@@ -35,37 +35,72 @@ declare module '@xh/hoist/core' {
 // ag-Grid -- Import and Register
 //-----------------------------------------------------------------
 import {installAgGrid} from '@xh/hoist/kit/ag-grid';
-import {ModuleRegistry} from '@ag-grid-community/core';
-import '@ag-grid-community/styles/ag-grid.css';
-import '@ag-grid-community/styles/ag-theme-balham.css';
-import {AgGridReact} from '@ag-grid-community/react';
-import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model';
+import {AgGridReact} from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-balham.css';
+import {
+    ModuleRegistry,
+    provideGlobalGridOptions,
+    ClientSideRowModelApiModule,
+    ClientSideRowModelModule,
+    CellStyleModule,
+    ColumnApiModule,
+    PinnedRowModule,
+    RenderApiModule,
+    RowSelectionModule,
+    RowApiModule,
+    RowStyleModule,
+    ScrollApiModule,
+    TextEditorModule,
+    TooltipModule,
+    TextFilterModule
+} from 'ag-grid-community';
+
+import {AgChartsCommunityModule} from 'ag-charts-community';
+
+ModuleRegistry.registerModules([
+    ClientSideRowModelApiModule,
+    ClientSideRowModelModule,
+    CellStyleModule,
+    ColumnApiModule,
+    PinnedRowModule,
+    RenderApiModule,
+    RowSelectionModule,
+    RowApiModule,
+    RowStyleModule,
+    ScrollApiModule,
+    TextEditorModule,
+    TooltipModule,
+    TextFilterModule
+]);
 
 // Enterprise features
 // IMPORTANT: If you are using enterprise version in your app, you must provide your own license
-import {LicenseManager, EnterpriseCoreModule} from '@ag-grid-enterprise/core';
-import {ClipboardModule} from '@ag-grid-enterprise/clipboard';
-import {MenuModule} from '@ag-grid-enterprise/menu';
-import {RowGroupingModule} from '@ag-grid-enterprise/row-grouping';
-// Fancy features for the raw agGrid Component example...
-import {SideBarModule} from '@ag-grid-enterprise/side-bar';
-import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel';
-import {FiltersToolPanelModule} from '@ag-grid-enterprise/filter-tool-panel';
-// Feature for the portfolio sparklines example
-import {SparklinesModule} from '@ag-grid-enterprise/sparklines';
-
-ModuleRegistry.registerModules([
-    ClientSideRowModelModule,
+import {
+    LicenseManager,
     ClipboardModule,
+    ColumnsToolPanelModule,
+    FiltersToolPanelModule,
     MenuModule,
     RowGroupingModule,
     SideBarModule,
+    SparklinesModule,
+    TreeDataModule
+} from 'ag-grid-enterprise';
+
+ModuleRegistry.registerModules([
+    ClipboardModule,
     ColumnsToolPanelModule,
     FiltersToolPanelModule,
-    SparklinesModule
+    MenuModule,
+    RowGroupingModule,
+    SideBarModule,
+    SparklinesModule.with(AgChartsCommunityModule),
+    TreeDataModule
 ]);
 
-installAgGrid(AgGridReact, EnterpriseCoreModule.version);
+provideGlobalGridOptions({theme: 'legacy'});
+installAgGrid(AgGridReact, ClientSideRowModelModule.version);
 
 when(
     () => XH.appIsRunning,

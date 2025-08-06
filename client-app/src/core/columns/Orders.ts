@@ -93,7 +93,6 @@ export const closingPriceSparklineCol: ColumnSpec = {
         cellRendererParams: {
             sparklineOptions: {
                 axis: {type: 'time'},
-                crosshairs: {xLine: {enabled: false}},
                 tooltip: {
                     renderer: ({xValue, yValue}) => ({
                         title: fmtDate(xValue, {fmt: 'MM/DD/YYYY'}),
