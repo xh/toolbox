@@ -26,6 +26,7 @@ export const gridScrolling = hoistCmp.factory({
                         rowData={model.rowData}
                         columnDefs={model.columnDefs}
                         suppressColumnVirtualisation={!model.isColVirtualizationEnabled}
+                        animateRows={false}
                     />
                 </div>
             )
