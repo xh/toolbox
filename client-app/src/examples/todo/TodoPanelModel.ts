@@ -1,3 +1,4 @@
+import {confirmInputTypeToConfirm} from '@xh/hoist/appcontainer/MessageSourceModel';
 import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, SizingMode, XH} from '@xh/hoist/core';
 import {RecordAction} from '@xh/hoist/data';
@@ -129,7 +130,8 @@ export class TodoPanelModel extends HoistModel {
             message = count === 1 ? `'${description}?'` : `${count} tasks?`,
             confirmed = await XH.confirm({
                 title: 'Confirm',
-                message: `Are you sure you want to permanently remove ${message}`
+                message: `Are you sure you want to permanently remove ${message}`,
+                input: confirmInputTypeToConfirm(message)
             });
 
         if (!confirmed) return;
