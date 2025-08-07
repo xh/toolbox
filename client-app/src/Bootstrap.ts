@@ -57,7 +57,7 @@ import {
     TextFilterModule
 } from 'ag-grid-community';
 
-//import {AgChartsCommunityModule} from 'ag-charts-community';
+import {AgChartsCommunityModule} from 'ag-charts-community';
 
 ModuleRegistry.registerModules([
     ClientSideRowModelApiModule,
@@ -81,23 +81,23 @@ ModuleRegistry.registerModules([
 import {
     LicenseManager,
     ClipboardModule,
-    //ColumnsToolPanelModule,
-    //FiltersToolPanelModule,
+    ColumnsToolPanelModule,
+    FiltersToolPanelModule,
     MenuModule,
     RowGroupingModule,
-    //SideBarModule,
-    //SparklinesModule,
+    SideBarModule,
+    SparklinesModule,
     TreeDataModule
 } from 'ag-grid-enterprise';
 
 ModuleRegistry.registerModules([
     ClipboardModule,
-    //ColumnsToolPanelModule,
-    //FiltersToolPanelModule,
+    ColumnsToolPanelModule,
+    FiltersToolPanelModule,
     MenuModule,
     RowGroupingModule,
-    //SideBarModule,
-    //SparklinesModule.with(AgChartsCommunityModule),
+    SideBarModule,
+    SparklinesModule.with(AgChartsCommunityModule),
     TreeDataModule
 ]);
 
