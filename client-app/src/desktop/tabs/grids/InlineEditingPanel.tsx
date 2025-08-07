@@ -12,6 +12,7 @@ import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
 import './InlineEditingPanel.scss';
 import {InlineEditingPanelModel} from './InlineEditingPanelModel';
 import React from 'react';
+import classNames from 'classnames';
 
 export const inlineEditingPanel = hoistCmp.factory({
     model: creates(InlineEditingPanelModel),
@@ -47,12 +48,15 @@ export const inlineEditingPanel = hoistCmp.factory({
             item: panel({
                 title: 'Grids › Inline Editing',
                 icon: Icon.edit(),
-                className: `tb-grid-wrapper-panel tb-inline-editing-panel ${
+                className: classNames(
+                    model.isModal ? '' : 'tb-grid-wrapper-panel',
+                    'tb-inline-editing-panel',
                     model.fullRowEditing ? 'tb-inline-editing-panel--fullRow' : ''
-                }`,
+                ),
                 tbar: tbar(),
-                item: hframe(grid(), gridOptionsPanel()),
-                bbar: bbar()
+                item: hframe(grid({agOptions: {popupParent: null}}), gridOptionsPanel()),
+                bbar: bbar(),
+                model: model.panelModel
             })
         });
     }
