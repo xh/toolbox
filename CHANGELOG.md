@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.5.0 - 2025-08-08
+
+### Libraries
+* hoist-core 31.1.0
+* @xh/hoist 75.0.0
+
 ## v6.4.0 - 2025-07-07
 
 ### New Features
