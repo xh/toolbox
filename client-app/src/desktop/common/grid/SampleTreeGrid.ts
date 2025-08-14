@@ -1,5 +1,6 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {
     colChooserButton,
@@ -29,7 +30,11 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 groupingChooser(),
                 expandToLevelButton(),
                 filler(),
-                gridCountLabel({includeChildren: true}),
+                gridCountLabel({
+                    includeChildren: true,
+                    excludeParents: true
+                }),
+                storeFilterField(),
                 '-',
                 gridFindField(),
                 '-',
