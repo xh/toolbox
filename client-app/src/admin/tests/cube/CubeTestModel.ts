@@ -1,5 +1,6 @@
 import {GridModel, timeCol, TreeStyle} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, PlainObject} from '@xh/hoist/core';
+import {numberEditor, textEditor} from '@xh/hoist/desktop/cmp/grid';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
@@ -107,32 +108,53 @@ export class CubeTestModel extends HoistModel {
             treeMode: true,
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             showSummary: this.showSummary,
-            store: {loadRootAsSummary: this.showSummary},
+            store: {
+                loadRootAsSummary: this.showSummary,
+                fields: [{name: 'cubeDimension', type: 'string'}]
+            },
             sortBy: 'time|desc',
             emptyText: 'No records found...',
             colChooserModel: true,
             enableExport: true,
             rowBorders: true,
             showHover: true,
+            levelLabels: () => {
+                const {dimManagerModel} = this,
+                    {groupingChooserModel} = dimManagerModel,
+                    groupings = dimManagerModel.value;
+                return groupings.map((it: string) => groupingChooserModel.getDimDisplayName(it));
+            },
+            colDefaults: {
+                editable: ({record}) => !record.data.cubeDimension, // Only editable if leaf node
+                setValueFn: ({value, record, field}) => {
+                    const data = {id: record.data.cubeLabel};
+                    data[field] = value;
+                    this.cubeModel.cube.modifyRecordsAsync(data);
+                }
+            },
             columns: [
                 {
                     field: 'id',
                     headerName: 'ID',
                     width: 40,
-                    hidden: true
+                    hidden: true,
+                    editable: false
                 },
                 {
                     field: 'cubeLabel',
                     headerName: 'Name',
                     minWidth: 180,
-                    isTreeColumn: true
+                    isTreeColumn: true,
+                    editable: false
                 },
                 {
                     field: 'fund',
+                    editor: textEditor,
                     width: 130
                 },
                 {
                     field: 'trader',
+                    editor: textEditor,
                     width: 130
                 },
                 {
@@ -141,6 +163,7 @@ export class CubeTestModel extends HoistModel {
                     align: 'right',
                     width: 130,
                     absSort: true,
+                    editor: numberEditor,
                     renderer: numberRenderer({
                         precision: 0,
                         ledger: true
@@ -151,6 +174,7 @@ export class CubeTestModel extends HoistModel {
                     field: 'price',
                     align: 'right',
                     width: 130,
+                    editor: numberEditor,
                     renderer: numberRenderer({
                         precision: 4
                     }),
@@ -160,6 +184,7 @@ export class CubeTestModel extends HoistModel {
                     field: 'commission',
                     align: 'right',
                     width: 130,
+                    editor: numberEditor,
                     renderer: numberRenderer({
                         precision: 0,
                         ledger: true
@@ -169,6 +194,7 @@ export class CubeTestModel extends HoistModel {
                     field: 'pctCommission',
                     align: 'right',
                     width: 130,
+                    editor: numberEditor,
                     renderer: numberRenderer({
                         precision: 6
                     })
@@ -177,6 +203,7 @@ export class CubeTestModel extends HoistModel {
                     field: 'maxConfidence',
                     align: 'right',
                     width: 130,
+                    editor: numberEditor,
                     renderer: numberRenderer({
                         precision: 0
                     }),
@@ -186,6 +213,7 @@ export class CubeTestModel extends HoistModel {
                     field: 'minConfidence',
                     align: 'right',
                     width: 130,
+                    editor: numberEditor,
                     renderer: numberRenderer({
                         precision: 0
                     }),
@@ -193,6 +221,7 @@ export class CubeTestModel extends HoistModel {
                 },
                 {
                     field: 'time',
+                    editable: false,
                     ...timeCol
                 }
             ]
