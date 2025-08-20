@@ -11,6 +11,7 @@ import xhLogo from '../core/img/xh-toolbox-logo.png';
 import '../core/Toolbox.scss';
 import './App.scss';
 import {AppModel} from './AppModel';
+import {search} from './search/Search';
 
 export const AppComponent = hoistCmp({
     displayName: 'App',
@@ -23,6 +24,7 @@ export const AppComponent = hoistCmp({
                 title: null,
                 leftItems: [tabSwitcher({enableOverflow: true})],
                 rightItems: [
+                    search({width: 300}),
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
                     appBarSeparator()
                 ],
