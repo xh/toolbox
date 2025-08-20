@@ -2,7 +2,7 @@ import {HoistService, persist, XH} from '@xh/hoist/core';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {without} from 'lodash';
 
-import {PERSIST_APP} from '../AppModel';
+export const PERSIST_APP = {prefKey: 'contactAppState'};
 
 /**
  * Service to manage fetching and updating contacts.
@@ -25,6 +25,7 @@ export class ContactService extends HoistService {
 
     async getContactsAsync() {
         const ret = await XH.fetchJson({url: 'contacts'});
+
         ret.forEach(it => {
             it.isFavorite = this.userFaves.includes(it.id);
             it.profilePicture = `../../public/contact-images/${
@@ -48,10 +49,17 @@ export class ContactService extends HoistService {
     }
 
     @action
-    toggleFavorite(id) {
+    toggleFavorite(id: string) {
         const {userFaves} = this,
             isFavorite = userFaves.includes(id);
 
-        this.userFaves = isFavorite ? without(userFaves, id) : [...userFaves, id];
+        const userFavorites = isFavorite ? without(userFaves, id) : [...userFaves, id];
+
+        XH.setPref(PERSIST_APP.prefKey, {
+            ...(XH.getPref(PERSIST_APP.prefKey) ?? {}),
+            userFaves: userFavorites
+        });
+
+        this.userFaves = userFavorites;
     }
 }
