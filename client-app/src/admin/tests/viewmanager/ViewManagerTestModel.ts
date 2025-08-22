@@ -154,7 +154,7 @@ export class ViewManagerTestModel extends HoistModel {
             this.viewManagerModel = newModel;
             // @ts-ignore
             window.testViewManagerModel = newModel;
-            console.log('ViewManagerModel created:', newModel);
+            this.logInfo('ViewManagerModel created:', newModel);
 
             // Clear dirty state of config form.
             configFormModel.init(data);
