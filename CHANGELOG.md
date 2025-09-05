@@ -2,6 +2,13 @@
 
 ## v7.0-SNAPSHOT - unreleased
 
+## 6.5.1 - 2025-08-15
+
+### Technical
+* Updated desktop and admin `AppModel` to utilize updates to `TabModel` API for in-place `childTabs`
+  definition, enabling full tab trees to be declared in one file and removing redundant nested tab boilerplate.
+
+
 ## 6.5.0 - 2025-08-08
 
 ### Libraries
