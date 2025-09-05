@@ -9,3 +9,4 @@ export * from './StandardGridPanel';
 export * from './TreeGridPanel';
 export * from './TreeGridWithCheckboxPanel';
 export * from './ZoneGridPanel';
+import './GridsTab.scss';
