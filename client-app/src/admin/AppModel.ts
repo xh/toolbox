@@ -72,38 +72,34 @@ export class AppModel extends HoistAdminAppModel {
                 id: 'roadmap',
                 title: 'Roadmap',
                 icon: Icon.mapSigns(),
-                childTabs: {
-                    modelConfig: {
-                        tabs: [
-                            {id: 'projects', icon: Icon.checkCircle(), content: projectRestPanel},
-                            {id: 'phases', icon: Icon.calendar(), content: phaseRestPanel}
-                        ],
-                        switcher: {orientation: 'left'}
-                    }
+                content: {
+                    switcher: {orientation: 'left'},
+                    tabs: [
+                        {id: 'projects', icon: Icon.checkCircle(), content: projectRestPanel},
+                        {id: 'phases', icon: Icon.calendar(), content: phaseRestPanel}
+                    ]
                 }
             },
             {
                 id: 'tests',
                 icon: Icon.stopwatch(),
-                childTabs: {
-                    modelConfig: {
-                        switcher: {orientation: 'left'},
-                        tabs: [
-                            {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
-                            {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
-                            {id: 'dataView', content: dataViewTestPanel},
-                            {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
-                            {id: 'grid', title: 'Grid', content: GridTestPanel},
-                            {id: 'gridScrolling', content: gridScrolling},
-                            {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
-                            {id: 'panelResizing', content: PanelResizingTestPanel},
-                            {id: 'select', content: SelectTestPanel},
-                            {id: 'storeColumnFilters', content: storeColumnFilterPanel},
-                            {id: 'viewColumnFilters', content: viewColumnFilterPanel},
-                            {id: 'viewManager', content: viewManagerTestPanel},
-                            {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel}
-                        ]
-                    }
+                content: {
+                    switcher: {orientation: 'left'},
+                    tabs: [
+                        {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
+                        {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
+                        {id: 'dataView', content: dataViewTestPanel},
+                        {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
+                        {id: 'grid', title: 'Grid', content: GridTestPanel},
+                        {id: 'gridScrolling', content: gridScrolling},
+                        {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
+                        {id: 'panelResizing', content: PanelResizingTestPanel},
+                        {id: 'select', content: SelectTestPanel},
+                        {id: 'storeColumnFilters', content: storeColumnFilterPanel},
+                        {id: 'viewColumnFilters', content: viewColumnFilterPanel},
+                        {id: 'viewManager', content: viewManagerTestPanel},
+                        {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel}
+                    ]
                 }
             }
         ] as TabConfig[];
