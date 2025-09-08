@@ -51,6 +51,12 @@ export const homePage = hoistCmp.factory({
                     route: 'charts'
                 }),
                 summaryCard({
+                    title: 'Tree Map',
+                    icon: Icon.gridLarge(),
+                    summary: 'TreeMap visualizations.', // Todo: Add more details
+                    route: 'treeMap'
+                }),
+                summaryCard({
                     title: 'Containers',
                     icon: Icon.box(),
                     summary: 'Layout children in Tabs, or flexed horizontally or vertically.',

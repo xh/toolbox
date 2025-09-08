@@ -1,7 +1,7 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
-import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
+import {SplitTreeMapModel} from '@xh/hoist/cmp/treemap';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {fmtMillions} from '@xh/hoist/format';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
@@ -30,6 +30,7 @@ export class SplitTreeMapPanelModel extends HoistModel {
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         selModel: 'multiple',
+        levelLabels: () => this.groupingChooserModel.valueDisplayNames,
         store: {
             processRawData: r => {
                 return {

@@ -1,5 +1,5 @@
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -40,6 +40,7 @@ class ErrorExampleModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.mounted = new Date();
     }
 }

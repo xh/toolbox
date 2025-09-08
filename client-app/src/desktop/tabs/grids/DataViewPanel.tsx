@@ -31,7 +31,7 @@ export const dataViewPanel = hoistCmp.factory({
                 bbar: [
                     refreshButton({
                         text: 'Load new (random) records',
-                        model
+                        target: model
                     }),
                     filler(),
                     storeFilterField({store: model.dataViewModel.store})

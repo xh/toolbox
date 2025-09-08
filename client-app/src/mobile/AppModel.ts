@@ -9,6 +9,7 @@ import {BaseAppModel} from '../BaseAppModel';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {buttonPage} from './buttons/ButtonPage';
 import {chartPage} from './charts/ChartPage';
+import {treeMapPage} from './treemap/TreeMapPage';
 import {containersPage} from './containers/ContainersPage';
 import {dataViewPage} from './dataview/DataViewPage';
 import {formPage} from './form/FormPage';
@@ -40,6 +41,7 @@ export class AppModel extends BaseAppModel {
             {id: 'dataview', content: dataViewPage},
             {id: 'form', content: formPage},
             {id: 'charts', content: chartPage},
+            {id: 'treeMap', content: treeMapPage},
             {id: 'containers', content: containersPage},
             {id: 'panels', content: panelsPage},
             {id: 'popovers', content: popoverPage},
@@ -99,6 +101,10 @@ export class AppModel extends BaseAppModel {
                         path: '/charts'
                     },
                     {
+                        name: 'treeMap',
+                        path: '/treeMap'
+                    },
+                    {
                         name: 'containers',
                         path: '/containers'
                     },
@@ -136,6 +142,7 @@ export class AppModel extends BaseAppModel {
     }
 
     override async initAsync() {
+        await super.initAsync();
         await XH.installServicesAsync(PortfolioService);
     }
 

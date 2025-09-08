@@ -4,7 +4,7 @@ import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {computed, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
-import filesize from 'filesize';
+import {filesize} from 'filesize';
 import download from 'downloadjs';
 import {filter, find, pull} from 'lodash';
 import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
@@ -139,7 +139,7 @@ export class FileManagerModel extends HoistModel {
     }
 
     async resetAndLoadAsync() {
-        this.chooserModel.removeAllFiles();
+        this.chooserModel.clear();
         await this.loadAsync();
     }
 
@@ -168,12 +168,11 @@ export class FileManagerModel extends HoistModel {
         const files = await XH.fetchService
             .fetchJson({
                 url: 'fileManager/list',
-                loadSpec
-            })
-            .track({
-                category: 'File Manager',
-                message: 'Loaded Files',
-                loadSpec
+                loadSpec,
+                track: {
+                    category: 'File Manager',
+                    message: 'Loaded Files'
+                }
             })
             .catchDefault();
 

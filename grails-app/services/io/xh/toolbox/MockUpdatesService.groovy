@@ -15,6 +15,7 @@ class MockUpdatesService extends BaseService {
 
     void init() {
         createTimer(
+            name: 'pushMockUpdate',
             runFn: this.&pushMockUpdate,
             interval: 3 * SECONDS
         )

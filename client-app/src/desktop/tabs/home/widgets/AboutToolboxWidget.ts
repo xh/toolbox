@@ -55,7 +55,7 @@ export const aboutToolboxWidget = hoistCmp.factory({
                                       'Server Uptime',
                                       relativeTimestamp({
                                           timestamp: startupTime,
-                                          options: {pastSuffix: ''}
+                                          pastSuffix: ''
                                       })
                                   )
                                 : null
