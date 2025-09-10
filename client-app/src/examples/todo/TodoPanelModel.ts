@@ -129,7 +129,9 @@ export class TodoPanelModel extends HoistModel {
             message = count === 1 ? `'${description}?'` : `${count} tasks?`,
             confirmed = await XH.confirm({
                 title: 'Confirm',
-                message: `Are you sure you want to permanently remove ${message}`
+                message: `Are you sure you want to permanently remove ${message}`,
+                extraConfirmText: 'REMOVE',
+                extraConfirmLabel: `Type 'REMOVE' to remove the task:`
             });
 
         if (!confirmed) return;

@@ -29,6 +29,13 @@ export const popupsPage = hoistCmp.factory({
                         })
                     );
                 }),
+                renderCard('Extra Confirm', () => {
+                    XH.confirm({
+                        title: 'Extra Confirm',
+                        message: 'This is a confirm dialog with extra confirm.',
+                        extraConfirmText: 'I agree'
+                    });
+                }),
                 renderCard('Prompt', () => {
                     XH.prompt<string>({
                         title: 'Prompt',
