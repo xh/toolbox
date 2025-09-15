@@ -1,4 +1,5 @@
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {span} from '@xh/hoist/cmp/layout';
+import {TabContainerModel, TabModel} from '@xh/hoist/cmp/tab';
 import {LoadSpec, managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
@@ -6,7 +7,11 @@ import {
     themeAppOption
 } from '@xh/hoist/desktop/cmp/appOption';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {DynamicTabSwitcherModel} from '@xh/hoist/desktop/cmp/tab/dynamic/DynamicTabSwitcherModel';
+import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {isEmpty} from 'lodash';
+import {BaseAppModel} from '../BaseAppModel';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {
@@ -16,6 +21,7 @@ import {
     simpleTreeMapPanel,
     splitTreeMapPanel
 } from './tabs/charts';
+import {examplesTab} from './tabs/examples/ExamplesTab';
 import {formPanel, inputsPanel, toolbarFormPanel} from './tabs/forms';
 import {
     agGridView,
@@ -30,6 +36,7 @@ import {
     treeGridWithCheckboxPanel,
     zoneGridPanel
 } from './tabs/grids';
+import {homeTab} from './tabs/home/HomeTab';
 import {
     dashCanvasPanel,
     dashContainerPanel,
@@ -39,8 +46,6 @@ import {
     tileFrameContainerPanel,
     vboxContainerPanel
 } from './tabs/layout';
-import {examplesTab} from './tabs/examples/ExamplesTab';
-import {homeTab} from './tabs/home/HomeTab';
 import {mobileTab} from './tabs/mobile/MobileTab';
 import {
     appNotificationsPanel,
@@ -69,9 +74,6 @@ import {
     panelSizingPanel,
     toolbarPanel
 } from './tabs/panels';
-import {fmtDateTimeSec} from '@xh/hoist/format';
-import {span} from '@xh/hoist/cmp/layout';
-import {BaseAppModel} from '../BaseAppModel';
 
 export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
@@ -213,6 +215,61 @@ export class AppModel extends BaseAppModel {
                 }
             },
             {id: 'examples', icon: Icon.books(), content: examplesTab}
+        ]
+    });
+
+    @managed
+    switcherModel: DynamicTabSwitcherModel = new DynamicTabSwitcherModel({
+        initialFavorites: [...this.tabModel.tabs.map(it => it.id), 'github'],
+        persistWith: {prefKey: 'appState'},
+        tabContainerModel: this.tabModel,
+        extraTabs: [
+            {
+                id: 'github',
+                title: 'XH Github',
+                tooltip: 'Open XH Github in new window',
+                icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
+                actionFn: () => XH.openWindow('https://github.com/xh')
+            }
+        ],
+        extraMenuItems: [
+            {
+                text: 'Open Tab in New Window',
+                icon: Icon.openExternal(),
+                actionFn: (_, {tab}) => {
+                    if (tab instanceof TabModel) {
+                        const {params} = XH.router.getState();
+                        XH.openWindow(
+                            window.origin +
+                                XH.router.buildPath(tab.containerModel.route + '.' + tab.id, params)
+                        );
+                    }
+                },
+                prepareFn: (me, {tab}) => {
+                    if (!(tab instanceof TabModel)) {
+                        me.hidden = true;
+                    }
+                }
+            },
+            '-',
+            {
+                text: 'More Tabs...',
+                prepareFn: me => {
+                    const tabs = this.tabModel.tabs.filter(
+                        tab => !this.switcherModel.enabledVisibleTabs.includes(tab)
+                    );
+                    if (isEmpty(tabs)) {
+                        me.hidden = true;
+                    } else {
+                        me.hidden = false;
+                        me.items = tabs.map(tab => ({
+                            text: tab.title,
+                            icon: tab.icon,
+                            actionFn: () => this.tabModel.activateTab(tab)
+                        }));
+                    }
+                }
+            }
         ]
     });
 
