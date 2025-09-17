@@ -38,9 +38,10 @@ import {installAgGrid} from '@xh/hoist/kit/ag-grid';
 import {AgGridReact} from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-balham.css';
+import {ModuleRegistry, provideGlobalGridOptions} from 'ag-grid-community';
+import {AgChartsCommunityModule} from 'ag-charts-community';
+
 import {
-    ModuleRegistry,
-    provideGlobalGridOptions,
     ClientSideRowModelApiModule,
     ClientSideRowModelModule,
     CellStyleModule,
@@ -55,10 +56,8 @@ import {
     ScrollApiModule,
     TextEditorModule,
     TooltipModule,
-    TextFilterModule
+    TextFilterModule,
 } from 'ag-grid-community';
-
-import {AgChartsCommunityModule} from 'ag-charts-community';
 
 ModuleRegistry.registerModules([
     ClientSideRowModelApiModule,
@@ -78,10 +77,11 @@ ModuleRegistry.registerModules([
     TextFilterModule
 ]);
 
-// Enterprise features
+// Enterprise features import and licensing.
 // IMPORTANT: If you are using enterprise version in your app, you must provide your own license
 import {
     LicenseManager,
+    CellSelectionModule,
     ClipboardModule,
     ColumnsToolPanelModule,
     FiltersToolPanelModule,
@@ -93,6 +93,7 @@ import {
 } from 'ag-grid-enterprise';
 
 ModuleRegistry.registerModules([
+    CellSelectionModule,
     ClipboardModule,
     ColumnsToolPanelModule,
     FiltersToolPanelModule,
