@@ -9,7 +9,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {SECONDS} from '@xh/hoist/utils/datetime';
-import {loadingIndicator} from '@xh/hoist/desktop/cmp/loadingindicator';
+import {loadingIndicator} from '@xh/hoist/cmp/loadingindicator';
 import {sampleGrid, SampleGridModel, wrapper} from '../../common';
 
 export const loadingIndicatorPanel = hoistCmp.factory({
@@ -37,7 +37,7 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/desktop/cmp/loadingindicator/LoadingIndicator.ts',
+                    url: '$HR/cmp/loadingindicator/LoadingIndicator.ts',
                     notes: 'Hoist component.'
                 },
                 {

@@ -2,37 +2,35 @@ package io.xh.toolbox.app
 
 
 import io.xh.hoist.BaseService
-import io.xh.hoist.cluster.ReplicatedValue
+import io.xh.hoist.cachedvalue.CachedValue
+import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
 import io.xh.toolbox.NewsItem
 import org.apache.hc.client5.http.classic.methods.HttpGet
-import io.xh.hoist.util.Timer
 
 import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
 
 class NewsService extends BaseService {
 
-    private ReplicatedValue<List<NewsItem>> _newsItems = getReplicatedValue('newsItems')
-    private Timer newsTimer
-    private JSONClient _jsonClient
-
     static clearCachesConfigs = ['newsSources', 'newsApiKey']
-    def configService
+
+    ConfigService configService
+
+    /**
+     * Example of a CachedValue being used for caching + expiry via `expireTime` directive.
+     * No proactive Timer-based refresh in this service - instead the first caller who comes across
+     * an empty or expired cache (on any instance) will trigger a refresh that is replicated to all.
+     */
+    private CachedValue<List<NewsItem>> _newsItems = createCachedValue(
+        name: 'newsItems',
+        expireTime: {configService.getInt('newsRefreshMins') * MINUTES},
+        replicate: true
+    )
 
     List<NewsItem> getNewsItems() {
-        // to avoid hitting the API too frequently, we only start our timer when the NewsService is actually used.
-        newsTimer = newsTimer ?: createTimer(
-            primaryOnly: true,
-            runFn: this.&loadAllNews,
-            interval: 'newsRefreshMins',
-            intervalUnits: MINUTES,
-            runImmediatelyAndBlock: true
-        )
-
-        return _newsItems.get()
+        _newsItems.getOrCreate { loadNews() }
     }
-
 
     //------------------------
     // For sample monitors
@@ -56,22 +54,10 @@ class NewsService extends BaseService {
     //------------------------
     // Implementation
     //------------------------
-    private void loadAllNews() {
-        def sources = configService.getMap('newsSources').keySet().toList()
-
-        withInfo("Loading news from ${sources.size()} configured sources") {
-            def items = []
-            try {
-                items = loadNewsForSources(sources)
-            } finally {
-                _newsItems.set(items)
-            }
-        }
-    }
-
-    private List<NewsItem> loadNewsForSources(List<String> sources) {
-        def sourcesParam = String.join(',', sources)
-        def apiKey = configService.getString('newsApiKey'),
+    private List<NewsItem> loadNews() {
+        def sources = configService.getMap('newsSources').keySet().toList(),
+            sourcesParam = sources.join(','),
+            apiKey = configService.getString('newsApiKey'),
             url = "https://newsapi.org/v2/top-headlines?sources=${sourcesParam}&apiKey=${apiKey}",
             response = client.executeAsMap(new HttpGet(url))
 
@@ -98,15 +84,15 @@ class NewsService extends BaseService {
         return ret
     }
 
+    private JSONClient _jsonClient
     private JSONClient getClient() {
-        _jsonClient = _jsonClient ?: new JSONClient()
+        _jsonClient ?= new JSONClient()
     }
 
     void clearCaches() {
         _jsonClient = null
         if (isPrimary) {
-            _newsItems.set(null)
-            loadAllNews()
+            _newsItems.clear()
         }
         super.clearCaches()
     }

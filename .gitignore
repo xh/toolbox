@@ -1,5 +1,4 @@
 # IDE Files (mostly)
-###################
 .idea/*
 !/.idea/scopes/
 !/.idea/copyright/
@@ -8,8 +7,11 @@
 .project
 .classpath
 
-# Compiled source #
-###################
+# Local instance configs w/secrets
+toolbox.yml
+.env
+
+# Compiled source
 .gradle/
 build/
 bin/
@@ -18,14 +20,11 @@ out/
 /client-app/node_modules/
 /client-app/tsconfig.tsbuildinfo
 
-# Logs #
-########
+# Logs
 toolbox-logs/
 *.log
-toolbox.yml
 
-# OS generated files #
-######################
+# OS generated files
 .DS_Store
 .DS_Store?
 ehthumbs.db

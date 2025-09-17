@@ -3,12 +3,13 @@ import static java.lang.Boolean.parseBoolean
 buildscript {
     repositories {
         mavenCentral()
-        maven {url 'https://plugins.gradle.org/m2/'}
+        gradlePluginPortal()
         maven {url 'https://repo.grails.org/grails/core'}
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
         classpath "org.grails.plugins:hibernate5:$grailsHibernatePluginVersion"
+        classpath "co.uzzu.dotenv:gradle:$dotEnvGradlePluginVersion"
     }
 }
 
@@ -18,6 +19,12 @@ group xhAppPackage
 apply plugin:'idea'
 apply plugin:'war'
 apply plugin:'org.grails.grails-web'
+
+// Must be applied to root project - matters when running Toolbox in a wrapper project mode w/hoist-core.
+// See README.md for more details on this configuration, including contents of top-level build.gradle file.
+gradle.rootProject {
+    apply plugin:'co.uzzu.dotenv.gradle'
+}
 
 repositories {
     mavenCentral()
@@ -79,7 +86,7 @@ Map hoistMetaData = [
 def allJvmArgs = [
     '-Dspring.output.ansi.enabled=always',
     '-XX:TieredStopAtLevel=1',
-    '-Xmx1024m',
+    '-Xmx' + localDevXmx,
     "--add-modules=java.se",
     "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
     "--add-opens=java.base/java.lang=ALL-UNNAMED",
@@ -106,6 +113,8 @@ bootRun {
     jvmArgs(allJvmArgs)
     sourceResources sourceSets.main
     systemProperties hoistMetaData
+    // Bring .env sourced environment variables into bootRun JVM process.
+    environment env.allVariables()
 }
 
 tasks.withType(GroovyCompile) {
@@ -132,4 +141,12 @@ tasks.war.doFirst {
     infoFile.withInputStream {properties.load(it)}
     properties.putAll(hoistMetaData)
     infoFile.withOutputStream {properties.store(it, null)}
+}
+
+// Ensure that all variables defined in .env.template are set in local .env
+tasks.bootRun.doFirst {
+    def missingEnvVars = env.allVariablesOrNull().findAll {it.value == null}.collect {it.key}
+    if (missingEnvVars) {
+        throw new GradleException("Environment variables listed in .env.template not set in local .env file as required: ${missingEnvVars}")
+    }
 }

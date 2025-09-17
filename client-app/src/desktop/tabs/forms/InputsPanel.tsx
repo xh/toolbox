@@ -1,6 +1,17 @@
 import React from 'react';
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {box, div, span, strong, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
+import {
+    box,
+    div,
+    span,
+    strong,
+    filler,
+    frame,
+    hbox,
+    hframe,
+    vbox,
+    fragment
+} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -223,7 +234,8 @@ const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
                             enableClear: true,
                             enableCreate: true,
                             selectOnFocus: true,
-                            placeholder: 'Search restaurants...'
+                            placeholder: 'Search restaurants...',
+                            createMessageFn: q => `Open a new restaurant "${q}"`
                         })
                     }),
                     row({
@@ -238,15 +250,27 @@ const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
                     }),
                     row({
                         field: 'select3',
-                        info: 'custom fields, renderer, selectOnFocus, async search',
+                        info: 'async search, custom fields, custom renderers, selectOnFocus',
                         item: select({
                             valueField: 'id',
                             labelField: 'company',
                             enableClear: true,
                             selectOnFocus: true,
-                            queryFn: q => model.queryCustomersAsync(q),
+                            placeholder: 'Search customers...',
+                            loadingMessageFn: () =>
+                                fragment(
+                                    Icon.spinner({intent: 'primary', pulse: true}),
+                                    ' Searching...'
+                                ),
+                            noOptionsMessageFn: q =>
+                                q
+                                    ? fragment(
+                                          Icon.warning({intent: 'warning'}),
+                                          ' No results found.'
+                                      )
+                                    : 'Type to search...',
                             optionRenderer: opt => customerOption({opt}),
-                            placeholder: 'Search customers...'
+                            queryFn: q => model.queryCustomersAsync(q)
                         })
                     }),
                     row({
@@ -294,6 +318,31 @@ const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
                         )
                     }),
                     row({
+                        field: 'buttonGroupInput',
+                        info: 'outlined, intent:primary',
+                        item: buttonGroupInput({
+                            outlined: true,
+                            intent: 'primary',
+                            items: [
+                                button({
+                                    icon: Icon.chartLine(),
+                                    text: 'Button 1',
+                                    value: 'button1'
+                                }),
+                                button({
+                                    icon: Icon.gear(),
+                                    text: 'Button 2',
+                                    value: 'button2'
+                                }),
+                                button({
+                                    icon: Icon.skull(),
+                                    text: 'Button 3',
+                                    value: 'button3'
+                                })
+                            ]
+                        })
+                    }),
+                    row({
                         field: 'radioInput',
                         info: 'inline, disabled option',
                         item: radioInput({
@@ -336,7 +385,7 @@ const row = hoistCmp.factory<FormModel>({
     }
 });
 
-const customerOption = hoistCmp.factory(({opt}) =>
+const customerOption = ({opt}) =>
     hbox({
         className: 'xh-pad-half xh-border-bottom',
         items: [
@@ -357,8 +406,7 @@ const customerOption = hoistCmp.factory(({opt}) =>
         ],
         alignItems: 'center',
         paddingLeft: 0
-    })
-);
+    });
 
 const bbar = hoistCmp.factory<InputsPanelModel>(({model}) => {
     const {formModel} = model;

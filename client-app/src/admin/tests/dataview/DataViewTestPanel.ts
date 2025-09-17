@@ -12,8 +12,8 @@ export const dataViewTestPanel = hoistCmp.factory({
     render({model}) {
         const {dataViewModel} = model;
         return panel({
-            className: 'dataview-test xh-tiled-bg',
             title: 'Data View',
+            className: 'tb-data-view-test',
             items: [dataView({model: dataViewModel})],
             bbar: [
                 label('itemHeight'),
@@ -24,6 +24,7 @@ export const dataViewTestPanel = hoistCmp.factory({
                     max: 100,
                     labelStepSize: 20
                 }),
+                '-',
                 label('groupRowHeight'),
                 slider({
                     bind: 'groupRowHeight',

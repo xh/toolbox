@@ -42,9 +42,9 @@ export class RoadmapModel extends HoistModel {
         rowBorders: true,
         showHover: true,
         groupSortFn: (a, b) => {
-            a = toNumber(a);
-            b = toNumber(b);
-            return this.statusFilter === 'showUpcoming' ? a - b : b - a;
+            const aVal = toNumber(a),
+                bVal = toNumber(b);
+            return this.statusFilter === 'showUpcoming' ? aVal - bVal : bVal - aVal;
         }
     });
 

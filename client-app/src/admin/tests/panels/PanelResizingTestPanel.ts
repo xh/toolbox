@@ -35,7 +35,7 @@ export const PanelResizingTestPanel = hoistCmp({
                     }),
                     headerItems: [
                         relativeTimestamp({
-                            options: {prefix: 'Rendered'},
+                            prefix: 'Rendered',
                             timestamp: Date.now(),
                             marginLeft: 4
                         }),
@@ -134,9 +134,9 @@ export const PanelResizingTestPanel = hoistCmp({
                     item: box({
                         padding: 10,
                         item: `Collapsible Bottom (
-                          defaultSize: ${model.bottomPanel2Model.defaultSize}, 
-                          minSize: ${model.bottomPanel2Model.minSize}px, 
-                          maxSize: ${model.bottomPanel2Model.maxSize}px, 
+                          defaultSize: ${model.bottomPanel2Model.defaultSize},
+                          minSize: ${model.bottomPanel2Model.minSize}px,
+                          maxSize: ${model.bottomPanel2Model.maxSize}px,
                           persistWith: {localStorageKey: 'adminPanelSizing', path: 'bottomPanel2'}
                           )`
                     })

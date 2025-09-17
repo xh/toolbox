@@ -1,14 +1,28 @@
-import {HoistModel} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
+import {MouseEvent} from 'react';
+import {type ContextMenuSpec, HoistModel} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {clipboardMenuItem} from '@xh/hoist/desktop/cmp/clipboard';
 
 export class BasicPanelModel extends HoistModel {
     @bindable state: string = null;
     @bindable compactHeader: boolean = false;
     @bindable triggerError: boolean = false;
 
+    @bindable showContextMenu = true;
+    @bindable appliedContextMenu: ContextMenuSpec = null;
+
     constructor() {
         super();
         makeObservable(this);
+
+        this.addReaction({
+            track: () => this.showContextMenu,
+            run: () => {
+                this.appliedContextMenu = this.showContextMenu ? this.panelContextMenu : null;
+            },
+            fireImmediately: true
+        });
     }
 
     demoText = [
@@ -30,4 +44,76 @@ export class BasicPanelModel extends HoistModel {
 
         el.style.fontSize = `${currentSize + (up ? 1 : -1)}px`;
     }
+
+    getWordAtEvent(e: MouseEvent | PointerEvent): string {
+        const range = document.caretPositionFromPoint?.(e.clientX, e.clientY);
+        if (!range) return null;
+
+        const textNode = range.offsetNode;
+
+        // Only split TEXT_NODEs
+        if (textNode?.nodeType === 3) {
+            const offset = range.offset,
+                text = textNode.nodeValue,
+                wordCharRegex = /[a-zA-Z0-9_]/;
+
+            let start = offset;
+            let end = offset;
+
+            // Expand backwards to find the start of the word
+            while (start > 0 && wordCharRegex.test(text[start - 1])) {
+                start--;
+            }
+
+            // Expand forwards to find the end of the word
+            while (end < text.length && wordCharRegex.test(text[end])) {
+                end++;
+            }
+
+            // If the character at the offset wasn't a word character, or no word was found
+            if (start === end || !wordCharRegex.test(text[offset])) {
+                return null;
+            }
+
+            return text.substring(start, end);
+        }
+    }
+
+    private panelContextMenu: ContextMenuSpec = [
+        clipboardMenuItem({
+            text: 'Copy Text',
+            getCopyText: () => this.demoText.join('\n')
+        }),
+        {
+            text: 'Increase Text Size',
+            icon: Icon.plusCircle(),
+            actionFn: () => this.changeTextSize(true)
+        },
+        {
+            text: 'Decrease Text Size',
+            icon: Icon.minusCircle(),
+            actionFn: () => this.changeTextSize(false)
+        },
+        {
+            text: 'Lookup',
+            icon: Icon.book(),
+            prepareFn: (item, {contextMenuEvent}) => {
+                const word = this.getWordAtEvent(contextMenuEvent);
+
+                if (word) {
+                    item.text = `Lookup "${word}"`;
+                    item.hidden = false;
+                    return;
+                }
+
+                // reset to defaults
+                item.text = 'Lookup';
+                item.hidden = true;
+            },
+            actionFn: (e, {contextMenuEvent}) => {
+                const word = this.getWordAtEvent(contextMenuEvent);
+                window.open(`https://www.merriam-webster.com/dictionary/${word}`, '_blank');
+            }
+        }
+    ];
 }

@@ -1,13 +1,27 @@
-import {XH} from '@xh/hoist/core';
 import {AppModel as HoistAdminAppModel} from '@xh/hoist/admin/AppModel';
+import {TabConfig} from '@xh/hoist/cmp/tab';
+import {XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {roadmapTab} from './roadmap/RoadmapTab';
-import {testsTab} from './tests/TestsTab';
-import {wipTab} from './wip/WipTab';
+import {phaseRestPanel, projectRestPanel} from './roadmap';
+import {
+    asyncLoopPanel,
+    storeColumnFilterPanel,
+    viewColumnFilterPanel,
+    CubeTestPanel,
+    dataViewTestPanel,
+    FetchApiTestPanel,
+    GridTestPanel,
+    gridScrolling,
+    LocalDateTestPanel,
+    PanelResizingTestPanel,
+    SelectTestPanel,
+    viewManagerTestPanel,
+    WebSocketTestPanel
+} from './tests';
 
 export class AppModel extends HoistAdminAppModel {
-    static override instance: AppModel;
+    static instance: AppModel;
 
     override async initAsync() {
         await super.initAsync();
@@ -42,14 +56,11 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'localDate', path: '/localDate'},
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'select', path: '/select'},
-                    {name: 'webSockets', path: '/webSockets'},
+                    {name: 'storeColumnFilters', path: '/storeColumnFilters'},
                     {name: 'viewColumnFilters', path: '/viewColumnFilters'},
-                    {name: 'storeColumnFilters', path: '/storeColumnFilters'}
+                    {name: 'viewManager', path: '/viewManager'},
+                    {name: 'webSockets', path: '/webSockets'}
                 ]
-            },
-            {
-                name: 'wip',
-                path: '/wip'
             }
         ];
     }
@@ -57,9 +68,40 @@ export class AppModel extends HoistAdminAppModel {
     override createTabs() {
         return [
             ...super.createTabs(),
-            {id: 'roadmap', title: 'Roadmap', icon: Icon.mapSigns(), content: roadmapTab},
-            {id: 'tests', icon: Icon.stopwatch(), content: testsTab},
-            {id: 'wip', title: 'WIP', icon: Icon.experiment(), content: wipTab}
-        ];
+            {
+                id: 'roadmap',
+                title: 'Roadmap',
+                icon: Icon.mapSigns(),
+                content: {
+                    switcher: {orientation: 'left'},
+                    tabs: [
+                        {id: 'projects', icon: Icon.checkCircle(), content: projectRestPanel},
+                        {id: 'phases', icon: Icon.calendar(), content: phaseRestPanel}
+                    ]
+                }
+            },
+            {
+                id: 'tests',
+                icon: Icon.stopwatch(),
+                content: {
+                    switcher: {orientation: 'left'},
+                    tabs: [
+                        {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
+                        {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
+                        {id: 'dataView', content: dataViewTestPanel},
+                        {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
+                        {id: 'grid', title: 'Grid', content: GridTestPanel},
+                        {id: 'gridScrolling', content: gridScrolling},
+                        {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
+                        {id: 'panelResizing', content: PanelResizingTestPanel},
+                        {id: 'select', content: SelectTestPanel},
+                        {id: 'storeColumnFilters', content: storeColumnFilterPanel},
+                        {id: 'viewColumnFilters', content: viewColumnFilterPanel},
+                        {id: 'viewManager', content: viewManagerTestPanel},
+                        {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel}
+                    ]
+                }
+            }
+        ] as TabConfig[];
     }
 }

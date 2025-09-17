@@ -1,29 +1,27 @@
 {
   "compilerOptions": {
-    "noEmit": true,
-
-    "target": "ES2022",
-    "module": "ES2022",
-    "lib": ["dom", "es2022"],
-
-    "jsx": "react",
-    "moduleResolution": "Node",
-    "skipLibCheck": true,
-
     "allowSyntheticDefaultImports":  true,
     "experimentalDecorators": true,
+    "jsx": "react",
+    "lib": ["dom", "es2022"],
+    "module": "ES2022",
+    "moduleResolution": "Node",
+    "noEmit": true,
     "noImplicitOverride": true,
     "resolveJsonModule":  true,
+    "skipLibCheck": true,
+    "target": "ES2022",
     "useDefineForClassFields": true,
 
-    // Ignored by tsc when run by husky `pre-commit` hook if hoist-react is not present
-    // in a wrapper project for inline development.  Hoist-react should only be present if
-    // you are developing hoist-react itself.
+    // Supports inline development of hoist-react in a wrapper project.
+    // Ignored if hoist-react is not found at the relative path below.
     "paths": {
       "@xh/hoist/*": ["../../hoist-react/*"]
     }
 
   },
+  // Reference hoist-react as a composite build.
+  // Allows for distinct tsconfig options in hoist-react vs. this application.
   "references": [
     {"path":  "./node_modules/@xh/hoist"}
   ],

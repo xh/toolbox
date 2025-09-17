@@ -61,7 +61,7 @@ export const mobileTab = hoistCmp.factory(() =>
                     text: 'Open Toolbox Mobile in this browser',
                     icon: Icon.mobile(),
                     minimal: false,
-                    onClick: () => window.open('/mobile')
+                    onClick: () => XH.openWindow('/mobile')
                 }),
                 filler()
             ],

@@ -2,7 +2,7 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {box, hbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {jsonInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
-import {mask} from '@xh/hoist/desktop/cmp/mask';
+import {mask} from '@xh/hoist/cmp/mask';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {FetchApiTestModel} from './FetchApiTestModel';
 import './FetchApiTestStyles.scss';
