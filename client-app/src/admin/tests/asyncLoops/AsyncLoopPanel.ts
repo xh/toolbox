@@ -9,7 +9,7 @@ import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, observable, makeObservable, runInAction, computed} from '@xh/hoist/mobx';
 import {forEachAsync, Timer, whileAsync} from '@xh/hoist/utils/async';
-import {withDebug} from '@xh/hoist/utils/js';
+import {withDebug} from '@xh/hoist/utils/log';
 import {sampleGrid} from '../../../desktop/common/grid/SampleGrid';
 import {times} from 'lodash';
 import {wait} from '@xh/hoist/promise';
