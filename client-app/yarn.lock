@@ -2,110 +2,6 @@
 # yarn lockfile v1
 
 
-"@ag-grid-community/client-side-row-model@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/client-side-row-model/-/client-side-row-model-31.2.1.tgz#7ee1e80e8de31d3e231a74c8267a9f849fe05d2b"
-  integrity sha512-EwW2Sj3DGboZ7kv1uvbVUVyumfzRMFCo3qgLwONwWNeLkQP+9EooUsDQmyzWT8nn1lBkSFyvolpxFfyS05pL2A==
-  dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    tslib "^2.3.0"
-
-"@ag-grid-community/core@31.2.1", "@ag-grid-community/core@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/core/-/core-31.2.1.tgz#eefc018e39e22d82b53dbb4229d7330167ebe25a"
-  integrity sha512-tTDt8c6KykR+Y0cNwwbpokkhMmD1L1WVILPwZ0Z3lsSxSkmzGbTKSD2jOSvlw9vpPuAJpU0R5tMe1dfsEXO1YA==
-  dependencies:
-    tslib "^2.3.0"
-
-"@ag-grid-community/csv-export@31.2.1":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/csv-export/-/csv-export-31.2.1.tgz#040a04b7cdc5ec23208e270b120790071a4a633e"
-  integrity sha512-3h9kd9LDgpHdO2aPcKI2qZT0dGEJMWE/oTRrpBIMQD66KMTRKVJouKulvCTgDVp9X0nGHWq00/2TpNpTcK5jDg==
-  dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    tslib "^2.3.0"
-
-"@ag-grid-community/react@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/react/-/react-31.2.1.tgz#73c670f495b4753970b40ebdb0865a310d748c27"
-  integrity sha512-PDbvU965Zr6iE6QvEPeJpNRKvJfIv8z8gPWKuAyiUrQUowBjzFHe80XwSyOzYwWg1+79hJbGioPdBglLwLm0GQ==
-  dependencies:
-    prop-types "^15.8.1"
-
-"@ag-grid-community/styles@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/styles/-/styles-31.2.1.tgz#d38d55e0f50e45c67b3566b78ee94a8c0897b6c3"
-  integrity sha512-eivh8dgxNm7zewsK7i8XFIEpHWBCffL6w2xvd4DZDSzsLzOOwLSMfxwgieBr4kVQblmDtU6lwHlu61yVuUf0rQ==
-
-"@ag-grid-enterprise/clipboard@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/clipboard/-/clipboard-31.2.1.tgz#da23fd951ece8bfda67f8560d583ff4b94fcf33c"
-  integrity sha512-POD4k7a8ND3U0ktW/zA22hye+V1dKOeDCyBbafPX3Z2bufJ/w4/phN1sDSpag21mel/94gG+dW3CqE8d1WIJ+g==
-  dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-community/csv-export" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
-
-"@ag-grid-enterprise/column-tool-panel@31.2.1", "@ag-grid-enterprise/column-tool-panel@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/column-tool-panel/-/column-tool-panel-31.2.1.tgz#b061a2ab34758ac20c4912eebfe5bea2c0fd6764"
-  integrity sha512-FoymPDDQz1B4XaYXaqarczbTwhbu3G4PkHzavcfMUcM8FqoqE0Mhhk4oAihR8gwRJrDwaGZ0C/OQcsaG6VY0wQ==
-  dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
-    "@ag-grid-enterprise/row-grouping" "31.2.1"
-    "@ag-grid-enterprise/side-bar" "31.2.1"
-
-"@ag-grid-enterprise/core@31.2.1", "@ag-grid-enterprise/core@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/core/-/core-31.2.1.tgz#a0be8d3857d30a511c6f88581f09622733282959"
-  integrity sha512-So9U/bC41uBjNdg0pdJTYOkW9fFFRx7+2csOZkSuf2Y3dx9Zn8bAFCzNs1N3v0+XlNj8Ylsdi2isA6mjP9dIMQ==
-  dependencies:
-    "@ag-grid-community/core" "31.2.1"
-
-"@ag-grid-enterprise/filter-tool-panel@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/filter-tool-panel/-/filter-tool-panel-31.2.1.tgz#55ab4c9d2cecd3c3ef3285462bcb2af267f1af99"
-  integrity sha512-I0NwbLsbiuq18Vs6wFWrdRCrZeisLF9amGvnA8WqnBryd09Cqd8Yp40Ak9fxJopkgPtJd6h/amtF2/JRZN3LJw==
-  dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
-    "@ag-grid-enterprise/side-bar" "31.2.1"
-
-"@ag-grid-enterprise/menu@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/menu/-/menu-31.2.1.tgz#07bca2da90748fd90a1d48bbfffc5318dc00d956"
-  integrity sha512-lOK6z+4yDyxpaDz9B4Te9au4VWxfW7H2CigVC84j5j9rKJF+u0niD9S93V5m1R6O2qCGaNeIEfqnqEywA+eH+g==
-  dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/column-tool-panel" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
-
-"@ag-grid-enterprise/row-grouping@31.2.1", "@ag-grid-enterprise/row-grouping@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/row-grouping/-/row-grouping-31.2.1.tgz#95a710704abda44e4832a178044fa65b367c2ae8"
-  integrity sha512-Sl7QPjrx4+4yJtNO/KKuTJjkg0JjSJmghY30kSjGmJA6+FEvlptnW6HKqVuKS/49lNd+GDL9oncug8t+b99ghA==
-  dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
-
-"@ag-grid-enterprise/side-bar@31.2.1", "@ag-grid-enterprise/side-bar@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/side-bar/-/side-bar-31.2.1.tgz#f8540cf2cb610ec4e78a9e9bbe06453a58a27ee7"
-  integrity sha512-OLAyJLx5ZTgPmE/f0NljaV/MFUBa+Uy0VABPz+NELmRmuhGNj7m4CoiOBYPXdWlOWygZ4xuc3dFqYmMWZql8hg==
-  dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
-
-"@ag-grid-enterprise/sparklines@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/sparklines/-/sparklines-31.2.1.tgz#fddf05deb629bd0c709c0721f6623d09428021ef"
-  integrity sha512-6kCeOMQhEdMafCTADonUKPmGI+II+nf1YtCHw3ZUumA5ZbOolKZ+zR+MpgSCP6Vh7/u6m8kte83mNJlO3aUCLA==
-  dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
-    ag-charts-community "9.2.0"
-
 "@auth0/auth0-spa-js@~2.3.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-2.3.0.tgz#fcbbe31e31e8e98c4e7b25a8d043eac8c01f73bf"
@@ -1094,9 +990,9 @@
     tslib "~2.6.2"
 
 "@bufbuild/protobuf@^2.0.0":
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/@bufbuild/protobuf/-/protobuf-2.8.0.tgz#88fcbcfa4735b88d882c7a3218c4403cf7ce3eee"
-  integrity sha512-r1/0w5C9dkbcdjyxY8ZHsC5AOWg4Pnzhm2zu7LO4UHSounp2tMm6Y+oioV9zlGbLveE7YaWRDUk48WLxRDgoqg==
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/protobuf/-/protobuf-2.9.0.tgz#ff8827be3d8e56d74a03530cff8b0e1952aa115e"
+  integrity sha512-rnJenoStJ8nvmt9Gzye8nkYd6V22xUAnu4086ER7h1zJ508vStko4pMvDeQ446ilDTFpV5wnoc5YS7XvMwwMqA==
 
 "@cacheable/memoize@^2.0.1":
   version "2.0.1"
@@ -1307,10 +1203,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@eslint/js@9.35.0", "@eslint/js@^9.26":
-  version "9.35.0"
-  resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.35.0.tgz#ffbc7e13cf1204db18552e9cd9d4a8e17c692d07"
-  integrity sha512-30iXE9whjlILfWobBkNerJo+TXYsgVM5ERQwMcMKCHckHflCmf7wXDAHlARoWnh0s1U72WqlbeyE7iAcCzuCPw==
+"@eslint/js@9.36.0", "@eslint/js@^9.26":
+  version "9.36.0"
+  resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.36.0.tgz#b1a3893dd6ce2defed5fd49de805ba40368e8fef"
+  integrity sha512-uhCbYtYynH30iZErszX78U+nR3pJU3RHGQ57NXy5QupD4SBVwDeU8TNBy+MjMngc1UyIW9noKqsRqfjQTBU2dw==
 
 "@eslint/object-schema@^2.1.6":
   version "2.1.6"
@@ -1518,11 +1414,11 @@
     "@jsonjoy.com/codegen" "^1.0.0"
 
 "@keyv/bigmap@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@keyv/bigmap/-/bigmap-1.0.0.tgz#15a3cfc41d86d9059f9b813f1ccabfef170e9371"
-  integrity sha512-N2UsRSXlWwbvYKdFVS7sKqj6oXGegELh+zr9VripWDc8grsq8KBNp8JHI+9AQuUEFiM1S7+tm6lLp/lmbBCqCw==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@keyv/bigmap/-/bigmap-1.0.1.tgz#fa673178ff6515cc908af95b49c94f96aca1fb0d"
+  integrity sha512-dZ7TMshK6brpuGPPRoq4pHNzNH4KTWaxVPB7KEnPErlgJpc+jG1Oyx3sw6nBFiZ0OCKwC1zU6skMEG7H421f9g==
   dependencies:
-    hookified "^1.10.0"
+    hookified "^1.12.0"
 
 "@keyv/serialize@^1.1.1":
   version "1.1.1"
@@ -1752,9 +1648,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "24.5.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.5.1.tgz#dab6917c47113eb4502d27d06e89a407ec0eff95"
-  integrity sha512-/SQdmUP2xa+1rdx7VwB9yPq8PaKej8TD5cQ+XfKDPWWC+VDJU4rvVVagXqKUzhKjtFoNA8rXDJAkCxQPAe00+Q==
+  version "24.5.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.5.2.tgz#52ceb83f50fe0fcfdfbd2a9fab6db2e9e7ef6446"
+  integrity sha512-FYxk1I7wPv3K2XBaoyH2cTnocQEu8AOZ60hPbsyukMPLv5/5qr7V1i8PLHdl6Zf87I+xZXFvPCXYjiTFq+YSDQ==
   dependencies:
     undici-types "~7.12.0"
 
@@ -2181,10 +2077,9 @@
     webpack-dev-server "~5.2.0"
     webpackbar "~7.0.0"
 
-"@xh/hoist@^76.0.0-SNAPSHOT":
-  version "76.0.0-SNAPSHOT.1758132590722"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-76.0.0-SNAPSHOT.1758132590722.tgz#940f397ba3ea920618ababd87b5c1cccb8fb37d7"
-  integrity sha512-HX+YtPiAQmms3xLPDMqEgb90mMLZl8HqrHF6UttSZZGGXBdmk1PFQSQ8QtBVMu5OptMJl2pR1lY0qkuAW3/1pw==
+"@xh/hoist@https://github.com/xh/hoist-react.git#agUpgrade34":
+  version "76.0.0-SNAPSHOT"
+  resolved "https://github.com/xh/hoist-react.git#eaa755c76b04734221803c39f0ac3953327b3889"
   dependencies:
     "@auth0/auth0-spa-js" "~2.3.0"
     "@azure/msal-browser" "~4.16.0"
@@ -2245,9 +2140,9 @@
     ua-parser-js "~2.0.4"
 
 "@xh/package-template@~3.0.1":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@xh/package-template/-/package-template-3.0.3.tgz#4aadd385f2c190b7f3f3d5f6365dcb896039a873"
-  integrity sha512-a+56zLBXGSzqRxAGjl4EEg/fXDrwKRCWhMTDBXI54JBHfeKuVXeS3y9WiE5Qbyrpucu4IQZ4AYlEHstR3/NlsA==
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@xh/package-template/-/package-template-3.0.4.tgz#b9ddb51d7c13575708d7dd78bec004db2d097a8a"
+  integrity sha512-VJzC2dw3HdLvXD+nKKrTv3b4CZW22jZ3K3qf+nY35Uw3543u07TFOWWz3XOSTR1/kjk+AJAFyoXi7nZ6bicLnA==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -2284,10 +2179,64 @@ acorn@^8.0.4, acorn@^8.11.0, acorn@^8.14.0, acorn@^8.15.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.15.0.tgz#a360898bc415edaac46c8241f6383975b930b816"
   integrity sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==
 
-ag-charts-community@9.2.0:
-  version "9.2.0"
-  resolved "https://registry.yarnpkg.com/ag-charts-community/-/ag-charts-community-9.2.0.tgz#7c4a1af655f4e76b0793e6cc690b4713bd68513c"
-  integrity sha512-dS5nPExh81owIIdyHli0TvWvSyhmZy2RncM/s3/KXpjAf3eiVN2fxfT2z+QxqsLyoms+fernp5cAuSju0peYXw==
+ag-charts-community@12.1.2:
+  version "12.1.2"
+  resolved "https://registry.yarnpkg.com/ag-charts-community/-/ag-charts-community-12.1.2.tgz#a531b055dbbedd27d40de484e261b67d10fdfeed"
+  integrity sha512-Z3oSsbIyAqaiB4PdnMQ2gt3s+oY19xTHJUee5TKjsTThX8wVX8PXRGMOZaFWbN/HNaZCWkUTgkuLrasw2w+x/w==
+  dependencies:
+    ag-charts-core "12.1.2"
+    ag-charts-locale "12.1.2"
+    ag-charts-types "12.1.2"
+
+ag-charts-core@12.1.2:
+  version "12.1.2"
+  resolved "https://registry.yarnpkg.com/ag-charts-core/-/ag-charts-core-12.1.2.tgz#265fc06ad31d6b67f5f041719e42511c6231d34d"
+  integrity sha512-9AfMX+HSpr4zmp88PBWcOqO9jW1HTKxC+b/7B/xYOE6K1hBFvnuLbqdeNGfGoiyWqw5TUlY1lirr/9xrFyZFsQ==
+  dependencies:
+    ag-charts-types "12.1.2"
+
+ag-charts-enterprise@12.1.2:
+  version "12.1.2"
+  resolved "https://registry.yarnpkg.com/ag-charts-enterprise/-/ag-charts-enterprise-12.1.2.tgz#a8a9451c84f8f315651c1fd6fea2d00a0ec5455d"
+  integrity sha512-ac6AfLJ2OM/+V9VtCe6SHXdJLviDXhnU3iTtVnE21OvpBZ2ynl3C3v2kZDUQ0EdAkNK/SwWCHo7xaPrE2lbfIg==
+  dependencies:
+    ag-charts-community "12.1.2"
+    ag-charts-core "12.1.2"
+
+ag-charts-locale@12.1.2:
+  version "12.1.2"
+  resolved "https://registry.yarnpkg.com/ag-charts-locale/-/ag-charts-locale-12.1.2.tgz#037cfeece2aff1f1c9dc90872912afbc3093f9b8"
+  integrity sha512-GFAq4KZit3CHT3Br/LGruas75HqsvV+VZV6qz5hLrmiovJSSVfzPirzf/hUGDTCHqIOS7CdxmpdKUu8pKv1LGw==
+
+ag-charts-types@12.1.2:
+  version "12.1.2"
+  resolved "https://registry.yarnpkg.com/ag-charts-types/-/ag-charts-types-12.1.2.tgz#a94d8c042792d2472998c3e783f674b37327b366"
+  integrity sha512-B5IEMzaDxpJRko9sREIBEZOn44tlMX353tMJ1RGYHZrjDFx4on/p6q3YxBvway3nViAM2POmFOS45+1fF9YC8g==
+
+ag-grid-community@34.1.2, ag-grid-community@~34.1.1:
+  version "34.1.2"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-34.1.2.tgz#4ff755f5840b3e110fa4a6184bdb9eb4d826e93c"
+  integrity sha512-PN79zG/tigZaVKkQZXaithLO3j4JWp+9CjqEFth6kFUwMJ0E6OcNzNtn4NFEKM38fEdpGsr+k+gFk5KUE2h5fA==
+  dependencies:
+    ag-charts-types "12.1.2"
+
+ag-grid-enterprise@~34.1.1:
+  version "34.1.2"
+  resolved "https://registry.yarnpkg.com/ag-grid-enterprise/-/ag-grid-enterprise-34.1.2.tgz#b268233b149592a616ec3c585c672ee27c7c7f17"
+  integrity sha512-B++4t4lDylXt6SfFvaNY6aswtzp/0oUwbaXLpXWJZQZlfyRb4u1e787NpISGaVVcGoHyAgYLvtNHJluVsnQikg==
+  dependencies:
+    ag-grid-community "34.1.2"
+  optionalDependencies:
+    ag-charts-community "12.1.2"
+    ag-charts-enterprise "12.1.2"
+
+ag-grid-react@~34.1.1:
+  version "34.1.2"
+  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-34.1.2.tgz#54e969512ca9b0eae9a431613479a3ea1dbd8438"
+  integrity sha512-6l5+hp3O4VSZ1nc2IZSQyhNeUOZ4TDg4UVrpxsqV3xXBO1TRqmOhcsYBDJ95JZ8zSiAEvy7XKT3MSI7sJG+MFg==
+  dependencies:
+    ag-grid-community "34.1.2"
+    prop-types "^15.8.1"
 
 airbnb-prop-types@^2.14.0, airbnb-prop-types@^2.15.0, airbnb-prop-types@^2.16.0:
   version "2.16.0"
@@ -2592,9 +2541,9 @@ balanced-match@^2.0.0:
   integrity sha512-1ugUSr8BHXRnK23KfuYS+gVMC3LB8QGH9W1iGtDPsNWoQbgtXSExkBu2aDR4epiGWZOjZsj6lDl/N/AqqTC3UA==
 
 baseline-browser-mapping@^2.8.3:
-  version "2.8.5"
-  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.8.5.tgz#3147fe6b01a0c49ce1952daebcfc2057fc43fedb"
-  integrity sha512-TiU4qUT9jdCuh4aVOG7H1QozyeI2sZRqoRPdqBIaslfNt4WUSanRBueAwl2x5jt4rXBMim3lIN2x6yT8PDi24Q==
+  version "2.8.6"
+  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.8.6.tgz#c37dea4291ed8d01682f85661dbe87967028642e"
+  integrity sha512-wrH5NNqren/QMtKUEEJf7z86YjfqW/2uw3IL3/xpqZUC95SSVIFXYQeeGjL6FT/X68IROu6RMehZQS5foy2BXw==
 
 batch@0.6.1:
   version "0.6.1"
@@ -3451,9 +3400,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.5.218:
-  version "1.5.221"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.221.tgz#bd98014b2a247701c4ebd713080448d539545d79"
-  integrity sha512-/1hFJ39wkW01ogqSyYoA4goOXOtMRy6B+yvA1u42nnsEGtHzIzmk93aPISumVQeblj47JUHLC9coCjUxb1EvtQ==
+  version "1.5.222"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.222.tgz#965c93783ad989116b74593ae3068b9466fdb237"
+  integrity sha512-gA7psSwSwQRE60CEoLz6JBCQPIxNeuzB2nL8vE03GK/OHxlvykbLyeiumQy1iH5C2f3YbRAZpGCMT12a/9ih9w==
 
 emoji-regex@^10.3.0:
   version "10.5.0"
@@ -3749,9 +3698,9 @@ eslint-visitor-keys@^4.2.1:
   integrity sha512-Uhdk5sfqcee/9H/rCOJikYz67o0a2Tw2hGRPOG2Y1R2dg7brRe1uG0yaNQDHu+TO/uQPF/5eCapvYSmHUjt7JQ==
 
 eslint@9.x, eslint@^9.26:
-  version "9.35.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-9.35.0.tgz#7a89054b7b9ee1dfd1b62035d8ce75547773f47e"
-  integrity sha512-QePbBFMJFjgmlE+cXAlbHZbHpdFVS2E/6vzCy7aKlebddvl1vadiC4JFV5u/wqTkNUwEV8WrQi257jf5f06hrg==
+  version "9.36.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-9.36.0.tgz#9cc5cbbfb9c01070425d9bfed81b4e79a1c09088"
+  integrity sha512-hB4FIzXovouYzwzECDcUkJ4OcfOEkXTv2zRY6B9bkwjx/cprAq0uvm1nl7zvQ0/TsUk0zQiN4uPfJpB9m+rPMQ==
   dependencies:
     "@eslint-community/eslint-utils" "^4.8.0"
     "@eslint-community/regexpp" "^4.12.1"
@@ -3759,7 +3708,7 @@ eslint@9.x, eslint@^9.26:
     "@eslint/config-helpers" "^0.3.1"
     "@eslint/core" "^0.15.2"
     "@eslint/eslintrc" "^3.3.1"
-    "@eslint/js" "9.35.0"
+    "@eslint/js" "9.36.0"
     "@eslint/plugin-kit" "^0.3.5"
     "@humanfs/node" "^0.16.6"
     "@humanwhocodes/module-importer" "^1.0.1"
@@ -3984,9 +3933,9 @@ file-selector@^0.1.12:
     tslib "^2.0.1"
 
 filesize@~11.0.2:
-  version "11.0.2"
-  resolved "https://registry.yarnpkg.com/filesize/-/filesize-11.0.2.tgz#b7771e3836812582ad74b8a10d6eb0dc58c1ceda"
-  integrity sha512-s/iAeeWLk5BschUIpmdrF8RA8lhFZ/xDZgKw1Tan72oGws1/dFGB06nYEiyyssWUfjKNQTNRlrwMVjO9/hvXDw==
+  version "11.0.13"
+  resolved "https://registry.yarnpkg.com/filesize/-/filesize-11.0.13.tgz#8e61c5c4e8d7463c71d573c4f8051fb1ba4ff883"
+  integrity sha512-mYJ/qXKvREuO0uH8LTQJ6v7GsUvVOguqxg2VTwQUkyTPXXRRWPdjuUPVqdBrJQhvci48OHlNGRnux+Slr2Rnvw==
 
 fill-range@^7.1.1:
   version "7.1.1"
@@ -4403,10 +4352,10 @@ hoist-non-react-statics@^3.2.1, hoist-non-react-statics@^3.3.0, hoist-non-react-
   dependencies:
     react-is "^16.7.0"
 
-hookified@^1.10.0, hookified@^1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/hookified/-/hookified-1.12.0.tgz#eb4097ed1459211eef47fe85a8b3382c5f633996"
-  integrity sha512-hMr1Y9TCLshScrBbV2QxJ9BROddxZ12MX9KsCtuGGy/3SmmN5H1PllKerrVlSotur9dlE8hmUKAOSa3WDzsZmQ==
+hookified@^1.12.0:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/hookified/-/hookified-1.12.1.tgz#b0de0116ca346fd6c4e55db901f52d5cd728ef00"
+  integrity sha512-xnKGl+iMIlhrZmGHB729MqlmPoWBznctSQTYCpFKqNsCgimJQmithcW0xSQMMFzYnV2iKUh25alswn6epgxS0Q==
 
 hpack.js@^2.1.6:
   version "2.1.6"
@@ -4829,9 +4778,9 @@ is-negative-zero@^2.0.3:
   integrity sha512-5KoIu2Ngpyek75jXodFvnafB6DJgr3u8uuK0LEZJjrU19DrMD3EVERaR8sjz8CCGgpZvxPl9SuE1GMVPFHx1mw==
 
 is-network-error@^1.0.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/is-network-error/-/is-network-error-1.2.0.tgz#ca807bbd4f33967d9954fc7f02bf4176254d71b3"
-  integrity sha512-32jdpRpJo8SeL7zOuBJbMLz/VTw9mDpTvcKzzR8DkXWsJbbE60gdiX8YOd0UAV6b8Skt+CMytzfgVVIRFidn0Q==
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/is-network-error/-/is-network-error-1.3.0.tgz#2ce62cbca444abd506f8a900f39d20b898d37512"
+  integrity sha512-6oIwpsgRfnDiyEDLMay/GqCl3HoAtH5+RUKW29gYkL0QA+ipzpDLA16yQs7/RHCSu+BwgbJaOUqa4A99qNVQVw==
 
 is-number-object@^1.1.1:
   version "1.1.1"
@@ -5091,9 +5040,9 @@ keyv@^4.5.4:
     json-buffer "3.0.1"
 
 keyv@^5.5.1:
-  version "5.5.1"
-  resolved "https://registry.yarnpkg.com/keyv/-/keyv-5.5.1.tgz#80099d3fab2662079fa9eed374d94388f429dc16"
-  integrity sha512-eF3cHZ40bVsjdlRi/RvKAuB0+B61Q1xWvohnrJrnaQslM3h1n79IV+mc9EGag4nrA9ZOlNyr3TUzW5c8uy8vNA==
+  version "5.5.2"
+  resolved "https://registry.yarnpkg.com/keyv/-/keyv-5.5.2.tgz#942348b882e08a27429688897eec4f735f75a978"
+  integrity sha512-TXcFHbmm/z7MGd1u9ASiCSfTS+ei6Z8B3a5JHzx3oPa/o7QzWVtPRpc4KGER5RR469IC+/nfg4U5YLIuDUua2g==
   dependencies:
     "@keyv/serialize" "^1.1.1"
 
@@ -5490,9 +5439,9 @@ media-typer@0.3.0:
   integrity sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==
 
 memfs@^4.6.0:
-  version "4.42.0"
-  resolved "https://registry.yarnpkg.com/memfs/-/memfs-4.42.0.tgz#faa3b89d78fb723bef37370ca86a460763c23e15"
-  integrity sha512-RG+4HMGyIVp6UWDWbFmZ38yKrSzblPnfJu0PyPt0hw52KW4PPlPp+HdV4qZBG0hLDuYVnf8wfQT4NymKXnlQjA==
+  version "4.43.0"
+  resolved "https://registry.yarnpkg.com/memfs/-/memfs-4.43.0.tgz#8aeed4d242e29acf57dfdfe93fec4f84280f8df6"
+  integrity sha512-XCdhMy33sgxCwJ4JgjSasLGgOjFm9/i+IEhO03gPHroJeTBhM7ZQ1+v3j7di9nNKtcLGjVvKjHVOkTbVop/R/Q==
   dependencies:
     "@jsonjoy.com/json-pack" "^1.11.0"
     "@jsonjoy.com/util" "^1.9.0"
@@ -8079,7 +8028,7 @@ ts-api-utils@^2.1.0:
   resolved "https://registry.yarnpkg.com/ts-api-utils/-/ts-api-utils-2.1.0.tgz#595f7094e46eed364c13fd23e75f9513d29baf91"
   integrity sha512-CUgTZL1irw8u29bzrOD/nH85jqyc74D6SshFgujOIA7osm2Rz7dYH77agkx7H4FBNxDq7Cjf+IjaX/8zwFW+ZQ==
 
-tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0:
+tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
