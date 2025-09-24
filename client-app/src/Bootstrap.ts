@@ -56,7 +56,7 @@ import {
     ScrollApiModule,
     TextEditorModule,
     TooltipModule,
-    TextFilterModule,
+    TextFilterModule
 } from 'ag-grid-community';
 
 ModuleRegistry.registerModules([
@@ -105,7 +105,7 @@ ModuleRegistry.registerModules([
 ]);
 
 provideGlobalGridOptions({theme: 'legacy'});
-installAgGrid(AgGridReact, ClientSideRowModelModule.version);
+installAgGrid(AgGridReact as any, ClientSideRowModelModule.version);
 
 when(
     () => XH.appIsRunning,
