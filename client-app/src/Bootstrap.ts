@@ -33,14 +33,17 @@ declare module '@xh/hoist/core' {
 
 //-----------------------------------------------------------------
 // ag-Grid -- Import and Register
+//
+// IMPORTANT: If you are using enterprise version in your app
+// you must provide your own license
 //-----------------------------------------------------------------
 import {installAgGrid} from '@xh/hoist/kit/ag-grid';
 import {AgGridReact} from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-balham.css';
 import {ModuleRegistry, provideGlobalGridOptions} from 'ag-grid-community';
-import {AgChartsCommunityModule} from 'ag-charts-community';
 
+// 1) Standard community modules, needed by all Hoist Apps.
 import {
     ClientSideRowModelApiModule,
     ClientSideRowModelModule,
@@ -55,10 +58,8 @@ import {
     RowStyleModule,
     ScrollApiModule,
     TextEditorModule,
-    TooltipModule,
-    TextFilterModule
+    TooltipModule
 } from 'ag-grid-community';
-
 ModuleRegistry.registerModules([
     ClientSideRowModelApiModule,
     ClientSideRowModelModule,
@@ -73,35 +74,45 @@ ModuleRegistry.registerModules([
     RowStyleModule,
     ScrollApiModule,
     TextEditorModule,
-    TooltipModule,
-    TextFilterModule
+    TooltipModule
 ]);
 
-// Enterprise features import and licensing.
-// IMPORTANT: If you are using enterprise version in your app, you must provide your own license
+// 2) Typical enterprise modules -- useful for most apps
 import {
     LicenseManager,
     CellSelectionModule,
     ClipboardModule,
-    ColumnsToolPanelModule,
-    FiltersToolPanelModule,
     MenuModule,
     RowGroupingModule,
-    SideBarModule,
-    SparklinesModule,
     TreeDataModule
 } from 'ag-grid-enterprise';
-
 ModuleRegistry.registerModules([
     CellSelectionModule,
     ClipboardModule,
-    ColumnsToolPanelModule,
-    FiltersToolPanelModule,
     MenuModule,
     RowGroupingModule,
+    TreeDataModule
+]);
+
+// 3) Toolbox specific modules -- for ag-Grid demo, not typically required.
+import {
+    ColumnsToolPanelModule,
+    FiltersToolPanelModule,
+    SideBarModule,
+    SparklinesModule,
+    PivotModule
+} from 'ag-grid-enterprise';
+import {TextFilterModule, NumberFilterModule} from 'ag-grid-community';
+import {AgChartsCommunityModule} from 'ag-charts-community';
+
+ModuleRegistry.registerModules([
+    NumberFilterModule,
+    TextFilterModule,
+    ColumnsToolPanelModule,
+    FiltersToolPanelModule,
     SideBarModule,
     SparklinesModule.with(AgChartsCommunityModule),
-    TreeDataModule
+    PivotModule
 ]);
 
 provideGlobalGridOptions({theme: 'legacy'});
