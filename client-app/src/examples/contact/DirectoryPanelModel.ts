@@ -140,7 +140,7 @@ export class DirectoryPanelModel extends HoistModel {
             colDefaults: {width: 160},
             persistWith: this.persistWith,
             groupBy: 'isFavorite',
-            groupRowRenderer: ({value}) => (value === 'true' ? 'Favorites' : 'XH Engineers'),
+            groupRowRenderer: ({value}) => (value === true ? 'Favorites' : 'XH Engineers'),
             groupSortFn: (a, b) => (a < b ? 1 : -1),
             columns: [
                 {
