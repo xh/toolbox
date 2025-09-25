@@ -60,12 +60,8 @@ if (parseBoolean(runHoistInline)) {
 }
 
 dependencies {
-
-
     // For server-side JWT validation.
     implementation "org.bitbucket.b_c:jose4j:0.9.6"
-
-    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
     // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
     // MySQL for deployed instances, or more stateful local workstation setups.
