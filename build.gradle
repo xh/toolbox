@@ -67,6 +67,9 @@ dependencies {
     // MySQL for deployed instances, or more stateful local workstation setups.
     runtimeOnly "com.h2database:h2"
     runtimeOnly "mysql:mysql-connector-java:8.0.33"
+
+    // For hot reloading
+    developmentOnly "io.methvin:directory-watcher:0.19.1"
 }
 
 
