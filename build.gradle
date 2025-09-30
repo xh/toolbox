@@ -59,6 +59,14 @@ if (parseBoolean(runHoistInline)) {
     }
 }
 
+configurations {
+    groovyReset {
+        canBeConsumed = false
+        canBeResolved = true
+        transitive = false
+    }
+}
+
 dependencies {
     // For server-side JWT validation.
     implementation "org.bitbucket.b_c:jose4j:0.9.6"
@@ -70,8 +78,10 @@ dependencies {
 
     // For hot reloading
     developmentOnly "io.methvin:directory-watcher:0.19.1"
+    if (parseBoolean(enableHotSwap)) {
+        groovyReset fileTree(dir: 'lib', include: ['*.jar']
+    }
 }
-
 
 Map hoistMetaData = [
     'info.xh.appCode': xhAppCode,
@@ -93,6 +103,14 @@ def allJvmArgs = [
     "--add-opens=java.base/java.util=ALL-UNNAMED"
 ]
 
+if (parseBoolean(enableHotSwap)) {
+   // def groovyResetFile = configurations.groovyReset.files.first()
+    allJvmArgs += [
+        '-XX:HotswapAgent=fatjar',
+        '-XX:+AllowEnhancedClassRedefinition',
+        '-javaagent:' + "/Users/lee/sbox/toolbox-wrapper5/toolbox/lib/gragent.jar"
+    ]
+}
 
 bootRun {
     ignoreExitValue true
