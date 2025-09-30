@@ -59,37 +59,6 @@ if (parseBoolean(runHoistInline)) {
     }
 }
 
-configurations {
-    groovyReset {
-        canBeConsumed = false
-        canBeResolved = true
-        transitive = false
-    }
-}
-
-dependencies {
-    // For server-side JWT validation.
-    implementation "org.bitbucket.b_c:jose4j:0.9.6"
-
-    // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
-    // MySQL for deployed instances, or more stateful local workstation setups.
-    runtimeOnly "com.h2database:h2"
-    runtimeOnly "mysql:mysql-connector-java:8.0.33"
-
-    // For hot reloading
-    developmentOnly "io.methvin:directory-watcher:0.19.1"
-    if (parseBoolean(enableHotSwap)) {
-        groovyReset fileTree(dir: 'lib', include: ['*.jar']
-    }
-}
-
-Map hoistMetaData = [
-    'info.xh.appCode': xhAppCode,
-    'info.xh.appName': xhAppName,
-    'info.xh.appPackage': xhAppPackage,
-    'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN'
-]
-
 def allJvmArgs = [
     '-Dspring.output.ansi.enabled=always',
     '-XX:TieredStopAtLevel=1',
@@ -104,19 +73,46 @@ def allJvmArgs = [
 ]
 
 if (parseBoolean(enableHotSwap)) {
-   // def groovyResetFile = configurations.groovyReset.files.first()
+
+    // Enhance JVM args, including Groovy Reset as agent
+    def groovyReset = configurations.detachedConfiguration(
+        dependencies.create("io.xh:groovyReset:1.0")
+    )
     allJvmArgs += [
         '-XX:HotswapAgent=fatjar',
         '-XX:+AllowEnhancedClassRedefinition',
-        '-javaagent:' + "/Users/lee/sbox/toolbox-wrapper5/toolbox/lib/gragent.jar"
+        "-Dspring.devtools.restart.enabled=false",
+        "-Dspring.devtools.livereload.enabled=false",
+        "-javaagent:" + groovyReset.singleFile.absolutePath
     ]
 }
+
+
+dependencies {
+    // For server-side JWT validation.
+    implementation "org.bitbucket.b_c:jose4j:0.9.6"
+
+    // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
+    // MySQL for deployed instances, or more stateful local workstation setups.
+    runtimeOnly "com.h2database:h2"
+    runtimeOnly "mysql:mysql-connector-java:8.0.33"
+
+    // Stifle dev errors on Macs
+    developmentOnly "io.methvin:directory-watcher:0.19.1"
+}
+
+Map hoistMetaData = [
+    'info.xh.appCode': xhAppCode,
+    'info.xh.appName': xhAppName,
+    'info.xh.appPackage': xhAppPackage,
+    'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN'
+]
+
 
 bootRun {
     ignoreExitValue true
     systemProperties System.properties
     jvmArgs(allJvmArgs)
-    sourceResources sourceSets.main
     systemProperties hoistMetaData
     // Bring .env sourced environment variables into bootRun JVM process.
     environment env.allVariables()
@@ -125,14 +121,6 @@ bootRun {
 tasks.withType(GroovyCompile) {
     configure(groovyOptions) {
         forkOptions.jvmArgs = allJvmArgs
-    }
-}
-
-// Ask IntelliJ to download sources and javadocs for Gradle-managed dependencies.
-idea {
-    module {
-        downloadJavadoc = true
-        downloadSources = true
     }
 }
 
@@ -155,3 +143,5 @@ tasks.bootRun.doFirst {
         throw new GradleException("Environment variables listed in .env.template not set in local .env file as required: ${missingEnvVars}")
     }
 }
+
+

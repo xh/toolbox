@@ -14,6 +14,7 @@ class RecallsService extends BaseService {
     private JSONClient _jsonClient
 
     List fetchRecalls(String searchQuery) {
+        logInfo('hi10')
         def host = configService.getString('recallsHost'),
             uri = !searchQuery ?
                 // `_exists_:openfda` ensures all search hits includes a nested openfda object that contains essential data for frontend
