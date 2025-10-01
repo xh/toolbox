@@ -105,5 +105,10 @@ class ChartWidgetModel extends LineChartModel {
                 exporting: {enabled: false}
             });
         }
+
+        // Demo dynamic titleDetails with ticking timestamp in view title.
+        setInterval(() => {
+            dashViewModel.titleDetails = new Date().toTimeString().split(' ')[0];
+        }, 1000);
     }
 }
