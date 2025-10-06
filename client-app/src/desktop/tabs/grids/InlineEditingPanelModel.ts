@@ -281,7 +281,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     align: 'center',
                     resizable: false,
                     editable: ifNotRestricted,
-                    editor: props => booleanEditor({...props, quickToggle: true}),
+                    editor: props => booleanEditor({...props, quickToggle: !this.fullRowEditing}),
                     renderer: checkboxRenderer({displayUnsetState: true})
                 },
                 {

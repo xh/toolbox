@@ -142,9 +142,8 @@ export class ActivityWidgetModel extends HoistModel {
             },
             groupRowRenderer: params => {
                 const {value} = params;
-
                 if (this.groupBy === 'committedDay') {
-                    const ld = LocalDate.get(value);
+                    const ld = value;
                     if (ld === LocalDate.today()) return 'Today';
                     if (ld === LocalDate.yesterday()) return 'Yesterday';
                     return ld ? fmtDate(ld, 'dddd, DD-MMM') : '???';

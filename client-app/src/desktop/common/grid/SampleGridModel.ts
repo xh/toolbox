@@ -93,7 +93,7 @@ export class SampleGridModel extends HoistModel {
         makeObservable(this);
 
         this.gridModel = new GridModel({
-            experimental: {enableFullWidthScroll: true},
+            enableFullWidthScroll: true,
             selModel: {mode: 'multiple'},
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',
