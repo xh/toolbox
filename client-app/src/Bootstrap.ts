@@ -25,8 +25,6 @@ declare module '@xh/hoist/core' {
         portfolioService: PortfolioService;
         taskService: TaskService;
     }
-    // @ts-ignore - Help IntelliJ recognize uses of injected service methods on the `XH` singleton.
-    export const XH: XHApi;
 
     export interface HoistUser {
         profilePicUrl: string;
@@ -35,39 +33,92 @@ declare module '@xh/hoist/core' {
 
 //-----------------------------------------------------------------
 // ag-Grid -- Import and Register
+//
+// IMPORTANT: If you are using enterprise version in your app
+// you must provide your own license
 //-----------------------------------------------------------------
 import {installAgGrid} from '@xh/hoist/kit/ag-grid';
-import {ModuleRegistry} from '@ag-grid-community/core';
-import '@ag-grid-community/styles/ag-grid.css';
-import '@ag-grid-community/styles/ag-theme-balham.css';
-import {AgGridReact} from '@ag-grid-community/react';
-import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model';
+import {AgGridReact} from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-balham.css';
+import {ModuleRegistry, provideGlobalGridOptions} from 'ag-grid-community';
 
-// Enterprise features
-// IMPORTANT: If you are using enterprise version in your app, you must provide your own license
-import {LicenseManager, EnterpriseCoreModule} from '@ag-grid-enterprise/core';
-import {ClipboardModule} from '@ag-grid-enterprise/clipboard';
-import {MenuModule} from '@ag-grid-enterprise/menu';
-import {RowGroupingModule} from '@ag-grid-enterprise/row-grouping';
-// Fancy features for the raw agGrid Component example...
-import {SideBarModule} from '@ag-grid-enterprise/side-bar';
-import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel';
-import {FiltersToolPanelModule} from '@ag-grid-enterprise/filter-tool-panel';
-// Feature for the portfolio sparklines example
-import {SparklinesModule} from '@ag-grid-enterprise/sparklines';
-
-ModuleRegistry.registerModules([
+// 1) Standard community modules - required for all Hoist Apps.
+import {
+    ClientSideRowModelApiModule,
     ClientSideRowModelModule,
+    CellStyleModule,
+    ColumnApiModule,
+    CustomEditorModule,
+    PinnedRowModule,
+    RenderApiModule,
+    RowSelectionModule,
+    RowApiModule,
+    RowAutoHeightModule,
+    RowStyleModule,
+    ScrollApiModule,
+    TextEditorModule,
+    TextFilterModule,
+    TooltipModule
+} from 'ag-grid-community';
+ModuleRegistry.registerModules([
+    ClientSideRowModelApiModule,
+    ClientSideRowModelModule,
+    CellStyleModule,
+    ColumnApiModule,
+    CustomEditorModule,
+    PinnedRowModule,
+    RenderApiModule,
+    RowSelectionModule,
+    RowApiModule,
+    RowAutoHeightModule,
+    RowStyleModule,
+    ScrollApiModule,
+    TextEditorModule,
+    TextFilterModule,
+    TooltipModule
+]);
+
+// 2) Typical enterprise modules - useful for most apps.
+import {
+    LicenseManager,
+    CellSelectionModule,
     ClipboardModule,
     MenuModule,
     RowGroupingModule,
-    SideBarModule,
-    ColumnsToolPanelModule,
-    FiltersToolPanelModule,
-    SparklinesModule
+    TreeDataModule
+} from 'ag-grid-enterprise';
+ModuleRegistry.registerModules([
+    CellSelectionModule,
+    ClipboardModule,
+    MenuModule,
+    RowGroupingModule,
+    TreeDataModule
 ]);
 
-installAgGrid(AgGridReact, EnterpriseCoreModule.version);
+// 3) Toolbox specific modules - for "direct" AG Grid usage demo, not typically required.
+import {
+    ColumnsToolPanelModule,
+    FiltersToolPanelModule,
+    SideBarModule,
+    SparklinesModule,
+    PivotModule
+} from 'ag-grid-enterprise';
+import {NumberFilterModule} from 'ag-grid-community';
+import {AgChartsCommunityModule} from 'ag-charts-community';
+
+ModuleRegistry.registerModules([
+    NumberFilterModule,
+    TextFilterModule,
+    ColumnsToolPanelModule,
+    FiltersToolPanelModule,
+    SideBarModule,
+    SparklinesModule.with(AgChartsCommunityModule),
+    PivotModule
+]);
+
+provideGlobalGridOptions({theme: 'legacy'});
+installAgGrid(AgGridReact as any, ClientSideRowModelModule.version);
 
 when(
     () => XH.appIsRunning,

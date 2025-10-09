@@ -3,7 +3,7 @@ import {hframe, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistProps} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {GridScrollingModel} from './GridScrollingModel';
-import {AgGridReact} from '@ag-grid-community/react';
+import {AgGridReact} from 'ag-grid-react';
 import React from 'react';
 import {toolbar, toolbarSeparator} from '@xh/hoist/desktop/cmp/toolbar';
 import {checkbox, numberInput} from '@xh/hoist/desktop/cmp/input';
@@ -26,6 +26,7 @@ export const gridScrolling = hoistCmp.factory({
                         rowData={model.rowData}
                         columnDefs={model.columnDefs}
                         suppressColumnVirtualisation={!model.isColVirtualizationEnabled}
+                        animateRows={false}
                     />
                 </div>
             )

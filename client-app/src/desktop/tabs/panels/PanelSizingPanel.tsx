@@ -124,7 +124,7 @@ export const panelSizingPanel = hoistCmp.factory({
                         }),
                         headerItems: [
                             relativeTimestamp({
-                                options: {prefix: 'Rendered'},
+                                prefix: 'Rendered',
                                 timestamp: Date.now(),
                                 marginLeft: 4
                             }),

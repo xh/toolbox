@@ -1,0 +1,13 @@
+body {
+  --tb-editable-cell-bg: rgba(255, 253, 231, 0.5);
+
+  &.xh-dark {
+    --tb-editable-cell-bg: rgba(255, 217, 48, 0.05);
+  }
+}
+
+.tb-cube-test-panel {
+  .xh-cell--editable {
+    background-color: var(--tb-editable-cell-bg);
+  }
+}

@@ -59,6 +59,7 @@ function renderCode(value: string) {
         width: null,
         height: null,
         readonly: true,
+        mode: 'application/javascript',
         value: value.trim()
     });
 }

@@ -93,7 +93,7 @@ export class SampleGridModel extends HoistModel {
         makeObservable(this);
 
         this.gridModel = new GridModel({
-            experimental: {enableFullWidthScroll: true},
+            enableFullWidthScroll: true,
             selModel: {mode: 'multiple'},
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',
@@ -119,6 +119,11 @@ export class SampleGridModel extends HoistModel {
                 '-',
                 ...GridModel.defaultContextMenu
             ],
+            levelLabels: () => {
+                return this.groupBy === 'city,winLose'
+                    ? ['City', 'Win/Lose', 'Company']
+                    : ['Win/Lose', 'City', 'Company'];
+            },
             groupSortFn: (a, b, groupField) => {
                 if (a === b) return 0;
                 if (groupField === 'winLose') {

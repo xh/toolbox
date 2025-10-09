@@ -1,5 +1,7 @@
+import {div} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
+import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
@@ -10,7 +12,43 @@ export class OHLCChartModel extends HoistModel {
     @bindable aspectRatio: number = null;
 
     @managed
-    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
+    chartModel = new ChartModel({
+        highchartsConfig: this.getChartModelCfg(),
+        contextMenu: [
+            'viewFullscreen',
+            'copyToClipboard',
+            'printChart',
+            '-',
+            {
+                text: 'Images',
+                items: ['downloadJPEG', 'downloadPNG', 'downloadSVG', 'downloadPDF']
+            },
+            '-',
+            {
+                text: 'Data',
+                items: ['downloadCSV', 'downloadXLS']
+            },
+            '-',
+            {
+                text: 'Sample Custom Function',
+                icon: Icon.json(),
+                actionFn: (menuItemEvent, {point}) => {
+                    const message = div({
+                        items: point
+                            ? [
+                                  'Custom chart menu items have access to the clicked point in the series.',
+                                  div(`X: ${fmtDate(point.x)}`),
+                                  div(`Y: ${point.y}`)
+                              ]
+                            : [
+                                  'Custom chart menu items have access to the clicked point in the series, when a point is active when opening the context menu.'
+                              ]
+                    });
+                    XH.successToast({message});
+                }
+            }
+        ]
+    });
 
     constructor() {
         super();

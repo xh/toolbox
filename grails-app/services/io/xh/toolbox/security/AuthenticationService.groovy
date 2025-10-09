@@ -1,5 +1,6 @@
 package io.xh.toolbox.security
 
+import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.ReadOnly
 import io.xh.hoist.security.BaseAuthenticationService
 import io.xh.toolbox.user.User
@@ -10,10 +11,24 @@ import javax.servlet.http.HttpServletRequest
 
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
-class AuthenticationService extends BaseAuthenticationService  {
+/**
+ * Toolbox's implementation of Hoist's {@link BaseAuthenticationService} contract for handling
+ * authentication. This example is atypical of most application implementations of this service
+ * in that it supports a fallback option for local username/password login as well as OAuth.
+ *
+ * Use the `oauthProvider` instance config to set the OAuth provider to use, or `NONE` to disable.
+ *
+ * It can also delegate to either {@link AuthZeroTokenService} or {@link EntraIdTokenService} to
+ * validate JWTs when in OAuth mode, to support testing flows against either provider.
+ */
+@GrailsCompileStatic
+class AuthenticationService extends BaseAuthenticationService {
 
-    Auth0Service auth0Service
+    AuthZeroTokenService authZeroTokenService
+    EntraIdTokenService entraIdTokenService
     UserService userService
+
+    private String AUTH_HEADER = 'Authorization'
 
     AuthenticationService() {
         super()
@@ -21,9 +36,22 @@ class AuthenticationService extends BaseAuthenticationService  {
     }
 
     Map getClientConfig() {
-        useOAuth ?
-            [useOAuth: true, *: auth0Service.getClientConfig()] :
-            [useOAuth: false]
+        switch (oauthProvider) {
+            case 'AUTH_ZERO':
+                return [useOAuth: true, *: authZeroTokenService.getClientConfig()];
+            case 'ENTRA_ID':
+                return [useOAuth: true, *: entraIdTokenService.getClientConfig()];
+            default:
+                return [useOAuth: false]
+        }
+    }
+
+    String getOauthProvider() {
+        getInstanceConfig('oauthProvider') ?: 'AUTH_ZERO'
+    }
+
+    boolean getUseOAuth() {
+        getInstanceConfig('oauthProvider') != 'NONE'
     }
 
     /**
@@ -33,12 +61,20 @@ class AuthenticationService extends BaseAuthenticationService  {
      * first identity check back to the server.
      */
     protected boolean completeAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        if (!useOAuth) {
-            return true
+        if (!useOAuth) return true
+
+        String token = request.getHeader(AUTH_HEADER)?.replace('Bearer ', '')
+        TokenValidationResult tokenResult = null
+
+        if (token) {
+            tokenResult = oauthProvider == 'AUTH_ZERO' ?
+                authZeroTokenService.validateToken(token) :
+                entraIdTokenService.validateToken(token)
+
+        } else {
+            logTrace("Unable to validate inbound request - no token presented in header")
         }
 
-        def token = request.getHeader('x-xh-idt'),
-            tokenResult = token ? auth0Service.validateToken(token) : null
         if (tokenResult) {
             def user = userService.getOrCreateFromTokenResult(tokenResult)
             setUser(request, user)
@@ -46,6 +82,7 @@ class AuthenticationService extends BaseAuthenticationService  {
         } else {
             logDebug('Invalid token - no user set on session - return 401')
         }
+
         return true
     }
 
@@ -68,6 +105,16 @@ class AuthenticationService extends BaseAuthenticationService  {
     }
 
 
+    @Override
+    Map getAdminStats() {
+        return [
+            *: super.getAdminStats(),
+            oauthProvider: oauthProvider,
+            clientConfig: clientConfig
+        ]
+    }
+
+
     //------------------------
     // Implementation
     //------------------------
@@ -75,10 +122,6 @@ class AuthenticationService extends BaseAuthenticationService  {
     private User lookupUser(String username, String password) {
         def user = User.findByEmailAndEnabled(username, true)
         return user?.checkPassword(password) ? user : null
-    }
-
-    private static boolean getUseOAuth() {
-        getInstanceConfig('useOAuth') != 'false'
     }
 
 }

@@ -21,7 +21,7 @@ export const zoneGridPage = hoistCmp.factory({
             headerItems: [
                 relativeTimestamp({
                     bind: 'dateLoaded',
-                    options: {prefix: 'Loaded'}
+                    prefix: 'Loaded'
                 })
             ],
             tbar: [storeFilterField({gridModel}), filler(), zoneMapperButton()],

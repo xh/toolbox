@@ -1,10 +1,61 @@
 # Changelog
 
-## v6.0-SNAPSHOT - unreleased
+## v7.0-SNAPSHOT - unreleased
+
+## 6.5.1 - 2025-08-15
+
+### Technical
+* Updated desktop and admin `AppModel` to utilize updates to `TabModel` API for in-place `childTabs`
+  definition, enabling full tab trees to be declared in one file and removing redundant nested tab boilerplate.
+
+
+## 6.5.0 - 2025-08-08
+
+### Libraries
+* hoist-core 31.1.0
+* @xh/hoist 75.0.0
+
+## v6.4.0 - 2025-07-07
+
+### New Features
+* Added example usages of newly customizable chart context menus.
+
+### Libraries
+* hoist-core 31.0.3
+* @xh/hoist 74.1.2
+
+## v6.3.0 - 2025-05-21
+
+### Libraries
+* hoist-core 31.0.1
+* @xh/hoist 73.0.1
+* typescript 5.8
+
+## v6.2.0 - 2025-04-08
+
+### New Features
+* Enabled support for testing OAuth flows against Azure / Entra ID, in addition to Auth0. To support switching, the prior `useOauth` instance config has been replaced with a new `oauthProvider` config - aka `APP_TOOLBOX_OAUTH_PROVIDER` in your `.env` file for local development.
+
+### Libraries
+* hoist-core 29.1.0
+* @xh/hoist 72.3.0
+
+## v6.1.0 - 2025-02-14
+
+### Libraries
+* hoist-core 28.1.0
+* @xh/hoist 72.1.0
+
+## v6.0.0 - 2025-01-08
 
 ### New Features
 * Added the new Hoist `ViewManager` component to the Portfolio example, as well as an in-depth test page hosted within the Admin Console.
 * Refactored and updated the Portfolio example for clarity and to better demonstrate potential usages of saved layouts via `ViewManager`.
+
+### Libraries
+* hoist-core 27.0.0
+* @xh/hoist 71.0.0
+* @xh/hoist-dev-utils 10.0.0
 
 ## v5.3.0 - 2024-10-17
 

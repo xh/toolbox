@@ -3,7 +3,7 @@ import {fragment} from '@xh/hoist/cmp/layout';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
-import {cloneDeep} from 'lodash';
+import {cloneDeep, times} from 'lodash';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {GridTestData} from './GridTestData';
 import {GridTestMetrics} from './GridTestMetrics';
@@ -65,7 +65,7 @@ export class GridTestModel extends HoistModel {
     includeCollapsedChildren = true;
 
     @bindable
-    @persist.with({path: 'gridPersistType', buffer: 500}) // test persist.with!
+    @persist.with({path: 'gridPersistType', debounce: 500}) // test persist.with!
     persistType = null;
 
     @managed
@@ -196,6 +196,7 @@ export class GridTestModel extends HoistModel {
             lockColumnGroups: this.lockColumnGroups,
             store: storeConf,
             treeMode: this.tree,
+            levelLabels: times(5, n => `Level ${n}`),
             showSummary: this.showSummary,
             colChooserModel: {
                 commitOnChange: this.colChooserCommitOnChange,

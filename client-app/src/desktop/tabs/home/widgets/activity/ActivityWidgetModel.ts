@@ -28,7 +28,7 @@ export class ActivityWidgetModel extends HoistModel {
             tooltip: 'Open on Github',
             icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
             displayFn: ({record}) => ({disabled: !record?.data?.url}),
-            actionFn: ({record}) => window.open(record.data.url)
+            actionFn: ({record}) => XH.openWindow(record.data.url, 'gitlink')
         };
 
         this.gridModel = new GridModel({
@@ -37,6 +37,7 @@ export class ActivityWidgetModel extends HoistModel {
                 p(['Have you properly configured the ', code('gitHubAccessToken'), ' config?'])
             ]),
             colChooserModel: true,
+            expandLevel: 1,
             sortBy: 'committedDate|desc',
             groupBy: 'committedDay',
             contextMenu: [openUrlAction, '-', ...GridModel.defaultContextMenu],
@@ -141,9 +142,8 @@ export class ActivityWidgetModel extends HoistModel {
             },
             groupRowRenderer: params => {
                 const {value} = params;
-
                 if (this.groupBy === 'committedDay') {
-                    const ld = LocalDate.get(value);
+                    const ld = value;
                     if (ld === LocalDate.today()) return 'Today';
                     if (ld === LocalDate.yesterday()) return 'Yesterday';
                     return ld ? fmtDate(ld, 'dddd, DD-MMM') : '???';
@@ -181,7 +181,7 @@ export class ActivityWidgetModel extends HoistModel {
 
     private onRowDoubleClicked = params => {
         const rec = params.data;
-        if (rec?.isRecord) window.open(rec.data.url);
+        if (rec?.isRecord) XH.openWindow(rec.data.url, 'gitlink');
     };
 
     private setGroupBy(groupBy) {
