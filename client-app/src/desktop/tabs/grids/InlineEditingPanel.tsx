@@ -54,6 +54,11 @@ export const inlineEditingPanel = hoistCmp.factory({
                     model.fullRowEditing ? 'tb-inline-editing-panel--fullRow' : ''
                 ),
                 tbar: tbar(),
+                /**
+                 * The `popupParent: null` option is a fix to TextEditors/TextAreaEditors
+                 * with showIsPopup=true when opened from within a GridModel in dialog.
+                 * {@see https://github.com/xh/hoist-react/issues/4061}
+                 */
                 item: hframe(grid({agOptions: {popupParent: null}}), gridOptionsPanel()),
                 bbar: bbar(),
                 model: model.panelModel
