@@ -2,26 +2,26 @@
 # yarn lockfile v1
 
 
-"@auth0/auth0-spa-js@~2.4.1":
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-2.4.1.tgz#48fcde461684be720a664746a3eaf6c1aca7e7d7"
-  integrity sha512-GE1XPLEgEUeqYBw5VcA52+3ubJDh4VKZFqdu0mr6h7anu+rFZb389cDbfpW145I23T1knZB/jvQtuRrkcLuT+Q==
+"@auth0/auth0-spa-js@~2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-2.7.0.tgz#f42c7e39de094f4d03be5e4cc76c3e2297dee384"
+  integrity sha512-o29ZDbUUCJcEXeBP5LPuacbP28BkNroHuq3jfKbNjFiiWjmrCe95jwPAYb6+9PGyEbs8Wva4fGkVSNZ2HZFEGA==
   dependencies:
     browser-tabs-lock "^1.2.15"
     dpop "^2.1.1"
     es-cookie "~1.3.2"
 
-"@azure/msal-browser@~4.23.0":
-  version "4.23.0"
-  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-4.23.0.tgz#9f4e943f2f624f1569acdcde83db7b7781d768d2"
-  integrity sha512-uHnfRwGAEHaYVXzpCtYsruy6PQxL2v76+MJ3+n/c/3PaTiTIa5ch7VofTUNoA39nHyjJbdiqTwFZK40OOTOkjw==
+"@azure/msal-browser@~4.25.0":
+  version "4.25.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-4.25.0.tgz#cc80f392bde9adca334cec0c4facd2a9d7121955"
+  integrity sha512-kbL+Ae7/UC62wSzxirZddYeVnHvvkvAnSZkBqL55X+jaSXTAXfngnNsDM5acEWU0Q/SAv3gEQfxO1igWOn87Pg==
   dependencies:
-    "@azure/msal-common" "15.12.0"
+    "@azure/msal-common" "15.13.0"
 
-"@azure/msal-common@15.12.0":
-  version "15.12.0"
-  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-15.12.0.tgz#5c30a05b4396e2dbbc35d27bd9bb636d44ccb00e"
-  integrity sha512-4ucXbjVw8KJ5QBgnGJUeA07c8iznwlk5ioHIhI4ASXcXgcf2yRFhWzYOyWg/cI49LC9ekpFJeQtO3zjDTbl6TQ==
+"@azure/msal-common@15.13.0":
+  version "15.13.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-15.13.0.tgz#229008f8badbf5af6a446a0be1c436be2f4c8cd9"
+  integrity sha512-8oF6nj02qX7eE/6+wFT5NluXRHc05AgdCC3fJnkjiJooq8u7BcLmxaYYSwc2AfEkWRMRi6Eyvvbeqk4U4412Ag==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.27.1":
   version "7.27.1"
@@ -2094,12 +2094,12 @@
     webpackbar "~7.0.0"
 
 "@xh/hoist@^77.0.0-SNAPSHOT":
-  version "77.0.0-SNAPSHOT.1760707577281"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-77.0.0-SNAPSHOT.1760707577281.tgz#5307bbfb943230a69af9fa966fdec5e44ea422e7"
-  integrity sha512-9qsCX9+GX24i8BFOYM6pg8+pmq77MCyVhstElq4uYWDwKvvQKuwZU88k5rSo49JAt8DE5NEcT/XiD4t4+bmCuQ==
+  version "77.0.0-SNAPSHOT.1760710210101"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-77.0.0-SNAPSHOT.1760710210101.tgz#45c546b26cbe1a4066075a5b6fe2ea1eb42a4d41"
+  integrity sha512-KTmWWwcrPXDh02bmzfHThGO23kZaxFQUHjtoSIZpm+LMGDdm4e1Di8KLm38LRjwzaGw8JkKQtKH9EUyX0L9KLA==
   dependencies:
-    "@auth0/auth0-spa-js" "~2.4.1"
-    "@azure/msal-browser" "~4.23.0"
+    "@auth0/auth0-spa-js" "~2.7.0"
+    "@azure/msal-browser" "~4.25.0"
     "@blueprintjs/core" "^5.10.5"
     "@blueprintjs/datetime" "^5.3.7"
     "@blueprintjs/datetime2" "^2.3.7"
@@ -2118,7 +2118,7 @@
     codemirror "~5.65.0"
     core-js "3.x"
     debounce-promise "~3.1.0"
-    dompurify "~3.2.3"
+    dompurify "~3.3.0"
     downloadjs "~1.4.7"
     fast-deep-equal "~3.1.1"
     filesize "~11.0.2"
@@ -2128,7 +2128,7 @@
     jwt-decode "~4.0.0"
     lodash "~4.17.21"
     lodash-inflection "~1.5.0"
-    mobx "~6.13.2"
+    mobx "~6.15.0"
     mobx-react-lite "~4.1.0"
     moment "~2.30.1"
     numbro "~2.5.0"
@@ -3366,10 +3366,10 @@ domhandler@^4.0.0, domhandler@^4.2.0, domhandler@^4.3.1:
   dependencies:
     domelementtype "^2.2.0"
 
-dompurify@~3.2.3:
-  version "3.2.7"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.2.7.tgz#721d63913db5111dd6dfda8d3a748cfd7982d44a"
-  integrity sha512-WhL/YuveyGXJaerVlMYGWhvQswa7myDG17P7Vu65EWC05o8vfeNbvNf4d/BOvH99+ZW+LlQsc1GDKMa1vNK6dw==
+dompurify@~3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.3.0.tgz#aaaadbb83d87e1c2fbb066452416359e5b62ec97"
+  integrity sha512-r+f6MYR1gGN1eJv0TVQbhA7if/U7P87cdPl3HN5rikqaBSBxLiCb/b9O+2eG0cxz0ghyU+mU1QkbsOwERMYlWQ==
   optionalDependencies:
     "@types/trusted-types" "^2.0.7"
 
@@ -5864,10 +5864,10 @@ mobx-react-lite@~4.1.0:
   dependencies:
     use-sync-external-store "^1.4.0"
 
-mobx@~6.13.2:
-  version "6.13.7"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.13.7.tgz#70e5dda7a45da947f773b3cd3b065dfe7c8a75de"
-  integrity sha512-aChaVU/DO5aRPmk1GX8L+whocagUUpBQqoPtJk+cm7UOXUk87J4PeWCh6nNmTTIfEhiR9DI/+FnA8dln/hTK7g==
+mobx@~6.15.0:
+  version "6.15.0"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.15.0.tgz#78b9b82d383724eebb4b6e50c2eb4ae2da861cb5"
+  integrity sha512-UczzB+0nnwGotYSgllfARAqWCJ5e/skuV2K/l+Zyck/H6pJIhLXuBnz+6vn2i211o7DtbE78HQtsYEKICHGI+g==
 
 moment@2.x, moment@>=1.6.0, moment@~2.30.1:
   version "2.30.1"
