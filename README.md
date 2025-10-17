@@ -95,8 +95,8 @@ can be useful to have the code on-hand.
 
 * To run the server using the local `hoist-core`, you need `hoist-core` to exist as sibling of the
   `toolbox` package, and do one of the following:
-  * Edit the `toolbox/gradle.properties` file and set `runHoistInline=true`.
-  * Run the command `./gradlew bootRun -Duser.timezone=Etc/UTC -PrunHoistInline=true` from the `toolbox` directory.
+  * Edit the `toolbox/gradle.properties` file and set `runHoistInline=true` or set it in your
+    default gradle properties, e.g. ~/.gradle/gradle.properties
 
   Note this is _only_ required if you're changing hoist-core code.
 
