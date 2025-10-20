@@ -8,15 +8,15 @@ import {DashCanvasViewModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {button, modalToggleButton} from '@xh/hoist/desktop/cmp/button';
 import {ONE_DAY} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon/Icon';
-import './ChartWidget.scss';
 import {LineChartModel} from '../../charts/LineChartModel';
+import './ChartWidget.scss';
 
 export const chartWidget = hoistCmp.factory({
     model: creates(() => ChartWidgetModel),
     render({model}) {
         const {panelModel, symbols, dashViewModel} = model,
             modalOpts = {
-                title: dashViewModel.title,
+                title: dashViewModel.fullTitle,
                 icon: dashViewModel.icon,
                 headerItems: [rangeSelector({model}), modalToggleButton({panelModel})]
             };
@@ -105,5 +105,10 @@ class ChartWidgetModel extends LineChartModel {
                 exporting: {enabled: false}
             });
         }
+
+        // Demo dynamic titleDetails with ticking timestamp in view title.
+        setInterval(() => {
+            dashViewModel.titleDetails = new Date().toTimeString().split(' ')[0];
+        }, 1000);
     }
 }

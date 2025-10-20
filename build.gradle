@@ -47,17 +47,6 @@ springBoot {
     mainClass = xhAppPackage + ".Application"
 }
 
-if (parseBoolean(runHoistInline)) {
-    println "${xhAppName}: running with Hoist Core INLINE...."
-    grails.plugins {
-        implementation project(":hoist-core")
-    }
-} else {
-    println "${xhAppName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
-    dependencies {
-        implementation "io.xh:hoist-core:$hoistCoreVersion"
-    }
-}
 
 def allJvmArgs = [
     '-Dspring.output.ansi.enabled=always',
@@ -87,8 +76,10 @@ if (parseBoolean(enableHotSwap)) {
     ]
 }
 
-
 dependencies {
+    // If `runHoistInline` is true, `hoistCoreVersion` will be ignored and local hoist-core will be used instead.
+    implementation "io.xh:hoist-core:$hoistCoreVersion"
+
     // For server-side JWT validation.
     implementation "org.bitbucket.b_c:jose4j:0.9.6"
 

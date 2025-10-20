@@ -43,7 +43,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-balham.css';
 import {ModuleRegistry, provideGlobalGridOptions} from 'ag-grid-community';
 
-// 1) Standard community modules, needed by all Hoist Apps.
+// 1) Standard community modules - required for all Hoist Apps.
 import {
     ClientSideRowModelApiModule,
     ClientSideRowModelModule,
@@ -58,6 +58,7 @@ import {
     RowStyleModule,
     ScrollApiModule,
     TextEditorModule,
+    TextFilterModule,
     TooltipModule
 } from 'ag-grid-community';
 ModuleRegistry.registerModules([
@@ -74,10 +75,11 @@ ModuleRegistry.registerModules([
     RowStyleModule,
     ScrollApiModule,
     TextEditorModule,
+    TextFilterModule,
     TooltipModule
 ]);
 
-// 2) Typical enterprise modules -- useful for most apps
+// 2) Typical enterprise modules - useful for most apps.
 import {
     LicenseManager,
     CellSelectionModule,
@@ -94,7 +96,7 @@ ModuleRegistry.registerModules([
     TreeDataModule
 ]);
 
-// 3) Toolbox specific modules -- for ag-Grid demo, not typically required.
+// 3) Toolbox specific modules - for "direct" AG Grid usage demo, not typically required.
 import {
     ColumnsToolPanelModule,
     FiltersToolPanelModule,
@@ -102,7 +104,7 @@ import {
     SparklinesModule,
     PivotModule
 } from 'ag-grid-enterprise';
-import {TextFilterModule, NumberFilterModule} from 'ag-grid-community';
+import {NumberFilterModule} from 'ag-grid-community';
 import {AgChartsCommunityModule} from 'ag-charts-community';
 
 ModuleRegistry.registerModules([
