@@ -16,6 +16,7 @@ plugins {
     id "war"
     id "idea"
     id "java-library"
+    id 'co.uzzu.dotenv.gradle' version '3.0.0'
 }
 
 // Not Published to Gradle Plugin Portal
@@ -23,12 +24,6 @@ apply plugin: "org.apache.grails.gradle.grails-web"
 
 version xhAppVersion
 group xhAppPackage
-
-// Must be applied to root project - matters when running Toolbox in a wrapper project mode w/hoist-core.
-// See README.md for more details on this configuration, including contents of top-level build.gradle file.
-gradle.rootProject {
-    apply plugin:'co.uzzu.dotenv.gradle'
-}
 
 repositories {
     mavenCentral()
