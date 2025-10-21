@@ -85,6 +85,7 @@ dependencies {
 
     // Stifle dev errors on Macs
     developmentOnly "io.methvin:directory-watcher:0.19.1"
+    console "org.apache.grails:grails-console"
 }
 
 Map hoistMetaData = [
@@ -94,8 +95,11 @@ Map hoistMetaData = [
     'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN'
 ]
 
-
-bootRun {
+//-------------------------
+// Trampoline  jvmArgs
+// -------------------------
+def execTasks = tasks.matching {it.name == 'bootRun' || it.name == 'console'}
+execTasks.configureEach {
     ignoreExitValue true
     systemProperties System.properties
     jvmArgs(allJvmArgs)
@@ -123,11 +127,14 @@ tasks.war.doFirst {
 }
 
 // Ensure that all variables defined in .env.template are set in local .env
-tasks.bootRun.doFirst {
-    def missingEnvVars = env.allVariablesOrNull().findAll {it.value == null}.collect {it.key}
-    if (missingEnvVars) {
-        throw new GradleException("Environment variables listed in .env.template not set in local .env file as required: ${missingEnvVars}")
+execTasks.all {task ->
+    task.doFirst {
+        def missingEnvVars = env.allVariablesOrNull().findAll { it.value == null }.collect { it.key }
+        if (missingEnvVars) {
+            throw new GradleException("Environment variables listed in .env.template not set in local .env file as required: ${missingEnvVars}")
+        }
     }
 }
+
 
 
