@@ -1,0 +1,11 @@
+import static java.lang.Boolean.parseBoolean
+
+rootProject.name = 'toolbox'
+
+// Composite build setup for compiling hoist-core locally
+if (parseBoolean(runHoistInline)) {
+    println "${xhAppName}: running with Hoist Core INLINE...."
+    includeBuild '../hoist-core'
+} else {
+    println "${xhAppName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
+}
