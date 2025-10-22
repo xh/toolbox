@@ -13,9 +13,8 @@ buildscript {
 }
 
 plugins {
-    id "war"
-    id "idea"
-    id "java-library"
+    id 'idea'
+    id 'war'
     id 'co.uzzu.dotenv.gradle' version '3.0.0'
 }
 
@@ -114,6 +113,13 @@ tasks.withType(GroovyCompile) {
     }
 }
 
+// Ask IntelliJ to download sources and javadocs for Gradle-managed dependencies.
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
 
 //--------------------------------------------------
 // Extensions to build.info (Hoist-Core requirement)
