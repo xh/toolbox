@@ -3,7 +3,7 @@ import static java.lang.Boolean.parseBoolean
 buildscript {
     repositories {
         mavenCentral()
-        maven {url 'https://repo.grails.org/grails/restricted'}
+        maven {url = 'https://repo.grails.org/grails/restricted'}
     }
     dependencies { // Not Published to Gradle Plugin Portal
         classpath platform("org.apache.grails:grails-bom:$grailsVersion")
@@ -21,13 +21,13 @@ plugins {
 // Not Published to Gradle Plugin Portal
 apply plugin: "org.apache.grails.gradle.grails-web"
 
-version xhAppVersion
-group xhAppPackage
+version = xhAppVersion
+group = xhAppPackage
 
 repositories {
     mavenCentral()
     maven {url = 'https://repo.grails.org/grails/restricted'}
-    maven {url 'https://repo.xh.io/content/groups/public/'}
+    maven {url = 'https://repo.xh.io/content/groups/public/'}
 }
 
 configurations {
@@ -99,7 +99,7 @@ Map hoistMetaData = [
 // -------------------------
 def execTasks = tasks.matching {it.name == 'bootRun' || it.name == 'console'}
 execTasks.configureEach {
-    ignoreExitValue true
+    ignoreExitValue = true
     systemProperties System.properties
     jvmArgs(allJvmArgs)
     systemProperties hoistMetaData
