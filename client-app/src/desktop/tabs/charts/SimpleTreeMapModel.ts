@@ -1,8 +1,13 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {TreeMapModel} from '@xh/hoist/cmp/treemap';
 import {Store} from '@xh/hoist/data';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class SimpleTreeMapModel extends HoistModel {
+    @bindable cluster = false;
+    @bindable clusterWidthThreshold = 10;
+    @bindable clusterHeightThreshold = 10;
+
     @managed
     store = new Store({
         processRawData: r => {
@@ -27,6 +32,27 @@ export class SimpleTreeMapModel extends HoistModel {
         valueField: 'pnl',
         heatField: 'pnlMktVal'
     });
+
+    constructor() {
+        super();
+        makeObservable(this);
+        this.addReaction({
+            track: () => [this.cluster, this.clusterWidthThreshold, this.clusterHeightThreshold],
+            run: ([enableCluster, clusterWidthThreshold, clusterHeightThreshold]) => {
+                this.treeMapModel.highchartsConfig = {
+                    plotOptions: {
+                        treemap: {
+                            cluster: {
+                                enabled: enableCluster,
+                                pixelWidth: clusterWidthThreshold,
+                                pixelHeight: clusterHeightThreshold
+                            }
+                        }
+                    }
+                };
+            }
+        });
+    }
 
     override async doLoadAsync() {
         const data = await XH.portfolioService.getPositionsAsync(['symbol']);

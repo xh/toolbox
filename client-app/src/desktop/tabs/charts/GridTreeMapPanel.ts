@@ -5,7 +5,7 @@ import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {grid} from '@xh/hoist/cmp/grid';
 import {treeMap} from '@xh/hoist/cmp/treemap';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 
 import {GridTreeMapModel} from './GridTreeMapModel';
 
@@ -31,6 +31,11 @@ const tbar = hoistCmp.factory<GridTreeMapModel>(({model}) =>
     toolbar(
         groupingChooser({width: 200}),
         filler(),
+        span('Enable Cluster'),
+        switchInput({
+            bind: 'cluster'
+        }),
+        '-',
         span('Max Heat'),
         select({
             model: model.treeMapModel,

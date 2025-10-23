@@ -134,18 +134,13 @@ when(
 //-------------------------------------------------------------------------------
 import {installHighcharts} from '@xh/hoist/kit/highcharts';
 import Highcharts from 'highcharts/highstock';
-import highchartsExportData from 'highcharts/modules/export-data';
-import highchartsExporting from 'highcharts/modules/exporting';
-import highchartsHeatmap from 'highcharts/modules/heatmap';
-import highchartsOfflineExporting from 'highcharts/modules/offline-exporting';
-import highchartsTree from 'highcharts/modules/treemap';
-import highchartsTreeGraph from 'highcharts/modules/treegraph';
 
-highchartsExportData(Highcharts);
-highchartsExporting(Highcharts);
-highchartsHeatmap(Highcharts);
-highchartsOfflineExporting(Highcharts);
-highchartsTree(Highcharts);
-highchartsTreeGraph(Highcharts);
+// Check https://api.highcharts.com/highcharts/ for modules that require other base modules and import in order
+import 'highcharts/modules/exporting';
+import 'highcharts/modules/export-data'; // export-data module must be imported after exporting module
+import 'highcharts/modules/offline-exporting'; // offline-exporting module must be imported after exporting module
+import 'highcharts/modules/heatmap';
+import 'highcharts/modules/treemap';
+import 'highcharts/modules/treegraph';
 
 installHighcharts(Highcharts);
