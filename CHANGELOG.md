@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.0-SNAPSHOT - unreleased
+## 8.0-SNAPSHOT - unreleased
 
 ## 6.6.0 - 2025-10-22
 

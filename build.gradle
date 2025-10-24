@@ -3,33 +3,31 @@ import static java.lang.Boolean.parseBoolean
 buildscript {
     repositories {
         mavenCentral()
-        gradlePluginPortal()
-        maven {url 'https://repo.grails.org/grails/core'}
+        maven {url = 'https://repo.grails.org/grails/restricted'}
     }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "org.grails.plugins:hibernate5:$grailsHibernatePluginVersion"
-        classpath "co.uzzu.dotenv:gradle:$dotEnvGradlePluginVersion"
+    dependencies { // Not Published to Gradle Plugin Portal
+        classpath platform("org.apache.grails:grails-bom:$grailsVersion")
+        classpath "org.apache.grails:grails-data-hibernate5"
+        classpath "org.apache.grails:grails-gradle-plugins"
     }
 }
 
-version xhAppVersion
-group xhAppPackage
-
-apply plugin:'idea'
-apply plugin:'war'
-apply plugin:'org.grails.grails-web'
-
-// Must be applied to root project - matters when running Toolbox in a wrapper project mode w/hoist-core.
-// See README.md for more details on this configuration, including contents of top-level build.gradle file.
-gradle.rootProject {
-    apply plugin:'co.uzzu.dotenv.gradle'
+plugins {
+    id 'idea'
+    id 'war'
+    id 'co.uzzu.dotenv.gradle' version '3.0.0'
 }
+
+// Not Published to Gradle Plugin Portal
+apply plugin: "org.apache.grails.gradle.grails-web"
+
+version = xhAppVersion
+group = xhAppPackage
 
 repositories {
     mavenCentral()
-    maven {url 'https://repo.grails.org/grails/core'}
-    maven {url 'https://repo.xh.io/content/groups/public/'}
+    maven {url = 'https://repo.grails.org/grails/restricted'}
+    maven {url = 'https://repo.xh.io/content/groups/public/'}
 }
 
 configurations {
@@ -43,40 +41,12 @@ springBoot {
     mainClass = xhAppPackage + ".Application"
 }
 
-dependencies {
-    // If `runHoistInline` is true, `hoistCoreVersion` will be ignored and local hoist-core will be used instead.
-    implementation "io.xh:hoist-core:$hoistCoreVersion"
-
-    // For server-side JWT validation.
-    implementation "org.bitbucket.b_c:jose4j:0.9.6"
-
-    // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
-    // MySQL for deployed instances, or more stateful local workstation setups.
-    runtimeOnly "com.h2database:h2:2.2.224"
-    runtimeOnly "mysql:mysql-connector-java:8.0.33"
-
-    // For hot reloading
-    developmentOnly "io.methvin:directory-watcher:0.15.0"
-    if (parseBoolean(enableHotSwap)) {
-        developmentOnly "io.xh:groovyReset:1.0"
-    }
-}
-
-// Avoid unexpected errors with overly-long classpath on Windows development machines.
-grails {
-    pathingJar = true
-}
-
-Map hoistMetaData = [
-    'info.xh.appCode': xhAppCode,
-    'info.xh.appName': xhAppName,
-    'info.xh.appPackage': xhAppPackage,
-    'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN'
-]
 
 def allJvmArgs = [
     '-Dspring.output.ansi.enabled=always',
+    '-XX:+TieredCompilation',
     '-XX:TieredStopAtLevel=1',
+    '-XX:CICompilerCount=3',
     '-Xmx' + localDevXmx,
     "--add-modules=java.se",
     "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
@@ -87,22 +57,53 @@ def allJvmArgs = [
     "--add-opens=java.base/java.util=ALL-UNNAMED"
 ]
 
-
-
 if (parseBoolean(enableHotSwap)) {
-    def groovyReset = configurations.developmentOnly.resolve().find {it.name.contains("groovyReset")}
+
+    // Enhance JVM args, including Groovy Reset as agent
+    def groovyReset = configurations.detachedConfiguration(
+        dependencies.create("io.xh:groovyReset:1.0")
+    )
     allJvmArgs += [
         '-XX:HotswapAgent=fatjar',
         '-XX:+AllowEnhancedClassRedefinition',
-        '-javaagent:' + groovyReset.absolutePath
+        "-Dspring.devtools.restart.enabled=false",
+        "-Dspring.devtools.livereload.enabled=false",
+        "-javaagent:" + groovyReset.singleFile.absolutePath
     ]
 }
 
-bootRun {
-    ignoreExitValue true
+dependencies {
+    // If `runHoistInline` is true, `hoistCoreVersion` will be ignored and local hoist-core will be used instead.
+    implementation "io.xh:hoist-core:$hoistCoreVersion"
+
+    // For server-side JWT validation.
+    implementation "org.bitbucket.b_c:jose4j:0.9.6"
+
+    // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
+    // MySQL for deployed instances, or more stateful local workstation setups.
+    runtimeOnly "com.h2database:h2"
+    runtimeOnly "mysql:mysql-connector-java:8.0.33"
+
+    // Stifle dev errors on Macs
+    developmentOnly "io.methvin:directory-watcher:0.19.1"
+    console "org.apache.grails:grails-console"
+}
+
+Map hoistMetaData = [
+    'info.xh.appCode': xhAppCode,
+    'info.xh.appName': xhAppName,
+    'info.xh.appPackage': xhAppPackage,
+    'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN'
+]
+
+//-------------------------
+// Trampoline  jvmArgs
+// -------------------------
+def execTasks = tasks.matching {it.name == 'bootRun' || it.name == 'console'}
+execTasks.configureEach {
+    ignoreExitValue = true
     systemProperties System.properties
     jvmArgs(allJvmArgs)
-    sourceResources sourceSets.main
     systemProperties hoistMetaData
     // Bring .env sourced environment variables into bootRun JVM process.
     environment env.allVariables()
@@ -122,7 +123,6 @@ idea {
     }
 }
 
-
 //--------------------------------------------------
 // Extensions to build.info (Hoist-Core requirement)
 //--------------------------------------------------
@@ -135,9 +135,14 @@ tasks.war.doFirst {
 }
 
 // Ensure that all variables defined in .env.template are set in local .env
-tasks.bootRun.doFirst {
-    def missingEnvVars = env.allVariablesOrNull().findAll {it.value == null}.collect {it.key}
-    if (missingEnvVars) {
-        throw new GradleException("Environment variables listed in .env.template not set in local .env file as required: ${missingEnvVars}")
+execTasks.all {task ->
+    task.doFirst {
+        def missingEnvVars = env.allVariablesOrNull().findAll { it.value == null }.collect { it.key }
+        if (missingEnvVars) {
+            throw new GradleException("Environment variables listed in .env.template not set in local .env file as required: ${missingEnvVars}")
+        }
     }
 }
+
+
+

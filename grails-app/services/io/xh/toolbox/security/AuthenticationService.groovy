@@ -6,8 +6,8 @@ import io.xh.hoist.security.BaseAuthenticationService
 import io.xh.toolbox.user.User
 import io.xh.toolbox.user.UserService
 
-import javax.servlet.http.HttpServletResponse
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletRequest
 
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
