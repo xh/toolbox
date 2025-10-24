@@ -44,7 +44,9 @@ springBoot {
 
 def allJvmArgs = [
     '-Dspring.output.ansi.enabled=always',
+    '-XX:+TieredCompilation',
     '-XX:TieredStopAtLevel=1',
+    '-XX:CICompilerCount=3',
     '-Xmx' + localDevXmx,
     "--add-modules=java.se",
     "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
