@@ -69,6 +69,7 @@ export class GridTreeMapModel extends HoistModel {
                         treemap: {
                             cluster: {
                                 enabled: enableCluster,
+                                minimumClusterSize: 2,
                                 pixelWidth: 50,
                                 pixelHeight: 50
                             }
