@@ -1,6 +1,6 @@
 import {span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {treeMap} from '@xh/hoist/cmp/treemap';
@@ -63,6 +63,23 @@ export const simpleTreeMapPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory<SimpleTreeMapModel>(({model}) =>
     toolbar(
+        span('Enable Cluster'),
+        switchInput({
+            bind: 'cluster'
+        }),
+        span('Threshold Width (px)'),
+        numberInput({
+            disabled: !model.cluster,
+            width: 50,
+            bind: 'clusterWidthThreshold'
+        }),
+        span('Threshold Height (px)'),
+        numberInput({
+            disabled: !model.cluster,
+            width: 50,
+            bind: 'clusterHeightThreshold'
+        }),
+        '-',
         span('Max Heat'),
         select({
             model: model.treeMapModel,

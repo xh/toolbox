@@ -54,7 +54,6 @@ class DataViewPanelModel extends HoistModel {
         sortBy: 'name',
         emptyText: 'No companies found...',
         renderer: (v, {record}) => dataViewItem({record}),
-        contextMenu: ['copyCell'],
         itemHeight: 70,
         rowClassFn: () => 'dataview-item',
         stripeRows: true
