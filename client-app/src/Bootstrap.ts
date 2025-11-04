@@ -38,23 +38,24 @@ declare module '@xh/hoist/core' {
 // you must provide your own license
 //-----------------------------------------------------------------
 import {installAgGrid} from '@xh/hoist/kit/ag-grid';
+import {ModuleRegistry, provideGlobalGridOptions} from 'ag-grid-community';
+import {LicenseManager} from 'ag-grid-enterprise';
 import {AgGridReact} from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-balham.css';
-import {ModuleRegistry, provideGlobalGridOptions} from 'ag-grid-community';
 
 // 1) Standard community modules - required for all Hoist Apps.
 import {
+    CellStyleModule,
     ClientSideRowModelApiModule,
     ClientSideRowModelModule,
-    CellStyleModule,
     ColumnApiModule,
     CustomEditorModule,
     PinnedRowModule,
     RenderApiModule,
-    RowSelectionModule,
     RowApiModule,
     RowAutoHeightModule,
+    RowSelectionModule,
     RowStyleModule,
     ScrollApiModule,
     TextEditorModule,
@@ -62,16 +63,16 @@ import {
     TooltipModule
 } from 'ag-grid-community';
 ModuleRegistry.registerModules([
+    CellStyleModule,
     ClientSideRowModelApiModule,
     ClientSideRowModelModule,
-    CellStyleModule,
     ColumnApiModule,
     CustomEditorModule,
     PinnedRowModule,
     RenderApiModule,
-    RowSelectionModule,
     RowApiModule,
     RowAutoHeightModule,
+    RowSelectionModule,
     RowStyleModule,
     ScrollApiModule,
     TextEditorModule,
@@ -81,7 +82,6 @@ ModuleRegistry.registerModules([
 
 // 2) Typical enterprise modules - useful for most apps.
 import {
-    LicenseManager,
     CellSelectionModule,
     ClipboardModule,
     MenuModule,
@@ -100,21 +100,20 @@ ModuleRegistry.registerModules([
 import {
     ColumnsToolPanelModule,
     FiltersToolPanelModule,
+    PivotModule,
     SideBarModule,
-    SparklinesModule,
-    PivotModule
+    SparklinesModule
 } from 'ag-grid-enterprise';
 import {NumberFilterModule} from 'ag-grid-community';
 import {AgChartsCommunityModule} from 'ag-charts-community';
-
 ModuleRegistry.registerModules([
-    NumberFilterModule,
-    TextFilterModule,
     ColumnsToolPanelModule,
     FiltersToolPanelModule,
+    NumberFilterModule,
+    PivotModule,
     SideBarModule,
     SparklinesModule.with(AgChartsCommunityModule),
-    PivotModule
+    TextFilterModule
 ]);
 
 provideGlobalGridOptions({theme: 'legacy'});
