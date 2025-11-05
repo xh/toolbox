@@ -98,7 +98,7 @@ Map hoistMetaData = [
 
 //-------------------------
 // Trampoline  jvmArgs
-// -------------------------
+//-------------------------
 def execTasks = tasks.matching {it.name == 'bootRun' || it.name == 'console'}
 execTasks.configureEach {
     ignoreExitValue = true
