@@ -40,7 +40,10 @@ export const AppComponent = hoistCmp({
                     onKeyDown: () => model.goHome()
                 }
             ],
-            item: tabContainer(),
+            item: tabContainer({
+                switcher: false,
+                childTabContainerProps: {switcher: {orientation: 'left', className: 'tb-switcher'}}
+            }),
             mask: 'onLoad'
         });
     }
