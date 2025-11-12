@@ -58,7 +58,6 @@ export class StoreColumnFilterPanelModel extends HoistModel {
             store: {
                 idEncodesTreePath: true,
                 freezeData: false,
-                fieldDefaults: {disableXssProtection: true},
                 fields: [
                     {
                         name: 'profit_loss',

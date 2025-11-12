@@ -1,6 +1,6 @@
 {
   "name": "toolbox",
-  "version": "7.0-SNAPSHOT",
+  "version": "8.0-SNAPSHOT",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -31,13 +31,13 @@
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^77.0.0-SNAPSHOT",
+    "@xh/hoist": "^78.0.0-SNAPSHOT",
     "@xh/package-template": "~3.0.1",
     "ag-grid-community": "~34.2.0",
     "ag-grid-enterprise": "~34.2.0",
     "ag-grid-react": "~34.2.0",
     "core-js": "3.x",
-    "highcharts": "11.x",
+    "highcharts": "12.x",
     "lodash": "4.x",
     "moment": "2.x",
     "react": "~18.2.0",

@@ -2,9 +2,12 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {TreeMapModel} from '@xh/hoist/cmp/treemap';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 
 export class GridTreeMapModel extends HoistModel {
+    @bindable cluster = false;
+
     @managed
     groupingChooserModel = new GroupingChooserModel({
         dimensions: ['region', 'sector', 'symbol'],
@@ -53,9 +56,27 @@ export class GridTreeMapModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.groupingChooserModel.value,
             run: () => this.loadAsync()
+        });
+        this.addReaction({
+            track: () => this.cluster,
+            run: enableCluster => {
+                this.treeMapModel.highchartsConfig = {
+                    plotOptions: {
+                        treemap: {
+                            cluster: {
+                                enabled: enableCluster,
+                                minimumClusterSize: 2,
+                                pixelWidth: 50,
+                                pixelHeight: 50
+                            }
+                        }
+                    }
+                };
+            }
         });
     }
 

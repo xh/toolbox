@@ -1,13 +1,18 @@
 # Changelog
 
-## v7.0-SNAPSHOT - unreleased
+## 8.0-SNAPSHOT - unreleased
+
+## 6.6.0 - 2025-10-22
+
+### Libraries
+* hoist-core 33.0.0
+* @xh/hoist 76.2.0
 
 ## 6.5.1 - 2025-08-15
 
 ### Technical
 * Updated desktop and admin `AppModel` to utilize updates to `TabModel` API for in-place `childTabs`
   definition, enabling full tab trees to be declared in one file and removing redundant nested tab boilerplate.
-
 
 ## 6.5.0 - 2025-08-08
 
