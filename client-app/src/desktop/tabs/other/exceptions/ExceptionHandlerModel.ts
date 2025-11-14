@@ -16,6 +16,20 @@ export class ExceptionHandlerModel extends HoistModel {
         makeObservable(this);
     }
 
+    async sendServerRequestForException() {
+        try {
+            await XH.fetchJson({
+                url: 'exceptionTesting/throwException'
+            });
+        } catch (e) {
+            const response = e?.serverDetails?.exception;
+
+            await XH.alert({
+                title: 'Exception Caught from Server',
+                message: `The server responded with a staut code of ${response.status} an the error message: "${response.message}"`
+            });
+        }
+    }
     throwException(type: 'standard' | 'routine') {
         const message =
             type === 'routine'

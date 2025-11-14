@@ -74,7 +74,11 @@ const buttonContainer = hoistCmp.factory(() =>
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: 15,
-                    items: [exceptionButton({type: 'standard'}), exceptionButton({type: 'routine'})]
+                    items: [
+                        exceptionButton({type: 'standard'}),
+                        exceptionButton({type: 'routine'}),
+                        exceptionButton({type: 'server'})
+                    ]
                 }),
                 div(
                     'Open your developer console to see how Hoist is logging and tracking exceptions when clicking ' +
@@ -97,7 +101,11 @@ const exceptionButton = hoistCmp.factory<ExceptionHandlerModel>({
             margin: 10,
             intent: isRoutine ? 'primary' : 'danger',
             minimal: false,
-            onClick: () => model.throwException(type)
+            onClick: () => {
+                type === 'server'
+                    ? model.sendServerRequestForException()
+                    : model.throwException(type);
+            }
         });
     }
 });
