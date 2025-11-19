@@ -398,7 +398,7 @@ export class AppModel extends BaseAppModel {
             route: 'default',
             track: true,
             tabs,
-            dynamicTabSwitcherModel: {
+            switcher: {
                 initialFavorites: [...tabs, ...actionTabs].map(it => it.id),
                 actionTabs,
                 extraMenuItems: [
@@ -427,11 +427,9 @@ export class AppModel extends BaseAppModel {
                     {
                         text: 'More Tabs...',
                         prepareFn: me => {
-                            const tabs = this.tabModel.tabs.filter(
+                            const tabs = [...this.tabModel.tabs, ...actionTabs].filter(
                                 tab =>
-                                    !this.tabModel.dynamicTabSwitcherModel.enabledVisibleTabs.includes(
-                                        tab
-                                    )
+                                    !this.tabModel.dynamicTabSwitcherModel.visibleTabs.includes(tab)
                             );
                             if (isEmpty(tabs)) {
                                 me.hidden = true;
@@ -440,7 +438,16 @@ export class AppModel extends BaseAppModel {
                                 me.items = tabs.map(tab => ({
                                     text: tab.title,
                                     icon: tab.icon,
-                                    actionFn: () => this.tabModel.activateTab(tab)
+                                    actionFn: () => {
+                                        if (tab instanceof TabModel) {
+                                            this.tabModel.activateTab(tab);
+                                        } else {
+                                            tab.actionFn();
+                                            this.tabModel.dynamicTabSwitcherModel.toggleTabFavorite(
+                                                tab.id
+                                            );
+                                        }
+                                    }
                                 }));
                             }
                         }

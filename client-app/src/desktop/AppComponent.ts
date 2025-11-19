@@ -42,7 +42,7 @@ export const AppComponent = hoistCmp({
             ],
             item: tabContainer({
                 switcher: false,
-                childTabContainerProps: {switcher: {orientation: 'left', className: 'tb-switcher'}}
+                childContainerProps: {switcher: {orientation: 'left', className: 'tb-switcher'}}
             }),
             mask: 'onLoad'
         });
