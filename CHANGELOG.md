@@ -2,6 +2,9 @@
 
 ## 8.0-SNAPSHOT - unreleased
 
+### Technical
+* Removed extraneous News example status monitors. Several monitors were all calling into the same lazily-populated cached value at the same time, causing a small storm of requests that could result in rate-limiting from the news API and regular monitor failures.
+
 ## 6.6.0 - 2025-10-22
 
 ### Libraries

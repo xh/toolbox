@@ -33,20 +33,8 @@ class NewsService extends BaseService {
     }
 
     //------------------------
-    // For sample monitors
+    // For status monitor
     //------------------------
-    int getItemCount() {
-        return newsItems.size()
-    }
-
-    int getLoadedSourcesCount() {
-        return newsItems.collect{it.source}.unique().size()
-    }
-
-    boolean getAllSourcesLoaded() {
-        return loadedSourcesCount == configService.getMap('newsSources').size()
-    }
-
     Date getLastTimestamp() {
         return newsItems ? newsItems[0].published : null
     }
