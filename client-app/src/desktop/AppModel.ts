@@ -428,8 +428,10 @@ export class AppModel extends BaseAppModel {
                         text: 'More Tabs...',
                         prepareFn: me => {
                             const tabs = [...this.tabModel.tabs, ...actionTabs].filter(
-                                tab =>
-                                    !this.tabModel.dynamicTabSwitcherModel.visibleTabs.includes(tab)
+                                ({id}) =>
+                                    !this.tabModel.dynamicTabSwitcherModel.visibleTabs.some(
+                                        it => it.id === id
+                                    )
                             );
                             if (isEmpty(tabs)) {
                                 me.hidden = true;
