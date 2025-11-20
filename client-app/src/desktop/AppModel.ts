@@ -253,154 +253,144 @@ export class AppModel extends BaseAppModel {
     // -------------------------------
     private createTabContainerModel(): TabContainerModel {
         const tabs = [
-                {id: 'home', icon: Icon.home(), content: homeTab},
-                {
-                    id: 'grids',
-                    icon: Icon.grid(),
-                    content: {
-                        // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
-                        tabs: [
-                            {id: 'standard', content: standardGridPanel},
-                            {id: 'tree', content: treeGridPanel},
-                            {id: 'columnFiltering', content: columnFilteringPanel},
-                            {id: 'inlineEditing', content: inlineEditingPanel},
-                            {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
-                            {id: 'dataview', title: 'DataView', content: dataViewPanel},
-                            {
-                                id: 'treeWithCheckBox',
-                                title: 'Tree w/CheckBox',
-                                content: treeGridWithCheckboxPanel
-                            },
-                            {
-                                id: 'groupedCols',
-                                title: 'Grouped Columns',
-                                content: columnGroupsGridPanel
-                            },
-                            {id: 'externalSort', content: externalSortGridPanel},
-                            {id: 'rest', title: 'REST Editor', content: restGridPanel},
-                            {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
-                        ]
-                    }
-                },
-                {
-                    id: 'panels',
-                    icon: Icon.window(),
-                    content: {
-                        // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
-                        tabs: [
-                            {id: 'intro', content: basicPanel},
-                            {id: 'toolbars', content: toolbarPanel},
-                            {id: 'sizing', content: panelSizingPanel},
-                            {id: 'mask', content: maskPanel},
-                            {id: 'loadingIndicator', content: loadingIndicatorPanel}
-                        ]
-                    }
-                },
-                {
-                    id: 'layout',
-                    icon: Icon.layout(),
-                    content: {
-                        // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
-                        tabs: [
-                            {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
-                            {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
-                            {
-                                id: 'tabPanel',
-                                title: 'TabContainer',
-                                content: tabPanelContainerPanel
-                            },
-                            {
-                                id: 'dashContainer',
-                                title: 'DashContainer',
-                                content: dashContainerPanel
-                            },
-                            {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel},
-                            {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
-                            {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
-                        ]
-                    }
-                },
-                {
-                    id: 'forms',
-                    icon: Icon.edit(),
-                    content: {
-                        // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
-                        tabs: [
-                            {id: 'form', title: 'FormModel', content: formPanel},
-                            {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
-                            {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
-                        ]
-                    }
-                },
-                {
-                    id: 'charts',
-                    icon: Icon.chartLine(),
-                    content: {
-                        // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
-                        tabs: [
-                            {id: 'line', content: lineChartPanel},
-                            {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
-                            {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
-                            {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
-                            {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
-                        ]
-                    }
-                },
-                {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
-                {
-                    id: 'other',
-                    icon: Icon.boxFull(),
-                    content: {
-                        // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
-                        tabs: [
-                            {id: 'appNotifications', content: appNotificationsPanel},
-                            {id: 'buttons', content: buttonsPanel},
-                            {id: 'clock', content: clockPanel},
-                            {id: 'customPackage', content: customPackagePanel},
-                            {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
-                            {
-                                id: 'exceptionHandler',
-                                title: 'Exception Handling',
-                                content: exceptionHandlerPanel
-                            },
-                            {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
-                            {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
-                            {id: 'formatDates', content: dateFormatsPanel},
-                            {id: 'formatNumbers', content: numberFormatsPanel},
-                            {id: 'icons', content: iconsPanel},
-                            {id: 'inspector', content: inspectorPanel},
-                            {
-                                id: 'leftRightChooser',
-                                title: 'LeftRightChooser',
-                                content: leftRightChooserPanel
-                            },
-                            {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
-                            {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
-                            {id: 'popups', content: popupsPanel},
-                            {id: 'timestamp', content: relativeTimestampPanel},
-                            {id: 'simpleRouting', content: simpleRoutingPanel}
-                        ]
-                    }
-                },
-                {id: 'examples', icon: Icon.books(), content: examplesTab}
-            ],
-            actionTabs = [
-                {
-                    id: 'github',
-                    title: 'XH Github',
-                    tooltip: 'Open XH Github in new window',
-                    icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
-                    actionFn: () => XH.openWindow('https://github.com/xh')
+            {id: 'home', icon: Icon.home(), content: homeTab},
+            {
+                id: 'grids',
+                icon: Icon.grid(),
+                content: {
+                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    tabs: [
+                        {id: 'standard', content: standardGridPanel},
+                        {id: 'tree', content: treeGridPanel},
+                        {id: 'columnFiltering', content: columnFilteringPanel},
+                        {id: 'inlineEditing', content: inlineEditingPanel},
+                        {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
+                        {id: 'dataview', title: 'DataView', content: dataViewPanel},
+                        {
+                            id: 'treeWithCheckBox',
+                            title: 'Tree w/CheckBox',
+                            content: treeGridWithCheckboxPanel
+                        },
+                        {
+                            id: 'groupedCols',
+                            title: 'Grouped Columns',
+                            content: columnGroupsGridPanel
+                        },
+                        {id: 'externalSort', content: externalSortGridPanel},
+                        {id: 'rest', title: 'REST Editor', content: restGridPanel},
+                        {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
+                    ]
                 }
-            ];
+            },
+            {
+                id: 'panels',
+                icon: Icon.window(),
+                content: {
+                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    tabs: [
+                        {id: 'intro', content: basicPanel},
+                        {id: 'toolbars', content: toolbarPanel},
+                        {id: 'sizing', content: panelSizingPanel},
+                        {id: 'mask', content: maskPanel},
+                        {id: 'loadingIndicator', content: loadingIndicatorPanel}
+                    ]
+                }
+            },
+            {
+                id: 'layout',
+                icon: Icon.layout(),
+                content: {
+                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    tabs: [
+                        {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
+                        {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
+                        {
+                            id: 'tabPanel',
+                            title: 'TabContainer',
+                            content: tabPanelContainerPanel
+                        },
+                        {
+                            id: 'dashContainer',
+                            title: 'DashContainer',
+                            content: dashContainerPanel
+                        },
+                        {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel},
+                        {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
+                        {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
+                    ]
+                }
+            },
+            {
+                id: 'forms',
+                icon: Icon.edit(),
+                content: {
+                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    tabs: [
+                        {id: 'form', title: 'FormModel', content: formPanel},
+                        {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                        {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
+                    ]
+                }
+            },
+            {
+                id: 'charts',
+                icon: Icon.chartLine(),
+                content: {
+                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    tabs: [
+                        {id: 'line', content: lineChartPanel},
+                        {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
+                        {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
+                        {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
+                        {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
+                    ]
+                }
+            },
+            {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
+            {
+                id: 'other',
+                icon: Icon.boxFull(),
+                content: {
+                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    tabs: [
+                        {id: 'appNotifications', content: appNotificationsPanel},
+                        {id: 'buttons', content: buttonsPanel},
+                        {id: 'clock', content: clockPanel},
+                        {id: 'customPackage', content: customPackagePanel},
+                        {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
+                        {
+                            id: 'exceptionHandler',
+                            title: 'Exception Handling',
+                            content: exceptionHandlerPanel
+                        },
+                        {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
+                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
+                        {id: 'formatDates', content: dateFormatsPanel},
+                        {id: 'formatNumbers', content: numberFormatsPanel},
+                        {id: 'icons', content: iconsPanel},
+                        {id: 'inspector', content: inspectorPanel},
+                        {
+                            id: 'leftRightChooser',
+                            title: 'LeftRightChooser',
+                            content: leftRightChooserPanel
+                        },
+                        {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                        {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                        {id: 'popups', content: popupsPanel},
+                        {id: 'timestamp', content: relativeTimestampPanel},
+                        {id: 'simpleRouting', content: simpleRoutingPanel}
+                    ]
+                }
+            },
+            {id: 'examples', icon: Icon.books(), content: examplesTab}
+        ];
         return new TabContainerModel({
             persistWith: {localStorageKey: 'tabState'},
             route: 'default',
             track: true,
             tabs,
             switcher: {
-                initialFavorites: [...tabs, ...actionTabs].map(it => it.id),
-                actionTabs,
+                initialFavorites: tabs.map(it => it.id),
                 extraMenuItems: [
                     {
                         text: 'Open Tab in New Window',
@@ -427,7 +417,7 @@ export class AppModel extends BaseAppModel {
                     {
                         text: 'More Tabs...',
                         prepareFn: me => {
-                            const tabs = [...this.tabModel.tabs, ...actionTabs].filter(
+                            const tabs = this.tabModel.tabs.filter(
                                 ({id}) =>
                                     !this.tabModel.dynamicTabSwitcherModel.visibleTabs.some(
                                         it => it.id === id
@@ -440,16 +430,7 @@ export class AppModel extends BaseAppModel {
                                 me.items = tabs.map(tab => ({
                                     text: tab.title,
                                     icon: tab.icon,
-                                    actionFn: () => {
-                                        if (tab instanceof TabModel) {
-                                            this.tabModel.activateTab(tab);
-                                        } else {
-                                            tab.actionFn();
-                                            this.tabModel.dynamicTabSwitcherModel.toggleTabFavorite(
-                                                tab.id
-                                            );
-                                        }
-                                    }
+                                    actionFn: () => this.tabModel.activateTab(tab)
                                 }));
                             }
                         }
