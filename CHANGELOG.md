@@ -1,6 +1,10 @@
 # Changelog
 
-## 8.0-SNAPSHOT - unreleased
+## 7.0.0 - 2025-11-21
+
+### Libraries
+* hoist-core 34.0.0
+* @xh/hoist 78.0.0
 
 ### Technical
 * Removed extraneous News example status monitors. Several monitors were all calling into the same lazily-populated cached value at the same time, causing a small storm of requests that could result in rate-limiting from the news API and regular monitor failures.
