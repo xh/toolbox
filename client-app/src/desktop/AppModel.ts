@@ -1,5 +1,5 @@
 import {span} from '@xh/hoist/cmp/layout';
-import {TabContainerModel, TabModel} from '@xh/hoist/cmp/tab';
+import {TabConfig, TabContainerModel, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
 import {LoadSpec, managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
@@ -252,13 +252,29 @@ export class AppModel extends BaseAppModel {
     // Implementation
     // -------------------------------
     private createTabContainerModel(): TabContainerModel {
-        const tabs = [
+        const switcher: TabSwitcherConfig = {
+            mode: 'static',
+            extraMenuItems: [
+                {
+                    text: 'Open Tab in New Window',
+                    icon: Icon.openExternal(),
+                    actionFn: (_, {tab}) => {
+                        const {params} = XH.router.getState();
+                        XH.openWindow(
+                            window.origin +
+                                XH.router.buildPath(tab.containerModel.route + '.' + tab.id, params)
+                        );
+                    }
+                }
+            ]
+        };
+        const tabs: TabConfig[] = [
             {id: 'home', icon: Icon.home(), content: homeTab},
             {
                 id: 'grids',
                 icon: Icon.grid(),
                 content: {
-                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    switcher,
                     tabs: [
                         {id: 'standard', content: standardGridPanel},
                         {id: 'tree', content: treeGridPanel},
@@ -286,7 +302,7 @@ export class AppModel extends BaseAppModel {
                 id: 'panels',
                 icon: Icon.window(),
                 content: {
-                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    switcher,
                     tabs: [
                         {id: 'intro', content: basicPanel},
                         {id: 'toolbars', content: toolbarPanel},
@@ -300,7 +316,7 @@ export class AppModel extends BaseAppModel {
                 id: 'layout',
                 icon: Icon.layout(),
                 content: {
-                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    switcher,
                     tabs: [
                         {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
                         {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
@@ -324,7 +340,7 @@ export class AppModel extends BaseAppModel {
                 id: 'forms',
                 icon: Icon.edit(),
                 content: {
-                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    switcher,
                     tabs: [
                         {id: 'form', title: 'FormModel', content: formPanel},
                         {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
@@ -336,7 +352,7 @@ export class AppModel extends BaseAppModel {
                 id: 'charts',
                 icon: Icon.chartLine(),
                 content: {
-                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    switcher,
                     tabs: [
                         {id: 'line', content: lineChartPanel},
                         {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
@@ -351,7 +367,7 @@ export class AppModel extends BaseAppModel {
                 id: 'other',
                 icon: Icon.boxFull(),
                 content: {
-                    // switcher: {orientation: 'left', className: 'tb-switcher'}, // TODO revisit
+                    switcher,
                     tabs: [
                         {id: 'appNotifications', content: appNotificationsPanel},
                         {id: 'buttons', content: buttonsPanel},
@@ -390,29 +406,10 @@ export class AppModel extends BaseAppModel {
             track: true,
             tabs,
             switcher: {
+                mode: 'dynamic',
                 initialFavorites: tabs.map(it => it.id),
                 extraMenuItems: [
-                    {
-                        text: 'Open Tab in New Window',
-                        icon: Icon.openExternal(),
-                        actionFn: (_, {tab}) => {
-                            if (tab instanceof TabModel) {
-                                const {params} = XH.router.getState();
-                                XH.openWindow(
-                                    window.origin +
-                                        XH.router.buildPath(
-                                            tab.containerModel.route + '.' + tab.id,
-                                            params
-                                        )
-                                );
-                            }
-                        },
-                        prepareFn: (me, {tab}) => {
-                            if (!(tab instanceof TabModel)) {
-                                me.hidden = true;
-                            }
-                        }
-                    },
+                    ...switcher.extraMenuItems,
                     '-',
                     {
                         text: 'More Tabs...',
