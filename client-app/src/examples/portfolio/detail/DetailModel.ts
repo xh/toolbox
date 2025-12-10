@@ -4,6 +4,7 @@ import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {PortfolioModel} from '../PortfolioModel';
+import {actWidget} from './act/ActWidget';
 import {chartsPanel} from './charts/ChartsPanel';
 import {ordersGrid} from './orders/OrdersGrid';
 import {OrdersModel} from './orders/OrdersModel';
@@ -40,6 +41,10 @@ export class DetailModel extends HoistModel {
             persistWith: {...persistWith, path: 'detailDash', settleTime: 1500},
             viewSpecs: [
                 {
+                    id: 'act',
+                    icon: Icon.star(),
+                    content: actWidget
+                },{
                     id: 'orders',
                     icon: Icon.edit(),
                     content: () => ordersGrid({modelConfig: {parentModel: this}})

@@ -21,7 +21,7 @@ export class AuthModel extends HoistAuthModel {
         // where you wish to load the app on a local IP that's not a valid redirect URL as per Auth0. Note that this
         // relies on the server-side Toolbox `User.groovy` class supporting a password-based login.
         const config: PlainObject = await this.loadConfigAsync();
-        if (!config.useOAuth) {
+        if (true) {
             // If OAuth is disabled (the non-standard case), we enable forms-based login by mutating the appSpec,
             // then return the result of the server-based auth check - will be false if the user does not have an
             // active session, at which point the Hoist login form will be displayed.

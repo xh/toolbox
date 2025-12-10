@@ -61,11 +61,16 @@ export class PortfolioModel extends HoistModel {
             const session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp');
             if (loadSpec.isStale) return;
 
+            session.initialPositions.root.children.forEach(c1 => {
+                c1.children.forEach((it, idx) => {
+                    it.sector = idx % 2 > 0 ? 'Foo' : 'Bar'
+                });
+            })
+
+            console.log(session.initialPositions)
             store.loadData([session.initialPositions.root]);
-            session.onUpdate = ({data}) => {
-                posGridModel.loadTimestamp = Date.now();
-                store.updateData(data);
-            };
+
+
 
             this.session = session;
             await posGridModel.gridModel.preSelectFirstAsync();
@@ -83,6 +88,7 @@ export class PortfolioModel extends HoistModel {
             fields: [
                 {name: 'name', type: 'string'},
                 {name: 'mktVal', type: 'number'},
+                {name: 'sector', type: 'string'},
                 {name: 'pnl', type: 'number', displayName: 'P&L'},
                 {name: 'pnlMktVal', type: 'number', displayName: 'P&L / Mkt Val'}
             ],

@@ -19,7 +19,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
     model: uses(SampleTreeGridModel),
 
     render({model, ...props}) {
-        const {gridModel} = model;
+        const {gridModel, gridFindFieldRef} = model;
         return panel({
             item: hframe(grid(), gridOptionsPanel({model: gridModel})),
             ref: model.panelRef,
@@ -31,7 +31,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 filler(),
                 gridCountLabel({includeChildren: true}),
                 '-',
-                gridFindField(),
+                gridFindField({ref: gridFindFieldRef}),
                 '-',
                 colChooserButton(),
                 exportButton()

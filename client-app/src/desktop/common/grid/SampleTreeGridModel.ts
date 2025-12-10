@@ -4,7 +4,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GroupingChooserModel} from '@xh/hoist/desktop/cmp/grouping';
 import {fragment} from '@xh/hoist/cmp/layout';
-import {checkbox} from '@xh/hoist/desktop/cmp/input';
+import {checkbox, TextInputModel} from '@xh/hoist/desktop/cmp/input';
 import {action, makeObservable} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
@@ -35,6 +35,7 @@ export class SampleTreeGridModel extends HoistModel {
     gridModel: GridModel;
 
     panelRef = createRef<HTMLElement>();
+    gridFindFieldRef = createRef<TextInputModel>();
 
     get store() {
         return this.gridModel.store;
