@@ -127,7 +127,7 @@ const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
                     row({
                         field: 'jsonInput',
                         layout: {height: 260},
-                        item: jsonInput()
+                        item: jsonInput({language: 'json'})
                     })
                 ]
             }),
