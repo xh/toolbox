@@ -25,14 +25,17 @@ export const chartWidget = hoistCmp.factory({
             model: panelModel,
             ...(panelModel.isModal ? modalOpts : {}),
             item: chart(),
-            bbar: [
-                box('Symbol: '),
-                select({
-                    bind: 'currentSymbol',
-                    options: symbols,
-                    enableFilter: false
-                })
-            ]
+            bbar: !model.presetSymbol
+                ? [
+                      box('Symbol: '),
+                      select({
+                          bind: 'currentSymbols',
+                          options: symbols,
+                          enableFilter: false,
+                          enableMulti: true
+                      })
+                  ]
+                : null
         });
     }
 });
@@ -60,6 +63,10 @@ class ChartWidgetModel extends LineChartModel {
         resizable: false
     });
 
+    get presetSymbol() {
+        return this.dashViewModel?.viewSpec.id.split('-')[1];
+    }
+
     constructor() {
         super();
         makeObservable(this);
@@ -67,9 +74,10 @@ class ChartWidgetModel extends LineChartModel {
         this.addReaction({
             track: () => [this.range, this.chartModel.series],
             run: () => {
-                if (!this.chartModel.series[0]) return;
+                if (!this.chartModel.series[0] || !this.chartModel.highchart) return;
                 const endDate = new Date(),
                     startDate = new Date(endDate.getTime() - ONE_DAY * this.range);
+
                 this.chartModel.highchart.xAxis[0].setExtremes(
                     startDate.getTime(),
                     endDate.getTime()
@@ -80,6 +88,11 @@ class ChartWidgetModel extends LineChartModel {
 
     override onLinked() {
         const {dashViewModel, panelModel} = this;
+
+        if (this.presetSymbol) {
+            dashViewModel.title = this.presetSymbol;
+            this.currentSymbols = [this.presetSymbol];
+        }
 
         dashViewModel.extraMenuItems = [
             {
