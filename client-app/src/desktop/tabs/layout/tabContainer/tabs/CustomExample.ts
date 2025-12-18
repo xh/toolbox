@@ -17,12 +17,12 @@ export const customExample = hoistCmp.factory({
                     onClick: () => model.detachedTabModel.activateTab(childModel.id)
                 })
             ),
-            item: tabContainer({model: model.detachedTabModel})
+            item: tabContainer({model: model.detachedTabModel, switcher: false})
         });
     }
 });
 
 class CustomExampleModel extends HoistModel {
     @managed
-    detachedTabModel = new TabContainerModel(createContainerModelConfig({switcher: false}));
+    detachedTabModel = new TabContainerModel(createContainerModelConfig({}));
 }
