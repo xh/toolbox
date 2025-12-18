@@ -4,7 +4,7 @@ import {webSocketIndicator} from '@xh/hoist/cmp/websocket';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
+import {dynamicTabSwitcher} from '@xh/hoist/desktop/cmp/tab';
 import {welcomeMsg} from '../core/cmp/WelcomeMsg';
 // @ts-ignore
 import xhLogo from '../core/img/xh-toolbox-logo.png';
@@ -21,7 +21,7 @@ export const AppComponent = hoistCmp({
             tbar: appBar({
                 icon: img({src: xhLogo, onClick: () => model.goHome()}),
                 title: null,
-                leftItems: [tabSwitcher({enableOverflow: true})],
+                leftItems: [dynamicTabSwitcher()],
                 rightItems: [
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
                     appBarSeparator()
@@ -40,7 +40,10 @@ export const AppComponent = hoistCmp({
                     onKeyDown: () => model.goHome()
                 }
             ],
-            item: tabContainer(),
+            item: tabContainer({
+                switcher: false,
+                childContainerProps: {switcher: {orientation: 'left', className: 'tb-switcher'}}
+            }),
             mask: 'onLoad'
         });
     }

@@ -1,4 +1,5 @@
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {span} from '@xh/hoist/cmp/layout';
+import {TabConfig, TabContainerModel, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
 import {LoadSpec, managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
@@ -6,7 +7,10 @@ import {
     themeAppOption
 } from '@xh/hoist/desktop/cmp/appOption';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {isEmpty} from 'lodash';
+import {BaseAppModel} from '../BaseAppModel';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {
@@ -16,6 +20,7 @@ import {
     simpleTreeMapPanel,
     splitTreeMapPanel
 } from './tabs/charts';
+import {examplesTab} from './tabs/examples/ExamplesTab';
 import {formPanel, inputsPanel, toolbarFormPanel} from './tabs/forms';
 import {
     agGridView,
@@ -30,6 +35,7 @@ import {
     treeGridWithCheckboxPanel,
     zoneGridPanel
 } from './tabs/grids';
+import {homeTab} from './tabs/home/HomeTab';
 import {
     dashCanvasPanel,
     dashContainerPanel,
@@ -39,8 +45,6 @@ import {
     tileFrameContainerPanel,
     vboxContainerPanel
 } from './tabs/layout';
-import {examplesTab} from './tabs/examples/ExamplesTab';
-import {homeTab} from './tabs/home/HomeTab';
 import {mobileTab} from './tabs/mobile/MobileTab';
 import {
     appNotificationsPanel,
@@ -69,152 +73,13 @@ import {
     panelSizingPanel,
     toolbarPanel
 } from './tabs/panels';
-import {fmtDateTimeSec} from '@xh/hoist/format';
-import {span} from '@xh/hoist/cmp/layout';
-import {BaseAppModel} from '../BaseAppModel';
 
 export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
 
     @managed
-    tabModel: TabContainerModel = new TabContainerModel({
-        route: 'default',
-        track: true,
-        switcher: false,
-        tabs: [
-            {id: 'home', icon: Icon.home(), content: homeTab},
-            {
-                id: 'grids',
-                icon: Icon.grid(),
-                content: {
-                    switcher: {orientation: 'left', className: 'tb-switcher'},
-                    tabs: [
-                        {id: 'standard', content: standardGridPanel},
-                        {id: 'tree', content: treeGridPanel},
-                        {id: 'columnFiltering', content: columnFilteringPanel},
-                        {id: 'inlineEditing', content: inlineEditingPanel},
-                        {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
-                        {id: 'dataview', title: 'DataView', content: dataViewPanel},
-                        {
-                            id: 'treeWithCheckBox',
-                            title: 'Tree w/CheckBox',
-                            content: treeGridWithCheckboxPanel
-                        },
-                        {
-                            id: 'groupedCols',
-                            title: 'Grouped Columns',
-                            content: columnGroupsGridPanel
-                        },
-                        {id: 'externalSort', content: externalSortGridPanel},
-                        {id: 'rest', title: 'REST Editor', content: restGridPanel},
-                        {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
-                    ]
-                }
-            },
-            {
-                id: 'panels',
-                icon: Icon.window(),
-                content: {
-                    switcher: {orientation: 'left', className: 'tb-switcher'},
-                    tabs: [
-                        {id: 'intro', content: basicPanel},
-                        {id: 'toolbars', content: toolbarPanel},
-                        {id: 'sizing', content: panelSizingPanel},
-                        {id: 'mask', content: maskPanel},
-                        {id: 'loadingIndicator', content: loadingIndicatorPanel}
-                    ]
-                }
-            },
-            {
-                id: 'layout',
-                icon: Icon.layout(),
-                content: {
-                    switcher: {orientation: 'left', className: 'tb-switcher'},
-                    tabs: [
-                        {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
-                        {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
-                        {
-                            id: 'tabPanel',
-                            title: 'TabContainer',
-                            content: tabPanelContainerPanel
-                        },
-                        {
-                            id: 'dashContainer',
-                            title: 'DashContainer',
-                            content: dashContainerPanel
-                        },
-                        {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel},
-                        {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
-                        {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
-                    ]
-                }
-            },
-            {
-                id: 'forms',
-                icon: Icon.edit(),
-                content: {
-                    switcher: {orientation: 'left', className: 'tb-switcher'},
-                    tabs: [
-                        {id: 'form', title: 'FormModel', content: formPanel},
-                        {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
-                        {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
-                    ]
-                }
-            },
-            {
-                id: 'charts',
-                icon: Icon.chartLine(),
-                content: {
-                    switcher: {orientation: 'left', className: 'tb-switcher'},
-                    tabs: [
-                        {id: 'line', content: lineChartPanel},
-                        {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
-                        {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
-                        {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
-                        {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
-                    ]
-                }
-            },
-            {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
-            {
-                id: 'other',
-                icon: Icon.boxFull(),
-                content: {
-                    switcher: {orientation: 'left', className: 'tb-switcher'},
-                    tabs: [
-                        {id: 'appNotifications', content: appNotificationsPanel},
-                        {id: 'buttons', content: buttonsPanel},
-                        {id: 'clock', content: clockPanel},
-                        {id: 'customPackage', content: customPackagePanel},
-                        {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
-                        {
-                            id: 'exceptionHandler',
-                            title: 'Exception Handling',
-                            content: exceptionHandlerPanel
-                        },
-                        {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
-                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
-                        {id: 'formatDates', content: dateFormatsPanel},
-                        {id: 'formatNumbers', content: numberFormatsPanel},
-                        {id: 'icons', content: iconsPanel},
-                        {id: 'inspector', content: inspectorPanel},
-                        {
-                            id: 'leftRightChooser',
-                            title: 'LeftRightChooser',
-                            content: leftRightChooserPanel
-                        },
-                        {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
-                        {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
-                        {id: 'popups', content: popupsPanel},
-                        {id: 'timestamp', content: relativeTimestampPanel},
-                        {id: 'simpleRouting', content: simpleRoutingPanel}
-                    ]
-                }
-            },
-            {id: 'examples', icon: Icon.books(), content: examplesTab}
-        ]
-    });
+    tabModel: TabContainerModel = this.createTabContainerModel();
 
     override async initAsync() {
         await super.initAsync();
@@ -381,5 +246,194 @@ export class AppModel extends BaseAppModel {
                 omit: !lastGitHubCommit
             }
         ];
+    }
+
+    // -------------------------------
+    // Implementation
+    // -------------------------------
+    private createTabContainerModel(): TabContainerModel {
+        const switcher: TabSwitcherConfig = {
+            mode: 'static',
+            extraMenuItems: [
+                {
+                    text: 'Open Tab in New Window',
+                    icon: Icon.openExternal(),
+                    actionFn: (_, {tab}) => {
+                        const {params} = XH.router.getState();
+                        XH.openWindow(
+                            window.origin +
+                                XH.router.buildPath(tab.containerModel.route + '.' + tab.id, params)
+                        );
+                    }
+                }
+            ]
+        };
+        const tabs: TabConfig[] = [
+            {id: 'home', icon: Icon.home(), content: homeTab},
+            {
+                id: 'grids',
+                icon: Icon.grid(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'standard', content: standardGridPanel},
+                        {id: 'tree', content: treeGridPanel},
+                        {id: 'columnFiltering', content: columnFilteringPanel},
+                        {id: 'inlineEditing', content: inlineEditingPanel},
+                        {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
+                        {id: 'dataview', title: 'DataView', content: dataViewPanel},
+                        {
+                            id: 'treeWithCheckBox',
+                            title: 'Tree w/CheckBox',
+                            content: treeGridWithCheckboxPanel
+                        },
+                        {
+                            id: 'groupedCols',
+                            title: 'Grouped Columns',
+                            content: columnGroupsGridPanel
+                        },
+                        {id: 'externalSort', content: externalSortGridPanel},
+                        {id: 'rest', title: 'REST Editor', content: restGridPanel},
+                        {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
+                    ]
+                }
+            },
+            {
+                id: 'panels',
+                icon: Icon.window(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'intro', content: basicPanel},
+                        {id: 'toolbars', content: toolbarPanel},
+                        {id: 'sizing', content: panelSizingPanel},
+                        {id: 'mask', content: maskPanel},
+                        {id: 'loadingIndicator', content: loadingIndicatorPanel}
+                    ]
+                }
+            },
+            {
+                id: 'layout',
+                icon: Icon.layout(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
+                        {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
+                        {
+                            id: 'tabPanel',
+                            title: 'TabContainer',
+                            content: tabPanelContainerPanel
+                        },
+                        {
+                            id: 'dashContainer',
+                            title: 'DashContainer',
+                            content: dashContainerPanel
+                        },
+                        {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel},
+                        {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
+                        {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
+                    ]
+                }
+            },
+            {
+                id: 'forms',
+                icon: Icon.edit(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'form', title: 'FormModel', content: formPanel},
+                        {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                        {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
+                    ]
+                }
+            },
+            {
+                id: 'charts',
+                icon: Icon.chartLine(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'line', content: lineChartPanel},
+                        {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
+                        {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
+                        {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
+                        {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
+                    ]
+                }
+            },
+            {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
+            {
+                id: 'other',
+                icon: Icon.boxFull(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'appNotifications', content: appNotificationsPanel},
+                        {id: 'buttons', content: buttonsPanel},
+                        {id: 'clock', content: clockPanel},
+                        {id: 'customPackage', content: customPackagePanel},
+                        {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
+                        {
+                            id: 'exceptionHandler',
+                            title: 'Exception Handling',
+                            content: exceptionHandlerPanel
+                        },
+                        {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
+                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
+                        {id: 'formatDates', content: dateFormatsPanel},
+                        {id: 'formatNumbers', content: numberFormatsPanel},
+                        {id: 'icons', content: iconsPanel},
+                        {id: 'inspector', content: inspectorPanel},
+                        {
+                            id: 'leftRightChooser',
+                            title: 'LeftRightChooser',
+                            content: leftRightChooserPanel
+                        },
+                        {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                        {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                        {id: 'popups', content: popupsPanel},
+                        {id: 'timestamp', content: relativeTimestampPanel},
+                        {id: 'simpleRouting', content: simpleRoutingPanel}
+                    ]
+                }
+            },
+            {id: 'examples', icon: Icon.books(), content: examplesTab}
+        ];
+        return new TabContainerModel({
+            persistWith: {localStorageKey: 'tabState'},
+            route: 'default',
+            track: true,
+            tabs,
+            switcher: {
+                mode: 'dynamic',
+                initialFavorites: tabs.map(it => it.id),
+                extraMenuItems: [
+                    ...switcher.extraMenuItems,
+                    '-',
+                    {
+                        text: 'More Tabs...',
+                        prepareFn: me => {
+                            const tabs = this.tabModel.tabs.filter(
+                                ({id}) =>
+                                    !this.tabModel.dynamicTabSwitcherModel.visibleTabs.some(
+                                        it => it.id === id
+                                    )
+                            );
+                            if (isEmpty(tabs)) {
+                                me.hidden = true;
+                            } else {
+                                me.hidden = false;
+                                me.items = tabs.map(tab => ({
+                                    text: tab.title,
+                                    icon: tab.icon,
+                                    actionFn: () => this.tabModel.activateTab(tab)
+                                }));
+                            }
+                        }
+                    }
+                ]
+            }
+        });
     }
 }
