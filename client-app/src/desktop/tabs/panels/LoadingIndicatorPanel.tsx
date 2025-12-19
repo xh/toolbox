@@ -84,7 +84,7 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                 loadingIndicator: loadingIndicator({
                     spinner: model.spinner,
                     corner: model.corner,
-                    bind: model.loadModel
+                    bind: model.loadObserver
                 })
             })
         });
