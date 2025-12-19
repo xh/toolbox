@@ -79,7 +79,7 @@ export class CubeTestModel extends HoistModel {
 
     private async executeQueryAsync() {
         const LTM = this.loadTimesModel,
-            {gridModel, loadModel, showSummary} = this,
+            {gridModel, loadObserver, showSummary} = this,
             query = this.getQuery(),
             dimCount = query.dimensions.length,
             filterCount = (query.filter as PlainObject)?.value?.length ?? 0; // Any filter is a FieldFilter with [] of Funds
@@ -100,7 +100,7 @@ export class CubeTestModel extends HoistModel {
                     }
                 );
             })
-            .linkTo(loadModel);
+            .linkTo(loadObserver);
     }
 
     private createGridModel() {
