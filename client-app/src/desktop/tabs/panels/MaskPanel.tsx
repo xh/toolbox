@@ -78,7 +78,7 @@ export const maskPanel = hoistCmp.factory({
                 mask: mask({
                     spinner: model.spinner,
                     inline: model.inline,
-                    bind: model.loadModel
+                    bind: model.loadObserver
                 })
             })
         });
@@ -99,15 +99,15 @@ class MaskPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const {loadModel, message, seconds} = this,
+        const {loadObserver, message, seconds} = this,
             interval = (seconds / 3) * SECONDS;
-        loadModel.setMessage(message);
+        loadObserver.setMessage(message);
         await this.sampleGridModel.loadAsync(loadSpec);
         await wait(interval);
-        if (message) loadModel.setMessage(message + ' - still loading...');
+        if (message) loadObserver.setMessage(message + ' - still loading...');
         await wait(interval);
-        if (message) loadModel.setMessage(message + ' - almost finished...');
+        if (message) loadObserver.setMessage(message + ' - almost finished...');
         await wait(interval);
-        loadModel.setMessage(message);
+        loadObserver.setMessage(message);
     }
 }
