@@ -16,7 +16,7 @@ export const viewColumnFilterPanel = hoistCmp.factory({
         return hframe(
             panel({
                 mask: [
-                    model.loadModel,
+                    model.loadObserver,
                     model.filterChooserModel.filterTask,
                     model.gridModel.filterTask
                 ],
