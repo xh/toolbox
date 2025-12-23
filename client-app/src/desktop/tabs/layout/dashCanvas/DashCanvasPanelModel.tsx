@@ -91,7 +91,7 @@ export class DashCanvasPanelModel extends HoistModel {
     private createDashCanvasModel() {
         return new DashCanvasModel({
             persistWith: {localStorageKey: 'dashCanvasExampleState'},
-            droppable: true,
+            allowsDrop: true,
             initialState,
             viewSpecDefaults: {
                 icon: Icon.gridPanel()
