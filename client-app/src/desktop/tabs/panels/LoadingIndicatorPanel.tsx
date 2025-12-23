@@ -84,7 +84,7 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                 loadingIndicator: loadingIndicator({
                     spinner: model.spinner,
                     corner: model.corner,
-                    bind: model.loadModel
+                    bind: model.loadObserver
                 })
             })
         });
@@ -105,15 +105,15 @@ class LoadingIndicatorPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const {loadModel, message, seconds} = this,
+        const {loadObserver, message, seconds} = this,
             interval = (seconds / 3) * SECONDS;
-        loadModel.setMessage(message);
+        loadObserver.setMessage(message);
         await this.sampleGridModel.loadAsync(loadSpec);
         await wait(interval);
-        if (message) loadModel.setMessage(message + ' - Still Loading...');
+        if (message) loadObserver.setMessage(message + ' - Still Loading...');
         await wait(interval);
-        if (message) loadModel.setMessage(message + ' - Almost Finished...');
+        if (message) loadObserver.setMessage(message + ' - Almost Finished...');
         await wait(interval);
-        loadModel.setMessage(message);
+        loadObserver.setMessage(message);
     }
 }

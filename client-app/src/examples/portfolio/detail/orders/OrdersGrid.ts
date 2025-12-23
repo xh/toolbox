@@ -9,7 +9,7 @@ export const ordersGrid = hoistCmp.factory({
     model: uses(OrdersModel),
 
     render({model}) {
-        const {positionId, loadModel} = model;
+        const {positionId, loadObserver} = model;
 
         return panel({
             item: grid(),
@@ -23,7 +23,7 @@ export const ordersGrid = hoistCmp.factory({
                 colChooserButton(),
                 exportButton()
             ],
-            mask: positionId == null || loadModel.isPending
+            mask: positionId == null || loadObserver.isPending
         });
     }
 });
