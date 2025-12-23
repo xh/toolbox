@@ -11,6 +11,8 @@ import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
 import {wrapper} from '../../../common';
 import {DashCanvasPanelModel} from './DashCanvasPanelModel';
 
+import './DashCanvasPanel.scss';
+
 export const dashCanvasPanel = hoistCmp.factory({
     model: creates(() => DashCanvasPanelModel),
 

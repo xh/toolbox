@@ -13,8 +13,6 @@ import {
     treeGridWidget
 } from '../widgets';
 
-import './DashCanvasPanel.scss';
-
 export class DashCanvasPanelModel extends HoistModel {
     @bindable renderDashboard = true;
     @observable.ref allSymbols: string[] = [];
