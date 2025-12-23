@@ -3,7 +3,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {div, filler, frame, hframe, vframe} from '@xh/hoist/cmp/layout';
+import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
@@ -35,34 +35,14 @@ export const dashCanvasPanel = hoistCmp.factory({
                 title: 'Layout › DashCanvas',
                 icon: Icon.layout(),
                 headerItems: [refreshButton({minimal: true, intent: null})],
-                className: 'dash-canvas-droppable-demo',
                 height: '80%',
                 width: '80%',
-                item: hframe(
-                    model.renderDashboard
-                        ? dashCanvas({
-                              omit: !model.dashCanvasModel
-                          })
-                        : frame({
-                              item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
-                              padding: 10
-                          }),
-                    panel({
-                        icon: Icon.arrowsLeftRight(),
-                        title: 'Single Series Charts',
-                        width: 250,
-                        modelConfig: {
-                            side: 'right',
-                            defaultSize: 250
-                        },
-                        item: vframe({
-                            className: 'scrollable-div vertical-only',
-                            items: model.unusedSymbols.map(it =>
-                                draggableWidget({symbol: it, key: it})
-                            )
-                        })
-                    })
-                ),
+                item: model.renderDashboard
+                    ? dashCanvas()
+                    : frame({
+                          item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
+                          padding: 10
+                      }),
                 bbar: bbar()
             }),
             links: [
@@ -161,17 +141,5 @@ const bbar = hoistCmp.factory<DashCanvasPanelModel>(({model}) =>
                 onClick: () => model.resetState()
             })
         ]
-    })
-);
-
-const draggableWidget = hoistCmp.factory<DashCanvasPanelModel>(({model, symbol}) =>
-    div({
-        id: 'draggableFor-singleSeriesChart-' + symbol,
-        className: 'draggable-widget',
-        draggable: true,
-        unselectable: 'on',
-        onDragStart: e => model.onDragStart(e),
-        onDragEnd: e => model.onDragEnd(e),
-        items: [Icon.chartLine(), ' ', symbol]
     })
 );
