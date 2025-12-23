@@ -25,17 +25,15 @@ export const chartWidget = hoistCmp.factory({
             model: panelModel,
             ...(panelModel.isModal ? modalOpts : {}),
             item: chart(),
-            bbar: !model.presetSymbol
-                ? [
-                      box('Symbol: '),
-                      select({
-                          bind: 'currentSymbols',
-                          options: symbols,
-                          enableFilter: false,
-                          enableMulti: true
-                      })
-                  ]
-                : null
+            bbar: [
+                box('Symbol: '),
+                select({
+                    bind: 'currentSymbols',
+                    options: symbols,
+                    enableFilter: false,
+                    enableMulti: true
+                })
+            ]
         });
     }
 });
@@ -63,10 +61,6 @@ class ChartWidgetModel extends LineChartModel {
         resizable: false
     });
 
-    get presetSymbol() {
-        return this.dashViewModel?.viewSpec.id.split('-')[1];
-    }
-
     constructor() {
         super();
         makeObservable(this);
@@ -88,11 +82,6 @@ class ChartWidgetModel extends LineChartModel {
 
     override onLinked() {
         const {dashViewModel, panelModel} = this;
-
-        if (this.presetSymbol) {
-            dashViewModel.title = this.presetSymbol;
-            this.currentSymbols = [this.presetSymbol];
-        }
 
         dashViewModel.extraMenuItems = [
             {
