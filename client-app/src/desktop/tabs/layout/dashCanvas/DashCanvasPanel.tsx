@@ -1,4 +1,4 @@
-import {switchInput, numberInput} from '@xh/hoist/desktop/cmp/input';
+import {switchInput, numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
 import {creates, hoistCmp} from '@xh/hoist/core';
@@ -122,6 +122,13 @@ const bbar = hoistCmp.factory<DashCanvasPanelModel>(({model}) =>
                 model: model.dashCanvasModel
             }),
             '-',
+            switchInput({
+                label: 'Show Background',
+                bind: 'showGridBackground',
+                labelSide: 'left',
+                model: model.dashCanvasModel
+            }),
+            '-',
             'Columns',
             numberInput({
                 width: 80,
@@ -136,10 +143,11 @@ const bbar = hoistCmp.factory<DashCanvasPanelModel>(({model}) =>
                 model: model.dashCanvasModel
             }),
             '-',
-            switchInput({
+            'Compact Views',
+            select({
                 bind: 'compact',
-                label: 'Compact Views',
-                model: model.dashCanvasModel
+                model: model.dashCanvasModel,
+                options: ['vertical', 'horizontal', false]
             }),
             filler(),
             button({
