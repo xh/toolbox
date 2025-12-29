@@ -5,7 +5,7 @@
     "jsx": "react",
     "lib": ["dom", "es2022"],
     "module": "ES2022",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "noImplicitOverride": true,
     "resolveJsonModule":  true,

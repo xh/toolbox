@@ -28,9 +28,10 @@ export const chartWidget = hoistCmp.factory({
             bbar: [
                 box('Symbol: '),
                 select({
-                    bind: 'currentSymbol',
+                    bind: 'currentSymbols',
                     options: symbols,
-                    enableFilter: false
+                    enableFilter: false,
+                    enableMulti: true
                 })
             ]
         });
@@ -67,9 +68,10 @@ class ChartWidgetModel extends LineChartModel {
         this.addReaction({
             track: () => [this.range, this.chartModel.series],
             run: () => {
-                if (!this.chartModel.series[0]) return;
+                if (!this.chartModel.series[0] || !this.chartModel.highchart) return;
                 const endDate = new Date(),
                     startDate = new Date(endDate.getTime() - ONE_DAY * this.range);
+
                 this.chartModel.highchart.xAxis[0].setExtremes(
                     startDate.getTime(),
                     endDate.getTime()
