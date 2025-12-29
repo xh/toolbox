@@ -54,8 +54,8 @@ export class DetailModel extends HoistModel {
                 {
                     type: 'row',
                     content: [
-                        {type: 'view', id: 'orders'},
-                        {type: 'view', id: 'charts'}
+                        {type: 'view', viewSpecId: 'orders'},
+                        {type: 'view', viewSpecId: 'charts'}
                     ]
                 }
             ]

@@ -124,17 +124,17 @@ class DashContainerPanelModel extends HoistModel {
                         type: 'stack',
                         width: 60,
                         content: [
-                            {type: 'view', id: 'grid'},
-                            {type: 'view', id: 'treeGrid'},
-                            {type: 'view', id: 'error'}
+                            {type: 'view', viewSpecId: 'grid'},
+                            {type: 'view', viewSpecId: 'treeGrid'},
+                            {type: 'view', viewSpecId: 'error'}
                         ]
                     },
                     {
                         type: 'column',
                         width: 40,
                         content: [
-                            {type: 'view', id: 'chart'},
-                            {type: 'view', id: 'buttons', height: '200px'}
+                            {type: 'view', viewSpecId: 'chart'},
+                            {type: 'view', viewSpecId: 'buttons', height: '200px'}
                         ]
                     }
                 ]

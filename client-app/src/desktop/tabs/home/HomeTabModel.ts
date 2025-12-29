@@ -27,7 +27,9 @@ export class HomeTabModel extends HoistModel {
                                 {
                                     type: 'stack',
                                     height: '350px',
-                                    content: [{type: 'view', id: 'welcome', height: '370px'}]
+                                    content: [
+                                        {type: 'view', viewSpecId: 'welcome', height: '370px'}
+                                    ]
                                 },
                                 {
                                     type: 'row',
@@ -35,11 +37,11 @@ export class HomeTabModel extends HoistModel {
                                         {
                                             type: 'stack',
                                             width: '350px',
-                                            content: [{type: 'view', id: 'about'}]
+                                            content: [{type: 'view', viewSpecId: 'about'}]
                                         },
                                         {
                                             type: 'stack',
-                                            content: [{type: 'view', id: 'roadmap'}]
+                                            content: [{type: 'view', viewSpecId: 'roadmap'}]
                                         }
                                     ]
                                 }
@@ -47,7 +49,7 @@ export class HomeTabModel extends HoistModel {
                         },
                         {
                             type: 'stack',
-                            content: [{type: 'view', id: 'activity'}]
+                            content: [{type: 'view', viewSpecId: 'activity'}]
                         }
                     ]
                 }

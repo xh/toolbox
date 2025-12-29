@@ -267,9 +267,9 @@ export class ViewManagerTestModel extends HoistModel {
                 {
                     type: 'column',
                     content: [
-                        {type: 'view', id: 'filterChooser'},
-                        {type: 'view', id: 'groupingChooser'},
-                        {type: 'view', id: 'grid'}
+                        {type: 'view', viewSpecId: 'filterChooser'},
+                        {type: 'view', viewSpecId: 'groupingChooser'},
+                        {type: 'view', viewSpecId: 'grid'}
                     ]
                 }
             ]
