@@ -55,7 +55,7 @@ class TabStateExampleModel extends HoistModel {
     showBadge = true;
 
     @managed
-    stateTabModel = new TabContainerModel(createContainerModelConfig({}));
+    stateTabModel = new TabContainerModel(createContainerModelConfig());
 
     constructor() {
         super();

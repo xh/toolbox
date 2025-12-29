@@ -24,5 +24,5 @@ export const customExample = hoistCmp.factory({
 
 class CustomExampleModel extends HoistModel {
     @managed
-    detachedTabModel = new TabContainerModel(createContainerModelConfig({}));
+    detachedTabModel = new TabContainerModel(createContainerModelConfig());
 }
