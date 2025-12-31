@@ -12,10 +12,7 @@ import io.xh.toolbox.portfolio.PortfolioService
 import java.time.Duration
 import java.time.Instant
 
-import static io.xh.hoist.monitor.MonitorStatus.OK
-import static io.xh.hoist.monitor.MonitorStatus.FAIL
-import static io.xh.hoist.monitor.MonitorStatus.WARN
-import static io.xh.hoist.monitor.MonitorStatus.INACTIVE
+import static io.xh.hoist.monitor.MonitorStatus.*
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 import static java.lang.System.currentTimeMillis
 
@@ -80,24 +77,6 @@ class MonitorDefinitionService extends DefaultMonitorDefinitionService {
                 metricUnit   : 'minutes since last story',
                 warnThreshold: 2160,
                 failThreshold: 4320,
-                active       : true,
-                primaryOnly  : true
-            ],
-            [
-                code         : 'newsLoadedSourcesCount',
-                name         : 'News: Loaded Sources',
-                metricType   : 'Floor',
-                metricUnit   : 'sources',
-                failThreshold: 1,
-                active       : true,
-                primaryOnly  : true
-            ],
-            [
-                code         : 'newsStoryCount',
-                name         : 'News: Story Count',
-                metricType   : 'Floor',
-                metricUnit   : 'stories',
-                failThreshold: 1,
                 active       : true,
                 primaryOnly  : true
             ],
@@ -179,28 +158,18 @@ class MonitorDefinitionService extends DefaultMonitorDefinitionService {
         result.message = 'This metric is always 1337!'
     }
 
-    /** Report when the latest news update was fetched, or fail if no stories are loaded. */
+    /** Report how long ago the latest news update was fetched, or fail if no stories are loaded. */
     def newsLastUpdateMins(MonitorResult result) {
-        if (newsService.lastTimestamp) {
-            def diffMs = currentTimeMillis() - newsService.lastTimestamp.time,
+        def lastTimestamp = newsService.lastTimestamp
+        if (lastTimestamp) {
+            def diffMs = currentTimeMillis() - lastTimestamp.time,
                 diffMins = Math.floor(diffMs / MINUTES)
             result.metric = diffMins
         } else {
             result.metric = -1
             result.status = FAIL
-            result.message = 'Have not yet loaded any stories'
+            result.message = 'No news stories loaded'
         }
-    }
-
-    /** Count news stories loaded by NewsService. */
-    def newsStoryCount(MonitorResult result) {
-        result.metric = newsService.itemCount
-    }
-
-    /** Check if NewsService has loaded stories from all its sources. */
-    def newsLoadedSourcesCount(MonitorResult result) {
-        result.metric = newsService.loadedSourcesCount
-        result.status = newsService.allSourcesLoaded ? OK : FAIL
     }
 
     /** Check ability to connect to the FDA API for drug recall example app. */

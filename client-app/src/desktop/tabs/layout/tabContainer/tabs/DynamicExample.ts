@@ -27,7 +27,13 @@ export const dynamicExample = hoistCmp.factory({
                 }),
                 button({icon: Icon.xCircle(), text: 'Clear', onClick: () => model.clearDynamic()})
             ],
-            item: tabContainer({model: model.dynamicModel})
+            item: tabContainer({
+                model: model.dynamicModel,
+                switcher: {
+                    orientation: 'top',
+                    enableOverflow: true
+                }
+            })
         });
     }
 });
@@ -36,13 +42,7 @@ class DynamicExampleModel extends HoistModel {
     id = 0;
 
     @managed
-    dynamicModel = new TabContainerModel({
-        tabs: [],
-        switcher: {
-            orientation: 'top',
-            enableOverflow: true
-        }
-    });
+    dynamicModel = new TabContainerModel({tabs: []});
 
     constructor() {
         super();
