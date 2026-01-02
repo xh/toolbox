@@ -66,6 +66,7 @@ export class AppModel extends HoistAdminAppModel {
     }
 
     override createTabs() {
+        const switcher = {orientation: 'left', mode: 'static'};
         return [
             ...super.createTabs(),
             {
@@ -73,10 +74,10 @@ export class AppModel extends HoistAdminAppModel {
                 title: 'Roadmap',
                 icon: Icon.mapSigns(),
                 content: {
-                    switcher: {orientation: 'left'},
+                    switcher,
                     tabs: [
-                        {id: 'projects', icon: Icon.checkCircle(), content: projectRestPanel},
-                        {id: 'phases', icon: Icon.calendar(), content: phaseRestPanel}
+                        {id: 'phases', icon: Icon.calendar(), content: phaseRestPanel},
+                        {id: 'projects', icon: Icon.checkCircle(), content: projectRestPanel}
                     ]
                 }
             },
@@ -84,7 +85,7 @@ export class AppModel extends HoistAdminAppModel {
                 id: 'tests',
                 icon: Icon.stopwatch(),
                 content: {
-                    switcher: {orientation: 'left'},
+                    switcher,
                     tabs: [
                         {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
                         {id: 'cube', title: 'Cube Data', content: CubeTestPanel},

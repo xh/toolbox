@@ -6,11 +6,12 @@ import {Icon} from '@xh/hoist/icon';
 export const simpleExample = hoistCmp.factory(({orientation}) =>
     tabContainer({
         className: 'child-tabcontainer',
-        modelConfig: createContainerModelConfig({switcher: {orientation}})
+        switcher: {orientation},
+        modelConfig: createContainerModelConfig()
     })
 );
 
-export const createContainerModelConfig = args => {
+export const createContainerModelConfig = () => {
     const tabTxt = title => div(`This is the ${title} tab`);
 
     return {
@@ -30,7 +31,6 @@ export const createContainerModelConfig = args => {
                 icon: Icon.portfolio(),
                 content: () => tabTxt('Things')
             }
-        ],
-        ...args
+        ]
     };
 };
