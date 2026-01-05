@@ -162,6 +162,11 @@ const storeValidIndicator = hoistCmp.factory<InlineEditingPanelModel>(({model}) 
                 label = `Not Valid (${errorCount} errors)`;
                 className = 'xh-intent-danger';
                 break;
+            case ValidationState.ValidWithWarnings:
+                icon = Icon.warning();
+                label = 'Valid with Warnings';
+                className = 'xh-intent-warning';
+                break;
             default:
                 icon = Icon.questionCircle();
                 label = 'Validation state unknown';

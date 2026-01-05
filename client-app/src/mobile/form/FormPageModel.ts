@@ -20,7 +20,13 @@ export class FormPageModel extends HoistModel {
             {name: 'name', rules: [required, lengthIs({min: 8})]},
             {name: 'customer', rules: [required]},
             {name: 'movie', rules: [required]},
-            {name: 'salary'},
+            {
+                name: 'salary',
+                rules: [
+                    ({value}) =>
+                        value < 10_000 ? {severity: 'warning', message: 'Salary seems low.'} : null
+                ]
+            },
             {name: 'percentage'},
             {name: 'date', rules: [required]},
             {name: 'enabled'},
