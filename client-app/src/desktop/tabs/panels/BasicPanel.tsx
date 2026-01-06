@@ -1,7 +1,8 @@
+import {parseMenuItems} from '@xh/hoist/utils/impl';
 import React from 'react';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {div, filler, p, span} from '@xh/hoist/cmp/layout';
-import {menu, menuDivider, menuItem, popover} from '@xh/hoist/kit/blueprint';
+import {menu, menuDivider, popover} from '@xh/hoist/kit/blueprint';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -79,23 +80,24 @@ export const basicPanel = hoistCmp.factory({
                             text: 'Menu Button'
                         }),
                         content: menu(
-                            menuItem({text: 'Menu Item 1', icon: Icon.rocket(), intent: 'success'}),
-                            menuItem({text: 'Menu Item 2', icon: Icon.skull(), intent: 'danger'}),
-                            menuItem({
-                                text: 'Menu Item 3',
-                                icon: Icon.placeholder(),
-                                disabled: true
-                            }),
-                            menuDivider({title: 'Another Section'}),
-                            menuItem({text: 'Menu Item 4'}),
-                            menuItem({
-                                text: 'Menu Item 5',
-                                children: [
-                                    menuItem({text: 'Sub Item 1'}),
-                                    menuItem({text: 'Sub Item 2'}),
-                                    menuItem({text: 'Sub Item 3'})
-                                ]
-                            })
+                            parseMenuItems([
+                                {text: 'Menu Item 1', icon: Icon.rocket(), intent: 'success'},
+                                {text: 'Menu Item 2', icon: Icon.skull(), intent: 'danger'},
+                                {
+                                    text: 'Menu Item 3',
+                                    icon: Icon.placeholder(),
+                                    disabled: true
+                                },
+                                menuDivider({title: 'Another Section'}),
+                                {text: 'Menu Item 4'},
+                                {
+                                    text: 'Menu Item 5',
+                                    items: ['Sub Item 1', 'Sub Item 2', 'Sub Item 3'].map(it => ({
+                                        text: it,
+                                        key: it
+                                    }))
+                                }
+                            ])
                         )
                     }),
                     filler(),
