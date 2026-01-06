@@ -66,7 +66,7 @@ export class AppModel extends HoistAdminAppModel {
     }
 
     override createTabs() {
-        const switcher = {orientation: 'left', mode: 'static'};
+        const switcher = {mode: 'static'};
         return [
             ...super.createTabs(),
             {

@@ -136,10 +136,14 @@ import Highcharts from 'highcharts/highstock';
 
 // Check https://api.highcharts.com/highcharts/ for modules that require other base modules and import in order
 import 'highcharts/modules/exporting';
-import 'highcharts/modules/export-data'; // export-data module must be imported after exporting module
-import 'highcharts/modules/offline-exporting'; // offline-exporting module must be imported after exporting module
 import 'highcharts/modules/heatmap';
 import 'highcharts/modules/treemap';
+
+// `treegraph` must be imported after `treemap`
 import 'highcharts/modules/treegraph';
+
+// `export-data` + `offline-exporting` must be imported after `exporting`
+import 'highcharts/modules/export-data';
+import 'highcharts/modules/offline-exporting';
 
 installHighcharts(Highcharts);
