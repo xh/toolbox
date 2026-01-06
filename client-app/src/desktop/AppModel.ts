@@ -9,6 +9,7 @@ import {
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
 import {GitHubService} from '../core/svc/GitHubService';
@@ -78,8 +79,17 @@ export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
 
+    @observable showUserInitialsInMenu: boolean;
+
     @managed
     tabModel: TabContainerModel = this.createTabContainerModel();
+
+    constructor() {
+        super();
+
+        makeObservable(this);
+        this.showUserInitialsInMenu = XH.getPref('showUserInitialsInMenuButton') ?? false;
+    }
 
     override async initAsync() {
         await super.initAsync();
@@ -115,6 +125,23 @@ export class AppModel extends BaseAppModel {
                 formField: {
                     label: 'Expand Links',
                     info: 'Enable to always expand the docked Links panel when available.',
+                    item: switchInput()
+                }
+            },
+            {
+                name: 'toggleUserMenuInitials',
+                valueSetter: v => {
+                    runInAction(() => {
+                        this.showUserInitialsInMenu = v;
+                    });
+                    XH.prefService.set('showUserInitialsInMenuButton', v);
+                },
+                valueGetter: () => {
+                    return XH.getPref('showUserInitialsInMenuButton');
+                },
+                formField: {
+                    label: 'User Initials in Menu',
+                    info: "Toggle to show the the active user's initials in the app menu button.",
                     item: switchInput()
                 }
             }
