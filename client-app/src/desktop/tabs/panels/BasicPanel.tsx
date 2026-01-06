@@ -1,16 +1,16 @@
+import {div, filler, p, span} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon} from '@xh/hoist/icon';
+import {menu, menuDivider, popover} from '@xh/hoist/kit/blueprint';
+import {wait} from '@xh/hoist/promise';
 import {parseMenuItems} from '@xh/hoist/utils/impl';
 import React from 'react';
-import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {div, filler, p, span} from '@xh/hoist/cmp/layout';
-import {menu, menuDivider, popover} from '@xh/hoist/kit/blueprint';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {Icon} from '@xh/hoist/icon';
-import {wait} from '@xh/hoist/promise';
-import {wrapper} from '../../common';
 import {usStates} from '../../../core/data';
+import {wrapper} from '../../common';
 import {BasicPanelModel} from './BasicPanelModel';
 
 export const basicPanel = hoistCmp.factory({
