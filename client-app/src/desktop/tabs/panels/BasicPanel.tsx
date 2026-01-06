@@ -93,8 +93,7 @@ export const basicPanel = hoistCmp.factory({
                                 {
                                     text: 'Menu Item 5',
                                     items: ['Sub Item 1', 'Sub Item 2', 'Sub Item 3'].map(it => ({
-                                        text: it,
-                                        key: it
+                                        text: it
                                     }))
                                 }
                             ])
