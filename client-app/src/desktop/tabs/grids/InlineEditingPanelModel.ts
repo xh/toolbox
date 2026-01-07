@@ -187,7 +187,13 @@ export class InlineEditingPanelModel extends HoistModel {
                 {
                     name: 'date',
                     type: 'localDate',
-                    rules: [dateIs({min: LocalDate.today().startOfYear(), max: 'today'})]
+                    rules: [
+                        dateIs({min: LocalDate.today().startOfYear(), max: 'today'}),
+                        ({value}) =>
+                            value && !value.isWeekday
+                                ? {severity: 'info', message: 'Date falls on a weekend.'}
+                                : null
+                    ]
                 },
                 {
                     name: 'restricted',

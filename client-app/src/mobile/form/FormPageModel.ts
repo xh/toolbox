@@ -28,7 +28,16 @@ export class FormPageModel extends HoistModel {
                 ]
             },
             {name: 'percentage'},
-            {name: 'date', rules: [required]},
+            {
+                name: 'date',
+                rules: [
+                    required,
+                    ({value}) =>
+                        value && !value.isWeekday
+                            ? {severity: 'info', message: 'Selected date falls on a weekend.'}
+                            : null
+                ]
+            },
             {name: 'enabled'},
             {name: 'buttonGroup', initialValue: 'button2'},
             {name: 'notes'},

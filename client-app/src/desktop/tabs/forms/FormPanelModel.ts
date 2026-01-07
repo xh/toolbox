@@ -55,6 +55,13 @@ export class FormPanelModel extends HoistModel {
                 name: 'yearsExperience',
                 rules: [
                     numberIs({min: 0, max: 100}),
+                    ({value}) =>
+                        value > 50
+                            ? {
+                                  severity: 'info',
+                                  message: 'You have extensive experience!'
+                              }
+                            : null,
                     {
                         when: (f, {isManager}) => isManager,
                         check: [
