@@ -59,7 +59,9 @@ export const dashCanvasPanel = hoistCmp.factory({
                             side: 'right',
                             defaultSize: 250
                         },
-                        item: dashCanvasWidgetWell({dashCanvasModel: model.dashCanvasModel})
+                        item: dashCanvasWidgetWell({
+                            dashCanvasModel: model.dashCanvasModel
+                        })
                     })
                 ),
                 bbar: bbar()
