@@ -28,7 +28,7 @@ export const AppComponent = hoistCmp({
                 ],
                 hideRefreshButton: false,
                 appMenuButtonProps: {
-                    userInitials: model.showUserInitialsInMenu,
+                    renderWithUserProfile: model.renderWithUserProfile,
                     hideLogoutItem: false,
                     extraItems: [welcomeMsg({multiline: true})]
                 }

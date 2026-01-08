@@ -79,7 +79,7 @@ export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
 
-    @observable showUserInitialsInMenu: boolean;
+    @observable renderWithUserProfile: boolean;
 
     @managed
     tabModel: TabContainerModel = this.createTabContainerModel();
@@ -88,7 +88,7 @@ export class AppModel extends BaseAppModel {
         super();
 
         makeObservable(this);
-        this.showUserInitialsInMenu = XH.getPref('showUserInitialsInMenuButton') ?? false;
+        this.renderWithUserProfile = XH.getPref('renderUserMenuWithUserProfile') ?? false;
     }
 
     override async initAsync() {
@@ -132,12 +132,12 @@ export class AppModel extends BaseAppModel {
                 name: 'toggleUserMenuInitials',
                 valueSetter: v => {
                     runInAction(() => {
-                        this.showUserInitialsInMenu = v;
+                        this.renderWithUserProfile = v;
                     });
-                    XH.prefService.set('showUserInitialsInMenuButton', v);
+                    XH.prefService.set('renderUserMenuWithUserProfile', v);
                 },
                 valueGetter: () => {
-                    return XH.getPref('showUserInitialsInMenuButton');
+                    return XH.getPref('renderUserMenuWithUserProfile');
                 },
                 formField: {
                     label: 'User Initials in Menu',
