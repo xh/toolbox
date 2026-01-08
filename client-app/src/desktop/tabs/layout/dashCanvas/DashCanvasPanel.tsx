@@ -3,10 +3,11 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {div, filler, frame, hframe, vframe} from '@xh/hoist/cmp/layout';
+import {filler, frame, hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
+import {dashCanvasWidgetWell} from '@xh/hoist/desktop/cmp/dash/canvas/widgetwell/DashCanvasWidgetWell';
 
 import {wrapper} from '../../../common';
 import {DashCanvasPanelModel} from './DashCanvasPanelModel';
@@ -50,19 +51,15 @@ export const dashCanvasPanel = hoistCmp.factory({
                               padding: 10
                           }),
                     panel({
+                        omit: !model.renderDashboard,
                         icon: Icon.arrowsLeftRight(),
-                        title: 'Single Series Charts',
+                        title: 'Add Widgets...',
                         width: 250,
                         modelConfig: {
                             side: 'right',
                             defaultSize: 250
                         },
-                        item: vframe({
-                            className: 'scrollable-div vertical-only',
-                            items: model.unusedSymbols.map(it =>
-                                draggableWidget({symbol: it, key: it})
-                            )
-                        })
+                        item: dashCanvasWidgetWell({dashCanvasModel: model.dashCanvasModel})
                     })
                 ),
                 bbar: bbar()
@@ -163,17 +160,5 @@ const bbar = hoistCmp.factory<DashCanvasPanelModel>(({model}) =>
                 onClick: () => model.resetState()
             })
         ]
-    })
-);
-
-const draggableWidget = hoistCmp.factory<DashCanvasPanelModel>(({model, symbol}) =>
-    div({
-        id: 'draggableFor-singleSeriesChart-' + symbol,
-        className: 'draggable-widget',
-        draggable: true,
-        unselectable: 'on',
-        onDragStart: e => model.onDragStart(e),
-        onDragEnd: e => model.onDragEnd(e),
-        items: [Icon.chartLine(), ' ', symbol]
     })
 );

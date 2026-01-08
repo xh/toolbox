@@ -1,5 +1,4 @@
-import {DragEvent} from 'react';
-import {difference, isEmpty} from 'lodash';
+import {isEmpty} from 'lodash';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
@@ -21,46 +20,6 @@ export class DashCanvasPanelModel extends HoistModel {
     @observable.ref
     dashCanvasModel: DashCanvasModel;
 
-    onDragStart(evt: DragEvent<HTMLDivElement>) {
-        const target = evt.target as HTMLElement;
-        if (!target) return;
-
-        this.dashCanvasModel.showAddViewButtonWhenEmpty = false;
-        evt.dataTransfer.effectAllowed = 'move';
-        target.classList.add('is-dragging');
-
-        const viewSpecId: string = target.getAttribute('id').split('draggableFor-')[1],
-            viewSpec = this.dashCanvasModel.viewSpecs.find(it => it.id === viewSpecId),
-            {width, height} = viewSpec,
-            widget = {
-                viewSpecId,
-                layout: {
-                    x: 0,
-                    y: 0,
-                    w: width,
-                    h: height
-                }
-            };
-
-        this.dashCanvasModel.setDraggedInView(widget);
-    }
-
-    onDragEnd(evt: DragEvent<HTMLDivElement>) {
-        this.dashCanvasModel.showAddViewButtonWhenEmpty = true;
-
-        const target = evt.target as HTMLElement;
-        if (!target) return;
-
-        target.classList.remove('is-dragging');
-    }
-
-    get unusedSymbols() {
-        const usedSymbols = this.dashCanvasModel?.viewModels
-            .filter(it => it.viewSpec.id.startsWith('singleSeriesChart'))
-            .map(it => it.viewSpec.id.split('-')[1]);
-
-        return difference(this.allSymbols, usedSymbols);
-    }
     override async doLoadAsync(loadSpec) {
         if (isEmpty(this.allSymbols)) {
             const symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
