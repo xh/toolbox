@@ -12,7 +12,7 @@ export const AppComponent = hoistCmp({
     displayName: 'App',
     model: uses(AppModel),
 
-    render() {
+    render({model}) {
         return panel({
             tbar: appBar({
                 omit: XH.isLandscape,
@@ -21,6 +21,7 @@ export const AppComponent = hoistCmp({
                 appMenuButtonProps: {
                     hideLogoutItem: false,
                     hideThemeItem: true,
+                    renderWithUserProfile: model.renderWithUserProfile,
                     extraItems: [
                         {
                             text: hbox(

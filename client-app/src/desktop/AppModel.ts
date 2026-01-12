@@ -9,7 +9,7 @@ import {
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
 import {GitHubService} from '../core/svc/GitHubService';
@@ -79,17 +79,8 @@ export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
 
-    @observable renderWithUserProfile: boolean;
-
     @managed
     tabModel: TabContainerModel = this.createTabContainerModel();
-
-    constructor() {
-        super();
-
-        makeObservable(this);
-        this.renderWithUserProfile = XH.getPref('renderUserMenuWithUserProfile') ?? false;
-    }
 
     override async initAsync() {
         await super.initAsync();
@@ -129,19 +120,15 @@ export class AppModel extends BaseAppModel {
                 }
             },
             {
-                name: 'toggleUserMenuInitials',
+                name: 'appMenuButtonWithUserProfile',
                 valueSetter: v => {
-                    runInAction(() => {
-                        this.renderWithUserProfile = v;
-                    });
-                    XH.prefService.set('renderUserMenuWithUserProfile', v);
+                    runInAction(() => (this.renderWithUserProfile = v));
+                    XH.setPref('appMenuButtonWithUserProfile', v);
                 },
-                valueGetter: () => {
-                    return XH.getPref('renderUserMenuWithUserProfile');
-                },
+                valueGetter: () => XH.getPref('appMenuButtonWithUserProfile'),
                 formField: {
-                    label: 'User Initials in Menu',
-                    info: "Toggle to show the the active user's initials in the app menu button.",
+                    label: 'Profile-style menu',
+                    info: 'Enable to render your initials in the top-level App Menu button.',
                     item: switchInput()
                 }
             }
