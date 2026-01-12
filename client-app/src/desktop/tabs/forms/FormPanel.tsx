@@ -149,11 +149,11 @@ const startAndEndDate = hoistCmp.factory<FormPanelModel>(({model}) => {
         items: [
             formField({
                 field: 'startDate',
-                item: dateInput({valueType: 'localDate', width: 110})
+                item: dateInput({valueType: 'localDate', width: 130})
             }),
             formField({
                 field: 'endDate',
-                item: dateInput({valueType: 'localDate', width: 110, enableClear: true})
+                item: dateInput({valueType: 'localDate', width: 130, enableClear: true})
             })
         ]
     });
