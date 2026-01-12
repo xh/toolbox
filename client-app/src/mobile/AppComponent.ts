@@ -1,10 +1,11 @@
-import {hoistCmp, XH, uses} from '@xh/hoist/core';
+import {hoistCmp, XH, uses, HoistUser} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
 import {navigator} from '@xh/hoist/mobile/cmp/navigator';
 import {hbox} from '@xh/hoist/cmp/layout';
 import {badge} from '@xh/hoist/cmp/badge';
 import {Icon} from '@xh/hoist/icon';
+import {profilePic} from '../core/cmp';
 import {AppModel} from './AppModel';
 import './App.scss';
 
@@ -13,6 +14,10 @@ export const AppComponent = hoistCmp({
     model: uses(AppModel),
 
     render({model}) {
+        const renderWithUserProfile = model.renderWithUserProfile
+            ? (user: HoistUser) => profilePic({user})
+            : false;
+
         return panel({
             tbar: appBar({
                 omit: XH.isLandscape,
@@ -21,7 +26,7 @@ export const AppComponent = hoistCmp({
                 appMenuButtonProps: {
                     hideLogoutItem: false,
                     hideThemeItem: true,
-                    renderWithUserProfile: model.renderWithUserProfile,
+                    renderWithUserProfile,
                     extraItems: [
                         {
                             text: hbox(

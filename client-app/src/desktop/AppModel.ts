@@ -115,7 +115,7 @@ export class AppModel extends BaseAppModel {
                 prefName: 'expandDockedLinks',
                 formField: {
                     label: 'Expand Links',
-                    info: 'Enable to always expand the docked Links panel when available.',
+                    info: 'Always expand the docked Links panel when available.',
                     item: switchInput()
                 }
             },
@@ -127,8 +127,8 @@ export class AppModel extends BaseAppModel {
                 },
                 valueGetter: () => XH.getPref('appMenuButtonWithUserProfile'),
                 formField: {
-                    label: 'Profile-style menu',
-                    info: 'Enable to render your initials in the top-level App Menu button.',
+                    label: 'Profile pic menu',
+                    info: 'Render the App Menu button using your profile pic',
                     item: switchInput()
                 }
             }
