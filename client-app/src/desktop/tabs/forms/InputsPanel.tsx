@@ -463,6 +463,7 @@ const setFocusMenu = hoistCmp.factory<InputsPanelModel>(({model}) => {
             return menuItem({text: f.displayName, onClick: () => f.focus()});
         });
     return popover({
+        enforceFocus: false,
         item: button({
             icon: Icon.target(),
             text: 'Set Focus'

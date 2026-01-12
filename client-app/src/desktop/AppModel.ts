@@ -9,6 +9,7 @@ import {
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
 import {GitHubService} from '../core/svc/GitHubService';
@@ -114,7 +115,20 @@ export class AppModel extends BaseAppModel {
                 prefName: 'expandDockedLinks',
                 formField: {
                     label: 'Expand Links',
-                    info: 'Enable to always expand the docked Links panel when available.',
+                    info: 'Always expand the docked Links panel when available.',
+                    item: switchInput()
+                }
+            },
+            {
+                name: 'appMenuButtonWithUserProfile',
+                valueSetter: v => {
+                    runInAction(() => (this.renderWithUserProfile = v));
+                    XH.setPref('appMenuButtonWithUserProfile', v);
+                },
+                valueGetter: () => XH.getPref('appMenuButtonWithUserProfile'),
+                formField: {
+                    label: 'Profile pic menu',
+                    info: 'Render the App Menu button using your profile pic',
                     item: switchInput()
                 }
             }

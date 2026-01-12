@@ -15,7 +15,7 @@ buildscript {
 plugins {
     id 'idea'
     id 'war'
-    id 'co.uzzu.dotenv.gradle' version '3.0.0'
+    id 'co.uzzu.dotenv.gradle' version "$dotEnvGradlePluginVersion"
 }
 
 // Not Published to Gradle Plugin Portal
