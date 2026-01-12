@@ -2,6 +2,11 @@
 
 ## 8.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added app option to use new `AppMenuButton.renderWithUserProfile` option. Toolbox includes a
+  customized renderer to display your user profile image when enabled.
+
 ### Libraries
 
 * hoist-core 35.0.0
