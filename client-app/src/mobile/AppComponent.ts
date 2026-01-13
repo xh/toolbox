@@ -7,6 +7,7 @@ import {badge} from '@xh/hoist/cmp/badge';
 import {Icon} from '@xh/hoist/icon';
 import {profilePic} from '../core/cmp';
 import {AppModel} from './AppModel';
+import '../core/Toolbox.scss';
 import './App.scss';
 
 export const AppComponent = hoistCmp({
