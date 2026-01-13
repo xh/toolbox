@@ -110,9 +110,9 @@ can be useful to have the code on-hand.
 
 * Make sure that the `APP_TOOLBOX_MULTI_INSTANCE_ENABLED` property in `.env` is set to `true`.
 * Run the first instance of the server and client as normal.
-* To run a second instance of the server, you run the command `./gradlew bootRun -Duser.timezone=Etc/UTC -Dserver.port=8082` from the `toolbox` directory.
+* To run a second instance of the server, you run the command `./gradlew bootRun -Duser.timezone=Etc/UTC -Dserver.port=8081` from the `toolbox` directory.
 * To run a second instance of the client connected to the second server, start another local
-  webpack-dev-server from the `toolbox/client-app` directory using `yarn start --env devGrailsPort=8082 devWebpackPort=3002`.
+  webpack-dev-server from the `toolbox/client-app` directory using `yarn start --env devGrailsPort=8081 devWebpackPort=3001`.
 
 ## Developing with HTTPS on `xh.io` domain
 
