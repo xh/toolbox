@@ -1,5 +1,5 @@
 import {form} from '@xh/hoist/cmp/form';
-import {box, div, filler, img, p, placeholder} from '@xh/hoist/cmp/layout';
+import {box, div, filler, hspacer, img, p, placeholder} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -33,7 +33,7 @@ export const detailsPanel = hoistCmp.factory({
             className,
             item: currentRecord
                 ? contactProfile()
-                : placeholder('Select a contact to view their details.'),
+                : placeholder(Icon.userCircle(), 'Select a contact to view their details.'),
             bbar: bbar()
         });
     }
@@ -70,13 +70,14 @@ const bbar = hoistCmp.factory<DetailsPanelModel>(({model}) => {
     if (!currentRecord) return null;
 
     return toolbar(
+        favoriteButton({omit: isEditing}),
+        filler(),
         button({
             text: 'Cancel',
             omit: !isEditing,
             onClick: () => model.cancelEdit()
         }),
-        favoriteButton({omit: isEditing}),
-        filler(),
+        hspacer(5),
         editButton({omit: !XH.getUser().isHoistAdmin})
     );
 });
@@ -132,9 +133,9 @@ const tagsField = hoistCmp.factory<DetailsPanelModel>(({model}) =>
 const favoriteButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
     const {isFavorite} = model.currentRecord.data;
     return button({
-        text: isFavorite ? 'Remove Favorite' : 'Make Favorite',
+        text: isFavorite ? 'Remove Favorite' : 'Add Favorite',
         icon: Icon.favorite({
-            color: isFavorite ? 'gold' : null,
+            className: isFavorite ? 'xh-orange' : null,
             prefix: isFavorite ? 'fas' : 'far'
         }),
         width: 150,
@@ -147,8 +148,10 @@ const editButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
     const {isEditing} = model;
     return button({
         text: isEditing ? 'Save Changes' : 'Edit Contact',
-        intent: isEditing ? 'primary' : null,
+        icon: isEditing ? Icon.check() : Icon.edit(),
+        intent: isEditing ? 'success' : 'primary',
         minimal: !isEditing,
+        outlined: !isEditing,
         onClick: () => model.toggleEditAsync()
     });
 });

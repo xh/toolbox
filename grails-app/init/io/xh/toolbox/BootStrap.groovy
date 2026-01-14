@@ -268,6 +268,12 @@ class BootStrap implements LogSupport {
 
     private void ensureRequiredPrefsCreated() {
         prefService.ensureRequiredPrefsCreated([
+            appMenuButtonWithUserProfile: [
+                type: 'bool',
+                defaultValue: false,
+                groupName: 'Toolbox',
+                note: 'True to render the main app menu button using the alternate user profile (initials) mode.'
+            ],
             contactAppState: [
                     type: 'json',
                     defaultValue: [],
