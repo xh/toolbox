@@ -1841,9 +1841,9 @@
   integrity sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==
 
 "@types/node@*":
-  version "25.0.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-25.0.6.tgz#5ca3c46f2b256b59128f433426e42d464765dab1"
-  integrity sha512-NNu0sjyNxpoiW3YuVFfNz7mxSQ+S4X2G28uqg2s+CzoqoQjLPsWSbsFFyztIAqt2vb8kfEAsJNepMGPTxFDx3Q==
+  version "25.0.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-25.0.8.tgz#e54e00f94fe1db2497b3e42d292b8376a2678c8d"
+  integrity sha512-powIePYMmC3ibL0UJ2i2s0WIbq6cg6UyVFQxSCpaPxxzAaziRfimGivjdF943sSGV6RADVbk0Nvlm5P/FB44Zg==
   dependencies:
     undici-types "~7.16.0"
 
@@ -2284,9 +2284,9 @@
     webpackbar "~7.0.0"
 
 "@xh/hoist@^80.0.0-SNAPSHOT":
-  version "80.0.0-SNAPSHOT.1768251023007"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-80.0.0-SNAPSHOT.1768251023007.tgz#1e278c3c658f2fc8718c9ea1e3b9b2cace67bb22"
-  integrity sha512-XZdtioPFGtOPVcWDnyrJsRR+reNJvXMRF+69KkgeDJTo3IK3wdiABz3aEqdRBHRdBY0qGTiXNTf1tp1SZEDPJQ==
+  version "80.0.0-SNAPSHOT.1768360784265"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-80.0.0-SNAPSHOT.1768360784265.tgz#8136bdabc62161ea346597f19d1183c4130f1f75"
+  integrity sha512-Kz78RZMZuRL//BoGCIv6wpsRQ11pqwaPPm4eIaAibwkFx3vFKRV+BY8USqjHk/vAsA3lZTuIhKVjMsRZN3jtkw==
   dependencies:
     "@auth0/auth0-spa-js" "~2.9.1"
     "@azure/msal-browser" "~4.26.2"
@@ -8329,9 +8329,9 @@ ua-is-frozen@^0.1.2:
   integrity sha512-RwKDW2p3iyWn4UbaxpP2+VxwqXh0jpvdxsYpZ5j/MLLiQOfbsV5shpgQiw93+KMYQPcteeMQ289MaAFzs3G9pw==
 
 ua-parser-js@~2.0.4:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-2.0.7.tgz#0f22e3f8430cce9c43463b8603e54b45cbae68d5"
-  integrity sha512-CFdHVHr+6YfbktNZegH3qbYvYgC7nRNEUm2tk7nSFXSODUu4tDBpaFpP1jdXBUOKKwapVlWRfTtS8bCPzsQ47w==
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-2.0.8.tgz#4f87d94d164c79a104cf089f85aea810ca3dfcce"
+  integrity sha512-BdnBM5waFormdrOFBU+cA90R689V0tWUWlIG2i30UXxElHjuCu5+dOV2Etw3547jcQ/yaLtPm9wrqIuOY2bSJg==
   dependencies:
     detect-europe-js "^0.1.2"
     is-standalone-pwa "^0.1.1"
