@@ -1,8 +1,8 @@
-import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
 import {action, bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {div, hbox} from '@xh/hoist/cmp/layout';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {withFilterByField, withFilterByKey} from '@xh/hoist/data';
+import {StoreRecord, withFilterByField, withFilterByKey} from '@xh/hoist/data';
 import {isEmpty, uniq, without} from 'lodash';
 
 import {PERSIST_APP} from './AppModel';
@@ -50,20 +50,20 @@ export class DirectoryPanelModel extends HoistModel {
         const gridModel = (this.gridModel = this.createGridModel());
         this.detailsPanelModel = new DetailsPanelModel(this);
 
-        this.addReaction({
-            track: () => gridModel.selectedRecord,
-            run: rec => this.detailsPanelModel.setCurrentRecord(rec)
-        });
-
-        this.addReaction({
-            track: () => this.locationFilter,
-            run: () => this.updateLocationFilter()
-        });
-
-        this.addReaction({
-            track: () => this.tagFilters,
-            run: () => this.updateTagFilter()
-        });
+        this.addReaction(
+            {
+                track: () => gridModel.selectedRecord,
+                run: rec => this.detailsPanelModel.setCurrentRecord(rec)
+            },
+            {
+                track: () => this.locationFilter,
+                run: () => this.updateLocationFilter()
+            },
+            {
+                track: () => this.tagFilters,
+                run: () => this.updateTagFilter()
+            }
+        );
     }
 
     async updateContactAsync(id, data) {
@@ -71,7 +71,7 @@ export class DirectoryPanelModel extends HoistModel {
         await this.loadAsync();
     }
 
-    toggleFavorite(record) {
+    toggleFavorite(record: StoreRecord) {
         XH.contactService.toggleFavorite(record.id);
         // Update store directly, to avoid more heavyweight full reload.
         this.gridModel.store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
@@ -80,19 +80,22 @@ export class DirectoryPanelModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    override async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec: LoadSpec) {
         const {gridModel} = this;
 
         try {
             const contacts = await XH.contactService.getContactsAsync();
+            if (loadSpec.isStale) return;
+
             runInAction(() => {
                 this.tagList = uniq(contacts.flatMap(it => it.tags ?? [])).sort() as string[];
                 this.locationList = uniq(contacts.map(it => it.location)).sort() as string[];
             });
 
             gridModel.loadData(contacts);
-            gridModel.preSelectFirstAsync();
+            await gridModel.preSelectFirstAsync();
         } catch (e) {
+            if (loadSpec.isStale) return;
             XH.handleException(e);
         }
     }

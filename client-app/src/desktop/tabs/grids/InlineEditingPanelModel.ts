@@ -172,9 +172,14 @@ export class InlineEditingPanelModel extends HoistModel {
                             when: (f, {category}) => category === 'US',
                             check: async ({value}) => {
                                 if (this.asyncValidation) await wait(1000);
-                                return isNil(value) || value < 10
-                                    ? 'Records where `category` is "US" require `amount` of 10 or greater.'
-                                    : null;
+                                if (isNil(value) || value < 10) {
+                                    return 'Records where `category` is "US" require `amount` of 10 or greater.';
+                                } else if (value > 50) {
+                                    return {
+                                        severity: 'warning',
+                                        message: 'Amounts over 50 may require additional approval.'
+                                    };
+                                }
                             }
                         }
                     ]
@@ -182,7 +187,13 @@ export class InlineEditingPanelModel extends HoistModel {
                 {
                     name: 'date',
                     type: 'localDate',
-                    rules: [dateIs({min: LocalDate.today().startOfYear(), max: 'today'})]
+                    rules: [
+                        dateIs({min: LocalDate.today().startOfYear(), max: 'today'}),
+                        ({value}) =>
+                            value && !value.isWeekday
+                                ? {severity: 'info', message: 'Date falls on a weekend.'}
+                                : null
+                    ]
                 },
                 {
                     name: 'restricted',

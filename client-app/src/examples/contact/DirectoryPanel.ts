@@ -69,12 +69,14 @@ const tbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
                 items: [
                     button({
                         text: 'Details',
+                        icon: Icon.list(),
                         value: 'grid',
                         width: 80
                     }),
                     button({
                         text: 'Faces',
                         value: 'tiles',
+                        icon: Icon.userCircle(),
                         width: 80
                     })
                 ]
