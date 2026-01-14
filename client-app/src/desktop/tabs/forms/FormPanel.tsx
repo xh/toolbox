@@ -149,11 +149,11 @@ const startAndEndDate = hoistCmp.factory<FormPanelModel>(({model}) => {
         items: [
             formField({
                 field: 'startDate',
-                item: dateInput({valueType: 'localDate', width: 130})
+                item: dateInput({valueType: 'localDate', width: 150})
             }),
             formField({
                 field: 'endDate',
-                item: dateInput({valueType: 'localDate', width: 130, enableClear: true})
+                item: dateInput({valueType: 'localDate', width: 150, enableClear: true})
             })
         ]
     });
@@ -175,6 +175,8 @@ const managerAndYearsExperience = hoistCmp.factory<FormPanelModel>(({model}) => 
             formField({
                 field: 'isManager',
                 label: 'Manager?',
+                width: 100,
+                flex: 'none',
                 item: checkbox()
             }),
             formField({

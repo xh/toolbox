@@ -1,5 +1,6 @@
-import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
+import {pre, vbox} from '@xh/hoist/cmp/layout';
+import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {
     constrainAll,
     dateIs,
@@ -9,10 +10,9 @@ import {
     stringExcludes,
     validEmail
 } from '@xh/hoist/data';
-import {pre, vbox} from '@xh/hoist/cmp/layout';
+import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {Icon} from '@xh/hoist/icon';
 import {filter, isEmpty} from 'lodash';
 
 export class FormPanelModel extends HoistModel {
@@ -70,13 +70,13 @@ export class FormPanelModel extends HoistModel {
                                 if (value < 10) {
                                     return {
                                         severity: 'error',
-                                        message:
-                                            'Managerial positions require at least 10 years of experience.'
+                                        message: '10+ years required for managers.'
                                     };
-                                } else if (value < 15) {
+                                }
+                                if (value < 15) {
                                     return {
                                         severity: 'warning',
-                                        message: '15+ years of experience recommended for role.'
+                                        message: '15+ years recommended for managers.'
                                     };
                                 }
                             }
