@@ -2,7 +2,7 @@ import {form} from '@xh/hoist/cmp/form';
 import {box, div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {formField} from '@xh/hoist/desktop/cmp/form';
+import {fieldSet, formField} from '@xh/hoist/desktop/cmp/form';
 import {
     checkbox,
     dateInput,
@@ -49,7 +49,7 @@ export const formPanel = hoistCmp.factory({
                 title: 'Forms › FormModel',
                 className: 'tb-form-panel',
                 icon: Icon.edit(),
-                width: 870,
+                width: 950,
                 height: 550,
                 item: hframe(formContent(), displayOptions())
             })
@@ -71,25 +71,29 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                 className: 'tb-form-panel__inner-scroll',
                 items: [
                     hbox({
-                        gap: 10,
+                        gap: 5,
                         items: [
-                            div({
-                                style: {width: '50%'},
-                                items: [firstAndLastNames(), email(), region(), tags()]
+                            fieldSet({
+                                label: 'Contact Info',
+                                items: [firstAndLastNames(), region(), email(), tags()],
+                                flex: 1
                             }),
-                            div({
-                                style: {width: '50%'},
+                            fieldSet({
+                                label: 'Employment Details',
                                 items: [
                                     startAndEndDate(),
                                     reasonForLeaving(),
                                     managerAndYearsExperience(),
                                     notes()
-                                ]
+                                ],
+                                flex: 1
                             })
                         ]
                     }),
-                    'References',
-                    references()
+                    fieldSet({
+                        label: 'References',
+                        item: references()
+                    })
                 ]
             })
         }),
