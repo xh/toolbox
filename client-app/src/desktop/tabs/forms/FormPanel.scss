@@ -1,4 +1,9 @@
 .tb-form-panel {
+  --xh-form-field-label-color: var(--xh-text-color-muted);
+  --xh-form-field-label-text-transform: uppercase;
+  --xh-form-field-label-font-size: var(--xh-font-size-small-px);
+  --xh-form-field-readonly-label-border-bottom: var(--xh-border-solid);
+
   &__inner-scroll {
     flex: 1;
     overflow-y: auto;

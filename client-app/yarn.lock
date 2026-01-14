@@ -2284,9 +2284,9 @@
     webpackbar "~7.0.0"
 
 "@xh/hoist@^80.0.0-SNAPSHOT":
-  version "80.0.0-SNAPSHOT.1768360784265"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-80.0.0-SNAPSHOT.1768360784265.tgz#8136bdabc62161ea346597f19d1183c4130f1f75"
-  integrity sha512-Kz78RZMZuRL//BoGCIv6wpsRQ11pqwaPPm4eIaAibwkFx3vFKRV+BY8USqjHk/vAsA3lZTuIhKVjMsRZN3jtkw==
+  version "80.0.0-SNAPSHOT.1768415875152"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-80.0.0-SNAPSHOT.1768415875152.tgz#718a88bcd2f80d38eaf03850c8659ac83bd88ac1"
+  integrity sha512-Avp/UzN9SLaOD3rJCFnID/33aLcDnNe+mTkjdnV4MCML8yNqYv8Z3t5Kn4lVrELhr74UJ/II22liqDFu6j0hzQ==
   dependencies:
     "@auth0/auth0-spa-js" "~2.9.1"
     "@azure/msal-browser" "~4.26.2"
@@ -8249,9 +8249,9 @@ type-check@^0.4.0, type-check@~0.4.0:
     prelude-ls "^1.2.1"
 
 type-fest@5.x:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-5.4.0.tgz#be169ec21eaaae88769b3fc69fe0cbbf05350731"
-  integrity sha512-wfkA6r0tBpVfGiyO+zbf9e10QkRQSlK9F2UvyfnjoCmrvH2bjHyhPzhugSBOuq1dog3P0+FKckqe+Xf6WKVjwg==
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-5.4.1.tgz#aa9eaadcdc0acb0b5bd52e54f966ee3e38e125d2"
+  integrity sha512-xygQcmneDyzsEuKZrFbRMne5HDqMs++aFzefrJTgEIKjQ3rekM+RPfFCVq2Gp1VIDqddoYeppCj4Pcb+RZW0GQ==
   dependencies:
     tagged-tag "^1.0.0"
 

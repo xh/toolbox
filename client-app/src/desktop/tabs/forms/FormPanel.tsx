@@ -1,5 +1,5 @@
 import {form} from '@xh/hoist/cmp/form';
-import {box, div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
+import {box, div, filler, hbox, hframe, label, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -24,8 +24,9 @@ import {FormPanelModel} from './FormPanelModel';
 
 export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
+    className: 'tb-form-panel',
 
-    render() {
+    render({className}) {
         return wrapper({
             description: [
                 <p>
@@ -34,6 +35,10 @@ export const formPanel = hoistCmp.factory({
                     properties on all its contained <code>FormField</code>s and bind them to a{' '}
                     <code>FormModel</code>. The <code>FormModel</code> provides an observable API
                     for loading, validating, and submitting the data to back-end services.
+                </p>,
+                <p>
+                    This example also demonstrates customizing the style of <code>FormField</code>
+                    via CSS variables.
                 </p>
             ],
             links: [
@@ -47,8 +52,8 @@ export const formPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Forms › FormModel',
-                className: 'tb-form-panel',
                 icon: Icon.edit(),
+                className,
                 width: 870,
                 height: 550,
                 item: hframe(formContent(), displayOptions())
@@ -75,7 +80,7 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                         items: [
                             div({
                                 style: {width: '50%'},
-                                items: [firstAndLastNames(), email(), region(), tags()]
+                                items: [firstAndLastNames(), fullName(), email(), region(), tags()]
                             }),
                             div({
                                 style: {width: '50%'},
@@ -88,7 +93,10 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                             })
                         ]
                     }),
-                    'References',
+                    label({
+                        className: 'xh-form-field__label',
+                        item: 'References'
+                    }),
                     references()
                 ]
             })
@@ -98,20 +106,26 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
 );
 
 const firstAndLastNames = hoistCmp.factory<FormPanelModel>(({model}) => {
+    const flex = model.inline ? null : 1;
     return box({
         flexDirection: model.inline ? 'column' : 'row',
         items: [
             formField({
                 field: 'firstName',
+                flex,
                 item: textInput()
             }),
             formField({
                 field: 'lastName',
+                flex,
                 item: textInput()
             })
         ]
     });
 });
+
+// Readonly field - does not require an item
+const fullName = hoistCmp.factory(() => formField({field: 'fullName'}));
 
 const email = hoistCmp.factory(() =>
     formField({
@@ -144,15 +158,18 @@ const tags = hoistCmp.factory(() =>
 );
 
 const startAndEndDate = hoistCmp.factory<FormPanelModel>(({model}) => {
+    const flex = model.inline ? null : 1;
     return box({
         flexDirection: model.inline ? 'column' : 'row',
         items: [
             formField({
                 field: 'startDate',
+                flex,
                 item: dateInput({valueType: 'localDate', width: 150})
             }),
             formField({
                 field: 'endDate',
+                flex,
                 item: dateInput({valueType: 'localDate', width: 150, enableClear: true})
             })
         ]
@@ -177,7 +194,8 @@ const managerAndYearsExperience = hoistCmp.factory<FormPanelModel>(({model}) => 
                 label: 'Manager?',
                 width: 100,
                 flex: 'none',
-                item: checkbox()
+                item: checkbox(),
+                readonlyRenderer: v => (v ? 'Yes' : 'No')
             }),
             formField({
                 field: 'yearsExperience',
@@ -262,16 +280,16 @@ const displayOptions = hoistCmp.factory<FormPanelModel>(({model}) => {
             className: 'tbox-display-opts__inner',
             items: [
                 switchInput({
+                    bind: 'commitOnChange',
+                    label: 'Commit on change'
+                }),
+                switchInput({
                     bind: 'inline',
                     label: 'Inline labels'
                 }),
                 switchInput({
                     bind: 'minimal',
                     label: 'Minimal validation display'
-                }),
-                switchInput({
-                    bind: 'commitOnChange',
-                    label: 'Commit on change'
                 }),
                 switchInput({
                     model: formModel,
