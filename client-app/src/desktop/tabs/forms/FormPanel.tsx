@@ -2,7 +2,7 @@ import {form} from '@xh/hoist/cmp/form';
 import {box, div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {fieldSet, formField} from '@xh/hoist/desktop/cmp/form';
+import {collapsibleFieldSet, formField} from '@xh/hoist/desktop/cmp/form';
 import {
     checkbox,
     dateInput,
@@ -73,12 +73,12 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                     hbox({
                         gap: 5,
                         items: [
-                            fieldSet({
+                            collapsibleFieldSet({
                                 label: 'Contact Info',
                                 items: [firstAndLastNames(), region(), email(), tags()],
                                 flex: 1
                             }),
-                            fieldSet({
+                            collapsibleFieldSet({
                                 label: 'Employment Details',
                                 items: [
                                     startAndEndDate(),
@@ -90,7 +90,7 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                             })
                         ]
                     }),
-                    fieldSet({
+                    collapsibleFieldSet({
                         label: 'References',
                         item: references()
                     })
