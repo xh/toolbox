@@ -1,5 +1,5 @@
 import {form} from '@xh/hoist/cmp/form';
-import {div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
+import {box, div, filler, hbox, hframe, label, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -24,8 +24,9 @@ import {FormPanelModel} from './FormPanelModel';
 
 export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
+    className: 'tb-form-panel',
 
-    render() {
+    render({className}) {
         return wrapper({
             description: [
                 <p>
@@ -34,6 +35,10 @@ export const formPanel = hoistCmp.factory({
                     properties on all its contained <code>FormField</code>s and bind them to a{' '}
                     <code>FormModel</code>. The <code>FormModel</code> provides an observable API
                     for loading, validating, and submitting the data to back-end services.
+                </p>,
+                <p>
+                    This example also demonstrates customizing the style of <code>FormField</code>
+                    via CSS variables.
                 </p>
             ],
             links: [
@@ -47,8 +52,8 @@ export const formPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Forms › FormModel',
-                className: 'tb-form-panel',
                 icon: Icon.edit(),
+                className,
                 width: 870,
                 height: 550,
                 item: hframe(formContent(), displayOptions())
@@ -59,7 +64,6 @@ export const formPanel = hoistCmp.factory({
 
 const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
     panel({
-        flex: 1,
         item: form({
             fieldDefaults: {
                 inline: model.inline,
@@ -72,23 +76,14 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                 className: 'tb-form-panel__inner-scroll',
                 items: [
                     hbox({
-                        flex: 'none',
+                        gap: 10,
                         items: [
-                            vbox({
-                                flex: 1,
-                                marginRight: 30,
-                                items: [
-                                    hbox(
-                                        formField({field: 'firstName', item: textInput()}),
-                                        formField({field: 'lastName', item: textInput()})
-                                    ),
-                                    region(),
-                                    email(),
-                                    tags()
-                                ]
+                            div({
+                                style: {width: '50%'},
+                                items: [firstAndLastNames(), fullName(), email(), region(), tags()]
                             }),
-                            vbox({
-                                flex: 1,
+                            div({
+                                style: {width: '50%'},
                                 items: [
                                     startAndEndDate(),
                                     reasonForLeaving(),
@@ -98,7 +93,10 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                             })
                         ]
                     }),
-                    'References',
+                    label({
+                        className: 'xh-form-field__label',
+                        item: 'References'
+                    }),
                     references()
                 ]
             })
@@ -106,6 +104,28 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
         bbar: bbar()
     })
 );
+
+const firstAndLastNames = hoistCmp.factory<FormPanelModel>(({model}) => {
+    const flex = model.inline ? null : 1;
+    return box({
+        flexDirection: model.inline ? 'column' : 'row',
+        items: [
+            formField({
+                field: 'firstName',
+                flex,
+                item: textInput()
+            }),
+            formField({
+                field: 'lastName',
+                flex,
+                item: textInput()
+            })
+        ]
+    });
+});
+
+// Readonly field - does not require an item
+const fullName = hoistCmp.factory(() => formField({field: 'fullName'}));
 
 const email = hoistCmp.factory(() =>
     formField({
@@ -137,27 +157,24 @@ const tags = hoistCmp.factory(() =>
     })
 );
 
-const startAndEndDate = hoistCmp.factory(() =>
-    hbox(
-        formField({
-            field: 'startDate',
-            flex: 1,
-            inline: false, // always print labels on top (override form-level inline)
-            item: dateInput({
-                valueType: 'localDate'
+const startAndEndDate = hoistCmp.factory<FormPanelModel>(({model}) => {
+    const flex = model.inline ? null : 1;
+    return box({
+        flexDirection: model.inline ? 'column' : 'row',
+        items: [
+            formField({
+                field: 'startDate',
+                flex,
+                item: dateInput({valueType: 'localDate', width: 150})
+            }),
+            formField({
+                field: 'endDate',
+                flex,
+                item: dateInput({valueType: 'localDate', width: 150, enableClear: true})
             })
-        }),
-        formField({
-            field: 'endDate',
-            flex: 1,
-            inline: false,
-            item: dateInput({
-                valueType: 'localDate',
-                enableClear: true
-            })
-        })
-    )
-);
+        ]
+    });
+});
 
 const reasonForLeaving = hoistCmp.factory(() =>
     formField({
@@ -168,22 +185,25 @@ const reasonForLeaving = hoistCmp.factory(() =>
     })
 );
 
-const managerAndYearsExperience = hoistCmp.factory<FormPanelModel>(({model}) =>
-    hbox({
+const managerAndYearsExperience = hoistCmp.factory<FormPanelModel>(({model}) => {
+    return box({
+        flexDirection: model.inline ? 'column' : 'row',
         items: [
             formField({
                 field: 'isManager',
                 label: 'Manager?',
-                item: checkbox()
+                width: 100,
+                flex: 'none',
+                item: checkbox(),
+                readonlyRenderer: v => (v ? 'Yes' : 'No')
             }),
             formField({
                 field: 'yearsExperience',
                 item: numberInput({width: 50})
             })
-        ],
-        alignItems: model.inline ? 'center' : 'top'
-    })
-);
+        ]
+    });
+});
 
 const notes = hoistCmp.factory(() =>
     formField({
@@ -260,16 +280,16 @@ const displayOptions = hoistCmp.factory<FormPanelModel>(({model}) => {
             className: 'tbox-display-opts__inner',
             items: [
                 switchInput({
+                    bind: 'commitOnChange',
+                    label: 'Commit on change'
+                }),
+                switchInput({
                     bind: 'inline',
                     label: 'Inline labels'
                 }),
                 switchInput({
                     bind: 'minimal',
                     label: 'Minimal validation display'
-                }),
-                switchInput({
-                    bind: 'commitOnChange',
-                    label: 'Commit on change'
                 }),
                 switchInput({
                     model: formModel,

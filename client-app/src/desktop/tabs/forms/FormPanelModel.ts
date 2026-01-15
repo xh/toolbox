@@ -1,5 +1,6 @@
-import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
+import {pre, vbox} from '@xh/hoist/cmp/layout';
+import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {
     constrainAll,
     dateIs,
@@ -9,33 +10,34 @@ import {
     stringExcludes,
     validEmail
 } from '@xh/hoist/data';
-import {pre, vbox} from '@xh/hoist/cmp/layout';
+import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {Icon} from '@xh/hoist/icon';
-import {filter, isEmpty, isNil} from 'lodash';
+import {filter, isEmpty} from 'lodash';
 
 export class FormPanelModel extends HoistModel {
     @managed
     validateTask = TaskObserver.trackLast();
 
     // For meta controls below example.
-    @bindable inline = false;
-    @bindable minimal = false;
-    @bindable commitOnChange = false;
+    @bindable inline: boolean = false;
+    @bindable minimal: boolean = false;
+    @bindable commitOnChange: boolean = true;
 
     @managed
     formModel = new FormModel({
         fields: [
             {
                 name: 'firstName',
-                initialValue: 'Hoist',
                 rules: [required, lengthIs({max: 20})]
             },
             {
                 name: 'lastName',
-                initialValue: 'Developer',
                 rules: [required, lengthIs({max: 20})]
+            },
+            {
+                name: 'fullName',
+                readonly: true
             },
             {
                 name: 'email',
@@ -55,14 +57,31 @@ export class FormPanelModel extends HoistModel {
                 name: 'yearsExperience',
                 rules: [
                     numberIs({min: 0, max: 100}),
+                    ({value}) =>
+                        value > 50
+                            ? {
+                                  severity: 'info',
+                                  message: 'You have extensive experience!'
+                              }
+                            : null,
                     {
                         when: (f, {isManager}) => isManager,
                         check: [
                             required,
-                            ({value}) =>
-                                isNil(value) || value < 10
-                                    ? 'Managerial positions require at least 10 years of experience.'
-                                    : null
+                            ({value}) => {
+                                if (value < 10) {
+                                    return {
+                                        severity: 'error',
+                                        message: '10+ years required for managers.'
+                                    };
+                                }
+                                if (value < 15) {
+                                    return {
+                                        severity: 'warning',
+                                        message: '15+ years recommended for managers.'
+                                    };
+                                }
+                            }
                         ]
                     }
                 ]
@@ -91,7 +110,16 @@ export class FormPanelModel extends HoistModel {
             },
             {
                 name: 'region',
-                rules: [required]
+                rules: [
+                    required,
+                    ({value}) =>
+                        ['London', 'Montreal'].includes(value)
+                            ? {
+                                  severity: 'warning',
+                                  message: 'Region is outside primary operating areas.'
+                              }
+                            : null
+                ]
             },
             {
                 name: 'tags',
@@ -115,19 +143,31 @@ export class FormPanelModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
-        this.addReaction({
-            track: () => this.formModel.values.endDate,
-            run: endDate => {
-                const reasonField = this.formModel.fields.reasonForLeaving;
-                if (endDate) {
-                    reasonField.setDisabled(false);
-                } else {
-                    reasonField.setDisabled(true);
-                    reasonField.setValue(null);
-                }
+
+        const {formModel} = this;
+        this.addReaction(
+            {
+                track: () => formModel.values.endDate,
+                run: endDate => {
+                    const reasonField = formModel.fields.reasonForLeaving;
+                    if (endDate) {
+                        reasonField.setDisabled(false);
+                    } else {
+                        reasonField.setDisabled(true);
+                        reasonField.setValue(null);
+                    }
+                },
+                fireImmediately: true
             },
-            fireImmediately: true
-        });
+            {
+                track: () => [formModel.values.firstName, formModel.values.lastName],
+                run: ([firstName, lastName]) => {
+                    formModel.setValues({
+                        fullName: `${firstName ?? '[???]'} ${lastName ?? '[???]'}`
+                    });
+                }
+            }
+        );
     }
 
     async reset() {

@@ -1,10 +1,10 @@
 package io.xh.toolbox.admin
 
+import io.xh.hoist.security.AccessRequiresRole
 import io.xh.toolbox.BaseController
-import io.xh.hoist.security.Access
 
 
-@Access(['HOIST_ADMIN_READER'])
+@AccessRequiresRole('HOIST_ADMIN_READER')
 class FetchTestController extends BaseController {
 
     def index() {
@@ -16,7 +16,7 @@ class FetchTestController extends BaseController {
         if (sleep) {
             Thread.sleep(sleep)
         }
-        
+
         response.status = statusInt
 
         switch(status[0]) {
