@@ -2,7 +2,7 @@ import {form} from '@xh/hoist/cmp/form';
 import {box, div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {collapsibleFieldSet, formField} from '@xh/hoist/desktop/cmp/form';
+import {formField, formFieldSet} from '@xh/hoist/desktop/cmp/form';
 import {
     checkbox,
     dateInput,
@@ -70,33 +70,34 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
             item: div({
                 className: 'tb-form-panel__inner-scroll',
                 items: [
-                    collapsibleFieldSet({
+                    formFieldSet({
                         icon: Icon.user(),
-                        label: 'Candidate',
+                        title: 'Candidate',
+                        modelConfig: {collapsible: false},
                         item: hbox({
                             gap: 5,
                             items: [
-                                collapsibleFieldSet({
-                                    label: 'Contact Info',
+                                formFieldSet({
                                     items: [firstAndLastNames(), region(), email(), tags()],
-                                    flex: 1
+                                    flex: 1,
+                                    modelConfig: {collapsible: false}
                                 }),
-                                collapsibleFieldSet({
-                                    label: 'Employment Details',
+                                formFieldSet({
                                     items: [
                                         startAndEndDate(),
                                         reasonForLeaving(),
                                         managerAndYearsExperience(),
                                         notes()
                                     ],
-                                    flex: 1
+                                    flex: 1,
+                                    modelConfig: {collapsible: false}
                                 })
                             ]
                         })
                     }),
-                    collapsibleFieldSet({
+                    formFieldSet({
                         icon: Icon.phone(),
-                        label: 'References',
+                        title: 'References',
                         item: references()
                     })
                 ]
