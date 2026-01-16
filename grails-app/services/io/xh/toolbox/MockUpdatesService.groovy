@@ -52,7 +52,7 @@ class MockUpdatesService extends BaseService {
     }
 
     private void cullInactiveSubs() {
-        subs.removeAll{!webSocketService.hasLocalChannel(it)}
+        subs.removeAll{!webSocketService.hasChannel(it)}
     }
 
 }

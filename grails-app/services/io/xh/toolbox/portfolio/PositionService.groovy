@@ -259,7 +259,7 @@ class PositionService extends BaseService {
 
     void cullSessions() {
         def obsoleteSessions = sessions.values().findAll {
-            !webSocketService.hasLocalChannel(it.channelKey)
+            !webSocketService.hasChannel(it.channelKey)
         }
         obsoleteSessions.each {
             it.destroy()
