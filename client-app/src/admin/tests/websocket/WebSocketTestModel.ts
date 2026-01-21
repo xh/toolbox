@@ -1,13 +1,17 @@
+import {badge} from '@xh/hoist/cmp/badge';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {hbox} from '@xh/hoist/cmp/layout';
+import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {dateRenderer} from '@xh/hoist/format';
 import {makeObservable, bindable} from '@xh/hoist/mobx';
 import {WebSocketSubscription} from '@xh/hoist/svc';
+import {ReactNode} from 'react';
 
 export class WebSocketTestModel extends HoistModel {
     @managed gridModel: GridModel;
     @managed updateSub: WebSocketSubscription;
-    @bindable subscribed = false;
+    @bindable subscribedLocal = false;
+    @bindable subscribedCluster = false;
 
     constructor() {
         super();
@@ -16,7 +20,7 @@ export class WebSocketTestModel extends HoistModel {
             sortBy: [{colId: 'timestamp', sort: 'desc'}],
             emptyText: 'No updates received',
             columns: [
-                {field: 'id', headerName: 'ID', width: 80},
+                {field: 'id', headerName: 'ID', width: 120},
                 {field: 'timestamp', width: 200, renderer: dateRenderer({fmt: 'h:mm:ssa'})}
             ]
         });
@@ -30,23 +34,56 @@ export class WebSocketTestModel extends HoistModel {
         this.gridModel.updateData({add: [msg.data]});
     }
 
-    async subscribeAsync() {
+    async subscribeLocalAsync() {
         await XH.fetchJson({
-            url: 'mockUpdates/subscribe',
+            url: 'mockUpdates/subscribeLocal',
             params: {channelKey: XH.webSocketService.channelKey}
         });
 
-        XH.toast({message: 'Subscribed to updates.'});
-        this.subscribed = true;
+        XH.toast({message: 'Subscribed to updates from local server instance.'});
+        this.subscribedLocal = true;
     }
 
-    async unsubscribeAsync() {
+    async unsubscribeLocalAsync() {
         await XH.fetchJson({
-            url: 'mockUpdates/unsubscribe',
+            url: 'mockUpdates/unsubscribeLocal',
             params: {channelKey: XH.webSocketService.channelKey}
         });
 
-        XH.toast({message: 'Unsubscribed from updates.', intent: 'danger'});
-        this.subscribed = false;
+        XH.toast({
+            message: 'Unsubscribed from updates from local server instance.',
+            intent: 'danger'
+        });
+        this.subscribedLocal = false;
+    }
+
+    async subscribeClusterAsync() {
+        await XH.fetchJson({
+            url: 'mockUpdates/subscribeCluster',
+            params: {channelKey: XH.webSocketService.channelKey}
+        });
+
+        XH.toast({message: 'Subscribed to updates from all servers in cluster.'});
+        this.subscribedCluster = true;
+    }
+
+    async unsubscribeClusterAsync() {
+        await XH.fetchJson({
+            url: 'mockUpdates/unsubscribeCluster',
+            params: {channelKey: XH.webSocketService.channelKey}
+        });
+
+        XH.toast({
+            message: 'Unsubscribed from updates from all servers in cluster.',
+            intent: 'danger'
+        });
+        this.subscribedCluster = false;
+    }
+
+    formatInstance(instance: PlainObject): ReactNode {
+        const content = [instance.name];
+        if (instance.isPrimary) content.push(badge({item: 'primary', intent: 'primary'}));
+        if (instance.isLocal) content.push(badge('local'));
+        return hbox(content);
     }
 }
