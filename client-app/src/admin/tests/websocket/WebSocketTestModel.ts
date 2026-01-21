@@ -1,11 +1,8 @@
-import {badge} from '@xh/hoist/cmp/badge';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {hbox} from '@xh/hoist/cmp/layout';
-import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateRenderer} from '@xh/hoist/format';
 import {makeObservable, bindable} from '@xh/hoist/mobx';
 import {WebSocketSubscription} from '@xh/hoist/svc';
-import {ReactNode} from 'react';
 
 export class WebSocketTestModel extends HoistModel {
     @managed gridModel: GridModel;
@@ -78,12 +75,5 @@ export class WebSocketTestModel extends HoistModel {
             intent: 'danger'
         });
         this.subscribedCluster = false;
-    }
-
-    formatInstance(instance: PlainObject): ReactNode {
-        const content = [instance.name];
-        if (instance.isPrimary) content.push(badge({item: 'primary', intent: 'primary'}));
-        if (instance.isLocal) content.push(badge('local'));
-        return hbox(content);
     }
 }
