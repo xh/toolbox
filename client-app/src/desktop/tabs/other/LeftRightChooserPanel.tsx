@@ -59,7 +59,7 @@ export const leftRightChooserPanel = hoistCmp.factory({
                 }),
                 bbar: [
                     leftRightChooserFilter({
-                        anyMatch: model.anyMatch
+                        matchMode: model.anyMatch ? 'any' : 'startWord'
                     }),
                     switchInput({
                         bind: 'anyMatch',
