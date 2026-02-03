@@ -38,9 +38,8 @@ Toolbox is a showcase application for the Hoist framework - a full-stack UI tool
 # Start the Grails server
 ./gradlew bootRun -Duser.timezone=Etc/UTC
 
-# Start with local hoist-core (requires sibling directory)
+# Start with local hoist-core (requires sibling directory and runHoistInline=true in gradle.properties)
 ./gradlew bootRun -Duser.timezone=Etc/UTC
-# (with runHoistInline=true in gradle.properties)
 
 # Run console
 ./gradlew console
