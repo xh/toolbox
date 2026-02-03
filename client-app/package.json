@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^80.0.0-SNAPSHOT",
+    "@xh/hoist": "80.0.1",
     "@xh/package-template": "~3.0.1",
     "ag-grid-community": "~34.2.0",
     "ag-grid-enterprise": "~34.2.0",
