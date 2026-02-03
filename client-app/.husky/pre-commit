@@ -2,6 +2,6 @@ cd client-app
 yarn run lint-staged
 
 # Only run TypeScript compiler if TS/JS/TSX/JSX files are staged
-if git diff --cached --name-only --diff-filter=ACMR | grep -qE '\.(ts|tsx|js|jsx)$'; then
+if git diff --cached --name-only --diff-filter=ACMRD | grep -qE '\.(ts|tsx|js|jsx)$'; then
   yarn run tsc
 fi
