@@ -1,8 +1,8 @@
-import {form} from '@xh/hoist/cmp/form';
+import {form, formFieldSet} from '@xh/hoist/cmp/form';
 import {box, div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {formField, formFieldSet} from '@xh/hoist/desktop/cmp/form';
+import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
     checkbox,
     dateInput,

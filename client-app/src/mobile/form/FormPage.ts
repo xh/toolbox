@@ -1,4 +1,4 @@
-import {form} from '@xh/hoist/cmp/form';
+import {form, formFieldSet} from '@xh/hoist/cmp/form';
 import {div, filler, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {fmtPercent} from '@xh/hoist/format';
@@ -52,95 +52,105 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
         items: form({
             fieldDefaults: {minimal},
             items: vbox(
-                formField({
-                    field: 'name',
-                    info: 'Min. 8 chars',
-                    item: textInput({enableClear: true})
-                }),
-                formField({
-                    field: 'customer',
-                    item: select({
-                        placeholder: 'Search customers...',
-                        title: 'Search customers...',
-                        enableFilter: true,
-                        enableFullscreen: true,
-                        queryFn: q => model.queryCustomersAsync(q)
-                    })
-                }),
-                formField({
-                    field: 'movie',
-                    item: select({
-                        placeholder: 'Select a Movie...',
-                        options: movies
-                    })
-                }),
-                formField({
-                    field: 'salary',
-                    item: numberInput({
-                        enableShorthandUnits: false,
-                        displayWithCommas: true
-                    })
-                }),
-                formField({
-                    field: 'percentage',
-                    item: numberInput({
-                        scaleFactor: 100,
-                        valueLabel: '%'
-                    })
-                }),
-                formField({
-                    field: 'date',
-                    item: dateInput({
-                        minDate: LocalDate.today().subtract(2),
-                        maxDate: LocalDate.today().add(1, 'month'),
-                        textAlign: 'right',
-                        valueType: 'localDate'
-                    })
-                }),
-                hbox({
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
+                formFieldSet({
+                    title: 'Required',
                     items: [
                         formField({
-                            field: 'enabled',
-                            item: checkbox()
+                            field: 'name',
+                            info: 'Min. 8 chars',
+                            item: textInput({enableClear: true})
                         }),
                         formField({
-                            field: 'enabled',
-                            item: switchInput()
+                            field: 'customer',
+                            item: select({
+                                placeholder: 'Search customers...',
+                                title: 'Search customers...',
+                                enableFilter: true,
+                                enableFullscreen: true,
+                                queryFn: q => model.queryCustomersAsync(q)
+                            })
                         }),
                         formField({
-                            field: 'enabled',
-                            label: null, // checkboxButton is self-labelling, using fieldName for its text by default
-                            item: checkboxButton()
+                            field: 'movie',
+                            item: select({
+                                placeholder: 'Select a Movie...',
+                                options: movies
+                            })
                         })
                     ]
                 }),
-                formField({
-                    field: 'buttonGroup',
-                    item: buttonGroupInput(
-                        button({
-                            text: 'Button 1',
-                            value: 'button1'
+                formFieldSet({
+                    title: 'Optional',
+                    items: [
+                        formField({
+                            field: 'salary',
+                            item: numberInput({
+                                enableShorthandUnits: false,
+                                displayWithCommas: true
+                            })
                         }),
-                        button({
-                            icon: Icon.moon(),
-                            value: 'button2'
+                        formField({
+                            field: 'percentage',
+                            item: numberInput({
+                                scaleFactor: 100,
+                                valueLabel: '%'
+                            })
                         }),
-                        button({
-                            icon: Icon.skull(),
-                            text: 'Button 2',
-                            value: 'button3'
+                        formField({
+                            field: 'date',
+                            item: dateInput({
+                                minDate: LocalDate.today().subtract(2),
+                                maxDate: LocalDate.today().add(1, 'month'),
+                                textAlign: 'right',
+                                valueType: 'localDate'
+                            })
+                        }),
+                        hbox({
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            items: [
+                                formField({
+                                    field: 'enabled',
+                                    item: checkbox()
+                                }),
+                                formField({
+                                    field: 'enabled',
+                                    item: switchInput()
+                                }),
+                                formField({
+                                    field: 'enabled',
+                                    label: null, // checkboxButton is self-labelling, using fieldName for its text by default
+                                    item: checkboxButton()
+                                })
+                            ]
+                        }),
+                        formField({
+                            field: 'buttonGroup',
+                            item: buttonGroupInput(
+                                button({
+                                    text: 'Button 1',
+                                    value: 'button1'
+                                }),
+                                button({
+                                    icon: Icon.moon(),
+                                    value: 'button2'
+                                }),
+                                button({
+                                    icon: Icon.skull(),
+                                    text: 'Button 2',
+                                    value: 'button3'
+                                })
+                            )
+                        }),
+                        formField({
+                            field: 'notes',
+                            item: textArea()
+                        }),
+                        formField({
+                            field: 'searchQuery',
+                            item: searchInput()
                         })
-                    )
-                }),
-                formField({
-                    field: 'notes',
-                    item: textArea()
-                }),
-                formField({
-                    field: 'searchQuery',
-                    item: searchInput()
+                    ]
                 })
             )
         })
