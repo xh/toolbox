@@ -53,7 +53,8 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
             fieldDefaults: {minimal},
             items: vbox(
                 formFieldSet({
-                    title: 'Required',
+                    title: 'Field Set 1',
+                    modelConfig: {collapsible: true},
                     items: [
                         formField({
                             field: 'name',
@@ -80,7 +81,9 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
                     ]
                 }),
                 formFieldSet({
-                    title: 'Optional',
+                    className: 'xh-margin-top',
+                    title: 'Field Set 2',
+                    modelConfig: {collapsible: true},
                     items: [
                         formField({
                             field: 'salary',

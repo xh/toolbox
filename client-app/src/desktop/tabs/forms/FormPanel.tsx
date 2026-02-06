@@ -21,6 +21,7 @@ import React from 'react';
 import {wrapper} from '../../common';
 import './FormPanel.scss';
 import {FormPanelModel} from './FormPanelModel';
+import {badge} from '@xh/hoist/cmp/badge';
 
 export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
@@ -55,7 +56,7 @@ export const formPanel = hoistCmp.factory({
                 icon: Icon.edit(),
                 className,
                 width: 950,
-                height: 550,
+                height: 575,
                 item: hframe(formContent(), displayOptions())
             })
         });
@@ -78,7 +79,6 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                     formFieldSet({
                         icon: Icon.user(),
                         title: 'Candidate',
-                        modelConfig: {collapsible: false},
                         item: hbox({
                             gap: 5,
                             items: [
@@ -90,8 +90,7 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                                         region(),
                                         tags()
                                     ],
-                                    flex: 1,
-                                    modelConfig: {collapsible: false}
+                                    flex: 1
                                 }),
                                 formFieldSet({
                                     items: [
@@ -100,15 +99,16 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                                         managerAndYearsExperience(),
                                         notes()
                                     ],
-                                    flex: 1,
-                                    modelConfig: {collapsible: false}
+                                    flex: 1
                                 })
                             ]
                         })
                     }),
                     formFieldSet({
+                        className: 'xh-margin-top',
+                        modelConfig: {collapsible: true},
                         icon: Icon.phone(),
-                        title: 'References',
+                        title: hbox('References', badge(model.formModel.values.references.length)),
                         item: references()
                     })
                 ]
@@ -260,6 +260,8 @@ const references = hoistCmp.factory<FormPanelModel>(({model}) => {
                             icon: Icon.delete(),
                             intent: 'danger',
                             disabled: disableButtons,
+                            alignSelf: 'start',
+                            marginTop: 'var(--xh-form-field-padding)',
                             onClick: () => references.remove(refModel)
                         })
                     ]
