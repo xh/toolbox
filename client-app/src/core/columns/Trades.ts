@@ -1,4 +1,4 @@
-import {ExcelFormat, localDateCol} from '@xh/hoist/cmp/grid';
+import {ExcelFormat, localDateCol, tags} from '@xh/hoist/cmp/grid';
 import {dateRenderer, millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
@@ -54,6 +54,17 @@ export const tradeDateCol: ColumnSpec = {
         displayName: 'Date'
     },
     chooserDescription: 'Date of last trade (including related derivatives)'
+};
+
+export const tagsCol: ColumnSpec = {
+    ...tags,
+    field: {
+        name: 'tags',
+        type: 'tags',
+        displayName: 'Tags'
+    },
+    width: 210,
+    chooserDescription: 'Tags associated with this trade'
 };
 
 export const dayOfWeekCol: ColumnSpec = {
