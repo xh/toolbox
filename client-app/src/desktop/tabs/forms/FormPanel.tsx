@@ -1,5 +1,5 @@
-import {form} from '@xh/hoist/cmp/form';
-import {box, div, filler, hbox, hframe, label, span, vbox} from '@xh/hoist/cmp/layout';
+import {form, formFieldSet} from '@xh/hoist/cmp/form';
+import {box, div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -21,6 +21,7 @@ import React from 'react';
 import {wrapper} from '../../common';
 import './FormPanel.scss';
 import {FormPanelModel} from './FormPanelModel';
+import {badge} from '@xh/hoist/cmp/badge';
 
 export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
@@ -54,8 +55,8 @@ export const formPanel = hoistCmp.factory({
                 title: 'Forms › FormModel',
                 icon: Icon.edit(),
                 className,
-                width: 870,
-                height: 550,
+                width: 950,
+                height: 575,
                 item: hframe(formContent(), displayOptions())
             })
         });
@@ -75,29 +76,41 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
             item: div({
                 className: 'tb-form-panel__inner-scroll',
                 items: [
-                    hbox({
-                        gap: 10,
-                        items: [
-                            div({
-                                style: {width: '50%'},
-                                items: [firstAndLastNames(), fullName(), email(), region(), tags()]
-                            }),
-                            div({
-                                style: {width: '50%'},
-                                items: [
-                                    startAndEndDate(),
-                                    reasonForLeaving(),
-                                    managerAndYearsExperience(),
-                                    notes()
-                                ]
-                            })
-                        ]
+                    formFieldSet({
+                        icon: Icon.user(),
+                        title: 'Candidate',
+                        item: hbox({
+                            gap: 5,
+                            items: [
+                                formFieldSet({
+                                    items: [
+                                        firstAndLastNames(),
+                                        fullName(),
+                                        email(),
+                                        region(),
+                                        tags()
+                                    ],
+                                    flex: 1
+                                }),
+                                formFieldSet({
+                                    items: [
+                                        startAndEndDate(),
+                                        reasonForLeaving(),
+                                        managerAndYearsExperience(),
+                                        notes()
+                                    ],
+                                    flex: 1
+                                })
+                            ]
+                        })
                     }),
-                    label({
-                        className: 'xh-form-field__label',
-                        item: 'References'
-                    }),
-                    references()
+                    formFieldSet({
+                        className: 'xh-margin-top',
+                        modelConfig: {collapsible: true},
+                        icon: Icon.phone(),
+                        title: hbox('References', badge(model.formModel.values.references.length)),
+                        item: references()
+                    })
                 ]
             })
         }),
@@ -247,6 +260,8 @@ const references = hoistCmp.factory<FormPanelModel>(({model}) => {
                             icon: Icon.delete(),
                             intent: 'danger',
                             disabled: disableButtons,
+                            alignSelf: 'start',
+                            marginTop: 'var(--xh-form-field-padding)',
                             onClick: () => references.remove(refModel)
                         })
                     ]

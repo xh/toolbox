@@ -38,6 +38,7 @@ import {
 } from './tabs/grids';
 import {homeTab} from './tabs/home/HomeTab';
 import {
+    cardPanel,
     dashCanvasPanel,
     dashContainerPanel,
     dockContainerPanel,
@@ -151,6 +152,7 @@ export class AppModel extends BaseAppModel {
                         children: [
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
+                            {name: 'card', path: '/card'},
                             {name: 'tabPanel', path: '/tabPanel'},
                             {name: 'dock', path: '/dock'},
                             {name: 'dashContainer', path: '/dashContainer'},
@@ -334,6 +336,7 @@ export class AppModel extends BaseAppModel {
                     tabs: [
                         {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
                         {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
+                        {id: 'card', title: 'Card', content: cardPanel},
                         {
                             id: 'tabPanel',
                             title: 'TabContainer',
