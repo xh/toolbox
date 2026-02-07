@@ -1,5 +1,6 @@
 import React from 'react';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {span} from '@xh/hoist/cmp/layout';
 import {wrapper} from '../../common';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
@@ -9,7 +10,7 @@ import {
     leftRightChooserFilter,
     LeftRightChooserModel
 } from '@xh/hoist/desktop/cmp/leftrightchooser';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {select} from '@xh/hoist/desktop/cmp/input';
 // @ts-ignore
 import data from './impl/LeftRightChooserData';
 
@@ -59,11 +60,12 @@ export const leftRightChooserPanel = hoistCmp.factory({
                 }),
                 bbar: [
                     leftRightChooserFilter({
-                        anyMatch: model.anyMatch
+                        matchMode: model.matchMode
                     }),
-                    switchInput({
-                        bind: 'anyMatch',
-                        label: 'match anywhere in the string'
+                    span('Filter match mode:'),
+                    select({
+                        bind: 'matchMode',
+                        options: ['start', 'startWord', 'any']
                     })
                 ]
             })
@@ -80,7 +82,8 @@ class LeftRightChooserPanelModel extends HoistModel {
         rightGroupingEnabled: false
     });
 
-    @bindable anyMatch = false;
+    @bindable
+    matchMode: 'start' | 'startWord' | 'any' = 'startWord';
 
     constructor() {
         super();
