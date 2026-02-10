@@ -13,7 +13,7 @@ import {
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {filter, isEmpty} from 'lodash';
+import {isEmpty} from 'lodash';
 
 export class FormPanelModel extends HoistModel {
     @managed
@@ -176,6 +176,7 @@ export class FormPanelModel extends HoistModel {
 
     async submitAsync() {
         const {formModel} = this;
+
         const isValid = await formModel.validateAsync().linkTo(this.validateTask);
         if (isValid) {
             XH.alert({
@@ -183,11 +184,11 @@ export class FormPanelModel extends HoistModel {
             });
             this.reset();
         } else {
-            const errCount = filter(formModel.fields, f => f.isNotValid).length;
+            const allErrors = formModel.allErrors;
             XH.toast({
                 icon: Icon.warning(),
                 intent: 'danger',
-                message: `Cannot submit your form - ${errCount} fields failed to pass validation.`
+                message: `Cannot submit your form - ${allErrors.length} fields failed to pass validation.`
             });
         }
     }
