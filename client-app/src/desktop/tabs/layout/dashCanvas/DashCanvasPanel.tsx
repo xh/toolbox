@@ -7,7 +7,7 @@ import {filler, frame, hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
-import {dashCanvasWidgetWell} from '@xh/hoist/desktop/cmp/dash/canvas/widgetwell/DashCanvasWidgetWell';
+import {dashCanvasWidgetChooser} from '@xh/hoist/desktop/cmp/dash/canvas/widgetchooser/DashCanvasWidgetChooser';
 
 import {wrapper} from '../../../common';
 import {DashCanvasPanelModel} from './DashCanvasPanelModel';
@@ -59,7 +59,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                             side: 'right',
                             defaultSize: 250
                         },
-                        item: dashCanvasWidgetWell({
+                        item: dashCanvasWidgetChooser({
                             dashCanvasModel: model.dashCanvasModel
                         })
                     })
