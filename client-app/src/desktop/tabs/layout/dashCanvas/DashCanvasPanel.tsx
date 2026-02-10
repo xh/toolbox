@@ -1,25 +1,21 @@
 import {switchInput, numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
-import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame} from '@xh/hoist/cmp/layout';
+import {filler, frame, hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {dashCanvas, DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
-import {
-    buttonWidget,
-    chartWidget,
-    errorWidget,
-    gridWidget,
-    panelWidget,
-    treeGridWidget
-} from '../widgets';
+import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
+import {dashCanvasWidgetChooser} from '@xh/hoist/desktop/cmp/dash/canvas/widgetchooser/DashCanvasWidgetChooser';
+
 import {wrapper} from '../../../common';
+import {DashCanvasPanelModel} from './DashCanvasPanelModel';
+
+import './DashCanvasPanel.scss';
 
 export const dashCanvasPanel = hoistCmp.factory({
-    model: creates(() => Model),
+    model: creates(() => DashCanvasPanelModel),
 
     render({model}) {
         return wrapper({
@@ -42,14 +38,32 @@ export const dashCanvasPanel = hoistCmp.factory({
                 title: 'Layout › DashCanvas',
                 icon: Icon.layout(),
                 headerItems: [refreshButton({minimal: true, intent: null})],
+                className: 'dash-canvas-droppable-demo',
                 height: '80%',
                 width: '80%',
-                item: model.renderDashboard
-                    ? dashCanvas()
-                    : frame({
-                          item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
-                          padding: 10
-                      }),
+                item: hframe(
+                    model.renderDashboard
+                        ? dashCanvas({
+                              omit: !model.dashCanvasModel
+                          })
+                        : frame({
+                              item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
+                              padding: 10
+                          }),
+                    panel({
+                        omit: !model.renderDashboard,
+                        icon: Icon.arrowsLeftRight(),
+                        title: 'Add Widgets...',
+                        width: 250,
+                        modelConfig: {
+                            side: 'right',
+                            defaultSize: 250
+                        },
+                        item: dashCanvasWidgetChooser({
+                            dashCanvasModel: model.dashCanvasModel
+                        })
+                    })
+                ),
                 bbar: bbar()
             }),
             links: [
@@ -78,7 +92,7 @@ export const dashCanvasPanel = hoistCmp.factory({
     }
 });
 
-const bbar = hoistCmp.factory<Model>(({model}) =>
+const bbar = hoistCmp.factory<DashCanvasPanelModel>(({model}) =>
     toolbar({
         enableOverflowMenu: true,
         children: [
@@ -150,160 +164,3 @@ const bbar = hoistCmp.factory<Model>(({model}) =>
         ]
     })
 );
-
-class Model extends HoistModel {
-    @bindable renderDashboard = true;
-
-    @managed
-    dashCanvasModel = new DashCanvasModel({
-        persistWith: {localStorageKey: 'dashCanvasExampleState'},
-        initialState,
-        viewSpecDefaults: {
-            icon: Icon.gridPanel()
-        },
-        viewSpecs: [
-            {
-                id: 'grid',
-                title: 'Grid',
-                unique: true,
-                content: gridWidget,
-                width: 6,
-                height: 5,
-                groupName: 'Grid Widgets'
-            },
-            {
-                id: 'treeGrid',
-                title: 'Tree Grid',
-                content: treeGridWidget,
-                width: 12,
-                height: 8,
-                groupName: 'Grid Widgets'
-            },
-            {
-                id: 'buttons',
-                title: 'Buttons',
-                icon: Icon.stop(),
-                content: buttonWidget,
-                width: 4,
-                height: 2,
-                allowRename: false,
-                hideMenuButton: true
-            },
-            {
-                id: 'chart',
-                title: 'Chart',
-                icon: Icon.chartLine(),
-                unique: true,
-                content: chartWidget,
-                width: 12,
-                height: 5
-            },
-            {
-                id: 'panel',
-                title: 'Panel',
-                icon: Icon.window(),
-                content: panelWidget
-            },
-            {
-                id: 'error',
-                title: 'Error Example',
-                icon: Icon.skull(),
-                unique: true,
-                content: errorWidget({componentName: 'DashCanvas'})
-            }
-        ]
-    });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
-
-    clearCanvas() {
-        this.dashCanvasModel.viewModels.forEach(it => this.dashCanvasModel.removeView(it.id));
-        XH.toast({message: 'All views removed.'});
-    }
-
-    resetState() {
-        this.dashCanvasModel.restoreDefaults();
-        XH.toast({message: 'Dash state reset to default'});
-    }
-}
-
-const initialState = [
-    {
-        layout: {
-            x: 0,
-            y: 0,
-            w: 12,
-            h: 5
-        },
-        viewSpecId: 'chart'
-    },
-    {
-        layout: {
-            x: 0,
-            y: 5,
-            w: 4,
-            h: 3
-        },
-        viewSpecId: 'buttons',
-        title: 'Buttons 1',
-        state: {
-            value: 'Button 1'
-        }
-    },
-    {
-        layout: {
-            x: 4,
-            y: 5,
-            w: 4,
-            h: 3
-        },
-        viewSpecId: 'buttons',
-        title: 'Buttons 2',
-        state: {
-            value: 'Button 2'
-        }
-    },
-    {
-        layout: {
-            x: 8,
-            y: 5,
-            w: 4,
-            h: 3
-        },
-        viewSpecId: 'buttons',
-        title: 'Buttons 3',
-        state: {
-            value: 'Button 3'
-        }
-    },
-    {
-        layout: {
-            x: 9,
-            y: 8,
-            w: 3,
-            h: 4
-        },
-        viewSpecId: 'panel'
-    },
-    {
-        layout: {
-            x: 0,
-            y: 8,
-            w: 9,
-            h: 7
-        },
-        viewSpecId: 'treeGrid'
-    },
-    {
-        layout: {
-            x: 0,
-            y: 15,
-            w: 6,
-            h: 6
-        },
-        viewSpecId: 'error'
-    }
-];
