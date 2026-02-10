@@ -231,10 +231,7 @@ query XHRepoCommits {
     }
 
     private void pushUpdate() {
-        webSocketService.pushToChannels(
-            webSocketService.allChannels*.key, 'gitHubUpdate',
-            [timestamp: Instant.now()]
-        )
+        webSocketService.pushToAllChannels('gitHubUpdate', [timestamp: Instant.now()])
     }
 
     void clearCaches() {

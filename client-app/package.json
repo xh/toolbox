@@ -1,6 +1,6 @@
 {
   "name": "toolbox",
-  "version": "8.0-SNAPSHOT",
+  "version": "9.0-SNAPSHOT",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^80.0.0-SNAPSHOT",
+    "@xh/hoist": "^81.0.0-SNAPSHOT",
     "@xh/package-template": "~3.0.1",
     "ag-grid-community": "~34.2.0",
     "ag-grid-enterprise": "~34.2.0",
@@ -54,14 +54,15 @@
     "lint-staged": "16.x",
     "postcss": "8.x",
     "prettier": "3.x",
-    "stylelint": "16.x",
-    "stylelint-config-standard-scss": "16.x",
+    "stylelint": "17.x",
+    "stylelint-config-standard-scss": "17.x",
     "typescript": "~5.9.2"
   },
   "resolutions": {
     "@types/react": "18.x",
     "@types/react-dom": "18.x",
-    "core-js": "3.x"
+    "core-js": "3.x",
+    "jquery": "3.x"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

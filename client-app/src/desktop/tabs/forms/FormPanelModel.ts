@@ -20,22 +20,24 @@ export class FormPanelModel extends HoistModel {
     validateTask = TaskObserver.trackLast();
 
     // For meta controls below example.
-    @bindable inline = false;
-    @bindable minimal = false;
-    @bindable commitOnChange = false;
+    @bindable inline: boolean = false;
+    @bindable minimal: boolean = false;
+    @bindable commitOnChange: boolean = true;
 
     @managed
     formModel = new FormModel({
         fields: [
             {
                 name: 'firstName',
-                initialValue: 'Hoist',
                 rules: [required, lengthIs({max: 20})]
             },
             {
                 name: 'lastName',
-                initialValue: 'Developer',
                 rules: [required, lengthIs({max: 20})]
+            },
+            {
+                name: 'fullName',
+                readonly: true
             },
             {
                 name: 'email',
@@ -141,19 +143,31 @@ export class FormPanelModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
-        this.addReaction({
-            track: () => this.formModel.values.endDate,
-            run: endDate => {
-                const reasonField = this.formModel.fields.reasonForLeaving;
-                if (endDate) {
-                    reasonField.setDisabled(false);
-                } else {
-                    reasonField.setDisabled(true);
-                    reasonField.setValue(null);
-                }
+
+        const {formModel} = this;
+        this.addReaction(
+            {
+                track: () => formModel.values.endDate,
+                run: endDate => {
+                    const reasonField = formModel.fields.reasonForLeaving;
+                    if (endDate) {
+                        reasonField.setDisabled(false);
+                    } else {
+                        reasonField.setDisabled(true);
+                        reasonField.setValue(null);
+                    }
+                },
+                fireImmediately: true
             },
-            fireImmediately: true
-        });
+            {
+                track: () => [formModel.values.firstName, formModel.values.lastName],
+                run: ([firstName, lastName]) => {
+                    formModel.setValues({
+                        fullName: `${firstName ?? '[???]'} ${lastName ?? '[???]'}`
+                    });
+                }
+            }
+        );
     }
 
     async reset() {

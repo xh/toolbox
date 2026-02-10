@@ -1,3 +1,4 @@
+export * from './CardPanel';
 export * from './DockContainerPanel';
 export * from './HBoxContainerPanel';
 export * from './TileFrameContainerPanel';

@@ -1,6 +1,8 @@
 # Changelog
 
-## 8.0-SNAPSHOT - unreleased
+## 9.0-SNAPSHOT - unreleased
+
+## 8.0.0 - 2026-02-03
 
 ### New Features
 
@@ -9,8 +11,8 @@
 
 ### Libraries
 
-* hoist-core 35.0.0
-* @xh/hoist 79.0.0
+* hoist-core 36.1.0
+* @xh/hoist 80.0.1
 
 ## 7.0.0 - 2025-11-21
 

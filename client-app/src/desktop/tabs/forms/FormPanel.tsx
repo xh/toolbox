@@ -1,4 +1,4 @@
-import {form} from '@xh/hoist/cmp/form';
+import {form, formFieldSet} from '@xh/hoist/cmp/form';
 import {box, div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -21,11 +21,13 @@ import React from 'react';
 import {wrapper} from '../../common';
 import './FormPanel.scss';
 import {FormPanelModel} from './FormPanelModel';
+import {badge} from '@xh/hoist/cmp/badge';
 
 export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
+    className: 'tb-form-panel',
 
-    render() {
+    render({className}) {
         return wrapper({
             description: [
                 <p>
@@ -34,6 +36,10 @@ export const formPanel = hoistCmp.factory({
                     properties on all its contained <code>FormField</code>s and bind them to a{' '}
                     <code>FormModel</code>. The <code>FormModel</code> provides an observable API
                     for loading, validating, and submitting the data to back-end services.
+                </p>,
+                <p>
+                    This example also demonstrates customizing the style of <code>FormField</code>
+                    via CSS variables.
                 </p>
             ],
             links: [
@@ -47,10 +53,10 @@ export const formPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Forms › FormModel',
-                className: 'tb-form-panel',
                 icon: Icon.edit(),
-                width: 870,
-                height: 550,
+                className,
+                width: 950,
+                height: 575,
                 item: hframe(formContent(), displayOptions())
             })
         });
@@ -70,26 +76,41 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
             item: div({
                 className: 'tb-form-panel__inner-scroll',
                 items: [
-                    hbox({
-                        gap: 10,
-                        items: [
-                            div({
-                                style: {width: '50%'},
-                                items: [firstAndLastNames(), email(), region(), tags()]
-                            }),
-                            div({
-                                style: {width: '50%'},
-                                items: [
-                                    startAndEndDate(),
-                                    reasonForLeaving(),
-                                    managerAndYearsExperience(),
-                                    notes()
-                                ]
-                            })
-                        ]
+                    formFieldSet({
+                        icon: Icon.user(),
+                        title: 'Candidate',
+                        item: hbox({
+                            gap: 5,
+                            items: [
+                                formFieldSet({
+                                    items: [
+                                        firstAndLastNames(),
+                                        fullName(),
+                                        email(),
+                                        region(),
+                                        tags()
+                                    ],
+                                    flex: 1
+                                }),
+                                formFieldSet({
+                                    items: [
+                                        startAndEndDate(),
+                                        reasonForLeaving(),
+                                        managerAndYearsExperience(),
+                                        notes()
+                                    ],
+                                    flex: 1
+                                })
+                            ]
+                        })
                     }),
-                    'References',
-                    references()
+                    formFieldSet({
+                        className: 'xh-margin-top',
+                        modelConfig: {collapsible: true},
+                        icon: Icon.phone(),
+                        title: hbox('References', badge(model.formModel.values.references.length)),
+                        item: references()
+                    })
                 ]
             })
         }),
@@ -98,20 +119,26 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
 );
 
 const firstAndLastNames = hoistCmp.factory<FormPanelModel>(({model}) => {
+    const flex = model.inline ? null : 1;
     return box({
         flexDirection: model.inline ? 'column' : 'row',
         items: [
             formField({
                 field: 'firstName',
+                flex,
                 item: textInput()
             }),
             formField({
                 field: 'lastName',
+                flex,
                 item: textInput()
             })
         ]
     });
 });
+
+// Readonly field - does not require an item
+const fullName = hoistCmp.factory(() => formField({field: 'fullName'}));
 
 const email = hoistCmp.factory(() =>
     formField({
@@ -144,15 +171,18 @@ const tags = hoistCmp.factory(() =>
 );
 
 const startAndEndDate = hoistCmp.factory<FormPanelModel>(({model}) => {
+    const flex = model.inline ? null : 1;
     return box({
         flexDirection: model.inline ? 'column' : 'row',
         items: [
             formField({
                 field: 'startDate',
+                flex,
                 item: dateInput({valueType: 'localDate', width: 150})
             }),
             formField({
                 field: 'endDate',
+                flex,
                 item: dateInput({valueType: 'localDate', width: 150, enableClear: true})
             })
         ]
@@ -177,7 +207,8 @@ const managerAndYearsExperience = hoistCmp.factory<FormPanelModel>(({model}) => 
                 label: 'Manager?',
                 width: 100,
                 flex: 'none',
-                item: checkbox()
+                item: checkbox(),
+                readonlyRenderer: v => (v ? 'Yes' : 'No')
             }),
             formField({
                 field: 'yearsExperience',
@@ -229,6 +260,8 @@ const references = hoistCmp.factory<FormPanelModel>(({model}) => {
                             icon: Icon.delete(),
                             intent: 'danger',
                             disabled: disableButtons,
+                            alignSelf: 'start',
+                            marginTop: 'var(--xh-form-field-padding)',
                             onClick: () => references.remove(refModel)
                         })
                     ]
@@ -262,16 +295,16 @@ const displayOptions = hoistCmp.factory<FormPanelModel>(({model}) => {
             className: 'tbox-display-opts__inner',
             items: [
                 switchInput({
+                    bind: 'commitOnChange',
+                    label: 'Commit on change'
+                }),
+                switchInput({
                     bind: 'inline',
                     label: 'Inline labels'
                 }),
                 switchInput({
                     bind: 'minimal',
                     label: 'Minimal validation display'
-                }),
-                switchInput({
-                    bind: 'commitOnChange',
-                    label: 'Commit on change'
                 }),
                 switchInput({
                     model: formModel,
