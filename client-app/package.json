@@ -11,6 +11,7 @@
     "lint:all": "yarn lint:code && yarn lint:styles",
     "lint:code": "eslint .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
+    "postinstall": "node scripts/link-hoist-docs.js",
     "prepare": "cd .. && husky client-app/.husky",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
     "startAndAnalyze": "yarn start --env analyzeBundles",
