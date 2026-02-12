@@ -2,6 +2,13 @@
 
 ## 9.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added Weather Dashboard example app — a full-stack weather dashboard backed by the OpenWeatherMap
+  API, featuring a `DashCanvas` layout with multiple chart types and a grid summary view. Server-side
+  caching via Hoist `Cache`, city persistence via `@persist`, and `ViewManager` support for saved
+  layouts. This example was coded entirely by AI (Claude) without any human-written application code.
+
 ## 8.0.0 - 2026-02-03
 
 ### New Features

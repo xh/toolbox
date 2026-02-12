@@ -139,6 +139,10 @@ import 'highcharts/modules/exporting';
 import 'highcharts/modules/heatmap';
 import 'highcharts/modules/treemap';
 
+// `highcharts-more` must be imported before `solid-gauge`
+import 'highcharts/highcharts-more';
+import 'highcharts/modules/solid-gauge';
+
 // `treegraph` must be imported after `treemap`
 import 'highcharts/modules/treegraph';
 

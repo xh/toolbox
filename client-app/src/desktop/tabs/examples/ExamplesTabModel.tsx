@@ -35,6 +35,26 @@ export class ExamplesTabModel extends HoistModel {
             ]
         },
         {
+            title: 'Weather',
+            icon: Icon.sun(),
+            path: 'weather',
+            srcPath: 'weather',
+            text: [
+                <p>
+                    A weather dashboard backed by the OpenWeatherMap API, with server-side caching
+                    and auto-refresh.
+                </p>,
+                <p>
+                    Uses a <code>DashCanvas</code> layout with multiple chart types and a{' '}
+                    <code>Grid</code> summary view.
+                </p>,
+                <p>
+                    ✨This example was coded entirely by AI (Claude) without any human-written
+                    application code.
+                </p>
+            ]
+        },
+        {
             title: 'Contact',
             icon: Icon.users(),
             path: 'contact',
