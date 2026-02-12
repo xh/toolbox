@@ -1,167 +1,70 @@
 # Copilot Instructions for Toolbox
 
-## Overview
+## Primary Reference
 
-Toolbox is a showcase application for the Hoist framework - a full-stack UI toolkit by Extremely Heavy Industries. It demonstrates Hoist components and provides examples for both desktop and mobile applications.
+**See [AGENTS.md](../AGENTS.md) for comprehensive guidance** on this repository's tech stack, architecture, commands, and development practices.
 
-## Tech Stack
+## Critical: Hoist Framework Documentation
 
-### Backend
-- **Grails 7.0.5** - Server-side framework (Groovy/Java)
-- **Hoist Core 36.0-SNAPSHOT** - Backend framework
-- **MySQL** - Production database (H2 for local development)
-- **Java 17+** - Required JVM version
-- **Spring Boot** - Underlying application framework
-- **Auth0** - Authentication provider
+**Before writing or modifying any client-side code**, you MUST consult the hoist-react documentation at [`docs/hoist-react/README.md`](../docs/hoist-react/README.md). This is the authoritative reference for:
 
-### Frontend
-- **React 18.2** - UI framework
-- **TypeScript 5.9** - Primary language for client code
-- **Hoist React 80.0-SNAPSHOT** - Frontend framework
-- **Webpack** - Module bundler
-- **Node 18+** - Required (see `.nvmrc`)
-- **Yarn 1.22** - Package manager
-- **AG Grid 34.2** - Data grid component
-- **Highcharts 12.x** - Charting library
+- All available Hoist components and their APIs
+- Established patterns and conventions
+- Architecture guidance (Models, Components, Services)
+- Built-in functionality you should use instead of reinventing
 
-### Development Tools
-- **ESLint 9.x** - Code linting
-- **Prettier 3.x** - Code formatting
-- **Stylelint 17.x** - CSS linting
-- **Husky** - Git hooks
-- **lint-staged** - Pre-commit linting
+**Skipping the Hoist docs risks producing code that conflicts with framework patterns or misses existing functionality.** The documentation is shipped with the library and optimized for AI agent consumption.
 
-## Common Commands
+For server-side work, consult the existing `grails-app/` code and the [hoist-core GitHub repository](https://github.com/xh/hoist-core).
 
-### Server (from project root)
-```bash
-# Start the Grails server
-./gradlew bootRun -Duser.timezone=Etc/UTC
+## Copilot Workflow Guidelines
 
-# Start with local hoist-core (requires sibling directory and runHoistInline=true in gradle.properties)
-./gradlew bootRun -Duser.timezone=Etc/UTC
+### Before Starting Any Task
 
-# Run console
-./gradlew console
+1. **Read AGENTS.md** for project context
+2. **Consult hoist-react docs** (for client work) via the index at `docs/hoist-react/README.md`
+3. Review existing similar code in the repository
+4. Understand the Model + Component pairing pattern (see hoist-react AGENTS.md)
 
-# Build WAR file
-./gradlew war
-```
+### When Writing Code
 
-### Client (from client-app directory)
-```bash
-# Install dependencies
-yarn install
+- **Follow existing patterns** - This is a demo app showcasing Hoist framework best practices
+- **Use Hoist components** - Don't create custom implementations of functionality Hoist provides
+- **Maintain consistency** - Match the style and structure of existing code
+- **Check the docs first** - Before implementing any UI feature, verify if Hoist has a built-in solution
 
-# Start development server
-yarn start
+### Code Quality Standards
 
-# Start with local hoist-react (requires sibling directory)
-yarn startWithHoist
+- **Linting**: All code must pass ESLint and Stylelint (auto-runs on commit via Husky)
+- **TypeScript**: Preferred for all new client-side code
+- **Formatting**: Prettier config enforced (100 char width, 4-space indent for JS/TS, single quotes, no trailing commas)
+- **Comments**: Only add when necessary to explain complex logic; match existing comment style
 
-# Build for production
-yarn build
+### Testing & Validation
 
-# Lint code
-yarn lint
+- **Manual testing required** - No extensive automated test infrastructure exists
+- **Run locally** - Test both server (`./gradlew bootRun`) and client (`yarn start`) before committing
+- **Verify in browser** - Exercise the actual UI/API to confirm changes work correctly
 
-# Lint JavaScript/TypeScript only
-yarn lint:code
+### Security & Safety
 
-# Lint styles only
-yarn lint:styles
-```
+- **Never commit secrets** - Credentials belong in `.env` file (gitignored)
+- **Check dependencies** - Run security scanning before adding new packages
+- **Respect boundaries**:
+  - Don't modify framework code (`hoist-core`, `hoist-react`)
+  - Don't change build configs unless required
+  - Don't alter `.env`, certificates, or Auth0 configuration
 
-## Project Structure
+## Common Pitfalls to Avoid
 
-- `/grails-app/` - Grails backend code (controllers, services, domain, config)
-- `/src/main/groovy/` - Additional Groovy source code
-- `/client-app/src/` - React frontend source code
-  - `desktop/` - Desktop application code
-  - `mobile/` - Mobile application code
-- `/client-app/public/` - Static assets
-- `.env` - Local environment configuration (not committed, use `.env.template`)
+1. **Don't skip the Hoist documentation** - It's comprehensive and will save time
+2. **Don't reinvent components** - Hoist likely has what you need already built
+3. **Don't modify framework code** - Work in the application layer only
+4. **Don't commit without linting** - Pre-commit hooks will catch this, but fix issues early
+5. **Don't add dependencies without security review** - Check for vulnerabilities first
 
-## Development Guidelines
+## Quick Reference
 
-### Code Style
-- **Backend**: Follow Groovy conventions; use 4 spaces for indentation
-- **Frontend**: TypeScript is preferred; use Prettier and ESLint configurations
-- **Pre-commit hooks**: Code is automatically formatted and linted via Husky
-- **Do not add comments** unless they match existing style or explain complex logic
+For detailed information on tech stack, commands, architecture, and configuration, see [AGENTS.md](../AGENTS.md).
 
-### Testing
-- This repository does not have extensive test infrastructure
-- Manual testing via running the application is the primary validation method
-- Always test changes by running both server and client locally
-
-### Git Workflow
-- Never commit `.env` file (contains credentials)
-- Use semantic commit messages
-- Husky hooks will run linting before commits
-
-### Dependencies
-- **Backend**: Dependencies managed via Gradle (see `build.gradle`)
-- **Frontend**: Dependencies managed via Yarn (see `client-app/package.json`)
-- Hoist framework versions are coordinated between client and server
-- Always check for security vulnerabilities before adding dependencies
-
-## Configuration
-
-### Instance Configuration
-- Environment variables are loaded from `.env` file via Gradle plugin
-- Copy `.env.template` to `.env` and configure for your environment
-- Required variables must be set (validation runs at startup)
-
-### Database
-- **Local dev**: H2 (in-memory) or MySQL
-- **Production**: MySQL with UTF8 charset
-- Schema auto-created/updated via `dbCreate` setting
-
-### Multiple Instances
-- Enable via `APP_TOOLBOX_MULTI_INSTANCE_ENABLED=true` in `.env`
-- Run additional server instances on different ports (e.g., 8081)
-- Run additional client instances on different webpack ports (e.g., 3001)
-
-## Important Notes
-
-### What to Modify
-- Application code in `grails-app/` and `client-app/src/`
-- Configuration files when adding new features
-- Documentation when making significant changes
-
-### What NOT to Modify
-- `.env` file (this is local and gitignored)
-- Self-signed certificates in `src/main/resources/local-dev/`
-- Build configuration files unless absolutely necessary
-- Hoist framework code (modify in sibling repos: `hoist-core`, `hoist-react`)
-- Dependencies without checking security advisories first
-
-### Security
-- Never commit secrets, API keys, or credentials
-- Auth0 configuration must be updated by authorized team members only
-- Database credentials go in `.env`, not in code
-- Always run security scanning on code changes
-
-## Related Resources
-
-- [Hoist Core](https://github.com/xh/hoist-core)
-- [Hoist React](https://github.com/xh/hoist-react)
-- [Toolbox Dev Instance](https://toolbox-dev.xh.io)
-- [Toolbox Production](https://toolbox.xh.io)
-
-## Development Environment Setup
-
-1. Install Java 17+ and MySQL (or plan to use H2)
-2. Install Node.js (version from `.nvmrc`) and Yarn
-3. Clone `toolbox`, `hoist-core`, and `hoist-react` as sibling directories
-4. Copy `.env.template` to `.env` and configure
-5. For server: `./gradlew bootRun -Duser.timezone=Etc/UTC`
-6. For client: `cd client-app && yarn start`
-7. Access application at `http://localhost:3000`
-
-## Deployment
-
-- Toolbox-dev auto-deploys via TeamCity on commits to `develop`
-- Production instance updated manually with versioned Hoist releases
-- Uses AWS infrastructure with MySQL database
+For Hoist framework details, start with [`docs/hoist-react/README.md`](../docs/hoist-react/README.md).
