@@ -1,0 +1,36 @@
+.weather-app {
+  height: 100%;
+}
+
+.weather-current-conditions {
+  height: 100%;
+
+  &__gauge {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  &__details {
+    padding: 4px 12px 8px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  &__text {
+    font-size: 12px;
+    gap: 2px;
+  }
+
+  &__description {
+    font-weight: 600;
+    font-size: 13px;
+  }
+}
