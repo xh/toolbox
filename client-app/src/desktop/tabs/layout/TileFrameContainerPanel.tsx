@@ -1,6 +1,5 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {tileFrame} from '@xh/hoist/cmp/layout';
-import {div, hframe} from '@xh/hoist/cmp/layout';
+import {hframe, tileFrame} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -22,6 +21,11 @@ export const tileFrameContainerPanel = hoistCmp.factory({
             tiles.push(
                 panel({
                     className: 'tb-tileframe__tile',
+                    contentBoxProps: {
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        style: {backgroundColor: 'var(--xh-intent-primary-trans1)'}
+                    },
                     item: xhLogo({maxWidth: '60%', maxHeight: '80%'})
                 })
             );
@@ -65,64 +69,65 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                     }),
                     panel({
                         width: 200,
-                        className: 'xh-border-left',
+                        className: 'xh-border-left tb-tileframe__props-form',
+                        contentBoxProps: {
+                            padding: true,
+                            overflow: 'auto'
+                        },
                         item: form({
                             fieldDefaults: {inline: true, labelWidth: 110},
-                            item: div({
-                                className: 'tb-tileframe__props-form',
-                                items: [
-                                    formField({
-                                        field: 'tileCount',
-                                        item: numberInput({...inputConf})
-                                    }),
-                                    formField({
-                                        field: 'desiredRatio',
-                                        item: numberInput({...inputConf, stepSize: 0.5})
-                                    }),
-                                    formField({
-                                        field: 'spacing',
-                                        item: numberInput({...inputConf, valueLabel: 'px'})
-                                    }),
-                                    formField({
-                                        field: 'minTileWidth',
-                                        item: numberInput({
-                                            ...inputConf,
-                                            stepSize: 10,
-                                            valueLabel: 'px'
-                                        })
-                                    }),
-                                    formField({
-                                        field: 'maxTileWidth',
-                                        item: numberInput({
-                                            ...inputConf,
-                                            stepSize: 10,
-                                            valueLabel: 'px'
-                                        })
-                                    }),
-                                    formField({
-                                        field: 'minTileHeight',
-                                        item: numberInput({
-                                            ...inputConf,
-                                            stepSize: 10,
-                                            valueLabel: 'px'
-                                        })
-                                    }),
-                                    formField({
-                                        field: 'maxTileHeight',
-                                        item: numberInput({
-                                            ...inputConf,
-                                            stepSize: 10,
-                                            valueLabel: 'px'
-                                        })
-                                    }),
-                                    button({
-                                        text: 'Reset',
-                                        icon: Icon.reset(),
-                                        outlined: true,
-                                        onClick: () => model.formModel.reset()
+                            items: [
+                                formField({
+                                    field: 'tileCount',
+                                    item: numberInput({...inputConf})
+                                }),
+                                formField({
+                                    field: 'desiredRatio',
+                                    item: numberInput({...inputConf, stepSize: 0.5})
+                                }),
+                                formField({
+                                    field: 'spacing',
+                                    item: numberInput({...inputConf, valueLabel: 'px'})
+                                }),
+                                formField({
+                                    field: 'minTileWidth',
+                                    item: numberInput({
+                                        ...inputConf,
+                                        stepSize: 10,
+                                        valueLabel: 'px'
                                     })
-                                ]
-                            })
+                                }),
+                                formField({
+                                    field: 'maxTileWidth',
+                                    item: numberInput({
+                                        ...inputConf,
+                                        stepSize: 10,
+                                        valueLabel: 'px'
+                                    })
+                                }),
+                                formField({
+                                    field: 'minTileHeight',
+                                    item: numberInput({
+                                        ...inputConf,
+                                        stepSize: 10,
+                                        valueLabel: 'px'
+                                    })
+                                }),
+                                formField({
+                                    field: 'maxTileHeight',
+                                    item: numberInput({
+                                        ...inputConf,
+                                        stepSize: 10,
+                                        valueLabel: 'px'
+                                    })
+                                }),
+                                button({
+                                    text: 'Reset',
+                                    icon: Icon.reset(),
+                                    outlined: true,
+                                    onClick: () => model.formModel.reset()
+                                })
+                            ]
                         })
                     })
                 )

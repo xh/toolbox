@@ -18,13 +18,13 @@
   }
 
   &__output {
-    > .xh-panel__content > .xh-vframe {
+    > .xh-panel__inner > .xh-vframe {
       overflow-y: auto !important;
     }
   }
 
   &__comp {
-    > .xh-panel__content > .xh-vframe {
+    > .xh-panel__inner > .xh-vframe {
       padding: var(--xh-pad-px);
     }
 
