@@ -6,7 +6,8 @@ export const profitLossCol: ColumnSpec = {
     field: {
         name: 'profit_loss',
         type: 'number',
-        displayName: 'P&L'
+        displayName: 'P&L',
+        description: 'Annual Profit & Loss YTD (EBITDA)'
     },
     width: 130,
     align: 'right',
@@ -17,8 +18,7 @@ export const profitLossCol: ColumnSpec = {
         ledger: true,
         colorSpec: true
     }),
-    excelFormat: ExcelFormat.LEDGER_COLOR,
-    chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
+    excelFormat: ExcelFormat.LEDGER_COLOR
 };
 
 export const winLoseCol: ColumnSpec = {
@@ -30,7 +30,8 @@ export const tradeVolumeCol: ColumnSpec = {
     field: {
         name: 'trade_volume',
         type: 'number',
-        displayName: 'Volume'
+        displayName: 'Volume',
+        description: 'Daily Volume of Shares (Estimated, avg. YTD)'
     },
     width: 110,
     align: 'right',
@@ -42,8 +43,7 @@ export const tradeVolumeCol: ColumnSpec = {
     cellClassRules: {
         'tb-sample-grid__high-volume-cell': ({value}) => value >= 9000000000
     },
-    excelFormat: ExcelFormat.NUM_DELIMITED,
-    chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
+    excelFormat: ExcelFormat.NUM_DELIMITED
 };
 
 export const tradeDateCol: ColumnSpec = {
@@ -51,9 +51,9 @@ export const tradeDateCol: ColumnSpec = {
     field: {
         name: 'trade_date',
         type: 'localDate',
-        displayName: 'Date'
-    },
-    chooserDescription: 'Date of last trade (including related derivatives)'
+        displayName: 'Date',
+        description: 'Date of last trade (including related derivatives)'
+    }
 };
 
 export const dayOfWeekCol: ColumnSpec = {
