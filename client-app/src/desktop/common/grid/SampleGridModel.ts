@@ -170,7 +170,7 @@ export class SampleGridModel extends HoistModel {
                 }
             },
             columns: [
-                {field: 'id', hidden: true},
+                {field: 'id', hidden: true, headerHasExpandCollapse: false},
                 {
                     ...actionCol,
                     width: calcActionColWidth(2),
