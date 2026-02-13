@@ -118,6 +118,60 @@ Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged f
 ### Instance Configuration
 Environment variables loaded from `.env` file (copy `.env.template` to `.env`). Required: `APP_TOOLBOX_ENVIRONMENT`, `APP_TOOLBOX_DB_HOST`, `APP_TOOLBOX_DB_SCHEMA`, `APP_TOOLBOX_DB_USER`, `APP_TOOLBOX_DB_PASSWORD`.
 
+## Changelog
+
+Toolbox maintains a `CHANGELOG.md` that is parsed at build time by `changelog-parser` (via
+hoist-dev-utils) and displayed in-app to users via Hoist's `ChangelogService`. Write entries for an
+audience of developers and potential clients evaluating Hoist.
+
+### Format
+
+The file follows the [Keep a Changelog](https://keepachangelog.com/) structure:
+
+```
+# Changelog
+
+## 9.0-SNAPSHOT - unreleased
+
+### New Features
+
+* Added Weather Dashboard example app backed by the OpenWeatherMap API.
+
+### Libraries
+
+* @xh/hoist 80.0.1
+```
+
+- **Version headings**: `## <version> - <date>` — no `v` prefix. Use `SNAPSHOT - unreleased` for
+  the in-development version.
+- **Recognized categories** (used for styling in the in-app dialog): `Breaking Changes`,
+  `New Features`, `Bug Fixes`, `Technical`, `Libraries`.
+
+### Critical: single-line bullets only
+
+The changelog parser works **line-by-line**. Bullet points are only recognized when a line starts
+with `*` or `-`. Continuation lines, wrapped text, and nested sub-bullets are **silently dropped**
+from the parsed output.
+
+**Every bullet MUST be a single line — no matter how long.** Do not wrap, indent continuation text,
+or use nested sub-bullets. A 300-character single line is correct; a neatly wrapped two-line bullet
+is broken.
+
+```
+// GOOD — single line, renders completely in-app
+* Added Weather Dashboard example app — a full-stack weather dashboard backed by the OpenWeatherMap API, featuring a `DashCanvas` layout with multiple chart types.
+
+// BAD — continuation line will be silently dropped
+* Added Weather Dashboard example app — a full-stack weather dashboard backed by the OpenWeatherMap
+  API, featuring a `DashCanvas` layout with multiple chart types.
+```
+
+### Style
+
+- Use past tense ("Added", "Fixed", "Removed" — not "Add", "Fix", "Remove").
+- Be concise but specific about what changed and why.
+- Use backticks for API names, component names, and config keys (e.g. `ViewManager`, `useOAuth`).
+
 ## Related Repositories
 
 XH / Hoist framework developers can optionally check out the framework libraries as sibling
