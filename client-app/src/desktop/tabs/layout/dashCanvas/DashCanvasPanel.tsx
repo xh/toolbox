@@ -44,7 +44,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                 item: hframe(
                     model.renderDashboard
                         ? dashCanvas({
-                              omit: !model.dashCanvasModel
+                              omit: !model.dashCanvasModel // model is not created until async load of symbols completes
                           })
                         : frame({
                               item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
