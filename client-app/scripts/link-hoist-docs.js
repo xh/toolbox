@@ -25,9 +25,10 @@ if (!fs.existsSync(target)) {
 
 fs.mkdirSync(docsDir, {recursive: true});
 try {
-    fs.rmSync(link, {force: true});
+    fs.rmSync(link, {force: true, recursive: true});
 } catch (e) {
-    // May not exist yet
+    // Ignore error if it is of the "file doesn't exist" type
+    if (e.code !== 'ENOENT') throw e;
 }
 fs.symlinkSync(target, link, 'junction');
 console.log('[link-hoist-docs] Linked docs/hoist-react -> @xh/hoist/docs');
