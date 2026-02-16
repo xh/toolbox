@@ -182,6 +182,13 @@ class BootStrap implements LogSupport {
                     clientVisible: false,
                     groupName: 'Toolbox - Example Apps'
             ],
+            weatherApiKey: [
+                    valueType: 'string',
+                    defaultValue: 'UNCONFIGURED',
+                    clientVisible: false,
+                    groupName: 'Toolbox - Example Apps',
+                    note: 'API key for OpenWeatherMap (https://openweathermap.org/api). Sign up for a free key.'
+            ],
             newsRefreshMins: [
                     valueType: 'int',
                     defaultValue: 60,

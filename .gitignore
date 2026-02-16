@@ -12,6 +12,9 @@
 toolbox.yml
 .env
 
+# Symlinked hoist-react docs (created by postinstall)
+/docs/hoist-react
+
 # Compiled source
 .gradle/
 build/

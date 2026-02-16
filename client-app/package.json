@@ -11,6 +11,7 @@
     "lint:all": "yarn lint:code && yarn lint:styles",
     "lint:code": "eslint .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
+    "postinstall": "node scripts/link-hoist-docs.js",
     "prepare": "cd .. && husky client-app/.husky",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
     "startAndAnalyze": "yarn start --env analyzeBundles",
@@ -31,7 +32,7 @@
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^81.0.0-SNAPSHOT",
+    "@xh/hoist": "^82.0.0-SNAPSHOT",
     "@xh/package-template": "~3.0.1",
     "ag-grid-community": "~34.2.0",
     "ag-grid-enterprise": "~34.2.0",
