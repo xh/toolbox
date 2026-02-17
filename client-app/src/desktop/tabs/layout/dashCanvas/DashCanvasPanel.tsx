@@ -3,7 +3,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame, hframe} from '@xh/hoist/cmp/layout';
+import {filler, frame, hframe, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
@@ -41,6 +41,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                 className: 'dash-canvas-droppable-demo',
                 height: '80%',
                 width: '80%',
+                tbar: tbar(),
                 item: hframe(
                     model.renderDashboard
                         ? dashCanvas({
@@ -50,15 +51,10 @@ export const dashCanvasPanel = hoistCmp.factory({
                               item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                               padding: 10
                           }),
-                    panel({
-                        omit: !model.renderDashboard,
-                        icon: Icon.arrowsLeftRight(),
-                        title: 'Add Widgets...',
-                        width: 250,
-                        modelConfig: {
-                            side: 'right',
-                            defaultSize: 250
-                        },
+                    vframe({
+                        omit: !model.showWidgetChooser || !model.renderDashboard,
+                        width: 310,
+                        style: {borderLeft: '1px solid var(--xh-border-color)'},
                         item: dashCanvasWidgetChooser({
                             dashCanvasModel: model.dashCanvasModel
                         })
@@ -92,75 +88,86 @@ export const dashCanvasPanel = hoistCmp.factory({
     }
 });
 
+const tbar = hoistCmp.factory<DashCanvasPanelModel>(({model}) =>
+    toolbar(
+        'Columns',
+        numberInput({
+            width: 80,
+            bind: 'columns',
+            model: model.dashCanvasModel
+        }),
+        '-',
+        'Row Height',
+        numberInput({
+            width: 80,
+            bind: 'rowHeight',
+            valueLabel: 'px',
+            model: model.dashCanvasModel
+        }),
+        '-',
+        'Compact Views',
+        select({
+            width: 120,
+            bind: 'compact',
+            model: model.dashCanvasModel,
+            options: ['vertical', 'horizontal', false]
+        }),
+        '-',
+        switchInput({
+            label: 'Show Background',
+            bind: 'showGridBackground',
+            labelSide: 'left',
+            model: model.dashCanvasModel
+        }),
+        filler(),
+        button({
+            text: 'Choose Widgets...',
+            icon: Icon.boxFull(),
+            outlined: !model.showWidgetChooser,
+            active: model.showWidgetChooser,
+            onClick: () => (model.showWidgetChooser = !model.showWidgetChooser)
+        })
+    )
+);
+
 const bbar = hoistCmp.factory<DashCanvasPanelModel>(({model}) =>
-    toolbar({
-        enableOverflowMenu: true,
-        children: [
-            switchInput({
-                label: 'Render Dashboard',
-                bind: 'renderDashboard',
-                labelSide: 'left'
-            }),
-            '-',
-            switchInput({
-                label: 'Layout Locked',
-                bind: 'layoutLocked',
-                labelSide: 'left',
-                model: model.dashCanvasModel
-            }),
-            '-',
-            switchInput({
-                label: 'Content Locked',
-                bind: 'contentLocked',
-                labelSide: 'left',
-                model: model.dashCanvasModel
-            }),
-            '-',
-            switchInput({
-                label: 'Rename Locked',
-                bind: 'renameLocked',
-                labelSide: 'left',
-                model: model.dashCanvasModel
-            }),
-            '-',
-            switchInput({
-                label: 'Show Background',
-                bind: 'showGridBackground',
-                labelSide: 'left',
-                model: model.dashCanvasModel
-            }),
-            '-',
-            'Columns',
-            numberInput({
-                width: 80,
-                bind: 'columns',
-                model: model.dashCanvasModel
-            }),
-            '-',
-            'Row Ht.',
-            numberInput({
-                width: 80,
-                bind: 'rowHeight',
-                model: model.dashCanvasModel
-            }),
-            '-',
-            'Compact Views',
-            select({
-                bind: 'compact',
-                model: model.dashCanvasModel,
-                options: ['vertical', 'horizontal', false]
-            }),
-            filler(),
-            button({
-                text: 'Clear',
-                icon: Icon.cross(),
-                onClick: () => model.clearCanvas()
-            }),
-            button({
-                text: 'Reset State',
-                icon: Icon.reset(),
-                onClick: () => model.resetState()
-            })
-        ]
-    })
+    toolbar(
+        switchInput({
+            label: 'Render Dashboard',
+            bind: 'renderDashboard',
+            labelSide: 'left'
+        }),
+        '-',
+        switchInput({
+            label: 'Layout Locked',
+            bind: 'layoutLocked',
+            labelSide: 'left',
+            model: model.dashCanvasModel
+        }),
+        '-',
+        switchInput({
+            label: 'Content Locked',
+            bind: 'contentLocked',
+            labelSide: 'left',
+            model: model.dashCanvasModel
+        }),
+        '-',
+        switchInput({
+            label: 'Rename Locked',
+            bind: 'renameLocked',
+            labelSide: 'left',
+            model: model.dashCanvasModel
+        }),
+        filler(),
+        button({
+            text: 'Clear',
+            icon: Icon.cross(),
+            onClick: () => model.clearCanvas()
+        }),
+        button({
+            text: 'Reset State',
+            icon: Icon.reset(),
+            onClick: () => model.resetState()
+        })
+    )
 );

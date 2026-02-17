@@ -14,6 +14,7 @@ import {
 
 export class DashCanvasPanelModel extends HoistModel {
     @bindable renderDashboard = true;
+    @bindable showWidgetChooser = true;
     @observable.ref allSymbols: string[] = [];
 
     @managed
