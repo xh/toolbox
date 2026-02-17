@@ -12,6 +12,7 @@
 import {XH} from '@xh/hoist/core';
 import {when} from '@xh/hoist/mobx';
 
+import {BoardGameService} from './examples/boardGames/BoardGameService';
 import {ContactService} from './examples/contact/svc/ContactService';
 import {GitHubService} from './core/svc/GitHubService';
 import {PortfolioService} from './core/svc/PortfolioService';
@@ -20,6 +21,7 @@ import {TaskService} from './examples/todo/TaskService';
 declare module '@xh/hoist/core' {
     // Merge interface with XHApi class to include injected services.
     export interface XHApi {
+        boardGameService: BoardGameService;
         contactService: ContactService;
         gitHubService: GitHubService;
         portfolioService: PortfolioService;

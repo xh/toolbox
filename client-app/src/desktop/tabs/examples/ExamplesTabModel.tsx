@@ -124,6 +124,20 @@ export class ExamplesTabModel extends HoistModel {
                     file uploads. Contact us for a walkthrough.
                 </p>
             ]
+        },
+        {
+            title: 'Board Games',
+            icon: Icon.gridPanel(),
+            path: 'boardGames',
+            srcPath: 'boardGames',
+            text: [
+                <p>Classic board games powered by Hoist grids.</p>,
+                <p>
+                    Minesweeper and Battleship demonstrate the <code>Grid</code> as an interactive
+                    game board, with custom cell renderers, per-cell CSS classes, click handlers,
+                    and dynamic grid reconstruction.
+                </p>
+            ]
         }
     ];
 

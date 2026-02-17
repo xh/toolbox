@@ -1,0 +1,114 @@
+.minesweeper-game-panel {
+  .minesweeper-board {
+    .ag-root-wrapper {
+      border: 1px solid var(--xh-border-color);
+    }
+
+    // Overriding ag-Grid's own element styles — these target ag-Grid classes
+    // directly so !important may be needed to beat theme/inline specificity.
+    .ag-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 !important;
+      cursor: pointer;
+      user-select: none;
+      font-size: 14px;
+      font-weight: bold;
+      border-right: 1px solid var(--xh-border-color) !important;
+    }
+
+    .ag-row {
+      border-bottom: 1px solid var(--xh-border-color) !important;
+    }
+
+    // Cell states — light theme.
+    // Our specificity (0-3-0) should beat ag-Grid's theme selectors (0-2-0).
+    .minesweeper-cell {
+      &--hidden {
+        background: var(--xh-bg-alt);
+
+        &:hover {
+          background: var(--xh-bg-highlight);
+        }
+      }
+
+      &--flagged {
+        background: var(--xh-bg-alt);
+      }
+
+      &--revealed {
+        background: var(--xh-bg);
+      }
+
+      &--mine {
+        background: var(--xh-intent-danger-transparent);
+      }
+    }
+
+    // Flag and mine icons
+    .minesweeper-flag {
+      color: var(--xh-red);
+      font-size: 14px;
+    }
+
+    .minesweeper-mine {
+      color: var(--xh-text-color);
+      font-size: 14px;
+    }
+
+    // Number colors — classic Minesweeper palette (light mode)
+    .minesweeper-number-1 {
+      color: #0000ff;
+    }
+    .minesweeper-number-2 {
+      color: #008000;
+    }
+    .minesweeper-number-3 {
+      color: #ff0000;
+    }
+    .minesweeper-number-4 {
+      color: #000080;
+    }
+    .minesweeper-number-5 {
+      color: #800000;
+    }
+    .minesweeper-number-6 {
+      color: #008080;
+    }
+    .minesweeper-number-7 {
+      color: #000000;
+    }
+    .minesweeper-number-8 {
+      color: #808080;
+    }
+  }
+}
+
+// Dark mode — brighter variants for readability
+.xh-dark .minesweeper-game-panel .minesweeper-board {
+  .minesweeper-number-1 {
+    color: #6ea8fe;
+  }
+  .minesweeper-number-2 {
+    color: #55dd55;
+  }
+  .minesweeper-number-3 {
+    color: #ff6666;
+  }
+  .minesweeper-number-4 {
+    color: #9b9bff;
+  }
+  .minesweeper-number-5 {
+    color: #ff7799;
+  }
+  .minesweeper-number-6 {
+    color: #55dddd;
+  }
+  .minesweeper-number-7 {
+    color: #ffffff;
+  }
+  .minesweeper-number-8 {
+    color: #bbbbbb;
+  }
+}

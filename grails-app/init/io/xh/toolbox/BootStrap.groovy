@@ -328,6 +328,12 @@ class BootStrap implements LogSupport {
                     groupName: 'Toolbox',
                     type: 'json',
                     defaultValue: []
+            ],
+            boardGameHighScores: [
+                    type: 'json',
+                    defaultValue: [:],
+                    groupName: 'Toolbox - Example Apps',
+                    note: 'Stores high scores for the Board Games example app (Minesweeper, Battleship).'
             ]
         ])
     }
