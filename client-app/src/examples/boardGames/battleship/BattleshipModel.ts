@@ -207,7 +207,22 @@ export class BattleshipModel extends HoistModel {
         if (this.phase !== 'playing' || !this.isPlayerTurn) return;
         if (this.attackBoard[row][col] !== 'water') return;
 
-        // Process player shot
+        if (this.processPlayerShot(row, col)) return;
+
+        this.beginAITurn();
+        await wait(750);
+        this.processAITurn();
+    }
+
+    @action
+    private beginAITurn() {
+        this.isPlayerTurn = false;
+        this.syncGrids();
+    }
+
+    /** Process a player shot and sync the grid. Returns true if the game ended. */
+    @action
+    private processPlayerShot(row: number, col: number): boolean {
         const hit = this.aiBoard[row][col] === 'ship';
         this.attackBoard[row][col] = hit ? 'hit' : 'miss';
 
@@ -215,13 +230,13 @@ export class BattleshipModel extends HoistModel {
             const sunkShip = this.registerHit(this.aiShips, row, col);
             if (sunkShip) {
                 this.markSunk(this.attackBoard, sunkShip);
+                this.aiShips = [...this.aiShips];
                 XH.successToast(`You sank their ${sunkShip.name}!`);
             }
         }
 
         this.syncGrids();
 
-        // Check win
         if (this.aiShips.every(s => s.isSunk)) {
             this.phase = 'gameOver';
             this.syncGrids();
@@ -230,14 +245,10 @@ export class BattleshipModel extends HoistModel {
                 message: 'You sank all enemy ships!',
                 icon: Icon.checkCircle()
             });
-            return;
+            return true;
         }
 
-        // AI turn
-        this.isPlayerTurn = false;
-        this.syncGrids();
-        await wait(750);
-        this.processAITurn();
+        return false;
     }
 
     //------------------------------------------------------------------
@@ -276,6 +287,7 @@ export class BattleshipModel extends HoistModel {
             const sunkShip = this.registerHit(this.playerShips, r, c);
             if (sunkShip) {
                 this.markSunk(this.playerBoard, sunkShip);
+                this.playerShips = [...this.playerShips];
                 // Clear hunt targets on sink
                 this.aiState.targets = [];
                 this.aiState.mode = 'random';

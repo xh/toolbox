@@ -11,8 +11,6 @@ export interface HighScore {
  * Scores are persisted per-user via Hoist preferences.
  */
 export class BoardGameService extends HoistService {
-    static instance: BoardGameService;
-
     getHighScores(game: string): HighScore[] {
         const all = XH.getPref('boardGameHighScores') ?? {};
         return all[game] ?? [];

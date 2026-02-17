@@ -1,7 +1,7 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
 import {Timer} from '@xh/hoist/utils/async';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {span} from '@xh/hoist/cmp/layout';
@@ -70,7 +70,7 @@ export class MinesweeperModel extends HoistModel {
     private mineCount: number = 0;
     private firstClick: boolean = true;
 
-    private gameTimer: Timer = null;
+    @managed private gameTimer: Timer = null;
 
     constructor() {
         super();
@@ -84,11 +84,11 @@ export class MinesweeperModel extends HoistModel {
         });
     }
 
-    get difficultyConfig(): Difficulty {
+    @computed get difficultyConfig(): Difficulty {
         return DIFFICULTIES[this.difficulty];
     }
 
-    get flagCount(): number {
+    @computed get flagCount(): number {
         let count = 0;
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
@@ -98,18 +98,18 @@ export class MinesweeperModel extends HoistModel {
         return count;
     }
 
-    get minesRemaining(): number {
+    @computed get minesRemaining(): number {
         return this.mineCount - this.flagCount;
     }
 
-    get formattedTime(): string {
+    @computed get formattedTime(): string {
         const s = this.elapsedSeconds;
         const mins = Math.floor(s / 60);
         const secs = s % 60;
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
-    get statusText(): string {
+    @computed get statusText(): string {
         switch (this.gameState) {
             case 'idle':
                 return 'Click any cell to start.';
@@ -158,6 +158,7 @@ export class MinesweeperModel extends HoistModel {
     //------------------------------------------------------------------
     // Cell interactions
     //------------------------------------------------------------------
+    @action
     revealCell(row: number, col: number) {
         if (this.gameState === 'won' || this.gameState === 'lost') return;
 
@@ -292,9 +293,9 @@ export class MinesweeperModel extends HoistModel {
     //------------------------------------------------------------------
     private startTimer() {
         this.gameTimer = Timer.create({
-            runFn: () => {
+            runFn: action(() => {
                 this.elapsedSeconds++;
-            },
+            }),
             interval: 1,
             intervalUnits: SECONDS,
             delay: true
