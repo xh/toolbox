@@ -379,14 +379,19 @@ export class BattleshipModel extends HoistModel {
         this.shipBorderMap = Array.from({length: GRID_ROWS}, () => Array(GRID_COLS).fill(''));
         for (const ship of this.playerShips) {
             for (const {r, c} of ship.cells) {
-                const id = ship.id;
-                const b = [];
-                if (r === 0 || ownerMap[r - 1][c] !== id) b.push('battleship-ship--border-top');
-                if (r === GRID_ROWS - 1 || ownerMap[r + 1][c] !== id)
-                    b.push('battleship-ship--border-bottom');
-                if (c === 0 || ownerMap[r][c - 1] !== id) b.push('battleship-ship--border-left');
-                if (c === GRID_COLS - 1 || ownerMap[r][c + 1] !== id)
-                    b.push('battleship-ship--border-right');
+                const id = ship.id,
+                    above = r > 0 ? ownerMap[r - 1][c] : null,
+                    below = r < GRID_ROWS - 1 ? ownerMap[r + 1][c] : null,
+                    left = c > 0 ? ownerMap[r][c - 1] : null,
+                    right = c < GRID_COLS - 1 ? ownerMap[r][c + 1] : null,
+                    b = [];
+                // Top/left: only draw if facing water (not another ship — that
+                // neighbor's bottom/right already covers the shared edge).
+                if (above === null) b.push('battleship-ship--border-top');
+                if (left === null) b.push('battleship-ship--border-left');
+                // Bottom/right: draw if facing anything other than same ship.
+                if (below !== id) b.push('battleship-ship--border-bottom');
+                if (right !== id) b.push('battleship-ship--border-right');
                 this.shipBorderMap[r][c] = b.join(' ');
             }
         }
