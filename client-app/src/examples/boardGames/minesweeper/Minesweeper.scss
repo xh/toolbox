@@ -4,8 +4,6 @@
       border: 1px solid var(--xh-border-color);
     }
 
-    // Overriding ag-Grid's own element styles — these target ag-Grid classes
-    // directly so !important may be needed to beat theme/inline specificity.
     .ag-cell {
       display: flex;
       align-items: center;
@@ -22,31 +20,24 @@
       border-bottom: 1px solid var(--xh-border-color) !important;
     }
 
-    // Cell states — light theme.
-    // Our specificity (0-3-0) should beat ag-Grid's theme selectors (0-2-0).
     .minesweeper-cell {
       &--hidden {
         background: var(--xh-bg-alt);
-
         &:hover {
           background: var(--xh-bg-highlight);
         }
       }
-
       &--flagged {
         background: var(--xh-bg-alt);
       }
-
       &--revealed {
         background: var(--xh-bg);
       }
-
       &--mine {
         background: var(--xh-intent-danger-transparent);
       }
     }
 
-    // Flag and mine icons
     .minesweeper-flag {
       color: var(--xh-red);
       font-size: 14px;
@@ -57,7 +48,7 @@
       font-size: 14px;
     }
 
-    // Number colors — classic Minesweeper palette (light mode)
+    // Number colors — classic Minesweeper palette
     .minesweeper-number-1 {
       color: #0000ff;
     }
@@ -85,8 +76,8 @@
   }
 }
 
-// Dark mode — brighter variants for readability
-.xh-dark .minesweeper-game-panel .minesweeper-board {
+// Dark mode — brighter number variants for readability
+.xh-dark .minesweeper-board {
   .minesweeper-number-1 {
     color: #6ea8fe;
   }
