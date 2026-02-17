@@ -4,7 +4,8 @@
     "allow": [
       "Read",
       "WebSearch",
-      "mcp__hoist-react__*"
+      "mcp__hoist-react__*",
+      "mcp__ide__getDiagnostics"
     ]
   },
   "enabledMcpjsonServers": [

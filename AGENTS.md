@@ -53,6 +53,37 @@ at https://github.com/xh/hoist-core. A local checkout may exist as a sibling dir
 **Prefer the GitHub repository as the authoritative source for hoist-core reference material
 unless asked not to or the context suggests the local version is more relevant.**
 
+## MCP Servers
+
+This project configures MCP (Model Context Protocol) servers in `.mcp.json` that provide additional
+tools to AI coding agents. Servers must also be listed in `.claude/settings.json` under
+`enabledMcpjsonServers` to be active.
+
+### hoist-react (enabled by default)
+
+A local Node.js process that exposes hoist-react framework documentation and symbol search. This is
+the same documentation referenced in the section above — the MCP server provides a structured
+interface for querying it. No additional setup is required; it runs directly from installed
+`node_modules`.
+
+### github (opt-in)
+
+A Docker-based server providing GitHub API tools (issues, PRs, code search, etc.) via the official
+`github-mcp-server` image. This server is **not enabled by default**. To use it:
+
+1. Install and start **Docker**
+2. Set the **`GITHUB_TOKEN`** environment variable to a GitHub Personal Access Token
+3. Add `"github"` to `enabledMcpjsonServers` in `.claude/settings.local.json`:
+   ```json
+   {
+     "enabledMcpjsonServers": ["hoist-react", "github"]
+   }
+   ```
+
+If Docker is not running or the token is not set when the server is enabled, Claude Code may show
+errors on startup. Disable the server by removing `"github"` from your local settings if this
+becomes disruptive.
+
 ## Tech Stack
 
 - **Frontend**: TypeScript, React 18, MobX, AG Grid, Highcharts, `@xh/hoist` framework
