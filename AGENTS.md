@@ -253,6 +253,7 @@ Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged f
 - **Arrow parens**: avoid when possible (`x => x` not `(x) => x`)
 - **Semicolons**: always
 - **Trailing commas**: none
+- **Commit messages**: Do not hard-wrap lines in commit message bodies. Write each sentence or thought as a single unwrapped line and let the viewing tool handle display wrapping.
 
 ## Architecture
 
