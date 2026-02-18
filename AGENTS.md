@@ -21,37 +21,165 @@ Understanding these frameworks is essential to writing correct, idiomatic code i
 
 ### hoist-react (client-side)
 
-hoist-react ships as an uncompiled library, so its full source *and documentation* are available
-locally. A symlink at **[`docs/hoist-react/`](./docs/hoist-react/)** points into the installed
-`@xh/hoist` package for easy access. **Before writing or modifying any client-side code, consult
-the hoist-react documentation:**
+Read the Architecture Primer below, then use the MCP tools for full documentation on any package.
 
-> **[`docs/hoist-react/README.md`](./docs/hoist-react/README.md)**
+#### Architecture Primer
 
-This is the primary documentation index — an AI-agent-optimized catalog of all package READMEs,
-cross-cutting concept docs, and DevOps guides. A **Quick Reference by Task** table is also
-inlined in [`CLAUDE.md`](./CLAUDE.md) for immediate lookup.
+Hoist applications are built around three artifact types:
 
-Use this index as your first stop when you need to understand how a Hoist feature works, what
-patterns to follow, or what APIs are available. The docs are the authoritative reference for how
-Hoist packages work and how they are intended to be used — **skipping them risks producing code
-that conflicts with established patterns or misses built-in functionality.**
+| Artifact | Base Class | Purpose | Lifecycle |
+|----------|------------|---------|-----------|
+| **Component** | `hoistCmp.factory` | UI rendering (React) | Transient — mount/unmount with views |
+| **Model** | `HoistModel` | Observable state + business logic | Varies — linked to component or standalone |
+| **Service** | `HoistService` | App-wide data access + shared state | Singleton — lives for app lifetime |
 
-Additional package-level READMEs are co-located with their source code throughout the hoist-react
-tree (e.g. `docs/hoist-react/../cmp/grid/README.md`). The docs index links to all of them.
+**Element factories over JSX.** Hoist uses element factory functions, not JSX:
+```typescript
+// ✅ Hoist style
+panel({title: 'Users', items: [grid(), button({text: 'Refresh'})]})
 
-The hoist-react package also contains its own `AGENTS.md` at
-`docs/hoist-react/../AGENTS.md` with architecture patterns, coding conventions, and
-code style guidance specific to the framework.
+// ❌ Not used in Hoist
+<Panel title="Users"><Grid /><Button text="Refresh" /></Panel>
+```
+
+**Components** are created with `hoistCmp.factory`. Each component declares its model relationship:
+```typescript
+export const userList = hoistCmp.factory({
+    model: creates(UserListModel),  // Component creates and owns this model
+    render({model}) {
+        return panel({title: 'Users', item: grid()});
+    }
+});
+```
+
+**Model wiring — `creates()` vs `uses()`:**
+- `creates(ModelClass)` — component instantiates, owns, and destroys the model on unmount.
+- `uses(ModelClass)` — component receives model from a parent via context or explicit prop.
+
+**Context-based model lookup** eliminates prop drilling. When a component `creates()` a model, that
+model is published to React context. Child components using `uses(ModelClass)` automatically find
+the nearest matching model in the ancestor tree. All public properties of ancestor models are
+searched — so if `PanelModel` has a `gridModel: GridModel` property, a child `grid()` call
+resolves it automatically. (Note: `@managed` is unrelated to lookup — it controls cleanup on
+destroy. A property does not need `@managed` to be found via context lookup.)
+
+When multiple models of the same type exist in context (e.g. two `GridModel` instances), pass the
+model explicitly: `grid({model: model.leftGridModel})`.
+
+**HoistModel** — the core state holder:
+```typescript
+class UserListModel extends HoistModel {
+    @observable.ref users: User[] = [];
+    @bindable selectedUserId: string = null;
+    @managed detailModel = new UserDetailModel();
+
+    constructor() {
+        super();
+        makeObservable(this);  // Required when class adds new observables
+    }
+
+    override async doLoadAsync(loadSpec: LoadSpec) {
+        const users = await XH.fetchJson({url: 'api/users', loadSpec});
+        runInAction(() => this.users = users);
+    }
+}
+```
+
+**Key decorators:**
+
+| Decorator | Purpose |
+|-----------|---------|
+| `@observable` / `@observable.ref` | MobX observable state |
+| `@bindable` | Observable + auto-generated action-wrapped setter |
+| `@managed` | Mark child object for automatic cleanup on `destroy()` |
+| `@persist` | Sync property with a persistence provider (requires `persistWith`) |
+| `@lookup(ModelClass)` | Inject ancestor model (linked models only, available after `onLinked`) |
+| `@computed` | Cached derived value |
+| `@action` | Mark method as state-modifying |
+
+**`makeObservable(this)`** must be called in the constructor of any class that introduces new
+`@observable`, `@bindable`, or `@computed` properties. The base class call does not cover subclass
+decorators. Forgetting this is the most common Hoist bug.
+
+**`doLoadAsync(loadSpec)`** — implement this template method to opt into managed data loading.
+Call `model.loadAsync()` or `model.refreshAsync()` to trigger — never call `doLoadAsync` directly.
+Linked models with `doLoadAsync` are loaded automatically on mount.
+
+**HoistService** — singleton services installed during app init and accessed via `XH`:
+```typescript
+XH.tradeService.submitTradeAsync(trade);  // Custom service
+XH.fetchJson({url: 'api/data'});          // FetchService alias
+XH.getConf('featureFlag', false);         // ConfigService alias
+XH.getPref('pageSize', 50);              // PrefService alias
+```
+
+**XH singleton** — the top-level API entry point. Provides service access, data fetching
+(`fetchJson`, `postJson`), user interaction (`toast`, `confirm`, `prompt`, `handleException`),
+navigation (`navigate`, `appendRoute`), and app state (`appState`, `darkTheme`).
+
+**Critical pitfalls:**
+1. **Forgetting `makeObservable(this)`** — observables silently won't react.
+2. **Managing objects you don't own** — only `@managed` objects your class creates. Objects passed
+   in from outside are owned by the provider.
+3. **Mutating observables outside actions** — use `runInAction()`, `@action`, or `@bindable`.
+4. **Calling `lookupModel()` too early** — only works during or after `onLinked()`.
+5. **Calling `doLoadAsync()` directly** — use `loadAsync()` / `refreshAsync()` entry points.
+
+#### Quick Reference — MCP Doc IDs by Task
+
+Use `hoist-search-docs` with the doc ID for full documentation on any topic.
+
+| If you need to... | Doc ID |
+|---|---|
+| Understand the component/model/service pattern | `core` |
+| Work with Stores, Records, Fields, or Filters | `data` |
+| Fetch data, read configuration, or manage preferences | `svc` |
+| Build or configure a data grid | `cmp/grid` |
+| Build a form with validation | `cmp/form` |
+| Understand input change/commit lifecycle | `cmp/input` |
+| Use layout containers (Box, HBox, VBox) | `cmp/layout` |
+| Create a tabbed interface | `cmp/tab` |
+| Save and restore named view configurations | `cmp/viewmanager` |
+| Build a configurable dashboard with draggable widgets | `desktop/cmp/dash` |
+| Configure a desktop panel (toolbars, masks, collapse) | `desktop/cmp/panel` |
+| Build a mobile app | `mobile` |
+| Format numbers, dates, or currencies | `format` |
+| Understand app lifecycle and startup sequence | `lifecycle-app` |
+| Understand model/service lifecycles and loading | `lifecycle-models-and-services` |
+| Add authentication (OAuth, login) | `authentication` |
+| Persist UI state (columns, filters, panel sizes) | `persistence` |
+| Check roles, gates, or app access | `authorization` |
+| Configure client-side routing | `routing` |
+| Handle exceptions and display errors | `error-handling` |
+| Add testId selectors for test automation | `test-automation` |
+| Use Promises with error handling and tracking | `promise` |
+| Work with MobX observables and `@bindable` | `mobx` |
+| Use timers, decorators, or utility functions | `utils` |
+| Configure the app shell, dialogs, toasts, or theming | `appcontainer` |
+| Use icons in buttons, menus, and grids | `icon` |
+| Configure OAuth with Auth0 or Microsoft Entra | `security` |
+
+#### MCP Tools
+
+For full documentation beyond this primer, use the hoist-react MCP tools:
+
+- **`hoist-search-docs`** — keyword search across all docs; use doc IDs from the table above
+- **`hoist-search-symbols`** — search TypeScript symbols, classes, and API signatures
+- **`hoist-list-docs`** — browse the complete documentation catalog
+- **`hoist-get-symbol`** / **`hoist-get-members`** — detailed type info for specific classes
+
+**Skipping the docs risks producing code that conflicts with established patterns or misses
+built-in functionality.**
 
 ### hoist-core (server-side)
 
-Comprehensive agent-facing documentation for hoist-core is not yet available. For server-side work,
-refer to the existing source code in `grails-app/` and the public hoist-core repository on GitHub
-at https://github.com/xh/hoist-core. A local checkout may exist as a sibling directory
-(`../hoist-core`) — this is common for XH developers but is not required and may be out of date.
-**Prefer the GitHub repository as the authoritative source for hoist-core reference material
-unless asked not to or the context suggests the local version is more relevant.**
+The hoist-core repository contains a growing `docs/` directory at its top level with important
+documentation on server-side architecture, services, and conventions. Consult these docs — either
+via the public GitHub repository at https://github.com/xh/hoist-core or a local sibling checkout
+(`../hoist-core`) — for specific guidance on server-side work. A local checkout is common for XH
+developers but is not required and may be out of date. **Prefer the GitHub repository as the
+authoritative source unless asked not to or the context suggests the local version is more
+relevant.** For topics not yet covered by docs, refer to the existing source code in `grails-app/`.
 
 ## MCP Servers
 
@@ -61,9 +189,9 @@ tools to AI coding agents. Servers must also be listed in `.claude/settings.json
 
 ### hoist-react (enabled by default)
 
-A local Node.js process that exposes hoist-react framework documentation and symbol search. This is
-the same documentation referenced in the section above — the MCP server provides a structured
-interface for querying it. No additional setup is required; it runs directly from installed
+A local Node.js process that exposes hoist-react framework documentation and symbol search. The
+Architecture Primer above covers essential patterns inline; the MCP provides full documentation
+for all 39 packages and concepts. No additional setup is required; it runs directly from installed
 `node_modules`.
 
 ### github (opt-in)
