@@ -72,27 +72,15 @@ export class MinesweeperModel extends HoistModel {
 
     @managed private gameTimer: Timer = null;
 
-    constructor() {
-        super();
-        makeObservable(this);
-        this.newGame();
-
-        // React to difficulty changes — ensures newGame() sees the updated value.
-        this.addReaction({
-            track: () => this.difficulty,
-            run: () => this.newGame()
-        });
-    }
-
     @computed get difficultyConfig(): Difficulty {
         return DIFFICULTIES[this.difficulty];
     }
 
     @computed get flagCount(): number {
         let count = 0;
-        for (let r = 0; r < this.rows; r++) {
-            for (let c = 0; c < this.cols; c++) {
-                if (this.cells[r][c].isFlagged) count++;
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                if (this.cells[row][col].isFlagged) count++;
             }
         }
         return count;
@@ -103,9 +91,9 @@ export class MinesweeperModel extends HoistModel {
     }
 
     @computed get formattedTime(): string {
-        const s = this.elapsedSeconds;
-        const mins = Math.floor(s / 60);
-        const secs = s % 60;
+        const seconds = this.elapsedSeconds;
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
@@ -124,6 +112,18 @@ export class MinesweeperModel extends HoistModel {
         }
     }
 
+    constructor() {
+        super();
+        makeObservable(this);
+        this.newGame();
+
+        // React to difficulty changes — ensures newGame() sees the updated value.
+        this.addReaction({
+            track: () => this.difficulty,
+            run: () => this.newGame()
+        });
+    }
+
     //------------------------------------------------------------------
     // Actions
     //------------------------------------------------------------------
@@ -140,10 +140,10 @@ export class MinesweeperModel extends HoistModel {
 
         // Initialize empty board
         this.cells = [];
-        for (let r = 0; r < rows; r++) {
-            this.cells[r] = [];
-            for (let c = 0; c < cols; c++) {
-                this.cells[r][c] = {
+        for (let row = 0; row < rows; row++) {
+            this.cells[row] = [];
+            for (let col = 0; col < cols; col++) {
+                this.cells[row][col] = {
                     isMine: false,
                     isRevealed: false,
                     isFlagged: false,
@@ -213,68 +213,72 @@ export class MinesweeperModel extends HoistModel {
         let placed = 0;
 
         while (placed < mineCount) {
-            const r = Math.floor(Math.random() * rows);
-            const c = Math.floor(Math.random() * cols);
+            const row = Math.floor(Math.random() * rows);
+            const col = Math.floor(Math.random() * cols);
 
             // Skip safe zone (clicked cell + neighbors)
-            if (Math.abs(r - safeRow) <= 1 && Math.abs(c - safeCol) <= 1) continue;
-            if (this.cells[r][c].isMine) continue;
+            if (Math.abs(row - safeRow) <= 1 && Math.abs(col - safeCol) <= 1) continue;
+            if (this.cells[row][col].isMine) continue;
 
-            this.cells[r][c].isMine = true;
+            this.cells[row][col].isMine = true;
             placed++;
         }
     }
 
     private computeAdjacentCounts() {
         const {rows, cols} = this;
-        for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
-                if (this.cells[r][c].isMine) continue;
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                if (this.cells[row][col].isMine) continue;
                 let count = 0;
-                for (let dr = -1; dr <= 1; dr++) {
-                    for (let dc = -1; dc <= 1; dc++) {
-                        if (dr === 0 && dc === 0) continue;
-                        const nr = r + dr,
-                            nc = c + dc;
-                        if (this.inBounds(nr, nc) && this.cells[nr][nc].isMine) count++;
+                for (let deltaRow = -1; deltaRow <= 1; deltaRow++) {
+                    for (let deltaCol = -1; deltaCol <= 1; deltaCol++) {
+                        if (deltaRow === 0 && deltaCol === 0) continue;
+                        const neighborRow = row + deltaRow,
+                            neighborCol = col + deltaCol;
+                        if (
+                            this.inBounds(neighborRow, neighborCol) &&
+                            this.cells[neighborRow][neighborCol].isMine
+                        )
+                            count++;
                     }
                 }
-                this.cells[r][c].adjacentMines = count;
+                this.cells[row][col].adjacentMines = count;
             }
         }
     }
 
     private floodReveal(row: number, col: number) {
-        for (let dr = -1; dr <= 1; dr++) {
-            for (let dc = -1; dc <= 1; dc++) {
-                if (dr === 0 && dc === 0) continue;
-                const nr = row + dr,
-                    nc = col + dc;
-                if (!this.inBounds(nr, nc)) continue;
-                const neighbor = this.cells[nr][nc];
+        for (let deltaRow = -1; deltaRow <= 1; deltaRow++) {
+            for (let deltaCol = -1; deltaCol <= 1; deltaCol++) {
+                if (deltaRow === 0 && deltaCol === 0) continue;
+                const neighborRow = row + deltaRow,
+                    neighborCol = col + deltaCol;
+                if (!this.inBounds(neighborRow, neighborCol)) continue;
+                const neighbor = this.cells[neighborRow][neighborCol];
                 if (neighbor.isRevealed || neighbor.isFlagged || neighbor.isMine) continue;
                 neighbor.isRevealed = true;
                 if (neighbor.adjacentMines === 0) {
-                    this.floodReveal(nr, nc);
+                    this.floodReveal(neighborRow, neighborCol);
                 }
             }
         }
     }
 
     private revealAllMines() {
-        for (let r = 0; r < this.rows; r++) {
-            for (let c = 0; c < this.cols; c++) {
-                if (this.cells[r][c].isMine) {
-                    this.cells[r][c].isRevealed = true;
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                if (this.cells[row][col].isMine) {
+                    this.cells[row][col].isRevealed = true;
                 }
             }
         }
     }
 
     private checkWin() {
-        for (let r = 0; r < this.rows; r++) {
-            for (let c = 0; c < this.cols; c++) {
-                const cell = this.cells[r][c];
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                const cell = this.cells[row][col];
                 if (!cell.isMine && !cell.isRevealed) return;
             }
         }
@@ -337,10 +341,9 @@ export class MinesweeperModel extends HoistModel {
         ));
 
         const columns = [];
-        for (let c = 0; c < cols; c++) {
-            const colIdx = c;
+        for (let col = 0; col < cols; col++) {
             columns.push({
-                field: `c${c}`,
+                field: `c${col}`,
                 width: cellSize,
                 minWidth: cellSize,
                 maxWidth: cellSize,
@@ -353,11 +356,11 @@ export class MinesweeperModel extends HoistModel {
                 hideable: false,
                 excludeFromChooser: true,
                 rendererIsComplex: true,
-                renderer: (v, {record}) => this.cellRenderer(record.data.row, colIdx),
+                renderer: (v, {record}) => this.cellRenderer(record.data.row, col),
                 cellClass: (v, {record}) => {
                     const row = record?.data?.row;
                     if (row == null) return '';
-                    const cell = this.cells[row]?.[colIdx];
+                    const cell = this.cells[row]?.[col];
                     if (!cell) return '';
                     if (!cell.isRevealed)
                         return cell.isFlagged
@@ -372,17 +375,17 @@ export class MinesweeperModel extends HoistModel {
                     if (!data) return;
                     const row = data.data.row;
                     if (event.shiftKey || event.ctrlKey || event.metaKey) {
-                        this.toggleFlag(row, colIdx);
+                        this.toggleFlag(row, col);
                     } else {
-                        this.revealCell(row, colIdx);
+                        this.revealCell(row, col);
                     }
                 }
             });
         }
 
         const fields: {name: string; type: 'int' | 'string'}[] = [{name: 'row', type: 'int'}];
-        for (let c = 0; c < cols; c++) {
-            fields.push({name: `c${c}`, type: 'string'});
+        for (let col = 0; col < cols; col++) {
+            fields.push({name: `c${col}`, type: 'string'});
         }
 
         this.gridModel = new GridModel({
@@ -405,12 +408,11 @@ export class MinesweeperModel extends HoistModel {
     private syncGrid() {
         if (!this.gridModel) return;
         const rowData = [];
-        for (let r = 0; r < this.rows; r++) {
-            const row: any = {id: r, row: r};
-            for (let c = 0; c < this.cols; c++) {
-                // Store a version string to trigger re-render
-                const cell = this.cells[r][c];
-                row[`c${c}`] = cell.isRevealed
+        for (let row = 0; row < this.rows; row++) {
+            const record: any = {id: row, row};
+            for (let col = 0; col < this.cols; col++) {
+                const cell = this.cells[row][col];
+                record[`c${col}`] = cell.isRevealed
                     ? cell.isMine
                         ? 'mine'
                         : String(cell.adjacentMines)
@@ -418,7 +420,7 @@ export class MinesweeperModel extends HoistModel {
                       ? 'flag'
                       : 'hidden';
             }
-            rowData.push(row);
+            rowData.push(record);
         }
         this.gridModel.loadData(rowData);
     }

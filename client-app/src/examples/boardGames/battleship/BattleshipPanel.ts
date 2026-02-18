@@ -54,7 +54,7 @@ export const battleshipPanel = hoistCmp.factory({
                                       onCellContextMenu: ({event}) => {
                                           event.preventDefault();
                                           if (model.phase === 'placement')
-                                              model.toggleOrientation();
+                                              model.toggleShipOrientation();
                                       }
                                   }
                               })
@@ -78,14 +78,8 @@ const tbar = hoistCmp.factory<BattleshipModel>(({model}) =>
         }),
         toolbarSep(),
         span({item: model.phaseText, style: {fontWeight: 'bold'}}),
-        button({
-            text: 'Rotate',
-            icon: Icon.sync(),
-            omit: model.phase !== 'placement',
-            onClick: () => model.toggleOrientation()
-        }),
         span({
-            item: 'or right-click board',
+            item: '\u2013 Right-click to rotate ship',
             omit: model.phase !== 'placement',
             className: 'xh-text-color-muted'
         })

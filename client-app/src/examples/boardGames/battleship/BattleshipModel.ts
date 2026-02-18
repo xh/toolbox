@@ -1,5 +1,5 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, ReactionSpec, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
@@ -55,7 +55,7 @@ const SHIP_DEFS = [
 export class BattleshipModel extends HoistModel {
     @observable phase: Phase = 'placement';
     @observable isPlayerTurn: boolean = true;
-    @bindable orientation: Orientation = 'horizontal';
+    @bindable shipOrientation: Orientation = 'horizontal';
 
     @managed @observable.ref playerGridModel: GridModel = null;
     @managed @observable.ref attackGridModel: GridModel = null;
@@ -78,22 +78,6 @@ export class BattleshipModel extends HoistModel {
 
     // Placement preview — tracks hovered cell on player board
     @observable.ref hoverCell: {r: number; c: number} | null = null;
-
-    constructor() {
-        super();
-        makeObservable(this);
-        this.newGame();
-
-        // Re-sync player grid when hover changes during placement to show ship preview.
-        this.addReaction({
-            track: () => [this.hoverCell, this.orientation],
-            run: () => {
-                if (this.phase === 'placement') {
-                    this.syncBoard(this.playerGridModel, this.playerBoard, true);
-                }
-            }
-        });
-    }
 
     get currentShipToPlace(): (typeof SHIP_DEFS)[0] | null {
         return this.phase === 'placement' ? (SHIP_DEFS[this.shipPlacementIndex] ?? null) : null;
@@ -119,15 +103,22 @@ export class BattleshipModel extends HoistModel {
         }
     }
 
+    constructor() {
+        super();
+        makeObservable(this);
+        this.newGame();
+        this.addReaction(this.placementPreviewReaction());
+    }
+
     //------------------------------------------------------------------
-    // Actions
+    // Game setup
     //------------------------------------------------------------------
     @action
     newGame() {
         this.phase = 'placement';
         this.isPlayerTurn = true;
         this.shipPlacementIndex = 0;
-        this.orientation = 'horizontal';
+        this.shipOrientation = 'horizontal';
         this.playerShips = [];
         this.aiShips = [];
         this.aiState = {mode: 'random', targets: [], lastHit: null};
@@ -137,15 +128,16 @@ export class BattleshipModel extends HoistModel {
         this.aiBoard = this.createEmptyBoard();
         this.shipBorderMap = [];
 
-        // AI places its ships randomly
         this.placeAIShips();
-
         this.rebuildGrids();
     }
 
+    //------------------------------------------------------------------
+    // Ship placement
+    //------------------------------------------------------------------
     @action
-    toggleOrientation() {
-        this.orientation = this.orientation === 'horizontal' ? 'vertical' : 'horizontal';
+    toggleShipOrientation() {
+        this.shipOrientation = this.shipOrientation === 'horizontal' ? 'vertical' : 'horizontal';
     }
 
     @action
@@ -158,9 +150,6 @@ export class BattleshipModel extends HoistModel {
         this.hoverCell = null;
     }
 
-    //------------------------------------------------------------------
-    // Player ship placement
-    //------------------------------------------------------------------
     @action
     handlePlayerBoardClick(row: number, col: number) {
         if (this.phase !== 'placement') return;
@@ -168,7 +157,7 @@ export class BattleshipModel extends HoistModel {
         const shipDef = this.currentShipToPlace;
         if (!shipDef) return;
 
-        const cells = this.getShipCells(row, col, shipDef.size, this.orientation);
+        const cells = this.getShipCells(row, col, shipDef.size, this.shipOrientation);
         if (!this.isValidPlacement(cells, this.playerBoard)) {
             XH.warningToast('Invalid placement — ships cannot overlap or extend off the board.');
             return;
@@ -183,8 +172,8 @@ export class BattleshipModel extends HoistModel {
             isSunk: false
         };
 
-        cells.forEach(({r, c}) => {
-            this.playerBoard[r][c] = 'ship';
+        cells.forEach(({r: cellRow, c: cellCol}) => {
+            this.playerBoard[cellRow][cellCol] = 'ship';
         });
 
         this.playerShips = [...this.playerShips, ship];
@@ -204,30 +193,27 @@ export class BattleshipModel extends HoistModel {
     // Player attack
     //------------------------------------------------------------------
     async handleAttackBoardClick(row: number, col: number) {
-        if (this.phase !== 'playing' || !this.isPlayerTurn) return;
-        if (this.attackBoard[row][col] !== 'water') return;
+        const cannotFire =
+            this.phase !== 'playing' ||
+            !this.isPlayerTurn ||
+            this.attackBoard[row][col] !== 'water';
+        if (cannotFire) return;
 
-        if (this.processPlayerShot(row, col)) return;
+        this.processPlayerShot(row, col);
+        if (this.phase === 'gameOver') return;
 
         this.beginAITurn();
-        await wait(750);
+        await wait(400);
         this.processAITurn();
     }
 
     @action
-    private beginAITurn() {
-        this.isPlayerTurn = false;
-        this.syncGrids();
-    }
-
-    /** Process a player shot and sync the grid. Returns true if the game ended. */
-    @action
-    private processPlayerShot(row: number, col: number): boolean {
+    private processPlayerShot(row: number, col: number) {
         const hit = this.aiBoard[row][col] === 'ship';
         this.attackBoard[row][col] = hit ? 'hit' : 'miss';
 
         if (hit) {
-            const sunkShip = this.registerHit(this.aiShips, row, col);
+            const sunkShip = this.applyHitAndCheckSunk(this.aiShips, row, col);
             if (sunkShip) {
                 this.markSunk(this.attackBoard, sunkShip);
                 this.aiShips = [...this.aiShips];
@@ -245,57 +231,60 @@ export class BattleshipModel extends HoistModel {
                 message: 'You sank all enemy ships!',
                 icon: Icon.checkCircle()
             });
-            return true;
         }
-
-        return false;
     }
 
     //------------------------------------------------------------------
     // AI
     //------------------------------------------------------------------
     @action
-    private processAITurn() {
-        const {r, c} = this.getAITarget();
+    private beginAITurn() {
+        this.isPlayerTurn = false;
+        this.syncGrids();
+    }
 
-        const hit = this.playerBoard[r][c] === 'ship';
-        this.playerBoard[r][c] = hit ? 'hit' : 'miss';
+    @action
+    private processAITurn() {
+        const {r: row, c: col} = this.getAITarget();
+
+        const hit = this.playerBoard[row][col] === 'ship';
+        this.playerBoard[row][col] = hit ? 'hit' : 'miss';
 
         if (hit) {
-            this.aiState.lastHit = {r, c};
+            this.aiState.lastHit = {r: row, c: col};
             this.aiState.mode = 'hunt';
 
-            // Add adjacent cells as targets
-            for (const [dr, dc] of [
+            for (const [deltaRow, deltaCol] of [
                 [0, 1],
                 [0, -1],
                 [1, 0],
                 [-1, 0]
             ]) {
-                const nr = r + dr,
-                    nc = c + dc;
+                const neighborRow = row + deltaRow,
+                    neighborCol = col + deltaCol;
                 if (
-                    this.inBounds(nr, nc) &&
-                    (this.playerBoard[nr][nc] === 'water' || this.playerBoard[nr][nc] === 'ship')
+                    this.inBounds(neighborRow, neighborCol) &&
+                    (this.playerBoard[neighborRow][neighborCol] === 'water' ||
+                        this.playerBoard[neighborRow][neighborCol] === 'ship')
                 ) {
-                    if (!this.aiState.targets.some(t => t.r === nr && t.c === nc)) {
-                        this.aiState.targets.push({r: nr, c: nc});
+                    if (
+                        !this.aiState.targets.some(t => t.r === neighborRow && t.c === neighborCol)
+                    ) {
+                        this.aiState.targets.push({r: neighborRow, c: neighborCol});
                     }
                 }
             }
 
-            const sunkShip = this.registerHit(this.playerShips, r, c);
+            const sunkShip = this.applyHitAndCheckSunk(this.playerShips, row, col);
             if (sunkShip) {
                 this.markSunk(this.playerBoard, sunkShip);
                 this.playerShips = [...this.playerShips];
-                // Clear hunt targets on sink
                 this.aiState.targets = [];
                 this.aiState.mode = 'random';
                 XH.dangerToast(`They sank your ${sunkShip.name}!`);
             }
         }
 
-        // Check loss
         if (this.playerShips.every(s => s.isSunk)) {
             this.phase = 'gameOver';
             this.syncGrids();
@@ -312,7 +301,6 @@ export class BattleshipModel extends HoistModel {
     }
 
     private getAITarget(): {r: number; c: number} {
-        // Hunt mode: try adjacent cells to previous hits
         while (this.aiState.targets.length > 0) {
             const target = this.aiState.targets.pop();
             if (
@@ -324,15 +312,14 @@ export class BattleshipModel extends HoistModel {
             }
         }
 
-        // Random mode
         this.aiState.mode = 'random';
-        let r, c;
+        let row, col;
         do {
-            r = Math.floor(Math.random() * GRID_ROWS);
-            c = Math.floor(Math.random() * GRID_COLS);
-        } while (this.playerBoard[r][c] !== 'water' && this.playerBoard[r][c] !== 'ship');
+            row = Math.floor(Math.random() * GRID_ROWS);
+            col = Math.floor(Math.random() * GRID_COLS);
+        } while (this.playerBoard[row][col] !== 'water' && this.playerBoard[row][col] !== 'ship');
 
-        return {r, c};
+        return {r: row, c: col};
     }
 
     //------------------------------------------------------------------
@@ -356,8 +343,8 @@ export class BattleshipModel extends HoistModel {
                         hits: new Set(),
                         isSunk: false
                     };
-                    cells.forEach(({r: cr, c: cc}) => {
-                        this.aiBoard[cr][cc] = 'ship';
+                    cells.forEach(({r: cellRow, c: cellCol}) => {
+                        this.aiBoard[cellRow][cellCol] = 'ship';
                     });
                     this.aiShips = [...this.aiShips, ship];
                     placed = true;
@@ -369,15 +356,17 @@ export class BattleshipModel extends HoistModel {
     private getShipCells(row: number, col: number, size: number, orientation: Orientation) {
         const cells: {r: number; c: number}[] = [];
         for (let i = 0; i < size; i++) {
-            const r = orientation === 'vertical' ? row + i : row;
-            const c = orientation === 'horizontal' ? col + i : col;
-            cells.push({r, c});
+            const cellRow = orientation === 'vertical' ? row + i : row;
+            const cellCol = orientation === 'horizontal' ? col + i : col;
+            cells.push({r: cellRow, c: cellCol});
         }
         return cells;
     }
 
     private isValidPlacement(cells: {r: number; c: number}[], board: CellState[][]): boolean {
-        return cells.every(({r, c}) => this.inBounds(r, c) && board[r][c] === 'water');
+        return cells.every(
+            ({r: row, c: col}) => this.inBounds(row, col) && board[row][col] === 'water'
+        );
     }
 
     private computeShipBorders() {
@@ -385,31 +374,31 @@ export class BattleshipModel extends HoistModel {
             Array(GRID_COLS).fill(null)
         );
         for (const ship of this.playerShips) {
-            for (const {r, c} of ship.cells) ownerMap[r][c] = ship.id;
+            for (const {r: row, c: col} of ship.cells) ownerMap[row][col] = ship.id;
         }
 
         this.shipBorderMap = Array.from({length: GRID_ROWS}, () => Array(GRID_COLS).fill(''));
         for (const ship of this.playerShips) {
-            for (const {r, c} of ship.cells) {
+            for (const {r: row, c: col} of ship.cells) {
                 const id = ship.id,
-                    above = r > 0 ? ownerMap[r - 1][c] : null,
-                    below = r < GRID_ROWS - 1 ? ownerMap[r + 1][c] : null,
-                    left = c > 0 ? ownerMap[r][c - 1] : null,
-                    right = c < GRID_COLS - 1 ? ownerMap[r][c + 1] : null,
-                    b = [];
+                    above = row > 0 ? ownerMap[row - 1][col] : null,
+                    below = row < GRID_ROWS - 1 ? ownerMap[row + 1][col] : null,
+                    left = col > 0 ? ownerMap[row][col - 1] : null,
+                    right = col < GRID_COLS - 1 ? ownerMap[row][col + 1] : null,
+                    borderClasses = [];
                 // Top/left: only draw if facing water (not another ship — that
                 // neighbor's bottom/right already covers the shared edge).
-                if (above === null) b.push('battleship-ship--border-top');
-                if (left === null) b.push('battleship-ship--border-left');
+                if (above === null) borderClasses.push('battleship-ship--border-top');
+                if (left === null) borderClasses.push('battleship-ship--border-left');
                 // Bottom/right: draw if facing anything other than same ship.
-                if (below !== id) b.push('battleship-ship--border-bottom');
-                if (right !== id) b.push('battleship-ship--border-right');
-                this.shipBorderMap[r][c] = b.join(' ');
+                if (below !== id) borderClasses.push('battleship-ship--border-bottom');
+                if (right !== id) borderClasses.push('battleship-ship--border-right');
+                this.shipBorderMap[row][col] = borderClasses.join(' ');
             }
         }
     }
 
-    private registerHit(ships: Ship[], row: number, col: number): Ship | null {
+    private applyHitAndCheckSunk(ships: Ship[], row: number, col: number): Ship | null {
         const key = `${row},${col}`;
         for (const ship of ships) {
             if (ship.cells.some(c => c.r === row && c.c === col)) {
@@ -425,8 +414,8 @@ export class BattleshipModel extends HoistModel {
     }
 
     private markSunk(board: CellState[][], ship: Ship) {
-        ship.cells.forEach(({r, c}) => {
-            board[r][c] = 'sunk';
+        ship.cells.forEach(({r: row, c: col}) => {
+            board[row][col] = 'sunk';
         });
     }
 
@@ -474,11 +463,10 @@ export class BattleshipModel extends HoistModel {
         });
 
         // Game columns A-L
-        for (let c = 0; c < GRID_COLS; c++) {
-            const colIdx = c;
+        for (let col = 0; col < GRID_COLS; col++) {
             columns.push({
-                field: `c${c}`,
-                headerName: COL_LETTERS[c],
+                field: `c${col}`,
+                headerName: COL_LETTERS[col],
                 headerAlign: 'center' as const,
                 width: CELL_SIZE,
                 minWidth: CELL_SIZE,
@@ -496,11 +484,11 @@ export class BattleshipModel extends HoistModel {
                     const base = this.cellCssClass(v);
                     if (!isPlayerBoard) return base;
                     const row = record?.data?.row;
-                    const borders = row != null ? this.shipBorderMap[row]?.[colIdx] : '';
+                    const borders = row != null ? this.shipBorderMap[row]?.[col] : '';
                     return borders ? `${base} ${borders}` : base;
                 },
                 onCellClicked: ({data}) => {
-                    if (data) clickHandler(data.data.row, colIdx);
+                    if (data) clickHandler(data.data.row, col);
                 }
             });
         }
@@ -509,8 +497,8 @@ export class BattleshipModel extends HoistModel {
             {name: 'row', type: 'int' as const},
             {name: 'rowNum', type: 'string' as const}
         ];
-        for (let c = 0; c < GRID_COLS; c++) {
-            fields.push({name: `c${c}`, type: 'string' as const});
+        for (let col = 0; col < GRID_COLS; col++) {
+            fields.push({name: `c${col}`, type: 'string' as const});
         }
 
         return new GridModel({
@@ -545,27 +533,29 @@ export class BattleshipModel extends HoistModel {
                     this.hoverCell.r,
                     this.hoverCell.c,
                     shipDef.size,
-                    this.orientation
+                    this.shipOrientation
                 );
                 previewValid = this.isValidPlacement(cells, this.playerBoard);
-                previewSet = new Set(cells.map(({r, c}) => `${r},${c}`));
+                previewSet = new Set(
+                    cells.map(({r: cellRow, c: cellCol}) => `${cellRow},${cellCol}`)
+                );
             }
         }
 
         const rowData = [];
-        for (let r = 0; r < GRID_ROWS; r++) {
-            const row: any = {id: r, row: r, rowNum: String(r + 1)};
-            for (let c = 0; c < GRID_COLS; c++) {
-                const state = board[r][c];
+        for (let row = 0; row < GRID_ROWS; row++) {
+            const record: any = {id: row, row, rowNum: String(row + 1)};
+            for (let col = 0; col < GRID_COLS; col++) {
+                const state = board[row][col];
                 const base = showShips ? state : state === 'ship' ? 'water' : state;
 
-                if (previewSet?.has(`${r},${c}`) && base === 'water') {
-                    row[`c${c}`] = previewValid ? 'preview' : 'preview-invalid';
+                if (previewSet?.has(`${row},${col}`) && base === 'water') {
+                    record[`c${col}`] = previewValid ? 'preview' : 'preview-invalid';
                 } else {
-                    row[`c${c}`] = base;
+                    record[`c${col}`] = base;
                 }
             }
-            rowData.push(row);
+            rowData.push(record);
         }
         gridModel.loadData(rowData);
     }
@@ -613,12 +603,23 @@ export class BattleshipModel extends HoistModel {
     //------------------------------------------------------------------
     // Helpers
     //------------------------------------------------------------------
+    private placementPreviewReaction(): ReactionSpec {
+        return {
+            track: () => [this.hoverCell, this.shipOrientation],
+            run: () => {
+                if (this.phase === 'placement') {
+                    this.syncBoard(this.playerGridModel, this.playerBoard, true);
+                }
+            }
+        };
+    }
+
     private createEmptyBoard(): CellState[][] {
         const board: CellState[][] = [];
-        for (let r = 0; r < GRID_ROWS; r++) {
-            board[r] = [];
-            for (let c = 0; c < GRID_COLS; c++) {
-                board[r][c] = 'water';
+        for (let row = 0; row < GRID_ROWS; row++) {
+            board[row] = [];
+            for (let col = 0; col < GRID_COLS; col++) {
+                board[row][col] = 'water';
             }
         }
         return board;
