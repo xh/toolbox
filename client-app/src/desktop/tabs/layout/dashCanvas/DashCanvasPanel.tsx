@@ -3,7 +3,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame, hframe, vframe} from '@xh/hoist/cmp/layout';
+import {filler, frame, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
@@ -90,24 +90,27 @@ export const dashCanvasPanel = hoistCmp.factory({
     }
 });
 
+const commitOnChange = true;
 const tbar = hoistCmp.factory<DashCanvasPanelModel>(({model}) =>
     toolbar(
-        'Columns',
+        span('Columns'),
         numberInput({
-            width: 80,
+            width: 40,
             bind: 'columns',
+            commitOnChange,
             model: model.dashCanvasModel
         }),
         '-',
-        'Row Height',
+        span('Row Height'),
         numberInput({
-            width: 80,
+            width: 60,
             bind: 'rowHeight',
             valueLabel: 'px',
+            commitOnChange,
             model: model.dashCanvasModel
         }),
         '-',
-        'Compact Views',
+        span('Compact'),
         select({
             width: 120,
             bind: 'compact',
