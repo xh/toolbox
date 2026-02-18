@@ -3,8 +3,28 @@
     "hoist-react": {
       "type": "stdio",
       "command": "node",
-      "args": ["client-app/node_modules/@xh/hoist/bin/hoist-mcp.mjs"],
+      "args": [
+        "client-app/node_modules/@xh/hoist/bin/hoist-mcp.mjs"
+      ],
       "env": {}
+    },
+    "github": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "jetbrains": {
+      "url": "http://localhost:64342/sse",
+      "type": "sse"
     }
   }
 }
