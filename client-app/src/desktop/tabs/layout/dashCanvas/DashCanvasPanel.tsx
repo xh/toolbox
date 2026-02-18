@@ -21,17 +21,19 @@ export const dashCanvasPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    <code>DashCanvas</code> is configured and managed via a{' '}
-                    <code>DashCanvasModel</code> and allows the user to drag-and-drop configured
-                    widgets into highly-customizable layouts.
+                    <code>DashCanvas</code> is configured via a <code>DashCanvasModel</code> and
+                    renders user-arrangeable widgets in a drag-and-drop grid layout.
                 </p>,
                 <p>
-                    Unlike its cousin <code>DashContainer</code>, this component scales the{' '}
-                    <em>width only</em> of its child widgets as its overall size changes, leaving
-                    heights unchanged and scrolling internally as necessary. This makes it a good
-                    candidate for report-style dashboards containing lots of content that is
-                    unlikely to fit or compress nicely on smaller screens. Consider{' '}
-                    <code>DashContainer</code> instead when a space-filling layout is a priority.
+                    Unlike <code>DashContainer</code>, this component scales only the <em>width</em>{' '}
+                    of its widgets as overall size changes, keeping heights fixed and scrolling as
+                    needed. This makes it well-suited for report-style dashboards with content that
+                    won't compress well on smaller screens. Use <code>DashContainer</code> when a
+                    space-filling layout is preferred.
+                </p>,
+                <p>
+                    This example also demonstrates <code>DashCanvasWidgetChooser</code>, a
+                    ready-made sidebar for browsing and dragging available widgets onto the canvas.
                 </p>
             ],
             item: panel({
@@ -121,7 +123,7 @@ const tbar = hoistCmp.factory<DashCanvasPanelModel>(({model}) =>
         }),
         filler(),
         button({
-            text: 'Choose Widgets...',
+            text: 'Widget Chooser',
             icon: Icon.boxFull(),
             outlined: !model.showWidgetChooser,
             active: model.showWidgetChooser,
