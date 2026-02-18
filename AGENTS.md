@@ -304,6 +304,12 @@ The file follows the [Keep a Changelog](https://keepachangelog.com/) structure:
 
 - **Version headings**: `## <version> - <date>` — no `v` prefix. Use `SNAPSHOT - unreleased` for
   the in-development version.
+- **Adding a new SNAPSHOT version**: Before adding a changelog entry, check whether the topmost
+  version in `CHANGELOG.md` has already been released. A version is released if it has a date
+  (e.g. `## 8.1.0 - 2026-02-12`) or a matching `v<version>` git tag exists. If it has been
+  released, create a new `## <next-major>.0-SNAPSHOT` heading above it (with no date) before
+  adding your entry. Bump the major version number from the last release (e.g. after `8.1.0`,
+  create `9.0-SNAPSHOT`).
 - **Recognized categories** (used for styling in the in-app dialog): `Breaking Changes`,
   `New Features`, `Bug Fixes`, `Technical`, `Libraries`.
 
