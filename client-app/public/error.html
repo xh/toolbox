@@ -67,10 +67,40 @@
         }
 
         .divider {
-            width: 48px;
+            width: min(260px, 50vw);
             height: 2px;
-            background: rgba(247, 147, 30, 0.3);
+            background: rgba(247, 147, 30, 0.08);
             border-radius: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(247, 147, 30, 0.45);
+            border-radius: 1px;
+            transform-origin: left;
+            animation: last-try 7s ease-out 0.5s both;
+        }
+
+        @keyframes last-try {
+            0%   { transform: scaleX(0);    background: rgba(247, 147, 30, 0.45); opacity: 1; }
+            35%  { transform: scaleX(0.7);  background: rgba(247, 147, 30, 0.45); opacity: 1; }
+            55%  { transform: scaleX(0.88); background: rgba(247, 147, 30, 0.45); opacity: 1; }
+            70%  { transform: scaleX(0.92); background: rgba(247, 147, 30, 0.35); opacity: 0.5; }
+            76%  { transform: scaleX(0.92); background: rgba(247, 147, 30, 0.15); opacity: 0.25; }
+            /* short out — full width flash */
+            77%  { transform: scaleX(1);    background: rgb(247, 147, 30);         opacity: 1; }
+            79%  { transform: scaleX(1);    background: rgb(220, 60, 40);          opacity: 1; }
+            81%  { transform: scaleX(1);    background: rgb(180, 50, 35);          opacity: 0.7; }
+            /* burn out to ash */
+            90%  { transform: scaleX(1);    background: rgba(100, 96, 92, 0.25);  opacity: 1; }
+            100% { transform: scaleX(1);    background: rgba(100, 96, 92, 0.1);   opacity: 1; }
         }
 
         .message {
