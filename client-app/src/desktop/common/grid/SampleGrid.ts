@@ -1,5 +1,5 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
+import {filler, hbox, hframe, vframe} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {hoistCmp, uses, HoistProps, BoxProps} from '@xh/hoist/core';
 import {
@@ -8,7 +8,7 @@ import {
     exportButton,
     refreshButton
 } from '@xh/hoist/desktop/cmp/button';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
@@ -78,19 +78,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
                 refreshButton(),
                 colAutosizeButton(),
                 toolbarSep(),
-                span('Group by:'),
-                select({
-                    bind: 'groupBy',
-                    options: [
-                        {value: 'city', label: 'City'},
-                        {value: 'winLose', label: 'Win/Lose'},
-                        {value: 'city,winLose', label: 'City › Win/Lose'},
-                        {value: 'winLose,city', label: 'Win/Lose › City'},
-                        {value: null, label: 'None'}
-                    ],
-                    width: 160,
-                    enableFilter: false
-                }),
+                groupingChooser({icon: Icon.treeList(), emptyText: 'No grouping'}),
                 filler(),
                 gridCountLabel({unit: 'companies'}),
                 storeFilterField(),
