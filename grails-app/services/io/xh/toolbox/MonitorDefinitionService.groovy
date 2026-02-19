@@ -2,7 +2,10 @@ package io.xh.toolbox
 
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.monitor.MonitorResult
+import io.xh.hoist.monitor.MonitorSpec
 import io.xh.hoist.monitor.provided.DefaultMonitorDefinitionService
+
+import static io.xh.hoist.monitor.MonitorMetricType.*
 import io.xh.toolbox.app.FileManagerService
 import io.xh.toolbox.app.GitHubService
 import io.xh.toolbox.app.NewsService
@@ -30,71 +33,79 @@ class MonitorDefinitionService extends DefaultMonitorDefinitionService {
         super.init()
 
         ensureRequiredMonitorsCreated([
-            [
-                code      : 'divideByZeroMonitor',
-                name      : 'Always throws',
-                metricType: 'None',
-                active    : false
-            ],
-            [
-                code         : 'fileManagerStorageUsedMb',
-                name         : 'File Manager: Storage Used',
-                metricType   : 'Ceil',
-                metricUnit   : 'MB',
-                warnThreshold: 16,
-                failThreshold: 100,
+
+            // Portfolio
+            new MonitorSpec(
+                code         : 'instrumentCount',
+                name         : 'Portfolio: Instruments',
+                metricType   : Floor,
+                metricUnit   : 'instruments',
+                warnThreshold: 500,
+                failThreshold: 1,
                 active       : true
-            ],
-            [
+            ),
+            new MonitorSpec(
+                code         : 'rawPositionCount',
+                name         : 'Portfolio: Raw Positions',
+                metricType   : Floor,
+                metricUnit   : 'positions',
+                failThreshold: 1,
+                active       : true
+            ),
+
+            // Data Services
+            new MonitorSpec(
                 code         : 'gitHubLastUpdateMins',
                 name         : 'GitHub: Last Update Check',
-                metricType   : 'Ceil',
+                metricType   : Ceil,
                 metricUnit   : 'minutes since last refresh',
                 warnThreshold: 70,
                 failThreshold: 140,
                 active       : true
-            ],
-            [
-                code         : 'instrumentCount',
-                name         : 'Portfolio: Instruments',
-                metricType   : 'Floor',
-                metricUnit   : 'instruments',
-                warnThreshold: 500,
-                failThreshold: 1,
-                active       : true,
-            ],
-            [
-                code         : 'metric1337Monitor',
-                name         : 'Always 1337',
-                metricType   : 'Floor',
-                failThreshold: 1337,
-                active       : true
-            ],
-            [
+            ),
+            new MonitorSpec(
                 code         : 'newsLastUpdateMins',
                 name         : 'News: Last Update Check',
-                metricType   : 'Ceil',
+                metricType   : Ceil,
                 metricUnit   : 'minutes since last story',
                 warnThreshold: 2160,
                 failThreshold: 4320,
                 active       : true,
                 primaryOnly  : true
-            ],
-            [
-                code         : 'rawPositionCount',
-                name         : 'Portfolio: Raw Positions',
-                metricType   : 'Floor',
-                metricUnit   : 'positions',
-                failThreshold: 1,
-                active       : true,
-            ],
-            [
+            ),
+            new MonitorSpec(
                 code       : 'recallsFetchStatus',
                 name       : 'Recalls: API Connection Status',
-                metricType : 'None',
+                metricType : None,
                 active     : true,
                 primaryOnly: true
-            ]
+            ),
+
+            // File Manager
+            new MonitorSpec(
+                code         : 'fileManagerStorageUsedMb',
+                name         : 'File Manager: Storage Used',
+                metricType   : Ceil,
+                metricUnit   : 'MB',
+                warnThreshold: 16,
+                failThreshold: 100,
+                active       : true
+            ),
+
+            // Test / Demo
+            new MonitorSpec(
+                code         : 'metric1337Monitor',
+                name         : 'Always 1337',
+                metricType   : Floor,
+                failThreshold: 1337,
+                active       : true
+            ),
+            new MonitorSpec(
+                code      : 'divideByZeroMonitor',
+                name      : 'Always throws',
+                metricType: None,
+                active    : false
+            )
         ])
     }
 
