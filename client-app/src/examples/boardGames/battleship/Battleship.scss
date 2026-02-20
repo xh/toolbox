@@ -15,6 +15,16 @@
   }
 
   .battleship-board {
+    --bs-water: #c9dff0;
+    --bs-ship: #94a3b8;
+    --bs-hit: #fecaca;
+    --bs-miss: #a8c8e8;
+    --bs-sunk: #f8a0a0;
+    --bs-sunk-icon: #991b1b;
+    --bs-preview: #a7d5b8;
+    --bs-preview-invalid: #f0b0b0;
+    --bs-ship-border: rgba(0, 0, 0, 0.5);
+
     .ag-root-wrapper {
       border: 1px solid var(--xh-border-color);
     }
@@ -44,25 +54,25 @@
 
     .battleship-cell {
       &--water {
-        background: #c9dff0;
+        background: var(--bs-water);
       }
       &--ship {
-        background: #94a3b8;
+        background: var(--bs-ship);
       }
       &--hit {
-        background: #fecaca;
+        background: var(--bs-hit);
       }
       &--miss {
-        background: #a8c8e8;
+        background: var(--bs-miss);
       }
       &--sunk {
-        background: #f8a0a0;
+        background: var(--bs-sunk);
       }
       &--preview {
-        background: #a7d5b8;
+        background: var(--bs-preview);
       }
       &--preview-invalid {
-        background: #f0b0b0;
+        background: var(--bs-preview-invalid);
       }
     }
 
@@ -78,7 +88,7 @@
     }
 
     .battleship-sunk {
-      color: #991b1b;
+      color: var(--bs-sunk-icon);
       font-size: 14px;
     }
 
@@ -89,63 +99,30 @@
 
     .battleship-ship {
       &--border-top {
-        border-top: 1px solid rgba(0, 0, 0, 0.5) !important;
+        border-top: 1px solid var(--bs-ship-border) !important;
       }
       &--border-bottom {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.5) !important;
+        border-bottom: 1px solid var(--bs-ship-border) !important;
       }
       &--border-left {
-        border-left: 1px solid rgba(0, 0, 0, 0.5) !important;
+        border-left: 1px solid var(--bs-ship-border) !important;
       }
       &--border-right {
-        border-right: 1px solid rgba(0, 0, 0, 0.5) !important;
+        border-right: 1px solid var(--bs-ship-border) !important;
       }
     }
   }
 }
 
-// Dark theme overrides
+// Dark theme — redefine variables only, no repeated selectors.
 .xh-dark .battleship-board {
-  .battleship-cell {
-    &--water {
-      background: #1a3a5c;
-    }
-    &--ship {
-      background: #4a5568;
-    }
-    &--hit {
-      background: #7f1d1d;
-    }
-    &--miss {
-      background: #1e3a5f;
-    }
-    &--sunk {
-      background: #4a1a1a;
-    }
-    &--preview {
-      background: #2d5a3d;
-    }
-    &--preview-invalid {
-      background: #5a2d2d;
-    }
-  }
-
-  .battleship-sunk {
-    color: #ff6666;
-  }
-
-  .battleship-ship {
-    &--border-top {
-      border-top-color: rgba(255, 255, 255, 0.4) !important;
-    }
-    &--border-bottom {
-      border-bottom-color: rgba(255, 255, 255, 0.4) !important;
-    }
-    &--border-left {
-      border-left-color: rgba(255, 255, 255, 0.4) !important;
-    }
-    &--border-right {
-      border-right-color: rgba(255, 255, 255, 0.4) !important;
-    }
-  }
+  --bs-water: #1a3a5c;
+  --bs-ship: #4a5568;
+  --bs-hit: #7f1d1d;
+  --bs-miss: #1e3a5f;
+  --bs-sunk: #4a1a1a;
+  --bs-sunk-icon: #ff6666;
+  --bs-preview: #2d5a3d;
+  --bs-preview-invalid: #5a2d2d;
+  --bs-ship-border: rgba(255, 255, 255, 0.4);
 }

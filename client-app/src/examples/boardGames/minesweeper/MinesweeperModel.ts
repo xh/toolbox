@@ -5,6 +5,7 @@ import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/
 import {Timer} from '@xh/hoist/utils/async';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {span} from '@xh/hoist/cmp/layout';
+import {times} from 'lodash';
 
 //------------------------------------------------------------------
 // Types
@@ -65,8 +66,8 @@ export class MinesweeperModel extends HoistModel {
 
     // Internal board state
     private cells: Cell[][] = [];
-    private rows: number = 0;
-    private cols: number = 0;
+    private rowCount: number = 0;
+    private colCount: number = 0;
     private mineCount: number = 0;
     private firstClick: boolean = true;
 
@@ -77,13 +78,7 @@ export class MinesweeperModel extends HoistModel {
     }
 
     @computed get flagCount(): number {
-        let count = 0;
-        for (let row = 0; row < this.rows; row++) {
-            for (let col = 0; col < this.cols; col++) {
-                if (this.cells[row][col].isFlagged) count++;
-            }
-        }
-        return count;
+        return this.cells.flat().filter(c => c.isFlagged).length;
     }
 
     @computed get minesRemaining(): number {
@@ -130,27 +125,23 @@ export class MinesweeperModel extends HoistModel {
     @action
     newGame() {
         this.stopTimer();
-        const {rows, cols, mines} = this.difficultyConfig;
-        this.rows = rows;
-        this.cols = cols;
+        const {rows: rowCount, cols: colCount, mines} = this.difficultyConfig;
+        this.rowCount = rowCount;
+        this.colCount = colCount;
         this.mineCount = mines;
         this.firstClick = true;
         this.gameState = 'idle';
         this.elapsedSeconds = 0;
 
         // Initialize empty board
-        this.cells = [];
-        for (let row = 0; row < rows; row++) {
-            this.cells[row] = [];
-            for (let col = 0; col < cols; col++) {
-                this.cells[row][col] = {
-                    isMine: false,
-                    isRevealed: false,
-                    isFlagged: false,
-                    adjacentMines: 0
-                };
-            }
-        }
+        this.cells = times(rowCount, () =>
+            times(colCount, () => ({
+                isMine: false,
+                isRevealed: false,
+                isFlagged: false,
+                adjacentMines: 0
+            }))
+        );
 
         this.rebuildGrid();
     }
@@ -194,6 +185,7 @@ export class MinesweeperModel extends HoistModel {
         this.syncGrid();
     }
 
+    @action
     toggleFlag(row: number, col: number) {
         if (this.gameState === 'won' || this.gameState === 'lost') return;
         if (this.gameState === 'idle') return;
@@ -209,12 +201,12 @@ export class MinesweeperModel extends HoistModel {
     // Implementation
     //------------------------------------------------------------------
     private placeMines(safeRow: number, safeCol: number) {
-        const {rows, cols, mineCount} = this;
+        const {rowCount, colCount, mineCount} = this;
         let placed = 0;
 
         while (placed < mineCount) {
-            const row = Math.floor(Math.random() * rows);
-            const col = Math.floor(Math.random() * cols);
+            const row = Math.floor(Math.random() * rowCount);
+            const col = Math.floor(Math.random() * colCount);
 
             // Skip safe zone (clicked cell + neighbors)
             if (Math.abs(row - safeRow) <= 1 && Math.abs(col - safeCol) <= 1) continue;
@@ -226,9 +218,9 @@ export class MinesweeperModel extends HoistModel {
     }
 
     private computeAdjacentCounts() {
-        const {rows, cols} = this;
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
+        const {rowCount, colCount} = this;
+        for (let row = 0; row < rowCount; row++) {
+            for (let col = 0; col < colCount; col++) {
                 if (this.cells[row][col].isMine) continue;
                 let count = 0;
                 for (let deltaRow = -1; deltaRow <= 1; deltaRow++) {
@@ -266,22 +258,14 @@ export class MinesweeperModel extends HoistModel {
     }
 
     private revealAllMines() {
-        for (let row = 0; row < this.rows; row++) {
-            for (let col = 0; col < this.cols; col++) {
-                if (this.cells[row][col].isMine) {
-                    this.cells[row][col].isRevealed = true;
-                }
-            }
-        }
+        this.cells
+            .flat()
+            .filter(c => c.isMine)
+            .forEach(c => (c.isRevealed = true));
     }
 
     private checkWin() {
-        for (let row = 0; row < this.rows; row++) {
-            for (let col = 0; col < this.cols; col++) {
-                const cell = this.cells[row][col];
-                if (!cell.isMine && !cell.isRevealed) return;
-            }
-        }
+        if (!this.cells.every(row => row.every(c => c.isMine || c.isRevealed))) return;
         this.gameState = 'won';
         this.stopTimer();
         XH.successToast(`You win! Cleared in ${this.formattedTime}.`);
@@ -289,7 +273,7 @@ export class MinesweeperModel extends HoistModel {
     }
 
     private inBounds(r: number, c: number): boolean {
-        return r >= 0 && r < this.rows && c >= 0 && c < this.cols;
+        return r >= 0 && r < this.rowCount && c >= 0 && c < this.colCount;
     }
 
     //------------------------------------------------------------------
@@ -319,29 +303,29 @@ export class MinesweeperModel extends HoistModel {
     @observable cellSize: number = 30;
 
     get boardWidth(): number {
-        return this.cols * this.cellSize;
+        return this.colCount * this.cellSize;
     }
 
     get boardHeight(): number {
-        return this.rows * this.cellSize;
+        return this.rowCount * this.cellSize;
     }
 
     @action
     private rebuildGrid() {
         if (this.gridModel) this.gridModel.destroy();
 
-        const {rows, cols} = this;
+        const {rowCount, colCount} = this;
 
         // Compute largest square cell size that fits within a consistent board area.
         // All difficulties target the same footprint — fewer cells = bigger squares.
         const TARGET = 550;
         const cellSize = (this.cellSize = Math.max(
             16,
-            Math.min(Math.floor(TARGET / cols), Math.floor(TARGET / rows))
+            Math.min(Math.floor(TARGET / colCount), Math.floor(TARGET / rowCount))
         ));
 
         const columns = [];
-        for (let col = 0; col < cols; col++) {
+        for (let col = 0; col < colCount; col++) {
             columns.push({
                 field: `c${col}`,
                 width: cellSize,
@@ -384,7 +368,7 @@ export class MinesweeperModel extends HoistModel {
         }
 
         const fields: {name: string; type: 'int' | 'string'}[] = [{name: 'row', type: 'int'}];
-        for (let col = 0; col < cols; col++) {
+        for (let col = 0; col < colCount; col++) {
             fields.push({name: `c${col}`, type: 'string'});
         }
 
@@ -408,9 +392,9 @@ export class MinesweeperModel extends HoistModel {
     private syncGrid() {
         if (!this.gridModel) return;
         const rowData = [];
-        for (let row = 0; row < this.rows; row++) {
+        for (let row = 0; row < this.rowCount; row++) {
             const record: any = {id: row, row};
-            for (let col = 0; col < this.cols; col++) {
+            for (let col = 0; col < this.colCount; col++) {
                 const cell = this.cells[row][col];
                 record[`c${col}`] = cell.isRevealed
                     ? cell.isMine

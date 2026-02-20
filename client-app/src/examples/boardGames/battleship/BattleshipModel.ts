@@ -1,9 +1,10 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, ReactionSpec, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, computed, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {span} from '@xh/hoist/cmp/layout';
+import {sample, times} from 'lodash';
 
 //------------------------------------------------------------------
 // Types
@@ -55,7 +56,7 @@ const SHIP_DEFS = [
 export class BattleshipModel extends HoistModel {
     @observable phase: Phase = 'placement';
     @observable isPlayerTurn: boolean = true;
-    @bindable shipOrientation: Orientation = 'horizontal';
+    @observable shipOrientation: Orientation = 'horizontal';
 
     @managed @observable.ref playerGridModel: GridModel = null;
     @managed @observable.ref attackGridModel: GridModel = null;
@@ -192,7 +193,7 @@ export class BattleshipModel extends HoistModel {
     //------------------------------------------------------------------
     // Player attack
     //------------------------------------------------------------------
-    async handleAttackBoardClick(row: number, col: number) {
+    async handleAttackBoardClickAsync(row: number, col: number) {
         const cannotFire =
             this.phase !== 'playing' ||
             !this.isPlayerTurn ||
@@ -301,25 +302,23 @@ export class BattleshipModel extends HoistModel {
     }
 
     private getAITarget(): {r: number; c: number} {
+        const isTargetable = (r: number, c: number) =>
+            this.playerBoard[r][c] === 'water' || this.playerBoard[r][c] === 'ship';
+
+        // Try hunt targets first (LIFO)
         while (this.aiState.targets.length > 0) {
             const target = this.aiState.targets.pop();
-            if (
-                this.inBounds(target.r, target.c) &&
-                (this.playerBoard[target.r][target.c] === 'water' ||
-                    this.playerBoard[target.r][target.c] === 'ship')
-            ) {
+            if (this.inBounds(target.r, target.c) && isTargetable(target.r, target.c)) {
                 return target;
             }
         }
 
+        // Fall back to random pick from all targetable cells
         this.aiState.mode = 'random';
-        let row, col;
-        do {
-            row = Math.floor(Math.random() * GRID_ROWS);
-            col = Math.floor(Math.random() * GRID_COLS);
-        } while (this.playerBoard[row][col] !== 'water' && this.playerBoard[row][col] !== 'ship');
-
-        return {r: row, c: col};
+        const available = this.playerBoard.flatMap((row, r) =>
+            row.map((state, c) => ({r, c, state})).filter(it => isTargetable(it.r, it.c))
+        );
+        return sample(available);
     }
 
     //------------------------------------------------------------------
@@ -354,13 +353,10 @@ export class BattleshipModel extends HoistModel {
     }
 
     private getShipCells(row: number, col: number, size: number, orientation: Orientation) {
-        const cells: {r: number; c: number}[] = [];
-        for (let i = 0; i < size; i++) {
-            const cellRow = orientation === 'vertical' ? row + i : row;
-            const cellCol = orientation === 'horizontal' ? col + i : col;
-            cells.push({r: cellRow, c: cellCol});
-        }
-        return cells;
+        return times(size, i => ({
+            r: orientation === 'vertical' ? row + i : row,
+            c: orientation === 'horizontal' ? col + i : col
+        }));
     }
 
     private isValidPlacement(cells: {r: number; c: number}[], board: CellState[][]): boolean {
@@ -370,16 +366,14 @@ export class BattleshipModel extends HoistModel {
     }
 
     private computeShipBorders() {
-        const ownerMap: (string | null)[][] = Array.from({length: GRID_ROWS}, () =>
-            Array(GRID_COLS).fill(null)
+        const ownerMap: (string | null)[][] = times(GRID_ROWS, () => Array(GRID_COLS).fill(null));
+        this.playerShips.forEach(ship =>
+            ship.cells.forEach(({r, c}) => (ownerMap[r][c] = ship.id))
         );
-        for (const ship of this.playerShips) {
-            for (const {r: row, c: col} of ship.cells) ownerMap[row][col] = ship.id;
-        }
 
-        this.shipBorderMap = Array.from({length: GRID_ROWS}, () => Array(GRID_COLS).fill(''));
-        for (const ship of this.playerShips) {
-            for (const {r: row, c: col} of ship.cells) {
+        this.shipBorderMap = times(GRID_ROWS, () => Array(GRID_COLS).fill(''));
+        this.playerShips.forEach(ship =>
+            ship.cells.forEach(({r: row, c: col}) => {
                 const id = ship.id,
                     above = row > 0 ? ownerMap[row - 1][col] : null,
                     below = row < GRID_ROWS - 1 ? ownerMap[row + 1][col] : null,
@@ -394,21 +388,18 @@ export class BattleshipModel extends HoistModel {
                 if (below !== id) borderClasses.push('battleship-ship--border-bottom');
                 if (right !== id) borderClasses.push('battleship-ship--border-right');
                 this.shipBorderMap[row][col] = borderClasses.join(' ');
-            }
-        }
+            })
+        );
     }
 
     private applyHitAndCheckSunk(ships: Ship[], row: number, col: number): Ship | null {
-        const key = `${row},${col}`;
-        for (const ship of ships) {
-            if (ship.cells.some(c => c.r === row && c.c === col)) {
-                ship.hits.add(key);
-                if (ship.hits.size === ship.size) {
-                    ship.isSunk = true;
-                    return ship;
-                }
-                return null;
-            }
+        const ship = ships.find(s => s.cells.some(c => c.r === row && c.c === col));
+        if (!ship) return null;
+
+        ship.hits.add(`${row},${col}`);
+        if (ship.hits.size === ship.size) {
+            ship.isSunk = true;
+            return ship;
         }
         return null;
     }
@@ -432,7 +423,7 @@ export class BattleshipModel extends HoistModel {
             true
         );
         this.attackGridModel = this.createBoardGrid(
-            (row, col) => this.handleAttackBoardClick(row, col),
+            (row, col) => this.handleAttackBoardClickAsync(row, col),
             false
         );
 
@@ -615,14 +606,7 @@ export class BattleshipModel extends HoistModel {
     }
 
     private createEmptyBoard(): CellState[][] {
-        const board: CellState[][] = [];
-        for (let row = 0; row < GRID_ROWS; row++) {
-            board[row] = [];
-            for (let col = 0; col < GRID_COLS; col++) {
-                board[row][col] = 'water';
-            }
-        }
-        return board;
+        return times(GRID_ROWS, () => times(GRID_COLS, () => 'water' as CellState));
     }
 
     private inBounds(r: number, c: number): boolean {
