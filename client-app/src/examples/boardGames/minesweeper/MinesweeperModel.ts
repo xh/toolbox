@@ -316,12 +316,14 @@ export class MinesweeperModel extends HoistModel {
 
         const {rowCount, colCount} = this;
 
-        // Compute largest square cell size that fits within a consistent board area.
-        // All difficulties target the same footprint — fewer cells = bigger squares.
+        // Compute largest square cell size that keeps the board close to a consistent
+        // footprint.  Using Math.ceil ensures colCount * cellSize >= TARGET so the
+        // columns always fill the grid — Math.floor can leave a gap when the division
+        // doesn't come out even (visible on the Hard 19×19 board).
         const TARGET = 550;
         const cellSize = (this.cellSize = Math.max(
             16,
-            Math.min(Math.floor(TARGET / colCount), Math.floor(TARGET / rowCount))
+            Math.min(Math.ceil(TARGET / colCount), Math.ceil(TARGET / rowCount))
         ));
 
         const columns = [];
