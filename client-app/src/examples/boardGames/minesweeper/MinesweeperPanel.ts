@@ -24,7 +24,16 @@ export const minesweeperPanel = hoistCmp.factory({
                           model: gridModel,
                           className: 'minesweeper-board',
                           width: boardWidth,
-                          height: boardHeight
+                          height: boardHeight,
+                          agOptions: {
+                              onCellContextMenu: ({event, data, column}) => {
+                                  event.preventDefault();
+                                  if (!data || !column) return;
+                                  const col = column.getColId();
+                                  if (!col.startsWith('c')) return;
+                                  model.toggleFlag(data.data.row, parseInt(col.substring(1)));
+                              }
+                          }
                       })
                   })
                 : null,
@@ -67,7 +76,7 @@ const bbar = hoistCmp.factory<MinesweeperModel>(({model}) =>
         span({item: model.statusText}),
         filler(),
         span({
-            item: 'Shift+click or Ctrl+click to flag',
+            item: 'Right-click or Shift+click to flag',
             className: 'xh-text-color-muted'
         })
     )
