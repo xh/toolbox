@@ -15,9 +15,4 @@ export class BaseAppModel extends HoistAppModel {
         makeObservable(this);
         this.renderWithUserProfile = XH.getPref('appMenuButtonWithUserProfile') ?? false;
     }
-
-    override async initAsync() {
-        await super.initAsync();
-        XH.fetchService.autoGenCorrelationIds = true;
-    }
 }
