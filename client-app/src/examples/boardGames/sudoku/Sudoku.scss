@@ -1,0 +1,71 @@
+.sudoku-game-panel {
+  .sudoku-board {
+    .ag-root-wrapper {
+      border: 2px solid var(--xh-text-color);
+    }
+
+    .ag-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 !important;
+      cursor: pointer;
+      user-select: none;
+      font-size: 18px;
+      border-right: 1px solid var(--xh-border-color) !important;
+    }
+
+    .ag-row {
+      border-bottom: 1px solid var(--xh-border-color) !important;
+    }
+
+    .sudoku-cell {
+      &--prefilled {
+        font-weight: bold;
+        background: var(--xh-bg-alt);
+      }
+
+      &--filled {
+        color: var(--xh-blue);
+      }
+
+      &--empty {
+        background: var(--xh-bg);
+        &:hover {
+          background: var(--xh-bg-highlight);
+        }
+      }
+
+      &--selected {
+        background: var(--xh-bg-highlight);
+        outline: 2px solid var(--xh-blue);
+        outline-offset: -2px;
+      }
+
+      &--conflict {
+        color: var(--xh-red);
+        background: var(--xh-intent-danger-transparent);
+      }
+
+      // Box boundary borders — thick lines on interior box edges
+      &--box-top {
+        border-top: 2px solid var(--xh-text-color) !important;
+      }
+      &--box-left {
+        border-left: 2px solid var(--xh-text-color) !important;
+      }
+    }
+  }
+
+  .sudoku-palette {
+    gap: 4px;
+
+    .xh-button {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+}

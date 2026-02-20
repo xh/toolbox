@@ -4,6 +4,7 @@ import {BaseAppModel} from '../../BaseAppModel';
 import {BoardGameService} from './BoardGameService';
 import {minesweeperPanel} from './minesweeper/MinesweeperPanel';
 import {battleshipPanel} from './battleship/BattleshipPanel';
+import {sudokuPanel} from './sudoku/SudokuPanel';
 import {Icon} from '@xh/hoist/icon';
 
 export class AppModel extends BaseAppModel {
@@ -23,6 +24,12 @@ export class AppModel extends BaseAppModel {
                 title: 'Battleship',
                 icon: Icon.target(),
                 content: battleshipPanel
+            },
+            {
+                id: 'sudoku',
+                title: 'Sudoku',
+                icon: Icon.grid(),
+                content: sudokuPanel
             }
         ]
     });
