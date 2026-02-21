@@ -4,7 +4,9 @@ See [AGENTS.md](./AGENTS.md) for AI coding agent guidance for this repository.
 
 ## Hoist React Documentation — READ BEFORE WRITING CODE
 
-Before writing or modifying any client-side code, **consult the hoist-react documentation** via the
-index at [`docs/hoist-react/README.md`](./docs/hoist-react/README.md). This is a symlink into the
-`@xh/hoist` package — the docs are shipped with the library and are the authoritative reference for
-how Hoist features work. **Read the docs index first, not raw source code.**
+Before writing or modifying any client-side code, **read the Hoist Architecture Primer in
+[AGENTS.md](./AGENTS.md)** and **use the hoist-react MCP tools** to consult full framework
+documentation. The MCP provides searchable access to all hoist-react docs plus TypeScript API
+introspection — use `hoist-search-docs` and `hoist-search-symbols` to find relevant docs.
+**Skipping the docs risks producing code that conflicts with established patterns or misses
+built-in functionality.**

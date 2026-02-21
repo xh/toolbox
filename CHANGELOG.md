@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.0-SNAPSHOT
+
+### New Features
+
+* Updated `DashCanvas` example to demo the new `DashCanvasWidgetChooser` component.
+
 ## 8.1.0 - 2026-02-12
 
 ### New Features
