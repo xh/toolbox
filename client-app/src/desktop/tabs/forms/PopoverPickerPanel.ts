@@ -47,7 +47,7 @@ export const popoverPickerPanel = hoistCmp.factory({
                 title: 'Forms › PopoverPicker',
                 icon: Icon.list(),
                 width: '90%',
-                height: 700,
+                maxWidth: 700,
                 scrollable: true,
                 item: hframe(column1(), column2()),
                 tbar: pickerToolbar(),
@@ -62,7 +62,6 @@ export const popoverPickerPanel = hoistCmp.factory({
 //------------------------------------------------------------------
 const pickerToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
     toolbar(
-        span('Toolbar usage:'),
         popoverPicker({
             bind: 'toolbarStates',
             options: usStates,
@@ -80,11 +79,6 @@ const pickerToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             options: ['Critical', 'High', 'Medium', 'Low'],
             placeholder: 'Priority...',
             buttonProps: {icon: Icon.flag()}
-        }),
-        filler(),
-        div({
-            className: 'xh-text-color-muted',
-            item: 'PopoverPicker is ideal for toolbar-based filtering'
         })
     )
 );
@@ -96,7 +90,6 @@ const compactToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
     toolbar({
         compact: true,
         items: [
-            span('Compact toolbar:'),
             popoverPicker({
                 bind: 'toolbarStates',
                 options: usStates,
@@ -106,7 +99,8 @@ const compactToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                 displayNoun: 'state',
                 buttonProps: {icon: Icon.globe()},
                 placeholder: 'States...',
-                width: 180
+                width: 180,
+                popoverPosition: 'top'
             }),
             toolbarSep(),
             popoverPicker({
@@ -114,12 +108,8 @@ const compactToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                 options: ['Critical', 'High', 'Medium', 'Low'],
                 placeholder: 'Priority...',
                 buttonProps: {icon: Icon.flag()},
-                width: 130
-            }),
-            filler(),
-            div({
-                className: 'xh-text-color-muted',
-                item: 'Same pickers in compact mode'
+                width: 130,
+                popoverPosition: 'top'
             })
         ]
     })
