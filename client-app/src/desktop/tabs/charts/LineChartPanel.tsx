@@ -60,12 +60,10 @@ export const lineChartPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory<LineChartModel>(({model}) => {
     return toolbar(
-        span('Symbol'),
         popoverPicker({
             bind: 'currentSymbols',
             options: model.symbols,
             enableMulti: true,
-            enableClear: true,
             enableSelectAll: true,
             displayNoun: 'symbol',
             buttonProps: {icon: Icon.chartLine()},
