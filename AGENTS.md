@@ -212,6 +212,42 @@ If Docker is not running or the token is not set when the server is enabled, Cla
 errors on startup. Disable the server by removing `"github"` from your local settings if this
 becomes disruptive.
 
+## Plugins
+
+### TypeScript LSP (enabled by default)
+
+The `typescript-lsp` plugin is enabled in `.claude/settings.json` and provides code intelligence
+(go-to-definition, find references, hover info, call hierarchy, etc.) for TypeScript and JavaScript
+files via the LSP tool. The plugin is auto-installed by Claude Code, but it requires the
+**`typescript-language-server`** binary to be installed on your machine:
+
+```bash
+npm install -g typescript-language-server typescript
+```
+
+If the binary is not installed, LSP tool calls will fail silently. Verify your install with
+`typescript-language-server --version`.
+
+### Java LSP (enabled by default)
+
+The `jdtls-lsp` plugin is enabled in `.claude/settings.json` and provides code intelligence
+(hover info, document symbols, find references, call hierarchy, etc.) for Java files via the LSP
+tool. The plugin is auto-installed by Claude Code, but it requires the **`jdtls`** binary to be
+installed on your machine:
+
+```bash
+brew install jdtls
+```
+
+If the binary is not installed, LSP tool calls will fail silently. Verify your install with
+`jdtls --version`.
+
+In this mixed Java/Groovy project, jdtls works well for Java-specific operations within `.java`
+files — hover, document symbols, find references, and call hierarchy all return useful results.
+However, **go-to-definition does not resolve Groovy classes** (e.g. services and domain objects
+defined in `.groovy` files), and **workspace symbol search may return empty results** since the
+server only indexes Java source. For navigating into Groovy code, use Grep/Glob tools instead.
+
 ## Tech Stack
 
 - **Frontend**: TypeScript, React 18, MobX, AG Grid, Highcharts, `@xh/hoist` framework
