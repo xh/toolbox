@@ -57,6 +57,8 @@ const tbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
                 buttonProps: {icon: Icon.tag()},
                 enableMulti: true,
                 enableClear: true,
+                enableSelectAll: true,
+                displayNoun: 'tag',
                 options: tagList,
                 width: 180
             }),

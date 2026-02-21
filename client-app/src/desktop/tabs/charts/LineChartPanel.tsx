@@ -66,6 +66,8 @@ const tbar = hoistCmp.factory<LineChartModel>(({model}) => {
             options: model.symbols,
             enableMulti: true,
             enableClear: true,
+            enableSelectAll: true,
+            displayNoun: 'symbol',
             buttonProps: {icon: Icon.chartLine()},
             placeholder: 'Symbols...',
             width: 200

@@ -68,6 +68,8 @@ const pickerToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             options: usStates,
             enableMulti: true,
             enableClear: true,
+            enableSelectAll: true,
+            displayNoun: 'state',
             buttonProps: {icon: Icon.globe()},
             placeholder: 'States...',
             width: 200
@@ -100,6 +102,8 @@ const compactToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                 options: usStates,
                 enableMulti: true,
                 enableClear: true,
+                enableSelectAll: true,
+                displayNoun: 'state',
                 buttonProps: {icon: Icon.globe()},
                 placeholder: 'States...',
                 width: 180
@@ -141,13 +145,14 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             }),
             demoRow({
                 label: 'Multi-select',
-                info: 'enableMulti, enableClear',
+                info: 'enableMulti, enableClear, enableSelectAll, displayNoun',
                 item: popoverPicker({
                     bind: 'multiStates',
                     options: usStates,
                     enableMulti: true,
                     enableClear: true,
-                    placeholder: 'Select states...',
+                    enableSelectAll: true,
+                    displayNoun: 'state',
                     width: 220
                 })
             }),
@@ -164,11 +169,11 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             }),
             demoRow({
                 label: 'Simple options',
-                info: 'Primitive string options, no filter needed',
+                info: 'Primitive string options, enableClear',
                 item: popoverPicker({
                     bind: 'simpleOption',
                     options: ['Small', 'Medium', 'Large', 'X-Large'],
-                    enableFilter: false,
+                    enableClear: true,
                     placeholder: 'Size...',
                     width: 140
                 })
@@ -217,7 +222,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             }),
             demoRow({
                 label: 'Badge count',
-                info: 'textRenderer with Hoist Badge',
+                info: 'buttonTextRenderer with Hoist Badge',
                 item: popoverPicker({
                     bind: 'badgeStates',
                     options: usStates,
@@ -226,7 +231,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                     buttonProps: {icon: Icon.filter()},
                     width: 180,
                     placeholder: 'Filters...',
-                    textRenderer: selected => {
+                    buttonTextRenderer: selected => {
                         if (!selected.length) return 'Filters...';
                         return hbox({
                             alignItems: 'center',
@@ -244,7 +249,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                 })
             }),
             demoRow({
-                label: 'Custom option + text renderer',
+                label: 'Custom renderers',
                 info: 'Status dot in both options and trigger button',
                 item: popoverPicker({
                     bind: 'statusOption',
@@ -252,7 +257,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                     placeholder: 'Status...',
                     enableFilter: false,
                     width: 160,
-                    textRenderer: selected => {
+                    buttonTextRenderer: selected => {
                         if (!selected.length) return 'Status...';
                         const opt = selected[0] as any;
                         return hbox({
