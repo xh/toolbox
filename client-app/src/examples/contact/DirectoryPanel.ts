@@ -3,7 +3,7 @@ import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, popoverPicker, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
@@ -51,15 +51,15 @@ const tbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
                 options: locationList,
                 width: 200
             }),
-            select({
+            popoverPicker({
                 bind: 'tagFilters',
-                placeholder: 'Tags',
-                leftIcon: Icon.tag(),
+                placeholder: 'Tags...',
+                icon: Icon.tag(),
                 enableMulti: true,
                 enableClear: true,
+                emptyValue: [],
                 options: tagList,
-                flex: 4,
-                maxWidth: 400
+                width: 180
             }),
             filler(),
             buttonGroupInput({
