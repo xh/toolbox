@@ -36,10 +36,8 @@ export const mobileTab = hoistCmp.factory(() =>
             </p>
         ],
         item: panel({
-            title: 'Mobile Support',
-            icon: Icon.icon({iconName: 'phone-laptop'}),
             className: 'tb-mobile',
-            tbar: [
+            bbar: [
                 filler(),
                 button({
                     text: 'Mail yourself a link to Toolbox Mobile',

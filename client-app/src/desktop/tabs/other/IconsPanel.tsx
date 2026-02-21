@@ -1,17 +1,17 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faIcons} from '@fortawesome/pro-regular-svg-icons';
+import {div, fragment, span, table, tbody, td, th, thead, tr} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, Intent} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {div, fragment, hspacer, table, tbody, td, th, thead, tr} from '@xh/hoist/cmp/layout';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {startCase, without} from 'lodash';
 import React from 'react';
 import {wrapper} from '../../common';
 import './IconsPanel.scss';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
-import {button} from '@xh/hoist/desktop/cmp/button';
 
 // Register a custom icon - used within this app / not pre-imported by `Icon` - imported above.
 // @see https://www.npmjs.com/package/@fortawesome/react-fontawesome#build-a-library-to-reference-icons-throughout-your-app-more-conveniently
@@ -75,66 +75,69 @@ export const iconsPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(({model}) =>
     fragment(
-        toolbar(
-            'Font Size:',
-            hspacer(5),
-            buttonGroupInput({
-                model,
-                bind: 'fontSize',
-                minimal: true,
-                outlined: true,
-                items: [
-                    sizeButton('small', {className: 'font-size--small'}),
-                    sizeButton('default', {className: 'font-size--default'}),
-                    sizeButton('large', {className: 'font-size--large'})
-                ]
-            }),
-            hspacer(30),
-            'Intent:',
-            hspacer(5),
-            buttonGroupInput({
-                model,
-                bind: 'intent',
-                minimal: true,
-                outlined: true,
-                items: [
-                    intentButton('neutral'),
-                    intentButton('primary'),
-                    intentButton('success'),
-                    intentButton('warning'),
-                    intentButton('danger')
-                ]
-            })
-        ),
-        toolbar(
-            'Icon Size:',
-            hspacer(5),
-            buttonGroupInput({
-                model,
-                bind: 'size',
-                minimal: true,
-                outlined: true,
-                items: [
-                    sizeButton('2xs'),
-                    sizeButton('xs'),
-                    sizeButton('sm'),
-                    sizeButton('default', {value: ''}),
-                    sizeButton('lg'),
-                    sizeButton('xl'),
-                    sizeButton('2xl'),
-                    sizeButton('1x'),
-                    sizeButton('2x'),
-                    sizeButton('3x'),
-                    sizeButton('4x'),
-                    sizeButton('5x'),
-                    sizeButton('6x'),
-                    sizeButton('7x'),
-                    sizeButton('8x'),
-                    sizeButton('9x'),
-                    sizeButton('10x')
-                ]
-            })
-        )
+        toolbar({
+            style: {backgroundColor: 'transparent'},
+            items: [
+                span('Font Size:'),
+                buttonGroupInput({
+                    model,
+                    bind: 'fontSize',
+                    minimal: true,
+                    outlined: true,
+                    items: [
+                        sizeButton('small', {className: 'font-size--small'}),
+                        sizeButton('default', {className: 'font-size--default'}),
+                        sizeButton('large', {className: 'font-size--large'})
+                    ]
+                }),
+                '-',
+                span('Intent:'),
+                buttonGroupInput({
+                    model,
+                    bind: 'intent',
+                    minimal: true,
+                    outlined: true,
+                    items: [
+                        intentButton('neutral'),
+                        intentButton('primary'),
+                        intentButton('success'),
+                        intentButton('warning'),
+                        intentButton('danger')
+                    ]
+                })
+            ]
+        }),
+        toolbar({
+            style: {backgroundColor: 'transparent'},
+            items: [
+                span('Icon Size:'),
+                buttonGroupInput({
+                    model,
+                    bind: 'size',
+                    minimal: true,
+                    outlined: true,
+                    items: [
+                        sizeButton('2xs'),
+                        sizeButton('xs'),
+                        sizeButton('sm'),
+                        sizeButton('default', {value: ''}),
+                        sizeButton('lg'),
+                        sizeButton('xl'),
+                        sizeButton('2xl'),
+                        sizeButton('1x'),
+                        sizeButton('2x'),
+                        sizeButton('3x'),
+                        sizeButton('4x'),
+                        sizeButton('5x'),
+                        sizeButton('6x'),
+                        sizeButton('7x'),
+                        sizeButton('8x'),
+                        sizeButton('9x'),
+                        sizeButton('10x')
+                    ]
+                })
+            ]
+        })
     )
 );
 
