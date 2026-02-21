@@ -1,5 +1,5 @@
 import {badge} from '@xh/hoist/cmp/badge';
-import {code, div, filler, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
+import {code, div, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {popoverPicker} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -10,14 +10,32 @@ import {usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import './PopoverPickerPanel.scss';
 
+const LARGE_OPTIONS = Array.from({length: 500}, (_, i) => `Item ${i + 1}`);
+
 const STATUS_OPTIONS = [
-    {label: 'Active', value: 'active', color: 'var(--xh-green)'},
-    {label: 'Pending', value: 'pending', color: 'var(--xh-orange)'},
-    {label: 'Inactive', value: 'inactive', color: 'var(--xh-red)'},
-    {label: 'Archived', value: 'archived', color: 'var(--xh-text-color-muted)'}
+    {
+        label: 'Active',
+        value: 'active',
+        color: 'var(--xh-green)',
+        description: 'Visible to all users'
+    },
+    {label: 'Pending', value: 'pending', color: 'var(--xh-orange)', description: 'Awaiting review'},
+    {
+        label: 'Inactive',
+        value: 'inactive',
+        color: 'var(--xh-red)',
+        description: 'Hidden from searches'
+    },
+    {
+        label: 'Archived',
+        value: 'archived',
+        color: 'var(--xh-text-color-muted)',
+        description: 'Read-only, retained for audit'
+    }
 ];
 
 export const popoverPickerPanel = hoistCmp.factory({
+    displayName: 'PopoverPickerPanel',
     model: creates(() => PopoverPickerPanelModel),
 
     render() {
@@ -240,13 +258,13 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             }),
             demoRow({
                 label: 'Custom renderers',
-                info: 'Status dot in both options and trigger button',
+                info: 'optionRenderer with two-line rows',
                 item: popoverPicker({
                     bind: 'statusOption',
                     options: STATUS_OPTIONS,
                     placeholder: 'Status...',
                     enableFilter: false,
-                    width: 160,
+                    width: 200,
                     buttonTextRenderer: selected => {
                         if (!selected.length) return 'Status...';
                         const opt = selected[0] as any;
@@ -258,10 +276,19 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                     optionRenderer: (opt, isSelected) =>
                         hbox({
                             alignItems: 'center',
+                            flex: 1,
                             items: [
                                 statusDot((opt as any).color),
-                                span(opt.label),
-                                filler(),
+                                vbox({
+                                    flex: 1,
+                                    items: [
+                                        span(opt.label),
+                                        span({
+                                            className: 'xh-text-color-muted xh-font-size-small',
+                                            item: (opt as any).description
+                                        })
+                                    ]
+                                }),
                                 isSelected ? Icon.check({className: 'xh-intent-primary'}) : null
                             ]
                         })
@@ -291,6 +318,20 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                     options: usStates,
                     buttonProps: {outlined: false},
                     placeholder: 'Select...',
+                    width: 200
+                })
+            }),
+            demoRow({
+                label: 'Large list (virtual)',
+                info: '500 options — virtualized via react-window',
+                item: popoverPicker({
+                    bind: 'largeListValues',
+                    options: LARGE_OPTIONS,
+                    enableMulti: true,
+                    enableClear: true,
+                    enableSelectAll: true,
+                    displayNoun: 'item',
+                    stripeRows: true,
                     width: 200
                 })
             })
@@ -348,6 +389,7 @@ class PopoverPickerPanelModel extends HoistModel {
     @bindable statusOption: string = null;
     @bindable wideState: string[] = [];
     @bindable nonMinimalState: string = null;
+    @bindable largeListValues: string[] = [];
 
     constructor() {
         super();
