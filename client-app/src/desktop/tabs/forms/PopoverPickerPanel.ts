@@ -89,14 +89,16 @@ const pickerToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             displayNoun: 'state',
             buttonProps: {icon: Icon.globe()},
             placeholder: 'States...',
-            width: 200
+            width: 200,
+            testId: 'tbar-states'
         }),
         toolbarSep(),
         popoverPicker({
             bind: 'toolbarPriority',
             options: ['Critical', 'High', 'Medium', 'Low'],
             placeholder: 'Priority...',
-            buttonProps: {icon: Icon.flag()}
+            buttonProps: {icon: Icon.flag()},
+            testId: 'tbar-priority'
         })
     )
 );
@@ -148,7 +150,8 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
                     bind: 'singleState',
                     options: usStates,
                     placeholder: 'Select a state...',
-                    width: 200
+                    width: 200,
+                    testId: 'single-state'
                 })
             }),
             demoRow({
@@ -161,7 +164,8 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
                     enableClear: true,
                     enableSelectAll: true,
                     displayNoun: 'state',
-                    width: 220
+                    width: 220,
+                    testId: 'multi-states'
                 })
             }),
             demoRow({
