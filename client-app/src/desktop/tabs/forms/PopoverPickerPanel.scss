@@ -1,9 +1,18 @@
 .tb-popover-picker-panel {
   &__row {
     margin-bottom: var(--xh-pad-double-px);
+    flex-shrink: 0;
   }
 
   &__label {
     font-weight: 500;
+  }
+
+  &__badge {
+    margin-left: 6px;
+    font-size: 11px;
+    min-width: 18px;
+    min-height: 18px;
+    line-height: 18px;
   }
 }

@@ -1,14 +1,21 @@
-import {div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
+import {badge} from '@xh/hoist/cmp/badge';
+import {code, div, filler, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {popoverPicker} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import React from 'react';
-import {usStates, restaurants} from '../../../core/data';
+import {usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import './PopoverPickerPanel.scss';
+
+const STATUS_OPTIONS = [
+    {label: 'Active', value: 'active', color: 'var(--xh-green)'},
+    {label: 'Pending', value: 'pending', color: 'var(--xh-orange)'},
+    {label: 'Inactive', value: 'inactive', color: 'var(--xh-red)'},
+    {label: 'Archived', value: 'archived', color: 'var(--xh-text-color-muted)'}
+];
 
 export const popoverPickerPanel = hoistCmp.factory({
     model: creates(() => PopoverPickerPanelModel),
@@ -16,17 +23,15 @@ export const popoverPickerPanel = hoistCmp.factory({
     render() {
         return wrapper({
             description: [
-                <p>
-                    <code>PopoverPicker</code> presents its options in a popover dropdown triggered
-                    by a compact button showing the current value or a summary. Supports single and
-                    multi-select modes.
-                </p>,
-                <p>
-                    Designed for space-constrained areas such as toolbars, where a traditional{' '}
-                    <code>Select</code> component — especially in multi-select "tag picker" mode —
-                    is too wide. In multi-mode, displays a compact summary (e.g. "3 of 10 selected")
-                    rather than listing all selected values inline.
-                </p>
+                p(
+                    code('PopoverPicker'),
+                    ' presents its options in a popover dropdown triggered by a compact button showing the current value or a summary. Supports single and multi-select modes.'
+                ),
+                p(
+                    'Designed for space-constrained areas such as toolbars, where a traditional ',
+                    code('Select'),
+                    ' component — especially in multi-select "tag picker" mode — is too wide. In multi-mode, displays a compact summary (e.g. "3 selected") rather than listing all selected values inline.'
+                )
             ],
             links: [
                 {
@@ -43,11 +48,10 @@ export const popoverPickerPanel = hoistCmp.factory({
                 icon: Icon.list(),
                 width: '90%',
                 height: 700,
-                item: hframe(
-                    column1(),
-                    column2()
-                ),
-                tbar: pickerToolbar()
+                scrollable: true,
+                item: hframe(column1(), column2()),
+                tbar: pickerToolbar(),
+                bbar: compactToolbar()
             })
         });
     }
@@ -64,8 +68,7 @@ const pickerToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             options: usStates,
             enableMulti: true,
             enableClear: true,
-            emptyValue: [],
-            icon: Icon.globe(),
+            buttonProps: {icon: Icon.globe()},
             placeholder: 'States...',
             width: 200
         }),
@@ -74,8 +77,7 @@ const pickerToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             bind: 'toolbarPriority',
             options: ['Critical', 'High', 'Medium', 'Low'],
             placeholder: 'Priority...',
-            icon: Icon.flag(),
-            width: 140
+            buttonProps: {icon: Icon.flag()}
         }),
         filler(),
         div({
@@ -83,6 +85,40 @@ const pickerToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             item: 'PopoverPicker is ideal for toolbar-based filtering'
         })
     )
+);
+
+//------------------------------------------------------------------
+// Compact bottom toolbar
+//------------------------------------------------------------------
+const compactToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
+    toolbar({
+        compact: true,
+        items: [
+            span('Compact toolbar:'),
+            popoverPicker({
+                bind: 'toolbarStates',
+                options: usStates,
+                enableMulti: true,
+                enableClear: true,
+                buttonProps: {icon: Icon.globe()},
+                placeholder: 'States...',
+                width: 180
+            }),
+            toolbarSep(),
+            popoverPicker({
+                bind: 'toolbarPriority',
+                options: ['Critical', 'High', 'Medium', 'Low'],
+                placeholder: 'Priority...',
+                buttonProps: {icon: Icon.flag()},
+                width: 130
+            }),
+            filler(),
+            div({
+                className: 'xh-text-color-muted',
+                item: 'Same pickers in compact mode'
+            })
+        ]
+    })
 );
 
 //------------------------------------------------------------------
@@ -105,26 +141,23 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             }),
             demoRow({
                 label: 'Multi-select',
-                info: 'enableMulti, enableClear, emptyValue: []',
+                info: 'enableMulti, enableClear',
                 item: popoverPicker({
                     bind: 'multiStates',
                     options: usStates,
                     enableMulti: true,
                     enableClear: true,
-                    emptyValue: [],
                     placeholder: 'Select states...',
                     width: 220
                 })
             }),
             demoRow({
                 label: 'With icon + intent',
-                info: 'icon, intent, outlined',
+                info: 'buttonProps: {icon, intent}',
                 item: popoverPicker({
                     bind: 'intentState',
                     options: usStates,
-                    icon: Icon.globe(),
-                    intent: 'primary',
-                    outlined: true,
+                    buttonProps: {icon: Icon.globe(), intent: 'primary'},
                     placeholder: 'Region...',
                     width: 180
                 })
@@ -165,10 +198,17 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
         items: [
             demoRow({
                 label: 'Custom fields',
-                info: 'labelField: "name", valueField: "name"',
+                info: 'labelField + valueField on plain objects',
                 item: popoverPicker({
                     bind: 'restaurant',
-                    options: restaurants,
+                    options: [
+                        {name: 'Osteria Francescana', city: 'Italy'},
+                        {name: 'El Celler de Can Roca', city: 'Spain'},
+                        {name: 'Mirazur', city: 'France'},
+                        {name: 'Eleven Madison Park', city: 'NYC'},
+                        {name: 'Gaggan', city: 'Thailand'},
+                        {name: 'Central', city: 'Peru'}
+                    ],
                     labelField: 'name',
                     valueField: 'name',
                     placeholder: 'Pick a restaurant...',
@@ -176,67 +216,72 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                 })
             }),
             demoRow({
-                label: 'Custom button renderer',
-                info: 'buttonRenderer showing selection count as badge',
+                label: 'Badge count',
+                info: 'textRenderer with Hoist Badge',
                 item: popoverPicker({
                     bind: 'badgeStates',
                     options: usStates,
                     enableMulti: true,
                     enableClear: true,
-                    emptyValue: [],
-                    icon: Icon.filter(),
+                    buttonProps: {icon: Icon.filter()},
                     width: 180,
                     placeholder: 'Filters...',
-                    buttonRenderer: (selected, all) => {
-                        if (!selected.length) return 'No filters';
-                        if (selected.length === all.length) return 'All regions';
-                        return `${selected.length} filter${selected.length > 1 ? 's' : ''} active`;
+                    textRenderer: selected => {
+                        if (!selected.length) return 'Filters...';
+                        return hbox({
+                            alignItems: 'center',
+                            items: [
+                                span('Filters'),
+                                badge({
+                                    compact: true,
+                                    intent: 'primary',
+                                    className: 'tb-popover-picker-panel__badge',
+                                    item: selected.length
+                                })
+                            ]
+                        });
                     }
                 })
             }),
             demoRow({
-                label: 'Custom option renderer',
-                info: 'optionRenderer with colored indicators',
+                label: 'Custom option + text renderer',
+                info: 'Status dot in both options and trigger button',
                 item: popoverPicker({
                     bind: 'statusOption',
-                    options: [
-                        {label: 'Active', value: 'active', color: 'var(--xh-green)'},
-                        {label: 'Pending', value: 'pending', color: 'var(--xh-orange)'},
-                        {label: 'Inactive', value: 'inactive', color: 'var(--xh-red)'},
-                        {label: 'Archived', value: 'archived', color: 'var(--xh-text-color-muted)'}
-                    ],
+                    options: STATUS_OPTIONS,
                     placeholder: 'Status...',
                     enableFilter: false,
                     width: 160,
+                    textRenderer: selected => {
+                        if (!selected.length) return 'Status...';
+                        const opt = selected[0] as any;
+                        return hbox({
+                            alignItems: 'center',
+                            items: [statusDot(opt.color), span(opt.label)]
+                        });
+                    },
                     optionRenderer: (opt, isSelected) =>
                         hbox({
                             alignItems: 'center',
                             items: [
-                                div({
-                                    style: {
-                                        width: 8,
-                                        height: 8,
-                                        borderRadius: '50%',
-                                        backgroundColor: (opt as any).color,
-                                        marginRight: 8
-                                    }
-                                }),
+                                statusDot((opt as any).color),
                                 span(opt.label),
                                 filler(),
-                                isSelected ? Icon.check({className: 'xh-blue'}) : null
+                                isSelected ? Icon.check({className: 'xh-intent-primary'}) : null
                             ]
                         })
                 })
             }),
             demoRow({
-                label: 'Popover width',
-                info: 'popoverWidth: 300, maxMenuHeight: 200',
+                label: 'Popover width + stripes',
+                info: 'popoverWidth, stripeRows, rowBorders',
                 item: popoverPicker({
                     bind: 'wideState',
                     options: usStates,
                     enableMulti: true,
                     enableClear: true,
-                    emptyValue: [],
+                    stripeRows: true,
+                    rowBorders: true,
                     popoverWidth: 300,
                     maxMenuHeight: 200,
                     placeholder: 'Wide popover...',
@@ -244,12 +289,12 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                 })
             }),
             demoRow({
-                label: 'Minimal: false',
-                info: 'Non-minimal trigger button style',
+                label: 'Not outlined',
+                info: 'buttonProps: {outlined: false}',
                 item: popoverPicker({
                     bind: 'nonMinimalState',
                     options: usStates,
-                    minimal: false,
+                    buttonProps: {outlined: false},
                     placeholder: 'Select...',
                     width: 200
                 })
@@ -259,22 +304,29 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
 );
 
 //------------------------------------------------------------------
-// Helper: labeled demo row
+// Helpers
 //------------------------------------------------------------------
+const statusDot = (color: string) =>
+    div({
+        style: {
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            backgroundColor: color,
+            marginRight: 8,
+            flexShrink: 0
+        }
+    });
+
 const demoRow = hoistCmp.factory(({label, info, children}) =>
     vbox({
         className: 'tb-popover-picker-panel__row',
         items: [
-            hbox({
-                alignItems: 'baseline',
-                items: [
-                    span({className: 'tb-popover-picker-panel__label', item: label}),
-                    span({
-                        className: 'xh-text-color-muted xh-font-size-small',
-                        style: {marginLeft: 8},
-                        item: info
-                    })
-                ]
+            span({className: 'tb-popover-picker-panel__label', item: label}),
+            span({
+                className: 'xh-text-color-muted xh-font-size-small',
+                style: {marginTop: 2},
+                item: info
             }),
             div({style: {marginTop: 6}, item: children})
         ]

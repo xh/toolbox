@@ -54,10 +54,9 @@ const tbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
             popoverPicker({
                 bind: 'tagFilters',
                 placeholder: 'Tags...',
-                icon: Icon.tag(),
+                buttonProps: {icon: Icon.tag()},
                 enableMulti: true,
                 enableClear: true,
-                emptyValue: [],
                 options: tagList,
                 width: 180
             }),
