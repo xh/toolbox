@@ -2,7 +2,7 @@ import {switchInput, numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {code, em, filler, frame, hframe, p, span, vframe} from '@xh/hoist/cmp/layout';
+import {em, filler, frame, hframe, p, span, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
@@ -20,24 +20,15 @@ export const dashCanvasPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 p(
-                    code('DashCanvas'),
-                    ' is configured via a ',
-                    code('DashCanvasModel'),
-                    ' and renders user-arrangeable widgets in a drag-and-drop grid layout.'
+                    'DashCanvas is configured via a DashCanvasModel and renders user-arrangeable widgets in a drag-and-drop grid layout.'
                 ),
                 p(
-                    'Unlike ',
-                    code('DashContainer'),
-                    ', this component scales only the ',
+                    'Unlike DashContainer, this component scales only the ',
                     em('width'),
-                    ' of its widgets as overall size changes, keeping heights fixed and scrolling as needed. This makes it well-suited for report-style dashboards with content that won\'t compress well on smaller screens. Use ',
-                    code('DashContainer'),
-                    ' when a space-filling layout is preferred.'
+                    ' of its widgets as overall size changes, keeping heights fixed and scrolling as needed. This makes it well-suited for report-style dashboards with content that won\'t compress well on smaller screens. Use DashContainer when a space-filling layout is preferred.'
                 ),
                 p(
-                    'This example also demonstrates ',
-                    code('DashCanvasWidgetChooser'),
-                    ', a ready-made sidebar for browsing and dragging available widgets onto the canvas.'
+                    'This example also demonstrates DashCanvasWidgetChooser, a ready-made sidebar for browsing and dragging available widgets onto the canvas.'
                 )
             ],
             item: panel({

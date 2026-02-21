@@ -1,6 +1,6 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {code, filler, frame, p} from '@xh/hoist/cmp/layout';
+import {filler, frame, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
@@ -30,13 +30,7 @@ export const toolbarFormPanel = hoistCmp.factory({
             description: [
                 p('Forms and FormFields can also be used inside Toolbars.'),
                 p(
-                    'When using a FormField within a Toolbar, it is not necessary to set the ',
-                    code('inline'),
-                    ' prop - FormFields within Toolbars are always displayed as if ',
-                    code('inline: true'),
-                    '. For validation, it is recommenced to set ',
-                    code('minimal: true'),
-                    ' on your FormFields or via Form.fieldDefaults. When not using minimal validation, validation messages will be shown to the right of the FormField.'
+                    'When using a FormField within a Toolbar, it is not necessary to set the inline prop - FormFields within Toolbars are always displayed as if inline: true. For validation, it is recommenced to set minimal: true on your FormFields or via Form.fieldDefaults. When not using minimal validation, validation messages will be shown to the right of the FormField.'
                 ),
                 p(
                     'Using TextArea, JSONInput or Slider inputs within Toolbars is not currently supported, and may lead to unwanted sizing side-effects.'

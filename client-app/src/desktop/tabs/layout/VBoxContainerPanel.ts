@@ -1,5 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {box, code, p, vbox} from '@xh/hoist/cmp/layout';
+import {box, p, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
@@ -7,9 +7,7 @@ import {wrapper} from '../../common';
 export const vboxContainerPanel = hoistCmp.factory(() =>
     wrapper({
         description: p(
-            'A VBox lays out its children vertically, rendering a Box with ',
-            code('flexDirection:column'),
-            '.'
+            'A VBox lays out its children vertically, rendering a Box with flexDirection:column.'
         ),
         links: [
             {

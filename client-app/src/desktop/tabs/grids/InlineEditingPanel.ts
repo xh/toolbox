@@ -1,5 +1,5 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {code, filler, hbox, hframe, hspacer, p, span} from '@xh/hoist/cmp/layout';
+import {filler, hbox, hframe, hspacer, p, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {ValidationState} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -20,16 +20,10 @@ export const inlineEditingPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 p(
-                    'Grids support inline editing of their underlying store records. To enable, set ',
-                    code('editable:true'),
-                    ' on columns that should allow editing and (optionally) configure a type-appropriate editor.'
+                    'Grids support inline editing of their underlying store records. To enable, set editable:true on columns that should allow editing and (optionally) configure a type-appropriate editor.'
                 ),
                 p(
-                    'The ',
-                    code('Column.editable'),
-                    ' config also takes a function, allowing field-level editing to be conditional based upon the data or some other state, as demonstrated in the example below. This example also applies a custom style to highlight the editable cells in the grid, which are given the ',
-                    code('.xh-cell--editable'),
-                    ' CSS class by the toolkit.'
+                    'The Column.editable config also takes a function, allowing field-level editing to be conditional based upon the data or some other state, as demonstrated in the example below. This example also applies a custom style to highlight the editable cells in the grid, which are given the .xh-cell--editable CSS class by the toolkit.'
                 ),
                 p(
                     'Store fields can be configured with validation rules, much like forms, allowing the application to require resolution before persisting to the back-end. Cells with invalid values are styled with a red corner flag by default. (Try setting a negative amount in any row to test.)'

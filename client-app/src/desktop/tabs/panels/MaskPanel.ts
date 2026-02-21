@@ -2,7 +2,7 @@ import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {code, p, span} from '@xh/hoist/cmp/layout';
+import {p, span} from '@xh/hoist/cmp/layout';
 import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -18,8 +18,8 @@ export const maskPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 p('Masks provide a semi-opaque overlay to disable interaction with a component.'),
-                p('A convenient way to display a mask is via the ', code('mask'), ' property of Panel. This prop can accept a fully configured mask element, ', code('true'), ' for a plain default mask, or (most commonly) a ', code('TaskObserver'), ' instance to automatically show a mask with a spinner when a task is pending.'),
-                p('A mask configured with ', code('inline: false'), ' will mask the entire Viewport.')
+                p('A convenient way to display a mask is via the mask property of Panel. This prop can accept a fully configured mask element, true for a plain default mask, or (most commonly) a TaskObserver instance to automatically show a mask with a spinner when a task is pending.'),
+                p('A mask configured with inline: false will mask the entire Viewport.')
             ],
             links: [
                 {

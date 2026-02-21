@@ -23,9 +23,9 @@ export const numberFormatsPanel = hoistCmp.factory({
     render() {
         return wrapper({
             description: [
-                p('Hoist provides a collection of number formatting functions in ', code('@xh/hoist/format'), '. The main method is ', code('fmtNumber'), ' which provides several useful options. More specific methods delegate to ', code('fmtNumber'), ' and set useful defaults.'),
-                p(code('fmtNumber'), ' is backed by ', a({href: 'https://numbrojs.com/', target: '_blank', item: 'numbro.js '}), ' and makes the full numbro API available via the ', code('formatConfig'), ' property, which takes a numbro configuration object.'),
-                p('All Hoist formatting functions support the ', code('asHtml'), ' option to produce a raw HTML string rather than a React element. This allows them to be useful in both React and non-React contexts.')
+                p('Hoist provides a collection of number formatting functions in @xh/hoist/format. The main method is fmtNumber which provides several useful options. More specific methods delegate to fmtNumber and set useful defaults.'),
+                p('fmtNumber is backed by ', a({href: 'https://numbrojs.com/', target: '_blank', item: 'numbro.js '}), ' and makes the full numbro API available via the formatConfig property, which takes a numbro configuration object.'),
+                p('All Hoist formatting functions support the asHtml option to produce a raw HTML string rather than a React element. This allows them to be useful in both React and non-React contexts.')
             ],
             item: panel({
                 title: 'Other › Format Numbers',

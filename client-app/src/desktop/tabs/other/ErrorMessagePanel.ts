@@ -1,4 +1,4 @@
-import {code, p, vframe} from '@xh/hoist/cmp/layout';
+import {p, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {errorMessage} from '@xh/hoist/cmp/error';
@@ -16,8 +16,8 @@ export const errorMessagePanel = hoistCmp.factory({
 
         return wrapper({
             description: [
-                p('The ', code('ErrorMessage'), ' component displays an exception or other custom error message. It supports an optional button to trigger an action that might resolve the error, such as retrying a failed data load.'),
-                p('Consider using an ', code('ErrorMessage'), ' to replace another, primary component in your app when an error prevents that component from displaying as it should.')
+                p('The ErrorMessage component displays an exception or other custom error message. It supports an optional button to trigger an action that might resolve the error, such as retrying a failed data load.'),
+                p('Consider using an ErrorMessage to replace another, primary component in your app when an error prevents that component from displaying as it should.')
             ],
             links: [
                 {

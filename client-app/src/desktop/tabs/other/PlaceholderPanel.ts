@@ -1,5 +1,5 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {code, filler, frame, hframe, p, placeholder} from '@xh/hoist/cmp/layout';
+import {filler, frame, hframe, p, placeholder} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -14,8 +14,8 @@ export const placeholderPanel = hoistCmp.factory({
         const {selectedRecord} = model.gridModel;
         return wrapper({
             description: [
-                p('The ', code('Placeholder'), ' component is useful to occupy a portion of an application\'s layout when the primary content is not yet ready to show - e.g. for a master-detail view where the detail is blank until a record is selected.'),
-                p('Placeholders center their contents and are styled with a muted text color. If the first child of a placeholder is an ', code('Icon'), ' element, it will be automatically styled as below.')
+                p('The Placeholder component is useful to occupy a portion of an application\'s layout when the primary content is not yet ready to show - e.g. for a master-detail view where the detail is blank until a record is selected.'),
+                p('Placeholders center their contents and are styled with a muted text color. If the first child of a placeholder is an Icon element, it will be automatically styled as below.')
             ],
             links: [
                 {

@@ -1,5 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {box, code, hbox, p} from '@xh/hoist/cmp/layout';
+import {box, hbox, p} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
@@ -7,9 +7,7 @@ import {wrapper} from '../../common';
 export const hboxContainerPanel = hoistCmp.factory(() =>
     wrapper({
         description: p(
-            'An HBox lays out its children horizontally, rendering a Box with ',
-            code('flexDirection:row'),
-            '.'
+            'An HBox lays out its children horizontally, rendering a Box with flexDirection:row.'
         ),
         links: [{url: '$HR/cmp/layout/Box.ts', notes: 'Hoist Box components.'}],
         item: panel({

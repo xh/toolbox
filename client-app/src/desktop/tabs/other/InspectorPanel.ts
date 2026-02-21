@@ -1,4 +1,4 @@
-import {code, li, p, ul, vframe} from '@xh/hoist/cmp/layout';
+import {li, p, ul, vframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -12,17 +12,11 @@ export const inspectorPanel = hoistCmp.factory({
             description: [
                 p({
                     style: {marginBottom: 0},
-                    items: [
-                        'Hoist Inspector is a developer-centric tool built directly into the Hoist UI. It provides a listing of all active ',
-                        code('HoistModel'),
-                        ' and ',
-                        code('HoistService'),
-                        ' instances running within the current application.'
-                    ]
+                    item: 'Hoist Inspector is a developer-centric tool built directly into the Hoist UI. It provides a listing of all active HoistModel and HoistService instances running within the current application.'
                 }),
                 ul(
                     li('Enumerable properties + getters for the selected instance load within the docked detail grid.'),
-                    li('Getters can be evaluated by clicking ', code('(...)'), ' to display their value.'),
+                    li('Getters can be evaluated by clicking (...) to display their value.'),
                     li('All observable properties (including getters) reactively update when their value changes.'),
                     li('Click ', Icon.star(), ' to pin a property to the top of your list.'),
                     li('Click ', Icon.terminal(), ' to log an instance or property to the console.')
@@ -44,9 +38,7 @@ export const inspectorPanel = hoistCmp.factory({
                             p(
                                 'Inspector can be activated via the little ',
                                 Icon.search(),
-                                ' icon in the version bar footer, or by running ',
-                                code('XH.inspectorService.activate()'),
-                                ' on the dev tools console.'
+                                ' icon in the version bar footer, or by running XH.inspectorService.activate() on the dev tools console.'
                             ),
                             p(
                                 'To make it easy for you here in Toolbox, we have provided this giant button:'

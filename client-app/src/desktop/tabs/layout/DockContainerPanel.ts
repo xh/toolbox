@@ -1,5 +1,5 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {box, br, code, hbox, p} from '@xh/hoist/cmp/layout';
+import {box, br, hbox, p} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -14,8 +14,7 @@ export const dockContainerPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 p(
-                    code('DockContainer'),
-                    ' provides a user-friendly way to display multiple views simultaneously as docked overlays.'
+                    'DockContainer provides a user-friendly way to display multiple views simultaneously as docked overlays.'
                 ),
                 p(
                     'Users can choose which views are expanded or collapsed at any given time, or if so enabled they can pop a view out of the dock and display it as a modal dialog.'

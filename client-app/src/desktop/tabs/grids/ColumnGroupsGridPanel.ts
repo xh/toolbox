@@ -1,5 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {a, code, em, p} from '@xh/hoist/cmp/layout';
+import {a, em, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {sampleColumnGroupsGrid, wrapper} from '../../common';
@@ -17,11 +17,7 @@ export const columnGroupsGridPanel = hoistCmp.factory(() =>
                 '.'
             ),
             p(
-                'Note that column group configurations must be provided either a ',
-                code('headerName'),
-                ' or ',
-                code('groupId'),
-                ' property, which must be unique within the GridModel. Column groups in Hoist React are also \'sealed\', meaning that columns may be reordered ',
+                'Note that column group configurations must be provided either a headerName or groupId property, which must be unique within the GridModel. Column groups in Hoist React are also \'sealed\', meaning that columns may be reordered ',
                 em('within'),
                 ' the group in which they are defined but not broken out from them.'
             ),

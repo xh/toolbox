@@ -3,7 +3,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {code, filler, frame, p} from '@xh/hoist/cmp/layout';
+import {filler, frame, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
@@ -24,10 +24,7 @@ export const dashContainerPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 p(
-                    code('DashContainer'),
-                    ' is configured and managed via a ',
-                    code('DashContainerModel'),
-                    ' and allows the user to drag-and-drop content into various tab, and split-pane layouts. This component also supports publishing observable state, managed mounting/unmounting of inactive tabs, and lazy refreshing of its active view.'
+                    'DashContainer is configured and managed via a DashContainerModel and allows the user to drag-and-drop content into various tab, and split-pane layouts. This component also supports publishing observable state, managed mounting/unmounting of inactive tabs, and lazy refreshing of its active view.'
                 )
             ],
             item: panel({

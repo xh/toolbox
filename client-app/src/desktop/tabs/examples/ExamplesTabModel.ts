@@ -2,7 +2,7 @@ import {HoistModel, managed} from '@xh/hoist/core';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {makeObservable, bindable} from '@xh/hoist/mobx';
-import {code, p, strong} from '@xh/hoist/cmp/layout';
+import {p, strong} from '@xh/hoist/cmp/layout';
 
 export class ExamplesTabModel extends HoistModel {
     @managed
@@ -28,11 +28,7 @@ export class ExamplesTabModel extends HoistModel {
             text: [
                 p('Hello Fintech! 👋'),
                 p(
-                    'A highly simplified portfolio analysis tool, this example includes tree-based data loaded into ',
-                    code('Grid'),
-                    ", a detail panel that responds to the user's selection, a Hoist ",
-                    code('TreeMap'),
-                    ', and timeseries charting.'
+                    "A highly simplified portfolio analysis tool, this example includes tree-based data loaded into Grid, a detail panel that responds to the user's selection, a Hoist TreeMap, and timeseries charting."
                 )
             ]
         },
@@ -46,11 +42,7 @@ export class ExamplesTabModel extends HoistModel {
                     'A weather dashboard backed by the OpenWeatherMap API, with server-side caching and auto-refresh.'
                 ),
                 p(
-                    'Uses a ',
-                    code('DashCanvas'),
-                    ' layout with multiple chart types and a ',
-                    code('Grid'),
-                    ' summary view.'
+                    'Uses a DashCanvas layout with multiple chart types and a Grid summary view.'
                 ),
                 p(
                     '✨This example was coded entirely by AI (Claude) without any human-written application code.'
@@ -65,11 +57,7 @@ export class ExamplesTabModel extends HoistModel {
             text: [
                 p('Meet the Extremely Heavy team.'),
                 p(
-                    'This demo of an employee directory app features multiple views of data within a Hoist ',
-                    code('Store'),
-                    ', search + filter controls, and lightweight server-side persistence leveraging ',
-                    code('AppConfig'),
-                    '.'
+                    'This demo of an employee directory app features multiple views of data within a Hoist Store, search + filter controls, and lightweight server-side persistence leveraging AppConfig.'
                 )
             ]
         },
@@ -81,11 +69,7 @@ export class ExamplesTabModel extends HoistModel {
             text: [
                 p('The classic reference app, Hoist style.'),
                 p(
-                    'Includes examples of a grid with ',
-                    code('RecordAction'),
-                    ', a ',
-                    code('Form'),
-                    ' with validation, modal dialogs, and Preferences.'
+                    'Includes examples of a grid with RecordAction, a Form with validation, modal dialogs, and Preferences.'
                 )
             ]
         },
@@ -99,9 +83,7 @@ export class ExamplesTabModel extends HoistModel {
                     'Demonstrates how the Hoist server can load and cache data from an external API.'
                 ),
                 p(
-                    'On the client, a ',
-                    code('DataView'),
-                    ' supports custom filtering logic and rich component rendering.'
+                    'On the client, a DataView supports custom filtering logic and rich component rendering.'
                 )
             ]
         },
@@ -112,11 +94,7 @@ export class ExamplesTabModel extends HoistModel {
             srcPath: 'recalls',
             text: [
                 p(
-                    'Another example that loads data from a remote API, with ',
-                    code('Store'),
-                    ' based filtering and a master-detail view controlled by ',
-                    code('Grid'),
-                    ' selection.'
+                    'Another example that loads data from a remote API, with Store based filtering and a master-detail view controlled by Grid selection.'
                 )
             ]
         },
@@ -128,9 +106,7 @@ export class ExamplesTabModel extends HoistModel {
             text: [
                 p('A simple, full-stack pattern for file uploads.'),
                 p(
-                    'A ',
-                    code('FileChooser'),
-                    ' accepts local files and uploads to a server-side controller and service for processing.'
+                    'A FileChooser accepts local files and uploads to a server-side controller and service for processing.'
                 ),
                 p(
                     strong('This example is visible only to admins'),

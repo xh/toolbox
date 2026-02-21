@@ -1,4 +1,4 @@
-import {code, div, filler, hbox, li, p, ul} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, li, p, ul} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -24,27 +24,13 @@ export const buttonsPanel = hoistCmp.factory({
     render() {
         return wrapper({
             description: div(
-                p(
-                    'Hoist Desktop Buttons are implemented using the Blueprint library, and take all props supported by the Blueprint component. In addition to ',
-                    code('text'),
-                    ', ',
-                    code('icon'),
-                    ', and ',
-                    code('onClick'),
-                    ', core props for customizing buttons include:'
-                ),
+                p('Hoist Desktop Buttons are implemented using the Blueprint library, and take all props supported by the Blueprint component. In addition to text, icon, and onClick, core props for customizing buttons include:'),
                 ul(
-                    li(code('intent: [primary|success|warning|danger]')),
-                    li(code('minimal: true|false')),
-                    li(code('outlined: true|false'))
+                    li('intent: [primary|success|warning|danger]'),
+                    li('minimal: true|false'),
+                    li('outlined: true|false')
                 ),
-                p(
-                    'Buttons are shown below contained within both ',
-                    code('panel'),
-                    ' and ',
-                    code('toolbar'),
-                    ' components.'
-                )
+                p('Buttons are shown below contained within both panel and toolbar components.')
             ),
             item: div({
                 className: 'tbox-buttons',

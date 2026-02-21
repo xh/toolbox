@@ -1,5 +1,5 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {code, p, span} from '@xh/hoist/cmp/layout';
+import {p, span} from '@xh/hoist/cmp/layout';
 import {wrapper} from '../../common';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
@@ -20,7 +20,7 @@ export const leftRightChooserPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 p('LeftRightChooser splits a list of items into generic "left" and "right" sides, with controls for the user to move items between the two. This can be used to e.g. create a selected subset from a pool of items - see the grid column chooser for such an example.'),
-                p('Items can provide optional descriptions and groups, and can be marked with ', code('locked:true'), ' to prevent them from being moved from one side to another.')
+                p('Items can provide optional descriptions and groups, and can be marked with locked:true to prevent them from being moved from one side to another.')
             ],
             links: [
                 {

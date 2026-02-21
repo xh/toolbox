@@ -1,7 +1,6 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {
     box,
-    code,
     div,
     span,
     strong,
@@ -48,19 +47,10 @@ export const inputsPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 p(
-                    code('HoistInput'),
-                    's are core Components used to display editable data in applications. They present a consistent API for editing data with MobX, React, and the underlying widgets provided by libraries such as Blueprint and Onsen. At its simplest, any HoistInput can be bound to a data source using the ',
-                    code('bind'),
-                    ' and ',
-                    code('model'),
-                    ' props.'
+                    'HoistInputs are core Components used to display editable data in applications. They present a consistent API for editing data with MobX, React, and the underlying widgets provided by libraries such as Blueprint and Onsen. At its simplest, any HoistInput can be bound to a data source using the bind and model props.'
                 ),
                 p(
-                    'For more complex uses ',
-                    code('HoistInput'),
-                    's may also be hosted in ',
-                    code('Form'),
-                    's. Forms provide support for validation, data submission, and dirty state management.'
+                    'For more complex uses HoistInputs may also be hosted in Forms. Forms provide support for validation, data submission, and dirty state management.'
                 )
             ],
             links: [

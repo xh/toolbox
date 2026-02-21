@@ -1,6 +1,6 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faIcons} from '@fortawesome/pro-regular-svg-icons';
-import {a, code, div, fragment, p, span, table, tbody, td, th, thead, tr} from '@xh/hoist/cmp/layout';
+import {a, div, fragment, p, span, table, tbody, td, th, thead, tr} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, Intent} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
@@ -24,9 +24,7 @@ export const iconsPanel = hoistCmp.factory({
                 p(
                     'Hoist includes the latest version of the ubiquitous ',
                     a({href: 'https://fontawesome.com/icons', target: '_blank', item: 'Font Awesome'}),
-                    ' library and its companion project, react-fontawesome. Hoist exports an ',
-                    code('Icon'),
-                    ' constant to expose a preselected set of icons as element factories. This ensures that many of the most common glyphs are built-in (while also mapping icons to several concepts particular to finance and trading).'
+                    ' library and its companion project, react-fontawesome. Hoist exports an Icon constant to expose a preselected set of icons as element factories. This ensures that many of the most common glyphs are built-in (while also mapping icons to several concepts particular to finance and trading).'
                 ),
                 p(
                     'Apps are not limited to the set of FA icons imported by the framework. Developers can use any icon from the library, as long as they import those glyphs directly and register them with FA to include them in the bundled output. The icon used in the panel header below provides an example of this usage.'

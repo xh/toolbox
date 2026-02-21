@@ -1,6 +1,6 @@
 import {card} from '@xh/hoist/cmp/card';
 import {hoistCmp} from '@xh/hoist/core';
-import {code, hbox, p, placeholder, vbox} from '@xh/hoist/cmp/layout';
+import {hbox, p, placeholder, vbox} from '@xh/hoist/cmp/layout';
 import {Icon, xhLogo} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
@@ -11,9 +11,7 @@ export const cardPanel = hoistCmp.factory(() =>
             p('A Card is a bordered container for grouping related content.'),
             p('Cards support titles, icons, intent-based styling, and collapsibility.'),
             p(
-                'Children are arranged vertically by default, but this and other aspects of its inner layout can be customized via ',
-                code('contentBoxProps'),
-                '.'
+                'Children are arranged vertically by default, but this and other aspects of its inner layout can be customized via contentBoxProps.'
             )
         ],
         links: [
@@ -61,9 +59,7 @@ export const cardPanel = hoistCmp.factory(() =>
                         items: [
                             xhLogo({width: 150}),
                             p(
-                                'This is an even more basic card, but we can use',
-                                code('contentBoxProps'),
-                                ' to customize its padding and internal layout.'
+                                'This is an even more basic card, but we can use contentBoxProps to customize its padding and internal layout.'
                             )
                         ]
                     }),

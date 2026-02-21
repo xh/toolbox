@@ -1,7 +1,7 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {code, filler, fragment, p, span} from '@xh/hoist/cmp/layout';
+import {filler, fragment, p, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -48,13 +48,7 @@ export const fileChooserPanel = hoistCmp.factory({
                     accept: ['.txt', '.png'],
                     targetText: fragment(
                         p('Drag and drop files here, or click to browse.'),
-                        p(
-                            'Note that this example is configured to accept only ',
-                            code('*.txt'),
-                            ' and ',
-                            code('*.png'),
-                            ' file types.'
-                        )
+                        p('Note that this example is configured to accept only *.txt and *.png file types.')
                     ),
                     model: chooserModel
                 }),

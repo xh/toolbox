@@ -17,9 +17,9 @@ export const dateFormatsPanel = hoistCmp.factory({
     render() {
         return wrapper({
             description: [
-                p('Hoist provides a collection of date formatting functions in ', code('@xh/hoist/format'), '. The main method is ', code('fmtDate'), ' which provides a few useful options.'),
-                p(code('fmtDate'), ' is backed by ', a({href: 'https://momentjs.com/', target: '_blank', item: 'moment.js '}), ', and makes the full moment API available via the ', code('fmt'), ' option, which takes a moment js string. Convenience methods delegate to ', code('fmtDate'), ' with a useful ', code('fmt'), ' default.'),
-                p('All Hoist formatting functions support the ', code('asHtml'), ' option to produce a raw HTML string rather than a React element. This allows them to be useful in both React and non-React contexts.')
+                p('Hoist provides a collection of date formatting functions in @xh/hoist/format. The main method is fmtDate which provides a few useful options.'),
+                p('fmtDate is backed by ', a({href: 'https://momentjs.com/', target: '_blank', item: 'moment.js '}), ', and makes the full moment API available via the fmt option, which takes a moment js string. Convenience methods delegate to fmtDate with a useful fmt default.'),
+                p('All Hoist formatting functions support the asHtml option to produce a raw HTML string rather than a React element. This allows them to be useful in both React and non-React contexts.')
             ],
             item: panel({
                 title: 'Other › Format Dates',

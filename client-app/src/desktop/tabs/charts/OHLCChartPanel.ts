@@ -1,5 +1,5 @@
 import {chart} from '@xh/hoist/cmp/chart';
-import {code, filler, p, span} from '@xh/hoist/cmp/layout';
+import {filler, p, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
@@ -16,11 +16,7 @@ export const ohlcChartPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 p(
-                    'Hoist provides a lightweight wrapper around the Highcharts charting and visualization library. This integration includes the ',
-                    code('Chart'),
-                    ' component to handle basic rendering, layout, and resizing and a ',
-                    code('ChartModel'),
-                    ' class to hold an observable config and data series.'
+                    'Hoist provides a lightweight wrapper around the Highcharts charting and visualization library. This integration includes the Chart component to handle basic rendering, layout, and resizing and a ChartModel class to hold an observable config and data series.'
                 ),
                 p(
                     'Note that applications must license and specify a compatible version of Highcharts as an application dependency.'

@@ -1,4 +1,4 @@
-import {code, div, p} from '@xh/hoist/cmp/layout';
+import {div, p} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -13,17 +13,10 @@ export const tabPanelContainerPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 p(
-                    code('TabContainer'),
-                    ' is configured and managed via a ',
-                    code('TabContainerModel'),
-                    ' and supports route-based navigation, managed mounting/unmounting of inactive tabs, automatic refreshing of a newly activated tab, and a built-in ',
-                    code('ErrorBoundary'),
-                    ' to prevent an unhandled error in one tab from crashing the entire app.'
+                    'TabContainer is configured and managed via a TabContainerModel and supports route-based navigation, managed mounting/unmounting of inactive tabs, automatic refreshing of a newly activated tab, and a built-in ErrorBoundary to prevent an unhandled error in one tab from crashing the entire app.'
                 ),
                 p(
-                    'The controls for switching tabs can be placed on any side of the container, or omitted, via the model\'s ',
-                    code('switcher'),
-                    ' config.'
+                    'The controls for switching tabs can be placed on any side of the container, or omitted, via the model\'s switcher config.'
                 )
             ],
             links: [
