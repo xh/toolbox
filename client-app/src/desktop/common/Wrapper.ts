@@ -1,3 +1,4 @@
+import {card} from '@xh/hoist/cmp/card';
 import {hoistCmp, HoistModel, managed, XH, creates, HoistProps} from '@xh/hoist/core';
 import {box, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -27,17 +28,21 @@ export interface WrapperProps extends HoistProps<WrapperModel> {
  */
 export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
     displayName: 'Wrapper',
-    className: 'tbox-wrapper xh-tiled-bg',
+    className: 'tbox-wrapper',
     model: creates(() => WrapperModel, {publishMode: 'limited'}),
     render({model, className, description, children, ...props}) {
         const {dockContainerModel} = model;
         return box({
             className,
             items: [
-                panel({
+                card({
                     className: 'tbox-wrapper__description',
+                    margin: true,
                     item: description,
-                    omit: !description
+                    omit: !description,
+                    modelConfig: {
+                        collapsible: true
+                    }
                 }),
                 children,
                 dockContainer({
