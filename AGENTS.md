@@ -279,6 +279,23 @@ Run both simultaneously:
 - Terminal 1: `./gradlew bootRun`
 - Terminal 2: `cd client-app && yarn start`
 
+The Grids tab is a good example of this wrapper panel that we're looking to optimize.### App URLs during Local Development
+
+The webpack dev server runs on **`http://localhost:3000`**. Each file in `client-app/src/apps/`
+defines an entry point, and its filename (minus the extension) becomes the URL path. For example,
+`apps/app.ts` → `http://localhost:3000/app`.
+
+**Primary entry points** (the ones you'll use most often for interactive testing):
+
+| App | URL |
+|-----|-----|
+| Desktop app | http://localhost:3000/app |
+| Admin console | http://localhost:3000/admin |
+| Mobile app | http://localhost:3000/mobile |
+
+**Example apps**: `/contact`, `/todo`, `/portfolio`, `/news`, `/recalls`, `/fileManager`, `/weather`
+— each at `http://localhost:3000/<name>`.
+
 ### Pre-commit Hooks
 Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged files) and conditionally the TypeScript compiler if TS/JS/package files are staged.
 

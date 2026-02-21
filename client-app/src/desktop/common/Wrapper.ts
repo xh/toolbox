@@ -1,12 +1,11 @@
-import {card} from '@xh/hoist/cmp/card';
-import {hoistCmp, HoistModel, managed, XH, creates, HoistProps} from '@xh/hoist/core';
-import {box, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
+import {div, table, tbody, td, th, tr, vframe} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, HoistModel, HoistProps, managed, XH} from '@xh/hoist/core';
+import {dockContainer, DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {dockContainer, DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
+import {ReactNode} from 'react';
 import {toolboxLink, ToolboxLinkProps} from '../../core/cmp/ToolboxLink';
 import './Wrapper.scss';
-import {ReactNode} from 'react';
 
 export interface WrapperProps extends HoistProps<WrapperModel> {
     /**
@@ -32,19 +31,18 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
     model: creates(() => WrapperModel, {publishMode: 'limited'}),
     render({model, className, description, children, ...props}) {
         const {dockContainerModel} = model;
-        return box({
+        return vframe({
             className,
             items: [
-                card({
-                    className: 'tbox-wrapper__description',
-                    margin: true,
+                div({
+                    className: `tbox-wrapper__description`,
                     item: description,
-                    omit: !description,
-                    modelConfig: {
-                        collapsible: true
-                    }
+                    omit: !description
                 }),
-                children,
+                vframe({
+                    className: `tbox-wrapper__content`,
+                    items: children
+                }),
                 dockContainer({
                     model: dockContainerModel,
                     omit: !dockContainerModel,
