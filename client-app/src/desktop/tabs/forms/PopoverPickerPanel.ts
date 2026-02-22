@@ -65,9 +65,9 @@ export const popoverPickerPanel = hoistCmp.factory({
                 title: 'Forms › PopoverPicker',
                 icon: Icon.list(),
                 width: '90%',
-                maxWidth: 700,
+                maxWidth: 1000,
                 scrollable: true,
-                item: hframe(column1(), column2()),
+                item: hframe(column1(), column2(), column3()),
                 tbar: pickerToolbar(),
                 bbar: compactToolbar()
             })
@@ -166,17 +166,6 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
                     displayNoun: 'state',
                     width: 220,
                     testId: 'multi-states'
-                })
-            }),
-            demoRow({
-                label: 'With icon + intent',
-                info: 'buttonProps: {icon, intent}',
-                item: popoverPicker({
-                    bind: 'intentState',
-                    options: usStates,
-                    buttonProps: {icon: Icon.globe(), intent: 'primary'},
-                    placeholder: 'Region...',
-                    width: 180
                 })
             }),
             demoRow({
@@ -358,6 +347,62 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
 );
 
 //------------------------------------------------------------------
+// Column 3: Intent variants
+//------------------------------------------------------------------
+const column3 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
+    vbox({
+        flex: 1,
+        padding: 20,
+        items: [
+            demoRow({
+                label: 'Primary',
+                info: 'intent: primary',
+                item: popoverPicker({
+                    bind: 'intentPrimary',
+                    options: usStates,
+                    buttonProps: {icon: Icon.globe(), intent: 'primary'},
+                    placeholder: 'Region...',
+                    width: 180
+                })
+            }),
+            demoRow({
+                label: 'Success',
+                info: 'intent: success',
+                item: popoverPicker({
+                    bind: 'intentSuccess',
+                    options: usStates,
+                    buttonProps: {icon: Icon.checkCircle(), intent: 'success'},
+                    placeholder: 'Approved...',
+                    width: 180
+                })
+            }),
+            demoRow({
+                label: 'Warning',
+                info: 'intent: warning',
+                item: popoverPicker({
+                    bind: 'intentWarning',
+                    options: usStates,
+                    buttonProps: {icon: Icon.warning(), intent: 'warning'},
+                    placeholder: 'Review...',
+                    width: 180
+                })
+            }),
+            demoRow({
+                label: 'Danger',
+                info: 'intent: danger',
+                item: popoverPicker({
+                    bind: 'intentDanger',
+                    options: usStates,
+                    buttonProps: {icon: Icon.skull(), intent: 'danger'},
+                    placeholder: 'Critical...',
+                    width: 180
+                })
+            })
+        ]
+    })
+);
+
+//------------------------------------------------------------------
 // Helpers
 //------------------------------------------------------------------
 const statusDot = (color: string) =>
@@ -398,9 +443,14 @@ class PopoverPickerPanelModel extends HoistModel {
     // Column 1
     @bindable singleState: string = null;
     @bindable multiStates: string[] = [];
-    @bindable intentState: string = null;
     @bindable simpleOption: string = null;
     @bindable compactStates: string[] = [];
+
+    // Column 3 — intents
+    @bindable intentPrimary: string = null;
+    @bindable intentSuccess: string = null;
+    @bindable intentWarning: string = null;
+    @bindable intentDanger: string = null;
 
     // Column 2
     @bindable restaurant: string = null;
