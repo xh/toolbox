@@ -88,7 +88,6 @@ const pickerToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             enableSelectAll: true,
             displayNoun: 'state',
             buttonProps: {icon: Icon.globe()},
-            placeholder: 'States...',
             width: 200,
             testId: 'tbar-states'
         }),
@@ -119,7 +118,6 @@ const compactToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                 enableSelectAll: true,
                 displayNoun: 'state',
                 buttonProps: {icon: Icon.globe()},
-                placeholder: 'States...',
                 width: 180,
                 popoverPosition: 'top'
             }),
@@ -213,7 +211,6 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
                     enableMulti: true,
                     enableClear: true,
                     displayNoun: 'state',
-                    placeholder: 'States...',
                     width: 200,
                     testId: 'compact-standalone'
                 })
