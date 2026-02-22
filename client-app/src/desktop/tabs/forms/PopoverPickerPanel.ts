@@ -113,6 +113,7 @@ const compactToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             popoverPicker({
                 bind: 'toolbarStates',
                 options: usStates,
+                compact: true,
                 enableMulti: true,
                 enableClear: true,
                 enableSelectAll: true,
@@ -126,6 +127,7 @@ const compactToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             popoverPicker({
                 bind: 'toolbarPriority',
                 options: ['Critical', 'High', 'Medium', 'Low'],
+                compact: true,
                 placeholder: 'Priority...',
                 buttonProps: {icon: Icon.flag()},
                 width: 130,
@@ -199,6 +201,21 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
                     disabled: true,
                     placeholder: 'Disabled...',
                     width: 200
+                })
+            }),
+            demoRow({
+                label: 'Compact',
+                info: 'compact: true — standalone, outside toolbar',
+                item: popoverPicker({
+                    bind: 'compactStates',
+                    options: usStates,
+                    compact: true,
+                    enableMulti: true,
+                    enableClear: true,
+                    displayNoun: 'state',
+                    placeholder: 'States...',
+                    width: 200,
+                    testId: 'compact-standalone'
                 })
             })
         ]
@@ -386,6 +403,7 @@ class PopoverPickerPanelModel extends HoistModel {
     @bindable multiStates: string[] = [];
     @bindable intentState: string = null;
     @bindable simpleOption: string = null;
+    @bindable compactStates: string[] = [];
 
     // Column 2
     @bindable restaurant: string = null;
