@@ -37,9 +37,12 @@
 
     &-btn {
       font-weight: 500;
+      border-bottom: 1px dashed var(--xh-border-color);
+      border-radius: 0;
+      padding-bottom: 1px;
 
-      .xh-button-right-icon {
-        opacity: 0.5;
+      &:hover {
+        border-bottom-color: var(--xh-orange);
       }
     }
 

@@ -110,7 +110,6 @@ const breadcrumb = hoistCmp.factory({
                         className: 'tbox-docs__breadcrumb-btn',
                         icon: m.getCategoryIcon(activeCategory.id),
                         text: activeCategory.title,
-                        rightIcon: Icon.chevronDown(),
                         minimal: true
                     }),
                     content: menu(
@@ -131,7 +130,6 @@ const breadcrumb = hoistCmp.factory({
                     item: button({
                         className: 'tbox-docs__breadcrumb-btn',
                         text: activeDoc.title,
-                        rightIcon: Icon.chevronDown(),
                         minimal: true
                     }),
                     content: menu(
