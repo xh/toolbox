@@ -2,12 +2,12 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
-import {DOC_CATEGORIES, DOC_REGISTRY, DocEntry, getDocEntry} from './docRegistry';
-import {DocService} from './DocService';
+import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {DOC_CATEGORIES, DOC_REGISTRY, DocCategory, DocEntry, getDocEntry} from './docRegistry';
+import {DocService} from '../../../core/svc/DocService';
 
 /**
- * Primary model for the Docs viewer application.
+ * Primary model for the Docs viewer tab.
  *
  * Manages a tree-based navigation grid of all hoist-react documentation,
  * text-based filtering, and loading of markdown content for the selected doc.
@@ -65,6 +65,20 @@ export class DocsPanelModel extends HoistModel {
         this.loadNav();
     }
 
+    /** The category of the currently active doc. */
+    @computed
+    get activeCategory(): DocCategory | null {
+        if (!this.activeDoc) return null;
+        return DOC_CATEGORIES.find(c => c.id === this.activeDoc.category) ?? null;
+    }
+
+    /** Sibling docs in the same category as the active doc. */
+    @computed
+    get activeCategorySiblings(): DocEntry[] {
+        if (!this.activeDoc) return [];
+        return DOC_REGISTRY.filter(d => d.category === this.activeDoc.category);
+    }
+
     /** Navigate to a specific doc by ID. Used for internal link interception. */
     @action
     navigateToDoc(docId: string) {
@@ -80,6 +94,12 @@ export class DocsPanelModel extends HoistModel {
 
         this.activeDoc = entry;
         this.loadContentAsync(entry);
+    }
+
+    /** Navigate to the first doc in a given category. */
+    navigateToCategory(categoryId: string) {
+        const firstDoc = DOC_REGISTRY.find(d => d.category === categoryId);
+        if (firstDoc) this.navigateToDoc(firstDoc.id);
     }
 
     //------------------
@@ -206,7 +226,7 @@ export class DocsPanelModel extends HoistModel {
         }
     }
 
-    private getCategoryIcon(categoryId: string) {
+    getCategoryIcon(categoryId: string) {
         switch (categoryId) {
             case 'overview':
                 return Icon.home();

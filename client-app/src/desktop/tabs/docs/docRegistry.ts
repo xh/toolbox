@@ -91,12 +91,12 @@ export interface DocCategory {
 // ---------------------------------------------------------------------------
 export const DOC_CATEGORIES: DocCategory[] = [
     {id: 'overview', title: 'Overview'},
+    {id: 'concepts', title: 'Concepts'},
     {id: 'core', title: 'Core Framework'},
     {id: 'components', title: 'Components'},
     {id: 'desktop', title: 'Desktop'},
     {id: 'mobile', title: 'Mobile'},
     {id: 'utilities', title: 'Utilities'},
-    {id: 'concepts', title: 'Concepts'},
     {id: 'supporting', title: 'Supporting Packages'},
     {id: 'devops', title: 'DevOps & Environment'},
     {id: 'upgrade', title: 'Upgrade Notes'}

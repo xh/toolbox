@@ -1,5 +1,5 @@
 import {HoistService, XH} from '@xh/hoist/core';
-import {DOC_REGISTRY, DocEntry, getDocEntry} from './docRegistry';
+import {DOC_REGISTRY, DocEntry, getDocEntry} from '../../desktop/tabs/docs/docRegistry';
 
 /**
  * Service providing access to hoist-react documentation content.

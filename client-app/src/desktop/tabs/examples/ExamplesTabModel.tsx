@@ -124,24 +124,6 @@ export class ExamplesTabModel extends HoistModel {
                     file uploads. Contact us for a walkthrough.
                 </p>
             ]
-        },
-        {
-            title: 'Docs',
-            icon: Icon.book(),
-            path: 'docs',
-            srcPath: 'docs',
-            text: [
-                <p>An interactive viewer for hoist-react documentation.</p>,
-                <p>
-                    Browse all package READMEs, concept guides, and upgrade notes with a searchable
-                    tree navigation and rendered <code>Markdown</code> content.
-                </p>,
-                <p>
-                    Also demonstrates use of Hoist's <code>Markdown</code> component, tree-mode{' '}
-                    <code>Grid</code> navigation, and client-only data sourced from the hoist-react
-                    package itself.
-                </p>
-            ]
         }
     ];
 

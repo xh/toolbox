@@ -1,24 +1,27 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {div, filler, hframe} from '@xh/hoist/cmp/layout';
+import {div, filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {textInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
+import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import React, {useCallback, useRef, useEffect} from 'react';
+import {DOC_CATEGORIES} from './docRegistry';
 import {resolveDocLink} from './docRegistry';
 import {DocsPanelModel} from './DocsPanelModel';
-import './App.scss';
+import './DocsTab.scss';
 
 /**
- * Main panel for the Docs viewer application.
+ * Main panel for the Docs viewer tab.
  *
  * Renders a left sidebar with searchable, tree-based documentation navigation
  * and a main content area that displays the selected document as rendered Markdown.
  */
-export const [DocsPanel, docsPanel] = hoistCmp.withFactory({
-    displayName: 'DocsPanel',
+export const docsTab = hoistCmp.factory({
+    displayName: 'DocsTab',
     model: creates(DocsPanelModel),
     className: 'tbox-docs',
 
@@ -40,6 +43,7 @@ const navPanel = hoistCmp.factory({
             model: navPanelModel,
             icon: Icon.book(),
             title: 'Documentation',
+            compactHeader: true,
             className: 'tbox-docs__nav',
             tbar: toolbar(
                 textInput({
@@ -61,7 +65,8 @@ const navPanel = hoistCmp.factory({
 //------------------
 const contentPanel = hoistCmp.factory({
     render({model}) {
-        const {activeDoc, isLoadingContent} = model as DocsPanelModel;
+        const m = model as DocsPanelModel,
+            {activeDoc, isLoadingContent} = m;
 
         if (!activeDoc) {
             return panel({
@@ -77,16 +82,7 @@ const contentPanel = hoistCmp.factory({
             className: 'tbox-docs__content',
             tbar: toolbar({
                 className: 'tbox-docs__content-toolbar',
-                items: [
-                    Icon.file(),
-                    div({className: 'tbox-docs__content-title', item: activeDoc.title}),
-                    filler(),
-                    div({
-                        className: 'tbox-docs__content-desc',
-                        item: activeDoc.description,
-                        omit: !activeDoc.description
-                    })
-                ]
+                items: [breadcrumb(), filler(), descBadge()]
             }),
             item: contentBody(),
             mask: isLoadingContent
@@ -94,6 +90,79 @@ const contentPanel = hoistCmp.factory({
     }
 });
 
+//------------------
+// Breadcrumb toolbar
+//------------------
+const breadcrumb = hoistCmp.factory({
+    render({model}) {
+        const m = model as DocsPanelModel,
+            {activeCategory, activeDoc} = m;
+
+        if (!activeCategory || !activeDoc) return null;
+
+        return div({
+            className: 'tbox-docs__breadcrumb',
+            items: [
+                popover({
+                    position: 'bottom-left',
+                    minimal: true,
+                    item: button({
+                        className: 'tbox-docs__breadcrumb-btn',
+                        icon: m.getCategoryIcon(activeCategory.id),
+                        text: activeCategory.title,
+                        rightIcon: Icon.chevronDown(),
+                        minimal: true
+                    }),
+                    content: menu(
+                        ...DOC_CATEGORIES.map(cat =>
+                            menuItem({
+                                text: cat.title,
+                                icon: m.getCategoryIcon(cat.id),
+                                active: cat.id === activeCategory.id,
+                                onClick: () => m.navigateToCategory(cat.id)
+                            })
+                        )
+                    )
+                }),
+                span({className: 'tbox-docs__breadcrumb-sep', item: Icon.chevronRight()}),
+                popover({
+                    position: 'bottom-left',
+                    minimal: true,
+                    item: button({
+                        className: 'tbox-docs__breadcrumb-btn',
+                        text: activeDoc.title,
+                        rightIcon: Icon.chevronDown(),
+                        minimal: true
+                    }),
+                    content: menu(
+                        ...m.activeCategorySiblings.map(doc =>
+                            menuItem({
+                                text: doc.title,
+                                active: doc.id === activeDoc.id,
+                                onClick: () => m.navigateToDoc(doc.id)
+                            })
+                        )
+                    )
+                })
+            ]
+        });
+    }
+});
+
+const descBadge = hoistCmp.factory({
+    render({model}) {
+        const {activeDoc} = model as DocsPanelModel;
+        if (!activeDoc?.description) return null;
+        return div({
+            className: 'tbox-docs__content-desc',
+            item: activeDoc.description
+        });
+    }
+});
+
+//------------------
+// Content body
+//------------------
 const contentBody = hoistCmp.factory(({model}) => {
     const {content, activeDoc} = model as DocsPanelModel,
         scrollRef = useRef<HTMLDivElement>(null);
