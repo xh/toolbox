@@ -5,6 +5,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
+
 import {BattleshipModel, BOARD_WIDTH, BOARD_HEIGHT} from './BattleshipModel';
 import './Battleship.scss';
 

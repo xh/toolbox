@@ -1,14 +1,15 @@
+import {sample, times} from 'lodash';
+
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {span} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, ReactionSpec, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {action, computed, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import {span} from '@xh/hoist/cmp/layout';
-import {sample, times} from 'lodash';
 
-//------------------------------------------------------------------
+//--------
 // Types
-//------------------------------------------------------------------
+//--------
 type CellState = 'water' | 'ship' | 'hit' | 'miss' | 'sunk';
 type Phase = 'placement' | 'playing' | 'gameOver';
 type Orientation = 'horizontal' | 'vertical';
@@ -17,20 +18,20 @@ interface Ship {
     id: string;
     name: string;
     size: number;
-    cells: {r: number; c: number}[];
+    cells: {row: number; col: number}[];
     hits: Set<string>;
     isSunk: boolean;
 }
 
 interface AIState {
     mode: 'hunt' | 'random';
-    targets: {r: number; c: number}[];
-    lastHit: {r: number; c: number} | null;
+    targets: {row: number; col: number}[];
+    lastHit: {row: number; col: number} | null;
 }
 
-//------------------------------------------------------------------
+//--------------
 // Constants
-//------------------------------------------------------------------
+//--------------
 const GRID_COLS = 12;
 const GRID_ROWS = 8;
 const CELL_SIZE = 30;
@@ -50,35 +51,26 @@ const SHIP_DEFS = [
     {id: 'destroyer', name: 'Destroyer', size: 2}
 ];
 
-//------------------------------------------------------------------
-// Model
-//------------------------------------------------------------------
 export class BattleshipModel extends HoistModel {
-    @observable phase: Phase = 'placement';
-    @observable isPlayerTurn: boolean = true;
-    @observable shipOrientation: Orientation = 'horizontal';
-
     @managed @observable.ref playerGridModel: GridModel = null;
     @managed @observable.ref attackGridModel: GridModel = null;
 
-    // Board state: GRID_ROWS x GRID_COLS arrays
+    //---------------------
+    // Observable State
+    //---------------------
+    @observable phase: Phase = 'placement';
+    @observable isPlayerTurn: boolean = true;
+    @observable shipOrientation: Orientation = 'horizontal';
+    @observable.ref playerShips: Ship[] = [];
+    @observable.ref aiShips: Ship[] = [];
+    @observable.ref hoverCell: {row: number; col: number} | null = null;
+    @observable shipPlacementIndex: number = 0;
+
     private playerBoard: CellState[][] = [];
     private attackBoard: CellState[][] = [];
     private aiBoard: CellState[][] = [];
-
-    // Ships
-    @observable.ref playerShips: Ship[] = [];
-    @observable.ref aiShips: Ship[] = [];
-    private shipPlacementIndex: number = 0;
-
-    // AI state
     private aiState: AIState = {mode: 'random', targets: [], lastHit: null};
-
-    // Per-cell border classes for distinguishing adjacent ships on the player board.
     private shipBorderMap: string[][] = [];
-
-    // Placement preview — tracks hovered cell on player board
-    @observable.ref hoverCell: {r: number; c: number} | null = null;
 
     get currentShipToPlace(): (typeof SHIP_DEFS)[0] | null {
         return this.phase === 'placement' ? (SHIP_DEFS[this.shipPlacementIndex] ?? null) : null;
@@ -111,9 +103,9 @@ export class BattleshipModel extends HoistModel {
         this.addReaction(this.placementPreviewReaction());
     }
 
-    //------------------------------------------------------------------
+    //---------------
     // Game setup
-    //------------------------------------------------------------------
+    //---------------
     @action
     newGame() {
         this.phase = 'placement';
@@ -133,9 +125,9 @@ export class BattleshipModel extends HoistModel {
         this.rebuildGrids();
     }
 
-    //------------------------------------------------------------------
+    //-------------------
     // Ship placement
-    //------------------------------------------------------------------
+    //-------------------
     @action
     toggleShipOrientation() {
         this.shipOrientation = this.shipOrientation === 'horizontal' ? 'vertical' : 'horizontal';
@@ -143,7 +135,7 @@ export class BattleshipModel extends HoistModel {
 
     @action
     setHoverCell(row: number, col: number) {
-        this.hoverCell = {r: row, c: col};
+        this.hoverCell = {row, col};
     }
 
     @action
@@ -173,7 +165,7 @@ export class BattleshipModel extends HoistModel {
             isSunk: false
         };
 
-        cells.forEach(({r: cellRow, c: cellCol}) => {
+        cells.forEach(({row: cellRow, col: cellCol}) => {
             this.playerBoard[cellRow][cellCol] = 'ship';
         });
 
@@ -190,9 +182,9 @@ export class BattleshipModel extends HoistModel {
         this.syncGrids();
     }
 
-    //------------------------------------------------------------------
+    //-------------------
     // Player attack
-    //------------------------------------------------------------------
+    //-------------------
     async handleAttackBoardClickAsync(row: number, col: number) {
         const cannotFire =
             this.phase !== 'playing' ||
@@ -235,9 +227,9 @@ export class BattleshipModel extends HoistModel {
         }
     }
 
-    //------------------------------------------------------------------
+    //------
     // AI
-    //------------------------------------------------------------------
+    //------
     @action
     private beginAITurn() {
         this.isPlayerTurn = false;
@@ -246,13 +238,13 @@ export class BattleshipModel extends HoistModel {
 
     @action
     private processAITurn() {
-        const {r: row, c: col} = this.getAITarget();
+        const {row, col} = this.getAITarget();
 
         const hit = this.playerBoard[row][col] === 'ship';
         this.playerBoard[row][col] = hit ? 'hit' : 'miss';
 
         if (hit) {
-            this.aiState.lastHit = {r: row, c: col};
+            this.aiState.lastHit = {row, col};
             this.aiState.mode = 'hunt';
 
             for (const [deltaRow, deltaCol] of [
@@ -269,9 +261,11 @@ export class BattleshipModel extends HoistModel {
                         this.playerBoard[neighborRow][neighborCol] === 'ship')
                 ) {
                     if (
-                        !this.aiState.targets.some(t => t.r === neighborRow && t.c === neighborCol)
+                        !this.aiState.targets.some(
+                            t => t.row === neighborRow && t.col === neighborCol
+                        )
                     ) {
-                        this.aiState.targets.push({r: neighborRow, c: neighborCol});
+                        this.aiState.targets.push({row: neighborRow, col: neighborCol});
                     }
                 }
             }
@@ -301,29 +295,29 @@ export class BattleshipModel extends HoistModel {
         this.syncGrids();
     }
 
-    private getAITarget(): {r: number; c: number} {
-        const isTargetable = (r: number, c: number) =>
-            this.playerBoard[r][c] === 'water' || this.playerBoard[r][c] === 'ship';
+    private getAITarget(): {row: number; col: number} {
+        const isTargetable = (row: number, col: number) =>
+            this.playerBoard[row][col] === 'water' || this.playerBoard[row][col] === 'ship';
 
-        // Try hunt targets first (LIFO)
         while (this.aiState.targets.length > 0) {
             const target = this.aiState.targets.pop();
-            if (this.inBounds(target.r, target.c) && isTargetable(target.r, target.c)) {
+            if (this.inBounds(target.row, target.col) && isTargetable(target.row, target.col)) {
                 return target;
             }
         }
 
-        // Fall back to random pick from all targetable cells
         this.aiState.mode = 'random';
-        const available = this.playerBoard.flatMap((row, r) =>
-            row.map((state, c) => ({r, c, state})).filter(it => isTargetable(it.r, it.c))
+        const available = this.playerBoard.flatMap((boardRow, row) =>
+            boardRow
+                .map((state, col) => ({row, col, state}))
+                .filter(it => isTargetable(it.row, it.col))
         );
         return sample(available);
     }
 
-    //------------------------------------------------------------------
+    //------------------
     // Ship helpers
-    //------------------------------------------------------------------
+    //------------------
     private placeAIShips() {
         for (const shipDef of SHIP_DEFS) {
             let placed = false;
@@ -342,7 +336,7 @@ export class BattleshipModel extends HoistModel {
                         hits: new Set(),
                         isSunk: false
                     };
-                    cells.forEach(({r: cellRow, c: cellCol}) => {
+                    cells.forEach(({row: cellRow, col: cellCol}) => {
                         this.aiBoard[cellRow][cellCol] = 'ship';
                     });
                     this.aiShips = [...this.aiShips, ship];
@@ -354,26 +348,24 @@ export class BattleshipModel extends HoistModel {
 
     private getShipCells(row: number, col: number, size: number, orientation: Orientation) {
         return times(size, i => ({
-            r: orientation === 'vertical' ? row + i : row,
-            c: orientation === 'horizontal' ? col + i : col
+            row: orientation === 'vertical' ? row + i : row,
+            col: orientation === 'horizontal' ? col + i : col
         }));
     }
 
-    private isValidPlacement(cells: {r: number; c: number}[], board: CellState[][]): boolean {
-        return cells.every(
-            ({r: row, c: col}) => this.inBounds(row, col) && board[row][col] === 'water'
-        );
+    private isValidPlacement(cells: {row: number; col: number}[], board: CellState[][]): boolean {
+        return cells.every(({row, col}) => this.inBounds(row, col) && board[row][col] === 'water');
     }
 
     private computeShipBorders() {
         const ownerMap: (string | null)[][] = times(GRID_ROWS, () => Array(GRID_COLS).fill(null));
         this.playerShips.forEach(ship =>
-            ship.cells.forEach(({r, c}) => (ownerMap[r][c] = ship.id))
+            ship.cells.forEach(({row, col}) => (ownerMap[row][col] = ship.id))
         );
 
         this.shipBorderMap = times(GRID_ROWS, () => Array(GRID_COLS).fill(''));
         this.playerShips.forEach(ship =>
-            ship.cells.forEach(({r: row, c: col}) => {
+            ship.cells.forEach(({row, col}) => {
                 const id = ship.id,
                     above = row > 0 ? ownerMap[row - 1][col] : null,
                     below = row < GRID_ROWS - 1 ? ownerMap[row + 1][col] : null,
@@ -393,7 +385,7 @@ export class BattleshipModel extends HoistModel {
     }
 
     private applyHitAndCheckSunk(ships: Ship[], row: number, col: number): Ship | null {
-        const ship = ships.find(s => s.cells.some(c => c.r === row && c.c === col));
+        const ship = ships.find(s => s.cells.some(cell => cell.row === row && cell.col === col));
         if (!ship) return null;
 
         ship.hits.add(`${row},${col}`);
@@ -405,14 +397,14 @@ export class BattleshipModel extends HoistModel {
     }
 
     private markSunk(board: CellState[][], ship: Ship) {
-        ship.cells.forEach(({r: row, c: col}) => {
+        ship.cells.forEach(({row, col}) => {
             board[row][col] = 'sunk';
         });
     }
 
-    //------------------------------------------------------------------
-    // Grid building and sync
-    //------------------------------------------------------------------
+    //------------------------
+    // Grid building & sync
+    //------------------------
     @action
     private rebuildGrids() {
         if (this.playerGridModel) this.playerGridModel.destroy();
@@ -436,7 +428,6 @@ export class BattleshipModel extends HoistModel {
     ): GridModel {
         const columns = [];
 
-        // Row number column
         columns.push({
             field: 'rowNum',
             headerName: '',
@@ -453,7 +444,6 @@ export class BattleshipModel extends HoistModel {
             renderer: v => span({item: v, style: {fontWeight: 'bold', fontSize: 12}})
         });
 
-        // Game columns A-L
         for (let col = 0; col < GRID_COLS; col++) {
             columns.push({
                 field: `c${col}`,
@@ -515,20 +505,20 @@ export class BattleshipModel extends HoistModel {
         if (!gridModel) return;
 
         // Compute preview cells during placement phase on the player board.
-        let previewSet: Set<string> | null = null;
-        let previewValid = false;
+        let previewSet: Set<string> | null = null,
+            previewValid = false;
         if (showShips && this.phase === 'placement' && this.hoverCell) {
             const shipDef = this.currentShipToPlace;
             if (shipDef) {
                 const cells = this.getShipCells(
-                    this.hoverCell.r,
-                    this.hoverCell.c,
+                    this.hoverCell.row,
+                    this.hoverCell.col,
                     shipDef.size,
                     this.shipOrientation
                 );
                 previewValid = this.isValidPlacement(cells, this.playerBoard);
                 previewSet = new Set(
-                    cells.map(({r: cellRow, c: cellCol}) => `${cellRow},${cellCol}`)
+                    cells.map(({row: cellRow, col: cellCol}) => `${cellRow},${cellCol}`)
                 );
             }
         }
@@ -537,8 +527,8 @@ export class BattleshipModel extends HoistModel {
         for (let row = 0; row < GRID_ROWS; row++) {
             const record: any = {id: row, row, rowNum: String(row + 1)};
             for (let col = 0; col < GRID_COLS; col++) {
-                const state = board[row][col];
-                const base = showShips ? state : state === 'ship' ? 'water' : state;
+                const state = board[row][col],
+                    base = showShips ? state : state === 'ship' ? 'water' : state;
 
                 if (previewSet?.has(`${row},${col}`) && base === 'water') {
                     record[`c${col}`] = previewValid ? 'preview' : 'preview-invalid';
@@ -551,9 +541,9 @@ export class BattleshipModel extends HoistModel {
         gridModel.loadData(rowData);
     }
 
-    //------------------------------------------------------------------
+    //--------------
     // Renderers
-    //------------------------------------------------------------------
+    //--------------
     private cellRenderer(state: string) {
         switch (state) {
             case 'hit':
@@ -591,9 +581,9 @@ export class BattleshipModel extends HoistModel {
         }
     }
 
-    //------------------------------------------------------------------
+    //------------
     // Helpers
-    //------------------------------------------------------------------
+    //------------
     private placementPreviewReaction(): ReactionSpec {
         return {
             track: () => [this.hoverCell, this.shipOrientation],
@@ -609,7 +599,7 @@ export class BattleshipModel extends HoistModel {
         return times(GRID_ROWS, () => times(GRID_COLS, () => 'water' as CellState));
     }
 
-    private inBounds(r: number, c: number): boolean {
-        return r >= 0 && r < GRID_ROWS && c >= 0 && c < GRID_COLS;
+    private inBounds(row: number, col: number): boolean {
+        return row >= 0 && row < GRID_ROWS && col >= 0 && col < GRID_COLS;
     }
 }

@@ -6,6 +6,7 @@ import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
+
 import {DIFFICULTY_OPTIONS, MinesweeperModel} from './MinesweeperModel';
 import './Minesweeper.scss';
 

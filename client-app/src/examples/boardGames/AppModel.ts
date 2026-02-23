@@ -1,10 +1,11 @@
-import {managed, XH} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {managed, XH} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
+
 import {BaseAppModel} from '../../BaseAppModel';
+import {battleshipPanel} from './battleship/BattleshipPanel';
 import {BoardGameService} from './BoardGameService';
 import {minesweeperPanel} from './minesweeper/MinesweeperPanel';
-import {battleshipPanel} from './battleship/BattleshipPanel';
-import {Icon} from '@xh/hoist/icon';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
