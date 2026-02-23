@@ -1,5 +1,6 @@
 import {box, code, div, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {creates, hoistCmp, HoistModel, lookup, XH} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -44,7 +45,7 @@ export const selectPanel = hoistCmp.factory({
     displayName: 'SelectPanel',
     model: creates(() => SelectPanelModel),
 
-    render() {
+    render({model}) {
         return wrapper({
             description: [
                 p(
@@ -53,7 +54,11 @@ export const selectPanel = hoistCmp.factory({
                 ),
                 p(
                     'For a more compact trigger suited to toolbars, see the companion ',
-                    code('PopoverPicker'),
+                    code({
+                        className: 'tb-code-link',
+                        onClick: () => model.tabContainerModel.activateTab('popoverPicker'),
+                        item: 'PopoverPicker'
+                    }),
                     ' component.'
                 )
             ],
@@ -455,6 +460,8 @@ const demoRow = hoistCmp.factory(({label, info, children}) =>
 // Model
 //------------------------------------------------------------------
 class SelectPanelModel extends HoistModel {
+    @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
+
     // Toolbar
     @bindable toolbarState: string = null;
     @bindable toolbarMulti: string[] = [];

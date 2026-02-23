@@ -1,6 +1,7 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {code, div, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
 import {popoverPicker} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -38,7 +39,7 @@ export const popoverPickerPanel = hoistCmp.factory({
     displayName: 'PopoverPickerPanel',
     model: creates(() => PopoverPickerPanelModel),
 
-    render() {
+    render({model}) {
         return wrapper({
             description: [
                 p(
@@ -47,7 +48,11 @@ export const popoverPickerPanel = hoistCmp.factory({
                 ),
                 p(
                     'Designed for space-constrained areas such as toolbars, where a traditional ',
-                    code('Select'),
+                    code({
+                        className: 'tb-code-link',
+                        onClick: () => model.tabContainerModel.activateTab('select'),
+                        item: 'Select'
+                    }),
                     ' component — especially in multi-select "tag picker" mode — is too wide. In multi-mode, displays a compact summary (e.g. "3 selected") rather than listing all selected values inline.'
                 )
             ],
@@ -436,6 +441,8 @@ const demoRow = hoistCmp.factory(({label, info, children}) =>
 // Model
 //------------------------------------------------------------------
 class PopoverPickerPanelModel extends HoistModel {
+    @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
+
     // Toolbar
     @bindable toolbarStates: string[] = [];
     @bindable toolbarPriority: string = null;
