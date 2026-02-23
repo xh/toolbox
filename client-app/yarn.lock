@@ -2601,9 +2601,9 @@
     webpackbar "~7.0.0"
 
 "@xh/hoist@^82.0.0-SNAPSHOT":
-  version "82.0.0-SNAPSHOT.1771568310572"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-82.0.0-SNAPSHOT.1771568310572.tgz#ffea33d3523076e990110ed5480dd37170a3f342"
-  integrity sha512-N5Ts68ZWrpnPUFHIUqHlMDZ+FDLvOWo1MYEcFgvbOp2hyshXFif0JAY9fELna1E+Z32Ouyf4SNbQY3ENMYoOJg==
+  version "82.0.0-SNAPSHOT.1771632180729"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-82.0.0-SNAPSHOT.1771632180729.tgz#eda94d7588793db40233c07dabdab735b02cd91b"
+  integrity sha512-GC+mYcTcpVVIV1LdO3tX6RynzpSPpmI896aL0dcML4cstGJxkLvzqkdMGVbcOBH9eGiguT++2KxU1/wMREm3RA==
   dependencies:
     "@auth0/auth0-spa-js" "~2.9.1"
     "@azure/msal-browser" "~4.26.2"
@@ -2821,9 +2821,9 @@ ajv-keywords@^5.1.0:
     fast-deep-equal "^3.1.3"
 
 ajv@^6.12.4, ajv@^6.12.5:
-  version "6.12.6"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
-  integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
+  version "6.14.0"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.14.0.tgz#fd067713e228210636ebb08c60bd3765d6dbe73a"
+  integrity sha512-IWrosm/yrn43eiKqkfkHis7QioDleaXQHdDVPKg0FSwwd/DuvyX79TZnFOnYpB7dcsFAMmtFztZuXPDvSePkFw==
   dependencies:
     fast-deep-equal "^3.1.1"
     fast-json-stable-stringify "^2.0.0"
@@ -5058,9 +5058,9 @@ hoist-non-react-statics@^3.2.1, hoist-non-react-statics@^3.3.0, hoist-non-react-
     react-is "^16.7.0"
 
 hono@^4.11.4:
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/hono/-/hono-4.12.0.tgz#18f96a2962274398efc57a1a79e22b3daad2ca1c"
-  integrity sha512-NekXntS5M94pUfiVZ8oXXK/kkri+5WpX2/Ik+LVsl+uvw+soj4roXIsPqO+XsWrAw20mOzaXOZf3Q7PfB9A/IA==
+  version "4.12.1"
+  resolved "https://registry.yarnpkg.com/hono/-/hono-4.12.1.tgz#e8d56c98a679c1cf03d47146f410ea9a2c25b938"
+  integrity sha512-hi9afu8g0lfJVLolxElAZGANCTTl6bewIdsRNhaywfP9K8BPf++F2z6OLrYGIinUwpRKzbZHMhPwvc0ZEpAwGw==
 
 hookified@^1.14.0, hookified@^1.15.0:
   version "1.15.1"
@@ -5965,9 +5965,9 @@ mdast-util-find-and-replace@^3.0.0:
     unist-util-visit-parents "^6.0.0"
 
 mdast-util-from-markdown@^2.0.0:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/mdast-util-from-markdown/-/mdast-util-from-markdown-2.0.2.tgz#4850390ca7cf17413a9b9a0fbefcd1bc0eb4160a"
-  integrity sha512-uZhTV/8NBuw0WHkPTrCqDOl0zVe1BIng5ZtHoDk49ME1qqcjYmmLmOf0gELgcRMxN4w2iuIeVso5/6QymSrgmA==
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/mdast-util-from-markdown/-/mdast-util-from-markdown-2.0.3.tgz#c95822b91aab75f18a4cbe8b2f51b873ed2cf0c7"
+  integrity sha512-W4mAWTvSlKvf8L6J+VN9yLSqQ9AOAAvHuoDAmPkz4dHf553m5gVj2ejadHJhoJmcmxEnOv6Pa8XJhpxE93kb8Q==
   dependencies:
     "@types/mdast" "^4.0.0"
     "@types/unist" "^3.0.0"
