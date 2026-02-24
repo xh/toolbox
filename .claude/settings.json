@@ -8,11 +8,14 @@
       "WebFetch",
       "WebSearch",
       "Write",
-      "mcp__github__pull_request_read",
       "mcp__github__list_commits",
+      "mcp__github__pull_request_read",
       "mcp__github__search_pull_requests",
       "mcp__hoist-react__*",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__get*",
+      "mcp__jetbrains__get*",
+      "mcp__jetbrains__list*",
+      "mcp__plugin_context7*"
     ]
   },
   "enabledMcpjsonServers": [
