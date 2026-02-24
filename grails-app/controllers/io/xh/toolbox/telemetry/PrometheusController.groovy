@@ -4,7 +4,7 @@
  *
  * Copyright © 2026 Extremely Heavy Industries Inc.
  */
-package io.xh.toolbox.observe
+package io.xh.toolbox.telemetry
 
 import io.xh.hoist.BaseController
 import io.xh.hoist.security.AccessAll
