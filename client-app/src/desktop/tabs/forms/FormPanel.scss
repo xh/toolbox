@@ -4,12 +4,6 @@
   --xh-form-field-label-font-size: var(--xh-font-size-small-px);
   --xh-form-field-readonly-label-border-bottom: var(--xh-border-solid);
 
-  &__inner-scroll {
-    flex: 1;
-    overflow-y: auto;
-    padding: var(--xh-pad-px);
-  }
-
   &__reference-row {
     flex: none;
 

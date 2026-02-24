@@ -65,6 +65,8 @@ export const formPanel = hoistCmp.factory({
 
 const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
     panel({
+        scrollable: true,
+        contentBoxProps: {padding: true, gap: true},
         item: form({
             fieldDefaults: {
                 inline: model.inline,
@@ -73,46 +75,34 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                 readonlyRenderer: v =>
                     isNil(v) ? span({item: 'N/A', className: 'xh-text-color-muted'}) : `${v}`
             },
-            item: div({
-                className: 'tb-form-panel__inner-scroll',
-                items: [
-                    formFieldSet({
-                        icon: Icon.user(),
-                        title: 'Candidate',
-                        item: hbox({
-                            gap: 5,
+            items: [
+                formFieldSet({
+                    icon: Icon.user(),
+                    title: 'Candidate',
+                    contentBoxProps: {flexDirection: 'row', gap: true},
+                    items: [
+                        formFieldSet({
+                            items: [firstAndLastNames(), fullName(), email(), region(), tags()],
+                            flex: 1
+                        }),
+                        formFieldSet({
                             items: [
-                                formFieldSet({
-                                    items: [
-                                        firstAndLastNames(),
-                                        fullName(),
-                                        email(),
-                                        region(),
-                                        tags()
-                                    ],
-                                    flex: 1
-                                }),
-                                formFieldSet({
-                                    items: [
-                                        startAndEndDate(),
-                                        reasonForLeaving(),
-                                        managerAndYearsExperience(),
-                                        notes()
-                                    ],
-                                    flex: 1
-                                })
-                            ]
+                                startAndEndDate(),
+                                reasonForLeaving(),
+                                managerAndYearsExperience(),
+                                notes()
+                            ],
+                            flex: 1
                         })
-                    }),
-                    formFieldSet({
-                        className: 'xh-margin-top',
-                        modelConfig: {collapsible: true},
-                        icon: Icon.phone(),
-                        title: hbox('References', badge(model.formModel.values.references.length)),
-                        item: references()
-                    })
-                ]
-            })
+                    ]
+                }),
+                formFieldSet({
+                    modelConfig: {collapsible: true},
+                    icon: Icon.phone(),
+                    title: hbox('References', badge(model.formModel.values.references.length)),
+                    item: references()
+                })
+            ]
         }),
         bbar: bbar()
     })
