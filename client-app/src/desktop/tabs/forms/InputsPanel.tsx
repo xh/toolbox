@@ -1,20 +1,7 @@
-import React from 'react';
-import {form, FormModel} from '@xh/hoist/cmp/form';
-import {
-    box,
-    div,
-    span,
-    strong,
-    filler,
-    frame,
-    hbox,
-    hframe,
-    vbox,
-    fragment
-} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, uses} from '@xh/hoist/core';
+import {code, div, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
     buttonGroupInput,
     checkbox,
@@ -22,42 +9,58 @@ import {
     jsonInput,
     numberInput,
     radioInput,
-    select,
     slider,
     switchInput,
     textArea,
     textInput
 } from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {fmtDateTime, fmtNumber, fmtThousands} from '@xh/hoist/format';
+import {fmtThousands} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {isString} from 'lodash';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {LocalDate} from '@xh/hoist/utils/datetime';
+import {random} from 'lodash';
 import moment from 'moment';
-import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import './InputsPanel.scss';
-import {InputsPanelModel} from './InputsPanelModel';
-import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 
 export const inputsPanel = hoistCmp.factory({
-    model: creates(InputsPanelModel),
+    displayName: 'InputsPanel',
+    model: creates(() => InputsPanelModel),
 
-    render() {
+    render({model}) {
         return wrapper({
             description: [
-                <p>
-                    <code>HoistInput</code>s are core Components used to display editable data in
-                    applications. They present a consistent API for editing data with MobX, React,
-                    and the underlying widgets provided by libraries such as Blueprint and Onsen. At
-                    its simplest, any HoistInput can be bound to a data source using the{' '}
-                    <code>bind</code> and <code>model</code> props.
-                </p>,
-                <p>
-                    For more complex uses <code>HoistInput</code>s may also be hosted in{' '}
-                    <code>Form</code>s. Forms provide support for validation, data submission, and
-                    dirty state management.
-                </p>
+                p(
+                    code('HoistInput'),
+                    ' provides a common interface and integration points for a variety of core Components used to enter and edit data in applications. They present a consistent API for editing data with MobX, React, and the underlying widgets provided by libraries such as Blueprint and Onsen.'
+                ),
+                p(
+                    'Any HoistInput can be bound to a data source using the ',
+                    code('bind'),
+                    ' and ',
+                    code('model'),
+                    ' props. They can also be nested within a ',
+                    code('formField'),
+                    ' to integrate tightly with ',
+                    code('FormModel'),
+                    ' for validation and labelling.'
+                ),
+                p(
+                    'See the dedicated tabs for ',
+                    code({
+                        className: 'tb-code-link',
+                        onClick: () => model.tabContainerModel.activateTab('select'),
+                        item: 'Select'
+                    }),
+                    ' and ',
+                    code({
+                        className: 'tb-code-link',
+                        onClick: () => model.tabContainerModel.activateTab('picker'),
+                        item: 'Picker'
+                    }),
+                    ' components.'
+                )
             ],
             links: [
                 {
@@ -72,402 +75,325 @@ export const inputsPanel = hoistCmp.factory({
                 className: 'tb-inputs-panel',
                 icon: Icon.edit(),
                 width: '90%',
-                height: 950,
-                item: frame(formContents()),
-                bbar: bbar()
+                maxWidth: 1100,
+                scrollable: true,
+                item: hframe(column1(), column2(), column3())
             })
         });
     }
 });
 
-const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
-    form({
-        fieldDefaults: {
-            commitOnChange: model.commitOnChange
-        },
-        items: hframe(
-            vbox({
-                className: 'tb-inputs-panel__column',
-                items: [
-                    row({
-                        field: 'textInput1',
-                        info: 'autoFocus',
-                        item: textInput({
-                            autoFocus: true
-                        })
-                    }),
-                    row({
-                        field: 'textInput2',
-                        info: 'placeholder, leftIcon, enableClear',
-                        item: textInput({
-                            placeholder: 'user@company.com',
-                            round: true,
-                            leftIcon: Icon.mail(),
-                            enableClear: true
-                        })
-                    }),
-                    row({
-                        field: 'textInput3',
-                        info: 'type:password, selectOnFocus',
-                        readonlyRenderer: v => (v ? v.replace(/./g, '•') : null),
-                        item: textInput({
-                            type: 'password',
-                            selectOnFocus: true
-                        })
-                    }),
-                    row({
-                        field: 'textArea',
-                        info: 'placeholder, selectOnFocus',
-                        layout: {height: 150},
-                        item: textArea({
-                            placeholder: 'Tell us your thoughts...',
-                            selectOnFocus: true
-                        })
-                    }),
-                    row({
-                        field: 'jsonInput',
-                        layout: {height: 260},
-                        item: jsonInput()
-                    })
-                ]
+//------------------------------------------------------------------
+// Column 1: Text inputs
+//------------------------------------------------------------------
+const column1 = hoistCmp.factory<InputsPanelModel>(() =>
+    vbox({
+        flex: 1,
+        padding: 20,
+        items: [
+            demoRow({
+                label: 'TextInput',
+                info: 'autoFocus',
+                item: textInput({
+                    bind: 'textInput1',
+                    autoFocus: true
+                })
             }),
-            vbox({
-                className: 'tb-inputs-panel__column',
-                items: [
-                    row({
-                        field: 'numberInput1',
-                        info: 'stepSizes',
-                        item: numberInput({
-                            stepSize: 1000,
-                            majorStepSize: 100000,
-                            minorStepSize: 100
-                        })
-                    }),
-                    row({
-                        field: 'numberInput2',
-                        info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
-                        item: numberInput({
-                            enableShorthandUnits: true,
-                            displayWithCommas: true,
-                            selectOnFocus: true
-                        })
-                    }),
-                    row({
-                        field: 'numberInput3',
-                        info: 'scale, valueLabel',
-                        item: numberInput({
-                            scaleFactor: 100,
-                            valueLabel: '%'
-                        })
-                    }),
-                    row({
-                        field: 'slider1',
-                        info: 'max, min, stepSizes',
-                        item: slider({
-                            max: 100,
-                            min: 0,
-                            labelStepSize: 25,
-                            stepSize: 1
-                        })
-                    }),
-                    row({
-                        field: 'slider2',
-                        info: 'multi-value, labelRenderer',
-                        readonlyRenderer: v =>
-                            v.map(it => fmtNumber(it, {asHtml: true})).join(' - '),
-                        item: slider({
-                            min: 50000,
-                            max: 150000,
-                            labelStepSize: 25000,
-                            stepSize: 1000,
-                            labelRenderer: v =>
-                                `$${fmtThousands(v, {
-                                    label: true,
-                                    precision: 0,
-                                    labelCls: null,
-                                    asHtml: true
-                                })}`
-                        })
-                    }),
-                    row({
-                        field: 'dateInput1',
-                        info: 'minDate, maxDate, enableClear',
-                        fmtVal: v => fmtDateTime(v),
-                        layout: {width: 160},
-                        item: dateInput({
-                            placeholder: 'YYYY-MM-DD',
-                            minDate: moment().subtract(5, 'weeks').toDate(),
-                            maxDate: moment().add(2, 'weeks').toDate(),
-                            enableClear: true
-                        })
-                    }),
-                    row({
-                        field: 'dateInput2',
-                        info: 'timePrecision',
-                        fmtVal: v => fmtDateTime(v),
-                        readonlyRenderer: v => fmtDateTime(v),
-                        layout: {width: 160},
-                        item: dateInput({
-                            showActionsBar: true,
-                            timePrecision: 'minute',
-                            timePickerProps: {useAmPm: true}
-                        })
-                    }),
-                    row({
-                        field: 'dateInput3',
-                        info: 'valueType: localDate',
-                        layout: {width: 130},
-                        item: dateInput({
-                            valueType: 'localDate'
-                        })
-                    })
-                ]
+            demoRow({
+                label: 'TextInput',
+                info: 'placeholder, round, leftIcon, enableClear',
+                item: textInput({
+                    bind: 'textInput2',
+                    placeholder: 'user@company.com',
+                    round: true,
+                    leftIcon: Icon.mail(),
+                    enableClear: true
+                })
             }),
-            vbox({
-                className: 'tb-inputs-panel__column',
-                items: [
-                    row({
-                        field: 'select1',
-                        info: 'enableClear, enableCreate, selectOnFocus',
-                        item: select({
-                            options: restaurants,
-                            enableClear: true,
-                            enableCreate: true,
-                            selectOnFocus: true,
-                            placeholder: 'Search restaurants...',
-                            createMessageFn: q => `Open a new restaurant "${q}"`
-                        })
-                    }),
-                    row({
-                        field: 'select2',
-                        info: 'enableFilter:false',
-                        layout: {width: 150},
-                        item: select({
-                            options: usStates,
-                            enableFilter: false,
-                            placeholder: 'Select a state...'
-                        })
-                    }),
-                    row({
-                        field: 'select3',
-                        info: 'async search, custom fields, custom renderers, selectOnFocus',
-                        item: select({
-                            valueField: 'id',
-                            labelField: 'company',
-                            enableClear: true,
-                            selectOnFocus: true,
-                            placeholder: 'Search customers...',
-                            loadingMessageFn: () =>
-                                fragment(
-                                    Icon.spinner({intent: 'primary', pulse: true}),
-                                    ' Searching...'
-                                ),
-                            noOptionsMessageFn: q =>
-                                q
-                                    ? fragment(
-                                          Icon.warning({intent: 'warning'}),
-                                          ' No results found.'
-                                      )
-                                    : 'Type to search...',
-                            optionRenderer: opt => customerOption({opt}),
-                            queryFn: q => model.queryCustomersAsync(q)
-                        })
-                    }),
-                    row({
-                        field: 'select4',
-                        info: 'enableMulti, leftIcon',
-                        item: select({
-                            options: usStates,
-                            enableClear: false,
-                            enableMulti: true,
-                            leftIcon: Icon.globe(),
-                            placeholder: 'Select state(s)...'
-                        })
-                    }),
-                    row({
-                        field: 'checkbox',
-                        item: checkbox({
-                            label: 'enabled'
-                        })
-                    }),
-                    row({
-                        field: 'switch',
-                        item: switchInput({
-                            label: 'Enabled:',
-                            labelSide: 'left'
-                        })
-                    }),
-                    row({
-                        field: 'buttonGroupInput',
-                        item: buttonGroupInput(
-                            button({
-                                icon: Icon.chartLine(),
-                                text: 'Button 1',
-                                value: 'button1'
-                            }),
-                            button({
-                                icon: Icon.gear(),
-                                text: 'Button 2',
-                                value: 'button2'
-                            }),
-                            button({
-                                icon: Icon.skull(),
-                                text: 'Button 3',
-                                value: 'button3'
-                            })
-                        )
-                    }),
-                    row({
-                        field: 'buttonGroupInput',
-                        info: 'outlined, intent:primary',
-                        item: buttonGroupInput({
-                            outlined: true,
-                            intent: 'primary',
-                            items: [
-                                button({
-                                    icon: Icon.chartLine(),
-                                    text: 'Button 1',
-                                    value: 'button1'
-                                }),
-                                button({
-                                    icon: Icon.gear(),
-                                    text: 'Button 2',
-                                    value: 'button2'
-                                }),
-                                button({
-                                    icon: Icon.skull(),
-                                    text: 'Button 3',
-                                    value: 'button3'
-                                })
-                            ]
-                        })
-                    }),
-                    row({
-                        field: 'radioInput',
-                        info: 'inline, disabled option',
-                        item: radioInput({
-                            inline: true,
-                            options: [
-                                'Steak',
-                                'Chicken',
-                                {label: 'Fish', value: 'Fish', disabled: true}
-                            ]
-                        })
+            demoRow({
+                label: 'TextInput',
+                info: 'type: password, selectOnFocus',
+                item: textInput({
+                    bind: 'textInput3',
+                    type: 'password',
+                    selectOnFocus: true
+                })
+            }),
+            demoRow({
+                label: 'TextArea',
+                info: 'placeholder, selectOnFocus',
+                item: textArea({
+                    bind: 'textArea',
+                    height: 100,
+                    placeholder: 'Tell us your thoughts...',
+                    selectOnFocus: true
+                })
+            }),
+            demoRow({
+                label: 'JsonInput',
+                info: 'enableSearch, showFullscreenButton',
+                item: div({
+                    style: {border: 'var(--xh-border-solid)'},
+                    item: jsonInput({
+                        bind: 'jsonInput',
+                        height: 180,
+                        enableSearch: true
                     })
-                ]
+                })
             })
-        )
+        ]
     })
 );
 
-const row = hoistCmp.factory<FormModel>({
-    model: uses(FormModel),
-
-    render({model, label, field, info, readonlyRenderer, fmtVal, layout = {}, children}) {
-        const fieldModel = model.fields[field];
-
-        if (!layout.width) layout.flex = 1;
-
-        return box({
-            className: 'inputs-panel-field-box',
-            items: [
-                fieldDisplay({fieldModel, fmtVal}),
-                formField({
-                    model: fieldModel,
-                    item: children,
-                    label,
-                    info,
-                    readonlyRenderer,
-                    ...layout
-                })
-            ]
-        });
-    }
-});
-
-const customerOption = ({opt}) =>
-    hbox({
-        className: 'xh-pad-half xh-border-bottom',
+//------------------------------------------------------------------
+// Column 2: Numbers & dates
+//------------------------------------------------------------------
+const column2 = hoistCmp.factory<InputsPanelModel>(() =>
+    vbox({
+        flex: 1,
+        padding: 20,
         items: [
-            box({
-                item: opt.isActive
-                    ? Icon.checkCircle({className: 'xh-green'})
-                    : Icon.x({className: 'xh-red'}),
-                width: 32,
-                justifyContent: 'center'
-            }),
-            div(
-                opt.company,
-                div({
-                    className: 'xh-text-color-muted xh-font-size-small',
-                    item: `${opt.city} · ID: ${opt.id}`
+            demoRow({
+                label: 'NumberInput',
+                info: 'stepSize, majorStepSize, minorStepSize',
+                item: numberInput({
+                    bind: 'numberInput1',
+                    stepSize: 1000,
+                    majorStepSize: 100000,
+                    minorStepSize: 100
                 })
-            )
-        ],
-        alignItems: 'center',
-        paddingLeft: 0
-    });
+            }),
+            demoRow({
+                label: 'NumberInput',
+                info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
+                item: numberInput({
+                    bind: 'numberInput2',
+                    enableShorthandUnits: true,
+                    displayWithCommas: true,
+                    selectOnFocus: true
+                })
+            }),
+            demoRow({
+                label: 'NumberInput',
+                info: 'scaleFactor, valueLabel',
+                item: numberInput({
+                    bind: 'numberInput3',
+                    scaleFactor: 100,
+                    valueLabel: '%'
+                })
+            }),
+            demoRow({
+                label: 'DateInput',
+                info: 'minDate, maxDate, enableClear',
+                item: dateInput({
+                    bind: 'dateInput1',
+                    placeholder: 'YYYY-MM-DD',
+                    minDate: moment().subtract(5, 'weeks').toDate(),
+                    maxDate: moment().add(2, 'weeks').toDate(),
+                    enableClear: true,
+                    width: 160
+                })
+            }),
+            demoRow({
+                label: 'DateInput',
+                info: 'timePrecision: minute',
+                item: dateInput({
+                    bind: 'dateInput2',
+                    showActionsBar: true,
+                    timePrecision: 'minute',
+                    timePickerProps: {useAmPm: true},
+                    width: 160
+                })
+            }),
+            demoRow({
+                label: 'DateInput',
+                info: 'valueType: localDate',
+                item: dateInput({
+                    bind: 'dateInput3',
+                    valueType: 'localDate',
+                    width: 130
+                })
+            })
+        ]
+    })
+);
 
-const bbar = hoistCmp.factory<InputsPanelModel>(({model}) => {
-    const {formModel} = model;
+//------------------------------------------------------------------
+// Column 3: Toggles & choice
+//------------------------------------------------------------------
+const column3 = hoistCmp.factory<InputsPanelModel>(() =>
+    vbox({
+        flex: 1,
+        padding: 20,
+        items: [
+            demoRow({
+                label: 'Checkbox',
+                info: 'Basic boolean toggle',
+                item: checkbox({
+                    bind: 'checkbox',
+                    label: 'enabled'
+                })
+            }),
+            demoRow({
+                label: 'SwitchInput',
+                info: 'labelSide: left',
+                item: switchInput({
+                    bind: 'switchVal',
+                    label: 'Enabled:',
+                    labelSide: 'left'
+                })
+            }),
+            demoRow({
+                label: 'ButtonGroupInput',
+                info: 'Icon + text buttons',
+                item: buttonGroupInput({
+                    bind: 'buttonGroupInput',
+                    items: [
+                        button({
+                            icon: Icon.chartLine(),
+                            text: 'Button 1',
+                            value: 'button1'
+                        }),
+                        button({
+                            icon: Icon.gear(),
+                            text: 'Button 2',
+                            value: 'button2'
+                        }),
+                        button({
+                            icon: Icon.skull(),
+                            text: 'Button 3',
+                            value: 'button3'
+                        })
+                    ]
+                })
+            }),
+            demoRow({
+                label: 'ButtonGroupInput',
+                info: 'outlined, intent: primary',
+                item: buttonGroupInput({
+                    bind: 'buttonGroupInput2',
+                    outlined: true,
+                    intent: 'primary',
+                    items: [
+                        button({
+                            icon: Icon.chartLine(),
+                            text: 'Button 1',
+                            value: 'button1'
+                        }),
+                        button({
+                            icon: Icon.gear(),
+                            text: 'Button 2',
+                            value: 'button2'
+                        }),
+                        button({
+                            icon: Icon.skull(),
+                            text: 'Button 3',
+                            value: 'button3'
+                        })
+                    ]
+                })
+            }),
+            demoRow({
+                label: 'RadioInput',
+                info: 'inline, disabled option',
+                item: radioInput({
+                    bind: 'radioInput',
+                    inline: true,
+                    options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
+                })
+            }),
+            demoRow({
+                label: 'Slider',
+                info: 'max, min, stepSize, labelStepSize',
+                item: slider({
+                    bind: 'slider1',
+                    max: 100,
+                    min: 0,
+                    labelStepSize: 25,
+                    stepSize: 1
+                })
+            }),
+            demoRow({
+                label: 'Slider',
+                info: 'multi-value, labelRenderer',
+                item: slider({
+                    bind: 'slider2',
+                    min: 50000,
+                    max: 150000,
+                    labelStepSize: 25000,
+                    stepSize: 1000,
+                    labelRenderer: v =>
+                        `$${fmtThousands(v, {
+                            label: true,
+                            precision: 0,
+                            labelCls: null,
+                            asHtml: true
+                        })}`
+                })
+            })
+        ]
+    })
+);
 
-    return toolbar(
-        currFocused(),
-        filler(),
-        setFocusMenu(),
-        toolbarSep(),
-        switchInput({
-            model: formModel,
-            bind: 'readonly',
-            label: 'Read-only'
-        }),
-        toolbarSep(),
-        switchInput({
-            model: formModel,
-            bind: 'disabled',
-            label: 'Disabled'
-        }),
-        toolbarSep(),
-        switchInput({
-            model,
-            bind: 'commitOnChange',
-            label: 'Commit on change'
-        })
+//------------------------------------------------------------------
+// Helpers
+//------------------------------------------------------------------
+const demoRow = hoistCmp.factory(({label, info, children}) =>
+    vbox({
+        className: 'tb-inputs-panel__row',
+        items: [
+            span({className: 'tb-inputs-panel__label', item: label}),
+            span({
+                className: 'xh-text-color-muted xh-font-size-small',
+                style: {marginTop: 2},
+                item: info
+            }),
+            div({style: {marginTop: 6}, item: children})
+        ]
+    })
+);
+
+//------------------------------------------------------------------
+// Model
+//------------------------------------------------------------------
+class InputsPanelModel extends HoistModel {
+    @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
+
+    // Text inputs
+    @bindable textInput1: string = null;
+    @bindable textInput2: string = `support@xh.io`;
+    @bindable textInput3: string = `somethingSuperS3cret!`;
+    @bindable textArea: string = null;
+    @bindable jsonInput: string = JSON.stringify(
+        {
+            name: 'Toolbox',
+            version: 4,
+            features: ['grids', 'charts', 'forms'],
+            config: {theme: 'dark', locale: 'en-US'}
+        },
+        null,
+        2
     );
-});
 
-const fieldDisplay = hoistCmp.factory(({fieldModel, fmtVal}) => {
-    let displayVal = fieldModel.value;
-    if (displayVal == null) {
-        displayVal = 'null';
-    } else {
-        displayVal = fmtVal ? fmtVal(displayVal) : displayVal.toString();
-        if (isString(displayVal) && displayVal.trim() === '') {
-            displayVal = displayVal.length ? '[Blank String]' : '[Empty String]';
-        }
+    // Numbers & dates
+    @bindable numberInput1: number = null;
+    @bindable numberInput2: number = 2_000_000;
+    @bindable numberInput3: number = 0.33;
+    @bindable slider1: number = random(0, 100);
+    @bindable slider2: number[] = [random(50000, 70000), random(110000, 150000)];
+    @bindable dateInput1: Date = null;
+    @bindable dateInput2: Date = moment().startOf('hour').toDate();
+    @bindable dateInput3: LocalDate = LocalDate.today();
+
+    // Toggles & choice
+    @bindable checkbox: boolean = null;
+    @bindable switchVal: boolean = null;
+    @bindable buttonGroupInput: string = 'button2';
+    @bindable buttonGroupInput2: string = 'button2';
+    @bindable radioInput: string = null;
+
+    constructor() {
+        super();
+        makeObservable(this);
     }
-    return div({
-        className: 'inputs-panel-field-display',
-        item: displayVal
-    });
-});
-
-const currFocused = hoistCmp.factory<InputsPanelModel>(({model}) => {
-    const {focusedField} = model.formModel;
-    return span('Focused: ', focusedField ? strong(focusedField.displayName) : '');
-});
-
-const setFocusMenu = hoistCmp.factory<InputsPanelModel>(({model}) => {
-    const fields = model.formModel.fieldList,
-        menuItems = fields.map(f => {
-            return menuItem({text: f.displayName, onClick: () => f.focus()});
-        });
-    return popover({
-        enforceFocus: false,
-        item: button({
-            icon: Icon.target(),
-            text: 'Set Focus'
-        }),
-        content: menu(menuItems)
-    });
-});
+}
