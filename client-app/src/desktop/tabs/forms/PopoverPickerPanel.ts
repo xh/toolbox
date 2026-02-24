@@ -208,6 +208,17 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
                     width: 200,
                     testId: 'compact-standalone'
                 })
+            }),
+            demoRow({
+                label: 'Minimal popover',
+                info: 'popoverMinimal: true — no arrow or border',
+                item: popoverPicker({
+                    bind: 'minimalPopoverState',
+                    options: usStates,
+                    popoverMinimal: true,
+                    placeholder: 'Minimal...',
+                    width: 200
+                })
             })
         ]
     })
@@ -465,6 +476,7 @@ class PopoverPickerPanelModel extends HoistModel {
     @bindable statusOption: string = null;
     @bindable wideState: string[] = [];
     @bindable nonMinimalState: string = null;
+    @bindable minimalPopoverState: string = null;
     @bindable largeListValues: string[] = [];
 
     constructor() {
