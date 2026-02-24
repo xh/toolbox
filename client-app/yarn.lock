@@ -1694,9 +1694,9 @@
   integrity sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==
 
 "@modelcontextprotocol/sdk@^1.26.0":
-  version "1.27.0"
-  resolved "https://registry.yarnpkg.com/@modelcontextprotocol/sdk/-/sdk-1.27.0.tgz#be49d98984d703caf7804ad4de1467a739f24e65"
-  integrity sha512-qOdO524oPMkUsOJTrsH9vz/HN3B5pKyW+9zIW51A9kDMVe7ON70drz1ouoyoyOcfzc+oxhkQ6jWmbyKnlWmYqA==
+  version "1.27.1"
+  resolved "https://registry.yarnpkg.com/@modelcontextprotocol/sdk/-/sdk-1.27.1.tgz#a602cf823bf8a68e13e7112f50aeb02b09fb83b9"
+  integrity sha512-sr6GbP+4edBwFndLbM60gf07z0FQ79gaExpnsjMGePXqFcSSb7t6iscpjk9DhFhwd+mTEQrzNafGP8/iGGFYaA==
   dependencies:
     "@hono/node-server" "^1.19.9"
     ajv "^8.17.1"
@@ -2601,9 +2601,9 @@
     webpackbar "~7.0.0"
 
 "@xh/hoist@^82.0.0-SNAPSHOT":
-  version "82.0.0-SNAPSHOT.1771897190954"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-82.0.0-SNAPSHOT.1771897190954.tgz#2e58de0c4a21c3c675aa8a0973a640a8c7402d63"
-  integrity sha512-CURgjLj8mHY/SwV/U4auUNAW+2RDmcoUKMJjgiG/noHs+whfAYWZTuiiNLuGfaWsl+IzBMvJz1YAf1UXlJ+1sw==
+  version "82.0.0-SNAPSHOT.1771970134523"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-82.0.0-SNAPSHOT.1771970134523.tgz#1cd94cc6922a6742762e3d1a725624637f7f5033"
+  integrity sha512-4pnCwPRcEJ+bR09ZBDcaG7446KByeoyBBLrukJUeCbuELhtFafu5Rc8l4SmpvRuDQ6LpKOpvHbjODwCm2/3LQg==
   dependencies:
     "@auth0/auth0-spa-js" "~2.9.1"
     "@azure/msal-browser" "~4.26.2"
@@ -6557,6 +6557,11 @@ minipass@^7.1.2, minipass@^7.1.3:
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/minipass/-/minipass-7.1.3.tgz#79389b4eb1bb2d003a9bba87d492f2bd37bdc65b"
   integrity sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==
+
+minisearch@^7.1.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/minisearch/-/minisearch-7.2.0.tgz#3dc30e41e9464b3836553b6d969b656614f8f359"
+  integrity sha512-dqT2XBYUOZOiC5t2HRnwADjhNS2cecp9u+TJRiJ1Qp/f5qjkeT5APcGPjHw+bz89Ms8Jp+cG4AlE+QZ/QnDglg==
 
 mobx-react-lite@~4.1.0:
   version "4.1.1"

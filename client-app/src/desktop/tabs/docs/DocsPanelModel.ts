@@ -4,13 +4,14 @@ import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {DOC_CATEGORIES, DOC_REGISTRY, DocCategory, DocEntry, getDocEntry} from './docRegistry';
-import {DocService} from '../../../core/svc/DocService';
+import {DocSearchResult, DocService} from '../../../core/svc/DocService';
 
 /**
  * Primary model for the Docs viewer tab.
  *
  * Manages a tree-based navigation grid of all hoist-react documentation,
- * text-based filtering, and loading of markdown content for the selected doc.
+ * full-text search mode with ranked results, and loading of markdown content
+ * for the selected doc.
  */
 export class DocsPanelModel extends HoistModel {
     @managed
@@ -29,6 +30,12 @@ export class DocsPanelModel extends HoistModel {
 
     @bindable
     searchQuery: string = '';
+
+    @observable
+    searchMode: boolean = false;
+
+    @observable.ref
+    searchResults: DocSearchResult[] = [];
 
     @observable.ref
     activeDoc: DocEntry = null;
@@ -51,7 +58,7 @@ export class DocsPanelModel extends HoistModel {
 
         this.addReaction({
             track: () => this.searchQuery,
-            run: () => this.filterNav(),
+            run: query => this.runSearch(query),
             debounce: 200
         });
 
@@ -85,10 +92,6 @@ export class DocsPanelModel extends HoistModel {
         const entry = getDocEntry(docId);
         if (!entry || entry.id === this.activeDoc?.id) return;
 
-        // Clear search and filter so the target is visible in the tree
-        this.searchQuery = '';
-        this.gridModel.store.clearFilter();
-
         const rec = this.gridModel.store.getById(entry.id);
         if (rec) this.gridModel.selModel.select(rec);
 
@@ -100,6 +103,35 @@ export class DocsPanelModel extends HoistModel {
     navigateToCategory(categoryId: string) {
         const firstDoc = DOC_REGISTRY.find(d => d.category === categoryId);
         if (firstDoc) this.navigateToDoc(firstDoc.id);
+    }
+
+    /** Toggle search mode on/off. */
+    @action
+    toggleSearchMode() {
+        this.searchMode ? this.exitSearchMode() : this.enterSearchMode();
+    }
+
+    /** Enter search mode — switches content area to search results view. */
+    @action
+    enterSearchMode() {
+        this.searchMode = true;
+        this.searchQuery = '';
+        this.searchResults = [];
+    }
+
+    /** Exit search mode — returns to normal doc viewing. */
+    @action
+    exitSearchMode() {
+        this.searchMode = false;
+        this.searchQuery = '';
+        this.searchResults = [];
+    }
+
+    /** Select a search result — navigate to the doc and exit search. */
+    @action
+    selectSearchResult(docId: string) {
+        this.navigateToDoc(docId);
+        this.exitSearchMode();
     }
 
     //------------------
@@ -179,22 +211,12 @@ export class DocsPanelModel extends HoistModel {
         }).filter(Boolean);
     }
 
-    /**
-     * Apply or clear a Store filter based on the current search query.
-     * Uses Store filtering (rather than rebuilding tree data) to preserve
-     * stable record ordering. The Store's tree filter logic automatically
-     * includes parent (category) records when their children match.
-     */
-    private filterNav() {
-        const {searchQuery, docService, gridModel} = this;
-        if (!searchQuery?.trim()) {
-            gridModel.store.clearFilter();
-            return;
-        }
-
-        const matches = docService.searchDocs(searchQuery);
-        const matchIds = new Set(matches.map(m => m.id));
-        gridModel.store.setFilter(rec => matchIds.has(rec.id as string));
+    /** Run search via DocService and update results. */
+    private runSearch(query: string) {
+        if (!this.searchMode) return;
+        runInAction(() => {
+            this.searchResults = this.docService.searchDocs(query);
+        });
     }
 
     @action

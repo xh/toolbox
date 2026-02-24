@@ -1,5 +1,5 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {div, filler, hframe, span} from '@xh/hoist/cmp/layout';
+import {div, filler, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -17,18 +17,29 @@ import './DocsTab.scss';
 /**
  * Main panel for the Docs viewer tab.
  *
- * Renders a left sidebar with searchable, tree-based documentation navigation
- * and a main content area that displays the selected document as rendered Markdown.
+ * Renders a left sidebar with tree-based documentation navigation
+ * and a main content area that displays the selected document as rendered Markdown,
+ * or a full-text search results view when search mode is active.
  */
 export const docsTab = hoistCmp.factory({
     displayName: 'DocsTab',
     model: creates(DocsPanelModel),
     className: 'tbox-docs',
 
-    render({className}) {
-        return hframe({
+    render({model, className}) {
+        const m = model as DocsPanelModel;
+        return panel({
             className,
-            items: [navPanel(), contentPanel()]
+            hotkeys: [
+                {
+                    label: 'Toggle documentation search',
+                    combo: 'shift + s',
+                    global: true,
+                    preventDefault: true,
+                    onKeyDown: () => m.toggleSearchMode()
+                }
+            ],
+            item: hframe(navPanel(), contentPanel())
         });
     }
 });
@@ -45,16 +56,6 @@ const navPanel = hoistCmp.factory({
             title: 'Documentation',
             compactHeader: true,
             className: 'tbox-docs__nav',
-            tbar: toolbar(
-                textInput({
-                    bind: 'searchQuery',
-                    placeholder: 'Search docs...',
-                    leftIcon: Icon.search(),
-                    commitOnChange: true,
-                    enableClear: true,
-                    flex: 1
-                })
-            ),
             item: grid({model: gridModel})
         });
     }
@@ -66,15 +67,14 @@ const navPanel = hoistCmp.factory({
 const contentPanel = hoistCmp.factory({
     render({model}) {
         const m = model as DocsPanelModel,
-            {activeDoc, isLoadingContent} = m;
+            {activeDoc, isLoadingContent, searchMode} = m;
+
+        if (searchMode) return searchPanel();
 
         if (!activeDoc) {
             return panel({
                 className: 'tbox-docs__content',
-                item: div({
-                    className: 'tbox-docs__empty',
-                    item: 'Select a document to view'
-                })
+                item: placeholder(Icon.book(), 'Select a document to view.')
             });
         }
 
@@ -82,10 +82,102 @@ const contentPanel = hoistCmp.factory({
             className: 'tbox-docs__content',
             tbar: toolbar({
                 className: 'tbox-docs__content-toolbar',
-                items: [breadcrumb(), filler(), descBadge()]
+                items: [
+                    button({
+                        icon: Icon.search(),
+                        tooltip: 'Search documentation (Shift+S)',
+                        minimal: true,
+                        onClick: () => m.enterSearchMode()
+                    }),
+                    breadcrumb(),
+                    filler(),
+                    descBadge()
+                ]
             }),
             item: contentBody(),
             mask: isLoadingContent
+        });
+    }
+});
+
+//------------------
+// Search panel
+//------------------
+const searchResultsBody = hoistCmp.factory({
+    render({model}) {
+        const m = model as DocsPanelModel,
+            {searchResults, searchQuery} = m,
+            hasQuery = !!searchQuery?.trim();
+
+        if (!hasQuery) {
+            return placeholder(Icon.search(), 'Type to search across all documentation content.');
+        }
+
+        if (searchResults.length === 0) {
+            return placeholder(Icon.search(), 'No results found.');
+        }
+
+        return div({
+            className: 'tbox-docs__search-results',
+            items: searchResults.map(r =>
+                div({
+                    key: r.entry.id,
+                    className: 'tbox-docs__search-result',
+                    onClick: () => m.selectSearchResult(r.entry.id),
+                    items: [
+                        div({
+                            className: 'tbox-docs__search-result-header',
+                            items: [
+                                span({
+                                    className: 'tbox-docs__search-result-title',
+                                    item: r.entry.title
+                                }),
+                                span({
+                                    className: 'tbox-docs__search-result-category',
+                                    item:
+                                        DOC_CATEGORIES.find(c => c.id === r.entry.category)
+                                            ?.title ?? r.entry.category
+                                })
+                            ]
+                        }),
+                        div({
+                            className: 'tbox-docs__search-result-desc',
+                            item: r.entry.description
+                        })
+                    ]
+                })
+            )
+        });
+    }
+});
+
+const searchPanel = hoistCmp.factory({
+    render({model}) {
+        const m = model as DocsPanelModel;
+
+        return panel({
+            className: 'tbox-docs__content',
+            tbar: toolbar({
+                className: 'tbox-docs__content-toolbar',
+                items: [
+                    button({
+                        icon: Icon.arrowLeft(),
+                        tooltip: 'Back to document (Shift+S)',
+                        minimal: true,
+                        onClick: () => m.exitSearchMode()
+                    }),
+                    textInput({
+                        bind: 'searchQuery',
+                        placeholder: 'Search all documentation...',
+                        leftIcon: Icon.search(),
+                        commitOnChange: true,
+                        enableClear: true,
+                        flex: 1,
+                        autoFocus: true
+                    })
+                ]
+            }),
+            item: searchResultsBody()
         });
     }
 });
