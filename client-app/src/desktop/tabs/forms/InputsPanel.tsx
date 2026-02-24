@@ -56,8 +56,8 @@ export const inputsPanel = hoistCmp.factory({
                     ' and ',
                     code({
                         className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('popoverPicker'),
-                        item: 'PopoverPicker'
+                        onClick: () => model.tabContainerModel.activateTab('picker'),
+                        item: 'Picker'
                     }),
                     ' components.'
                 )

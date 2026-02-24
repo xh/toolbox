@@ -2,14 +2,14 @@ import {badge} from '@xh/hoist/cmp/badge';
 import {code, div, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
-import {popoverPicker} from '@xh/hoist/desktop/cmp/input';
+import {picker} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {usStates} from '../../../core/data';
 import {wrapper} from '../../common';
-import './PopoverPickerPanel.scss';
+import './PickerPanel.scss';
 
 const LARGE_OPTIONS = Array.from({length: 500}, (_, i) => `Item ${i + 1}`);
 
@@ -35,15 +35,15 @@ const STATUS_OPTIONS = [
     }
 ];
 
-export const popoverPickerPanel = hoistCmp.factory({
-    displayName: 'PopoverPickerPanel',
-    model: creates(() => PopoverPickerPanelModel),
+export const pickerPanel = hoistCmp.factory({
+    displayName: 'PickerPanel',
+    model: creates(() => PickerPanelModel),
 
     render({model}) {
         return wrapper({
             description: [
                 p(
-                    code('PopoverPicker'),
+                    code('Picker'),
                     ' presents its options in a popover dropdown triggered by a compact button showing the current value or a summary. Supports single and multi-select modes.'
                 ),
                 p(
@@ -58,16 +58,16 @@ export const popoverPickerPanel = hoistCmp.factory({
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/forms/PopoverPickerPanel.ts',
+                    url: '$TB/client-app/src/desktop/tabs/forms/PickerPanel.ts',
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/desktop/cmp/input/PopoverPicker.ts',
-                    notes: 'Hoist PopoverPicker component.'
+                    url: '$HR/desktop/cmp/input/Picker.ts',
+                    notes: 'Hoist Picker component.'
                 }
             ],
             item: panel({
-                title: 'Forms › PopoverPicker',
+                title: 'Forms › Picker',
                 icon: Icon.list(),
                 width: '90%',
                 maxWidth: 1000,
@@ -83,9 +83,9 @@ export const popoverPickerPanel = hoistCmp.factory({
 //------------------------------------------------------------------
 // Toolbar demonstrating the primary use case: compact multi-select
 //------------------------------------------------------------------
-const pickerToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
+const pickerToolbar = hoistCmp.factory<PickerPanelModel>(({model}) =>
     toolbar(
-        popoverPicker({
+        picker({
             bind: 'toolbarStates',
             options: usStates,
             enableMulti: true,
@@ -97,7 +97,7 @@ const pickerToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             testId: 'tbar-states'
         }),
         toolbarSep(),
-        popoverPicker({
+        picker({
             bind: 'toolbarPriority',
             options: ['Critical', 'High', 'Medium', 'Low'],
             placeholder: 'Priority...',
@@ -110,11 +110,11 @@ const pickerToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
 //------------------------------------------------------------------
 // Compact bottom toolbar
 //------------------------------------------------------------------
-const compactToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
+const compactToolbar = hoistCmp.factory<PickerPanelModel>(({model}) =>
     toolbar({
         compact: true,
         items: [
-            popoverPicker({
+            picker({
                 bind: 'toolbarStates',
                 options: usStates,
                 compact: true,
@@ -127,7 +127,7 @@ const compactToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                 popoverPosition: 'top'
             }),
             toolbarSep(),
-            popoverPicker({
+            picker({
                 bind: 'toolbarPriority',
                 options: ['Critical', 'High', 'Medium', 'Low'],
                 compact: true,
@@ -143,7 +143,7 @@ const compactToolbar = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
 //------------------------------------------------------------------
 // Column 1: Single & multi-select basics
 //------------------------------------------------------------------
-const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
+const column1 = hoistCmp.factory<PickerPanelModel>(() =>
     vbox({
         flex: 1,
         padding: 20,
@@ -151,7 +151,7 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             demoRow({
                 label: 'Single select',
                 info: 'Basic single-select with default options',
-                item: popoverPicker({
+                item: picker({
                     bind: 'singleState',
                     options: usStates,
                     placeholder: 'Select a state...',
@@ -162,7 +162,7 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             demoRow({
                 label: 'Multi-select',
                 info: 'enableMulti, enableClear, enableSelectAll, displayNoun',
-                item: popoverPicker({
+                item: picker({
                     bind: 'multiStates',
                     options: usStates,
                     enableMulti: true,
@@ -176,7 +176,7 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             demoRow({
                 label: 'Simple options',
                 info: 'Primitive string options, enableClear',
-                item: popoverPicker({
+                item: picker({
                     bind: 'simpleOption',
                     options: ['Small', 'Medium', 'Large', 'X-Large'],
                     enableClear: true,
@@ -187,7 +187,7 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             demoRow({
                 label: 'Disabled',
                 info: 'disabled: true',
-                item: popoverPicker({
+                item: picker({
                     bind: 'singleState',
                     options: usStates,
                     disabled: true,
@@ -198,7 +198,7 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             demoRow({
                 label: 'Compact',
                 info: 'compact: true — standalone, outside toolbar',
-                item: popoverPicker({
+                item: picker({
                     bind: 'compactStates',
                     options: usStates,
                     compact: true,
@@ -212,7 +212,7 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             demoRow({
                 label: 'Minimal popover',
                 info: 'popoverMinimal: true — no arrow or border',
-                item: popoverPicker({
+                item: picker({
                     bind: 'minimalPopoverState',
                     options: usStates,
                     popoverMinimal: true,
@@ -227,7 +227,7 @@ const column1 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
 //------------------------------------------------------------------
 // Column 2: Advanced features
 //------------------------------------------------------------------
-const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
+const column2 = hoistCmp.factory<PickerPanelModel>(({model}) =>
     vbox({
         flex: 1,
         padding: 20,
@@ -235,7 +235,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             demoRow({
                 label: 'Custom fields',
                 info: 'labelField + valueField on plain objects',
-                item: popoverPicker({
+                item: picker({
                     bind: 'restaurant',
                     options: [
                         {name: 'Osteria Francescana', city: 'Italy'},
@@ -254,7 +254,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             demoRow({
                 label: 'Badge count',
                 info: 'buttonTextRenderer with Hoist Badge',
-                item: popoverPicker({
+                item: picker({
                     bind: 'badgeStates',
                     options: usStates,
                     enableMulti: true,
@@ -271,7 +271,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
                                 badge({
                                     compact: true,
                                     intent: 'primary',
-                                    className: 'tb-popover-picker-panel__badge',
+                                    className: 'tb-picker-panel__badge',
                                     item: selected.length
                                 })
                             ]
@@ -282,7 +282,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             demoRow({
                 label: 'Custom renderers',
                 info: 'optionRenderer with two-line rows',
-                item: popoverPicker({
+                item: picker({
                     bind: 'statusOption',
                     options: STATUS_OPTIONS,
                     placeholder: 'Status...',
@@ -320,7 +320,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             demoRow({
                 label: 'Popover width + stripes',
                 info: 'popoverWidth, stripeRows, rowBorders',
-                item: popoverPicker({
+                item: picker({
                     bind: 'wideState',
                     options: usStates,
                     enableMulti: true,
@@ -336,7 +336,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             demoRow({
                 label: 'Not outlined',
                 info: 'buttonProps: {outlined: false}',
-                item: popoverPicker({
+                item: picker({
                     bind: 'nonMinimalState',
                     options: usStates,
                     buttonProps: {outlined: false},
@@ -347,7 +347,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
             demoRow({
                 label: 'Large list (virtual)',
                 info: '500 options — virtualized via react-window',
-                item: popoverPicker({
+                item: picker({
                     bind: 'largeListValues',
                     options: LARGE_OPTIONS,
                     enableMulti: true,
@@ -365,7 +365,7 @@ const column2 = hoistCmp.factory<PopoverPickerPanelModel>(({model}) =>
 //------------------------------------------------------------------
 // Column 3: Intent variants
 //------------------------------------------------------------------
-const column3 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
+const column3 = hoistCmp.factory<PickerPanelModel>(() =>
     vbox({
         flex: 1,
         padding: 20,
@@ -373,7 +373,7 @@ const column3 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             demoRow({
                 label: 'Primary',
                 info: 'intent: primary',
-                item: popoverPicker({
+                item: picker({
                     bind: 'intentPrimary',
                     options: usStates,
                     buttonProps: {icon: Icon.globe(), intent: 'primary'},
@@ -384,7 +384,7 @@ const column3 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             demoRow({
                 label: 'Success',
                 info: 'intent: success',
-                item: popoverPicker({
+                item: picker({
                     bind: 'intentSuccess',
                     options: usStates,
                     buttonProps: {icon: Icon.checkCircle(), intent: 'success'},
@@ -395,7 +395,7 @@ const column3 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             demoRow({
                 label: 'Warning',
                 info: 'intent: warning',
-                item: popoverPicker({
+                item: picker({
                     bind: 'intentWarning',
                     options: usStates,
                     buttonProps: {icon: Icon.warning(), intent: 'warning'},
@@ -406,7 +406,7 @@ const column3 = hoistCmp.factory<PopoverPickerPanelModel>(() =>
             demoRow({
                 label: 'Danger',
                 info: 'intent: danger',
-                item: popoverPicker({
+                item: picker({
                     bind: 'intentDanger',
                     options: usStates,
                     buttonProps: {icon: Icon.skull(), intent: 'danger'},
@@ -435,9 +435,9 @@ const statusDot = (color: string) =>
 
 const demoRow = hoistCmp.factory(({label, info, children}) =>
     vbox({
-        className: 'tb-popover-picker-panel__row',
+        className: 'tb-picker-panel__row',
         items: [
-            span({className: 'tb-popover-picker-panel__label', item: label}),
+            span({className: 'tb-picker-panel__label', item: label}),
             span({
                 className: 'xh-text-color-muted xh-font-size-small',
                 style: {marginTop: 2},
@@ -451,7 +451,7 @@ const demoRow = hoistCmp.factory(({label, info, children}) =>
 //------------------------------------------------------------------
 // Model
 //------------------------------------------------------------------
-class PopoverPickerPanelModel extends HoistModel {
+class PickerPanelModel extends HoistModel {
     @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
 
     // Toolbar

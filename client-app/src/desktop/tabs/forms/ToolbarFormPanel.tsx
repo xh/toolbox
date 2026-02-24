@@ -12,7 +12,7 @@ import {
     checkbox,
     dateInput,
     numberInput,
-    popoverPicker,
+    picker,
     radioInput,
     select,
     switchInput,
@@ -143,7 +143,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                         }),
                         formField({
                             field: 'option2',
-                            item: popoverPicker({
+                            item: picker({
                                 options: usStates,
                                 enableMulti: true,
                                 enableClear: true,

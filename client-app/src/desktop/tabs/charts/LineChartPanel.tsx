@@ -1,7 +1,7 @@
 import {chart} from '@xh/hoist/cmp/chart';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {popoverPicker, select} from '@xh/hoist/desktop/cmp/input';
+import {picker, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
@@ -60,7 +60,7 @@ export const lineChartPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory<LineChartModel>(({model}) => {
     return toolbar(
-        popoverPicker({
+        picker({
             bind: 'currentSymbols',
             options: model.symbols,
             enableMulti: true,

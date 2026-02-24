@@ -56,8 +56,8 @@ export const selectPanel = hoistCmp.factory({
                     'For a more compact trigger suited to toolbars, see the companion ',
                     code({
                         className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('popoverPicker'),
-                        item: 'PopoverPicker'
+                        onClick: () => model.tabContainerModel.activateTab('picker'),
+                        item: 'Picker'
                     }),
                     ' component.'
                 )
