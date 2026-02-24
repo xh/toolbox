@@ -8,7 +8,6 @@ import {zoneMapperButton} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 import React from 'react';
-import './ZoneGridPanel.scss';
 import {wrapper} from '../../common';
 import {
     activeCol,
@@ -24,7 +23,6 @@ export const zoneGridPanel = hoistCmp.factory({
     model: creates(() => ZoneGridPanelModel),
     render() {
         return wrapper({
-            className: 'tb-zone-grid-wrapper',
             description: [
                 <p>
                     The ZoneGrid component leverages an underlying Grid / GridModel instance to
