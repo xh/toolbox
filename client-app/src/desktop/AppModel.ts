@@ -22,7 +22,7 @@ import {
     splitTreeMapPanel
 } from './tabs/charts';
 import {examplesTab} from './tabs/examples/ExamplesTab';
-import {formPanel, inputsPanel, toolbarFormPanel} from './tabs/forms';
+import {formPanel, inputsPanel, pickerPanel, selectPanel, toolbarFormPanel} from './tabs/forms';
 import {
     agGridView,
     columnFilteringPanel,
@@ -195,6 +195,8 @@ export class AppModel extends BaseAppModel {
                         children: [
                             {name: 'form', path: '/form'},
                             {name: 'inputs', path: '/inputs'},
+                            {name: 'select', path: '/select'},
+                            {name: 'picker', path: '/picker'},
                             {name: 'toolbarForm', path: '/toolbarForm'}
                         ]
                     },
@@ -361,6 +363,8 @@ export class AppModel extends BaseAppModel {
                     tabs: [
                         {id: 'form', title: 'FormModel', content: formPanel},
                         {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                        {id: 'select', title: 'Select', content: selectPanel},
+                        {id: 'picker', title: 'Picker', content: pickerPanel},
                         {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
                     ]
                 }
