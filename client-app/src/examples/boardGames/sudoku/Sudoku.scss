@@ -1,9 +1,5 @@
 .sudoku-game-panel {
   .sudoku-board {
-    .ag-root-wrapper {
-      border: 2px solid var(--xh-text-color);
-    }
-
     .ag-cell {
       display: flex;
       align-items: center;
@@ -47,12 +43,26 @@
         background: var(--xh-intent-danger-transparent);
       }
 
+      // Board edge borders — thick lines on the outer perimeter
+      &--board-top {
+        border-top: 1px solid var(--xh-border-color) !important;
+      }
+      &--board-bottom {
+        border-bottom: 1px solid var(--xh-border-color) !important;
+      }
+      &--board-left {
+        border-left: 1px solid var(--xh-border-color) !important;
+      }
+      &--board-right {
+        border-right: 1px solid var(--xh-border-color) !important;
+      }
+
       // Box boundary borders — thick lines on interior box edges
       &--box-top {
-        border-top: 2px solid var(--xh-text-color) !important;
+        border-top: 1px solid var(--xh-border-color) !important;
       }
       &--box-left {
-        border-left: 2px solid var(--xh-text-color) !important;
+        border-left: 1px solid var(--xh-border-color) !important;
       }
     }
   }

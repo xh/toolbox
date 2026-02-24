@@ -158,11 +158,7 @@ export class SudokuModel extends HoistModel {
         const {row, col} = this.selectedCell;
         const cell = this.cells[row][col];
 
-        // Can't edit pre-filled cells
         if (cell.isPreFilled) return;
-
-        // In create mode solving phase, can't edit locked cells
-        if (this.createPhase === 'solving' && cell.isPreFilled) return;
 
         cell.value = num;
         this.startTimerIfNeeded();
@@ -425,11 +421,11 @@ export class SudokuModel extends HoistModel {
     //------------------------------------------------------------------
     @observable cellSize: number = 30;
 
-    get boardWidth(): number {
+    @computed get boardWidth(): number {
         return this.n * this.cellSize + 5;
     }
 
-    get boardHeight(): number {
+    @computed get boardHeight(): number {
         return this.n * this.cellSize + 1;
     }
 
@@ -533,7 +529,14 @@ export class SudokuModel extends HoistModel {
         const sel = this.selectedCell;
         if (sel && sel.row === row && sel.col === col) classes.push('sudoku-cell--selected');
 
-        // Box boundary borders
+        // Board edge borders — outer perimeter gets same thick treatment
+        const {n} = this;
+        if (row === 0) classes.push('sudoku-cell--board-top');
+        if (row === n - 1) classes.push('sudoku-cell--board-bottom');
+        if (col === 0) classes.push('sudoku-cell--board-left');
+        if (col === n - 1) classes.push('sudoku-cell--board-right');
+
+        // Box boundary borders — thick lines on interior box edges
         if (row > 0 && row % boxRows === 0) classes.push('sudoku-cell--box-top');
         if (col > 0 && col % boxCols === 0) classes.push('sudoku-cell--box-left');
 
