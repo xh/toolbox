@@ -1,8 +1,10 @@
 import {switchInput, numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, elementFactory, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {em, filler, frame, hframe, p, span, vframe} from '@xh/hoist/cmp/layout';
+import {filler, frame, hframe, p, span, vframe} from '@xh/hoist/cmp/layout';
+
+const em = elementFactory('em');
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
@@ -25,7 +27,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                 p(
                     'Unlike DashContainer, this component scales only the ',
                     em('width'),
-                    ' of its widgets as overall size changes, keeping heights fixed and scrolling as needed. This makes it well-suited for report-style dashboards with content that won\'t compress well on smaller screens. Use DashContainer when a space-filling layout is preferred.'
+                    " of its widgets as overall size changes, keeping heights fixed and scrolling as needed. This makes it well-suited for report-style dashboards with content that won't compress well on smaller screens. Use DashContainer when a space-filling layout is preferred."
                 ),
                 p(
                     'This example also demonstrates DashCanvasWidgetChooser, a ready-made sidebar for browsing and dragging available widgets onto the canvas.'

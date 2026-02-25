@@ -117,7 +117,7 @@ export class DirectoryPanelModel extends HoistModel {
             newFilter = !isEmpty(tagFilters)
                 ? {
                       key: 'tags',
-                      testFn: rec => tagFilters.every(tag => rec.data.tags?.includes(tag))
+                      testFn: rec => tagFilters.some(tag => rec.data.tags?.includes(tag))
                   }
                 : null;
 

@@ -1,3 +1,14 @@
+// Clickable code element styled as a tab link.
+code.tb-code-link {
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    background-color: var(--xh-orange-muted);
+    border-color: var(--xh-orange);
+  }
+}
+
 // Tweak vertical alignment on custom Toolbox icon/logo title image.
 .xh-appbar-icon {
   img {

@@ -27,7 +27,7 @@ export const gridScrolling = hoistCmp.factory({
                     style: {flex: 1},
                     item: createElement(AgGridReact, {
                         rowData: model.rowData,
-                        columnDefs: model.columnDefs,
+                        columnDefs: model.columnDefs as any,
                         suppressColumnVirtualisation: !model.isColVirtualizationEnabled,
                         animateRows: false
                     })

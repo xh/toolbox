@@ -1,7 +1,9 @@
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, elementFactory, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
-import {em, hframe, p} from '@xh/hoist/cmp/layout';
+import {hframe, p} from '@xh/hoist/cmp/layout';
+
+const em = elementFactory('em');
 import {Icon} from '@xh/hoist/icon/Icon';
 import {wrapper} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';

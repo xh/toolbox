@@ -1,0 +1,285 @@
+// Override Blueprint's inverted tooltip colors to follow the app theme.
+.tb-docs-tooltip.bp6-tooltip {
+  .bp6-popover-content {
+    background: var(--xh-bg);
+    color: var(--xh-text-color);
+  }
+
+  .bp6-popover-arrow-fill {
+    fill: var(--xh-border-color);
+  }
+}
+
+.tb-docs {
+  // Navigation sidebar
+  &__nav {
+    .xh-grid {
+      .ag-row {
+        cursor: pointer;
+      }
+
+      // Style category (group) rows
+      .ag-row-group {
+        font-weight: 600;
+        color: var(--xh-text-color-muted);
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+      }
+
+      // Style leaf doc rows
+      .ag-row:not(.ag-row-group) {
+        .ag-cell {
+          padding-left: 24px;
+        }
+      }
+    }
+  }
+
+  // Content toolbar
+  &__content-toolbar {
+    border-bottom: 2px solid var(--xh-orange);
+  }
+
+  // Breadcrumb navigation
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+
+    &-btn {
+      font-weight: 500;
+      border-bottom: 1px dashed var(--xh-border-color);
+      border-radius: 0;
+      padding-bottom: 1px;
+
+      &:hover {
+        border-bottom-color: var(--xh-orange);
+      }
+    }
+
+    &-sep {
+      color: var(--xh-text-color-muted);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    &-section {
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  // Content area
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  // Search results
+  &__search-results {
+    overflow: auto;
+    flex: 1;
+    padding: 16px 24px;
+  }
+
+  &__search-result {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--xh-border-color);
+    transition: background-color 0.1s ease;
+
+    &:hover {
+      background-color: var(--xh-bg-highlight);
+    }
+
+    &--selected {
+      border-left: 3px solid var(--xh-orange);
+      padding-left: 13px;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &-header {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    &-title {
+      font-weight: 500;
+      font-size: var(--xh-font-size-large-px);
+    }
+
+    &-desc {
+      //font-size: var(--xh-font-size-small-px);
+      color: var(--xh-text-color-muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+  }
+
+  // Markdown content styling
+  &__content-body {
+    overflow: auto;
+    flex: 1;
+  }
+
+  &__content-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 40px 60px;
+
+    // Headings
+    h1 {
+      font-size: 1.8em;
+      border-bottom: 2px solid var(--xh-orange);
+      padding-bottom: 10px;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 1.4em;
+      border-bottom: 1px solid var(--xh-border-color);
+      padding-bottom: 6px;
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 1.15em;
+      margin-top: 24px;
+      margin-bottom: 12px;
+    }
+
+    h4 {
+      font-size: 1.05em;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    // Code blocks
+    pre {
+      background-color: var(--xh-bg-alt);
+      border: 1px solid var(--xh-border-color);
+      border-radius: 6px;
+      padding: 14px 18px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 16px 0;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+      font-size: 0.88em;
+    }
+
+    // Inline code
+    :not(pre) > code {
+      background-color: var(--xh-bg-alt);
+      border: 1px solid var(--xh-border-color);
+      border-radius: 3px;
+      padding: 1px 6px;
+    }
+
+    // Tables
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0;
+      font-size: 0.95em;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--xh-border-color);
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--xh-bg-alt);
+      font-weight: 600;
+    }
+
+    tr:hover td {
+      background-color: var(--xh-bg-highlight);
+    }
+
+    // Links
+    a {
+      color: var(--xh-blue);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s ease;
+
+      &:hover {
+        border-bottom-color: var(--xh-blue);
+      }
+    }
+
+    // Lists
+    ul,
+    ol {
+      padding-left: 24px;
+      margin: 12px 0;
+    }
+
+    li {
+      margin: 6px 0;
+      line-height: 1.6;
+    }
+
+    li > ul,
+    li > ol {
+      margin: 4px 0;
+    }
+
+    // Blockquotes
+    blockquote {
+      border-left: 4px solid var(--xh-orange);
+      margin: 16px 0;
+      padding: 8px 16px;
+      background-color: var(--xh-bg-alt);
+      border-radius: 0 6px 6px 0;
+
+      p:first-child {
+        margin-top: 0;
+      }
+      p:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    // Horizontal rules
+    hr {
+      border: none;
+      border-top: 1px solid var(--xh-border-color);
+      margin: 32px 0;
+    }
+
+    // Paragraphs
+    p {
+      line-height: 1.7;
+      margin: 14px 0;
+    }
+
+    // Images - constrain width
+    img {
+      max-width: 100%;
+      border-radius: 4px;
+    }
+
+    // Strong emphasis
+    strong {
+      font-weight: 600;
+    }
+  }
+}

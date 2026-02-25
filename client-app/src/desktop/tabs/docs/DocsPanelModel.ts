@@ -1,0 +1,486 @@
+import {GridModel} from '@xh/hoist/cmp/grid';
+import {Content, HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
+import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
+import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
+import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {
+    DOC_CATEGORIES,
+    DOC_REGISTRY,
+    DocCategory,
+    DocEntry,
+    DocExampleLink,
+    getDocEntry,
+    getDocExamples
+} from './docRegistry';
+import {DocSearchResult, DocService} from '../../../core/svc/DocService';
+
+export interface DocSection {
+    id: string;
+    title: string;
+}
+
+/**
+ * Primary model for the Docs viewer tab.
+ *
+ * Manages a tree-based navigation grid of all hoist-react documentation,
+ * full-text search mode with ranked results, and loading of markdown content
+ * for the selected doc. Active doc selection is synced with the URL via a
+ * route parameter (e.g. /app/docs/core).
+ */
+export class DocsPanelModel extends HoistModel {
+    private readonly BASE_ROUTE = 'default.docs';
+
+    @managed
+    gridModel: GridModel;
+
+    @managed
+    dockContainerModel: DockContainerModel = new DockContainerModel();
+
+    @managed
+    navPanelModel: PanelModel = new PanelModel({
+        defaultSize: 280,
+        minSize: 200,
+        maxSize: 450,
+        collapsible: true,
+        resizable: true,
+        side: 'left',
+        persistWith: {localStorageKey: 'docsApp.navPanel'}
+    });
+
+    @bindable
+    searchQuery: string = '';
+
+    @observable
+    searchMode: boolean = false;
+
+    @observable.ref
+    searchResults: DocSearchResult[] = [];
+
+    @observable
+    selectedSearchIdx: number = -1;
+
+    @observable.ref
+    activeDoc: DocEntry = null;
+
+    @observable.ref
+    content: string = null;
+
+    @managed
+    loadContentTask: TaskObserver = TaskObserver.trackLast();
+
+    @observable
+    activeSection: string = null;
+
+    @bindable
+    feedbackMessage: string = '';
+
+    private get docService(): DocService {
+        return DocService.instance;
+    }
+
+    constructor() {
+        super();
+        makeObservable(this);
+
+        this.gridModel = this.createGridModel();
+
+        this.addReaction(
+            {
+                track: () => this.searchQuery,
+                run: query => this.runSearch(query),
+                debounce: 200
+            },
+            {
+                track: () => this.searchResults,
+                run: () => (this.selectedSearchIdx = -1)
+            },
+            {
+                track: () => this.gridModel.selectedRecord,
+                run: rec => this.onSelectionChange(rec)
+            },
+            {
+                track: () => XH.routerState.params,
+                run: () => this.updateDocFromRoute()
+            }
+        );
+    }
+
+    override onLinked() {
+        this.loadNav();
+    }
+
+    /** The category of the currently active doc. */
+    @computed
+    get activeCategory(): DocCategory | null {
+        if (!this.activeDoc) return null;
+        return DOC_CATEGORIES.find(c => c.id === this.activeDoc.category) ?? null;
+    }
+
+    /** Sibling docs in the same category as the active doc. */
+    @computed
+    get activeCategorySiblings(): DocEntry[] {
+        if (!this.activeDoc) return [];
+        return DOC_REGISTRY.filter(d => d.category === this.activeDoc.category);
+    }
+
+    /** H2-level sections parsed from the current document content. */
+    @computed
+    get sections(): DocSection[] {
+        if (!this.content) return [];
+        return extractSections(this.content);
+    }
+
+    /** Toolbox example tabs relevant to the active doc. */
+    @computed
+    get activeDocExamples(): DocExampleLink[] {
+        if (!this.activeDoc) return [];
+        return getDocExamples(this.activeDoc.id);
+    }
+
+    /** Navigate to a specific doc by ID. Updates grid selection, content, and route. */
+    @action
+    navigateToDoc(docId: string) {
+        const entry = getDocEntry(docId);
+        if (!entry || entry.id === this.activeDoc?.id) return;
+
+        const rec = this.gridModel.store.getById(entry.id);
+        if (rec) this.gridModel.selModel.select(rec);
+
+        this.activeDoc = entry;
+        this.activeSection = null;
+        this.searchMode = false;
+        this.loadContentAsync(entry);
+        this.updateRouteFromDoc();
+    }
+
+    /** Navigate to the first doc in a given category. */
+    navigateToCategory(categoryId: string) {
+        const firstDoc = DOC_REGISTRY.find(d => d.category === categoryId);
+        if (firstDoc) this.navigateToDoc(firstDoc.id);
+    }
+
+    /** Toggle search mode on/off. */
+    @action
+    toggleSearchMode() {
+        this.searchMode ? this.exitSearchMode() : this.enterSearchMode();
+    }
+
+    /** Enter search mode — switches content area to search results view. */
+    @action
+    enterSearchMode() {
+        this.searchMode = true;
+        this.searchQuery = '';
+        this.searchResults = [];
+        this.selectedSearchIdx = -1;
+    }
+
+    /** Exit search mode — returns to normal doc viewing. */
+    @action
+    exitSearchMode() {
+        this.searchMode = false;
+        this.searchQuery = '';
+        this.searchResults = [];
+        this.selectedSearchIdx = -1;
+    }
+
+    /** Select a search result — navigate to the doc and exit search. */
+    @action
+    selectSearchResult(docId: string) {
+        this.navigateToDoc(docId);
+        this.exitSearchMode();
+    }
+
+    /** Move the keyboard selection within search results by the given delta (+1 / -1). */
+    @action
+    moveSearchSelection(delta: number) {
+        const len = this.searchResults.length;
+        if (!len) return;
+        this.selectedSearchIdx = Math.max(0, Math.min(len - 1, this.selectedSearchIdx + delta));
+    }
+
+    /** Confirm the currently selected search result, if any. */
+    confirmSearchSelection() {
+        const result = this.searchResults[this.selectedSearchIdx];
+        if (result) this.selectSearchResult(result.entry.id);
+    }
+
+    /** Handle keyboard navigation within search results. */
+    onSearchKeyDown(e: KeyboardEvent) {
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                this.moveSearchSelection(1);
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                this.moveSearchSelection(-1);
+                break;
+            case 'Enter':
+                e.preventDefault();
+                this.confirmSearchSelection();
+                break;
+            case 'Escape':
+                e.preventDefault();
+                this.exitSearchMode();
+                break;
+        }
+    }
+
+    /** Update the active section — called from scroll-based observation in the view. */
+    @action
+    setActiveSection(sectionId: string) {
+        this.activeSection = sectionId;
+    }
+
+    /**
+     * Open the feedback compose panel as a docked view.
+     * @param content - factory for the feedback panel component (passed from the view
+     *     to avoid a circular import between the model and view files).
+     */
+    openFeedbackPanel(content: Content) {
+        const {dockContainerModel} = this;
+        if (dockContainerModel.getView('docFeedback')) {
+            dockContainerModel.expandView('docFeedback');
+            return;
+        }
+        dockContainerModel.addView({
+            id: 'docFeedback',
+            title: 'Report Doc Issue',
+            icon: Icon.comment(),
+            width: 420,
+            allowDialog: false,
+            allowClose: true,
+            content,
+            onClose: () => this.closeFeedbackPanel()
+        });
+    }
+
+    /** Close the feedback panel and clear the message. */
+    @action
+    closeFeedbackPanel() {
+        this.feedbackMessage = '';
+        const view = this.dockContainerModel.getView('docFeedback');
+        if (view) this.dockContainerModel.removeView('docFeedback');
+    }
+
+    /** Submit feedback via activity tracking, then close the panel. */
+    async submitFeedbackAsync() {
+        const {activeDoc, activeSection, sections, feedbackMessage} = this;
+        if (!feedbackMessage?.trim()) return;
+
+        const sectionTitle = activeSection
+            ? sections.find(s => s.id === activeSection)?.title
+            : null;
+
+        XH.track({
+            category: 'Docs Feedback',
+            message: feedbackMessage.trim(),
+            data: {
+                docId: activeDoc?.id,
+                docTitle: activeDoc?.title,
+                section: sectionTitle
+            },
+            logData: true
+        });
+        await XH.trackService.pushPendingAsync();
+
+        this.closeFeedbackPanel();
+        XH.successToast('Feedback submitted — thank you!');
+    }
+
+    //------------------
+    // Implementation
+    //------------------
+    private createGridModel(): GridModel {
+        return new GridModel({
+            selModel: 'single',
+            treeMode: true,
+            showHover: true,
+            expandLevel: 10,
+            store: {
+                idSpec: 'id',
+                fields: [
+                    {name: 'title', type: 'string'},
+                    {name: 'description', type: 'string'},
+                    {name: 'isCategory', type: 'bool'},
+                    {name: 'icon', type: 'auto'},
+                    {name: 'order', type: 'int'}
+                ]
+            },
+            sortBy: [{colId: 'order', sort: 'asc'}],
+            emptyText: 'No matching docs found.',
+            columns: [
+                {
+                    field: 'title',
+                    flex: 1,
+                    isTreeColumn: true
+                },
+                {
+                    field: 'order',
+                    hidden: true
+                }
+            ],
+            hideHeaders: true
+        });
+    }
+
+    /** Load all doc tree data into the grid, then select the doc from the route or default. */
+    private loadNav() {
+        this.gridModel.loadData(this.buildTreeData());
+
+        const {docId} = XH.routerState.params;
+        const initialDoc = (docId && getDocEntry(docId)) || DOC_REGISTRY[0];
+        if (initialDoc) this.navigateToDoc(initialDoc.id);
+    }
+
+    private buildTreeData(): any[] {
+        let order = 0;
+        return DOC_CATEGORIES.map(cat => {
+            const docs = DOC_REGISTRY.filter(d => d.category === cat.id);
+            if (docs.length === 0) return null;
+
+            return {
+                id: `cat:${cat.id}`,
+                title: cat.title,
+                description: '',
+                isCategory: true,
+                icon: this.getCategoryIcon(cat.id),
+                order: order++,
+                children: docs.map(doc => ({
+                    id: doc.id,
+                    title: doc.title,
+                    description: doc.description,
+                    isCategory: false,
+                    icon: null,
+                    order: order++
+                }))
+            };
+        }).filter(Boolean);
+    }
+
+    /** Run search via DocService and update results. */
+    private runSearch(query: string) {
+        if (!this.searchMode) return;
+        runInAction(() => {
+            this.searchResults = this.docService.searchDocs(query);
+        });
+    }
+
+    @action
+    private onSelectionChange(record: any) {
+        if (!record || record.data.isCategory) return;
+        this.navigateToDoc(record.id);
+    }
+
+    /** Route → doc: sync active doc when the URL changes. */
+    private updateDocFromRoute() {
+        const {name, params} = XH.routerState;
+        if (!name.startsWith(this.BASE_ROUTE)) return;
+
+        const {docId} = params;
+        if (docId) this.navigateToDoc(docId);
+    }
+
+    /** Doc → route: push active doc ID into the URL. */
+    private updateRouteFromDoc() {
+        const {activeDoc, BASE_ROUTE} = this,
+            {name} = XH.routerState;
+
+        if (!name.startsWith(BASE_ROUTE)) return;
+
+        if (activeDoc) {
+            XH.navigate(`${BASE_ROUTE}.docId`, {docId: activeDoc.id}, {replace: true});
+        } else {
+            XH.navigate(BASE_ROUTE, {replace: true});
+        }
+    }
+
+    private async loadContentAsync(entry: DocEntry) {
+        runInAction(() => (this.content = null));
+        try {
+            const content = await this.docService
+                .fetchContentAsync(entry.id)
+                .linkTo(this.loadContentTask);
+            runInAction(() => (this.content = content));
+        } catch (e) {
+            runInAction(() => {
+                this.content = `## Error Loading Document\n\nFailed to load **${entry.title}**.\n\n\`${e.message}\``;
+            });
+            XH.handleException(e, {showAlert: false});
+        }
+    }
+
+    getCategoryIcon(categoryId: string) {
+        switch (categoryId) {
+            case 'overview':
+                return Icon.home();
+            case 'core':
+                return Icon.gear();
+            case 'components':
+                return Icon.gridPanel();
+            case 'desktop':
+                return Icon.desktop();
+            case 'mobile':
+                return Icon.mobile();
+            case 'utilities':
+                return Icon.wrench();
+            case 'concepts':
+                return Icon.book();
+            case 'supporting':
+                return Icon.cube();
+            case 'devops':
+                return Icon.server();
+            case 'upgrade':
+                return Icon.arrowUp();
+            default:
+                return Icon.folder();
+        }
+    }
+}
+
+//------------------
+// Section parsing
+//------------------
+/**
+ * Parse H2 headings from raw markdown content into navigable sections.
+ *
+ * Each H2 (`## Title`) becomes a section entry with a display title (inline markdown
+ * stripped) and a URL-safe slug ID. Duplicate slugs are disambiguated with a numeric
+ * suffix (e.g. `overview`, `overview-1`). The resulting IDs are assigned to the
+ * corresponding DOM H2 elements in the view for scroll-based tracking and navigation.
+ */
+function extractSections(content: string): DocSection[] {
+    const regex = /^## (.+)$/gm;
+    const sections: DocSection[] = [],
+        slugCounts = new Map<string, number>();
+    let match: RegExpExecArray;
+    while ((match = regex.exec(content)) !== null) {
+        const title = stripInlineMarkdown(match[1].trim());
+        let id = slugify(title);
+        const count = slugCounts.get(id) || 0;
+        if (count > 0) id += `-${count}`;
+        slugCounts.set(id, count + 1);
+        sections.push({id, title});
+    }
+    return sections;
+}
+
+/** Remove inline markdown formatting (code, bold, italic, links) to get plain text. */
+function stripInlineMarkdown(text: string): string {
+    return text
+        .replace(/`([^`]*)`/g, '$1')
+        .replace(/\*\*([^*]*)\*\*/g, '$1')
+        .replace(/\*([^*]*)\*/g, '$1')
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+        .trim();
+}
+
+/** Convert text to a URL-safe slug: lowercase, strip special chars, hyphenate spaces. */
+function slugify(text: string): string {
+    return text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}

@@ -11,6 +11,7 @@ import {
     checkbox,
     dateInput,
     numberInput,
+    picker,
     radioInput,
     select,
     switchInput,
@@ -42,18 +43,21 @@ export const toolbarFormPanel = hoistCmp.factory({
                 icon: Icon.edit(),
                 width: '90%',
                 height: 300,
+                maxWidth: 1100,
                 tbar: form({
                     model: topFormModel,
                     fieldDefaults: {minimal: true, label: null},
                     item: toolbar(
                         formField({
                             label: 'Inline label:',
+                            requiredIndicator: null,
                             field: 'text1',
                             commitOnChange: true,
                             item: textInput()
                         }),
                         formField({
                             field: 'number1',
+                            width: 100,
                             item: numberInput({
                                 enableShorthandUnits: true,
                                 displayWithCommas: true,
@@ -112,17 +116,6 @@ export const toolbarFormPanel = hoistCmp.factory({
                     fieldDefaults: {minimal: true, label: null},
                     item: toolbar(
                         formField({
-                            label: 'Multi-select:',
-                            field: 'option2',
-                            width: 400,
-                            item: select({
-                                options: usStates,
-                                enableClear: false,
-                                enableMulti: true,
-                                placeholder: 'Select state(s)...'
-                            })
-                        }),
-                        formField({
                             field: 'option1',
                             width: 150,
                             item: select({
@@ -131,6 +124,28 @@ export const toolbarFormPanel = hoistCmp.factory({
                                 placeholder: 'Select a state...'
                             })
                         }),
+                        formField({
+                            field: 'option2',
+                            width: 350,
+                            item: select({
+                                options: usStates,
+                                enableClear: false,
+                                enableMulti: true,
+                                placeholder: 'Select state(s)...'
+                            })
+                        }),
+                        formField({
+                            field: 'option2',
+                            item: picker({
+                                options: usStates,
+                                enableMulti: true,
+                                enableClear: true,
+                                displayNoun: 'state',
+                                buttonProps: {icon: Icon.globe()},
+                                width: 180
+                            })
+                        }),
+                        '-',
                         formField({
                             field: 'option3',
                             item: radioInput({
