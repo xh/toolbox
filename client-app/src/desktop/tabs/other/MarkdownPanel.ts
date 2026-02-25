@@ -1,38 +1,30 @@
-import {div, vbox} from '@xh/hoist/cmp/layout';
+import {code, div, p, vbox} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {codeInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import React from 'react';
 import {wrapper} from '../../common';
-import './JsxPanel.scss';
-// @ts-ignore
 import content from './MarkdownPanelContent.md';
 
-class MarkdownModel extends HoistModel {
-    @bindable content: string = '';
-
-    constructor() {
-        super();
-        makeObservable(this);
-
-        fetch(content)
-            .then(response => response.text())
-            .then(text => (this.content = text));
-    }
-}
-
 export const markdownPanel = hoistCmp.factory({
-    model: creates(MarkdownModel),
+    displayName: 'MarkdownPanel',
+    model: creates(() => MarkdownModel),
+
     render({model}) {
         return wrapper({
-            description: [
-                <p>
-                    Hoist supplies a <code>markdown</code> component that wraps the react-markdown
-                    library and will convert a markdown string into a React element tree.
-                </p>
+            description: p(
+                'Hoist supplies a ',
+                code('markdown'),
+                ' component that wraps the react-markdown library and will convert a markdown string into a React element tree.'
+            ),
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/MarkdownPanel.ts',
+                    notes: 'This example.'
+                },
+                {url: '$HR/cmp/markdown/Markdown.ts', notes: 'Hoist component.'}
             ],
             item: vbox({
                 width: 800,
@@ -69,3 +61,16 @@ export const markdownPanel = hoistCmp.factory({
         });
     }
 });
+
+class MarkdownModel extends HoistModel {
+    @bindable content: string = '';
+
+    constructor() {
+        super();
+        makeObservable(this);
+
+        fetch(content)
+            .then(response => response.text())
+            .then(text => (this.content = text));
+    }
+}

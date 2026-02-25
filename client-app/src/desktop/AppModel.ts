@@ -63,6 +63,7 @@ import {
     inspectorPanel,
     jsxPanel,
     leftRightChooserPanel,
+    markdownPanel,
     numberFormatsPanel,
     pinPadPanel,
     placeholderPanel,
@@ -419,6 +420,7 @@ export class AppModel extends BaseAppModel {
                             title: 'LeftRightChooser',
                             content: leftRightChooserPanel
                         },
+                        {id: 'markdown', content: markdownPanel},
                         {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                         {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                         {id: 'popups', content: popupsPanel},

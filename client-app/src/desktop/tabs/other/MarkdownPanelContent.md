@@ -38,6 +38,6 @@ This initial markdown content was imported from a file checked in alongside the 
 This might be useful for lengthy markdown content that should land in source control,
 e.g. inline documentation.
 
-See the source within [`MarkdownPanel.tsx`](https://github.com/xh/toolbox/blob/develop/client-app/src/desktop/tabs/other/MarkdownPanel.tsx)
+See the source within [`MarkdownPanel.ts`](https://github.com/xh/toolbox/blob/develop/client-app/src/desktop/tabs/other/MarkdownPanel.ts)
 to review how it is imported and loaded _(hint, `fetch` is involved)_.
 
