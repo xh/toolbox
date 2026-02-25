@@ -11,9 +11,12 @@ import {DocSearchResult, DocService} from '../../../core/svc/DocService';
  *
  * Manages a tree-based navigation grid of all hoist-react documentation,
  * full-text search mode with ranked results, and loading of markdown content
- * for the selected doc.
+ * for the selected doc. Active doc selection is synced with the URL via a
+ * route parameter (e.g. /app/docs/core).
  */
 export class DocsPanelModel extends HoistModel {
+    private readonly BASE_ROUTE = 'default.docs';
+
     @managed
     gridModel: GridModel;
 
@@ -56,16 +59,21 @@ export class DocsPanelModel extends HoistModel {
 
         this.gridModel = this.createGridModel();
 
-        this.addReaction({
-            track: () => this.searchQuery,
-            run: query => this.runSearch(query),
-            debounce: 200
-        });
-
-        this.addReaction({
-            track: () => this.gridModel.selectedRecord,
-            run: rec => this.onSelectionChange(rec)
-        });
+        this.addReaction(
+            {
+                track: () => this.searchQuery,
+                run: query => this.runSearch(query),
+                debounce: 200
+            },
+            {
+                track: () => this.gridModel.selectedRecord,
+                run: rec => this.onSelectionChange(rec)
+            },
+            {
+                track: () => XH.routerState.params,
+                run: () => this.updateDocFromRoute()
+            }
+        );
     }
 
     override onLinked() {
@@ -86,7 +94,7 @@ export class DocsPanelModel extends HoistModel {
         return DOC_REGISTRY.filter(d => d.category === this.activeDoc.category);
     }
 
-    /** Navigate to a specific doc by ID. Used for internal link interception. */
+    /** Navigate to a specific doc by ID. Updates grid selection, content, and route. */
     @action
     navigateToDoc(docId: string) {
         const entry = getDocEntry(docId);
@@ -97,6 +105,7 @@ export class DocsPanelModel extends HoistModel {
 
         this.activeDoc = entry;
         this.loadContentAsync(entry);
+        this.updateRouteFromDoc();
     }
 
     /** Navigate to the first doc in a given category. */
@@ -170,20 +179,13 @@ export class DocsPanelModel extends HoistModel {
         });
     }
 
-    /** Load all doc tree data into the grid once. */
+    /** Load all doc tree data into the grid, then select the doc from the route or default. */
     private loadNav() {
         this.gridModel.loadData(this.buildTreeData());
 
-        // Auto-select first doc on initial load
-        if (DOC_REGISTRY.length > 0) {
-            const firstDoc = DOC_REGISTRY[0];
-            const rec = this.gridModel.store.getById(firstDoc.id);
-            if (rec) {
-                this.gridModel.selModel.select(rec);
-                this.activeDoc = firstDoc;
-                this.loadContentAsync(firstDoc);
-            }
-        }
+        const {docId} = XH.routerState.params;
+        const initialDoc = (docId && getDocEntry(docId)) || DOC_REGISTRY[0];
+        if (initialDoc) this.navigateToDoc(initialDoc.id);
     }
 
     private buildTreeData(): any[] {
@@ -222,13 +224,30 @@ export class DocsPanelModel extends HoistModel {
     @action
     private onSelectionChange(record: any) {
         if (!record || record.data.isCategory) return;
+        this.navigateToDoc(record.id);
+    }
 
-        const entry = DOC_REGISTRY.find(d => d.id === record.id);
-        if (!entry || entry.id === this.activeDoc?.id) return;
+    /** Route → doc: sync active doc when the URL changes. */
+    private updateDocFromRoute() {
+        const {name, params} = XH.routerState;
+        if (!name.startsWith(this.BASE_ROUTE)) return;
 
-        if (this.searchMode) this.exitSearchMode();
-        this.activeDoc = entry;
-        this.loadContentAsync(entry);
+        const {docId} = params;
+        if (docId) this.navigateToDoc(docId);
+    }
+
+    /** Doc → route: push active doc ID into the URL. */
+    private updateRouteFromDoc() {
+        const {activeDoc, BASE_ROUTE} = this,
+            {name} = XH.routerState;
+
+        if (!name.startsWith(BASE_ROUTE)) return;
+
+        if (activeDoc) {
+            XH.navigate(`${BASE_ROUTE}.docId`, {docId: activeDoc.id}, {replace: true});
+        } else {
+            XH.navigate(BASE_ROUTE, {replace: true});
+        }
     }
 
     private async loadContentAsync(entry: DocEntry) {

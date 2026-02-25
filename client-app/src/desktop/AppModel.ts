@@ -247,7 +247,8 @@ export class AppModel extends BaseAppModel {
                     },
                     {
                         name: 'docs',
-                        path: '/docs'
+                        path: '/docs',
+                        children: [{name: 'docId', path: '/:docId'}]
                     },
                     {
                         name: 'examples',
