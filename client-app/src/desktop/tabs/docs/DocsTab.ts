@@ -197,9 +197,13 @@ const searchPanel = hoistCmp.factory({
 const breadcrumb = hoistCmp.factory({
     render({model}) {
         const m = model as DocsPanelModel,
-            {activeCategory, activeDoc} = m;
+            {activeCategory, activeDoc, sections, activeSection} = m;
 
         if (!activeCategory || !activeDoc) return null;
+
+        const activeSectionTitle = activeSection
+            ? sections.find(s => s.id === activeSection)?.title
+            : null;
 
         return div({
             className: 'tb-docs__breadcrumb',
@@ -242,7 +246,40 @@ const breadcrumb = hoistCmp.factory({
                             })
                         )
                     )
-                })
+                }),
+                sections.length > 0
+                    ? span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()})
+                    : null,
+                sections.length > 0
+                    ? popover({
+                          position: 'bottom-left',
+                          minimal: true,
+                          item: button({
+                              className: 'tb-docs__breadcrumb-btn tb-docs__breadcrumb-section',
+                              icon: Icon.list(),
+                              text: activeSectionTitle,
+                              minimal: true
+                          }),
+                          content: menu(
+                              ...sections.map(sec =>
+                                  menuItem({
+                                      text: sec.title,
+                                      active: sec.id === activeSection,
+                                      onClick: () => {
+                                          const el = document.getElementById(sec.id);
+                                          if (el) {
+                                              el.scrollIntoView({
+                                                  behavior: 'smooth',
+                                                  block: 'start'
+                                              });
+                                              m.setActiveSection(sec.id);
+                                          }
+                                      }
+                                  })
+                              )
+                          )
+                      })
+                    : null
             ]
         });
     }
@@ -263,7 +300,8 @@ const descBadge = hoistCmp.factory({
 // Content body
 //------------------
 const contentBody = hoistCmp.factory(({model}) => {
-    const {content, activeDoc} = model as DocsPanelModel,
+    const m = model as DocsPanelModel,
+        {content, activeDoc} = m,
         scrollRef = useRef<HTMLDivElement>(null);
 
     // Scroll to top when the active doc changes
@@ -271,7 +309,54 @@ const contentBody = hoistCmp.factory(({model}) => {
         scrollRef.current?.scrollTo(0, 0);
     }, [activeDoc]);
 
-    // All hooks must be called before any conditional returns
+    // After content renders: assign slug IDs to H2 elements and track active section.
+    useEffect(() => {
+        const container = scrollRef.current;
+        if (!container || !content) return;
+
+        // Assign IDs to H2s from the model's parsed sections, ensuring 1:1 correspondence.
+        const headings = container.querySelectorAll('h2'),
+            secs = m.sections;
+        headings.forEach((h2, i) => {
+            if (i < secs.length) h2.id = secs[i].id;
+        });
+
+        // Track active section based on scroll position — the last H2 that has
+        // scrolled past the top of the container is considered "active".
+        let ticking = false;
+        const onScroll = () => {
+            if (ticking) return;
+            ticking = true;
+            window.requestAnimationFrame(() => {
+                const containerTop = container.getBoundingClientRect().top;
+                let activeId: string = null;
+                container.querySelectorAll('h2[id]').forEach(h2 => {
+                    if (h2.getBoundingClientRect().top <= containerTop + 60) {
+                        activeId = h2.id;
+                    }
+                });
+                if (activeId !== m.activeSection) m.setActiveSection(activeId);
+                ticking = false;
+            });
+        };
+        container.addEventListener('scroll', onScroll, {passive: true});
+
+        // If the URL has a hash fragment, scroll to the matching section.
+        const hash = window.location.hash?.slice(1);
+        if (hash) {
+            window.requestAnimationFrame(() => {
+                const target = document.getElementById(hash);
+                if (target) {
+                    target.scrollIntoView({block: 'start'});
+                    m.setActiveSection(hash);
+                }
+            });
+        }
+
+        return () => container.removeEventListener('scroll', onScroll);
+    }, [m, content]);
+
+    // Handle clicks on links within the rendered markdown.
     const handleLinkClick = useCallback(
         (e: React.MouseEvent<HTMLDivElement>) => {
             const anchor = (e.target as HTMLElement).closest('a');
@@ -280,13 +365,23 @@ const contentBody = hoistCmp.factory(({model}) => {
             const href = anchor.getAttribute('href');
             if (!href) return;
 
+            // Anchor-only links: scroll to the section within the current doc.
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                const sectionId = href.slice(1),
+                    el = document.getElementById(sectionId);
+                if (el) {
+                    el.scrollIntoView({behavior: 'smooth', block: 'start'});
+                    m.setActiveSection(sectionId);
+                }
+                return;
+            }
+
             // Try to resolve as an internal doc link
-            if (activeDoc && !href.startsWith('http') && !href.startsWith('#')) {
+            if (activeDoc && !href.startsWith('http')) {
                 e.preventDefault();
                 const target = resolveDocLink(activeDoc.sourcePath, href);
-                if (target) {
-                    (model as DocsPanelModel).navigateToDoc(target.id);
-                }
+                if (target) m.navigateToDoc(target.id);
                 // Unresolved relative links (e.g. .ts source files) are silently
                 // consumed to prevent the browser from navigating away from the SPA.
                 return;
@@ -298,7 +393,7 @@ const contentBody = hoistCmp.factory(({model}) => {
                 window.open(href, '_blank', 'noopener');
             }
         },
-        [activeDoc, model]
+        [m, activeDoc]
     );
 
     if (!content) return null;

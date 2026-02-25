@@ -6,6 +6,11 @@ import {action, bindable, computed, makeObservable, observable, runInAction} fro
 import {DOC_CATEGORIES, DOC_REGISTRY, DocCategory, DocEntry, getDocEntry} from './docRegistry';
 import {DocSearchResult, DocService} from '../../../core/svc/DocService';
 
+export interface DocSection {
+    id: string;
+    title: string;
+}
+
 /**
  * Primary model for the Docs viewer tab.
  *
@@ -48,6 +53,9 @@ export class DocsPanelModel extends HoistModel {
 
     @observable
     isLoadingContent: boolean = false;
+
+    @observable
+    activeSection: string = null;
 
     private get docService(): DocService {
         return DocService.instance;
@@ -94,6 +102,13 @@ export class DocsPanelModel extends HoistModel {
         return DOC_REGISTRY.filter(d => d.category === this.activeDoc.category);
     }
 
+    /** H2-level sections parsed from the current document content. */
+    @computed
+    get sections(): DocSection[] {
+        if (!this.content) return [];
+        return extractSections(this.content);
+    }
+
     /** Navigate to a specific doc by ID. Updates grid selection, content, and route. */
     @action
     navigateToDoc(docId: string) {
@@ -104,6 +119,7 @@ export class DocsPanelModel extends HoistModel {
         if (rec) this.gridModel.selModel.select(rec);
 
         this.activeDoc = entry;
+        this.activeSection = null;
         this.searchMode = false;
         this.loadContentAsync(entry);
         this.updateRouteFromDoc();
@@ -142,6 +158,12 @@ export class DocsPanelModel extends HoistModel {
     selectSearchResult(docId: string) {
         this.navigateToDoc(docId);
         this.exitSearchMode();
+    }
+
+    /** Update the active section — called from scroll-based observation in the view. */
+    @action
+    setActiveSection(sectionId: string) {
+        this.activeSection = sectionId;
     }
 
     //------------------
@@ -295,4 +317,40 @@ export class DocsPanelModel extends HoistModel {
                 return Icon.folder();
         }
     }
+}
+
+//------------------
+// Section parsing
+//------------------
+function extractSections(content: string): DocSection[] {
+    const regex = /^## (.+)$/gm;
+    const sections: DocSection[] = [],
+        slugCounts = new Map<string, number>();
+    let match: RegExpExecArray;
+    while ((match = regex.exec(content)) !== null) {
+        const title = stripInlineMarkdown(match[1].trim());
+        let id = slugify(title);
+        const count = slugCounts.get(id) || 0;
+        if (count > 0) id += `-${count}`;
+        slugCounts.set(id, count + 1);
+        sections.push({id, title});
+    }
+    return sections;
+}
+
+function stripInlineMarkdown(text: string): string {
+    return text
+        .replace(/`([^`]*)`/g, '$1')
+        .replace(/\*\*([^*]*)\*\*/g, '$1')
+        .replace(/\*([^*]*)\*/g, '$1')
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+        .trim();
+}
+
+function slugify(text: string): string {
+    return text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
 }
