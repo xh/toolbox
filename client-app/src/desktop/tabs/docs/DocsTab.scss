@@ -1,4 +1,16 @@
-.tbox-docs {
+// Override Blueprint's inverted tooltip colors to follow the app theme.
+.tb-docs-tooltip.bp6-tooltip {
+  .bp6-popover-content {
+    background: var(--xh-bg);
+    color: var(--xh-text-color);
+  }
+
+  .bp6-popover-arrow-fill {
+    fill: var(--xh-border-color);
+  }
+}
+
+.tb-docs {
   // Navigation sidebar
   &__nav {
     .xh-grid {

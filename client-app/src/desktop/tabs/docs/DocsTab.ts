@@ -1,5 +1,5 @@
-import {grid} from '@xh/hoist/cmp/grid';
 import {badge} from '@xh/hoist/cmp/badge';
+import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp} from '@xh/hoist/core';
@@ -8,10 +8,9 @@ import {textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import React, {useCallback, useRef, useEffect} from 'react';
-import {DOC_CATEGORIES} from './docRegistry';
-import {resolveDocLink} from './docRegistry';
+import {menu, menuItem, popover, tooltip} from '@xh/hoist/kit/blueprint';
+import React, {useCallback, useEffect, useRef} from 'react';
+import {DOC_CATEGORIES, resolveDocLink} from './docRegistry';
 import {DocsPanelModel} from './DocsPanelModel';
 import './DocsTab.scss';
 
@@ -25,7 +24,7 @@ import './DocsTab.scss';
 export const docsTab = hoistCmp.factory({
     displayName: 'DocsTab',
     model: creates(DocsPanelModel),
-    className: 'tbox-docs',
+    className: 'tb-docs',
 
     render({model, className}) {
         const m = model as DocsPanelModel;
@@ -53,10 +52,10 @@ const navPanel = hoistCmp.factory({
         const {gridModel, navPanelModel} = model as DocsPanelModel;
         return panel({
             model: navPanelModel,
-            icon: Icon.book(),
-            title: 'Documentation',
+            collapsedIcon: Icon.book(),
+            collapsedTitle: 'Documentation',
             compactHeader: true,
-            className: 'tbox-docs__nav',
+            className: 'tb-docs__nav',
             item: grid({model: gridModel})
         });
     }
@@ -74,21 +73,26 @@ const contentPanel = hoistCmp.factory({
 
         if (!activeDoc) {
             return panel({
-                className: 'tbox-docs__content',
+                className: 'tb-docs__content',
                 item: placeholder(Icon.book(), 'Select a document to view.')
             });
         }
 
         return panel({
-            className: 'tbox-docs__content',
+            className: 'tb-docs__content',
             tbar: toolbar({
-                className: 'tbox-docs__content-toolbar',
+                className: 'tb-docs__content-toolbar',
                 items: [
-                    button({
-                        icon: Icon.search(),
-                        tooltip: 'Search documentation (Shift+S)',
-                        minimal: true,
-                        onClick: () => m.enterSearchMode()
+                    tooltip({
+                        content: searchTooltip(),
+                        hoverOpenDelay: 500,
+                        placement: 'bottom',
+                        popoverClassName: 'tb-docs-tooltip',
+                        item: button({
+                            icon: Icon.search(),
+                            minimal: true,
+                            onClick: () => m.enterSearchMode()
+                        })
                     }),
                     breadcrumb(),
                     filler(),
@@ -119,18 +123,18 @@ const searchResultsBody = hoistCmp.factory({
         }
 
         return div({
-            className: 'tbox-docs__search-results',
+            className: 'tb-docs__search-results',
             items: searchResults.map(r =>
                 div({
                     key: r.entry.id,
-                    className: 'tbox-docs__search-result',
+                    className: 'tb-docs__search-result',
                     onClick: () => m.selectSearchResult(r.entry.id),
                     items: [
                         div({
-                            className: 'tbox-docs__search-result-header',
+                            className: 'tb-docs__search-result-header',
                             items: [
                                 span({
-                                    className: 'tbox-docs__search-result-title',
+                                    className: 'tb-docs__search-result-title',
                                     item: r.entry.title
                                 }),
                                 badge({
@@ -141,7 +145,7 @@ const searchResultsBody = hoistCmp.factory({
                             ]
                         }),
                         div({
-                            className: 'tbox-docs__search-result-desc',
+                            className: 'tb-docs__search-result-desc',
                             item: r.entry.description
                         })
                     ]
@@ -156,15 +160,20 @@ const searchPanel = hoistCmp.factory({
         const m = model as DocsPanelModel;
 
         return panel({
-            className: 'tbox-docs__content',
+            className: 'tb-docs__content',
             tbar: toolbar({
-                className: 'tbox-docs__content-toolbar',
+                className: 'tb-docs__content-toolbar',
                 items: [
-                    button({
-                        icon: Icon.arrowLeft(),
-                        tooltip: 'Back to document (Shift+S)',
-                        minimal: true,
-                        onClick: () => m.exitSearchMode()
+                    tooltip({
+                        content: searchTooltip('Back to document'),
+                        hoverOpenDelay: 400,
+                        placement: 'bottom',
+                        popoverClassName: 'tb-docs-tooltip',
+                        item: button({
+                            icon: Icon.arrowLeft(),
+                            minimal: true,
+                            onClick: () => m.exitSearchMode()
+                        })
                     }),
                     textInput({
                         bind: 'searchQuery',
@@ -193,13 +202,13 @@ const breadcrumb = hoistCmp.factory({
         if (!activeCategory || !activeDoc) return null;
 
         return div({
-            className: 'tbox-docs__breadcrumb',
+            className: 'tb-docs__breadcrumb',
             items: [
                 popover({
                     position: 'bottom-left',
                     minimal: true,
                     item: button({
-                        className: 'tbox-docs__breadcrumb-btn',
+                        className: 'tb-docs__breadcrumb-btn',
                         icon: m.getCategoryIcon(activeCategory.id),
                         text: activeCategory.title,
                         minimal: true
@@ -215,12 +224,12 @@ const breadcrumb = hoistCmp.factory({
                         )
                     )
                 }),
-                span({className: 'tbox-docs__breadcrumb-sep', item: Icon.chevronRight()}),
+                span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()}),
                 popover({
                     position: 'bottom-left',
                     minimal: true,
                     item: button({
-                        className: 'tbox-docs__breadcrumb-btn',
+                        className: 'tb-docs__breadcrumb-btn',
                         text: activeDoc.title,
                         minimal: true
                     }),
@@ -244,7 +253,7 @@ const descBadge = hoistCmp.factory({
         const {activeDoc} = model as DocsPanelModel;
         if (!activeDoc?.description) return null;
         return div({
-            className: 'tbox-docs__content-desc',
+            className: 'tb-docs__content-desc',
             item: activeDoc.description
         });
     }
@@ -295,12 +304,32 @@ const contentBody = hoistCmp.factory(({model}) => {
     if (!content) return null;
 
     return div({
-        className: 'tbox-docs__content-body',
+        className: 'tb-docs__content-body',
         ref: scrollRef,
         onClick: handleLinkClick,
         item: div({
-            className: 'tbox-docs__content-inner',
+            className: 'tb-docs__content-inner',
             item: markdown({content, lineBreaks: false})
         })
     });
 });
+
+//------------------
+// Helpers
+//------------------
+function searchTooltip(label: string = 'Search documentation') {
+    return span({
+        style: {whiteSpace: 'nowrap'},
+        items: [
+            label + ' ',
+            span({
+                className: 'bp6-key-combo',
+                style: {display: 'inline-flex'},
+                items: [
+                    span({className: 'bp6-key', item: 'Shift'}),
+                    span({className: 'bp6-key', item: 'S'})
+                ]
+            })
+        ]
+    });
+}

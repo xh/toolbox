@@ -104,6 +104,7 @@ export class DocsPanelModel extends HoistModel {
         if (rec) this.gridModel.selModel.select(rec);
 
         this.activeDoc = entry;
+        this.searchMode = false;
         this.loadContentAsync(entry);
         this.updateRouteFromDoc();
     }
