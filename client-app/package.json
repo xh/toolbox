@@ -8,6 +8,7 @@
     "buildAndAnalyze": "webpack --env prodBuild --env analyzeBundles",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "yarn lint:all",
+    "validateDocs": "node scripts/validate-doc-registry.mjs",
     "lint:all": "yarn lint:code && yarn lint:styles",
     "lint:code": "eslint .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",

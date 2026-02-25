@@ -45,19 +45,22 @@ import docsIndexUrl from '@xh/hoist/docs/README.md';
 // ---------------------------------------------------------------------------
 import authenticationUrl from '@xh/hoist/docs/authentication.md';
 import authorizationUrl from '@xh/hoist/docs/authorization.md';
+import codingConventionsUrl from '@xh/hoist/docs/coding-conventions.md';
 import errorHandlingUrl from '@xh/hoist/docs/error-handling.md';
 import lifecycleAppUrl from '@xh/hoist/docs/lifecycle-app.md';
 import lifecycleModelsUrl from '@xh/hoist/docs/lifecycle-models-and-services.md';
 import persistenceUrl from '@xh/hoist/docs/persistence.md';
 import routingUrl from '@xh/hoist/docs/routing.md';
 import testAutomationUrl from '@xh/hoist/docs/test-automation.md';
+import versionCompatibilityUrl from '@xh/hoist/docs/version-compatibility.md';
 
 // ---------------------------------------------------------------------------
 // DevOps docs
 // ---------------------------------------------------------------------------
 import buildDeployUrl from '@xh/hoist/docs/build-and-deploy.md';
-import devEnvironmentUrl from '@xh/hoist/docs/development-environment.md';
+import changelogFormatUrl from '@xh/hoist/docs/changelog-format.md';
 import compilationNotesUrl from '@xh/hoist/docs/compilation-notes.md';
+import devEnvironmentUrl from '@xh/hoist/docs/development-environment.md';
 
 // ---------------------------------------------------------------------------
 // Upgrade notes
@@ -124,6 +127,60 @@ export const DOC_REGISTRY: DocEntry[] = [
         url: docsIndexUrl,
         sourcePath: 'docs/README.md',
         keyTopics: ['index', 'quick reference', 'catalog']
+    },
+    {
+        id: 'coding-conventions',
+        title: 'Coding Conventions',
+        category: 'overview',
+        description: 'Code style, naming, class structure, component and async patterns',
+        url: codingConventionsUrl,
+        sourcePath: 'docs/coding-conventions.md',
+        keyTopics: [
+            'conventions',
+            'code style',
+            'imports',
+            'import ordering',
+            'named imports',
+            'barrel exports',
+            'TypeScript',
+            'interface vs type',
+            'declare config',
+            'override',
+            'readonly',
+            'naming',
+            'PascalCase',
+            'camelCase',
+            'Async suffix',
+            'class structure',
+            'member ordering',
+            'section dividers',
+            'constructor pattern',
+            'hoistCmp',
+            'withFactory',
+            'factory',
+            'model binding',
+            'displayName',
+            'element factories',
+            'JSX',
+            'null',
+            'undefined',
+            '== null',
+            'withDefault',
+            'async/await',
+            'catchDefault',
+            'return await',
+            'XH.handleException',
+            'throwIf',
+            'logging',
+            'logInfo',
+            'withDebug',
+            'CSS',
+            'BEM',
+            'xh- prefix',
+            'CSS variables',
+            'lodash',
+            'TSDoc'
+        ]
     },
 
     // Core Framework
@@ -707,16 +764,6 @@ export const DOC_REGISTRY: DocEntry[] = [
             'model leak detection'
         ]
     },
-    {
-        id: 'mcp',
-        title: 'MCP Server',
-        category: 'supporting',
-        description: 'Model Context Protocol server for AI assistant integration',
-        url: mcpUrl,
-        sourcePath: 'mcp/README.md',
-        keyTopics: ['MCP', 'AI assistants', 'documentation search', 'TypeScript types']
-    },
-
     // DevOps & Environment
     {
         id: 'build-deploy',
@@ -745,8 +792,58 @@ export const DOC_REGISTRY: DocEntry[] = [
         sourcePath: 'docs/compilation-notes.md',
         keyTopics: ['TypeScript', 'Babel', 'compilation', 'build tooling']
     },
+    {
+        id: 'changelog-format',
+        title: 'Changelog Format',
+        category: 'devops',
+        description: 'CHANGELOG entry format conventions, section headers, and difficulty ratings',
+        url: changelogFormatUrl,
+        sourcePath: 'docs/changelog-format.md',
+        keyTopics: [
+            'changelog',
+            'CHANGELOG',
+            'format',
+            'release notes',
+            'breaking changes',
+            'upgrade difficulty',
+            'section headers',
+            'entry structure',
+            'versioning'
+        ]
+    },
+    {
+        id: 'mcp',
+        title: 'MCP Server',
+        category: 'devops',
+        description: 'Model Context Protocol server for AI assistant integration',
+        url: mcpUrl,
+        sourcePath: 'mcp/README.md',
+        keyTopics: ['MCP', 'AI assistants', 'documentation search', 'TypeScript types']
+    },
 
-    // Upgrade Notes
+    // Upgrade Notes & Versioning
+    {
+        id: 'version-compatibility',
+        title: 'Version Compatibility',
+        category: 'upgrade',
+        description: 'Required hoist-core versions for each hoist-react release',
+        url: versionCompatibilityUrl,
+        sourcePath: 'docs/version-compatibility.md',
+        keyTopics: [
+            'version',
+            'compatibility',
+            'hoist-core',
+            'hoist-react',
+            'minimum version',
+            'required version',
+            'recommended version',
+            'compatibility matrix',
+            'version pairing',
+            'upgrade',
+            'hoist-dev-utils',
+            'reverse lookup'
+        ]
+    },
     {
         id: 'v81-upgrade',
         title: 'v81 Upgrade Notes',
