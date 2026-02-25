@@ -72,8 +72,8 @@ export class DocService extends HoistService {
         if (this.indexReady) {
             const results = this.index.search(query, {
                 boost: {title: 5, keyTopics: 3, description: 2, content: 1},
-                prefix: true,
-                fuzzy: 0.2,
+                prefix: term => term.length >= 4,
+                fuzzy: term => (term.length >= 6 ? 0.15 : false),
                 combineWith: 'AND'
             });
             return results
@@ -108,13 +108,7 @@ export class DocService extends HoistService {
             // Build the MiniSearch index.
             const index = new MiniSearch({
                 fields: ['title', 'keyTopics', 'description', 'content'],
-                storeFields: [],
-                searchOptions: {
-                    boost: {title: 5, keyTopics: 3, description: 2, content: 1},
-                    prefix: true,
-                    fuzzy: 0.2,
-                    combineWith: 'AND'
-                }
+                storeFields: []
             });
 
             const documents = entries.map((entry, i) => ({

@@ -138,11 +138,18 @@ export const DOC_REGISTRY: DocEntry[] = [
             'HoistBase',
             'HoistModel',
             'HoistService',
+            'HoistAppModel',
             'hoistCmp',
             'XH',
             'element factories',
             'decorators',
-            'lifecycle'
+            'lifecycle',
+            '@managed',
+            '@lookup',
+            'creates',
+            'uses',
+            'addReaction',
+            'lookupModel'
         ]
     },
     {
@@ -179,7 +186,13 @@ export const DOC_REGISTRY: DocEntry[] = [
             'PrefService',
             'IdentityService',
             'TrackService',
-            'WebSocketService'
+            'WebSocketService',
+            'JsonBlobService',
+            'GridExportService',
+            'GridAutosizeService',
+            'IdleService',
+            'AutoRefreshService',
+            'EnvironmentService'
         ]
     },
 
@@ -191,7 +204,19 @@ export const DOC_REGISTRY: DocEntry[] = [
         description: 'Cross-platform component overview and catalog',
         url: cmpUrl,
         sourcePath: 'cmp/README.md',
-        keyTopics: ['component categories', 'factory pattern', 'platform-specific']
+        keyTopics: [
+            'component categories',
+            'factory pattern',
+            'DataView',
+            'DataViewModel',
+            'Treemap',
+            'ZoneGrid',
+            'Badge',
+            'Spinner',
+            'LoadingIndicator',
+            'RelativeTimestamp',
+            'Markdown'
+        ]
     },
     {
         id: 'grid',
@@ -209,7 +234,12 @@ export const DOC_REGISTRY: DocEntry[] = [
             'filtering',
             'selection',
             'inline editing',
-            'export'
+            'export',
+            'tree grid',
+            'GridFilterModel',
+            'ag-Grid',
+            'column chooser',
+            'context menu'
         ]
     },
     {
@@ -236,9 +266,17 @@ export const DOC_REGISTRY: DocEntry[] = [
         sourcePath: 'cmp/input/README.md',
         keyTopics: [
             'HoistInputModel',
+            'HoistInputProps',
             'change/commit lifecycle',
+            'commitOnChange',
             'value binding',
-            'focus management'
+            'focus management',
+            'Select',
+            'TextInput',
+            'DateInput',
+            'NumberInput',
+            'Checkbox',
+            'SwitchInput'
         ]
     },
     {
@@ -259,9 +297,12 @@ export const DOC_REGISTRY: DocEntry[] = [
         sourcePath: 'cmp/tab/README.md',
         keyTopics: [
             'TabContainerModel',
+            'TabModel',
             'routing integration',
-            'render modes',
-            'refresh strategies'
+            'renderMode',
+            'refreshMode',
+            'RefreshContextModel',
+            'dynamic tabs'
         ]
     },
     {
@@ -289,7 +330,23 @@ export const DOC_REGISTRY: DocEntry[] = [
         description: 'Desktop-specific components and app container',
         url: desktopUrl,
         sourcePath: 'desktop/README.md',
-        keyTopics: ['desktop components', 'Blueprint wrappers', 'desktop navigation']
+        keyTopics: [
+            'desktop components',
+            'Blueprint wrappers',
+            'Select',
+            'DateInput',
+            'NumberInput',
+            'TextArea',
+            'Picker',
+            'Checkbox',
+            'SwitchInput',
+            'RadioInput',
+            'Slider',
+            'CodeInput',
+            'JsonInput',
+            'LeftRightChooser',
+            'dropdown'
+        ]
     },
     {
         id: 'panel',
@@ -303,9 +360,12 @@ export const DOC_REGISTRY: DocEntry[] = [
             'PanelModel',
             'Toolbar',
             'mask',
+            'loading indicator',
             'collapse/resize',
             'persistence',
-            'modal support'
+            'modal support',
+            'splitter',
+            'compactHeader'
         ]
     },
     {
@@ -339,7 +399,9 @@ export const DOC_REGISTRY: DocEntry[] = [
             'AppBar',
             'mobile inputs',
             'touch navigation',
-            'swipeable tabs'
+            'swipeable tabs',
+            'DialogPanel',
+            'pull to refresh'
         ]
     },
 
@@ -355,10 +417,14 @@ export const DOC_REGISTRY: DocEntry[] = [
             'fmtNumber',
             'fmtPercent',
             'fmtMillions',
+            'fmtDate',
+            'fmtThousands',
             'numberRenderer',
             'dateRenderer',
             'ledger',
-            'colorSpec'
+            'colorSpec',
+            'column renderer',
+            'currency'
         ]
     },
     {
@@ -375,7 +441,15 @@ export const DOC_REGISTRY: DocEntry[] = [
             'BannerSpec',
             'ThemeModel',
             'RouterModel',
-            'AppOption'
+            'AppOption',
+            'dark mode',
+            'light mode',
+            'theming',
+            'ExceptionDialogModel',
+            'SizingModeModel',
+            'XH.toast',
+            'XH.confirm',
+            'XH.alert'
         ]
     },
     {
@@ -461,10 +535,14 @@ export const DOC_REGISTRY: DocEntry[] = [
             'afterLinked',
             'doLoadAsync',
             'destroy',
+            'cleanup',
             'initAsync',
             'LoadSupport',
             'LoadSpec',
-            'RefreshContextModel'
+            'RefreshContextModel',
+            '@managed',
+            'loadAsync',
+            'refreshAsync'
         ]
     },
     {
@@ -496,7 +574,12 @@ export const DOC_REGISTRY: DocEntry[] = [
             'PersistenceProvider',
             'localStorage',
             'Preference',
-            'ViewManager'
+            'ViewManager',
+            'JsonBlob',
+            'DashContainerModel',
+            'GridModel',
+            'save state',
+            'restore state'
         ]
     },
     {
@@ -545,7 +628,9 @@ export const DOC_REGISTRY: DocEntry[] = [
             'catchDefault',
             'alertType',
             'toast',
-            'requireReload'
+            'requireReload',
+            'error boundary',
+            'exception logging'
         ]
     },
     {
