@@ -8,6 +8,7 @@
 * Added Forms > Picker example sub-tab — demos the new `Picker` component with single/multi-select modes, custom renderers, badge counts, intent variants, and compact toolbar usage.
 * Added Forms > Select example sub-tab — a dedicated 3-column showcase of the `Select` component covering single/multi-select, async queries, creatable entries, grouped options, custom renderers, windowed rendering, and appearance/behavior options.
 * Updated `DashCanvas` example to demo the new `DashCanvasWidgetChooser` component.
+* Added Other > Markdown example tab — demos the `markdown` component with a live editor, GFM support, and a toggleable custom CSS class showcasing opt-in styling for rendered markdown content.
 
 ### Technical
 
