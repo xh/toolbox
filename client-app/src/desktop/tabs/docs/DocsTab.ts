@@ -1,12 +1,13 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {grid} from '@xh/hoist/cmp/grid';
-import {div, filler, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
+import {div, filler, hframe, placeholder, span, vframe} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
-import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, uses, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {textInput} from '@xh/hoist/desktop/cmp/input';
+import {dockContainer} from '@xh/hoist/desktop/cmp/dock';
+import {textArea, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuItem, popover, tooltip} from '@xh/hoist/kit/blueprint';
 import React, {useCallback, useEffect, useRef} from 'react';
@@ -39,7 +40,10 @@ export const docsTab = hoistCmp.factory({
                     onKeyDown: () => m.toggleSearchMode()
                 }
             ],
-            item: hframe(navPanel(), contentPanel())
+            items: [
+                hframe(navPanel(), contentPanel()),
+                dockContainer({model: m.dockContainerModel})
+            ]
         });
     }
 });
@@ -96,7 +100,14 @@ const contentPanel = hoistCmp.factory({
                     }),
                     breadcrumb(),
                     filler(),
-                    examplesMenu()
+                    examplesMenu(),
+                    toolbarSep(),
+                    button({
+                        icon: Icon.comment(),
+                        text: 'Feedback',
+                        minimal: true,
+                        onClick: () => m.openFeedbackPanel(() => feedbackPanel())
+                    })
                 ]
             }),
             item: contentBody(),
@@ -311,6 +322,57 @@ const examplesMenu = hoistCmp.factory({
                     })
                 )
             )
+        });
+    }
+});
+
+//------------------
+// Feedback panel (docked compose)
+//------------------
+const feedbackPanel = hoistCmp.factory({
+    model: uses(DocsPanelModel),
+    render({model}) {
+        const m = model as DocsPanelModel,
+            {activeDoc, activeSection, sections} = m,
+            sectionTitle = activeSection ? sections.find(s => s.id === activeSection)?.title : null;
+
+        return vframe({
+            className: 'tb-docs__feedback',
+            items: [
+                div({
+                    className: 'tb-docs__feedback-context',
+                    items: [
+                        span({item: activeDoc?.title ?? 'No document selected'}),
+                        sectionTitle
+                            ? span({
+                                  className: 'tb-docs__feedback-section',
+                                  item: `\u00A7 ${sectionTitle}`
+                              })
+                            : null
+                    ]
+                }),
+                textArea({
+                    bind: 'feedbackMessage',
+                    placeholder: 'Describe the issue or suggestion...',
+                    flex: 1,
+                    commitOnChange: true
+                }),
+                toolbar(
+                    filler(),
+                    button({
+                        text: 'Cancel',
+                        minimal: true,
+                        onClick: () => m.closeFeedbackPanel()
+                    }),
+                    button({
+                        icon: Icon.mail(),
+                        text: 'Submit',
+                        intent: 'primary',
+                        disabled: !m.feedbackMessage?.trim(),
+                        onClick: () => m.submitFeedbackAsync()
+                    })
+                )
+            ]
         });
     }
 });

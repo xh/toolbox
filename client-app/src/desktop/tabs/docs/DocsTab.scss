@@ -77,12 +77,6 @@
   &__content {
     flex: 1;
     min-width: 0;
-
-    &-desc {
-      color: var(--xh-text-color-muted);
-      font-size: var(--xh-font-size-small-px);
-      font-style: italic;
-    }
   }
 
   // Examples menu button
@@ -134,6 +128,26 @@
       color: var(--xh-text-color-muted);
       margin-top: 4px;
       line-height: 1.4;
+    }
+  }
+
+  // Feedback docked panel
+  &__feedback {
+    padding: 8px;
+    gap: 8px;
+
+    &-context {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-weight: 500;
+      padding: 0 4px;
+    }
+
+    &-section {
+      color: var(--xh-text-color-muted);
+      font-size: var(--xh-font-size-small-px);
+      font-weight: normal;
     }
   }
 

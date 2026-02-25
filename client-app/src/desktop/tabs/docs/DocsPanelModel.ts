@@ -1,5 +1,6 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {Content, HoistModel, managed, XH} from '@xh/hoist/core';
+import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
@@ -34,6 +35,9 @@ export class DocsPanelModel extends HoistModel {
     gridModel: GridModel;
 
     @managed
+    dockContainerModel: DockContainerModel = new DockContainerModel();
+
+    @managed
     navPanelModel: PanelModel = new PanelModel({
         defaultSize: 280,
         minSize: 200,
@@ -64,6 +68,9 @@ export class DocsPanelModel extends HoistModel {
 
     @observable
     activeSection: string = null;
+
+    @bindable
+    feedbackMessage: string = '';
 
     private get docService(): DocService {
         return DocService.instance;
@@ -179,6 +186,62 @@ export class DocsPanelModel extends HoistModel {
     @action
     setActiveSection(sectionId: string) {
         this.activeSection = sectionId;
+    }
+
+    /**
+     * Open the feedback compose panel as a docked view.
+     * @param content - factory for the feedback panel component (passed from the view
+     *     to avoid a circular import between the model and view files).
+     */
+    openFeedbackPanel(content: Content) {
+        const {dockContainerModel} = this;
+        if (dockContainerModel.getView('docFeedback')) {
+            dockContainerModel.expandView('docFeedback');
+            return;
+        }
+        dockContainerModel.addView({
+            id: 'docFeedback',
+            title: 'Report Doc Issue',
+            icon: Icon.comment(),
+            width: 420,
+            height: 300,
+            allowDialog: false,
+            allowClose: true,
+            content,
+            onClose: () => this.closeFeedbackPanel()
+        });
+    }
+
+    /** Close the feedback panel and clear the message. */
+    @action
+    closeFeedbackPanel() {
+        this.feedbackMessage = '';
+        const view = this.dockContainerModel.getView('docFeedback');
+        if (view) this.dockContainerModel.removeView('docFeedback');
+    }
+
+    /** Submit feedback via activity tracking, then close the panel. */
+    async submitFeedbackAsync() {
+        const {activeDoc, activeSection, sections, feedbackMessage} = this;
+        if (!feedbackMessage?.trim()) return;
+
+        const sectionTitle = activeSection
+            ? sections.find(s => s.id === activeSection)?.title
+            : null;
+
+        XH.track({
+            category: 'Docs Feedback',
+            message: feedbackMessage.trim(),
+            data: {
+                docId: activeDoc?.id,
+                docTitle: activeDoc?.title,
+                section: sectionTitle
+            },
+            logData: true
+        });
+
+        this.closeFeedbackPanel();
+        XH.toast({message: 'Feedback submitted — thank you!'});
     }
 
     //------------------
