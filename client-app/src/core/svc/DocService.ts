@@ -52,6 +52,7 @@ export class DocService extends HoistService {
             throw XH.exception(`Unknown doc ID: ${docId}`);
         }
 
+        // Native fetch — these are static assets emitted by webpack, not API calls.
         const response = await fetch(entry.url);
         if (!response.ok) {
             throw XH.exception(`Failed to load doc "${entry.title}": ${response.statusText}`);
