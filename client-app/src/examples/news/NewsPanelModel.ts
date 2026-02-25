@@ -5,7 +5,7 @@ import {withFilterByField, FilterLike} from '@xh/hoist/data';
 import {uniq, map} from 'lodash';
 
 import {newsPanelItem} from './NewsPanelItem';
-import {code, p, vbox} from '@xh/hoist/cmp/layout';
+import {p, vbox} from '@xh/hoist/cmp/layout';
 
 export class NewsPanelModel extends HoistModel {
     SEARCH_FIELDS = ['title', 'text'];
@@ -14,7 +14,7 @@ export class NewsPanelModel extends HoistModel {
     viewModel = new DataViewModel({
         emptyText: vbox([
             p('No news found...'),
-            p(['Have you properly configured the ', code('newsApiKey'), ' config?'])
+            p('Have you properly configured the newsApiKey config?')
         ]),
         sortBy: 'published|desc',
         store: {
