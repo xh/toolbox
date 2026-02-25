@@ -3,7 +3,15 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
-import {DOC_CATEGORIES, DOC_REGISTRY, DocCategory, DocEntry, getDocEntry} from './docRegistry';
+import {
+    DOC_CATEGORIES,
+    DOC_REGISTRY,
+    DocCategory,
+    DocEntry,
+    DocExampleLink,
+    getDocEntry,
+    getDocExamples
+} from './docRegistry';
 import {DocSearchResult, DocService} from '../../../core/svc/DocService';
 
 export interface DocSection {
@@ -107,6 +115,13 @@ export class DocsPanelModel extends HoistModel {
     get sections(): DocSection[] {
         if (!this.content) return [];
         return extractSections(this.content);
+    }
+
+    /** Toolbox example tabs relevant to the active doc. */
+    @computed
+    get activeDocExamples(): DocExampleLink[] {
+        if (!this.activeDoc) return [];
+        return getDocExamples(this.activeDoc.id);
     }
 
     /** Navigate to a specific doc by ID. Updates grid selection, content, and route. */

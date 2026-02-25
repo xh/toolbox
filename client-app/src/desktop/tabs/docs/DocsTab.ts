@@ -2,7 +2,7 @@ import {badge} from '@xh/hoist/cmp/badge';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -96,7 +96,7 @@ const contentPanel = hoistCmp.factory({
                     }),
                     breadcrumb(),
                     filler(),
-                    descBadge()
+                    examplesMenu()
                 ]
             }),
             item: contentBody(),
@@ -285,13 +285,32 @@ const breadcrumb = hoistCmp.factory({
     }
 });
 
-const descBadge = hoistCmp.factory({
+const examplesMenu = hoistCmp.factory({
     render({model}) {
-        const {activeDoc} = model as DocsPanelModel;
-        if (!activeDoc?.description) return null;
-        return div({
-            className: 'tb-docs__content-desc',
-            item: activeDoc.description
+        const m = model as DocsPanelModel,
+            {activeDocExamples} = m;
+
+        if (!activeDocExamples.length) return null;
+
+        const count = activeDocExamples.length;
+        return popover({
+            position: 'bottom-right',
+            minimal: true,
+            item: button({
+                className: 'tb-docs__examples-btn',
+                icon: Icon.code(),
+                text: `${count} Example${count > 1 ? 's' : ''}`,
+                minimal: true
+            }),
+            content: menu(
+                ...activeDocExamples.map(ex =>
+                    menuItem({
+                        text: ex.title,
+                        icon: Icon.openExternal({className: 'xh-text-color-muted'}),
+                        onClick: () => XH.navigate(ex.route)
+                    })
+                )
+            )
         });
     }
 });

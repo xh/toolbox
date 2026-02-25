@@ -85,6 +85,18 @@
     }
   }
 
+  // Examples menu button
+  &__examples-btn {
+    font-weight: 500;
+    border-bottom: 1px dashed var(--xh-border-color);
+    border-radius: 0;
+    padding-bottom: 1px;
+
+    &:hover {
+      border-bottom-color: var(--xh-orange);
+    }
+  }
+
   // Search results
   &__search-results {
     overflow: auto;

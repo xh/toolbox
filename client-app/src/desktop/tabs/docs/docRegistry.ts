@@ -89,6 +89,12 @@ export interface DocCategory {
     title: string;
 }
 
+export interface DocExampleLink {
+    title: string;
+    /** Full Router5 route name, e.g. 'default.grids.standard'. */
+    route: string;
+}
+
 // ---------------------------------------------------------------------------
 // Categories
 // ---------------------------------------------------------------------------
@@ -932,4 +938,87 @@ function normalizePath(path: string): string {
         }
     }
     return result.join('/');
+}
+
+// ---------------------------------------------------------------------------
+// Doc → Toolbox example tab mappings
+// ---------------------------------------------------------------------------
+const R = 'default';
+
+/**
+ * Maps doc IDs to relevant Toolbox example tabs. Only docs with highly relevant,
+ * directly demonstrative examples are included — not every doc needs entries here.
+ */
+const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
+    grid: [
+        {title: 'Standard Grid', route: `${R}.grids.standard`},
+        {title: 'Tree Grid', route: `${R}.grids.tree`},
+        {title: 'Column Filtering', route: `${R}.grids.columnFiltering`},
+        {title: 'Inline Editing', route: `${R}.grids.inlineEditing`},
+        {title: 'Zone Grid', route: `${R}.grids.zoneGrid`},
+        {title: 'DataView', route: `${R}.grids.dataview`},
+        {title: 'REST Editor', route: `${R}.grids.rest`}
+    ],
+    form: [
+        {title: 'FormModel', route: `${R}.forms.form`},
+        {title: 'Hoist Inputs', route: `${R}.forms.inputs`}
+    ],
+    input: [
+        {title: 'Hoist Inputs', route: `${R}.forms.inputs`},
+        {title: 'Select', route: `${R}.forms.select`},
+        {title: 'Picker', route: `${R}.forms.picker`}
+    ],
+    layout: [
+        {title: 'HBox', route: `${R}.layout.hbox`},
+        {title: 'VBox', route: `${R}.layout.vbox`}
+    ],
+    tab: [{title: 'TabContainer', route: `${R}.layout.tabPanel`}],
+    panel: [
+        {title: 'Panel Intro', route: `${R}.panels.intro`},
+        {title: 'Toolbars', route: `${R}.panels.toolbars`},
+        {title: 'Panel Sizing', route: `${R}.panels.sizing`},
+        {title: 'Mask', route: `${R}.panels.mask`},
+        {title: 'Loading Indicator', route: `${R}.panels.loadingIndicator`}
+    ],
+    dash: [
+        {title: 'DashContainer', route: `${R}.layout.dashContainer`},
+        {title: 'DashCanvas', route: `${R}.layout.dashCanvas`}
+    ],
+    desktop: [
+        {title: 'Hoist Inputs', route: `${R}.forms.inputs`},
+        {title: 'Select', route: `${R}.forms.select`},
+        {title: 'LeftRightChooser', route: `${R}.other.leftRightChooser`}
+    ],
+    format: [
+        {title: 'Date Formats', route: `${R}.other.formatDates`},
+        {title: 'Number Formats', route: `${R}.other.formatNumbers`}
+    ],
+    icon: [{title: 'Icons', route: `${R}.other.icons`}],
+    'error-handling': [
+        {title: 'Exception Handling', route: `${R}.other.exceptionHandler`},
+        {title: 'ErrorMessage', route: `${R}.other.errorMessage`}
+    ],
+    routing: [{title: 'Simple Routing', route: `${R}.other.simpleRouting`}],
+    appcontainer: [
+        {title: 'App Notifications', route: `${R}.other.appNotifications`},
+        {title: 'Popups', route: `${R}.other.popups`}
+    ],
+    inspector: [{title: 'Inspector', route: `${R}.other.inspector`}],
+    cmp: [
+        {title: 'Standard Grid', route: `${R}.grids.standard`},
+        {title: 'FormModel', route: `${R}.forms.form`},
+        {title: 'DataView', route: `${R}.grids.dataview`}
+    ],
+    data: [
+        {title: 'Standard Grid', route: `${R}.grids.standard`},
+        {title: 'Tree Grid', route: `${R}.grids.tree`}
+    ],
+    viewmanager: [{title: 'Standard Grid', route: `${R}.grids.standard`}],
+    core: [{title: 'Factories vs. JSX', route: `${R}.other.jsx`}],
+    mobile: [{title: 'Mobile', route: `${R}.mobile`}]
+};
+
+/** Get example links for a given doc, or an empty array if none. */
+export function getDocExamples(docId: string): DocExampleLink[] {
+    return DOC_EXAMPLES[docId] ?? [];
 }
