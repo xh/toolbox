@@ -226,6 +226,7 @@ export class DocsPanelModel extends HoistModel {
         const entry = DOC_REGISTRY.find(d => d.id === record.id);
         if (!entry || entry.id === this.activeDoc?.id) return;
 
+        if (this.searchMode) this.exitSearchMode();
         this.activeDoc = entry;
         this.loadContentAsync(entry);
     }

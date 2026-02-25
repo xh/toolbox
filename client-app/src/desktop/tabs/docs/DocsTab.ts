@@ -115,7 +115,7 @@ const searchResultsBody = hoistCmp.factory({
         }
 
         if (searchResults.length === 0) {
-            return placeholder(Icon.search(), 'No results found.');
+            return placeholder(Icon.skull(), 'No results found.');
         }
 
         return div({
