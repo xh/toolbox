@@ -12,6 +12,7 @@ import {Icon} from '@xh/hoist/icon';
 import {runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
+import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {
@@ -21,6 +22,7 @@ import {
     simpleTreeMapPanel,
     splitTreeMapPanel
 } from './tabs/charts';
+import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
 import {formPanel, inputsPanel, pickerPanel, selectPanel, toolbarFormPanel} from './tabs/forms';
 import {
@@ -85,7 +87,7 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync() {
         await super.initAsync();
-        await XH.installServicesAsync(GitHubService, PortfolioService);
+        await XH.installServicesAsync(DocService, GitHubService, PortfolioService);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
         this.addReaction({
@@ -242,6 +244,11 @@ export class AppModel extends BaseAppModel {
                             },
                             {name: 'timestamp', path: '/timestamp'}
                         ]
+                    },
+                    {
+                        name: 'docs',
+                        path: '/docs',
+                        children: [{name: 'docId', path: '/:docId'}]
                     },
                     {
                         name: 'examples',
@@ -419,6 +426,7 @@ export class AppModel extends BaseAppModel {
                     ]
                 }
             },
+            {id: 'docs', icon: Icon.book(), content: docsTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab}
         ];
         return new TabContainerModel({
