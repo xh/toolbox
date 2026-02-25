@@ -9,6 +9,10 @@
 * Added Forms > Select example sub-tab — a dedicated 3-column showcase of the `Select` component covering single/multi-select, async queries, creatable entries, grouped options, custom renderers, windowed rendering, and appearance/behavior options.
 * Updated `DashCanvas` example to demo the new `DashCanvasWidgetChooser` component.
 
+### Technical
+
+* Converted `.tsx` example/demo files to `.ts`, replacing JSX with hoist element factory functions. Aligns all examples with the project's established "no JSX" convention.
+
 ## 8.1.0 - 2026-02-12
 
 ### New Features
