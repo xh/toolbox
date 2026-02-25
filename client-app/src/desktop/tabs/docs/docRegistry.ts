@@ -157,6 +157,8 @@ export const DOC_REGISTRY: DocEntry[] = [
             'StoreRecord',
             'Field',
             'Filter',
+            'FilterChooserModel',
+            'FilterFieldSpec',
             'Cube',
             'View',
             'tree data',

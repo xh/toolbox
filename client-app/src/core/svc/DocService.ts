@@ -136,8 +136,8 @@ export class DocService extends HoistService {
     /** Strip markdown syntax to produce plain text for indexing. */
     private stripMarkdown(md: string): string {
         return md
-            .replace(/```[\s\S]*?```/g, '') // fenced code blocks
-            .replace(/`[^`]*`/g, '') // inline code
+            .replace(/```\w*\n([\s\S]*?)```/g, '$1') // fenced code blocks — keep content, strip delimiters
+            .replace(/`([^`]*)`/g, '$1') // inline code — keep content, strip backticks
             .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1') // links/images
             .replace(/#{1,6}\s+/g, '') // headings
             .replace(/[*_~]{1,3}/g, '') // bold/italic/strikethrough
