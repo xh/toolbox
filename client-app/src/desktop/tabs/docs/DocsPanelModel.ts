@@ -57,6 +57,9 @@ export class DocsPanelModel extends HoistModel {
     @observable.ref
     searchResults: DocSearchResult[] = [];
 
+    @observable
+    selectedSearchIdx: number = -1;
+
     @observable.ref
     activeDoc: DocEntry = null;
 
@@ -87,6 +90,10 @@ export class DocsPanelModel extends HoistModel {
                 track: () => this.searchQuery,
                 run: query => this.runSearch(query),
                 debounce: 200
+            },
+            {
+                track: () => this.searchResults,
+                run: () => (this.selectedSearchIdx = -1)
             },
             {
                 track: () => this.gridModel.selectedRecord,
@@ -165,6 +172,7 @@ export class DocsPanelModel extends HoistModel {
         this.searchMode = true;
         this.searchQuery = '';
         this.searchResults = [];
+        this.selectedSearchIdx = -1;
     }
 
     /** Exit search mode — returns to normal doc viewing. */
@@ -173,6 +181,7 @@ export class DocsPanelModel extends HoistModel {
         this.searchMode = false;
         this.searchQuery = '';
         this.searchResults = [];
+        this.selectedSearchIdx = -1;
     }
 
     /** Select a search result — navigate to the doc and exit search. */
@@ -180,6 +189,42 @@ export class DocsPanelModel extends HoistModel {
     selectSearchResult(docId: string) {
         this.navigateToDoc(docId);
         this.exitSearchMode();
+    }
+
+    /** Move the keyboard selection within search results by the given delta (+1 / -1). */
+    @action
+    moveSearchSelection(delta: number) {
+        const len = this.searchResults.length;
+        if (!len) return;
+        this.selectedSearchIdx = Math.max(0, Math.min(len - 1, this.selectedSearchIdx + delta));
+    }
+
+    /** Confirm the currently selected search result, if any. */
+    confirmSearchSelection() {
+        const result = this.searchResults[this.selectedSearchIdx];
+        if (result) this.selectSearchResult(result.entry.id);
+    }
+
+    /** Handle keyboard navigation within search results. */
+    onSearchKeyDown(e: KeyboardEvent) {
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                this.moveSearchSelection(1);
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                this.moveSearchSelection(-1);
+                break;
+            case 'Enter':
+                e.preventDefault();
+                this.confirmSearchSelection();
+                break;
+            case 'Escape':
+                e.preventDefault();
+                this.exitSearchMode();
+                break;
+        }
     }
 
     /** Update the active section — called from scroll-based observation in the view. */

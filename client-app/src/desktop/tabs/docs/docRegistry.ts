@@ -742,7 +742,7 @@ export const DOC_REGISTRY: DocEntry[] = [
     {
         id: 'kit',
         title: 'Kit',
-        category: 'supporting',
+        category: 'components',
         description: 'Centralized wrappers for third-party libraries used by Hoist',
         url: kitUrl,
         sourcePath: 'kit/README.md',

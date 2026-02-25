@@ -120,23 +120,33 @@ const contentPanel = hoistCmp.factory<DocsPanelModel>({
 //------------------
 const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
-        const {searchResults, searchQuery} = model,
-            hasQuery = !!searchQuery?.trim();
+        const {searchResults, searchQuery, selectedSearchIdx} = model,
+            hasQuery = !!searchQuery?.trim(),
+            selectedRef = useRef<HTMLDivElement>(null);
+
+        useEffect(() => {
+            selectedRef.current?.scrollIntoView({block: 'nearest'});
+        }, [selectedSearchIdx]);
 
         if (!hasQuery) {
             return placeholder(Icon.search(), 'Type to search across all documentation content.');
         }
 
         if (searchResults.length === 0) {
-            return placeholder(Icon.skull(), 'No results found.');
+            return searchQuery.trim().length < 3
+                ? placeholder(Icon.search(), 'Keep typing to search...')
+                : placeholder(Icon.skull(), 'No results found.');
         }
 
         return div({
             className: 'tb-docs__search-results',
-            items: searchResults.map(r =>
+            items: searchResults.map((r, idx) =>
                 div({
                     key: r.entry.id,
-                    className: 'tb-docs__search-result',
+                    ref: idx === selectedSearchIdx ? selectedRef : undefined,
+                    className:
+                        'tb-docs__search-result' +
+                        (idx === selectedSearchIdx ? ' tb-docs__search-result--selected' : ''),
                     onClick: () => model.selectSearchResult(r.entry.id),
                     items: [
                         div({
@@ -189,7 +199,8 @@ const searchPanel = hoistCmp.factory<DocsPanelModel>({
                         commitOnChange: true,
                         enableClear: true,
                         flex: 1,
-                        autoFocus: true
+                        autoFocus: true,
+                        onKeyDown: e => model.onSearchKeyDown(e)
                     })
                 ]
             }),

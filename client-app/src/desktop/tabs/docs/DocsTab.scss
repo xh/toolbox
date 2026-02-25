@@ -108,6 +108,11 @@
       background-color: var(--xh-bg-highlight);
     }
 
+    &--selected {
+      border-left: 3px solid var(--xh-orange);
+      padding-left: 13px;
+    }
+
     &:last-child {
       border-bottom: none;
     }
