@@ -8,6 +8,7 @@ export * from './IconsPanel';
 export * from './InspectorPanel';
 export * from './JsxPanel';
 export * from './LeftRightChooserPanel';
+export * from './MarkdownPanel';
 export * from './PinPadPanel';
 export * from './PlaceholderPanel';
 export * from './PopupsPanel';

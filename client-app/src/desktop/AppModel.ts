@@ -12,6 +12,7 @@ import {Icon} from '@xh/hoist/icon';
 import {runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
+import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {
@@ -21,6 +22,7 @@ import {
     simpleTreeMapPanel,
     splitTreeMapPanel
 } from './tabs/charts';
+import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
 import {formPanel, inputsPanel, pickerPanel, selectPanel, toolbarFormPanel} from './tabs/forms';
 import {
@@ -61,6 +63,7 @@ import {
     inspectorPanel,
     jsxPanel,
     leftRightChooserPanel,
+    markdownPanel,
     numberFormatsPanel,
     pinPadPanel,
     placeholderPanel,
@@ -85,7 +88,7 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync() {
         await super.initAsync();
-        await XH.installServicesAsync(GitHubService, PortfolioService);
+        await XH.installServicesAsync(DocService, GitHubService, PortfolioService);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
         this.addReaction({
@@ -232,6 +235,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'inspector', path: '/inspector'},
                             {name: 'jsx', path: '/jsx'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
+                            {name: 'markdown', path: '/markdown'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'placeholder', path: '/placeholder'},
                             {name: 'popups', path: '/popups'},
@@ -242,6 +246,11 @@ export class AppModel extends BaseAppModel {
                             },
                             {name: 'timestamp', path: '/timestamp'}
                         ]
+                    },
+                    {
+                        name: 'docs',
+                        path: '/docs',
+                        children: [{name: 'docId', path: '/:docId'}]
                     },
                     {
                         name: 'examples',
@@ -411,14 +420,16 @@ export class AppModel extends BaseAppModel {
                             title: 'LeftRightChooser',
                             content: leftRightChooserPanel
                         },
+                        {id: 'markdown', content: markdownPanel},
                         {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                         {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                         {id: 'popups', content: popupsPanel},
-                        {id: 'timestamp', content: relativeTimestampPanel},
-                        {id: 'simpleRouting', content: simpleRoutingPanel}
+                        {id: 'simpleRouting', content: simpleRoutingPanel},
+                        {id: 'timestamp', content: relativeTimestampPanel}
                     ]
                 }
             },
+            {id: 'docs', icon: Icon.book(), content: docsTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab}
         ];
         return new TabContainerModel({
