@@ -1,4 +1,5 @@
 import {grid} from '@xh/hoist/cmp/grid';
+import {badge} from '@xh/hoist/cmp/badge';
 import {div, filler, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp} from '@xh/hoist/core';
@@ -132,8 +133,7 @@ const searchResultsBody = hoistCmp.factory({
                                     className: 'tbox-docs__search-result-title',
                                     item: r.entry.title
                                 }),
-                                span({
-                                    className: 'tbox-docs__search-result-category',
+                                badge({
                                     item:
                                         DOC_CATEGORIES.find(c => c.id === r.entry.category)
                                             ?.title ?? r.entry.category
