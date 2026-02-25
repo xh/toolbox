@@ -131,26 +131,6 @@
     }
   }
 
-  // Feedback docked panel
-  &__feedback {
-    padding: 8px;
-    gap: 8px;
-
-    &-context {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      font-weight: 500;
-      padding: 0 4px;
-    }
-
-    &-section {
-      color: var(--xh-text-color-muted);
-      font-size: var(--xh-font-size-small-px);
-      font-weight: normal;
-    }
-  }
-
   // Markdown content styling
   &__content-body {
     overflow: auto;

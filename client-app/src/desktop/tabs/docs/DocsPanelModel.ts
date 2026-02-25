@@ -1,5 +1,5 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {Content, HoistModel, managed, XH} from '@xh/hoist/core';
+import {Content, HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -63,8 +63,8 @@ export class DocsPanelModel extends HoistModel {
     @observable.ref
     content: string = null;
 
-    @observable
-    isLoadingContent: boolean = false;
+    @managed
+    loadContentTask: TaskObserver = TaskObserver.trackLast();
 
     @observable
     activeSection: string = null;
@@ -204,7 +204,6 @@ export class DocsPanelModel extends HoistModel {
             title: 'Report Doc Issue',
             icon: Icon.comment(),
             width: 420,
-            height: 300,
             allowDialog: false,
             allowClose: true,
             content,
@@ -239,9 +238,10 @@ export class DocsPanelModel extends HoistModel {
             },
             logData: true
         });
+        await XH.trackService.pushPendingAsync();
 
         this.closeFeedbackPanel();
-        XH.toast({message: 'Feedback submitted — thank you!'});
+        XH.successToast('Feedback submitted — thank you!');
     }
 
     //------------------
@@ -352,20 +352,17 @@ export class DocsPanelModel extends HoistModel {
     }
 
     private async loadContentAsync(entry: DocEntry) {
-        runInAction(() => {
-            this.isLoadingContent = true;
-            this.content = null;
-        });
+        runInAction(() => (this.content = null));
         try {
-            const content = await this.docService.fetchContentAsync(entry.id);
+            const content = await this.docService
+                .fetchContentAsync(entry.id)
+                .linkTo(this.loadContentTask);
             runInAction(() => (this.content = content));
         } catch (e) {
             runInAction(() => {
                 this.content = `## Error Loading Document\n\nFailed to load **${entry.title}**.\n\n\`${e.message}\``;
             });
             XH.handleException(e, {showAlert: false});
-        } finally {
-            runInAction(() => (this.isLoadingContent = false));
         }
     }
 
@@ -400,6 +397,14 @@ export class DocsPanelModel extends HoistModel {
 //------------------
 // Section parsing
 //------------------
+/**
+ * Parse H2 headings from raw markdown content into navigable sections.
+ *
+ * Each H2 (`## Title`) becomes a section entry with a display title (inline markdown
+ * stripped) and a URL-safe slug ID. Duplicate slugs are disambiguated with a numeric
+ * suffix (e.g. `overview`, `overview-1`). The resulting IDs are assigned to the
+ * corresponding DOM H2 elements in the view for scroll-based tracking and navigation.
+ */
 function extractSections(content: string): DocSection[] {
     const regex = /^## (.+)$/gm;
     const sections: DocSection[] = [],
@@ -416,6 +421,7 @@ function extractSections(content: string): DocSection[] {
     return sections;
 }
 
+/** Remove inline markdown formatting (code, bold, italic, links) to get plain text. */
 function stripInlineMarkdown(text: string): string {
     return text
         .replace(/`([^`]*)`/g, '$1')
@@ -425,6 +431,7 @@ function stripInlineMarkdown(text: string): string {
         .trim();
 }
 
+/** Convert text to a URL-safe slug: lowercase, strip special chars, hyphenate spaces. */
 function slugify(text: string): string {
     return text
         .toLowerCase()

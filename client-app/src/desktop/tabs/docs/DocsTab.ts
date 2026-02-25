@@ -1,6 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {grid} from '@xh/hoist/cmp/grid';
-import {div, filler, hframe, placeholder, span, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, hframe, hspacer, placeholder, span} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp, uses, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -10,6 +10,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuItem, popover, tooltip} from '@xh/hoist/kit/blueprint';
+import {pluralize} from '@xh/hoist/utils/js';
 import React, {useCallback, useEffect, useRef} from 'react';
 import {DOC_CATEGORIES, resolveDocLink} from './docRegistry';
 import {DocsPanelModel} from './DocsPanelModel';
@@ -22,13 +23,12 @@ import './DocsTab.scss';
  * and a main content area that displays the selected document as rendered Markdown,
  * or a full-text search results view when search mode is active.
  */
-export const docsTab = hoistCmp.factory({
+export const docsTab = hoistCmp.factory<DocsPanelModel>({
     displayName: 'DocsTab',
     model: creates(DocsPanelModel),
     className: 'tb-docs',
 
     render({model, className}) {
-        const m = model as DocsPanelModel;
         return panel({
             className,
             hotkeys: [
@@ -37,12 +37,12 @@ export const docsTab = hoistCmp.factory({
                     combo: 'shift + s',
                     global: true,
                     preventDefault: true,
-                    onKeyDown: () => m.toggleSearchMode()
+                    onKeyDown: () => model.toggleSearchMode()
                 }
             ],
             items: [
                 hframe(navPanel(), contentPanel()),
-                dockContainer({model: m.dockContainerModel})
+                dockContainer({model: model.dockContainerModel})
             ]
         });
     }
@@ -51,9 +51,9 @@ export const docsTab = hoistCmp.factory({
 //------------------
 // Nav sidebar
 //------------------
-const navPanel = hoistCmp.factory({
+const navPanel = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
-        const {gridModel, navPanelModel} = model as DocsPanelModel;
+        const {gridModel, navPanelModel} = model;
         return panel({
             model: navPanelModel,
             collapsedIcon: Icon.book(),
@@ -68,10 +68,9 @@ const navPanel = hoistCmp.factory({
 //------------------
 // Content viewer
 //------------------
-const contentPanel = hoistCmp.factory({
+const contentPanel = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
-        const m = model as DocsPanelModel,
-            {activeDoc, isLoadingContent, searchMode} = m;
+        const {activeDoc, loadContentTask, searchMode} = model;
 
         if (searchMode) return searchPanel();
 
@@ -95,7 +94,7 @@ const contentPanel = hoistCmp.factory({
                         item: button({
                             icon: Icon.search(),
                             minimal: true,
-                            onClick: () => m.enterSearchMode()
+                            onClick: () => model.enterSearchMode()
                         })
                     }),
                     breadcrumb(),
@@ -106,12 +105,12 @@ const contentPanel = hoistCmp.factory({
                         icon: Icon.comment(),
                         text: 'Feedback',
                         minimal: true,
-                        onClick: () => m.openFeedbackPanel(() => feedbackPanel())
+                        onClick: () => model.openFeedbackPanel(() => feedbackPanel())
                     })
                 ]
             }),
             item: contentBody(),
-            mask: isLoadingContent
+            mask: loadContentTask
         });
     }
 });
@@ -119,10 +118,9 @@ const contentPanel = hoistCmp.factory({
 //------------------
 // Search panel
 //------------------
-const searchResultsBody = hoistCmp.factory({
+const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
-        const m = model as DocsPanelModel,
-            {searchResults, searchQuery} = m,
+        const {searchResults, searchQuery} = model,
             hasQuery = !!searchQuery?.trim();
 
         if (!hasQuery) {
@@ -139,7 +137,7 @@ const searchResultsBody = hoistCmp.factory({
                 div({
                     key: r.entry.id,
                     className: 'tb-docs__search-result',
-                    onClick: () => m.selectSearchResult(r.entry.id),
+                    onClick: () => model.selectSearchResult(r.entry.id),
                     items: [
                         div({
                             className: 'tb-docs__search-result-header',
@@ -166,10 +164,8 @@ const searchResultsBody = hoistCmp.factory({
     }
 });
 
-const searchPanel = hoistCmp.factory({
+const searchPanel = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
-        const m = model as DocsPanelModel;
-
         return panel({
             className: 'tb-docs__content',
             tbar: toolbar({
@@ -183,7 +179,7 @@ const searchPanel = hoistCmp.factory({
                         item: button({
                             icon: Icon.arrowLeft(),
                             minimal: true,
-                            onClick: () => m.exitSearchMode()
+                            onClick: () => model.exitSearchMode()
                         })
                     }),
                     textInput({
@@ -205,10 +201,9 @@ const searchPanel = hoistCmp.factory({
 //------------------
 // Breadcrumb toolbar
 //------------------
-const breadcrumb = hoistCmp.factory({
+const breadcrumb = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
-        const m = model as DocsPanelModel,
-            {activeCategory, activeDoc, sections, activeSection} = m;
+        const {activeCategory, activeDoc, sections, activeSection} = model;
 
         if (!activeCategory || !activeDoc) return null;
 
@@ -224,7 +219,7 @@ const breadcrumb = hoistCmp.factory({
                     minimal: true,
                     item: button({
                         className: 'tb-docs__breadcrumb-btn',
-                        icon: m.getCategoryIcon(activeCategory.id),
+                        icon: model.getCategoryIcon(activeCategory.id),
                         text: activeCategory.title,
                         minimal: true
                     }),
@@ -232,9 +227,9 @@ const breadcrumb = hoistCmp.factory({
                         ...DOC_CATEGORIES.map(cat =>
                             menuItem({
                                 text: cat.title,
-                                icon: m.getCategoryIcon(cat.id),
+                                icon: model.getCategoryIcon(cat.id),
                                 active: cat.id === activeCategory.id,
-                                onClick: () => m.navigateToCategory(cat.id)
+                                onClick: () => model.navigateToCategory(cat.id)
                             })
                         )
                     )
@@ -249,11 +244,11 @@ const breadcrumb = hoistCmp.factory({
                         minimal: true
                     }),
                     content: menu(
-                        ...m.activeCategorySiblings.map(doc =>
+                        ...model.activeCategorySiblings.map(doc =>
                             menuItem({
                                 text: doc.title,
                                 active: doc.id === activeDoc.id,
-                                onClick: () => m.navigateToDoc(doc.id)
+                                onClick: () => model.navigateToDoc(doc.id)
                             })
                         )
                     )
@@ -283,7 +278,7 @@ const breadcrumb = hoistCmp.factory({
                                                   behavior: 'smooth',
                                                   block: 'start'
                                               });
-                                              m.setActiveSection(sec.id);
+                                              model.setActiveSection(sec.id);
                                           }
                                       }
                                   })
@@ -296,28 +291,40 @@ const breadcrumb = hoistCmp.factory({
     }
 });
 
-const examplesMenu = hoistCmp.factory({
+const examplesMenu = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
-        const m = model as DocsPanelModel,
-            {activeDocExamples} = m;
+        const {activeDocExamples} = model;
 
         if (!activeDocExamples.length) return null;
 
         const count = activeDocExamples.length;
+
+        if (count === 1) {
+            const ex = activeDocExamples[0];
+            return button({
+                className: 'tb-docs__examples-btn',
+                icon: Icon.code(),
+                text: ex.title,
+                minimal: true,
+                onClick: () => XH.navigate(ex.route)
+            });
+        }
+
         return popover({
             position: 'bottom-right',
             minimal: true,
             item: button({
                 className: 'tb-docs__examples-btn',
                 icon: Icon.code(),
-                text: `${count} Example${count > 1 ? 's' : ''}`,
-                minimal: true
+                text: pluralize('Example', count, true),
+                minimal: true,
+                rightIcon: Icon.chevronDown()
             }),
             content: menu(
                 ...activeDocExamples.map(ex =>
                     menuItem({
                         text: ex.title,
-                        icon: Icon.openExternal({className: 'xh-text-color-muted'}),
+                        icon: Icon.openExternal(),
                         onClick: () => XH.navigate(ex.route)
                     })
                 )
@@ -329,50 +336,53 @@ const examplesMenu = hoistCmp.factory({
 //------------------
 // Feedback panel (docked compose)
 //------------------
-const feedbackPanel = hoistCmp.factory({
+const feedbackPanel = hoistCmp.factory<DocsPanelModel>({
     model: uses(DocsPanelModel),
     render({model}) {
-        const m = model as DocsPanelModel,
-            {activeDoc, activeSection, sections} = m,
+        const {activeDoc, activeSection, sections} = model,
             sectionTitle = activeSection ? sections.find(s => s.id === activeSection)?.title : null;
 
-        return vframe({
+        return panel({
             className: 'tb-docs__feedback',
-            items: [
-                div({
-                    className: 'tb-docs__feedback-context',
-                    items: [
-                        span({item: activeDoc?.title ?? 'No document selected'}),
-                        sectionTitle
-                            ? span({
-                                  className: 'tb-docs__feedback-section',
-                                  item: `\u00A7 ${sectionTitle}`
-                              })
-                            : null
-                    ]
-                }),
-                textArea({
-                    bind: 'feedbackMessage',
-                    placeholder: 'Describe the issue or suggestion...',
-                    flex: 1,
-                    commitOnChange: true
-                }),
-                toolbar(
-                    filler(),
-                    button({
-                        text: 'Cancel',
-                        minimal: true,
-                        onClick: () => m.closeFeedbackPanel()
-                    }),
-                    button({
-                        icon: Icon.mail(),
-                        text: 'Submit',
-                        intent: 'primary',
-                        disabled: !m.feedbackMessage?.trim(),
-                        onClick: () => m.submitFeedbackAsync()
+            tbar: toolbar({
+                compact: true,
+                items: [
+                    span({item: activeDoc?.title ?? 'No document selected'}),
+                    span({
+                        items: [
+                            Icon.chevronRight({className: 'xh-text-color-muted'}),
+                            ` ${sectionTitle}`
+                        ],
+                        omit: !sectionTitle
                     })
-                )
-            ]
+                ]
+            }),
+            contentBoxProps: {padding: true},
+            item: textArea({
+                bind: 'feedbackMessage',
+                placeholder: 'Describe the issue or suggestion...',
+                width: '100%',
+                height: 250,
+                commitOnChange: true,
+                autoFocus: true
+            }),
+            bbar: toolbar(
+                filler(),
+                button({
+                    text: 'Cancel',
+                    minimal: true,
+                    onClick: () => model.closeFeedbackPanel()
+                }),
+                hspacer(5),
+                button({
+                    icon: Icon.mail(),
+                    text: 'Send to XH',
+                    intent: 'primary',
+                    outlined: true,
+                    disabled: !model.feedbackMessage?.trim(),
+                    onClick: () => model.submitFeedbackAsync()
+                })
+            )
         });
     }
 });
@@ -380,9 +390,8 @@ const feedbackPanel = hoistCmp.factory({
 //------------------
 // Content body
 //------------------
-const contentBody = hoistCmp.factory(({model}) => {
-    const m = model as DocsPanelModel,
-        {content, activeDoc} = m,
+const contentBody = hoistCmp.factory<DocsPanelModel>(({model}) => {
+    const {content, activeDoc} = model,
         scrollRef = useRef<HTMLDivElement>(null);
 
     // Scroll to top when the active doc changes
@@ -397,7 +406,7 @@ const contentBody = hoistCmp.factory(({model}) => {
 
         // Assign IDs to H2s from the model's parsed sections, ensuring 1:1 correspondence.
         const headings = container.querySelectorAll('h2'),
-            secs = m.sections;
+            secs = model.sections;
         headings.forEach((h2, i) => {
             if (i < secs.length) h2.id = secs[i].id;
         });
@@ -416,7 +425,7 @@ const contentBody = hoistCmp.factory(({model}) => {
                         activeId = h2.id;
                     }
                 });
-                if (activeId !== m.activeSection) m.setActiveSection(activeId);
+                if (activeId !== model.activeSection) model.setActiveSection(activeId);
                 ticking = false;
             });
         };
@@ -429,13 +438,13 @@ const contentBody = hoistCmp.factory(({model}) => {
                 const target = document.getElementById(hash);
                 if (target) {
                     target.scrollIntoView({block: 'start'});
-                    m.setActiveSection(hash);
+                    model.setActiveSection(hash);
                 }
             });
         }
 
         return () => container.removeEventListener('scroll', onScroll);
-    }, [m, content]);
+    }, [model, content]);
 
     // Handle clicks on links within the rendered markdown.
     const handleLinkClick = useCallback(
@@ -453,7 +462,7 @@ const contentBody = hoistCmp.factory(({model}) => {
                     el = document.getElementById(sectionId);
                 if (el) {
                     el.scrollIntoView({behavior: 'smooth', block: 'start'});
-                    m.setActiveSection(sectionId);
+                    model.setActiveSection(sectionId);
                 }
                 return;
             }
@@ -462,7 +471,7 @@ const contentBody = hoistCmp.factory(({model}) => {
             if (activeDoc && !href.startsWith('http')) {
                 e.preventDefault();
                 const target = resolveDocLink(activeDoc.sourcePath, href);
-                if (target) m.navigateToDoc(target.id);
+                if (target) model.navigateToDoc(target.id);
                 // Unresolved relative links (e.g. .ts source files) are silently
                 // consumed to prevent the browser from navigating away from the SPA.
                 return;
@@ -474,7 +483,7 @@ const contentBody = hoistCmp.factory(({model}) => {
                 window.open(href, '_blank', 'noopener');
             }
         },
-        [m, activeDoc]
+        [model, activeDoc]
     );
 
     if (!content) return null;
