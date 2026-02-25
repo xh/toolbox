@@ -1,6 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {grid} from '@xh/hoist/cmp/grid';
-import {div, filler, hframe, hspacer, placeholder, span} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, hframe, hspacer, placeholder, span} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp, uses, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -514,10 +514,11 @@ const contentBody = hoistCmp.factory<DocsPanelModel>(({model}) => {
 // Helpers
 //------------------
 function searchTooltip(label: string = 'Search documentation') {
-    return span({
-        style: {whiteSpace: 'nowrap'},
+    return hbox({
+        alignItems: 'center',
         items: [
-            label + ' ',
+            label,
+            hspacer(),
             span({
                 className: 'bp6-key-combo',
                 style: {display: 'inline-flex'},
