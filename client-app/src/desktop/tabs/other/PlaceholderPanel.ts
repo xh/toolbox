@@ -1,5 +1,5 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {filler, frame, hframe, p, placeholder} from '@xh/hoist/cmp/layout';
+import {box, filler, frame, p, placeholder} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -34,12 +34,9 @@ export const placeholderPanel = hoistCmp.factory({
                 width: 700,
                 height: '50%',
                 mask: 'onLoad',
-                item: hframe(
-                    panel({
-                        maxWidth: 300,
-                        minWidth: 300,
-                        item: grid()
-                    }),
+                contentBoxProps: {flexDirection: 'row'},
+                items: [
+                    box({width: 300, flex: 'none', item: grid(), className: 'xh-border-right'}),
                     selectedRecord
                         ? detailPanel()
                         : placeholder({
@@ -49,7 +46,7 @@ export const placeholderPanel = hoistCmp.factory({
                                   p('(This is a placeholder)')
                               ]
                           })
-                )
+                ]
             })
         });
     }

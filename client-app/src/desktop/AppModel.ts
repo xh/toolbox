@@ -424,8 +424,8 @@ export class AppModel extends BaseAppModel {
                         {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                         {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                         {id: 'popups', content: popupsPanel},
-                        {id: 'timestamp', content: relativeTimestampPanel},
-                        {id: 'simpleRouting', content: simpleRoutingPanel}
+                        {id: 'simpleRouting', content: simpleRoutingPanel},
+                        {id: 'timestamp', content: relativeTimestampPanel}
                     ]
                 }
             },

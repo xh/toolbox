@@ -1,8 +1,9 @@
-import {box, div, li, p, span, table, tbody, td, th, tr, ul} from '@xh/hoist/cmp/layout';
+import {div, li, p, span, table, tbody, td, th, tr, ul} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {lengthIs, required} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {useRef} from 'react';
 import {wrapper} from '../../common';
@@ -27,9 +28,12 @@ export const popupsPanel = hoistCmp.factory(() => {
             ),
             p('For non-modal notifications, consider using XH.toast() or XH.showBanner().')
         ),
-        item: box({
+        item: panel({
+            title: 'Other › Popups',
+            icon: Icon.comment(),
             className: 'tbox-popups',
             ref: divRef,
+            flex: 'none',
             item: table(
                 tbody(
                     row(

@@ -1,5 +1,5 @@
 import {form} from '@xh/hoist/cmp/form';
-import {a, code, div, hbox, hframe, input, p} from '@xh/hoist/cmp/layout';
+import {a, code, div, hbox, input, p} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistProps} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -39,18 +39,16 @@ export const numberFormatsPanel = hoistCmp.factory({
                 title: 'Other › Format Numbers',
                 icon: Icon.print(),
                 className: 'tbox-formats-tab',
-                item: hframe({
-                    style: {padding: '10px', gap: '10px'},
-                    items: [
-                        paramsPanel(),
-                        resultsPanel({
-                            tryItInput: numberInput({
-                                selectOnFocus: true,
-                                placeholder: 'Enter a value to test'
-                            })
+                contentBoxProps: {flexDirection: 'row', padding: true, gap: true},
+                items: [
+                    paramsPanel(),
+                    resultsPanel({
+                        tryItInput: numberInput({
+                            selectOnFocus: true,
+                            placeholder: 'Enter a value to test'
                         })
-                    ]
-                })
+                    })
+                ]
             })
         });
     }
