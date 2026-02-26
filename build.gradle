@@ -27,7 +27,7 @@ group = xhAppPackage
 repositories {
     mavenCentral()
     maven {url = 'https://repo.grails.org/grails/restricted'}
-    maven {url = 'https://repo.xh.io/content/groups/public/'}
+    maven {url = 'https://central.sonatype.com/repository/maven-snapshots'}
 }
 
 configurations {
