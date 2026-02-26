@@ -1,14 +1,18 @@
 package io.xh.toolbox.portfolio
 
 import com.hazelcast.replicatedmap.ReplicatedMap
+import io.micrometer.core.instrument.Gauge
+import io.micrometer.core.instrument.Timer
 import io.xh.hoist.BaseService
 import io.xh.hoist.cachedvalue.CachedValue
 import io.xh.hoist.exception.DataNotAvailableException
+import io.xh.hoist.telemetry.MetricsService
 
 import java.time.*
 
 import static io.xh.toolbox.portfolio.Utils.*
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
+
 
 class PortfolioService extends BaseService {
 
@@ -17,10 +21,14 @@ class PortfolioService extends BaseService {
         historicalPriceGenerationService,
         instrumentGenerationService
 
+    MetricsService metricsService
+
     private CachedValue<Portfolio> _portfolio = createCachedValue(name: 'portfolio', replicate: true)
     private ReplicatedMap<String, MarketPrice> _currentPrices = createReplicatedMap('currentPrices')
+    private Timer generationTimer
 
     void init() {
+        initMetrics()
         createTimer(
             name: 'updateData',
             runFn: this.&updateData,
@@ -51,9 +59,22 @@ class PortfolioService extends BaseService {
             .collectEntries { k, v -> [k, v.collect { [it.day, it.close] }] }
     }
 
-    //----------------
+    //------------------------
     // Implementation
-    //-----------------
+    //------------------------
+    private void initMetrics() {
+        def registry = metricsService.registry
+
+        Gauge.builder('portfolio.positions', this) {
+            (_portfolio.get()?.rawPositions?.size() ?: 0) as double
+        }.description('Number of portfolio positions')
+            .register(registry)
+
+        generationTimer = Timer.builder('portfolio.generationTime')
+            .description('Time to generate portfolio')
+            .register(registry)
+    }
+
     private void updateData(boolean force = false) {
         // 1) Populate/update main data, if needed, to initialize or roll day
         def portfolio = _portfolio.get(),
@@ -88,19 +109,21 @@ class PortfolioService extends BaseService {
     }
 
     private Portfolio generatePortfolio() {
-        def day = LocalDate.now(),
-            instruments = instrumentGenerationService.generateInstruments(),
-            historicalPrices = historicalPriceGenerationService.generateHistoricalPrices(instruments, day),
-            orders = orderGenerationService.generateOrders(instruments, historicalPrices),
-            rawPositions = calculateRawPositions(instruments, orders)
+        return generationTimer.recordCallable {
+            def day = LocalDate.now(),
+                instruments = instrumentGenerationService.generateInstruments(),
+                historicalPrices = historicalPriceGenerationService.generateHistoricalPrices(instruments, day),
+                orders = orderGenerationService.generateOrders(instruments, historicalPrices),
+                rawPositions = calculateRawPositions(instruments, orders)
 
-        return new Portfolio(
-            day: day,
-            instruments: instruments,
-            historicalPrices: historicalPrices,
-            orders: orders,
-            rawPositions: rawPositions
-        )
+            new Portfolio(
+                day: day,
+                instruments: instruments,
+                historicalPrices: historicalPrices,
+                orders: orders,
+                rawPositions: rawPositions
+            )
+        }
     }
 
     private List<RawPosition> calculateRawPositions(Map<String, Instrument> instruments, List<Order> orders) {
