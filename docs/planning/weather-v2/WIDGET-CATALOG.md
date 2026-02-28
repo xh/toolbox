@@ -24,6 +24,7 @@
 - `selectedCity` (string) — The currently selected city name.
 
 **Config:**
+
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `selectedCity` | string | `"New York"` | Initially selected city |
@@ -60,6 +61,7 @@
 - `units` (string) — `"imperial"` or `"metric"`.
 
 **Config:**
+
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `units` | enum | `"imperial"` | Initial unit system. Values: `imperial`, `metric` |
@@ -87,12 +89,14 @@
 **Purpose:** Current weather snapshot — temperature gauge, conditions icon, description, and key details (feels-like, humidity, wind).
 
 **Inputs:**
+
 | Input | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `city` | string | yes | `"New York"` | City to display |
 | `units` | string | no | `"imperial"` | Unit system |
 
 **Config:**
+
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `showFeelsLike` | boolean | `true` | Show feels-like temperature |
@@ -126,12 +130,14 @@
 **Purpose:** Multi-series line/area/column chart showing forecast data over the 5-day window. The primary charting widget — highly configurable series selection and chart types.
 
 **Inputs:**
+
 | Input | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `city` | string | yes | `"New York"` | City to show forecast for |
 | `units` | string | no | `"imperial"` | Unit system |
 
 **Config:**
+
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `series` | string[] | `["temp", "feelsLike"]` | Series to show. Options: `temp`, `feelsLike`, `humidity`, `pressure` |
@@ -170,11 +176,13 @@
 **Purpose:** Precipitation probability and/or volume over the forecast period. Dual-axis column chart.
 
 **Inputs:**
+
 | Input | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `city` | string | yes | `"New York"` | City to show precipitation for |
 
 **Config:**
+
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `metric` | enum | `"both"` | `"probability"`, `"volume"`, `"both"` |
@@ -204,12 +212,14 @@
 **Purpose:** Wind speed and gusts over the forecast period.
 
 **Inputs:**
+
 | Input | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `city` | string | yes | `"New York"` | City to show wind data for |
 | `units` | string | no | `"imperial"` | Unit system (mph vs m/s) |
 
 **Config:**
+
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `showGusts` | boolean | `true` | Show gust data alongside sustained |
@@ -240,12 +250,14 @@
 **Purpose:** Tabular daily overview — one row per day with high/low, conditions, humidity, wind.
 
 **Inputs:**
+
 | Input | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `city` | string | yes | `"New York"` | City to summarize |
 | `units` | string | no | `"imperial"` | Unit system |
 
 **Config:**
+
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `visibleColumns` | string[] | `["date","icon","conditions","high","low","humidity","wind"]` | Columns to display |
@@ -274,6 +286,7 @@
 **Purpose:** Static rich-text display using Hoist's Markdown renderer. Useful for dashboard titles, instructions, annotations, or any static content. No data inputs — purely content-driven.
 
 **Config:**
+
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `content` | string | `"# Welcome\nEdit this widget's content."` | Markdown text to render |
@@ -303,6 +316,7 @@
 **Purpose:** Debug/demo utility that visualizes the wiring graph, shows resolved input/output values, and displays validation status. Makes the IO story visible and legible during demos.
 
 **Config:**
+
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `showBindings` | boolean | `true` | Show binding details per widget |

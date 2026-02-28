@@ -183,7 +183,7 @@ const annotatedSpec: DashSpec = {
             title: 'Dashboard Guide',
             state: {
                 content:
-                    '# Weather Dashboard V2\nThis dashboard demonstrates **inter-widget wiring**. The City Chooser and Units Toggle publish outputs that drive all display widgets. Open the **Dash Inspector** to see live binding values.'
+                    '# Weather Dashboard V2\n\nThis dashboard demonstrates **inter-widget wiring**. The City Chooser and Units Toggle publish outputs that drive all display widgets. Open the **Dash Inspector** to see live binding values.'
             }
         },
         {
