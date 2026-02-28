@@ -2,6 +2,7 @@ import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {
+    colAutosizeButton,
     colChooserButton,
     expandToLevelButton,
     exportButton,
@@ -33,6 +34,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 '-',
                 gridFindField(),
                 '-',
+                colAutosizeButton(),
                 colChooserButton(),
                 exportButton()
             ],

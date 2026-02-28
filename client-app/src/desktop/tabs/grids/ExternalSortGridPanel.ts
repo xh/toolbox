@@ -1,15 +1,20 @@
-import {creates, hoistCmp} from '@xh/hoist/core';
-import {hframe, filler, p, span} from '@xh/hoist/cmp/layout';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
+import {filler, hframe, p, span} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {
+    colAutosizeButton,
+    colChooserButton,
+    exportButton,
+    refreshButton
+} from '@xh/hoist/desktop/cmp/button';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {ExternalSortGridPanelModel} from './ExternalSortGridPanelModel';
 import {wrapper} from '../../common';
 import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
+import {ExternalSortGridPanelModel} from './ExternalSortGridPanelModel';
 
 export const externalSortGridPanel = hoistCmp.factory({
     model: creates(ExternalSortGridPanelModel),
@@ -36,7 +41,7 @@ export const externalSortGridPanel = hoistCmp.factory({
 const tbar = hoistCmp.factory<ExternalSortGridPanelModel>(() => {
     return toolbar(
         refreshButton(),
-        toolbarSep(),
+        '-',
         span('Max rows:'),
         select({
             bind: 'maxRows',
@@ -51,7 +56,10 @@ const tbar = hoistCmp.factory<ExternalSortGridPanelModel>(() => {
         }),
         filler(),
         gridCountLabel({unit: 'companies'}),
+        '-',
         storeFilterField(),
+        '-',
+        colAutosizeButton(),
         colChooserButton(),
         exportButton()
     );
