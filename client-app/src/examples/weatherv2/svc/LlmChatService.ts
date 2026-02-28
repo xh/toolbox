@@ -1,4 +1,4 @@
-import {XH} from '@xh/hoist/core';
+import {HoistService, XH} from '@xh/hoist/core';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {DashSpec} from '../dash/types';
 
@@ -8,13 +8,13 @@ export interface ChatMessage {
 }
 
 /**
- * Client-side service for assembling LLM prompts, calling the server proxy,
+ * Service for assembling LLM prompts, calling the server proxy,
  * and parsing spec responses.
  */
-export const LlmChatService = {
-    /**
-     * Build the system prompt including widget schemas, spec format, and rules.
-     */
+export class LlmChatService extends HoistService {
+    static instance: LlmChatService;
+
+    /** Build the system prompt including widget schemas, spec format, and rules. */
     buildSystemPrompt(currentSpec?: DashSpec): string {
         const widgetDocs = widgetRegistry.generateLLMPrompt();
         const parts: string[] = [
@@ -36,16 +36,14 @@ export const LlmChatService = {
 
         parts.push(OUTPUT_RULES);
         return parts.join('\n\n');
-    },
+    }
 
-    /**
-     * Call the LLM proxy endpoint and return the raw response.
-     */
+    /** Call the LLM proxy endpoint and return the raw response. */
     async generateAsync(
         systemPrompt: string,
         messages: ChatMessage[]
     ): Promise<{content: string; raw: any}> {
-        const response = await XH.fetchJson({
+        const response = await XH.postJson({
             url: 'llm/generate',
             body: {systemPrompt, messages}
         });
@@ -54,7 +52,7 @@ export const LlmChatService = {
         const textBlock = response?.content?.find((c: any) => c.type === 'text');
         const content = textBlock?.text ?? '';
         return {content, raw: response};
-    },
+    }
 
     /**
      * Extract a JSON dashboard spec from the LLM's text response.
@@ -90,7 +88,7 @@ export const LlmChatService = {
 
         return null;
     }
-};
+}
 
 //--------------------------------------------------
 // System prompt sections

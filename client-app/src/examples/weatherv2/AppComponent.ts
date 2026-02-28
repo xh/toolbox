@@ -6,6 +6,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
 import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {Icon} from '@xh/hoist/icon';
+import {sparklesIcon} from './Icons';
 import {AppModel} from './AppModel';
 import {jsonHarnessPanel} from './harness/JsonHarnessPanel';
 import {chatHarnessPanel} from './harness/ChatHarnessPanel';
@@ -28,7 +29,7 @@ export const AppComponent = hoistCmp({
                 rightItems: [
                     button({
                         testId: 'chat-btn',
-                        icon: Icon.comment(),
+                        icon: sparklesIcon(),
                         text: 'Chat',
                         active: showChatHarness,
                         outlined: true,

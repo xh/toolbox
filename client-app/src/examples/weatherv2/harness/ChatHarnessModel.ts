@@ -1,8 +1,8 @@
-import {HoistModel, PersistableState, XH} from '@xh/hoist/core';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {HoistModel, managed, PersistableState, TaskObserver, XH} from '@xh/hoist/core';
+import {action, bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {DashSpec} from '../dash/types';
 import {validateSpec, migrateSpec} from '../dash/validation';
-import {LlmChatService, ChatMessage} from './LlmChatService';
+import {ChatMessage} from '../svc/LlmChatService';
 import {AppModel} from '../AppModel';
 
 /**
@@ -11,9 +11,11 @@ import {AppModel} from '../AppModel';
  */
 export class ChatHarnessModel extends HoistModel {
     @bindable userInput: string = '';
-    @bindable isLoading: boolean = false;
     @observable.ref messages: ChatMessage[] = [];
     @observable.ref lastError: string = null;
+
+    @managed
+    generateTask = TaskObserver.trackLast();
 
     constructor() {
         super();
@@ -24,37 +26,15 @@ export class ChatHarnessModel extends HoistModel {
     @action
     async sendMessageAsync() {
         const {userInput} = this;
-        if (!userInput.trim() || this.isLoading) return;
+        if (!userInput.trim() || this.generateTask.isPending) return;
 
         // Add user message
         const userMsg: ChatMessage = {role: 'user', content: userInput.trim()};
         this.messages = [...this.messages, userMsg];
         this.userInput = '';
-        this.isLoading = true;
         this.lastError = null;
 
-        try {
-            // Build system prompt with current dashboard spec
-            const currentSpec = this.getCurrentSpec();
-            const systemPrompt = LlmChatService.buildSystemPrompt(currentSpec);
-
-            // Call LLM
-            const {content} = await LlmChatService.generateAsync(systemPrompt, this.messages);
-
-            // Add assistant response
-            const assistantMsg: ChatMessage = {role: 'assistant', content};
-            this.messages = [...this.messages, assistantMsg];
-
-            // Try to extract and apply spec
-            const spec = LlmChatService.parseSpecFromResponse(content);
-            if (spec) {
-                this.applySpec(spec);
-            }
-        } catch (e) {
-            this.lastError = e.message || 'LLM request failed.';
-        } finally {
-            this.isLoading = false;
-        }
+        this.doGenerateAsync().linkTo(this.generateTask);
     }
 
     /** Clear the conversation. */
@@ -62,6 +42,33 @@ export class ChatHarnessModel extends HoistModel {
     clearChat() {
         this.messages = [];
         this.lastError = null;
+    }
+
+    //------------------
+    // Implementation
+    //------------------
+    private async doGenerateAsync() {
+        try {
+            const svc = XH.llmChatService;
+
+            // Build system prompt with current dashboard spec
+            const currentSpec = this.getCurrentSpec();
+            const systemPrompt = svc.buildSystemPrompt(currentSpec);
+
+            // Call LLM
+            const {content} = await svc.generateAsync(systemPrompt, this.messages);
+
+            // Add assistant response and apply any spec — in action since we're post-await
+            runInAction(() => {
+                this.messages = [...this.messages, {role: 'assistant', content}];
+                const spec = svc.parseSpecFromResponse(content);
+                if (spec) this.applySpec(spec);
+            });
+        } catch (e) {
+            runInAction(() => {
+                this.lastError = e.message || 'LLM request failed.';
+            });
+        }
     }
 
     private getCurrentSpec(): DashSpec | undefined {

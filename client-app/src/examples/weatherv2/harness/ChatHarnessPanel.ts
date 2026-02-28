@@ -5,6 +5,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
+import {sparklesIcon} from '../Icons';
 import {ChatHarnessModel} from './ChatHarnessModel';
 
 export const chatHarnessPanel = hoistCmp.factory({
@@ -15,7 +16,7 @@ export const chatHarnessPanel = hoistCmp.factory({
         return panel({
             testId: 'chat-panel',
             title: 'LLM Chat',
-            icon: Icon.comment(),
+            icon: sparklesIcon(),
             compactHeader: true,
             item: vbox({flex: 1, items: [messageList(), errorDisplay(), chatInput()]}),
             bbar: toolbar(
@@ -78,6 +79,7 @@ const errorDisplay = hoistCmp.factory<ChatHarnessModel>({
 
 const chatInput = hoistCmp.factory<ChatHarnessModel>({
     render({model}) {
+        const isPending = model.generateTask.isPending;
         return div({
             className: 'weather-v2-chat-input',
             items: [
@@ -91,10 +93,10 @@ const chatInput = hoistCmp.factory<ChatHarnessModel>({
                 }),
                 button({
                     testId: 'chat-send-btn',
-                    icon: model.isLoading ? Icon.spinner() : Icon.chevronRight(),
-                    text: model.isLoading ? 'Thinking...' : 'Send',
+                    icon: isPending ? Icon.spinner() : Icon.chevronRight(),
+                    text: isPending ? 'Thinking...' : 'Send',
                     intent: 'primary',
-                    disabled: model.isLoading || !model.userInput.trim(),
+                    disabled: isPending || !model.userInput.trim(),
                     onClick: () => model.sendMessageAsync()
                 })
             ]

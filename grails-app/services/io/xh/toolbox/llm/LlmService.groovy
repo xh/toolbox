@@ -49,7 +49,7 @@ class LlmService extends BaseService {
 
         def model = configService.getString('llmModel', 'claude-sonnet-4-20250514'),
             maxTokens = configService.getInt('llmMaxTokens', 4096),
-            apiKey = configService.getString('llmApiKey')
+            apiKey = configService.getPwd('llmApiKey')
 
         def body = [
             model     : model,
@@ -98,7 +98,7 @@ class LlmService extends BaseService {
     }
 
     private void checkApiKey() {
-        def key = configService.getString('llmApiKey', 'none')
+        def key = configService.getPwd('llmApiKey', 'none')
         if (key == 'none' || !key?.trim()) {
             throw new DataNotAvailableException(
                 'LLM API key not configured. Set the "llmApiKey" config entry in the Hoist Admin console.'

@@ -9,6 +9,7 @@ import {
 } from '@xh/hoist/desktop/cmp/appOption';
 import {BaseAppModel} from '../../BaseAppModel';
 import {WeatherV2DashModel} from './dash/WeatherV2DashModel';
+import {LlmChatService} from './svc/LlmChatService';
 import {WeatherDataService} from './svc/WeatherDataService';
 
 export class AppModel extends BaseAppModel {
@@ -28,7 +29,7 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync() {
         await super.initAsync();
-        await XH.installServicesAsync(WeatherDataService);
+        await XH.installServicesAsync(LlmChatService, WeatherDataService);
 
         this.harnessPanelModel = new PanelModel({
             side: 'right',
