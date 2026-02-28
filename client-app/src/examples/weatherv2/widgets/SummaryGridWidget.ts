@@ -190,6 +190,6 @@ export const summaryGridWidget = hoistCmp.factory({
     model: creates(SummaryGridModel),
 
     render() {
-        return panel({item: grid()});
+        return panel({testId: 'summary-grid', item: grid()});
     }
 });

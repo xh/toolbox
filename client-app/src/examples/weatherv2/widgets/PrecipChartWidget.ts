@@ -192,6 +192,7 @@ export const precipChartWidget = hoistCmp.factory({
 
     render({model}) {
         return panel({
+            testId: 'precip-chart',
             item: model.hasData
                 ? chart()
                 : placeholder({

@@ -27,6 +27,7 @@ export const AppComponent = hoistCmp({
                 leftItems: [viewManager()],
                 rightItems: [
                     button({
+                        testId: 'chat-btn',
                         icon: Icon.comment(),
                         text: 'Chat',
                         active: showChatHarness,
@@ -35,6 +36,7 @@ export const AppComponent = hoistCmp({
                         onClick: () => (model.showChatHarness = !showChatHarness)
                     }),
                     button({
+                        testId: 'json-btn',
                         icon: Icon.json(),
                         text: 'JSON',
                         active: showJsonHarness,

@@ -195,6 +195,6 @@ export const windChartWidget = hoistCmp.factory({
     model: creates(WindChartModel),
 
     render() {
-        return panel({item: chart()});
+        return panel({testId: 'wind-chart', item: chart()});
     }
 });

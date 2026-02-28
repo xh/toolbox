@@ -1,5 +1,5 @@
 import {hoistCmp, creates} from '@xh/hoist/core';
-import {div} from '@xh/hoist/cmp/layout';
+import {box} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
@@ -52,7 +52,8 @@ export const markdownContentWidget = hoistCmp.factory({
     model: creates(MarkdownContentModel),
 
     render({model}) {
-        return div({
+        return box({
+            testId: 'markdown-content',
             className: 'weather-v2-markdown',
             item: markdown({content: model.content, lineBreaks: false})
         });

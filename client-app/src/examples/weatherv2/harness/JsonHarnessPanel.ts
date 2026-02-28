@@ -14,6 +14,7 @@ export const jsonHarnessPanel = hoistCmp.factory({
 
     render({model}) {
         return panel({
+            testId: 'json-panel',
             ref: model.containerRef,
             title: 'JSON Spec Editor',
             icon: Icon.code(),
@@ -27,6 +28,7 @@ export const jsonHarnessPanel = hoistCmp.factory({
 const editorArea = hoistCmp.factory({
     render() {
         return jsonInput({
+            testId: 'json-editor',
             bind: 'editorValue',
             flex: 1,
             width: '100%',
@@ -105,6 +107,7 @@ const bottomToolbar = hoistCmp.factory<JsonHarnessModel>({
 
         return toolbar(
             select({
+                testId: 'json-load-example',
                 options: exampleOptions,
                 placeholder: 'Load Example...',
                 width: 180,
@@ -114,21 +117,28 @@ const bottomToolbar = hoistCmp.factory<JsonHarnessModel>({
                 }
             }),
             button({
+                testId: 'json-sync-btn',
                 icon: Icon.sync(),
-                text: 'Sync',
-                tooltip: 'Load current dashboard state into editor',
+                text: 'Sync from Dash',
+                tooltip: 'Overwrite editor with current dashboard state',
+                disabled: !model.isDiverged,
                 onClick: () => model.syncFromDashboard()
             }),
             filler(),
             button({
+                testId: 'json-validate-btn',
                 icon: Icon.check(),
                 text: 'Validate',
                 onClick: () => model.validateOnly()
             }),
+            '-',
             button({
+                testId: 'json-apply-btn',
                 icon: Icon.play(),
-                text: 'Apply',
+                text: 'Apply to Dash',
+                tooltip: 'Apply editor spec to the dashboard',
                 intent: 'success',
+                disabled: !model.isDiverged,
                 onClick: () => model.applySpec()
             })
         );

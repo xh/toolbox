@@ -103,9 +103,11 @@ export const cityChooserWidget = hoistCmp.factory({
 
     render({model}) {
         return box({
+            testId: 'city-chooser',
             padding: 8,
             flex: 1,
             item: select({
+                testId: 'city-select',
                 bind: 'selectedCity',
                 options: model.cities,
                 enableFilter: model.enableSearch,

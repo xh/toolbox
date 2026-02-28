@@ -1,4 +1,4 @@
-import {managed, XH} from '@xh/hoist/core';
+import {managed, persist, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -13,11 +13,13 @@ import {WeatherDataService} from './svc/WeatherDataService';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
+    override persistWith = {localStorageKey: 'weatherV2App'};
+
     @managed weatherV2DashModel: WeatherV2DashModel;
     @managed weatherViewManager: ViewManagerModel;
     @managed harnessPanelModel: PanelModel;
-    @bindable showJsonHarness: boolean = false;
-    @bindable showChatHarness: boolean = false;
+    @persist @bindable showJsonHarness: boolean = false;
+    @persist @bindable showChatHarness: boolean = false;
 
     constructor() {
         super();
@@ -34,7 +36,7 @@ export class AppModel extends BaseAppModel {
             minSize: 300,
             resizable: true,
             collapsible: false,
-            persistWith: {localStorageKey: 'weatherV2HarnessPanel'}
+            persistWith: {...this.persistWith, path: 'harnessPanel'}
         });
 
         this.weatherViewManager = await ViewManagerModel.createAsync({

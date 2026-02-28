@@ -223,6 +223,7 @@ export const currentConditionsWidget = hoistCmp.factory({
             current.description.charAt(0).toUpperCase() + current.description.slice(1);
 
         return vbox({
+            testId: 'current-conditions',
             className: 'weather-v2-current-conditions',
             alignItems: 'center',
             flex: 1,

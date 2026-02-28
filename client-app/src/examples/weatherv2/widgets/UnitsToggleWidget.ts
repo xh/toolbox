@@ -63,10 +63,12 @@ export const unitsToggleWidget = hoistCmp.factory({
 
     render() {
         return box({
+            testId: 'units-toggle',
             padding: 8,
             alignItems: 'center',
             justifyContent: 'center',
             item: buttonGroupInput({
+                testId: 'units-input',
                 bind: 'units',
                 items: [
                     button({text: '°F / mph', value: 'imperial'}),

@@ -13,12 +13,14 @@ export const chatHarnessPanel = hoistCmp.factory({
 
     render({model}) {
         return panel({
+            testId: 'chat-panel',
             title: 'LLM Chat',
             icon: Icon.comment(),
             compactHeader: true,
             item: vbox({flex: 1, items: [messageList(), errorDisplay(), chatInput()]}),
             bbar: toolbar(
                 button({
+                    testId: 'chat-clear-btn',
                     icon: Icon.delete(),
                     text: 'Clear',
                     onClick: () => model.clearChat()
@@ -80,6 +82,7 @@ const chatInput = hoistCmp.factory<ChatHarnessModel>({
             className: 'weather-v2-chat-input',
             items: [
                 textArea({
+                    testId: 'chat-input',
                     bind: 'userInput',
                     placeholder: 'Describe what you want...',
                     flex: 1,
@@ -87,6 +90,7 @@ const chatInput = hoistCmp.factory<ChatHarnessModel>({
                     commitOnChange: true
                 }),
                 button({
+                    testId: 'chat-send-btn',
                     icon: model.isLoading ? Icon.spinner() : Icon.chevronRight(),
                     text: model.isLoading ? 'Thinking...' : 'Send',
                     intent: 'primary',

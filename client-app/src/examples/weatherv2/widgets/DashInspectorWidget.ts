@@ -114,6 +114,6 @@ export const dashInspectorWidget = hoistCmp.factory({
     model: creates(DashInspectorModel),
 
     render() {
-        return panel({item: grid()});
+        return panel({testId: 'dash-inspector', item: grid()});
     }
 });

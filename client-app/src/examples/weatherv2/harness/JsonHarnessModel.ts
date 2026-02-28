@@ -1,7 +1,7 @@
 import {createRef} from 'react';
 import {HoistModel, PersistableState, XH} from '@xh/hoist/core';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
 import {DashSpec, DashWidgetState, ValidationResult} from '../dash/types';
 import {validateSpec, migrateSpec} from '../dash/validation';
 import {EXAMPLE_SPECS, ExampleSpec} from '../dash/exampleSpecs';
@@ -19,6 +19,21 @@ export class JsonHarnessModel extends HoistModel {
 
     get exampleSpecs(): ExampleSpec[] {
         return EXAMPLE_SPECS;
+    }
+
+    /** True when editor content differs from the live dashboard state. */
+    @computed
+    get isDiverged(): boolean {
+        try {
+            const editorNormalized = JSON.stringify(JSON.parse(this.editorValue));
+            const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
+            const dashSpec: DashSpec = {version: 1, state: this.buildSpecState(dashModel)};
+            const dashNormalized = JSON.stringify(dashSpec);
+            return editorNormalized !== dashNormalized;
+        } catch {
+            // Unparseable editor content is always considered diverged.
+            return true;
+        }
     }
 
     constructor() {

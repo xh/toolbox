@@ -207,6 +207,6 @@ export const forecastChartWidget = hoistCmp.factory({
     model: creates(ForecastChartModel),
 
     render() {
-        return panel({item: chart()});
+        return panel({testId: 'forecast-chart', item: chart()});
     }
 });
