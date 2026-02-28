@@ -12,8 +12,9 @@ export const jsonHarnessPanel = hoistCmp.factory({
     displayName: 'JsonHarnessPanel',
     model: creates(JsonHarnessModel),
 
-    render() {
+    render({model}) {
         return panel({
+            ref: model.containerRef,
             title: 'JSON Spec Editor',
             icon: Icon.code(),
             compactHeader: true,

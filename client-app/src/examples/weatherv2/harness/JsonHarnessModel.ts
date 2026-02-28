@@ -1,3 +1,4 @@
+import {createRef} from 'react';
 import {HoistModel, PersistableState, XH} from '@xh/hoist/core';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
@@ -14,6 +15,7 @@ export class JsonHarnessModel extends HoistModel {
     @bindable editorValue: string = '';
     @observable.ref lastValidation: ValidationResult = null;
     @bindable lastError: string = null;
+    containerRef = createRef<HTMLElement>();
 
     get exampleSpecs(): ExampleSpec[] {
         return EXAMPLE_SPECS;
@@ -114,7 +116,11 @@ export class JsonHarnessModel extends HoistModel {
 
         const result = validateSpec(spec);
         if (result.valid && result.warnings.length === 0) {
-            XH.successToast('Spec is valid.');
+            XH.successToast({
+                message: 'Spec is valid.',
+                containerRef: this.containerRef.current,
+                position: 'top'
+            });
         } else {
             this.lastValidation = result;
         }
