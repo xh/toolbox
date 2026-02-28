@@ -1,8 +1,9 @@
-import {HoistModel, XH} from '@xh/hoist/core';
+import {HoistModel, PersistableState, XH} from '@xh/hoist/core';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {DashSpec} from '../dash/types';
 import {validateSpec, migrateSpec} from '../dash/validation';
 import {LlmChatService, ChatMessage} from './LlmChatService';
+import {AppModel} from '../AppModel';
 
 /**
  * Model for the LLM chat harness — manages conversation history,
@@ -65,7 +66,6 @@ export class ChatHarnessModel extends HoistModel {
 
     private getCurrentSpec(): DashSpec | undefined {
         try {
-            const {AppModel} = require('../AppModel');
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
             const persistable = dashModel.getPersistableState();
             return {version: 1, state: persistable?.value?.state ?? []};
@@ -86,9 +86,8 @@ export class ChatHarnessModel extends HoistModel {
                 return;
             }
 
-            const {AppModel} = require('../AppModel');
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
-            dashModel.setPersistableState({value: {state: spec.state}});
+            dashModel.setPersistableState(new PersistableState({state: spec.state}));
             XH.successToast('Dashboard updated from LLM response.');
         } catch (e) {
             this.lastError = `Failed to apply spec: ${e.message}`;

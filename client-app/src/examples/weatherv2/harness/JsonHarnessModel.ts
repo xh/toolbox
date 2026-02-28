@@ -1,8 +1,9 @@
-import {HoistModel, XH} from '@xh/hoist/core';
+import {HoistModel, PersistableState, XH} from '@xh/hoist/core';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {DashSpec, ValidationResult} from '../dash/types';
 import {validateSpec, migrateSpec} from '../dash/validation';
 import {EXAMPLE_SPECS, ExampleSpec} from '../dash/exampleSpecs';
+import {AppModel} from '../AppModel';
 
 /**
  * Model for the JSON harness — manages the editor state, validation,
@@ -27,7 +28,6 @@ export class JsonHarnessModel extends HoistModel {
     @action
     syncFromDashboard() {
         try {
-            const {AppModel} = require('../AppModel');
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
             const persistable = dashModel.getPersistableState();
             const spec: DashSpec = {version: 1, state: persistable?.value?.state ?? []};
@@ -71,9 +71,8 @@ export class JsonHarnessModel extends HoistModel {
 
         // Apply to dashboard
         try {
-            const {AppModel} = require('../AppModel');
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
-            dashModel.setPersistableState({value: {state: spec.state}});
+            dashModel.setPersistableState(new PersistableState({state: spec.state}));
             XH.successToast('Dashboard spec applied.');
         } catch (e) {
             this.lastError = `Apply error: ${e.message}`;
@@ -83,7 +82,6 @@ export class JsonHarnessModel extends HoistModel {
     /** Copy current dashboard spec to clipboard. */
     async copySpecAsync() {
         try {
-            const {AppModel} = require('../AppModel');
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
             const persistable = dashModel.getPersistableState();
             const spec: DashSpec = {version: 1, state: persistable?.value?.state ?? []};

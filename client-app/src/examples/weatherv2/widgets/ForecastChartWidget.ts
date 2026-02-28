@@ -8,6 +8,7 @@ import {widgetRegistry} from '../dash/WidgetRegistry';
 import {convertTemp, tempUnit} from '../dash/unitUtils';
 import {WidgetMeta} from '../dash/types';
 import {WeatherData} from '../Types';
+import {AppModel} from '../AppModel';
 
 //--------------------------------------------------
 // Model
@@ -103,7 +104,6 @@ export class ForecastChartModel extends WeatherWidgetModel {
         const {city} = this;
         if (!city) return;
         try {
-            const {AppModel} = require('../AppModel');
             await AppModel.instance.weatherV2DashModel.weatherDataModel.ensureDataAsync(
                 city,
                 loadSpec
@@ -114,7 +114,6 @@ export class ForecastChartModel extends WeatherWidgetModel {
     }
 
     @computed get weatherData(): WeatherData | null {
-        const {AppModel} = require('../AppModel');
         return AppModel.instance.weatherV2DashModel.weatherDataModel.getData(this.city);
     }
 

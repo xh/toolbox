@@ -2,6 +2,7 @@ import {HoistModel, lookup} from '@xh/hoist/core';
 import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {WidgetMeta, BindingSpec} from './types';
 import {WiringModel} from './WiringModel';
+import {AppModel} from '../AppModel';
 
 /**
  * Abstract base class for all V2 weather dashboard widget models.
@@ -66,8 +67,6 @@ export abstract class WeatherWidgetModel extends HoistModel {
 
     /** Access to the shared WiringModel via AppModel singleton. */
     private get wiringModel(): WiringModel {
-        // Dynamic import to avoid circular dependency — AppModel imports widgets which import this.
-        const {AppModel} = require('../AppModel');
         return AppModel.instance.weatherV2DashModel.wiringModel;
     }
 }

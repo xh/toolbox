@@ -1,5 +1,5 @@
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {box, hframe} from '@xh/hoist/cmp/layout';
+import {frame, hframe} from '@xh/hoist/cmp/layout';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -17,7 +17,9 @@ export const AppComponent = hoistCmp({
     model: uses(AppModel),
 
     render({model}) {
-        const {weatherV2DashModel, showJsonHarness, showChatHarness} = model;
+        const {weatherV2DashModel, showJsonHarness, showChatHarness} = model,
+            showHarness = showChatHarness || showJsonHarness;
+
         return panel({
             tbar: appBar({
                 icon: Icon.sun({size: '2x', prefix: 'fal'}),
@@ -43,9 +45,15 @@ export const AppComponent = hoistCmp({
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
             item: hframe(
-                showChatHarness ? chatHarnessPanel({width: 400, minWidth: 300}) : null,
-                showJsonHarness ? jsonHarnessPanel({width: 500, minWidth: 350}) : null,
-                box({flex: 1, item: dashCanvas({model: weatherV2DashModel.dashCanvasModel})})
+                frame(dashCanvas({model: weatherV2DashModel.dashCanvasModel})),
+                panel({
+                    model: model.harnessPanelModel,
+                    items: [
+                        showChatHarness ? chatHarnessPanel({flex: 1}) : null,
+                        showJsonHarness ? jsonHarnessPanel({flex: 1}) : null
+                    ],
+                    omit: !showHarness
+                })
             ),
             className: 'weather-v2-app'
         });

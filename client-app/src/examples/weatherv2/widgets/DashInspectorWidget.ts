@@ -5,6 +5,7 @@ import {computed, makeObservable} from '@xh/hoist/mobx';
 import {WeatherWidgetModel} from '../dash/WeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {WidgetMeta} from '../dash/types';
+import {AppModel} from '../AppModel';
 
 //--------------------------------------------------
 // Model
@@ -42,13 +43,12 @@ export class DashInspectorModel extends WeatherWidgetModel {
 
     @computed
     get inspectorData(): Record<string, any>[] {
-        const {AppModel} = require('../AppModel');
         const dashModel = AppModel.instance.weatherV2DashModel,
             wiringModel = dashModel.wiringModel,
             canvasModel = dashModel.dashCanvasModel,
             allOutputs = wiringModel.allOutputs;
 
-        const state = canvasModel.getPersistableState()?.state ?? [];
+        const state = canvasModel.getPersistableState()?.value?.state ?? [];
         return state.map((item: any, idx: number) => {
             const specId = item.viewSpecId,
                 meta = widgetRegistry.get(specId),

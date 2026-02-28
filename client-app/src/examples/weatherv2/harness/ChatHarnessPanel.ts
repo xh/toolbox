@@ -16,7 +16,7 @@ export const chatHarnessPanel = hoistCmp.factory({
             title: 'LLM Chat',
             icon: Icon.comment(),
             compactHeader: true,
-            item: vbox(messageList(), errorDisplay(), chatInput()),
+            item: vbox({flex: 1, items: [messageList(), errorDisplay(), chatInput()]}),
             bbar: toolbar(
                 button({
                     icon: Icon.delete(),

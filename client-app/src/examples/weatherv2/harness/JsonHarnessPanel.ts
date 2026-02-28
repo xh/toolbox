@@ -28,6 +28,7 @@ const editorArea = hoistCmp.factory({
         return jsonInput({
             bind: 'editorValue',
             flex: 1,
+            width: '100%',
             commitOnChange: true,
             enableSearch: true,
             showCopyButton: false,
