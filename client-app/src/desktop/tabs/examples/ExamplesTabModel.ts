@@ -48,6 +48,20 @@ export class ExamplesTabModel extends HoistModel {
             ]
         },
         {
+            title: 'Weather V2',
+            icon: Icon.sun(),
+            path: 'weatherv2',
+            srcPath: 'weatherv2',
+            text: [
+                p(
+                    'Weather Dashboard V2 — a declarative, wirable dashboard with inter-widget bindings and LLM-driven spec generation.'
+                ),
+                p(
+                    "Demonstrates dashboard-as-DSL: Hoist's native persisted state as a machine-readable spec that an LLM can generate and validate."
+                )
+            ]
+        },
+        {
             title: 'Contact',
             icon: Icon.users(),
             path: 'contact',
