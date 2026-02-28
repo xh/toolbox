@@ -1,6 +1,7 @@
 import {HoistModel, PersistableState, XH} from '@xh/hoist/core';
+import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
-import {DashSpec, ValidationResult} from '../dash/types';
+import {DashSpec, DashWidgetState, ValidationResult} from '../dash/types';
 import {validateSpec, migrateSpec} from '../dash/validation';
 import {EXAMPLE_SPECS, ExampleSpec} from '../dash/exampleSpecs';
 import {AppModel} from '../AppModel';
@@ -29,8 +30,7 @@ export class JsonHarnessModel extends HoistModel {
     syncFromDashboard() {
         try {
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
-            const persistable = dashModel.getPersistableState();
-            const spec: DashSpec = {version: 1, state: persistable?.value?.state ?? []};
+            const spec: DashSpec = {version: 1, state: this.buildSpecState(dashModel)};
             this.editorValue = JSON.stringify(spec, null, 2);
             this.lastValidation = null;
             this.lastError = null;
@@ -83,8 +83,7 @@ export class JsonHarnessModel extends HoistModel {
     async copySpecAsync() {
         try {
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
-            const persistable = dashModel.getPersistableState();
-            const spec: DashSpec = {version: 1, state: persistable?.value?.state ?? []};
+            const spec: DashSpec = {version: 1, state: this.buildSpecState(dashModel)};
             const json = JSON.stringify(spec, null, 2);
             await navigator.clipboard.writeText(json);
             XH.successToast('Spec copied to clipboard.');
@@ -127,5 +126,31 @@ export class JsonHarnessModel extends HoistModel {
         }
 
         this.lastValidation = validateSpec(spec);
+    }
+
+    //------------------------
+    // Implementation
+    //------------------------
+    /**
+     * Build the current DashSpec state from the DashCanvasModel's live viewModels and layout.
+     *
+     * Workaround for https://github.com/xh/hoist-react/issues/4276 —
+     * getPersistableState() can return stale initialState after persistence restore.
+     * Once that issue is resolved, this method and its callers could be simplified to
+     * use getPersistableState() directly.
+     */
+    private buildSpecState(dashModel: DashCanvasModel): DashWidgetState[] {
+        return dashModel.layout
+            .map(({i: id, x, y, w, h}) => {
+                const vm = dashModel.viewModels.find(v => v.id === id);
+                if (!vm) return null;
+                return {
+                    layout: {x, y, w, h},
+                    viewSpecId: vm.viewSpec.id,
+                    title: vm.title,
+                    state: vm.viewState
+                };
+            })
+            .filter(Boolean);
     }
 }
