@@ -30,7 +30,7 @@ export class JsonHarnessModel extends HoistModel {
             const {AppModel} = require('../AppModel');
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
             const persistable = dashModel.getPersistableState();
-            const spec: DashSpec = {version: 1, state: persistable?.state ?? []};
+            const spec: DashSpec = {version: 1, state: persistable?.value?.state ?? []};
             this.editorValue = JSON.stringify(spec, null, 2);
             this.lastValidation = null;
             this.lastError = null;
@@ -73,7 +73,7 @@ export class JsonHarnessModel extends HoistModel {
         try {
             const {AppModel} = require('../AppModel');
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
-            dashModel.setPersistableState({state: spec.state});
+            dashModel.setPersistableState({value: {state: spec.state}});
             XH.successToast('Dashboard spec applied.');
         } catch (e) {
             this.lastError = `Apply error: ${e.message}`;
@@ -86,7 +86,7 @@ export class JsonHarnessModel extends HoistModel {
             const {AppModel} = require('../AppModel');
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
             const persistable = dashModel.getPersistableState();
-            const spec: DashSpec = {version: 1, state: persistable?.state ?? []};
+            const spec: DashSpec = {version: 1, state: persistable?.value?.state ?? []};
             const json = JSON.stringify(spec, null, 2);
             await navigator.clipboard.writeText(json);
             XH.successToast('Spec copied to clipboard.');

@@ -68,7 +68,7 @@ export class ChatHarnessModel extends HoistModel {
             const {AppModel} = require('../AppModel');
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
             const persistable = dashModel.getPersistableState();
-            return {version: 1, state: persistable?.state ?? []};
+            return {version: 1, state: persistable?.value?.state ?? []};
         } catch {
             return undefined;
         }
@@ -88,7 +88,7 @@ export class ChatHarnessModel extends HoistModel {
 
             const {AppModel} = require('../AppModel');
             const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
-            dashModel.setPersistableState({state: spec.state});
+            dashModel.setPersistableState({value: {state: spec.state}});
             XH.successToast('Dashboard updated from LLM response.');
         } catch (e) {
             this.lastError = `Failed to apply spec: ${e.message}`;

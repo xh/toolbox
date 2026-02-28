@@ -75,7 +75,8 @@ export class PrecipChartModel extends WeatherWidgetModel {
 
         this.addReaction({
             track: () => [this.weatherData, this.displayMetric],
-            run: () => this.updateChart()
+            run: () => this.updateChart(),
+            fireImmediately: true
         });
     }
 

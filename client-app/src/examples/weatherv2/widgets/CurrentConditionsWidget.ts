@@ -96,7 +96,8 @@ export class CurrentConditionsModel extends WeatherWidgetModel {
         // Update chart when data or units change
         this.addReaction({
             track: () => [this.weatherData, this.units],
-            run: () => this.updateChart()
+            run: () => this.updateChart(),
+            fireImmediately: true
         });
     }
 
@@ -192,7 +193,7 @@ export class CurrentConditionsModel extends WeatherWidgetModel {
 
         // Update gauge range for units
         const yAxis = units === 'metric' ? {min: -30, max: 50} : {min: -20, max: 120};
-        this.chartModel.setHighchartsConfig({yAxis});
+        this.chartModel.updateHighchartsConfig({yAxis});
     }
 }
 

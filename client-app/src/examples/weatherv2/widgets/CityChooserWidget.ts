@@ -104,8 +104,7 @@ export const cityChooserWidget = hoistCmp.factory({
     render({model}) {
         return box({
             padding: 8,
-            alignItems: 'center',
-            justifyContent: 'center',
+            flex: 1,
             item: select({
                 bind: 'selectedCity',
                 options: model.cities,

@@ -87,7 +87,8 @@ export class WindChartModel extends WeatherWidgetModel {
 
         this.addReaction({
             track: () => [this.weatherData, this.units, this.showGusts],
-            run: () => this.updateChart()
+            run: () => this.updateChart(),
+            fireImmediately: true
         });
     }
 

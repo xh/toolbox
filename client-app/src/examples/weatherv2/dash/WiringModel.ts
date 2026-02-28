@@ -34,7 +34,20 @@ export class WiringModel extends HoistModel {
         if (!binding) return undefined;
         if ('const' in binding) return binding.const;
         if ('fromWidget' in binding) {
-            return this._outputs.get(binding.fromWidget)?.get(binding.output);
+            const {fromWidget, output} = binding;
+            // Try exact match first, then prefix match — DashCanvasModel assigns
+            // instance IDs like "cityChooser_0" while specs reference "cityChooser".
+            const widgetOutputs =
+                this._outputs.get(fromWidget) ?? this.findOutputsByPrefix(fromWidget);
+            return widgetOutputs?.get(output);
+        }
+        return undefined;
+    }
+
+    /** Find outputs for a widget by viewSpecId prefix (e.g. "cityChooser" → "cityChooser_0"). */
+    private findOutputsByPrefix(prefix: string): Map<string, any> | undefined {
+        for (const [key, value] of this._outputs) {
+            if (key.startsWith(prefix + '_')) return value;
         }
         return undefined;
     }

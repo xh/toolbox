@@ -75,7 +75,8 @@ export class SummaryGridModel extends WeatherWidgetModel {
 
         this.addReaction({
             track: () => [this.weatherData, this.units],
-            run: () => this.updateGrid()
+            run: () => this.updateGrid(),
+            fireImmediately: true
         });
     }
 
@@ -99,7 +100,6 @@ export class SummaryGridModel extends WeatherWidgetModel {
     }
 
     private createGridModel(): GridModel {
-        const {units} = this;
         return new GridModel({
             sortBy: 'date',
             emptyText: 'No forecast data available.',
@@ -133,20 +133,8 @@ export class SummaryGridModel extends WeatherWidgetModel {
                     exportValue: (_v, {record}) => record.data.conditions
                 },
                 {field: 'conditions', headerName: 'Conditions', flex: 1},
-                {
-                    field: 'high',
-                    headerName: 'High',
-                    width: 70,
-                    align: 'right',
-                    renderer: v => fmtTemp(v, units)
-                },
-                {
-                    field: 'low',
-                    headerName: 'Low',
-                    width: 70,
-                    align: 'right',
-                    renderer: v => fmtTemp(v, units)
-                },
+                {field: 'high', headerName: 'High', width: 70, align: 'right'},
+                {field: 'low', headerName: 'Low', width: 70, align: 'right'},
                 {
                     field: 'humidity',
                     headerName: 'Humidity',
@@ -154,23 +142,20 @@ export class SummaryGridModel extends WeatherWidgetModel {
                     align: 'right',
                     renderer: v => `${v}%`
                 },
-                {
-                    field: 'wind',
-                    headerName: 'Wind',
-                    width: 80,
-                    align: 'right',
-                    renderer: v => fmtWind(v, units)
-                }
+                {field: 'wind', headerName: 'Wind', width: 80, align: 'right'}
             ]
         });
     }
 
+    /** Build grid rows with pre-formatted values so cell data changes when units change. */
     private updateGrid() {
         const data = this.weatherData;
         if (!data?.forecast?.length) {
             this.gridModel.clear();
             return;
         }
+
+        const {units} = this;
 
         const byDay = groupBy(data.forecast, entry => {
             const d = new Date(entry.dt);
@@ -189,10 +174,10 @@ export class SummaryGridModel extends WeatherWidgetModel {
                 date: dayItems[0].dt,
                 icon: midItem.iconCode,
                 conditions: midItem.conditions,
-                high: Math.round(Math.max(...highs)),
-                low: Math.round(Math.min(...lows)),
+                high: fmtTemp(Math.max(...highs), units),
+                low: fmtTemp(Math.min(...lows), units),
                 humidity: Math.round(humidities.reduce((a, b) => a + b, 0) / humidities.length),
-                wind: Math.round(winds.reduce((a, b) => a + b, 0) / winds.length)
+                wind: fmtWind(winds.reduce((a, b) => a + b, 0) / winds.length, units)
             };
         });
 
