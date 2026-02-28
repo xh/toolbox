@@ -89,7 +89,13 @@ const chatInput = hoistCmp.factory<ChatHarnessModel>({
                     placeholder: 'Describe what you want...',
                     flex: 1,
                     height: 80,
-                    commitOnChange: true
+                    commitOnChange: true,
+                    onKeyDown: (e: KeyboardEvent) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            model.sendMessageAsync();
+                        }
+                    }
                 }),
                 button({
                     testId: 'chat-send-btn',

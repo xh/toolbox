@@ -82,6 +82,10 @@ export class ForecastChartModel extends BaseWeatherWidgetModel {
         return this.viewModel.viewState?.showLegend ?? true;
     }
 
+    protected override getAutoTitle(): string {
+        return `Forecast — ${this.city}`;
+    }
+
     override onLinked() {
         super.onLinked();
         this.chartModel = this.createChartModel();

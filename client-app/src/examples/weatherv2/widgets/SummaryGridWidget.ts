@@ -63,6 +63,10 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
         return this.resolveInput('units') ?? 'imperial';
     }
 
+    protected override getAutoTitle(): string {
+        return `5-Day Summary — ${this.city}`;
+    }
+
     override onLinked() {
         super.onLinked();
         this.gridModel = this.createGridModel();

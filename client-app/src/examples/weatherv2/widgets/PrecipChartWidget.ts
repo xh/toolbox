@@ -63,6 +63,10 @@ export class PrecipChartModel extends BaseWeatherWidgetModel {
         return this.viewModel.viewState?.metric ?? 'both';
     }
 
+    protected override getAutoTitle(): string {
+        return `Precipitation — ${this.city}`;
+    }
+
     override onLinked() {
         super.onLinked();
         this.chartModel = this.createChartModel();

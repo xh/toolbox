@@ -125,7 +125,6 @@ const comparisonSpec: DashSpec = {
         {
             viewSpecId: 'forecastChart',
             layout: {x: 0, y: 2, w: 6, h: 5},
-            title: 'City A Forecast',
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser', output: 'selectedCity'},
@@ -138,7 +137,6 @@ const comparisonSpec: DashSpec = {
         {
             viewSpecId: 'forecastChart',
             layout: {x: 6, y: 2, w: 6, h: 5},
-            title: 'City B Forecast',
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_2', output: 'selectedCity'},
@@ -151,7 +149,6 @@ const comparisonSpec: DashSpec = {
         {
             viewSpecId: 'currentConditions',
             layout: {x: 0, y: 7, w: 6, h: 5},
-            title: 'City A Conditions',
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser', output: 'selectedCity'},
@@ -162,7 +159,6 @@ const comparisonSpec: DashSpec = {
         {
             viewSpecId: 'currentConditions',
             layout: {x: 6, y: 7, w: 6, h: 5},
-            title: 'City B Conditions',
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_2', output: 'selectedCity'},
@@ -180,8 +176,8 @@ const annotatedSpec: DashSpec = {
         {
             viewSpecId: 'markdownContent',
             layout: {x: 0, y: 0, w: 12, h: 2},
-            title: 'Dashboard Guide',
             state: {
+                title: 'Dashboard Guide',
                 content:
                     '# Weather Dashboard V2\n\nThis dashboard demonstrates **inter-widget wiring**. The City Chooser and Units Toggle publish outputs that drive all display widgets. Open the **Dash Inspector** to see live binding values.'
             }

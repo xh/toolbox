@@ -113,10 +113,79 @@ Final review pass:
 - LLM chat harness: natural language → system prompt → spec → validation → hydration
 - 4 curated example specs loadable from dropdown
 
-### What Needs Runtime Testing
+### LLM Chat Service Promoted to HoistService
 
-- Actual weather API calls (requires running Grails server)
-- LLM proxy (requires Anthropic API key in Hoist config)
-- Persistence across page reloads (requires ViewManager backend)
-- DashCanvas drag/resize (requires browser)
-- Widget instance ID assignment in bindings (DashCanvasModel's ID generation must match validation's `computeInstanceIds`)
+LlmChatService refactored from a plain class to a proper HoistService, installed via `XH.installServicesAsync()` in AppModel. Accessible as `XH.llmChatService` throughout the app.
+
+### UI Polish
+
+- JSON harness: improved UX with persisted panel state and added testIds
+- Chat/JSON panels use `PanelModel` with right-side resizable layout
+
+### Runtime Testing Results
+
+All runtime features confirmed working with live Grails server:
+- Weather API calls via OpenWeatherMap — data caching works correctly
+- LLM proxy via Anthropic API — full round-trip conversation works
+- DashCanvas drag/resize works
+- Widget instance IDs in bindings match DashCanvasModel's ID generation
+- ViewManager persistence across page reloads works
+
+### Chat UX: Enter-to-Submit
+
+Added `onKeyDown` handler to ChatHarnessPanel's textArea. Enter now submits the message; Shift+Enter inserts a newline. Matches standard chat UX conventions.
+
+### Markdown Widget Rendering Fix
+
+The markdown widget was rendering header content inline with body text because Hoist's `box` component applies `display: flex` via inline styles, causing react-markdown's block-level elements (h1, p) to lay out horizontally. Fixed by replacing `box` with a plain `div` from `@xh/hoist/cmp/layout` — the CSS `.weather-v2-markdown` class provides the necessary `flex: 1`, `padding`, and `overflow: auto` for the widget to fill its card correctly.
+
+### Thorough LLM Chat Testing (12 API + 3 UI tests)
+
+Systematic testing of the LLM chat functionality across multiple scenarios:
+
+**Results (all passing):**
+- Fresh dashboard builds from natural language (correct widget selection, bindings, layout)
+- Iterative refinement (add/remove/modify widgets while preserving existing ones)
+- Multi-instance wiring (dual city choosers with correct `cityChooser`/`cityChooser_2` instance IDs)
+- Capability self-description (accurate listing of all 9 widgets with categories and wiring explanation)
+- Off-topic/impossible requests handled gracefully (poems, stock prices, gibberish all redirected)
+- Prompt injection rejected cleanly
+- Const bindings used correctly for hard-wired city inputs
+- Full end-to-end UI pipeline: LLM → JSON parse → validation → hydration → live dashboard
+
+**System prompt quality:** The current prompt produces consistently valid specs with correct bindings, sensible layouts, and appropriate widget selection. No critical issues found.
+
+### Auto-Generated Widget Titles
+
+Implemented reactive auto-titles that show widget context (particularly the active city) in widget headers:
+
+**Architecture:**
+- `BaseWeatherWidgetModel.getAutoTitle()` — virtual method returning `null` by default
+- `BaseWeatherWidgetModel.onLinked()` — reaction tracks `getAutoTitle()` and pushes to `viewModel.title`
+- Display widgets override: `"Current Conditions — Tokyo"`, `"Forecast — Chicago"`, etc.
+- Titles update reactively when the city chooser selection changes
+
+**Widget-specific behavior:**
+- **Display widgets** (CurrentConditions, ForecastChart, PrecipChart, WindChart, SummaryGrid): Auto-generate `"<Widget Type> — <City>"` titles from their bound city input
+- **MarkdownContent**: Exposes a `title` config in its state (`state.title`) — LLM/user sets it explicitly since content is free-form
+- **Input widgets** (CityChooser, UnitsToggle) and **DashInspector**: Use default viewSpec titles
+
+**User renaming disabled:** Set `allowRename: false` on all 9 viewSpecs in `WeatherV2DashModel` to prevent conflicts between user-set titles and auto-generated ones.
+
+**System prompt updated:** Added guidance telling the LLM not to set top-level `title` for auto-titled display widgets (it would be overwritten) and to use `state.title` for markdown widgets.
+
+**Example specs updated:** Removed top-level `title` from display widgets in comparison spec; moved markdown title into `state.title` in annotated spec.
+
+### What's Working (Updated)
+
+- Full 9-widget catalog with typed inputs/outputs/config
+- Inter-widget wiring via MobX-reactive WiringModel
+- Per-city weather data caching via WeatherDataService
+- Spec validation with detailed error messages + JSON paths
+- JSON harness: edit → validate → apply → dashboard updates live
+- LLM chat harness: natural language → system prompt → spec → validation → hydration
+- Enter-to-submit in chat with Shift+Enter for newlines
+- Auto-generated widget titles with reactive city context
+- Markdown rendering with proper block layout
+- 4 curated example specs loadable from dropdown
+- Widget renaming disabled to prevent title conflicts

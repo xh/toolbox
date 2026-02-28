@@ -44,6 +44,7 @@ export class WeatherV2DashModel extends HoistModel {
                     icon: Icon.globe(),
                     content: cityChooserWidget,
                     unique: false,
+                    allowRename: false,
                     width: 3,
                     height: 2
                 },
@@ -53,6 +54,7 @@ export class WeatherV2DashModel extends HoistModel {
                     icon: Icon.sun(),
                     content: currentConditionsWidget,
                     unique: false,
+                    allowRename: false,
                     width: 4,
                     height: 5
                 },
@@ -62,6 +64,7 @@ export class WeatherV2DashModel extends HoistModel {
                     icon: temperatureIcon(),
                     content: forecastChartWidget,
                     unique: false,
+                    allowRename: false,
                     width: 8,
                     height: 5
                 },
@@ -71,6 +74,7 @@ export class WeatherV2DashModel extends HoistModel {
                     icon: cloudRainIcon(),
                     content: precipChartWidget,
                     unique: false,
+                    allowRename: false,
                     width: 6,
                     height: 5
                 },
@@ -80,6 +84,7 @@ export class WeatherV2DashModel extends HoistModel {
                     icon: calendarDaysIcon(),
                     content: summaryGridWidget,
                     unique: false,
+                    allowRename: false,
                     width: 6,
                     height: 5
                 },
@@ -89,6 +94,7 @@ export class WeatherV2DashModel extends HoistModel {
                     icon: Icon.gear(),
                     content: unitsToggleWidget,
                     unique: false,
+                    allowRename: false,
                     width: 3,
                     height: 2
                 },
@@ -98,6 +104,7 @@ export class WeatherV2DashModel extends HoistModel {
                     icon: windIcon(),
                     content: windChartWidget,
                     unique: false,
+                    allowRename: false,
                     width: 6,
                     height: 5
                 },
@@ -107,6 +114,7 @@ export class WeatherV2DashModel extends HoistModel {
                     icon: Icon.info(),
                     content: markdownContentWidget,
                     unique: false,
+                    allowRename: false,
                     width: 4,
                     height: 3
                 },
@@ -116,6 +124,7 @@ export class WeatherV2DashModel extends HoistModel {
                     icon: Icon.code(),
                     content: dashInspectorWidget,
                     unique: true,
+                    allowRename: false,
                     width: 6,
                     height: 5
                 }

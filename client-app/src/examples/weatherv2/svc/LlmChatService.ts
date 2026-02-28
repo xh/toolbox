@@ -107,7 +107,6 @@ The spec is a JSON object with this structure:
         {
             "viewSpecId": "widgetTypeId",
             "layout": {"x": 0, "y": 0, "w": 6, "h": 5},
-            "title": "Optional Custom Title",
             "state": {
                 "bindings": {
                     "inputName": {"fromWidget": "sourceInstanceId", "output": "outputName"}
@@ -122,8 +121,9 @@ The spec is a JSON object with this structure:
 Each widget in the \`state\` array has:
 - \`viewSpecId\` (required): Widget type from the catalog.
 - \`layout\` (required): Grid position. \`x\` is column (0-11), \`y\` is row, \`w\` is width (1-12), \`h\` is height.
-- \`title\` (optional): Custom display title.
-- \`state\` (optional): Widget config and input bindings.`;
+- \`state\` (optional): Widget config and input bindings.
+
+**Widget Titles:** Display widgets (currentConditions, forecastChart, precipChart, windChart, summaryGrid) auto-generate their titles from their bound city (e.g. "Forecast — Tokyo"). Do NOT set a top-level \`title\` for these widgets — it will be overwritten. For the \`markdownContent\` widget, set the title via \`state.title\` (e.g. \`"state": {"title": "Dashboard Header", "content": "..."}\`). Input widgets (cityChooser, unitsToggle) and dashInspector use their default titles.`;
 
 const WIRING_RULES = `## Wiring Rules
 

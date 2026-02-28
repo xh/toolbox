@@ -25,6 +25,27 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
     override onLinked() {
         super.onLinked();
         this.persistWith = {dashViewModel: this.viewModel};
+
+        // Auto-title: subclasses override getAutoTitle() to provide reactive titles
+        this.addReaction({
+            track: () => this.getAutoTitle(),
+            run: title => {
+                if (title != null) this.viewModel.title = title;
+            },
+            fireImmediately: true
+        });
+    }
+
+    //--------------------------------------------------
+    // Auto-Title
+    //--------------------------------------------------
+
+    /**
+     * Override in subclasses to provide a reactive auto-generated title.
+     * Returning null keeps the default viewSpec title unchanged.
+     */
+    protected getAutoTitle(): string | null {
+        return null;
     }
 
     //--------------------------------------------------
