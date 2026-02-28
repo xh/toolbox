@@ -1,7 +1,7 @@
 import {HoistModel, lookup} from '@xh/hoist/core';
 import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
-import {WidgetMeta, BindingSpec} from './types';
-import {WiringModel} from './WiringModel';
+import {WidgetMeta, BindingSpec} from '../dash/types';
+import {WiringModel} from '../dash/WiringModel';
 import {AppModel} from '../AppModel';
 
 /**
@@ -15,7 +15,7 @@ import {AppModel} from '../AppModel';
  * Subclasses must define a static `meta: WidgetMeta` property
  * and register it with the WidgetRegistry.
  */
-export abstract class WeatherWidgetModel extends HoistModel {
+export abstract class BaseWeatherWidgetModel extends HoistModel {
     /** Static metadata — override in every subclass. */
     static meta: WidgetMeta;
 

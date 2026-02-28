@@ -3,7 +3,7 @@ import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {computed, makeObservable} from '@xh/hoist/mobx';
-import {WeatherWidgetModel} from '../dash/WeatherWidgetModel';
+import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {convertTemp, tempUnit} from '../dash/unitUtils';
 import {WidgetMeta} from '../dash/types';
@@ -12,7 +12,7 @@ import {WeatherData} from '../Types';
 //--------------------------------------------------
 // Model
 //--------------------------------------------------
-export class ForecastChartModel extends WeatherWidgetModel {
+export class ForecastChartModel extends BaseWeatherWidgetModel {
     static override meta: WidgetMeta = {
         id: 'forecastChart',
         title: 'Forecast Chart',

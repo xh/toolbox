@@ -5,7 +5,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
-import {WeatherWidgetModel} from '../dash/WeatherWidgetModel';
+import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {WidgetMeta} from '../dash/types';
 import {WeatherData} from '../Types';
@@ -13,7 +13,7 @@ import {WeatherData} from '../Types';
 //--------------------------------------------------
 // Model
 //--------------------------------------------------
-export class PrecipChartModel extends WeatherWidgetModel {
+export class PrecipChartModel extends BaseWeatherWidgetModel {
     static override meta: WidgetMeta = {
         id: 'precipChart',
         title: 'Precipitation',

@@ -2,14 +2,14 @@ import {hoistCmp, creates} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {WeatherWidgetModel} from '../dash/WeatherWidgetModel';
+import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {WidgetMeta} from '../dash/types';
 
 //--------------------------------------------------
 // Model
 //--------------------------------------------------
-export class MarkdownContentModel extends WeatherWidgetModel {
+export class MarkdownContentModel extends BaseWeatherWidgetModel {
     static override meta: WidgetMeta = {
         id: 'markdownContent',
         title: 'Markdown Content',

@@ -3,14 +3,14 @@ import {box} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {WeatherWidgetModel} from '../dash/WeatherWidgetModel';
+import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {WidgetMeta} from '../dash/types';
 
 //--------------------------------------------------
 // Model
 //--------------------------------------------------
-export class UnitsToggleModel extends WeatherWidgetModel {
+export class UnitsToggleModel extends BaseWeatherWidgetModel {
     static override meta: WidgetMeta = {
         id: 'unitsToggle',
         title: 'Units Toggle',

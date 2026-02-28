@@ -4,7 +4,7 @@ import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {computed, makeObservable} from '@xh/hoist/mobx';
 import {groupBy} from 'lodash';
-import {WeatherWidgetModel} from '../dash/WeatherWidgetModel';
+import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {fmtTemp, fmtWind} from '../dash/unitUtils';
 import {WidgetMeta} from '../dash/types';
@@ -13,7 +13,7 @@ import {WeatherData} from '../Types';
 //--------------------------------------------------
 // Model
 //--------------------------------------------------
-export class SummaryGridModel extends WeatherWidgetModel {
+export class SummaryGridModel extends BaseWeatherWidgetModel {
     static override meta: WidgetMeta = {
         id: 'summaryGrid',
         title: '5-Day Summary',

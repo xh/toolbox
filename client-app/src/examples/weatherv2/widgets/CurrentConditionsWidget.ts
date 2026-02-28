@@ -2,7 +2,7 @@ import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {div, hbox, img, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {computed, makeObservable} from '@xh/hoist/mobx';
-import {WeatherWidgetModel} from '../dash/WeatherWidgetModel';
+import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {fmtTemp, fmtWind} from '../dash/unitUtils';
 import {WidgetMeta} from '../dash/types';
@@ -12,7 +12,7 @@ import '../WeatherV2.scss';
 //--------------------------------------------------
 // Model
 //--------------------------------------------------
-export class CurrentConditionsModel extends WeatherWidgetModel {
+export class CurrentConditionsModel extends BaseWeatherWidgetModel {
     static override meta: WidgetMeta = {
         id: 'currentConditions',
         title: 'Current Conditions',

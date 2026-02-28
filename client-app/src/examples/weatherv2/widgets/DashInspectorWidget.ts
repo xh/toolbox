@@ -2,7 +2,7 @@ import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {computed, makeObservable} from '@xh/hoist/mobx';
-import {WeatherWidgetModel} from '../dash/WeatherWidgetModel';
+import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {WidgetMeta} from '../dash/types';
 import {AppModel} from '../AppModel';
@@ -10,7 +10,7 @@ import {AppModel} from '../AppModel';
 //--------------------------------------------------
 // Model
 //--------------------------------------------------
-export class DashInspectorModel extends WeatherWidgetModel {
+export class DashInspectorModel extends BaseWeatherWidgetModel {
     static override meta: WidgetMeta = {
         id: 'dashInspector',
         title: 'Dash Inspector',

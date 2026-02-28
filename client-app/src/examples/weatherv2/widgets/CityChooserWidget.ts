@@ -2,7 +2,7 @@ import {hoistCmp, creates} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {box} from '@xh/hoist/cmp/layout';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {WeatherWidgetModel} from '../dash/WeatherWidgetModel';
+import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {WidgetMeta} from '../dash/types';
 
@@ -37,7 +37,7 @@ export const CITIES = [
 //--------------------------------------------------
 // Model
 //--------------------------------------------------
-export class CityChooserModel extends WeatherWidgetModel {
+export class CityChooserModel extends BaseWeatherWidgetModel {
     static override meta: WidgetMeta = {
         id: 'cityChooser',
         title: 'City Chooser',
