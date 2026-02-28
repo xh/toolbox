@@ -14,6 +14,7 @@ export class AppModel extends BaseAppModel {
     @managed weatherV2DashModel: WeatherV2DashModel;
     @managed weatherViewManager: ViewManagerModel;
     @bindable showJsonHarness: boolean = false;
+    @bindable showChatHarness: boolean = false;
 
     constructor() {
         super();

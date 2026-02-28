@@ -80,3 +80,62 @@
     color: var(--xh-orange);
   }
 }
+
+// Chat harness
+.weather-v2-chat-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  color: var(--xh-text-color-muted);
+  font-style: italic;
+}
+
+.weather-v2-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.weather-v2-chat-msg {
+  padding: 8px 10px;
+  border-radius: 6px;
+
+  &--user {
+    background: var(--xh-bg-highlight);
+    align-self: flex-end;
+    max-width: 90%;
+  }
+
+  &--assistant {
+    background: var(--xh-bg-alt);
+    max-width: 95%;
+  }
+
+  &__role {
+    font-size: var(--xh-font-size-small-px);
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__content {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    font-size: var(--xh-font-size-px);
+    line-height: 1.4;
+  }
+}
+
+.weather-v2-chat-input {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-top: var(--xh-border-solid);
+  align-items: flex-end;
+}

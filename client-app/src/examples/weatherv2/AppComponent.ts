@@ -8,6 +8,7 @@ import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {Icon} from '@xh/hoist/icon';
 import {AppModel} from './AppModel';
 import {jsonHarnessPanel} from './harness/JsonHarnessPanel';
+import {chatHarnessPanel} from './harness/ChatHarnessPanel';
 import '../../core/Toolbox.scss';
 import './WeatherV2.scss';
 
@@ -16,13 +17,20 @@ export const AppComponent = hoistCmp({
     model: uses(AppModel),
 
     render({model}) {
-        const {weatherV2DashModel, showJsonHarness} = model;
+        const {weatherV2DashModel, showJsonHarness, showChatHarness} = model;
         return panel({
             tbar: appBar({
                 icon: Icon.sun({size: '2x', prefix: 'fal'}),
                 title: 'Weather V2',
                 leftItems: [viewManager()],
                 rightItems: [
+                    button({
+                        icon: Icon.comment(),
+                        text: 'Chat',
+                        active: showChatHarness,
+                        outlined: true,
+                        onClick: () => (model.showChatHarness = !showChatHarness)
+                    }),
                     button({
                         icon: Icon.code(),
                         text: 'JSON',
@@ -35,6 +43,7 @@ export const AppComponent = hoistCmp({
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
             item: hframe(
+                showChatHarness ? chatHarnessPanel({width: 400, minWidth: 300}) : null,
                 showJsonHarness ? jsonHarnessPanel({width: 500, minWidth: 350}) : null,
                 box({flex: 1, item: dashCanvas({model: weatherV2DashModel.dashCanvasModel})})
             ),
