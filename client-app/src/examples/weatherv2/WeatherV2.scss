@@ -1,5 +1,11 @@
 .weather-v2-app {
   height: 100%;
+
+  // Ensure dashCanvas fills remaining space in hframe
+  > .xh-hframe {
+    flex: 1;
+    min-height: 0;
+  }
 }
 
 .weather-v2-current-conditions {
@@ -32,5 +38,45 @@
   &__description {
     font-weight: 600;
     font-size: 13px;
+  }
+}
+
+// Validation display in JSON harness
+.weather-v2-validation {
+  padding: 6px 10px;
+  font-size: var(--xh-font-size-small-px);
+  border-top: var(--xh-border-solid);
+
+  &--success {
+    color: var(--xh-green);
+  }
+
+  &--warning {
+    color: var(--xh-orange);
+  }
+
+  &--error {
+    color: var(--xh-red);
+  }
+}
+
+.weather-v2-validation-details {
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 4px 10px;
+  font-size: var(--xh-font-size-small-px);
+  font-family: var(--xh-font-family-mono);
+  border-top: var(--xh-border-solid);
+}
+
+.weather-v2-validation-msg {
+  padding: 2px 0;
+
+  &--error {
+    color: var(--xh-red);
+  }
+
+  &--warning {
+    color: var(--xh-orange);
   }
 }

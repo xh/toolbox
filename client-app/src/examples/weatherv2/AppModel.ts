@@ -1,5 +1,6 @@
 import {managed, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {
     autoRefreshAppOption,
     themeAppOption,
@@ -12,6 +13,12 @@ export class AppModel extends BaseAppModel {
     static instance: AppModel;
     @managed weatherV2DashModel: WeatherV2DashModel;
     @managed weatherViewManager: ViewManagerModel;
+    @bindable showJsonHarness: boolean = false;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     override async initAsync() {
         await super.initAsync();
