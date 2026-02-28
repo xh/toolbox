@@ -57,7 +57,8 @@ import versionCompatibilityUrl from '@xh/hoist/docs/version-compatibility.md';
 // ---------------------------------------------------------------------------
 // DevOps docs
 // ---------------------------------------------------------------------------
-import buildDeployUrl from '@xh/hoist/docs/build-and-deploy.md';
+import buildPublishUrl from '@xh/hoist/docs/build-and-publish.md';
+import buildAppDeploymentUrl from '@xh/hoist/docs/build-app-deployment.md';
 import changelogFormatUrl from '@xh/hoist/docs/changelog-format.md';
 import compilationNotesUrl from '@xh/hoist/docs/compilation-notes.md';
 import devEnvironmentUrl from '@xh/hoist/docs/development-environment.md';
@@ -69,6 +70,7 @@ import v78UpgradeUrl from '@xh/hoist/docs/upgrade-notes/v78-upgrade-notes.md';
 import v79UpgradeUrl from '@xh/hoist/docs/upgrade-notes/v79-upgrade-notes.md';
 import v80UpgradeUrl from '@xh/hoist/docs/upgrade-notes/v80-upgrade-notes.md';
 import v81UpgradeUrl from '@xh/hoist/docs/upgrade-notes/v81-upgrade-notes.md';
+import v82UpgradeUrl from '@xh/hoist/docs/upgrade-notes/v82-upgrade-notes.md';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -772,13 +774,22 @@ export const DOC_REGISTRY: DocEntry[] = [
     },
     // DevOps & Environment
     {
-        id: 'build-deploy',
-        title: 'Build & Deploy',
+        id: 'build-publish',
+        title: 'Build & Publish',
         category: 'devops',
-        description: 'CI configuration, build pipelines, and deployment considerations',
-        url: buildDeployUrl,
-        sourcePath: 'docs/build-and-deploy.md',
-        keyTopics: ['CI', 'build', 'deploy', 'pipeline', 'Docker', 'Tomcat']
+        description: 'Hoist-react CI/CD: GitHub Actions workflows for linting, npm publishing',
+        url: buildPublishUrl,
+        sourcePath: 'docs/build-and-publish.md',
+        keyTopics: ['CI', 'GitHub Actions', 'npm', 'publish', 'snapshot', 'lint', 'CodeQL']
+    },
+    {
+        id: 'build-app-deployment',
+        title: 'App Build & Deployment',
+        category: 'devops',
+        description: 'Full-stack application build process, WAR packaging, and deployment',
+        url: buildAppDeploymentUrl,
+        sourcePath: 'docs/build-app-deployment.md',
+        keyTopics: ['build', 'deploy', 'WAR', 'Gradle', 'webpack', 'nginx', 'Docker']
     },
     {
         id: 'dev-environment',
@@ -849,6 +860,16 @@ export const DOC_REGISTRY: DocEntry[] = [
             'hoist-dev-utils',
             'reverse lookup'
         ]
+    },
+    {
+        id: 'v82-upgrade',
+        title: 'v82 Upgrade Notes',
+        category: 'upgrade',
+        description:
+            'Picker input, DashCanvasWidgetChooser, GroupingChooser bind, MCP server, filter refactor',
+        url: v82UpgradeUrl,
+        sourcePath: 'docs/upgrade-notes/v82-upgrade-notes.md',
+        keyTopics: ['v82', 'upgrade', 'Picker', 'DashCanvas', 'MCP', 'Filter']
     },
     {
         id: 'v81-upgrade',

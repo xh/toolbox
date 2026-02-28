@@ -2,14 +2,13 @@ import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
 import {action, bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {div, hbox} from '@xh/hoist/cmp/layout';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {StoreRecord, withFilterByField, withFilterByKey} from '@xh/hoist/data';
+import {StoreRecord, appendFilter, FilterLike} from '@xh/hoist/data';
 import {isEmpty, uniq, without} from 'lodash';
 
 import {PERSIST_APP} from './AppModel';
 import {favoriteButton} from './cmp/FavoriteButton';
 import {DetailsPanelModel} from './details/DetailsPanelModel';
 import {cellPhoneCol, emailCol, locationCol, nameCol, workPhoneCol} from '../../core/columns';
-import {FilterLike} from '@xh/hoist/data/filter/Types';
 
 /**
  * Primary model to load a list of contacts from the server and manage filter and selection state.
@@ -107,7 +106,7 @@ export class DirectoryPanelModel extends HoistModel {
                 ? {field: 'location', op: '=', value: locationFilter}
                 : null;
 
-        const filter = withFilterByField(store.filter, newFilter, 'location');
+        const filter = appendFilter(store.filter?.removeFieldFilters('location'), newFilter);
         store.setFilter(filter);
     }
 
@@ -121,7 +120,7 @@ export class DirectoryPanelModel extends HoistModel {
                   }
                 : null;
 
-        const filter = withFilterByKey(store.filter, newFilter, 'tags');
+        const filter = appendFilter(store.filter?.removeFunctionFilters('tags'), newFilter);
         store.setFilter(filter);
     }
 

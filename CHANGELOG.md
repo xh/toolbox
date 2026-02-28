@@ -1,6 +1,6 @@
 # Changelog
 
-## 9.0-SNAPSHOT
+## 8.2.0 - 2026-02-27
 
 ### New Features
 
@@ -13,6 +13,12 @@
 ### Technical
 
 * Converted `.tsx` example/demo files to `.ts`, replacing JSX with hoist element factory functions. Aligns all examples with the project's established "no JSX" convention.
+
+### Libraries
+
+* hoist-core 36.3.1
+* @xh/hoist 82.0.0
+
 
 ## 8.1.0 - 2026-02-12
 

@@ -1,7 +1,7 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
-import {withFilterByField, FilterLike} from '@xh/hoist/data';
+import {appendFilter, FilterLike} from '@xh/hoist/data';
 import {uniq, map} from 'lodash';
 
 import {newsPanelItem} from './NewsPanelItem';
@@ -66,7 +66,7 @@ export class NewsPanelModel extends HoistModel {
                 ? {field: 'source', op: '=', value: sourceFilterValues}
                 : null;
 
-        const filter = withFilterByField(store.filter, newFilter, 'source');
+        const filter = appendFilter(store.filter?.removeFieldFilters('source'), newFilter);
         store.setFilter(filter);
     }
 

@@ -7,13 +7,15 @@ usage, and links to related Hoist and Toolbox source code. Toolbox also provides
 examples which may be especially useful as a starting point for application developers new to the
 framework.
 
-Please refer to the [Hoist Core](https://github.com/xh/hoist-core) and [Hoist React](https://github.com/xh/hoist-react) repos for detailed information and
+Please refer to the [Hoist Core](https://github.com/xh/hoist-core)
+and [Hoist React](https://github.com/xh/hoist-react) repos for detailed information and
 documentation on Hoist, including more information on configuring a local development environment.
 
 Toolbox is itself a Hoist Application, and we keep it updated with the latest versions of the Hoist
-Framework. A [toolbox-dev instance](https://toolbox-dev.xh.io) is auto-deployed via Teamcity on each commit to either the
-Toolbox or Hoist `develop` branches. We update a distinct ["production" instance](https://toolbox.xh.io) manually with
-each new versioned Hoist release.
+Framework. A [toolbox-dev instance](https://toolbox-dev.xh.io) is auto-deployed via Teamcity on each
+commit to either the Toolbox or Hoist `develop` branches. We update a
+distinct ["production" instance](https://toolbox.xh.io) manually with each new versioned Hoist
+release.
 
 ## Database
 
@@ -66,7 +68,9 @@ Auth0 config accordingly.
 ## Running Toolbox
 
 To run toolbox locally on your machine, use the following commands:
-* Start the server with the command `./gradlew bootRun -Duser.timezone=Etc/UTC` in the `toolbox` package.
+
+* Start the server with the command `./gradlew bootRun -Duser.timezone=Etc/UTC` in the `toolbox`
+  package.
 * Start the client with the command `yarn start` in the `toolbox/client-app` package.
 
 ## Toolbox + Hoist development
@@ -95,8 +99,8 @@ can be useful to have the code on-hand.
 
 * To run the server using the local `hoist-core`, you need `hoist-core` to exist as sibling of the
   `toolbox` package, and do one of the following:
-  * Edit the `toolbox/gradle.properties` file and set `runHoistInline=true` or set it in your
-    default gradle properties, e.g. ~/.gradle/gradle.properties
+    * Edit the `toolbox/gradle.properties` file and set `runHoistInline=true` or set it in your
+      default gradle properties, e.g. ~/.gradle/gradle.properties
 
   Note this is _only_ required if you're changing hoist-core code.
 
@@ -110,9 +114,11 @@ can be useful to have the code on-hand.
 
 * Make sure that the `APP_TOOLBOX_MULTI_INSTANCE_ENABLED` property in `.env` is set to `true`.
 * Run the first instance of the server and client as normal.
-* To run a second instance of the server, you run the command `./gradlew bootRun -Duser.timezone=Etc/UTC -Dserver.port=8081` from the `toolbox` directory.
+* To run a second instance of the server, you run the command
+  `./gradlew bootRun -Duser.timezone=Etc/UTC -Dserver.port=8081` from the `toolbox` directory.
 * To run a second instance of the client connected to the second server, start another local
-  webpack-dev-server from the `toolbox/client-app` directory using `yarn start --env devGrailsPort=8081 devWebpackPort=3001`.
+  webpack-dev-server from the `toolbox/client-app` directory using
+  `yarn start --env devGrailsPort=8081 devWebpackPort=3001`.
 
 ## Developing with HTTPS on `xh.io` domain
 
@@ -136,6 +142,4 @@ HTTPS on the `toolbox-local.xh.io:3000` domain:
 
 ------------------------------------------
 
-📫☎️🌎 info@xh.io | <https://xh.io/contact>
-
-Copyright © 2024 Extremely Heavy Industries Inc.
+info@xh.io | <https://xh.io/>
