@@ -43,20 +43,18 @@
 
 // Validation display in JSON harness
 .weather-v2-validation {
-  padding: 6px 10px;
   font-size: var(--xh-font-size-small-px);
-  border-top: var(--xh-border-solid);
 
   &--success {
-    color: var(--xh-green);
+    color: var(--xh-intent-success);
   }
 
   &--warning {
-    color: var(--xh-orange);
+    color: var(--xh-intent-warning);
   }
 
   &--error {
-    color: var(--xh-red);
+    color: var(--xh-intent-danger);
   }
 }
 

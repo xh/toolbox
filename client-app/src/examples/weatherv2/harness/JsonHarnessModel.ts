@@ -79,19 +79,6 @@ export class JsonHarnessModel extends HoistModel {
         }
     }
 
-    /** Copy current dashboard spec to clipboard. */
-    async copySpecAsync() {
-        try {
-            const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
-            const spec: DashSpec = {version: 1, state: this.buildSpecState(dashModel)};
-            const json = JSON.stringify(spec, null, 2);
-            await navigator.clipboard.writeText(json);
-            XH.successToast('Spec copied to clipboard.');
-        } catch (e) {
-            XH.dangerToast('Failed to copy spec.');
-        }
-    }
-
     /** Load an example spec into the editor. */
     @action
     loadExample(name: string) {
@@ -125,7 +112,19 @@ export class JsonHarnessModel extends HoistModel {
             return;
         }
 
-        this.lastValidation = validateSpec(spec);
+        const result = validateSpec(spec);
+        if (result.valid && result.warnings.length === 0) {
+            XH.successToast('Spec is valid.');
+        } else {
+            this.lastValidation = result;
+        }
+    }
+
+    /** Clear validation/error display. */
+    @action
+    dismissValidation() {
+        this.lastValidation = null;
+        this.lastError = null;
     }
 
     //------------------------

@@ -31,7 +31,7 @@ const editorArea = hoistCmp.factory({
             width: '100%',
             commitOnChange: true,
             enableSearch: true,
-            showCopyButton: false,
+            showCopyButton: true,
             showFormatButton: true,
             showFullscreenButton: true
         });
@@ -44,58 +44,54 @@ const validationDisplay = hoistCmp.factory<JsonHarnessModel>({
 
         if (!lastValidation && !lastError) return null;
 
+        let icon, title, className;
         if (lastError) {
-            return div({
-                className: 'weather-v2-validation weather-v2-validation--error',
-                item: lastError
-            });
-        }
-
-        if (!lastValidation) return null;
-
-        const {valid, errors, warnings} = lastValidation;
-        const items = [];
-
-        if (valid && warnings.length === 0) {
-            items.push(
-                div({
-                    className: 'weather-v2-validation weather-v2-validation--success',
-                    item: 'Spec is valid.'
-                })
-            );
-        } else if (valid) {
-            items.push(
-                div({
-                    className: 'weather-v2-validation weather-v2-validation--warning',
-                    item: `Valid with ${warnings.length} warning(s).`
-                })
-            );
+            icon = Icon.warning();
+            title = 'Error';
+            className = 'weather-v2-validation--error';
+        } else if (!lastValidation.valid) {
+            icon = Icon.warning();
+            title = `${lastValidation.errors.length} error(s), ${lastValidation.warnings.length} warning(s)`;
+            className = 'weather-v2-validation--error';
         } else {
-            items.push(
-                div({
-                    className: 'weather-v2-validation weather-v2-validation--error',
-                    item: `${errors.length} error(s), ${warnings.length} warning(s).`
-                })
-            );
+            icon = Icon.warning();
+            title = `Valid with ${lastValidation.warnings.length} warning(s)`;
+            className = 'weather-v2-validation--warning';
         }
 
-        const messages = [...errors, ...warnings];
-        if (messages.length > 0) {
-            items.push(
-                div({
-                    className: 'weather-v2-validation-details',
-                    items: messages.slice(0, 10).map((m, i) =>
-                        div({
-                            key: i,
-                            className: `weather-v2-validation-msg weather-v2-validation-msg--${m.level}`,
-                            item: `[${m.level.toUpperCase()}] ${m.path ? m.path + ': ' : ''}${m.message}`
-                        })
-                    )
-                })
-            );
-        }
+        const messages = lastError
+            ? [lastError]
+            : [...(lastValidation?.errors ?? []), ...(lastValidation?.warnings ?? [])];
 
-        return vbox(...items);
+        return panel({
+            icon,
+            title,
+            className: `weather-v2-validation ${className}`,
+            compactHeader: true,
+            maxHeight: 200,
+            headerItems: [
+                button({
+                    icon: Icon.close(),
+                    minimal: true,
+                    small: true,
+                    onClick: () => model.dismissValidation()
+                })
+            ],
+            item: div({
+                className: 'weather-v2-validation-details',
+                style: {overflow: 'auto'},
+                items: messages.slice(0, 10).map((m, i) =>
+                    div({
+                        key: i,
+                        className: `weather-v2-validation-msg weather-v2-validation-msg--${typeof m === 'string' ? 'error' : m.level}`,
+                        item:
+                            typeof m === 'string'
+                                ? m
+                                : `[${m.level.toUpperCase()}] ${m.path ? m.path + ': ' : ''}${m.message}`
+                    })
+                )
+            })
+        });
     }
 });
 
@@ -119,7 +115,7 @@ const bottomToolbar = hoistCmp.factory<JsonHarnessModel>({
             button({
                 icon: Icon.sync(),
                 text: 'Sync',
-                title: 'Load current dashboard state into editor',
+                tooltip: 'Load current dashboard state into editor',
                 onClick: () => model.syncFromDashboard()
             }),
             filler(),
@@ -133,11 +129,6 @@ const bottomToolbar = hoistCmp.factory<JsonHarnessModel>({
                 text: 'Apply',
                 intent: 'success',
                 onClick: () => model.applySpec()
-            }),
-            button({
-                icon: Icon.copy(),
-                text: 'Copy Spec',
-                onClick: () => model.copySpecAsync()
             })
         );
     }

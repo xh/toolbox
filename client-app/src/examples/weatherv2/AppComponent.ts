@@ -31,13 +31,15 @@ export const AppComponent = hoistCmp({
                         text: 'Chat',
                         active: showChatHarness,
                         outlined: true,
+                        intent: 'primary',
                         onClick: () => (model.showChatHarness = !showChatHarness)
                     }),
                     button({
-                        icon: Icon.code(),
+                        icon: Icon.json(),
                         text: 'JSON',
                         active: showJsonHarness,
                         outlined: true,
+                        intent: 'primary',
                         onClick: () => (model.showJsonHarness = !showJsonHarness)
                     }),
                     appBarSeparator()
