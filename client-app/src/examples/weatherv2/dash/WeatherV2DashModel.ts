@@ -6,12 +6,16 @@ import {makeObservable} from '@xh/hoist/mobx';
 import {WiringModel} from './WiringModel';
 import {WeatherDataModel} from './WeatherDataModel';
 
-import {temperatureIcon, cloudRainIcon, calendarDaysIcon} from '../Icons';
+import {temperatureIcon, cloudRainIcon, calendarDaysIcon, windIcon} from '../Icons';
 import {cityChooserWidget} from '../widgets/CityChooserWidget';
 import {currentConditionsWidget} from '../widgets/CurrentConditionsWidget';
 import {forecastChartWidget} from '../widgets/ForecastChartWidget';
 import {precipChartWidget} from '../widgets/PrecipChartWidget';
 import {summaryGridWidget} from '../widgets/SummaryGridWidget';
+import {unitsToggleWidget} from '../widgets/UnitsToggleWidget';
+import {windChartWidget} from '../widgets/WindChartWidget';
+import {markdownContentWidget} from '../widgets/MarkdownContentWidget';
+import {dashInspectorWidget} from '../widgets/DashInspectorWidget';
 
 /**
  * Central model for the Weather V2 dashboard.
@@ -81,6 +85,42 @@ export class WeatherV2DashModel extends HoistModel {
                     unique: false,
                     width: 6,
                     height: 5
+                },
+                {
+                    id: 'unitsToggle',
+                    title: 'Units Toggle',
+                    icon: Icon.gear(),
+                    content: unitsToggleWidget,
+                    unique: false,
+                    width: 3,
+                    height: 2
+                },
+                {
+                    id: 'windChart',
+                    title: 'Wind',
+                    icon: windIcon(),
+                    content: windChartWidget,
+                    unique: false,
+                    width: 6,
+                    height: 5
+                },
+                {
+                    id: 'markdownContent',
+                    title: 'Markdown Content',
+                    icon: Icon.info(),
+                    content: markdownContentWidget,
+                    unique: false,
+                    width: 4,
+                    height: 3
+                },
+                {
+                    id: 'dashInspector',
+                    title: 'Dash Inspector',
+                    icon: Icon.code(),
+                    content: dashInspectorWidget,
+                    unique: true,
+                    width: 6,
+                    height: 5
                 }
             ],
             initialState: [
@@ -90,11 +130,17 @@ export class WeatherV2DashModel extends HoistModel {
                     state: {selectedCity: 'New York'}
                 },
                 {
+                    viewSpecId: 'unitsToggle',
+                    layout: {x: 0, y: 2, w: 3, h: 2},
+                    state: {units: 'imperial'}
+                },
+                {
                     viewSpecId: 'currentConditions',
                     layout: {x: 3, y: 0, w: 4, h: 5},
                     state: {
                         bindings: {
-                            city: {fromWidget: 'cityChooser', output: 'selectedCity'}
+                            city: {fromWidget: 'cityChooser', output: 'selectedCity'},
+                            units: {fromWidget: 'unitsToggle', output: 'units'}
                         }
                     }
                 },
@@ -103,7 +149,8 @@ export class WeatherV2DashModel extends HoistModel {
                     layout: {x: 7, y: 0, w: 5, h: 5},
                     state: {
                         bindings: {
-                            city: {fromWidget: 'cityChooser', output: 'selectedCity'}
+                            city: {fromWidget: 'cityChooser', output: 'selectedCity'},
+                            units: {fromWidget: 'unitsToggle', output: 'units'}
                         },
                         series: ['temp', 'feelsLike'],
                         chartType: 'line'
@@ -119,11 +166,22 @@ export class WeatherV2DashModel extends HoistModel {
                     }
                 },
                 {
-                    viewSpecId: 'summaryGrid',
+                    viewSpecId: 'windChart',
                     layout: {x: 6, y: 5, w: 6, h: 5},
                     state: {
                         bindings: {
-                            city: {fromWidget: 'cityChooser', output: 'selectedCity'}
+                            city: {fromWidget: 'cityChooser', output: 'selectedCity'},
+                            units: {fromWidget: 'unitsToggle', output: 'units'}
+                        }
+                    }
+                },
+                {
+                    viewSpecId: 'summaryGrid',
+                    layout: {x: 0, y: 10, w: 12, h: 5},
+                    state: {
+                        bindings: {
+                            city: {fromWidget: 'cityChooser', output: 'selectedCity'},
+                            units: {fromWidget: 'unitsToggle', output: 'units'}
                         }
                     }
                 }
