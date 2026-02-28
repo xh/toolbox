@@ -1,4 +1,4 @@
-import {HoistModel, LoadSpec, XH} from '@xh/hoist/core';
+import {HoistService, LoadSpec, XH} from '@xh/hoist/core';
 import {action, makeObservable, observable} from '@xh/hoist/mobx';
 import {
     WeatherData,
@@ -18,7 +18,9 @@ const STALE_MS = 5 * 60 * 1000;
  * `ensureDataAsync(city)` to trigger a fetch (if not cached or stale),
  * then read the observable cache reactively.
  */
-export class WeatherDataModel extends HoistModel {
+export class WeatherDataService extends HoistService {
+    static instance: WeatherDataService;
+
     /** Observable cache: city → WeatherData. Replace the map reference to trigger reactions. */
     @observable.ref
     private _cache = new Map<string, WeatherData>();

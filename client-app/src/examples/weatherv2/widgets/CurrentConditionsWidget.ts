@@ -1,13 +1,12 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {div, hbox, img, vbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, LoadSpec, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {computed, makeObservable} from '@xh/hoist/mobx';
 import {WeatherWidgetModel} from '../dash/WeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {fmtTemp, fmtWind} from '../dash/unitUtils';
 import {WidgetMeta} from '../dash/types';
 import {WeatherData} from '../Types';
-import {AppModel} from '../AppModel';
 import '../WeatherV2.scss';
 
 //--------------------------------------------------
@@ -106,10 +105,7 @@ export class CurrentConditionsModel extends WeatherWidgetModel {
         const {city} = this;
         if (!city) return;
         try {
-            await AppModel.instance.weatherV2DashModel.weatherDataModel.ensureDataAsync(
-                city,
-                loadSpec
-            );
+            await XH.weatherDataService.ensureDataAsync(city, loadSpec);
         } catch (e) {
             // Data model handles caching — errors will show via lastLoadException
         }
@@ -117,7 +113,7 @@ export class CurrentConditionsModel extends WeatherWidgetModel {
 
     @computed
     get weatherData(): WeatherData | null {
-        return AppModel.instance.weatherV2DashModel.weatherDataModel.getData(this.city);
+        return XH.weatherDataService.getData(this.city);
     }
 
     private createChartModel(): ChartModel {

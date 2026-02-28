@@ -1,6 +1,6 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {img} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, LoadSpec, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {computed, makeObservable} from '@xh/hoist/mobx';
 import {groupBy} from 'lodash';
@@ -9,7 +9,6 @@ import {widgetRegistry} from '../dash/WidgetRegistry';
 import {fmtTemp, fmtWind} from '../dash/unitUtils';
 import {WidgetMeta} from '../dash/types';
 import {WeatherData} from '../Types';
-import {AppModel} from '../AppModel';
 
 //--------------------------------------------------
 // Model
@@ -85,17 +84,14 @@ export class SummaryGridModel extends WeatherWidgetModel {
         const {city} = this;
         if (!city) return;
         try {
-            await AppModel.instance.weatherV2DashModel.weatherDataModel.ensureDataAsync(
-                city,
-                loadSpec
-            );
+            await XH.weatherDataService.ensureDataAsync(city, loadSpec);
         } catch (e) {
-            // Handled by WeatherDataModel
+            // Handled by WeatherDataService
         }
     }
 
     @computed get weatherData(): WeatherData | null {
-        return AppModel.instance.weatherV2DashModel.weatherDataModel.getData(this.city);
+        return XH.weatherDataService.getData(this.city);
     }
 
     private createGridModel(): GridModel {

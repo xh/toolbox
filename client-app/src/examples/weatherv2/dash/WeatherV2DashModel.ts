@@ -4,7 +4,6 @@ import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {Icon} from '@xh/hoist/icon';
 import {makeObservable} from '@xh/hoist/mobx';
 import {WiringModel} from './WiringModel';
-import {WeatherDataModel} from './WeatherDataModel';
 
 import {temperatureIcon, cloudRainIcon, calendarDaysIcon, windIcon} from '../Icons';
 import {cityChooserWidget} from '../widgets/CityChooserWidget';
@@ -20,12 +19,11 @@ import {dashInspectorWidget} from '../widgets/DashInspectorWidget';
 /**
  * Central model for the Weather V2 dashboard.
  *
- * Owns the DashCanvasModel (layout + widgets), the WiringModel (inter-widget
- * communication), and the WeatherDataModel (shared data cache).
+ * Owns the DashCanvasModel (layout + widgets) and the WiringModel (inter-widget
+ * communication). Weather data is provided by WeatherDataService.
  */
 export class WeatherV2DashModel extends HoistModel {
     @managed wiringModel: WiringModel;
-    @managed weatherDataModel: WeatherDataModel;
     @managed dashCanvasModel: DashCanvasModel;
 
     viewManagerModel: ViewManagerModel;
@@ -36,7 +34,6 @@ export class WeatherV2DashModel extends HoistModel {
 
         this.viewManagerModel = viewManagerModel;
         this.wiringModel = new WiringModel();
-        this.weatherDataModel = new WeatherDataModel();
 
         this.dashCanvasModel = new DashCanvasModel({
             persistWith: {viewManagerModel},
