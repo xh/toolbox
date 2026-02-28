@@ -1,6 +1,6 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
-import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
+import {DashCanvasModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {Icon} from '@xh/hoist/icon';
 import {makeObservable} from '@xh/hoist/mobx';
 import {WiringModel} from './WiringModel';
@@ -145,8 +145,8 @@ export class WeatherV2DashModel extends HoistModel {
                     layout: {x: 3, y: 0, w: 4, h: 5},
                     state: {
                         bindings: {
-                            city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                            units: {fromWidget: 'unitsToggle', output: 'units'}
+                            city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                            units: {fromWidget: 'unitsToggle_0', output: 'units'}
                         }
                     }
                 },
@@ -155,8 +155,8 @@ export class WeatherV2DashModel extends HoistModel {
                     layout: {x: 7, y: 0, w: 5, h: 5},
                     state: {
                         bindings: {
-                            city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                            units: {fromWidget: 'unitsToggle', output: 'units'}
+                            city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                            units: {fromWidget: 'unitsToggle_0', output: 'units'}
                         },
                         series: ['temp', 'feelsLike'],
                         chartType: 'line'
@@ -167,7 +167,7 @@ export class WeatherV2DashModel extends HoistModel {
                     layout: {x: 0, y: 5, w: 6, h: 5},
                     state: {
                         bindings: {
-                            city: {fromWidget: 'cityChooser', output: 'selectedCity'}
+                            city: {fromWidget: 'cityChooser_0', output: 'selectedCity'}
                         }
                     }
                 },
@@ -176,8 +176,8 @@ export class WeatherV2DashModel extends HoistModel {
                     layout: {x: 6, y: 5, w: 6, h: 5},
                     state: {
                         bindings: {
-                            city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                            units: {fromWidget: 'unitsToggle', output: 'units'}
+                            city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                            units: {fromWidget: 'unitsToggle_0', output: 'units'}
                         }
                     }
                 },
@@ -186,12 +186,58 @@ export class WeatherV2DashModel extends HoistModel {
                     layout: {x: 0, y: 10, w: 12, h: 5},
                     state: {
                         bindings: {
-                            city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                            units: {fromWidget: 'unitsToggle', output: 'units'}
+                            city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                            units: {fromWidget: 'unitsToggle_0', output: 'units'}
                         }
                     }
                 }
             ]
         });
+
+        // Auto-title: reactively set titles on display widgets from their bound city.
+        // Runs at this level (not in content models) because DashCanvas may lazily render
+        // widget content — DashViewModels always exist regardless of render state.
+        this.addReaction({
+            track: () => this.dashCanvasModel.viewModels.map(vm => this.computeAutoTitle(vm)),
+            run: titles => {
+                this.dashCanvasModel.viewModels.forEach((vm, i) => {
+                    if (titles[i] != null) vm.title = titles[i];
+                });
+            },
+            fireImmediately: true
+        });
+    }
+
+    //--------------------------------------------------
+    // Auto-Title
+    //--------------------------------------------------
+
+    /** Compute an auto-generated title for a widget, or null to leave as-is. */
+    private computeAutoTitle(vm: DashViewModel): string | null {
+        const specId = vm.viewSpec.id;
+
+        // Markdown widget: title comes from its persisted state
+        if (specId === 'markdownContent') {
+            return vm.viewState?.title ?? 'Markdown Content';
+        }
+
+        // Display widgets: title = prefix + bound city
+        const titlePrefix = DISPLAY_WIDGET_TITLES[specId];
+        if (!titlePrefix) return null;
+
+        const cityBinding = vm.viewState?.bindings?.city;
+        if (!cityBinding) return titlePrefix;
+
+        const city = this.wiringModel.resolveBinding(cityBinding);
+        return city ? `${titlePrefix} — ${city}` : titlePrefix;
     }
 }
+
+/** Display widgets that get auto-generated titles with city context. */
+const DISPLAY_WIDGET_TITLES: Record<string, string> = {
+    currentConditions: 'Current Conditions',
+    forecastChart: 'Forecast',
+    precipChart: 'Precipitation',
+    windChart: 'Wind',
+    summaryGrid: '5-Day Summary'
+};

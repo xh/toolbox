@@ -312,15 +312,15 @@ function validateReferential(
 }
 
 /**
- * Compute widget instance IDs matching DashCanvasModel's assignment:
- * first instance of type X → "X", second → "X_2", etc.
+ * Compute widget instance IDs matching DashCanvasModel's 0-indexed assignment:
+ * first instance of type X → "X_0", second → "X_1", etc.
  */
 function computeInstanceIds(state: DashWidgetState[]): string[] {
     const counts = new Map<string, number>();
     return state.map(widget => {
-        const count = (counts.get(widget.viewSpecId) ?? 0) + 1;
-        counts.set(widget.viewSpecId, count);
-        return count === 1 ? widget.viewSpecId : `${widget.viewSpecId}_${count}`;
+        const idx = counts.get(widget.viewSpecId) ?? 0;
+        counts.set(widget.viewSpecId, idx + 1);
+        return `${widget.viewSpecId}_${idx}`;
     });
 }
 

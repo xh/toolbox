@@ -82,10 +82,6 @@ export class CurrentConditionsModel extends BaseWeatherWidgetModel {
         return this.viewModel.viewState?.showWind ?? true;
     }
 
-    protected override getAutoTitle(): string {
-        return `Current Conditions — ${this.city}`;
-    }
-
     override onLinked() {
         super.onLinked();
 

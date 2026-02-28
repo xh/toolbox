@@ -1,5 +1,5 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {div, filler, vbox} from '@xh/hoist/cmp/layout';
+import {div, filler, placeholder, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -37,10 +37,7 @@ const messageList = hoistCmp.factory<ChatHarnessModel>({
         const {messages} = model;
 
         if (messages.length === 0) {
-            return div({
-                className: 'weather-v2-chat-empty',
-                item: 'Ask the LLM to create or modify your dashboard. Try: "Create a weather dashboard for New York and London side by side."'
-            });
+            return placeholder(sparklesIcon(), 'Ask the LLM to create or modify your dashboard.');
         }
 
         return div({

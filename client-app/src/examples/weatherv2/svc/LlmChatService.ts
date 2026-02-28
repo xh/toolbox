@@ -45,7 +45,14 @@ export class LlmChatService extends HoistService {
     ): Promise<{content: string; raw: any}> {
         const response = await XH.postJson({
             url: 'llm/generate',
-            body: {systemPrompt, messages}
+            body: {systemPrompt, messages},
+            track: {
+                category: 'WeatherV2',
+                message: 'LLM generate',
+                severity: 'DEBUG',
+                data: {messageCount: messages.length},
+                logData: true
+            }
         });
 
         // Anthropic API returns {content: [{type: 'text', text: '...'}], ...}
@@ -129,15 +136,15 @@ const WIRING_RULES = `## Wiring Rules
 
 Widgets communicate via bindings. An input widget publishes outputs; display widgets consume them via bindings.
 
-**Instance ID assignment:** Widget instance IDs are assigned by order of appearance in the \`state\` array. The first instance of type X gets ID "X", the second gets "X_2", the third "X_3", etc. Use these IDs in binding references.
+**Instance ID assignment:** Widget instance IDs are assigned by order of appearance in the \`state\` array using 0-indexed suffixes: first instance of type X gets ID "X_0", second gets "X_1", third "X_2", etc. Use these IDs in binding references.
 
 **Binding format:**
 - Wire to another widget: \`{"fromWidget": "instanceId", "output": "outputName"}\`
 - Constant value: \`{"const": "value"}\`
 
 **Common wiring patterns:**
-- CityChooser publishes \`selectedCity\` → display widgets bind their \`city\` input to it.
-- UnitsToggle publishes \`units\` → display widgets bind their \`units\` input to it.`;
+- CityChooser publishes \`selectedCity\` → display widgets bind their \`city\` input to it, e.g. \`{"fromWidget": "cityChooser_0", "output": "selectedCity"}\`.
+- UnitsToggle publishes \`units\` → display widgets bind their \`units\` input to it, e.g. \`{"fromWidget": "unitsToggle_0", "output": "units"}\`.`;
 
 const LAYOUT_RULES = `## Layout Rules
 

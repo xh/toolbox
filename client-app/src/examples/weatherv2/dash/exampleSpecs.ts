@@ -19,14 +19,14 @@ const minimalSpec: DashSpec = {
             viewSpecId: 'currentConditions',
             layout: {x: 3, y: 0, w: 4, h: 5},
             state: {
-                bindings: {city: {fromWidget: 'cityChooser', output: 'selectedCity'}}
+                bindings: {city: {fromWidget: 'cityChooser_0', output: 'selectedCity'}}
             }
         },
         {
             viewSpecId: 'forecastChart',
             layout: {x: 7, y: 0, w: 5, h: 5},
             state: {
-                bindings: {city: {fromWidget: 'cityChooser', output: 'selectedCity'}},
+                bindings: {city: {fromWidget: 'cityChooser_0', output: 'selectedCity'}},
                 series: ['temp'],
                 chartType: 'line'
             }
@@ -53,8 +53,8 @@ const fullSpec: DashSpec = {
             layout: {x: 3, y: 0, w: 4, h: 5},
             state: {
                 bindings: {
-                    city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                    units: {fromWidget: 'unitsToggle', output: 'units'}
+                    city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                    units: {fromWidget: 'unitsToggle_0', output: 'units'}
                 }
             }
         },
@@ -63,8 +63,8 @@ const fullSpec: DashSpec = {
             layout: {x: 7, y: 0, w: 5, h: 5},
             state: {
                 bindings: {
-                    city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                    units: {fromWidget: 'unitsToggle', output: 'units'}
+                    city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                    units: {fromWidget: 'unitsToggle_0', output: 'units'}
                 },
                 series: ['temp', 'feelsLike'],
                 chartType: 'line'
@@ -74,7 +74,7 @@ const fullSpec: DashSpec = {
             viewSpecId: 'precipChart',
             layout: {x: 0, y: 5, w: 6, h: 5},
             state: {
-                bindings: {city: {fromWidget: 'cityChooser', output: 'selectedCity'}}
+                bindings: {city: {fromWidget: 'cityChooser_0', output: 'selectedCity'}}
             }
         },
         {
@@ -82,8 +82,8 @@ const fullSpec: DashSpec = {
             layout: {x: 6, y: 5, w: 6, h: 5},
             state: {
                 bindings: {
-                    city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                    units: {fromWidget: 'unitsToggle', output: 'units'}
+                    city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                    units: {fromWidget: 'unitsToggle_0', output: 'units'}
                 },
                 showGusts: true
             }
@@ -93,8 +93,8 @@ const fullSpec: DashSpec = {
             layout: {x: 0, y: 10, w: 12, h: 5},
             state: {
                 bindings: {
-                    city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                    units: {fromWidget: 'unitsToggle', output: 'units'}
+                    city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                    units: {fromWidget: 'unitsToggle_0', output: 'units'}
                 }
             }
         }
@@ -127,8 +127,8 @@ const comparisonSpec: DashSpec = {
             layout: {x: 0, y: 2, w: 6, h: 5},
             state: {
                 bindings: {
-                    city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                    units: {fromWidget: 'unitsToggle', output: 'units'}
+                    city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                    units: {fromWidget: 'unitsToggle_0', output: 'units'}
                 },
                 series: ['temp'],
                 chartType: 'line'
@@ -139,8 +139,8 @@ const comparisonSpec: DashSpec = {
             layout: {x: 6, y: 2, w: 6, h: 5},
             state: {
                 bindings: {
-                    city: {fromWidget: 'cityChooser_2', output: 'selectedCity'},
-                    units: {fromWidget: 'unitsToggle', output: 'units'}
+                    city: {fromWidget: 'cityChooser_1', output: 'selectedCity'},
+                    units: {fromWidget: 'unitsToggle_0', output: 'units'}
                 },
                 series: ['temp'],
                 chartType: 'line'
@@ -151,8 +151,8 @@ const comparisonSpec: DashSpec = {
             layout: {x: 0, y: 7, w: 6, h: 5},
             state: {
                 bindings: {
-                    city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                    units: {fromWidget: 'unitsToggle', output: 'units'}
+                    city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                    units: {fromWidget: 'unitsToggle_0', output: 'units'}
                 }
             }
         },
@@ -161,8 +161,8 @@ const comparisonSpec: DashSpec = {
             layout: {x: 6, y: 7, w: 6, h: 5},
             state: {
                 bindings: {
-                    city: {fromWidget: 'cityChooser_2', output: 'selectedCity'},
-                    units: {fromWidget: 'unitsToggle', output: 'units'}
+                    city: {fromWidget: 'cityChooser_1', output: 'selectedCity'},
+                    units: {fromWidget: 'unitsToggle_0', output: 'units'}
                 }
             }
         }
@@ -197,8 +197,8 @@ const annotatedSpec: DashSpec = {
             layout: {x: 6, y: 2, w: 6, h: 5},
             state: {
                 bindings: {
-                    city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                    units: {fromWidget: 'unitsToggle', output: 'units'}
+                    city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                    units: {fromWidget: 'unitsToggle_0', output: 'units'}
                 },
                 series: ['temp', 'humidity'],
                 chartType: 'area'
@@ -209,8 +209,8 @@ const annotatedSpec: DashSpec = {
             layout: {x: 0, y: 4, w: 6, h: 5},
             state: {
                 bindings: {
-                    city: {fromWidget: 'cityChooser', output: 'selectedCity'},
-                    units: {fromWidget: 'unitsToggle', output: 'units'}
+                    city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
+                    units: {fromWidget: 'unitsToggle_0', output: 'units'}
                 }
             }
         },

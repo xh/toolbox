@@ -20,7 +20,7 @@ export class AppModel extends BaseAppModel {
     @managed weatherViewManager: ViewManagerModel;
     @managed harnessPanelModel: PanelModel;
     @persist @bindable showJsonHarness: boolean = false;
-    @persist @bindable showChatHarness: boolean = false;
+    @persist @bindable showChatHarness: boolean = true;
 
     constructor() {
         super();
@@ -44,6 +44,7 @@ export class AppModel extends BaseAppModel {
             type: 'weatherDashboardV2',
             typeDisplayName: 'Layout',
             enableDefault: true,
+            enableAutoSave: false,
             manageGlobal: XH.getUser().isHoistAdmin
         });
 

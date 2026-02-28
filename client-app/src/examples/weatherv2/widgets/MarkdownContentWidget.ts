@@ -48,10 +48,6 @@ export class MarkdownContentModel extends BaseWeatherWidgetModel {
         this.markPersist('content');
         this.markPersist('widgetTitle', {path: 'title'});
     }
-
-    protected override getAutoTitle(): string {
-        return this.widgetTitle;
-    }
 }
 
 widgetRegistry.register(MarkdownContentModel.meta);

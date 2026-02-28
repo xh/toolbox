@@ -75,10 +75,6 @@ export class WindChartModel extends BaseWeatherWidgetModel {
         return this.viewModel.viewState?.chartType ?? 'line';
     }
 
-    protected override getAutoTitle(): string {
-        return `Wind — ${this.city}`;
-    }
-
     override onLinked() {
         super.onLinked();
         this.chartModel = this.createChartModel();
