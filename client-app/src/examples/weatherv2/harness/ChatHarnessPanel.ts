@@ -1,5 +1,6 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {div, hbox, vbox} from '@xh/hoist/cmp/layout';
+import {markdown} from '@xh/hoist/cmp/markdown';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
@@ -82,6 +83,18 @@ function renderBubble(model: ChatHarnessModel, msg: DisplayMessage, index: numbe
     const formatted = formatMessageContent(msg.content);
     const displayed = model.getDisplayContent(index, formatted);
     const isTyping = index === model.typingMessageIdx;
+    const isAssistant = msg.role === 'assistant';
+
+    // Render completed assistant messages as markdown; use plain text during
+    // typewriter animation (partial markdown would produce broken rendering)
+    // and for user messages.
+    const contentItem =
+        isAssistant && !isTyping
+            ? div({
+                  className: 'weather-v2-chat-markdown',
+                  item: markdown({content: displayed, lineBreaks: false})
+              })
+            : displayed;
 
     return div({
         key: index,
@@ -93,7 +106,7 @@ function renderBubble(model: ChatHarnessModel, msg: DisplayMessage, index: numbe
             }),
             div({
                 className: `weather-v2-chat-msg__content${isTyping ? ' weather-v2-chat-msg__content--typing' : ''}`,
-                item: displayed
+                item: contentItem
             })
         ]
     });

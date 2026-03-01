@@ -330,6 +330,115 @@
   }
 }
 
+// Chat harness — markdown rendering within assistant message bubbles.
+// Compact variant of .weather-v2-markdown, sized for the narrow side panel.
+.weather-v2-chat-markdown {
+  white-space: normal;
+  font-size: var(--xh-font-size-small-px);
+  line-height: 1.5;
+
+  > :first-child {
+    margin-top: 0;
+  }
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  p {
+    margin: 4px 0;
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin-top: 8px;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  h1 {
+    font-size: 1.15em;
+  }
+  h2 {
+    font-size: 1.1em;
+  }
+  h3,
+  h4 {
+    font-size: 1em;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  ul,
+  ol {
+    padding-left: 18px;
+    margin: 4px 0;
+  }
+  li {
+    margin: 2px 0;
+  }
+
+  pre {
+    background: var(--xh-bg-alt);
+    border: 1px solid var(--xh-border-color);
+    border-radius: 4px;
+    padding: 6px 8px;
+    overflow-x: auto;
+    font-size: 11px;
+    line-height: 1.4;
+    margin: 6px 0;
+  }
+  code {
+    font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 0.9em;
+  }
+  :not(pre) > code {
+    background: var(--xh-bg-alt);
+    border: 1px solid var(--xh-border-color);
+    border-radius: 3px;
+    padding: 1px 4px;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--xh-orange);
+    margin: 6px 0;
+    padding: 4px 8px;
+    background: var(--xh-bg-alt);
+    border-radius: 0 4px 4px 0;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 6px 0;
+    font-size: 0.9em;
+  }
+  th,
+  td {
+    border: 1px solid var(--xh-border-color);
+    padding: 4px 6px;
+    text-align: left;
+  }
+  th {
+    background: var(--xh-bg-alt);
+    font-weight: 600;
+  }
+
+  a {
+    color: var(--xh-blue);
+    text-decoration: none;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--xh-border-color);
+    margin: 8px 0;
+  }
+}
+
 // Thinking dots animation
 .weather-v2-thinking-dots {
   display: flex;
