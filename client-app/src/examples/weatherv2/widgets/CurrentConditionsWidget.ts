@@ -49,8 +49,8 @@ export class CurrentConditionsModel extends BaseWeatherWidgetModel {
             },
             showWind: {type: 'boolean', description: 'Show wind speed.', default: true}
         },
-        defaultSize: {w: 4, h: 5},
-        minSize: {w: 3, h: 3}
+        defaultSize: {w: 4, h: 8},
+        minSize: {w: 3, h: 5}
     };
 
     @managed chartModel: ChartModel;

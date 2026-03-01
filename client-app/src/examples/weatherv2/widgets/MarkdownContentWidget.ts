@@ -31,8 +31,8 @@ export class MarkdownContentModel extends BaseWeatherWidgetModel {
                 default: 'Markdown Content'
             }
         },
-        defaultSize: {w: 4, h: 3},
-        minSize: {w: 2, h: 1}
+        defaultSize: {w: 4, h: 5},
+        minSize: {w: 2, h: 2}
     };
 
     @bindable content: string = "# Welcome\n\nEdit this widget's content in the dashboard spec.";

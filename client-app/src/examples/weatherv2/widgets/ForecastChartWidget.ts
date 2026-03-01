@@ -51,8 +51,8 @@ export class ForecastChartModel extends BaseWeatherWidgetModel {
             },
             showLegend: {type: 'boolean', description: 'Show chart legend.', default: true}
         },
-        defaultSize: {w: 8, h: 5},
-        minSize: {w: 4, h: 3}
+        defaultSize: {w: 8, h: 8},
+        minSize: {w: 4, h: 5}
     };
 
     @managed chartModel: ChartModel;

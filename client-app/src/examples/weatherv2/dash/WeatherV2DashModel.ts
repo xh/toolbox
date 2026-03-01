@@ -37,6 +37,7 @@ export class WeatherV2DashModel extends HoistModel {
 
         this.dashCanvasModel = new DashCanvasModel({
             persistWith: {viewManagerModel},
+            rowHeight: 30,
             viewSpecs: [
                 {
                     id: 'cityChooser',
@@ -46,7 +47,7 @@ export class WeatherV2DashModel extends HoistModel {
                     unique: false,
                     allowRename: false,
                     width: 3,
-                    height: 2
+                    height: 3
                 },
                 {
                     id: 'currentConditions',
@@ -56,7 +57,7 @@ export class WeatherV2DashModel extends HoistModel {
                     unique: false,
                     allowRename: false,
                     width: 4,
-                    height: 5
+                    height: 8
                 },
                 {
                     id: 'forecastChart',
@@ -66,7 +67,7 @@ export class WeatherV2DashModel extends HoistModel {
                     unique: false,
                     allowRename: false,
                     width: 8,
-                    height: 5
+                    height: 8
                 },
                 {
                     id: 'precipChart',
@@ -76,7 +77,7 @@ export class WeatherV2DashModel extends HoistModel {
                     unique: false,
                     allowRename: false,
                     width: 6,
-                    height: 5
+                    height: 8
                 },
                 {
                     id: 'summaryGrid',
@@ -86,7 +87,7 @@ export class WeatherV2DashModel extends HoistModel {
                     unique: false,
                     allowRename: false,
                     width: 6,
-                    height: 5
+                    height: 8
                 },
                 {
                     id: 'unitsToggle',
@@ -96,7 +97,7 @@ export class WeatherV2DashModel extends HoistModel {
                     unique: false,
                     allowRename: false,
                     width: 3,
-                    height: 2
+                    height: 3
                 },
                 {
                     id: 'windChart',
@@ -106,7 +107,7 @@ export class WeatherV2DashModel extends HoistModel {
                     unique: false,
                     allowRename: false,
                     width: 6,
-                    height: 5
+                    height: 8
                 },
                 {
                     id: 'markdownContent',
@@ -116,7 +117,7 @@ export class WeatherV2DashModel extends HoistModel {
                     unique: false,
                     allowRename: false,
                     width: 4,
-                    height: 3
+                    height: 5
                 },
                 {
                     id: 'dashInspector',
@@ -126,23 +127,23 @@ export class WeatherV2DashModel extends HoistModel {
                     unique: true,
                     allowRename: false,
                     width: 6,
-                    height: 5
+                    height: 8
                 }
             ],
             initialState: [
                 {
                     viewSpecId: 'cityChooser',
-                    layout: {x: 0, y: 0, w: 3, h: 2},
+                    layout: {x: 0, y: 0, w: 3, h: 3},
                     state: {selectedCity: 'New York'}
                 },
                 {
                     viewSpecId: 'unitsToggle',
-                    layout: {x: 0, y: 2, w: 3, h: 2},
+                    layout: {x: 0, y: 3, w: 3, h: 3},
                     state: {units: 'imperial'}
                 },
                 {
                     viewSpecId: 'currentConditions',
-                    layout: {x: 3, y: 0, w: 4, h: 5},
+                    layout: {x: 3, y: 0, w: 4, h: 8},
                     state: {
                         bindings: {
                             city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -152,7 +153,7 @@ export class WeatherV2DashModel extends HoistModel {
                 },
                 {
                     viewSpecId: 'forecastChart',
-                    layout: {x: 7, y: 0, w: 5, h: 5},
+                    layout: {x: 7, y: 0, w: 5, h: 8},
                     state: {
                         bindings: {
                             city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -164,7 +165,7 @@ export class WeatherV2DashModel extends HoistModel {
                 },
                 {
                     viewSpecId: 'precipChart',
-                    layout: {x: 0, y: 5, w: 6, h: 5},
+                    layout: {x: 0, y: 8, w: 6, h: 8},
                     state: {
                         bindings: {
                             city: {fromWidget: 'cityChooser_0', output: 'selectedCity'}
@@ -173,7 +174,7 @@ export class WeatherV2DashModel extends HoistModel {
                 },
                 {
                     viewSpecId: 'windChart',
-                    layout: {x: 6, y: 5, w: 6, h: 5},
+                    layout: {x: 6, y: 8, w: 6, h: 8},
                     state: {
                         bindings: {
                             city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -183,7 +184,7 @@ export class WeatherV2DashModel extends HoistModel {
                 },
                 {
                     viewSpecId: 'summaryGrid',
-                    layout: {x: 0, y: 10, w: 12, h: 5},
+                    layout: {x: 0, y: 16, w: 12, h: 8},
                     state: {
                         bindings: {
                             city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -197,6 +198,8 @@ export class WeatherV2DashModel extends HoistModel {
         // Auto-title: reactively set titles on display widgets from their bound city.
         // Runs at this level (not in content models) because DashCanvas may lazily render
         // widget content — DashViewModels always exist regardless of render state.
+        // Delay avoids setting titles synchronously during the render cycle that fires
+        // when a new spec is applied (widget onLinked → publishOutput → this reaction).
         this.addReaction({
             track: () => this.dashCanvasModel.viewModels.map(vm => this.computeAutoTitle(vm)),
             run: titles => {
@@ -204,7 +207,8 @@ export class WeatherV2DashModel extends HoistModel {
                     if (titles[i] != null) vm.title = titles[i];
                 });
             },
-            fireImmediately: true
+            fireImmediately: true,
+            delay: 1
         });
     }
 
@@ -221,17 +225,28 @@ export class WeatherV2DashModel extends HoistModel {
             return vm.viewState?.title ?? 'Markdown Content';
         }
 
-        // Display widgets: title = prefix + bound city
+        // Input widgets: static titles (always enforced so LLM-generated specs can't blank them)
+        const staticTitle = STATIC_WIDGET_TITLES[specId];
+        if (staticTitle) return staticTitle;
+
+        // Display widgets: title = prefix + city (from binding or direct state)
         const titlePrefix = DISPLAY_WIDGET_TITLES[specId];
         if (!titlePrefix) return null;
 
         const cityBinding = vm.viewState?.bindings?.city;
-        if (!cityBinding) return titlePrefix;
+        const city = cityBinding
+            ? this.wiringModel.resolveBinding(cityBinding)
+            : vm.viewState?.city;
 
-        const city = this.wiringModel.resolveBinding(cityBinding);
         return city ? `${titlePrefix} — ${city}` : titlePrefix;
     }
 }
+
+/** Input/utility widgets that always get a fixed title. */
+const STATIC_WIDGET_TITLES: Record<string, string> = {
+    cityChooser: 'City',
+    unitsToggle: 'Units'
+};
 
 /** Display widgets that get auto-generated titles with city context. */
 const DISPLAY_WIDGET_TITLES: Record<string, string> = {

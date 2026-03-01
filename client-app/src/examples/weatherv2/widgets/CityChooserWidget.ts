@@ -6,32 +6,52 @@ import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {WidgetMeta} from '../dash/types';
 
+/**
+ * Curated list of major cities known to work well with the OpenWeatherMap API.
+ * Shown as structured suggestions in the dropdown, but users and the LLM can
+ * also enter any city name — the weather API accepts any valid city worldwide.
+ */
 export const CITIES = [
     'Atlanta',
     'Austin',
+    'Bangkok',
+    'Berlin',
     'Boston',
+    'Buenos Aires',
+    'Cairo',
     'Chicago',
     'Dallas',
     'Denver',
+    'Dubai',
     'Houston',
+    'Hong Kong',
+    'Istanbul',
     'Las Vegas',
     'London',
     'Los Angeles',
+    'Madrid',
+    'Mexico City',
     'Miami',
     'Minneapolis',
+    'Mumbai',
     'Nashville',
     'New York',
     'Paris',
     'Philadelphia',
     'Phoenix',
     'Portland',
+    'Rome',
     'San Antonio',
     'San Diego',
     'San Francisco',
     'Seattle',
+    'Seoul',
+    'Shanghai',
+    'Singapore',
     'Sydney',
     'Tokyo',
-    'Toronto'
+    'Toronto',
+    'Vancouver'
 ];
 
 //--------------------------------------------------
@@ -42,7 +62,7 @@ export class CityChooserModel extends BaseWeatherWidgetModel {
         id: 'cityChooser',
         title: 'City Chooser',
         description:
-            'Dropdown selector that emits the selected city name. Other widgets bind to this to display data for the chosen city.',
+            'Dropdown selector that emits the selected city name. Includes a curated list of major cities but also accepts any city name supported by the weather API.',
         category: 'input',
         inputs: [],
         outputs: [
@@ -51,7 +71,8 @@ export class CityChooserModel extends BaseWeatherWidgetModel {
         config: {
             selectedCity: {
                 type: 'string',
-                description: 'Initially selected city.',
+                description:
+                    'Initially selected city. Can be any city name the weather API supports.',
                 default: 'New York'
             },
             enableSearch: {
@@ -60,8 +81,8 @@ export class CityChooserModel extends BaseWeatherWidgetModel {
                 default: true
             }
         },
-        defaultSize: {w: 3, h: 2},
-        minSize: {w: 2, h: 1}
+        defaultSize: {w: 3, h: 3},
+        minSize: {w: 2, h: 3}
     };
 
     @bindable selectedCity: string = 'New York';
@@ -111,6 +132,8 @@ export const cityChooserWidget = hoistCmp.factory({
                 bind: 'selectedCity',
                 options: model.cities,
                 enableFilter: model.enableSearch,
+                enableCreate: true,
+                createMessageFn: q => `Use "${q}"`,
                 width: '100%'
             })
         });

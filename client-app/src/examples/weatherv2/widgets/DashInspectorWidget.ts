@@ -20,8 +20,8 @@ export class DashInspectorModel extends BaseWeatherWidgetModel {
         inputs: [],
         outputs: [],
         config: {},
-        defaultSize: {w: 6, h: 5},
-        minSize: {w: 4, h: 3}
+        defaultSize: {w: 6, h: 8},
+        minSize: {w: 4, h: 5}
     };
 
     @managed gridModel: GridModel;

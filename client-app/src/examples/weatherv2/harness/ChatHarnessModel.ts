@@ -1,35 +1,77 @@
 import {HoistModel, managed, PersistableState, TaskObserver, XH} from '@xh/hoist/core';
-import {action, bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {DashSpec} from '../dash/types';
 import {validateSpec, migrateSpec} from '../dash/validation';
 import {ChatMessage} from '../svc/LlmChatService';
 import {AppModel} from '../AppModel';
 
+/** A message for display, including a "thinking" placeholder state. */
+export interface DisplayMessage {
+    role: 'user' | 'assistant';
+    content: string;
+    thinking?: boolean;
+}
+
 /**
  * Model for the LLM chat harness — manages conversation history,
- * LLM API calls, and spec application.
+ * LLM API calls, spec application, and typewriter display effect.
  */
 export class ChatHarnessModel extends HoistModel {
     @bindable userInput: string = '';
     @observable.ref messages: ChatMessage[] = [];
     @observable.ref lastError: string = null;
 
+    // Typewriter effect state
+    @observable typingMessageIdx: number = -1;
+    @observable typingChars: number = 0;
+
     @managed
     generateTask = TaskObserver.trackLast();
+
+    private _typingTimer: ReturnType<typeof setInterval> = null;
 
     constructor() {
         super();
         makeObservable(this);
     }
 
-    /** Send the current user input to the LLM and process the response. */
-    @action
-    async sendMessageAsync() {
-        const {userInput} = this;
-        if (!userInput.trim() || this.generateTask.isPending) return;
+    /** Messages to render, including a thinking placeholder while awaiting LLM response. */
+    @computed
+    get displayMessages(): DisplayMessage[] {
+        const msgs: DisplayMessage[] = this.messages.map(m => ({...m}));
+        if (
+            this.generateTask.isPending &&
+            (msgs.length === 0 || msgs[msgs.length - 1].role === 'user')
+        ) {
+            msgs.push({role: 'assistant', content: '', thinking: true});
+        }
+        return msgs;
+    }
 
-        // Add user message
-        const userMsg: ChatMessage = {role: 'user', content: userInput.trim()};
+    /**
+     * Get displayed content for a message, accounting for typewriter effect.
+     * Call with the formatted (JSON-stripped) content, not the raw LLM text.
+     */
+    getDisplayContent(index: number, formattedContent: string): string {
+        if (index === this.typingMessageIdx && this.typingChars < formattedContent.length) {
+            return formattedContent.slice(0, this.typingChars);
+        }
+        return formattedContent;
+    }
+
+    /** Whether the typewriter effect is currently animating. */
+    @computed
+    get isTyping(): boolean {
+        return this.typingMessageIdx >= 0;
+    }
+
+    /** Send the current user input (or provided text) to the LLM. */
+    @action
+    async sendMessageAsync(content?: string) {
+        const input = content ?? this.userInput;
+        if (!input.trim() || this.generateTask.isPending) return;
+
+        const userMsg: ChatMessage = {role: 'user', content: input.trim()};
         this.messages = [...this.messages, userMsg];
         this.userInput = '';
         this.lastError = null;
@@ -40,8 +82,14 @@ export class ChatHarnessModel extends HoistModel {
     /** Clear the conversation. */
     @action
     clearChat() {
+        this.stopTyping();
         this.messages = [];
         this.lastError = null;
+    }
+
+    override destroy() {
+        this.stopTyping();
+        super.destroy();
     }
 
     //------------------
@@ -58,11 +106,12 @@ export class ChatHarnessModel extends HoistModel {
             // Call LLM
             const {content} = await svc.generateAsync(systemPrompt, this.messages);
 
-            // Add assistant response and apply any spec — in action since we're post-await
+            // Add assistant response, apply any spec, and start typewriter
             runInAction(() => {
                 this.messages = [...this.messages, {role: 'assistant', content}];
                 const spec = svc.parseSpecFromResponse(content);
                 if (spec) this.applySpec(spec);
+                this.startTyping(this.messages.length - 1, content);
             });
         } catch (e) {
             runInAction(() => {
@@ -100,4 +149,50 @@ export class ChatHarnessModel extends HoistModel {
             this.lastError = `Failed to apply spec: ${e.message}`;
         }
     }
+
+    //------------------
+    // Typewriter
+    //------------------
+    @action
+    private startTyping(index: number, rawContent: string) {
+        this.stopTyping();
+        const formatted = formatMessageContent(rawContent);
+        // Skip animation for very short messages
+        if (formatted.length < 30) return;
+
+        this.typingMessageIdx = index;
+        this.typingChars = 0;
+
+        // Target ~1.2s total animation; tick every 12ms
+        const charsPerTick = Math.max(3, Math.ceil(formatted.length / 100));
+        this._typingTimer = setInterval(() => {
+            runInAction(() => {
+                this.typingChars += charsPerTick;
+                if (this.typingChars >= formatted.length) {
+                    this.stopTyping();
+                }
+            });
+        }, 12);
+    }
+
+    private stopTyping() {
+        if (this._typingTimer) {
+            clearInterval(this._typingTimer);
+            this._typingTimer = null;
+        }
+        if (this.typingMessageIdx >= 0) {
+            runInAction(() => {
+                this.typingMessageIdx = -1;
+                this.typingChars = 0;
+            });
+        }
+    }
+}
+
+/**
+ * Format a message content string, stripping JSON code fences for cleaner display.
+ * Exported for use by both model (typewriter length) and panel (render).
+ */
+export function formatMessageContent(content: string): string {
+    return content.replace(/```json[\s\S]*?```/g, '[Dashboard spec applied]').trim();
 }

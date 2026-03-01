@@ -1,4 +1,4 @@
-import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {grid, GridAutosizeMode, GridModel} from '@xh/hoist/cmp/grid';
 import {img} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -44,8 +44,8 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
                 default: ['date', 'icon', 'conditions', 'high', 'low', 'humidity', 'wind']
             }
         },
-        defaultSize: {w: 6, h: 5},
-        minSize: {w: 4, h: 3}
+        defaultSize: {w: 6, h: 8},
+        minSize: {w: 4, h: 5}
     };
 
     @managed gridModel: GridModel;
@@ -98,6 +98,7 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
         return new GridModel({
             sortBy: 'date',
             emptyText: 'No forecast data available.',
+            autosizeOptions: {mode: GridAutosizeMode.MANAGED},
             columns: [
                 {
                     field: 'date',
@@ -127,7 +128,7 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
                     },
                     exportValue: (_v, {record}) => record.data.conditions
                 },
-                {field: 'conditions', headerName: 'Conditions', flex: 1},
+                {field: 'conditions', headerName: 'Conditions', width: 150},
                 {field: 'high', headerName: 'High', width: 70, align: 'right'},
                 {field: 'low', headerName: 'Low', width: 70, align: 'right'},
                 {

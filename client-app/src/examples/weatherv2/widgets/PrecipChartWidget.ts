@@ -43,8 +43,8 @@ export class PrecipChartModel extends BaseWeatherWidgetModel {
                 default: false
             }
         },
-        defaultSize: {w: 6, h: 5},
-        minSize: {w: 4, h: 3}
+        defaultSize: {w: 6, h: 8},
+        minSize: {w: 4, h: 5}
     };
 
     @managed chartModel: ChartModel;

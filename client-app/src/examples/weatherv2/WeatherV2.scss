@@ -213,18 +213,66 @@
   }
 }
 
-// Chat harness
+// Chat harness — empty state
 .weather-v2-chat-empty {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  text-align: center;
-  color: var(--xh-text-color-muted);
-  font-style: italic;
+  gap: 20px;
+
+  &__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__text {
+    font-size: var(--xh-font-size-px);
+    text-align: center;
+    max-width: 320px;
+    line-height: 1.5;
+  }
+
+  &__suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  &__suggestions-label {
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
 }
 
+.weather-v2-chat-suggestion {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--xh-border-color);
+  background: var(--xh-bg-alt);
+  font-size: var(--xh-font-size-small-px);
+  line-height: 1.4;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    background: var(--xh-bg-highlight);
+    border-color: var(--xh-blue-muted);
+  }
+}
+
+// Chat harness — message list
 .weather-v2-chat-messages {
   flex: 1;
   overflow-y: auto;
@@ -261,9 +309,63 @@
     overflow-wrap: break-word;
     font-size: var(--xh-font-size-px);
     line-height: 1.4;
+
+    &--typing::after {
+      content: '\25AE';
+      animation: blink-cursor 0.6s step-end infinite;
+      color: var(--xh-text-color-muted);
+      margin-left: 1px;
+    }
   }
 }
 
+// Thinking dots animation
+.weather-v2-thinking-dots {
+  display: flex;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.weather-v2-thinking-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--xh-text-color-muted);
+  animation: thinking-bounce 1.2s ease-in-out infinite;
+
+  &:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+}
+
+@keyframes thinking-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@keyframes blink-cursor {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+// Chat harness — input
 .weather-v2-chat-input {
   display: flex;
   gap: 8px;

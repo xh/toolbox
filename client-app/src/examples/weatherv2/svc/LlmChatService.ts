@@ -1,6 +1,7 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {DashSpec} from '../dash/types';
+import {CITIES} from '../widgets/CityChooserWidget';
 
 export interface ChatMessage {
     role: 'user' | 'assistant';
@@ -17,12 +18,14 @@ export class LlmChatService extends HoistService {
     /** Build the system prompt including widget schemas, spec format, and rules. */
     buildSystemPrompt(currentSpec?: DashSpec): string {
         const widgetDocs = widgetRegistry.generateLLMPrompt();
+        const cityList = CITIES.join(', ');
         const parts: string[] = [
             SYSTEM_INTRO,
             '## Widget Types\n\n' + widgetDocs,
             SPEC_FORMAT_DOCS,
             WIRING_RULES,
-            LAYOUT_RULES
+            LAYOUT_RULES,
+            CITY_RULES.replace('{{CITIES}}', cityList)
         ];
 
         if (currentSpec) {
@@ -130,7 +133,7 @@ Each widget in the \`state\` array has:
 - \`layout\` (required): Grid position. \`x\` is column (0-11), \`y\` is row, \`w\` is width (1-12), \`h\` is height.
 - \`state\` (optional): Widget config and input bindings.
 
-**Widget Titles:** Display widgets (currentConditions, forecastChart, precipChart, windChart, summaryGrid) auto-generate their titles from their bound city (e.g. "Forecast — Tokyo"). Do NOT set a top-level \`title\` for these widgets — it will be overwritten. For the \`markdownContent\` widget, set the title via \`state.title\` (e.g. \`"state": {"title": "Dashboard Header", "content": "..."}\`). Input widgets (cityChooser, unitsToggle) and dashInspector use their default titles.`;
+**Widget Titles:** Display widgets (currentConditions, forecastChart, precipChart, windChart, summaryGrid) auto-generate their titles from their bound city (e.g. "Forecast — Tokyo"). Do NOT set a top-level \`title\` for these widgets — it will be overwritten. Input widgets (cityChooser, unitsToggle) also receive automatic static titles ("City", "Units") — do NOT set titles for these either. For the \`markdownContent\` widget, set the title via \`state.title\` (e.g. \`"state": {"title": "Dashboard Header", "content": "..."}\`). The dashInspector uses its default title.`;
 
 const WIRING_RULES = `## Wiring Rules
 
@@ -142,16 +145,39 @@ Widgets communicate via bindings. An input widget publishes outputs; display wid
 - Wire to another widget: \`{"fromWidget": "instanceId", "output": "outputName"}\`
 - Constant value: \`{"const": "value"}\`
 
+**IMPORTANT: Every display widget input MUST be set via a binding** — either a \`fromWidget\` binding or a \`const\` binding. Do NOT set input values as direct state keys. For example, to set a widget's city to "Tokyo", use \`"bindings": {"city": {"const": "Tokyo"}}\`, NOT \`"city": "Tokyo"\` at the state level.
+
 **Common wiring patterns:**
 - CityChooser publishes \`selectedCity\` → display widgets bind their \`city\` input to it, e.g. \`{"fromWidget": "cityChooser_0", "output": "selectedCity"}\`.
-- UnitsToggle publishes \`units\` → display widgets bind their \`units\` input to it, e.g. \`{"fromWidget": "unitsToggle_0", "output": "units"}\`.`;
+- UnitsToggle publishes \`units\` → display widgets bind their \`units\` input to it, e.g. \`{"fromWidget": "unitsToggle_0", "output": "units"}\`.
+- Fixed city (no chooser widget): use a const binding, e.g. \`"bindings": {"city": {"const": "Tokyo"}}\`.
+- Fixed units (no toggle widget): use a const binding, e.g. \`"bindings": {"units": {"const": "metric"}}\`.`;
 
 const LAYOUT_RULES = `## Layout Rules
 
-- The grid has **12 columns**. Widgets cannot extend past column 12 (x + w <= 12).
+- The grid has **12 columns** and each row is **30px** tall. Widgets cannot extend past column 12 (x + w <= 12).
 - Rows are unlimited — widgets can stack vertically.
 - Minimum widget size varies by type (see widget docs).
-- Widgets should not overlap. Place them so x ranges don't overlap within the same y range.`;
+- Widgets should not overlap. Place them so x ranges don't overlap within the same y range.
+
+**Sizing guidelines (row height = 30px):**
+- Input widgets (cityChooser, unitsToggle): h=3 (90px) — just enough for the frame + control. Keep these compact.
+- Display widgets (charts, grids, conditions): h=8 (240px) is a good default. Use h=6 for compact or h=10+ for emphasis.
+- Markdown banners: h=3 to h=5 depending on content length.
+
+**Layout best practices:**
+- Strive for balanced, symmetrical arrangements. Avoid leaving large empty gaps between widgets.
+- Align widgets on common row boundaries where possible for a clean grid appearance.
+- Place input controls (city chooser, units toggle) near the top for easy access.
+- When comparing multiple cities, arrange them in evenly-spaced columns (e.g. 3 cities at w=4 each, or 2 cities at w=6 each).`;
+
+const CITY_RULES = `## Available Cities
+
+The city chooser dropdown includes these curated cities: {{CITIES}}.
+
+However, the weather API accepts **any valid city name worldwide** — the dropdown also allows users to type in custom cities. When the user asks about a city not in the list, you can use it directly in the \`selectedCity\` config. Use the standard English name for the city (e.g. "Munich" not "München", "Rome" not "Roma").
+
+If a user asks "what cities are available", mention both the curated list and the ability to enter any city name. If asked for a city you're unsure about, use it anyway — the weather API will handle it.`;
 
 const OUTPUT_RULES = `## Output Rules
 

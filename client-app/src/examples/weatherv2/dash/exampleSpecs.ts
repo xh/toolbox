@@ -12,19 +12,19 @@ const minimalSpec: DashSpec = {
     state: [
         {
             viewSpecId: 'cityChooser',
-            layout: {x: 0, y: 0, w: 3, h: 2},
+            layout: {x: 0, y: 0, w: 3, h: 3},
             state: {selectedCity: 'New York'}
         },
         {
             viewSpecId: 'currentConditions',
-            layout: {x: 3, y: 0, w: 4, h: 5},
+            layout: {x: 3, y: 0, w: 4, h: 8},
             state: {
                 bindings: {city: {fromWidget: 'cityChooser_0', output: 'selectedCity'}}
             }
         },
         {
             viewSpecId: 'forecastChart',
-            layout: {x: 7, y: 0, w: 5, h: 5},
+            layout: {x: 7, y: 0, w: 5, h: 8},
             state: {
                 bindings: {city: {fromWidget: 'cityChooser_0', output: 'selectedCity'}},
                 series: ['temp'],
@@ -40,17 +40,17 @@ const fullSpec: DashSpec = {
     state: [
         {
             viewSpecId: 'cityChooser',
-            layout: {x: 0, y: 0, w: 3, h: 2},
+            layout: {x: 0, y: 0, w: 3, h: 3},
             state: {selectedCity: 'New York'}
         },
         {
             viewSpecId: 'unitsToggle',
-            layout: {x: 0, y: 2, w: 3, h: 2},
+            layout: {x: 0, y: 3, w: 3, h: 3},
             state: {units: 'imperial'}
         },
         {
             viewSpecId: 'currentConditions',
-            layout: {x: 3, y: 0, w: 4, h: 5},
+            layout: {x: 3, y: 0, w: 4, h: 8},
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -60,7 +60,7 @@ const fullSpec: DashSpec = {
         },
         {
             viewSpecId: 'forecastChart',
-            layout: {x: 7, y: 0, w: 5, h: 5},
+            layout: {x: 7, y: 0, w: 5, h: 8},
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -72,14 +72,14 @@ const fullSpec: DashSpec = {
         },
         {
             viewSpecId: 'precipChart',
-            layout: {x: 0, y: 5, w: 6, h: 5},
+            layout: {x: 0, y: 8, w: 6, h: 8},
             state: {
                 bindings: {city: {fromWidget: 'cityChooser_0', output: 'selectedCity'}}
             }
         },
         {
             viewSpecId: 'windChart',
-            layout: {x: 6, y: 5, w: 6, h: 5},
+            layout: {x: 6, y: 8, w: 6, h: 8},
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -90,7 +90,7 @@ const fullSpec: DashSpec = {
         },
         {
             viewSpecId: 'summaryGrid',
-            layout: {x: 0, y: 10, w: 12, h: 5},
+            layout: {x: 0, y: 16, w: 12, h: 8},
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -107,24 +107,22 @@ const comparisonSpec: DashSpec = {
     state: [
         {
             viewSpecId: 'cityChooser',
-            layout: {x: 0, y: 0, w: 3, h: 2},
-            title: 'City A',
+            layout: {x: 0, y: 0, w: 3, h: 3},
             state: {selectedCity: 'New York'}
         },
         {
             viewSpecId: 'cityChooser',
-            layout: {x: 6, y: 0, w: 3, h: 2},
-            title: 'City B',
+            layout: {x: 6, y: 0, w: 3, h: 3},
             state: {selectedCity: 'London'}
         },
         {
             viewSpecId: 'unitsToggle',
-            layout: {x: 3, y: 0, w: 3, h: 2},
+            layout: {x: 3, y: 0, w: 3, h: 3},
             state: {units: 'imperial'}
         },
         {
             viewSpecId: 'forecastChart',
-            layout: {x: 0, y: 2, w: 6, h: 5},
+            layout: {x: 0, y: 3, w: 6, h: 8},
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -136,7 +134,7 @@ const comparisonSpec: DashSpec = {
         },
         {
             viewSpecId: 'forecastChart',
-            layout: {x: 6, y: 2, w: 6, h: 5},
+            layout: {x: 6, y: 3, w: 6, h: 8},
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_1', output: 'selectedCity'},
@@ -148,7 +146,7 @@ const comparisonSpec: DashSpec = {
         },
         {
             viewSpecId: 'currentConditions',
-            layout: {x: 0, y: 7, w: 6, h: 5},
+            layout: {x: 0, y: 11, w: 6, h: 8},
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -158,7 +156,7 @@ const comparisonSpec: DashSpec = {
         },
         {
             viewSpecId: 'currentConditions',
-            layout: {x: 6, y: 7, w: 6, h: 5},
+            layout: {x: 6, y: 11, w: 6, h: 8},
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_1', output: 'selectedCity'},
@@ -175,7 +173,7 @@ const annotatedSpec: DashSpec = {
     state: [
         {
             viewSpecId: 'markdownContent',
-            layout: {x: 0, y: 0, w: 12, h: 2},
+            layout: {x: 0, y: 0, w: 12, h: 3},
             state: {
                 title: 'Dashboard Guide',
                 content:
@@ -184,17 +182,17 @@ const annotatedSpec: DashSpec = {
         },
         {
             viewSpecId: 'cityChooser',
-            layout: {x: 0, y: 2, w: 3, h: 2},
+            layout: {x: 0, y: 3, w: 3, h: 3},
             state: {selectedCity: 'Tokyo'}
         },
         {
             viewSpecId: 'unitsToggle',
-            layout: {x: 3, y: 2, w: 3, h: 2},
+            layout: {x: 3, y: 3, w: 3, h: 3},
             state: {units: 'metric'}
         },
         {
             viewSpecId: 'forecastChart',
-            layout: {x: 6, y: 2, w: 6, h: 5},
+            layout: {x: 6, y: 3, w: 6, h: 8},
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -206,7 +204,7 @@ const annotatedSpec: DashSpec = {
         },
         {
             viewSpecId: 'currentConditions',
-            layout: {x: 0, y: 4, w: 6, h: 5},
+            layout: {x: 0, y: 6, w: 6, h: 8},
             state: {
                 bindings: {
                     city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
@@ -216,8 +214,7 @@ const annotatedSpec: DashSpec = {
         },
         {
             viewSpecId: 'dashInspector',
-            layout: {x: 0, y: 9, w: 12, h: 4},
-            title: 'Wiring Inspector'
+            layout: {x: 0, y: 14, w: 12, h: 7}
         }
     ]
 };

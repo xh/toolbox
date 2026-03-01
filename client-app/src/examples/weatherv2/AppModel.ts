@@ -21,6 +21,7 @@ export class AppModel extends BaseAppModel {
     @managed harnessPanelModel: PanelModel;
     @persist @bindable showJsonHarness: boolean = false;
     @persist @bindable showChatHarness: boolean = true;
+    @persist @bindable showWidgetChooser: boolean = false;
 
     constructor() {
         super();

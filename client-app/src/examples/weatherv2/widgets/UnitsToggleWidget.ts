@@ -29,8 +29,8 @@ export class UnitsToggleModel extends BaseWeatherWidgetModel {
                 default: 'imperial'
             }
         },
-        defaultSize: {w: 3, h: 2},
-        minSize: {w: 2, h: 1}
+        defaultSize: {w: 3, h: 3},
+        minSize: {w: 2, h: 3}
     };
 
     @bindable units: string = 'imperial';
@@ -67,12 +67,17 @@ export const unitsToggleWidget = hoistCmp.factory({
             padding: 8,
             alignItems: 'center',
             justifyContent: 'center',
+            flex: 1,
             item: buttonGroupInput({
                 testId: 'units-input',
                 bind: 'units',
+                intent: 'primary',
+                outlined: true,
+                width: '100%',
+                maxWidth: 300,
                 items: [
-                    button({text: '°F / mph', value: 'imperial'}),
-                    button({text: '°C / m/s', value: 'metric'})
+                    button({text: '°F / mph', value: 'imperial', flex: 1}),
+                    button({text: '°C / m/s', value: 'metric', flex: 1})
                 ]
             })
         });

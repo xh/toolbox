@@ -38,15 +38,20 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
      * if no binding is defined.
      */
     protected resolveInput<T = any>(inputName: string): T | undefined {
-        const bindings = this.viewModel.viewState?.bindings;
-        const binding: BindingSpec | undefined = bindings?.[inputName];
+        const viewState = this.viewModel.viewState;
 
+        // 1. Resolve from binding (fromWidget or const)
+        const binding: BindingSpec | undefined = viewState?.bindings?.[inputName];
         if (binding) {
             const resolved = this.wiringModel.resolveBinding(binding);
             if (resolved !== undefined) return resolved as T;
         }
 
-        // Fall back to declared default
+        // 2. Fall back to direct state value (e.g. LLM sets {city: "Tokyo"} without a binding)
+        const directValue = viewState?.[inputName];
+        if (directValue !== undefined) return directValue as T;
+
+        // 3. Fall back to declared default from widget meta
         const meta = (this.constructor as any).meta as WidgetMeta;
         const inputDef = meta?.inputs?.find(i => i.name === inputName);
         return inputDef?.default as T;
