@@ -1,6 +1,6 @@
 # Changelog
 
-## 8.2.0 - 2026-02-27
+## 8.2.1 - 2026-02-28
 
 ### New Features
 
@@ -17,7 +17,7 @@
 ### Libraries
 
 * hoist-core 36.3.1
-* @xh/hoist 82.0.0
+* @xh/hoist 82.0.1
 
 
 ## 8.1.0 - 2026-02-12
