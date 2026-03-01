@@ -52,7 +52,7 @@ export class LlmToolService extends HoistService {
                 if (!viewName?.trim()) throw new Error('View name is required.');
                 await viewManager.saveAsAsync({
                     name: viewName.trim(),
-                    group: '',
+                    group: null,
                     description: '',
                     isShared: false,
                     isGlobal: false,
