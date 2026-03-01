@@ -79,6 +79,26 @@ export class ChatHarnessModel extends HoistModel {
         this.doGenerateAsync().linkTo(this.generateTask);
     }
 
+    /** Retry the last user message after an error. */
+    @action
+    retryLastAsync() {
+        if (!this.lastError || this.generateTask.isPending) return;
+        this.lastError = null;
+        this.doGenerateAsync().linkTo(this.generateTask);
+    }
+
+    /** Pop the last user message back into the input for editing after an error. */
+    @action
+    editLast() {
+        if (!this.lastError || this.generateTask.isPending) return;
+        const msgs = this.messages;
+        if (msgs.length && msgs[msgs.length - 1].role === 'user') {
+            this.userInput = msgs[msgs.length - 1].content;
+            this.messages = msgs.slice(0, -1);
+        }
+        this.lastError = null;
+    }
+
     /** Clear the conversation. */
     @action
     clearChat() {

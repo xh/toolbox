@@ -376,6 +376,23 @@
   }
 }
 
+// Chat harness — error display with retry/edit actions
+.weather-v2-chat-error {
+  padding: 8px 10px;
+  border-top: var(--xh-border-solid);
+  background: var(--xh-red-trans1);
+
+  &__message {
+    color: var(--xh-intent-danger);
+    font-size: var(--xh-font-size-small-px);
+    margin-bottom: 6px;
+  }
+
+  &__actions {
+    gap: 6px;
+  }
+}
+
 // Chat harness — input
 .weather-v2-chat-input {
   display: flex;

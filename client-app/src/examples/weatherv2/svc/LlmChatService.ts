@@ -49,6 +49,7 @@ export class LlmChatService extends HoistService {
         const response = await XH.postJson({
             url: 'llm/generate',
             body: {systemPrompt, messages},
+            timeout: {interval: 120_000, message: 'LLM request timed out.'},
             track: {
                 category: 'WeatherV2',
                 message: 'LLM generate',

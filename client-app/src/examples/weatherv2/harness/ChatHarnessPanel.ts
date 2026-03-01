@@ -1,5 +1,5 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {div, vbox} from '@xh/hoist/cmp/layout';
+import {div, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
@@ -155,8 +155,28 @@ const errorDisplay = hoistCmp.factory<ChatHarnessModel>({
         if (!lastError) return null;
 
         return div({
-            className: 'weather-v2-validation weather-v2-validation--error',
-            item: lastError
+            className: 'weather-v2-chat-error',
+            items: [
+                div({className: 'weather-v2-chat-error__message', item: lastError}),
+                hbox({
+                    className: 'weather-v2-chat-error__actions',
+                    items: [
+                        button({
+                            icon: Icon.refresh(),
+                            text: 'Retry',
+                            intent: 'danger',
+                            outlined: true,
+                            onClick: () => model.retryLastAsync()
+                        }),
+                        button({
+                            icon: Icon.edit(),
+                            text: 'Edit',
+                            outlined: true,
+                            onClick: () => model.editLast()
+                        })
+                    ]
+                })
+            ]
         });
     }
 });
