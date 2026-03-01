@@ -331,10 +331,10 @@
 }
 
 // Chat harness — markdown rendering within assistant message bubbles.
-// Compact variant of .weather-v2-markdown, sized for the narrow side panel.
+// Adapted from Toolbox's MarkdownPanel.scss, scaled for the narrow side panel.
 .weather-v2-chat-markdown {
   white-space: normal;
-  font-size: var(--xh-font-size-small-px);
+  font-size: var(--xh-font-size-px);
   line-height: 1.5;
 
   > :first-child {
@@ -425,6 +425,9 @@
   th {
     background: var(--xh-bg-alt);
     font-weight: 600;
+  }
+  tr:hover td {
+    background: var(--xh-bg-highlight);
   }
 
   a {
