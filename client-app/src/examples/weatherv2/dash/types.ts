@@ -16,6 +16,7 @@ export interface WidgetMeta {
     outputs: OutputDef[];
     config: Record<string, ConfigPropertyDef>;
     defaultSize: {w: number; h: number};
+    idealSize?: {w?: number; h?: number};
     minSize?: {w?: number; h?: number};
     maxSize?: {w?: number; h?: number};
 }

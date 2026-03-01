@@ -25,7 +25,11 @@ export const chatHarnessPanel = hoistCmp.factory({
                     onClick: () => model.clearChat()
                 })
             ],
-            item: vbox({flex: 1, items: [messageList(), errorDisplay(), chatInput()]})
+            item: vbox({
+                className: 'weather-v2-chat-body',
+                flex: 1,
+                items: [messageList(), errorDisplay(), chatInput()]
+            })
         });
     }
 });

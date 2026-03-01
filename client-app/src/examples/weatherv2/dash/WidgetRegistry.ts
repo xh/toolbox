@@ -84,6 +84,14 @@ class WidgetRegistryImpl {
                 }
 
                 lines.push(`Default size: ${meta.defaultSize.w}×${meta.defaultSize.h}`);
+                if (meta.idealSize) {
+                    const parts: string[] = [];
+                    if (meta.idealSize.w) parts.push(`w=${meta.idealSize.w}`);
+                    if (meta.idealSize.h) parts.push(`h=${meta.idealSize.h}`);
+                    lines.push(
+                        `Ideal size: ${parts.join(', ')} — prefer this size to avoid wasting space.`
+                    );
+                }
                 return lines.join('\n');
             })
             .join('\n\n');

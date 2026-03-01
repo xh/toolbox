@@ -82,6 +82,7 @@ export class CityChooserModel extends BaseWeatherWidgetModel {
             }
         },
         defaultSize: {w: 3, h: 3},
+        idealSize: {h: 3},
         minSize: {w: 2, h: 3}
     };
 

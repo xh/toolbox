@@ -25,8 +25,9 @@ export const AppComponent = hoistCmp({
             tbar: appBar({
                 icon: Icon.sun({size: '2x', prefix: 'fal'}),
                 title: 'Weather V2',
-                leftItems: [viewManager()],
                 rightItems: [
+                    viewManager(),
+                    appBarSeparator(),
                     button({
                         testId: 'chat-btn',
                         icon: sparklesIcon(),

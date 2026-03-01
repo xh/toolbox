@@ -161,7 +161,7 @@ const LAYOUT_RULES = `## Layout Rules
 - Widgets should not overlap. Place them so x ranges don't overlap within the same y range.
 
 **Sizing guidelines (row height = 30px):**
-- Input widgets (cityChooser, unitsToggle): h=3 (90px) — just enough for the frame + control. Keep these compact.
+- Input widgets (cityChooser, unitsToggle): h=3 (90px) — just enough for the frame + control. **Always use h=3 for these** unless the user specifically requests a larger size. Making them taller wastes vertical space. Check each widget's "Ideal size" annotation and prefer it.
 - Display widgets (charts, grids, conditions): h=8 (240px) is a good default. Use h=6 for compact or h=10+ for emphasis.
 - Markdown banners: h=3 to h=5 depending on content length.
 
