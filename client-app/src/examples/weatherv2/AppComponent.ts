@@ -1,7 +1,7 @@
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {frame, hframe} from '@xh/hoist/cmp/layout';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, dashCanvasAddViewButton} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dashCanvas, dashCanvasWidgetChooser} from '@xh/hoist/desktop/cmp/dash';
 import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
@@ -18,7 +18,14 @@ export const AppComponent = hoistCmp({
     model: uses(AppModel),
 
     render({model}) {
-        const {weatherV2DashModel, showJsonHarness, showChatHarness, showWidgetChooser} = model,
+        const {
+                weatherViewManager,
+                weatherV2DashModel,
+                showJsonHarness,
+                showChatHarness,
+                showWidgetChooser
+            } = model,
+            {dashCanvasModel} = weatherV2DashModel,
             showHarness = showChatHarness || showJsonHarness || showWidgetChooser;
 
         return panel({
@@ -26,7 +33,13 @@ export const AppComponent = hoistCmp({
                 icon: Icon.sun({size: '2x', prefix: 'fal'}),
                 title: 'Weather V2',
                 rightItems: [
-                    viewManager(),
+                    viewManager({model: weatherViewManager}),
+                    appBarSeparator(),
+                    dashCanvasAddViewButton({
+                        dashCanvasModel,
+                        rightIcon: Icon.chevronDown(),
+                        outlined: true
+                    }),
                     appBarSeparator(),
                     button({
                         testId: 'chat-btn',
@@ -60,7 +73,7 @@ export const AppComponent = hoistCmp({
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
             item: hframe(
-                frame(dashCanvas({model: weatherV2DashModel.dashCanvasModel})),
+                frame(dashCanvas({model: dashCanvasModel})),
                 panel({
                     model: model.harnessPanelModel,
                     items: [
@@ -73,9 +86,7 @@ export const AppComponent = hoistCmp({
                                   icon: Icon.boxFull(),
                                   compactHeader: true,
                                   flex: 1,
-                                  item: dashCanvasWidgetChooser({
-                                      dashCanvasModel: weatherV2DashModel.dashCanvasModel
-                                  })
+                                  item: dashCanvasWidgetChooser({dashCanvasModel})
                               })
                             : null
                     ],

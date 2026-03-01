@@ -4,6 +4,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
+import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {WidgetMeta} from '../dash/types';
 
@@ -19,7 +20,7 @@ export class UnitsToggleModel extends BaseWeatherWidgetModel {
         category: 'input',
         inputs: [],
         outputs: [
-            {name: 'units', type: 'string', description: 'Unit system: "imperial" or "metric".'}
+            {name: 'units', type: 'units', description: 'Unit system: "imperial" or "metric".'}
         ],
         config: {
             units: {
@@ -62,8 +63,8 @@ export const unitsToggleWidget = hoistCmp.factory({
     displayName: 'UnitsToggleWidget',
     model: creates(UnitsToggleModel),
 
-    render() {
-        return box({
+    render({model}) {
+        const content = box({
             testId: 'units-toggle',
             padding: 8,
             alignItems: 'center',
@@ -82,5 +83,6 @@ export const unitsToggleWidget = hoistCmp.factory({
                 ]
             })
         });
+        return settingsAwarePanel(model, content);
     }
 });

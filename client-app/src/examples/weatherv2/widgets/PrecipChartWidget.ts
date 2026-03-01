@@ -1,11 +1,11 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {placeholder} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
+import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {WidgetMeta} from '../dash/types';
 import {WeatherData} from '../Types';
@@ -23,7 +23,7 @@ export class PrecipChartModel extends BaseWeatherWidgetModel {
         inputs: [
             {
                 name: 'city',
-                type: 'string',
+                type: 'city',
                 required: true,
                 default: 'New York',
                 description: 'City to show precipitation for.'
@@ -191,13 +191,11 @@ export const precipChartWidget = hoistCmp.factory({
     model: creates(PrecipChartModel),
 
     render({model}) {
-        return panel({
-            testId: 'precip-chart',
-            item: model.hasData
-                ? chart()
-                : placeholder({
-                      items: [Icon.sun(), 'No precipitation expected in the forecast period']
-                  })
-        });
+        const content = model.hasData
+            ? chart()
+            : placeholder({
+                  items: [Icon.sun(), 'No precipitation expected in the forecast period']
+              });
+        return settingsAwarePanel(model, content);
     }
 });

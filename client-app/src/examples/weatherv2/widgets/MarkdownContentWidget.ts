@@ -3,6 +3,7 @@ import {div} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
+import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {WidgetMeta} from '../dash/types';
 
@@ -60,9 +61,10 @@ export const markdownContentWidget = hoistCmp.factory({
     model: creates(MarkdownContentModel),
 
     render({model}) {
-        return div({
+        const content = div({
             className: 'weather-v2-markdown',
             item: markdown({content: model.content, lineBreaks: false})
         });
+        return settingsAwarePanel(model, content);
     }
 });

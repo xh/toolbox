@@ -1,9 +1,9 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {computed, makeObservable} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
+import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {convertTemp, tempUnit} from '../dash/unitUtils';
 import {WidgetMeta} from '../dash/types';
@@ -22,14 +22,14 @@ export class ForecastChartModel extends BaseWeatherWidgetModel {
         inputs: [
             {
                 name: 'city',
-                type: 'string',
+                type: 'city',
                 required: true,
                 default: 'New York',
                 description: 'City to show forecast for.'
             },
             {
                 name: 'units',
-                type: 'string',
+                type: 'units',
                 required: false,
                 default: 'imperial',
                 description: 'Unit system: "imperial" or "metric".'
@@ -206,7 +206,7 @@ export const forecastChartWidget = hoistCmp.factory({
     displayName: 'ForecastChartWidget',
     model: creates(ForecastChartModel),
 
-    render() {
-        return panel({testId: 'forecast-chart', item: chart()});
+    render({model}) {
+        return settingsAwarePanel(model, chart());
     }
 });

@@ -3,6 +3,7 @@ import {select} from '@xh/hoist/desktop/cmp/input';
 import {box} from '@xh/hoist/cmp/layout';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
+import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {WidgetMeta} from '../dash/types';
 
@@ -66,7 +67,7 @@ export class CityChooserModel extends BaseWeatherWidgetModel {
         category: 'input',
         inputs: [],
         outputs: [
-            {name: 'selectedCity', type: 'string', description: 'The currently selected city name.'}
+            {name: 'selectedCity', type: 'city', description: 'The currently selected city name.'}
         ],
         config: {
             selectedCity: {
@@ -124,7 +125,7 @@ export const cityChooserWidget = hoistCmp.factory({
     model: creates(CityChooserModel),
 
     render({model}) {
-        return box({
+        const content = box({
             testId: 'city-chooser',
             padding: 8,
             flex: 1,
@@ -138,5 +139,6 @@ export const cityChooserWidget = hoistCmp.factory({
                 width: '100%'
             })
         });
+        return settingsAwarePanel(model, content);
     }
 });

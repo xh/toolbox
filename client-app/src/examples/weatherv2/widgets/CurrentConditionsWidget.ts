@@ -3,6 +3,7 @@ import {div, hbox, img, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {computed, makeObservable} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
+import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {fmtTemp, fmtWind} from '../dash/unitUtils';
 import {WidgetMeta} from '../dash/types';
@@ -22,14 +23,14 @@ export class CurrentConditionsModel extends BaseWeatherWidgetModel {
         inputs: [
             {
                 name: 'city',
-                type: 'string',
+                type: 'city',
                 required: true,
                 default: 'New York',
                 description: 'City to display.'
             },
             {
                 name: 'units',
-                type: 'string',
+                type: 'units',
                 required: false,
                 default: 'imperial',
                 description: 'Unit system: "imperial" or "metric".'
@@ -222,7 +223,7 @@ export const currentConditionsWidget = hoistCmp.factory({
         const description =
             current.description.charAt(0).toUpperCase() + current.description.slice(1);
 
-        return vbox({
+        const content = vbox({
             testId: 'current-conditions',
             className: 'weather-v2-current-conditions',
             alignItems: 'center',
@@ -253,5 +254,7 @@ export const currentConditionsWidget = hoistCmp.factory({
                 })
             ]
         });
+
+        return settingsAwarePanel(model, content);
     }
 });

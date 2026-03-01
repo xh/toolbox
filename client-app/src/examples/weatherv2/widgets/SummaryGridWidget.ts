@@ -1,10 +1,10 @@
 import {grid, GridAutosizeMode, GridModel} from '@xh/hoist/cmp/grid';
 import {img} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {computed, makeObservable} from '@xh/hoist/mobx';
 import {groupBy} from 'lodash';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
+import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {fmtTemp, fmtWind} from '../dash/unitUtils';
 import {WidgetMeta} from '../dash/types';
@@ -23,14 +23,14 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
         inputs: [
             {
                 name: 'city',
-                type: 'string',
+                type: 'city',
                 required: true,
                 default: 'New York',
                 description: 'City to summarize.'
             },
             {
                 name: 'units',
-                type: 'string',
+                type: 'units',
                 required: false,
                 default: 'imperial',
                 description: 'Unit system.'
@@ -190,7 +190,7 @@ export const summaryGridWidget = hoistCmp.factory({
     displayName: 'SummaryGridWidget',
     model: creates(SummaryGridModel),
 
-    render() {
-        return panel({testId: 'summary-grid', item: grid()});
+    render({model}) {
+        return settingsAwarePanel(model, grid());
     }
 });

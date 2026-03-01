@@ -234,9 +234,16 @@ export class WeatherV2DashModel extends HoistModel {
             return vm.viewState?.title ?? 'Markdown Content';
         }
 
-        // Input widgets: static titles (always enforced so LLM-generated specs can't blank them)
+        // Input widgets: indexed titles when multiple of the same type exist
         const staticTitle = STATIC_WIDGET_TITLES[specId];
-        if (staticTitle) return staticTitle;
+        if (staticTitle) {
+            const siblings = this.dashCanvasModel.viewModels.filter(v => v.viewSpec.id === specId);
+            if (siblings.length > 1) {
+                const idx = siblings.findIndex(v => v.id === vm.id) + 1;
+                return `${staticTitle} #${idx}`;
+            }
+            return staticTitle;
+        }
 
         // Display widgets: title = prefix + city (from binding or direct state)
         const titlePrefix = DISPLAY_WIDGET_TITLES[specId];
