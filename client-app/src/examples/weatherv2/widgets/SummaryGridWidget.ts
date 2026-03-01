@@ -40,7 +40,6 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
         config: {
             visibleColumns: {
                 type: 'string[]',
-                description: 'Columns to display.',
                 default: ['date', 'icon', 'conditions', 'high', 'low', 'humidity', 'wind']
             }
         },

@@ -38,17 +38,9 @@ export class CurrentConditionsModel extends BaseWeatherWidgetModel {
         ],
         outputs: [],
         config: {
-            showFeelsLike: {
-                type: 'boolean',
-                description: 'Show feels-like temperature.',
-                default: true
-            },
-            showHumidity: {
-                type: 'boolean',
-                description: 'Show humidity percentage.',
-                default: true
-            },
-            showWind: {type: 'boolean', description: 'Show wind speed.', default: true}
+            showFeelsLike: {type: 'boolean', default: true},
+            showHumidity: {type: 'boolean', default: true},
+            showWind: {type: 'boolean', default: true}
         },
         defaultSize: {w: 4, h: 8},
         minSize: {w: 3, h: 5}

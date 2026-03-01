@@ -27,7 +27,7 @@ export function settingsAwarePanel(model: BaseWeatherWidgetModel, content: React
             flex: 1,
             items: [
                 frame({flex: 1, item: content}),
-                panelModel.isModal ? widgetSettingsForm({widgetModel: model}) : null
+                panelModel.isModal ? widgetSettingsForm() : null
             ]
         })
     });

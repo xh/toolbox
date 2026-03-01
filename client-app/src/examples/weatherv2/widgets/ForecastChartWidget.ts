@@ -45,11 +45,10 @@ export class ForecastChartModel extends BaseWeatherWidgetModel {
             },
             chartType: {
                 type: 'enum',
-                description: 'Chart rendering style.',
                 enum: ['line', 'area', 'column'],
                 default: 'line'
             },
-            showLegend: {type: 'boolean', description: 'Show chart legend.', default: true}
+            showLegend: {type: 'boolean', default: true}
         },
         defaultSize: {w: 8, h: 8},
         minSize: {w: 4, h: 5}

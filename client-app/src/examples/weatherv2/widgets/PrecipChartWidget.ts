@@ -33,7 +33,6 @@ export class PrecipChartModel extends BaseWeatherWidgetModel {
         config: {
             metric: {
                 type: 'enum',
-                description: 'What to display.',
                 enum: ['probability', 'volume', 'both'],
                 default: 'both'
             },

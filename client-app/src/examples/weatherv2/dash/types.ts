@@ -40,7 +40,7 @@ export interface OutputDef {
 /** Config property definition within a widget schema. */
 export interface ConfigPropertyDef {
     type: 'string' | 'number' | 'boolean' | 'enum' | 'string[]';
-    description: string;
+    description?: string;
     default?: any;
     enum?: string[];
     min?: number;

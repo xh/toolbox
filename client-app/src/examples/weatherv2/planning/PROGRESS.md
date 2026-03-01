@@ -217,3 +217,34 @@ Added Anthropic native tool use API to give the LLM callable tools for app opera
 - **Client (modified):** `harness/ChatHarnessPanel.ts` — tool calls rendered as collapsible `<details>` elements, tool-use suggestion in empty state
 - **Client (modified):** `WeatherV2.scss` — `.weather-v2-tool-call` styles
 - **Client (modified):** `AppModel.ts` + `Bootstrap.ts` — LlmToolService registration + type augmentation
+
+## 2026-03-01
+
+### Input Binding Lifecycle — Culling, Simplified Sources, Unbound State
+
+Three related changes to how widget input bindings are managed:
+
+**1. Binding culling on widget removal (`WeatherV2DashModel.ts`)**
+- Added MobX reaction tracking `dashCanvasModel.viewModels` IDs
+- On widget removal: calls `wiringModel.removeWidget()` AND scans all remaining widgets to delete bindings referencing the removed widget
+- On widget addition: seeds declared input defaults into `viewState` (only if neither binding nor manual value already exists)
+- Registered before the auto-title reaction so culled viewState settles first
+
+**2. Simplified `resolveInput` fallback chain (`BaseWeatherWidgetModel.ts`)**
+- Removed the meta-default fallback (step 3)
+- Chain is now: binding → manual viewState value → `undefined` (unbound)
+- Input defaults are seeded into viewState at addition time, so the meta fallback is redundant
+
+**3. Simplified settings form source model (`WidgetSettingsForm.ts`)**
+- Removed `SOURCE_DEFAULT` constant and "Default" dropdown option
+- Added `SOURCE_UNBOUND` sentinel for unconfigured inputs
+- Three states: Linked (bound to provider), Manual (direct value), Unbound (needs configuration)
+- Warning icon and note shown for unbound required inputs
+- "Not configured" option only appears when input is currently unbound
+
+**4. Validation updates (`validation.ts`)**
+- `UNBOUND_REQUIRED_INPUT` now checks for missing binding AND missing manual value
+- Input names added to `knownKeys` set so manual values don't trigger `UNKNOWN_STATE_KEY` warnings
+
+**5. Unbound state styling (`WeatherV2.scss`)**
+- Warning-colored note and icon styles for unbound inputs in settings form

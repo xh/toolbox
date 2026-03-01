@@ -36,17 +36,8 @@ export class WindChartModel extends BaseWeatherWidgetModel {
         ],
         outputs: [],
         config: {
-            showGusts: {
-                type: 'boolean',
-                description: 'Show gust data alongside sustained.',
-                default: true
-            },
-            chartType: {
-                type: 'enum',
-                description: 'Chart style.',
-                enum: ['line', 'area'],
-                default: 'line'
-            }
+            showGusts: {type: 'boolean', default: true},
+            chartType: {type: 'enum', enum: ['line', 'area'], default: 'line'}
         },
         defaultSize: {w: 6, h: 8},
         minSize: {w: 4, h: 5}

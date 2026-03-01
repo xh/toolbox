@@ -2,9 +2,12 @@ import {createElement, ReactNode} from 'react';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
 import {DashCanvasViewModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
+import {FormModel} from '@xh/hoist/cmp/form';
+import {required, numberIs} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {WidgetMeta, BindingSpec} from '../dash/types';
+import {isEqual} from 'lodash';
+import {WidgetMeta, BindingSpec, ConfigPropertyDef} from '../dash/types';
 import {WiringModel} from '../dash/WiringModel';
 import {getInputWidgetColor, getConsumerWidgetColors} from '../dash/colorCoding';
 import {AppModel} from '../AppModel';
@@ -35,6 +38,12 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
      */
     @managed panelModel: PanelModel;
 
+    /**
+     * FormModel for config property editing in the settings dialog.
+     * Created only for widgets that declare config properties.
+     */
+    @managed configFormModel: FormModel;
+
     /** True if this widget type has user-configurable settings. */
     get hasSettings(): boolean {
         const meta = (this.constructor as any).meta as WidgetMeta;
@@ -57,11 +66,67 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
                 resizable: false
             });
         }
+
+        const configEntries = meta ? Object.entries(meta.config) : [];
+        if (configEntries.length > 0) {
+            this.configFormModel = new FormModel({
+                fields: configEntries.map(([key, def]) => configPropertyToField(key, def))
+            });
+        }
     }
 
     override onLinked() {
         super.onLinked();
         this.persistWith = {dashViewModel: this.viewModel};
+
+        // Init configFormModel from current viewState and set up bidirectional sync.
+        if (this.configFormModel) {
+            const meta = (this.constructor as any).meta as WidgetMeta,
+                configKeys = Object.keys(meta.config);
+
+            // Init form values from persisted viewState.
+            const initialValues: Record<string, any> = {};
+            for (const key of configKeys) {
+                initialValues[key] = this.viewModel.viewState?.[key] ?? meta.config[key].default;
+            }
+            this.configFormModel.init(initialValues);
+
+            // Sync form → viewState: push form changes to persisted state.
+            this.addReaction({
+                track: () => {
+                    const vals: Record<string, any> = {};
+                    for (const key of configKeys) vals[key] = this.configFormModel.values[key];
+                    return vals;
+                },
+                run: vals => {
+                    for (const key of configKeys) {
+                        this.viewModel.setViewStateKey(key, vals[key]);
+                    }
+                }
+            });
+
+            // Sync viewState → form: reflect external changes (e.g. LLM updates).
+            this.addReaction({
+                track: () => {
+                    const vs = this.viewModel.viewState ?? {},
+                        vals: Record<string, any> = {};
+                    for (const key of configKeys) vals[key] = vs[key];
+                    return vals;
+                },
+                run: vals => {
+                    const formVals = this.configFormModel.values,
+                        updates: Record<string, any> = {};
+                    let hasUpdates = false;
+                    for (const key of configKeys) {
+                        if (!isEqual(vals[key], formVals[key])) {
+                            updates[key] = vals[key];
+                            hasUpdates = true;
+                        }
+                    }
+                    if (hasUpdates) this.configFormModel.setValues(updates);
+                }
+            });
+        }
 
         // Reactively build header items: color indicators + gear button.
         // Tracks canvasModel.viewModels so colors update when widgets are added/removed.
@@ -130,9 +195,14 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
 
     /**
      * Resolve a named input to its current value.
-     * Reads the binding from persisted viewState and resolves it
-     * through the WiringModel. Returns the input's default value
-     * if no binding is defined.
+     *
+     * Fallback chain:
+     * 1. Binding (fromWidget or const) → resolved value
+     * 2. Direct viewState value (manual / LLM-set)
+     * 3. undefined (unbound — widget needs reconfiguration)
+     *
+     * Input defaults are seeded into viewState at widget-addition time by
+     * WeatherV2DashModel, so there is no meta-default fallback here.
      */
     protected resolveInput<T = any>(inputName: string): T | undefined {
         const viewState = this.viewModel.viewState;
@@ -144,14 +214,12 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
             if (resolved !== undefined) return resolved as T;
         }
 
-        // 2. Fall back to direct state value (e.g. LLM sets {city: "Tokyo"} without a binding)
+        // 2. Fall back to direct state value (manual or seeded default)
         const directValue = viewState?.[inputName];
         if (directValue !== undefined) return directValue as T;
 
-        // 3. Fall back to declared default from widget meta
-        const meta = (this.constructor as any).meta as WidgetMeta;
-        const inputDef = meta?.inputs?.find(i => i.name === inputName);
-        return inputDef?.default as T;
+        // 3. Unbound — no binding and no manual value
+        return undefined;
     }
 
     //--------------------------------------------------
@@ -180,4 +248,14 @@ function colorDot(color: string): ReactNode {
         style: {backgroundColor: color},
         key: `color-${color}`
     });
+}
+
+/** Map a ConfigPropertyDef to a FormModel field spec. */
+function configPropertyToField(key: string, def: ConfigPropertyDef) {
+    const rules = [];
+    if (def.required) rules.push(required);
+    if (def.type === 'number' && (def.min != null || def.max != null)) {
+        rules.push(numberIs({min: def.min, max: def.max}));
+    }
+    return {name: key, initialValue: def.default ?? null, rules};
 }

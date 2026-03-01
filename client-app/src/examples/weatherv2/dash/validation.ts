@@ -171,8 +171,10 @@ function validateSemantic(
             }
         }
 
-        // Warn about unknown state keys (excluding 'bindings' and known config)
-        const knownKeys = new Set([...configKeys, 'bindings']);
+        // Warn about unknown state keys (excluding 'bindings', known config, input names, and output names)
+        const inputNames = meta.inputs.map(i => i.name);
+        const outputNames = meta.outputs.map(o => o.name);
+        const knownKeys = new Set([...configKeys, ...inputNames, ...outputNames, 'bindings']);
         for (const key of Object.keys(widgetState)) {
             if (!knownKeys.has(key)) {
                 warnings.push(
@@ -204,15 +206,19 @@ function validateSemantic(
             }
         }
 
-        // Warn about required inputs without bindings
+        // Warn about required inputs without bindings or manual values
         for (const input of meta.inputs) {
-            if (input.required && !bindings?.[input.name]) {
+            if (
+                input.required &&
+                !bindings?.[input.name] &&
+                widgetState[input.name] === undefined
+            ) {
                 warnings.push(
                     msg(
                         'warning',
-                        `${path}.state.bindings`,
+                        `${path}.state`,
                         'UNBOUND_REQUIRED_INPUT',
-                        `Required input "${input.name}" on ${widget.viewSpecId} has no binding. Default value will be used.`
+                        `Required input "${input.name}" on ${widget.viewSpecId} has no binding or manual value. Widget is unconfigured.`
                     )
                 );
             }

@@ -22,7 +22,6 @@ export class MarkdownContentModel extends BaseWeatherWidgetModel {
         config: {
             content: {
                 type: 'string',
-                description: 'Markdown text to render.',
                 default: "# Welcome\n\nEdit this widget's content in the dashboard spec."
             },
             title: {

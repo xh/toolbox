@@ -79,7 +79,8 @@ class WidgetRegistryImpl {
                             def.default !== undefined
                                 ? `, default: ${JSON.stringify(def.default)}`
                                 : '';
-                        lines.push(`  - ${key} (${typeStr}${defStr}) — ${def.description}`);
+                        const descStr = def.description ? ` — ${def.description}` : '';
+                        lines.push(`  - ${key} (${typeStr}${defStr})${descStr}`);
                     }
                 }
 

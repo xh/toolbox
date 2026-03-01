@@ -1,5 +1,8 @@
-import {hoistCmp} from '@xh/hoist/core';
-import {div, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
+import {hoistCmp, uses} from '@xh/hoist/core';
+import {div, filler, span, vbox} from '@xh/hoist/cmp/layout';
+import {form} from '@xh/hoist/cmp/form';
+import {genDisplayName} from '@xh/hoist/data';
+import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
     select,
     switchInput,
@@ -9,6 +12,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
@@ -19,8 +23,8 @@ import {getInputWidgetColor} from '../dash/colorCoding';
 //--------------------------------------------------
 // Constants
 //--------------------------------------------------
-const SOURCE_DEFAULT = '__default__';
 const SOURCE_MANUAL = '__manual__';
+const SOURCE_UNBOUND = '__unbound__';
 
 //--------------------------------------------------
 // Component
@@ -32,41 +36,40 @@ const SOURCE_MANUAL = '__manual__';
  */
 export const widgetSettingsForm = hoistCmp.factory({
     displayName: 'WidgetSettingsForm',
+    className: 'weather-v2-settings-form',
+    model: uses(BaseWeatherWidgetModel, {publishMode: 'none'}),
 
-    render(props: any) {
-        const widgetModel: BaseWeatherWidgetModel = props.widgetModel;
-        const meta = (widgetModel.constructor as any).meta as WidgetMeta;
+    render({model, className}) {
+        const meta = (model.constructor as any).meta as WidgetMeta;
         if (!meta) return null;
 
         const {inputs, config} = meta,
             hasInputs = inputs.length > 0,
             hasConfig = Object.keys(config).length > 0;
 
-        return vbox({
-            ...props,
-            className: 'weather-v2-settings-form',
-            items: [
-                toolbar({
-                    className: 'weather-v2-settings-form__header',
-                    items: [
-                        Icon.gear(),
-                        span({className: 'weather-v2-settings-form__title', item: 'Settings'}),
-                        filler(),
-                        button({
-                            icon: Icon.close(),
-                            minimal: true,
-                            onClick: () => widgetModel.panelModel.toggleIsModal()
-                        })
-                    ]
-                }),
-                div({
-                    className: 'weather-v2-settings-form__body',
-                    items: [
-                        hasInputs ? renderInputsSection(widgetModel, inputs) : null,
-                        hasConfig ? renderConfigSection(widgetModel, config) : null
-                    ]
-                })
-            ]
+        return panel({
+            className,
+            scrollable: true,
+            tbar: toolbar({
+                className: 'weather-v2-settings-form__header',
+                items: [
+                    Icon.gear(),
+                    span({className: 'weather-v2-settings-form__title', item: 'Settings'}),
+                    filler(),
+                    button({
+                        icon: Icon.close(),
+                        minimal: true,
+                        onClick: () => model.panelModel.toggleIsModal()
+                    })
+                ]
+            }),
+            item: div({
+                className: 'weather-v2-settings-form__body',
+                items: [
+                    hasInputs ? renderInputsSection(model, inputs) : null,
+                    hasConfig ? renderConfigSection(model, config) : null
+                ]
+            })
         });
     }
 });
@@ -93,14 +96,11 @@ function renderInputField(widgetModel: BaseWeatherWidgetModel, inputDef: InputDe
         binding = bindings[inputDef.name],
         providers = findProviders(inputDef, widgetModel.viewModel.id),
         currentSource = determineSource(binding, viewState[inputDef.name]),
-        isLinked = currentSource !== SOURCE_DEFAULT && currentSource !== SOURCE_MANUAL,
-        manualValue = viewState[inputDef.name] ?? inputDef.default ?? '';
+        isLinked = currentSource !== SOURCE_MANUAL && currentSource !== SOURCE_UNBOUND,
+        isUnbound = currentSource === SOURCE_UNBOUND,
+        manualValue = viewState[inputDef.name] ?? '';
 
     const sourceOptions = [
-        {
-            label: `Default${inputDef.default != null ? ` (${inputDef.default})` : ''}`,
-            value: SOURCE_DEFAULT
-        },
         {label: 'Set manually...', value: SOURCE_MANUAL},
         ...providers.map(p => ({
             label: formatProviderLabel(p),
@@ -108,12 +108,23 @@ function renderInputField(widgetModel: BaseWeatherWidgetModel, inputDef: InputDe
         }))
     ];
 
+    // Show "Not configured" only when currently unbound — once the user picks
+    // a real source it disappears from the dropdown.
+    if (isUnbound) {
+        sourceOptions.unshift({label: 'Not configured', value: SOURCE_UNBOUND});
+    }
+
     return vbox({
         className: 'weather-v2-settings-form__field',
         items: [
             div({
-                className: 'weather-v2-settings-form__field-label',
-                item: inputDef.name
+                className: `weather-v2-settings-form__field-label${isUnbound && inputDef.required ? ' weather-v2-settings-form__field-label--warning' : ''}`,
+                items: [
+                    isUnbound && inputDef.required
+                        ? Icon.warning({className: 'weather-v2-settings-form__warning-icon'})
+                        : null,
+                    genDisplayName(inputDef.name)
+                ]
             }),
             select({
                 value: currentSource,
@@ -139,18 +150,34 @@ function renderInputField(widgetModel: BaseWeatherWidgetModel, inputDef: InputDe
                       className: 'weather-v2-settings-form__linked-note',
                       items: [Icon.link(), span(' Linked to provider widget')]
                   })
+                : null,
+            isUnbound
+                ? div({
+                      className: 'weather-v2-settings-form__unbound-note',
+                      items: [
+                          Icon.warning(),
+                          span(
+                              inputDef.required
+                                  ? ' Required input — select a source'
+                                  : ' No source configured'
+                          )
+                      ]
+                  })
                 : null
         ]
     });
 }
 
 //--------------------------------------------------
-// Config Section — widget-specific configuration
+// Config Section — widget-specific configuration via FormModel
 //--------------------------------------------------
 function renderConfigSection(
     widgetModel: BaseWeatherWidgetModel,
     config: Record<string, ConfigPropertyDef>
 ) {
+    const {configFormModel} = widgetModel;
+    if (!configFormModel) return null;
+
     return vbox({
         className: 'weather-v2-settings-form__section',
         items: [
@@ -158,145 +185,66 @@ function renderConfigSection(
                 className: 'weather-v2-settings-form__section-title',
                 item: 'Configuration'
             }),
-            ...Object.entries(config).map(([key, def]) => renderConfigField(widgetModel, key, def))
+            form({
+                model: configFormModel,
+                fieldDefaults: {commitOnChange: true},
+                items: Object.entries(config).map(([key, def]) => renderConfigField(key, def))
+            })
         ]
     });
 }
 
-function renderConfigField(
-    widgetModel: BaseWeatherWidgetModel,
-    configKey: string,
-    configDef: ConfigPropertyDef
-) {
-    const viewState = widgetModel.viewModel.viewState ?? {},
-        currentValue = viewState[configKey] ?? configDef.default;
+function renderConfigField(configKey: string, configDef: ConfigPropertyDef) {
+    const info = configDef.description || undefined;
 
-    const onChange = (val: any) => {
-        widgetModel.viewModel.setViewStateKey(configKey, val);
-    };
-
-    let control;
     switch (configDef.type) {
         case 'boolean':
-            control = switchInput({
-                value: !!currentValue,
-                onChange,
-                inline: true,
-                label: null
-            });
-            break;
+            return formField({field: configKey, info, item: switchInput({label: null})});
 
         case 'enum':
             if (configDef.enum && configDef.enum.length <= 3) {
-                control = buttonGroupInput({
-                    value: currentValue,
-                    onChange,
-                    outlined: true,
-                    width: '100%',
-                    items: configDef.enum.map(opt => button({text: opt, value: opt, flex: 1}))
-                });
-            } else {
-                control = select({
-                    value: currentValue,
-                    options: configDef.enum ?? [],
-                    onChange,
-                    width: '100%'
+                return formField({
+                    field: configKey,
+                    info,
+                    item: buttonGroupInput({
+                        outlined: true,
+                        items: configDef.enum.map(opt => button({text: opt, value: opt, flex: 1}))
+                    })
                 });
             }
-            break;
+            return formField({
+                field: configKey,
+                info,
+                item: select({options: configDef.enum ?? []})
+            });
 
         case 'number':
-            control = numberInput({
-                value: currentValue,
-                onCommit: onChange,
-                width: '100%',
-                min: configDef.min,
-                max: configDef.max
+            return formField({
+                field: configKey,
+                info,
+                item: numberInput({min: configDef.min, max: configDef.max})
             });
-            break;
 
-        case 'string[]':
-            control = renderStringArrayControl(currentValue, configDef, onChange);
-            break;
+        case 'string[]': {
+            const knownOptions = extractOptionsFromDesc(configDef.description);
+            if (knownOptions.length > 0) {
+                return formField({
+                    field: configKey,
+                    info,
+                    item: select({enableMulti: true, enableFilter: false, options: knownOptions})
+                });
+            }
+            return formField({
+                field: configKey,
+                info,
+                item: textInput({placeholder: 'Comma-separated values...'})
+            });
+        }
 
         case 'string':
         default:
-            control = textInput({
-                value: currentValue?.toString() ?? '',
-                onCommit: onChange,
-                width: '100%'
-            });
-            break;
+            return formField({field: configKey, info, item: textInput()});
     }
-
-    return vbox({
-        className: 'weather-v2-settings-form__field',
-        items: [
-            hbox({
-                className: 'weather-v2-settings-form__field-label',
-                items: [span(configKey), filler(), configDef.type === 'boolean' ? control : null]
-            }),
-            configDef.type !== 'boolean' ? control : null,
-            configDef.description
-                ? div({
-                      className: 'weather-v2-settings-form__field-desc',
-                      item: configDef.description
-                  })
-                : null
-        ]
-    });
-}
-
-/** Control for string[] config — renders switches for known options or a text input fallback. */
-function renderStringArrayControl(
-    value: string[],
-    configDef: ConfigPropertyDef,
-    onChange: (val: string[]) => void
-) {
-    const knownOptions = extractOptionsFromDesc(configDef.description);
-    if (knownOptions.length > 0) {
-        const currentSet = new Set(value ?? []);
-        return vbox({
-            className: 'weather-v2-settings-form__checkbox-group',
-            items: knownOptions.map(opt =>
-                hbox({
-                    className: 'weather-v2-settings-form__checkbox-item',
-                    alignItems: 'center',
-                    items: [
-                        switchInput({
-                            value: currentSet.has(opt),
-                            onChange: (checked: boolean) => {
-                                const next = new Set(currentSet);
-                                if (checked) next.add(opt);
-                                else next.delete(opt);
-                                onChange(Array.from(next));
-                            },
-                            inline: true,
-                            label: null
-                        }),
-                        span({
-                            className: 'weather-v2-settings-form__checkbox-label',
-                            item: opt
-                        })
-                    ]
-                })
-            )
-        });
-    }
-
-    return textInput({
-        value: (value ?? []).join(', '),
-        onCommit: (val: string) => {
-            onChange(
-                val
-                    .split(',')
-                    .map(s => s.trim())
-                    .filter(Boolean)
-            );
-        },
-        width: '100%',
-        placeholder: 'Comma-separated values...'
-    });
 }
 
 //--------------------------------------------------
@@ -341,7 +289,7 @@ function determineSource(binding: any, directValue: any): string {
         if ('const' in binding) return SOURCE_MANUAL;
     }
     if (directValue !== undefined) return SOURCE_MANUAL;
-    return SOURCE_DEFAULT;
+    return SOURCE_UNBOUND;
 }
 
 /** Handle changes to the source dropdown for an input. */
@@ -350,13 +298,13 @@ function handleSourceChange(
     inputDef: InputDef,
     newSource: string
 ) {
+    // SOURCE_UNBOUND is a read-only display state — no-op
+    if (newSource === SOURCE_UNBOUND) return;
+
     const viewState = {...(widgetModel.viewModel.viewState ?? {})},
         bindings = {...(viewState.bindings ?? {})};
 
-    if (newSource === SOURCE_DEFAULT) {
-        delete bindings[inputDef.name];
-        delete viewState[inputDef.name];
-    } else if (newSource === SOURCE_MANUAL) {
+    if (newSource === SOURCE_MANUAL) {
         delete bindings[inputDef.name];
         viewState[inputDef.name] = inputDef.default ?? '';
     } else {
@@ -378,8 +326,8 @@ function formatProviderLabel(provider: ProviderInfo): string {
 }
 
 /** Try to extract known options from a config description (e.g., quoted strings). */
-function extractOptionsFromDesc(description: string): string[] {
-    const matches = description.match(/"([^"]+)"/g);
+function extractOptionsFromDesc(description?: string): string[] {
+    const matches = description?.match(/"([^"]+)"/g);
     if (!matches || matches.length < 2) return [];
     return matches.map(m => m.replace(/"/g, ''));
 }

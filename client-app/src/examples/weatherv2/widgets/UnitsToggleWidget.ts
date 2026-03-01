@@ -22,14 +22,7 @@ export class UnitsToggleModel extends BaseWeatherWidgetModel {
         outputs: [
             {name: 'units', type: 'units', description: 'Unit system: "imperial" or "metric".'}
         ],
-        config: {
-            units: {
-                type: 'enum',
-                description: 'Initial unit system.',
-                enum: ['imperial', 'metric'],
-                default: 'imperial'
-            }
-        },
+        config: {},
         defaultSize: {w: 3, h: 3},
         idealSize: {h: 3},
         minSize: {w: 2, h: 3}

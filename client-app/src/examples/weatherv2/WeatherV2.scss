@@ -643,6 +643,24 @@
     gap: 4px;
   }
 
+  &__unbound-note {
+    margin-top: 4px;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-orange);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__field-label--warning {
+    color: var(--xh-orange);
+  }
+
+  &__warning-icon {
+    margin-right: 4px;
+    color: var(--xh-orange);
+  }
+
   &__checkbox-group {
     gap: 4px;
   }

@@ -212,7 +212,7 @@ const CITY_RULES = `## Available Cities
 
 The city chooser dropdown includes these curated cities: {{CITIES}}.
 
-However, the weather API accepts **any valid city name worldwide** — the dropdown also allows users to type in custom cities. When the user asks about a city not in the list, you can use it directly in the \`selectedCity\` config. Use the standard English name for the city (e.g. "Munich" not "München", "Rome" not "Roma").
+However, the weather API accepts **any valid city name worldwide** — the dropdown also allows users to type in custom cities. When the user asks about a city not in the list, you can set it directly via \`state.selectedCity\` on the cityChooser widget. Use the standard English name for the city (e.g. "Munich" not "München", "Rome" not "Roma").
 
 If a user asks "what cities are available", mention both the curated list and the ability to enter any city name. If asked for a city you're unsure about, use it anyway — the weather API will handle it.`;
 

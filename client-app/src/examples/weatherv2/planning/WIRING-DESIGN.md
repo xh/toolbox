@@ -46,7 +46,9 @@ Three binding types:
 |------|-----------|---------|
 | Widget output | `{"fromWidget": "city1", "output": "selectedCity"}` | Read another widget's output |
 | Constant | `{"const": "New York"}` | Static value |
-| Unbound | *(key absent)* | Use input's default value |
+| Unbound | *(no binding, no manual value in viewState)* | Widget is unconfigured — needs reconfiguration |
+
+Note: Input defaults are seeded into `viewState` at widget-addition time. When a binding is culled (e.g. the provider widget is removed) and no manual value exists, the input is unbound and `resolveInput()` returns `undefined`.
 
 ### Widget Instance IDs
 
@@ -124,17 +126,20 @@ abstract class WeatherWidgetModel extends HoistModel {
         this.persistWith = {dashViewModel: this.viewModel};
     }
 
-    /** Resolve an input binding to its current value. */
+    /** Resolve an input binding to its current value.
+     *  Chain: binding → manual viewState value → undefined (unbound).
+     *  Input defaults are seeded into viewState at widget-addition time,
+     *  so there is no meta-default fallback here. */
     protected resolveInput<T>(inputName: string): T | undefined {
-        const bindings = this.viewModel.viewState?.bindings ?? {};
-        const binding = bindings[inputName];
-        if (!binding) {
-            // Return default from meta
-            const inputDef = (this.constructor as any).meta?.inputs
-                ?.find(i => i.name === inputName);
-            return inputDef?.default;
+        const viewState = this.viewModel.viewState;
+        const binding = viewState?.bindings?.[inputName];
+        if (binding) {
+            const resolved = this.wiringModel.resolveBinding(binding);
+            if (resolved !== undefined) return resolved;
         }
-        return this.wiringModel.resolveBinding(binding);
+        const directValue = viewState?.[inputName];
+        if (directValue !== undefined) return directValue;
+        return undefined;
     }
 
     /** Publish an output value. */
@@ -223,8 +228,8 @@ Chart re-renders with London data
 
 ### Runtime Validation
 
-1. **Missing output value.** If a widget hasn't published its output yet (e.g., still loading), downstream inputs resolve to `undefined` → widget uses its default.
-2. **Widget removal.** When a widget is removed from the canvas, `WiringModel.removeWidget()` clears its outputs. Downstream widgets fall back to defaults. Bindings referencing the removed widget become dangling — this is acceptable at runtime (widget shows default state) but should warn in the JSON harness.
+1. **Missing output value.** If a widget hasn't published its output yet (e.g., still loading), downstream inputs resolve to `undefined` → widget uses its `??` fallback.
+2. **Widget removal.** When a widget is removed from the canvas, `WeatherV2DashModel` automatically: (a) calls `WiringModel.removeWidget()` to clear its outputs, and (b) scans all remaining widgets' `viewState.bindings` to cull any entries referencing the removed widget. Culled inputs become unbound (`resolveInput` returns `undefined`), and the settings form shows them as "Not configured" with a warning indicator.
 
 ## Cycle Prevention
 

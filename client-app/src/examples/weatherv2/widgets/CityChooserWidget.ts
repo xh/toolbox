@@ -70,12 +70,6 @@ export class CityChooserModel extends BaseWeatherWidgetModel {
             {name: 'selectedCity', type: 'city', description: 'The currently selected city name.'}
         ],
         config: {
-            selectedCity: {
-                type: 'string',
-                description:
-                    'Initially selected city. Can be any city name the weather API supports.',
-                default: 'New York'
-            },
             enableSearch: {
                 type: 'boolean',
                 description: 'Enable type-ahead filtering in the dropdown.',

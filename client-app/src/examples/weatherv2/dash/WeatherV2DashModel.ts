@@ -4,6 +4,7 @@ import {DashCanvasModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {Icon} from '@xh/hoist/icon';
 import {makeObservable} from '@xh/hoist/mobx';
 import {WiringModel} from './WiringModel';
+import {widgetRegistry} from './WidgetRegistry';
 
 import {temperatureIcon, cloudRainIcon, calendarDaysIcon, windIcon} from '../Icons';
 import {cityChooserWidget} from '../widgets/CityChooserWidget';
@@ -204,6 +205,33 @@ export class WeatherV2DashModel extends HoistModel {
             ]
         });
 
+        // Widget lifecycle: track viewModel additions/removals to cull stale bindings
+        // and initialize input defaults. Registered BEFORE auto-title so culled viewState
+        // is settled before title computation runs.
+        let previousIds = new Set<string>();
+        this.addReaction({
+            track: () => new Set(this.dashCanvasModel.viewModels.map(vm => vm.id)),
+            run: currentIds => {
+                // On removal: cull wiring outputs and stale bindings
+                for (const id of previousIds) {
+                    if (!currentIds.has(id)) {
+                        this.wiringModel.removeWidget(id);
+                        this.cullBindingsTo(id);
+                    }
+                }
+
+                // On addition: seed input defaults into viewState
+                for (const id of currentIds) {
+                    if (!previousIds.has(id)) {
+                        this.initInputDefaults(id);
+                    }
+                }
+
+                previousIds = currentIds;
+            },
+            fireImmediately: true
+        });
+
         // Auto-title: reactively set titles on display widgets from their bound city.
         // Runs at this level (not in content models) because DashCanvas may lazily render
         // widget content — DashViewModels always exist regardless of render state.
@@ -219,6 +247,63 @@ export class WeatherV2DashModel extends HoistModel {
             fireImmediately: true,
             delay: 1
         });
+    }
+
+    //--------------------------------------------------
+    // Widget Lifecycle
+    //--------------------------------------------------
+
+    /** Remove bindings that reference a removed widget from all remaining widgets. */
+    private cullBindingsTo(removedId: string) {
+        for (const vm of this.dashCanvasModel.viewModels) {
+            const bindings = vm.viewState?.bindings;
+            if (!bindings) continue;
+
+            let changed = false;
+            const updated = {...bindings};
+            for (const [inputName, binding] of Object.entries(updated)) {
+                if (
+                    binding &&
+                    typeof binding === 'object' &&
+                    'fromWidget' in binding &&
+                    (binding as any).fromWidget === removedId
+                ) {
+                    delete updated[inputName];
+                    changed = true;
+                }
+            }
+
+            if (changed) {
+                const vs = {...vm.viewState};
+                vs.bindings = Object.keys(updated).length > 0 ? updated : undefined;
+                vm.setViewState(vs);
+            }
+        }
+    }
+
+    /** Seed declared input defaults into viewState for a newly added widget. */
+    private initInputDefaults(widgetId: string) {
+        const vm = this.dashCanvasModel.viewModels.find(v => v.id === widgetId);
+        if (!vm) return;
+
+        const meta = widgetRegistry.get(vm.viewSpec.id);
+        if (!meta) return;
+
+        let changed = false;
+        const vs = {...(vm.viewState ?? {})};
+
+        for (const input of meta.inputs) {
+            if (input.default === undefined) continue;
+            // Only seed if neither a binding nor a manual value already exists
+            const hasBinding = vs.bindings?.[input.name] != null;
+            const hasManualValue = vs[input.name] !== undefined;
+            if (!hasBinding && !hasManualValue) {
+                vs[input.name] = input.default;
+                changed = true;
+            }
+        }
+
+        if (changed) vm.setViewState(vs);
     }
 
     //--------------------------------------------------
