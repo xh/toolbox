@@ -1,3 +1,4 @@
+import {createElement} from 'react';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {div, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
@@ -6,7 +7,12 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {sparklesIcon} from '../Icons';
-import {ChatHarnessModel, DisplayMessage, formatMessageContent} from './ChatHarnessModel';
+import {
+    ChatHarnessModel,
+    DisplayMessage,
+    ToolCallDisplay,
+    formatMessageContent
+} from './ChatHarnessModel';
 
 export const chatHarnessPanel = hoistCmp.factory({
     displayName: 'ChatHarnessPanel',
@@ -40,15 +46,24 @@ export const chatHarnessPanel = hoistCmp.factory({
 //--------------------------------------------------
 const messageList = hoistCmp.factory<ChatHarnessModel>({
     render({model}) {
-        const {displayMessages} = model;
+        const {displayMessages, generateTask} = model;
 
-        if (displayMessages.length === 0) {
+        // Append a thinking placeholder when waiting for an LLM response
+        const msgs = [...displayMessages];
+        if (
+            generateTask.isPending &&
+            (msgs.length === 0 || msgs[msgs.length - 1].role === 'user')
+        ) {
+            msgs.push({role: 'assistant', content: '', thinking: true});
+        }
+
+        if (msgs.length === 0) {
             return emptyState();
         }
 
         return div({
             className: 'weather-v2-chat-messages',
-            items: displayMessages.map((msg, i) => renderBubble(model, msg, i)),
+            items: msgs.map((msg, i) => renderBubble(model, msg, i)),
             ref: (el: HTMLElement) => {
                 if (el) el.scrollTop = el.scrollHeight;
             }
@@ -104,12 +119,65 @@ function renderBubble(model: ChatHarnessModel, msg: DisplayMessage, index: numbe
                 className: 'weather-v2-chat-msg__role',
                 item: msg.role === 'user' ? 'You' : 'Assistant'
             }),
+            // Tool calls rendered between role label and text content
+            ...(msg.toolCalls?.length ? [renderToolCalls(msg.toolCalls)] : []),
             div({
                 className: `weather-v2-chat-msg__content${isTyping ? ' weather-v2-chat-msg__content--typing' : ''}`,
                 item: contentItem
             })
         ]
     });
+}
+
+/** Render tool call summary cards (collapsed by default using native details/summary). */
+function renderToolCalls(toolCalls: ToolCallDisplay[]) {
+    return div({
+        className: 'weather-v2-tool-calls',
+        items: toolCalls.map((tc, i) =>
+            createElement(
+                'details',
+                {key: `tool-${i}`, className: 'weather-v2-tool-call'},
+                createElement(
+                    'summary',
+                    {className: 'weather-v2-tool-call__summary'},
+                    Icon.bolt(),
+                    friendlyToolSummary(tc)
+                ),
+                div({
+                    className: 'weather-v2-tool-call__detail',
+                    items: [
+                        tc.input && Object.keys(tc.input).length > 0
+                            ? div({item: `Input: ${JSON.stringify(tc.input)}`})
+                            : null,
+                        div({
+                            className: tc.isError ? 'weather-v2-tool-call__error' : null,
+                            item: `Result: ${tc.result}`
+                        })
+                    ]
+                })
+            )
+        )
+    });
+}
+
+/** Map tool name + input to a human-readable summary. */
+function friendlyToolSummary(tc: ToolCallDisplay): string {
+    switch (tc.name) {
+        case 'save_dashboard_as_view':
+            return `Saved view: ${tc.input?.name ?? ''}`;
+        case 'switch_to_view':
+            return `Switched to: ${tc.input?.name ?? ''}`;
+        case 'reset_dashboard':
+            return 'Reset to defaults';
+        case 'toggle_theme':
+            return 'Toggled theme';
+        case 'open_widget_chooser':
+            return 'Opened widget chooser';
+        case 'show_json_spec':
+            return 'Opened JSON editor';
+        default:
+            return tc.name;
+    }
 }
 
 //--------------------------------------------------
@@ -119,8 +187,8 @@ const SUGGESTIONS = [
     'Compare weather in New York and Tokyo side by side',
     'Show current conditions for 16 major cities in a 4x4 grid',
     'Build a compact 3-city overview dashboard',
-    'Simplify to just current conditions and the 5-day forecast',
-    'Add a markdown welcome banner at the top of the dashboard'
+    'Set up a Tokyo weather dashboard and save it as a view called "Tokyo Overview"',
+    'Simplify to just current conditions and the 5-day forecast'
 ];
 
 const emptyState = hoistCmp.factory<ChatHarnessModel>({

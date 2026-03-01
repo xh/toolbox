@@ -2,10 +2,31 @@ import {HoistService, XH} from '@xh/hoist/core';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {DashSpec} from '../dash/types';
 import {CITIES} from '../widgets/CityChooserWidget';
+import {ToolDefinition} from './LlmToolService';
 
+/** A content block in an Anthropic API message. */
+export interface ContentBlock {
+    type: 'text' | 'tool_use' | 'tool_result';
+    // text block
+    text?: string;
+    // tool_use block
+    id?: string;
+    name?: string;
+    input?: Record<string, any>;
+    // tool_result block
+    tool_use_id?: string;
+    content?: string;
+    is_error?: boolean;
+}
+
+/**
+ * A message in the conversation history.
+ * User messages use a simple string content; assistant messages may contain
+ * rich content blocks (text + tool_use) when tool calling is active.
+ */
 export interface ChatMessage {
     role: 'user' | 'assistant';
-    content: string;
+    content: string | ContentBlock[];
 }
 
 /**
@@ -37,18 +58,27 @@ export class LlmChatService extends HoistService {
             );
         }
 
+        parts.push(TOOL_USE_GUIDANCE);
         parts.push(OUTPUT_RULES);
         return parts.join('\n\n');
     }
 
-    /** Call the LLM proxy endpoint and return the raw response. */
+    /**
+     * Call the LLM proxy endpoint and return the full response.
+     * Returns the raw content block array (which may contain text + tool_use blocks),
+     * the stop reason, and the full API response.
+     */
     async generateAsync(
         systemPrompt: string,
-        messages: ChatMessage[]
-    ): Promise<{content: string; raw: any}> {
+        messages: ChatMessage[],
+        tools?: ToolDefinition[]
+    ): Promise<{content: ContentBlock[]; stopReason: string; raw: any}> {
+        const body: any = {systemPrompt, messages};
+        if (tools?.length) body.tools = tools;
+
         const response = await XH.postJson({
             url: 'llm/generate',
-            body: {systemPrompt, messages},
+            body,
             timeout: {interval: 120_000, message: 'LLM request timed out.'},
             track: {
                 category: 'WeatherV2',
@@ -59,10 +89,9 @@ export class LlmChatService extends HoistService {
             }
         });
 
-        // Anthropic API returns {content: [{type: 'text', text: '...'}], ...}
-        const textBlock = response?.content?.find((c: any) => c.type === 'text');
-        const content = textBlock?.text ?? '';
-        return {content, raw: response};
+        const content: ContentBlock[] = response?.content ?? [];
+        const stopReason: string = response?.stop_reason ?? 'end_turn';
+        return {content, stopReason, raw: response};
     }
 
     /**
@@ -186,6 +215,17 @@ The city chooser dropdown includes these curated cities: {{CITIES}}.
 However, the weather API accepts **any valid city name worldwide** — the dropdown also allows users to type in custom cities. When the user asks about a city not in the list, you can use it directly in the \`selectedCity\` config. Use the standard English name for the city (e.g. "Munich" not "München", "Rome" not "Roma").
 
 If a user asks "what cities are available", mention both the curated list and the ability to enter any city name. If asked for a city you're unsure about, use it anyway — the weather API will handle it.`;
+
+const TOOL_USE_GUIDANCE = `## Tools
+
+You have tools available for performing app operations. When the user asks for an action like saving a view, switching themes, or opening a panel, you MUST invoke the tool via the tool_use mechanism — do NOT describe, simulate, or role-play tool calls in your text. Only the tool_use API actually executes actions; writing tool calls in text does nothing.
+
+**When to use tools vs. JSON specs:**
+- Use **tools** for app operations (saving views, changing theme, opening panels). The tool definitions describe each one.
+- Use **JSON specs** for building or modifying dashboard layouts (adding/removing/repositioning widgets).
+- You can combine both in one turn — e.g. generate a dashboard spec AND call save_dashboard_as_view.
+
+After a tool executes, briefly confirm the result in your text response.`;
 
 const OUTPUT_RULES = `## Output Rules
 

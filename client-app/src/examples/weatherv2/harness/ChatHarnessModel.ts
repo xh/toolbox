@@ -2,23 +2,36 @@ import {HoistModel, managed, PersistableState, TaskObserver, XH} from '@xh/hoist
 import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {DashSpec} from '../dash/types';
 import {validateSpec, migrateSpec} from '../dash/validation';
-import {ChatMessage} from '../svc/LlmChatService';
+import {ChatMessage, ContentBlock} from '../svc/LlmChatService';
 import {AppModel} from '../AppModel';
+
+/** Tool call info for display in the chat UI. */
+export interface ToolCallDisplay {
+    name: string;
+    input: Record<string, any>;
+    result: string;
+    isError: boolean;
+}
 
 /** A message for display, including a "thinking" placeholder state. */
 export interface DisplayMessage {
     role: 'user' | 'assistant';
     content: string;
     thinking?: boolean;
+    toolCalls?: ToolCallDisplay[];
 }
+
+/** Max tool-use loop iterations to prevent runaway. */
+const MAX_TOOL_ITERATIONS = 5;
 
 /**
  * Model for the LLM chat harness — manages conversation history,
- * LLM API calls, spec application, and typewriter display effect.
+ * LLM API calls, tool execution, spec application, and typewriter display effect.
  */
 export class ChatHarnessModel extends HoistModel {
     @bindable userInput: string = '';
     @observable.ref messages: ChatMessage[] = [];
+    @observable.ref displayMessages: DisplayMessage[] = [];
     @observable.ref lastError: string = null;
 
     // Typewriter effect state
@@ -29,23 +42,14 @@ export class ChatHarnessModel extends HoistModel {
     generateTask = TaskObserver.trackLast();
 
     private _typingTimer: ReturnType<typeof setInterval> = null;
+    // Synchronous guard against concurrent sends — complements the MobX-based
+    // generateTask.isPending check which can miss rapid-fire calls from the
+    // same tick due to batching.
+    private _isGenerating = false;
 
     constructor() {
         super();
         makeObservable(this);
-    }
-
-    /** Messages to render, including a thinking placeholder while awaiting LLM response. */
-    @computed
-    get displayMessages(): DisplayMessage[] {
-        const msgs: DisplayMessage[] = this.messages.map(m => ({...m}));
-        if (
-            this.generateTask.isPending &&
-            (msgs.length === 0 || msgs[msgs.length - 1].role === 'user')
-        ) {
-            msgs.push({role: 'assistant', content: '', thinking: true});
-        }
-        return msgs;
     }
 
     /**
@@ -69,22 +73,29 @@ export class ChatHarnessModel extends HoistModel {
     @action
     async sendMessageAsync(content?: string) {
         const input = content ?? this.userInput;
-        if (!input.trim() || this.generateTask.isPending) return;
+        if (!input.trim() || this._isGenerating) return;
+        this._isGenerating = true;
 
         const userMsg: ChatMessage = {role: 'user', content: input.trim()};
         this.messages = [...this.messages, userMsg];
+        this.rebuildDisplayMessages();
         this.userInput = '';
         this.lastError = null;
 
-        this.doGenerateAsync().linkTo(this.generateTask);
+        this.doGenerateAsync()
+            .finally(() => (this._isGenerating = false))
+            .linkTo(this.generateTask);
     }
 
     /** Retry the last user message after an error. */
     @action
     retryLastAsync() {
-        if (!this.lastError || this.generateTask.isPending) return;
+        if (!this.lastError || this._isGenerating) return;
+        this._isGenerating = true;
         this.lastError = null;
-        this.doGenerateAsync().linkTo(this.generateTask);
+        this.doGenerateAsync()
+            .finally(() => (this._isGenerating = false))
+            .linkTo(this.generateTask);
     }
 
     /** Pop the last user message back into the input for editing after an error. */
@@ -93,8 +104,10 @@ export class ChatHarnessModel extends HoistModel {
         if (!this.lastError || this.generateTask.isPending) return;
         const msgs = this.messages;
         if (msgs.length && msgs[msgs.length - 1].role === 'user') {
-            this.userInput = msgs[msgs.length - 1].content;
+            const lastContent = msgs[msgs.length - 1].content;
+            this.userInput = typeof lastContent === 'string' ? lastContent : '';
             this.messages = msgs.slice(0, -1);
+            this.rebuildDisplayMessages();
         }
         this.lastError = null;
     }
@@ -104,6 +117,7 @@ export class ChatHarnessModel extends HoistModel {
     clearChat() {
         this.stopTyping();
         this.messages = [];
+        this.displayMessages = [];
         this.lastError = null;
     }
 
@@ -117,27 +131,127 @@ export class ChatHarnessModel extends HoistModel {
     //------------------
     private async doGenerateAsync() {
         try {
-            const svc = XH.llmChatService;
+            const chatSvc = XH.llmChatService,
+                toolSvc = XH.llmToolService;
 
-            // Build system prompt with current dashboard spec
             const currentSpec = this.getCurrentSpec();
-            const systemPrompt = svc.buildSystemPrompt(currentSpec);
+            const systemPrompt = chatSvc.buildSystemPrompt(currentSpec);
+            const tools = toolSvc.getToolDefinitions();
 
-            // Call LLM
-            const {content} = await svc.generateAsync(systemPrompt, this.messages);
+            // Accumulate tool calls across iterations for display
+            const allToolCalls: ToolCallDisplay[] = [];
+            let allTextParts: string[] = [];
 
-            // Add assistant response, apply any spec, and start typewriter
+            // Tool use loop: call LLM, execute any tools, send results back
+            for (let i = 0; i < MAX_TOOL_ITERATIONS; i++) {
+                const {content} = await chatSvc.generateAsync(systemPrompt, this.messages, tools);
+
+                // Append assistant message with full content blocks to API history
+                runInAction(() => {
+                    this.messages = [...this.messages, {role: 'assistant', content}];
+                });
+
+                // Collect text parts from this response
+                const textParts = content.filter(b => b.type === 'text' && b.text).map(b => b.text);
+                allTextParts.push(...textParts);
+
+                // Check for tool use blocks — break if none
+                const toolUseBlocks = content.filter(b => b.type === 'tool_use');
+                if (toolUseBlocks.length === 0) break;
+
+                // Execute each tool and collect results
+                const toolResults: ContentBlock[] = [];
+                for (const block of toolUseBlocks) {
+                    const {content: result, isError} = await toolSvc.executeToolAsync(
+                        block.name,
+                        block.input
+                    );
+                    allToolCalls.push({
+                        name: block.name,
+                        input: block.input,
+                        result,
+                        isError
+                    });
+                    toolResults.push({
+                        type: 'tool_result',
+                        tool_use_id: block.id,
+                        content: result,
+                        is_error: isError
+                    });
+                }
+
+                // Send tool results back as a user message
+                runInAction(() => {
+                    this.messages = [...this.messages, {role: 'user', content: toolResults}];
+                });
+            }
+
+            // Build final display text from all text parts
+            const finalText = allTextParts.join('\n\n');
+
             runInAction(() => {
-                this.messages = [...this.messages, {role: 'assistant', content}];
-                const spec = svc.parseSpecFromResponse(content);
+                // Parse and apply any spec from the combined text
+                const spec = chatSvc.parseSpecFromResponse(finalText);
                 if (spec) this.applySpec(spec);
-                this.startTyping(this.messages.length - 1, content);
+
+                // Add display message with tool calls + text
+                this.displayMessages = [
+                    ...this.displayMessages,
+                    {
+                        role: 'assistant',
+                        content: finalText,
+                        toolCalls: allToolCalls.length > 0 ? allToolCalls : undefined
+                    }
+                ];
+
+                this.startTyping(this.displayMessages.length - 1, finalText);
             });
         } catch (e) {
             runInAction(() => {
                 this.lastError = e.message || 'LLM request failed.';
             });
         }
+    }
+
+    /**
+     * Rebuild displayMessages from the API messages array.
+     * Called when user messages are added/removed (send, edit).
+     * Only processes user messages — assistant display messages are added
+     * by doGenerateAsync after the full tool loop completes.
+     */
+    @action
+    private rebuildDisplayMessages() {
+        const display: DisplayMessage[] = [];
+        for (const msg of this.messages) {
+            if (msg.role === 'user' && typeof msg.content === 'string') {
+                display.push({role: 'user', content: msg.content});
+            }
+            // Assistant display messages and tool-result user messages are not
+            // rebuilt here — they're managed by doGenerateAsync.
+        }
+
+        // Preserve existing assistant display messages by interleaving:
+        // Walk through existing displayMessages to keep assistant entries intact.
+        const existing = this.displayMessages;
+        const merged: DisplayMessage[] = [];
+        let userIdx = 0;
+        const userMsgs = display;
+
+        for (const dm of existing) {
+            if (dm.role === 'user') {
+                if (userIdx < userMsgs.length) {
+                    merged.push(userMsgs[userIdx++]);
+                }
+            } else {
+                merged.push(dm);
+            }
+        }
+        // Append any remaining new user messages
+        while (userIdx < userMsgs.length) {
+            merged.push(userMsgs[userIdx++]);
+        }
+
+        this.displayMessages = merged;
     }
 
     private getCurrentSpec(): DashSpec | undefined {

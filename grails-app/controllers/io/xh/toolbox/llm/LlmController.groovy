@@ -16,18 +16,19 @@ class LlmController extends BaseController {
 
     /**
      * POST /llm/generate
-     * Body: {systemPrompt: string, messages: [{role, content}]}
+     * Body: {systemPrompt: string, messages: [{role, content}], tools?: [...]}
      * Returns: Anthropic API response
      */
     def generate() {
         def body = parseRequestJSON()
         def systemPrompt = body.systemPrompt as String
         def messages = body.messages as List<Map>
+        def tools = body.tools as List<Map>
 
         if (!systemPrompt) throw new RuntimeException('systemPrompt is required.')
         if (!messages) throw new RuntimeException('messages array is required.')
 
         def username = authUsername
-        renderJSON(llmService.generate(systemPrompt, messages, username))
+        renderJSON(llmService.generate(systemPrompt, messages, username, tools))
     }
 }

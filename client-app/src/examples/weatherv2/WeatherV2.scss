@@ -505,6 +505,58 @@
   }
 }
 
+// Chat harness — tool call display
+.weather-v2-tool-calls {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 4px 0;
+}
+
+.weather-v2-tool-call {
+  border-radius: 4px;
+  font-size: var(--xh-font-size-small-px);
+  background: var(--xh-bg-highlight);
+  border: 1px solid var(--xh-border-color);
+
+  &__summary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+    list-style: none;
+    user-select: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::before {
+      content: '\25B6';
+      font-size: 8px;
+      transition: transform 0.15s ease;
+    }
+  }
+
+  &[open] > &__summary::before {
+    transform: rotate(90deg);
+  }
+
+  &__detail {
+    padding: 4px 8px 6px 22px;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+    border-top: 1px solid var(--xh-border-color);
+  }
+
+  &__error {
+    color: var(--xh-intent-danger);
+  }
+}
+
 // Chat harness — input
 .weather-v2-chat-input {
   display: flex;

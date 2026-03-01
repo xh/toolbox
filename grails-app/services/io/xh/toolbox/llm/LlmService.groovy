@@ -41,14 +41,15 @@ class LlmService extends BaseService {
      * @param systemPrompt - system message for the LLM
      * @param messages - conversation messages [{role: 'user'|'assistant', content: '...'}]
      * @param username - for rate limiting
+     * @param tools - optional list of tool definitions for function calling
      * @return parsed response map from the Anthropic API
      */
-    Map generate(String systemPrompt, List<Map> messages, String username) {
+    Map generate(String systemPrompt, List<Map> messages, String username, List<Map> tools = null) {
         checkApiKey()
         checkRateLimit(username)
 
         def model = configService.getString('llmModel', 'claude-sonnet-4-6'),
-            maxTokens = configService.getInt('llmMaxTokens', 4096),
+            maxTokens = configService.getInt('llmMaxTokens', 8192),
             apiKey = configService.getPwd('llmApiKey')
 
         def body = [
@@ -58,11 +59,17 @@ class LlmService extends BaseService {
             messages  : messages
         ]
 
+        if (tools) {
+            body.tools = tools
+        }
+
+        def serialized = JSONSerializer.serialize(body)
+
         def post = new HttpPost('https://api.anthropic.com/v1/messages')
         post.setHeader('Content-Type', 'application/json')
         post.setHeader('x-api-key', apiKey)
         post.setHeader('anthropic-version', '2023-06-01')
-        post.setEntity(new StringEntity(JSONSerializer.serialize(body)))
+        post.setEntity(new StringEntity(serialized))
 
         try {
             def response = client.executeAsMap(post)

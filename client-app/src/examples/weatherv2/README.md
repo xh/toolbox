@@ -18,6 +18,9 @@ unchanged; both share the same server-side weather endpoints.
 - **LLM generation pipeline** — User describes a dashboard in natural language → system prompt with
   widget schemas + spec format → LLM produces JSON spec → validation pipeline checks it → valid
   specs hydrate into a live dashboard.
+- **LLM tool use** — The LLM has access to callable tools (via Anthropic's function calling API)
+  for app operations: saving/loading views, toggling theme, opening panels. Tools execute
+  client-side; the server passes tool definitions through to the Anthropic API.
 
 ## Directory Structure
 
@@ -36,6 +39,7 @@ weatherv2/
 │   └── exampleSpecs.ts             — Curated example dashboard specs
 ├── svc/
 │   ├── LlmChatService.ts                — System prompt builder + LLM API client (HoistService)
+│   ├── LlmToolService.ts                — LLM tool definitions + execution (HoistService)
 │   └── WeatherDataService.ts            — Per-city weather data caching (HoistService)
 ├── harness/
 │   ├── JsonHarnessModel.ts/Panel.ts    — JSON editor: view/edit/validate/apply specs

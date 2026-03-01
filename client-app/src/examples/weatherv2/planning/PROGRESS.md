@@ -189,3 +189,31 @@ Implemented reactive auto-titles that show widget context (particularly the acti
 - Markdown rendering with proper block layout
 - 4 curated example specs loadable from dropdown
 - Widget renaming disabled to prevent title conflicts
+
+### LLM Tool Use (Function Calling)
+
+Added Anthropic native tool use API to give the LLM callable tools for app operations beyond dashboard spec generation.
+
+**Architecture:**
+- Tools execute **client-side** since they manipulate UI state (ViewManager, theme, panels)
+- Server is a pass-through — forwards the `tools` array to the Anthropic API
+- Multi-turn loop: LLM responds with `tool_use` blocks → client executes → sends `tool_result` → LLM responds with final text (max 5 iterations)
+
+**6 tools implemented:**
+| Tool | Action |
+|------|--------|
+| `save_dashboard_as_view` | Save current dashboard as a named view |
+| `switch_to_view` | Switch to an existing saved view by name |
+| `reset_dashboard` | Reset dashboard to saved state |
+| `toggle_theme` | Toggle light/dark theme |
+| `open_widget_chooser` | Open widget chooser panel |
+| `show_json_spec` | Open JSON spec editor |
+
+**Files changed:**
+- **Server:** `LlmService.groovy` + `LlmController.groovy` — accept optional `tools` param, increased default max tokens to 8192
+- **Client (new):** `svc/LlmToolService.ts` — HoistService with tool definitions + execution
+- **Client (modified):** `svc/LlmChatService.ts` — returns full content block array, tool guidance in system prompt
+- **Client (modified):** `harness/ChatHarnessModel.ts` — tool use loop, split API messages from display messages, ToolCallDisplay type
+- **Client (modified):** `harness/ChatHarnessPanel.ts` — tool calls rendered as collapsible `<details>` elements, tool-use suggestion in empty state
+- **Client (modified):** `WeatherV2.scss` — `.weather-v2-tool-call` styles
+- **Client (modified):** `AppModel.ts` + `Bootstrap.ts` — LlmToolService registration + type augmentation

@@ -17,6 +17,7 @@ import {GitHubService} from './core/svc/GitHubService';
 import {PortfolioService} from './core/svc/PortfolioService';
 import {TaskService} from './examples/todo/TaskService';
 import {LlmChatService} from './examples/weatherv2/svc/LlmChatService';
+import {LlmToolService} from './examples/weatherv2/svc/LlmToolService';
 import {WeatherDataService} from './examples/weatherv2/svc/WeatherDataService';
 
 declare module '@xh/hoist/core' {
@@ -25,6 +26,7 @@ declare module '@xh/hoist/core' {
         contactService: ContactService;
         gitHubService: GitHubService;
         llmChatService: LlmChatService;
+        llmToolService: LlmToolService;
         portfolioService: PortfolioService;
         taskService: TaskService;
         weatherDataService: WeatherDataService;
