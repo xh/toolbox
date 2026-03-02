@@ -98,6 +98,12 @@ export class LlmToolService extends HoistService {
                 return 'JSON spec editor opened.';
             }
 
+            case 'toggle_manual_editing': {
+                const newVal = !appModel.manualEditingEnabled;
+                appModel.manualEditingEnabled = newVal;
+                return `Manual editing ${newVal ? 'enabled' : 'disabled'}.`;
+            }
+
             default:
                 throw new Error(`Unknown tool: "${name}"`);
         }
@@ -171,6 +177,16 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
         name: 'show_json_spec',
         description:
             'Open the JSON spec editor panel so the user can view or manually edit the raw dashboard specification.',
+        input_schema: {
+            type: 'object',
+            properties: {},
+            required: []
+        }
+    },
+    {
+        name: 'toggle_manual_editing',
+        description:
+            "Toggle manual editing mode on or off. When enabled, the user can drag, resize, and add widgets directly. Useful for previewing exact layout sizing, and especially helpful whenever a user asks to hide a widget's title bar — enabling manual editing lets them see and adjust the resulting layout.",
         input_schema: {
             type: 'object',
             properties: {},

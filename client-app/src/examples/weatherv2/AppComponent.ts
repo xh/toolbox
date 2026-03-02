@@ -90,8 +90,8 @@ export const AppComponent = hoistCmp({
                 panel({
                     model: model.harnessPanelModel,
                     items: [
-                        showChatHarness ? chatHarnessPanel({flex: 1}) : null,
-                        showJsonHarness ? jsonHarnessPanel({flex: 1}) : null,
+                        showChatHarness ? chatHarnessPanel() : null,
+                        showJsonHarness ? jsonHarnessPanel() : null,
                         activeWidgetChooser
                             ? panel({
                                   testId: 'widget-chooser-panel',
@@ -99,6 +99,7 @@ export const AppComponent = hoistCmp({
                                   icon: Icon.boxFull(),
                                   compactHeader: true,
                                   flex: 1,
+                                  minHeight: 0,
                                   item: dashCanvasWidgetChooser({dashCanvasModel})
                               })
                             : null

@@ -19,6 +19,8 @@ export const jsonHarnessPanel = hoistCmp.factory({
             title: 'JSON Spec Editor',
             icon: Icon.code(),
             compactHeader: true,
+            flex: 1,
+            minHeight: 0,
             item: vbox({flex: 1, items: [editorArea(), validationDisplay()]}),
             bbar: bottomToolbar()
         });

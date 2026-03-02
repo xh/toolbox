@@ -19,6 +19,8 @@ export interface DisplayMessage {
     content: string;
     thinking?: boolean;
     toolCalls?: ToolCallDisplay[];
+    /** Elapsed time in ms for the full LLM generate cycle (including tool loops). */
+    elapsedMs?: number;
 }
 
 /** Max tool-use loop iterations to prevent runaway. */
@@ -130,6 +132,7 @@ export class ChatHarnessModel extends HoistModel {
     // Implementation
     //------------------
     private async doGenerateAsync() {
+        const startTime = Date.now();
         try {
             const chatSvc = XH.llmChatService,
                 toolSvc = XH.llmToolService;
@@ -194,13 +197,15 @@ export class ChatHarnessModel extends HoistModel {
                 const spec = chatSvc.parseSpecFromResponse(finalText);
                 if (spec) this.applySpec(spec);
 
-                // Add display message with tool calls + text
+                // Add display message with tool calls + text + elapsed time
+                const elapsedMs = Date.now() - startTime;
                 this.displayMessages = [
                     ...this.displayMessages,
                     {
                         role: 'assistant',
                         content: finalText,
-                        toolCalls: allToolCalls.length > 0 ? allToolCalls : undefined
+                        toolCalls: allToolCalls.length > 0 ? allToolCalls : undefined,
+                        elapsedMs
                     }
                 ];
 

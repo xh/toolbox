@@ -281,6 +281,10 @@
     background: var(--xh-bg-highlight);
     border-color: var(--xh-blue-muted);
   }
+
+  &--meta {
+    font-style: italic;
+  }
 }
 
 // Chat harness — message list
@@ -313,6 +317,15 @@
     font-weight: 600;
     margin-bottom: 4px;
     color: var(--xh-text-color-muted);
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  &__elapsed {
+    font-weight: 400;
+    font-size: 11px;
+    opacity: 0.7;
   }
 
   &__content {

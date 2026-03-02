@@ -24,6 +24,8 @@ export const chatHarnessPanel = hoistCmp.factory({
             title: 'Dashboard Agent',
             icon: sparklesIcon(),
             compactHeader: true,
+            flex: 1,
+            minHeight: 0,
             headerItems: [
                 button({
                     testId: 'chat-clear-btn',
@@ -117,7 +119,15 @@ function renderBubble(model: ChatHarnessModel, msg: DisplayMessage, index: numbe
         items: [
             div({
                 className: 'weather-v2-chat-msg__role',
-                item: msg.role === 'user' ? 'You' : 'Assistant'
+                items: [
+                    msg.role === 'user' ? 'You' : 'Assistant',
+                    msg.elapsedMs
+                        ? div({
+                              className: 'weather-v2-chat-msg__elapsed',
+                              item: formatElapsed(msg.elapsedMs)
+                          })
+                        : null
+                ]
             }),
             // Tool calls rendered between role label and text content
             ...(msg.toolCalls?.length ? [renderToolCalls(msg.toolCalls)] : []),
@@ -160,6 +170,16 @@ function renderToolCalls(toolCalls: ToolCallDisplay[]) {
     });
 }
 
+/** Format elapsed milliseconds into a friendly human-readable string. */
+function formatElapsed(ms: number): string {
+    if (ms < 1000) return `${ms}ms`;
+    const secs = ms / 1000;
+    if (secs < 60) return `${secs.toFixed(1)}s`;
+    const mins = Math.floor(secs / 60);
+    const remainSecs = Math.round(secs % 60);
+    return `${mins}m ${remainSecs}s`;
+}
+
 /** Map tool name + input to a human-readable summary. */
 function friendlyToolSummary(tc: ToolCallDisplay): string {
     switch (tc.name) {
@@ -175,6 +195,8 @@ function friendlyToolSummary(tc: ToolCallDisplay): string {
             return 'Opened widget chooser';
         case 'show_json_spec':
             return 'Opened JSON editor';
+        case 'toggle_manual_editing':
+            return 'Toggled manual editing';
         default:
             return tc.name;
     }
@@ -186,9 +208,13 @@ function friendlyToolSummary(tc: ToolCallDisplay): string {
 const SUGGESTIONS = [
     'Compare weather in New York and Tokyo side by side',
     'Show current conditions for 16 major cities in a 4x4 grid',
-    'Build a compact 3-city overview dashboard',
     'Set up a Tokyo weather dashboard and save it as a view called "Tokyo Overview"',
     'Simplify to just current conditions and the 5-day forecast'
+];
+
+const META_SUGGESTIONS = [
+    'What can you help me do?',
+    'How do I change which city my dashboard shows?'
 ];
 
 const emptyState = hoistCmp.factory<ChatHarnessModel>({
@@ -216,6 +242,23 @@ const emptyState = hoistCmp.factory<ChatHarnessModel>({
                         ...SUGGESTIONS.map(suggestion =>
                             div({
                                 className: 'weather-v2-chat-suggestion',
+                                item: suggestion,
+                                onClick: () => model.sendMessageAsync(suggestion)
+                            })
+                        )
+                    ]
+                }),
+                div({
+                    className: 'weather-v2-chat-empty__suggestions',
+                    items: [
+                        div({
+                            className: 'weather-v2-chat-empty__suggestions-label',
+                            item: 'Or ask about the agent:'
+                        }),
+                        ...META_SUGGESTIONS.map(suggestion =>
+                            div({
+                                className:
+                                    'weather-v2-chat-suggestion weather-v2-chat-suggestion--meta',
                                 item: suggestion,
                                 onClick: () => model.sendMessageAsync(suggestion)
                             })
