@@ -52,6 +52,14 @@ export class AppModel extends BaseAppModel {
         });
 
         this.weatherV2DashModel = new WeatherV2DashModel(this.weatherViewManager);
+
+        this.addReaction({
+            track: () => this.manualEditingEnabled,
+            run: editing => {
+                this.weatherV2DashModel.dashCanvasModel.showGridBackground = editing;
+            },
+            fireImmediately: true
+        });
     }
 
     override getAppOptions() {

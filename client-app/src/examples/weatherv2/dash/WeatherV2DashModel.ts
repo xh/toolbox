@@ -39,6 +39,7 @@ export class WeatherV2DashModel extends HoistModel {
         this.dashCanvasModel = new DashCanvasModel({
             persistWith: {viewManagerModel},
             rowHeight: 30,
+            allowsDrop: true,
             viewSpecs: [
                 {
                     id: 'cityChooser',
