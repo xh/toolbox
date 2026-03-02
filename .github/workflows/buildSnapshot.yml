@@ -9,19 +9,13 @@ on:
     push:
         branches: [ "develop" ]
     workflow_dispatch:
-        inputs:
-            xhSnapshotVersion:
-                description: '(Optional) Snapshot version to override default in gradle.properties. Must end with -SNAPSHOT.'
-                required: false
-                default: ''
-                type: string
 
 concurrency:
     group: deploy-snapshot
     cancel-in-progress: true
 
 jobs:
-    build-and-deploy:
+    build-tomcat:
 
         runs-on: ubuntu-latest
         permissions:
@@ -39,20 +33,37 @@ jobs:
         - name: Setup Gradle
           uses: gradle/actions/setup-gradle@v4
 
-        - name: Override snapshot version
-          if: inputs.xhSnapshotVersion != ''
-          env:
-              VERSION: ${{ inputs.xhSnapshotVersion }}
-          run: |
-              if [[ ! "$VERSION" == *-SNAPSHOT ]]; then
-                  echo "::error::Version '$VERSION' must end with -SNAPSHOT."
-                  exit 1
-              fi
-              sed -i "s/^xhAppVersion=.*/xhAppVersion=$VERSION/" gradle.properties
-              echo "Updated xhAppVersion to: $VERSION"
-
         - name: Build WAR
           run: ./gradlew war
+
+        - name: Copy WAR into Docker context
+          run: cp build/libs/*.war docker/tomcat/toolbox.war
+
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v6
+          with:
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region: ${{ secrets.AWS_REGION }}
+
+        - name: Login to Amazon ECR
+          uses: aws-actions/amazon-ecr-login@v2
+
+        - name: Build and push tomcat image
+          env:
+              ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          run: |
+              docker build -t $ECR_ROOT/xh/toolbox-tomcat:snapshot docker/tomcat
+              docker push $ECR_ROOT/xh/toolbox-tomcat:snapshot
+
+    build-nginx:
+
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+
+        steps:
+        - uses: actions/checkout@v6
 
         - name: Setup Node.js
           uses: actions/setup-node@v6
@@ -67,13 +78,11 @@ jobs:
         - name: Install dependencies and build client app
           run: cd client-app && yarn install --frozen-lockfile && yarn lint && yarn build
 
-        - name: Copy artifacts into Docker contexts
-          run: |
-              cp build/libs/*.war docker/tomcat/toolbox.war
-              cp -r client-app/build/ docker/nginx/build/
+        - name: Copy client build into Docker context
+          run: cp -r client-app/build/ docker/nginx/build/
 
         - name: Configure AWS credentials
-          uses: aws-actions/configure-aws-credentials@v4
+          uses: aws-actions/configure-aws-credentials@v6
           with:
               aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
               aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -82,25 +91,9 @@ jobs:
         - name: Login to Amazon ECR
           uses: aws-actions/amazon-ecr-login@v2
 
-        - name: Build and push tomcat image
-          env:
-              ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-          run: |
-              SHORT_SHA=${GITHUB_SHA::7}
-              docker build -t $ECR_ROOT/xh/toolbox-tomcat:snapshot \
-                           -t $ECR_ROOT/xh/toolbox-tomcat:snapshot-$SHORT_SHA \
-                           docker/tomcat
-              docker push $ECR_ROOT/xh/toolbox-tomcat:snapshot
-              docker push $ECR_ROOT/xh/toolbox-tomcat:snapshot-$SHORT_SHA
-
         - name: Build and push nginx image
           env:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           run: |
-              SHORT_SHA=${GITHUB_SHA::7}
-              docker build -t $ECR_ROOT/xh/toolbox-nginx:snapshot \
-                           -t $ECR_ROOT/xh/toolbox-nginx:snapshot-$SHORT_SHA \
-                           docker/nginx
+              docker build -t $ECR_ROOT/xh/toolbox-nginx:snapshot docker/nginx
               docker push $ECR_ROOT/xh/toolbox-nginx:snapshot
-              docker push $ECR_ROOT/xh/toolbox-nginx:snapshot-$SHORT_SHA
-
