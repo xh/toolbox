@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.2.2 - 2026-03-02
+
+### Libraries
+
+* @xh/hoist 82.0.3
+
 ## 8.2.1 - 2026-02-28
 
 ### New Features
