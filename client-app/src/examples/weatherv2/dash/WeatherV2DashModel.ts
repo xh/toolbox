@@ -1,4 +1,4 @@
-import {HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {DashCanvasModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {Icon} from '@xh/hoist/icon';
@@ -246,6 +246,17 @@ export class WeatherV2DashModel extends HoistModel {
             },
             fireImmediately: true,
             delay: 1
+        });
+
+        // Lock/unlock canvas editing based on manual editing toggle.
+        this.addReaction({
+            track: () => (XH.appModel as any).manualEditingEnabled,
+            run: enabled => {
+                const locked = !enabled;
+                this.dashCanvasModel.layoutLocked = locked;
+                this.dashCanvasModel.contentLocked = locked;
+            },
+            fireImmediately: true
         });
     }
 

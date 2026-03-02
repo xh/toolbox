@@ -22,7 +22,13 @@ export class UnitsToggleModel extends BaseWeatherWidgetModel {
         outputs: [
             {name: 'units', type: 'units', description: 'Unit system: "imperial" or "metric".'}
         ],
-        config: {},
+        config: {
+            hidePanelHeader: {
+                type: 'boolean',
+                default: false,
+                description: 'Hide widget header bar when manual editing is disabled'
+            }
+        },
         defaultSize: {w: 3, h: 3},
         idealSize: {h: 3},
         minSize: {w: 2, h: 3}

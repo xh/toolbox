@@ -32,16 +32,10 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
     @lookup(() => DashViewModel)
     viewModel: DashViewModel;
 
-    /**
-     * PanelModel with modal support for the settings dialog.
-     * Created only for widgets that declare inputs or config properties.
-     */
+    /** PanelModel with modal support for the settings dialog. */
     @managed panelModel: PanelModel;
 
-    /**
-     * FormModel for config property editing in the settings dialog.
-     * Created only for widgets that declare config properties.
-     */
+    /** FormModel for config property editing in the settings dialog. */
     @managed configFormModel: FormModel;
 
     /** True if this widget type has user-configurable settings. */
@@ -54,25 +48,23 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
     constructor() {
         super();
         const meta = (this.constructor as any).meta as WidgetMeta;
-        const hasSettings = meta && (meta.inputs.length > 0 || Object.keys(meta.config).length > 0);
-        if (hasSettings) {
-            this.panelModel = new PanelModel({
-                modalSupport: {
-                    width: '80vw',
-                    height: '70vh',
-                    canOutsideClickClose: true
-                },
-                collapsible: false,
-                resizable: false
-            });
-        }
 
+        // Always create PanelModel — every widget has at least the hidePanelHeader config.
+        this.panelModel = new PanelModel({
+            modalSupport: {
+                width: '80vw',
+                height: '70vh',
+                canOutsideClickClose: true
+            },
+            collapsible: false,
+            resizable: false
+        });
+
+        // Always create configFormModel — every widget has at least hidePanelHeader.
         const configEntries = meta ? Object.entries(meta.config) : [];
-        if (configEntries.length > 0) {
-            this.configFormModel = new FormModel({
-                fields: configEntries.map(([key, def]) => configPropertyToField(key, def))
-            });
-        }
+        this.configFormModel = new FormModel({
+            fields: configEntries.map(([key, def]) => configPropertyToField(key, def))
+        });
     }
 
     override onLinked() {
@@ -130,11 +122,14 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
 
         // Reactively build header items: color indicators + gear button.
         // Tracks canvasModel.viewModels so colors update when widgets are added/removed.
+        // Also tracks manualEditingEnabled so gear button visibility updates.
         this.addReaction({
             track: () => {
                 const meta = (this.constructor as any).meta as WidgetMeta;
                 if (!meta) return null;
                 const vmId = this.viewModel.id;
+                // Track editing toggle to rebuild header items (gear visibility).
+                void AppModel.instance.manualEditingEnabled;
                 if (meta.category === 'input') return getInputWidgetColor(vmId);
                 if (meta.inputs.length > 0) return getConsumerWidgetColors(vmId);
                 return null;
@@ -145,6 +140,21 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
             },
             fireImmediately: true,
             delay: 1
+        });
+
+        // Sync hidePanelHeader based on viewState config + editing toggle.
+        this.addReaction({
+            track: () => ({
+                editing: AppModel.instance.manualEditingEnabled,
+                hide: this.viewModel.viewState?.hidePanelHeader ?? false
+            }),
+            run: ({editing, hide}) => {
+                const canvasVM = this.viewModel as DashCanvasViewModel;
+                // While editing, always show header so gear is accessible.
+                // When locked, respect the widget's hidePanelHeader setting.
+                canvasVM.hidePanelHeader = editing ? false : hide;
+            },
+            fireImmediately: true
         });
     }
 
@@ -175,8 +185,8 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
             }
         }
 
-        // Gear button for configurable widgets
-        if (this.panelModel) {
+        // Gear button — only visible when manual editing is enabled
+        if (this.panelModel && AppModel.instance.manualEditingEnabled) {
             items.push(
                 button({
                     icon: Icon.gear(),

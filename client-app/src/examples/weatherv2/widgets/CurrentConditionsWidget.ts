@@ -41,7 +41,12 @@ export class CurrentConditionsModel extends BaseWeatherWidgetModel {
         config: {
             showFeelsLike: {type: 'boolean', default: true},
             showHumidity: {type: 'boolean', default: true},
-            showWind: {type: 'boolean', default: true}
+            showWind: {type: 'boolean', default: true},
+            hidePanelHeader: {
+                type: 'boolean',
+                default: false,
+                description: 'Hide widget header bar when manual editing is disabled'
+            }
         },
         defaultSize: {w: 4, h: 8},
         minSize: {w: 3, h: 5}

@@ -49,7 +49,12 @@ export class ForecastChartModel extends BaseWeatherWidgetModel {
                 enum: ['line', 'area', 'column'],
                 default: 'line'
             },
-            showLegend: {type: 'boolean', default: true}
+            showLegend: {type: 'boolean', default: true},
+            hidePanelHeader: {
+                type: 'boolean',
+                default: false,
+                description: 'Hide widget header bar when manual editing is disabled'
+            }
         },
         defaultSize: {w: 8, h: 8},
         minSize: {w: 4, h: 5}

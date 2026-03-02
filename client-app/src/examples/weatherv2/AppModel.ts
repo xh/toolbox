@@ -20,6 +20,7 @@ export class AppModel extends BaseAppModel {
     @managed weatherV2DashModel: WeatherV2DashModel;
     @managed weatherViewManager: ViewManagerModel;
     @managed harnessPanelModel: PanelModel;
+    @persist @bindable manualEditingEnabled: boolean = true;
     @persist @bindable showJsonHarness: boolean = false;
     @persist @bindable showChatHarness: boolean = true;
     @persist @bindable showWidgetChooser: boolean = false;

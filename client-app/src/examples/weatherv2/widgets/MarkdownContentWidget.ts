@@ -29,6 +29,11 @@ export class MarkdownContentModel extends BaseWeatherWidgetModel {
             content: {
                 type: 'markdown',
                 default: "# Welcome\n\nEdit this widget's content in the dashboard spec."
+            },
+            hidePanelHeader: {
+                type: 'boolean',
+                default: false,
+                description: 'Hide widget header bar when manual editing is disabled'
             }
         },
         defaultSize: {w: 4, h: 5},

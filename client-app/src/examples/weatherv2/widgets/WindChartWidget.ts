@@ -38,7 +38,12 @@ export class WindChartModel extends BaseWeatherWidgetModel {
         outputs: [],
         config: {
             showGusts: {type: 'boolean', default: true},
-            chartType: {type: 'enum', enum: ['line', 'area'], default: 'line'}
+            chartType: {type: 'enum', enum: ['line', 'area'], default: 'line'},
+            hidePanelHeader: {
+                type: 'boolean',
+                default: false,
+                description: 'Hide widget header bar when manual editing is disabled'
+            }
         },
         defaultSize: {w: 6, h: 8},
         minSize: {w: 4, h: 5}

@@ -21,12 +21,14 @@ export const AppComponent = hoistCmp({
         const {
                 weatherViewManager,
                 weatherV2DashModel,
+                manualEditingEnabled,
                 showJsonHarness,
                 showChatHarness,
                 showWidgetChooser
             } = model,
             {dashCanvasModel} = weatherV2DashModel,
-            showHarness = showChatHarness || showJsonHarness || showWidgetChooser;
+            activeWidgetChooser = showWidgetChooser && manualEditingEnabled,
+            showHarness = showChatHarness || showJsonHarness || activeWidgetChooser;
 
         return panel({
             tbar: appBar({
@@ -35,10 +37,20 @@ export const AppComponent = hoistCmp({
                 rightItems: [
                     viewManager({model: weatherViewManager}),
                     appBarSeparator(),
+                    button({
+                        testId: 'manual-editing-btn',
+                        icon: Icon.edit(),
+                        text: 'Manual Editing',
+                        active: manualEditingEnabled,
+                        outlined: true,
+                        intent: manualEditingEnabled ? 'primary' : undefined,
+                        onClick: () => (model.manualEditingEnabled = !manualEditingEnabled)
+                    }),
                     dashCanvasAddViewButton({
                         dashCanvasModel,
                         rightIcon: Icon.chevronDown(),
-                        outlined: true
+                        outlined: true,
+                        disabled: !manualEditingEnabled
                     }),
                     appBarSeparator(),
                     button({
@@ -47,7 +59,7 @@ export const AppComponent = hoistCmp({
                         text: 'Dashboard Agent',
                         active: showChatHarness,
                         outlined: true,
-                        intent: 'primary',
+                        intent: showChatHarness ? 'primary' : undefined,
                         onClick: () => (model.showChatHarness = !showChatHarness)
                     }),
                     button({
@@ -56,7 +68,7 @@ export const AppComponent = hoistCmp({
                         text: 'JSON',
                         active: showJsonHarness,
                         outlined: true,
-                        intent: 'primary',
+                        intent: showJsonHarness ? 'primary' : undefined,
                         onClick: () => (model.showJsonHarness = !showJsonHarness)
                     }),
                     button({
@@ -65,7 +77,8 @@ export const AppComponent = hoistCmp({
                         text: 'Widgets',
                         active: showWidgetChooser,
                         outlined: true,
-                        intent: 'primary',
+                        intent: activeWidgetChooser ? 'primary' : undefined,
+                        disabled: !manualEditingEnabled,
                         onClick: () => (model.showWidgetChooser = !showWidgetChooser)
                     }),
                     appBarSeparator()
@@ -79,7 +92,7 @@ export const AppComponent = hoistCmp({
                     items: [
                         showChatHarness ? chatHarnessPanel({flex: 1}) : null,
                         showJsonHarness ? jsonHarnessPanel({flex: 1}) : null,
-                        showWidgetChooser
+                        activeWidgetChooser
                             ? panel({
                                   testId: 'widget-chooser-panel',
                                   title: 'Widget Chooser',

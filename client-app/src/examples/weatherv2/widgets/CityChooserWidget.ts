@@ -74,6 +74,11 @@ export class CityChooserModel extends BaseWeatherWidgetModel {
                 type: 'boolean',
                 description: 'Enable type-ahead filtering in the dropdown.',
                 default: true
+            },
+            hidePanelHeader: {
+                type: 'boolean',
+                default: false,
+                description: 'Hide widget header bar when manual editing is disabled'
             }
         },
         defaultSize: {w: 3, h: 3},
@@ -123,6 +128,7 @@ export const cityChooserWidget = hoistCmp.factory({
             testId: 'city-chooser',
             padding: 8,
             flex: 1,
+            alignItems: 'center',
             item: select({
                 testId: 'city-select',
                 bind: 'selectedCity',

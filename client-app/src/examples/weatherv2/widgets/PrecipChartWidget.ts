@@ -41,7 +41,12 @@ export class PrecipChartModel extends BaseWeatherWidgetModel {
                 description: 'Highlight high-probability periods.',
                 default: false
             },
-            showLegend: {type: 'boolean', default: true}
+            showLegend: {type: 'boolean', default: true},
+            hidePanelHeader: {
+                type: 'boolean',
+                default: false,
+                description: 'Hide widget header bar when manual editing is disabled'
+            }
         },
         defaultSize: {w: 6, h: 8},
         minSize: {w: 4, h: 5}

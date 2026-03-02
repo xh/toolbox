@@ -42,6 +42,11 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
             visibleColumns: {
                 type: 'string[]',
                 default: ['date', 'icon', 'conditions', 'high', 'low', 'humidity', 'wind']
+            },
+            hidePanelHeader: {
+                type: 'boolean',
+                default: false,
+                description: 'Hide widget header bar when manual editing is disabled'
             }
         },
         defaultSize: {w: 6, h: 8},

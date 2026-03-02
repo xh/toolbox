@@ -19,7 +19,13 @@ export class DashInspectorModel extends BaseWeatherWidgetModel {
         category: 'utility',
         inputs: [],
         outputs: [],
-        config: {},
+        config: {
+            hidePanelHeader: {
+                type: 'boolean',
+                default: false,
+                description: 'Hide widget header bar when manual editing is disabled'
+            }
+        },
         defaultSize: {w: 6, h: 8},
         minSize: {w: 4, h: 5}
     };
