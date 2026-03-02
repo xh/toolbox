@@ -142,6 +142,33 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
             delay: 1
         });
 
+        // Apply colored border to the outer DashCanvas card for input widgets.
+        // Tracked separately so it fires when the DOM ref becomes available
+        // (after mount) and when the color changes (widgets added/removed).
+        this.addReaction({
+            track: () => {
+                const meta = (this.constructor as any).meta as WidgetMeta;
+                if (meta?.category !== 'input') return null;
+                const canvasVM = this.viewModel as DashCanvasViewModel;
+                const el = canvasVM.ref?.current;
+                if (!el) return null;
+                return getInputWidgetColor(this.viewModel.id) ?? null;
+            },
+            run: color => {
+                const canvasVM = this.viewModel as DashCanvasViewModel,
+                    el = canvasVM.ref?.current as HTMLElement | null;
+                if (!el) return;
+                if (color) {
+                    el.style.border = `2px solid ${color}`;
+                    el.style.borderRadius = 'var(--xh-border-radius-px)';
+                } else {
+                    el.style.border = '';
+                    el.style.borderRadius = '';
+                }
+            },
+            fireImmediately: true
+        });
+
         // Sync hidePanelHeader based on viewState config + editing toggle.
         this.addReaction({
             track: () => ({
