@@ -1,6 +1,7 @@
 import {grid, GridAutosizeMode, GridModel} from '@xh/hoist/cmp/grid';
 import {img} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
+import {ColChooserModel} from '@xh/hoist/desktop/cmp/grid/impl/colchooser/ColChooserModel';
 import {computed, makeObservable} from '@xh/hoist/mobx';
 import {groupBy} from 'lodash';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
@@ -39,10 +40,6 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
         ],
         outputs: [],
         config: {
-            visibleColumns: {
-                type: 'string[]',
-                default: ['date', 'icon', 'conditions', 'high', 'low', 'humidity', 'wind']
-            },
             hidePanelHeader: {
                 type: 'boolean',
                 default: false,
@@ -83,6 +80,17 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
             run: () => this.updateGrid(),
             fireImmediately: true
         });
+
+        // Sync chooser data when settings modal opens so the LeftRightChooser
+        // reflects the current column visibility state.
+        this.addReaction({
+            track: () => this.panelModel.isModal,
+            run: isModal => {
+                if (isModal) {
+                    (this.gridModel.colChooserModel as ColChooserModel).syncChooserData();
+                }
+            }
+        });
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
@@ -104,6 +112,12 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
             sortBy: 'date',
             emptyText: 'No forecast data available.',
             autosizeOptions: {mode: GridAutosizeMode.MANAGED},
+            colChooserModel: {commitOnChange: true},
+            persistWith: {
+                dashViewModel: this.viewModel,
+                persistSort: false,
+                persistGrouping: false
+            },
             columns: [
                 {
                     field: 'date',
@@ -121,6 +135,7 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
                 {
                     field: 'icon',
                     headerName: '',
+                    chooserName: 'Icon',
                     width: 50,
                     rendererIsComplex: true,
                     renderer: (v, {record}) => {

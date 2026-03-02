@@ -1,8 +1,11 @@
 import {hoistCmp, uses} from '@xh/hoist/core';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {div, filler, span, vbox} from '@xh/hoist/cmp/layout';
 import {form} from '@xh/hoist/cmp/form';
 import {genDisplayName} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
+import {colChooser} from '@xh/hoist/desktop/cmp/grid/impl/colchooser/ColChooser';
+import {ColChooserModel} from '@xh/hoist/desktop/cmp/grid/impl/colchooser/ColChooserModel';
 import {
     codeInput,
     select,
@@ -68,6 +71,7 @@ export const widgetSettingsForm = hoistCmp.factory({
                 className: 'weather-v2-settings-form__body',
                 items: [
                     hasInputs ? renderInputsSection(model, inputs) : null,
+                    renderColumnChooserSection(model),
                     hasConfig ? renderConfigSection(model, config) : null
                 ]
             })
@@ -155,6 +159,28 @@ function renderInputField(widgetModel: BaseWeatherWidgetModel, inputDef: InputDe
                       ]
                   })
                 : null
+        ]
+    });
+}
+
+//--------------------------------------------------
+// Column Chooser Section — native LeftRightChooser for grid widgets
+//--------------------------------------------------
+function renderColumnChooserSection(widgetModel: BaseWeatherWidgetModel) {
+    const gridModel = (widgetModel as any).gridModel as GridModel | undefined;
+    if (!gridModel) return null;
+
+    const colChooserModel = gridModel.colChooserModel as ColChooserModel;
+    if (!colChooserModel) return null;
+
+    return vbox({
+        className: 'weather-v2-settings-form__section',
+        items: [
+            div({
+                className: 'weather-v2-settings-form__section-title',
+                item: 'Columns'
+            }),
+            colChooser({model: colChooserModel})
         ]
     });
 }

@@ -597,7 +597,7 @@
   border-left: var(--xh-border-solid);
   background: var(--xh-bg);
   min-width: 280px;
-  max-width: 380px;
+  max-width: 500px;
 
   &__header {
     border-bottom: var(--xh-border-solid);
@@ -689,6 +689,14 @@
   // use height: 100% which resolves only when a parent has explicit height.
   .xh-form-field--code-input {
     height: 230px;
+  }
+
+  // Inline ColumnChooser — constrain the LeftRightChooser to fit within
+  // the settings panel without overflowing.
+  .xh-col-chooser {
+    height: 300px;
+    border: var(--xh-border-solid);
+    border-radius: var(--xh-border-radius-px);
   }
 
   &__checkbox-group {
