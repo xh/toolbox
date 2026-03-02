@@ -1,17 +1,20 @@
 # Build Snapshot — Builds snapshot Docker images on every push to develop.
 #
 # Builds both nginx (React frontend) and tomcat (Grails backend) images and pushes them
-# to ECR with snapshot tags. For numbered releases, see Build Release.
+# to ECR with snapshot tags. Also triggered when hoist-core or hoist-react publish new
+# snapshots (via repository_dispatch). For numbered releases, see Build Release.
 
 name: Build Snapshot
 
 on:
     push:
         branches: [ "develop" ]
+    repository_dispatch:
+        types: [ hoist-core-snapshot, hoist-react-snapshot ]
     workflow_dispatch:
 
 concurrency:
-    group: deploy-snapshot
+    group: build-snapshot
     cancel-in-progress: true
 
 jobs:
@@ -31,7 +34,7 @@ jobs:
               distribution: 'zulu'
 
         - name: Setup Gradle
-          uses: gradle/actions/setup-gradle@v4
+          uses: gradle/actions/setup-gradle@v5
 
         - name: Build WAR
           run: ./gradlew war

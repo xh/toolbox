@@ -2,7 +2,7 @@
 # graph to GitHub for Dependabot vulnerability alerts.
 #
 # This workflow does not publish artifacts. For snapshot and release Docker builds,
-# see Deploy Snapshot and Deploy Release.
+# see Build Snapshot and Build Release.
 
 name: CI
 
@@ -28,7 +28,7 @@ jobs:
               distribution: 'zulu'
 
         - name: Setup Gradle
-          uses: gradle/actions/setup-gradle@v4
+          uses: gradle/actions/setup-gradle@v5
 
         - name: Build with Gradle Wrapper
           run: ./gradlew build

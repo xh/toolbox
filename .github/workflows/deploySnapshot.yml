@@ -1,17 +1,23 @@
 # Deploy Snapshot — Forces a new ECS deployment of the dev service using current ECR images.
 #
-# Manually triggered. Does not build or push new images — use this to redeploy
-# the latest snapshot images already in ECR (e.g. after an infrastructure change).
+# Runs automatically after a successful Build Snapshot, or can be triggered manually to
+# redeploy the latest snapshot images already in ECR (e.g. after an infrastructure change).
 
 name: Deploy Snapshot
 
 on:
+    workflow_run:
+        workflows: [ "Build Snapshot" ]
+        types: [ completed ]
     workflow_dispatch:
 
 jobs:
     deploy:
 
+        if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
         runs-on: ubuntu-latest
+        # No GitHub token scopes needed — this job only uses AWS credentials from secrets.
+        permissions: {}
 
         steps:
         - name: Configure AWS credentials
