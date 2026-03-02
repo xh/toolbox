@@ -159,11 +159,9 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
                     el = canvasVM.ref?.current as HTMLElement | null;
                 if (!el) return;
                 if (color) {
-                    el.style.border = `2px solid ${color}`;
-                    el.style.borderRadius = 'var(--xh-border-radius-px)';
+                    el.style.borderLeft = `8px solid ${color}`;
                 } else {
-                    el.style.border = '';
-                    el.style.borderRadius = '';
+                    el.style.borderLeft = '';
                 }
             },
             fireImmediately: true

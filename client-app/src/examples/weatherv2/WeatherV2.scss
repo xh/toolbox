@@ -6,6 +6,12 @@
     flex: 1;
     min-height: 0;
   }
+
+  // Round corners on all DashCanvas widget cards
+  .react-grid-item {
+    border-radius: var(--xh-border-radius-px);
+    overflow: hidden;
+  }
 }
 
 .weather-v2-current-conditions {
@@ -233,6 +239,11 @@
   justify-content: center;
   padding: 20px;
   gap: 20px;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--xh-bg-alt) 40%, transparent) 0%,
+    transparent 70%
+  );
 
   &__intro {
     display: flex;
@@ -701,7 +712,7 @@
   display: inline-block;
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: 2px;
   margin-right: 4px;
   flex-shrink: 0;
 }
