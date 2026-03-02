@@ -40,7 +40,8 @@ export class PrecipChartModel extends BaseWeatherWidgetModel {
                 type: 'boolean',
                 description: 'Highlight high-probability periods.',
                 default: false
-            }
+            },
+            showLegend: {type: 'boolean', default: true}
         },
         defaultSize: {w: 6, h: 8},
         minSize: {w: 4, h: 5}
@@ -62,6 +63,10 @@ export class PrecipChartModel extends BaseWeatherWidgetModel {
         return this.viewModel.viewState?.metric ?? 'both';
     }
 
+    get showLegend(): boolean {
+        return this.viewModel.viewState?.showLegend ?? true;
+    }
+
     override onLinked() {
         super.onLinked();
         this.chartModel = this.createChartModel();
@@ -76,6 +81,12 @@ export class PrecipChartModel extends BaseWeatherWidgetModel {
             track: () => [this.weatherData, this.displayMetric],
             run: () => this.updateChart(),
             fireImmediately: true
+        });
+
+        this.addReaction({
+            track: () => this.showLegend,
+            run: showLegend =>
+                this.chartModel.updateHighchartsConfig({legend: {enabled: showLegend}})
         });
     }
 

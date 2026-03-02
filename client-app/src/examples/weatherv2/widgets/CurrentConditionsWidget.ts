@@ -33,6 +33,7 @@ export class CurrentConditionsModel extends BaseWeatherWidgetModel {
                 type: 'units',
                 required: false,
                 default: 'imperial',
+                enum: ['imperial', 'metric'],
                 description: 'Unit system: "imperial" or "metric".'
             }
         ],

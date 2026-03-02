@@ -20,15 +20,15 @@ export class MarkdownContentModel extends BaseWeatherWidgetModel {
         inputs: [],
         outputs: [],
         config: {
-            content: {
-                type: 'string',
-                default: "# Welcome\n\nEdit this widget's content in the dashboard spec."
-            },
             title: {
                 type: 'string',
                 description:
                     'Display title for the widget header. Set this to label the widget since its title cannot be auto-generated.',
                 default: 'Markdown Content'
+            },
+            content: {
+                type: 'markdown',
+                default: "# Welcome\n\nEdit this widget's content in the dashboard spec."
             }
         },
         defaultSize: {w: 4, h: 5},

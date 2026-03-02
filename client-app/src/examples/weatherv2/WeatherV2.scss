@@ -661,6 +661,12 @@
     color: var(--xh-orange);
   }
 
+  // CodeInput needs explicit height on the formField — its internal elements
+  // use height: 100% which resolves only when a parent has explicit height.
+  .xh-form-field--code-input {
+    height: 230px;
+  }
+
   &__checkbox-group {
     gap: 4px;
   }

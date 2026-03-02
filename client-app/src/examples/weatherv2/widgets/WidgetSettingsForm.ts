@@ -4,6 +4,7 @@ import {form} from '@xh/hoist/cmp/form';
 import {genDisplayName} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
+    codeInput,
     select,
     switchInput,
     textInput,
@@ -133,17 +134,7 @@ function renderInputField(widgetModel: BaseWeatherWidgetModel, inputDef: InputDe
                 onChange: (val: string) => handleSourceChange(widgetModel, inputDef, val)
             }),
             currentSource === SOURCE_MANUAL
-                ? textInput({
-                      className: 'weather-v2-settings-form__manual-input',
-                      value: manualValue?.toString() ?? '',
-                      width: '100%',
-                      placeholder: `Enter ${inputDef.name}...`,
-                      onCommit: (val: string) => {
-                          const vs = {...(widgetModel.viewModel.viewState ?? {})};
-                          vs[inputDef.name] = val;
-                          widgetModel.viewModel.setViewState(vs);
-                      }
-                  })
+                ? renderManualInput(widgetModel, inputDef, manualValue)
                 : null,
             isLinked
                 ? div({
@@ -241,6 +232,13 @@ function renderConfigField(configKey: string, configDef: ConfigPropertyDef) {
             });
         }
 
+        case 'markdown':
+            return formField({
+                field: configKey,
+                info,
+                item: codeInput({mode: 'markdown', showFullscreenButton: true})
+            });
+
         case 'string':
         default:
             return formField({field: configKey, info, item: textInput()});
@@ -316,6 +314,34 @@ function handleSourceChange(
 
     viewState.bindings = Object.keys(bindings).length > 0 ? bindings : undefined;
     widgetModel.viewModel.setViewState(viewState);
+}
+
+/** Render the appropriate input control for a manual value based on the input's metadata. */
+function renderManualInput(widgetModel: BaseWeatherWidgetModel, inputDef: InputDef, value: any) {
+    const onChange = (val: any) => {
+        const vs = {...(widgetModel.viewModel.viewState ?? {})};
+        vs[inputDef.name] = val;
+        widgetModel.viewModel.setViewState(vs);
+    };
+
+    if (inputDef.enum?.length) {
+        return buttonGroupInput({
+            className: 'weather-v2-settings-form__manual-input',
+            value: value ?? inputDef.default ?? inputDef.enum[0],
+            outlined: true,
+            width: '100%',
+            onChange,
+            items: inputDef.enum.map(opt => button({text: opt, value: opt, flex: 1}))
+        });
+    }
+
+    return textInput({
+        className: 'weather-v2-settings-form__manual-input',
+        value: value?.toString() ?? '',
+        width: '100%',
+        placeholder: `Enter ${inputDef.name}...`,
+        onCommit: onChange
+    });
 }
 
 /** Format a provider widget label for the source dropdown. */

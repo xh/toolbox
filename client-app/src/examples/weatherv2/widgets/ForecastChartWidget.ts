@@ -32,6 +32,7 @@ export class ForecastChartModel extends BaseWeatherWidgetModel {
                 type: 'units',
                 required: false,
                 default: 'imperial',
+                enum: ['imperial', 'metric'],
                 description: 'Unit system: "imperial" or "metric".'
             }
         ],
@@ -95,6 +96,12 @@ export class ForecastChartModel extends BaseWeatherWidgetModel {
             track: () => [this.weatherData, this.units, this.activeSeries, this.chartType],
             run: () => this.updateChart(),
             fireImmediately: true
+        });
+
+        this.addReaction({
+            track: () => this.showLegend,
+            run: showLegend =>
+                this.chartModel.updateHighchartsConfig({legend: {enabled: showLegend}})
         });
     }
 
