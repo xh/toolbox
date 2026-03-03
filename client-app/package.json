@@ -8,6 +8,7 @@
     "buildAndAnalyze": "webpack --env prodBuild --env analyzeBundles",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "yarn lint:all",
+    "validateDocs": "node scripts/validate-doc-registry.mjs",
     "lint:all": "yarn lint:code && yarn lint:styles",
     "lint:code": "eslint .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
@@ -31,7 +32,7 @@
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^82.0.0-SNAPSHOT",
+    "@xh/hoist": "^83.0.0-SNAPSHOT",
     "@xh/package-template": "~3.0.1",
     "ag-grid-community": "~34.2.0",
     "ag-grid-enterprise": "~34.2.0",
@@ -39,6 +40,7 @@
     "core-js": "3.x",
     "highcharts": "12.x",
     "lodash": "4.x",
+    "minisearch": "^7.1.0",
     "moment": "2.x",
     "react": "~18.2.0",
     "react-dom": "~18.2.0"
@@ -48,7 +50,7 @@
     "@types/react-dom": "18.x",
     "@xh/hoist-dev-utils": "11.x",
     "cross-env": "10.x",
-    "eslint": "9.x",
+    "eslint": "10.x",
     "eslint-config-prettier": "10.x",
     "husky": "9.x",
     "lint-staged": "16.x",

@@ -1,17 +1,16 @@
 import {grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {StoreRecord} from '@xh/hoist/data';
+import {colAutosizeButton, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {StoreRecord} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
-import {gridOptionsPanel} from './options/GridOptionsPanel';
 import {
     actualGrossCol,
     actualUnitsSoldCol,
@@ -25,6 +24,7 @@ import {
     salaryCol,
     stateCol
 } from '../../../core/columns';
+import {gridOptionsPanel} from './options/GridOptionsPanel';
 
 export const sampleColumnGroupsGrid = hoistCmp.factory({
     model: creates(() => SampleColumnGroupsGridModel),
@@ -37,8 +37,6 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
             ref: model.panelRef,
             mask: 'onLoad',
             tbar: [
-                refreshButton(),
-                toolbarSep(),
                 switchInput({
                     bind: 'groupRows',
                     label: 'Group rows:',
@@ -47,12 +45,15 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
                 toolbarSep(),
                 switchInput({
                     bind: 'inMillions',
-                    label: 'Gross in millions:',
+                    label: 'Sales in millions:',
                     labelSide: 'left'
                 }),
                 filler(),
                 gridCountLabel(),
+                '-',
                 storeFilterField(),
+                '-',
+                colAutosizeButton(),
                 colChooserButton(),
                 exportButton()
             ],

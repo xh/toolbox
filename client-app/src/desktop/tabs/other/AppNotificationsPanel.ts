@@ -1,4 +1,4 @@
-import {box, code, filler, p} from '@xh/hoist/cmp/layout';
+import {box, filler, p} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -71,11 +71,7 @@ const idleServiceTile = hoistCmp.factory(() =>
                 This feature is recommended for apps that are rapidly polling or receiving 
                 updates from the server that generate load on back-end APIs.
             `),
-            p(
-                `Idle detection is enabled and configured via the `,
-                code('xhIdleConfig'),
-                ` app config.`
-            ),
+            p('Idle detection is enabled and configured via the xhIdleConfig app config.'),
             p('Click below to put Toolbox to sleep.'),
             filler()
         ],

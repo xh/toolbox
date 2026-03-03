@@ -1,16 +1,10 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
+import {filler, hbox, vframe} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {hoistCmp, uses, HoistProps, BoxProps} from '@xh/hoist/core';
-import {
-    colAutosizeButton,
-    colChooserButton,
-    exportButton,
-    refreshButton
-} from '@xh/hoist/desktop/cmp/button';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {BoxProps, hoistCmp, HoistProps, uses} from '@xh/hoist/core';
+import {colAutosizeButton, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
+import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {gridOptionsPanel} from './options/GridOptionsPanel';
 import './SampleGrid.scss';
@@ -64,7 +58,8 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
             ref: model.panelRef,
             mask: omitMask ? null : 'onLoad',
             ...props,
-            item: hframe(
+            contentBoxProps: {flexDirection: 'row'},
+            items: [
                 vframe(
                     grid(),
                     hbox({
@@ -73,27 +68,15 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
                     })
                 ),
                 gridOptionsPanel({model: model.gridModel})
-            ),
+            ],
             tbar: [
-                refreshButton(),
-                colAutosizeButton(),
-                toolbarSep(),
-                span('Group by:'),
-                select({
-                    bind: 'groupBy',
-                    options: [
-                        {value: 'city', label: 'City'},
-                        {value: 'winLose', label: 'Win/Lose'},
-                        {value: 'city,winLose', label: 'City › Win/Lose'},
-                        {value: 'winLose,city', label: 'Win/Lose › City'},
-                        {value: null, label: 'None'}
-                    ],
-                    width: 160,
-                    enableFilter: false
-                }),
+                groupingChooser({icon: Icon.treeList(), emptyText: 'Ungrouped', minWidth: 200}),
                 filler(),
                 gridCountLabel({unit: 'companies'}),
+                '-',
                 storeFilterField(),
+                '-',
+                colAutosizeButton(),
                 colChooserButton(),
                 exportButton()
             ]

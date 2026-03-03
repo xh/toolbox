@@ -1,12 +1,30 @@
 # Changelog
 
-## 9.0-SNAPSHOT
+## 8.2.2 - 2026-03-02
+
+### Libraries
+
+* @xh/hoist 82.0.3
+
+## 8.2.1 - 2026-02-28
 
 ### New Features
 
+* Added a built-in Docs tab — an integrated viewer for all hoist-react documentation, rendered directly within the Toolbox app. Features a navigable tree sidebar, full-text search across all docs with ranked results, inter-document link navigation, and deep-linking via route parameters (e.g. `/app/docs/core`).
 * Added Forms > Picker example sub-tab — demos the new `Picker` component with single/multi-select modes, custom renderers, badge counts, intent variants, and compact toolbar usage.
 * Added Forms > Select example sub-tab — a dedicated 3-column showcase of the `Select` component covering single/multi-select, async queries, creatable entries, grouped options, custom renderers, windowed rendering, and appearance/behavior options.
 * Updated `DashCanvas` example to demo the new `DashCanvasWidgetChooser` component.
+* Added Other > Markdown example tab — demos the `markdown` component with a live editor, GFM support, and a toggleable custom CSS class showcasing opt-in styling for rendered markdown content.
+
+### Technical
+
+* Converted `.tsx` example/demo files to `.ts`, replacing JSX with hoist element factory functions. Aligns all examples with the project's established "no JSX" convention.
+
+### Libraries
+
+* hoist-core 36.3.1
+* @xh/hoist 82.0.1
+
 
 ## 8.1.0 - 2026-02-12
 
