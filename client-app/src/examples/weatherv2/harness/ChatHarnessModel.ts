@@ -1,7 +1,6 @@
-import {HoistModel, managed, PersistableState, TaskObserver, XH} from '@xh/hoist/core';
+import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {DashSpec} from '../dash/types';
-import {validateSpec, migrateSpec} from '../dash/validation';
 import {ChatMessage, ContentBlock} from '../svc/LlmChatService';
 import {AppModel} from '../AppModel';
 
@@ -28,7 +27,10 @@ const MAX_TOOL_ITERATIONS = 5;
 
 /**
  * Model for the LLM chat harness — manages conversation history,
- * LLM API calls, tool execution, spec application, and typewriter display effect.
+ * LLM API calls, tool execution loop, and typewriter display effect.
+ *
+ * Dashboard changes are handled by dashboard tools in LlmToolService, which
+ * execute within the tool-use loop alongside app operation tools.
  */
 export class ChatHarnessModel extends HoistModel {
     @bindable userInput: string = '';
@@ -192,11 +194,22 @@ export class ChatHarnessModel extends HoistModel {
             // Build final display text from all text parts
             const finalText = allTextParts.join('\n\n');
 
-            runInAction(() => {
-                // Parse and apply any spec from the combined text
-                const spec = chatSvc.parseSpecFromResponse(finalText);
-                if (spec) this.applySpec(spec);
+            // Single consolidated toast if any dashboard-mutating tools were called
+            const DASH_TOOLS = new Set([
+                'set_dashboard',
+                'add_widget',
+                'remove_widget',
+                'update_widget',
+                'move_widget'
+            ]);
+            const dashToolCount = allToolCalls.filter(
+                tc => DASH_TOOLS.has(tc.name) && !tc.isError
+            ).length;
+            if (dashToolCount > 0) {
+                XH.successToast('Dashboard updated.');
+            }
 
+            runInAction(() => {
                 // Add display message with tool calls + text + elapsed time
                 const elapsedMs = Date.now() - startTime;
                 this.displayMessages = [
@@ -266,26 +279,6 @@ export class ChatHarnessModel extends HoistModel {
             return {version: 1, state: persistable?.value?.state ?? []};
         } catch {
             return undefined;
-        }
-    }
-
-    @action
-    private applySpec(rawSpec: DashSpec) {
-        try {
-            const spec = migrateSpec(rawSpec);
-            const result = validateSpec(spec);
-
-            if (!result.valid) {
-                const errorSummary = result.errors.map(e => e.message).join('; ');
-                this.lastError = `Spec validation failed: ${errorSummary}`;
-                return;
-            }
-
-            const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
-            dashModel.setPersistableState(new PersistableState({state: spec.state}));
-            XH.successToast('Dashboard updated from LLM response.');
-        } catch (e) {
-            this.lastError = `Failed to apply spec: ${e.message}`;
         }
     }
 

@@ -45,10 +45,13 @@ export class UnitsToggleModel extends BaseWeatherWidgetModel {
         super.onLinked();
         this.markPersist('units');
 
+        // delay: 1 avoids modifying observable state synchronously during the
+        // React render cycle that triggers onLinked.
         this.addReaction({
             track: () => this.units,
             run: units => this.publishOutput('units', units),
-            fireImmediately: true
+            fireImmediately: true,
+            delay: 1
         });
     }
 }

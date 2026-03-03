@@ -321,7 +321,7 @@ function validateReferential(
  * Compute widget instance IDs matching DashCanvasModel's 0-indexed assignment:
  * first instance of type X → "X_0", second → "X_1", etc.
  */
-function computeInstanceIds(state: DashWidgetState[]): string[] {
+export function computeInstanceIds(state: DashWidgetState[]): string[] {
     const counts = new Map<string, number>();
     return state.map(widget => {
         const idx = counts.get(widget.viewSpecId) ?? 0;

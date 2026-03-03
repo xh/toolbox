@@ -1,6 +1,7 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {DashSpec} from '../dash/types';
+import {computeInstanceIds} from '../dash/validation';
 import {CITIES} from '../widgets/CityChooserWidget';
 import {ToolDefinition} from './LlmToolService';
 
@@ -49,11 +50,18 @@ export class LlmChatService extends HoistService {
             CITY_RULES.replace('{{CITIES}}', cityList)
         ];
 
-        if (currentSpec) {
+        if (currentSpec?.state?.length) {
+            const ids = computeInstanceIds(currentSpec.state);
+            const annotated = currentSpec.state.map((widget, idx) => ({
+                instanceId: ids[idx],
+                ...widget
+            }));
             parts.push(
-                "## Current Dashboard Spec\n\nThe user's current dashboard is shown below. " +
-                    'When modifying, preserve widgets not mentioned in the request.\n\n```json\n' +
-                    JSON.stringify(currentSpec, null, 2) +
+                '## Current Dashboard State\n\n' +
+                    `The dashboard currently has ${annotated.length} widget(s). ` +
+                    'Each widget is shown with its `instanceId` — use these IDs with ' +
+                    'update_widget, remove_widget, and move_widget tools.\n\n```json\n' +
+                    JSON.stringify(annotated, null, 2) +
                     '\n```'
             );
         }
@@ -218,21 +226,41 @@ If a user asks "what cities are available", mention both the curated list and th
 
 const TOOL_USE_GUIDANCE = `## Tools
 
-You have tools available for performing app operations. When the user asks for an action like saving a view, switching themes, or opening a panel, you MUST invoke the tool via the tool_use mechanism — do NOT describe, simulate, or role-play tool calls in your text. Only the tool_use API actually executes actions; writing tool calls in text does nothing.
+You have tools for **all** dashboard and app operations. You MUST use tools to make changes — do NOT output raw JSON specs in your text response. Only tool_use API calls actually execute actions.
 
-**When to use tools vs. JSON specs:**
-- Use **tools** for app operations (saving views, changing theme, opening panels). The tool definitions describe each one.
-- Use **JSON specs** for building or modifying dashboard layouts (adding/removing/repositioning widgets).
-- You can combine both in one turn — e.g. generate a dashboard spec AND call save_dashboard_as_view.
+**Dashboard tools** (use these for all layout and widget changes):
+- \`set_dashboard\` — Replace the entire dashboard with a complete spec. **This is the primary tool for dashboard changes.**
+- \`update_widget\` — Update a single widget's config or bindings (state changes merge). Best for targeted tweaks.
+- \`add_widget\` — Add one widget. Returns the new instance ID.
+- \`remove_widget\` — Remove a widget by instance ID.
+- \`move_widget\` — Reposition or resize a single widget.
+- \`list_widgets\` — Query the current dashboard inventory.
 
-After a tool executes, briefly confirm the result in your text response.`;
+**CRITICAL — Choosing the right tool:**
+Use \`set_dashboard\` for ANY request that involves:
+- Building a new dashboard from scratch
+- Adding or removing multiple widgets
+- Rearranging the layout (repositioning widgets)
+- Any combination of adding widgets + changing bindings + adjusting layout
+- Structural changes that affect more than 2-3 widgets
+
+Use \`update_widget\` ONLY for small, isolated changes to 1-3 existing widgets where the layout stays the same:
+- Changing a chart type on one widget
+- Switching a binding source
+- Toggling a config flag
+
+**Why this matters:** Each granular tool call (add_widget, move_widget, update_widget) applies immediately and rebuilds the dashboard. Chaining many of them creates a poor experience — multiple redraws, potential layout instability, and harder-to-debug results. A single \`set_dashboard\` call produces the final state atomically and reliably.
+
+**Rule of thumb:** If your plan involves more than 3 tool calls, use \`set_dashboard\` instead with the complete desired layout.
+
+**App operation tools:** save_dashboard_as_view, switch_to_view, reset_dashboard, toggle_theme, open_widget_chooser, show_json_spec, toggle_manual_editing.
+
+After tool calls, briefly confirm the result in your text response.`;
 
 const OUTPUT_RULES = `## Output Rules
 
-IMPORTANT: Always output a complete, valid JSON spec wrapped in a \`\`\`json code fence. Include ALL widgets — both new ones and any existing ones the user didn't ask to change. Do not output partial specs or diffs.
+**Do NOT output raw JSON specs or code fences in your text response.** All dashboard changes must be made through tool calls (set_dashboard, add_widget, remove_widget, update_widget, move_widget).
 
-If the user asks to modify the dashboard, start from the current spec and make targeted changes. Preserve widget IDs, bindings, and layouts for widgets the user didn't mention.
+Your text response should be a brief, friendly explanation of what you're setting up or changing — written for a business audience, not a technical one. Focus on what the user will *see* in the dashboard, not how it's implemented.
 
-Before the JSON spec, include a brief, friendly explanation of what you're setting up or changing — written for a business audience, not a technical one. Focus on what the user will *see* in the dashboard, not how it's implemented.
-
-If the user asks a general question, or something conversational that does not require a dashboard change, respond naturally without producing a JSON spec. Not every message needs a dashboard update.`;
+If the user asks a general question or something conversational that does not require a dashboard change, respond naturally without any tool calls. Not every message needs a dashboard update.`;

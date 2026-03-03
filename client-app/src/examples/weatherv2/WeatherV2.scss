@@ -549,7 +549,6 @@
     gap: 6px;
     padding: 4px 8px;
     cursor: pointer;
-    color: var(--xh-text-color-muted);
     font-size: var(--xh-font-size-small-px);
     list-style: none;
     user-select: none;
@@ -572,7 +571,6 @@
   &__detail {
     padding: 4px 8px 6px 22px;
     font-size: var(--xh-font-size-small-px);
-    color: var(--xh-text-color-muted);
     border-top: 1px solid var(--xh-border-color);
   }
 

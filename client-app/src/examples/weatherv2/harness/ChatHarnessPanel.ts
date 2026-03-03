@@ -4,7 +4,7 @@ import {div, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {textArea} from '@xh/hoist/desktop/cmp/input';
+import {jsonInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {sparklesIcon} from '../Icons';
 import {
@@ -150,23 +150,57 @@ function renderToolCalls(toolCalls: ToolCallDisplay[]) {
                 createElement(
                     'summary',
                     {className: 'weather-v2-tool-call__summary'},
-                    Icon.bolt(),
+                    Icon.tools(),
                     friendlyToolSummary(tc)
                 ),
                 div({
                     className: 'weather-v2-tool-call__detail',
                     items: [
-                        tc.input && Object.keys(tc.input).length > 0
-                            ? div({item: `Input: ${JSON.stringify(tc.input)}`})
-                            : null,
-                        div({
-                            className: tc.isError ? 'weather-v2-tool-call__error' : null,
-                            item: `Result: ${tc.result}`
-                        })
+                        renderToolPayload('Input', tc.input),
+                        renderToolPayload('Result', tc.result, tc.isError)
                     ]
                 })
             )
         )
+    });
+}
+
+/**
+ * Render a tool call payload (input or result). Small values render inline;
+ * large JSON payloads render in a readonly jsonInput with search and copy.
+ */
+function renderToolPayload(label: string, value: any, isError?: boolean): any {
+    if (value == null) return null;
+
+    const isObject = typeof value === 'object';
+    const str = isObject ? JSON.stringify(value, null, 2) : String(value);
+
+    // Empty objects don't need display
+    if (isObject && Object.keys(value).length === 0) return null;
+
+    // Only large JSON objects get the jsonInput treatment
+    if (isObject && str.length >= 120) {
+        return div({
+            className: isError ? 'weather-v2-tool-call__error' : null,
+            items: [
+                div({item: `${label}:`}),
+                jsonInput({
+                    value: str,
+                    readonly: true,
+                    showCopyButton: true,
+                    showFullscreenButton: true,
+                    editorProps: {lineNumbers: false},
+                    width: '100%',
+                    minHeight: 240
+                })
+            ]
+        });
+    }
+
+    // Everything else renders inline
+    return div({
+        className: isError ? 'weather-v2-tool-call__error' : null,
+        item: `${label}: ${isObject ? JSON.stringify(value) : str}`
     });
 }
 
@@ -183,20 +217,34 @@ function formatElapsed(ms: number): string {
 /** Map tool name + input to a human-readable summary. */
 function friendlyToolSummary(tc: ToolCallDisplay): string {
     switch (tc.name) {
+        // Dashboard tools
+        case 'set_dashboard':
+            return 'set_dashboard';
+        case 'add_widget':
+            return `add_widget: ${tc.input?.viewSpecId ?? ''}`;
+        case 'remove_widget':
+            return `remove_widget: ${tc.input?.instanceId ?? ''}`;
+        case 'update_widget':
+            return `update_widget: ${tc.input?.instanceId ?? ''}`;
+        case 'move_widget':
+            return `move_widget: ${tc.input?.instanceId ?? ''}`;
+        case 'list_widgets':
+            return 'list_widgets';
+        // App operation tools
         case 'save_dashboard_as_view':
-            return `Saved view: ${tc.input?.name ?? ''}`;
+            return `save_view: ${tc.input?.name ?? ''}`;
         case 'switch_to_view':
-            return `Switched to: ${tc.input?.name ?? ''}`;
+            return `switch_to_view: ${tc.input?.name ?? ''}`;
         case 'reset_dashboard':
-            return 'Reset to defaults';
+            return 'reset_dashboard';
         case 'toggle_theme':
-            return 'Toggled theme';
+            return 'toggle_theme';
         case 'open_widget_chooser':
-            return 'Opened widget chooser';
+            return 'open_widget_chooser';
         case 'show_json_spec':
-            return 'Opened JSON editor';
+            return 'show_json_spec';
         case 'toggle_manual_editing':
-            return 'Toggled manual editing';
+            return 'toggle_manual_editing';
         default:
             return tc.name;
     }

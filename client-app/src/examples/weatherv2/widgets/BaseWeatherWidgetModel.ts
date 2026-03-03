@@ -168,6 +168,7 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
         });
 
         // Sync hidePanelHeader based on viewState config + editing toggle.
+        // delay: 1 avoids modifying canvasVM observable state during render.
         this.addReaction({
             track: () => ({
                 editing: AppModel.instance.manualEditingEnabled,
@@ -179,7 +180,8 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
                 // When locked, respect the widget's hidePanelHeader setting.
                 canvasVM.hidePanelHeader = editing ? false : hide;
             },
-            fireImmediately: true
+            fireImmediately: true,
+            delay: 1
         });
     }
 

@@ -97,11 +97,16 @@ export class CityChooserModel extends BaseWeatherWidgetModel {
         super.onLinked();
         this.markPersist('selectedCity');
 
-        // Publish output whenever city changes
+        // Publish output whenever city changes.
+        // delay: 1 avoids modifying observable state synchronously during the
+        // React render cycle that triggers onLinked (fireImmediately + @action
+        // on publishOutput would otherwise cause "can't update state while
+        // rendering" warnings from React).
         this.addReaction({
             track: () => this.selectedCity,
             run: city => this.publishOutput('selectedCity', city),
-            fireImmediately: true
+            fireImmediately: true,
+            delay: 1
         });
     }
 
