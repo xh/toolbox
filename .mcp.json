@@ -11,7 +11,7 @@
     "hoist-core": {
       "type": "stdio",
       "command": "bash",
-      "args": ["../hoist-core/mcp/bootstrap.sh"]
+      "args": [".claude/start-hoist-core-mcp.sh"]
     },
     "github": {
       "command": "docker",
