@@ -8,6 +8,11 @@
       ],
       "env": {}
     },
+    "hoist-core": {
+      "type": "stdio",
+      "command": "bash",
+      "args": ["../hoist-core/mcp/bootstrap.sh"]
+    },
     "github": {
       "command": "docker",
       "args": [
