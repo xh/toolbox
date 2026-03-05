@@ -1,6 +1,6 @@
 # Changelog
 
-## 9.0.0 - SNAPSHOT
+## 9.0.0-SNAPSHOT - unreleased
 
 ### New Features
 
