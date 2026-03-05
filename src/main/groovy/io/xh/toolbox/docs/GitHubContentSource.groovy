@@ -1,6 +1,6 @@
 package io.xh.toolbox.docs
 
-import groovy.util.logging.Slf4j
+import io.xh.hoist.log.LogSupport
 
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -13,8 +13,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
  * Downloads a repo at a specific ref (tag, branch, or SHA) and extracts
  * it to ~/.cache/toolbox-docs/<repo-name>/<ref>/.
  */
-@Slf4j
-class GitHubContentSource implements ContentSource {
+class GitHubContentSource implements ContentSource, LogSupport {
 
     private static final String GITHUB_API = 'https://api.github.com/repos'
 
@@ -30,7 +29,7 @@ class GitHubContentSource implements ContentSource {
         def repoName = repo.replace('/', '-')
         this.cacheDir = new File(System.getProperty('user.home'), ".cache/toolbox-docs/${repoName}/${ref}")
         this.root = ensureDownloaded()
-        log.info("Using GitHub content source: ${repo}@${ref} -> ${root}")
+        logInfo("Using GitHub content source: ${repo}@${ref} -> ${root}")
     }
 
     @Override
@@ -62,7 +61,7 @@ class GitHubContentSource implements ContentSource {
             if (extracted) return extracted
         }
 
-        log.info("Downloading ${repo} archive for ref '${ref}'...")
+        logInfo("Downloading ${repo} archive for ref '${ref}'...")
         cacheDir.mkdirs()
 
         def url = "${GITHUB_API}/${repo}/tarball/${ref}"
@@ -97,7 +96,7 @@ class GitHubContentSource implements ContentSource {
         }
         tarStream.close()
 
-        log.info("Downloaded and extracted to ${cacheDir}")
+        logInfo("Downloaded and extracted to ${cacheDir}")
 
         def extracted = findExtractedRoot()
         if (!extracted) {

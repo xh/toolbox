@@ -3,6 +3,8 @@ package io.xh.toolbox.docs
 import io.xh.hoist.BaseService
 import io.xh.hoist.exception.NotFoundException
 
+import static grails.util.Holders.currentPluginManager
+
 class DocsService extends BaseService {
 
     private Map<String, ContentSource> sources = [:]
@@ -30,6 +32,7 @@ class DocsService extends BaseService {
         def content = contentSource.readFile(entry.filePath)
         if (content == null) throw new NotFoundException("Content file missing: ${entry.filePath}")
 
+        logDebug("Served ${source}:${docId} (${entry.filePath}, ${content.length()} chars) via ${contentSource.sourceLabel}")
         return content
     }
 
@@ -49,10 +52,10 @@ class DocsService extends BaseService {
     // Source resolution
     //--------------------------------------------------------------------------
     private Map<String, ContentSource> resolveSources() {
-        def ret = [:]
-        ret['hoist-react'] = resolveHoistReactSource()
-        ret['hoist-core'] = resolveHoistCoreSource()
-        return ret.findAll { k, v -> v != null }
+        return [
+            'hoist-react': resolveHoistReactSource(),
+            'hoist-core' : resolveHoistCoreSource()
+        ].findAll { it.value != null }
     }
 
     private ContentSource resolveHoistReactSource() {
@@ -70,59 +73,35 @@ class DocsService extends BaseService {
                 return new GitHubContentSource('xh/hoist-react', ref)
             }
 
-            log.warn("Could not resolve hoist-react content source")
+            logWarn("Could not resolve hoist-react content source")
             return null
         } catch (Exception e) {
-            log.error("Failed to resolve hoist-react content source", e)
+            logError("Failed to resolve hoist-react content source", e)
             return null
         }
     }
 
     private ContentSource resolveHoistCoreSource() {
         try {
-            // Check gradle.properties for runHoistInline
-            def gradleProps = readGradleProperties()
-            def runInline = gradleProps?.getProperty('runHoistInline') == 'true'
-
-            if (runInline) {
-                def localDir = new File(appDir, '../hoist-core').canonicalFile
-                if (localDir.isDirectory()) {
-                    return new LocalContentSource(localDir.absolutePath)
-                }
+            // Check for sibling local checkout
+            def localDir = new File(appDir, '../hoist-core').canonicalFile
+            if (new File(localDir, 'docs/README.md').exists()) {
+                return new LocalContentSource(localDir.absolutePath)
             }
 
-            // Fall back to GitHub — use hoistCoreVersion from gradle.properties
-            def version = gradleProps?.getProperty('hoistCoreVersion')
+            // Fall back to GitHub — version from plugin manager at runtime
+            def version = currentPluginManager().getGrailsPlugin('hoist-core').version
             if (version) {
                 def ref = version.endsWith('-SNAPSHOT') ? 'develop' : "v${version}"
                 return new GitHubContentSource('xh/hoist-core', ref)
             }
 
-            log.warn("Could not resolve hoist-core content source")
+            logWarn("Could not resolve hoist-core content source")
             return null
         } catch (Exception e) {
-            log.error("Failed to resolve hoist-core content source", e)
+            logError("Failed to resolve hoist-core content source", e)
             return null
         }
-    }
-
-    /** Read the hoist-react version from the installed npm package. */
-    private String getHoistReactVersion() {
-        def pkgFile = new File(appDir, 'client-app/node_modules/@xh/hoist/package.json')
-        if (!pkgFile.exists()) return null
-
-        def json = new groovy.json.JsonSlurper().parse(pkgFile)
-        return json.version
-    }
-
-    /** Read gradle.properties from the app root. */
-    private Properties readGradleProperties() {
-        def file = new File(appDir, 'gradle.properties')
-        if (!file.exists()) return null
-
-        def props = new Properties()
-        file.withInputStream { props.load(it) }
-        return props
     }
 
     /** Application root directory. */

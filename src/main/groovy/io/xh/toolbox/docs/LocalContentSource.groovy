@@ -1,12 +1,11 @@
 package io.xh.toolbox.docs
 
-import groovy.util.logging.Slf4j
+import io.xh.hoist.log.LogSupport
 
 /**
  * ContentSource backed by a local filesystem checkout.
  */
-@Slf4j
-class LocalContentSource implements ContentSource {
+class LocalContentSource implements ContentSource, LogSupport {
 
     final File root
 
@@ -15,7 +14,7 @@ class LocalContentSource implements ContentSource {
         if (!root.isDirectory()) {
             throw new IllegalArgumentException("Root directory does not exist: $root")
         }
-        log.info("Using local content source: $root")
+        logInfo("Using local content source: $root")
     }
 
     @Override

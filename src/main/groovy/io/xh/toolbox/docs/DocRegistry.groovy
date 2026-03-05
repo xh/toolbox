@@ -1,13 +1,12 @@
 package io.xh.toolbox.docs
 
-import groovy.util.logging.Slf4j
+import io.xh.hoist.log.LogSupport
 
 /**
  * Unified registry of documentation entries for both hoist-react and hoist-core.
  * Entries are hardcoded with metadata and validated against the active ContentSources at init.
  */
-@Slf4j
-class DocRegistry {
+class DocRegistry implements LogSupport {
 
     final List<DocEntry> entries
 
@@ -20,18 +19,18 @@ class DocRegistry {
         this.entries = allEntries.findAll { entry ->
             def source = sources[entry.source]
             if (!source) {
-                log.warn("No content source for '${entry.source}', skipping: ${entry.id}")
+                logWarn("No content source for '${entry.source}', skipping: ${entry.id}")
                 return false
             }
             if (source.fileExists(entry.filePath)) {
                 return true
             } else {
-                log.warn("Doc file not found for ${entry.source}:${entry.id} at ${entry.filePath}, skipping")
+                logWarn("Doc file not found for ${entry.source}:${entry.id} at ${entry.filePath}, skipping")
                 return false
             }
         }
 
-        log.info("Doc registry loaded: ${entries.size()} of ${allEntries.size()} entries available")
+        logInfo("Doc registry loaded: ${entries.size()} of ${allEntries.size()} entries available")
     }
 
     List<Map> toMaps() {

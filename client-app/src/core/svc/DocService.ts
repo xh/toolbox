@@ -141,7 +141,10 @@ export class DocService extends HoistService {
     // Implementation
     //------------------
     private async loadRegistryAsync() {
-        const resp = await XH.fetchJson({url: 'docs/registry'});
+        const resp = await XH.fetchJson({url: 'docs/registry'}),
+            sourceCount = Object.keys(resp.sources).length;
+
+        this.logInfo(`Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`);
 
         runInAction(() => {
             this.registry = resp.entries.map(e => ({
@@ -158,6 +161,7 @@ export class DocService extends HoistService {
 
     private async buildIndexAsync() {
         try {
+            this.logDebug('Building full-text search index...');
             const entries = this.registry,
                 contents = await Promise.all(
                     entries.map(entry =>
@@ -181,6 +185,7 @@ export class DocService extends HoistService {
             index.addAll(documents);
             this.index = index;
             runInAction(() => (this.indexReady = true));
+            this.logInfo(`Search index built: ${documents.length} documents indexed`);
         } catch (e) {
             XH.handleException(e, {showAlert: false, logOnServer: false});
         }
