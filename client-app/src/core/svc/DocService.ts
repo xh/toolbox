@@ -68,9 +68,17 @@ export class DocService extends HoistService {
 
     override async initAsync() {
         await this.loadRegistryAsync();
-        // Fire-and-forget — don't block app load while pre-fetching all doc content.
-        this.buildIndexAsync();
     }
+
+    /** Kick off full-text index build. Called lazily on first search request. */
+    ensureIndexBuilt() {
+        if (!this.indexReady && !this._indexBuilding) {
+            this._indexBuilding = true;
+            this.buildIndexAsync();
+        }
+    }
+
+    private _indexBuilding = false;
 
     /**
      * Fetch and return the markdown content for a given doc entry.
@@ -97,6 +105,7 @@ export class DocService extends HoistService {
      */
     searchDocs(query: string): DocSearchResult[] {
         if (!query?.trim()) return [];
+        this.ensureIndexBuilt();
 
         if (this.indexReady) {
             const results = this.index.search(query, {

@@ -182,6 +182,7 @@ export class DocsPanelModel extends HoistModel {
         this.searchQuery = '';
         this.searchResults = [];
         this.selectedSearchIdx = -1;
+        this.docService.ensureIndexBuilt();
     }
 
     /** Exit search mode — returns to normal doc viewing. */
