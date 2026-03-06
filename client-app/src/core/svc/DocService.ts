@@ -109,7 +109,7 @@ export class DocService extends HoistService {
 
         if (this.indexReady) {
             const results = this.index.search(query, {
-                boost: {title: 5, keyTopics: 3, description: 2, content: 1},
+                boost: {title: 5, keywords: 3, description: 2, content: 1},
                 prefix: term => term.length >= 4,
                 fuzzy: term => (term.length >= 6 ? 0.15 : false),
                 combineWith: 'AND'
@@ -129,7 +129,7 @@ export class DocService extends HoistService {
         const terms = query.toLowerCase().split(/\s+/);
         return this.registry
             .filter(doc => {
-                const searchable = [doc.title, doc.description, ...doc.keyTopics]
+                const searchable = [doc.title, doc.description, ...doc.keywords]
                     .join(' ')
                     .toLowerCase();
                 return terms.every(term => searchable.includes(term));
@@ -153,7 +153,7 @@ export class DocService extends HoistService {
                 title: e.title,
                 category: e.category,
                 description: e.description,
-                keyTopics: e.keyTopics ?? []
+                keywords: e.keywords ?? []
             }));
             this.sourceInfo = resp.sources;
         });
@@ -170,14 +170,14 @@ export class DocService extends HoistService {
                 );
 
             const index = new MiniSearch({
-                fields: ['title', 'keyTopics', 'description', 'content'],
+                fields: ['title', 'keywords', 'description', 'content'],
                 storeFields: []
             });
 
             const documents = entries.map((entry, i) => ({
                 id: `${entry.source}:${entry.id}`,
                 title: entry.title,
-                keyTopics: entry.keyTopics.join(' '),
+                keywords: entry.keywords.join(' '),
                 description: entry.description,
                 content: this.stripMarkdown(contents[i])
             }));

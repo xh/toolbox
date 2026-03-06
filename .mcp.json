@@ -2,11 +2,13 @@
   "mcpServers": {
     "hoist-react": {
       "type": "stdio",
-      "command": "node",
-      "args": [
-        "client-app/node_modules/@xh/hoist/bin/hoist-mcp.mjs"
-      ],
-      "env": {}
+      "command": "bash",
+      "args": [".claude/start-hoist-react-mcp.sh"]
+    },
+    "hoist-core": {
+      "type": "stdio",
+      "command": "bash",
+      "args": [".claude/start-hoist-core-mcp.sh"]
     },
     "github": {
       "command": "docker",
@@ -23,7 +25,7 @@
       }
     },
     "jetbrains": {
-      "url": "http://localhost:64342/sse",
+      "url": "http://localhost:${JETBRAINS_MCP_PORT:-64342}/sse",
       "type": "sse"
     }
   }

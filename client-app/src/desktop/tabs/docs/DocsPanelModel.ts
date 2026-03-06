@@ -341,7 +341,8 @@ export class DocsPanelModel extends HoistModel {
     private loadNav() {
         this.gridModel.loadData(this.buildTreeData());
 
-        const {docId} = XH.routerState.params;
+        const rawDocId = XH.routerState.params.docId;
+        const docId = rawDocId ? decodeURIComponent(rawDocId) : null;
         const registry = this.docService.registry;
         const initialDoc = (docId && this.docService.getDocEntry(docId)) || registry[0];
         if (initialDoc) this.navigateToDoc(initialDoc.id, initialDoc.source);
@@ -429,7 +430,7 @@ export class DocsPanelModel extends HoistModel {
         if (!name.startsWith(this.BASE_ROUTE)) return;
 
         const {docId} = params;
-        if (docId) this.navigateToDoc(docId);
+        if (docId) this.navigateToDoc(decodeURIComponent(docId));
     }
 
     /** Doc → route: push active doc ID into the URL. */
@@ -440,7 +441,11 @@ export class DocsPanelModel extends HoistModel {
         if (!name.startsWith(BASE_ROUTE)) return;
 
         if (activeDoc) {
-            XH.navigate(`${BASE_ROUTE}.docId`, {docId: activeDoc.id}, {replace: true});
+            XH.navigate(
+                `${BASE_ROUTE}.docId`,
+                {docId: encodeURIComponent(activeDoc.id)},
+                {replace: true}
+            );
         } else {
             XH.navigate(BASE_ROUTE, {replace: true});
         }

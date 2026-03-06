@@ -1,9 +1,11 @@
 package io.xh.toolbox.docs
 
+import groovy.json.JsonSlurper
 import io.xh.hoist.BaseService
 import io.xh.hoist.exception.NotFoundException
 
 import static grails.util.Holders.currentPluginManager
+import static io.xh.hoist.util.Utils.isLocalDevelopment
 
 class DocsService extends BaseService {
 
@@ -29,16 +31,16 @@ class DocsService extends BaseService {
         def contentSource = sources[source]
         if (!contentSource) throw new NotFoundException("Unknown source: ${source}")
 
-        def content = contentSource.readFile(entry.filePath)
-        if (content == null) throw new NotFoundException("Content file missing: ${entry.filePath}")
+        def content = contentSource.readFile(entry.id)
+        if (content == null) throw new NotFoundException("Content file missing: ${entry.id}")
 
-        logDebug("Served ${source}:${docId} (${entry.filePath}, ${content.length()} chars) via ${contentSource.sourceLabel}")
+        logDebug("Served ${source}:${docId} (${entry.id}, ${content.length()} chars) via ${contentSource.sourceLabel}")
         return content
     }
 
     /** Metadata about each content source (mode, label) plus category definitions. */
     Map getSourceInfo() {
-        return DocRegistry.SOURCES.collectEntries { name, meta ->
+        return registry.sourceMetadata.collectEntries { name, meta ->
             def src = sources[name]
             [name, [
                 label     : meta.label,
@@ -60,17 +62,22 @@ class DocsService extends BaseService {
 
     private ContentSource resolveHoistReactSource() {
         try {
-            // Check for sibling local checkout
-            def localDir = new File(appDir, '../hoist-react').canonicalFile
-            if (new File(localDir, 'docs/README.md').exists()) {
-                return new LocalContentSource(localDir.absolutePath)
+            // In local dev, check for sibling checkout with docs
+            if (isLocalDevelopment) {
+                def localDir = new File(appDir, '../hoist-react').canonicalFile
+                if (new File(localDir, 'docs/README.md').exists()) {
+                    return new LocalContentSource(localDir.absolutePath)
+                }
             }
 
-            // Fall back to GitHub — derive version from installed npm package
-            def version = getHoistReactVersion()
-            if (version) {
-                def ref = version.endsWith('-SNAPSHOT') ? 'develop' : "v${version}"
-                return new GitHubContentSource('xh/hoist-react', ref)
+            // Fall back to GitHub — read version from installed npm package
+            def pkgFile = new File(appDir, 'client-app/node_modules/@xh/hoist/package.json')
+            if (pkgFile.exists()) {
+                def version = new JsonSlurper().parse(pkgFile).version as String
+                if (version) {
+                    def ref = version.contains('SNAPSHOT') ? 'develop' : "v${version}"
+                    return new GitHubContentSource('xh/hoist-react', ref)
+                }
             }
 
             logWarn("Could not resolve hoist-react content source")
@@ -83,10 +90,12 @@ class DocsService extends BaseService {
 
     private ContentSource resolveHoistCoreSource() {
         try {
-            // Check for sibling local checkout
-            def localDir = new File(appDir, '../hoist-core').canonicalFile
-            if (new File(localDir, 'docs/README.md').exists()) {
-                return new LocalContentSource(localDir.absolutePath)
+            // In local dev, check for sibling checkout with docs
+            if (isLocalDevelopment) {
+                def localDir = new File(appDir, '../hoist-core').canonicalFile
+                if (new File(localDir, 'docs/README.md').exists()) {
+                    return new LocalContentSource(localDir.absolutePath)
+                }
             }
 
             // Fall back to GitHub — version from plugin manager at runtime
@@ -104,7 +113,7 @@ class DocsService extends BaseService {
         }
     }
 
-    /** Application root directory. */
+    /** Project root directory — reliable in local dev where Gradle sets user.dir. */
     private File getAppDir() {
         return new File(System.getProperty('user.dir'))
     }
