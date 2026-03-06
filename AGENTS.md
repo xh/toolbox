@@ -171,9 +171,13 @@ the `hoist-search-docs`, `hoist-list-docs`, `hoist-search-symbols`, `hoist-get-s
 
 **CLI Tools** — For environments without MCP support, or when you prefer shell commands. These are
 `bin` entries in the hoist-react `package.json` and are available via `npx` in any project that
-depends on hoist-react:
+depends on hoist-react. **You must run these from the `client-app/` directory** (where hoist-react is
+installed as a dependency) — they will not resolve from the project root. Ensure `yarn install` has
+been run in `client-app/` first.
 
 ```bash
+cd client-app
+
 # Documentation
 npx hoist-docs search "grid sorting"         # Search all docs by keyword
 npx hoist-docs read cmp/grid                 # Read a specific doc by ID
