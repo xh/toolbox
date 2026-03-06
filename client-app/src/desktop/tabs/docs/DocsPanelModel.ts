@@ -4,15 +4,7 @@ import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
-import {
-    DOC_CATEGORIES,
-    DOC_REGISTRY,
-    DocCategory,
-    DocEntry,
-    DocExampleLink,
-    getDocEntry,
-    getDocExamples
-} from './docRegistry';
+import {DocCategory, DocEntry, DocExampleLink, getDocExamples} from './docRegistry';
 import {DocSearchResult, DocService} from '../../../core/svc/DocService';
 
 export interface DocSection {
@@ -23,7 +15,7 @@ export interface DocSection {
 /**
  * Primary model for the Docs viewer tab.
  *
- * Manages a tree-based navigation grid of all hoist-react documentation,
+ * Manages a tree-based navigation grid of hoist-react and hoist-core documentation,
  * full-text search mode with ranked results, and loading of markdown content
  * for the selected doc. Active doc selection is synced with the URL via a
  * route parameter (e.g. /app/docs/core).
@@ -110,18 +102,32 @@ export class DocsPanelModel extends HoistModel {
         this.loadNav();
     }
 
+    /** The source info for the currently active doc. */
+    @computed
+    get activeSource(): string | null {
+        return this.activeDoc?.source ?? null;
+    }
+
     /** The category of the currently active doc. */
     @computed
     get activeCategory(): DocCategory | null {
         if (!this.activeDoc) return null;
-        return DOC_CATEGORIES.find(c => c.id === this.activeDoc.category) ?? null;
+        const cats = this.docService.getCategories(this.activeDoc.source);
+        return cats.find(c => c.id === this.activeDoc.category) ?? null;
     }
 
-    /** Sibling docs in the same category as the active doc. */
+    /** Sibling docs in the same source + category as the active doc. */
     @computed
     get activeCategorySiblings(): DocEntry[] {
         if (!this.activeDoc) return [];
-        return DOC_REGISTRY.filter(d => d.category === this.activeDoc.category);
+        return this.docService.getDocsByCategory(this.activeDoc.source, this.activeDoc.category);
+    }
+
+    /** Categories for the active doc's source. */
+    @computed
+    get activeSourceCategories(): DocCategory[] {
+        if (!this.activeDoc) return [];
+        return this.docService.getCategories(this.activeDoc.source);
     }
 
     /** H2-level sections parsed from the current document content. */
@@ -138,13 +144,16 @@ export class DocsPanelModel extends HoistModel {
         return getDocExamples(this.activeDoc.id);
     }
 
-    /** Navigate to a specific doc by ID. Updates grid selection, content, and route. */
+    /** Navigate to a specific doc by source + ID. Updates grid selection, content, and route. */
     @action
-    navigateToDoc(docId: string) {
-        const entry = getDocEntry(docId);
-        if (!entry || entry.id === this.activeDoc?.id) return;
+    navigateToDoc(docId: string, source?: string) {
+        const entry = source
+            ? this.docService.getDocEntry(docId, source)
+            : this.docService.getDocEntry(docId);
+        if (!entry || (entry.id === this.activeDoc?.id && entry.source === this.activeDoc?.source))
+            return;
 
-        const rec = this.gridModel.store.getById(entry.id);
+        const rec = this.gridModel.store.getById(`${entry.source}:${entry.id}`);
         if (rec) this.gridModel.selModel.select(rec);
 
         this.activeDoc = entry;
@@ -154,10 +163,10 @@ export class DocsPanelModel extends HoistModel {
         this.updateRouteFromDoc();
     }
 
-    /** Navigate to the first doc in a given category. */
-    navigateToCategory(categoryId: string) {
-        const firstDoc = DOC_REGISTRY.find(d => d.category === categoryId);
-        if (firstDoc) this.navigateToDoc(firstDoc.id);
+    /** Navigate to the first doc in a given source + category. */
+    navigateToCategory(source: string, categoryId: string) {
+        const firstDoc = this.docService.getDocsByCategory(source, categoryId)[0];
+        if (firstDoc) this.navigateToDoc(firstDoc.id, firstDoc.source);
     }
 
     /** Toggle search mode on/off. */
@@ -173,6 +182,7 @@ export class DocsPanelModel extends HoistModel {
         this.searchQuery = '';
         this.searchResults = [];
         this.selectedSearchIdx = -1;
+        this.docService.ensureIndexBuilt();
     }
 
     /** Exit search mode — returns to normal doc viewing. */
@@ -186,8 +196,8 @@ export class DocsPanelModel extends HoistModel {
 
     /** Select a search result — navigate to the doc and exit search. */
     @action
-    selectSearchResult(docId: string) {
-        this.navigateToDoc(docId);
+    selectSearchResult(entry: DocEntry) {
+        this.navigateToDoc(entry.id, entry.source);
         this.exitSearchMode();
     }
 
@@ -202,7 +212,7 @@ export class DocsPanelModel extends HoistModel {
     /** Confirm the currently selected search result, if any. */
     confirmSearchSelection() {
         const result = this.searchResults[this.selectedSearchIdx];
-        if (result) this.selectSearchResult(result.entry.id);
+        if (result) this.selectSearchResult(result.entry);
     }
 
     /** Handle keyboard navigation within search results. */
@@ -278,6 +288,7 @@ export class DocsPanelModel extends HoistModel {
             message: feedbackMessage.trim(),
             data: {
                 docId: activeDoc?.id,
+                docSource: activeDoc?.source,
                 docTitle: activeDoc?.title,
                 section: sectionTitle
             },
@@ -297,13 +308,14 @@ export class DocsPanelModel extends HoistModel {
             selModel: 'single',
             treeMode: true,
             showHover: true,
-            expandLevel: 10,
+            expandLevel: 1,
             store: {
                 idSpec: 'id',
                 fields: [
                     {name: 'title', type: 'string'},
                     {name: 'description', type: 'string'},
                     {name: 'isCategory', type: 'bool'},
+                    {name: 'isSource', type: 'bool'},
                     {name: 'icon', type: 'auto'},
                     {name: 'order', type: 'int'}
                 ]
@@ -329,34 +341,70 @@ export class DocsPanelModel extends HoistModel {
     private loadNav() {
         this.gridModel.loadData(this.buildTreeData());
 
-        const {docId} = XH.routerState.params;
-        const initialDoc = (docId && getDocEntry(docId)) || DOC_REGISTRY[0];
-        if (initialDoc) this.navigateToDoc(initialDoc.id);
+        const rawDocId = XH.routerState.params.docId;
+        const docId = rawDocId ? decodeURIComponent(rawDocId) : null;
+        const registry = this.docService.registry;
+        const initialDoc = (docId && this.docService.getDocEntry(docId)) || registry[0];
+        if (initialDoc) this.navigateToDoc(initialDoc.id, initialDoc.source);
     }
 
+    /**
+     * Build tree data with source root nodes:
+     *   Hoist React
+     *     Overview
+     *       Hoist React (doc)
+     *       Docs Index (doc)
+     *     ...
+     *   Hoist Core
+     *     Core Framework
+     *       Base Classes (doc)
+     *       ...
+     */
     private buildTreeData(): any[] {
         let order = 0;
-        return DOC_CATEGORIES.map(cat => {
-            const docs = DOC_REGISTRY.filter(d => d.category === cat.id);
-            if (docs.length === 0) return null;
+        const {docService} = this;
+
+        return docService.sourceNames.map(sourceName => {
+            const sourceLabel = docService.getSourceLabel(sourceName);
+            const categories = docService.getCategories(sourceName);
+
+            const catChildren = categories
+                .map(cat => {
+                    const docs = docService.getDocsByCategory(sourceName, cat.id);
+                    if (docs.length === 0) return null;
+
+                    return {
+                        id: `${sourceName}:cat:${cat.id}`,
+                        title: cat.title,
+                        description: '',
+                        isCategory: true,
+                        isSource: false,
+                        icon: this.getCategoryIcon(cat.id),
+                        order: order++,
+                        children: docs.map(doc => ({
+                            id: `${doc.source}:${doc.id}`,
+                            title: doc.title,
+                            description: doc.description,
+                            isCategory: false,
+                            isSource: false,
+                            icon: null,
+                            order: order++
+                        }))
+                    };
+                })
+                .filter(Boolean);
 
             return {
-                id: `cat:${cat.id}`,
-                title: cat.title,
+                id: `source:${sourceName}`,
+                title: sourceLabel,
                 description: '',
-                isCategory: true,
-                icon: this.getCategoryIcon(cat.id),
+                isCategory: false,
+                isSource: true,
+                icon: this.getSourceIcon(sourceName),
                 order: order++,
-                children: docs.map(doc => ({
-                    id: doc.id,
-                    title: doc.title,
-                    description: doc.description,
-                    isCategory: false,
-                    icon: null,
-                    order: order++
-                }))
+                children: catChildren
             };
-        }).filter(Boolean);
+        });
     }
 
     /** Run search via DocService and update results. */
@@ -369,8 +417,11 @@ export class DocsPanelModel extends HoistModel {
 
     @action
     private onSelectionChange(record: any) {
-        if (!record || record.data.isCategory) return;
-        this.navigateToDoc(record.id);
+        if (!record || record.data.isCategory || record.data.isSource) return;
+        // Record IDs are formatted as "source:docId"
+        const [source, ...idParts] = record.id.split(':');
+        const docId = idParts.join(':');
+        this.navigateToDoc(docId, source);
     }
 
     /** Route → doc: sync active doc when the URL changes. */
@@ -379,7 +430,7 @@ export class DocsPanelModel extends HoistModel {
         if (!name.startsWith(this.BASE_ROUTE)) return;
 
         const {docId} = params;
-        if (docId) this.navigateToDoc(docId);
+        if (docId) this.navigateToDoc(decodeURIComponent(docId));
     }
 
     /** Doc → route: push active doc ID into the URL. */
@@ -390,7 +441,11 @@ export class DocsPanelModel extends HoistModel {
         if (!name.startsWith(BASE_ROUTE)) return;
 
         if (activeDoc) {
-            XH.navigate(`${BASE_ROUTE}.docId`, {docId: activeDoc.id}, {replace: true});
+            XH.navigate(
+                `${BASE_ROUTE}.docId`,
+                {docId: encodeURIComponent(activeDoc.id)},
+                {replace: true}
+            );
         } else {
             XH.navigate(BASE_ROUTE, {replace: true});
         }
@@ -400,7 +455,7 @@ export class DocsPanelModel extends HoistModel {
         runInAction(() => (this.content = null));
         try {
             const content = await this.docService
-                .fetchContentAsync(entry.id)
+                .fetchContentAsync(entry.source, entry.id)
                 .linkTo(this.loadContentTask);
             runInAction(() => (this.content = content));
         } catch (e) {
@@ -413,6 +468,7 @@ export class DocsPanelModel extends HoistModel {
 
     getCategoryIcon(categoryId: string) {
         switch (categoryId) {
+            // hoist-react categories
             case 'overview':
                 return Icon.home();
             case 'core':
@@ -433,6 +489,30 @@ export class DocsPanelModel extends HoistModel {
                 return Icon.server();
             case 'upgrade':
                 return Icon.arrowUp();
+            // hoist-core categories
+            case 'core-framework':
+                return Icon.gear();
+            case 'core-features':
+                return Icon.gears();
+            case 'infrastructure':
+                return Icon.server();
+            case 'app-development':
+                return Icon.code();
+            case 'grails-platform':
+                return Icon.database();
+            case 'build':
+                return Icon.boxFull();
+            default:
+                return Icon.folder();
+        }
+    }
+
+    getSourceIcon(sourceName: string) {
+        switch (sourceName) {
+            case 'hoist-react':
+                return Icon.icon({iconName: 'react', prefix: 'fab'});
+            case 'hoist-core':
+                return Icon.server();
             default:
                 return Icon.folder();
         }
@@ -444,11 +524,6 @@ export class DocsPanelModel extends HoistModel {
 //------------------
 /**
  * Parse H2 headings from raw markdown content into navigable sections.
- *
- * Each H2 (`## Title`) becomes a section entry with a display title (inline markdown
- * stripped) and a URL-safe slug ID. Duplicate slugs are disambiguated with a numeric
- * suffix (e.g. `overview`, `overview-1`). The resulting IDs are assigned to the
- * corresponding DOM H2 elements in the view for scroll-based tracking and navigation.
  */
 function extractSections(content: string): DocSection[] {
     const regex = /^## (.+)$/gm;

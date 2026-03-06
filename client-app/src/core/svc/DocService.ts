@@ -1,7 +1,7 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import {makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import MiniSearch from 'minisearch';
-import {DOC_REGISTRY, DocEntry, getDocEntry} from '../../desktop/tabs/docs/docRegistry';
+import {DocCategory, DocEntry, DocSourceInfo} from '../../desktop/tabs/docs/docRegistry';
 
 export interface DocSearchResult {
     entry: DocEntry;
@@ -9,17 +9,17 @@ export interface DocSearchResult {
 }
 
 /**
- * Service providing access to hoist-react documentation content.
+ * Service providing access to hoist-react and hoist-core documentation content.
  *
- * Markdown files are emitted to the build output by webpack's file-loader at build time.
- * This service fetches their content on demand and caches it for the session.
- *
- * Also maintains a MiniSearch full-text index across all doc content for ranked search.
+ * Fetches a registry of all doc entries and their content from the server-side
+ * DocsService API. Maintains a MiniSearch full-text index for ranked search.
  */
 export class DocService extends HoistService {
     static instance: DocService;
 
     @observable indexReady: boolean = false;
+    @observable.ref registry: DocEntry[] = [];
+    @observable.ref sourceInfo: Record<string, DocSourceInfo> = {};
 
     private cache: Map<string, string> = new Map();
     private index: MiniSearch;
@@ -31,35 +31,71 @@ export class DocService extends HoistService {
 
     /** All registered documentation entries. */
     get docs(): DocEntry[] {
-        return DOC_REGISTRY;
+        return this.registry;
+    }
+
+    /** Get categories for a given source. */
+    getCategories(source: string): DocCategory[] {
+        return this.sourceInfo[source]?.categories ?? [];
+    }
+
+    /** Get all categories across all sources. */
+    get allCategories(): DocCategory[] {
+        return Object.values(this.sourceInfo).flatMap(s => s.categories);
+    }
+
+    /** Get the display label for a source (e.g. 'Hoist React'). */
+    getSourceLabel(source: string): string {
+        return this.sourceInfo[source]?.label ?? source;
+    }
+
+    /** Get unique source names present in the registry. */
+    get sourceNames(): string[] {
+        return [...new Set(this.registry.map(d => d.source))];
+    }
+
+    /** Find a doc entry by ID, optionally scoped to a source. */
+    getDocEntry(id: string, source?: string): DocEntry | undefined {
+        return source
+            ? this.registry.find(it => it.id === id && it.source === source)
+            : this.registry.find(it => it.id === id);
+    }
+
+    /** Get all doc entries for a given source + category. */
+    getDocsByCategory(source: string, categoryId: string): DocEntry[] {
+        return this.registry.filter(it => it.source === source && it.category === categoryId);
     }
 
     override async initAsync() {
-        // Fire-and-forget — don't block app load while pre-fetching all doc content.
-        this.buildIndexAsync();
+        await this.loadRegistryAsync();
     }
 
+    /** Kick off full-text index build. Called lazily on first search request. */
+    ensureIndexBuilt() {
+        if (!this.indexReady && !this._indexBuilding) {
+            this._indexBuilding = true;
+            this.buildIndexAsync();
+        }
+    }
+
+    private _indexBuilding = false;
+
     /**
-     * Fetch and return the markdown content for a given doc ID.
+     * Fetch and return the markdown content for a given doc entry.
      * Results are cached after the first fetch.
      */
-    async fetchContentAsync(docId: string): Promise<string> {
-        const cached = this.cache.get(docId);
+    async fetchContentAsync(source: string, docId: string): Promise<string> {
+        const cacheKey = `${source}:${docId}`;
+        const cached = this.cache.get(cacheKey);
         if (cached) return cached;
 
-        const entry = getDocEntry(docId);
-        if (!entry) {
-            throw XH.exception(`Unknown doc ID: ${docId}`);
-        }
+        const resp = await XH.fetchJson({
+            url: 'docs/content',
+            params: {source, docId}
+        });
 
-        // Native fetch — these are static assets emitted by webpack, not API calls.
-        const response = await fetch(entry.url);
-        if (!response.ok) {
-            throw XH.exception(`Failed to load doc "${entry.title}": ${response.statusText}`);
-        }
-
-        const content = await response.text();
-        this.cache.set(docId, content);
+        const content = resp.content;
+        this.cache.set(cacheKey, content);
         return content;
     }
 
@@ -69,53 +105,79 @@ export class DocService extends HoistService {
      */
     searchDocs(query: string): DocSearchResult[] {
         if (!query?.trim()) return [];
+        this.ensureIndexBuilt();
 
         if (this.indexReady) {
             const results = this.index.search(query, {
-                boost: {title: 5, keyTopics: 3, description: 2, content: 1},
+                boost: {title: 5, keywords: 3, description: 2, content: 1},
                 prefix: term => term.length >= 4,
                 fuzzy: term => (term.length >= 6 ? 0.15 : false),
                 combineWith: 'AND'
             });
             return results
-                .map(r => ({
-                    entry: getDocEntry(r.id as string),
-                    score: r.score
-                }))
+                .map(r => {
+                    const [source, id] = (r.id as string).split(':');
+                    return {
+                        entry: this.getDocEntry(id, source),
+                        score: r.score
+                    };
+                })
                 .filter(r => r.entry != null);
         }
 
         // Fallback: simple substring matching before index is ready.
         const terms = query.toLowerCase().split(/\s+/);
-        return DOC_REGISTRY.filter(doc => {
-            const searchable = [doc.title, doc.description, ...doc.keyTopics]
-                .join(' ')
-                .toLowerCase();
-            return terms.every(term => searchable.includes(term));
-        }).map(entry => ({entry, score: 1}));
+        return this.registry
+            .filter(doc => {
+                const searchable = [doc.title, doc.description, ...doc.keywords]
+                    .join(' ')
+                    .toLowerCase();
+                return terms.every(term => searchable.includes(term));
+            })
+            .map(entry => ({entry, score: 1}));
     }
 
     //------------------
     // Implementation
     //------------------
+    private async loadRegistryAsync() {
+        const resp = await XH.fetchJson({url: 'docs/registry'}),
+            sourceCount = Object.keys(resp.sources).length;
+
+        this.logInfo(`Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`);
+
+        runInAction(() => {
+            this.registry = resp.entries.map(e => ({
+                id: e.id,
+                source: e.source,
+                title: e.title,
+                category: e.category,
+                description: e.description,
+                keywords: e.keywords ?? []
+            }));
+            this.sourceInfo = resp.sources;
+        });
+    }
+
     private async buildIndexAsync() {
         try {
-            // Pre-fetch all doc content in parallel.
-            const entries = DOC_REGISTRY,
+            this.logDebug('Building full-text search index...');
+            const entries = this.registry,
                 contents = await Promise.all(
-                    entries.map(entry => this.fetchContentAsync(entry.id).catch(() => ''))
+                    entries.map(entry =>
+                        this.fetchContentAsync(entry.source, entry.id).catch(() => '')
+                    )
                 );
 
-            // Build the MiniSearch index.
             const index = new MiniSearch({
-                fields: ['title', 'keyTopics', 'description', 'content'],
+                fields: ['title', 'keywords', 'description', 'content'],
                 storeFields: []
             });
 
             const documents = entries.map((entry, i) => ({
-                id: entry.id,
+                id: `${entry.source}:${entry.id}`,
                 title: entry.title,
-                keyTopics: entry.keyTopics.join(' '),
+                keywords: entry.keywords.join(' '),
                 description: entry.description,
                 content: this.stripMarkdown(contents[i])
             }));
@@ -123,6 +185,7 @@ export class DocService extends HoistService {
             index.addAll(documents);
             this.index = index;
             runInAction(() => (this.indexReady = true));
+            this.logInfo(`Search index built: ${documents.length} documents indexed`);
         } catch (e) {
             XH.handleException(e, {showAlert: false, logOnServer: false});
         }
@@ -131,17 +194,17 @@ export class DocService extends HoistService {
     /** Strip markdown syntax to produce plain text for indexing. */
     private stripMarkdown(md: string): string {
         return md
-            .replace(/```\w*\n([\s\S]*?)```/g, '$1') // fenced code blocks — keep content, strip delimiters
-            .replace(/`([^`]*)`/g, '$1') // inline code — keep content, strip backticks
-            .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1') // links/images
-            .replace(/#{1,6}\s+/g, '') // headings
-            .replace(/[*_~]{1,3}/g, '') // bold/italic/strikethrough
-            .replace(/^\s*[-*+]\s+/gm, '') // unordered list markers
-            .replace(/^\s*\d+\.\s+/gm, '') // ordered list markers
-            .replace(/^\s*>\s+/gm, '') // blockquotes
-            .replace(/\|/g, ' ') // table pipes
-            .replace(/---+/g, '') // horizontal rules
-            .replace(/\n{2,}/g, '\n') // collapse multiple newlines
+            .replace(/```\w*\n([\s\S]*?)```/g, '$1')
+            .replace(/`([^`]*)`/g, '$1')
+            .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+            .replace(/#{1,6}\s+/g, '')
+            .replace(/[*_~]{1,3}/g, '')
+            .replace(/^\s*[-*+]\s+/gm, '')
+            .replace(/^\s*\d+\.\s+/gm, '')
+            .replace(/^\s*>\s+/gm, '')
+            .replace(/\|/g, ' ')
+            .replace(/---+/g, '')
+            .replace(/\n{2,}/g, '\n')
             .trim();
     }
 }

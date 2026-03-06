@@ -18,7 +18,7 @@
         cursor: pointer;
       }
 
-      // Style category (group) rows
+      // Style group rows (source + category levels)
       .ag-row-group {
         font-weight: 600;
         color: var(--xh-text-color-muted);
@@ -27,11 +27,10 @@
         letter-spacing: 0.5px;
       }
 
-      // Style leaf doc rows
-      .ag-row:not(.ag-row-group) {
-        .ag-cell {
-          padding-left: 24px;
-        }
+      // Source-level rows: slightly larger styling
+      .ag-row-level-0 {
+        font-size: 12px;
+        letter-spacing: 0.4px;
       }
     }
   }
@@ -46,6 +45,14 @@
     display: flex;
     align-items: center;
     gap: 2px;
+
+    &-source {
+      font-weight: 600;
+      color: var(--xh-text-color-muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
 
     &-btn {
       font-weight: 500;

@@ -1,5 +1,12 @@
 # Changelog
 
+## 9.0.0-SNAPSHOT - unreleased
+
+### New Features
+
+* Added hoist-core documentation to the Docs tab alongside existing hoist-react docs. The viewer now shows both frameworks in a two-level tree (source > category > doc) with source badges in search results.
+* Docs content is now served by a server-side API (`DocsService`) that dynamically resolves content from either a local sibling repo checkout or a GitHub tarball, replacing the previous webpack static asset approach.
+
 ## 8.2.2 - 2026-03-02
 
 ### Libraries
