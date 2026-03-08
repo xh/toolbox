@@ -1,0 +1,36 @@
+# Deploy Release — Forces a new ECS deployment of the production service using current ECR images.
+#
+# Runs automatically after a successful Build Release, or can be triggered manually to
+# redeploy the latest images already in ECR (e.g. after an infrastructure change).
+
+name: Deploy Release
+
+on:
+    workflow_run:
+        workflows: [ "Build Release" ]
+        types: [ completed ]
+    workflow_dispatch:
+
+jobs:
+    deploy:
+
+        if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+        runs-on: ubuntu-latest
+        # No GitHub token scopes needed — this job only uses AWS credentials from secrets.
+        permissions: {}
+
+        steps:
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v6
+          with:
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region: ${{ secrets.AWS_REGION }}
+
+        - name: Deploy to ECS
+          run: |
+              aws ecs update-service \
+                  --cluster toolbox \
+                  --service toolbox-prod \
+                  --desired-count 1 \
+                  --force-new-deployment
