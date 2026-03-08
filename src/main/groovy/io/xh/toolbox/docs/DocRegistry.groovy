@@ -51,7 +51,9 @@ class DocRegistry implements LogSupport, JSONFormat {
     //--------------------------------------------------------------------------
     private Map loadRaw(ContentSource source, String sourceName) {
         try {
-            return parseObject(source.readFile('docs/doc-registry.json'))
+            def raw = source.readFile('docs/doc-registry.json')
+            if (!raw) throw new RuntimeException("No doc-registry.json found")
+            return parseObject(raw)
         } catch (Exception e) {
             logError("Failed to load doc-registry.json for ${sourceName}", e)
             return [viewerCategories: [], entries: []]
