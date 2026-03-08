@@ -9,18 +9,12 @@ class DocsController extends BaseController {
     def docsService
 
     def registry() {
-        renderJSON(
-            entries  : docsService.registry,
-            sources  : docsService.sourceInfo
-        )
+        renderJSON(docsService.registry)
     }
 
     def content() {
-        def source = params.source,
-            docId = params.docId
-
         renderJSON(
-            content: docsService.getContent(source, docId)
+            content: docsService.getContent(params.source, params.docId)
         )
     }
 }

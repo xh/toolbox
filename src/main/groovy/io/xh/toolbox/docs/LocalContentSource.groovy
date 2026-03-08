@@ -17,18 +17,15 @@ class LocalContentSource implements ContentSource, LogSupport {
         logInfo("Using local content source: $root")
     }
 
-    @Override
     String readFile(String relativePath) {
         def file = resolveFile(relativePath)
         return file?.exists() ? file.text : null
     }
 
-    @Override
     boolean fileExists(String relativePath) {
         return resolveFile(relativePath)?.exists() ?: false
     }
 
-    @Override
     String getSourceLabel() {
         return "local: ${root.absolutePath}"
     }
