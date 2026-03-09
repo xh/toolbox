@@ -12,8 +12,9 @@ import {Icon} from '@xh/hoist/icon';
 import {menu, menuItem, popover, tooltip} from '@xh/hoist/kit/blueprint';
 import {pluralize} from '@xh/hoist/utils/js';
 import React, {useCallback, useEffect, useRef} from 'react';
-import {DOC_CATEGORIES, resolveDocLink} from './docRegistry';
+import {resolveDocLink} from './docRegistry';
 import {DocsPanelModel} from './DocsPanelModel';
+import {DocService} from '../../../core/svc/DocService';
 import './DocsTab.scss';
 
 /**
@@ -138,16 +139,18 @@ const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
                 : placeholder(Icon.skull(), 'No results found.');
         }
 
+        const docService = DocService.instance;
+
         return div({
             className: 'tb-docs__search-results',
             items: searchResults.map((r, idx) =>
                 div({
-                    key: r.entry.id,
+                    key: `${r.entry.source}:${r.entry.id}`,
                     ref: idx === selectedSearchIdx ? selectedRef : undefined,
                     className:
                         'tb-docs__search-result' +
                         (idx === selectedSearchIdx ? ' tb-docs__search-result--selected' : ''),
-                    onClick: () => model.selectSearchResult(r.entry.id),
+                    onClick: () => model.selectSearchResult(r.entry),
                     items: [
                         div({
                             className: 'tb-docs__search-result-header',
@@ -156,10 +159,13 @@ const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
                                     className: 'tb-docs__search-result-title',
                                     item: r.entry.title
                                 }),
+                                badge({item: docService.getSourceLabel(r.entry.source)}),
                                 badge({
                                     item:
-                                        DOC_CATEGORIES.find(c => c.id === r.entry.category)
-                                            ?.title ?? r.entry.category
+                                        docService
+                                            .getCategories(r.entry.source)
+                                            .find(c => c.id === r.entry.category)?.title ??
+                                        r.entry.category
                                 })
                             ]
                         }),
@@ -214,17 +220,26 @@ const searchPanel = hoistCmp.factory<DocsPanelModel>({
 //------------------
 const breadcrumb = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
-        const {activeCategory, activeDoc, sections, activeSection} = model;
+        const {activeCategory, activeDoc, activeSource, sections, activeSection} = model,
+            docService = DocService.instance;
 
-        if (!activeCategory || !activeDoc) return null;
+        if (!activeCategory || !activeDoc || !activeSource) return null;
 
-        const activeSectionTitle = activeSection
-            ? sections.find(s => s.id === activeSection)?.title
-            : null;
+        const sourceLabel = docService.getSourceLabel(activeSource),
+            activeSectionTitle = activeSection
+                ? sections.find(s => s.id === activeSection)?.title
+                : null;
 
         return div({
             className: 'tb-docs__breadcrumb',
             items: [
+                // Source label (non-interactive)
+                span({
+                    className: 'tb-docs__breadcrumb-source',
+                    item: sourceLabel
+                }),
+                span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()}),
+                // Category dropdown — scoped to the active source's categories
                 popover({
                     position: 'bottom-left',
                     minimal: true,
@@ -235,17 +250,18 @@ const breadcrumb = hoistCmp.factory<DocsPanelModel>({
                         minimal: true
                     }),
                     content: menu(
-                        ...DOC_CATEGORIES.map(cat =>
+                        ...model.activeSourceCategories.map(cat =>
                             menuItem({
                                 text: cat.title,
                                 icon: model.getCategoryIcon(cat.id),
                                 active: cat.id === activeCategory.id,
-                                onClick: () => model.navigateToCategory(cat.id)
+                                onClick: () => model.navigateToCategory(activeSource, cat.id)
                             })
                         )
                     )
                 }),
                 span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()}),
+                // Doc dropdown
                 popover({
                     position: 'bottom-left',
                     minimal: true,
@@ -258,8 +274,8 @@ const breadcrumb = hoistCmp.factory<DocsPanelModel>({
                         ...model.activeCategorySiblings.map(doc =>
                             menuItem({
                                 text: doc.title,
-                                active: doc.id === activeDoc.id,
-                                onClick: () => model.navigateToDoc(doc.id)
+                                active: doc.id === activeDoc.id && doc.source === activeDoc.source,
+                                onClick: () => model.navigateToDoc(doc.id, doc.source)
                             })
                         )
                     )
@@ -481,8 +497,8 @@ const contentBody = hoistCmp.factory<DocsPanelModel>(({model}) => {
             // Try to resolve as an internal doc link
             if (activeDoc && !href.startsWith('http')) {
                 e.preventDefault();
-                const target = resolveDocLink(activeDoc.sourcePath, href);
-                if (target) model.navigateToDoc(target.id);
+                const target = resolveDocLink(activeDoc, href);
+                if (target) model.navigateToDoc(target.id, target.source);
                 // Unresolved relative links (e.g. .ts source files) are silently
                 // consumed to prevent the browser from navigating away from the SPA.
                 return;

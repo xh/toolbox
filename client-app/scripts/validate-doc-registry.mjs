@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /**
- * Validates that the toolbox doc registry (docRegistry.ts) is in sync with the
- * markdown documentation files shipped in the installed @xh/hoist package.
+ * Validates that the hoist-react documentation files in the installed @xh/hoist
+ * package have corresponding entries in the server-side DocRegistry.
  *
- * Checks:
- *  1. Every sourcePath in the registry points to a real file in @xh/hoist.
- *  2. Every doc-worthy markdown file in @xh/hoist has a registry entry.
+ * The doc registry has moved server-side (DocsService/DocRegistry.groovy).
+ * This script performs a lighter-weight check: it scans the installed @xh/hoist
+ * package for doc-worthy markdown files and compares against the known set of
+ * hoist-react source paths hardcoded in docRegistry.ts's link resolution map.
  *
  * Usage:
  *   node scripts/validate-doc-registry.mjs
@@ -27,18 +28,13 @@ const REGISTRY_FILE = resolve(
 );
 
 // Files in @xh/hoist that are intentionally NOT included in the doc registry.
-// Add paths here (relative to hoist root) when a file should be excluded from
-// the viewer — e.g. internal planning docs, thin stubs, or archived content.
 const IGNORED_FILES = new Set([
-    // Archive and internal planning docs — not user-facing.
     'docs/archive/CHANGELOG-pre-v56.md',
     'docs/archive/upgrade-to-typescript.md',
     'docs/planning/docs-roadmap.md',
     'docs/planning/docs-roadmap-log.md',
-    // Build infrastructure stubs — not framework documentation.
     'public/README.md',
     'static/README.md',
-    // Top-level repo files — not part of the doc viewer.
     'CHANGELOG.md',
     'LICENSE.md'
 ]);
@@ -47,32 +43,31 @@ const IGNORED_FILES = new Set([
 // Helpers
 //------------------------------------------------------------------------------
 
-/** Extract all sourcePath values from the registry TypeScript source. */
+/** Extract all source paths from the HOIST_REACT_SOURCE_PATHS map in docRegistry.ts. */
 function parseRegistryPaths() {
     const src = readFileSync(REGISTRY_FILE, 'utf-8');
     const paths = [];
-    for (const match of src.matchAll(/sourcePath:\s*'([^']+)'/g)) {
+    // Match entries like: 'docs/authentication.md': 'authentication',
+    for (const match of src.matchAll(/'([^']+\.md)':\s*'[^']+'/g)) {
         paths.push(match[1]);
     }
     return new Set(paths);
 }
 
-/** Glob for all README.md and docs/**\/*.md files in the installed hoist package. */
+// Find all README.md and docs/*.md files in the installed hoist package.
 function findHoistDocFiles() {
     const results = new Set();
 
-    // Find README.md files at package level (not nested in node_modules)
     const readmes = findFiles(HOIST_ROOT, 'README.md');
     for (const f of readmes) results.add(f);
 
-    // Find docs/**/*.md files
     const docs = findFiles(join(HOIST_ROOT, 'docs'), '.md');
     for (const f of docs) results.add('docs/' + f);
 
     return results;
 }
 
-/** Simple recursive file finder — avoids needing glob dependency. */
+// Simple recursive file finder.
 function findFiles(dir, suffix, prefix = '') {
     const results = [];
     if (!existsSync(dir)) return results;
@@ -105,7 +100,7 @@ function main() {
 
     let ok = true;
 
-    // Check 1: Files in hoist but missing from registry
+    // Files in hoist but missing from registry
     const missing = [...hoistFiles]
         .filter(f => !registryPaths.has(f) && !IGNORED_FILES.has(f))
         .sort();
@@ -116,7 +111,7 @@ function main() {
         for (const f of missing) console.log(`   + ${f}`);
     }
 
-    // Check 2: Registry entries pointing to files that don't exist
+    // Registry entries pointing to files that don't exist
     const stale = [...registryPaths]
         .filter(p => !hoistFiles.has(p))
         .sort();
@@ -140,7 +135,7 @@ function main() {
         console.log('✅ Doc registry is in sync.\n');
     } else {
         console.log(
-            '\n🔧 Update docRegistry.ts to add missing entries or add paths to IGNORED_FILES.\n'
+            '\n🔧 Update HOIST_REACT_SOURCE_PATHS in docRegistry.ts or the server-side DocRegistry.groovy.\n'
         );
         process.exit(1);
     }
