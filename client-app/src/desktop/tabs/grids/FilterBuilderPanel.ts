@@ -18,7 +18,7 @@ export const filterBuilderPanel = hoistCmp.factory({
                     "FilterBuilder provides a visual query builder for constructing filters of arbitrary complexity. It supports nested AND/OR groups with NOT negation, type-appropriate value editors, and full integration with Hoist's filter binding system."
                 ),
                 p(
-                    'This example shows a FilterBuilder and FilterChooser both bound to the same store, demonstrating bi-directional sync. Changes in one are reflected in the other.'
+                    'This example shows a FilterBuilder and FilterChooser both bound to the same store, demonstrating bi-directional sync. Note that FilterBuilder can construct compound filters (e.g. nested groups with NOT negation) that FilterChooser cannot represent in its compact format. When such a filter is active, the chooser will display an "Unsupported filter" placeholder.'
                 )
             ],
             links: [
