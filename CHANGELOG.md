@@ -4,6 +4,7 @@
 
 ### New Features
 
+* Added Grids > FilterBuilder example page — demos the new `FilterBuilder` component with a companion `FilterChooser` bound to the same store for bi-directional sync. Includes toggleable `commitOnChange` and `favorites` options in the bottom toolbar.
 * Added hoist-core documentation to the Docs tab alongside existing hoist-react docs. The viewer now shows both frameworks in a two-level tree (source > category > doc) with source badges in search results.
 * Docs content is now served by a server-side API (`DocsService`) that dynamically resolves content from either a local sibling repo checkout or a GitHub tarball, replacing the previous webpack static asset approach.
 

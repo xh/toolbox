@@ -121,7 +121,10 @@ XH.getPref('pageSize', 50);              // PrefService alias
 navigation (`navigate`, `appendRoute`), and app state (`appState`, `darkTheme`).
 
 **Critical pitfalls:**
-1. **Forgetting `makeObservable(this)`** — observables silently won't react.
+1. **Forgetting `makeObservable(this)`** — observables silently won't react. This produces a
+   runtime console warning: *"Observable properties not initialized properly."* Always check the
+   browser console for warnings after creating or modifying model classes — this error is easy to
+   miss visually but breaks all reactivity for the affected class.
 2. **Managing objects you don't own** — only `@managed` objects your class creates. Objects passed
    in from outside are owned by the provider.
 3. **Mutating observables outside actions** — use `runInAction()`, `@action`, or `@bindable`.
@@ -304,6 +307,21 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 - **Backend**: Grails 7 (Groovy/Spring Boot), `hoist-core` framework
 - **Database**: MySQL (or H2 in-memory for quick local dev via `APP_TOOLBOX_USE_H2=true`)
 - **Package Manager**: Yarn 1.22 (frontend), Gradle via wrapper (backend)
+
+## Interactive Debugging with Chrome
+
+When using browser automation tools (e.g. Chrome MCP) to interactively test Hoist components:
+
+- **Always check the browser console** after significant interactions — runtime errors and warnings
+  are invisible in screenshots but often critical. Look for MobX strict-mode violations, uncaught
+  promise rejections, React key/prop warnings, and Hoist-specific diagnostics. Surface any console
+  errors to the developer immediately rather than continuing to test against broken state.
+- **Use `data-testid` attributes** for reliable element targeting. Hoist components support a
+  `testId` prop (via `TestSupportProps`) that renders as `data-testid` in the DOM. Use `getTestId()`
+  to create hierarchical IDs for sub-elements (e.g. `getTestId(testId, 'add-rule')`). Prefer
+  testId-based selectors over fragile coordinate or text-based targeting.
+- **Watch for HMR state loss** — hot module replacement during development resets model state. After
+  code changes, a full page reload may be needed to get a clean baseline before testing.
 
 ## Common Commands
 
