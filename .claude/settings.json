@@ -51,8 +51,7 @@
   },
   "enabledMcpjsonServers": [
     "hoist-core",
-    "hoist-react",
-    "jetbrains"
+    "hoist-react"
   ],
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,

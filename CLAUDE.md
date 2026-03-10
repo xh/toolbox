@@ -254,6 +254,14 @@ Local settings merge with the shared `settings.json`, so enabling it locally doe
 developers. If Docker is not running or the token is not set when the server is enabled, Claude
 Code may show errors on startup — remove `"github"` from your local settings to resolve.
 
+### jetbrains (opt-in)
+
+A JetBrains MCP server is also configured in `.mcp.json`, providing tools for interacting with
+the IntelliJ IDE (file navigation, code inspections, refactoring, terminal commands, etc.).
+This server must be enabled within IntelliJ's settings and requires a running IDE instance to
+connect. Add `"jetbrains"` to `enabledMcpjsonServers` in `.claude/settings.local.json` to
+enable it for Claude Code.
+
 ## Plugins
 
 ### TypeScript LSP (enabled by default)
