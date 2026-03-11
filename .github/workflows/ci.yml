@@ -1,0 +1,78 @@
+# CI — Validates builds on PRs and pushes to develop, and submits the dependency
+# graph to GitHub for Dependabot vulnerability alerts.
+#
+# This workflow does not publish artifacts. For snapshot and release Docker builds,
+# see Build Snapshot and Build Release.
+
+name: CI
+
+on:
+    push:
+        branches: [ "develop" ]
+    pull_request:
+        branches: [ "develop" ]
+
+jobs:
+    build:
+
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+
+        steps:
+        - uses: actions/checkout@v6
+        - name: Setup JDK 17
+          uses: actions/setup-java@v5
+          with:
+              java-version: '17'
+              distribution: 'zulu'
+
+        - name: Setup Gradle
+          uses: gradle/actions/setup-gradle@v5
+
+        - name: Build with Gradle Wrapper
+          run: ./gradlew build
+
+    lint:
+
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+
+        steps:
+        - uses: actions/checkout@v6
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v6
+          with:
+              node-version-file: 'client-app/.nvmrc'
+
+        - name: Configure Font Awesome registry auth
+          env:
+              FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
+          run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
+
+        - name: Install dependencies
+          run: cd client-app && yarn install --frozen-lockfile
+
+        - name: Yarn lint
+          run: cd client-app && yarn lint
+
+    dependency-submission:
+
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+
+        steps:
+        - uses: actions/checkout@v6
+        - name: Setup JDK 17
+          uses: actions/setup-java@v5
+          with:
+              java-version: '17'
+              distribution: 'zulu'
+
+        # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
+        # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
+        - name: Generate and submit dependency graph
+          uses: gradle/actions/dependency-submission@v5

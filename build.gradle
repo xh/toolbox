@@ -93,7 +93,11 @@ Map hoistMetaData = [
     'info.xh.appCode': xhAppCode,
     'info.xh.appName': xhAppName,
     'info.xh.appPackage': xhAppPackage,
-    'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN'
+    'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN',
+    'info.xh.hoistReactVersion': new groovy.json.JsonSlurper()
+        .parse(file('client-app/package.json'))
+        .dependencies['@xh/hoist']
+        .replaceAll(/[\^~]/, '')
 ]
 
 //-------------------------

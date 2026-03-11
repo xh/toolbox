@@ -18,20 +18,12 @@
         cursor: pointer;
       }
 
-      // Style category (group) rows
+      // Style group rows (source + category levels)
       .ag-row-group {
         font-weight: 600;
-        color: var(--xh-text-color-muted);
         text-transform: uppercase;
         font-size: 11px;
         letter-spacing: 0.5px;
-      }
-
-      // Style leaf doc rows
-      .ag-row:not(.ag-row-group) {
-        .ag-cell {
-          padding-left: 24px;
-        }
       }
     }
   }
@@ -117,7 +109,6 @@
     }
 
     &-desc {
-      //font-size: var(--xh-font-size-small-px);
       color: var(--xh-text-color-muted);
       margin-top: 4px;
       line-height: 1.4;

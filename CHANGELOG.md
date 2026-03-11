@@ -1,5 +1,16 @@
 # Changelog
 
+## 9.0.0-SNAPSHOT - unreleased
+
+### New Features
+
+* Added hoist-core documentation to the Docs tab alongside existing hoist-react docs. The viewer now shows both frameworks in a two-level tree (source > category > doc) with source badges in search results.
+* Moved Docs content to a server-side API (`DocsService`) that dynamically resolves content from either a local sibling repo checkout or a GitHub tarball, replacing the previous webpack static asset approach.
+
+### Technical
+
+* Migrated CI/CD from TeamCity to GitHub Actions. New workflows handle CI validation, snapshot builds, release builds, and deployment to AWS ECS. Snapshot images are built and deployed automatically on pushes to `develop` and on upstream hoist-core/hoist-react snapshot publishes. Release builds are manually triggered with strict semver validation. See `docs/build-and-deploy.md` for details.
+
 ## 8.2.2 - 2026-03-02
 
 ### Libraries
@@ -24,7 +35,6 @@
 
 * hoist-core 36.3.1
 * @xh/hoist 82.0.1
-
 
 ## 8.1.0 - 2026-02-12
 
