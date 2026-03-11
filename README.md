@@ -12,10 +12,10 @@ and [Hoist React](https://github.com/xh/hoist-react) repos for detailed informat
 documentation on Hoist, including more information on configuring a local development environment.
 
 Toolbox is itself a Hoist Application, and we keep it updated with the latest versions of the Hoist
-Framework. A [toolbox-dev instance](https://toolbox-dev.xh.io) is auto-deployed via Teamcity on each
-commit to either the Toolbox or Hoist `develop` branches. We update a
+Framework. A [toolbox-dev instance](https://toolbox-dev.xh.io) is auto-deployed via GitHub Actions
+on each commit to either the Toolbox or Hoist `develop` branches. We update a
 distinct ["production" instance](https://toolbox.xh.io) manually with each new versioned Hoist
-release.
+release. See [Build and Deploy](docs/build-and-deploy.md) for details on the CI/CD workflows.
 
 ## Database
 
@@ -83,17 +83,6 @@ the recommended configuration for XH developers to use when setting up Toolbox.
   IntelliJ) `~/IdeaProjects/`.
 * Within this directory, check out the `toolbox`, `hoist-react`, and `hoist-core` repositories as
   siblings.
-
-### Editing multiple projects together
-
-For editing Hoist Core and React alongside Toolbox, it is recommended to open the `hoist-react` and
-`hoist-core` projects as modules in your editor. Having all three repos in a single IntelliJ project
-can be useful to have the code on-hand.
-
-* Open up the `toolbox` project in IntelliJ.
-* Import `hoist-react` and `hoist-core` as modules:
-  File -> Project Structure -> Modules -> Add (+) -> Import Module
-* Using the Gradle tool window, "Link Gradle Project" (+) both `toolbox` and `hoist-core`.
 
 ### Running Toolbox using local Hoist
 
