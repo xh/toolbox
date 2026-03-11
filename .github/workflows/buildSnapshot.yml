@@ -78,8 +78,8 @@ jobs:
               FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
           run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
 
-        - name: Install dependencies and build client app
-          run: cd client-app && yarn install --frozen-lockfile && yarn lint && yarn build
+        - name: Upgrade dependencies, lint, and build client app
+          run: cd client-app && yarn upgrade && yarn lint && yarn build
 
         - name: Copy client build into Docker context
           run: cp -r client-app/build/ docker/nginx/build/
