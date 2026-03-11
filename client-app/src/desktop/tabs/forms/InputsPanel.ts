@@ -11,6 +11,7 @@ import {
     jsonInput,
     numberInput,
     radioInput,
+    segmentedControl,
     slider,
     switchInput,
     textArea,
@@ -322,6 +323,18 @@ const column3 = hoistCmp.factory<InputsPanelModel>(() =>
                         })
                     }),
                     demoRow({
+                        label: 'SegmentedControl',
+                        info: 'Icon + text options',
+                        item: segmentedControl({
+                            bind: 'segmentedControl',
+                            options: [
+                                {label: 'Button 1', value: 'button1', icon: Icon.chartLine()},
+                                {label: 'Button 2', value: 'button2', icon: Icon.gear()},
+                                {label: 'Button 3', value: 'button3', icon: Icon.skull()}
+                            ]
+                        })
+                    }),
+                    demoRow({
                         label: 'RadioInput',
                         info: 'inline, disabled option',
                         item: radioInput({
@@ -459,6 +472,7 @@ class InputsPanelModel extends HoistModel {
     @bindable checkboxButton: boolean = null;
     @bindable buttonGroupInput: string = 'button2';
     @bindable buttonGroupInput2: string = 'button2';
+    @bindable segmentedControl: string = 'button2';
     @bindable radioInput: string = null;
 
     constructor() {
