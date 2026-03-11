@@ -10,6 +10,12 @@ on:
         workflows: [ "Build Release" ]
         types: [ completed ]
     workflow_dispatch:
+        inputs:
+            desiredCount:
+                description: 'Number of instances'
+                required: false
+                default: '1'
+                type: string
 
 jobs:
     deploy:
@@ -32,5 +38,5 @@ jobs:
               aws ecs update-service \
                   --cluster toolbox \
                   --service toolbox-prod \
-                  --desired-count 1 \
+                  --desired-count ${{ inputs.desiredCount || '1' }} \
                   --force-new-deployment
