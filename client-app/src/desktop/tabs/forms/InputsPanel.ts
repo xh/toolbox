@@ -18,6 +18,7 @@ import {
     textInput
 } from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtThousands} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -84,15 +85,13 @@ export const inputsPanel = hoistCmp.factory({
                     gap: true,
                     padding: true,
                     items: [column1(), column2(), column3(), column4()]
-                })
+                }),
+                bbar: inputsBbar()
             })
         });
     }
 });
 
-//------------------------------------------------------------------
-// Column 1: Text inputs
-//------------------------------------------------------------------
 const column1 = hoistCmp.factory<InputsPanelModel>(() =>
     vbox({
         flex: 1,
@@ -141,14 +140,28 @@ const column1 = hoistCmp.factory<InputsPanelModel>(() =>
                         })
                     })
                 ]
+            }),
+            card({
+                title: 'Code',
+                icon: Icon.json(),
+                items: [
+                    demoRow({
+                        label: 'JsonInput',
+                        info: 'enableSearch, showFullscreenButton',
+                        item: jsonInput({
+                            className: 'xh-border',
+                            bind: 'jsonInput',
+                            height: 180,
+                            width: '100%',
+                            enableSearch: true
+                        })
+                    })
+                ]
             })
         ]
     })
 );
 
-//------------------------------------------------------------------
-// Column 2: Numbers & dates
-//------------------------------------------------------------------
 const column2 = hoistCmp.factory<InputsPanelModel>(() =>
     vbox({
         flex: 1,
@@ -230,10 +243,81 @@ const column2 = hoistCmp.factory<InputsPanelModel>(() =>
     })
 );
 
-//------------------------------------------------------------------
-// Column 3: Toggles & choice
-//------------------------------------------------------------------
 const column3 = hoistCmp.factory<InputsPanelModel>(() =>
+    vbox({
+        flex: 1,
+        items: [
+            card({
+                title: 'Multiple Choice',
+                icon: Icon.list(),
+                items: [
+                    demoRow({
+                        label: 'SegmentedControl',
+                        info: 'icon + text options',
+                        item: segmentedControl({
+                            bind: 'segmentedControl',
+                            options: scOptions
+                        })
+                    }),
+                    demoRow({
+                        label: 'SegmentedControl',
+                        info: 'intent: primary, icon + text options',
+                        item: segmentedControl({
+                            bind: 'segmentedControl',
+                            intent: 'primary',
+                            options: scOptions
+                        })
+                    }),
+                    demoRow({
+                        label: 'ButtonGroupInput',
+                        info: 'Icon + text buttons',
+                        item: buttonGroupInput({
+                            bind: 'buttonGroupInput',
+                            items: bgButtons()
+                        })
+                    }),
+                    demoRow({
+                        label: 'ButtonGroupInput',
+                        info: 'outlined, intent: primary',
+                        item: buttonGroupInput({
+                            bind: 'buttonGroupInput',
+                            outlined: true,
+                            intent: 'primary',
+                            items: bgButtons()
+                        })
+                    }),
+                    demoRow({
+                        label: 'RadioInput',
+                        info: 'disabled option',
+                        item: radioInput({
+                            bind: 'radioInput',
+                            options: [
+                                'Steak',
+                                'Chicken',
+                                {label: 'Fish', value: 'Fish', disabled: true}
+                            ]
+                        })
+                    }),
+                    demoRow({
+                        label: 'RadioInput',
+                        info: 'inline, disabled option',
+                        item: radioInput({
+                            bind: 'radioInput',
+                            inline: true,
+                            options: [
+                                'Steak',
+                                'Chicken',
+                                {label: 'Fish', value: 'Fish', disabled: true}
+                            ]
+                        })
+                    })
+                ]
+            })
+        ]
+    })
+);
+
+const column4 = hoistCmp.factory<InputsPanelModel>(() =>
     vbox({
         flex: 1,
         items: [
@@ -264,115 +348,6 @@ const column3 = hoistCmp.factory<InputsPanelModel>(() =>
                         item: checkboxButton({
                             bind: 'checkboxButton',
                             text: 'Active'
-                        })
-                    })
-                ]
-            }),
-            card({
-                title: 'Multiple Choice',
-                icon: Icon.list(),
-                items: [
-                    demoRow({
-                        label: 'ButtonGroupInput',
-                        info: 'Icon + text buttons',
-                        item: buttonGroupInput({
-                            bind: 'buttonGroupInput',
-                            items: [
-                                button({
-                                    icon: Icon.chartLine(),
-                                    text: 'Button 1',
-                                    value: 'button1'
-                                }),
-                                button({
-                                    icon: Icon.gear(),
-                                    text: 'Button 2',
-                                    value: 'button2'
-                                }),
-                                button({
-                                    icon: Icon.skull(),
-                                    text: 'Button 3',
-                                    value: 'button3'
-                                })
-                            ]
-                        })
-                    }),
-                    demoRow({
-                        label: 'ButtonGroupInput',
-                        info: 'outlined, intent: primary',
-                        item: buttonGroupInput({
-                            bind: 'buttonGroupInput2',
-                            outlined: true,
-                            intent: 'primary',
-                            items: [
-                                button({
-                                    icon: Icon.chartLine(),
-                                    text: 'Button 1',
-                                    value: 'button1'
-                                }),
-                                button({
-                                    icon: Icon.gear(),
-                                    text: 'Button 2',
-                                    value: 'button2'
-                                }),
-                                button({
-                                    icon: Icon.skull(),
-                                    text: 'Button 3',
-                                    value: 'button3'
-                                })
-                            ]
-                        })
-                    }),
-                    demoRow({
-                        label: 'SegmentedControl',
-                        info: 'Icon + text options',
-                        item: segmentedControl({
-                            bind: 'segmentedControl',
-                            options: [
-                                {label: 'Button 1', value: 'button1', icon: Icon.chartLine()},
-                                {label: 'Button 2', value: 'button2', icon: Icon.gear()},
-                                {label: 'Button 3', value: 'button3', icon: Icon.skull()}
-                            ]
-                        })
-                    }),
-                    demoRow({
-                        label: 'RadioInput',
-                        info: 'inline, disabled option',
-                        item: radioInput({
-                            bind: 'radioInput',
-                            inline: true,
-                            options: [
-                                'Steak',
-                                'Chicken',
-                                {label: 'Fish', value: 'Fish', disabled: true}
-                            ]
-                        })
-                    })
-                ]
-            })
-        ]
-    })
-);
-
-//------------------------------------------------------------------
-// Column 4: Code & sliders
-//------------------------------------------------------------------
-const column4 = hoistCmp.factory<InputsPanelModel>(() =>
-    vbox({
-        flex: 1,
-        items: [
-            card({
-                title: 'Code',
-                icon: Icon.json(),
-                items: [
-                    demoRow({
-                        label: 'JsonInput',
-                        info: 'enableSearch, showFullscreenButton',
-                        item: jsonInput({
-                            className: 'xh-border',
-                            bind: 'jsonInput',
-                            height: 180,
-                            width: '100%',
-                            enableSearch: true
                         })
                     })
                 ]
@@ -412,6 +387,51 @@ const column4 = hoistCmp.factory<InputsPanelModel>(() =>
                     })
                 ]
             })
+        ]
+    })
+);
+
+//------------------------------------------------------------------
+// Shared option sets
+//------------------------------------------------------------------
+const bgButtons = () => [
+    button({icon: Icon.chartLine(), text: 'Linear', value: 'linear'}),
+    button({icon: Icon.chartArea(), text: 'Area', value: 'area'}),
+    button({icon: Icon.chartBar(), text: 'Bar', value: 'bar'})
+];
+
+const scOptions = [
+    {label: 'Trader', value: 'trader', icon: Icon.user()},
+    {label: 'Strategy', value: 'strategy', icon: Icon.chessKnight()},
+    {label: 'Fund', value: 'fund', icon: Icon.fund()}
+];
+
+//------------------------------------------------------------------
+// Bottom bar
+//------------------------------------------------------------------
+const inputsBbar = hoistCmp.factory<InputsPanelModel>(() =>
+    toolbar({
+        compact: true,
+        items: [
+            textInput({bind: 'tbarText', placeholder: 'Search...', width: 140}),
+            '-',
+            numberInput({bind: 'tbarNumber', placeholder: '####', width: 80}),
+            '-',
+            dateInput({bind: 'tbarDate', width: 100}),
+            '-',
+            segmentedControl({
+                bind: 'segmentedControl',
+                compact: true,
+                fill: false,
+                options: scOptions
+            }),
+            '-',
+            buttonGroupInput({
+                bind: 'buttonGroupInput',
+                items: bgButtons()
+            }),
+            '-',
+            switchInput({bind: 'tbarSwitch', label: 'Enabled:', labelSide: 'left'})
         ]
     })
 );
@@ -470,10 +490,15 @@ class InputsPanelModel extends HoistModel {
     @bindable checkbox: boolean = null;
     @bindable switchVal: boolean = null;
     @bindable checkboxButton: boolean = null;
-    @bindable buttonGroupInput: string = 'button2';
-    @bindable buttonGroupInput2: string = 'button2';
-    @bindable segmentedControl: string = 'button2';
+    @bindable buttonGroupInput: string = 'area';
+    @bindable segmentedControl: string = 'strategy';
     @bindable radioInput: string = null;
+
+    // Compact toolbar inputs
+    @bindable tbarText: string = null;
+    @bindable tbarNumber: number = null;
+    @bindable tbarDate: Date = null;
+    @bindable tbarSwitch: boolean = false;
 
     constructor() {
         super();
