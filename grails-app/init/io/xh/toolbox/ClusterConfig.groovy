@@ -11,16 +11,21 @@ class ClusterConfig extends io.xh.hoist.ClusterConfig {
 
         if (!multiInstanceEnabled) return
 
-        def networkConfig = config.networkConfig
+        def join = config.networkConfig.join,
+            interfaces = config.networkConfig.interfaces
+
+        join.multicastConfig.enabled = false
+        interfaces.enabled = true
+
         if (isLocalDevelopment) {
-            networkConfig.join.multicastConfig.enabled = true
+            join.tcpIpConfig.enabled = true
+            join.tcpIpConfig.addMember('127.0.0.1')
+            interfaces.addInterface('127.0.0.1')
         } else {
             // NOTE - these values are specific to Toolbox's AWS ECS-based deployment.
             // Contact XH for assistance with the settings required for your application's deployment environment.
-            networkConfig.join.multicastConfig.enabled = false
-            networkConfig.join.awsConfig.enabled = true
-            networkConfig.interfaces.enabled = true
-            networkConfig.interfaces.addInterface('172.30.*.*')
+            join.awsConfig.enabled = true
+            interfaces.addInterface('172.30.*.*')
         }
     }
 }

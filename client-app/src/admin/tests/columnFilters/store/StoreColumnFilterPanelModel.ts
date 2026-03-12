@@ -62,17 +62,20 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                     {
                         name: 'profit_loss',
                         displayName: 'P&L',
-                        type: 'number'
+                        type: 'number',
+                        description: 'Annual Profit & Loss YTD (EBITDA)'
                     },
                     {
                         name: 'trade_date',
                         displayName: 'Date',
-                        type: 'localDate'
+                        type: 'localDate',
+                        description: 'Date of last trade (including related derivatives)'
                     },
                     {
                         name: 'trade_volume',
                         displayName: 'Volume (Sales Quantity)',
-                        type: 'number'
+                        type: 'number',
+                        description: 'Daily Volume of Shares (Estimated, avg. YTD)'
                     },
                     {
                         name: 'active',
@@ -126,8 +129,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                         precision: 1,
                         label: true
                     }),
-                    excelFormat: ExcelFormat.NUM_DELIMITED,
-                    chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
+                    excelFormat: ExcelFormat.NUM_DELIMITED
                 },
                 {
                     field: 'profit_loss',
@@ -139,14 +141,12 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                         ledger: true,
                         colorSpec: true
                     }),
-                    excelFormat: ExcelFormat.LEDGER_COLOR,
-                    chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
+                    excelFormat: ExcelFormat.LEDGER_COLOR
                 },
                 {
                     field: 'trade_date',
                     ...localDateCol,
-                    width: 150,
-                    chooserDescription: 'Date of last trade (including related derivatives)'
+                    width: 150
                 }
             ]
         });

@@ -6,6 +6,7 @@
 .settings
 .project
 .classpath
+.vscode/tasks.json
 
 # Local instance configs w/secrets
 toolbox.yml

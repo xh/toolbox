@@ -18,8 +18,12 @@
       }
 
       td {
+        padding: 5px;
         text-align: right;
-        width: 50%;
+
+        &.outputColumn {
+          white-space: nowrap;
+        }
       }
     }
   }

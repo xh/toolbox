@@ -9,25 +9,41 @@ export const WebSocketTestPanel = hoistCmp({
     model: creates(WebSocketTestModel),
 
     render({model}) {
-        const {subscribed} = model;
+        const {subscribedLocal, subscribedCluster} = model;
 
         return panel({
             tbar: [
                 button({
-                    text: 'Subscribe',
+                    text: 'Subscribe Local',
                     icon: Icon.playCircle(),
                     intent: 'success',
                     minimal: false,
-                    omit: subscribed,
-                    onClick: () => model.subscribeAsync()
+                    omit: subscribedLocal,
+                    onClick: () => model.subscribeLocalAsync()
                 }),
                 button({
-                    text: 'Unsubscribe',
+                    text: 'Unsubscribe Local',
                     icon: Icon.stopCircle(),
                     intent: 'danger',
                     minimal: false,
-                    omit: !subscribed,
-                    onClick: () => model.unsubscribeAsync()
+                    omit: !subscribedLocal,
+                    onClick: () => model.unsubscribeLocalAsync()
+                }),
+                button({
+                    text: 'Subscribe Cluster',
+                    icon: Icon.playCircle(),
+                    intent: 'success',
+                    minimal: false,
+                    omit: subscribedCluster,
+                    onClick: () => model.subscribeClusterAsync()
+                }),
+                button({
+                    text: 'Unsubscribe Cluster',
+                    icon: Icon.stopCircle(),
+                    intent: 'danger',
+                    minimal: false,
+                    omit: !subscribedCluster,
+                    onClick: () => model.unsubscribeClusterAsync()
                 })
             ],
             item: grid()

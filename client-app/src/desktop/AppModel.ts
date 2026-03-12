@@ -12,6 +12,7 @@ import {Icon} from '@xh/hoist/icon';
 import {runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
+import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {
@@ -21,8 +22,9 @@ import {
     simpleTreeMapPanel,
     splitTreeMapPanel
 } from './tabs/charts';
+import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
-import {formPanel, inputsPanel, toolbarFormPanel} from './tabs/forms';
+import {formPanel, inputsPanel, pickerPanel, selectPanel, toolbarFormPanel} from './tabs/forms';
 import {
     agGridView,
     columnFilteringPanel,
@@ -38,6 +40,7 @@ import {
 } from './tabs/grids';
 import {homeTab} from './tabs/home/HomeTab';
 import {
+    cardPanel,
     dashCanvasPanel,
     dashContainerPanel,
     dockContainerPanel,
@@ -60,6 +63,7 @@ import {
     inspectorPanel,
     jsxPanel,
     leftRightChooserPanel,
+    markdownPanel,
     numberFormatsPanel,
     pinPadPanel,
     placeholderPanel,
@@ -84,7 +88,7 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync() {
         await super.initAsync();
-        await XH.installServicesAsync(GitHubService, PortfolioService);
+        await XH.installServicesAsync(DocService, GitHubService, PortfolioService);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
         this.addReaction({
@@ -151,6 +155,7 @@ export class AppModel extends BaseAppModel {
                         children: [
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
+                            {name: 'card', path: '/card'},
                             {name: 'tabPanel', path: '/tabPanel'},
                             {name: 'dock', path: '/dock'},
                             {name: 'dashContainer', path: '/dashContainer'},
@@ -193,6 +198,8 @@ export class AppModel extends BaseAppModel {
                         children: [
                             {name: 'form', path: '/form'},
                             {name: 'inputs', path: '/inputs'},
+                            {name: 'select', path: '/select'},
+                            {name: 'picker', path: '/picker'},
                             {name: 'toolbarForm', path: '/toolbarForm'}
                         ]
                     },
@@ -228,6 +235,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'inspector', path: '/inspector'},
                             {name: 'jsx', path: '/jsx'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
+                            {name: 'markdown', path: '/markdown'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'placeholder', path: '/placeholder'},
                             {name: 'popups', path: '/popups'},
@@ -238,6 +246,11 @@ export class AppModel extends BaseAppModel {
                             },
                             {name: 'timestamp', path: '/timestamp'}
                         ]
+                    },
+                    {
+                        name: 'docs',
+                        path: '/docs',
+                        children: [{name: 'docRef', path: '/:source/:docId'}]
                     },
                     {
                         name: 'examples',
@@ -334,6 +347,7 @@ export class AppModel extends BaseAppModel {
                     tabs: [
                         {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
                         {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
+                        {id: 'card', title: 'Card', content: cardPanel},
                         {
                             id: 'tabPanel',
                             title: 'TabContainer',
@@ -358,6 +372,8 @@ export class AppModel extends BaseAppModel {
                     tabs: [
                         {id: 'form', title: 'FormModel', content: formPanel},
                         {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                        {id: 'select', title: 'Select', content: selectPanel},
+                        {id: 'picker', title: 'Picker', content: pickerPanel},
                         {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
                     ]
                 }
@@ -404,14 +420,16 @@ export class AppModel extends BaseAppModel {
                             title: 'LeftRightChooser',
                             content: leftRightChooserPanel
                         },
+                        {id: 'markdown', content: markdownPanel},
                         {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                         {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                         {id: 'popups', content: popupsPanel},
-                        {id: 'timestamp', content: relativeTimestampPanel},
-                        {id: 'simpleRouting', content: simpleRoutingPanel}
+                        {id: 'simpleRouting', content: simpleRoutingPanel},
+                        {id: 'timestamp', content: relativeTimestampPanel}
                     ]
                 }
             },
+            {id: 'docs', icon: Icon.book(), content: docsTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab}
         ];
         return new TabContainerModel({

@@ -32,6 +32,12 @@ declare module '@xh/hoist/core' {
 }
 
 //-----------------------------------------------------------------
+// Hoist Configuration
+//-----------------------------------------------------------------
+import {FetchService} from '@xh/hoist/svc';
+FetchService.autoGenCorrelationIds = true;
+
+//-----------------------------------------------------------------
 // ag-Grid -- Import and Register
 //
 // IMPORTANT: If you are using enterprise version in your app
@@ -138,6 +144,10 @@ import Highcharts from 'highcharts/highstock';
 import 'highcharts/modules/exporting';
 import 'highcharts/modules/heatmap';
 import 'highcharts/modules/treemap';
+
+// `highcharts-more` must be imported before `solid-gauge`
+import 'highcharts/highcharts-more';
+import 'highcharts/modules/solid-gauge';
 
 // `treegraph` must be imported after `treemap`
 import 'highcharts/modules/treegraph';

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><!--#echo var="status" --> — Error</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #1a1a1e;
+            color: #a0a0a8;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            min-height: 100dvh;
+            overflow: hidden;
+        }
+
+        /* Subtle radial glow behind content */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 900px;
+            height: 900px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(247, 147, 30, 0.035) 0%, transparent 65%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.75rem;
+            text-align: center;
+        }
+
+        .logo {
+            width: clamp(100px, 18vw, 160px);
+            opacity: 0.6;
+        }
+
+        .code {
+            font-size: clamp(5rem, 15vw, 10rem);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            background: linear-gradient(180deg, #3a3a42 0%, #28282e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .divider {
+            width: min(260px, 50vw);
+            height: 2px;
+            background: rgba(247, 147, 30, 0.08);
+            border-radius: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(247, 147, 30, 0.45);
+            border-radius: 1px;
+            transform-origin: left;
+            animation: last-try 7s ease-out 0.5s both;
+        }
+
+        @keyframes last-try {
+            0%   { transform: scaleX(0);    background: rgba(247, 147, 30, 0.45); opacity: 1; }
+            35%  { transform: scaleX(0.7);  background: rgba(247, 147, 30, 0.45); opacity: 1; }
+            55%  { transform: scaleX(0.88); background: rgba(247, 147, 30, 0.45); opacity: 1; }
+            70%  { transform: scaleX(0.92); background: rgba(247, 147, 30, 0.35); opacity: 0.5; }
+            76%  { transform: scaleX(0.92); background: rgba(247, 147, 30, 0.15); opacity: 0.25; }
+            /* short out — full width flash */
+            77%  { transform: scaleX(1);    background: rgb(247, 147, 30);         opacity: 1; }
+            79%  { transform: scaleX(1);    background: rgb(220, 60, 40);          opacity: 1; }
+            81%  { transform: scaleX(1);    background: rgb(180, 50, 35);          opacity: 0.7; }
+            /* burn out to ash */
+            90%  { transform: scaleX(1);    background: rgba(100, 96, 92, 0.25);  opacity: 1; }
+            100% { transform: scaleX(1);    background: rgba(100, 96, 92, 0.1);   opacity: 1; }
+        }
+
+        .message {
+            font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+            font-weight: 400;
+            line-height: 1.6;
+            color: #6a6a74;
+            max-width: 38ch;
+        }
+
+        @media (max-width: 480px) {
+            .logo { opacity: 0.5; }
+            .container { gap: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- XH logo -->
+        <svg class="logo" viewBox="0 0 660 260" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#F7931E" d="M200.8,11.67l-35.47,106.45L129.86,11.67H16.94l39.43,118.33-39.43,118.33h112.92l35.47-106.45,35.47,106.45h112.92l-39.43-118.33,39.43-118.33h-112.92Z"/>
+            <path fill="#F7931E" d="M531.63,11.67l-35.47,106.45-35.47-106.45h-111.43v236.65h111.43l35.47-106.45,35.47,106.45h111.43V11.67h-111.43Z"/>
+        </svg>
+
+        <div class="code"><!--#echo var="status" --></div>
+        <div class="divider"></div>
+        <p class="message">
+            <!--# if expr="$status = 400" -->The request could not be understood by the server.
+            <!--# elif expr="$status = 401" -->Authentication is required to access this page.
+            <!--# elif expr="$status = 403" -->You don't have permission to access this page.
+            <!--# elif expr="$status = 404" -->This page doesn't exist or has been moved.
+            <!--# elif expr="$status = 405" -->The request method is not supported for this page.
+            <!--# elif expr="$status = 408" -->The server timed out waiting for the request.
+            <!--# elif expr="$status = 429" -->Too many requests. Please try again later.
+            <!--# elif expr="$status = 500" -->Something went wrong on our end.
+            <!--# elif expr="$status = 502" -->The server received an invalid response upstream.
+            <!--# elif expr="$status = 503" -->The service is temporarily unavailable.
+            <!--# elif expr="$status = 504" -->The server did not receive a timely response upstream.
+            <!--# else -->An unexpected error occurred.
+            <!--# endif -->
+        </p>
+    </div>
+</body>
+</html>

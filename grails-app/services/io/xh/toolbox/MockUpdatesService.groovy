@@ -43,7 +43,7 @@ class MockUpdatesService extends BaseService {
         if (subs) {
             logDebug("Pushing mock update to ${subs.size()} active subscribers.")
             webSocketService.pushToChannels(subs, 'mockUpdate', [
-                id: updateCounter,
+                id: "${clusterService.instanceName}-${updateCounter}",
                 timestamp: Instant.now()
             ])
 

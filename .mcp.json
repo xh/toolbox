@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "hoist-react": {
+      "type": "stdio",
+      "command": "bash",
+      "args": [".claude/start-hoist-react-mcp.sh"]
+    },
+    "hoist-core": {
+      "type": "stdio",
+      "command": "bash",
+      "args": [".claude/start-hoist-core-mcp.sh"]
+    },
+    "github": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "jetbrains": {
+      "url": "http://localhost:${JETBRAINS_MCP_PORT:-64342}/sse",
+      "type": "sse"
+    }
+  }
+}
