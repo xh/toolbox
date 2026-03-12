@@ -81,12 +81,13 @@ export const inputsPanel = hoistCmp.factory({
                 width: '90%',
                 maxWidth: 1400,
                 scrollable: true,
+                tbar: inputsTbar({compact: false}),
                 item: hframe({
                     gap: true,
                     padding: true,
                     items: [column1(), column2(), column3(), column4()]
                 }),
-                bbar: inputsBbar()
+                bbar: inputsTbar({compact: true})
             })
         });
     }
@@ -407,21 +408,21 @@ const scOptions = [
 ];
 
 //------------------------------------------------------------------
-// Bottom bar
+// Toolbar with inputs - used as both tbar (standard) and bbar (compact)
 //------------------------------------------------------------------
-const inputsBbar = hoistCmp.factory<InputsPanelModel>(() =>
+const inputsTbar = hoistCmp.factory<InputsPanelModel>(({compact}) =>
     toolbar({
-        compact: true,
+        compact,
         items: [
             textInput({bind: 'tbarText', placeholder: 'Search...', width: 140}),
             '-',
             numberInput({bind: 'tbarNumber', placeholder: '####', width: 80}),
             '-',
-            dateInput({bind: 'tbarDate', width: 100}),
+            dateInput({bind: 'tbarDate', width: compact ? 110 : 130}),
             '-',
             segmentedControl({
                 bind: 'segmentedControl',
-                compact: true,
+                compact,
                 fill: false,
                 options: scOptions
             }),
