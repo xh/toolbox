@@ -26,13 +26,17 @@ class WeatherService extends BaseService {
     )
 
     Map getCurrentWeather(String city) {
-        withSpan(name: 'Fanning Out Across the Cluster') {
-            def result = ClusterUtils
+        withSpan(
+            name: 'Fanning Out Across the Cluster',
+            logInfo: true,
+            timer: 'weather.fanout'
+        ) {
+             def result = ClusterUtils
                 .runOnAllInstances(this.&loadCurrentWeather, [city])
                 .values().find()
             if (result.exception) throw result.exception
-            return result.value
-        } as Map
+            result.value
+        }
     }
 
     Map getForecast(String city) {

@@ -138,32 +138,27 @@ export class WeatherDashModel extends HoistModel {
         if (!selectedCity) return;
 
         try {
-            await XH.withSpanAsync(
-                {
-                    name: 'Loading Weather Dash'
-                },
-                async span => {
-                    const [currentWeather, forecast] = await Promise.all([
-                        XH.fetchJson({
-                            url: 'weather/current',
-                            params: {city: selectedCity},
-                            loadSpec: {...loadSpec, parentSpan: span}
-                        }),
-                        XH.fetchJson({
-                            url: 'weather/forecast',
-                            params: {city: selectedCity},
-                            loadSpec: {...loadSpec, parentSpan: span}
-                        })
-                    ]);
+            await XH.withSpanAsync({name: 'Loading Weather Dash'}, async span => {
+                const [currentWeather, forecast] = await Promise.all([
+                    XH.fetchJson({
+                        url: 'weather/current',
+                        params: {city: selectedCity},
+                        loadSpec: {...loadSpec, parentSpan: span}
+                    }),
+                    XH.fetchJson({
+                        url: 'weather/forecast',
+                        params: {city: selectedCity},
+                        loadSpec: {...loadSpec, parentSpan: span}
+                    })
+                ]);
 
-                    if (loadSpec.isStale) return;
+                if (loadSpec.isStale) return;
 
-                    runInAction(() => {
-                        this.currentWeather = currentWeather;
-                        this.forecast = forecast;
-                    });
-                }
-            );
+                runInAction(() => {
+                    this.currentWeather = currentWeather;
+                    this.forecast = forecast;
+                });
+            });
         } catch (e) {
             if (loadSpec.isAutoRefresh || loadSpec.isStale) return;
             XH.handleException(e);
