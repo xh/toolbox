@@ -38,7 +38,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                 tbody(
                     row(
                         button({
-                            ...popBtn(Icon.warning({className: 'xh-red'})),
+                            ...popBtn(Icon.warning({intent: 'danger'})),
                             text: 'Alert',
                             onClick: () =>
                                 XH.alert({
@@ -50,7 +50,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.warning({className: 'xh-red-muted'})),
+                            ...popBtn(Icon.warning({intent: 'danger'})),
                             text: 'with custom button',
                             onClick: () =>
                                 XH.alert({
@@ -66,7 +66,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.warning({className: 'xh-red-muted'})),
+                            ...popBtn(Icon.warning({intent: 'danger'})),
                             text: 'as promise',
                             onClick: () =>
                                 XH.alert({
@@ -79,7 +79,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                     ),
                     row(
                         button({
-                            ...popBtn(Icon.questionCircle({className: 'xh-blue-dark'})),
+                            ...popBtn(Icon.questionCircle({intent: 'primary'})),
                             text: 'Confirm',
                             onClick: () =>
                                 XH.confirm({
@@ -93,7 +93,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.questionCircle({className: 'xh-blue-muted'})),
+                            ...popBtn(Icon.questionCircle({intent: 'primary'})),
                             text: 'with custom button',
                             onClick: () =>
                                 XH.confirm({
@@ -114,7 +114,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.questionCircle({className: 'xh-blue-muted'})),
+                            ...popBtn(Icon.questionCircle({intent: 'primary'})),
                             text: 'as promise',
                             onClick: () =>
                                 XH.confirm({
@@ -127,7 +127,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                     ),
                     row(
                         button({
-                            ...popBtn(Icon.edit({className: 'xh-blue-light'})),
+                            ...popBtn(Icon.edit({intent: 'primary'})),
                             text: 'Prompt',
                             onClick: () =>
                                 XH.prompt<string>({
@@ -141,7 +141,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.edit({className: 'xh-blue-light'})),
+                            ...popBtn(Icon.edit({intent: 'primary'})),
                             text: 'with customizations',
                             onClick: () =>
                                 XH.prompt<string>({
@@ -170,7 +170,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.edit({className: 'xh-blue-light'})),
+                            ...popBtn(Icon.edit({intent: 'primary'})),
                             text: 'as promise',
                             onClick: () =>
                                 XH.prompt<string>({
@@ -183,7 +183,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                     ),
                     row(
                         button({
-                            ...popBtn(Icon.comment({className: 'xh-green'})),
+                            ...popBtn(Icon.comment({intent: 'success'})),
                             text: 'Message',
                             onClick: () =>
                                 XH.message({
@@ -203,7 +203,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.comment({className: 'xh-green-muted'})),
+                            ...popBtn(Icon.comment({intent: 'success'})),
                             text: 'with callbacks',
                             onClick: () =>
                                 XH.message({
@@ -228,7 +228,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.comment({className: 'xh-green-muted'})),
+                            ...popBtn(Icon.comment({intent: 'success'})),
                             text: 'as promise',
                             onClick: () =>
                                 XH.message({
@@ -256,7 +256,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                     ),
                     row(
                         button({
-                            ...popBtn(Icon.flag({className: 'xh-blue-dark'})),
+                            ...popBtn(Icon.flag({intent: 'primary'})),
                             text: 'Banner',
                             onClick: () =>
                                 XH.showBanner({
@@ -265,7 +265,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.flag({className: 'xh-blue-muted'})),
+                            ...popBtn(Icon.flag({intent: 'primary'})),
                             text: 'with intent + icon',
                             onClick: () =>
                                 XH.showBanner({
@@ -275,7 +275,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.flag({className: 'xh-blue-muted'})),
+                            ...popBtn(Icon.flag({intent: 'primary'})),
                             text: 'with action',
                             onClick: () =>
                                 XH.showBanner({
@@ -295,7 +295,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                     ),
                     row(
                         button({
-                            ...popBtn(Icon.toast({className: 'xh-orange'})),
+                            ...popBtn(Icon.toast({intent: 'warning'})),
                             text: 'Toast',
                             onClick: () =>
                                 XH.toast({
@@ -303,7 +303,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.toast({className: 'xh-orange-muted'})),
+                            ...popBtn(Icon.toast({intent: 'warning'})),
                             text: 'with custom timeout',
                             onClick: () =>
                                 XH.toast({
@@ -314,7 +314,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.toast({className: 'xh-orange-muted'})),
+                            ...popBtn(Icon.toast({intent: 'warning'})),
                             text: 'with containerRef',
                             onClick: () =>
                                 XH.toast({
@@ -326,7 +326,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                     row(
                         '',
                         button({
-                            ...popBtn(Icon.toast({className: 'xh-orange-muted'})),
+                            ...popBtn(Icon.toast({intent: 'warning'})),
                             text: 'with position',
                             onClick: () =>
                                 XH.toast({
@@ -335,7 +335,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                                 })
                         }),
                         button({
-                            ...popBtn(Icon.toast({className: 'xh-orange-muted'})),
+                            ...popBtn(Icon.toast({intent: 'warning'})),
                             text: 'with intent + icon',
                             onClick: () =>
                                 XH.dangerToast({
