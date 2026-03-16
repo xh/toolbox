@@ -1,35 +1,33 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {tabContainer} from '@xh/hoist/cmp/tab';
-import {div} from '@xh/hoist/cmp/layout';
+import {tabContainer, TabContainerConfig} from '@xh/hoist/cmp/tab';
+import {placeholder} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 
 export const simpleExample = hoistCmp.factory(({orientation}) =>
     tabContainer({
-        className: 'child-tabcontainer',
+        className: 'tb-layout-tabs__child',
         switcher: {orientation},
         modelConfig: createContainerModelConfig()
     })
 );
 
-export const createContainerModelConfig = () => {
-    const tabTxt = title => div(`This is the ${title} tab`);
-
+export const createContainerModelConfig = (): TabContainerConfig => {
     return {
         tabs: [
             {
                 id: 'people',
                 icon: Icon.user(),
-                content: () => tabTxt('People')
+                content: () => placeholder(Icon.user(), 'People')
             },
             {
                 id: 'places',
-                icon: Icon.home(),
-                content: () => tabTxt('Places')
+                icon: Icon.location(),
+                content: () => placeholder(Icon.location(), 'Places')
             },
             {
                 id: 'things',
-                icon: Icon.portfolio(),
-                content: () => tabTxt('Things')
+                icon: Icon.boxFull(),
+                content: () => placeholder(Icon.boxFull(), 'Things')
             }
         ]
     };
