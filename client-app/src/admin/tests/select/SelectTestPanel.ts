@@ -111,6 +111,33 @@ export const SelectTestPanel = hoistCmp({
                             hideSelectedOptions: false,
                             closeMenuOnSelect: false
                         }
+                    }),
+                    // ID value + lookupFn examples, all pre-populated with a numeric id.
+                    // Should display the label on mount, not the raw id number.
+                    example({
+                        name: 'starting ID value, options (value not in list), lookupFn',
+                        bind: 'idNotInOpts',
+                        selectProps: {
+                            options: model.selectableEmployees,
+                            lookupFn: id => model.lookupEmployeeById(id),
+                            labelField: 'name',
+                            valueField: 'id',
+                            enableClear: true,
+                            placeholder: 'Select an employee...'
+                        }
+                    }),
+                    example({
+                        name: 'starting ID value, queryFn, lookupFn',
+                        bind: 'idQueryLookup',
+                        selectProps: {
+                            width: 200,
+                            valueField: 'id',
+                            labelField: 'company',
+                            enableClear: true,
+                            queryFn: queryCustomersAsync,
+                            lookupFn: lookupCustomerByIdAsync,
+                            placeholder: 'Search customers...'
+                        }
                     })
                 ]
             })
@@ -179,8 +206,13 @@ const customerProps = {
 async function queryCustomersAsync(query) {
     return XH.fetchJson({
         url: 'customer',
-        params: {query}
+        params: {query, activeOnly: true}
     });
+}
+
+// Resolves a single customer id to its full option, for display before any query runs.
+async function lookupCustomerByIdAsync(id: number) {
+    return XH.fetchJson({url: 'customer', params: {id}});
 }
 
 const recipes = [

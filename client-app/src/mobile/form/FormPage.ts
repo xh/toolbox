@@ -154,6 +154,34 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
                             item: searchInput()
                         })
                     ]
+                }),
+                formFieldSet({
+                    className: 'xh-margin-top',
+                    title: 'Field Set 3',
+                    modelConfig: {collapsible: true},
+                    items: [
+                        formField({
+                            field: 'employeeId',
+                            item: select({
+                                placeholder: 'Select an employee...',
+                                options: model.selectableEmployees,
+                                lookupFn: id => model.lookupEmployeeById(id),
+                                valueField: 'id',
+                                labelField: 'name'
+                            })
+                        }),
+                        formField({
+                            field: 'customerId',
+                            item: select({
+                                placeholder: 'Search customers...',
+                                title: 'Search customers...',
+                                enableFilter: true,
+                                enableFullscreen: true,
+                                queryFn: q => model.queryCustomersAsync(q),
+                                lookupFn: v => model.lookupCustomerByIdAsync(v)
+                            })
+                        })
+                    ]
                 })
             )
         })
@@ -173,7 +201,9 @@ const results = hoistCmp.factory(() => {
             fieldResult({field: 'enabled', renderer: v => (v ? 'Yes' : 'No')}),
             fieldResult({field: 'buttonGroup'}),
             fieldResult({field: 'notes'}),
-            fieldResult({field: 'searchQuery'})
+            fieldResult({field: 'searchQuery'}),
+            fieldResult({field: 'employeeId'}),
+            fieldResult({field: 'customerId'})
         ]
     });
 });
