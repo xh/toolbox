@@ -143,12 +143,14 @@ export class WeatherDashModel extends HoistModel {
                     XH.fetchJson({
                         url: 'weather/current',
                         params: {city: selectedCity},
-                        loadSpec: {...loadSpec, parentSpan: span}
+                        loadSpec,
+                        span
                     }),
                     XH.fetchJson({
                         url: 'weather/forecast',
                         params: {city: selectedCity},
-                        loadSpec: {...loadSpec, parentSpan: span}
+                        loadSpec,
+                        span
                     })
                 ]);
 
