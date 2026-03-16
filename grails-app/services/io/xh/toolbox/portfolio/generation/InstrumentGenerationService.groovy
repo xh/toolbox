@@ -2,19 +2,28 @@ package io.xh.toolbox.portfolio.generation
 
 import io.xh.hoist.BaseService
 import io.xh.toolbox.portfolio.Instrument
-import java.util.concurrent.ConcurrentHashMap
 
+import static io.xh.toolbox.portfolio.Lookups.getREGIONS
+import static io.xh.toolbox.portfolio.Lookups.getSECTORS
 import static io.xh.toolbox.portfolio.Utils.randInt
 import static io.xh.toolbox.portfolio.Utils.sample
-import static io.xh.toolbox.portfolio.Lookups.*
 
-
+/**
+ * Generates a randomized set of mock {@link Instrument} objects with unique ticker symbols,
+ * random sectors, and regions. The number of instruments is controlled by the
+ * {@code portfolioConfigs.instrumentCount} config.
+ */
 class InstrumentGenerationService extends BaseService {
 
     def configService
 
+    /** Generate a map of unique instruments keyed by ticker symbol. */
     Map<String, Instrument> generateInstruments() {
-        withSpan(name: 'generateInstruments', caller: this) {
+        withSpan(
+            name: 'generateInstruments',
+            "Generating ${config.instrumentCount} instruments",
+            caller: this
+        ) {
             def instrumentCount = config.instrumentCount
             Map<String, Instrument> ret = new HashMap(instrumentCount)
             while (ret.size() < instrumentCount) {
