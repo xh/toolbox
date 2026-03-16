@@ -12,6 +12,7 @@ import java.time.*
 
 import static io.xh.toolbox.portfolio.Utils.*
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
+import static java.util.concurrent.TimeUnit.MILLISECONDS
 
 
 class PortfolioService extends BaseService {
@@ -26,6 +27,7 @@ class PortfolioService extends BaseService {
     private CachedValue<Portfolio> _portfolio = createCachedValue(name: 'portfolio', replicate: true)
     private ReplicatedMap<String, MarketPrice> _currentPrices = createReplicatedMap('currentPrices')
     private Timer generationTimer
+    private Gauge positionsGauge
 
     void init() {
         initMetrics()
@@ -65,7 +67,7 @@ class PortfolioService extends BaseService {
     private void initMetrics() {
         def registry = metricsService.registry
 
-        Gauge.builder('portfolio.positions', this) {
+        positionsGauge = Gauge.builder('portfolio.positions', this) {
             (_portfolio.get()?.rawPositions?.size() ?: 0) as double
         }.description('Number of portfolio positions')
             .register(registry)
@@ -109,7 +111,12 @@ class PortfolioService extends BaseService {
     }
 
     private Portfolio generatePortfolio() {
-        return generationTimer.recordCallable {
+        withSpan(
+            name: 'generatePortfolio',
+            logInfo: true,
+            timer: generationTimer,
+            caller: this
+        ) {
             def day = LocalDate.now(),
                 instruments = instrumentGenerationService.generateInstruments(),
                 historicalPrices = historicalPriceGenerationService.generateHistoricalPrices(instruments, day),
@@ -158,6 +165,8 @@ class PortfolioService extends BaseService {
     }
 
     Map getAdminStats() {[
-        config: configForAdminStats('portfolioConfigs')
+        config: configForAdminStats('portfolioConfigs'),
+        avgGenerationTime: generationTimer.mean(MILLISECONDS),
+        positionsCount: positionsGauge.count()
     ]}
 }

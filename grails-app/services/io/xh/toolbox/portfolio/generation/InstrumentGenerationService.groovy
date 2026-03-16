@@ -14,19 +14,21 @@ class InstrumentGenerationService extends BaseService {
     def configService
 
     Map<String, Instrument> generateInstruments() {
-        def instrumentCount = config.instrumentCount
-        Map<String, Instrument> ret = new HashMap(instrumentCount)
-        while (ret.size() < instrumentCount) {
-            String symbol = generateSymbol()
-            if (!ret[symbol]) {
-                ret[symbol] = new Instrument(
-                        symbol: symbol,
-                        sector: sample(SECTORS),
-                        region: sample(REGIONS)
-                )
+        withSpan(name: 'generateInstruments', caller: this) {
+            def instrumentCount = config.instrumentCount
+            Map<String, Instrument> ret = new HashMap(instrumentCount)
+            while (ret.size() < instrumentCount) {
+                String symbol = generateSymbol()
+                if (!ret[symbol]) {
+                    ret[symbol] = new Instrument(
+                            symbol: symbol,
+                            sector: sample(SECTORS),
+                            region: sample(REGIONS)
+                    )
+                }
             }
+            return ret
         }
-        return ret
     }
 
     private String generateSymbol() {
