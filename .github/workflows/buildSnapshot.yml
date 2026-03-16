@@ -1,0 +1,102 @@
+# Build Snapshot — Builds snapshot Docker images on every push to develop.
+#
+# Builds both nginx (React frontend) and tomcat (Grails backend) images and pushes them
+# to ECR with snapshot tags. Also triggered when hoist-core or hoist-react publish new
+# snapshots (via repository_dispatch). For numbered releases, see Build Release.
+
+name: Build Snapshot
+
+on:
+    push:
+        branches: [ "develop" ]
+    repository_dispatch:
+        types: [ hoist-core-snapshot, hoist-react-snapshot ]
+    workflow_dispatch:
+
+concurrency:
+    group: build-snapshot
+    cancel-in-progress: true
+
+jobs:
+    build-tomcat:
+
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+
+        steps:
+        - uses: actions/checkout@v6
+
+        - name: Setup JDK 17
+          uses: actions/setup-java@v5
+          with:
+              java-version: '17'
+              distribution: 'zulu'
+
+        - name: Setup Gradle
+          uses: gradle/actions/setup-gradle@v5
+
+        - name: Build WAR
+          run: ./gradlew war
+
+        - name: Copy WAR into Docker context
+          run: cp build/libs/*.war docker/tomcat/toolbox.war
+
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v6
+          with:
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region: ${{ secrets.AWS_REGION }}
+
+        - name: Login to Amazon ECR
+          uses: aws-actions/amazon-ecr-login@v2
+
+        - name: Build and push tomcat image
+          env:
+              ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          run: |
+              docker build -t $ECR_ROOT/xh/toolbox-tomcat:snapshot docker/tomcat
+              docker push $ECR_ROOT/xh/toolbox-tomcat:snapshot
+
+    build-nginx:
+
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+
+        steps:
+        - uses: actions/checkout@v6
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v6
+          with:
+              node-version-file: 'client-app/.nvmrc'
+
+        - name: Configure Font Awesome registry auth
+          env:
+              FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
+          run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
+
+        - name: Upgrade dependencies, lint, and build client app
+          run: cd client-app && yarn upgrade && yarn lint && yarn build
+
+        - name: Copy client build into Docker context
+          run: cp -r client-app/build/ docker/nginx/build/
+
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v6
+          with:
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region: ${{ secrets.AWS_REGION }}
+
+        - name: Login to Amazon ECR
+          uses: aws-actions/amazon-ecr-login@v2
+
+        - name: Build and push nginx image
+          env:
+              ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          run: |
+              docker build -t $ECR_ROOT/xh/toolbox-nginx:snapshot docker/nginx
+              docker push $ECR_ROOT/xh/toolbox-nginx:snapshot

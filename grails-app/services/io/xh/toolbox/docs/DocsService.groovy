@@ -7,6 +7,28 @@ import static io.xh.hoist.util.Utils.hoistCoreVersion
 import static io.xh.hoist.util.Utils.hoistReactVersion
 import static io.xh.hoist.util.Utils.isLocalDevelopment
 
+/**
+ * Service providing documentation content from hoist-react and hoist-core to the Toolbox
+ * Docs Viewer. Builds a unified {@link DocRegistry} of all available doc entries and serves
+ * their markdown content on demand.
+ *
+ * Each source library (hoist-react, hoist-core) is backed by a {@link ContentSource} resolved
+ * at init with the following strategy:
+ *
+ *   1. In local development, check for a sibling checkout of the library (e.g. `../hoist-react`)
+ *      with a `docs/README.md` file. If found, use a {@link LocalContentSource} that reads
+ *      directly from the filesystem — allowing docs to be authored and previewed without
+ *      committing or pushing.
+ *
+ *   2. Otherwise, fall back to a {@link GitHubContentSource} that downloads the library's
+ *      tarball from GitHub. For SNAPSHOT versions, the `develop` branch is used; for released
+ *      versions, the corresponding `v{version}` tag is fetched. The full archive is extracted
+ *      into memory at init for fast subsequent reads.
+ *
+ * Sources that fail to resolve (e.g. missing local checkout and GitHub unreachable) are
+ * silently excluded — the viewer will display whichever sources loaded successfully.
+ * Calling {@code clearCaches()} rebuilds all sources and the registry from scratch.
+ */
 class DocsService extends BaseService {
 
     private DocRegistry registry

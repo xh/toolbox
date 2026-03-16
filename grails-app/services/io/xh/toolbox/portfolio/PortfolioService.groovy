@@ -67,12 +67,12 @@ class PortfolioService extends BaseService {
     private void initMetrics() {
         def registry = metricsService.registry
 
-        positionsGauge = Gauge.builder('portfolio.positions', this) {
+        positionsGauge = Gauge.builder('toolbox.portfolio.positions', this) {
             (_portfolio.get()?.rawPositions?.size() ?: 0) as double
         }.description('Number of portfolio positions')
             .register(registry)
 
-        generationTimer = Timer.builder('portfolio.generationTime')
+        generationTimer = Timer.builder('toolbox.portfolio.generationTime')
             .description('Time to generate portfolio')
             .register(registry)
     }

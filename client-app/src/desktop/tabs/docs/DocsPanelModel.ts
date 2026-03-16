@@ -1,5 +1,4 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {span} from '@xh/hoist/cmp/layout';
 import {Content, HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
@@ -124,11 +123,14 @@ export class DocsPanelModel extends HoistModel {
         return this.docService.getDocsByCategory(this.activeDoc.source, this.activeDoc.category);
     }
 
-    /** Categories for the active doc's source. */
+    /** Categories for the active doc's source, filtered to those with at least one doc. */
     @computed
     get activeSourceCategories(): DocCategory[] {
         if (!this.activeDoc) return [];
-        return this.docService.getCategories(this.activeDoc.source);
+        const {source} = this.activeDoc;
+        return this.docService
+            .getCategories(source)
+            .filter(cat => this.docService.getDocsByCategory(source, cat.id).length > 0);
     }
 
     /** H2-level sections parsed from the current document content. */
@@ -308,6 +310,7 @@ export class DocsPanelModel extends HoistModel {
         return new GridModel({
             selModel: 'single',
             treeMode: true,
+            clicksToExpand: 1,
             showHover: true,
             expandLevel: 1,
             store: {
@@ -327,12 +330,7 @@ export class DocsPanelModel extends HoistModel {
                 {
                     field: 'title',
                     flex: 1,
-                    isTreeColumn: true,
-                    renderer: (v, {record}) => {
-                        return record.data.isSource
-                            ? span({style: {color: 'var(--xh-black)'}, item: v})
-                            : v;
-                    }
+                    isTreeColumn: true
                 },
                 {
                     field: 'order',
@@ -484,40 +482,36 @@ export class DocsPanelModel extends HoistModel {
 
     getCategoryIcon(categoryId: string) {
         switch (categoryId) {
-            // hoist-react categories
-            case 'overview':
-                return Icon.home();
-            case 'core':
-                return Icon.gear();
-            case 'components':
-                return Icon.gridPanel();
-            case 'desktop':
-                return Icon.desktop();
-            case 'mobile':
-                return Icon.mobile();
-            case 'utilities':
-                return Icon.wrench();
-            case 'concepts':
-                return Icon.book();
-            case 'supporting':
-                return Icon.cube();
-            case 'devops':
-                return Icon.server();
-            case 'upgrade':
-                return Icon.arrowUp();
-            // hoist-core categories
-            case 'core-framework':
-                return Icon.gear();
-            case 'core-features':
-                return Icon.gears();
-            case 'infrastructure':
-                return Icon.server();
             case 'app-development':
                 return Icon.code();
+            case 'components':
+                return Icon.gridPanel();
+            case 'concepts':
+                return Icon.book();
+            case 'core':
+                return Icon.gear();
+            case 'core-features':
+                return Icon.boxFull();
+            case 'core-framework':
+                return Icon.gear();
+            case 'desktop':
+                return Icon.desktop();
+            case 'devops':
+                return Icon.server();
             case 'grails-platform':
                 return Icon.database();
-            case 'build':
-                return Icon.boxFull();
+            case 'infrastructure':
+                return Icon.server();
+            case 'mobile':
+                return Icon.mobile();
+            case 'overview':
+                return Icon.home();
+            case 'supporting':
+                return Icon.cube();
+            case 'upgrade':
+                return Icon.arrowUp();
+            case 'utilities':
+                return Icon.wrench();
             default:
                 return Icon.folder();
         }

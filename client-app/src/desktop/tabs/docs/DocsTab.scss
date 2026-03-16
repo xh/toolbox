@@ -21,16 +21,9 @@
       // Style group rows (source + category levels)
       .ag-row-group {
         font-weight: 600;
-        color: var(--xh-text-color-muted);
         text-transform: uppercase;
         font-size: 11px;
         letter-spacing: 0.5px;
-      }
-
-      // Source-level rows: slightly larger styling
-      .ag-row-level-0 {
-        font-size: 12px;
-        letter-spacing: 0.4px;
       }
     }
   }
@@ -45,14 +38,6 @@
     display: flex;
     align-items: center;
     gap: 2px;
-
-    &-source {
-      font-weight: 600;
-      color: var(--xh-text-color-muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
 
     &-btn {
       font-weight: 500;
@@ -124,7 +109,6 @@
     }
 
     &-desc {
-      //font-size: var(--xh-font-size-small-px);
       color: var(--xh-text-color-muted);
       margin-top: 4px;
       line-height: 1.4;
