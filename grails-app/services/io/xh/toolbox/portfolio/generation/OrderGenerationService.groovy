@@ -34,8 +34,7 @@ class OrderGenerationService extends BaseService {
     ) {
         withSpan(
             name: 'generateOrders',
-            logDebug: "Generating ${config.orderCount} orders",
-            caller: this
+            logDebug: "Generating ${config.orderCount} orders"
         ) {
             def orderCount = config.orderCount
             List<Order> ret = new ArrayList<Order>(orderCount)

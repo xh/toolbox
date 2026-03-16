@@ -21,8 +21,7 @@ class InstrumentGenerationService extends BaseService {
     Map<String, Instrument> generateInstruments() {
         withSpan(
             name: 'generateInstruments',
-            "Generating ${config.instrumentCount} instruments",
-            caller: this
+            logDebug: "Generating ${config.instrumentCount} instruments"
         ) {
             def instrumentCount = config.instrumentCount
             Map<String, Instrument> ret = new HashMap(instrumentCount)

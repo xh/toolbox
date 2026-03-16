@@ -26,8 +26,7 @@ class HistoricalPriceGenerationService extends BaseService {
     ) {
         withSpan(
             name: 'generateHistoricalPrices',
-            logDebug: "Generating historical prices for ${instruments.size()} instruments",
-            caller: this
+            logDebug: "Generating historical prices for ${instruments.size()} instruments"
         ) {
             List<LocalDate> tradingDays = tradingDayService.historicalDays(day)
             return instruments.keySet().collectEntries {

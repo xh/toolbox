@@ -123,8 +123,7 @@ class PortfolioService extends BaseService {
         withSpan(
             name: 'generatePortfolio',
             logInfo: 'Generating Portfolio',
-            timer: generationTimer,
-            caller: this
+            timer: generationTimer
         ) {
             def day = LocalDate.now(),
                 instruments = instrumentGenerationService.generateInstruments(),
