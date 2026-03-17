@@ -120,24 +120,24 @@ class PortfolioService extends BaseService {
     }
 
     private Portfolio generatePortfolio() {
-        withSpan(
-            name: 'generatePortfolio',
-            logInfo: 'Generating Portfolio',
-            timer: generationTimer
-        ) {
-            def day = LocalDate.now(),
-                instruments = instrumentGenerationService.generateInstruments(),
-                historicalPrices = historicalPriceGenerationService.generateHistoricalPrices(instruments, day),
-                orders = orderGenerationService.generateOrders(instruments, historicalPrices),
-                rawPositions = calculateRawPositions(instruments, orders)
+        observe()
+            .span(name: 'generatePortfolio')
+            .logInfo('Generating Portfolio')
+            .timer(generationTimer)
+            .run {
+                def day = LocalDate.now(),
+                    instruments = instrumentGenerationService.generateInstruments(),
+                    historicalPrices = historicalPriceGenerationService.generateHistoricalPrices(instruments, day),
+                    orders = orderGenerationService.generateOrders(instruments, historicalPrices),
+                    rawPositions = calculateRawPositions(instruments, orders)
 
-            new Portfolio(
-                day: day,
-                instruments: instruments,
-                historicalPrices: historicalPrices,
-                orders: orders,
-                rawPositions: rawPositions
-            )
+                new Portfolio(
+                    day: day,
+                    instruments: instruments,
+                    historicalPrices: historicalPrices,
+                    orders: orders,
+                    rawPositions: rawPositions
+                )
         }
     }
 

@@ -32,45 +32,45 @@ class OrderGenerationService extends BaseService {
             Map<String, Instrument> instruments,
             Map<String, List<MarketPrice>> historicalPrices
     ) {
-        withSpan(
-            name: 'generateOrders',
-            logDebug: "Generating ${config.orderCount} orders"
-        ) {
-            def orderCount = config.orderCount
-            List<Order> ret = new ArrayList<Order>(orderCount)
-            List<String> symbols = instruments.keySet() as List<String>
+        observe()
+            .span(name: 'generateOrders')
+            .logDebug("Generating ${config.orderCount} orders")
+            .run {
+                def orderCount = config.orderCount
+                List<Order> ret = new ArrayList<Order>(orderCount)
+                List<String> symbols = instruments.keySet() as List<String>
 
-            for (int i = 0; i < orderCount; i++) {
-                def symbol = sample(symbols),
-                    fund = sample(FUNDS),
-                    model = sample(MODELS),
-                    trader = sample(TRADERS),
-                    dir = sample(DIRS)
+                for (int i = 0; i < orderCount; i++) {
+                    def symbol = sample(symbols),
+                        fund = sample(FUNDS),
+                        model = sample(MODELS),
+                        trader = sample(TRADERS),
+                        dir = sample(DIRS)
 
-                MarketPrice mktData = sample(historicalPrices[symbol])
-                Instant time = mktData.day.atTime(LocalTime.of(randInt(9, 16), randInt(0, 59))).toInstant(EST)
-                long quantity = randInt(300, 10001) * (dir == 'Sell' ? -1 : 1)
-                double price = randDouble(mktData.low, mktData.high).round(2)
-                long cost = Math.round(quantity * price)
+                    MarketPrice mktData = sample(historicalPrices[symbol])
+                    Instant time = mktData.day.atTime(LocalTime.of(randInt(9, 16), randInt(0, 59))).toInstant(EST)
+                    long quantity = randInt(300, 10001) * (dir == 'Sell' ? -1 : 1)
+                    double price = randDouble(mktData.low, mktData.high).round(2)
+                    long cost = Math.round(quantity * price)
 
-                ret << new Order(
-                        id: "order-${i}",
-                        instrument: instruments[symbol],
-                        dir: dir,
-                        quantity: quantity,
-                        price: price,
-                        cost: cost,
-                        time: time,
-                        model: model,
-                        fund: fund,
-                        trader: trader,
-                        commission: Math.abs(cost * 0.0002),
-                        confidence: randInt(0, 1001)
-                )
+                    ret << new Order(
+                            id: "order-${i}",
+                            instrument: instruments[symbol],
+                            dir: dir,
+                            quantity: quantity,
+                            price: price,
+                            cost: cost,
+                            time: time,
+                            model: model,
+                            fund: fund,
+                            trader: trader,
+                            commission: Math.abs(cost * 0.0002),
+                            confidence: randInt(0, 1001)
+                    )
+                }
+
+                return ret.sort { it.time }
             }
-
-            return ret.sort { it.time }
-        }
     }
 
     private Map getConfig() {
