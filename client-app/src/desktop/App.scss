@@ -23,6 +23,26 @@ code.tb-code-link {
   border-right: var(--xh-border-solid);
 }
 
+.tb-nav-menu {
+  padding: var(--xh-pad-half-px) 0;
+  flex: auto;
+  overflow-y: auto;
+
+  &__section {
+    padding: 2px 0;
+  }
+
+  &__item--active {
+    font-weight: 500;
+    color: var(--xh-text-color-accent);
+  }
+
+  &__footer {
+    padding: var(--xh-pad-px);
+    border-top: 1px solid var(--xh-border-color);
+  }
+}
+
 .tbox-display-opts {
   .xh-panel-header {
     color: var(--xh-text-color);

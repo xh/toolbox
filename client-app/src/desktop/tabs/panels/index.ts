@@ -1,4 +1,5 @@
 export * from './BasicPanel';
+export * from './DrawerPanel';
 export * from './LoadingIndicatorPanel';
 export * from './MaskPanel';
 export * from './PanelSizingPanel';

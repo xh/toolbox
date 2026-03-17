@@ -1,6 +1,7 @@
 import {span} from '@xh/hoist/cmp/layout';
 import {TabConfig, TabContainerModel, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
 import {LoadSpec, managed, XH} from '@xh/hoist/core';
+import {DrawerModel} from '@xh/hoist/desktop/cmp/drawer';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
@@ -73,6 +74,7 @@ import {
 } from './tabs/other';
 import {
     basicPanel,
+    drawerPanel,
     loadingIndicatorPanel,
     maskPanel,
     panelSizingPanel,
@@ -85,6 +87,14 @@ export class AppModel extends BaseAppModel {
 
     @managed
     tabModel: TabContainerModel = this.createTabContainerModel();
+
+    @managed
+    navDrawerModel = new DrawerModel({
+        supportedModes: ['overlay', 'pinned'],
+        defaultMode: 'overlay',
+        size: 220,
+        persistWith: {localStorageKey: 'toolboxNavDrawer'}
+    });
 
     override async initAsync() {
         await super.initAsync();
@@ -170,6 +180,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'intro', path: '/intro'},
                             {name: 'toolbars', path: '/toolbars'},
                             {name: 'sizing', path: '/sizing'},
+                            {name: 'drawers', path: '/drawers'},
                             {name: 'mask', path: '/mask'},
                             {name: 'loadingIndicator', path: '/loadingIndicator'}
                         ]
@@ -334,6 +345,7 @@ export class AppModel extends BaseAppModel {
                         {id: 'intro', content: basicPanel},
                         {id: 'toolbars', content: toolbarPanel},
                         {id: 'sizing', content: panelSizingPanel},
+                        {id: 'drawers', content: drawerPanel},
                         {id: 'mask', content: maskPanel},
                         {id: 'loadingIndicator', content: loadingIndicatorPanel}
                     ]
