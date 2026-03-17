@@ -270,6 +270,16 @@ const column3 = hoistCmp.factory<InputsPanelModel>(() =>
                         })
                     }),
                     demoRow({
+                        label: 'SegmentedControl',
+                        info: 'outlined, intent: primary',
+                        item: segmentedControl({
+                            bind: 'segmentedControl',
+                            outlined: true,
+                            intent: 'primary',
+                            options: scOptions
+                        })
+                    }),
+                    demoRow({
                         label: 'ButtonGroupInput',
                         info: 'Icon + text buttons',
                         item: buttonGroupInput({
@@ -327,6 +337,14 @@ const column4 = hoistCmp.factory<InputsPanelModel>(() =>
                 icon: Icon.checkSquare(),
                 items: [
                     demoRow({
+                        label: 'CheckboxButton',
+                        info: 'Button-based boolean toggle',
+                        item: checkboxButton({
+                            bind: 'checkboxButton',
+                            text: 'Active'
+                        })
+                    }),
+                    demoRow({
                         label: 'Checkbox',
                         info: 'Basic boolean toggle',
                         item: checkbox({
@@ -341,14 +359,6 @@ const column4 = hoistCmp.factory<InputsPanelModel>(() =>
                             bind: 'switchVal',
                             label: 'Enabled:',
                             labelSide: 'left'
-                        })
-                    }),
-                    demoRow({
-                        label: 'CheckboxButton',
-                        info: 'Button-based boolean toggle',
-                        item: checkboxButton({
-                            bind: 'checkboxButton',
-                            text: 'Active'
                         })
                     })
                 ]
