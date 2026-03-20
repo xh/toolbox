@@ -7,14 +7,11 @@
 * Added hoist-core documentation to the Docs tab alongside existing hoist-react docs. The viewer now shows both frameworks in a two-level tree (source > category > doc) with source badges in search results.
 * Moved Docs content to a server-side API (`DocsService`) that dynamically resolves content from either a local sibling repo checkout or a GitHub tarball, replacing the previous webpack static asset approach.
 
-### Bug Fixes
-
-* Grid column filters now include a [blank] option when data contains null values, via fix to `Store.getFieldValues()` in hoist-react.
-
 ### Technical
 
 * Deferred portfolio data generation to run async after startup and optimized `HistoricalPriceGenerationService`, reducing total generation time from ~11s to ~3s. Added timing logs and expanded `PortfolioService` admin stats.
 * Migrated CI/CD from TeamCity to GitHub Actions. New workflows handle CI validation, snapshot builds, release builds, and deployment to AWS ECS. Snapshot images are built and deployed automatically on pushes to `develop` and on upstream hoist-core/hoist-react snapshot publishes. Release builds are manually triggered with strict semver validation. See `docs/build-and-deploy.md` for details.
+* Added some null values to city and profit_loss in TradeService data feed, to ensure grid fields display the "[blank]" value.
 
 ## 8.2.2 - 2026-03-02
 
