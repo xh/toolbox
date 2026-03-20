@@ -34,8 +34,6 @@ declare module '@xh/hoist/core' {
 //-----------------------------------------------------------------
 // Hoist Configuration
 //-----------------------------------------------------------------
-import {FetchService} from '@xh/hoist/svc';
-FetchService.defaults.autoGenCorrelationIds = true;
 
 //-----------------------------------------------------------------
 // ag-Grid -- Import and Register
