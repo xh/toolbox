@@ -7,6 +7,10 @@
 * Added hoist-core documentation to the Docs tab alongside existing hoist-react docs. The viewer now shows both frameworks in a two-level tree (source > category > doc) with source badges in search results.
 * Moved Docs content to a server-side API (`DocsService`) that dynamically resolves content from either a local sibling repo checkout or a GitHub tarball, replacing the previous webpack static asset approach.
 
+### Bug Fixes
+
+* Grid column filters now include a [blank] option when data contains null values, via fix to `Store.getFieldValues()` in hoist-react.
+
 ### Technical
 
 * Deferred portfolio data generation to run async after startup and optimized `HistoricalPriceGenerationService`, reducing total generation time from ~11s to ~3s. Added timing logs and expanded `PortfolioService` admin stats.
