@@ -12,6 +12,7 @@ import java.time.*
 
 import static io.xh.toolbox.portfolio.Utils.*
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
+import static java.util.concurrent.TimeUnit.MILLISECONDS
 
 
 /**
@@ -35,6 +36,7 @@ class PortfolioService extends BaseService {
     private CachedValue<Portfolio> _portfolio = createCachedValue(name: 'portfolio', replicate: true)
     private ReplicatedMap<String, MarketPrice> _currentPrices = createReplicatedMap('currentPrices')
     private Timer generationTimer
+    private Gauge positionsGauge
 
     void init() {
         initMetrics()
@@ -46,7 +48,6 @@ class PortfolioService extends BaseService {
         )
     }
 
-    /** Current portfolio data, or throws {@link DataNotAvailableException} if not yet generated. */
     Portfolio getPortfolio() {
         def data = _portfolio.get()
         if (!data) throw new DataNotAvailableException()
@@ -75,7 +76,7 @@ class PortfolioService extends BaseService {
     private void initMetrics() {
         def registry = metricsService.registry
 
-        Gauge.builder('toolbox.portfolio.positions', this) {
+        positionsGauge = Gauge.builder('toolbox.portfolio.positions', this) {
             (_portfolio.get()?.rawPositions?.size() ?: 0) as double
         }.description('Number of portfolio positions')
             .register(registry)
@@ -119,8 +120,11 @@ class PortfolioService extends BaseService {
     }
 
     private Portfolio generatePortfolio() {
-        return generationTimer.recordCallable {
-            withInfo('Generating portfolio') {
+        observe()
+            .span(name: 'generatePortfolio')
+            .logInfo('Generating Portfolio')
+            .timer(generationTimer)
+            .run {
                 def day = LocalDate.now(),
                     instruments = instrumentGenerationService.generateInstruments(),
                     historicalPrices = historicalPriceGenerationService.generateHistoricalPrices(instruments, day),
@@ -134,7 +138,6 @@ class PortfolioService extends BaseService {
                     orders: orders,
                     rawPositions: rawPositions
                 )
-            }
         }
     }
 
@@ -175,6 +178,8 @@ class PortfolioService extends BaseService {
         def p = _portfolio.get()
         return [
             config: configForAdminStats('portfolioConfigs'),
+            avgGenerationTime: generationTimer.mean(MILLISECONDS),
+
             portfolioAvailable: p != null,
             day: p?.day,
             generatedAt: p?.timeCreated,

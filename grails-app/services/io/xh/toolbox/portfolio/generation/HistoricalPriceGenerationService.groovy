@@ -24,12 +24,15 @@ class HistoricalPriceGenerationService extends BaseService {
             Map<String, Instrument> instruments,
             LocalDate day
     ) {
-        withDebug("Generating historical prices for ${instruments.size()} instruments") {
-            List<LocalDate> tradingDays = tradingDayService.historicalDays(day)
-            return instruments.keySet().collectEntries {
-                [it, generatePriceSeries(tradingDays)]
+        observe()
+            .span(name: 'generateHistoricalPrices')
+            .logDebug("Generating historical prices for ${instruments.size()} instruments")
+            .run {
+                List<LocalDate> tradingDays = tradingDayService.historicalDays(day)
+                return instruments.keySet().collectEntries {
+                    [it as String, generatePriceSeries(tradingDays)]
+                } as Map<String, List<MarketPrice>>
             }
-        }
     }
 
     /**

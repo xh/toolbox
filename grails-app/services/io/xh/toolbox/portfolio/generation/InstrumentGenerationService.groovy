@@ -19,20 +19,23 @@ class InstrumentGenerationService extends BaseService {
 
     /** Generate a map of unique instruments keyed by ticker symbol. */
     Map<String, Instrument> generateInstruments() {
-        withDebug("Generating ${config.instrumentCount} instruments") {
-            def instrumentCount = config.instrumentCount
-            Map<String, Instrument> ret = new HashMap(instrumentCount)
-            while (ret.size() < instrumentCount) {
-                String symbol = generateSymbol()
-                if (!ret[symbol]) {
-                    ret[symbol] = new Instrument(
-                            symbol: symbol,
-                            sector: sample(SECTORS),
-                            region: sample(REGIONS)
-                    )
+        observe()
+            .span(name: 'generateInstruments')
+            .logDebug("Generating ${config.instrumentCount} instruments")
+            .run {
+                def instrumentCount = config.instrumentCount
+                Map<String, Instrument> ret = new HashMap(instrumentCount)
+                while (ret.size() < instrumentCount) {
+                    String symbol = generateSymbol()
+                    if (!ret[symbol]) {
+                        ret[symbol] = new Instrument(
+                                symbol: symbol,
+                                sector: sample(SECTORS),
+                                region: sample(REGIONS)
+                        )
+                    }
                 }
-            }
-            return ret
+                return ret
         }
     }
 
