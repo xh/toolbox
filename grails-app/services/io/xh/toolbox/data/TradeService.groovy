@@ -33,13 +33,15 @@ class TradeService extends BaseService {
                 it.trade_volume = it.trade_volume * 1000000
                 it.active = it.trade_volume.toBigInteger() % 6 == 0
                 it.trade_date = LocalDate.now().minusDays(Math.round(dateRange * Math.random()))
+                if (it.id % 8 == 0) it.city = null
+                if (it.id % 9 == 0) it.profit_loss = null
             }
 
             ret = [
                 trades: trades,
                 summary: [
                     id          : 'summary',
-                    profit_loss : trades.sum { it.profit_loss },
+                    profit_loss : trades.sum { it.profit_loss ?: 0 },
                     trade_volume: trades.sum { it.trade_volume }
                 ]
             ]
