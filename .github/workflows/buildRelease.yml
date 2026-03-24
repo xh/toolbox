@@ -68,7 +68,7 @@ jobs:
         - name: Build WAR
           env:
               VERSION: ${{ inputs.version }}
-          run: ./gradlew -PxhAppVersion="$VERSION" war
+          run: ./gradlew -PxhAppVersion="$VERSION" -PxhAppBuild="${GITHUB_SHA::7}" war
 
         - name: Copy WAR into Docker context
           run: cp build/libs/*.war docker/tomcat/toolbox.war
