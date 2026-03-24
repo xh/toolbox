@@ -38,7 +38,7 @@ jobs:
           uses: gradle/actions/setup-gradle@v5
 
         - name: Build WAR
-          run: ./gradlew -PxhAppBuild="${GITHUB_SHA::7}-${GITHUB_REF_NAME}-$(date -u +'%Y-%m-%dT%H:%M:%SZ')" war
+          run: ./gradlew -PxhAppBuild="${GITHUB_SHA::7}-${GITHUB_REF_NAME}-$(date -u +'%Y-%m-%dT%H:%MZ')" war
 
         - name: Copy WAR into Docker context
           run: cp build/libs/*.war docker/tomcat/toolbox.war
