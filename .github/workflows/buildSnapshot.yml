@@ -13,6 +13,7 @@ on:
         types: [ hoist-core-snapshot, hoist-react-snapshot ]
     workflow_dispatch:
 
+# Debounce builds by branch. Newer runs from a branch will cancel the current run and start over.
 concurrency:
     group: build-snapshot
     cancel-in-progress: true
