@@ -5,27 +5,34 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {fmtTime} from '@xh/hoist/format';
-import {isEmpty, shuffle} from 'lodash';
+import {isEmpty} from 'lodash';
 
 export const dynamicExample = hoistCmp.factory({
     model: creates(() => DynamicExampleModel),
 
     render({model}) {
         return panel({
-            className: 'child-tabcontainer',
+            className: 'tb-layout-tabs__child',
             bbar: [
-                button({icon: Icon.add(), text: 'Add', onClick: () => model.addDynamic()}),
                 button({
-                    icon: Icon.transaction(),
-                    text: 'Shuffle',
-                    onClick: () => model.shuffleDynamic()
+                    icon: Icon.add(),
+                    text: 'Add',
+                    onClick: () => model.addDynamic()
                 }),
+                '-',
                 button({
                     icon: Icon.x(),
-                    text: 'Remove First',
-                    onClick: () => model.removeDynamic()
+                    text: 'Remove Active',
+                    onClick: () => model.removeActive(),
+                    disabled: isEmpty(model.dynamicModel.tabs)
                 }),
-                button({icon: Icon.xCircle(), text: 'Clear', onClick: () => model.clearDynamic()})
+                '-',
+                button({
+                    icon: Icon.xCircle(),
+                    text: 'Clear',
+                    onClick: () => model.clearDynamic(),
+                    disabled: isEmpty(model.dynamicModel.tabs)
+                })
             ],
             item: tabContainer({
                 model: model.dynamicModel,
@@ -71,19 +78,15 @@ class DynamicExampleModel extends HoistModel {
         );
     }
 
-    removeDynamic() {
-        const {dynamicModel} = this;
-        if (!isEmpty(dynamicModel.tabs)) {
-            dynamicModel.removeTab(dynamicModel.tabs[0]);
+    removeActive() {
+        const {dynamicModel} = this,
+            activeTab = dynamicModel.activeTab;
+        if (activeTab) {
+            dynamicModel.removeTab(activeTab);
         }
     }
 
     clearDynamic() {
         this.dynamicModel.setTabs([]);
-    }
-
-    shuffleDynamic() {
-        const {dynamicModel} = this;
-        dynamicModel.setTabs(shuffle(dynamicModel.tabs));
     }
 }

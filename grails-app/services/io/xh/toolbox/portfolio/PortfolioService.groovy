@@ -12,8 +12,18 @@ import java.time.*
 
 import static io.xh.toolbox.portfolio.Utils.*
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
+import static java.util.concurrent.TimeUnit.MILLISECONDS
 
 
+/**
+ * Central service for the Portfolio example app's simulated trading data. Generates and caches
+ * a complete {@link Portfolio} of randomized instruments, historical prices, orders, and
+ * positions, then applies periodic price perturbations on a timer to simulate live market
+ * activity.
+ *
+ * Portfolio data is generated asynchronously after app startup and regenerated daily. Current
+ * prices are stored in a replicated map for low-latency access across cluster instances.
+ */
 class PortfolioService extends BaseService {
 
     def configService,
@@ -26,6 +36,7 @@ class PortfolioService extends BaseService {
     private CachedValue<Portfolio> _portfolio = createCachedValue(name: 'portfolio', replicate: true)
     private ReplicatedMap<String, MarketPrice> _currentPrices = createReplicatedMap('currentPrices')
     private Timer generationTimer
+    private Gauge positionsGauge
 
     void init() {
         initMetrics()
@@ -33,10 +44,8 @@ class PortfolioService extends BaseService {
             name: 'updateData',
             runFn: this.&updateData,
             primaryOnly: true,
-            interval: {config.updateIntervalSecs * SECONDS},
-            runImmediatelyAndBlock: true
+            interval: {config.updateIntervalSecs * SECONDS}
         )
-        _portfolio.ensureAvailable()
     }
 
     Portfolio getPortfolio() {
@@ -45,10 +54,12 @@ class PortfolioService extends BaseService {
         return data
     }
 
+    /** Latest simulated market prices, keyed by instrument symbol. */
     Map<String, MarketPrice> getCurrentPrices() {
         _currentPrices
     }
 
+    /** Closing price history for the given symbols, looking back the specified number of days. */
     Map<LocalDate, Double> getClosingPriceHistory(List<String> symbols, int daysBack) {
         def startDate = LocalDate.now().minusDays(daysBack),
             historicalPrices = portfolio.historicalPrices
@@ -65,12 +76,12 @@ class PortfolioService extends BaseService {
     private void initMetrics() {
         def registry = metricsService.registry
 
-        Gauge.builder('portfolio.positions', this) {
+        positionsGauge = Gauge.builder('toolbox.portfolio.positions', this) {
             (_portfolio.get()?.rawPositions?.size() ?: 0) as double
         }.description('Number of portfolio positions')
             .register(registry)
 
-        generationTimer = Timer.builder('portfolio.generationTime')
+        generationTimer = Timer.builder('toolbox.portfolio.generationTime')
             .description('Time to generate portfolio')
             .register(registry)
     }
@@ -109,24 +120,29 @@ class PortfolioService extends BaseService {
     }
 
     private Portfolio generatePortfolio() {
-        return generationTimer.recordCallable {
-            def day = LocalDate.now(),
-                instruments = instrumentGenerationService.generateInstruments(),
-                historicalPrices = historicalPriceGenerationService.generateHistoricalPrices(instruments, day),
-                orders = orderGenerationService.generateOrders(instruments, historicalPrices),
-                rawPositions = calculateRawPositions(instruments, orders)
+        observe()
+            .span(name: 'generatePortfolio')
+            .logInfo('Generating Portfolio')
+            .timer(generationTimer)
+            .run {
+                def day = LocalDate.now(),
+                    instruments = instrumentGenerationService.generateInstruments(),
+                    historicalPrices = historicalPriceGenerationService.generateHistoricalPrices(instruments, day),
+                    orders = orderGenerationService.generateOrders(instruments, historicalPrices),
+                    rawPositions = calculateRawPositions(instruments, orders)
 
-            new Portfolio(
-                day: day,
-                instruments: instruments,
-                historicalPrices: historicalPrices,
-                orders: orders,
-                rawPositions: rawPositions
-            )
+                new Portfolio(
+                    day: day,
+                    instruments: instruments,
+                    historicalPrices: historicalPrices,
+                    orders: orders,
+                    rawPositions: rawPositions
+                )
         }
     }
 
     private List<RawPosition> calculateRawPositions(Map<String, Instrument> instruments, List<Order> orders) {
+        withDebug("Calculating raw positions from ${orders.size()} orders") {
         Map<String, List<Order>> byKey = orders.groupBy { it.key }
 
         return byKey.collect { key, ordersForKey ->
@@ -144,6 +160,7 @@ class PortfolioService extends BaseService {
                     endQty: endQty
             )
         }
+        }
     }
 
     private Map getConfig() {
@@ -157,7 +174,19 @@ class PortfolioService extends BaseService {
         super.clearCaches()
     }
 
-    Map getAdminStats() {[
-        config: configForAdminStats('portfolioConfigs')
-    ]}
+    Map getAdminStats() {
+        def p = _portfolio.get()
+        return [
+            config: configForAdminStats('portfolioConfigs'),
+            avgGenerationTime: generationTimer.mean(MILLISECONDS),
+
+            portfolioAvailable: p != null,
+            day: p?.day,
+            generatedAt: p?.timeCreated,
+            instruments: p?.instruments?.size() ?: 0,
+            orders: p?.orders?.size() ?: 0,
+            rawPositions: p?.rawPositions?.size() ?: 0,
+            currentPrices: _currentPrices.size()
+        ]
+    }
 }

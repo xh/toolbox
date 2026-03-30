@@ -204,7 +204,7 @@ export class TodoPanelModel extends HoistModel {
                 this.toggleCompleteAction,
                 this.deleteAction,
                 '-',
-                ...GridModel.defaultContextMenu
+                ...GridModel.defaults.contextMenu
             ],
             columns: [
                 {

@@ -77,7 +77,7 @@ class TabPanelContainerPanelModel extends HoistModel {
             },
             {
                 id: 'custom',
-                title: 'Custom Switcher',
+                title: 'Custom Switchers',
                 content: customExample()
             },
             {
@@ -101,7 +101,7 @@ class TabPanelContainerPanelModel extends HoistModel {
 
 const topExample = hoistCmp.factory(() =>
     div(
-        `This overall example is a standard TabContainer with its switcher located in the default, top position. Change 
+        `This overall example is a standard TabContainer with its switcher located in the default, top position. Change
         the tabs above to see examples of other TabContainer configurations.`
     )
 );
