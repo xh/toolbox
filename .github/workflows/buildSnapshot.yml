@@ -18,6 +18,9 @@ concurrency:
     group: build-snapshot
     cancel-in-progress: true
 
+env:
+    APP_CODE: toolbox
+
 jobs:
     build-tomcat:
 
@@ -42,7 +45,7 @@ jobs:
           run: ./gradlew -PxhAppBuild="${GITHUB_SHA::7}-${GITHUB_REF_NAME}-$(date -u +'%Y-%m-%dT%H:%MZ')" war
 
         - name: Copy WAR into Docker context
-          run: cp build/libs/*.war docker/tomcat/toolbox.war
+          run: cp build/libs/*.war docker/tomcat/${{ env.APP_CODE }}.war
 
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v6
@@ -58,8 +61,8 @@ jobs:
           env:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           run: |
-              docker build -t $ECR_ROOT/xh/toolbox-tomcat:snapshot docker/tomcat
-              docker push $ECR_ROOT/xh/toolbox-tomcat:snapshot
+              docker build -t $ECR_ROOT/xh/${{ env.APP_CODE }}-tomcat:snapshot docker/tomcat
+              docker push $ECR_ROOT/xh/${{ env.APP_CODE }}-tomcat:snapshot
 
     build-nginx:
 
@@ -102,5 +105,5 @@ jobs:
           env:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           run: |
-              docker build -t $ECR_ROOT/xh/toolbox-nginx:snapshot docker/nginx
-              docker push $ECR_ROOT/xh/toolbox-nginx:snapshot
+              docker build -t $ECR_ROOT/xh/${{ env.APP_CODE }}-nginx:snapshot docker/nginx
+              docker push $ECR_ROOT/xh/${{ env.APP_CODE }}-nginx:snapshot

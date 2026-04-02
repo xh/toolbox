@@ -24,6 +24,9 @@ concurrency:
     group: build-release
     cancel-in-progress: false
 
+env:
+    APP_CODE: toolbox
+
 jobs:
     validate:
         # Guards against accidental release from develop. Requires master for standard
@@ -73,7 +76,7 @@ jobs:
           run: ./gradlew -PxhAppVersion="$VERSION" -PxhAppBuild="${GITHUB_SHA::7}" war
 
         - name: Copy WAR into Docker context
-          run: cp build/libs/*.war docker/tomcat/toolbox.war
+          run: cp build/libs/*.war docker/tomcat/${{ env.APP_CODE }}.war
 
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v6
@@ -90,11 +93,11 @@ jobs:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
               VERSION: ${{ inputs.version }}
           run: |
-              docker build -t $ECR_ROOT/xh/toolbox-tomcat:$VERSION \
-                           -t $ECR_ROOT/xh/toolbox-tomcat:latest \
+              docker build -t $ECR_ROOT/xh/${{ env.APP_CODE }}-tomcat:$VERSION \
+                           -t $ECR_ROOT/xh/${{ env.APP_CODE }}-tomcat:latest \
                            docker/tomcat
-              docker push $ECR_ROOT/xh/toolbox-tomcat:$VERSION
-              docker push $ECR_ROOT/xh/toolbox-tomcat:latest
+              docker push $ECR_ROOT/xh/${{ env.APP_CODE }}-tomcat:$VERSION
+              docker push $ECR_ROOT/xh/${{ env.APP_CODE }}-tomcat:latest
 
     build-nginx:
         needs: validate
@@ -139,11 +142,11 @@ jobs:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
               VERSION: ${{ inputs.version }}
           run: |
-              docker build -t $ECR_ROOT/xh/toolbox-nginx:$VERSION \
-                           -t $ECR_ROOT/xh/toolbox-nginx:latest \
+              docker build -t $ECR_ROOT/xh/${{ env.APP_CODE }}-nginx:$VERSION \
+                           -t $ECR_ROOT/xh/${{ env.APP_CODE }}-nginx:latest \
                            docker/nginx
-              docker push $ECR_ROOT/xh/toolbox-nginx:$VERSION
-              docker push $ECR_ROOT/xh/toolbox-nginx:latest
+              docker push $ECR_ROOT/xh/${{ env.APP_CODE }}-nginx:$VERSION
+              docker push $ECR_ROOT/xh/${{ env.APP_CODE }}-nginx:latest
 
     release:
         needs: [ build-tomcat, build-nginx ]
