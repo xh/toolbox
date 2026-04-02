@@ -23,7 +23,19 @@ env:
     NGINX_IMAGE: xh/toolbox-nginx
 
 jobs:
+    prepare:
+
+        runs-on: ubuntu-latest
+        permissions: {}
+        outputs:
+            build-tag: ${{ steps.tag.outputs.build-tag }}
+        steps:
+        - name: Generate build tag
+          id: tag
+          run: echo "build-tag=${GITHUB_SHA::7}_${GITHUB_REF_NAME}_$(date -u +'%Y-%m-%dT%H:%MZ')" >> "$GITHUB_OUTPUT"
+
     build-tomcat:
+        needs: prepare
 
         runs-on: ubuntu-latest
         permissions:
@@ -43,7 +55,7 @@ jobs:
           uses: gradle/actions/setup-gradle@v5
 
         - name: Build WAR
-          run: ./gradlew -PxhAppBuild="${GITHUB_SHA::7}-${GITHUB_REF_NAME}-$(date -u +'%Y-%m-%dT%H:%MZ')" war
+          run: ./gradlew -PxhAppBuild="${{ needs.prepare.outputs.build-tag }}" war
 
         - name: Copy WAR into Docker context
           run: cp build/libs/*.war docker/tomcat/app.war
@@ -66,6 +78,7 @@ jobs:
               docker push $ECR_ROOT/${{ env.TOMCAT_IMAGE }}:snapshot
 
     build-nginx:
+        needs: prepare
 
         runs-on: ubuntu-latest
         permissions:
@@ -87,7 +100,7 @@ jobs:
           run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
 
         - name: Install and upgrade dependencies, lint, and build client app
-          run: cd client-app && yarn install && yarn upgrade && yarn lint && yarn build
+          run: cd client-app && yarn install && yarn upgrade && yarn lint && yarn build --env appBuild="${{ needs.prepare.outputs.build-tag }}"
 
         - name: Copy client build into Docker context
           run: cp -r client-app/build/ docker/nginx/build/

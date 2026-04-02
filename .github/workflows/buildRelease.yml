@@ -51,8 +51,20 @@ jobs:
               version: ${{ inputs.version }}
               is-hotfix: ${{ inputs.is-hotfix }}
 
-    build-tomcat:
+    prepare:
         needs: validate
+
+        runs-on: ubuntu-latest
+        permissions: {}
+        outputs:
+            build-tag: ${{ steps.tag.outputs.build-tag }}
+        steps:
+        - name: Generate build tag
+          id: tag
+          run: echo "build-tag=${GITHUB_SHA::7}_${GITHUB_REF_NAME}_$(date -u +'%Y-%m-%dT%H:%MZ')" >> "$GITHUB_OUTPUT"
+
+    build-tomcat:
+        needs: prepare
 
         runs-on: ubuntu-latest
         permissions:
@@ -74,7 +86,7 @@ jobs:
         - name: Build WAR
           env:
               VERSION: ${{ inputs.version }}
-          run: ./gradlew -PxhAppVersion="$VERSION" -PxhAppBuild="${GITHUB_SHA::7}" war
+          run: ./gradlew -PxhAppVersion="$VERSION" -PxhAppBuild="${{ needs.prepare.outputs.build-tag }}" war
 
         - name: Copy WAR into Docker context
           run: cp build/libs/*.war docker/tomcat/app.war
@@ -101,7 +113,7 @@ jobs:
               docker push $ECR_ROOT/${{ env.TOMCAT_IMAGE }}:latest
 
     build-nginx:
-        needs: validate
+        needs: prepare
 
         runs-on: ubuntu-latest
         permissions:
@@ -123,7 +135,7 @@ jobs:
           run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
 
         - name: Install dependencies and build client app
-          run: cd client-app && yarn install --frozen-lockfile && yarn lint && yarn build
+          run: cd client-app && yarn install --frozen-lockfile && yarn lint && yarn build --env appBuild="${{ needs.prepare.outputs.build-tag }}"
 
         - name: Copy client build into Docker context
           run: cp -r client-app/build/ docker/nginx/build/
