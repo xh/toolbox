@@ -18,7 +18,8 @@ on:
                 type: string
 
 env:
-    APP_CODE: toolbox
+    CLUSTER_NAME: toolbox
+    SERVICE_NAME: toolbox-dev
 
 jobs:
     deploy:
@@ -39,7 +40,7 @@ jobs:
         - name: Deploy to ECS
           run: |
               aws ecs update-service \
-                  --cluster ${{ env.APP_CODE }} \
-                  --service ${{ env.APP_CODE }}-dev \
+                  --cluster ${{ env.CLUSTER_NAME }} \
+                  --service ${{ env.SERVICE_NAME }} \
                   --desired-count ${{ inputs.desiredCount || '3' }} \
                   --force-new-deployment
