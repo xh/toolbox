@@ -13,9 +13,14 @@ on:
         types: [ hoist-core-snapshot, hoist-react-snapshot ]
     workflow_dispatch:
 
+# Debounce builds by branch. Newer runs from a branch will cancel the current run and start over.
 concurrency:
     group: build-snapshot
     cancel-in-progress: true
+
+env:
+    TOMCAT_IMAGE: xh/toolbox-tomcat
+    NGINX_IMAGE: xh/toolbox-nginx
 
 jobs:
     build-tomcat:
@@ -32,15 +37,16 @@ jobs:
           with:
               java-version: '17'
               distribution: 'zulu'
+              cache: 'gradle'
 
         - name: Setup Gradle
           uses: gradle/actions/setup-gradle@v5
 
         - name: Build WAR
-          run: ./gradlew war
+          run: ./gradlew -PxhAppBuild="${GITHUB_SHA::7}-${GITHUB_REF_NAME}-$(date -u +'%Y-%m-%dT%H:%MZ')" war
 
         - name: Copy WAR into Docker context
-          run: cp build/libs/*.war docker/tomcat/toolbox.war
+          run: cp build/libs/*.war docker/tomcat/app.war
 
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v6
@@ -56,8 +62,8 @@ jobs:
           env:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           run: |
-              docker build -t $ECR_ROOT/xh/toolbox-tomcat:snapshot docker/tomcat
-              docker push $ECR_ROOT/xh/toolbox-tomcat:snapshot
+              docker build -t $ECR_ROOT/${{ env.TOMCAT_IMAGE }}:snapshot docker/tomcat
+              docker push $ECR_ROOT/${{ env.TOMCAT_IMAGE }}:snapshot
 
     build-nginx:
 
@@ -72,14 +78,16 @@ jobs:
           uses: actions/setup-node@v6
           with:
               node-version-file: 'client-app/.nvmrc'
+              cache: 'yarn'
+              cache-dependency-path: 'client-app/yarn.lock'
 
         - name: Configure Font Awesome registry auth
           env:
               FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
           run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
 
-        - name: Upgrade dependencies, lint, and build client app
-          run: cd client-app && yarn upgrade && yarn lint && yarn build
+        - name: Install and upgrade dependencies, lint, and build client app
+          run: cd client-app && yarn install && yarn upgrade && yarn lint && yarn build
 
         - name: Copy client build into Docker context
           run: cp -r client-app/build/ docker/nginx/build/
@@ -98,5 +106,5 @@ jobs:
           env:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           run: |
-              docker build -t $ECR_ROOT/xh/toolbox-nginx:snapshot docker/nginx
-              docker push $ECR_ROOT/xh/toolbox-nginx:snapshot
+              docker build -t $ECR_ROOT/${{ env.NGINX_IMAGE }}:snapshot docker/nginx
+              docker push $ECR_ROOT/${{ env.NGINX_IMAGE }}:snapshot
