@@ -1,8 +1,8 @@
 .tb-form-panel {
-  --xh-form-field-label-color: var(--xh-text-color-muted);
-  --xh-form-field-label-text-transform: uppercase;
-  --xh-form-field-label-font-size: var(--xh-font-size-small-px);
-  --xh-form-field-readonly-label-border-bottom: var(--xh-border-solid);
+  --form-field-label-color: var(--xh-text-color-muted);
+  --form-field-label-text-transform: uppercase;
+  --form-field-label-font-size: var(--xh-font-size-small-px);
+  --form-field-readonly-label-border-bottom: var(--xh-border-solid);
 
   &__reference-row {
     flex: none;
