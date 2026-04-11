@@ -48,6 +48,11 @@ class PortfolioService extends BaseService {
         )
     }
 
+    /** True if portfolio data has been generated and is ready for use. */
+    boolean isPortfolioAvailable() {
+        _portfolio.get() != null
+    }
+
     Portfolio getPortfolio() {
         def data = _portfolio.get()
         if (!data) throw new DataNotAvailableException()
@@ -180,7 +185,7 @@ class PortfolioService extends BaseService {
             config: configForAdminStats('portfolioConfigs'),
             avgGenerationTime: generationTimer.mean(MILLISECONDS),
 
-            portfolioAvailable: p != null,
+            portfolioAvailable: portfolioAvailable,
             day: p?.day,
             generatedAt: p?.timeCreated,
             instruments: p?.instruments?.size() ?: 0,
