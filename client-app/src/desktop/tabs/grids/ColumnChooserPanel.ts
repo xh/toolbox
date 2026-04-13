@@ -48,7 +48,8 @@ export const columnChooserPanel = hoistCmp.factory({
                     }),
                     columnChooser({
                         gridModel: model.gridModel,
-                        width: 350
+                        width: 350,
+                        minWidth: 350
                     })
                 )
             })
