@@ -1,4 +1,5 @@
 export * from './AgGridView';
+export * from './ColumnChooserPanel';
 export * from './ColumnFilteringPanel';
 export * from './ColumnGroupsGridPanel';
 export * from './DataViewPanel';

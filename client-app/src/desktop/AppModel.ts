@@ -27,6 +27,7 @@ import {examplesTab} from './tabs/examples/ExamplesTab';
 import {formPanel, inputsPanel, pickerPanel, selectPanel, toolbarFormPanel} from './tabs/forms';
 import {
     agGridView,
+    columnChooserPanel,
     columnFilteringPanel,
     columnGroupsGridPanel,
     dataViewPanel,
@@ -189,7 +190,8 @@ export class AppModel extends BaseAppModel {
                             {name: 'externalSort', path: '/externalSort'},
                             {name: 'zoneGrid', path: '/zoneGrid'},
                             {name: 'dataview', path: '/dataview'},
-                            {name: 'agGrid', path: '/agGrid'}
+                            {name: 'agGrid', path: '/agGrid'},
+                            {name: 'columnChooser', path: '/columnChooser'}
                         ]
                     },
                     {
@@ -321,7 +323,8 @@ export class AppModel extends BaseAppModel {
                         },
                         {id: 'externalSort', content: externalSortGridPanel},
                         {id: 'rest', title: 'REST Editor', content: restGridPanel},
-                        {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
+                        {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView},
+                        {id: 'columnChooser', title: 'Column Chooser', content: columnChooserPanel}
                     ]
                 }
             },
