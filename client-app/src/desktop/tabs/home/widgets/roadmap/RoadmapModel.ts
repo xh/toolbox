@@ -1,5 +1,5 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {roadmapViewItem} from './RoadmapViewItem';
 import './RoadmapWidget.scss';
@@ -8,8 +8,7 @@ import {toNumber} from 'lodash';
 import {span} from '@xh/hoist/cmp/layout';
 
 export class RoadmapModel extends HoistModel {
-    @bindable
-    statusFilter = 'showUpcoming';
+    @bindable accessor statusFilter = 'showUpcoming';
 
     @managed
     dataViewModel = new DataViewModel({
@@ -50,7 +49,6 @@ export class RoadmapModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.addReaction({
             track: () => this.statusFilter,
             run: () => this.refreshAsync()

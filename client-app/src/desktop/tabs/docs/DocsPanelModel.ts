@@ -3,7 +3,7 @@ import {Content, HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, computed, observable, runInAction} from '@xh/hoist/mobx';
 import {DocCategory, DocEntry, DocExampleLink, getDocExamples} from './docRegistry';
 import {DocSearchResult, DocService} from '../../../core/svc/DocService';
 
@@ -40,32 +40,24 @@ export class DocsPanelModel extends HoistModel {
         persistWith: {localStorageKey: 'docsApp.navPanel'}
     });
 
-    @bindable
-    searchQuery: string = '';
+    @bindable accessor searchQuery: string = '';
 
-    @observable
-    searchMode: boolean = false;
+    @observable accessor searchMode: boolean = false;
 
-    @observable.ref
-    searchResults: DocSearchResult[] = [];
+    @observable.ref accessor searchResults: DocSearchResult[] = [];
 
-    @observable
-    selectedSearchIdx: number = -1;
+    @observable accessor selectedSearchIdx: number = -1;
 
-    @observable.ref
-    activeDoc: DocEntry = null;
+    @observable.ref accessor activeDoc: DocEntry = null;
 
-    @observable.ref
-    content: string = null;
+    @observable.ref accessor content: string = null;
 
     @managed
     loadContentTask: TaskObserver = TaskObserver.trackLast();
 
-    @observable
-    activeSection: string = null;
+    @observable accessor activeSection: string = null;
 
-    @bindable
-    feedbackMessage: string = '';
+    @bindable accessor feedbackMessage: string = '';
 
     private get docService(): DocService {
         return DocService.instance;
@@ -73,7 +65,6 @@ export class DocsPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.gridModel = this.createGridModel();
 

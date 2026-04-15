@@ -3,17 +3,16 @@ import {boolCheckCol, ExcelFormat, GridModel, localDateCol} from '@xh/hoist/cmp/
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {CompoundFilter, FieldFilter} from '@xh/hoist/data';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 
 export class StoreColumnFilterPanelModel extends HoistModel {
-    @bindable.ref filterJson: string = JSON.stringify(null);
+    @bindable.ref accessor filterJson: string = JSON.stringify(null);
 
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.gridModel = this.createGridModel();
         this.filterChooserModel = this.createFilterChooserModel();

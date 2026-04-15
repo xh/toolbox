@@ -2,13 +2,13 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {cloneDeep, isEmpty, isEqual, pullAllWith, unionWith} from 'lodash';
 import {StoreRecord} from '@xh/hoist/data';
 
 export class DimensionManagerModel extends HoistModel {
-    @observable.ref value = [];
+    @observable.ref accessor value = [];
 
     defaultDims: string[][];
     userDims: string[][];
@@ -19,7 +19,6 @@ export class DimensionManagerModel extends HoistModel {
 
     constructor(config) {
         super();
-        makeObservable(this);
 
         this.defaultDims = config.defaultDimConfig ? XH.getConf(config.defaultDimConfig) : [];
         this.groupingChooserModel = new GroupingChooserModel({

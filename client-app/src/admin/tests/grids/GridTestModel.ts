@@ -4,7 +4,7 @@ import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
 import {cloneDeep, times} from 'lodash';
-import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {GridTestData} from './GridTestData';
 import {GridTestMetrics} from './GridTestMetrics';
 
@@ -24,49 +24,49 @@ export class GridTestModel extends HoistModel {
     override persistWith = {localStorageKey: PERSIST_KEY};
 
     // Total count (approx) of all nodes generated (parents + children).
-    @bindable recordCount = 200000;
+    @bindable accessor recordCount = 200000;
     // Number of random records to perturb
-    @bindable twiddleCount = Math.round(this.recordCount * 0.5);
+    @bindable accessor twiddleCount = Math.round(this.recordCount * 0.5);
     // Prefix for all IDs - change to ensure no IDs re-used across data gens.
-    @bindable idSeed = 1;
+    @bindable accessor idSeed = 1;
     // True to generate data in tree structure.
-    @bindable tree = false;
+    @bindable accessor tree = false;
     // True to use an incremental numeric id as grid id.
-    @bindable numericId = false;
+    @bindable accessor numericId = false;
     // True to show summary row.
-    @bindable showSummary = false;
+    @bindable accessor showSummary = false;
     // True to use tree root node as summary row.
-    @bindable loadRootAsSummary = false;
+    @bindable accessor loadRootAsSummary = false;
     // True to enable XSS protection at store level.
-    @bindable enableXssProtection = false;
+    @bindable accessor enableXssProtection = false;
     // Value > 0 will trigger creation of additional (null value) fields on the store to
     // help stress-test stores with a wide array of fields.
-    @bindable extraFieldCount = 50;
+    @bindable accessor extraFieldCount = 50;
 
-    @bindable disableSelect = false;
+    @bindable accessor disableSelect = false;
 
-    @bindable colChooserCommitOnChange = true;
-    @bindable colChooserShowRestoreDefaults = true;
-    @bindable colChooserWidth = null;
-    @bindable colChooserHeight = null;
+    @bindable accessor colChooserCommitOnChange = true;
+    @bindable accessor colChooserShowRestoreDefaults = true;
+    @bindable accessor colChooserWidth = null;
+    @bindable accessor colChooserHeight = null;
 
-    @bindable lockColumnGroups = true;
-
-    @bindable
-    @persist
-    autosizeMode: GridAutosizeMode = 'onDemand';
+    @bindable accessor lockColumnGroups = true;
 
     @bindable
     @persist
-    renderedRowsOnly = true;
+    accessor autosizeMode: GridAutosizeMode = 'onDemand';
 
     @bindable
     @persist
-    includeCollapsedChildren = true;
+    accessor renderedRowsOnly = true;
+
+    @bindable
+    @persist
+    accessor includeCollapsedChildren = true;
 
     @bindable
     @persist.with({path: 'gridPersistType', debounce: 500}) // test persist.with!
-    persistType = null;
+    accessor persistType = null;
 
     @managed
     data = new GridTestData();
@@ -76,11 +76,10 @@ export class GridTestModel extends HoistModel {
 
     @managed
     @observable.ref
-    gridModel: GridModel;
+    accessor gridModel: GridModel;
 
     constructor() {
         super();
-        makeObservable(this);
         this.markPersist('tree');
         this.markPersist('showSummary');
         this.gridModel = this.createGridModel();

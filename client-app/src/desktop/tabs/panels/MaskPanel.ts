@@ -1,7 +1,7 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {p, span} from '@xh/hoist/cmp/layout';
 import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -80,17 +80,12 @@ export const maskPanel = hoistCmp.factory({
 });
 
 class MaskPanelModel extends HoistModel {
-    @bindable seconds = 3;
-    @bindable message = '';
-    @bindable inline = true;
-    @bindable spinner = true;
+    @bindable accessor seconds = 3;
+    @bindable accessor message = '';
+    @bindable accessor inline = true;
+    @bindable accessor spinner = true;
 
     @managed sampleGridModel = new SampleGridModel();
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     override async doLoadAsync(loadSpec) {
         const {loadObserver, message, seconds} = this,

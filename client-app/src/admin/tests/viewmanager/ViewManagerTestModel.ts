@@ -11,7 +11,7 @@ import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
-import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, computed, observable, runInAction} from '@xh/hoist/mobx';
 import {get} from 'lodash';
 import {sampleGrid, SampleGridModel} from '../../../desktop/common';
 
@@ -32,7 +32,7 @@ export class ViewManagerTestModel extends HoistModel {
     @managed @observable.ref dashCanvasModel: DashCanvasModel;
     @managed @observable.ref persistedPropertyModel: PersistedPropertyModel;
 
-    @bindable focusedPersistable: string = null;
+    @bindable accessor focusedPersistable: string = null;
 
     get managedPersistables() {
         return [
@@ -90,7 +90,6 @@ export class ViewManagerTestModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.configFormModel = new FormModel({
             fields: [
@@ -283,11 +282,10 @@ export class ViewManagerTestModel extends HoistModel {
  * Test case for direct persistence of model properties.
  */
 class PersistedPropertyModel extends HoistModel {
-    @bindable stringValue = 'Some Default Value';
+    @bindable accessor stringValue = 'Some Default Value';
 
     constructor({persistWith}: {persistWith: PersistOptions}) {
         super();
-        makeObservable(this);
         this.persistWith = persistWith;
         this.markPersist('stringValue');
     }

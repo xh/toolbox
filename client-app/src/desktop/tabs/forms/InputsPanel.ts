@@ -21,7 +21,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtThousands} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {random} from 'lodash';
 import moment from 'moment';
@@ -472,11 +472,11 @@ class InputsPanelModel extends HoistModel {
     @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
 
     // Text inputs
-    @bindable textInput1: string = null;
-    @bindable textInput2: string = `support@xh.io`;
-    @bindable textInput3: string = `somethingSuperS3cret!`;
-    @bindable textArea: string = null;
-    @bindable jsonInput: string = JSON.stringify(
+    @bindable accessor textInput1: string = null;
+    @bindable accessor textInput2: string = `support@xh.io`;
+    @bindable accessor textInput3: string = `somethingSuperS3cret!`;
+    @bindable accessor textArea: string = null;
+    @bindable accessor jsonInput: string = JSON.stringify(
         {
             name: 'Toolbox',
             version: 4,
@@ -488,31 +488,26 @@ class InputsPanelModel extends HoistModel {
     );
 
     // Numbers & dates
-    @bindable numberInput1: number = null;
-    @bindable numberInput2: number = 2_000_000;
-    @bindable numberInput3: number = 0.33;
-    @bindable slider1: number = random(0, 100);
-    @bindable slider2: number[] = [random(50000, 70000), random(110000, 150000)];
-    @bindable dateInput1: Date = null;
-    @bindable dateInput2: Date = moment().startOf('hour').toDate();
-    @bindable dateInput3: LocalDate = LocalDate.today();
+    @bindable accessor numberInput1: number = null;
+    @bindable accessor numberInput2: number = 2_000_000;
+    @bindable accessor numberInput3: number = 0.33;
+    @bindable accessor slider1: number = random(0, 100);
+    @bindable accessor slider2: number[] = [random(50000, 70000), random(110000, 150000)];
+    @bindable accessor dateInput1: Date = null;
+    @bindable accessor dateInput2: Date = moment().startOf('hour').toDate();
+    @bindable accessor dateInput3: LocalDate = LocalDate.today();
 
     // Toggles & choice
-    @bindable checkbox: boolean = null;
-    @bindable switchVal: boolean = null;
-    @bindable checkboxButton: boolean = null;
-    @bindable buttonGroupInput: string = 'area';
-    @bindable segmentedControl: string = 'strategy';
-    @bindable radioInput: string = null;
+    @bindable accessor checkbox: boolean = null;
+    @bindable accessor switchVal: boolean = null;
+    @bindable accessor checkboxButton: boolean = null;
+    @bindable accessor buttonGroupInput: string = 'area';
+    @bindable accessor segmentedControl: string = 'strategy';
+    @bindable accessor radioInput: string = null;
 
     // Compact toolbar inputs
-    @bindable tbarText: string = null;
-    @bindable tbarNumber: number = null;
-    @bindable tbarDate: Date = null;
-    @bindable tbarSwitch: boolean = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor tbarText: string = null;
+    @bindable accessor tbarNumber: number = null;
+    @bindable accessor tbarDate: Date = null;
+    @bindable accessor tbarSwitch: boolean = false;
 }

@@ -3,7 +3,7 @@ import {box} from '@xh/hoist/cmp/layout';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
 import {chart} from '@xh/hoist/cmp/chart';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {DashCanvasViewModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {button, modalToggleButton} from '@xh/hoist/desktop/cmp/button';
 import {ONE_DAY} from '@xh/hoist/utils/datetime';
@@ -54,7 +54,7 @@ const rangeSelector = hoistCmp.factory(() =>
 );
 
 class ChartWidgetModel extends LineChartModel {
-    @bindable range = 30;
+    @bindable accessor range = 30;
     @lookup(DashViewModel) dashViewModel: DashViewModel;
     @managed panelModel = new PanelModel({
         modalSupport: true,
@@ -69,7 +69,6 @@ class ChartWidgetModel extends LineChartModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.addReaction({
             track: () => [this.range, this.chartModel.series],
