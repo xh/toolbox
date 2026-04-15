@@ -2,6 +2,15 @@
 
 ## 9.0.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Upgraded build toolchain to JDK 25. Toolbox now requires JDK 25 for local development and CI.
+
+### Libraries
+
+* hoist-core 39.0-SNAPSHOT
+* Grails 7.0.7 → 7.0.8
+
 ## 8.3.0 - 2026-04-08
 
 ### New Features

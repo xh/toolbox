@@ -302,6 +302,9 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 
 - **Frontend**: TypeScript, React 18, MobX, AG Grid, Highcharts, `@xh/hoist` framework
 - **Backend**: Grails 7 (Groovy/Spring Boot), `hoist-core` framework
+- **JDK**: Java 25 is required for local development and CI. The Gradle toolchain in
+  `build.gradle` pins the language level to 25. (Note that `hoist-core` itself is separately
+  pinned to Java 17 bytecode so its published JAR remains runnable by client apps on JDK 17+.)
 - **Database**: MySQL (or H2 in-memory for quick local dev via `APP_TOOLBOX_USE_H2=true`)
 - **Package Manager**: Yarn 1.22 (frontend), Gradle via wrapper (backend)
 
