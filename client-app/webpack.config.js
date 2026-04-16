@@ -30,7 +30,7 @@ module.exports = (env = {}) => {
     return configureWebpack({
         appCode: 'toolbox',
         appName: 'Toolbox',
-        appVersion: '9.0-SNAPSHOT',
+        appVersion: '8.3.1',
         favicon: './public/favicon.svg',
         devServerOpenPage: 'app/',
         sourceMaps: 'devOnly',

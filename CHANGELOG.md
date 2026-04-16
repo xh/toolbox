@@ -1,6 +1,15 @@
 # Changelog
 
-## 9.0.0-SNAPSHOT - unreleased
+## 8.3.1 - 2026-04-16
+
+### Bug Fixes
+
+* Fix `ArrayIndexOutOfBoundsException` in portfolio push updates
+
+### Libraries
+
+* hoist-core 38.0.0
+* @xh/hoist 84.0.0
 
 ## 8.3.0 - 2026-04-08
 
