@@ -4,12 +4,22 @@
 
 ### Technical
 
-* Upgraded build toolchain to JDK 25. Toolbox now requires JDK 25 for local development and CI.
+* Upgraded build toolchain to JDK 25. Toolbox now uses JDK 25 for local development and CI.
 
 ### Libraries
 
-* hoist-core 39.0-SNAPSHOT
-* Grails 7.0.7 → 7.0.8
+* Grails 7.0.7 → 7.1.0
+
+## 8.3.1 - 2026-04-16
+
+### Bug Fixes
+
+* Fix `ArrayIndexOutOfBoundsException` in portfolio push updates
+
+### Libraries
+
+* hoist-core 38.0.0
+* @xh/hoist 84.0.0
 
 ## 8.3.0 - 2026-04-08
 
