@@ -1,20 +1,15 @@
 import {HoistModel} from '@xh/hoist/core';
 import {XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 
 export class ExceptionHandlerModel extends HoistModel {
     // For example options:
-    @bindable title = '';
-    @bindable message = '';
-    @bindable logOnServer = true;
-    @bindable showAlert = true;
-    @bindable requireReload = false;
-    @bindable alertType: 'dialog' | 'toast' = 'dialog';
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor title = '';
+    @bindable accessor message = '';
+    @bindable accessor logOnServer = true;
+    @bindable accessor showAlert = true;
+    @bindable accessor requireReload = false;
+    @bindable accessor alertType: 'dialog' | 'toast' = 'dialog';
 
     throwException(type: 'standard' | 'routine') {
         const message =

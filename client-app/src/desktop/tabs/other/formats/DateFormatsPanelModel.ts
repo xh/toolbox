@@ -3,7 +3,7 @@ import {code} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed} from '@xh/hoist/core';
 import {DateFormatOptions} from '@xh/hoist/format';
 import * as formatFunctions from '@xh/hoist/format/FormatDate';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import moment from 'moment';
 
 export class DateFormatsPanelModel extends HoistModel {
@@ -20,7 +20,7 @@ export class DateFormatsPanelModel extends HoistModel {
     ];
 
     @managed formModel: FormModel;
-    @bindable.ref tryItData = new Date();
+    @bindable.ref accessor tryItData = new Date();
 
     get testResults() {
         return this.testData.map(data => ({
@@ -40,7 +40,6 @@ export class DateFormatsPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         const optFields: Array<keyof DateFormatOptions> = ['fmt', 'nullDisplay', 'tooltip'];
 

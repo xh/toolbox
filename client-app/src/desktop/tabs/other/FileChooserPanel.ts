@@ -1,5 +1,5 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, fragment, p, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -86,17 +86,9 @@ class FileChooserPanelModel extends HoistModel {
     @managed
     chooserModel = new FileChooserModel();
 
-    @bindable
-    enableMulti = true;
+    @bindable accessor enableMulti = true;
 
-    @bindable
-    enableAddMulti = true;
+    @bindable accessor enableAddMulti = true;
 
-    @bindable
-    showFileGrid = true;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor showFileGrid = true;
 }

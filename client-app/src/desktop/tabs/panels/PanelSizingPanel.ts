@@ -1,6 +1,6 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {box, div, filler, h3, hbox, p, strong} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -152,7 +152,7 @@ const loremIpsum = [
 ];
 
 class PanelSizingModel extends HoistModel {
-    @bindable resizeWhileDragging = false;
+    @bindable accessor resizeWhileDragging = false;
 
     @managed
     leftPanelModel = new PanelModel({
@@ -181,7 +181,6 @@ class PanelSizingModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.addReaction({
             track: () => this.resizeWhileDragging,
             run: resizeWhileDragging => {

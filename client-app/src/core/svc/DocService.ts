@@ -1,5 +1,5 @@
 import {HoistService, XH} from '@xh/hoist/core';
-import {makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {observable, runInAction} from '@xh/hoist/mobx';
 import MiniSearch from 'minisearch';
 import {DocCategory, DocEntry, DocSourceInfo} from '../../desktop/tabs/docs/docRegistry';
 
@@ -17,17 +17,12 @@ export interface DocSearchResult {
 export class DocService extends HoistService {
     static instance: DocService;
 
-    @observable indexReady: boolean = false;
-    @observable.ref registry: DocEntry[] = [];
-    @observable.ref sourceInfo: Record<string, DocSourceInfo> = {};
+    @observable accessor indexReady: boolean = false;
+    @observable.ref accessor registry: DocEntry[] = [];
+    @observable.ref accessor sourceInfo: Record<string, DocSourceInfo> = {};
 
     private cache: Map<string, string> = new Map();
     private index: MiniSearch;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     /** All registered documentation entries. */
     get docs(): DocEntry[] {

@@ -1,7 +1,7 @@
 import {creates, hoistCmp, HoistModel, managed, Corner} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {p, span} from '@xh/hoist/cmp/layout';
 import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -85,17 +85,12 @@ export const loadingIndicatorPanel = hoistCmp.factory({
 });
 
 class LoadingIndicatorPanelModel extends HoistModel {
-    @bindable seconds = 3;
-    @bindable message = '';
-    @bindable corner: Corner = 'br';
-    @bindable spinner = true;
+    @bindable accessor seconds = 3;
+    @bindable accessor message = '';
+    @bindable accessor corner: Corner = 'br';
+    @bindable accessor spinner = true;
 
     @managed sampleGridModel = new SampleGridModel();
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     override async doLoadAsync(loadSpec) {
         const {loadObserver, message, seconds} = this,

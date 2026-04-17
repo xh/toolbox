@@ -6,7 +6,7 @@ import {picker} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import './PickerPanel.scss';
@@ -455,32 +455,27 @@ class PickerPanelModel extends HoistModel {
     @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
 
     // Toolbar
-    @bindable toolbarStates: string[] = [];
-    @bindable toolbarPriority: string = null;
+    @bindable accessor toolbarStates: string[] = [];
+    @bindable accessor toolbarPriority: string = null;
 
     // Column 1
-    @bindable singleState: string = null;
-    @bindable multiStates: string[] = [];
-    @bindable simpleOption: string = null;
-    @bindable compactStates: string[] = [];
+    @bindable accessor singleState: string = null;
+    @bindable accessor multiStates: string[] = [];
+    @bindable accessor simpleOption: string = null;
+    @bindable accessor compactStates: string[] = [];
 
     // Column 3 — intents
-    @bindable intentPrimary: string = null;
-    @bindable intentSuccess: string = null;
-    @bindable intentWarning: string = null;
-    @bindable intentDanger: string = null;
+    @bindable accessor intentPrimary: string = null;
+    @bindable accessor intentSuccess: string = null;
+    @bindable accessor intentWarning: string = null;
+    @bindable accessor intentDanger: string = null;
 
     // Column 2
-    @bindable restaurant: string = null;
-    @bindable badgeStates: string[] = [];
-    @bindable statusOption: string = null;
-    @bindable wideState: string[] = [];
-    @bindable nonMinimalState: string = null;
-    @bindable minimalPopoverState: string = null;
-    @bindable largeListValues: string[] = [];
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor restaurant: string = null;
+    @bindable accessor badgeStates: string[] = [];
+    @bindable accessor statusOption: string = null;
+    @bindable accessor wideState: string[] = [];
+    @bindable accessor nonMinimalState: string = null;
+    @bindable accessor minimalPopoverState: string = null;
+    @bindable accessor largeListValues: string[] = [];
 }

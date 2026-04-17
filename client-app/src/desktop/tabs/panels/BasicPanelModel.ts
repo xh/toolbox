@@ -1,20 +1,19 @@
 import {Icon} from '@xh/hoist/icon';
 import {MouseEvent} from 'react';
 import {type ContextMenuSpec, HoistModel} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {clipboardMenuItem} from '@xh/hoist/desktop/cmp/clipboard';
 
 export class BasicPanelModel extends HoistModel {
-    @bindable state: string = null;
-    @bindable compactHeader: boolean = false;
-    @bindable triggerError: boolean = false;
+    @bindable accessor state: string = null;
+    @bindable accessor compactHeader: boolean = false;
+    @bindable accessor triggerError: boolean = false;
 
-    @bindable showContextMenu = true;
-    @bindable appliedContextMenu: ContextMenuSpec = null;
+    @bindable accessor showContextMenu = true;
+    @bindable accessor appliedContextMenu: ContextMenuSpec = null;
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.addReaction({
             track: () => this.showContextMenu,

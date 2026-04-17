@@ -1,25 +1,25 @@
 import {RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
 import {HoistModel} from '@xh/hoist/core';
-import {action, bindable, makeObservable} from '@xh/hoist/mobx';
+import {action, bindable} from '@xh/hoist/mobx';
 
 export class RelativeTimestampPanelModel extends HoistModel {
     // RelativeTimestampOptions
-    @bindable allowFuture: RelativeTimestampOptions['allowFuture'] = true;
-    @bindable short: RelativeTimestampOptions['short'];
-    @bindable futureSuffix: RelativeTimestampOptions['futureSuffix'];
-    @bindable pastSuffix: RelativeTimestampOptions['pastSuffix'];
-    @bindable equalString: RelativeTimestampOptions['equalString'];
-    @bindable epsilon: RelativeTimestampOptions['epsilon'] = 10;
-    @bindable emptyResult: RelativeTimestampOptions['emptyResult'] = '';
-    @bindable prefix: RelativeTimestampOptions['prefix'] = '';
-    @bindable relativeTo: RelativeTimestampOptions['relativeTo'];
-    @bindable localDateMode: RelativeTimestampOptions['localDateMode'] = null;
+    @bindable accessor allowFuture: RelativeTimestampOptions['allowFuture'] = true;
+    @bindable accessor short: RelativeTimestampOptions['short'];
+    @bindable accessor futureSuffix: RelativeTimestampOptions['futureSuffix'];
+    @bindable accessor pastSuffix: RelativeTimestampOptions['pastSuffix'];
+    @bindable accessor equalString: RelativeTimestampOptions['equalString'];
+    @bindable accessor epsilon: RelativeTimestampOptions['epsilon'] = 10;
+    @bindable accessor emptyResult: RelativeTimestampOptions['emptyResult'] = '';
+    @bindable accessor prefix: RelativeTimestampOptions['prefix'] = '';
+    @bindable accessor relativeTo: RelativeTimestampOptions['relativeTo'];
+    @bindable accessor localDateMode: RelativeTimestampOptions['localDateMode'] = null;
 
-    @bindable currentTimestamp: Date = new Date();
-    @bindable pastTimestamp: Date;
-    @bindable futureTimestamp: Date;
+    @bindable accessor currentTimestamp: Date = new Date();
+    @bindable accessor pastTimestamp: Date;
+    @bindable accessor futureTimestamp: Date;
 
-    @bindable lastFocusedControl = 'setToNow';
+    @bindable accessor lastFocusedControl = 'setToNow';
 
     get timestamp() {
         switch (this.lastFocusedControl) {
@@ -30,11 +30,6 @@ export class RelativeTimestampPanelModel extends HoistModel {
             default:
                 return this.currentTimestamp;
         }
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     @action

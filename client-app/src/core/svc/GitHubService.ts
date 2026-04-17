@@ -1,6 +1,6 @@
 import {HoistService, LoadSpec, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {computed, observable, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {forOwn, sortBy} from 'lodash';
 
@@ -34,7 +34,7 @@ export class GitHubService extends HoistService {
     static instance: GitHubService;
 
     /** Loaded commits histories, keyed by repoName. */
-    @observable.ref commitHistories: Record<string, RepoCommitHistory> = {};
+    @observable.ref accessor commitHistories: Record<string, RepoCommitHistory> = {};
 
     /** Loaded array of commits across all repositories. */
     @computed
@@ -42,11 +42,6 @@ export class GitHubService extends HoistService {
         const ret = [];
         forOwn(this.commitHistories, v => ret.push(...v.commits));
         return sortBy(ret, it => -it.committedDate);
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     override async initAsync() {

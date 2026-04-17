@@ -9,7 +9,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 import {
     actualGrossCol,
@@ -64,14 +64,13 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
 
 class SampleColumnGroupsGridModel extends HoistModel {
     @managed gridModel: GridModel;
-    @bindable inMillions: boolean = false;
-    @bindable groupRows: boolean = true;
+    @bindable accessor inMillions: boolean = false;
+    @bindable accessor groupRows: boolean = true;
 
     panelRef = createRef<HTMLElement>();
 
     constructor() {
         super();
-        makeObservable(this);
         this.gridModel = this.createGridModel();
 
         this.addReaction({

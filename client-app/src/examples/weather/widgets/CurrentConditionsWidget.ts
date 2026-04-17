@@ -1,7 +1,6 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {div, hbox, img, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {makeObservable} from '@xh/hoist/mobx';
 import {CurrentWeatherResponse} from '../Types';
 import {AppModel} from '../AppModel';
 
@@ -63,11 +62,6 @@ export const currentConditionsWidget = hoistCmp.factory({
 
 class CurrentConditionsModel extends HoistModel {
     @managed chartModel: ChartModel;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     override onLinked() {
         this.chartModel = this.createChartModel();

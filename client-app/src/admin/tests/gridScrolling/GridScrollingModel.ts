@@ -2,7 +2,7 @@ import {FormModel} from '@xh/hoist/cmp/form';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
-import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, computed, observable} from '@xh/hoist/mobx';
 import {keyBy, mapValues, range} from 'lodash';
 import {createRef} from 'react';
 
@@ -10,10 +10,10 @@ export class GridScrollingModel extends HoistModel {
     readonly hoistGridRef = createRef<HTMLDivElement>();
     readonly agGridRef = createRef<HTMLDivElement>();
 
-    @observable colCount = 20;
-    @observable rowCount = 100_000;
-    @observable isColVirtualizationEnabled = false;
-    @bindable scrollFactor = 8;
+    @observable accessor colCount = 20;
+    @observable accessor rowCount = 100_000;
+    @observable accessor isColVirtualizationEnabled = false;
+    @bindable accessor scrollFactor = 8;
 
     @managed readonly formModel = this.createFormModel();
     @managed gridModel: GridModel;
@@ -32,7 +32,6 @@ export class GridScrollingModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.addReaction({
             track: () => [this.rowData, this.columnDefs, this.isColVirtualizationEnabled] as const,
             run: ([data]) => {

@@ -1,5 +1,5 @@
 import {HoistService, persist, XH} from '@xh/hoist/core';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable} from '@xh/hoist/mobx';
 import {without} from 'lodash';
 
 import {PERSIST_APP} from '../AppModel';
@@ -16,12 +16,7 @@ export class ContactService extends HoistService {
     /** ids of all contacts that the user has favorited. */
     @observable.ref
     @persist
-    userFaves: string[] = [];
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    accessor userFaves: string[] = [];
 
     async getContactsAsync() {
         const ret = await XH.fetchJson({url: 'contacts'});

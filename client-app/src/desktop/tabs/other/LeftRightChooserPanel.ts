@@ -1,7 +1,7 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {p, span} from '@xh/hoist/cmp/layout';
 import {wrapper} from '../../common';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {
@@ -76,11 +76,5 @@ class LeftRightChooserPanelModel extends HoistModel {
         rightGroupingEnabled: false
     });
 
-    @bindable
-    matchMode: 'start' | 'startWord' | 'any' = 'startWord';
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor matchMode: 'start' | 'startWord' | 'any' = 'startWord';
 }

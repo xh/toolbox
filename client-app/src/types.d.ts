@@ -6,3 +6,12 @@ declare module '*.md' {
     const url: string;
     export default url;
 }
+
+/**
+ * Image assets imported by hoist-react components resolved via the `@xh/hoist` paths alias
+ * (e.g. `Spinner`, `IdlePanel`). Webpack's url-loader handles these at build time.
+ */
+declare module '*.png' {
+    const url: string;
+    export default url;
+}
