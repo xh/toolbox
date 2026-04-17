@@ -2,6 +2,14 @@
 
 ## 9.0.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Upgraded build toolchain to JDK 25. Toolbox now uses JDK 25 for local development and CI.
+
+### Libraries
+
+* Grails 7.0.7 → 7.1.0
+
 ## 8.3.1 - 2026-04-16
 
 ### Bug Fixes
