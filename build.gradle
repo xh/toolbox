@@ -42,13 +42,18 @@ springBoot {
 }
 
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+
 def allJvmArgs = [
     '-Dspring.output.ansi.enabled=always',
-    '-XX:+TieredCompilation',
     '-XX:TieredStopAtLevel=1',
     '-XX:CICompilerCount=3',
     '-Xmx' + localDevXmx,
-    "--add-modules=java.se",
     "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
     "--add-opens=java.base/java.lang=ALL-UNNAMED",
     "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
