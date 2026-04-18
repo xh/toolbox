@@ -8,7 +8,8 @@
 
 ### Libraries
 
-* Grails 7.0.7 → 7.1.0
+* Grails 7.1.0
+* MySQL Connector/J 8.4.0
 
 ## 8.3.1 - 2026-04-16
 
