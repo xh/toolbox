@@ -109,11 +109,11 @@ jobs:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
               VERSION: ${{ inputs.version }}
           run: |
-              docker build -t $ECR_ROOT/${{ env.TOMCAT_IMAGE }}:$VERSION \
-                           -t $ECR_ROOT/${{ env.TOMCAT_IMAGE }}:latest \
+              docker build -t "$ECR_ROOT/${{ env.TOMCAT_IMAGE }}:$VERSION" \
+                           -t "$ECR_ROOT/${{ env.TOMCAT_IMAGE }}:latest" \
                            docker/tomcat
-              docker push $ECR_ROOT/${{ env.TOMCAT_IMAGE }}:$VERSION
-              docker push $ECR_ROOT/${{ env.TOMCAT_IMAGE }}:latest
+              docker push "$ECR_ROOT/${{ env.TOMCAT_IMAGE }}:$VERSION"
+              docker push "$ECR_ROOT/${{ env.TOMCAT_IMAGE }}:latest"
 
     build-nginx:
         needs: prepare
@@ -173,11 +173,11 @@ jobs:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
               VERSION: ${{ inputs.version }}
           run: |
-              docker build -t $ECR_ROOT/${{ env.NGINX_IMAGE }}:$VERSION \
-                           -t $ECR_ROOT/${{ env.NGINX_IMAGE }}:latest \
+              docker build -t "$ECR_ROOT/${{ env.NGINX_IMAGE }}:$VERSION" \
+                           -t "$ECR_ROOT/${{ env.NGINX_IMAGE }}:latest" \
                            docker/nginx
-              docker push $ECR_ROOT/${{ env.NGINX_IMAGE }}:$VERSION
-              docker push $ECR_ROOT/${{ env.NGINX_IMAGE }}:latest
+              docker push "$ECR_ROOT/${{ env.NGINX_IMAGE }}:$VERSION"
+              docker push "$ECR_ROOT/${{ env.NGINX_IMAGE }}:latest"
 
     release:
         needs: [ build-tomcat, build-nginx ]
