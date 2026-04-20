@@ -1,5 +1,4 @@
-import {managed} from '@xh/hoist/core';
-import {Span} from '@xh/hoist/utils/telemetry';
+import {InitContext, managed} from '@xh/hoist/core';
 import {NewsPanelModel} from './NewsPanelModel';
 import {BaseAppModel} from '../../BaseAppModel';
 
@@ -7,8 +6,8 @@ export class AppModel extends BaseAppModel {
     static instance: AppModel;
     @managed newsPanelModel: NewsPanelModel;
 
-    override async initAsync(span: Span) {
-        await super.initAsync(span);
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
         this.newsPanelModel = new NewsPanelModel();
         this.loadAsync();
     }

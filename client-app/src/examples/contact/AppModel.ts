@@ -1,5 +1,4 @@
-import {XH} from '@xh/hoist/core';
-import {Span} from '@xh/hoist/utils/telemetry';
+import {InitContext, XH} from '@xh/hoist/core';
 import {ContactService} from './svc/ContactService';
 import {BaseAppModel} from '../../BaseAppModel';
 
@@ -8,8 +7,8 @@ export const PERSIST_APP = {prefKey: 'contactAppState'};
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
 
-    override async initAsync(span: Span) {
-        await super.initAsync(span);
-        await XH.installServicesAsync([ContactService], span);
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
+        await XH.installServicesAsync([ContactService], ctx);
     }
 }

@@ -1,8 +1,7 @@
-import {XH} from '@xh/hoist/core';
+import {InitContext, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {sizingModeAppOption, themeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {Icon} from '@xh/hoist/icon';
-import {Span} from '@xh/hoist/utils/telemetry';
 import {BaseAppModel} from '../../BaseAppModel';
 import {PortfolioService} from '../../core/svc/PortfolioService';
 
@@ -11,9 +10,9 @@ export class AppModel extends BaseAppModel {
 
     portfolioViewManager: ViewManagerModel;
 
-    override async initAsync(span: Span) {
-        await super.initAsync(span);
-        await XH.installServicesAsync([PortfolioService], span);
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
+        await XH.installServicesAsync([PortfolioService], ctx);
 
         // Constructed here, in initAsync, so we can await the async factory and ensure that all
         // saved views are loaded and the desired option has been preselected before the model

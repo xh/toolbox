@@ -1,6 +1,5 @@
-import {managed, XH} from '@xh/hoist/core';
+import {InitContext, managed, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
-import {Span} from '@xh/hoist/utils/telemetry';
 import {
     autoRefreshAppOption,
     themeAppOption,
@@ -14,8 +13,8 @@ export class AppModel extends BaseAppModel {
     @managed weatherDashModel: WeatherDashModel;
     @managed weatherViewManager: ViewManagerModel;
 
-    override async initAsync(span: Span) {
-        await super.initAsync(span);
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
 
         this.weatherViewManager = await ViewManagerModel.createAsync({
             type: 'weatherDashboard',
