@@ -153,7 +153,9 @@ jobs:
           run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
 
         - name: Install dependencies and build client app
-          run: cd client-app && yarn install --frozen-lockfile && yarn lint && yarn build --env appBuild="${{ needs.prepare.outputs.build-tag }}"
+          env:
+              VERSION: ${{ inputs.version }}
+          run: cd client-app && yarn install --frozen-lockfile && yarn lint && yarn build --env appVersion="$VERSION" --env appBuild="${{ needs.prepare.outputs.build-tag }}"
 
         - name: Copy client build into Docker context
           run: cp -r client-app/build/ docker/nginx/build/
