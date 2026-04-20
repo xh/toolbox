@@ -1,6 +1,7 @@
 import {span} from '@xh/hoist/cmp/layout';
 import {TabConfig, TabContainerModel, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
 import {LoadSpec, managed, XH} from '@xh/hoist/core';
+import {Span} from '@xh/hoist/utils/telemetry';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
@@ -86,9 +87,9 @@ export class AppModel extends BaseAppModel {
     @managed
     tabModel: TabContainerModel = this.createTabContainerModel();
 
-    override async initAsync() {
-        await super.initAsync();
-        await XH.installServicesAsync(DocService, GitHubService, PortfolioService);
+    override async initAsync(initSpan: Span) {
+        await super.initAsync(initSpan);
+        await XH.installServicesAsync([DocService, GitHubService, PortfolioService], initSpan);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
         this.addReaction({

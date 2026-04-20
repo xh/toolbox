@@ -1,5 +1,6 @@
 import {HoistService, PlainObject, XH} from '@xh/hoist/core';
 import {LocalDate} from '@xh/hoist/utils/datetime';
+import {Span} from '@xh/hoist/utils/telemetry';
 import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
 
@@ -9,8 +10,8 @@ export class PortfolioService extends HoistService {
     MAX_POSITIONS = 950;
     lookups: PlainObject;
 
-    override async initAsync() {
-        this.lookups = await XH.fetchJson({url: 'portfolio/lookups'});
+    override async initAsync(span: Span) {
+        this.lookups = await XH.fetchJson({url: 'portfolio/lookups', span});
     }
 
     async getSymbolsAsync({loadSpec}: any = {}) {

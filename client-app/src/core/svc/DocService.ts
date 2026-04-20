@@ -1,5 +1,6 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import {makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {Span} from '@xh/hoist/utils/telemetry';
 import MiniSearch from 'minisearch';
 import {DocCategory, DocEntry, DocSourceInfo} from '../../desktop/tabs/docs/docRegistry';
 
@@ -66,7 +67,7 @@ export class DocService extends HoistService {
         return this.registry.filter(it => it.source === source && it.category === categoryId);
     }
 
-    override async initAsync() {
+    override async initAsync(span: Span) {
         await this.loadRegistryAsync();
     }
 

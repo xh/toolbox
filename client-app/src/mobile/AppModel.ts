@@ -1,4 +1,5 @@
 import {loadAllAsync, managed, XH} from '@xh/hoist/core';
+import {Span} from '@xh/hoist/utils/telemetry';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
@@ -160,9 +161,9 @@ export class AppModel extends BaseAppModel {
         ];
     }
 
-    override async initAsync() {
-        await super.initAsync();
-        await XH.installServicesAsync(PortfolioService);
+    override async initAsync(span: Span) {
+        await super.initAsync(span);
+        await XH.installServicesAsync([PortfolioService], span);
     }
 
     override async doLoadAsync(loadSpec) {
