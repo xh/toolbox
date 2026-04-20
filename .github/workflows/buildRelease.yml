@@ -129,8 +129,23 @@ jobs:
           uses: actions/setup-node@v6
           with:
               node-version-file: 'client-app/.nvmrc'
-              cache: 'yarn'
-              cache-dependency-path: 'client-app/yarn.lock'
+
+        # Cache the yarn download directory directly (rather than via setup-node's
+        # `cache: yarn`, which keys strictly on the lockfile hash with no fallback).
+        # The `restore-keys` prefix lets a lockfile-changed run restore the most
+        # recent prior cache, so `yarn install` only downloads packages that
+        # actually moved — important given the FontAwesome Pro bandwidth cap.
+        - name: Resolve Yarn cache directory
+          id: yarn-cache-dir
+          run: echo "dir=$(cd client-app && yarn cache dir)" >> "$GITHUB_OUTPUT"
+
+        - name: Restore Yarn cache
+          uses: actions/cache@v5
+          with:
+              path: ${{ steps.yarn-cache-dir.outputs.dir }}
+              key: yarn-${{ runner.os }}-${{ hashFiles('client-app/yarn.lock') }}
+              restore-keys: |
+                  yarn-${{ runner.os }}-
 
         - name: Configure Font Awesome registry auth
           env:
