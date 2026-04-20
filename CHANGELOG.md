@@ -1,10 +1,11 @@
 # Changelog
 
-## 9.0.0-SNAPSHOT - unreleased
+## 8.3.3 - 2026-04-20
 
 ### Technical
 
 * Upgraded build toolchain to JDK 25. Toolbox now uses JDK 25 for local development and CI.
+* Fixed bug in buildRelease workflow - client appVersion was not being set to release version.
 
 ### Libraries
 
