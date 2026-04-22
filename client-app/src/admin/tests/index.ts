@@ -5,6 +5,7 @@ export * from './dataview/DataViewTestPanel';
 export * from './fetch/FetchApiTestPanel';
 export * from './grids/GridTestPanel';
 export * from './gridScrolling/GridScrolling';
+export * from './inputSizing/InputSizingTestPanel';
 export * from './localDate/LocalDateTestPanel';
 export * from './panels/PanelResizingTestPanel';
 export * from './select/SelectTestPanel';
