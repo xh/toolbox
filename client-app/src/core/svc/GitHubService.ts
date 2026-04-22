@@ -1,4 +1,4 @@
-import {HoistService, LoadSpec, XH} from '@xh/hoist/core';
+import {HoistService, InitContext, LoadSpec, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
@@ -49,7 +49,7 @@ export class GitHubService extends HoistService {
         makeObservable(this);
     }
 
-    override async initAsync() {
+    override async initAsync(ctx: InitContext) {
         // Subscribe to websocket based updates so we refresh and pick up new commits immediately.
         XH.webSocketService.subscribe('gitHubUpdate', () => this.autoRefreshAsync());
 

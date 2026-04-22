@@ -6,7 +6,7 @@ import io.micrometer.core.instrument.Timer
 import io.xh.hoist.BaseService
 import io.xh.hoist.cachedvalue.CachedValue
 import io.xh.hoist.exception.DataNotAvailableException
-import io.xh.hoist.telemetry.MetricsService
+import io.xh.hoist.telemetry.metric.MetricsService
 
 import java.time.*
 
