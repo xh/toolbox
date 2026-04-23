@@ -59,7 +59,7 @@ function renderCode(value: string) {
         width: null,
         height: null,
         readonly: true,
-        mode: 'application/javascript',
+        language: 'js',
         value: value.trim()
     });
 }
