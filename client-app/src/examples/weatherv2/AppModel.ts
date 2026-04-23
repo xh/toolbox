@@ -1,4 +1,4 @@
-import {managed, persist, XH} from '@xh/hoist/core';
+import {InitContext, managed, persist, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -30,9 +30,9 @@ export class AppModel extends BaseAppModel {
         makeObservable(this);
     }
 
-    override async initAsync() {
-        await super.initAsync();
-        await XH.installServicesAsync(LlmChatService, LlmToolService, WeatherDataService);
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
+        await XH.installServicesAsync([LlmChatService, LlmToolService, WeatherDataService], ctx);
 
         this.harnessPanelModel = new PanelModel({
             side: 'right',
@@ -43,13 +43,18 @@ export class AppModel extends BaseAppModel {
             persistWith: {...this.persistWith, path: 'harnessPanel'}
         });
 
-        this.weatherViewManager = await ViewManagerModel.createAsync({
-            type: 'weatherDashboardV2',
-            typeDisplayName: 'Layout',
-            enableDefault: true,
-            enableAutoSave: false,
-            manageGlobal: XH.getUser().isHoistAdmin
-        });
+        await this.withSpanAsync(
+            {name: 'toolbox.weatherv2.loadViews', parent: ctx.span},
+            async () => {
+                this.weatherViewManager = await ViewManagerModel.createAsync({
+                    type: 'weatherDashboardV2',
+                    typeDisplayName: 'Layout',
+                    enableDefault: true,
+                    enableAutoSave: false,
+                    manageGlobal: XH.getUser().isHoistAdmin
+                });
+            }
+        );
 
         this.weatherV2DashModel = new WeatherV2DashModel(this.weatherViewManager);
 
