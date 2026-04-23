@@ -1,14 +1,22 @@
 # Changelog
 
-## 9.0.0-SNAPSHOT - unreleased
+## 8.3.3 - 2026-04-20
 
 ### Technical
 
 * Upgraded build toolchain to JDK 25. Toolbox now uses JDK 25 for local development and CI.
+* Fixed bug in buildRelease workflow - client appVersion was not being set to release version.
 
 ### Libraries
 
-* Grails 7.0.7 → 7.1.0
+* Grails 7.1.0
+* MySQL Connector/J 8.4.0
+
+## 8.3.2 - 2026-04-20
+
+### Libraries
+
+* @xh/hoist 84.0.1
 
 ## 8.3.1 - 2026-04-16
 

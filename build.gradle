@@ -87,7 +87,7 @@ dependencies {
     // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
     // MySQL for deployed instances, or more stateful local workstation setups.
     runtimeOnly "com.h2database:h2"
-    runtimeOnly "mysql:mysql-connector-java:8.0.33"
+    runtimeOnly "com.mysql:mysql-connector-j:8.4.0"
 
     // Stifle dev errors on Macs
     developmentOnly "io.methvin:directory-watcher:0.19.1"

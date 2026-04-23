@@ -359,7 +359,20 @@ Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged f
 - **Arrow parens**: avoid when possible (`x => x` not `(x) => x`)
 - **Semicolons**: always
 - **Trailing commas**: none
-- **Commit messages**: Do not hard-wrap lines in commit message bodies. Write each sentence or thought as a single unwrapped line and let the viewing tool handle display wrapping.
+
+**Commit messages, PRs, and comments**: Do not hard-wrap lines at a fixed column width in commit
+message bodies, pull request descriptions, or issue/PR comments — let the viewing tool handle
+display wrapping. However, do use line breaks for structure: separate logical points into bullet
+lists, use blank lines between paragraphs, and break after the subject line. Keep PR descriptions
+concise — XH developers review these regularly, so favor brief summaries over exhaustive detail.
+Bullet the key changes and let the diff and any upgrade notes speak for themselves.
+
+**Feature branch workflow**: On feature branches, prefer multiple small commits over amending — PRs
+are squash-merged into `develop`, so intermediate commits are collapsed automatically. Never
+force-push a feature branch; if the branch falls behind `develop`, use a simple merge commit rather
+than a rebase. Merge commits and extra commits are harmless on feature branches and are squashed out
+on merge, while force-pushes risk losing work and complicate collaboration.
+
 
 ## Architecture
 
