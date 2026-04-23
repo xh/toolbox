@@ -13,12 +13,29 @@ on:
         types: [ hoist-core-snapshot, hoist-react-snapshot ]
     workflow_dispatch:
 
+# Debounce builds by branch. Newer runs from a branch will cancel the current run and start over.
 concurrency:
     group: build-snapshot
     cancel-in-progress: true
 
+env:
+    TOMCAT_IMAGE: xh/toolbox-tomcat
+    NGINX_IMAGE: xh/toolbox-nginx
+
 jobs:
+    prepare:
+
+        runs-on: ubuntu-latest
+        permissions: {}
+        outputs:
+            build-tag: ${{ steps.tag.outputs.build-tag }}
+        steps:
+        - name: Generate build tag
+          id: tag
+          run: echo "build-tag=${GITHUB_SHA::7}_${GITHUB_REF_NAME}_$(date -u +'%Y-%m-%dT%H:%MZ')" >> "$GITHUB_OUTPUT"
+
     build-tomcat:
+        needs: prepare
 
         runs-on: ubuntu-latest
         permissions:
@@ -27,20 +44,24 @@ jobs:
         steps:
         - uses: actions/checkout@v6
 
-        - name: Setup JDK 17
+        - name: Setup JDK 25
           uses: actions/setup-java@v5
           with:
-              java-version: '17'
+              java-version: '25'
               distribution: 'zulu'
 
         - name: Setup Gradle
-          uses: gradle/actions/setup-gradle@v5
+          uses: gradle/actions/setup-gradle@v6
+          with:
+              build-scan-publish: false
+              build-scan-terms-of-use-url: 'https://gradle.com/terms-of-service'
+              build-scan-terms-of-use-agree: 'yes'
 
         - name: Build WAR
-          run: ./gradlew war
+          run: ./gradlew -PxhAppBuild="${{ needs.prepare.outputs.build-tag }}" war
 
         - name: Copy WAR into Docker context
-          run: cp build/libs/*.war docker/tomcat/toolbox.war
+          run: cp build/libs/*.war docker/tomcat/app.war
 
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v6
@@ -56,10 +77,11 @@ jobs:
           env:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           run: |
-              docker build -t $ECR_ROOT/xh/toolbox-tomcat:snapshot docker/tomcat
-              docker push $ECR_ROOT/xh/toolbox-tomcat:snapshot
+              docker build -t "$ECR_ROOT/${{ env.TOMCAT_IMAGE }}:snapshot" docker/tomcat
+              docker push "$ECR_ROOT/${{ env.TOMCAT_IMAGE }}:snapshot"
 
     build-nginx:
+        needs: prepare
 
         runs-on: ubuntu-latest
         permissions:
@@ -73,13 +95,65 @@ jobs:
           with:
               node-version-file: 'client-app/.nvmrc'
 
+        # Cache the yarn download directory directly (rather than via setup-node's
+        # `cache: yarn`, which keys strictly on the lockfile hash with no fallback).
+        # The `restore-keys` prefix lets a lockfile-changed run restore the most
+        # recent prior cache, so `yarn install` only downloads packages that
+        # actually moved — important given the FontAwesome Pro bandwidth cap.
+        # Note: snapshot runs `yarn upgrade`, which can fetch packages beyond the
+        # committed lockfile. On primary-key hits those deltas aren't persisted,
+        # so a newly-published FontAwesome version gets re-downloaded on each
+        # snapshot until the lockfile catches up. The "Detect FontAwesome
+        # lockfile drift" step below surfaces exactly this case as a warning so
+        # it gets resolved by committing an updated lockfile.
+        - name: Resolve Yarn cache directory
+          id: yarn-cache-dir
+          run: echo "dir=$(cd client-app && yarn cache dir)" >> "$GITHUB_OUTPUT"
+
+        - name: Restore Yarn cache
+          uses: actions/cache@v5
+          with:
+              path: ${{ steps.yarn-cache-dir.outputs.dir }}
+              key: yarn-${{ runner.os }}-${{ hashFiles('client-app/yarn.lock') }}
+              restore-keys: |
+                  yarn-${{ runner.os }}-
+
         - name: Configure Font Awesome registry auth
           env:
               FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
           run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
 
-        - name: Upgrade dependencies, lint, and build client app
-          run: cd client-app && yarn upgrade && yarn lint && yarn build
+        - name: Install and upgrade dependencies, lint, and build client app
+          run: cd client-app && yarn install && yarn upgrade && yarn lint && yarn build --env appBuild="${{ needs.prepare.outputs.build-tag }}"
+
+        # `yarn upgrade` rewrites yarn.lock when any semver-compatible transitive
+        # has moved. That's expected and usually too noisy to act on — but a
+        # FontAwesome bump matters, because every run until we commit the updated
+        # lockfile will re-download the new FA tarballs against our bandwidth cap.
+        # This step filters lockfile drift specifically to @fortawesome changes
+        # and surfaces a workflow warning + summary pointing at the standard
+        # remediation: run `yarn upgrade` locally, verify, and commit.
+        - name: Detect FontAwesome lockfile drift
+          working-directory: client-app
+          run: |
+              if git diff yarn.lock | grep -E '^[+-][^+-]' | grep -iq fortawesome; then
+                  echo "::warning title=FontAwesome lockfile drift::yarn upgrade picked up a newer FontAwesome version than the committed yarn.lock. Run yarn upgrade locally, verify, and commit the updated lockfile to stop re-downloading these packages on every snapshot build."
+                  {
+                      echo "### FontAwesome lockfile drift detected"
+                      echo ""
+                      echo "\`yarn upgrade\` moved one or more \`@fortawesome/*\` packages beyond the committed \`client-app/yarn.lock\`. Until the new lockfile is committed, each snapshot build will re-download these tarballs against the FontAwesome Pro bandwidth cap."
+                      echo ""
+                      echo "**Action:** run \`yarn upgrade\` locally, verify the app still builds and behaves correctly, and commit the updated \`yarn.lock\`."
+                      echo ""
+                      echo "<details><summary>FontAwesome diff</summary>"
+                      echo ""
+                      echo '```diff'
+                      git --no-pager diff yarn.lock | grep -iE '^[+-].*fortawesome' || true
+                      echo '```'
+                      echo ""
+                      echo "</details>"
+                  } >> "$GITHUB_STEP_SUMMARY"
+              fi
 
         - name: Copy client build into Docker context
           run: cp -r client-app/build/ docker/nginx/build/
@@ -98,5 +172,5 @@ jobs:
           env:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           run: |
-              docker build -t $ECR_ROOT/xh/toolbox-nginx:snapshot docker/nginx
-              docker push $ECR_ROOT/xh/toolbox-nginx:snapshot
+              docker build -t "$ECR_ROOT/${{ env.NGINX_IMAGE }}:snapshot" docker/nginx
+              docker push "$ECR_ROOT/${{ env.NGINX_IMAGE }}:snapshot"

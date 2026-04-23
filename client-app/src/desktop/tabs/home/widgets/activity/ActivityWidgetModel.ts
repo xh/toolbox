@@ -40,7 +40,7 @@ export class ActivityWidgetModel extends HoistModel {
             expandLevel: 1,
             sortBy: 'committedDate|desc',
             groupBy: 'committedDay',
-            contextMenu: [openUrlAction, '-', ...GridModel.defaultContextMenu],
+            contextMenu: [openUrlAction, '-', ...GridModel.defaults.contextMenu],
             store: {
                 fields: [
                     {name: 'repo', type: 'string'},

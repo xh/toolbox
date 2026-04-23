@@ -5,7 +5,7 @@ import {computed, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {filesize} from 'filesize';
-import download from 'downloadjs';
+import {downloadBlob} from '@xh/hoist/utils/js';
 import {filter, find, pull} from 'lodash';
 import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 
@@ -154,7 +154,7 @@ export class FileManagerModel extends HoistModel {
             }).catchDefault();
 
         const blob = await response.blob();
-        download(blob, name);
+        downloadBlob(blob, name);
         XH.toast({
             icon: Icon.download(),
             message: 'Download complete.'

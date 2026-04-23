@@ -31,8 +31,8 @@
     ]
   },
   "dependencies": {
-    "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^83.0.0-SNAPSHOT",
+    "@fortawesome/free-brands-svg-icons": "^7.2.0",
+    "@xh/hoist": "^85.0.0-SNAPSHOT",
     "@xh/package-template": "~3.0.1",
     "ag-grid-community": "~34.2.0",
     "ag-grid-enterprise": "~34.2.0",
@@ -48,7 +48,7 @@
   "devDependencies": {
     "@types/react": "18.x",
     "@types/react-dom": "18.x",
-    "@xh/hoist-dev-utils": "11.x",
+    "@xh/hoist-dev-utils": "12.x",
     "cross-env": "10.x",
     "eslint": "10.x",
     "eslint-config-prettier": "10.x",

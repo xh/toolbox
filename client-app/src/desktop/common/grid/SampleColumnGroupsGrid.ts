@@ -125,7 +125,7 @@ class SampleColumnGroupsGridModel extends HoistModel {
                         actionFn: ({record}) => this.showRecToast(record)
                     },
                     '-',
-                    ...GridModel.defaultContextMenu
+                    ...GridModel.defaults.contextMenu
                 ];
             },
             columns: [
