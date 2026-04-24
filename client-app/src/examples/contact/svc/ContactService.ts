@@ -24,7 +24,10 @@ export class ContactService extends HoistService {
     }
 
     async getContactsAsync() {
-        const ret = await XH.fetchJson({url: 'contacts'});
+        const ret = await XH.fetchJson({
+            url: 'contacts',
+            span: 'toolbox.client.contacts.getContacts'
+        });
         ret.forEach(it => {
             it.isFavorite = this.userFaves.includes(it.id);
             it.profilePicture = `../../public/contact-images/${
@@ -37,6 +40,7 @@ export class ContactService extends HoistService {
     async updateContactAsync(id, update) {
         await XH.fetchService.postJson({
             url: `contacts/update/${id}`,
+            span: 'toolbox.client.contacts.update',
             body: update,
             track: {
                 category: 'Contacts',

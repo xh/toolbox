@@ -91,6 +91,7 @@ export class DocService extends HoistService {
 
         const resp = await XH.fetchJson({
             url: 'docs/content',
+            span: 'toolbox.client.docs.getContent',
             params: {source, docId}
         });
 
@@ -141,8 +142,11 @@ export class DocService extends HoistService {
     // Implementation
     //------------------
     private async loadRegistryAsync() {
-        const resp = await XH.fetchJson({url: 'docs/registry'}),
-            sourceCount = Object.keys(resp.sources).length;
+        const resp = await XH.fetchJson({
+            url: 'docs/registry',
+            span: 'toolbox.client.docs.getRegistry'
+        });
+        const sourceCount = Object.keys(resp.sources).length;
 
         this.logInfo(`Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`);
 

@@ -62,6 +62,7 @@ export class GitHubService extends HoistService {
             const priorCommitCount = this.allCommits.length,
                 commitHistories = await XH.fetchJson({
                     url: 'gitHub/allCommits',
+                    span: 'toolbox.client.github.allCommits',
                     track: 'Loaded GitHub commit history',
                     loadSpec
                 });
