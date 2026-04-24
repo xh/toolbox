@@ -91,14 +91,16 @@ class AuthZeroTokenService extends BaseService {
 
     private JsonWebKeySet createKeySet() {
         def url = "https://$domain/.well-known/jwks.json"
-        withInfo(['Fetching JWKS', url]) {
-            def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
-                ret = new JsonWebKeySet(jwksJson)
-            if (!ret.jsonWebKeys) {
-                throw new RuntimeException('Unable to build valid key set from remote JWKS endpoint.')
+        span('toolbox.auth.getAuth0JWKS')
+            .logInfo(['Fetching JWKS', url])
+            .run {
+                def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
+                    ret = new JsonWebKeySet(jwksJson)
+                if (!ret.jsonWebKeys) {
+                    throw new RuntimeException('Unable to build valid key set from remote JWKS endpoint.')
+                }
+                ret
             }
-            return ret
-        }
     }
 
     private getConfig() {

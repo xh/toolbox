@@ -72,7 +72,9 @@ Time: ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
         post.setHeader('Authorization', "Bearer ${config.oauthToken}")
         post.setEntity(entity)
 
-        client.executeAsMap(post)
+        span('toolbox.slack.sendMessage').run {
+            client.executeAsMap(post)
+        }
     }
 
     private String alertSummary(MonitorStatusReport report) {
