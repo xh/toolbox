@@ -374,6 +374,16 @@ than a rebase. Merge commits and extra commits are harmless on feature branches 
 on merge, while force-pushes risk losing work and complicate collaboration.
 
 
+## Telemetry
+
+**Span names**: When naming custom OTEL spans passed to `withSpanAsync` or `FetchOptions.span`,
+use a dotted namespace of `toolbox.<sub-app>.<action>` for example apps (e.g.
+`toolbox.weatherv2.loadViews`, `toolbox.weather.loadDashboardData`), or `toolbox.<action>` for
+the main desktop/admin/mobile apps. The `xh.*` prefix is reserved for framework-owned spans per
+the hoist-react v85 upgrade notes, so the `toolbox.*` prefix keeps app spans cleanly
+distinguishable from framework spans in the trace view.
+
+
 ## Architecture
 
 ### Frontend (`client-app/src/`)
