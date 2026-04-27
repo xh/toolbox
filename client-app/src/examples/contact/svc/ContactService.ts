@@ -24,17 +24,16 @@ export class ContactService extends HoistService {
     }
 
     async getContactsAsync() {
-        const ret = await XH.fetchJson({
-            url: 'contacts',
-            span: 'toolbox.client.contacts.getContacts'
+        return this.span('toolbox.client.contacts.getContacts').run(span => {
+            return XH.fetchJson({url: 'contacts', span}).tap(ret => {
+                ret.forEach(it => {
+                    it.isFavorite = this.userFaves.includes(it.id);
+                    it.profilePicture = `../../public/contact-images/${
+                        it.profilePicture ?? 'no-profile.png'
+                    }`;
+                });
+            });
         });
-        ret.forEach(it => {
-            it.isFavorite = this.userFaves.includes(it.id);
-            it.profilePicture = `../../public/contact-images/${
-                it.profilePicture ?? 'no-profile.png'
-            }`;
-        });
-        return ret;
     }
 
     async updateContactAsync(id, update) {

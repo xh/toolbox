@@ -142,24 +142,25 @@ export class DocService extends HoistService {
     // Implementation
     //------------------
     private async loadRegistryAsync() {
-        const resp = await XH.fetchJson({
-            url: 'docs/registry',
-            span: 'toolbox.client.docs.getRegistry'
-        });
-        const sourceCount = Object.keys(resp.sources).length;
+        return this.span('toolbox.client.docs.loadRegistry').run(async span => {
+            const resp = await XH.fetchJson({url: 'docs/registry', span});
+            const sourceCount = Object.keys(resp.sources).length;
 
-        this.logInfo(`Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`);
+            this.logInfo(
+                `Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`
+            );
 
-        runInAction(() => {
-            this.registry = resp.entries.map(e => ({
-                id: e.id,
-                source: e.source,
-                title: e.title,
-                category: e.category,
-                description: e.description,
-                keywords: e.keywords ?? []
-            }));
-            this.sourceInfo = resp.sources;
+            runInAction(() => {
+                this.registry = resp.entries.map(e => ({
+                    id: e.id,
+                    source: e.source,
+                    title: e.title,
+                    category: e.category,
+                    description: e.description,
+                    keywords: e.keywords ?? []
+                }));
+                this.sourceInfo = resp.sources;
+            });
         });
     }
 
