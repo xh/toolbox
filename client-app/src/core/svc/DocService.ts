@@ -1,4 +1,4 @@
-import {HoistService, XH} from '@xh/hoist/core';
+import {HoistService, InitContext, XH} from '@xh/hoist/core';
 import {makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import MiniSearch from 'minisearch';
 import {DocCategory, DocEntry, DocSourceInfo} from '../../desktop/tabs/docs/docRegistry';
@@ -66,7 +66,7 @@ export class DocService extends HoistService {
         return this.registry.filter(it => it.source === source && it.category === categoryId);
     }
 
-    override async initAsync() {
+    override async initAsync(ctx: InitContext) {
         await this.loadRegistryAsync();
     }
 
@@ -91,6 +91,7 @@ export class DocService extends HoistService {
 
         const resp = await XH.fetchJson({
             url: 'docs/content',
+            span: 'toolbox.client.docs.getContent',
             params: {source, docId}
         });
 
@@ -141,21 +142,25 @@ export class DocService extends HoistService {
     // Implementation
     //------------------
     private async loadRegistryAsync() {
-        const resp = await XH.fetchJson({url: 'docs/registry'}),
-            sourceCount = Object.keys(resp.sources).length;
+        return this.span('toolbox.client.docs.loadRegistry').run(async span => {
+            const resp = await XH.fetchJson({url: 'docs/registry', span});
+            const sourceCount = Object.keys(resp.sources).length;
 
-        this.logInfo(`Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`);
+            this.logInfo(
+                `Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`
+            );
 
-        runInAction(() => {
-            this.registry = resp.entries.map(e => ({
-                id: e.id,
-                source: e.source,
-                title: e.title,
-                category: e.category,
-                description: e.description,
-                keywords: e.keywords ?? []
-            }));
-            this.sourceInfo = resp.sources;
+            runInAction(() => {
+                this.registry = resp.entries.map(e => ({
+                    id: e.id,
+                    source: e.source,
+                    title: e.title,
+                    category: e.category,
+                    description: e.description,
+                    keywords: e.keywords ?? []
+                }));
+                this.sourceInfo = resp.sources;
+            });
         });
     }
 

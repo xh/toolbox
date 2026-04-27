@@ -98,14 +98,16 @@ class EntraIdTokenService extends BaseService {
 
     private JsonWebKeySet createKeySet() {
         def url = "https://login.microsoftonline.com/${tenantId}/discovery/keys?appid=${clientId}"
-        withInfo(['Fetching JWKS', url]) {
-            def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
-                ret = new JsonWebKeySet(jwksJson)
-            if (!ret.jsonWebKeys) {
-                throw new RuntimeException('Unable to build valid key set from remote JWKS endpoint.')
+        span('toolbox.auth.getEntraJWKS')
+            .logInfo(['Fetching JWKS', url])
+            .run {
+                def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
+                    ret = new JsonWebKeySet(jwksJson)
+                if (!ret.jsonWebKeys) {
+                    throw new RuntimeException('Unable to build valid key set from remote JWKS endpoint.')
+                }
+                return ret
             }
-            return ret
-        }
     }
 
     private getConfig() {

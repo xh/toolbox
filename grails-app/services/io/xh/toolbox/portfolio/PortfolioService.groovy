@@ -6,7 +6,7 @@ import io.micrometer.core.instrument.Timer
 import io.xh.hoist.BaseService
 import io.xh.hoist.cachedvalue.CachedValue
 import io.xh.hoist.exception.DataNotAvailableException
-import io.xh.hoist.telemetry.MetricsService
+import io.xh.hoist.telemetry.metric.MetricsService
 
 import java.time.*
 
@@ -46,6 +46,11 @@ class PortfolioService extends BaseService {
             primaryOnly: true,
             interval: {config.updateIntervalSecs * SECONDS}
         )
+    }
+
+    /** True if portfolio data has been generated and is ready for use. */
+    boolean isPortfolioAvailable() {
+        _portfolio.get() != null
     }
 
     Portfolio getPortfolio() {
@@ -180,7 +185,7 @@ class PortfolioService extends BaseService {
             config: configForAdminStats('portfolioConfigs'),
             avgGenerationTime: generationTimer.mean(MILLISECONDS),
 
-            portfolioAvailable: p != null,
+            portfolioAvailable: portfolioAvailable,
             day: p?.day,
             generatedAt: p?.timeCreated,
             instruments: p?.instruments?.size() ?: 0,

@@ -2,9 +2,10 @@ package io.xh.toolbox
 
 import grails.gorm.transactions.Transactional
 import io.xh.hoist.config.ConfigService
-import io.xh.hoist.config.ConfigSpec
 import io.xh.hoist.log.LogSupport
 import io.xh.hoist.pref.PrefService
+import io.xh.hoist.telemetry.trace.TraceService
+import io.xh.hoist.config.ConfigSpec
 import io.xh.hoist.pref.PreferenceSpec
 import io.xh.toolbox.user.User
 
@@ -18,20 +19,23 @@ class BootStrap implements LogSupport {
 
     ConfigService configService
     PrefService prefService
+    TraceService traceService
 
     def init = {servletContext ->
         logStartupMsg()
 
-        ensureRequiredConfigsCreated()
-        ensureRequiredPrefsCreated()
-        createLocalAdminUserIfNeeded()
+        traceService.withSpan(name: 'toolbox.server.appLoad', caller: this) {
+            ensureRequiredConfigsCreated()
+            ensureRequiredPrefsCreated()
+            createLocalAdminUserIfNeeded()
 
-        def services = xhServices.findAll {
-            it.class.canonicalName.startsWith(this.class.package.name)
+            def services = xhServices.findAll {
+                it.class.canonicalName.startsWith(this.class.package.name)
+            }
+            parallelInit(services)
+
+            JavaTest.helloWorld()
         }
-        parallelInit(services)
-
-        JavaTest.helloWorld()
     }
 
     def destroy = {}

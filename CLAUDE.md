@@ -302,6 +302,9 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 
 - **Frontend**: TypeScript, React 18, MobX, AG Grid, Highcharts, `@xh/hoist` framework
 - **Backend**: Grails 7 (Groovy/Spring Boot), `hoist-core` framework
+- **JDK**: Java 25 is required for local development and CI. The Gradle toolchain in
+  `build.gradle` pins the language level to 25. (Note that `hoist-core` itself is separately
+  pinned to Java 17 bytecode so its published JAR remains runnable by client apps on JDK 17+.)
 - **Database**: MySQL (or H2 in-memory for quick local dev via `APP_TOOLBOX_USE_H2=true`)
 - **Package Manager**: Yarn 1.22 (frontend), Gradle via wrapper (backend)
 
@@ -356,7 +359,30 @@ Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged f
 - **Arrow parens**: avoid when possible (`x => x` not `(x) => x`)
 - **Semicolons**: always
 - **Trailing commas**: none
-- **Commit messages**: Do not hard-wrap lines in commit message bodies. Write each sentence or thought as a single unwrapped line and let the viewing tool handle display wrapping.
+
+**Commit messages, PRs, and comments**: Do not hard-wrap lines at a fixed column width in commit
+message bodies, pull request descriptions, or issue/PR comments — let the viewing tool handle
+display wrapping. However, do use line breaks for structure: separate logical points into bullet
+lists, use blank lines between paragraphs, and break after the subject line. Keep PR descriptions
+concise — XH developers review these regularly, so favor brief summaries over exhaustive detail.
+Bullet the key changes and let the diff and any upgrade notes speak for themselves.
+
+**Feature branch workflow**: On feature branches, prefer multiple small commits over amending — PRs
+are squash-merged into `develop`, so intermediate commits are collapsed automatically. Never
+force-push a feature branch; if the branch falls behind `develop`, use a simple merge commit rather
+than a rebase. Merge commits and extra commits are harmless on feature branches and are squashed out
+on merge, while force-pushes risk losing work and complicate collaboration.
+
+
+## Telemetry
+
+**Span names**: When naming custom OTEL spans passed to `withSpanAsync` or `FetchOptions.span`,
+use a dotted namespace of `toolbox.<sub-app>.<action>` for example apps (e.g.
+`toolbox.weatherv2.loadViews`, `toolbox.weather.loadDashboardData`), or `toolbox.<action>` for
+the main desktop/admin/mobile apps. The `xh.*` prefix is reserved for framework-owned spans per
+the hoist-react v85 upgrade notes, so the `toolbox.*` prefix keeps app spans cleanly
+distinguishable from framework spans in the trace view.
+
 
 ## Architecture
 
