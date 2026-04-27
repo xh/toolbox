@@ -63,16 +63,18 @@ Time: ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
     }
 
     private void sendSlackMessage(message) {
-        def client = new JSONClient(),
-            post = new HttpPost('https://slack.com/api/chat.postMessage'),
-            body = JSONSerializer.serialize([channel: config.channel, text: message]),
-            entity = new StringEntity(body)
+        span('toolbox.slack.sendMessage').run {
+            def client = new JSONClient(),
+                post = new HttpPost('https://slack.com/api/chat.postMessage'),
+                body = JSONSerializer.serialize([channel: config.channel, text: message]),
+                entity = new StringEntity(body)
 
-        post.setHeader('Content-type', 'application/json')
-        post.setHeader('Authorization', "Bearer ${config.oauthToken}")
-        post.setEntity(entity)
+            post.setHeader('Content-type', 'application/json')
+            post.setHeader('Authorization', "Bearer ${config.oauthToken}")
+            post.setEntity(entity)
 
-        client.executeAsMap(post)
+            client.executeAsMap(post)
+        }
     }
 
     private String alertSummary(MonitorStatusReport report) {

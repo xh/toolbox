@@ -138,7 +138,7 @@ export class WeatherDashModel extends HoistModel {
         if (!selectedCity) return;
 
         try {
-            await this.withSpanAsync({name: 'toolbox.weather.loadDashboardData'}, async span => {
+            await this.span('toolbox.client.weather.loadDash').run(async span => {
                 const [currentWeather, forecast] = await Promise.all([
                     XH.fetchJson({
                         url: 'weather/current',

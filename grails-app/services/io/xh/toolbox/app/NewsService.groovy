@@ -43,33 +43,35 @@ class NewsService extends BaseService {
     // Implementation
     //------------------------
     private List<NewsItem> loadNews() {
-        def sources = configService.getMap('newsSources').keySet().toList(),
-            sourcesParam = sources.join(','),
-            apiKey = configService.getString('newsApiKey'),
-            url = "https://newsapi.org/v2/top-headlines?sources=${sourcesParam}&apiKey=${apiKey}",
-            response = client.executeAsMap(new HttpGet(url))
+        span('toolbox.news.getNews').run {
+            def sources = configService.getMap('newsSources').keySet().toList(),
+                sourcesParam = sources.join(','),
+                apiKey = configService.getString('newsApiKey'),
+                url = "https://newsapi.org/v2/top-headlines?sources=${sourcesParam}&apiKey=${apiKey}",
+                response = client.executeAsMap(new HttpGet(url))
 
-        def articles = response.articles,
-            ret = []
-        articles.eachWithIndex{ it, idx ->
-            if (it.publishedAt) {
-                def cleanPubString = it.publishedAt.take(19) + 'Z'
-                ret << new NewsItem(
+            def articles = response.articles,
+                ret = []
+            articles.eachWithIndex { article, idx ->
+                if (article.publishedAt) {
+                    def cleanPubString = article.publishedAt.take(19) + 'Z'
+                    ret << new NewsItem(
                         id: idx,
-                        source: it.source.name,
-                        title: it.title,
-                        author: it.author,
-                        text: it.description,
-                        url: it.url,
-                        imageUrl: it.urlToImage,
+                        source: article.source.name,
+                        title: article.title,
+                        author: article.author,
+                        text: article.description,
+                        url: article.url,
+                        imageUrl: article.urlToImage,
                         published: Date.parse("yyyy-MM-dd'T'HH:mm:ssX", cleanPubString)
-                )
+                    )
+                }
             }
+
+            logDebug("Loaded ${ret.size()} news items.")
+
+            return ret
         }
-
-        logDebug("Loaded ${ret.size()} news items.")
-
-        return ret
     }
 
     private JSONClient _jsonClient

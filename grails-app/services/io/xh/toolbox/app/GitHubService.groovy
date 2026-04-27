@@ -87,17 +87,19 @@ class GitHubService extends BaseService {
         def repos = configService.getList('gitHubRepos', []),
             newCommitCount = 0
 
-        withInfo("Refreshing GitHub commits for ${repos.size()} configured repositories") {
-            repos.each{
-                def newCommits = loadCommitsForRepo(it as String, forceFullLoad)
-                newCommitCount += newCommits.size()
-            }
+        span('toolbox.github.getCommits')
+            .logInfo("Refreshing GitHub commits for ${repos.size()} configured repositories")
+            .run {
+                repos.each {
+                    def newCommits = loadCommitsForRepo(it as String, forceFullLoad)
+                    newCommitCount += newCommits.size()
+                }
 
-            if (newCommitCount) {
-                logDebug("Found $newCommitCount new commits - pushing update...")
-                pushUpdate()
+                if (newCommitCount) {
+                    logDebug("Found $newCommitCount new commits - pushing update...")
+                    pushUpdate()
+                }
             }
-        }
     }
 
     private List<Commit> loadCommitsForRepo(String repoName, Boolean forceFullLoad = false) {
