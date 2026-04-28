@@ -11,6 +11,8 @@ import {DetailsPanelModel} from './detail/DetailsPanelModel';
 export class RecallsPanelModel extends HoistModel {
     override persistWith = PERSIST_APP;
 
+    loadSpan = 'toolbox.client.recalls.load';
+
     @bindable
     searchQuery: string = '';
 

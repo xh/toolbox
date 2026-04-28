@@ -57,6 +57,8 @@ export class WeatherDashModel extends HoistModel {
     viewManagerModel: ViewManagerModel;
     @managed dashCanvasModel: DashCanvasModel;
 
+    loadSpan = 'toolbox.client.weather.load';
+
     constructor(viewManagerModel: ViewManagerModel) {
         super();
         makeObservable(this);
@@ -137,29 +139,25 @@ export class WeatherDashModel extends HoistModel {
         const {selectedCity} = this;
         if (!selectedCity) return;
 
+        loadSpec.span?.setTags({city: selectedCity});
         try {
-            await this.span('toolbox.client.weather.loadDash').run(async span => {
-                const [currentWeather, forecast] = await Promise.all([
-                    XH.fetchJson({
-                        url: 'weather/current',
-                        params: {city: selectedCity},
-                        loadSpec,
-                        span
-                    }),
-                    XH.fetchJson({
-                        url: 'weather/forecast',
-                        params: {city: selectedCity},
-                        loadSpec,
-                        span
-                    })
-                ]);
+            const [currentWeather, forecast] = await Promise.all([
+                XH.fetchJson({
+                    url: 'weather/current',
+                    params: {city: selectedCity},
+                    loadSpec
+                }),
+                XH.fetchJson({
+                    url: 'weather/forecast',
+                    params: {city: selectedCity},
+                    loadSpec
+                })
+            ]);
+            if (loadSpec.isStale) return;
 
-                if (loadSpec.isStale) return;
-
-                runInAction(() => {
-                    this.currentWeather = currentWeather;
-                    this.forecast = forecast;
-                });
+            runInAction(() => {
+                this.currentWeather = currentWeather;
+                this.forecast = forecast;
             });
         } catch (e) {
             if (loadSpec.isAutoRefresh || loadSpec.isStale) return;

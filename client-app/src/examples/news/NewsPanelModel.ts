@@ -10,6 +10,7 @@ import {p, vbox} from '@xh/hoist/cmp/layout';
 export class NewsPanelModel extends HoistModel {
     SEARCH_FIELDS = ['title', 'text'];
 
+    loadSpan = 'toolbox.client.news.load';
     @managed
     viewModel = new DataViewModel({
         emptyText: vbox([
