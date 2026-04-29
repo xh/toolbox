@@ -133,10 +133,6 @@ export class WeatherDashModel extends HoistModel {
         });
     }
 
-    override getLoadSpan() {
-        return 'toolbox.client.weather.load';
-    }
-
     override async doLoadAsync(loadSpec: LoadSpec) {
         const {selectedCity} = this;
         if (!selectedCity) return;

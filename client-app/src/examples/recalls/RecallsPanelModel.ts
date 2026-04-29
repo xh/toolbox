@@ -116,10 +116,6 @@ export class RecallsPanelModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    override getLoadSpan() {
-        return 'toolbox.client.recalls.load';
-    }
-
     override async doLoadAsync(loadSpec) {
         const {gridModel} = this;
 
