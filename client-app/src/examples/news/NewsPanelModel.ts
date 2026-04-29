@@ -1,4 +1,4 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {appendFilter, FilterLike} from '@xh/hoist/data';
@@ -10,7 +10,6 @@ import {p, vbox} from '@xh/hoist/cmp/layout';
 export class NewsPanelModel extends HoistModel {
     SEARCH_FIELDS = ['title', 'text'];
 
-    loadSpan = 'toolbox.client.news.load';
     @managed
     viewModel = new DataViewModel({
         emptyText: vbox([
@@ -52,7 +51,11 @@ export class NewsPanelModel extends HoistModel {
         });
     }
 
-    override async doLoadAsync(loadSpec) {
+    override getLoadSpan() {
+        return 'toolbox.client.news.load';
+    }
+
+    override async doLoadAsync(loadSpec: LoadSpec) {
         const stories = await XH.fetchJson({url: 'news', loadSpec});
         this.completeLoad(stories);
     }

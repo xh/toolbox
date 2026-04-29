@@ -11,8 +11,6 @@ import {DetailsPanelModel} from './detail/DetailsPanelModel';
 export class RecallsPanelModel extends HoistModel {
     override persistWith = PERSIST_APP;
 
-    loadSpan = 'toolbox.client.recalls.load';
-
     @bindable
     searchQuery: string = '';
 
@@ -118,6 +116,10 @@ export class RecallsPanelModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
+    override getLoadSpan() {
+        return 'toolbox.client.recalls.load';
+    }
+
     override async doLoadAsync(loadSpec) {
         const {gridModel} = this;
 

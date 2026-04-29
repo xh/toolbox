@@ -57,8 +57,6 @@ export class WeatherDashModel extends HoistModel {
     viewManagerModel: ViewManagerModel;
     @managed dashCanvasModel: DashCanvasModel;
 
-    loadSpan = 'toolbox.client.weather.load';
-
     constructor(viewManagerModel: ViewManagerModel) {
         super();
         makeObservable(this);
@@ -135,11 +133,15 @@ export class WeatherDashModel extends HoistModel {
         });
     }
 
+    override getLoadSpan() {
+        return 'toolbox.client.weather.load';
+    }
+
     override async doLoadAsync(loadSpec: LoadSpec) {
         const {selectedCity} = this;
         if (!selectedCity) return;
 
-        loadSpec.span?.setTags({city: selectedCity});
+        loadSpec.span.setTags({city: selectedCity});
         try {
             const [currentWeather, forecast] = await Promise.all([
                 XH.fetchJson({
