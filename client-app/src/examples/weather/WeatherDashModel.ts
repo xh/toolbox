@@ -137,7 +137,6 @@ export class WeatherDashModel extends HoistModel {
         const {selectedCity} = this;
         if (!selectedCity) return;
 
-        loadSpec.span.setTags({city: selectedCity});
         try {
             const [currentWeather, forecast] = await Promise.all([
                 XH.fetchJson({
