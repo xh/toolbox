@@ -1,5 +1,12 @@
 # Changelog
 
+## 8.4.0 - 2026-04-30
+
+### Libraries
+
+* hoist-core 39.0.0
+* @xh/hoist 85.0.0
+
 ## 8.3.3 - 2026-04-20
 
 ### Technical
