@@ -55,10 +55,19 @@
     "hoist-react"
   ],
   "enabledPlugins": {
+    "xh@hoist-ai": true,
     "typescript-lsp@claude-plugins-official": true,
     "jdtls-lsp@claude-plugins-official": true
   },
   "env": {
     "ENABLE_LSP_TOOL": "1"
+  },
+  "extraKnownMarketplaces": {
+    "hoist-ai": {
+      "source": {
+        "source": "github",
+        "repo": "xh/hoist-ai"
+      }
+    }
   }
 }
