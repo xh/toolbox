@@ -24,8 +24,9 @@ export class ContactService extends HoistService {
     }
 
     async getContactsAsync() {
-        return this.span('toolbox.client.contacts.getContacts').run(span => {
-            return XH.fetchJson({url: 'contacts', span}).tap(ret => {
+        return this.newSpan('toolbox.client.contacts.getContacts')
+            .fetchJson({url: 'contacts'})
+            .tap(ret => {
                 ret.forEach(it => {
                     it.isFavorite = this.userFaves.includes(it.id);
                     it.profilePicture = `../../public/contact-images/${
@@ -33,21 +34,22 @@ export class ContactService extends HoistService {
                     }`;
                 });
             });
-        });
     }
 
     async updateContactAsync(id, update) {
-        await XH.fetchService.postJson({
-            url: `contacts/update/${id}`,
-            span: 'toolbox.client.contacts.update',
-            body: update,
-            track: {
-                category: 'Contacts',
-                message: `Updated contact`,
-                data: {id, ...update},
-                logData: true
-            }
-        });
+        await this.newSpan('toolbox.client.contacts.update').run(ctx =>
+            XH.fetchService.postJson({
+                url: `contacts/update/${id}`,
+                span: ctx.span,
+                body: update,
+                track: {
+                    category: 'Contacts',
+                    message: `Updated contact`,
+                    data: {id, ...update},
+                    logData: true
+                }
+            })
+        );
     }
 
     @action

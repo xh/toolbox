@@ -138,24 +138,28 @@ export class WeatherDashModel extends HoistModel {
         if (!selectedCity) return;
 
         try {
-            const [currentWeather, forecast] = await Promise.all([
-                XH.fetchJson({
-                    url: 'weather/current',
-                    params: {city: selectedCity},
-                    loadSpec
-                }),
-                XH.fetchJson({
-                    url: 'weather/forecast',
-                    params: {city: selectedCity},
-                    loadSpec
-                })
-            ]);
-            if (loadSpec.isStale) return;
+            await this.runner(loadSpec)
+                .newSpan('toolbox.client.weather.dashLoad')
+                .run(async ctx => {
+                    ctx.span.setTags({city: selectedCity});
 
-            runInAction(() => {
-                this.currentWeather = currentWeather;
-                this.forecast = forecast;
-            });
+                    const [currentWeather, forecast] = await Promise.all([
+                        ctx.fetchJson({
+                            url: 'weather/current',
+                            params: {city: selectedCity}
+                        }),
+                        ctx.fetchJson({
+                            url: 'weather/forecast',
+                            params: {city: selectedCity}
+                        })
+                    ]);
+                    if (loadSpec.isStale) return;
+
+                    runInAction(() => {
+                        this.currentWeather = currentWeather;
+                        this.forecast = forecast;
+                    });
+                });
         } catch (e) {
             if (loadSpec.isAutoRefresh || loadSpec.isStale) return;
             XH.handleException(e);
