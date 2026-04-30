@@ -24,7 +24,7 @@ export class AppModel extends BaseAppModel {
         });
 
         this.weatherDashModel = new WeatherDashModel(this.weatherViewManager);
-        this.loadAsync(ctx);
+        this.loadAsync({span: ctx.span});
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
