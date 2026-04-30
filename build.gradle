@@ -94,6 +94,38 @@ dependencies {
     console "org.apache.grails:grails-console"
 }
 
+//------------------------------------------------------------------
+// hoist-core MCP server + CLI tools — version-locked launchers
+//------------------------------------------------------------------
+configurations {
+    hoistCoreCli
+}
+
+dependencies {
+    hoistCoreCli "io.xh:hoist-core-mcp:${hoistCoreVersion}:all@jar"
+}
+
+tasks.register('installHoistCoreTools', Sync) {
+    description = 'Install version-locked launchers for the hoist-core MCP server and CLI tools.'
+    group = 'hoist'
+    from configurations.hoistCoreCli
+    into "$buildDir/hoist-core-tools/lib"
+    doLast {
+        def jar = fileTree("$buildDir/hoist-core-tools/lib").singleFile
+        def binDir = file('bin')
+        binDir.mkdirs()
+        ['mcp', 'docs', 'symbols'].each { topic ->
+            def args = topic == 'mcp' ? '--source bundled' : "cli ${topic}"
+            new File(binDir, "hoist-core-${topic}").with {
+                text = "#!/usr/bin/env bash\nexec java -jar \"${jar.absolutePath}\" ${args} \"\$@\"\n"
+                setExecutable(true)
+            }
+            new File(binDir, "hoist-core-${topic}.bat").text =
+                "@echo off\r\njava -jar \"${jar.absolutePath}\" ${args} %*\r\n"
+        }
+    }
+}
+
 Map hoistMetaData = [
     'info.xh.appCode': xhAppCode,
     'info.xh.appName': xhAppName,
