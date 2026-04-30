@@ -89,9 +89,8 @@ export class DocService extends HoistService {
         const cached = this.cache.get(cacheKey);
         if (cached) return cached;
 
-        const resp = await XH.fetchJson({
+        const resp = await this.newSpan('toolbox.client.docs.getContent').fetchJson({
             url: 'docs/content',
-            span: 'toolbox.client.docs.getContent',
             params: {source, docId}
         });
 
@@ -142,8 +141,8 @@ export class DocService extends HoistService {
     // Implementation
     //------------------
     private async loadRegistryAsync() {
-        return this.span('toolbox.client.docs.loadRegistry').run(async span => {
-            const resp = await XH.fetchJson({url: 'docs/registry', span});
+        return this.newSpan('toolbox.client.docs.loadRegistry').run(async ctx => {
+            const resp = await ctx.fetchJson({url: 'docs/registry'});
             const sourceCount = Object.keys(resp.sources).length;
 
             this.logInfo(

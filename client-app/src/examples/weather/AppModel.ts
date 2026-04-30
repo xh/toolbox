@@ -1,4 +1,4 @@
-import {InitContext, managed, XH} from '@xh/hoist/core';
+import {InitContext, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {
     autoRefreshAppOption,
@@ -24,11 +24,11 @@ export class AppModel extends BaseAppModel {
         });
 
         this.weatherDashModel = new WeatherDashModel(this.weatherViewManager);
-        this.loadAsync({span: ctx.span});
+        this.loadAsync(ctx);
     }
 
-    override async doLoadAsync(loadSpec) {
-        await this.weatherDashModel.loadAsync(loadSpec);
+    override async doLoadAsync(loadSpec: LoadSpec) {
+        return this.weatherDashModel.loadAsync(loadSpec);
     }
 
     override getAppOptions() {
