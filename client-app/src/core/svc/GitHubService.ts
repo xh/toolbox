@@ -58,37 +58,37 @@ export class GitHubService extends HoistService {
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
-        try {
-            const priorCommitCount = this.allCommits.length,
-                commitHistories = await this.runner(loadSpec)
-                    .newSpan('toolbox.client.github.allCommits')
-                    .track('Loaded GitHub commit history')
-                    .fetchJson({url: 'gitHub/allCommits'});
+        await this.runOn(loadSpec)
+            .newSpan('toolbox.client.github.allCommits')
+            .track('Loaded GitHub commit history')
+            .run(async ctx => {
+                const priorCommitCount = this.allCommits.length,
+                    commitHistories = await ctx.fetchJson({url: 'gitHub/allCommits'});
 
-            forOwn(commitHistories, v => {
-                // Minor translations here on client for convenience.
-                v.commits.forEach(it => {
-                    it.authorEmail = it.author.email;
-                    it.authorName = it.author.name || it.authorEmail;
-                    it.committedDate = new Date(it.committedDate);
-                    it.committedDay = LocalDate.from(it.committedDate);
-                    it.isRelease =
-                        it.authorEmail === 'techops@xh.io' && it.messageHeadline.startsWith('v');
+                forOwn(commitHistories, v => {
+                    // Minor translations here on client for convenience.
+                    v.commits.forEach(it => {
+                        it.authorEmail = it.author.email;
+                        it.authorName = it.author.name || it.authorEmail;
+                        it.committedDate = new Date(it.committedDate);
+                        it.committedDay = LocalDate.from(it.committedDate);
+                        it.isRelease =
+                            it.authorEmail === 'techops@xh.io' &&
+                            it.messageHeadline.startsWith('v');
+                    });
                 });
-            });
 
-            runInAction(() => (this.commitHistories = commitHistories));
+                runInAction(() => (this.commitHistories = commitHistories));
 
-            const newCommitCount = this.allCommits.length;
-            if (priorCommitCount && newCommitCount > priorCommitCount) {
-                XH.toast({
-                    message: 'New Hoist commit detected!',
-                    icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
-                    intent: 'primary'
-                });
-            }
-        } catch (e) {
-            XH.handleException(e, {showAlert: false, showAsError: false});
-        }
+                const newCommitCount = this.allCommits.length;
+                if (priorCommitCount && newCommitCount > priorCommitCount) {
+                    XH.toast({
+                        message: 'New Hoist commit detected!',
+                        icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
+                        intent: 'primary'
+                    });
+                }
+            })
+            .catch(e => XH.handleException(e, {showAlert: false, showAsError: false}));
     }
 }

@@ -137,18 +137,23 @@ export class ViewManagerTestModel extends HoistModel {
                 initialViewName
             } = data;
 
-        const newModel = await ViewManagerModel.createAsync({
-            type,
-            instance,
-            typeDisplayName,
-            globalDisplayName,
-            manageGlobal,
-            enableGlobal,
-            enableSharing,
-            enableDefault,
-            enableAutoSave,
-            initialViewSpec: views => views.find(v => v.name == initialViewName) ?? views[0]
-        });
+        const newModel = await this.rootSpan('toolbox.client.viewManager.testRebuild').run(ctx =>
+            ViewManagerModel.createAsync(
+                {
+                    type,
+                    instance,
+                    typeDisplayName,
+                    globalDisplayName,
+                    manageGlobal,
+                    enableGlobal,
+                    enableSharing,
+                    enableDefault,
+                    enableAutoSave,
+                    initialViewSpec: views => views.find(v => v.name == initialViewName) ?? views[0]
+                },
+                ctx
+            )
+        );
 
         runInAction(() => {
             this.viewManagerModel = newModel;

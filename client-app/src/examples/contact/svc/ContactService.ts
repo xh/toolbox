@@ -24,7 +24,7 @@ export class ContactService extends HoistService {
     }
 
     async getContactsAsync() {
-        return this.newSpan('toolbox.client.contacts.getContacts')
+        return this.rootSpan('toolbox.client.contacts.getContacts')
             .fetchJson({url: 'contacts'})
             .tap(ret => {
                 ret.forEach(it => {
@@ -37,7 +37,7 @@ export class ContactService extends HoistService {
     }
 
     async updateContactAsync(id, update) {
-        await this.newSpan('toolbox.client.contacts.update').run(ctx =>
+        await this.rootSpan('toolbox.client.contacts.update').run(ctx =>
             XH.fetchService.postJson({
                 url: `contacts/update/${id}`,
                 span: ctx.span,

@@ -120,7 +120,7 @@ export class RecallsPanelModel extends HoistModel {
         const {gridModel} = this;
 
         try {
-            await this.runner(loadSpec)
+            await this.runOn(loadSpec)
                 .newSpan('toolbox.client.recalls.load')
                 .run(async ctx => {
                     let entries = await ctx.fetchJson({
