@@ -8,6 +8,8 @@ import {newsPanelItem} from './NewsPanelItem';
 import {p, vbox} from '@xh/hoist/cmp/layout';
 
 export class NewsPanelModel extends HoistModel {
+    override spanPrefix = 'toolbox.client.news';
+
     SEARCH_FIELDS = ['title', 'text'];
 
     @managed
@@ -53,7 +55,7 @@ export class NewsPanelModel extends HoistModel {
 
     override async doLoadAsync(loadSpec: LoadSpec) {
         await this.runOn(loadSpec)
-            .newSpan('toolbox.client.news.load')
+            .newSpan('load')
             .run(async ctx => {
                 const stories = await ctx.fetchJson({url: 'news'});
                 this.completeLoad(stories);

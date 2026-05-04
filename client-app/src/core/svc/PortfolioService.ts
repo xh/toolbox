@@ -4,6 +4,8 @@ import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
 
 export class PortfolioService extends HoistService {
+    override spanPrefix = 'toolbox.client.portfolio';
+
     static instance: PortfolioService;
 
     MAX_POSITIONS = 950;
@@ -14,9 +16,7 @@ export class PortfolioService extends HoistService {
     }
 
     async getSymbolsAsync(ctx: CallContext) {
-        return this.runOn(ctx)
-            .newSpan('toolbox.client.portfolio.getSymbols')
-            .fetchJson({url: 'portfolio/symbols'});
+        return this.runOn(ctx).newSpan('getSymbols').fetchJson({url: 'portfolio/symbols'});
     }
 
     /**
@@ -31,7 +31,7 @@ export class PortfolioService extends HoistService {
         includeSummary = false,
         maxPositions = this.MAX_POSITIONS
     ): Promise<Position[]> {
-        return this.rootSpan('toolbox.client.portfolio.getPositions')
+        return this.rootSpan('getPositions')
             .track('Loaded positions')
             .run(async ctx => {
                 const positions = await ctx.fetchJson({
@@ -50,7 +50,7 @@ export class PortfolioService extends HoistService {
      * @param positionId - ID installed on each position returned by `getPositionsAsync()`.
      */
     async getPositionAsync(positionId: string): Promise<Position> {
-        return this.rootSpan('toolbox.client.portfolio.getPosition').fetchJson({
+        return this.rootSpan('getPosition').fetchJson({
             url: 'portfolio/position',
             params: {positionId}
         });
@@ -65,7 +65,7 @@ export class PortfolioService extends HoistService {
         topic: string,
         maxPositions: number = this.MAX_POSITIONS
     ) {
-        return this.rootSpan('toolbox.client.portfolio.getLivePositions').run(async ctx => {
+        return this.rootSpan('getLivePositions').run(async ctx => {
             const session = await ctx.fetchJson({
                 url: 'portfolio/livePositions',
                 params: {
@@ -84,19 +84,17 @@ export class PortfolioService extends HoistService {
      */
     async getPricedRawPositionsAsync(ctx: CallContext): Promise<PricedRawPosition[]> {
         return this.runOn(ctx)
-            .newSpan('toolbox.client.portfolio.getPricedRawPositions')
+            .newSpan('getPricedRawPositions')
             .fetchJson({url: 'portfolio/pricedRawPositions'});
     }
 
     async getAllOrdersAsync(ctx: CallContext): Promise<PlainObject[]> {
-        return this.runOn(ctx)
-            .newSpan('toolbox.client.portfolio.getAllOrders')
-            .fetchJson({url: 'portfolio/orders'});
+        return this.runOn(ctx).newSpan('getAllOrders').fetchJson({url: 'portfolio/orders'});
     }
 
     async getOrdersAsync(positionId: string, ctx: CallContext): Promise<PlainObject[]> {
         return this.runOn(ctx)
-            .newSpan('toolbox.client.portfolio.getOrdersForPosition')
+            .newSpan('getOrdersForPosition')
             .run(async ctx => {
                 const ret: PlainObject[] = await ctx.fetchJson({
                     url: 'portfolio/ordersForPosition',
@@ -114,7 +112,7 @@ export class PortfolioService extends HoistService {
         ctx: CallContext
     ) {
         return this.runOn(ctx)
-            .newSpan('toolbox.client.portfolio.getLineChartSeriesAsync')
+            .newSpan('getLineChartSeriesAsync')
             .run(async ctx => {
                 const mktData = await ctx.fetchJson({url: `portfolio/prices/${symbol}`});
                 return {
@@ -128,7 +126,7 @@ export class PortfolioService extends HoistService {
 
     async getSparklineSeriesAsync(symbols: string[], ctx: CallContext) {
         return this.runOn(ctx)
-            .newSpan('toolbox.client.portfolio.getSparkline')
+            .newSpan('getSparkline')
             .run(async ctx => {
                 const data = await ctx.fetchJson({
                     url: `portfolio/closingPriceHistory`,
@@ -142,7 +140,7 @@ export class PortfolioService extends HoistService {
 
     async getOHLCChartSeriesAsync(symbol: string, ctx: CallContext) {
         return this.runOn(ctx)
-            .newSpan('toolbox.client.portfolio.getOHLCChart')
+            .newSpan('getOHLCChart')
             .run(async ctx => {
                 const mktData = await ctx.fetchJson({url: `portfolio/prices/${symbol}`});
                 return {

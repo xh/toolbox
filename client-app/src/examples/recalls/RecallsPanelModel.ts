@@ -9,6 +9,8 @@ import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
 
 export class RecallsPanelModel extends HoistModel {
+    override spanPrefix = 'toolbox.client.recalls';
+
     override persistWith = PERSIST_APP;
 
     @bindable
@@ -121,7 +123,7 @@ export class RecallsPanelModel extends HoistModel {
 
         try {
             await this.runOn(loadSpec)
-                .newSpan('toolbox.client.recalls.load')
+                .newSpan('load')
                 .run(async ctx => {
                     let entries = await ctx.fetchJson({
                         url: 'recalls',

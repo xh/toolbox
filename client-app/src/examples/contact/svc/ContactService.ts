@@ -9,6 +9,8 @@ import {PERSIST_APP} from '../AppModel';
  * Favorites are persisted for each user using the Hoist preference system.
  */
 export class ContactService extends HoistService {
+    override spanPrefix = 'toolbox.client.contacts';
+
     static instance: ContactService;
 
     override persistWith = PERSIST_APP;
@@ -24,7 +26,7 @@ export class ContactService extends HoistService {
     }
 
     async getContactsAsync() {
-        return this.rootSpan('toolbox.client.contacts.getContacts')
+        return this.rootSpan('getContacts')
             .fetchJson({url: 'contacts'})
             .tap(ret => {
                 ret.forEach(it => {
@@ -37,7 +39,7 @@ export class ContactService extends HoistService {
     }
 
     async updateContactAsync(id, update) {
-        await this.rootSpan('toolbox.client.contacts.update').run(ctx =>
+        await this.rootSpan('update').run(ctx =>
             XH.fetchService.postJson({
                 url: `contacts/update/${id}`,
                 span: ctx.span,

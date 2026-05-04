@@ -10,6 +10,8 @@ import {filter, find, pull} from 'lodash';
 import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 
 export class FileManagerModel extends HoistModel {
+    override spanPrefix = 'toolbox.client.fileManager';
+
     @managed
     chooserModel = new FileChooserModel();
 
@@ -95,7 +97,7 @@ export class FileManagerModel extends HoistModel {
         const uploads = this.chooserModel.files,
             deletes = this.getFilesToDelete();
 
-        return this.rootSpan('toolbox.client.fileManager.save')
+        return this.rootSpan('save')
             .run(async ctx => {
                 let uploadPromise, deletePromise;
 
@@ -147,7 +149,7 @@ export class FileManagerModel extends HoistModel {
     async downloadSelectedAsync() {
         if (!this.enableDownload) return;
 
-        await this.rootSpan('toolbox.client.fileManager.download')
+        await this.rootSpan('download')
             .run(async ctx => {
                 const sel = this.gridModel.selectedRecord,
                     {name} = sel.data,
@@ -171,7 +173,7 @@ export class FileManagerModel extends HoistModel {
     //---------------
     override async doLoadAsync(loadSpec) {
         await this.runOn(loadSpec)
-            .newSpan('toolbox.client.fileManager.load')
+            .newSpan('load')
             .track({category: 'File Manager', message: 'Loaded Files'})
             .run(async ctx => {
                 const files = await ctx.fetchJson({url: 'fileManager/list'});

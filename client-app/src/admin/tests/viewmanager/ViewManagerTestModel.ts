@@ -16,6 +16,8 @@ import {get} from 'lodash';
 import {sampleGrid, SampleGridModel} from '../../../desktop/common';
 
 export class ViewManagerTestModel extends HoistModel {
+    override spanPrefix = 'toolbox.client.viewManager';
+
     @managed @observable.ref viewManagerModel: ViewManagerModel;
 
     /** FormModel for model configs and component props. */
@@ -137,7 +139,7 @@ export class ViewManagerTestModel extends HoistModel {
                 initialViewName
             } = data;
 
-        const newModel = await this.rootSpan('toolbox.client.viewManager.testRebuild').run(ctx =>
+        const newModel = await this.rootSpan('testRebuild').run(ctx =>
             ViewManagerModel.createAsync(
                 {
                     type,

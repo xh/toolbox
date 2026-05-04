@@ -8,6 +8,8 @@ import {toNumber} from 'lodash';
 import {span} from '@xh/hoist/cmp/layout';
 
 export class RoadmapModel extends HoistModel {
+    override spanPrefix = 'toolbox.client.roadmap';
+
     @bindable
     statusFilter = 'showUpcoming';
 
@@ -61,7 +63,7 @@ export class RoadmapModel extends HoistModel {
         const {dataViewModel} = this;
 
         await this.runOn(loadSpec)
-            .newSpan('toolbox.client.roadmap.load')
+            .newSpan('load')
             .run(async ctx => {
                 const resp = await ctx.fetchJson({url: 'roadmap/data'}),
                     projects = this.processData(resp.data);

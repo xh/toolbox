@@ -31,6 +31,8 @@ export interface Commit {
 }
 
 export class GitHubService extends HoistService {
+    override spanPrefix = 'toolbox.client.github';
+
     static instance: GitHubService;
 
     /** Loaded commits histories, keyed by repoName. */
@@ -59,7 +61,7 @@ export class GitHubService extends HoistService {
 
     override async doLoadAsync(loadSpec: LoadSpec) {
         await this.runOn(loadSpec)
-            .newSpan('toolbox.client.github.allCommits')
+            .newSpan('allCommits')
             .track('Loaded GitHub commit history')
             .run(async ctx => {
                 const priorCommitCount = this.allCommits.length,

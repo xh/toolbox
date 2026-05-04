@@ -48,6 +48,7 @@ export const CITIES = [
 ];
 
 export class WeatherDashModel extends HoistModel {
+    override spanPrefix = 'toolbox.client.weather';
     override persistWith = {localStorageKey: 'xhWeatherDash'};
 
     @bindable @persist selectedCity: string = 'New York';
@@ -138,7 +139,7 @@ export class WeatherDashModel extends HoistModel {
         if (!selectedCity) return;
 
         await this.runOn(loadSpec)
-            .newSpan('toolbox.client.weather.dashLoad')
+            .newSpan('dashLoad')
             .run(async ctx => {
                 ctx.span.setTags({city: selectedCity});
 
