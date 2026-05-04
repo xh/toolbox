@@ -81,22 +81,15 @@ export class DirectoryPanelModel extends HoistModel {
     //------------------------
     override async doLoadAsync(loadSpec: LoadSpec) {
         const {gridModel} = this;
+        const contacts = await XH.contactService.getContactsAsync(loadSpec);
 
-        try {
-            const contacts = await XH.contactService.getContactsAsync();
-            if (loadSpec.isStale) return;
+        runInAction(() => {
+            this.tagList = uniq(contacts.flatMap(it => it.tags ?? [])).sort() as string[];
+            this.locationList = uniq(contacts.map(it => it.location)).sort() as string[];
+        });
 
-            runInAction(() => {
-                this.tagList = uniq(contacts.flatMap(it => it.tags ?? [])).sort() as string[];
-                this.locationList = uniq(contacts.map(it => it.location)).sort() as string[];
-            });
-
-            gridModel.loadData(contacts);
-            await gridModel.preSelectFirstAsync();
-        } catch (e) {
-            if (loadSpec.isStale) return;
-            XH.handleException(e);
-        }
+        gridModel.loadData(contacts);
+        await gridModel.preSelectFirstAsync();
     }
 
     private updateLocationFilter() {

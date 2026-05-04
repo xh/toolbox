@@ -55,23 +55,17 @@ export class PortfolioModel extends HoistModel {
         await waitFor(() => wsService.connected).catch(() =>
             this.logError('WebSocket service failed to connect')
         );
-        if (loadSpec.isStale) return;
+        loadSpec.abortIfNeeded();
 
-        try {
-            const session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp');
-            if (loadSpec.isStale) return;
+        const session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp', loadSpec);
+        store.loadData([session.initialPositions.root]);
+        session.onUpdate = ({data}) => {
+            posGridModel.loadTimestamp = Date.now();
+            store.updateData(data);
+        };
 
-            store.loadData([session.initialPositions.root]);
-            session.onUpdate = ({data}) => {
-                posGridModel.loadTimestamp = Date.now();
-                store.updateData(data);
-            };
-
-            this.session = session;
-            await posGridModel.gridModel.preSelectFirstAsync();
-        } catch (e) {
-            XH.handleException(e);
-        }
+        this.session = session;
+        await posGridModel.gridModel.preSelectFirstAsync();
     }
 
     //------------------------

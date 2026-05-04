@@ -1,4 +1,4 @@
-import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
+import {AbortMode, HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {appendFilter, FilterLike} from '@xh/hoist/data';
@@ -9,6 +9,7 @@ import {p, vbox} from '@xh/hoist/cmp/layout';
 
 export class NewsPanelModel extends HoistModel {
     override spanPrefix = 'toolbox.client.news';
+    override abortMode: AbortMode = 'never';
 
     SEARCH_FIELDS = ['title', 'text'];
 

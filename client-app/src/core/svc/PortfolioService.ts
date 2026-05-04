@@ -63,20 +63,23 @@ export class PortfolioService extends HoistService {
     async getLivePositionsAsync(
         dims: string[],
         topic: string,
+        ctx?: CallContext,
         maxPositions: number = this.MAX_POSITIONS
     ) {
-        return this.rootSpan('getLivePositions').run(async ctx => {
-            const session = await ctx.fetchJson({
-                url: 'portfolio/livePositions',
-                params: {
-                    dims: dims.join(','),
-                    maxPositions,
-                    channelKey: XH.webSocketService.channelKey,
-                    topic
-                }
+        return this.runOnOptional(ctx)
+            .newSpan('getLivePositions')
+            .run(async ctx => {
+                const session = await ctx.fetchJson({
+                    url: 'portfolio/livePositions',
+                    params: {
+                        dims: dims.join(','),
+                        maxPositions,
+                        channelKey: XH.webSocketService.channelKey,
+                        topic
+                    }
+                });
+                return new PositionSession(session);
             });
-            return new PositionSession(session);
-        });
     }
 
     /**
