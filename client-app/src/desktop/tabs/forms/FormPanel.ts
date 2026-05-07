@@ -304,7 +304,7 @@ const displayOptions = hoistCmp.factory<FormPanelModel>(({model}) => {
                 }),
                 switchInput({
                     bind: 'usDateFormat',
-                    label: 'US date format'
+                    label: 'US date formats'
                 }),
                 switchInput({
                     model: formModel,
