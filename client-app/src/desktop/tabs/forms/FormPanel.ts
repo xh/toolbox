@@ -155,19 +155,31 @@ const tags = hoistCmp.factory(() =>
 );
 
 const startAndEndDate = hoistCmp.factory<FormPanelModel>(({model}) => {
-    const flex = model.inline ? null : 1;
+    const flex = model.inline ? null : 1,
+        dateFormatProps = model.usDateFormat
+            ? {parseStrings: ['MM/DD/YY', 'MM/DD/YYYY'], formatString: 'MM/DD/YYYY'}
+            : {};
     return box({
         flexDirection: model.inline ? 'column' : 'row',
         items: [
             formField({
                 field: 'startDate',
                 flex,
-                item: dateInput({valueType: 'localDate', width: 150})
+                item: dateInput({
+                    valueType: 'localDate',
+                    width: 150,
+                    ...dateFormatProps
+                })
             }),
             formField({
                 field: 'endDate',
                 flex,
-                item: dateInput({valueType: 'localDate', width: 150, enableClear: true})
+                item: dateInput({
+                    valueType: 'localDate',
+                    width: 150,
+                    enableClear: true,
+                    ...dateFormatProps
+                })
             })
         ]
     });
@@ -289,6 +301,10 @@ const displayOptions = hoistCmp.factory<FormPanelModel>(({model}) => {
                 switchInput({
                     bind: 'minimal',
                     label: 'Minimal validation display'
+                }),
+                switchInput({
+                    bind: 'usDateFormat',
+                    label: 'US date format'
                 }),
                 switchInput({
                     model: formModel,
