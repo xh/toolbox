@@ -8,7 +8,7 @@ import {toNumber} from 'lodash';
 import {span} from '@xh/hoist/cmp/layout';
 
 export class RoadmapModel extends HoistModel {
-    override spanPrefix = 'toolbox.client.roadmap';
+    override telemetryPrefix = 'toolbox.client.roadmap';
 
     @bindable
     statusFilter = 'showUpcoming';

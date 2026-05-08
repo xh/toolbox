@@ -9,7 +9,7 @@ import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
 
 export class RecallsPanelModel extends HoistModel {
-    override spanPrefix = 'toolbox.client.recalls';
+    override telemetryPrefix = 'toolbox.client.recalls';
 
     override persistWith = PERSIST_APP;
 

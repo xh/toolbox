@@ -16,7 +16,7 @@ import {get} from 'lodash';
 import {sampleGrid, SampleGridModel} from '../../../desktop/common';
 
 export class ViewManagerTestModel extends HoistModel {
-    override spanPrefix = 'toolbox.client.viewManager';
+    override telemetryPrefix = 'toolbox.client.viewManager';
 
     @managed @observable.ref viewManagerModel: ViewManagerModel;
 

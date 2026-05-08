@@ -8,7 +8,7 @@ import {newsPanelItem} from './NewsPanelItem';
 import {p, vbox} from '@xh/hoist/cmp/layout';
 
 export class NewsPanelModel extends HoistModel {
-    override spanPrefix = 'toolbox.client.news';
+    override telemetryPrefix = 'toolbox.client.news';
 
     SEARCH_FIELDS = ['title', 'text'];
 
