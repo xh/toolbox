@@ -15,7 +15,7 @@ export interface DocSearchResult {
  * DocsService API. Maintains a MiniSearch full-text index for ranked search.
  */
 export class DocService extends HoistService {
-    override spanPrefix = 'toolbox.client.docs';
+    override telemetryPrefix = 'toolbox.client.docs';
 
     static instance: DocService;
 
@@ -91,14 +91,15 @@ export class DocService extends HoistService {
         const cached = this.cache.get(cacheKey);
         if (cached) return cached;
 
-        const resp = await this.rootSpan('getContent').fetchJson({
-            url: 'docs/content',
-            params: {source, docId}
+        return this.rootSpan('getContent').run(async ctx => {
+            const resp = await ctx.fetchJson({
+                url: 'docs/content',
+                params: {source, docId}
+            });
+            const content = resp.content;
+            this.cache.set(cacheKey, content);
+            return content;
         });
-
-        const content = resp.content;
-        this.cache.set(cacheKey, content);
-        return content;
     }
 
     /**

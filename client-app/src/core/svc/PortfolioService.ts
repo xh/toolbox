@@ -4,7 +4,7 @@ import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
 
 export class PortfolioService extends HoistService {
-    override spanPrefix = 'toolbox.client.portfolio';
+    override telemetryPrefix = 'toolbox.client.portfolio';
 
     static instance: PortfolioService;
 
@@ -12,11 +12,11 @@ export class PortfolioService extends HoistService {
     lookups: PlainObject;
 
     override async initAsync(ctx: InitContext) {
-        this.lookups = await this.runOn(ctx.span).fetchJson({url: 'portfolio/lookups'});
+        this.lookups = await this.runOn(ctx.span).runFetchJson({url: 'portfolio/lookups'});
     }
 
     async getSymbolsAsync(ctx: CallContext) {
-        return this.runOn(ctx).newSpan('getSymbols').fetchJson({url: 'portfolio/symbols'});
+        return this.runOn(ctx).newSpan('getSymbols').runFetchJson({url: 'portfolio/symbols'});
     }
 
     /**
@@ -32,7 +32,7 @@ export class PortfolioService extends HoistService {
         maxPositions = this.MAX_POSITIONS
     ): Promise<Position[]> {
         return this.rootSpan('getPositions')
-            .track('Loaded positions')
+            .withTrack('Loaded positions')
             .run(async ctx => {
                 const positions = await ctx.fetchJson({
                     url: 'portfolio/positions',
@@ -50,7 +50,7 @@ export class PortfolioService extends HoistService {
      * @param positionId - ID installed on each position returned by `getPositionsAsync()`.
      */
     async getPositionAsync(positionId: string): Promise<Position> {
-        return this.rootSpan('getPosition').fetchJson({
+        return this.rootSpan('getPosition').runFetchJson({
             url: 'portfolio/position',
             params: {positionId}
         });
@@ -85,11 +85,11 @@ export class PortfolioService extends HoistService {
     async getPricedRawPositionsAsync(ctx: CallContext): Promise<PricedRawPosition[]> {
         return this.runOn(ctx)
             .newSpan('getPricedRawPositions')
-            .fetchJson({url: 'portfolio/pricedRawPositions'});
+            .runFetchJson({url: 'portfolio/pricedRawPositions'});
     }
 
     async getAllOrdersAsync(ctx: CallContext): Promise<PlainObject[]> {
-        return this.runOn(ctx).newSpan('getAllOrders').fetchJson({url: 'portfolio/orders'});
+        return this.runOn(ctx).newSpan('getAllOrders').runFetchJson({url: 'portfolio/orders'});
     }
 
     async getOrdersAsync(positionId: string, ctx: CallContext): Promise<PlainObject[]> {

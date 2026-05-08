@@ -48,7 +48,7 @@ export const CITIES = [
 ];
 
 export class WeatherDashModel extends HoistModel {
-    override spanPrefix = 'toolbox.client.weather';
+    override telemetryPrefix = 'toolbox.client.weather';
     override persistWith = {localStorageKey: 'xhWeatherDash'};
 
     @bindable @persist selectedCity: string = 'New York';

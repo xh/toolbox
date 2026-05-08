@@ -9,7 +9,7 @@ import {PERSIST_APP} from '../AppModel';
  * Favorites are persisted for each user using the Hoist preference system.
  */
 export class ContactService extends HoistService {
-    override spanPrefix = 'toolbox.client.contacts';
+    override telemetryPrefix = 'toolbox.client.contacts';
 
     static instance: ContactService;
 
@@ -26,16 +26,16 @@ export class ContactService extends HoistService {
     }
 
     async getContactsAsync() {
-        return this.rootSpan('getContacts')
-            .fetchJson({url: 'contacts'})
-            .tap(ret => {
+        return this.rootSpan('getContacts').run(ctx =>
+            ctx.fetchJson({url: 'contacts'}).tap(ret => {
                 ret.forEach(it => {
                     it.isFavorite = this.userFaves.includes(it.id);
                     it.profilePicture = `../../public/contact-images/${
                         it.profilePicture ?? 'no-profile.png'
                     }`;
                 });
-            });
+            })
+        );
     }
 
     async updateContactAsync(id, update) {

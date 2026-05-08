@@ -10,7 +10,7 @@ import {filter, find, pull} from 'lodash';
 import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 
 export class FileManagerModel extends HoistModel {
-    override spanPrefix = 'toolbox.client.fileManager';
+    override telemetryPrefix = 'toolbox.client.fileManager';
 
     @managed
     chooserModel = new FileChooserModel();
@@ -174,7 +174,7 @@ export class FileManagerModel extends HoistModel {
     override async doLoadAsync(loadSpec) {
         await this.runOn(loadSpec)
             .newSpan('load')
-            .track({category: 'File Manager', message: 'Loaded Files'})
+            .withTrack({category: 'File Manager', message: 'Loaded Files'})
             .run(async ctx => {
                 const files = await ctx.fetchJson({url: 'fileManager/list'});
                 files.forEach(file => {
