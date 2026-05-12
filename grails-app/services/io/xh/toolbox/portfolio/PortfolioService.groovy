@@ -6,7 +6,6 @@ import io.micrometer.core.instrument.Timer
 import io.xh.hoist.BaseService
 import io.xh.hoist.cachedvalue.CachedValue
 import io.xh.hoist.exception.DataNotAvailableException
-import io.xh.hoist.telemetry.metric.MetricsService
 
 import java.time.*
 
@@ -26,12 +25,12 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS
  */
 class PortfolioService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.portfolio'
+
     def configService,
         orderGenerationService,
         historicalPriceGenerationService,
         instrumentGenerationService
-
-    MetricsService metricsService
 
     private CachedValue<Portfolio> _portfolio = createCachedValue(name: 'portfolio', replicate: true)
     private ReplicatedMap<String, MarketPrice> _currentPrices = createReplicatedMap('currentPrices')
@@ -81,12 +80,12 @@ class PortfolioService extends BaseService {
     private void initMetrics() {
         def registry = metricsService.registry
 
-        positionsGauge = Gauge.builder('toolbox.portfolio.positions', this) {
+        positionsGauge = Gauge.builder("${telemetryPrefix}.positions", this) {
             (_portfolio.get()?.rawPositions?.size() ?: 0) as double
         }.description('Number of portfolio positions')
             .register(registry)
 
-        generationTimer = Timer.builder('toolbox.portfolio.generationTime')
+        generationTimer = Timer.builder("${telemetryPrefix}.generationTime")
             .description('Time to generate portfolio')
             .register(registry)
     }
