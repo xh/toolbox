@@ -33,6 +33,8 @@ import static io.xh.hoist.util.DateTimeUtils.MINUTES
  */
 class GitHubService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.github'
+
     static clearCachesConfigs = ['gitHubRepos', 'gitHubAccessToken', 'gitHubMaxPagesPerLoad']
 
     ConfigService configService
@@ -87,7 +89,7 @@ class GitHubService extends BaseService {
         def repos = configService.getList('gitHubRepos', []),
             newCommitCount = 0
 
-        span('toolbox.github.getCommits')
+        span('getCommits')
             .logInfo("Refreshing GitHub commits for ${repos.size()} configured repositories")
             .run {
                 repos.each {

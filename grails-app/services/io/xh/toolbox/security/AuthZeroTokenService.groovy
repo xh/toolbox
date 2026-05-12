@@ -16,6 +16,8 @@ import static java.lang.System.currentTimeMillis
  */
 class AuthZeroTokenService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.auth'
+
     static clearCachesConfigs = ['auth0Config']
 
     AuthenticationService authenticationService
@@ -91,7 +93,7 @@ class AuthZeroTokenService extends BaseService {
 
     private JsonWebKeySet createKeySet() {
         def url = "https://$domain/.well-known/jwks.json"
-        span('toolbox.auth.getAuth0JWKS')
+        span('getAuth0JWKS')
             .logInfo(['Fetching JWKS', url])
             .run {
                 def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),

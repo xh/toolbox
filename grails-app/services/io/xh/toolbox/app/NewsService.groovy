@@ -13,6 +13,8 @@ import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
 class NewsService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.news'
+
     static clearCachesConfigs = ['newsSources', 'newsApiKey']
 
     ConfigService configService
@@ -43,7 +45,7 @@ class NewsService extends BaseService {
     // Implementation
     //------------------------
     private List<NewsItem> loadNews() {
-        span('toolbox.news.getNews').run {
+        span('getNews').run {
             def sources = configService.getMap('newsSources').keySet().toList(),
                 sourcesParam = sources.join(','),
                 apiKey = configService.getString('newsApiKey'),

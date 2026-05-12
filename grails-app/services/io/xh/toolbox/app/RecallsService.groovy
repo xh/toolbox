@@ -8,13 +8,15 @@ import static org.apache.hc.core5.http.HttpStatus.SC_OK
 
 class RecallsService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.recalls'
+
     def configService
 
     Integer lastResponseCode
     private JSONClient _jsonClient
 
     List fetchRecalls(String searchQuery) {
-        span('toolbox.recalls.get').run {
+        span('get').run {
             def host = configService.getString('recallsHost'),
                 uri = !searchQuery ?
                     // `_exists_:openfda` ensures all search hits includes a nested openfda object that contains essential data for frontend
