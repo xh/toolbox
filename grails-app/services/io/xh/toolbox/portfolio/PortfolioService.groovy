@@ -4,6 +4,7 @@ import com.hazelcast.replicatedmap.ReplicatedMap
 import io.xh.hoist.BaseService
 import io.xh.hoist.cachedvalue.CachedValue
 import io.xh.hoist.exception.DataNotAvailableException
+import io.xh.hoist.telemetry.metric.MetricsService
 
 import java.time.*
 
@@ -23,6 +24,8 @@ import static io.xh.hoist.util.DateTimeUtils.SECONDS
 class PortfolioService extends BaseService {
 
     String telemetryPrefix = 'toolbox.portfolio'
+
+    MetricsService metricsService
 
     def configService,
         orderGenerationService,
@@ -73,20 +76,23 @@ class PortfolioService extends BaseService {
     // Implementation
     //------------------------
     private void initMetrics() {
-        createMetricGauge(
+        metricsService.registerGauge(
             name: 'position.count',
             description: 'Number of portfolio positions',
-            valueFn: { _portfolio.get()?.rawPositions?.size() ?: 0 }
+            valueFn: { _portfolio.get()?.rawPositions?.size() ?: 0 },
+            owner: this
         )
 
-        createMetricTimer(
+        metricsService.configureTimer(
             name: 'generation.time',
-            description: 'Time to generate portfolio'
+            description: 'Time to generate portfolio',
+            owner: this
         )
 
-        createMetricCounter(
+        metricsService.configureCounter(
             name: 'generation.count',
-            description: 'The number of portfolio generations'
+            description: 'The number of portfolio generations',
+            owner: this
         )
     }
 
