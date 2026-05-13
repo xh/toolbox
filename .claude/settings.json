@@ -55,7 +55,7 @@
     "hoist-react"
   ],
   "enabledPlugins": {
-    "xh@hoist-ai": true,
+    "xh@xh-hoist-ai": true,
     "typescript-lsp@claude-plugins-official": true,
     "jdtls-lsp@claude-plugins-official": true
   },
