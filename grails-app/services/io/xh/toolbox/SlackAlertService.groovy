@@ -14,6 +14,8 @@ import static io.xh.hoist.monitor.MonitorStatus.*
 
 class SlackAlertService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.slack'
+
     ConfigService configService
 
     void init() {
@@ -63,7 +65,7 @@ Time: ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
     }
 
     private void sendSlackMessage(message) {
-        span('toolbox.slack.sendMessage').run {
+        span('sendMessage').run {
             def client = new JSONClient(),
                 post = new HttpPost('https://slack.com/api/chat.postMessage'),
                 body = JSONSerializer.serialize([channel: config.channel, text: message]),

@@ -22,6 +22,8 @@ import static java.lang.System.currentTimeMillis
  */
 class EntraIdTokenService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.auth'
+
     static clearCachesConfigs = ['entraIdConfig']
 
     AuthenticationService authenticationService
@@ -98,7 +100,7 @@ class EntraIdTokenService extends BaseService {
 
     private JsonWebKeySet createKeySet() {
         def url = "https://login.microsoftonline.com/${tenantId}/discovery/keys?appid=${clientId}"
-        span('toolbox.auth.getEntraJWKS')
+        span('getEntraJWKS')
             .logInfo(['Fetching JWKS', url])
             .run {
                 def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
