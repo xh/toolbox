@@ -11,6 +11,8 @@ import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
 class WeatherService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.weather'
+
     static clearCachesConfigs = ['weatherApiKey']
 
     ConfigService configService
@@ -38,7 +40,7 @@ class WeatherService extends BaseService {
             encodedCity = URLEncoder.encode(city, 'UTF-8'),
             url = "https://api.openweathermap.org/data/2.5/weather?q=${encodedCity}&appid=${apiKey}&units=imperial"
 
-        span('toolbox.weather.getCurrent')
+        span('getCurrent')
             .logDebug("Loading forecast for $city")
             .run {
                 client.executeAsMap(new HttpGet(url))
@@ -50,7 +52,7 @@ class WeatherService extends BaseService {
             encodedCity = URLEncoder.encode(city, 'UTF-8'),
             url = "https://api.openweathermap.org/data/2.5/forecast?q=${encodedCity}&appid=${apiKey}&units=imperial"
 
-        span('toolbox.weather.getForecast')
+        span('getForecast')
             .logDebug("Loading forecast for $city")
             .run {
                 client.executeAsMap(new HttpGet(url))
