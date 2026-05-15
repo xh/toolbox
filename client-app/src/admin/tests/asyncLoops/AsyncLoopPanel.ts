@@ -7,7 +7,7 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtDateTime} from '@xh/hoist/format';
 import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, observable, makeObservable, runInAction, computed} from '@xh/hoist/mobx';
+import {bindable, observable, runInAction, computed} from '@xh/hoist/mobx';
 import {forEachAsync, Timer, whileAsync} from '@xh/hoist/utils/async';
 import {withDebug} from '@xh/hoist/utils/js';
 import {sampleGrid} from '../../../desktop/common/grid/SampleGrid';
@@ -72,20 +72,15 @@ const tbar = hoistCmp.factory<AsyncLoopPanelModel>(({model}) => {
 });
 
 class AsyncLoopPanelModel extends HoistModel {
-    @bindable iterations = 1000 * 1000;
-    @bindable loopType = 'forEachAsync';
-    @bindable refreshInterval = -1;
-    @observable lastRunDuration: number = null;
+    @bindable accessor iterations = 1000 * 1000;
+    @bindable accessor loopType = 'forEachAsync';
+    @bindable accessor refreshInterval = -1;
+    @observable accessor lastRunDuration: number = null;
 
     @managed timer = Timer.create({
         runFn: () => this.refreshAsync(),
         interval: () => this.refreshInterval * SECONDS
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     @computed
     get collection() {

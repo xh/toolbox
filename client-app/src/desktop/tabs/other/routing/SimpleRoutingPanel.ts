@@ -36,7 +36,6 @@ export const simpleRoutingPanel = hoistCmp.factory({
     }
 });
 
-@managed
 class SimpleRoutingPanelModel extends HoistModel {
     private readonly BASE_ROUTE = 'default.other.simpleRouting';
 

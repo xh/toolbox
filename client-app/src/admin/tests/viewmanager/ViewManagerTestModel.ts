@@ -11,28 +11,28 @@ import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
-import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, computed, observable, runInAction} from '@xh/hoist/mobx';
 import {get} from 'lodash';
 import {sampleGrid, SampleGridModel} from '../../../desktop/common';
 
 export class ViewManagerTestModel extends HoistModel {
-    @managed @observable.ref viewManagerModel: ViewManagerModel;
+    @managed @observable.ref accessor viewManagerModel: ViewManagerModel;
 
     /** FormModel for model configs and component props. */
     @managed configFormModel: FormModel;
 
     /** Persisted models - all implementing Hoist's {@link Persistable} interface. */
-    @managed @observable.ref groupingChooserModel: GroupingChooserModel;
-    @managed @observable.ref filterChooserModel: FilterChooserModel;
-    @managed @observable.ref tabContainerModel: TabContainerModel;
-    @managed @observable.ref panelModel: PanelModel;
-    @managed @observable.ref panelPctModel: PanelModel;
-    @managed @observable.ref gridModel: SampleGridModel;
-    @managed @observable.ref dashContainerModel: DashContainerModel;
-    @managed @observable.ref dashCanvasModel: DashCanvasModel;
-    @managed @observable.ref persistedPropertyModel: PersistedPropertyModel;
+    @managed @observable.ref accessor groupingChooserModel: GroupingChooserModel;
+    @managed @observable.ref accessor filterChooserModel: FilterChooserModel;
+    @managed @observable.ref accessor tabContainerModel: TabContainerModel;
+    @managed @observable.ref accessor panelModel: PanelModel;
+    @managed @observable.ref accessor panelPctModel: PanelModel;
+    @managed @observable.ref accessor gridModel: SampleGridModel;
+    @managed @observable.ref accessor dashContainerModel: DashContainerModel;
+    @managed @observable.ref accessor dashCanvasModel: DashCanvasModel;
+    @managed @observable.ref accessor persistedPropertyModel: PersistedPropertyModel;
 
-    @bindable focusedPersistable: string = null;
+    @bindable accessor focusedPersistable: string = null;
 
     get managedPersistables() {
         return [
@@ -90,7 +90,6 @@ export class ViewManagerTestModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.configFormModel = new FormModel({
             fields: [
@@ -283,11 +282,10 @@ export class ViewManagerTestModel extends HoistModel {
  * Test case for direct persistence of model properties.
  */
 class PersistedPropertyModel extends HoistModel {
-    @bindable stringValue = 'Some Default Value';
+    @bindable accessor stringValue = 'Some Default Value';
 
     constructor({persistWith}: {persistWith: PersistOptions}) {
         super();
-        makeObservable(this);
         this.persistWith = persistWith;
         this.markPersist('stringValue');
     }

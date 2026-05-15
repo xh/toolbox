@@ -5,7 +5,7 @@ import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {isUndefined} from 'lodash';
 import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
@@ -463,33 +463,28 @@ class SelectPanelModel extends HoistModel {
     @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
 
     // Toolbar
-    @bindable toolbarState: string = null;
-    @bindable toolbarMulti: string[] = [];
+    @bindable accessor toolbarState: string = null;
+    @bindable accessor toolbarMulti: string[] = [];
 
     // Column 1
-    @bindable singleState: string = null;
-    @bindable multiStates: string[] = [];
-    @bindable simpleOption: string = null;
-    @bindable disabledState: string = 'California';
-    @bindable leftIconValue: string = null;
+    @bindable accessor singleState: string = null;
+    @bindable accessor multiStates: string[] = [];
+    @bindable accessor simpleOption: string = null;
+    @bindable accessor disabledState: string = 'California';
+    @bindable accessor leftIconValue: string = null;
 
     // Column 2
-    @bindable restaurant: string = null;
-    @bindable asyncValue: number = null;
-    @bindable creatableValue: string = null;
-    @bindable groupedValue: string = null;
-    @bindable statusOption: string = null;
-    @bindable bigValue: string = null;
+    @bindable accessor restaurant: string = null;
+    @bindable accessor asyncValue: number = null;
+    @bindable accessor creatableValue: string = null;
+    @bindable accessor groupedValue: string = null;
+    @bindable accessor statusOption: string = null;
+    @bindable accessor bigValue: string = null;
 
     // Column 3
-    @bindable searchStyle: string = null;
-    @bindable tooltipMulti: string[] = [];
-    @bindable menuTop: string = null;
-    @bindable wideMenu: string = null;
-    @bindable openOnFocus: string = null;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor searchStyle: string = null;
+    @bindable accessor tooltipMulti: string[] = [];
+    @bindable accessor menuTop: string = null;
+    @bindable accessor wideMenu: string = null;
+    @bindable accessor openOnFocus: string = null;
 }

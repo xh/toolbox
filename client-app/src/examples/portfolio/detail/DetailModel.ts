@@ -2,7 +2,7 @@ import {HoistModel, lookup, managed} from '@xh/hoist/core';
 import {DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {bindable, observable} from '@xh/hoist/mobx';
 import {PortfolioModel} from '../PortfolioModel';
 import {chartsPanel} from './charts/ChartsPanel';
 import {ordersGrid} from './orders/OrdersGrid';
@@ -15,21 +15,16 @@ export class DetailModel extends HoistModel {
     @managed ordersModel: OrdersModel;
     @managed panelModel: PanelModel;
 
-    @observable positionId = null;
+    @observable accessor positionId = null;
 
     /**
      * Symbol-level context for any charts within this detail panel.
      * Set by ordersModel when a symbol is selected.
      */
-    @bindable selectedSymbol: string = null;
+    @bindable accessor selectedSymbol: string = null;
 
     get collapsed() {
         return this.panelModel.collapsed;
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     override onLinked() {

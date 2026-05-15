@@ -3,7 +3,7 @@ import {code} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed} from '@xh/hoist/core';
 import {NumberFormatOptions} from '@xh/hoist/format/FormatNumber';
 import * as formatFunctions from '@xh/hoist/format/FormatNumber';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {isBoolean} from 'lodash';
 
 export class NumberFormatsPanelModel extends HoistModel {
@@ -35,7 +35,7 @@ export class NumberFormatsPanelModel extends HoistModel {
     ];
 
     @managed formModel: FormModel;
-    @bindable tryItData: number;
+    @bindable accessor tryItData: number;
 
     get testResults() {
         return this.testData.map(data => ({
@@ -51,7 +51,6 @@ export class NumberFormatsPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         const optFields: Array<keyof NumberFormatOptions> = [
             'colorSpec',

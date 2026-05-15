@@ -1,6 +1,6 @@
 import {isEmpty} from 'lodash';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {
@@ -13,13 +13,13 @@ import {
 } from '../widgets';
 
 export class DashCanvasPanelModel extends HoistModel {
-    @bindable renderDashboard = true;
-    @bindable showWidgetChooser = true;
-    @observable.ref allSymbols: string[] = [];
+    @bindable accessor renderDashboard = true;
+    @bindable accessor showWidgetChooser = true;
+    @observable.ref accessor allSymbols: string[] = [];
 
     @managed
     @observable.ref
-    dashCanvasModel: DashCanvasModel;
+    accessor dashCanvasModel: DashCanvasModel;
 
     override async doLoadAsync(loadSpec) {
         if (isEmpty(this.allSymbols)) {
@@ -29,11 +29,6 @@ export class DashCanvasPanelModel extends HoistModel {
                 this.dashCanvasModel = this.createDashCanvasModel();
             });
         }
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     clearCanvas() {

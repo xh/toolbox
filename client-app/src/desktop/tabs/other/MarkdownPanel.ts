@@ -7,7 +7,7 @@ import {codeInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {wrapper} from '../../common';
 import './MarkdownPanel.scss';
 import content from './MarkdownPanelContent.md';
@@ -88,12 +88,11 @@ export const markdownPanel = hoistCmp.factory({
 });
 
 class MarkdownModel extends HoistModel {
-    @bindable content: string = '';
-    @bindable useCustomStyles: boolean = false;
+    @bindable accessor content: string = '';
+    @bindable accessor useCustomStyles: boolean = false;
 
     constructor() {
         super();
-        makeObservable(this);
 
         fetch(content)
             .then(response => response.text())

@@ -7,7 +7,7 @@ import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {startCase, without} from 'lodash';
 import {wrapper} from '../../common';
 import './IconsPanel.scss';
@@ -179,12 +179,7 @@ function getAllIconNames(): string[] {
 }
 
 class IconsPanelModel extends HoistModel {
-    @bindable fontSize: 'small' | 'default' | 'large' = 'default';
-    @bindable size = '2x';
-    @bindable intent: 'neutral' | Intent = 'neutral';
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor fontSize: 'small' | 'default' | 'large' = 'default';
+    @bindable accessor size = '2x';
+    @bindable accessor intent: 'neutral' | Intent = 'neutral';
 }

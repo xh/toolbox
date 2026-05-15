@@ -3,11 +3,10 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {SplitTreeMapModel, TreeMapModel} from '@xh/hoist/cmp/treemap';
 import {Store} from '@xh/hoist/data';
 import {fmtMillions} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 
 export class TreeMapPageModel extends HoistModel {
-    @bindable
-    type: 'treeMap' | 'splitTreeMap' = 'treeMap';
+    @bindable accessor type: 'treeMap' | 'splitTreeMap' = 'treeMap';
 
     @managed
     store = new Store({
@@ -54,11 +53,6 @@ export class TreeMapPageModel extends HoistModel {
             ];
         }
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     override async doLoadAsync() {
         const data = await XH.portfolioService.getPositionsAsync(['symbol']);

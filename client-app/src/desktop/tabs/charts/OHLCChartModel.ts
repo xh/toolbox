@@ -2,14 +2,14 @@ import {div} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
 
 export class OHLCChartModel extends HoistModel {
-    @bindable currentSymbol: string = '';
-    @bindable.ref symbols: string[] = [];
-    @bindable aspectRatio: number = null;
+    @bindable accessor currentSymbol: string = '';
+    @bindable.ref accessor symbols: string[] = [];
+    @bindable accessor aspectRatio: number = null;
 
     @managed
     chartModel = new ChartModel({
@@ -52,7 +52,6 @@ export class OHLCChartModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.addReaction({
             track: () => this.currentSymbol,

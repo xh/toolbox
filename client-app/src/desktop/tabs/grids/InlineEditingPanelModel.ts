@@ -14,27 +14,24 @@ import {
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
 
 export class InlineEditingPanelModel extends HoistModel {
-    @bindable
-    asyncValidation = false;
+    @bindable accessor asyncValidation = false;
 
-    @bindable
-    fullRowEditing = false;
+    @bindable accessor fullRowEditing = false;
 
     @managed
     @observable.ref
-    gridModel: GridModel;
+    accessor gridModel: GridModel;
 
     @managed
     store: Store;
 
-    @bindable
-    clicksToEdit = 2;
+    @bindable accessor clicksToEdit = 2;
 
     @managed
     panelModel: PanelModel;
@@ -52,7 +49,6 @@ export class InlineEditingPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.panelModel = this.createPanelModel();
         this.store = this.createStore();
         this.gridModel = this.createGridModel();

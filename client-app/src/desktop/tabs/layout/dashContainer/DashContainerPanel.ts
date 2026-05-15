@@ -1,7 +1,7 @@
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, frame, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -105,7 +105,7 @@ const bbar = hoistCmp.factory<DashContainerPanelModel>(({model}) =>
 );
 
 class DashContainerPanelModel extends HoistModel {
-    @bindable renderDashboard = true;
+    @bindable accessor renderDashboard = true;
 
     @managed
     dashContainerModel = new DashContainerModel({
@@ -178,11 +178,6 @@ class DashContainerPanelModel extends HoistModel {
             }
         ]
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     resetState() {
         this.dashContainerModel

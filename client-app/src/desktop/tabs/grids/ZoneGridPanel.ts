@@ -1,5 +1,5 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {action, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, observable} from '@xh/hoist/mobx';
 import {filler, p, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {zoneGrid, ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
@@ -73,8 +73,7 @@ export const zoneGridPanel = hoistCmp.factory({
 });
 
 class ZoneGridPanelModel extends HoistModel {
-    @observable
-    groupBy: string = null;
+    @observable accessor groupBy: string = null;
 
     @managed
     zoneGridModel: ZoneGridModel = new ZoneGridModel({
@@ -125,11 +124,6 @@ class ZoneGridPanelModel extends HoistModel {
             br: {max: 1}
         }
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     override async doLoadAsync() {
         await wait(500);

@@ -1,18 +1,13 @@
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {lengthIs, required} from '@xh/hoist/data';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {movies} from '../../core/data';
 
 export class FormPageModel extends HoistModel {
-    @bindable minimal: boolean;
-    @bindable readonly: boolean;
+    @bindable accessor minimal: boolean;
+    @bindable accessor readonly: boolean;
     readonly movies: PlainObject[] = movies;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     @managed
     formModel: FormModel = new FormModel({
