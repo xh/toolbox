@@ -6,9 +6,7 @@
       "args": [".claude/start-hoist-react-mcp.sh"]
     },
     "hoist-core": {
-      "type": "stdio",
-      "command": "bash",
-      "args": [".claude/start-hoist-core-mcp.sh"]
+      "command": "./bin/hoist-core-mcp"
     },
     "github": {
       "command": "docker",

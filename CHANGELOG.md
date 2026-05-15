@@ -1,17 +1,41 @@
 # Changelog
 
-## 9.0.0-SNAPSHOT - unreleased
+## 9.0-SNAPSHOT - unreleased
+
+* Downgraded toolbox build toolchain back to JDK 21 — JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
+* Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
+
+### Libraries
+
+* ag-Grid `34.2 → 35.3`
+
+## 8.4.0 - 2026-04-30
+
+### Libraries
+
+* hoist-core 39.0.0
+* @xh/hoist 85.0.0
+
+## 8.3.3 - 2026-04-20
 
 ### Technical
 
 * Upgraded build toolchain to JDK 25. Toolbox now uses JDK 25 for local development and CI.
+* Fixed bug in buildRelease workflow - client appVersion was not being set to release version.
 
 * Migrated toolbox to TC39 Stage 3 modern decorators in step with `hoist-react` v85 and `hoist-dev-utils` v14. Removed `experimentalDecorators` from `client-app/tsconfig.json`, added the `accessor` keyword to all `@observable` / `@bindable` fields, and deleted the ~90 `makeObservable(this)` calls that existed across the example apps.
 
 
 ### Libraries
 
-* Grails 7.0.7 → 7.1.0
+* Grails 7.1.0
+* MySQL Connector/J 8.4.0
+
+## 8.3.2 - 2026-04-20
+
+### Libraries
+
+* @xh/hoist 84.0.1
 
 ## 8.3.1 - 2026-04-16
 

@@ -1,6 +1,6 @@
 import {AppModel as HoistAdminAppModel} from '@xh/hoist/admin/AppModel';
 import {TabConfig} from '@xh/hoist/cmp/tab';
-import {XH} from '@xh/hoist/core';
+import {InitContext, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {phaseRestPanel, projectRestPanel} from './roadmap';
@@ -23,9 +23,9 @@ import {
 export class AppModel extends HoistAdminAppModel {
     static instance: AppModel;
 
-    override async initAsync() {
-        await super.initAsync();
-        await XH.installServicesAsync(PortfolioService);
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
+        await XH.installServicesAsync([PortfolioService], ctx);
     }
 
     //------------------------

@@ -14,6 +14,8 @@ import static io.xh.hoist.monitor.MonitorStatus.*
 
 class SlackAlertService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.slack'
+
     ConfigService configService
 
     void init() {
@@ -63,16 +65,18 @@ Time: ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
     }
 
     private void sendSlackMessage(message) {
-        def client = new JSONClient(),
-            post = new HttpPost('https://slack.com/api/chat.postMessage'),
-            body = JSONSerializer.serialize([channel: config.channel, text: message]),
-            entity = new StringEntity(body)
+        span('sendMessage').run {
+            def client = new JSONClient(),
+                post = new HttpPost('https://slack.com/api/chat.postMessage'),
+                body = JSONSerializer.serialize([channel: config.channel, text: message]),
+                entity = new StringEntity(body)
 
-        post.setHeader('Content-type', 'application/json')
-        post.setHeader('Authorization', "Bearer ${config.oauthToken}")
-        post.setEntity(entity)
+            post.setHeader('Content-type', 'application/json')
+            post.setHeader('Authorization', "Bearer ${config.oauthToken}")
+            post.setEntity(entity)
 
-        client.executeAsMap(post)
+            client.executeAsMap(post)
+        }
     }
 
     private String alertSummary(MonitorStatusReport report) {

@@ -1,18 +1,15 @@
 package io.xh.toolbox.portfolio
 
 import com.hazelcast.replicatedmap.ReplicatedMap
-import io.micrometer.core.instrument.Gauge
-import io.micrometer.core.instrument.Timer
 import io.xh.hoist.BaseService
 import io.xh.hoist.cachedvalue.CachedValue
 import io.xh.hoist.exception.DataNotAvailableException
-import io.xh.hoist.telemetry.MetricsService
+import io.xh.hoist.telemetry.metric.MetricsService
 
 import java.time.*
 
 import static io.xh.toolbox.portfolio.Utils.*
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
-import static java.util.concurrent.TimeUnit.MILLISECONDS
 
 
 /**
@@ -26,17 +23,17 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS
  */
 class PortfolioService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.portfolio'
+
+    MetricsService metricsService
+
     def configService,
         orderGenerationService,
         historicalPriceGenerationService,
         instrumentGenerationService
 
-    MetricsService metricsService
-
     private CachedValue<Portfolio> _portfolio = createCachedValue(name: 'portfolio', replicate: true)
     private ReplicatedMap<String, MarketPrice> _currentPrices = createReplicatedMap('currentPrices')
-    private Timer generationTimer
-    private Gauge positionsGauge
 
     void init() {
         initMetrics()
@@ -79,16 +76,24 @@ class PortfolioService extends BaseService {
     // Implementation
     //------------------------
     private void initMetrics() {
-        def registry = metricsService.registry
+        metricsService.registerGauge(
+            name: 'position.count',
+            description: 'Number of portfolio positions',
+            valueFn: { _portfolio.get()?.rawPositions?.size() ?: 0 },
+            owner: this
+        )
 
-        positionsGauge = Gauge.builder('toolbox.portfolio.positions', this) {
-            (_portfolio.get()?.rawPositions?.size() ?: 0) as double
-        }.description('Number of portfolio positions')
-            .register(registry)
+        metricsService.configureTimer(
+            name: 'generation.time',
+            description: 'Time to generate portfolio',
+            owner: this
+        )
 
-        generationTimer = Timer.builder('toolbox.portfolio.generationTime')
-            .description('Time to generate portfolio')
-            .register(registry)
+        metricsService.configureCounter(
+            name: 'generation.count',
+            description: 'The number of portfolio generations',
+            owner: this
+        )
     }
 
     private void updateData(boolean force = false) {
@@ -126,9 +131,10 @@ class PortfolioService extends BaseService {
 
     private Portfolio generatePortfolio() {
         observe()
-            .span(name: 'generatePortfolio')
+            .span('generatePortfolio')
+            .timer('generation.time')
+            .counter('generation.count')
             .logInfo('Generating Portfolio')
-            .timer(generationTimer)
             .run {
                 def day = LocalDate.now(),
                     instruments = instrumentGenerationService.generateInstruments(),
@@ -183,8 +189,6 @@ class PortfolioService extends BaseService {
         def p = _portfolio.get()
         return [
             config: configForAdminStats('portfolioConfigs'),
-            avgGenerationTime: generationTimer.mean(MILLISECONDS),
-
             portfolioAvailable: portfolioAvailable,
             day: p?.day,
             generatedAt: p?.timeCreated,

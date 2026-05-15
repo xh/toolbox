@@ -31,12 +31,12 @@
     ]
   },
   "dependencies": {
-    "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^85.0.0-SNAPSHOT",
+    "@fortawesome/free-brands-svg-icons": "^7.2.0",
+    "@xh/hoist": "^86.0.0-SNAPSHOT",
     "@xh/package-template": "~3.0.1",
-    "ag-grid-community": "~34.2.0",
-    "ag-grid-enterprise": "~34.2.0",
-    "ag-grid-react": "~34.2.0",
+    "ag-grid-community": "~35.3.0",
+    "ag-grid-enterprise": "~35.3.0",
+    "ag-grid-react": "~35.3.0",
     "core-js": "3.x",
     "highcharts": "12.x",
     "lodash": "4.x",
@@ -53,7 +53,7 @@
     "eslint": "10.x",
     "eslint-config-prettier": "10.x",
     "husky": "9.x",
-    "lint-staged": "16.x",
+    "lint-staged": "17.x",
     "postcss": "8.x",
     "prettier": "3.x",
     "stylelint": "17.x",
@@ -63,8 +63,7 @@
   "resolutions": {
     "@types/react": "18.x",
     "@types/react-dom": "18.x",
-    "core-js": "3.x",
-    "jquery": "3.x"
+    "core-js": "3.x"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

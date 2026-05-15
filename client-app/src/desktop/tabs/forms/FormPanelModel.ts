@@ -23,6 +23,7 @@ export class FormPanelModel extends HoistModel {
     @bindable accessor inline: boolean = false;
     @bindable accessor minimal: boolean = false;
     @bindable accessor commitOnChange: boolean = true;
+    @bindable accessor usDateFormat: boolean = false;
 
     @managed
     formModel = new FormModel({
