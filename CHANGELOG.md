@@ -2,6 +2,13 @@
 
 ## 9.0-SNAPSHOT - unreleased
 
+* Downgraded toolbox build toolchain back to JDK 21 — JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
+* Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
+
+### Libraries
+
+* ag-Grid `34.2 → 35.3`
+
 ## 8.4.0 - 2026-04-30
 
 ### Libraries
