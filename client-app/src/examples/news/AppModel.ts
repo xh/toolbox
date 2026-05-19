@@ -9,7 +9,7 @@ export class AppModel extends BaseAppModel {
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
         this.newsPanelModel = new NewsPanelModel();
-        this.loadAsync();
+        this.loadAsync({span: ctx.span});
     }
 
     override async doLoadAsync(loadSpec) {

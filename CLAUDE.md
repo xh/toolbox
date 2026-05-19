@@ -21,12 +21,19 @@ Understanding these frameworks is essential to writing correct, idiomatic code i
 
 ## Hoist Framework Documentation — READ THIS FIRST
 
-### hoist-react (client-side)
+This project depends on two framework plugins. Always consult the framework reference tools
+before authoring code that imports from `@xh/hoist` or `io.xh.hoist` — prop names, decorators,
+and conventions evolve, and stale guesses produce real bugs.
 
-Read the Architecture Primer below, then use the Hoist Developer Tools for full documentation on
-any package.
+- **`@xh/hoist` (hoist-react)** — when authoring under `client-app/`, the
+  `xh:using-hoist-react-reference` skill is your routing table for the docs and symbol-search
+  tools (MCP + CLI). Read the Architecture Primer below for the foundational mental model; the
+  skill covers everything beyond.
+- **`hoist-core`** — when authoring Groovy/Java under `grails-app/` or `src/`, the
+  `xh:using-hoist-core-reference` skill is your routing table. It also owns the install /
+  upgrade procedure for the project-local CLI launchers and MCP server.
 
-#### Architecture Primer
+### hoist-react Architecture Primer
 
 Hoist applications are built around three artifact types:
 
@@ -162,55 +169,13 @@ Use `hoist-search-docs` with the doc ID for full documentation on any topic.
 | Use icons in buttons, menus, and grids | `icon` |
 | Configure OAuth with Auth0 or Microsoft Entra | `security` |
 
-#### Hoist Developer Tools
-
-For full documentation beyond this primer, use the hoist-react developer tools. Two interfaces are
-available. Both share the same underlying registries and produce identical output:
-
-**MCP Server (hoist-react)** — If a hoist-react MCP server is configured in your environment, use
-the `hoist-search-docs`, `hoist-list-docs`, `hoist-search-symbols`, `hoist-get-symbol`, and
-`hoist-get-members` tools, plus `hoist://docs/{id}` resources for direct document access.
-
-**CLI Tools** — For environments without MCP support, or when you prefer shell commands. These are
-`bin` entries in the hoist-react `package.json` and are available via `npx` in any project that
-depends on hoist-react. **You must run these from the `client-app/` directory** (where hoist-react is
-installed as a dependency) — they will not resolve from the project root. Ensure `yarn install` has
-been run in `client-app/` first.
-
-```bash
-cd client-app
-
-# Documentation
-npx hoist-docs search "grid sorting"         # Search all docs by keyword
-npx hoist-docs read cmp/grid                 # Read a specific doc by ID
-npx hoist-docs list                          # List all available docs
-npx hoist-docs conventions                   # Print coding conventions
-npx hoist-docs index                         # Print the documentation catalog
-
-# TypeScript symbols and types
-npx hoist-ts search GridModel                # Search for symbols and class members
-npx hoist-ts symbol GridModel                # Get detailed type info for a symbol
-npx hoist-ts members GridModel               # List all members of a class/interface
-```
-
-**Use `search` for discovery** — it does case-insensitive fuzzy matching across both symbol names
-and class members. Use `symbol` and `members` only when you already know the exact PascalCase name.
-Run `npx hoist-docs --help` and `npx hoist-ts --help` for full usage.
-
-**Skipping the docs risks producing code that conflicts with established patterns or misses
-built-in functionality.**
-
-### hoist-core (server-side)
+### hoist-core
 
 The hoist-core repository has comprehensive documentation covering server-side architecture,
-services, and conventions across 20+ feature docs and upgrade notes. Use the **hoist-core MCP
-tools** (`hoist-core-search-docs`, `hoist-core-list-docs`, `hoist-core-search-symbols`,
-`hoist-core-get-symbol`, `hoist-core-get-members`) to search and browse this documentation and
-inspect Groovy/Java symbols — just as you would use the hoist-react MCP tools for client-side work.
-
-For direct browsing, the docs are also available via the public GitHub repository at
-https://github.com/xh/hoist-core/tree/develop/docs or a local sibling checkout (`../hoist-core`).
-For topics not yet covered by docs, refer to the existing source code in `grails-app/`.
+services, and conventions across 20+ feature docs and upgrade notes — all surfaced via the
+reference tools described in the `xh:using-hoist-core-reference` skill. For topics not yet
+covered by docs, refer to the existing source code in `grails-app/`, or browse the public docs
+at https://github.com/xh/hoist-core/tree/develop/docs.
 
 ## MCP Servers
 
@@ -220,39 +185,47 @@ tools to AI coding agents. Servers must also be listed in `.claude/settings.json
 
 ### hoist-react (enabled by default)
 
-A local Node.js process that exposes hoist-react framework documentation and symbol search. The
-Architecture Primer above covers essential patterns inline; the MCP provides full documentation
-for all packages and concepts. No additional setup is required; it runs directly from installed
-`node_modules`.
+A local Node.js process that exposes hoist-react framework documentation and symbol search. No
+additional setup required — it runs directly from installed `node_modules`. See the
+`xh:using-hoist-react-reference` skill for the routing table of MCP and CLI surfaces.
 
 ### hoist-core (enabled by default)
 
-A Groovy-based MCP server that exposes hoist-core framework documentation and Groovy/Java symbol
-inspection. It provides documentation search across all feature docs and upgrade notes, plus
-AST-based symbol search for classes, services, controllers, and their members. The server runs via
-a bootstrap script that auto-builds from a local sibling checkout (when `runHoistInline=true` in
-`gradle.properties`) or downloads a published JAR for the version specified in `gradle.properties`.
-Requires Java 17+.
+A Groovy-based MCP server exposing hoist-core docs and AST-based symbol inspection. Runs via a
+project-local launcher (`./bin/hoist-core-mcp`) generated by `./gradlew installHoistCoreTools`;
+re-run that task after cloning the repo or bumping `hoistCoreVersion`. Toolbox typically tracks a
+hoist-core SNAPSHOT, so the bundled content stays close to `develop`. The same task also writes
+`./bin/hoist-core-docs` and `./bin/hoist-core-symbols` CLI launchers. See
+the `xh:using-hoist-core-reference` skill for the routing table and the full install/upgrade
+procedure.
 
-### github (opt-in)
+### GitHub MCP Server (opt-in)
 
-A Docker-based server providing GitHub API tools (issues, PRs, code search, etc.) via the official
-`github-mcp-server` image. This server is configured in `.mcp.json` but **not enabled by default**
-— it requires Docker and a GitHub token, which not all developers will have running. If you work
-with GitHub issues, PRs, or code search, enabling it is recommended. To do so:
+A Docker-based server providing GitHub API tools (issues, PRs, code search, etc.) via the
+official `github-mcp-server` image. Configured in `.mcp.json` but **not enabled by default** —
+it requires Docker and an authenticated GitHub CLI, which not every developer keeps running.
 
-1. Install and start **Docker**
-2. Set the **`GITHUB_TOKEN`** environment variable to a GitHub Personal Access Token
-3. Add `"github"` to `enabledMcpjsonServers` in `.claude/settings.local.json`:
+**To enable:**
+
+1. Install and start **Docker**.
+2. Install the **GitHub CLI** (`brew install gh`) and authenticate with `gh auth login`. The
+   server invokes `gh auth token` at startup to fetch a token from the macOS Keychain (or
+   `gh`'s credential store on other platforms), so no plaintext token needs to live in your
+   shell environment.
+3. Add `"github"` to `enabledMcpjsonServers` in `.claude/settings.local.json` (local settings
+   merge with the shared `settings.json` — enabling locally does not affect other developers):
    ```json
    {
      "enabledMcpjsonServers": ["hoist-react", "hoist-core", "github"]
    }
    ```
 
-Local settings merge with the shared `settings.json`, so enabling it locally does not affect other
-developers. If Docker is not running or the token is not set when the server is enabled, Claude
-Code may show errors on startup — remove `"github"` from your local settings to resolve.
+If Docker is not running or `gh` is not authenticated when the server is enabled, Claude Code
+may show errors on startup — remove `"github"` from your local settings to resolve.
+
+**Fallback when not enabled:** The `gh` CLI provides functionally equivalent access to the same
+operations (`gh pr view`, `gh issue list`, `gh api`, `gh pr create`, etc.). Prefer `gh` over
+crafting raw `curl` calls to the GitHub API.
 
 ### jetbrains (opt-in)
 
@@ -302,9 +275,11 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 
 - **Frontend**: TypeScript, React 18, MobX, AG Grid, Highcharts, `@xh/hoist` framework
 - **Backend**: Grails 7 (Groovy/Spring Boot), `hoist-core` framework
-- **JDK**: Java 25 is required for local development and CI. The Gradle toolchain in
-  `build.gradle` pins the language level to 25. (Note that `hoist-core` itself is separately
-  pinned to Java 17 bytecode so its published JAR remains runnable by client apps on JDK 17+.)
+- **JDK**: the JVM version used for local development and CI is set by `majorJavaVersion` in
+  `gradle.properties`; the Gradle toolchain in `build.gradle` reads that value. JDK 25+ is not
+  currently usable — Gradle 8.x caps its compatible JVM at version 24. (Note that `hoist-core`
+  itself is separately pinned to a lower bytecode level so its published JAR remains runnable
+  by older client apps — see `hoist-core` docs for the current minimum.)
 - **Database**: MySQL (or H2 in-memory for quick local dev via `APP_TOOLBOX_USE_H2=true`)
 - **Package Manager**: Yarn 1.22 (frontend), Gradle via wrapper (backend)
 
@@ -372,6 +347,16 @@ are squash-merged into `develop`, so intermediate commits are collapsed automati
 force-push a feature branch; if the branch falls behind `develop`, use a simple merge commit rather
 than a rebase. Merge commits and extra commits are harmless on feature branches and are squashed out
 on merge, while force-pushes risk losing work and complicate collaboration.
+
+
+## Telemetry
+
+**Span names**: When naming custom OTEL spans passed to `withSpanAsync` or `FetchOptions.span`,
+use a dotted namespace of `toolbox.<sub-app>.<action>` for example apps (e.g.
+`toolbox.weatherv2.loadViews`, `toolbox.weather.loadDashboardData`), or `toolbox.<action>` for
+the main desktop/admin/mobile apps. The `xh.*` prefix is reserved for framework-owned spans per
+the hoist-react v85 upgrade notes, so the `toolbox.*` prefix keeps app spans cleanly
+distinguishable from framework spans in the trace view.
 
 
 ## Architecture

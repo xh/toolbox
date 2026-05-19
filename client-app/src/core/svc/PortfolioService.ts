@@ -1,4 +1,4 @@
-import {HoistService, InitContext, PlainObject, XH} from '@xh/hoist/core';
+import {HoistService, InitContext, LoadSpec, PlainObject, XH} from '@xh/hoist/core';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
@@ -10,11 +10,13 @@ export class PortfolioService extends HoistService {
     lookups: PlainObject;
 
     override async initAsync(ctx: InitContext) {
-        this.lookups = await XH.fetchJson({url: 'portfolio/lookups', span: ctx.span});
+        this.lookups = await this.runner(ctx.span).fetchJson({url: 'portfolio/lookups'});
     }
 
-    async getSymbolsAsync({loadSpec}: any = {}) {
-        return XH.fetchJson({url: 'portfolio/symbols', loadSpec});
+    async getSymbolsAsync({loadSpec}: {loadSpec?: LoadSpec} = {}) {
+        return this.runner(loadSpec)
+            .newSpan('toolbox.client.portfolio.getSymbols')
+            .fetchJson({url: 'portfolio/symbols'});
     }
 
     /**
@@ -29,14 +31,15 @@ export class PortfolioService extends HoistService {
         includeSummary = false,
         maxPositions = this.MAX_POSITIONS
     ): Promise<Position[]> {
-        const positions = await XH.fetchJson({
-            url: 'portfolio/positions',
-            params: {
-                dims: dims.join(','),
-                maxPositions
-            },
-            track: 'Loaded positions'
-        });
+        const positions = await this.newSpan('toolbox.client.portfolio.getPositions')
+            .track('Loaded positions')
+            .fetchJson({
+                url: 'portfolio/positions',
+                params: {
+                    dims: dims.join(','),
+                    maxPositions
+                }
+            });
 
         return includeSummary ? [positions.root] : positions.root.children;
     }
@@ -46,11 +49,9 @@ export class PortfolioService extends HoistService {
      * @param positionId - ID installed on each position returned by `getPositionsAsync()`.
      */
     async getPositionAsync(positionId: string): Promise<Position> {
-        return XH.fetchJson({
+        return this.newSpan('toolbox.client.portfolio.getPosition').fetchJson({
             url: 'portfolio/position',
-            params: {
-                positionId
-            }
+            params: {positionId}
         });
     }
 
@@ -63,7 +64,7 @@ export class PortfolioService extends HoistService {
         topic: string,
         maxPositions: number = this.MAX_POSITIONS
     ) {
-        const session = await XH.fetchJson({
+        const session = await this.newSpan('toolbox.client.portfolio.getLivePositions').fetchJson({
             url: 'portfolio/livePositions',
             params: {
                 dims: dims.join(','),
@@ -79,20 +80,33 @@ export class PortfolioService extends HoistService {
     /**
      * Return a list of flat position data.
      */
-    async getPricedRawPositionsAsync({loadSpec}: any = {}): Promise<PricedRawPosition[]> {
-        return XH.fetchJson({url: 'portfolio/pricedRawPositions', loadSpec});
+    async getPricedRawPositionsAsync({loadSpec}: {loadSpec?: LoadSpec} = {}): Promise<
+        PricedRawPosition[]
+    > {
+        return this.runner(loadSpec)
+            .newSpan('toolbox.client.portfolio.getPricedRawPositions')
+            .fetchJson({url: 'portfolio/pricedRawPositions'});
     }
 
-    async getAllOrdersAsync({loadSpec}: any = {}): Promise<PlainObject[]> {
-        return XH.fetchJson({url: 'portfolio/orders', loadSpec});
+    async getAllOrdersAsync({loadSpec}: {loadSpec?: LoadSpec} = {}): Promise<PlainObject[]> {
+        return this.runner(loadSpec)
+            .newSpan('toolbox.client.portfolio.getAllOrders')
+            .fetchJson({url: 'portfolio/orders'});
     }
 
-    async getOrdersAsync({positionId, loadSpec}): Promise<PlainObject[]> {
-        const ret: PlainObject[] = await XH.fetchJson({
-            url: 'portfolio/ordersForPosition',
-            params: {positionId},
-            loadSpec
-        });
+    async getOrdersAsync({
+        positionId,
+        loadSpec
+    }: {
+        positionId: string;
+        loadSpec?: LoadSpec;
+    }): Promise<PlainObject[]> {
+        const ret: PlainObject[] = await this.runner(loadSpec)
+            .newSpan('toolbox.client.portfolio.getOrdersForPosition')
+            .fetchJson({
+                url: 'portfolio/ordersForPosition',
+                params: {positionId}
+            });
 
         ret.forEach(it => {
             it.day = LocalDate.from(it.time);
@@ -101,8 +115,18 @@ export class PortfolioService extends HoistService {
         return ret;
     }
 
-    async getLineChartSeriesAsync({symbol, dimension = 'volume', loadSpec}) {
-        const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`, loadSpec});
+    async getLineChartSeriesAsync({
+        symbol,
+        dimension = 'volume',
+        loadSpec
+    }: {
+        symbol: string;
+        dimension?: string;
+        loadSpec?: LoadSpec;
+    }) {
+        const mktData = await this.runner(loadSpec)
+            .newSpan('toolbox.client.portfolio.getLineChartSeriesAsync')
+            .fetchJson({url: `portfolio/prices/${symbol}`});
         return {
             name: symbol,
             type: 'line',
@@ -111,17 +135,20 @@ export class PortfolioService extends HoistService {
         };
     }
 
-    async getSparklineSeriesAsync({symbols, loadSpec}) {
-        const data = await XH.fetchJson({
-            url: `portfolio/closingPriceHistory`,
-            loadSpec,
-            params: {symbols}
-        });
+    async getSparklineSeriesAsync({symbols, loadSpec}: {symbols: string[]; loadSpec?: LoadSpec}) {
+        const data = await this.runner(loadSpec)
+            .newSpan('toolbox.client.portfolio.getSparkline')
+            .fetchJson({
+                url: `portfolio/closingPriceHistory`,
+                params: {symbols}
+            });
         return mapValues(data, series => series.map(([date, price]) => [new Date(date), price]));
     }
 
-    async getOHLCChartSeriesAsync({symbol, loadSpec}) {
-        const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`, loadSpec});
+    async getOHLCChartSeriesAsync({symbol, loadSpec}: {symbol: string; loadSpec?: LoadSpec}) {
+        const mktData = await this.runner(loadSpec)
+            .newSpan('toolbox.client.portfolio.getOHLCChart')
+            .fetchJson({url: `portfolio/prices/${symbol}`});
         return {
             name: symbol,
             type: 'ohlc',
