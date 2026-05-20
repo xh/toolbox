@@ -1,4 +1,8 @@
 .tb-news-panel {
+  & .ag-row {
+    overflow: hidden;
+  }
+
   .news-item {
     p,
     span {

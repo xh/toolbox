@@ -13,7 +13,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {Icon} from '@xh/hoist/icon';
-import {numberInput} from '@xh/hoist/desktop/cmp/input';
 import {get, isEqual} from 'lodash';
 import {sampleGrid} from '../../../desktop/common';
 import {ViewManagerTestModel} from './ViewManagerTestModel';
@@ -145,10 +144,6 @@ const modelConfig = hoistCmp.factory({
                 formField({
                     field: 'initialViewName',
                     item: textInput({enableClear: true})
-                }),
-                formField({
-                    field: 'settleTime',
-                    item: numberInput()
                 }),
                 hbox(
                     vbox(

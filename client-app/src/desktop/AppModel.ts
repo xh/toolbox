@@ -1,52 +1,94 @@
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {LoadSpec, managed, XH} from '@xh/hoist/core';
+import {span} from '@xh/hoist/cmp/layout';
+import {TabConfig, TabContainerModel, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
+import {InitContext, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
     themeAppOption
 } from '@xh/hoist/desktop/cmp/appOption';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {runInAction} from '@xh/hoist/mobx';
+import {isEmpty} from 'lodash';
+import {BaseAppModel} from '../BaseAppModel';
+import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {chartsTab} from './tabs/charts/ChartsTab';
-import {layoutTab} from './tabs/layout/LayoutTab';
+import {
+    gridTreeMapPanel,
+    lineChartPanel,
+    ohlcChartPanel,
+    simpleTreeMapPanel,
+    splitTreeMapPanel
+} from './tabs/charts';
+import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
-import {formsTab} from './tabs/forms/FormsTab';
-import {gridsTab} from './tabs/grids/GridsTab';
+import {formPanel, inputsPanel, pickerPanel, selectPanel, toolbarFormPanel} from './tabs/forms';
+import {
+    agGridView,
+    columnFilteringPanel,
+    columnGroupsGridPanel,
+    dataViewPanel,
+    externalSortGridPanel,
+    inlineEditingPanel,
+    restGridPanel,
+    standardGridPanel,
+    treeGridPanel,
+    treeGridWithCheckboxPanel,
+    zoneGridPanel
+} from './tabs/grids';
 import {homeTab} from './tabs/home/HomeTab';
+import {
+    cardPanel,
+    dashCanvasPanel,
+    dashContainerPanel,
+    dockContainerPanel,
+    hboxContainerPanel,
+    tabPanelContainerPanel,
+    tileFrameContainerPanel,
+    vboxContainerPanel
+} from './tabs/layout';
 import {mobileTab} from './tabs/mobile/MobileTab';
-import {otherTab} from './tabs/other/OtherTab';
-import {panelsTab} from './tabs/panels/PanelsTab';
-import {fmtDateTimeSec} from '@xh/hoist/format';
-import {span} from '@xh/hoist/cmp/layout';
-import {BaseAppModel} from '../BaseAppModel';
+import {
+    appNotificationsPanel,
+    buttonsPanel,
+    clockPanel,
+    customPackagePanel,
+    dateFormatsPanel,
+    errorMessagePanel,
+    exceptionHandlerPanel,
+    fileChooserPanel,
+    iconsPanel,
+    inspectorPanel,
+    jsxPanel,
+    leftRightChooserPanel,
+    markdownPanel,
+    numberFormatsPanel,
+    pinPadPanel,
+    placeholderPanel,
+    popupsPanel,
+    relativeTimestampPanel,
+    simpleRoutingPanel
+} from './tabs/other';
+import {
+    basicPanel,
+    loadingIndicatorPanel,
+    maskPanel,
+    panelSizingPanel,
+    toolbarPanel
+} from './tabs/panels';
 
 export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
 
     @managed
-    tabModel: TabContainerModel = new TabContainerModel({
-        route: 'default',
-        track: true,
-        switcher: false,
-        tabs: [
-            {id: 'home', icon: Icon.home(), content: homeTab},
-            {id: 'grids', icon: Icon.grid(), content: gridsTab},
-            {id: 'panels', icon: Icon.window(), content: panelsTab},
-            {id: 'layout', icon: Icon.layout(), content: layoutTab},
-            {id: 'forms', icon: Icon.edit(), content: formsTab},
-            {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
-            {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
-            {id: 'other', icon: Icon.boxFull(), content: otherTab},
-            {id: 'examples', icon: Icon.books(), content: examplesTab}
-        ]
-    });
+    tabModel: TabContainerModel = this.createTabContainerModel();
 
-    override async initAsync() {
-        await super.initAsync();
-        await XH.installServicesAsync(GitHubService, PortfolioService);
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
+        await XH.installServicesAsync([DocService, GitHubService, PortfolioService], ctx);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
         this.addReaction({
@@ -77,7 +119,20 @@ export class AppModel extends BaseAppModel {
                 prefName: 'expandDockedLinks',
                 formField: {
                     label: 'Expand Links',
-                    info: 'Enable to always expand the docked Links panel when available.',
+                    info: 'Always expand the docked Links panel when available.',
+                    item: switchInput()
+                }
+            },
+            {
+                name: 'appMenuButtonWithUserProfile',
+                valueSetter: v => {
+                    runInAction(() => (this.renderWithUserProfile = v));
+                    XH.setPref('appMenuButtonWithUserProfile', v);
+                },
+                valueGetter: () => XH.getPref('appMenuButtonWithUserProfile'),
+                formField: {
+                    label: 'Profile pic menu',
+                    info: 'Render the App Menu button using your profile pic',
                     item: switchInput()
                 }
             }
@@ -100,6 +155,7 @@ export class AppModel extends BaseAppModel {
                         children: [
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
+                            {name: 'card', path: '/card'},
                             {name: 'tabPanel', path: '/tabPanel'},
                             {name: 'dock', path: '/dock'},
                             {name: 'dashContainer', path: '/dashContainer'},
@@ -142,6 +198,8 @@ export class AppModel extends BaseAppModel {
                         children: [
                             {name: 'form', path: '/form'},
                             {name: 'inputs', path: '/inputs'},
+                            {name: 'select', path: '/select'},
+                            {name: 'picker', path: '/picker'},
                             {name: 'toolbarForm', path: '/toolbarForm'}
                         ]
                     },
@@ -177,6 +235,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'inspector', path: '/inspector'},
                             {name: 'jsx', path: '/jsx'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
+                            {name: 'markdown', path: '/markdown'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'placeholder', path: '/placeholder'},
                             {name: 'popups', path: '/popups'},
@@ -187,6 +246,11 @@ export class AppModel extends BaseAppModel {
                             },
                             {name: 'timestamp', path: '/timestamp'}
                         ]
+                    },
+                    {
+                        name: 'docs',
+                        path: '/docs',
+                        children: [{name: 'docRef', path: '/:source/:docId'}]
                     },
                     {
                         name: 'examples',
@@ -209,5 +273,199 @@ export class AppModel extends BaseAppModel {
                 omit: !lastGitHubCommit
             }
         ];
+    }
+
+    // -------------------------------
+    // Implementation
+    // -------------------------------
+    private createTabContainerModel(): TabContainerModel {
+        const switcher: TabSwitcherConfig = {
+            mode: 'static',
+            extraMenuItems: [
+                {
+                    text: 'Open Tab in New Window',
+                    icon: Icon.openExternal(),
+                    actionFn: (_, {tab}) => {
+                        const {params} = XH.router.getState();
+                        XH.openWindow(
+                            window.origin +
+                                XH.router.buildPath(tab.containerModel.route + '.' + tab.id, params)
+                        );
+                    }
+                }
+            ]
+        };
+        const tabs: TabConfig[] = [
+            {id: 'home', icon: Icon.home(), content: homeTab},
+            {
+                id: 'grids',
+                icon: Icon.grid(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'standard', content: standardGridPanel},
+                        {id: 'tree', content: treeGridPanel},
+                        {id: 'columnFiltering', content: columnFilteringPanel},
+                        {id: 'inlineEditing', content: inlineEditingPanel},
+                        {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
+                        {id: 'dataview', title: 'DataView', content: dataViewPanel},
+                        {
+                            id: 'treeWithCheckBox',
+                            title: 'Tree w/CheckBox',
+                            content: treeGridWithCheckboxPanel
+                        },
+                        {
+                            id: 'groupedCols',
+                            title: 'Grouped Columns',
+                            content: columnGroupsGridPanel
+                        },
+                        {id: 'externalSort', content: externalSortGridPanel},
+                        {id: 'rest', title: 'REST Editor', content: restGridPanel},
+                        {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
+                    ]
+                }
+            },
+            {
+                id: 'panels',
+                icon: Icon.window(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'intro', content: basicPanel},
+                        {id: 'toolbars', content: toolbarPanel},
+                        {id: 'sizing', content: panelSizingPanel},
+                        {id: 'mask', content: maskPanel},
+                        {id: 'loadingIndicator', content: loadingIndicatorPanel}
+                    ]
+                }
+            },
+            {
+                id: 'layout',
+                icon: Icon.layout(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
+                        {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
+                        {id: 'card', title: 'Card', content: cardPanel},
+                        {
+                            id: 'tabPanel',
+                            title: 'TabContainer',
+                            content: tabPanelContainerPanel
+                        },
+                        {
+                            id: 'dashContainer',
+                            title: 'DashContainer',
+                            content: dashContainerPanel
+                        },
+                        {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel},
+                        {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
+                        {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
+                    ]
+                }
+            },
+            {
+                id: 'forms',
+                icon: Icon.edit(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'form', title: 'FormModel', content: formPanel},
+                        {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                        {id: 'select', title: 'Select', content: selectPanel},
+                        {id: 'picker', title: 'Picker', content: pickerPanel},
+                        {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
+                    ]
+                }
+            },
+            {
+                id: 'charts',
+                icon: Icon.chartLine(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'line', content: lineChartPanel},
+                        {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
+                        {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
+                        {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
+                        {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
+                    ]
+                }
+            },
+            {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
+            {
+                id: 'other',
+                icon: Icon.boxFull(),
+                content: {
+                    switcher,
+                    tabs: [
+                        {id: 'appNotifications', content: appNotificationsPanel},
+                        {id: 'buttons', content: buttonsPanel},
+                        {id: 'clock', content: clockPanel},
+                        {id: 'customPackage', content: customPackagePanel},
+                        {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
+                        {
+                            id: 'exceptionHandler',
+                            title: 'Exception Handling',
+                            content: exceptionHandlerPanel
+                        },
+                        {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
+                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
+                        {id: 'formatDates', content: dateFormatsPanel},
+                        {id: 'formatNumbers', content: numberFormatsPanel},
+                        {id: 'icons', content: iconsPanel},
+                        {id: 'inspector', content: inspectorPanel},
+                        {
+                            id: 'leftRightChooser',
+                            title: 'LeftRightChooser',
+                            content: leftRightChooserPanel
+                        },
+                        {id: 'markdown', content: markdownPanel},
+                        {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                        {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                        {id: 'popups', content: popupsPanel},
+                        {id: 'simpleRouting', content: simpleRoutingPanel},
+                        {id: 'timestamp', content: relativeTimestampPanel}
+                    ]
+                }
+            },
+            {id: 'docs', icon: Icon.book(), content: docsTab},
+            {id: 'examples', icon: Icon.books(), content: examplesTab}
+        ];
+        return new TabContainerModel({
+            persistWith: {localStorageKey: 'tabState'},
+            route: 'default',
+            track: true,
+            tabs,
+            switcher: {
+                mode: 'dynamic',
+                initialFavorites: tabs.map(it => it.id),
+                extraMenuItems: [
+                    ...switcher.extraMenuItems,
+                    '-',
+                    {
+                        text: 'More Tabs...',
+                        prepareFn: me => {
+                            const tabs = this.tabModel.tabs.filter(
+                                ({id}) =>
+                                    !this.tabModel.dynamicTabSwitcherModel.visibleTabs.some(
+                                        it => it.id === id
+                                    )
+                            );
+                            if (isEmpty(tabs)) {
+                                me.hidden = true;
+                            } else {
+                                me.hidden = false;
+                                me.items = tabs.map(tab => ({
+                                    text: tab.title,
+                                    icon: tab.icon,
+                                    actionFn: () => this.tabModel.activateTab(tab)
+                                }));
+                            }
+                        }
+                    }
+                ]
+            }
+        });
     }
 }

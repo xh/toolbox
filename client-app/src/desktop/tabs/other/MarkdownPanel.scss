@@ -1,0 +1,140 @@
+/**
+ * Example opt-in styles for the Hoist `markdown` component. The component renders standard,
+ * unstyled HTML by default — apps can wrap it in a container with a custom class like this
+ * one to style headings, tables, code blocks, links, and other elements as desired.
+ * Uses Hoist theme variables (e.g. --xh-border-color, --xh-bg-alt) for dark/light support.
+ */
+.tb-markdown-panel--styled {
+  // Headings
+  h1 {
+    font-size: 1.8em;
+    border-bottom: 2px solid var(--xh-orange);
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 1.4em;
+    border-bottom: 1px solid var(--xh-border-color);
+    padding-bottom: 6px;
+    margin-top: 32px;
+    margin-bottom: 16px;
+  }
+  h3 {
+    font-size: 1.15em;
+    margin-top: 24px;
+    margin-bottom: 12px;
+  }
+  h4 {
+    font-size: 1.05em;
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+
+  // Code blocks
+  pre {
+    background-color: var(--xh-bg-alt);
+    border: 1px solid var(--xh-border-color);
+    border-radius: 6px;
+    padding: 14px 18px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 16px 0;
+  }
+  code {
+    font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 0.88em;
+  }
+  :not(pre) > code {
+    background-color: var(--xh-bg-alt);
+    border: 1px solid var(--xh-border-color);
+    border-radius: 3px;
+    padding: 1px 6px;
+  }
+
+  // Tables
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    font-size: 0.95em;
+  }
+  th,
+  td {
+    border: 1px solid var(--xh-border-color);
+    padding: 8px 12px;
+    text-align: left;
+  }
+  th {
+    background-color: var(--xh-bg-alt);
+    font-weight: 600;
+  }
+  tr:hover td {
+    background-color: var(--xh-bg-highlight);
+  }
+
+  // Links
+  a {
+    color: var(--xh-blue);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s ease;
+  }
+  a:hover {
+    border-bottom-color: var(--xh-blue);
+  }
+
+  // Lists
+  ul,
+  ol {
+    padding-left: 24px;
+    margin: 12px 0;
+  }
+  li {
+    margin: 6px 0;
+    line-height: 1.6;
+  }
+  li > ul,
+  li > ol {
+    margin: 4px 0;
+  }
+
+  // Blockquotes
+  blockquote {
+    border-left: 4px solid var(--xh-orange);
+    margin: 16px 0;
+    padding: 8px 16px;
+    background-color: var(--xh-bg-alt);
+    border-radius: 0 6px 6px 0;
+  }
+  blockquote p:first-child {
+    margin-top: 0;
+  }
+  blockquote p:last-child {
+    margin-bottom: 0;
+  }
+
+  // Horizontal rules
+  hr {
+    border: none;
+    border-top: 1px solid var(--xh-border-color);
+    margin: 32px 0;
+  }
+
+  // Paragraphs
+  p {
+    line-height: 1.7;
+    margin: 14px 0;
+  }
+
+  // Images
+  img {
+    max-width: 100%;
+    border-radius: 4px;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+}

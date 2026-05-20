@@ -123,7 +123,7 @@ export class OrdersModel extends HoistModel {
                 });
             if (loadSpec.isStale) return;
 
-            dashViewModel.title = `Orders (${orders.length})`;
+            dashViewModel.titleDetails = `(${orders.length})`;
             orders.forEach(order => (order.closingPrices = sparklineSeries[order.symbol]));
             gridModel.loadData(orders);
 

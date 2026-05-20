@@ -24,7 +24,7 @@ export const positionsGrid = hoistCmp.factory({
             collapsedIcon: Icon.treeList(),
             compactHeader: true,
             tbar: [groupingChooser({flex: 1, icon: Icon.treeList()}), '-', colChooserButton()],
-            item: grid({agOptions: {groupDefaultExpanded: 1}}),
+            item: grid(),
             bbar: [
                 gridCountLabel({unit: 'position'}),
                 filler(),

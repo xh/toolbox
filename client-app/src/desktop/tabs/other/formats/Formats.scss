@@ -18,8 +18,12 @@
       }
 
       td {
+        padding: 5px;
         text-align: right;
-        width: 50%;
+
+        &.outputColumn {
+          white-space: nowrap;
+        }
       }
     }
   }
@@ -33,12 +37,12 @@
       margin: 0;
       padding: 15px 10px;
 
-      .bp5-slider {
+      .bp6-slider {
         margin-top: 2px; // avoid clipped slider handle
       }
     }
 
-    .xh-form-field-label {
+    .xh-form-field__label {
       width: 200px;
       font-family: var(--xh-font-family-mono);
     }

@@ -5,19 +5,9 @@
 
   &__tile {
     border: 2px solid var(--xh-intent-primary-darker);
-    text-align: center;
-
-    .xh-panel__content > .xh-vframe {
-      background-color: var(--xh-intent-primary-trans1);
-      align-items: center;
-      justify-content: center;
-    }
   }
 
   &__props-form {
-    padding: var(--xh-pad-px);
-    overflow: auto;
-
     .xh-form-field {
       flex: none;
       margin: 0;

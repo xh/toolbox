@@ -3,15 +3,18 @@ package io.xh.toolbox.log
 import io.xh.hoist.log.LogSupportConverter
 
 /**
- * Layout Converter to output log messages in a more strict key/value pair format than Hoist's default
- * `LogSupportConverter`
+ * Example layout converter that outputs log messages in a more structured "key=value" format
+ * than the output used by Hoist's default {@link LogSupportConverter}.
  *
- * This is an example of an application-specific converter that can be used for application or enterprise
- * specific logging needs. It should be enabled in `logback.groovy`, by associating it with a format string via
- * `conversionRule` and using that format string in any layout template.
+ * NOTE this is an example of an app-specific converter that could be used for any app- or
+ * enterprise-specific logging needs. It is NOT necessary for a Hoist app that is happy with the
+ * toolkit's default formatting.
+ *
+ * A customer converter such as this must be enabled in `LogBackConfig.groovy` by associating it
+ * with a format string via `conversionRule` and then using that format string in a layout template.
+ * See {@link io.xh.toolbox.LogbackConfig}.
  */
 class CustomLogSupportConverter extends LogSupportConverter {
-
 
     protected String getDelimiter() {
         return ', '

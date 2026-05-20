@@ -33,6 +33,8 @@ import static io.xh.hoist.util.DateTimeUtils.MINUTES
  */
 class GitHubService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.github'
+
     static clearCachesConfigs = ['gitHubRepos', 'gitHubAccessToken', 'gitHubMaxPagesPerLoad']
 
     ConfigService configService
@@ -87,17 +89,19 @@ class GitHubService extends BaseService {
         def repos = configService.getList('gitHubRepos', []),
             newCommitCount = 0
 
-        withInfo("Refreshing GitHub commits for ${repos.size()} configured repositories") {
-            repos.each{
-                def newCommits = loadCommitsForRepo(it as String, forceFullLoad)
-                newCommitCount += newCommits.size()
-            }
+        span('getCommits')
+            .logInfo("Refreshing GitHub commits for ${repos.size()} configured repositories")
+            .run {
+                repos.each {
+                    def newCommits = loadCommitsForRepo(it as String, forceFullLoad)
+                    newCommitCount += newCommits.size()
+                }
 
-            if (newCommitCount) {
-                logDebug("Found $newCommitCount new commits - pushing update...")
-                pushUpdate()
+                if (newCommitCount) {
+                    logDebug("Found $newCommitCount new commits - pushing update...")
+                    pushUpdate()
+                }
             }
-        }
     }
 
     private List<Commit> loadCommitsForRepo(String repoName, Boolean forceFullLoad = false) {
@@ -231,10 +235,7 @@ query XHRepoCommits {
     }
 
     private void pushUpdate() {
-        webSocketService.pushToChannels(
-            webSocketService.allChannels*.key, 'gitHubUpdate',
-            [timestamp: Instant.now()]
-        )
+        webSocketService.pushToAllChannels('gitHubUpdate', [timestamp: Instant.now()])
     }
 
     void clearCaches() {

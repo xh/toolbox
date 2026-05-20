@@ -32,8 +32,8 @@ export const asyncLoopPanel = hoistCmp.factory({
 });
 
 const tbar = hoistCmp.factory<AsyncLoopPanelModel>(({model}) => {
-    const {loadModel, lastRunDuration} = model,
-        {isPending} = loadModel;
+    const {loadObserver, lastRunDuration} = model,
+        {isPending} = loadObserver;
 
     return toolbar({
         items: [

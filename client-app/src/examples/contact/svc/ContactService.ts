@@ -24,27 +24,32 @@ export class ContactService extends HoistService {
     }
 
     async getContactsAsync() {
-        const ret = await XH.fetchJson({url: 'contacts'});
-        ret.forEach(it => {
-            it.isFavorite = this.userFaves.includes(it.id);
-            it.profilePicture = `../../public/contact-images/${
-                it.profilePicture ?? 'no-profile.png'
-            }`;
-        });
-        return ret;
+        return this.newSpan('toolbox.client.contacts.getContacts')
+            .fetchJson({url: 'contacts'})
+            .tap(ret => {
+                ret.forEach(it => {
+                    it.isFavorite = this.userFaves.includes(it.id);
+                    it.profilePicture = `../../public/contact-images/${
+                        it.profilePicture ?? 'no-profile.png'
+                    }`;
+                });
+            });
     }
 
     async updateContactAsync(id, update) {
-        await XH.fetchService.postJson({
-            url: `contacts/update/${id}`,
-            body: update,
-            track: {
-                category: 'Contacts',
-                message: `Updated contact`,
-                data: {id, ...update},
-                logData: true
-            }
-        });
+        await this.newSpan('toolbox.client.contacts.update').run(ctx =>
+            XH.fetchService.postJson({
+                url: `contacts/update/${id}`,
+                span: ctx.span,
+                body: update,
+                track: {
+                    category: 'Contacts',
+                    message: `Updated contact`,
+                    data: {id, ...update},
+                    logData: true
+                }
+            })
+        );
     }
 
     @action

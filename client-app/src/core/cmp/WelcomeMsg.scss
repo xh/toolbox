@@ -3,27 +3,6 @@
   align-items: center;
   padding: 10px 5px;
 
-  // Show Oauth-sourced profile pic in a circular frame.
-  &__profile-pic {
-    flex: none;
-    position: relative;
-    display: inline-block;
-    height: 30px;
-    width: 30px;
-    overflow: hidden;
-    border-radius: 50%;
-    margin-right: 10px;
-
-    img {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      height: auto;
-      width: 100%;
-      transform: translate(-50%, -50%);
-    }
-  }
-
   &--multiline {
     .tb-welcome-message__profile-pic {
       height: 40px;

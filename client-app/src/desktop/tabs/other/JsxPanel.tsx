@@ -59,6 +59,7 @@ function renderCode(value: string) {
         width: null,
         height: null,
         readonly: true,
+        mode: 'application/javascript',
         value: value.trim()
     });
 }
@@ -83,7 +84,7 @@ render() {
                  )
             }),
             logViewer({model}),
-            mask({model: loadModel})
+            mask({model: loadObserver})
         ]
     });
 }
@@ -120,7 +121,7 @@ render() {
                 <Grid model={files} />
             </Panel>
             <LogViewer model={model} />
-            <Mask model={loadModel} />
+            <Mask model={loadObserver} />
         </HFrame>
     );
 }

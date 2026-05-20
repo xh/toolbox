@@ -6,6 +6,8 @@ import io.xh.hoist.cachedvalue.CachedValue
 import io.xh.hoist.cachedvalue.CachedValueChanged
 
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
+import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
+import static io.xh.hoist.util.Utils.getIsLocalDevelopment
 import static io.xh.toolbox.admin.TestUtils.generatePrice
 import static io.xh.toolbox.admin.TestUtils.generateResultSet
 
@@ -33,8 +35,13 @@ class TestCachedValueService extends BaseService {
 
     void init() {
         super.init()
-        if (isPrimary) initData()
-        resultValue.ensureAvailable()
+
+        if (isLocalDevelopment && !getInstanceConfig('initTestCacheServices')) {
+            logInfo("Disabled by default in local development mode - set initTestCacheServices instance config to override")
+        } else {
+            if (isPrimary) initData()
+            resultValue.ensureAvailable()
+        }
     }
 
     private void initData() {

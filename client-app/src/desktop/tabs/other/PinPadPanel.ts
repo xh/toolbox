@@ -118,8 +118,8 @@ class PinPadPanelModel extends HoistModel {
                 attempts === maxAttempts - 2
                     ? 'Access Denied. (Use the Schwartz!)'
                     : attempts === maxAttempts - 1
-                    ? "Access Denied. (Try '12345')"
-                    : 'Access Denied';
+                      ? "Access Denied. (Try '12345')"
+                      : 'Access Denied';
             pad.disabled = false;
             pad.clear();
 

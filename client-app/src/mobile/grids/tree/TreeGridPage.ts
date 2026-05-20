@@ -2,7 +2,11 @@ import {grid, TreeStyle} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {colAutosizeButton, colChooserButton} from '@xh/hoist/mobile/cmp/button';
+import {
+    colAutosizeButton,
+    colChooserButton,
+    expandToLevelButton
+} from '@xh/hoist/mobile/cmp/button';
 import {groupingChooser} from '@xh/hoist/mobile/cmp/grouping';
 import {checkboxButton, select} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
@@ -19,6 +23,7 @@ export const treeGridPage = hoistCmp.factory({
             tbar: [
                 groupingChooser({maxWidth: 250}),
                 filler(),
+                expandToLevelButton(),
                 colAutosizeButton(),
                 colChooserButton()
             ],

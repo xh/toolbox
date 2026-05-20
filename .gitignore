@@ -6,6 +6,8 @@
 .settings
 .project
 .classpath
+.vscode/tasks.json
+.claude/scheduled_tasks.lock
 
 # Local instance configs w/secrets
 toolbox.yml

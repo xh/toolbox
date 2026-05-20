@@ -13,9 +13,7 @@ export const panelPage = hoistCmp.factory({
             title: 'Hoist Panel',
             icon: Icon.window(),
             className: 'tb-panels-standard-panel',
-            headerItems: [
-                relativeTimestamp({timestamp: Date.now(), options: {prefix: 'Rendered'}})
-            ],
+            headerItems: [relativeTimestamp({timestamp: Date.now(), prefix: 'Rendered'})],
             items: [
                 'This is a Panel with a header (including a title, icon, and headerItem) as well as top and bottom toolbars.'
             ],

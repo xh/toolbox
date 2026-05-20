@@ -4,10 +4,10 @@ import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {computed, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
-import filesize from 'filesize';
-import download from 'downloadjs';
+import {filesize} from 'filesize';
 import {filter, find, isEmpty, pull} from 'lodash';
 import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
+import {downloadBlob} from '@xh/hoist/utils/js';
 
 export class FileManagerModel extends HoistModel {
     // Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
@@ -173,7 +173,7 @@ export class FileManagerModel extends HoistModel {
             }).catchDefault();
 
         const blob = await response.blob();
-        download(blob, name);
+        downloadBlob(blob, name);
         XH.toast({
             icon: Icon.download(),
             message: 'Download complete.'

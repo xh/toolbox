@@ -43,8 +43,7 @@ export class ColumnFilteringPanelModel extends HoistModel {
             },
             store: {
                 idEncodesTreePath: true,
-                freezeData: false,
-                fieldDefaults: {disableXssProtection: true}
+                freezeData: false
             },
             colDefaults: {filterable: true},
             columns: [

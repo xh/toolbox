@@ -21,6 +21,7 @@ export class TreeGridPageModel extends HoistModel {
         },
         colChooserModel: true,
         sortBy: 'pnl|desc|abs',
+        levelLabels: () => this.groupingChooserModel.valueDisplayNames,
         onRowClicked: ({data: record}) => {
             // Allow single tap on parent row to trigger expand/collapse (default on mobile)
             // without navigating the user away to the detail page.

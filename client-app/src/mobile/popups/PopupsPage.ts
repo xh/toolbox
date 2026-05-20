@@ -1,5 +1,5 @@
 import {hoistCmp, XH} from '@xh/hoist/core';
-import {code, div, fragment, span} from '@xh/hoist/cmp/layout';
+import {div, fragment, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -24,10 +24,17 @@ export const popupsPage = hoistCmp.factory({
                         message: 'This is a confirm dialog.'
                     }).then(ret =>
                         XH.toast({
-                            message: span('That popup resolved to ', code(`${ret}`)),
+                            message: span(`That popup resolved to ${ret}`),
                             intent: ret ? 'success' : 'danger'
                         })
                     );
+                }),
+                renderCard('Extra Confirm', () => {
+                    XH.confirm({
+                        title: 'Extra Confirm',
+                        message: 'This is a confirm dialog with extra confirm.',
+                        extraConfirmText: 'I agree'
+                    });
                 }),
                 renderCard('Prompt', () => {
                     XH.prompt<string>({
@@ -35,7 +42,7 @@ export const popupsPage = hoistCmp.factory({
                         message: 'This is a prompt dialog.'
                     }).then(ret =>
                         XH.toast({
-                            message: span('That popup resolved to ', code(`${ret}`))
+                            message: span(`That popup resolved to ${ret}`)
                         })
                     );
                 }),
@@ -57,7 +64,7 @@ export const popupsPage = hoistCmp.factory({
                 }),
                 renderCard('Danger Toast', () => {
                     XH.dangerToast({
-                        message: fragment('This is a toast shown via ', code('XH.dangerToast()')),
+                        message: fragment('This is a toast shown via XH.dangerToast()'),
                         icon: Icon.skull()
                     });
                 })
