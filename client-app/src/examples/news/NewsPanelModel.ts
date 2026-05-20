@@ -1,4 +1,4 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {appendFilter, FilterLike} from '@xh/hoist/data';
@@ -51,7 +51,7 @@ export class NewsPanelModel extends HoistModel {
         });
     }
 
-    override async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec: LoadSpec) {
         const stories = await XH.fetchJson({url: 'news', loadSpec});
         this.completeLoad(stories);
     }

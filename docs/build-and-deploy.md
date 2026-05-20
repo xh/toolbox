@@ -15,7 +15,7 @@ that automate that process.
 
 Runs automatically on pushes and pull requests to `develop`. Includes three independent jobs:
 
-- **Build** — checks out the project, sets up JDK 17 and Gradle, and runs `./gradlew build` to
+- **Build** — checks out the project, sets up Java and Gradle, and runs `./gradlew build` to
   validate the Grails server compiles successfully.
 - **Lint** — sets up Node.js (version from `client-app/.nvmrc`), installs JS dependencies via
   `yarn install --frozen-lockfile`, and runs `yarn lint` to validate the client code.
