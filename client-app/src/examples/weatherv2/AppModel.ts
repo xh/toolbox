@@ -43,8 +43,7 @@ export class AppModel extends BaseAppModel {
             persistWith: {...this.persistWith, path: 'harnessPanel'}
         });
 
-        await this.withSpanAsync(
-            {name: 'toolbox.weatherv2.loadViews', parent: ctx.span},
+        await this.newSpan({name: 'toolbox.weatherv2.loadViews', parent: ctx.span}).run(
             async () => {
                 this.weatherViewManager = await ViewManagerModel.createAsync({
                     type: 'weatherDashboardV2',
