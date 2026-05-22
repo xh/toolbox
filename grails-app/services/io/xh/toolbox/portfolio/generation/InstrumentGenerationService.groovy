@@ -15,12 +15,14 @@ import static io.xh.toolbox.portfolio.Utils.sample
  */
 class InstrumentGenerationService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.portfolio'
+
     def configService
 
     /** Generate a map of unique instruments keyed by ticker symbol. */
     Map<String, Instrument> generateInstruments() {
         observe()
-            .span(name: 'generateInstruments')
+            .span('generateInstruments')
             .logDebug("Generating ${config.instrumentCount} instruments")
             .run {
                 def instrumentCount = config.instrumentCount

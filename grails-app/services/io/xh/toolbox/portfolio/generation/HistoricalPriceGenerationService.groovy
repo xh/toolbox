@@ -17,6 +17,8 @@ import static io.xh.toolbox.portfolio.Utils.randInt
  */
 class HistoricalPriceGenerationService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.portfolio'
+
     def tradingDayService
 
     /** Generate a daily price series for each instrument, keyed by symbol. */
@@ -25,7 +27,7 @@ class HistoricalPriceGenerationService extends BaseService {
             LocalDate day
     ) {
         observe()
-            .span(name: 'generateHistoricalPrices')
+            .span('generateHistoricalPrices')
             .logDebug("Generating historical prices for ${instruments.size()} instruments")
             .run {
                 List<LocalDate> tradingDays = tradingDayService.historicalDays(day)

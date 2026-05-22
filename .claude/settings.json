@@ -48,6 +48,10 @@
       "mcp__jetbrains__list_directory_tree",
       "mcp__jetbrains__search_in_files_by_regex",
       "mcp__jetbrains__search_in_files_by_text"
+    ],
+    "additionalDirectories": [
+      "../hoist-core",
+      "../hoist-react"
     ]
   },
   "enabledMcpjsonServers": [
