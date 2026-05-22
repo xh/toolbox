@@ -1,4 +1,4 @@
-import {HoistService, persist, XH} from '@xh/hoist/core';
+import {CallContext, HoistService, persist, XH} from '@xh/hoist/core';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {without} from 'lodash';
 
@@ -25,17 +25,19 @@ export class ContactService extends HoistService {
         makeObservable(this);
     }
 
-    async getContactsAsync() {
-        return this.rootSpan('getContacts').run(ctx =>
-            ctx.fetchJson({url: 'contacts'}).tap(ret => {
-                ret.forEach(it => {
-                    it.isFavorite = this.userFaves.includes(it.id);
-                    it.profilePicture = `../../public/contact-images/${
-                        it.profilePicture ?? 'no-profile.png'
-                    }`;
-                });
-            })
-        );
+    async getContactsAsync(ctx?: CallContext) {
+        return this.runOnOptional(ctx)
+            .newSpan('getContacts')
+            .run(ctx =>
+                ctx.fetchJson({url: 'contacts'}).tap(ret => {
+                    ret.forEach(it => {
+                        it.isFavorite = this.userFaves.includes(it.id);
+                        it.profilePicture = `../../public/contact-images/${
+                            it.profilePicture ?? 'no-profile.png'
+                        }`;
+                    });
+                })
+            );
     }
 
     async updateContactAsync(id, update) {
