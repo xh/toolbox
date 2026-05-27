@@ -28,6 +28,7 @@ class BootStrap implements LogSupport {
             ensureRequiredConfigsCreated()
             ensureRequiredPrefsCreated()
             createLocalAdminUserIfNeeded()
+            ensureTestUsersCreated()
 
             def services = xhServices.findAll {
                 it.class.canonicalName.startsWith(this.class.package.name)
@@ -62,6 +63,40 @@ class BootStrap implements LogSupport {
             }
 
             logInfo("Local admin user available as per instanceConfig", adminUsername)
+        }
+    }
+
+    /**
+     * Create predictable local test users for the Playwright suite and interactive dev work.
+     * Only runs when `isLocalDevelopment` and a `testUserPassword` instance config is set, so
+     * deployed environments are never affected. Role assignment for `test-admin@xh.io` is handled
+     * by RoleService.ensureRequiredConfigAndRolesCreated().
+     *
+     * Pair with `APP_TOOLBOX_OAUTH_PROVIDER=NONE` to disable OAuth and show the Hoist login form.
+     */
+    @Transactional
+    private void ensureTestUsersCreated() {
+        if (!isLocalDevelopment) return
+
+        String testPassword = getInstanceConfig('testUserPassword')
+        if (!testPassword) {
+            logDebug('No testUserPassword instance config found - skipping test user creation')
+            return
+        }
+
+        ensureTestUser('test-admin@xh.io', 'Test Admin', testPassword)
+        ensureTestUser('test-user@xh.io', 'Test User', testPassword)
+
+        logInfo('Local test users configured for password-based login')
+    }
+
+    private void ensureTestUser(String email, String name, String password) {
+        def user = User.findByEmail(email)
+        if (!user) {
+            new User(email: email, password: password, name: name).save(flush: true)
+        } else if (!user.checkPassword(password)) {
+            user.password = password
+            user.save(flush: true)
         }
     }
 
