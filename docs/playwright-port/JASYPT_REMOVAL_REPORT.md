@@ -76,8 +76,7 @@ Every consuming app that wants password-based user login imports jasypt's
 Pattern in both: `static encryptor = new BasicPasswordEncryptor()`; `encryptor.encryptPassword(...)`
 in `beforeInsert/beforeUpdate`; `encryptor.checkPassword(plain, stored)` in `checkPassword(...)`.
 
-(Veracity and DirectLend don't appear to use this pattern in the dirs scanned — they're probably
-OAuth-only.)
+Other XH apps that authenticate exclusively via OAuth do not exhibit this pattern.
 
 ---
 
