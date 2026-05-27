@@ -143,10 +143,11 @@ Map hoistMetaData = [
 def execTasks = tasks.matching {it.name == 'bootRun' || it.name == 'console'}
 execTasks.configureEach {
     ignoreExitValue = true
-    systemProperties System.properties
+    // Per-dev settings belong in `.env` (e.g. SERVER_PORT=8081 maps to Spring Boot's
+    // server.port via relaxed env-var binding). Do NOT forward the daemon's System.properties
+    // wholesale - JDK-install descriptors (java.home, ...) corrupt the forked toolchain JVM.
     jvmArgs(allJvmArgs)
     systemProperties hoistMetaData
-    // Bring .env sourced environment variables into bootRun JVM process.
     environment env.allVariables()
 }
 
