@@ -327,6 +327,50 @@ defines an entry point, and its filename (minus the extension) becomes the URL p
 ### Pre-commit Hooks
 Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged files) and conditionally the TypeScript compiler if TS/JS/package files are staged.
 
+## End-to-End Testing (Playwright)
+
+A Playwright suite lives in **`playwright/`** as a standalone npm project — separate from the
+`client-app/` Yarn workspace, with its own `package.json`, `tsconfig.json`, and `node_modules/`.
+It drives a real running Toolbox instance (frontend at :3000 + Grails backend at :8080) and
+interacts with both the DOM and the live Hoist runtime via `page.evaluate()`.
+
+**Setup.** In `.env`, set:
+
+- `APP_TOOLBOX_OAUTH_PROVIDER=NONE` (disables Auth0, enables the Hoist password login form)
+- `APP_TOOLBOX_TEST_USER_PASSWORD=<some-password>` (bootstraps test users in local dev)
+
+Two test users are created automatically by `BootStrap.groovy` when these are set:
+
+- `test-admin@xh.io` — granted `HOIST_ADMIN` via `RoleService` extension (see
+  `grails-app/services/io/xh/toolbox/user/RoleService.groovy`)
+- `test-user@xh.io` — unprivileged
+
+**Running.** From `playwright/`:
+
+```bash
+npm install                       # one-time
+npx playwright install chromium   # one-time browser install
+npm test                          # headless full suite
+npm run testWithUI                # interactive Playwright UI
+```
+
+`playwright.config.ts` throws at startup if the required `.env` vars aren't set, so the
+guardrails are server-side and harness-side both.
+
+**Architecture.** The `playwright/hoist/` toolkit (`HoistPage`, `GridHelper`, `FormHelper`,
+`ApiHelper`, `Types`, `Utils`) is deliberately app-agnostic and ported verbatim from the
+JobSite suite. It injects browser-side globals (`getModel<T>()`, `getSvc<T>()`, `wait()`) into
+every `page.evaluate()` call, promotes `console.error` to test failures, and waits for
+`XH.appState === 'RUNNING'` before returning control. The intent is for this toolkit to
+graduate into hoist-react or a `@xh/hoist-testing` npm package — Toolbox is the second
+consumer that proves the API and is the natural home for the extraction.
+
+The `playwright/fixtures/ToolboxApp.ts` file is the small app-specific layer: tab navigation
+helpers and the `admin` / `user` role-scoped test fixtures with cached storage state.
+
+See `playwright/README.md` for a full tour and `docs/playwright-port/HARNESS_PROPOSAL.md` for
+the in-flight design of a dedicated component-scenario "Playwright host" sub-app.
+
 ## Code Style
 
 - **Prettier**: 100 char width, single quotes, no trailing commas, 4-space indent (JS/TS), 2-space (SCSS/JSON)
