@@ -1,6 +1,51 @@
 # Changelog
 
-## 9.0.0-SNAPSHOT - unreleased
+## 9.0-SNAPSHOT - unreleased
+
+* Downgraded toolbox build toolchain back to JDK 21 — JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
+* Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
+
+### Libraries
+
+* ag-Grid `34.2 → 35.3`
+
+## 8.4.0 - 2026-04-30
+
+### Libraries
+
+* hoist-core 39.0.0
+* @xh/hoist 85.0.0
+
+## 8.3.3 - 2026-04-20
+
+### Technical
+
+* Upgraded build toolchain to JDK 25. Toolbox now uses JDK 25 for local development and CI.
+* Fixed bug in buildRelease workflow - client appVersion was not being set to release version.
+
+### Libraries
+
+* Grails 7.1.0
+* MySQL Connector/J 8.4.0
+
+## 8.3.2 - 2026-04-20
+
+### Libraries
+
+* @xh/hoist 84.0.1
+
+## 8.3.1 - 2026-04-16
+
+### Bug Fixes
+
+* Fix `ArrayIndexOutOfBoundsException` in portfolio push updates
+
+### Libraries
+
+* hoist-core 38.0.0
+* @xh/hoist 84.0.0
+
+## 8.3.0 - 2026-04-08
 
 ### New Features
 
@@ -13,6 +58,11 @@
 * Deferred portfolio data generation to run async after startup and optimized `HistoricalPriceGenerationService`, reducing total generation time from ~11s to ~3s. Added timing logs and expanded `PortfolioService` admin stats.
 * Migrated CI/CD from TeamCity to GitHub Actions. New workflows handle CI validation, snapshot builds, release builds, and deployment to AWS ECS. Snapshot images are built and deployed automatically on pushes to `develop` and on upstream hoist-core/hoist-react snapshot publishes. Release builds are manually triggered with strict semver validation. See `docs/build-and-deploy.md` for details.
 * Added some null values to city and profit_loss in TradeService data feed, to ensure grid fields display the "[blank]" value.
+
+### Libraries
+
+* hoist-core 37.0.2
+* @xh/hoist 83.1.0
 
 ## 8.2.2 - 2026-03-02
 

@@ -174,6 +174,37 @@ const column1 = hoistCmp.factory<PickerPanelModel>(() =>
                 })
             }),
             demoRow({
+                label: 'Multi-select (values style)',
+                info: 'multiSelectButtonStyle: "values" — shows comma-separated labels with overflow ellipsis',
+                item: picker({
+                    bind: 'valuesStates',
+                    options: usStates,
+                    enableMulti: true,
+                    enableClear: true,
+                    enableSelectAll: true,
+                    displayNoun: 'state',
+                    multiSelectButtonStyle: 'values',
+                    width: 220,
+                    testId: 'values-states'
+                })
+            }),
+            demoRow({
+                label: 'Multi-select (values + count badge)',
+                info: 'multiSelectShowCount: true — adds a small count badge to the left of the labels',
+                item: picker({
+                    bind: 'valuesCountStates',
+                    options: usStates,
+                    enableMulti: true,
+                    enableClear: true,
+                    enableSelectAll: true,
+                    displayNoun: 'state',
+                    multiSelectButtonStyle: 'values',
+                    multiSelectShowCount: true,
+                    width: 220,
+                    testId: 'values-count-states'
+                })
+            }),
+            demoRow({
                 label: 'Simple options',
                 info: 'Primitive string options, enableClear',
                 item: picker({
@@ -461,6 +492,8 @@ class PickerPanelModel extends HoistModel {
     // Column 1
     @bindable singleState: string = null;
     @bindable multiStates: string[] = [];
+    @bindable valuesStates: string[] = [];
+    @bindable valuesCountStates: string[] = [];
     @bindable simpleOption: string = null;
     @bindable compactStates: string[] = [];
 

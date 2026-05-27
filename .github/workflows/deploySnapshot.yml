@@ -17,6 +17,10 @@ on:
                 default: '3'
                 type: string
 
+env:
+    CLUSTER_NAME: toolbox
+    SERVICE_NAME: toolbox-dev
+
 jobs:
     deploy:
 
@@ -36,7 +40,7 @@ jobs:
         - name: Deploy to ECS
           run: |
               aws ecs update-service \
-                  --cluster toolbox \
-                  --service toolbox-dev \
+                  --cluster ${{ env.CLUSTER_NAME }} \
+                  --service ${{ env.SERVICE_NAME }} \
                   --desired-count ${{ inputs.desiredCount || '3' }} \
                   --force-new-deployment

@@ -22,6 +22,8 @@ import static io.xh.toolbox.portfolio.Lookups.*
  */
 class OrderGenerationService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.portfolio'
+
     def configService
 
     private static final ZoneOffset EST = ZoneOffset.ofHours(-5)
@@ -33,7 +35,7 @@ class OrderGenerationService extends BaseService {
             Map<String, List<MarketPrice>> historicalPrices
     ) {
         observe()
-            .span(name: 'generateOrders')
+            .span('generateOrders')
             .logDebug("Generating ${config.orderCount} orders")
             .run {
                 def orderCount = config.orderCount

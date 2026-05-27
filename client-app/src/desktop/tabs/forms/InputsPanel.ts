@@ -442,7 +442,8 @@ const inputsTbar = hoistCmp.factory<InputsPanelModel>(({compact}) =>
                 items: bgButtons()
             }),
             '-',
-            switchInput({bind: 'tbarSwitch', label: 'Enabled:', labelSide: 'left'})
+            switchInput({bind: 'tbarSwitch', label: 'Enabled:', labelSide: 'left'}),
+            checkboxButton({bind: 'checkboxButton', text: 'Active'})
         ]
     })
 );

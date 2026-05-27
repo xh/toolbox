@@ -3,7 +3,8 @@
   "permissions": {
     "allow": [
       "Edit",
-      "MultiEdit",
+      "Glob",
+      "Grep",
       "Read",
       "WebFetch",
       "WebSearch",
@@ -47,6 +48,10 @@
       "mcp__jetbrains__list_directory_tree",
       "mcp__jetbrains__search_in_files_by_regex",
       "mcp__jetbrains__search_in_files_by_text"
+    ],
+    "additionalDirectories": [
+      "../hoist-core",
+      "../hoist-react"
     ]
   },
   "enabledMcpjsonServers": [
@@ -54,10 +59,19 @@
     "hoist-react"
   ],
   "enabledPlugins": {
+    "xh@hoist-ai": true,
     "typescript-lsp@claude-plugins-official": true,
     "jdtls-lsp@claude-plugins-official": true
   },
   "env": {
     "ENABLE_LSP_TOOL": "1"
+  },
+  "extraKnownMarketplaces": {
+    "hoist-ai": {
+      "source": {
+        "source": "github",
+        "repo": "xh/hoist-ai"
+      }
+    }
   }
 }
