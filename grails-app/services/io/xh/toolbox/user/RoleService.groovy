@@ -1,12 +1,6 @@
 package io.xh.toolbox.user
 
 import io.xh.hoist.role.provided.DefaultRoleService
-import io.xh.hoist.role.provided.Role
-import io.xh.hoist.role.provided.RoleSpec
-
-import static io.xh.hoist.role.provided.RoleMember.Type.USER
-import static io.xh.hoist.util.Utils.isLocalDevelopment
-import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
 /**
  * Toolbox leverages Hoist's built-in, database-backed Role management and its associated Admin Console UI.
@@ -36,28 +30,5 @@ class RoleService extends DefaultRoleService {
             }
             return [group, [] as Set]
         }
-    }
-
-    /**
-     * In local dev with the Playwright test users bootstrapped (see BootStrap.ensureTestUsersCreated),
-     * grant `test-admin@xh.io` membership in HOIST_ADMIN so it can drive admin-gated tests.
-     * `test-user@xh.io` deliberately gets no extra roles - it represents an unprivileged user.
-     */
-    @Override
-    protected void ensureRequiredConfigAndRolesCreated() {
-        super.ensureRequiredConfigAndRolesCreated()
-
-        if (isLocalDevelopment && getInstanceConfig('testUserPassword')) {
-            grantUserRole('test-admin@xh.io', 'HOIST_ADMIN')
-        }
-    }
-
-    private void grantUserRole(String username, String roleName) {
-        Role role = Role.findByName(roleName)
-        if (!role) return
-        if (role.users.contains(username)) return
-
-        role.addToMembers(type: USER, name: username, createdBy: 'app-bootstrap').save(flush: true)
-        logInfo("Granted role ${roleName} to ${username} (local dev bootstrap)")
     }
 }
