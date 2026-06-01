@@ -60,12 +60,12 @@ export class GitHubService extends HoistService {
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
-        await this.runOn(loadSpec)
-            .newSpan('allCommits')
-            .withTrack('Loaded GitHub commit history')
+        await this.runner({loadSpec})
+            .span('allCommits')
+            .track('Loaded GitHub commit history')
             .run(async ctx => {
                 const priorCommitCount = this.allCommits.length,
-                    commitHistories = await ctx.fetchJson({url: 'gitHub/allCommits'});
+                    commitHistories = await XH.fetchJson({url: 'gitHub/allCommits'}, ctx);
 
                 forOwn(commitHistories, v => {
                     // Minor translations here on client for convenience.

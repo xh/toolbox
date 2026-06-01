@@ -122,13 +122,16 @@ export class RecallsPanelModel extends HoistModel {
         const {gridModel} = this;
 
         try {
-            await this.runOn(loadSpec)
-                .newSpan('load')
+            await this.runner({loadSpec})
+                .span('load')
                 .run(async ctx => {
-                    let entries = await ctx.fetchJson({
-                        url: 'recalls',
-                        params: {searchQuery: this.searchQuery}
-                    });
+                    let entries = await XH.fetchJson(
+                        {
+                            url: 'recalls',
+                            params: {searchQuery: this.searchQuery}
+                        },
+                        ctx
+                    );
 
                     if (loadSpec.isStale) return;
 

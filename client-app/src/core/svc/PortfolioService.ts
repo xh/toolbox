@@ -1,4 +1,4 @@
-import {CallContext, HoistService, InitContext, PlainObject, XH} from '@xh/hoist/core';
+import {CallContextLike, HoistService, InitContext, PlainObject, XH} from '@xh/hoist/core';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
@@ -12,11 +12,11 @@ export class PortfolioService extends HoistService {
     lookups: PlainObject;
 
     override async initAsync(ctx: InitContext) {
-        this.lookups = await this.runOn(ctx.span).runFetchJson({url: 'portfolio/lookups'});
+        this.lookups = await this.runner({span: ctx.span}).fetchJson({url: 'portfolio/lookups'});
     }
 
-    async getSymbolsAsync(ctx: CallContext) {
-        return this.runOn(ctx).newSpan('getSymbols').runFetchJson({url: 'portfolio/symbols'});
+    async getSymbolsAsync(ctx: CallContextLike) {
+        return this.runner(ctx).span('getSymbols').fetchJson({url: 'portfolio/symbols'});
     }
 
     /**
@@ -31,16 +31,20 @@ export class PortfolioService extends HoistService {
         includeSummary = false,
         maxPositions = this.MAX_POSITIONS
     ): Promise<Position[]> {
-        return this.rootSpan('getPositions')
-            .withTrack('Loaded positions')
+        return this.runner()
+            .span('getPositions')
+            .track('Loaded positions')
             .run(async ctx => {
-                const positions = await ctx.fetchJson({
-                    url: 'portfolio/positions',
-                    params: {
-                        dims: dims.join(','),
-                        maxPositions
-                    }
-                });
+                const positions = await XH.fetchJson(
+                    {
+                        url: 'portfolio/positions',
+                        params: {
+                            dims: dims.join(','),
+                            maxPositions
+                        }
+                    },
+                    ctx
+                );
                 return includeSummary ? [positions.root] : positions.root.children;
             });
     }
@@ -50,7 +54,7 @@ export class PortfolioService extends HoistService {
      * @param positionId - ID installed on each position returned by `getPositionsAsync()`.
      */
     async getPositionAsync(positionId: string): Promise<Position> {
-        return this.rootSpan('getPosition').runFetchJson({
+        return this.runner().span('getPosition').fetchJson({
             url: 'portfolio/position',
             params: {positionId}
         });
@@ -65,41 +69,49 @@ export class PortfolioService extends HoistService {
         topic: string,
         maxPositions: number = this.MAX_POSITIONS
     ) {
-        return this.rootSpan('getLivePositions').run(async ctx => {
-            const session = await ctx.fetchJson({
-                url: 'portfolio/livePositions',
-                params: {
-                    dims: dims.join(','),
-                    maxPositions,
-                    channelKey: XH.webSocketService.channelKey,
-                    topic
-                }
+        return this.runner()
+            .span('getLivePositions')
+            .run(async ctx => {
+                const session = await XH.fetchJson(
+                    {
+                        url: 'portfolio/livePositions',
+                        params: {
+                            dims: dims.join(','),
+                            maxPositions,
+                            channelKey: XH.webSocketService.channelKey,
+                            topic
+                        }
+                    },
+                    ctx
+                );
+                return new PositionSession(session);
             });
-            return new PositionSession(session);
-        });
     }
 
     /**
      * Return a list of flat position data.
      */
-    async getPricedRawPositionsAsync(ctx: CallContext): Promise<PricedRawPosition[]> {
-        return this.runOn(ctx)
-            .newSpan('getPricedRawPositions')
-            .runFetchJson({url: 'portfolio/pricedRawPositions'});
+    async getPricedRawPositionsAsync(ctx: CallContextLike): Promise<PricedRawPosition[]> {
+        return this.runner(ctx)
+            .span('getPricedRawPositions')
+            .fetchJson({url: 'portfolio/pricedRawPositions'});
     }
 
-    async getAllOrdersAsync(ctx: CallContext): Promise<PlainObject[]> {
-        return this.runOn(ctx).newSpan('getAllOrders').runFetchJson({url: 'portfolio/orders'});
+    async getAllOrdersAsync(ctx: CallContextLike): Promise<PlainObject[]> {
+        return this.runner(ctx).span('getAllOrders').fetchJson({url: 'portfolio/orders'});
     }
 
-    async getOrdersAsync(positionId: string, ctx: CallContext): Promise<PlainObject[]> {
-        return this.runOn(ctx)
-            .newSpan('getOrdersForPosition')
+    async getOrdersAsync(positionId: string, ctx: CallContextLike): Promise<PlainObject[]> {
+        return this.runner(ctx)
+            .span('getOrdersForPosition')
             .run(async ctx => {
-                const ret: PlainObject[] = await ctx.fetchJson({
-                    url: 'portfolio/ordersForPosition',
-                    params: {positionId}
-                });
+                const ret: PlainObject[] = await XH.fetchJson(
+                    {
+                        url: 'portfolio/ordersForPosition',
+                        params: {positionId}
+                    },
+                    ctx
+                );
                 ret.forEach(it => {
                     it.day = LocalDate.from(it.time);
                 });
@@ -109,12 +121,12 @@ export class PortfolioService extends HoistService {
 
     async getLineChartSeriesAsync(
         {symbol, dimension = 'volume'}: {symbol: string; dimension?: string},
-        ctx: CallContext
+        ctx: CallContextLike
     ) {
-        return this.runOn(ctx)
-            .newSpan('getLineChartSeriesAsync')
+        return this.runner(ctx)
+            .span('getLineChartSeriesAsync')
             .run(async ctx => {
-                const mktData = await ctx.fetchJson({url: `portfolio/prices/${symbol}`});
+                const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`}, ctx);
                 return {
                     name: symbol,
                     type: 'line',
@@ -124,25 +136,28 @@ export class PortfolioService extends HoistService {
             });
     }
 
-    async getSparklineSeriesAsync(symbols: string[], ctx: CallContext) {
-        return this.runOn(ctx)
-            .newSpan('getSparkline')
+    async getSparklineSeriesAsync(symbols: string[], ctx: CallContextLike) {
+        return this.runner(ctx)
+            .span('getSparkline')
             .run(async ctx => {
-                const data = await ctx.fetchJson({
-                    url: `portfolio/closingPriceHistory`,
-                    params: {symbols}
-                });
+                const data = await XH.fetchJson(
+                    {
+                        url: `portfolio/closingPriceHistory`,
+                        params: {symbols}
+                    },
+                    ctx
+                );
                 return mapValues(data, series =>
                     series.map(([date, price]) => [new Date(date), price])
                 );
             });
     }
 
-    async getOHLCChartSeriesAsync(symbol: string, ctx: CallContext) {
-        return this.runOn(ctx)
-            .newSpan('getOHLCChart')
+    async getOHLCChartSeriesAsync(symbol: string, ctx: CallContextLike) {
+        return this.runner(ctx)
+            .span('getOHLCChart')
             .run(async ctx => {
-                const mktData = await ctx.fetchJson({url: `portfolio/prices/${symbol}`});
+                const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`}, ctx);
                 return {
                     name: symbol,
                     type: 'ohlc',

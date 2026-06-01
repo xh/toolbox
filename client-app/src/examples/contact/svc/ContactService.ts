@@ -1,4 +1,4 @@
-import {HoistService, persist, XH} from '@xh/hoist/core';
+import {HoistService, persist} from '@xh/hoist/core';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {without} from 'lodash';
 
@@ -26,23 +26,24 @@ export class ContactService extends HoistService {
     }
 
     async getContactsAsync() {
-        return this.rootSpan('getContacts').run(ctx =>
-            ctx.fetchJson({url: 'contacts'}).tap(ret => {
+        return this.runner()
+            .span('getContacts')
+            .fetchJson({url: 'contacts'})
+            .tap(ret => {
                 ret.forEach(it => {
                     it.isFavorite = this.userFaves.includes(it.id);
                     it.profilePicture = `../../public/contact-images/${
                         it.profilePicture ?? 'no-profile.png'
                     }`;
                 });
-            })
-        );
+            });
     }
 
     async updateContactAsync(id, update) {
-        await this.rootSpan('update').run(ctx =>
-            XH.fetchService.postJson({
+        await this.runner()
+            .span('update')
+            .postJson({
                 url: `contacts/update/${id}`,
-                span: ctx.span,
                 body: update,
                 track: {
                     category: 'Contacts',
@@ -50,8 +51,7 @@ export class ContactService extends HoistService {
                     data: {id, ...update},
                     logData: true
                 }
-            })
-        );
+            });
     }
 
     @action

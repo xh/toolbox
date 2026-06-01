@@ -54,10 +54,10 @@ export class NewsPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
-        await this.runOn(loadSpec)
-            .newSpan('load')
+        await this.runner({loadSpec})
+            .span('load')
             .run(async ctx => {
-                const stories = await ctx.fetchJson({url: 'news'});
+                const stories = await XH.fetchJson({url: 'news'}, ctx);
                 this.completeLoad(stories);
             });
     }

@@ -1,4 +1,4 @@
-import {HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {roadmapViewItem} from './RoadmapViewItem';
@@ -62,10 +62,10 @@ export class RoadmapModel extends HoistModel {
     override async doLoadAsync(loadSpec) {
         const {dataViewModel} = this;
 
-        await this.runOn(loadSpec)
-            .newSpan('load')
+        await this.runner({loadSpec})
+            .span('load')
             .run(async ctx => {
-                const resp = await ctx.fetchJson({url: 'roadmap/data'}),
+                const resp = await XH.fetchJson({url: 'roadmap/data'}, ctx),
                     projects = this.processData(resp.data);
                 dataViewModel.loadData(projects);
             });

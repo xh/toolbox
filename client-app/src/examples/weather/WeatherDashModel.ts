@@ -138,15 +138,15 @@ export class WeatherDashModel extends HoistModel {
         const {selectedCity} = this;
         if (!selectedCity) return;
 
-        await this.runOn(loadSpec)
-            .newSpan('dashLoad')
+        await this.runner({loadSpec})
+            .span('dashLoad')
             .run(async ctx => {
                 ctx.span.setTags({city: selectedCity});
 
                 const params = {city: selectedCity},
                     [currentWeather, forecast] = await Promise.all([
-                        ctx.fetchJson({url: 'weather/current', params}),
-                        ctx.fetchJson({url: 'weather/forecast', params})
+                        XH.fetchJson({url: 'weather/current', params}, ctx),
+                        XH.fetchJson({url: 'weather/forecast', params}, ctx)
                     ]);
                 if (loadSpec.isStale) return;
 
