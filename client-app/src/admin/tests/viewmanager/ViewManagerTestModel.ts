@@ -3,7 +3,16 @@ import {FormModel} from '@xh/hoist/cmp/form';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {div, frame} from '@xh/hoist/cmp/layout';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp, HoistModel, lookup, managed, PersistOptions, XH} from '@xh/hoist/core';
+import {
+    creates,
+    hoistCmp,
+    HoistModel,
+    lookup,
+    managed,
+    persistOptions,
+    PersistOptions,
+    XH
+} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {required} from '@xh/hoist/data';
 import {DashCanvasModel, DashContainerModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
@@ -191,7 +200,7 @@ export class ViewManagerTestModel extends HoistModel {
         });
 
         this.panelPctModel = new PanelModel({
-            persistWith: {...persistWith, path: 'panelPct'},
+            persistWith: persistOptions(persistWith, {path: 'panelPct'}),
             side: 'right',
             defaultSize: '50%'
         });
