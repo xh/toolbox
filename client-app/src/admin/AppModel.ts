@@ -6,6 +6,7 @@ import {PortfolioService} from '../core/svc/PortfolioService';
 import {phaseRestPanel, projectRestPanel} from './roadmap';
 import {
     asyncLoopPanel,
+    columnChooserTestPanel,
     storeColumnFilterPanel,
     viewColumnFilterPanel,
     CubeTestPanel,
@@ -47,6 +48,7 @@ export class AppModel extends HoistAdminAppModel {
                 path: '/tests',
                 children: [
                     {name: 'asyncLoop', path: '/asyncLoop'},
+                    {name: 'columnChooser', path: '/columnChooser'},
                     {name: 'cube', path: '/cube'},
                     {name: 'dataView', path: '/dataView'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
@@ -87,6 +89,11 @@ export class AppModel extends HoistAdminAppModel {
                     switcher,
                     tabs: [
                         {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
+                        {
+                            id: 'columnChooser',
+                            title: 'Column Chooser',
+                            content: columnChooserTestPanel
+                        },
                         {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
                         {id: 'dataView', content: dataViewTestPanel},
                         {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
