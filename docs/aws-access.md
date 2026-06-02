@@ -33,8 +33,9 @@ into checked-in files.
 | AWS account ID | `account_id` | `~/.aws/config` under `sso_account_id` |
 | Identity Center "AWS access portal URL" | `sso_start_url` | `~/.aws/config` under `sso_start_url` |
 | Identity Center region | `sso_region` (almost always `us-east-1`) | `~/.aws/config` under `sso_region` |
-| RDS dev endpoint | `rds_dev_endpoint` | — (or re-derive via `aws rds describe-db-instances`) |
-| RDS dev instance ID | `rds_dev_instance_id` | — |
+| RDS DNS alias (used for tunnels; resolves task-side) | `db_dns` | — |
+| RDS endpoint (single instance, serves dev + prod) | `rds_dev_endpoint` | — (or re-derive via `aws rds describe-db-instances`) |
+| RDS instance ID (single instance, serves dev + prod) | `rds_dev_instance_id` | — |
 | Toolbox DB schema (dev / prod) | `db_schema_dev` / `db_schema_prod` | — |
 | Toolbox DB user / password (shared dev+prod for now) | `db_user` / `db_password` | — |
 | Identity Center instance ARN (admin only) | `identity_center_instance_arn` | — |
@@ -174,8 +175,7 @@ by default.
 
 ### 4. Install the MySQL client (for DB access)
 
-Homebrew's default `mysql` 9.x dropped `mysql_native_password`, which XH's RDS users have historically
-relied on; if your client can't authenticate, install the dedicated 8.4 client formula:
+Install the dedicated 8.4 client formula (it matches the RDS server, which runs MySQL 8.4):
 
 ```bash
 brew install mysql-client@8.4
@@ -184,6 +184,12 @@ brew install mysql-client@8.4
 The 8.4 client is keg-only — invoke by full path:
 `/opt/homebrew/opt/mysql-client@8.4/bin/mysql`. Add it to `PATH` in your shell rc if you'd rather not
 type the path each time.
+
+> **Auth note:** the `toolbox` DB user uses `caching_sha2_password` (MySQL 8.4 disables
+> `mysql_native_password` by default). Over a plain-TCP SSM tunnel that handshake needs TLS or the
+> server's RSA public key — pass `--get-server-public-key` to the `mysql` client (used in the
+> examples below). GUI clients (Querious, etc.): use a Standard/TCP connection to `127.0.0.1:3307`
+> and enable SSL/TLS.
 
 ### 5. Test end-to-end with a no-op describe
 
@@ -217,10 +223,10 @@ RUNTIME=$(aws ecs describe-tasks --cluster toolbox --tasks "$TASK" \
   --profile xh-toolbox-ro \
   --query 'tasks[0].containers[?name==`tomcat`].runtimeId' --output text)
 
-# RDS endpoint from 1Password (or re-derive via `aws rds describe-db-instances`)
-RDS_HOST=$(op read "op://XH Team/Toolbox AWS Ops/rds_dev_endpoint")
-
-# Start the port forward (blocks; Ctrl-C to close)
+# RDS host = the db_dns alias from 1Password. It resolves task-side via the private Route53 zone,
+# follows any future instance swap, and is the same host for both dev and prod (one shared instance).
+# Start the port forward (blocks; Ctrl-C to close):
+RDS_HOST=$(op read "op://XH Team/Toolbox AWS Ops/db_dns")
 aws ssm start-session \
   --target "ecs:toolbox_${TASK}_${RUNTIME}" \
   --document-name AWS-StartPortForwardingSessionToRemoteHost \
@@ -233,22 +239,24 @@ with `mysql` from another:
 
 ```bash
 /opt/homebrew/opt/mysql-client@8.4/bin/mysql \
-  -h 127.0.0.1 -P 3307 \
+  -h 127.0.0.1 -P 3307 --get-server-public-key \
   -u "$(op read 'op://XH Team/Toolbox AWS Ops/db_user')" \
   -p"$(op read 'op://XH Team/Toolbox AWS Ops/db_password')" \
   "$(op read 'op://XH Team/Toolbox AWS Ops/db_schema_dev')"
 ```
 
-For prod, port-forward against a `toolbox-prod` task and connect to the `db_schema_prod` schema
-(which lives on the prod RDS instance, separate from dev). The DB user/password are currently
-**shared across dev and prod** (`db_user` / `db_password`) — if that splits later, add per-env fields
-to the 1Password item and update this doc.
+Dev and prod share the **same RDS instance** in separate schemas (`db_schema_dev` /
+`db_schema_prod`), with a **shared** DB user/password (`db_user` / `db_password`). One tunnel reaches
+both schemas; for prod work, relay through a `toolbox-prod` task and select `db_schema_prod`. If the
+user/password split per-env later, add per-env fields to the 1Password item and update this doc.
 
-> **Credentials note:** Unlike some other XH apps, the deployed Toolbox task definition does **not**
-> source DB credentials from AWS Secrets Manager or task-definition env vars — the connection config
-> is supplied via the container image's instance config. For operational DB access, use the
-> `db_user` / `db_password` / `db_schema_dev` / `db_schema_prod` values in the `Toolbox AWS Ops`
-> 1Password item.
+> **Credentials note:** The deployed Toolbox tasks source their instance config from
+> `APP_TOOLBOX_*` **environment variables** on the ECS task definition, with the secret values
+> (`dbUser`, `dbPassword`, `smtpUser`, `smtpPassword`) injected from **AWS Secrets Manager**
+> (`toolbox/dev/app`, `toolbox/prod/app`). For operational DB access, the same `toolbox`
+> user/password is mirrored in the `db_user` /
+> `db_password` / `db_schema_dev` / `db_schema_prod` values of the `Toolbox AWS Ops` 1Password item
+> (the read-only SSO profile cannot read the Secrets Manager value directly).
 
 ### ECS Exec (interactive shell into a task)
 
@@ -373,6 +381,25 @@ For departing operators: remove them from the `aws-power-users` group (and, on f
 disable their `@xh.io` Google account, which cuts federated sign-in). SSO tokens expire within 12
 hours; revocation is effectively immediate.
 
+### Instance configuration & secrets
+
+The deployed services read their Hoist instance config from the **ECS task definition**, not a file:
+
+- **Non-secret settings** are plain `environment` entries (`APP_TOOLBOX_ENVIRONMENT`,
+  `APP_TOOLBOX_DB_HOST`, `APP_TOOLBOX_DB_SCHEMA`, `APP_TOOLBOX_SMTP_HOST`). To change one, register a
+  new task-definition revision with the updated value and redeploy.
+- **Secret settings** come from the AWS Secrets Manager secrets **`toolbox/dev/app`** and
+  **`toolbox/prod/app`** (JSON keys `dbUser`, `dbPassword`, `smtpUser`, `smtpPassword`), wired into
+  the task definition's `secrets:` array. To rotate one, update the secret value and force a new
+  deployment so tasks pick it up. `ecsTaskExecutionRole` is granted `secretsmanager:GetSecretValue`
+  on `toolbox/dev/app-*` and `toolbox/prod/app-*` (inline policies `xhToolboxDevSecretsAccess` /
+  `xhToolboxProdSecretsAccess`) — adding a key to an existing secret needs no policy change, but a new
+  secret *name* does.
+
+Registering a task definition or pointing a service at a new revision needs `iam:PassRole` on the
+task/execution roles, which `ToolboxReadWrite` does **not** grant — use an admin profile for those.
+(Plain `--force-new-deployment` and `--desired-count` scaling work with `ToolboxReadWrite`.)
+
 ### Permission-set definitions
 
 `ToolboxReadOnly` and `ToolboxReadWrite` both attach the `ReadOnlyAccess` managed policy plus an
@@ -432,6 +459,8 @@ The CLI commands are point-in-time recipes. If they stop working, check first wh
 - A permission set (`ToolboxReadOnly` / `ToolboxReadWrite`) was renamed or had its inline policy trimmed
 - ECS Exec was disabled on the service (`enableExecuteCommand` flag)
 - The task IAM role lost the `ssmmessages:*` permissions
+- The RDS instance behind the `db_dns` / `rds_*` 1Password values was swapped (update those values)
+- A Secrets Manager secret was renamed, or a new one needs the `ecsTaskExecutionRole` `GetSecretValue` grant
 
 Then update this file. The runbook is checked in deliberately so it travels with the codebase, not
 anyone's individual notes — but keep the public/private split intact: identifiers stay here, secrets
