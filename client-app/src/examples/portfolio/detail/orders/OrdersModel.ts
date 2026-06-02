@@ -116,11 +116,11 @@ export class OrdersModel extends HoistModel {
         }
 
         try {
-            const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec}),
-                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync({
-                    symbols: uniq(map(orders, 'symbol')),
+            const orders = await XH.portfolioService.getOrdersAsync(positionId, loadSpec),
+                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync(
+                    uniq(map(orders, 'symbol')),
                     loadSpec
-                });
+                );
             if (loadSpec.isStale) return;
 
             dashViewModel.titleDetails = `(${orders.length})`;

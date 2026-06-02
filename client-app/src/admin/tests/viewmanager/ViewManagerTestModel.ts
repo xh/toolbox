@@ -25,6 +25,8 @@ import {get} from 'lodash';
 import {sampleGrid, SampleGridModel} from '../../../desktop/common';
 
 export class ViewManagerTestModel extends HoistModel {
+    override telemetryPrefix = 'toolbox.client.viewManager';
+
     @managed @observable.ref viewManagerModel: ViewManagerModel;
 
     /** FormModel for model configs and component props. */
@@ -146,18 +148,26 @@ export class ViewManagerTestModel extends HoistModel {
                 initialViewName
             } = data;
 
-        const newModel = await ViewManagerModel.createAsync({
-            type,
-            instance,
-            typeDisplayName,
-            globalDisplayName,
-            manageGlobal,
-            enableGlobal,
-            enableSharing,
-            enableDefault,
-            enableAutoSave,
-            initialViewSpec: views => views.find(v => v.name == initialViewName) ?? views[0]
-        });
+        const newModel = await this.runner()
+            .span('testRebuild')
+            .run(ctx =>
+                ViewManagerModel.createAsync(
+                    {
+                        type,
+                        instance,
+                        typeDisplayName,
+                        globalDisplayName,
+                        manageGlobal,
+                        enableGlobal,
+                        enableSharing,
+                        enableDefault,
+                        enableAutoSave,
+                        initialViewSpec: views =>
+                            views.find(v => v.name == initialViewName) ?? views[0]
+                    },
+                    ctx
+                )
+            );
 
         runInAction(() => {
             this.viewManagerModel = newModel;

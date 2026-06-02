@@ -10,6 +10,8 @@ import {filter, find, pull} from 'lodash';
 import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 
 export class FileManagerModel extends HoistModel {
+    override telemetryPrefix = 'toolbox.client.fileManager';
+
     @managed
     chooserModel = new FileChooserModel();
 
@@ -92,45 +94,51 @@ export class FileManagerModel extends HoistModel {
     }
 
     async saveAsync() {
-        let uploadPromise, deletePromise;
+        const uploads = this.chooserModel.files,
+            deletes = this.getFilesToDelete();
 
-        const uploads = this.chooserModel.files;
-        if (uploads.length) {
-            const formData = new FormData();
-            uploads.forEach((file, idx) => {
-                formData.append(`file-${idx}`, file, file.name);
-            });
+        return this.runner()
+            .span('save')
+            .run(async ctx => {
+                let uploadPromise, deletePromise;
 
-            uploadPromise = XH.fetch({
-                url: 'fileManager/upload',
-                method: 'POST',
-                body: formData,
-                headers: {'Content-Type': null}
-            });
-        }
+                if (uploads.length) {
+                    const formData = new FormData();
+                    uploads.forEach((file, idx) => {
+                        formData.append(`file-${idx}`, file, file.name);
+                    });
 
-        const deletes = this.getFilesToDelete();
-        if (deletes.length) {
-            deletePromise = Promise.all(
-                deletes.map(it => {
-                    return XH.fetchService
-                        .fetchJson({
-                            url: 'fileManager/delete',
-                            params: {filename: it.name}
+                    uploadPromise = XH.fetch(
+                        {
+                            url: 'fileManager/upload',
+                            method: 'POST',
+                            body: formData,
+                            headers: {'Content-Type': null}
+                        },
+                        ctx
+                    );
+                }
+
+                if (deletes.length) {
+                    deletePromise = Promise.all(
+                        deletes.map(it => {
+                            return XH.fetchJson(
+                                {
+                                    url: 'fileManager/delete',
+                                    params: {filename: it.name}
+                                },
+                                ctx
+                            )
+                                .then(ret => {
+                                    if (!ret.success) throw `Unable to delete ${it.name}`;
+                                })
+                                .catchDefault();
                         })
-                        .then(ret => {
-                            if (!ret.success) throw `Unable to delete ${it.name}`;
-                        })
-                        .catchDefault();
-                })
-            );
-        }
+                    );
+                }
 
-        return Promise.all([uploadPromise, deletePromise])
-            .then(() => {
-                return this.resetAndLoadAsync();
-            })
-            .then(() => {
+                await Promise.all([uploadPromise, deletePromise]);
+                await this.resetAndLoadAsync();
                 XH.toast({
                     message: `Files processed successfully: ${uploads.length} uploaded | ${deletes.length} deleted.`
                 });
@@ -146,41 +154,41 @@ export class FileManagerModel extends HoistModel {
     async downloadSelectedAsync() {
         if (!this.enableDownload) return;
 
-        const sel = this.gridModel.selectedRecord,
-            {name} = sel.data,
-            response = await XH.fetch({
-                url: 'fileManager/download',
-                params: {filename: name}
-            }).catchDefault();
-
-        const blob = await response.blob();
-        downloadBlob(blob, name);
-        XH.toast({
-            icon: Icon.download(),
-            message: 'Download complete.'
-        });
+        await this.runner()
+            .span('download')
+            .run(async ctx => {
+                const sel = this.gridModel.selectedRecord,
+                    {name} = sel.data,
+                    response = await XH.fetch({
+                        url: 'fileManager/download',
+                        params: {filename: name},
+                        span: ctx.span
+                    });
+                const blob = await response.blob();
+                downloadBlob(blob, name);
+                XH.toast({
+                    icon: Icon.download(),
+                    message: 'Download complete.'
+                });
+            })
+            .catchDefault();
     }
 
     //---------------
     // Implementation
     //---------------
     override async doLoadAsync(loadSpec) {
-        const files = await XH.fetchService
-            .fetchJson({
-                url: 'fileManager/list',
-                loadSpec,
-                track: {
-                    category: 'File Manager',
-                    message: 'Loaded Files'
-                }
+        await this.runner({loadSpec})
+            .span('load')
+            .track({category: 'File Manager', message: 'Loaded Files'})
+            .run(async ctx => {
+                const files = await XH.fetchJson({url: 'fileManager/list'}, ctx);
+                files.forEach(file => {
+                    file.status = 'Saved';
+                });
+                this.gridModel.loadData(files);
             })
             .catchDefault();
-
-        files.forEach(file => {
-            file.status = 'Saved';
-        });
-
-        this.gridModel.loadData(files);
     }
 
     // Mark already-uploaded file as pending deletion on save, or immediately remove a

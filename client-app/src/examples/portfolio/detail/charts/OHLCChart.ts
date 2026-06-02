@@ -89,7 +89,7 @@ class OHLCChartModel extends HoistModel {
         }
 
         try {
-            const series = await XH.portfolioService.getOHLCChartSeriesAsync({symbol, loadSpec});
+            const series = await XH.portfolioService.getOHLCChartSeriesAsync(symbol, loadSpec);
             if (loadSpec.isStale) return;
 
             chartModel.setSeries(series);
