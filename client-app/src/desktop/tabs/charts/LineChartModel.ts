@@ -68,11 +68,7 @@ export class LineChartModel extends HoistModel {
             this.currentSymbols.map(
                 it =>
                     XH.portfolioService
-                        .getLineChartSeriesAsync({
-                            symbol: it,
-                            dimension: 'close',
-                            loadSpec
-                        })
+                        .getLineChartSeriesAsync({symbol: it, dimension: 'close'}, loadSpec)
                         .catchDefault() ?? {}
             )
         );

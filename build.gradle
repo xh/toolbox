@@ -140,10 +140,27 @@ Map hoistMetaData = [
 //-------------------------
 // Trampoline  jvmArgs
 //-------------------------
+// Properties that describe the daemon's own JDK install. Forwarding them to a forked toolchain
+// JVM that runs a different JDK corrupts it - e.g. `java.home` makes the forked JVM resolve its
+// internal modules against the wrong install, surfacing as `NoClassDefFoundError` on any code
+// path that touches ICU (regex normalization, JCE init, java.text.Normalizer).
+def jdkInstallProps = [
+    'java.class.path', 'java.class.version', 'java.home', 'java.library.path',
+    'java.runtime.name', 'java.runtime.version', 'java.specification.name',
+    'java.specification.vendor', 'java.specification.version',
+    'java.vendor', 'java.vendor.url', 'java.vendor.url.bug', 'java.vendor.version',
+    'java.version', 'java.version.date',
+    'java.vm.compressedOopsMode', 'java.vm.info', 'java.vm.name',
+    'java.vm.specification.name', 'java.vm.specification.vendor', 'java.vm.specification.version',
+    'java.vm.vendor', 'java.vm.version', 'jdk.debug'
+] as Set
+
 def execTasks = tasks.matching {it.name == 'bootRun' || it.name == 'console'}
 execTasks.configureEach {
     ignoreExitValue = true
-    systemProperties System.properties
+    // Forward daemon `-D` properties (e.g. `bootRun -Dserver.port=8081`) but skip the
+    // JDK-install descriptors above.
+    systemProperties System.properties.findAll { k, _ -> !jdkInstallProps.contains(k) }
     jvmArgs(allJvmArgs)
     systemProperties hoistMetaData
     // Bring .env sourced environment variables into bootRun JVM process.

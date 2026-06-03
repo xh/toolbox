@@ -1,4 +1,11 @@
-import {HoistAuthModel, IdentityInfo, managed, PlainObject, XH} from '@xh/hoist/core';
+import {
+    CallContextLike,
+    HoistAuthModel,
+    IdentityInfo,
+    managed,
+    PlainObject,
+    XH
+} from '@xh/hoist/core';
 import {AuthZeroClient, AuthZeroClientConfig} from '@xh/hoist/security/authzero';
 import {MsalClient, MsalClientConfig} from '@xh/hoist/security/msal';
 
@@ -13,7 +20,7 @@ export class AuthModel extends HoistAuthModel {
     @managed
     client: AuthZeroClient | MsalClient;
 
-    override async completeAuthAsync(): Promise<IdentityInfo> {
+    override async completeAuthAsync(ctx: CallContextLike): Promise<IdentityInfo> {
         this.setMaskMsg('Authenticating...');
 
         // Toolbox's server-provided configuration allows for OAuth to be disabled entirely, falling back to a username
@@ -26,7 +33,7 @@ export class AuthModel extends HoistAuthModel {
             // then return the result of the server-based auth check - will be false if the user does not have an
             // active session, at which point the Hoist login form will be displayed.
             XH.appSpec.enableLoginForm = true;
-            const ret = await this.getAuthStatusFromServerAsync();
+            const ret = await this.getAuthStatusFromServerAsync(ctx);
             this.setMaskMsg(null);
             return ret;
         }
@@ -63,7 +70,7 @@ export class AuthModel extends HoistAuthModel {
         // installed above, which will be read and validated by Toolbox's server-side implementation of
         // `AuthenticationService.completeAuthentication()`. Toolbox is unusual in that it is a deliberately open site
         // and will create an account on the fly for any new user, so we expect this request to always return true.
-        const ret = await this.getAuthStatusFromServerAsync();
+        const ret = await this.getAuthStatusFromServerAsync(ctx);
         this.setMaskMsg(null);
         return ret;
     }

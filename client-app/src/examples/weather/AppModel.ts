@@ -16,15 +16,18 @@ export class AppModel extends BaseAppModel {
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
 
-        this.weatherViewManager = await ViewManagerModel.createAsync({
-            type: 'weatherDashboard',
-            typeDisplayName: 'Layout',
-            enableDefault: true,
-            manageGlobal: XH.getUser().isHoistAdmin
-        });
+        this.weatherViewManager = await ViewManagerModel.createAsync(
+            {
+                type: 'weatherDashboard',
+                typeDisplayName: 'Layout',
+                enableDefault: true,
+                manageGlobal: XH.getUser().isHoistAdmin
+            },
+            ctx
+        );
 
         this.weatherDashModel = new WeatherDashModel(this.weatherViewManager);
-        this.loadAsync({span: ctx.span});
+        this.loadAsync(ctx);
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
