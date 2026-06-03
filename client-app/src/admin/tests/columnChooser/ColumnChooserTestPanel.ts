@@ -147,6 +147,7 @@ class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
             emptyText: 'No records found...',
             colChooserModel: true,
             enableExport: true,
+            useVirtualColumns: true,
             lockColumnGroups: this.lockColumnGroups,
             enableColumnPinning: this.enableColumnPinning,
             columns: mergeCustomColumns(columns, this.customColumns)
