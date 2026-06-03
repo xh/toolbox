@@ -72,9 +72,9 @@ export const fileChooserPanel = hoistCmp.factory({
     }
 });
 
-//------------------------
-// Multi-purpose chooser with live controls over accept / limits / target placement.
-//------------------------
+/**
+ * Multi-purpose chooser with live controls over accept / limits / target placement.
+ */
 const configChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
     model: uses(() => FileChooserPanelModel),
     render({model}) {
@@ -162,9 +162,9 @@ const configChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
     }
 });
 
-//------------------------
-// Single-image chooser demonstrating a custom `fileDisplay` (in-place image preview).
-//------------------------
+/**
+ * Single-image chooser demonstrating a custom `fileDisplay` (in-place image preview).
+ */
 const imageChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
     model: uses(() => FileChooserPanelModel),
     render({model}) {
@@ -180,9 +180,11 @@ const imageChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
     }
 });
 
-// Custom single-file display: renders the selected image in place, with a footer to replace
-// (drop / click anywhere) or clear it. The object URL is created / revoked via a local model so
-// it is cleaned up on replace and unmount.
+/**
+ * Custom single-file display: renders the selected image in place, with a footer to replace
+ * (drop / click anywhere) or clear it. The object URL is created / revoked via a local model so
+ * it is cleaned up on replace and unmount.
+ */
 const imagePreview = hoistCmp.factory({
     model: creates(() => ImagePreviewModel),
     render({model}) {
