@@ -5,15 +5,34 @@ import {computed, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {filesize} from 'filesize';
-import {downloadBlob} from '@xh/hoist/utils/js';
 import {filter, find, pull} from 'lodash';
 import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
+import {downloadBlob} from '@xh/hoist/utils/js';
 
 export class FileManagerModel extends HoistModel {
     override telemetryPrefix = 'toolbox.client.fileManager';
 
+    // Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
+    // accepted file types for sanity (and to demo the `accepts` prop).
+    private acceptedFileTypes: string[] = [
+        '.txt',
+        '.png',
+        '.gif',
+        '.jpg',
+        '.doc',
+        '.docx',
+        '.xls',
+        '.xlsx',
+        '.ppt',
+        '.pptx',
+        '.pdf'
+    ];
+
     @managed
-    chooserModel = new FileChooserModel();
+    chooserModel = new FileChooserModel({
+        accept: this.acceptedFileTypes,
+        maskOnDrag: false
+    });
 
     @managed
     gridModel = new GridModel({
@@ -33,9 +52,9 @@ export class FileManagerModel extends HoistModel {
             {field: 'name', flex: 1},
             {
                 field: 'size',
-                width: 90,
                 align: 'right',
-                renderer: v => filesize(v)
+                renderer: v => filesize(v),
+                flex: 1
             },
             {
                 field: 'status',
