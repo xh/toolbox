@@ -17,12 +17,15 @@ export class AppModel extends BaseAppModel {
         // Constructed here, in initAsync, so we can await the async factory and ensure that all
         // saved views are loaded and the desired option has been preselected before the model
         // is used to construct component-level models within PortfolioModel.
-        this.portfolioViewManager = await ViewManagerModel.createAsync({
-            type: 'portfolioLayout',
-            typeDisplayName: 'Layout',
-            enableDefault: true,
-            manageGlobal: XH.getUser().isHoistAdmin
-        });
+        this.portfolioViewManager = await ViewManagerModel.createAsync(
+            {
+                type: 'portfolioLayout',
+                typeDisplayName: 'Layout',
+                enableDefault: true,
+                manageGlobal: XH.getUser().isHoistAdmin
+            },
+            ctx
+        );
 
         this.addReaction({
             track: () => XH.webSocketService.connected,

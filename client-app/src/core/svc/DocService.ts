@@ -15,6 +15,8 @@ export interface DocSearchResult {
  * DocsService API. Maintains a MiniSearch full-text index for ranked search.
  */
 export class DocService extends HoistService {
+    override telemetryPrefix = 'toolbox.client.docs';
+
     static instance: DocService;
 
     @observable indexReady: boolean = false;
@@ -89,14 +91,20 @@ export class DocService extends HoistService {
         const cached = this.cache.get(cacheKey);
         if (cached) return cached;
 
-        const resp = await this.newSpan('toolbox.client.docs.getContent').fetchJson({
-            url: 'docs/content',
-            params: {source, docId}
-        });
-
-        const content = resp.content;
-        this.cache.set(cacheKey, content);
-        return content;
+        return this.runner()
+            .span('getContent')
+            .run(async ctx => {
+                const resp = await XH.fetchJson(
+                    {
+                        url: 'docs/content',
+                        params: {source, docId}
+                    },
+                    ctx
+                );
+                const content = resp.content;
+                this.cache.set(cacheKey, content);
+                return content;
+            });
     }
 
     /**
@@ -141,26 +149,28 @@ export class DocService extends HoistService {
     // Implementation
     //------------------
     private async loadRegistryAsync() {
-        return this.newSpan('toolbox.client.docs.loadRegistry').run(async ctx => {
-            const resp = await ctx.fetchJson({url: 'docs/registry'});
-            const sourceCount = Object.keys(resp.sources).length;
+        return this.runner()
+            .span('loadRegistry')
+            .run(async ctx => {
+                const resp = await XH.fetchJson({url: 'docs/registry'}, ctx);
+                const sourceCount = Object.keys(resp.sources).length;
 
-            this.logInfo(
-                `Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`
-            );
+                this.logInfo(
+                    `Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`
+                );
 
-            runInAction(() => {
-                this.registry = resp.entries.map(e => ({
-                    id: e.id,
-                    source: e.source,
-                    title: e.title,
-                    category: e.category,
-                    description: e.description,
-                    keywords: e.keywords ?? []
-                }));
-                this.sourceInfo = resp.sources;
+                runInAction(() => {
+                    this.registry = resp.entries.map(e => ({
+                        id: e.id,
+                        source: e.source,
+                        title: e.title,
+                        category: e.category,
+                        description: e.description,
+                        keywords: e.keywords ?? []
+                    }));
+                    this.sourceInfo = resp.sources;
+                });
             });
-        });
     }
 
     private async buildIndexAsync() {

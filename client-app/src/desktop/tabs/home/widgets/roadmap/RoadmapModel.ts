@@ -8,6 +8,8 @@ import {toNumber} from 'lodash';
 import {span} from '@xh/hoist/cmp/layout';
 
 export class RoadmapModel extends HoistModel {
+    override telemetryPrefix = 'toolbox.client.roadmap';
+
     @bindable
     statusFilter = 'showUpcoming';
 
@@ -58,14 +60,15 @@ export class RoadmapModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const {dataViewModel} = this,
-            resp = await XH.fetchJson({
-                url: 'roadmap/data',
-                loadSpec
-            });
+        const {dataViewModel} = this;
 
-        const projects = this.processData(resp.data);
-        dataViewModel.loadData(projects);
+        await this.runner({loadSpec})
+            .span('load')
+            .run(async ctx => {
+                const resp = await XH.fetchJson({url: 'roadmap/data'}, ctx),
+                    projects = this.processData(resp.data);
+                dataViewModel.loadData(projects);
+            });
     }
 
     private processData(rawData) {

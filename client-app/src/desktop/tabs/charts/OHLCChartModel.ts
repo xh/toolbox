@@ -72,10 +72,7 @@ export class OHLCChartModel extends HoistModel {
 
         let series =
             (await XH.portfolioService
-                .getOHLCChartSeriesAsync({
-                    symbol: this.currentSymbol,
-                    loadSpec
-                })
+                .getOHLCChartSeriesAsync(this.currentSymbol, loadSpec)
                 .catchDefault()) ?? {};
 
         Object.assign(series, {

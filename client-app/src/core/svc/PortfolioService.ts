@@ -1,22 +1,22 @@
-import {HoistService, InitContext, LoadSpec, PlainObject, XH} from '@xh/hoist/core';
+import {CallContextLike, HoistService, InitContext, PlainObject, XH} from '@xh/hoist/core';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
 
 export class PortfolioService extends HoistService {
+    override telemetryPrefix = 'toolbox.client.portfolio';
+
     static instance: PortfolioService;
 
     MAX_POSITIONS = 950;
     lookups: PlainObject;
 
     override async initAsync(ctx: InitContext) {
-        this.lookups = await this.runner(ctx.span).fetchJson({url: 'portfolio/lookups'});
+        this.lookups = await this.runner({span: ctx.span}).fetchJson({url: 'portfolio/lookups'});
     }
 
-    async getSymbolsAsync({loadSpec}: {loadSpec?: LoadSpec} = {}) {
-        return this.runner(loadSpec)
-            .newSpan('toolbox.client.portfolio.getSymbols')
-            .fetchJson({url: 'portfolio/symbols'});
+    async getSymbolsAsync(ctx: CallContextLike) {
+        return this.runner(ctx).span('getSymbols').fetchJson({url: 'portfolio/symbols'});
     }
 
     /**
@@ -31,17 +31,22 @@ export class PortfolioService extends HoistService {
         includeSummary = false,
         maxPositions = this.MAX_POSITIONS
     ): Promise<Position[]> {
-        const positions = await this.newSpan('toolbox.client.portfolio.getPositions')
+        return this.runner()
+            .span('getPositions')
             .track('Loaded positions')
-            .fetchJson({
-                url: 'portfolio/positions',
-                params: {
-                    dims: dims.join(','),
-                    maxPositions
-                }
+            .run(async ctx => {
+                const positions = await XH.fetchJson(
+                    {
+                        url: 'portfolio/positions',
+                        params: {
+                            dims: dims.join(','),
+                            maxPositions
+                        }
+                    },
+                    ctx
+                );
+                return includeSummary ? [positions.root] : positions.root.children;
             });
-
-        return includeSummary ? [positions.root] : positions.root.children;
     }
 
     /**
@@ -49,7 +54,7 @@ export class PortfolioService extends HoistService {
      * @param positionId - ID installed on each position returned by `getPositionsAsync()`.
      */
     async getPositionAsync(positionId: string): Promise<Position> {
-        return this.newSpan('toolbox.client.portfolio.getPosition').fetchJson({
+        return this.runner().span('getPosition').fetchJson({
             url: 'portfolio/position',
             params: {positionId}
         });
@@ -64,106 +69,111 @@ export class PortfolioService extends HoistService {
         topic: string,
         maxPositions: number = this.MAX_POSITIONS
     ) {
-        const session = await this.newSpan('toolbox.client.portfolio.getLivePositions').fetchJson({
-            url: 'portfolio/livePositions',
-            params: {
-                dims: dims.join(','),
-                maxPositions,
-                channelKey: XH.webSocketService.channelKey,
-                topic
-            }
-        });
-
-        return new PositionSession(session);
+        return this.runner()
+            .span('getLivePositions')
+            .run(async ctx => {
+                const session = await XH.fetchJson(
+                    {
+                        url: 'portfolio/livePositions',
+                        params: {
+                            dims: dims.join(','),
+                            maxPositions,
+                            channelKey: XH.webSocketService.channelKey,
+                            topic
+                        }
+                    },
+                    ctx
+                );
+                return new PositionSession(session);
+            });
     }
 
     /**
      * Return a list of flat position data.
      */
-    async getPricedRawPositionsAsync({loadSpec}: {loadSpec?: LoadSpec} = {}): Promise<
-        PricedRawPosition[]
-    > {
-        return this.runner(loadSpec)
-            .newSpan('toolbox.client.portfolio.getPricedRawPositions')
+    async getPricedRawPositionsAsync(ctx: CallContextLike): Promise<PricedRawPosition[]> {
+        return this.runner(ctx)
+            .span('getPricedRawPositions')
             .fetchJson({url: 'portfolio/pricedRawPositions'});
     }
 
-    async getAllOrdersAsync({loadSpec}: {loadSpec?: LoadSpec} = {}): Promise<PlainObject[]> {
-        return this.runner(loadSpec)
-            .newSpan('toolbox.client.portfolio.getAllOrders')
-            .fetchJson({url: 'portfolio/orders'});
+    async getAllOrdersAsync(ctx: CallContextLike): Promise<PlainObject[]> {
+        return this.runner(ctx).span('getAllOrders').fetchJson({url: 'portfolio/orders'});
     }
 
-    async getOrdersAsync({
-        positionId,
-        loadSpec
-    }: {
-        positionId: string;
-        loadSpec?: LoadSpec;
-    }): Promise<PlainObject[]> {
-        const ret: PlainObject[] = await this.runner(loadSpec)
-            .newSpan('toolbox.client.portfolio.getOrdersForPosition')
-            .fetchJson({
-                url: 'portfolio/ordersForPosition',
-                params: {positionId}
+    async getOrdersAsync(positionId: string, ctx: CallContextLike): Promise<PlainObject[]> {
+        return this.runner(ctx)
+            .span('getOrdersForPosition')
+            .run(async ctx => {
+                const ret: PlainObject[] = await XH.fetchJson(
+                    {
+                        url: 'portfolio/ordersForPosition',
+                        params: {positionId}
+                    },
+                    ctx
+                );
+                ret.forEach(it => {
+                    it.day = LocalDate.from(it.time);
+                });
+                return ret;
             });
-
-        ret.forEach(it => {
-            it.day = LocalDate.from(it.time);
-        });
-
-        return ret;
     }
 
-    async getLineChartSeriesAsync({
-        symbol,
-        dimension = 'volume',
-        loadSpec
-    }: {
-        symbol: string;
-        dimension?: string;
-        loadSpec?: LoadSpec;
-    }) {
-        const mktData = await this.runner(loadSpec)
-            .newSpan('toolbox.client.portfolio.getLineChartSeriesAsync')
-            .fetchJson({url: `portfolio/prices/${symbol}`});
-        return {
-            name: symbol,
-            type: 'line',
-            animation: false,
-            data: mktData.map(it => [LocalDate.get(it.day).timestamp, it[dimension]])
-        };
-    }
-
-    async getSparklineSeriesAsync({symbols, loadSpec}: {symbols: string[]; loadSpec?: LoadSpec}) {
-        const data = await this.runner(loadSpec)
-            .newSpan('toolbox.client.portfolio.getSparkline')
-            .fetchJson({
-                url: `portfolio/closingPriceHistory`,
-                params: {symbols}
+    async getLineChartSeriesAsync(
+        {symbol, dimension = 'volume'}: {symbol: string; dimension?: string},
+        ctx: CallContextLike
+    ) {
+        return this.runner(ctx)
+            .span('getLineChartSeriesAsync')
+            .run(async ctx => {
+                const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`}, ctx);
+                return {
+                    name: symbol,
+                    type: 'line',
+                    animation: false,
+                    data: mktData.map(it => [LocalDate.get(it.day).timestamp, it[dimension]])
+                };
             });
-        return mapValues(data, series => series.map(([date, price]) => [new Date(date), price]));
     }
 
-    async getOHLCChartSeriesAsync({symbol, loadSpec}: {symbol: string; loadSpec?: LoadSpec}) {
-        const mktData = await this.runner(loadSpec)
-            .newSpan('toolbox.client.portfolio.getOHLCChart')
-            .fetchJson({url: `portfolio/prices/${symbol}`});
-        return {
-            name: symbol,
-            type: 'ohlc',
-            color: 'rgba(219, 0, 1, 0.55)',
-            upColor: 'rgba(23, 183, 0, 0.85)',
-            animation: false,
-            dataGrouping: {enabled: false},
-            data: mktData.map(it => [
-                LocalDate.get(it.day).timestamp,
-                it.open,
-                it.high,
-                it.low,
-                it.close
-            ])
-        };
+    async getSparklineSeriesAsync(symbols: string[], ctx: CallContextLike) {
+        return this.runner(ctx)
+            .span('getSparkline')
+            .run(async ctx => {
+                const data = await XH.fetchJson(
+                    {
+                        url: `portfolio/closingPriceHistory`,
+                        params: {symbols}
+                    },
+                    ctx
+                );
+                return mapValues(data, series =>
+                    series.map(([date, price]) => [new Date(date), price])
+                );
+            });
+    }
+
+    async getOHLCChartSeriesAsync(symbol: string, ctx: CallContextLike) {
+        return this.runner(ctx)
+            .span('getOHLCChart')
+            .run(async ctx => {
+                const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`}, ctx);
+                return {
+                    name: symbol,
+                    type: 'ohlc',
+                    color: 'rgba(219, 0, 1, 0.55)',
+                    upColor: 'rgba(23, 183, 0, 0.85)',
+                    animation: false,
+                    dataGrouping: {enabled: false},
+                    data: mktData.map(it => [
+                        LocalDate.get(it.day).timestamp,
+                        it.open,
+                        it.high,
+                        it.low,
+                        it.close
+                    ])
+                };
+            });
     }
 }
 

@@ -71,7 +71,7 @@ class LineChartModel extends HoistModel {
         }
 
         try {
-            const series = await XH.portfolioService.getLineChartSeriesAsync({symbol, loadSpec});
+            const series = await XH.portfolioService.getLineChartSeriesAsync({symbol}, loadSpec);
             if (loadSpec.isStale) return;
 
             chartModel.setSeries(series);
