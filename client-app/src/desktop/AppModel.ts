@@ -1,6 +1,6 @@
 import {span} from '@xh/hoist/cmp/layout';
 import {TabConfig, TabContainerModel, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
-import {InitContext, LoadSpec, managed, XH} from '@xh/hoist/core';
+import {InitContext, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
@@ -9,7 +9,7 @@ import {
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {runInAction} from '@xh/hoist/mobx';
+import {bindable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
 import {DocService} from '../core/svc/DocService';
@@ -83,6 +83,18 @@ export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
 
+    override persistWith = {prefKey: 'wrapperRailCollapsed'};
+
+    /** Global, persisted collapse state for the Wrapper info rail on component demo tabs. */
+    @bindable
+    @persist
+    wrapperRailCollapsed = false;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
+
     @managed
     tabModel: TabContainerModel = this.createTabContainerModel();
 
@@ -114,15 +126,6 @@ export class AppModel extends BaseAppModel {
             themeAppOption(),
             sizingModeAppOption(),
             autoRefreshAppOption(),
-            {
-                name: 'expandDockedLinks',
-                prefName: 'expandDockedLinks',
-                formField: {
-                    label: 'Expand Links',
-                    info: 'Always expand the docked Links panel when available.',
-                    item: switchInput()
-                }
-            },
             {
                 name: 'appMenuButtonWithUserProfile',
                 valueSetter: v => {
