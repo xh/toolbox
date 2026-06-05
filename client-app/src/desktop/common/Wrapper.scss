@@ -1,29 +1,29 @@
 .tbox-wrapper {
-  &__description {
-    flex: none !important;
-    width: 100%;
-    padding: 10px;
-    line-height: 1.4;
-    border-bottom: var(--xh-border-solid);
+  gap: var(--xh-pad-px);
+  padding: var(--xh-pad-px);
 
-    border-left: 4px solid var(--xh-tab-active-text-color);
-    background:
-      linear-gradient(
-        to right,
-        color-mix(in srgb, var(--xh-intent-primary), transparent 95%),
-        transparent 80%
-      ),
-      var(--xh-bg);
+  // Fixed-width info rail — constant silhouette across tabs.
+  &__rail {
+    flex: none;
+  }
+
+  &__rail-body {
+    overflow: auto;
+    padding: var(--xh-pad-px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-pad-px);
+    line-height: 1.5;
+  }
+
+  &__intro {
+    color: var(--xh-text-color-muted);
 
     p {
-      margin-bottom: 10px;
+      margin: 0 0 var(--xh-pad-half-px);
       &:last-child {
-        margin-bottom: 0;
+        margin: 0;
       }
-    }
-
-    a {
-      color: var(--xh-orange);
     }
 
     code {
@@ -36,54 +36,63 @@
     }
   }
 
-  &__content {
+  &__divider {
+    flex: none;
+    height: 1px;
+    background: var(--xh-border-color);
+  }
+
+  &__resources {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-pad-half-px);
+  }
+
+  &__resources-label {
+    margin-bottom: var(--xh-pad-half-px);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__resource {
+    display: flex;
+    gap: var(--xh-pad-half-px);
+    align-items: baseline;
+
+    .xh-icon {
+      flex: none;
+      font-size: 0.85em;
+      color: var(--xh-text-color-muted);
+    }
+  }
+
+  &__resource-note {
+    color: var(--xh-text-color-muted);
+    font-size: 0.9em;
+    line-height: 1.35;
+  }
+
+  // Flexible demo region — centers intrinsically-sized demos, no gradient.
+  &__demo {
     flex: 1;
+    min-width: 0;
     justify-content: center;
     align-items: center;
     padding: var(--xh-pad-double-px);
-    background:
-      radial-gradient(ellipse at center, var(--xh-bg-alt) 0%, transparent 80%), var(--xh-bg);
-
-    .xh-dark & {
-      background:
-        radial-gradient(
-          ellipse at center,
-          color-mix(in srgb, var(--xh-bg-alt), transparent 30%) 0%,
-          transparent 70%
-        ),
-        var(--xh-bg);
-    }
 
     > .xh-panel {
       border: var(--xh-border-solid);
     }
   }
 
-  &__links {
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    tr {
-      &:nth-child(even) {
-        background-color: var(--xh-grid-bg-odd);
-      }
-    }
-
-    th,
-    td {
-      padding: var(--xh-pad-half-px) var(--xh-pad-px) var(--xh-pad-px) var(--xh-pad-px);
-      vertical-align: top;
-    }
-
-    th {
-      white-space: nowrap;
-      text-align: left;
-    }
-
-    td {
-      width: 100%;
-    }
+  // Thin strip shown when the rail is collapsed.
+  &__rail-collapsed {
+    flex: none;
+    align-items: center;
+    padding-top: var(--xh-pad-px);
+    border-right: var(--xh-border-solid);
   }
 }
