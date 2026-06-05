@@ -281,11 +281,11 @@ class BootStrap implements LogSupport {
                 notes: 'Holds favorites, grid state, and displayMode prefs for the XH Contact example app.'
             ),
             new PreferenceSpec(
-                name: 'expandDockedLinks',
+                name: 'wrapperRailCollapsed',
                 type: 'bool',
                 defaultValue: false,
                 groupName: 'Toolbox',
-                notes: 'True to expand the docked linked panel by default, false to start collapsed.'
+                notes: 'True to collapse the Wrapper info rail (title/intro/links) shown on component demo tabs. Persists globally across tabs.'
             ),
             new PreferenceSpec(
                 name: 'todoTasks',
