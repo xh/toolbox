@@ -105,3 +105,7 @@ for details on the base images and container structure.
 | `AWS_ACCOUNT_ID` | Build | Used to construct the ECR registry URL |
 | `FONTAWESOME_PACKAGE_TOKEN` | CI, Build | Auth token for the Font Awesome Pro npm registry (`npm.fontawesome.com`) |
 | `GITHUB_TOKEN` | Build Release | Provided automatically by GitHub Actions; used for `gh release create` |
+
+------------------------------------------
+
+info@xh.io | <https://xh.io/>

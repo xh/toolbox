@@ -67,67 +67,16 @@ Auth0 config accordingly.
 
 ## Running Toolbox
 
-To run toolbox locally on your machine, use the following commands:
+To run Toolbox locally, start the Grails server and the Webpack dev server in separate terminals:
 
-* Start the server with the command `./gradlew bootRun -Duser.timezone=Etc/UTC` in the `toolbox`
-  package.
-* Start the client with the command `yarn start` in the `toolbox/client-app` package.
+* **Server** - from the project root: `./gradlew bootRun` (serves the API on port `8080`).
+* **Client** - from the `client-app/` directory: `yarn start` (serves `http://localhost:3000`).
 
-## Toolbox + Hoist development
+Then open `http://localhost:3000/app` (desktop app), `/admin` (admin console), or `/mobile`.
 
-Toolbox is often developed alongside the Hoist Core and React libraries, so that changes to the
-libraries themselves can be developed and tested locally using Toolbox as a reference app. This is
-the recommended configuration for XH developers to use when setting up Toolbox.
-
-* Create or find a suitable directory for multiple project repositories, like homedir or (if using
-  IntelliJ) `~/IdeaProjects/`.
-* Within this directory, check out the `toolbox`, `hoist-react`, and `hoist-core` repositories as
-  siblings.
-
-### Running Toolbox using local Hoist
-
-* To run the server using the local `hoist-core`, you need `hoist-core` to exist as sibling of the
-  `toolbox` package, and do one of the following:
-    * Edit the `toolbox/gradle.properties` file and set `runHoistInline=true` or set it in your
-      default gradle properties, e.g. ~/.gradle/gradle.properties
-
-  Note this is _only_ required if you're changing hoist-core code.
-
-* To run the client using the local `hoist-react`, you need `hoist-react` to exist as sibling of the
-  `toolbox` package, and to start your local webpack-dev-server from the `toolbox/client-app`
-  directory by running `yarn startWithHoist`.
-
-  Note this is _only_ required if you're changing hoist-react code.
-
-### Running multiple instances of Toolbox
-
-* Make sure that the `APP_TOOLBOX_MULTI_INSTANCE_ENABLED` property in `.env` is set to `true`.
-* Run the first instance of the server and client as normal.
-* To run a second instance of the server, you run the command
-  `./gradlew bootRun -Duser.timezone=Etc/UTC -Dserver.port=8081` from the `toolbox` directory.
-* To run a second instance of the client connected to the second server, start another local
-  webpack-dev-server from the `toolbox/client-app` directory using
-  `yarn start --env devGrailsPort=8081 devWebpackPort=3001`.
-
-## Developing with HTTPS on `xh.io` domain
-
-It can be useful to run Toolbox locally with HTTPS enabled and on a sub-domain of `xh.io`,
-especially when testing OAuth, CORS, or cookie dependent features. Follow these steps to run with
-HTTPS on the `toolbox-local.xh.io:3000` domain:
-
-1. Add this entry to your dev machine's `hosts` file: `127.0.0.1 toolbox-local.xh.io`
-2. Start the Grails server with the additional VM options below. The referenced files are
-   self-signed certs commited to the repo for local dev purposes.
-    ```
-    -Dserver.ssl.enabled=true
-    -Dserver.ssl.certificate=classpath:local-dev/toolbox-local.xh.io-self-signed.crt
-    -Dserver.ssl.certificate-private-key=classpath:local-dev/toolbox-local.xh.io-self-signed.key
-    -Dserver.ssl.trust-certificate=classpath:local-dev/toolbox-local.xh.io-self-signed.ca.crt
-    ```
-3. Visit `https://toolbox-local.xh.io:8080/ping` in your browser to proceed past the SSL warning
-   for API calls.
-4. Start the GUI with the `startWithHoistSecure` npm script. Go to
-   `https://toolbox-local.xh.io:3000/app/` in your browser and proceed past the SSL warning.
+For the complete guide — running against local Hoist framework checkouts, running multiple
+instances, on-device mobile testing over a network IP, HTTPS setup, and troubleshooting — see
+[**Running Toolbox Locally**](docs/local-development.md).
 
 ------------------------------------------
 

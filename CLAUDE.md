@@ -307,6 +307,10 @@ Run both simultaneously:
 - Terminal 1: `./gradlew bootRun`
 - Terminal 2: `cd client-app && yarn start`
 
+For the full local-run guide — local Hoist checkouts, multiple instances, on-device mobile testing
+over a network IP, HTTPS, and troubleshooting (including the server timezone check) — see
+[`docs/local-development.md`](docs/local-development.md).
+
 ### App URLs during Local Development
 
 The webpack dev server runs on **`http://localhost:3000`**. Each file in `client-app/src/apps/`
@@ -464,5 +468,5 @@ is broken.
 
 XH / Hoist framework developers can optionally check out the framework libraries as sibling
 directories for inline development of the libraries. This is not required for app development.
-- **`../hoist-core`** — Groovy/Java backend framework. Enable with `runHoistInline=true` in `gradle.properties`.
+- **`../hoist-core`** — Groovy/Java backend framework. Enable per-run with `./gradlew bootRun -PrunHoistInline=true` (no tracked-file edit), or persistently via `runHoistInline=true` in `gradle.properties`.
 - **`../hoist-react`** — React frontend library. Enable with `yarn startWithHoist` from `client-app/`.

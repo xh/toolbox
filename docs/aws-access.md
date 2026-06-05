@@ -465,3 +465,7 @@ The CLI commands are point-in-time recipes. If they stop working, check first wh
 Then update this file. The runbook is checked in deliberately so it travels with the codebase, not
 anyone's individual notes — but keep the public/private split intact: identifiers stay here, secrets
 stay in 1Password.
+
+------------------------------------------
+
+info@xh.io | <https://xh.io/>
