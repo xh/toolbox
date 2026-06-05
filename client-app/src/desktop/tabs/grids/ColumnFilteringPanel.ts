@@ -21,6 +21,8 @@ export const columnFilteringPanel = hoistCmp.factory({
     model: creates(ColumnFilteringPanelModel),
     render() {
         return wrapper({
+            title: 'Column Filtering',
+            icon: Icon.filter(),
             description: [
                 p(
                     'Grids support column-based filtering of their underlying store data. To enable, set the GridModel.filterModel config to a GridFilterModel (or true) and set filterable: true on the columns you wish to filter.'
@@ -55,8 +57,6 @@ export const columnFilteringPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Grids › Column Filtering',
-                icon: Icon.filter(),
                 className: 'tb-grid-wrapper-panel tb-column-filtering-panel',
                 tbar: tbar(),
                 item: hframe(grid(), gridOptionsPanel()),

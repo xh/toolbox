@@ -6,6 +6,8 @@ import {sampleGrid, wrapper} from '../../common';
 
 export const standardGridPanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'Standard Grid',
+        icon: Icon.gridPanel(),
         description: [
             p(
                 'Grids are at the heart of many Hoist React projects, and Grid, GridModel, and related helper components are key elements of the framework.'
@@ -47,8 +49,6 @@ export const standardGridPanel = hoistCmp.factory(() =>
             }
         ],
         item: panel({
-            title: 'Grids › Standard',
-            icon: Icon.gridPanel(),
             className: 'tb-grid-wrapper-panel',
             item: sampleGrid()
         })

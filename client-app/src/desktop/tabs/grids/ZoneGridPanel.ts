@@ -22,6 +22,8 @@ export const zoneGridPanel = hoistCmp.factory({
     model: creates(() => ZoneGridPanelModel),
     render() {
         return wrapper({
+            title: 'Zone Grid',
+            icon: Icon.gridLarge(),
             description: [
                 p(
                     'The ZoneGrid component leverages an underlying Grid / GridModel instance to display multi-line full-width rows with configurable fields.'
@@ -44,8 +46,6 @@ export const zoneGridPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Grids › Zone Grid',
-                icon: Icon.gridLarge(),
                 className: 'tb-zone-grid-panel',
                 width: 500,
                 height: 700,

@@ -16,6 +16,8 @@ export const agGridView = hoistCmp.factory({
         const {agGridModel, columnDefs} = model;
 
         return wrapper({
+            title: 'ag-Grid Wrapper',
+            icon: Icon.gridPanel(),
             description: [
                 p(
                     'The Hoist agGrid component provides a much more minimal wrapper for ag-Grid, supporting direct use of the library with limited enhancements for consistent Hoist styling, layout support, keyboard navigation, and a backing model for convenient access to the ag-Grid APIs and other utility methods.'
@@ -27,8 +29,6 @@ export const agGridView = hoistCmp.factory({
                 )
             ],
             item: panel({
-                title: 'Grids › ag-Grid Wrapper',
-                icon: Icon.gridPanel(),
                 className: 'tb-grid-wrapper-panel',
                 width: '95%',
                 mask: 'onLoad',

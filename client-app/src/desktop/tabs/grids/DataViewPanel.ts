@@ -14,6 +14,8 @@ export const dataViewPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'DataView',
+            icon: Icon.addressCard(),
             description: [
                 p(
                     'The DataView component leverages an underlying Grid / GridModel instance to display individual component "cards" for each rendered item.'
@@ -21,8 +23,6 @@ export const dataViewPanel = hoistCmp.factory({
             ],
             item: panel({
                 className: 'tb-dataview-panel',
-                title: 'Grids › DataView',
-                icon: Icon.addressCard(),
                 width: 700,
                 height: 400,
                 item: dataView(),

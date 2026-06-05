@@ -19,6 +19,8 @@ import {numberInput, switchInput, textArea} from '@xh/hoist/desktop/cmp/input';
 export const restGridPanel = hoistCmp.factory({
     render() {
         return wrapper({
+            title: 'REST Editor',
+            icon: Icon.edit(),
             description: [
                 p(
                     'RestGrid and its associated components provide a quick way to implement basic CRUD functionality for domain objects managed by the Hoist Grails server.'
@@ -30,8 +32,6 @@ export const restGridPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                title: 'Grids › REST Editor',
-                icon: Icon.edit(),
                 className: 'tb-grid-wrapper-panel',
                 item: restGrid({modelConfig: modelSpec})
             })

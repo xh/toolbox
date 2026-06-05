@@ -6,6 +6,8 @@ import {sampleTreeGrid, wrapper} from '../../common';
 
 export const treeGridPanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'Tree Grid',
+        icon: Icon.grid(),
         description: [
             p(
                 "Hoist's Grid supports the display of hierarchical tree data, leveraging the underlying support for nested data rows provided by ag-Grid. The GroupingChooser component allows control over the tree hierarchy, with optional support for persisting user-driven favorites."
@@ -15,8 +17,6 @@ export const treeGridPanel = hoistCmp.factory(() =>
             )
         ],
         item: panel({
-            title: 'Grids › Tree',
-            icon: Icon.grid(),
             className: 'tb-grid-wrapper-panel',
             item: sampleTreeGrid({modelConfig: {includeCheckboxes: false}})
         })

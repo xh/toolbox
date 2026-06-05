@@ -18,6 +18,8 @@ export const inlineEditingPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'Inline Editing',
+            icon: Icon.edit(),
             description: [
                 p(
                     'Grids support inline editing of their underlying store records. To enable, set editable:true on columns that should allow editing and (optionally) configure a type-appropriate editor.'
@@ -36,8 +38,6 @@ export const inlineEditingPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Grids › Inline Editing',
-                icon: Icon.edit(),
                 className: classNames(
                     model.isModal ? '' : 'tb-grid-wrapper-panel',
                     'tb-inline-editing-panel',

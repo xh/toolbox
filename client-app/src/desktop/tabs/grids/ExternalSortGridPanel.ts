@@ -20,6 +20,8 @@ export const externalSortGridPanel = hoistCmp.factory({
     model: creates(ExternalSortGridPanelModel),
     render() {
         return wrapper({
+            title: 'External Sort',
+            icon: Icon.gridPanel(),
             description: [
                 p(
                     'Grids can optionally manage their sort externally. In the below example, we react to GridModel.sortBy to offload sorting to external logic. Sorted rows can be limited after sorting, facilitating showing a subset of large datasets.'
@@ -27,8 +29,6 @@ export const externalSortGridPanel = hoistCmp.factory({
                 p('This pattern could be used to similarly offload sorting to the server.')
             ],
             item: panel({
-                title: 'Grids › External Sort',
-                icon: Icon.gridPanel(),
                 className: 'tb-grid-wrapper-panel tb-external-sort-panel',
                 mask: 'onLoad',
                 tbar: tbar(),

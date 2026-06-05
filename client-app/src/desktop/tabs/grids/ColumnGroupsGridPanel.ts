@@ -8,6 +8,8 @@ import {sampleColumnGroupsGrid, wrapper} from '../../common';
 
 export const columnGroupsGridPanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'Grouped Columns',
+        icon: Icon.gridPanel(),
         description: [
             p(
                 'Hoist React grids support column grouping as described in the ',
@@ -28,8 +30,6 @@ export const columnGroupsGridPanel = hoistCmp.factory(() =>
             )
         ],
         item: panel({
-            title: 'Grids › Grouped Columns',
-            icon: Icon.gridPanel(),
             className: 'tb-grid-wrapper-panel',
             item: sampleColumnGroupsGrid()
         })
