@@ -309,7 +309,7 @@ Run both simultaneously:
 
 For the full local-run guide — local Hoist checkouts, multiple instances, on-device mobile testing
 over a network IP, HTTPS, and troubleshooting (including the server timezone check) — see
-[`docs/local-development.md`](docs/local-development.md).
+[`docs/running-locally.md`](docs/running-locally.md).
 
 ### App URLs during Local Development
 

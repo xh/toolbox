@@ -76,7 +76,7 @@ Then open `http://localhost:3000/app` (desktop app), `/admin` (admin console), o
 
 For the complete guide — running against local Hoist framework checkouts, running multiple
 instances, on-device mobile testing over a network IP, HTTPS setup, and troubleshooting — see
-[**Running Toolbox Locally**](docs/local-development.md).
+[**Running Toolbox Locally**](docs/running-locally.md).
 
 ------------------------------------------
 

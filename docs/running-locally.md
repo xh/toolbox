@@ -95,6 +95,7 @@ must be reachable from that device. This means binding it to your workstation's 
 of `localhost`. There are several caveats — work through all of them or the device will fail to load
 the app or fail to log in.
 
+> [!TIP]
 > **Other options that keep you on `localhost`.** If you have the tooling, you can skip the
 > network-IP setup below entirely — and keep using Auth0, since `localhost:3000` is already a
 > registered callback (no need to switch to form-based login) — by reaching the standard

@@ -4,6 +4,7 @@ Runbook for accessing the deployed Toolbox environment on XH's AWS for troublesh
 inspection, and database queries. Designed for both human developers and AI coding agents (e.g.
 Claude Code) — the access patterns are identical.
 
+> [!WARNING]
 > **This repository is public.** This doc deliberately does **not** check in the AWS account ID,
 > Identity Center portal URL, Identity Center instance ARN, RDS instance IDs / endpoints, internal
 > DNS, or database credentials. Those per-environment specifics live in the **`Toolbox AWS Ops`**
@@ -83,6 +84,7 @@ Use only for state-changing operations, and only with **explicit per-command con
 agents must propose each write command and wait for the user to say "go" / "yes" / "run it" before
 invoking.
 
+> [!NOTE]
 > Account-wide `AdministratorAccess` / `PowerUserAccess` permission sets also exist for full admin
 > work (IAM, new infrastructure). Prefer the scoped `ToolboxReadWrite` for routine deploy/scale ops —
 > it's least-privilege and clearly named for support staff.
@@ -185,7 +187,8 @@ The 8.4 client is keg-only — invoke by full path:
 `/opt/homebrew/opt/mysql-client@8.4/bin/mysql`. Add it to `PATH` in your shell rc if you'd rather not
 type the path each time.
 
-> **Auth note:** the `toolbox` DB user uses `caching_sha2_password` (MySQL 8.4 disables
+> [!NOTE]
+> **Auth:** the `toolbox` DB user uses `caching_sha2_password` (MySQL 8.4 disables
 > `mysql_native_password` by default). Over a plain-TCP SSM tunnel that handshake needs TLS or the
 > server's RSA public key — pass `--get-server-public-key` to the `mysql` client (used in the
 > examples below). GUI clients (Querious, etc.): use a Standard/TCP connection to `127.0.0.1:3307`
@@ -250,7 +253,8 @@ Dev and prod share the **same RDS instance** in separate schemas (`db_schema_dev
 both schemas; for prod work, relay through a `toolbox-prod` task and select `db_schema_prod`. If the
 user/password split per-env later, add per-env fields to the 1Password item and update this doc.
 
-> **Credentials note:** The deployed Toolbox tasks source their instance config from
+> [!NOTE]
+> **Credentials:** The deployed Toolbox tasks source their instance config from
 > `APP_TOOLBOX_*` **environment variables** on the ECS task definition, with the secret values
 > (`dbUser`, `dbPassword`, `smtpUser`, `smtpPassword`) injected from **AWS Secrets Manager**
 > (`toolbox/dev/app`, `toolbox/prod/app`). For operational DB access, the same `toolbox`
@@ -332,6 +336,7 @@ aws ecs update-service --cluster toolbox --service toolbox-dev \
   --desired-count 2 --profile xh-toolbox-rw
 ```
 
+> [!NOTE]
 > Routine deploys normally happen via GitHub Actions (see [Build and Deploy](build-and-deploy.md)) —
 > the `Deploy Snapshot` / `Deploy Release` workflows run the same `update-service` call. Use the
 > manual commands above for ad-hoc redeploys or recovery.
