@@ -1,85 +1,122 @@
-import {div, table, tbody, td, th, tr, vframe} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, HoistProps, managed, XH} from '@xh/hoist/core';
-import {dockContainer, DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
+import {div, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {ReactNode} from 'react';
+import {isEmpty} from 'lodash';
+import {ReactElement, ReactNode} from 'react';
 import {toolboxLink, ToolboxLinkProps} from '../../core/cmp/ToolboxLink';
+import type {AppModel} from '../AppModel';
 import './Wrapper.scss';
 
-export interface WrapperProps extends HoistProps<WrapperModel> {
-    /**
-     * Intro text or description for the Component/pattern demo'd by this tab.
-     */
+export interface WrapperProps extends HoistProps {
+    /** Component/pattern name shown in the info rail header. */
+    title?: ReactNode;
+
+    /** Optional icon shown beside the title in the info rail header. */
+    icon?: ReactElement;
+
+    /** Intro text or description for the Component/pattern demo'd by this tab. */
     description?: ReactNode;
 
     /**
      * Links to display for this tab, pointing either to relevant source code within XH
-     * repos or to external sites (e.g. docs for key external components). Links should be
-     * provided as objects with `url` and `text` properties for the link itself, as well as an
-     * optional `notes` property for additional descriptive text.*
+     * repos or to external sites. Provided as objects with `url` and optional `text` / `notes`.
      */
     links?: ToolboxLinkProps[];
 }
 
-/**
- * A styled panel used to wrap component examples within Toolbox.
- */
+/** A styled container used to wrap component examples within Toolbox. */
 export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
     displayName: 'Wrapper',
     className: 'tbox-wrapper',
-    model: creates(() => WrapperModel, {publishMode: 'limited'}),
-    render({model, className, description, children, ...props}) {
-        const {dockContainerModel} = model;
-        return vframe({
+    render({className, title, icon, description, links, children}) {
+        const collapsed = (XH.appModel as AppModel).wrapperRailCollapsed;
+        return hframe({
             className,
             items: [
-                div({
-                    className: `tbox-wrapper__description`,
-                    item: description,
-                    omit: !description
-                }),
-                vframe({
-                    className: `tbox-wrapper__content`,
-                    items: children
-                }),
-                dockContainer({
-                    model: dockContainerModel,
-                    omit: !dockContainerModel,
-                    compactHeaders: true
-                })
-            ],
-            ...props
+                collapsed ? collapsedRail() : infoRail({title, icon, description, links}),
+                vframe({className: 'tbox-wrapper__demo', items: children})
+            ]
         });
     }
 });
 
-class WrapperModel extends HoistModel {
-    @managed
-    dockContainerModel: DockContainerModel = null;
+const infoRail = hoistCmp.factory<WrapperProps>({
+    render({title, icon, description, links}) {
+        return panel({
+            className: 'tbox-wrapper__rail',
+            title,
+            icon,
+            compactHeader: true,
+            width: 320,
+            headerItems: [
+                button({
+                    icon: Icon.chevronLeft(),
+                    title: 'Collapse info panel',
+                    onClick: () =>
+                        (XH.appModel as AppModel).setBindable('wrapperRailCollapsed', true)
+                })
+            ],
+            item: div({
+                className: 'tbox-wrapper__rail-body',
+                items: [
+                    div({
+                        className: 'tbox-wrapper__intro',
+                        item: description,
+                        omit: !description
+                    }),
+                    div({
+                        className: 'tbox-wrapper__divider',
+                        omit: !description || isEmpty(links)
+                    }),
+                    resources({links})
+                ]
+            })
+        });
+    }
+});
 
-    override onLinked() {
-        const {links} = this.componentProps;
-        if (links) {
-            this.dockContainerModel = new DockContainerModel();
-            this.dockContainerModel.addView({
-                id: XH.genId(),
-                icon: Icon.link(),
-                title: 'Links',
-                allowDialog: false,
-                allowClose: false,
-                collapsed: !XH.getPref('expandDockedLinks'),
-                content: () =>
-                    panel({
-                        className: 'tbox-wrapper__links',
-                        item: this.createLinksWithNotes(links),
-                        width: 400
+const resources = hoistCmp.factory<WrapperProps>({
+    render({links}) {
+        if (isEmpty(links)) return null;
+        return div({
+            className: 'tbox-wrapper__resources',
+            items: [
+                div({className: 'tbox-wrapper__resources-label', item: 'Resources'}),
+                ...links.map(link =>
+                    div({
+                        className: 'tbox-wrapper__resource',
+                        items: [
+                            link.url.startsWith('http') ? Icon.openExternal() : Icon.code(),
+                            div({
+                                className: 'tbox-wrapper__resource-text',
+                                items: [
+                                    toolboxLink(link),
+                                    div({
+                                        className: 'tbox-wrapper__resource-note',
+                                        item: link.notes,
+                                        omit: !link.notes
+                                    })
+                                ]
+                            })
+                        ]
                     })
-            });
-        }
+                )
+            ]
+        });
     }
+});
 
-    private createLinksWithNotes(links: ToolboxLinkProps[]) {
-        return table(tbody(links.map(link => tr(th(toolboxLink(link)), td(link.notes ?? '')))));
+const collapsedRail = hoistCmp.factory({
+    render() {
+        return vbox({
+            className: 'tbox-wrapper__rail-collapsed',
+            item: button({
+                icon: Icon.chevronRight(),
+                title: 'Show info panel',
+                onClick: () => (XH.appModel as AppModel).setBindable('wrapperRailCollapsed', false)
+            })
+        });
     }
-}
+});
