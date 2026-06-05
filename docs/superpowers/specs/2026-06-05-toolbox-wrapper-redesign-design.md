@@ -108,13 +108,18 @@ panel({
 **global** (collapse once, applies to every tab; the conference-room / space-constrained-display
 case) and persisted across sessions:
 
-- Add to the desktop `AppModel` (accessible app-wide via the framework `XH.appModel` getter):
+- Add a plain `@bindable wrapperRailCollapsed = false` observable to the desktop `AppModel`
+  (accessible app-wide via the framework `XH.appModel` getter; `AppModel` calls `makeObservable`).
+  **Do not use `@persist` here** — it does not bind on the early-constructed `AppModel` (observed:
+  neither reads nor writes the pref). Instead wire persistence explicitly in `AppModel.initAsync()`,
+  after services are ready:
   ```typescript
-  @bindable @persist.with({prefKey: 'wrapperRailCollapsed'})
-  wrapperRailCollapsed = false;
+  this.setBindable('wrapperRailCollapsed', XH.getPref('wrapperRailCollapsed'));
+  this.addReaction({
+      track: () => this.wrapperRailCollapsed,
+      run: collapsed => XH.setPref('wrapperRailCollapsed', collapsed)
+  });
   ```
-  (`AppModel` is constructed/initialized after framework + prefs are ready, so `@persist` is safe
-  there. `AppModel` already calls `makeObservable`.)
 - The `Wrapper` observes `(XH.appModel as AppModel).wrapperRailCollapsed` and renders one of two
   states:
   - **Expanded:** the full 320px rail panel as above.
@@ -188,8 +193,8 @@ export interface WrapperProps extends HoistProps<WrapperModel> {
 
 ### `AppModel` change
 
-- Add the `@bindable @persist.with({prefKey: 'wrapperRailCollapsed'}) wrapperRailCollapsed = false`
-  observable described above (with a `toggleWrapperRailCollapsed()` convenience if helpful).
+- Add the `@bindable wrapperRailCollapsed = false` observable, with persistence wired in
+  `initAsync` as described above (not via `@persist`).
 - Remove the `expandDockedLinks` entry from `getAppOptions()` (the "Expand Links" switch). The dock
   is gone and the rail's collapse chevron is now the control; no app-option toggle is needed. (A
   discoverable options-dialog entry for the rail can be added later if wanted.)
@@ -213,6 +218,8 @@ The old `expandDockedLinks` preference becomes obsolete (the dock is gone).
   - `.tbox-wrapper__demo` — flexible centering container, padded, **no** border/background/gradient.
 - Resource list styles (`.tbox-wrapper__resources` label + items) replace the old
   `.tbox-wrapper__links` table styles.
+- Round the info rail and the demo's child panel(s) with `border-radius: 8px` + `overflow: hidden`
+  for the card look from the approved mockup.
 - All colors via `--xh-*` tokens; verify both light and dark themes render correctly.
 
 ## Per-tab migration (~52 files under `desktop/tabs/`)
