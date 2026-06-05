@@ -1,6 +1,6 @@
 import {span} from '@xh/hoist/cmp/layout';
 import {TabConfig, TabContainerModel, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
-import {InitContext, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
+import {InitContext, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
@@ -83,11 +83,8 @@ export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
 
-    override persistWith = {prefKey: 'wrapperRailCollapsed'};
-
     /** Global, persisted collapse state for the Wrapper info rail on component demo tabs. */
     @bindable
-    @persist
     wrapperRailCollapsed = false;
 
     constructor() {
@@ -101,6 +98,15 @@ export class AppModel extends BaseAppModel {
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
         await XH.installServicesAsync([DocService, GitHubService, PortfolioService], ctx);
+
+        // Wrapper info-rail collapse state: initialize from preference and persist changes here,
+        // after services are ready. (Wired explicitly rather than via @persist, which does not
+        // bind on the early-constructed AppModel.)
+        this.setBindable('wrapperRailCollapsed', XH.getPref('wrapperRailCollapsed'));
+        this.addReaction({
+            track: () => this.wrapperRailCollapsed,
+            run: collapsed => XH.setPref('wrapperRailCollapsed', collapsed)
+        });
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
         this.addReaction({
