@@ -41,6 +41,8 @@ export const pickerPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'Picker',
+            icon: Icon.list(),
             description: [
                 p(
                     code('Picker'),
@@ -67,8 +69,6 @@ export const pickerPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Forms › Picker',
-                icon: Icon.list(),
                 width: '90%',
                 maxWidth: 1000,
                 scrollable: true,

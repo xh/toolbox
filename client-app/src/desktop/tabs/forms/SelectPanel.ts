@@ -47,6 +47,8 @@ export const selectPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'Select',
+            icon: Icon.list(),
             description: [
                 p(
                     code('Select'),
@@ -73,8 +75,6 @@ export const selectPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Forms › Select',
-                icon: Icon.list(),
                 width: '90%',
                 maxWidth: 1100,
                 scrollable: true,

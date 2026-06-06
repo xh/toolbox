@@ -34,6 +34,8 @@ export const inputsPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'HoistInputs',
+            icon: Icon.edit(),
             description: [
                 p(
                     code('HoistInput'),
@@ -75,9 +77,7 @@ export const inputsPanel = hoistCmp.factory({
                 {url: '$HR/desktop/cmp/input', notes: 'Hoist Inputs'}
             ],
             item: panel({
-                title: 'Forms › HoistInputs',
                 className: 'tb-inputs-panel',
-                icon: Icon.edit(),
                 width: '90%',
                 maxWidth: 1400,
                 scrollable: true,

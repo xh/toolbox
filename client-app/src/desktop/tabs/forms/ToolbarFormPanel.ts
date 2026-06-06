@@ -28,6 +28,8 @@ export const toolbarFormPanel = hoistCmp.factory({
         const {topFormModel, bottomFormModel} = model;
 
         return wrapper({
+            title: 'Toolbar Form',
+            icon: Icon.edit(),
             description: [
                 p('Forms and FormFields can also be used inside Toolbars.'),
                 p(
@@ -38,9 +40,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                title: 'Forms › Toolbar Form',
                 className: 'tb-toolbar-form-panel',
-                icon: Icon.edit(),
                 width: '90%',
                 height: 300,
                 maxWidth: 1100,

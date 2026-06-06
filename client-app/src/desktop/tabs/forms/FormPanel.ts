@@ -28,6 +28,8 @@ export const formPanel = hoistCmp.factory({
 
     render({className}) {
         return wrapper({
+            title: 'FormModel',
+            icon: Icon.edit(),
             description: [
                 p(
                     'Forms provide a standard way for validating and editing data. The Form component provides the ability to centrally control certain properties on all its contained FormFields and bind them to a FormModel. The FormModel provides an observable API for loading, validating, and submitting the data to back-end services.'
@@ -46,8 +48,6 @@ export const formPanel = hoistCmp.factory({
                 {url: '$HR/desktop/cmp/form/FormField.ts', notes: 'Form Field'}
             ],
             item: panel({
-                title: 'Forms › FormModel',
-                icon: Icon.edit(),
                 className,
                 width: 950,
                 height: 575,
