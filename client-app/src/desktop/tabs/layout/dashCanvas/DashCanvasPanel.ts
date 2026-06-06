@@ -6,7 +6,7 @@ import {filler, frame, hframe, p, span, vframe} from '@xh/hoist/cmp/layout';
 
 const em = elementFactory('em');
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
 import {dashCanvasWidgetChooser} from '@xh/hoist/desktop/cmp/dash/canvas/widgetchooser/DashCanvasWidgetChooser';
 
@@ -36,7 +36,6 @@ export const dashCanvasPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                headerItems: [refreshButton({minimal: true, intent: null})],
                 className: 'dash-canvas-droppable-demo',
                 height: '80%',
                 width: '80%',

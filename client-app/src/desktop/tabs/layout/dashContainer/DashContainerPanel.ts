@@ -5,7 +5,7 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, frame, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {
     buttonWidget,
@@ -30,7 +30,6 @@ export const dashContainerPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                headerItems: [refreshButton({minimal: true, intent: null})],
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard
