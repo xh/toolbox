@@ -5,6 +5,7 @@
   // Fixed-width info rail — constant silhouette across tabs.
   &__rail {
     flex: none;
+    border: var(--xh-border-solid);
     border-radius: 8px;
     overflow: hidden;
   }
