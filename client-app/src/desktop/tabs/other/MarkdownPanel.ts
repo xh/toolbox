@@ -1,6 +1,6 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faMarkdown} from '@fortawesome/free-brands-svg-icons';
-import {p, span, vbox} from '@xh/hoist/cmp/layout';
+import {p, span} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {codeInput, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -23,7 +23,7 @@ export const markdownPanel = hoistCmp.factory({
             title: 'Markdown',
             icon: Icon.icon({prefix: 'fab', iconName: 'markdown'}),
             description: p(
-                "Hoist's Markdown component wraps the react-markdown library to render a Markdown string as a React element tree. Content can be imported directly from .md files or supplied at runtime, and the rendered output can be styled with your own CSS. Edit the source text below to see it render live."
+                "Hoist's Markdown component wraps the react-markdown library to render a Markdown string as a React element tree. Content can be imported directly from .md files or supplied at runtime, and the rendered output can be styled with your own CSS. Edit the source on the left to see it render live."
             ),
             links: [
                 {
@@ -45,15 +45,28 @@ export const markdownPanel = hoistCmp.factory({
                     notes: 'The underlying Markdown rendering library.'
                 }
             ],
-            item: vbox({
-                width: 800,
-                height: '80%',
-                gap: true,
+            item: panel({
+                className: 'tb-markdown-panel',
+                contentBoxProps: {flexDirection: 'row', padding: true, gap: true},
                 items: [
+                    panel({
+                        title: 'Source Text',
+                        icon: Icon.edit(),
+                        flex: 2,
+                        minWidth: 0,
+                        item: codeInput({
+                            bind: 'content',
+                            commitOnChange: true,
+                            width: '100%',
+                            height: '100%'
+                        })
+                    }),
                     panel({
                         title: 'Rendered Markdown',
                         icon: Icon.icon({prefix: 'fab', iconName: 'markdown'}),
                         className: model.useCustomStyles ? 'tb-markdown-panel--styled' : undefined,
+                        flex: 3,
+                        minWidth: 0,
                         modelConfig: {
                             modalSupport: true,
                             collapsible: false,
@@ -72,21 +85,9 @@ export const markdownPanel = hoistCmp.factory({
                                   })
                                 : null
                         ),
-                        flex: 3,
                         scrollable: true,
                         contentBoxProps: {padding: '10px 20px'},
                         item: markdown({content: model.content, lineBreaks: false})
-                    }),
-                    panel({
-                        title: 'Source Text',
-                        icon: Icon.edit(),
-                        flex: 2,
-                        item: codeInput({
-                            bind: 'content',
-                            commitOnChange: true,
-                            width: '100%',
-                            height: '100%'
-                        })
                     })
                 ]
             })

@@ -1,3 +1,9 @@
+// Fill the demo region; the outer card border/radius come from .tbox-wrapper__demo > .xh-panel.
+.tb-markdown-panel {
+  width: 100%;
+  height: 100%;
+}
+
 /**
  * Example opt-in styles for the Hoist `markdown` component. The component renders standard,
  * unstyled HTML by default — apps can wrap it in a container with a custom class like this
