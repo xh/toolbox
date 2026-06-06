@@ -44,6 +44,11 @@ export const dateFormatsPanel = hoistCmp.factory({
                 {
                     url: '$HR/format/FormatDate.ts',
                     notes: 'fmtDate and the related date formatting functions.'
+                },
+                {
+                    url: 'https://momentjs.com/',
+                    text: 'moment.js',
+                    notes: 'The underlying date parsing and formatting library.'
                 }
             ],
             item: panel({

@@ -50,6 +50,11 @@ export const numberFormatsPanel = hoistCmp.factory({
                 {
                     url: '$HR/format/FormatNumber.ts',
                     notes: 'fmtNumber and the related number formatting functions.'
+                },
+                {
+                    url: 'https://numbrojs.com/',
+                    text: 'numbro.js',
+                    notes: 'The underlying number formatting library.'
                 }
             ],
             item: panel({

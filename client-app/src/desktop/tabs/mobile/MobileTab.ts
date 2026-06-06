@@ -49,6 +49,11 @@ export const mobileTab = hoistCmp.factory(() =>
                 url: '$HR/mobile',
                 text: 'Mobile package',
                 notes: 'Mobile-specific Hoist components.'
+            },
+            {
+                url: 'https://onsen.io',
+                text: 'Onsen UI',
+                notes: 'The underlying mobile UI framework.'
             }
         ],
         item: panel({
