@@ -4,4 +4,8 @@
   max-width: 900px;
   align-items: stretch;
   gap: var(--xh-pad-px);
+
+  .xh-toolbar {
+    border: var(--xh-border-solid);
+  }
 }

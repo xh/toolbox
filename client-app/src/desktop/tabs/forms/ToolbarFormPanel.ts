@@ -13,6 +13,7 @@ import {
     numberInput,
     picker,
     radioInput,
+    segmentedControl,
     select,
     switchInput,
     textInput
@@ -84,13 +85,23 @@ export const toolbarFormPanel = hoistCmp.factory({
                             formField({
                                 field: 'buttonGroup1',
                                 item: buttonGroupInput(
-                                    button({icon: Icon.gear(), text: 'Button 1', value: 'button1'}),
-                                    button({icon: Icon.skull(), text: 'Button 2', value: 'button2'})
+                                    button({icon: Icon.gear(), text: 'Option 1', value: 'button1'}),
+                                    button({icon: Icon.skull(), text: 'Option 2', value: 'button2'})
                                 )
                             }),
+                            formField({
+                                field: 'buttonGroup1',
+                                item: segmentedControl({
+                                    options: [
+                                        {value: 'button1', label: 'Option 1', icon: Icon.gear()},
+                                        {value: 'button2', label: 'Option 2', icon: Icon.skull()}
+                                    ]
+                                })
+                            }),
+                            '-',
                             formField({field: 'bool1', item: checkbox({label: 'enabled'})}),
-                            formField({field: 'bool2', item: switchInput({label: 'enabled'})}),
-                            formField({field: 'bool3', item: checkboxButton({text: 'Active'})})
+                            formField({field: 'bool1', item: switchInput({label: 'enabled'})}),
+                            formField({field: 'bool1', item: checkboxButton({text: 'Active'})})
                         )
                     }),
                     form({
