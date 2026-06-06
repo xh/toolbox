@@ -2,7 +2,7 @@
   gap: 12px;
   padding: 16px;
 
-  // Fixed-width info rail — constant silhouette across tabs.
+  // Fixed-width info rail: constant silhouette across tabs.
   &__rail {
     flex: none;
     border: var(--xh-border-solid);
@@ -78,8 +78,8 @@
     line-height: 1.35;
   }
 
-  // Flexible demo region — fills with space-filling demos (aligning to the rail), centers
-  // intrinsically-sized demos. No extra padding of its own: spacing comes from .tbox-wrapper.
+  // Flexible demo region. Fills with space-filling demos (aligning to the rail) and centers
+  // intrinsically-sized demos. No extra padding of its own; spacing comes from .tbox-wrapper.
   &__demo {
     flex: 1;
     min-width: 0;
