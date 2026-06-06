@@ -102,5 +102,11 @@
     padding-top: var(--xh-pad-half-px);
     border: var(--xh-border-solid);
     border-radius: 8px;
+    cursor: pointer;
+  }
+
+  &__rail-collapsed-hint {
+    margin-top: var(--xh-pad-half-px);
+    color: var(--xh-text-color-muted);
   }
 }

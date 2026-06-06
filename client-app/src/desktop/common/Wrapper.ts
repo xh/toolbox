@@ -110,13 +110,15 @@ const resources = hoistCmp.factory<WrapperProps>({
 
 const collapsedRail = hoistCmp.factory({
     render() {
+        const expand = () => (XH.appModel as AppModel).setBindable('wrapperRailCollapsed', false);
         return vbox({
             className: 'tbox-wrapper__rail-collapsed',
-            item: button({
-                icon: Icon.chevronRight(),
-                title: 'Show info panel',
-                onClick: () => (XH.appModel as AppModel).setBindable('wrapperRailCollapsed', false)
-            })
+            title: 'Show info panel',
+            onDoubleClick: expand,
+            items: [
+                button({icon: Icon.chevronRight(), title: 'Show info panel', onClick: expand}),
+                Icon.info({className: 'tbox-wrapper__rail-collapsed-hint'})
+            ]
         });
     }
 });
