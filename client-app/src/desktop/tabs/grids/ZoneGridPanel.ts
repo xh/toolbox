@@ -47,8 +47,8 @@ export const zoneGridPanel = hoistCmp.factory({
             ],
             item: panel({
                 className: 'tb-zone-grid-panel',
-                width: 500,
-                height: '100%',
+                width: 600,
+                height: '50vh',
                 item: zoneGrid(),
                 tbar: [
                     span('Group by:'),

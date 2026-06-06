@@ -43,8 +43,8 @@ export const loadingIndicatorPanel = hoistCmp.factory({
             item: panel({
                 title: 'Loading Indicator',
                 icon: Icon.spinner(),
-                width: 800,
-                height: 400,
+                height: '60vh',
+                width: '90%',
                 item: sampleGrid({omitGridTools: true, omitMask: true}),
                 bbar: [
                     span('Load for'),

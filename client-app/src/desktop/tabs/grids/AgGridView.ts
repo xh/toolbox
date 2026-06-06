@@ -30,7 +30,7 @@ export const agGridView = hoistCmp.factory({
             ],
             item: panel({
                 className: 'tb-grid-wrapper-panel',
-                width: '95%',
+                width: '100%',
                 mask: 'onLoad',
                 item: hframe(
                     agGrid({

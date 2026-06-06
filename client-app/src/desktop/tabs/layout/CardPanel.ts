@@ -31,8 +31,8 @@ export const cardPanel = hoistCmp.factory(() =>
             }
         ],
         item: panel({
-            height: 600,
-            width: 800,
+            height: '60vh',
+            width: '90%',
             item: vbox({
                 flex: 1,
                 overflow: 'auto',

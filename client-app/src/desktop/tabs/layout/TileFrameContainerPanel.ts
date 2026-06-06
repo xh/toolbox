@@ -51,6 +51,8 @@ export const tileFrameContainerPanel = hoistCmp.factory({
             ],
             item: panel({
                 className: 'tb-tileframe',
+                height: '60vh',
+                width: '90%',
                 item: hframe(
                     tileFrame({
                         desiredRatio: vals.desiredRatio,

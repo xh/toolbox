@@ -23,8 +23,8 @@ export const dataViewPanel = hoistCmp.factory({
             ],
             item: panel({
                 className: 'tb-dataview-panel',
-                width: 700,
-                height: 400,
+                width: 600,
+                height: '50vh',
                 item: dataView(),
                 bbar: [
                     refreshButton({

@@ -24,8 +24,8 @@ export const simpleTreeMapPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                width: '80%',
-                height: '60%',
+                height: '60vh',
+                width: '90%',
                 mask: 'onLoad',
                 tbar: tbar(),
                 item: treeMap()

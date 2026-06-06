@@ -43,7 +43,7 @@ export const panelSizingPanel = hoistCmp.factory({
                 icon: Icon.window(),
                 modelConfig: {modalSupport: true, collapsible: false, resizable: false},
                 height: '60vh',
-                width: '80%',
+                width: '90%',
                 bbar: toolbar(
                     filler(),
                     switchInput({
@@ -158,7 +158,7 @@ class PanelSizingModel extends HoistModel {
 
     @managed
     leftPanelModel = new PanelModel({
-        defaultSize: '30%',
+        defaultSize: '20%',
         maxSize: 300,
         minSize: 30,
         side: 'left'
@@ -166,7 +166,7 @@ class PanelSizingModel extends HoistModel {
 
     @managed
     rightPanelModel = new PanelModel({
-        defaultSize: '30%',
+        defaultSize: '20%',
         maxSize: 300,
         minSize: 30,
         side: 'right'

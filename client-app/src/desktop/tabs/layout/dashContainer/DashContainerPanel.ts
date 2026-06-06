@@ -30,8 +30,8 @@ export const dashContainerPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                height: '80%',
-                width: '80%',
+                width: '100%',
+                height: '100%',
                 item: model.renderDashboard
                     ? dashContainer()
                     : frame({

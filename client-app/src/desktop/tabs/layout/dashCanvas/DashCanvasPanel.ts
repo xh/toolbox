@@ -1,19 +1,17 @@
-import {switchInput, numberInput, select} from '@xh/hoist/desktop/cmp/input';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {box, filler, frame, hframe, p, span} from '@xh/hoist/cmp/layout';
 import {creates, elementFactory, hoistCmp} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
-import {filler, frame, hframe, p, span, vframe} from '@xh/hoist/cmp/layout';
-
-const em = elementFactory('em');
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
 import {dashCanvasWidgetChooser} from '@xh/hoist/desktop/cmp/dash/canvas/widgetchooser/DashCanvasWidgetChooser';
-
+import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../../common';
 import {DashCanvasPanelModel} from './DashCanvasPanelModel';
-
 import './DashCanvasPanel.scss';
+
+const em = elementFactory('em');
 
 export const dashCanvasPanel = hoistCmp.factory({
     model: creates(() => DashCanvasPanelModel),
@@ -37,8 +35,8 @@ export const dashCanvasPanel = hoistCmp.factory({
             ],
             item: panel({
                 className: 'dash-canvas-droppable-demo',
-                height: '80%',
-                width: '80%',
+                width: '100%',
+                height: '100%',
                 tbar: tbar(),
                 item: hframe(
                     model.renderDashboard
@@ -49,7 +47,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                               item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                               padding: 10
                           }),
-                    vframe({
+                    box({
                         omit: !model.showWidgetChooser || !model.renderDashboard,
                         width: 310,
                         style: {borderLeft: '1px solid var(--xh-border-color)'},

@@ -42,8 +42,8 @@ export const tabPanelContainerPanel = hoistCmp.factory({
             ],
             item: panel({
                 className: 'tb-layout-tabs',
-                width: 750,
-                height: 400,
+                height: '60vh',
+                width: '90%',
                 item: tabContainer()
             })
         });
