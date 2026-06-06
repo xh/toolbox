@@ -11,7 +11,7 @@ import './Wrapper.scss';
 
 export interface WrapperProps extends HoistProps {
     /** Component/pattern name shown in the info rail header. */
-    title?: ReactNode;
+    title: ReactNode;
 
     /** Optional icon shown beside the title in the info rail header. */
     icon?: ReactElement;
@@ -77,7 +77,11 @@ const infoRail = hoistCmp.factory<WrapperProps>({
     }
 });
 
-const resources = hoistCmp.factory<WrapperProps>({
+interface ResourcesProps extends HoistProps {
+    links?: ToolboxLinkProps[];
+}
+
+const resources = hoistCmp.factory<ResourcesProps>({
     render({links}) {
         if (isEmpty(links)) return null;
         return div({
