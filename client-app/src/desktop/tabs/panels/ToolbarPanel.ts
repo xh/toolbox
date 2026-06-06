@@ -15,6 +15,8 @@ export const toolbarPanel = hoistCmp.factory({
 
     render() {
         return wrapper({
+            title: 'Toolbar',
+            icon: Icon.add(),
             description: `
                 Toolbars (in case you have never seen one) are horizontal or vertical containers 
                 with distinct styling and managed spacing between items. Support for top and bottom
@@ -29,7 +31,6 @@ export const toolbarPanel = hoistCmp.factory({
                 {url: '$HR/desktop/cmp/toolbar/Toolbar.ts', notes: 'Hoist component.'}
             ],
             item: panel({
-                title: 'Panels › Toolbar',
                 height: '60vh',
                 width: '80vw',
                 tbar: topBar(),

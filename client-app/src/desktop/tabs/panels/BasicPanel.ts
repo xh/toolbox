@@ -17,6 +17,8 @@ export const basicPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'Intro',
+            icon: Icon.window(),
             description: [
                 p(
                     'Panels are a core building block for layouts in Hoist. They support an optional header bar with props to configure an icon, title and custom header items, props for top and bottom toolbars, and an optional model to manage their sizing.'
@@ -40,8 +42,6 @@ export const basicPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                icon: Icon.window(),
-                title: 'Panels › Intro',
                 height: 400,
                 width: 700,
                 compactHeader: model.compactHeader,

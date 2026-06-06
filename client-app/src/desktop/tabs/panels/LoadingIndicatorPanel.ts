@@ -16,6 +16,8 @@ export const loadingIndicatorPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'Loading Indicator',
+            icon: Icon.spinner(),
             description: [
                 p(
                     'Loading Indicators display an unobtrusive overlay in the corner of a component with a spinner and/or message. They indicate that a longer-running operation is in progress without using a modal Mask.'
@@ -39,8 +41,6 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Panels › Loading Indicator',
-                icon: Icon.spinner(),
                 width: 800,
                 height: 400,
                 item: sampleGrid({omitGridTools: true, omitMask: true}),
