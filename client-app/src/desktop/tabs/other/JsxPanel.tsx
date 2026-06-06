@@ -1,4 +1,3 @@
-import {hframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp} from '@xh/hoist/core';
 import {codeInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -43,19 +42,21 @@ export const jsxPanel = hoistCmp.factory(() =>
                 notes: 'elemFactory() and related helpers for the Hoist factory syntax.'
             }
         ],
-        item: hframe({
+        item: panel({
+            className: 'tb-jsx-panel',
+            contentBoxProps: {flexDirection: 'row', padding: true, gap: true},
             items: [
                 panel({
                     flex: 1,
                     className: 'tb-jsx-example',
-                    icon: Icon.factory({prefix: 'fas', size: 'lg'}),
+                    icon: Icon.factory({prefix: 'fas'}),
                     title: 'Using Factories',
                     item: renderCode(getElemExample())
                 }),
                 panel({
                     flex: 1,
                     className: 'tb-jsx-example',
-                    icon: Icon.code({size: 'lg'}),
+                    icon: Icon.code(),
                     title: 'Using JSX',
                     item: renderCode(getJsxExample())
                 })
