@@ -78,8 +78,8 @@ export const inputsPanel = hoistCmp.factory({
             ],
             item: panel({
                 className: 'tb-inputs-panel',
-                width: '90%',
-                maxWidth: 1400,
+                width: '100%',
+                height: '100%',
                 scrollable: true,
                 tbar: inputsTbar({compact: false}),
                 item: hframe({
