@@ -13,6 +13,8 @@ export const lineChartPanel = hoistCmp.factory({
 
     render() {
         return wrapper({
+            title: 'Line Chart',
+            icon: Icon.chartLine(),
             description: [
                 p(
                     'Hoist provides a lightweight wrapper around the Highcharts charting and visualization library. This integration includes the Chart component to handle basic rendering, layout, and resizing and a ChartModel class to hold an observable config and data series.'
@@ -22,8 +24,6 @@ export const lineChartPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                title: 'Charts › Line',
-                icon: Icon.chartLine(),
                 width: '80%',
                 height: '60%',
                 mask: 'onLoad',

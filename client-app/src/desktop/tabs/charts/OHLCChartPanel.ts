@@ -14,6 +14,8 @@ export const ohlcChartPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'OHLC Chart',
+            icon: Icon.chartLine(),
             description: [
                 p(
                     'Hoist provides a lightweight wrapper around the Highcharts charting and visualization library. This integration includes the Chart component to handle basic rendering, layout, and resizing and a ChartModel class to hold an observable config and data series.'
@@ -23,8 +25,6 @@ export const ohlcChartPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                title: 'Charts › OHLC',
-                icon: Icon.chartLine(),
                 width: '80%',
                 height: '60%',
                 mask: 'onLoad',

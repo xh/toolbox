@@ -13,6 +13,8 @@ export const simpleTreeMapPanel = hoistCmp.factory({
 
     render() {
         return wrapper({
+            title: 'Simple TreeMap',
+            icon: Icon.gridLarge(),
             description: [
                 p(
                     'Support for TreeMap visualizations is provided via the Highcharts charting and visualization library, with a set of wrapper components and models provided by Hoist to allow binding to a GridModel or Store and to customize map defaults to be more immediately useful and relevant for visualizing financial data. The base TreeMap component is shown below - see the other tabs on this page for more advanced integrations/variations.'
@@ -22,8 +24,6 @@ export const simpleTreeMapPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                icon: Icon.gridLarge(),
-                title: 'Simple TreeMap',
                 width: '80%',
                 height: '60%',
                 mask: 'onLoad',
