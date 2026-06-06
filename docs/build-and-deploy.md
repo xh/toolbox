@@ -35,13 +35,31 @@ manually via `workflow_dispatch`.
 Uses `concurrency` with `cancel-in-progress: true` to avoid redundant builds when multiple pushes
 land in quick succession.
 
-Two jobs run in parallel:
+The workflow runs in three stages:
 
-- **build-tomcat** — builds the Grails WAR via `./gradlew war` (using the default SNAPSHOT version
-  from `gradle.properties`), copies it into the `docker/tomcat` context, and pushes a
-  `toolbox-tomcat:snapshot` image to ECR.
-- **build-nginx** — installs JS dependencies, runs `yarn lint` and `yarn build`, copies the built
-  client assets into the `docker/nginx` context, and pushes a `toolbox-nginx:snapshot` image to ECR.
+- **prepare** — snaps a single timestamp and derives two identifiers from it via
+  `.github/scripts/build-tag.sh`, exposed as job outputs. `app-build` is the readable value
+  (`<ref>_<sha>_<timestamp>`, e.g. `develop_9fab876_2026-06-06T17:17Z`) baked into `appBuild` on both
+  client and server and shown in-app. `image-tag` is the immutable ECR image tag
+  (`snap_<ref>_<sha>_<ts>`). Both come from the one timestamp, so a run's two values correspond. The
+  script makes `image-tag` a total function — a valid Docker/ECR tag for any ref (allowlist charset,
+  bounded length, colon-free), so the build always proceeds — and those container-tag constraints
+  apply only to `image-tag`, never to the displayed `appBuild`. `app-build` is consumed by both build
+  jobs, so client and server always report the same build (what the version-skew check compares).
+- **build-tomcat** / **build-nginx** (parallel) — build the Grails WAR (via `./gradlew war`, default
+  SNAPSHOT version from `gradle.properties`) and the client assets (`yarn lint` + `yarn build`)
+  respectively, and push each to the run's *immutable* `image-tag` in ECR — **not** `:snapshot`.
+- **promote** — runs only after both build jobs succeed, and retags both images to `:snapshot` via a
+  registry-side manifest copy. This is the only step that advances the mutable `:snapshot` pointer,
+  so the deployed pair always comes from a single run. Re-running one build job in isolation can no
+  longer leave the server and client on mismatched builds (the failure that previously flapped
+  `toolbox-dev` with a perpetual update prompt).
+
+Because the `snap_` images stay permanently tagged (rather than going untagged on supersession), an
+ECR lifecycle policy on both repos retains only the most recent few `snap_`-prefixed images
+(`imageCountMoreThan`) while still expiring untagged images after a day; release tags and the live
+`:snapshot` are left untouched. That policy is applied directly to ECR via
+`aws ecr put-lifecycle-policy` and is not tracked in this repo.
 
 ## Deploy Snapshot (`deploySnapshot.yml`)
 
