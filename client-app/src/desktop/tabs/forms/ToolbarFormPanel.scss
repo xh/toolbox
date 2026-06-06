@@ -1,0 +1,16 @@
+// Vertical stack of equal-width toolbars: fills the demo region up to a max width, then centers.
+.tb-toolbar-form {
+  width: 100%;
+  max-width: 900px;
+  align-items: stretch;
+  gap: var(--xh-pad-px);
+
+  // Leading "title" for the controls within each toolbar. Fixed min-width so the
+  // group labels align vertically across the stacked toolbars.
+  &__group-label {
+    flex: none;
+    min-width: 110px;
+    font-weight: 600;
+    color: var(--xh-text-color-muted);
+  }
+}
