@@ -84,11 +84,16 @@ interface ResourcesProps extends HoistProps {
 const resources = hoistCmp.factory<ResourcesProps>({
     render({links}) {
         if (isEmpty(links)) return null;
+        // Group by kind for a consistent display (code, then docs, then external). Sort is stable,
+        // so each tab's spec order carries through as an intentional within-kind secondary sort.
+        const sortedLinks = [...links].sort(
+            (a, b) => LINK_KIND_ORDER[linkKind(a.url)] - LINK_KIND_ORDER[linkKind(b.url)]
+        );
         return div({
             className: 'tbox-wrapper__resources',
             items: [
                 div({className: 'tbox-wrapper__resources-label', item: 'Resources'}),
-                ...links.map(link =>
+                ...sortedLinks.map(link =>
                     div({
                         className: 'tbox-wrapper__resource',
                         items: [
@@ -128,12 +133,28 @@ const collapsedRail = hoistCmp.factory({
 });
 
 /**
- * Choose an icon for a resource link based on its target: a doc icon for markdown docs
- * (READMEs and concept guides), an external-link icon for fully-qualified URLs, and a code
- * icon for in-repo source files.
+ * Classify a resource link by its target: an in-repo source file ('code'), a markdown doc such
+ * as a README or concept guide ('doc'), or a fully-qualified external URL ('external').
  */
+type LinkKind = 'code' | 'doc' | 'external';
+
+function linkKind(url: string): LinkKind {
+    if (url.endsWith('.md')) return 'doc';
+    if (url.startsWith('http')) return 'external';
+    return 'code';
+}
+
+/** Display order applied to the Resources list: code samples first, then docs, then external. */
+const LINK_KIND_ORDER: Record<LinkKind, number> = {code: 0, doc: 1, external: 2};
+
+/** Icon shown beside a resource link, distinguishing its kind. */
 function linkIcon(url: string): ReactElement {
-    if (url.endsWith('.md')) return Icon.book();
-    if (url.startsWith('http')) return Icon.openExternal();
-    return Icon.code();
+    switch (linkKind(url)) {
+        case 'doc':
+            return Icon.book();
+        case 'external':
+            return Icon.openExternal();
+        default:
+            return Icon.code();
+    }
 }
