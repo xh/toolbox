@@ -94,11 +94,13 @@
     }
   }
 
-  // Thin strip shown when the rail is collapsed.
+  // Slim bordered card shown when the rail is collapsed (matches the rail/demo card style).
   &__rail-collapsed {
     flex: none;
+    width: 36px;
     align-items: center;
-    padding-top: var(--xh-pad-px);
-    border-right: var(--xh-border-solid);
+    padding-top: var(--xh-pad-half-px);
+    border: var(--xh-border-solid);
+    border-radius: 8px;
   }
 }
