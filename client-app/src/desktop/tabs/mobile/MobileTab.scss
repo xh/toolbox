@@ -1,15 +1,19 @@
 .tb-mobile {
-  margin: var(--xh-pad-double-px);
-  max-width: 1600px;
-  max-height: 800px;
-  width: 80%;
+  width: 100%;
+  height: 100%;
 
   &__screenshots {
+    flex: 1;
+    min-height: 0;
     justify-content: center;
-    margin: var(--xh-pad-px) var(--xh-pad-px) 0 var(--xh-pad-px);
+    align-items: center;
+    gap: var(--xh-pad-double-px);
+    padding: var(--xh-pad-px);
 
     img {
-      margin: var(--xh-pad-px);
+      max-width: 30%;
+      max-height: 100%;
+      object-fit: contain;
     }
   }
 }
