@@ -7,6 +7,8 @@ import {wrapper} from '../../common';
 
 export const cardPanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'Card',
+        icon: Icon.addressCard(),
         description: [
             p('A Card is a bordered container for grouping related content.'),
             p('Cards support titles, icons, intent-based styling, and collapsibility.'),
@@ -29,8 +31,6 @@ export const cardPanel = hoistCmp.factory(() =>
             }
         ],
         item: panel({
-            title: 'Layout › Card',
-            icon: Icon.addressCard(),
             height: 600,
             width: 800,
             item: vbox({

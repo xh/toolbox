@@ -32,6 +32,8 @@ export const tileFrameContainerPanel = hoistCmp.factory({
 
         const inputConf = {commitOnChange: true, width: 60, min: 0};
         return wrapper({
+            title: 'TileFrame',
+            icon: Icon.gridLarge(),
             description: [
                 p(
                     'TileFrame renders its children as equally-sized tiles, resized and arranged to fill the available space within the container while maintaining even padding between tiles and keeping tile width / height as close to a specified ratio as possible.'
@@ -48,9 +50,7 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                 {url: '$HR/cmp/layout/TileFrame.ts', notes: 'TileFrame component.'}
             ],
             item: panel({
-                title: 'Layout › TileFrame',
                 className: 'tb-tileframe',
-                icon: Icon.gridLarge(),
                 item: hframe(
                     tileFrame({
                         desiredRatio: vals.desiredRatio,

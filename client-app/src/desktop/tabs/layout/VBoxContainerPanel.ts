@@ -6,6 +6,8 @@ import {wrapper} from '../../common';
 
 export const vboxContainerPanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'VBox',
+        icon: Icon.box(),
         description: p(
             'A VBox lays out its children vertically, rendering a Box with flexDirection:column.'
         ),
@@ -16,8 +18,6 @@ export const vboxContainerPanel = hoistCmp.factory(() =>
             }
         ],
         item: panel({
-            title: 'Layout › VBox',
-            icon: Icon.box(),
             height: 400,
             width: 700,
             item: vbox({

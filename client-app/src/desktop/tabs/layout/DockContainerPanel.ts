@@ -12,6 +12,8 @@ export const dockContainerPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'Dock Container',
+            icon: Icon.gridPanel(),
             description: [
                 p(
                     'DockContainer provides a user-friendly way to display multiple views simultaneously as docked overlays.'

@@ -22,14 +22,14 @@ export const dashContainerPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'Dash Container',
+            icon: Icon.layout(),
             description: [
                 p(
                     'DashContainer is configured and managed via a DashContainerModel and allows the user to drag-and-drop content into various tab, and split-pane layouts. This component also supports publishing observable state, managed mounting/unmounting of inactive tabs, and lazy refreshing of its active view.'
                 )
             ],
             item: panel({
-                title: 'Layout › Dash Container',
-                icon: Icon.layout(),
                 headerItems: [refreshButton({minimal: true, intent: null})],
                 height: '80%',
                 width: '80%',

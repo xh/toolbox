@@ -20,6 +20,8 @@ export const dashCanvasPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'DashCanvas',
+            icon: Icon.layout(),
             description: [
                 p(
                     'DashCanvas is configured via a DashCanvasModel and renders user-arrangeable widgets in a drag-and-drop grid layout.'
@@ -34,8 +36,6 @@ export const dashCanvasPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                title: 'Layout › DashCanvas',
-                icon: Icon.layout(),
                 headerItems: [refreshButton({minimal: true, intent: null})],
                 className: 'dash-canvas-droppable-demo',
                 height: '80%',

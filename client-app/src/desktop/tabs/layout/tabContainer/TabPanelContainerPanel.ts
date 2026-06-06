@@ -11,6 +11,8 @@ export const tabPanelContainerPanel = hoistCmp.factory({
 
     render() {
         return wrapper({
+            title: 'Tabs',
+            icon: Icon.tab(),
             description: [
                 p(
                     'TabContainer is configured and managed via a TabContainerModel and supports route-based navigation, managed mounting/unmounting of inactive tabs, automatic refreshing of a newly activated tab, and a built-in ErrorBoundary to prevent an unhandled error in one tab from crashing the entire app.'
@@ -39,8 +41,6 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Layout › Tabs',
-                icon: Icon.tab(),
                 className: 'tb-layout-tabs',
                 width: 750,
                 height: 400,

@@ -6,13 +6,13 @@ import {wrapper} from '../../common';
 
 export const hboxContainerPanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'HBox',
+        icon: Icon.box(),
         description: p(
             'An HBox lays out its children horizontally, rendering a Box with flexDirection:row.'
         ),
         links: [{url: '$HR/cmp/layout/Box.ts', notes: 'Hoist Box components.'}],
         item: panel({
-            title: 'Layout › HBox',
-            icon: Icon.box(),
             height: 400,
             width: 700,
             item: hbox(
