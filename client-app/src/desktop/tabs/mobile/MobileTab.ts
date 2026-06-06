@@ -18,6 +18,8 @@ library.add(faPhoneLaptop);
 
 export const mobileTab = hoistCmp.factory(() =>
     wrapper({
+        title: 'Mobile',
+        icon: Icon.mobile(),
         description: [
             p(
                 'Mobile apps share many of the same components and logic as their desktop counterparts, with some mobile-specific Hoist components that are supported by the open-source framework ',

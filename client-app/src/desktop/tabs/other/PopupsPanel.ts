@@ -21,6 +21,8 @@ export const popupsPanel = hoistCmp.factory(() => {
             });
 
     return wrapper({
+        title: 'Popups',
+        icon: Icon.comment(),
         description: div(
             p('Popups notify users about important events or prompt them to confirm an action.'),
             p(
@@ -29,8 +31,6 @@ export const popupsPanel = hoistCmp.factory(() => {
             p('For non-modal notifications, consider using XH.toast() or XH.showBanner().')
         ),
         item: panel({
-            title: 'Other › Popups',
-            icon: Icon.comment(),
             className: 'tbox-popups',
             ref: divRef,
             flex: 'none',

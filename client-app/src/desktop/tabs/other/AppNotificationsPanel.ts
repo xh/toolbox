@@ -9,6 +9,8 @@ import {wrapper} from '../../common';
 
 export const appNotificationsPanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'App Notifications',
+        icon: Icon.rocket(),
         links: [
             {
                 url: '$HR/svc/EnvironmentService.ts',

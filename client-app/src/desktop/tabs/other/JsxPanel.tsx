@@ -9,6 +9,8 @@ import './JsxPanel.scss';
 
 export const jsxPanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'JSX',
+        icon: Icon.code(),
         description: [
             <p>
                 JSX is the XML-like extension to Javascript typically used to specify and configure

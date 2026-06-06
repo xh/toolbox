@@ -15,6 +15,8 @@ export const pinPadPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'PinPad',
+            icon: Icon.unlock(),
             description: 'A specialized PIN input, used for lightweight authentication of users.',
             links: [
                 {
@@ -28,8 +30,6 @@ export const pinPadPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Other › PinPad',
-                icon: Icon.unlock(),
                 width: 380,
                 height: 500,
                 className: 'tb-pinpad-container',

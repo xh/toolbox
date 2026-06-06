@@ -22,6 +22,8 @@ export const numberFormatsPanel = hoistCmp.factory({
 
     render() {
         return wrapper({
+            title: 'Format Numbers',
+            icon: Icon.print(),
             description: [
                 p(
                     'Hoist provides a collection of number formatting functions in @xh/hoist/format. The main method is fmtNumber which provides several useful options. More specific methods delegate to fmtNumber and set useful defaults.'
@@ -36,8 +38,6 @@ export const numberFormatsPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                title: 'Other › Format Numbers',
-                icon: Icon.print(),
                 className: 'tbox-formats-tab',
                 contentBoxProps: {flexDirection: 'row', padding: true, gap: true},
                 items: [

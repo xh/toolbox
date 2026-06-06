@@ -23,6 +23,8 @@ export const buttonsPanel = hoistCmp.factory({
     model: creates(ButtonsModel),
     render() {
         return wrapper({
+            title: 'Buttons',
+            icon: Icon.checkCircle(),
             description: div(
                 p(
                     'Hoist Desktop Buttons are implemented using the Blueprint library, and take all props supported by the Blueprint component. In addition to text, icon, and onClick, core props for customizing buttons include:'

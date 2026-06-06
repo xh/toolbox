@@ -20,6 +20,8 @@ export const markdownPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'Markdown',
+            icon: Icon.icon({prefix: 'fab', iconName: 'markdown'}),
             description: p(
                 'Hoist supplies a markdown component that wraps the react-markdown library and will convert a markdown string into a React element tree.'
             ),

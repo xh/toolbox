@@ -16,6 +16,8 @@ export const clockPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'Clock',
+            icon: Icon.clock(),
             description: `
                     A clock will display the current time, either for browser local time (the default)
                     or for a configurable timezone. It fetches timezone offsets from the server to
@@ -28,8 +30,6 @@ export const clockPanel = hoistCmp.factory({
                 {url: '$HR/cmp/clock/Clock.ts', notes: 'Hoist component.'}
             ],
             item: panel({
-                title: 'Other › Clock',
-                icon: Icon.clock(),
                 width: 700,
                 item: hframe({
                     className: 'tb-clock-container',

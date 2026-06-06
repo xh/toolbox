@@ -20,6 +20,8 @@ export const iconsPanel = hoistCmp.factory({
     model: creates(() => IconsPanelModel),
     render() {
         return wrapper({
+            title: 'Icons',
+            icon: Icon.icon({iconName: 'icons'}),
             description: [
                 p(
                     'Hoist includes the latest version of the ubiquitous ',
@@ -48,8 +50,6 @@ export const iconsPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Icons (regular, solid, and light variants)',
-                icon: Icon.icon({iconName: 'icons'}),
                 className: 'tb-icons-panel',
                 items: [
                     tbar(),

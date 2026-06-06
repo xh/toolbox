@@ -15,6 +15,8 @@ export const errorMessagePanel = hoistCmp.factory({
         const {error} = model;
 
         return wrapper({
+            title: 'Error Message',
+            icon: Icon.skull(),
             description: [
                 p(
                     'The ErrorMessage component displays an exception or other custom error message. It supports an optional button to trigger an action that might resolve the error, such as retrying a failed data load.'
@@ -31,8 +33,6 @@ export const errorMessagePanel = hoistCmp.factory({
                 {url: '$HR/desktop/cmp/error/ErrorMessage.ts', notes: 'ErrorMessage source'}
             ],
             item: panel({
-                title: 'Other › Error Message',
-                icon: Icon.skull(),
                 width: 700,
                 height: 350,
                 items: [

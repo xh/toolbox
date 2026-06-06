@@ -16,6 +16,8 @@ export const dateFormatsPanel = hoistCmp.factory({
 
     render() {
         return wrapper({
+            title: 'Format Dates',
+            icon: Icon.print(),
             description: [
                 p(
                     'Hoist provides a collection of date formatting functions in @xh/hoist/format. The main method is fmtDate which provides a few useful options.'
@@ -30,8 +32,6 @@ export const dateFormatsPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                title: 'Other › Format Dates',
-                icon: Icon.print(),
                 className: 'tbox-formats-tab',
                 height: 500,
                 contentBoxProps: {flexDirection: 'row', padding: true, gap: true},

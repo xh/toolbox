@@ -12,6 +12,8 @@ export const simpleRoutingPanel = hoistCmp.factory({
     render({model}) {
         const routedUrl = `${window.location.origin}/app/other/simpleRouting/123`;
         return wrapper({
+            title: 'Simple Routing',
+            icon: Icon.gridPanel(),
             description: [
                 p(
                     'Hoist provides functionality for route parameters to interact with UI components. The grid below has its selected record synced with a routable URL.'
@@ -26,8 +28,6 @@ export const simpleRoutingPanel = hoistCmp.factory({
                 )
             ],
             item: panel({
-                title: 'Simple Routing',
-                icon: Icon.gridPanel(),
                 item: grid(),
                 height: 500,
                 width: 700

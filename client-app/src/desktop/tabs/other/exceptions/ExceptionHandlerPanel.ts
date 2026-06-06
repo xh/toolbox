@@ -12,6 +12,8 @@ export const exceptionHandlerPanel = hoistCmp.factory({
     model: creates(ExceptionHandlerModel),
     render() {
         return wrapper({
+            title: 'Exception Handler',
+            icon: Icon.skull(),
             description: div(
                 p(
                     'Hoist provides centralized exception handling for Hoist Applications, including providing a managed display of the exception to the user, and providing options for introspection, tracking and notification of the problem to back-end administrators.'
@@ -42,8 +44,6 @@ export const exceptionHandlerPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Other > Exception Handler',
-                icon: Icon.skull(),
                 width: 700,
                 item: hframe(buttonContainer(), displayOptions())
             })

@@ -1,10 +1,13 @@
 import {p} from '@xh/hoist/cmp/layout';
 import {hoistCmp} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
 import {customPanel} from '@xh/package-template/desktop/cmp/custompanel';
 import {wrapper} from '../../common';
 
 export const customPackagePanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'Custom Package',
+        icon: Icon.box(),
         description: [
             p(
                 'When supporting multiple applications within an organization, it can be helpful to extract common components, services, styles, and utilities into a custom package for use across apps.'

@@ -9,6 +9,8 @@ export const inspectorPanel = hoistCmp.factory({
     render() {
         const {active} = XH.inspectorService;
         return wrapper({
+            title: 'Inspector',
+            icon: Icon.search(),
             description: [
                 p({
                     style: {marginBottom: 0},
@@ -31,8 +33,6 @@ export const inspectorPanel = hoistCmp.factory({
                 {url: '$HR/inspector', notes: 'Inspector component package'}
             ],
             item: panel({
-                title: 'Hoist Inspector',
-                icon: Icon.search(),
                 width: 700,
                 height: 250,
                 style: {textAlign: 'center'},

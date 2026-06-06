@@ -37,6 +37,8 @@ export const fileChooserPanel = hoistCmp.factory({
 
     render() {
         return wrapper({
+            title: 'FileChooser',
+            icon: Icon.copy(),
             description: [
                 p(
                     'A component to select one or more files from the local filesystem. Wraps the third-party react-dropzone component to provide both drag-and-drop and click-to-browse file selection. Expands upon this core functionality with an optional grid (enabled by default) displaying the list of selected files and allowing the user to remove files from the selection.'
@@ -80,8 +82,6 @@ const configChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
     render({model}) {
         const {chooserModel, disabled, placement} = model;
         return panel({
-            title: 'Other › FileChooser',
-            icon: Icon.copy(),
             className: 'tb-filechooser-example',
             flex: 'none',
             width: 960,

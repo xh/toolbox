@@ -18,6 +18,8 @@ export const leftRightChooserPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'LeftRightChooser',
+            icon: Icon.arrowsLeftRight(),
             description: [
                 p(
                     'LeftRightChooser splits a list of items into generic "left" and "right" sides, with controls for the user to move items between the two. This can be used to e.g. create a selected subset from a pool of items - see the grid column chooser for such an example.'
@@ -45,8 +47,6 @@ export const leftRightChooserPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Other › LeftRightChooser',
-                icon: Icon.arrowsLeftRight(),
                 width: 700,
                 height: 400,
                 item: leftRightChooser({

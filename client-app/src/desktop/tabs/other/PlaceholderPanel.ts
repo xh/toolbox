@@ -13,6 +13,8 @@ export const placeholderPanel = hoistCmp.factory({
     render({model}) {
         const {selectedRecord} = model.gridModel;
         return wrapper({
+            title: 'Placeholder',
+            icon: Icon.stop(),
             description: [
                 p(
                     "The Placeholder component is useful to occupy a portion of an application's layout when the primary content is not yet ready to show - e.g. for a master-detail view where the detail is blank until a record is selected."
@@ -29,8 +31,6 @@ export const placeholderPanel = hoistCmp.factory({
                 {url: '$HR/cmp/layout/Placeholder.ts', notes: 'Hoist component.'}
             ],
             item: panel({
-                title: 'Other › Placeholder',
-                icon: Icon.stop(),
                 width: 700,
                 height: '50%',
                 mask: 'onLoad',
