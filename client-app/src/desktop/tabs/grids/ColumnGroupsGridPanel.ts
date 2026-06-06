@@ -26,8 +26,26 @@ export const columnGroupsGridPanel = hoistCmp.factory(() =>
                 ' the group in which they are defined but not broken out from them.'
             ),
             p(
-                "This grid also demonstrates persistent grid state using the browser's local storage."
+                "This grid also persists its state (column order, sizing, and visibility) to the browser's local storage."
             )
+        ],
+        links: [
+            {
+                url: '$TB/client-app/src/desktop/tabs/grids/ColumnGroupsGridPanel.ts',
+                notes: 'This example.'
+            },
+            {
+                url: '$HR/cmp/grid/columns/ColumnGroup.ts',
+                notes: 'Config for grouping columns under a shared header.'
+            },
+            {
+                url: '$HR/cmp/grid/columns/Column.ts',
+                notes: 'Config for the individual columns within each group.'
+            },
+            {
+                url: '$HR/cmp/grid/GridModel.ts',
+                notes: 'Hoist model for configuring and interacting with grids, including persistence.'
+            }
         ],
         item: panel({
             className: 'tb-grid-wrapper-panel',

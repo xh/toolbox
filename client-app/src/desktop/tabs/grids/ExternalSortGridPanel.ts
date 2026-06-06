@@ -28,6 +28,16 @@ export const externalSortGridPanel = hoistCmp.factory({
                 ),
                 p('This pattern could be used to similarly offload sorting to the server.')
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/grids/ExternalSortGridPanel.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/grid/GridModel.ts',
+                    notes: 'Observe GridModel.sortBy to drive externally-managed sorting.'
+                }
+            ],
             item: panel({
                 className: 'tb-grid-wrapper-panel tb-external-sort-panel',
                 mask: 'onLoad',

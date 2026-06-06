@@ -10,8 +10,22 @@ export const treeGridWithCheckboxPanel = hoistCmp.factory(() =>
         icon: Icon.grid(),
         description: [
             p(
-                'This example is a copy of the Tree sample, but adds a checkbox component to every node. Custom checkboxes are added via a custom renderer, and the checkboxes values are synchronized up and down the tree using the Record API.'
+                'This example builds on the Tree Grid, adding a checkbox to every node via a custom column renderer. Checkbox values are synchronized up and down the hierarchy using the StoreRecord API, so toggling a parent updates its descendants and a node reflects the state of its children.'
             )
+        ],
+        links: [
+            {
+                url: '$TB/client-app/src/desktop/tabs/grids/TreeGridWithCheckboxPanel.ts',
+                notes: 'This example.'
+            },
+            {
+                url: '$HR/cmp/grid/columns/Column.ts',
+                notes: 'Column config, including the custom renderer used for the checkboxes.'
+            },
+            {
+                url: '$HR/data/StoreRecord.ts',
+                notes: 'Record API used to read and update values across the tree.'
+            }
         ],
         item: panel({
             className: 'tb-grid-wrapper-panel',

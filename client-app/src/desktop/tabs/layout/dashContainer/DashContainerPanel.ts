@@ -26,7 +26,10 @@ export const dashContainerPanel = hoistCmp.factory({
             icon: Icon.layout(),
             description: [
                 p(
-                    'DashContainer is configured and managed via a DashContainerModel and allows the user to drag-and-drop content into various tab, and split-pane layouts. This component also supports publishing observable state, managed mounting/unmounting of inactive tabs, and lazy refreshing of its active view.'
+                    'DashContainer is configured and managed via a DashContainerModel and lets users drag and drop content into tabbed and split-pane layouts. It also supports publishing observable state, managed mounting and unmounting of inactive tabs, and lazy refreshing of the active view.'
+                ),
+                p(
+                    'Unlike DashCanvas, it fills the available space, resizing its widgets in both dimensions as the layout changes. Use the controls below to add views and to unmount and restore the dashboard, demonstrating that its state is preserved.'
                 )
             ],
             item: panel({
@@ -59,7 +62,7 @@ export const dashContainerPanel = hoistCmp.factory({
                 },
                 {
                     url: '$HR/desktop/cmp/dash/DashViewModel.ts',
-                    notes: 'Model for contained view instances. '
+                    notes: 'Model for contained view instances.'
                 }
             ]
         });

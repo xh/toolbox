@@ -25,7 +25,7 @@ export const columnFilteringPanel = hoistCmp.factory({
             icon: Icon.filter(),
             description: [
                 p(
-                    'Grids support column-based filtering of their underlying store data. To enable, set the GridModel.filterModel config to a GridFilterModel (or true) and set filterable: true on the columns you wish to filter.'
+                    'Grids support column-based filtering of their underlying store data. To enable, set the GridModel.filterModel config to a GridFilterModel (or true to create one with defaults) and set filterable: true on the columns you wish to filter.'
                 ),
                 p(
                     'Applications may also wish to use a FilterChooser to allow the user to filter the store data via a single "omni-box" style text control.'

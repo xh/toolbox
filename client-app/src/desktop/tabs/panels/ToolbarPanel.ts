@@ -17,12 +17,8 @@ export const toolbarPanel = hoistCmp.factory({
         return wrapper({
             title: 'Toolbar',
             icon: Icon.add(),
-            description: `
-                Toolbars (in case you have never seen one) are horizontal or vertical containers
-                with distinct styling and managed spacing between items. Support for top and bottom
-                toolbars is built into Panel via its tbar/bbar props, but they can be used on their
-                own and can be displayed in a vertical configuration as well.
-            `,
+            description:
+                'Toolbars are horizontal or vertical containers with distinct styling and managed spacing between their items. Top and bottom toolbar support is built into Panel via its tbar and bbar props, but toolbars can also be used on their own and rendered vertically. Items that exceed the available space collapse into an automatic overflow menu.',
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/panels/ToolbarPanel.ts',

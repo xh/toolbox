@@ -30,11 +30,7 @@ export const standardGridPanel = hoistCmp.factory(() =>
             {url: '$HR/cmp/grid/Grid.ts', notes: 'Hoist component.'},
             {
                 url: '$HR/cmp/grid/GridModel.ts',
-                notes: 'Hoist model for configuring and interacting with Grids.'
-            },
-            {
-                url: '$HR/cmp/grid/impl/GridPersistenceModel.ts',
-                notes: 'Hoist model for persisting Grid state to local storage.'
+                notes: 'Hoist model for configuring and interacting with grids, including persistence.'
             },
             {url: '$HR/cmp/grid/columns/Column.ts', notes: 'Hoist class for Column config.'},
             {

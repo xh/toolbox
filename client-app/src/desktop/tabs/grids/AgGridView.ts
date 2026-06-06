@@ -28,6 +28,21 @@ export const agGridView = hoistCmp.factory({
                     ' include a number of Hoist enhancements provided by the core Grid component, including store support, grid state, enhanced column and renderer APIs, absolute value sorting, and enhanced server-side Excel exports. Use of this wrapper is encouraged only when advanced ag-Grid features (such as pivoting) are required.'
                 )
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/grids/AgGridView.ts',
+                    notes: 'This example.'
+                },
+                {url: '$HR/cmp/ag-grid/AgGrid.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/cmp/ag-grid/AgGridModel.ts',
+                    notes: 'Backing model with access to the ag-Grid APIs.'
+                },
+                {
+                    url: '$HR/cmp/grid/Grid.ts',
+                    notes: 'The full-featured Hoist grid, preferred for most use cases.'
+                }
+            ],
             item: panel({
                 className: 'tb-grid-wrapper-panel',
                 width: '100%',

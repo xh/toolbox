@@ -27,7 +27,7 @@ export const cardPanel = hoistCmp.factory(() =>
             },
             {
                 url: '$HR/cmp/card/CardModel.ts',
-                notes: 'Hoist CardModel.'
+                notes: 'Hoist model for configuring and interacting with cards.'
             }
         ],
         item: panel({

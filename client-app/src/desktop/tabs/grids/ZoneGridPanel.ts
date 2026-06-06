@@ -38,11 +38,7 @@ export const zoneGridPanel = hoistCmp.factory({
                 {url: '$HR/cmp/zoneGrid/ZoneGrid.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/cmp/zoneGrid/ZoneGridModel.ts',
-                    notes: 'Hoist model for configuring and interacting with Zone Grids.'
-                },
-                {
-                    url: '$HR/cmp/zoneGrid/impl/ZoneGridPersistenceModel.ts',
-                    notes: 'Hoist model for persisting Zone Grid state.'
+                    notes: 'Hoist model for configuring and interacting with Zone Grids, including persistence.'
                 }
             ],
             item: panel({

@@ -27,9 +27,16 @@ export const jsxPanel = hoistCmp.factory(() =>
             <p>
                 We believe that the factory approach excels for declarative specification of
                 code-heavy element trees. For element trees with a significant amount of hypertext,
-                JSX might be a better choice. Both can be used interchangably, even within the same
+                JSX might be a better choice. Both can be used interchangeably, even within the same
                 render method.
             </p>
+        ],
+        links: [
+            {url: '$TB/client-app/src/desktop/tabs/other/JsxPanel.tsx', notes: 'This example.'},
+            {
+                url: '$HR/core/elem.ts',
+                notes: 'elemFactory() and related helpers for the Hoist factory syntax.'
+            }
         ],
         item: hframe({
             items: [

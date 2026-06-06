@@ -16,7 +16,7 @@ export const exceptionHandlerPanel = hoistCmp.factory({
             icon: Icon.skull(),
             description: div(
                 p(
-                    'Hoist provides centralized exception handling for Hoist Applications, including providing a managed display of the exception to the user, and providing options for introspection, tracking and notification of the problem to back-end administrators.'
+                    'Hoist provides centralized exception handling for applications, including a managed display of the error to the user and options for introspection, tracking, and notifying back-end administrators of the problem.'
                 ),
                 p(
                     'Some errors may require an app refresh, while others do not. Errors may also be marked as "routine" and need not reveal further details to the user beyond the stringified error message. Users also have the option to send a message to the configured support email address to report additional information about the error.'
@@ -28,19 +28,19 @@ export const exceptionHandlerPanel = hoistCmp.factory({
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/exceptions/ExceptionHandlerPanel.ts',
-                    notes: 'This example'
+                    notes: 'This example.'
                 },
                 {
                     url: '$HR/core/XH.ts',
-                    notes: 'XH top-level Singleton model - see .handleException()'
+                    notes: 'Top-level singleton; see .handleException().'
                 },
                 {
-                    url: '$HR/core/exception/ExceptionHandler.ts',
-                    notes: 'ExceptionHandler Base Class'
+                    url: '$HR/core/ExceptionHandler.ts',
+                    notes: 'Implementation behind XH.handleException().'
                 },
                 {
                     url: '$HR/promise/Promise.ts',
-                    notes: 'Hoist promise enhancement methods - see .catchDefault()'
+                    notes: 'Hoist Promise enhancements; see .catchDefault().'
                 }
             ],
             item: panel({

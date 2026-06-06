@@ -18,8 +18,19 @@ export const dataViewPanel = hoistCmp.factory({
             icon: Icon.addressCard(),
             description: [
                 p(
-                    'The DataView component leverages an underlying Grid / GridModel instance to display individual component "cards" for each rendered item.'
+                    'DataView renders each store record as a custom "card" component rather than a row of columns, making it a good fit for richer, non-tabular layouts. It is backed by a Grid and GridModel under the hood, so it inherits grid features such as sorting, selection, and store binding while leaving the rendering of each item entirely up to the application.'
                 )
+            ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/grids/DataViewPanel.ts',
+                    notes: 'This example.'
+                },
+                {url: '$HR/cmp/dataview/DataView.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/cmp/dataview/DataViewModel.ts',
+                    notes: 'Hoist model for configuring and interacting with DataViews.'
+                }
             ],
             item: panel({
                 className: 'tb-dataview-panel',

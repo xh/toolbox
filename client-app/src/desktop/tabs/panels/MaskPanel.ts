@@ -30,7 +30,7 @@ export const maskPanel = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/panels/MaskPanel.ts',
                     notes: 'This example.'
                 },
-                {url: '$HR/desktop/cmp/mask/Mask.ts', notes: 'Hoist component.'},
+                {url: '$HR/cmp/mask/Mask.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/core/TaskObserver.ts',
                     notes: 'Hoist model for tracking async tasks - can be linked to masks.'

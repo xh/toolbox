@@ -72,6 +72,10 @@ export const selectPanel = hoistCmp.factory({
                 {
                     url: '$HR/desktop/cmp/input/Select.ts',
                     notes: 'Hoist Select component.'
+                },
+                {
+                    url: '$HR/cmp/input/HoistInputModel.ts',
+                    notes: 'Base class shared by all Hoist inputs.'
                 }
             ],
             item: panel({

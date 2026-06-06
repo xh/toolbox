@@ -41,7 +41,7 @@ export const fileChooserPanel = hoistCmp.factory({
             icon: Icon.copy(),
             description: [
                 p(
-                    'A component to select one or more files from the local filesystem. Wraps the third-party react-dropzone component to provide both drag-and-drop and click-to-browse file selection. Expands upon this core functionality with an optional grid (enabled by default) displaying the list of selected files and allowing the user to remove files from the selection.'
+                    'FileChooser selects one or more files from the local filesystem, wrapping the third-party react-dropzone library to support both drag-and-drop and click-to-browse selection. It also includes an optional grid (shown by default) that lists the selected files and lets the user remove them.'
                 ),
                 p(
                     'This component should be provided with a FileChooserModel instance, as the model holds an observable collection of File objects and provides a public API to manipulate the selection. The application is responsible for processing the selected files (e.g. by uploading them to a server) and clearing the selection when complete.'
@@ -50,7 +50,7 @@ export const fileChooserPanel = hoistCmp.factory({
                     'Use the controls below to vary the accepted types and size/count limits - the empty-state hint updates to summarize the active configuration. Changing a limit re-creates the chooser, clearing any current selection.'
                 ),
                 p(
-                    'The second example is a single-image chooser that supplies a custom `fileDisplay` to preview the selected PNG in place, with a footer to replace or clear it.'
+                    'The second example is a single-image chooser that supplies a custom fileDisplay to preview the selected PNG in place, with a footer to replace or clear it.'
                 )
             ],
             links: [
@@ -61,6 +61,10 @@ export const fileChooserPanel = hoistCmp.factory({
                 {
                     url: '$HR/desktop/cmp/filechooser/FileChooser.ts',
                     notes: 'Hoist component for selecting and queuing files for upload.'
+                },
+                {
+                    url: '$HR/desktop/cmp/filechooser/FileChooserModel.ts',
+                    notes: 'Holds the observable file selection and its public API.'
                 }
             ],
             item: vframe({

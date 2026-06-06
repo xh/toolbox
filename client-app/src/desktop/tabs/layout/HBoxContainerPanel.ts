@@ -9,9 +9,15 @@ export const hboxContainerPanel = hoistCmp.factory(() =>
         title: 'HBox',
         icon: Icon.box(),
         description: p(
-            'An HBox lays out its children horizontally, rendering a Box with flexDirection:row.'
+            'HBox lays out its children in a horizontal row. It is a thin wrapper over Box (flexDirection: row) that exposes flexbox and Hoist layout properties such as flex, width, gap, and alignItems directly as component props, as shown by the mix of flexed and fixed-width boxes below.'
         ),
-        links: [{url: '$HR/cmp/layout/Box.ts', notes: 'Hoist Box components.'}],
+        links: [
+            {
+                url: '$TB/client-app/src/desktop/tabs/layout/HBoxContainerPanel.ts',
+                notes: 'This example.'
+            },
+            {url: '$HR/cmp/layout/Box.ts', notes: 'The Box component and its layout props.'}
+        ],
         item: panel({
             height: 400,
             width: 700,

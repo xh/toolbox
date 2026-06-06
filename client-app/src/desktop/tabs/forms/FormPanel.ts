@@ -43,9 +43,15 @@ export const formPanel = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/forms/FormPanel.ts',
                     notes: 'This example.'
                 },
-                {url: '$HR/cmp/form/Form.ts', notes: 'Form Component'},
-                {url: '$HR/cmp/form/FormModel.ts', notes: 'Form Model'},
-                {url: '$HR/desktop/cmp/form/FormField.ts', notes: 'Form Field'}
+                {url: '$HR/cmp/form/Form.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/cmp/form/FormModel.ts',
+                    notes: 'Observable model for loading, validating, and submitting form data.'
+                },
+                {
+                    url: '$HR/desktop/cmp/form/FormField.ts',
+                    notes: 'Binds an input to a FormModel field, with label and validation display.'
+                }
             ],
             item: panel({
                 className,

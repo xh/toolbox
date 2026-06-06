@@ -11,16 +11,26 @@ export const appNotificationsPanel = hoistCmp.factory(() =>
     wrapper({
         title: 'App Notifications',
         icon: Icon.rocket(),
+        description: p(
+            "Hoist surfaces important runtime events without interrupting the user's work. The framework detects new app versions and prompts for a refresh via an unobtrusive banner, and can suspend an idle session to reduce server load before prompting the user to reload. The two tiles below trigger each behavior on demand."
+        ),
         links: [
             {
+                url: '$TB/client-app/src/desktop/tabs/other/AppNotificationsPanel.ts',
+                notes: 'This example.'
+            },
+            {
                 url: '$HR/svc/EnvironmentService.ts',
-                notes: 'EnvironmentService checks for updated versions and alerts after a new release, if enabled.'
+                notes: 'Checks for updated versions and alerts after a new release, if enabled.'
             },
             {
                 url: '$HR/svc/IdleService.ts',
-                notes: 'Idle Service listens for user interactions and triggers the IdlePanel, if enabled.'
+                notes: 'Listens for user interactions and triggers the IdlePanel, if enabled.'
             },
-            {url: '$HR/desktop/appcontainer/IdlePanel.ts', notes: 'IdlePanel Component'}
+            {
+                url: '$HR/desktop/appcontainer/suspend/IdlePanel.ts',
+                notes: 'Panel shown when an idle session is suspended.'
+            }
         ],
         item: box({
             className: 'tb-app-notifications',

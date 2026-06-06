@@ -18,7 +18,10 @@ export const ohlcChartPanel = hoistCmp.factory({
             icon: Icon.chartLine(),
             description: [
                 p(
-                    'Hoist provides a lightweight wrapper around the Highcharts charting and visualization library. This integration includes the Chart component to handle basic rendering, layout, and resizing and a ChartModel class to hold an observable config and data series.'
+                    'Hoist provides a lightweight wrapper around the Highcharts charting and visualization library. This integration includes the Chart component to handle rendering, layout, and resizing, plus an observable ChartModel class to hold the chart config and data series.'
+                ),
+                p(
+                    'This example renders financial data as an OHLC (open-high-low-close) chart, and shows how to reach through ChartModel to the underlying Highcharts API directly via the "Call chart API" button.'
                 ),
                 p(
                     'Note that applications must license and specify a compatible version of Highcharts as an application dependency.'

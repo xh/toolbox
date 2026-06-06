@@ -27,15 +27,23 @@ export const buttonsPanel = hoistCmp.factory({
             icon: Icon.checkCircle(),
             description: div(
                 p(
-                    'Hoist Desktop Buttons are implemented using the Blueprint library, and take all props supported by the Blueprint component. In addition to text, icon, and onClick, core props for customizing buttons include:'
+                    'Hoist desktop Buttons are built on the Blueprint library and accept all props supported by the underlying Blueprint button. Beyond text, icon, and onClick, the most common props for customizing their appearance are:'
                 ),
                 ul(
                     li('intent: [primary|success|warning|danger]'),
                     li('minimal: true|false'),
                     li('outlined: true|false')
                 ),
-                p('Buttons are shown below contained within both panel and toolbar components.')
+                p('Each intent is shown below, within both panel and toolbar containers.')
             ),
+            links: [
+                {url: '$TB/client-app/src/desktop/tabs/other/Buttons.ts', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/button/Button.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/desktop/cmp/input/ButtonGroupInput.ts',
+                    notes: 'Bindable input that groups buttons into a single-select control.'
+                }
+            ],
             item: div({
                 className: 'tbox-buttons',
                 item: [

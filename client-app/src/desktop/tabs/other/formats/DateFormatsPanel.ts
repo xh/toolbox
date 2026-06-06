@@ -24,12 +24,22 @@ export const dateFormatsPanel = hoistCmp.factory({
                 ),
                 p(
                     'fmtDate is backed by ',
-                    a({href: 'https://momentjs.com/', target: '_blank', item: 'moment.js '}),
-                    ', and makes the full moment API available via the fmt option, which takes a moment js string. Convenience methods delegate to fmtDate with a useful fmt default.'
+                    a({href: 'https://momentjs.com/', target: '_blank', item: 'moment.js'}),
+                    ', and makes the full moment API available via the fmt option, which takes a moment.js format string. Convenience methods delegate to fmtDate with a useful fmt default.'
                 ),
                 p(
-                    'All Hoist formatting functions support the asHtml option to produce a raw HTML string rather than a React element. This allows them to be useful in both React and non-React contexts.'
+                    'All Hoist formatting functions support the asHtml option to produce a raw HTML string rather than a React element, making them useful in both React and non-React contexts.'
                 )
+            ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/formats/DateFormatsPanel.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/format/FormatDate.ts',
+                    notes: 'fmtDate and the related date formatting functions.'
+                }
             ],
             item: panel({
                 className: 'tbox-formats-tab',

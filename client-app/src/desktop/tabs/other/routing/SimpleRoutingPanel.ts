@@ -27,6 +27,24 @@ export const simpleRoutingPanel = hoistCmp.factory({
                     'Note that this routing relies on an appropriate route path being defined in the config returned by AppModel.getRoutes().'
                 )
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/routing/SimpleRoutingPanel.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$TB/client-app/src/desktop/AppModel.ts',
+                    notes: 'getRoutes() defines the app route config this relies on.'
+                },
+                {
+                    url: '$HR/core/XH.ts',
+                    notes: 'Routing APIs: .routerState and .navigate().'
+                },
+                {
+                    url: '$HR/appcontainer/RouterModel.ts',
+                    notes: 'Model managing the application route state.'
+                }
+            ],
             item: panel({
                 item: grid(),
                 height: 500,

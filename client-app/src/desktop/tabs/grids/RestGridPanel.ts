@@ -31,6 +31,17 @@ export const restGridPanel = hoistCmp.factory({
                     '.'
                 )
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/grids/RestGridPanel.ts',
+                    notes: 'This example.'
+                },
+                {url: '$HR/desktop/cmp/rest/RestGrid.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/desktop/cmp/rest/RestGridModel.ts',
+                    notes: 'Hoist model defining the store, columns, editors, and actions.'
+                }
+            ],
             item: panel({
                 className: 'tb-grid-wrapper-panel',
                 item: restGrid({modelConfig: modelSpec})

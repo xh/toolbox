@@ -35,6 +35,18 @@ export const inlineEditingPanel = hoistCmp.factory({
                 {
                     url: '$TB/client-app/src/desktop/tabs/grids/InlineEditingPanel.ts',
                     notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/grid/columns/Column.ts',
+                    notes: 'Column config, including the editable flag and editor.'
+                },
+                {
+                    url: '$HR/desktop/cmp/grid/editors/index.ts',
+                    notes: 'Type-specific inline editor components.'
+                },
+                {
+                    url: '$HR/data/Field.ts',
+                    notes: 'Store field config, including the validation rules applied here.'
                 }
             ],
             item: panel({

@@ -38,8 +38,20 @@ export const toolbarFormPanel = hoistCmp.factory({
                     'When using a FormField within a Toolbar, it is not necessary to set the inline prop. FormFields within Toolbars are always displayed as if inline: true. For validation, it is recommended to set minimal: true on your FormFields or via Form.fieldDefaults. When not using minimal validation, validation messages will be shown to the right of the FormField.'
                 ),
                 p(
-                    'Using TextArea, JSONInput or Slider inputs within Toolbars is not currently supported, and may lead to unwanted sizing side-effects.'
+                    'Using TextArea, JSONInput or Slider inputs within Toolbars is not currently supported, and may lead to unwanted sizing side effects.'
                 )
+            ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/forms/ToolbarFormPanel.ts',
+                    notes: 'This example.'
+                },
+                {url: '$HR/cmp/form/Form.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/desktop/cmp/form/FormField.ts',
+                    notes: 'Renders inline automatically when placed within a Toolbar.'
+                },
+                {url: '$HR/desktop/cmp/toolbar/Toolbar.ts', notes: 'Hoist component.'}
             ],
             item: vbox({
                 className: 'tb-toolbar-form',

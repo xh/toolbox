@@ -10,11 +10,26 @@ export const treeGridPanel = hoistCmp.factory(() =>
         icon: Icon.grid(),
         description: [
             p(
-                "Hoist's Grid supports the display of hierarchical tree data, leveraging the underlying support for nested data rows provided by ag-Grid. The GroupingChooser component allows control over the tree hierarchy, with optional support for persisting user-driven favorites."
+                "Hoist's Grid renders hierarchical tree data directly, building on ag-Grid's support for nested data rows. The GroupingChooser component lets users control the tree hierarchy, with optional persistence of their favorite groupings."
             ),
             p(
-                'Applications provide standard record data with children nodes containing their sub-records. Data aggregations may be provided to the grid, or computed within the grid via ag-Grid aggregation configs.'
+                'Applications supply standard record data with child nodes nested under their parents. Aggregations can be provided alongside the data or computed within the grid via ag-Grid aggregation configs.'
             )
+        ],
+        links: [
+            {
+                url: '$TB/client-app/src/desktop/tabs/grids/TreeGridPanel.ts',
+                notes: 'This example.'
+            },
+            {url: '$HR/cmp/grid/Grid.ts', notes: 'Hoist component.'},
+            {
+                url: '$HR/cmp/grid/GridModel.ts',
+                notes: 'Hoist model for configuring and interacting with grids, including tree mode.'
+            },
+            {
+                url: '$HR/desktop/cmp/grouping/GroupingChooser.ts',
+                notes: 'Control for managing the tree grouping hierarchy.'
+            }
         ],
         item: panel({
             className: 'tb-grid-wrapper-panel',

@@ -30,12 +30,22 @@ export const numberFormatsPanel = hoistCmp.factory({
                 ),
                 p(
                     'fmtNumber is backed by ',
-                    a({href: 'https://numbrojs.com/', target: '_blank', item: 'numbro.js '}),
+                    a({href: 'https://numbrojs.com/', target: '_blank', item: 'numbro.js'}),
                     ' and makes the full numbro API available via the formatConfig property, which takes a numbro configuration object.'
                 ),
                 p(
-                    'All Hoist formatting functions support the asHtml option to produce a raw HTML string rather than a React element. This allows them to be useful in both React and non-React contexts.'
+                    'All Hoist formatting functions support the asHtml option to produce a raw HTML string rather than a React element, making them useful in both React and non-React contexts.'
                 )
+            ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/formats/NumberFormatsPanel.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/format/FormatNumber.ts',
+                    notes: 'fmtNumber and the related number formatting functions.'
+                }
             ],
             item: panel({
                 className: 'tbox-formats-tab',

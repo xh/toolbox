@@ -73,8 +73,15 @@ export const inputsPanel = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/forms/InputsPanel.ts',
                     notes: 'This example.'
                 },
-                {url: '$HR/cmp/input/HoistInputModel.ts', notes: 'HoistInput Base Class'},
-                {url: '$HR/desktop/cmp/input', notes: 'Hoist Inputs'}
+                {
+                    url: '$HR/cmp/input/HoistInputModel.ts',
+                    notes: 'Base class shared by all Hoist inputs.'
+                },
+                {
+                    url: '$HR/desktop/cmp/input',
+                    text: 'Input package',
+                    notes: 'The full set of desktop Hoist input components.'
+                }
             ],
             item: panel({
                 className: 'tb-inputs-panel',

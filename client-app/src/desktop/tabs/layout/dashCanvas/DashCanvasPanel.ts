@@ -77,7 +77,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                 },
                 {
                     url: '$HR/desktop/cmp/dash/canvas/DashCanvasViewModel.ts',
-                    notes: 'Model for contained view instances. '
+                    notes: 'Model for contained view instances.'
                 }
             ]
         });

@@ -14,7 +14,7 @@ export const inspectorPanel = hoistCmp.factory({
             description: [
                 p({
                     style: {marginBottom: 0},
-                    item: 'Hoist Inspector is a developer-centric tool built directly into the Hoist UI. It provides a listing of all active HoistModel and HoistService instances running within the current application.'
+                    item: 'Hoist Inspector is a developer tool built directly into the Hoist UI. It lists every active HoistModel and HoistService instance in the running application and lets you browse their observable state live, with no extra setup:'
                 }),
                 ul(
                     li(
@@ -29,8 +29,19 @@ export const inspectorPanel = hoistCmp.factory({
                 )
             ],
             links: [
-                {url: '$HR/svc/InspectorService.ts'},
-                {url: '$HR/inspector', notes: 'Inspector component package'}
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/InspectorPanel.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/svc/InspectorService.ts',
+                    notes: 'Service that activates and powers the Inspector.'
+                },
+                {
+                    url: '$HR/inspector',
+                    text: 'Inspector package',
+                    notes: 'Inspector UI components.'
+                }
             ],
             item: panel({
                 width: 700,

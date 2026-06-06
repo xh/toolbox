@@ -33,6 +33,19 @@ export const mobileTab = hoistCmp.factory(() =>
                 '.'
             )
         ],
+        links: [
+            {url: '$TB/client-app/src/desktop/tabs/mobile/MobileTab.ts', notes: 'This example.'},
+            {
+                url: 'https://toolbox.xh.io/mobile',
+                text: 'Toolbox Mobile',
+                notes: 'The live Toolbox mobile app, best viewed on a device.'
+            },
+            {
+                url: '$HR/mobile',
+                text: 'Mobile package',
+                notes: 'Mobile-specific Hoist components.'
+            }
+        ],
         item: panel({
             className: 'tb-mobile',
             bbar: [
