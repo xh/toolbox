@@ -32,6 +32,16 @@ export const panelSizingPanel = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.ts',
                     notes: 'This example.'
                 },
+                {
+                    url: '$HR/desktop/cmp/panel/README.md',
+                    text: 'Panel docs',
+                    notes: 'Desktop panel guide (sizing, collapse, modal support).'
+                },
+                {
+                    url: '$HR/docs/persistence.md',
+                    text: 'Persistence docs',
+                    notes: 'Guide to persisting UI state such as panel size.'
+                },
                 {url: '$HR/desktop/cmp/panel/Panel.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/desktop/cmp/panel/PanelModel.ts',

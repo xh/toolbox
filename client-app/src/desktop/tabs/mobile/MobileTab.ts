@@ -36,6 +36,11 @@ export const mobileTab = hoistCmp.factory(() =>
         links: [
             {url: '$TB/client-app/src/desktop/tabs/mobile/MobileTab.ts', notes: 'This example.'},
             {
+                url: '$HR/mobile/README.md',
+                text: 'Mobile docs',
+                notes: 'Mobile components guide.'
+            },
+            {
                 url: 'https://toolbox.xh.io/mobile',
                 text: 'Toolbox Mobile',
                 notes: 'The live Toolbox mobile app, best viewed on a device.'

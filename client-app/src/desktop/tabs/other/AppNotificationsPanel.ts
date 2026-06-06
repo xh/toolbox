@@ -20,6 +20,11 @@ export const appNotificationsPanel = hoistCmp.factory(() =>
                 notes: 'This example.'
             },
             {
+                url: '$HR/svc/README.md',
+                text: 'Services docs',
+                notes: 'Built-in services guide.'
+            },
+            {
                 url: '$HR/svc/EnvironmentService.ts',
                 notes: 'Checks for updated versions and alerts after a new release, if enabled.'
             },

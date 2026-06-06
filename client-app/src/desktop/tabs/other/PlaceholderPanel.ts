@@ -28,6 +28,11 @@ export const placeholderPanel = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/other/PlaceholderPanel.ts',
                     notes: 'This example.'
                 },
+                {
+                    url: '$HR/cmp/layout/README.md',
+                    text: 'Layout docs',
+                    notes: 'Layout containers guide.'
+                },
                 {url: '$HR/cmp/layout/Placeholder.ts', notes: 'Hoist component.'}
             ],
             item: panel({

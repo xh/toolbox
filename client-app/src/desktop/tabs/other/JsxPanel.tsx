@@ -34,6 +34,11 @@ export const jsxPanel = hoistCmp.factory(() =>
         links: [
             {url: '$TB/client-app/src/desktop/tabs/other/JsxPanel.tsx', notes: 'This example.'},
             {
+                url: '$HR/core/README.md',
+                text: 'Core docs',
+                notes: 'Core framework guide, including element factories.'
+            },
+            {
                 url: '$HR/core/elem.ts',
                 notes: 'elemFactory() and related helpers for the Hoist factory syntax.'
             }

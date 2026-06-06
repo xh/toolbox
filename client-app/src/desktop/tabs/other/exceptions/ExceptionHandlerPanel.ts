@@ -31,6 +31,11 @@ export const exceptionHandlerPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/docs/error-handling.md',
+                    text: 'Error handling docs',
+                    notes: 'Centralized exception handling and display guide.'
+                },
+                {
                     url: '$HR/core/XH.ts',
                     notes: 'Top-level singleton; see .handleException().'
                 },

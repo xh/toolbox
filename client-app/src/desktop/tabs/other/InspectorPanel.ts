@@ -34,6 +34,11 @@ export const inspectorPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/inspector/README.md',
+                    text: 'Inspector docs',
+                    notes: 'Inspector guide.'
+                },
+                {
                     url: '$HR/svc/InspectorService.ts',
                     notes: 'Service that activates and powers the Inspector.'
                 },

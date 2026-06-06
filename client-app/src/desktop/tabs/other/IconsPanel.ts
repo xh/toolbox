@@ -42,6 +42,11 @@ export const iconsPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/icon/README.md',
+                    text: 'Icon docs',
+                    notes: 'Icon system guide.'
+                },
+                {
                     url: 'https://fontawesome.com/icons',
                     text: 'FontAwesome',
                     notes:

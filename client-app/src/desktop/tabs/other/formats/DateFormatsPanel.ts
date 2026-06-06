@@ -37,6 +37,11 @@ export const dateFormatsPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/format/README.md',
+                    text: 'Formatting docs',
+                    notes: 'Number, date, and misc formatting guide.'
+                },
+                {
                     url: '$HR/format/FormatDate.ts',
                     notes: 'fmtDate and the related date formatting functions.'
                 }

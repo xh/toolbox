@@ -34,6 +34,11 @@ export const externalSortGridPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide and core concepts.'
+                },
+                {
                     url: '$HR/cmp/grid/GridModel.ts',
                     notes: 'Observe GridModel.sortBy to drive externally-managed sorting.'
                 }

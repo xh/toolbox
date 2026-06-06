@@ -27,6 +27,11 @@ export const standardGridPanel = hoistCmp.factory(() =>
                 url: '$TB/client-app/src/desktop/tabs/grids/StandardGridPanel.ts',
                 notes: 'This example.'
             },
+            {
+                url: '$HR/cmp/grid/README.md',
+                text: 'Grid docs',
+                notes: 'Grid component guide and core concepts.'
+            },
             {url: '$HR/cmp/grid/Grid.ts', notes: 'Hoist component.'},
             {
                 url: '$HR/cmp/grid/GridModel.ts',

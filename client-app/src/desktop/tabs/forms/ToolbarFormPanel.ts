@@ -46,6 +46,11 @@ export const toolbarFormPanel = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/forms/ToolbarFormPanel.ts',
                     notes: 'This example.'
                 },
+                {
+                    url: '$HR/cmp/form/README.md',
+                    text: 'Form docs',
+                    notes: 'Form infrastructure guide and validation concepts.'
+                },
                 {url: '$HR/cmp/form/Form.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/desktop/cmp/form/FormField.ts',

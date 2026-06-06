@@ -37,6 +37,16 @@ export const inlineEditingPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide and core concepts.'
+                },
+                {
+                    url: '$HR/data/README.md',
+                    text: 'Data docs',
+                    notes: 'Store, fields, and the validation used here.'
+                },
+                {
                     url: '$HR/cmp/grid/columns/Column.ts',
                     notes: 'Column config, including the editable flag and editor.'
                 },

@@ -74,6 +74,11 @@ export const inputsPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/cmp/input/README.md',
+                    text: 'Inputs docs',
+                    notes: 'Input components guide and shared concepts.'
+                },
+                {
                     url: '$HR/cmp/input/HoistInputModel.ts',
                     notes: 'Base class shared by all Hoist inputs.'
                 },

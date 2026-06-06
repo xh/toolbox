@@ -33,6 +33,11 @@ export const simpleRoutingPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/docs/routing.md',
+                    text: 'Routing docs',
+                    notes: 'Client-side routing guide.'
+                },
+                {
                     url: '$TB/client-app/src/desktop/AppModel.ts',
                     notes: 'getRoutes() defines the app route config this relies on.'
                 },

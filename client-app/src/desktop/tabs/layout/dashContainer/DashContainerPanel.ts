@@ -49,6 +49,11 @@ export const dashContainerPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/desktop/cmp/dash/README.md',
+                    text: 'Dashboard docs',
+                    notes: 'Dashboard system guide (DashContainer and DashCanvas).'
+                },
+                {
                     url: '$HR/desktop/cmp/dash/container/DashContainer.ts',
                     notes: 'Hoist container component.'
                 },

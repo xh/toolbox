@@ -24,6 +24,11 @@ export const toolbarPanel = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/panels/ToolbarPanel.ts',
                     notes: 'This example.'
                 },
+                {
+                    url: '$HR/desktop/cmp/panel/README.md',
+                    text: 'Panel docs',
+                    notes: 'Desktop panel guide; panels host toolbars via tbar and bbar.'
+                },
                 {url: '$HR/desktop/cmp/toolbar/Toolbar.ts', notes: 'Hoist component.'}
             ],
             item: panel({

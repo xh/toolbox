@@ -40,6 +40,11 @@ export const columnFilteringPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide and core concepts.'
+                },
+                {
                     url: '$HR/cmp/grid/filter/GridFilterModel.ts',
                     notes: 'Hoist model for managed Grid filters.'
                 },

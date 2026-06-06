@@ -92,7 +92,7 @@ const resources = hoistCmp.factory<ResourcesProps>({
                     div({
                         className: 'tbox-wrapper__resource',
                         items: [
-                            link.url.startsWith('http') ? Icon.openExternal() : Icon.code(),
+                            linkIcon(link.url),
                             div({
                                 className: 'tbox-wrapper__resource-text',
                                 items: [
@@ -126,3 +126,14 @@ const collapsedRail = hoistCmp.factory({
         });
     }
 });
+
+/**
+ * Choose an icon for a resource link based on its target: a doc icon for markdown docs
+ * (READMEs and concept guides), an external-link icon for fully-qualified URLs, and a code
+ * icon for in-repo source files.
+ */
+function linkIcon(url: string): ReactElement {
+    if (url.endsWith('.md')) return Icon.book();
+    if (url.startsWith('http')) return Icon.openExternal();
+    return Icon.code();
+}

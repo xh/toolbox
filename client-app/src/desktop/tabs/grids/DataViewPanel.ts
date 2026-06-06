@@ -26,6 +26,11 @@ export const dataViewPanel = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/grids/DataViewPanel.ts',
                     notes: 'This example.'
                 },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide that DataView builds on.'
+                },
                 {url: '$HR/cmp/dataview/DataView.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/cmp/dataview/DataViewModel.ts',

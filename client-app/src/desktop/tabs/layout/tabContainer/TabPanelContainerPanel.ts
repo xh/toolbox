@@ -27,6 +27,11 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/cmp/tab/README.md',
+                    text: 'Tabs docs',
+                    notes: 'Tabbed interface guide.'
+                },
+                {
                     url: '$TB/client-app/src/desktop/AppModel.ts',
                     notes: 'Toolbox AppModel with top-level TabContainerModel.'
                 },

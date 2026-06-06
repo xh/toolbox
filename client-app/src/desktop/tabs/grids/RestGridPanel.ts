@@ -36,6 +36,11 @@ export const restGridPanel = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/grids/RestGridPanel.ts',
                     notes: 'This example.'
                 },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide and core concepts.'
+                },
                 {url: '$HR/desktop/cmp/rest/RestGrid.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/desktop/cmp/rest/RestGridModel.ts',

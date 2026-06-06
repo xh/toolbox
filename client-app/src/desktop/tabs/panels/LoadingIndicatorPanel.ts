@@ -32,6 +32,11 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/desktop/cmp/panel/README.md',
+                    text: 'Panel docs',
+                    notes: 'Desktop panel guide, including the loadingIndicator prop.'
+                },
+                {
                     url: '$HR/cmp/loadingindicator/LoadingIndicator.ts',
                     notes: 'Hoist component.'
                 },

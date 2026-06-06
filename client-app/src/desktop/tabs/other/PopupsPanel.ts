@@ -35,6 +35,11 @@ export const popupsPanel = hoistCmp.factory(() => {
         links: [
             {url: '$TB/client-app/src/desktop/tabs/other/PopupsPanel.ts', notes: 'This example.'},
             {
+                url: '$HR/appcontainer/README.md',
+                text: 'App shell docs',
+                notes: 'Application shell guide: dialogs, toasts, and banners.'
+            },
+            {
                 url: '$HR/core/XH.ts',
                 notes: 'Top-level APIs: .alert(), .confirm(), .prompt(), .message(), .toast(), .showBanner().'
             }

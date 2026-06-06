@@ -35,6 +35,16 @@ export const columnGroupsGridPanel = hoistCmp.factory(() =>
                 notes: 'This example.'
             },
             {
+                url: '$HR/cmp/grid/README.md',
+                text: 'Grid docs',
+                notes: 'Grid component guide and core concepts.'
+            },
+            {
+                url: '$HR/docs/persistence.md',
+                text: 'Persistence docs',
+                notes: 'Guide to persisting UI state such as grid layout.'
+            },
+            {
                 url: '$HR/cmp/grid/columns/ColumnGroup.ts',
                 notes: 'Config for grouping columns under a shared header.'
             },

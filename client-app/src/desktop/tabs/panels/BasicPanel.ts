@@ -35,6 +35,11 @@ export const basicPanel = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/panels/BasicPanel.ts',
                     notes: 'This example.'
                 },
+                {
+                    url: '$HR/desktop/cmp/panel/README.md',
+                    text: 'Panel docs',
+                    notes: 'Desktop panel guide (toolbars, masks, sizing).'
+                },
                 {url: '$HR/desktop/cmp/panel/Panel.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/desktop/cmp/panel/PanelModel.ts',

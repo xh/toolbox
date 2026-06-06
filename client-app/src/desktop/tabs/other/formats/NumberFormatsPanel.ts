@@ -43,6 +43,11 @@ export const numberFormatsPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/format/README.md',
+                    text: 'Formatting docs',
+                    notes: 'Number, date, and misc formatting guide.'
+                },
+                {
                     url: '$HR/format/FormatNumber.ts',
                     notes: 'fmtNumber and the related number formatting functions.'
                 }

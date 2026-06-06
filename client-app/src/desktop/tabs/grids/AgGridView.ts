@@ -33,6 +33,11 @@ export const agGridView = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/grids/AgGridView.ts',
                     notes: 'This example.'
                 },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Guide to the full-featured Hoist grid.'
+                },
                 {url: '$HR/cmp/ag-grid/AgGrid.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/cmp/ag-grid/AgGridModel.ts',

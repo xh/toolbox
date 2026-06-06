@@ -35,6 +35,11 @@ export const zoneGridPanel = hoistCmp.factory({
                     url: '$TB/client-app/src/desktop/tabs/grids/ZoneGridPanel.ts',
                     notes: 'This example.'
                 },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide that ZoneGrid builds on.'
+                },
                 {url: '$HR/cmp/zoneGrid/ZoneGrid.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/cmp/zoneGrid/ZoneGridModel.ts',
