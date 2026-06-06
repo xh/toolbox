@@ -75,7 +75,8 @@ export const selectPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                width: '90%',
+                width: '100%',
+                height: '100%',
                 maxWidth: 1100,
                 scrollable: true,
                 item: hframe(column1(), column2(), column3()),
