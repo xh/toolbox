@@ -1,11 +1,13 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {filler, hframe, span} from '@xh/hoist/cmp/layout';
+import {filler, hframe, p, span} from '@xh/hoist/cmp/layout';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {grid} from '@xh/hoist/cmp/grid';
 import {treeMap} from '@xh/hoist/cmp/treemap';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {Icon} from '@xh/hoist/icon';
+import {wrapper} from '../../common';
 
 import {GridTreeMapModel} from './GridTreeMapModel';
 
@@ -13,16 +15,46 @@ export const gridTreeMapPanel = hoistCmp.factory({
     model: creates(GridTreeMapModel),
 
     render() {
-        return panel({
-            mask: 'onLoad',
-            tbar: tbar(),
-            items: hframe(
-                panel({
-                    modelConfig: {defaultSize: 480, side: 'left'},
-                    item: grid()
-                }),
-                treeMap()
-            )
+        return wrapper({
+            title: 'Grid TreeMap',
+            icon: Icon.gridLarge(),
+            description: [
+                p(
+                    'TreeMaps render hierarchical data as nested, color-coded rectangles — a heatmap-style view where the size and color of each tile encode two dimensions of a record.'
+                ),
+                p(
+                    'This example binds a TreeMap to the same Store and selection model as the grid beside it, keeping the two views in sync. Use the toolbar to adjust clustering, heat, color mode, theme, and tiling algorithm.'
+                )
+            ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/charts/GridTreeMapPanel.ts',
+                    notes: 'This example.'
+                },
+                {url: '$HR/cmp/treemap/TreeMap.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/cmp/treemap/TreeMapModel.ts',
+                    notes: 'Hoist model for configuring TreeMaps.'
+                },
+                {
+                    text: 'Highcharts Docs',
+                    url: 'https://api.highcharts.com/highcharts/',
+                    notes: 'Underlying charting library.'
+                }
+            ],
+            item: panel({
+                height: '100%',
+                width: '100%',
+                mask: 'onLoad',
+                tbar: tbar(),
+                items: hframe(
+                    panel({
+                        modelConfig: {defaultSize: 480, side: 'left'},
+                        item: grid()
+                    }),
+                    treeMap()
+                )
+            })
         });
     }
 });
