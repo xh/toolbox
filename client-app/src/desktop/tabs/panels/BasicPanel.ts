@@ -42,6 +42,8 @@ export const basicPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
+                title: 'Basic Panel',
+                icon: Icon.window(),
                 height: 400,
                 width: 700,
                 compactHeader: model.compactHeader,

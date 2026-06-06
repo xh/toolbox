@@ -39,6 +39,8 @@ export const panelSizingPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
+                title: 'Panel Sizing',
+                icon: Icon.window(),
                 modelConfig: {modalSupport: true, collapsible: false, resizable: false},
                 height: '60vh',
                 width: '80%',

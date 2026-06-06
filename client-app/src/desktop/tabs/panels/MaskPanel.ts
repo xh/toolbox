@@ -37,6 +37,8 @@ export const maskPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
+                title: 'Mask',
+                icon: Icon.mask({prefix: 'fas'}),
                 width: 800,
                 height: 400,
                 item: sampleGrid({omitGridTools: true, omitMask: true}),

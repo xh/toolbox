@@ -31,8 +31,10 @@ export const toolbarPanel = hoistCmp.factory({
                 {url: '$HR/desktop/cmp/toolbar/Toolbar.ts', notes: 'Hoist component.'}
             ],
             item: panel({
+                title: 'Toolbar',
+                icon: Icon.add(),
                 height: '60vh',
-                width: '80vw',
+                width: '80%',
                 tbar: topBar(),
                 item: hframe(leftBar(), placeholder(xhLogo({width: 200})), rightBar()),
                 bbar: bottomBar()
