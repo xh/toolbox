@@ -38,6 +38,11 @@ export const markdownPanel = hoistCmp.factory({
                 {
                     url: '$TB/client-app/src/types.d.ts',
                     notes: 'Module declaration for .md file imports.'
+                },
+                {
+                    url: 'https://github.com/remarkjs/react-markdown',
+                    text: 'react-markdown',
+                    notes: 'The underlying Markdown rendering library.'
                 }
             ],
             item: vbox({

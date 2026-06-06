@@ -46,6 +46,11 @@ export const agGridView = hoistCmp.factory({
                 {
                     url: '$HR/cmp/grid/Grid.ts',
                     notes: 'The full-featured Hoist grid, preferred for most use cases.'
+                },
+                {
+                    url: 'https://www.ag-grid.com/javascript-data-grid/',
+                    text: 'ag-Grid Docs',
+                    notes: 'ag-Grid documentation, covering advanced features such as pivoting.'
                 }
             ],
             item: panel({

@@ -15,7 +15,7 @@ export const standardGridPanel = hoistCmp.factory(() =>
             p(
                 'We rely on ',
                 a({
-                    href: 'https://www.ag-grid.com/javascript-grid-reference-overview/',
+                    href: 'https://www.ag-grid.com/javascript-data-grid/',
                     target: '_blank',
                     item: 'ag-Grid'
                 }),
@@ -44,7 +44,7 @@ export const standardGridPanel = hoistCmp.factory(() =>
                 notes: 'Hoist-managed data classes, including Store and StoreRecord.'
             },
             {
-                url: 'https://www.ag-grid.com/javascript-grid-reference-overview/',
+                url: 'https://www.ag-grid.com/javascript-data-grid/',
                 text: 'ag-Grid Docs',
                 notes: 'API documentation and guides for the underlying ag-grid library.'
             }

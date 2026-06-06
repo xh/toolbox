@@ -65,6 +65,11 @@ export const fileChooserPanel = hoistCmp.factory({
                 {
                     url: '$HR/desktop/cmp/filechooser/FileChooserModel.ts',
                     notes: 'Holds the observable file selection and its public API.'
+                },
+                {
+                    url: 'https://react-dropzone.js.org/',
+                    text: 'react-dropzone',
+                    notes: 'The underlying drag-and-drop file selection library.'
                 }
             ],
             item: vframe({
