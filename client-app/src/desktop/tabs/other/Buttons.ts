@@ -42,11 +42,6 @@ export const buttonsPanel = hoistCmp.factory({
                 {
                     url: '$HR/desktop/cmp/input/ButtonGroupInput.ts',
                     notes: 'Bindable input that groups buttons into a single-select control.'
-                },
-                {
-                    url: 'https://blueprintjs.com/docs/',
-                    text: 'Blueprint Docs',
-                    notes: 'The underlying component library; buttons accept all Blueprint button props.'
                 }
             ],
             item: div({
