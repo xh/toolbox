@@ -8,6 +8,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {
     buttonGroupInput,
     checkbox,
+    checkboxButton,
     dateInput,
     numberInput,
     picker,
@@ -47,6 +48,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                         fieldDefaults: {minimal: true, label: null},
                         item: toolbar(
                             groupLabel('Text, Number & Date'),
+                            '-',
                             formField({
                                 field: 'text1',
                                 flex: 1,
@@ -78,6 +80,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                         fieldDefaults: {minimal: true, label: null},
                         item: toolbar(
                             groupLabel('Buttons & Toggles'),
+                            '-',
                             formField({
                                 field: 'buttonGroup1',
                                 item: buttonGroupInput(
@@ -87,19 +90,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                             }),
                             formField({field: 'bool1', item: checkbox({label: 'enabled'})}),
                             formField({field: 'bool2', item: switchInput({label: 'enabled'})}),
-                            filler(),
-                            button({
-                                text: 'Reset',
-                                icon: Icon.undo(),
-                                onClick: () => topFormModel.reset(),
-                                disabled: !topFormModel.isDirty
-                            }),
-                            button({
-                                text: 'Validate',
-                                icon: Icon.check(),
-                                intent: 'success',
-                                onClick: () => topFormModel.validateAsync()
-                            })
+                            formField({field: 'bool3', item: checkboxButton({text: 'Active'})})
                         )
                     }),
                     form({
@@ -107,6 +98,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                         fieldDefaults: {minimal: true, label: null},
                         item: toolbar(
                             groupLabel('Selection'),
+                            '-',
                             formField({
                                 field: 'option1',
                                 width: 150,
@@ -144,6 +136,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                         fieldDefaults: {minimal: true, label: null},
                         item: toolbar(
                             groupLabel('Dinner Choice'),
+                            '-',
                             formField({
                                 field: 'option3',
                                 item: radioInput({
@@ -154,20 +147,34 @@ export const toolbarFormPanel = hoistCmp.factory({
                                         {label: 'Fish', value: 'Fish', disabled: true}
                                     ]
                                 })
-                            }),
-                            filler(),
-                            button({
-                                text: 'Reset',
-                                icon: Icon.undo(),
-                                onClick: () => bottomFormModel.reset(),
-                                disabled: !bottomFormModel.isDirty
                             })
                         )
-                    })
+                    }),
+                    toolbar(
+                        filler(),
+                        button({
+                            text: 'Reset',
+                            icon: Icon.undo(),
+                            onClick: () => {
+                                topFormModel.reset();
+                                bottomFormModel.reset();
+                            },
+                            disabled: !topFormModel.isDirty && !bottomFormModel.isDirty
+                        }),
+                        button({
+                            text: 'Validate',
+                            icon: Icon.check(),
+                            intent: 'success',
+                            onClick: () => {
+                                topFormModel.validateAsync();
+                                bottomFormModel.validateAsync();
+                            }
+                        })
+                    )
                 ]
             })
         });
     }
 });
 
-const groupLabel = (text: string) => span({className: 'tb-toolbar-form__group-label', item: text});
+const groupLabel = (text: string) => span(text);
