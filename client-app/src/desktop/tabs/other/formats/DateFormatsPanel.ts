@@ -1,10 +1,7 @@
-import {form} from '@xh/hoist/cmp/form';
-import {div} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {formField} from '@xh/hoist/desktop/cmp/form';
 import {dateInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../../common';
+import {wrapper, wrapperOption} from '../../../common';
 import {DateFormatsPanelModel} from './DateFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
 import './Formats.scss';
@@ -12,7 +9,7 @@ import './Formats.scss';
 export const dateFormatsPanel = hoistCmp.factory({
     model: creates(DateFormatsPanelModel),
 
-    render() {
+    render({model}) {
         return wrapper({
             title: 'Format Dates',
             icon: Icon.print(),
@@ -50,48 +47,48 @@ export const dateFormatsPanel = hoistCmp.factory({
                     notes: 'The underlying date parsing and formatting library.'
                 }
             ],
-            options: dateOptions(),
+            options: [
+                wrapperOption({
+                    label: 'Function',
+                    control: select({
+                        model,
+                        bind: 'fnName',
+                        width: 150,
+                        enableFilter: false,
+                        hideSelectedOptionCheck: true,
+                        options: ['fmtDate', 'fmtCompactDate', 'fmtDateTime', 'fmtTime']
+                    })
+                }),
+                wrapperOption({
+                    label: 'Format String',
+                    control: textInput({
+                        model,
+                        bind: 'fmt',
+                        commitOnChange: true,
+                        disabled: !model.enableFmt,
+                        placeholder: 'e.g. MMM DD',
+                        width: 130
+                    }),
+                    info: 'A moment.js format string. Only applies to fmtDate.'
+                }),
+                wrapperOption({
+                    label: 'Null Display',
+                    control: textInput({
+                        model,
+                        bind: 'nullDisplay',
+                        commitOnChange: true,
+                        width: 90
+                    }),
+                    info: 'Custom return for null values.'
+                }),
+                wrapperOption({
+                    label: 'Tooltip',
+                    control: switchInput({model, bind: 'tooltip'}),
+                    info: 'Show the full date in a tooltip on hover.'
+                })
+            ],
             item: resultsPanel({
                 tryItInput: dateInput({timePrecision: 'minute', textAlign: 'right'})
-            })
-        });
-    }
-});
-
-const dateOptions = hoistCmp.factory<DateFormatsPanelModel>({
-    render({model}) {
-        return form({
-            fieldDefaults: {inline: false, commitOnChange: true},
-            item: div({
-                className: 'tbox-formats-options',
-                items: [
-                    formField({
-                        field: 'fnName',
-                        label: 'Function',
-                        item: select({
-                            enableFilter: false,
-                            hideSelectedOptionCheck: true,
-                            options: ['fmtDate', 'fmtCompactDate', 'fmtDateTime', 'fmtTime']
-                        })
-                    }),
-                    formField({
-                        field: 'fmt',
-                        disabled: !model.enableFmt,
-                        item: textInput(),
-                        info: 'A moment.js format string. Only applies to fmtDate.'
-                    }),
-                    formField({
-                        field: 'nullDisplay',
-                        item: textInput({width: 80}),
-                        info: 'Custom return for null values.'
-                    }),
-                    formField({
-                        field: 'tooltip',
-                        inline: true,
-                        item: switchInput(),
-                        info: 'Show the full date in a tooltip on hover.'
-                    })
-                ]
             })
         });
     }

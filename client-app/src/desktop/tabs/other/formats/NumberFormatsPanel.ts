@@ -1,17 +1,15 @@
-import {form} from '@xh/hoist/cmp/form';
-import {div, input} from '@xh/hoist/cmp/layout';
+import {hbox, input} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistProps} from '@xh/hoist/core';
-import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
     numberInput,
     segmentedControl,
     select,
-    slider,
     switchInput,
     textInput
 } from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../../common';
+import {range} from 'lodash';
+import {wrapper, wrapperOption} from '../../../common';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
 import './Formats.scss';
@@ -19,7 +17,7 @@ import './Formats.scss';
 export const numberFormatsPanel = hoistCmp.factory({
     model: creates(NumberFormatsPanelModel),
 
-    render() {
+    render({model}) {
         return wrapper({
             title: 'Format Numbers',
             icon: Icon.print(),
@@ -57,7 +55,148 @@ export const numberFormatsPanel = hoistCmp.factory({
                     notes: 'The underlying number formatting library.'
                 }
             ],
-            options: numberOptions(),
+            options: [
+                wrapperOption({
+                    label: 'Function',
+                    control: select({
+                        model,
+                        bind: 'fnName',
+                        width: 150,
+                        enableFilter: false,
+                        hideSelectedOptionCheck: true,
+                        options: [
+                            'fmtNumber',
+                            'fmtQuantity',
+                            'fmtPrice',
+                            'fmtPercent',
+                            'fmtThousands',
+                            'fmtMillions',
+                            'fmtBillions'
+                        ]
+                    })
+                }),
+                wrapperOption({
+                    label: 'Color Spec',
+                    control: segmentedControl({
+                        model,
+                        bind: 'colorSpec',
+                        options: [
+                            {value: true, label: 'true'},
+                            {value: false, label: 'false'},
+                            {value: 'custom', label: 'Custom'}
+                        ]
+                    }),
+                    info: 'Color positive / negative / neutral values, or supply custom colors.'
+                }),
+                wrapperOption({
+                    omit: model.colorSpec !== 'custom',
+                    label: 'Custom Colors',
+                    control: hbox({
+                        alignItems: 'center',
+                        gap: 4,
+                        items: [
+                            colorInput({bind: 'positiveColor', title: 'Positive'}),
+                            colorInput({bind: 'negativeColor', title: 'Negative'}),
+                            colorInput({bind: 'neutralColor', title: 'Neutral'})
+                        ]
+                    }),
+                    info: 'Positive / negative / neutral colors.'
+                }),
+                wrapperOption({
+                    label: 'Precision',
+                    control: select({
+                        model,
+                        bind: 'precision',
+                        width: 100,
+                        enableFilter: false,
+                        hideSelectedOptionCheck: true,
+                        options: [{label: 'auto', value: -1}, ...range(0, 13)]
+                    }),
+                    info: `Set to 'auto' to base precision on the scale of the value, or a number for fixed precision.`
+                }),
+                wrapperOption({
+                    label: 'Zero Pad',
+                    control: select({
+                        model,
+                        bind: 'zeroPad',
+                        width: 100,
+                        enableFilter: false,
+                        hideSelectedOptionCheck: true,
+                        options: [
+                            {label: 'unset', value: -2},
+                            {label: 'false', value: -1},
+                            {label: 'true', value: 0},
+                            ...range(1, 12)
+                        ]
+                    }),
+                    info: 'false shows only significant digits, true pads out to precision, or pad to a custom length.'
+                }),
+                wrapperOption({
+                    label: 'Ledger',
+                    control: switchInput({model, bind: 'ledger'}),
+                    info: 'Use ledger formatting, with parens to indicate negative numbers.'
+                }),
+                wrapperOption({
+                    label: 'Force Ledger Align',
+                    control: switchInput({model, bind: 'forceLedgerAlign'}),
+                    info: 'Ensure mixed pos + neg values vertically align in ledger format.'
+                }),
+                wrapperOption({
+                    label: 'With Commas',
+                    control: switchInput({model, bind: 'withCommas'}),
+                    info: 'Use a comma as the thousands delimiter.'
+                }),
+                wrapperOption({
+                    label: 'Omit 4-Digit Comma',
+                    control: switchInput({model, bind: 'omitFourDigitComma'}),
+                    info: 'Suppress withCommas for four-digit integers, for improved readability.'
+                }),
+                wrapperOption({
+                    label: 'With Plus Sign',
+                    control: switchInput({model, bind: 'withPlusSign'}),
+                    info: 'Use an explicit plus sign for positive numbers.'
+                }),
+                wrapperOption({
+                    label: 'With Sign Glyph',
+                    control: switchInput({model, bind: 'withSignGlyph'}),
+                    info: 'Use up / down glyphs to indicate sign.'
+                }),
+                wrapperOption({
+                    label: 'Strict Zero',
+                    control: switchInput({model, bind: 'strictZero'}),
+                    info: 'Retain the underlying sign of small numbers formatted as zero due to precision.'
+                }),
+                wrapperOption({
+                    label: 'Label',
+                    control: textInput({model, bind: 'label', commitOnChange: true, width: 90}),
+                    info: 'Suffix characters, typically used for units.'
+                }),
+                wrapperOption({
+                    label: 'Prefix',
+                    control: textInput({model, bind: 'prefix', commitOnChange: true, width: 90}),
+                    info: 'Inserted between the number and its sign (e.g. $).'
+                }),
+                wrapperOption({
+                    label: 'Null Display',
+                    control: textInput({
+                        model,
+                        bind: 'nullDisplay',
+                        commitOnChange: true,
+                        width: 90
+                    }),
+                    info: 'Custom return for null values.'
+                }),
+                wrapperOption({
+                    label: 'Zero Display',
+                    control: textInput({
+                        model,
+                        bind: 'zeroDisplay',
+                        commitOnChange: true,
+                        width: 90
+                    }),
+                    info: 'Custom return for 0 values.'
+                })
+            ],
             item: resultsPanel({
                 tryItInput: numberInput({
                     selectOnFocus: true,
@@ -68,164 +207,16 @@ export const numberFormatsPanel = hoistCmp.factory({
     }
 });
 
-const numberOptions = hoistCmp.factory<NumberFormatsPanelModel>({
-    render({model}) {
-        return form({
-            fieldDefaults: {inline: false, commitOnChange: true},
-            item: div({
-                className: 'tbox-formats-options',
-                items: [
-                    formField({
-                        field: 'fnName',
-                        label: 'Function',
-                        item: select({
-                            enableFilter: false,
-                            hideSelectedOptionCheck: true,
-                            options: [
-                                'fmtNumber',
-                                'fmtQuantity',
-                                'fmtPrice',
-                                'fmtPercent',
-                                'fmtThousands',
-                                'fmtMillions',
-                                'fmtBillions'
-                            ]
-                        })
-                    }),
-                    formField({
-                        field: 'colorSpec',
-                        item: segmentedControl({
-                            options: [
-                                {value: true, label: 'true'},
-                                {value: false, label: 'false'},
-                                {value: 'custom', label: 'Custom'}
-                            ]
-                        }),
-                        info: 'Color positive / negative / neutral values.'
-                    }),
-                    div({
-                        className: 'tbox-formats-options__colors',
-                        omit: model.formModel.values.colorSpec !== 'custom',
-                        items: [
-                            div({className: 'tbox-formats-options__colors-label', item: 'pos'}),
-                            colorInput({bind: 'positiveColor'}),
-                            div({className: 'tbox-formats-options__colors-label', item: 'neg'}),
-                            colorInput({bind: 'negativeColor'}),
-                            div({
-                                className: 'tbox-formats-options__colors-label',
-                                item: 'neutral'
-                            }),
-                            colorInput({bind: 'neutralColor'})
-                        ]
-                    }),
-                    formField({
-                        field: 'precision',
-                        item: slider({
-                            min: -1,
-                            max: 12,
-                            showTrackFill: false,
-                            labelStepSize: 13,
-                            labelRenderer: val => (val === -1 ? `'auto'` : val)
-                        }),
-                        info: `Set to 'auto' to base precision on scale of value, or # for fixed precision.`
-                    }),
-                    formField({
-                        field: 'zeroPad',
-                        item: slider({
-                            min: -2,
-                            max: 11,
-                            showTrackFill: false,
-                            labelStepSize: 13,
-                            labelRenderer: val => {
-                                switch (val) {
-                                    case -2:
-                                        return 'unset';
-                                    case -1:
-                                        return 'false';
-                                    case 0:
-                                        return 'true';
-                                    default:
-                                        return val;
-                                }
-                            }
-                        }),
-                        info: 'false to show only significant digits, true to pad out to precision, # to pad to custom length.'
-                    }),
-                    formField({
-                        field: 'label',
-                        item: textInput({width: 60}),
-                        info: 'Suffix characters, typically used for units.'
-                    }),
-                    formField({
-                        field: 'prefix',
-                        item: textInput({width: 60}),
-                        info: 'Inserted between the number and its sign (e.g. $).'
-                    }),
-                    formField({
-                        field: 'nullDisplay',
-                        item: textInput({width: 60}),
-                        info: 'Custom return for null values.'
-                    }),
-                    formField({
-                        field: 'zeroDisplay',
-                        item: textInput({width: 60}),
-                        info: 'Custom return for 0 values.'
-                    }),
-                    formField({
-                        field: 'ledger',
-                        inline: true,
-                        item: switchInput(),
-                        info: 'Use ledger formatting, with parens to indicate negative numbers.'
-                    }),
-                    formField({
-                        field: 'forceLedgerAlign',
-                        inline: true,
-                        item: switchInput(),
-                        info: 'Ensure mixed pos + neg values vertically align in ledger format.'
-                    }),
-                    formField({
-                        field: 'withCommas',
-                        inline: true,
-                        item: switchInput(),
-                        info: 'Use comma as thousands delimiter.'
-                    }),
-                    formField({
-                        field: 'omitFourDigitComma',
-                        inline: true,
-                        item: switchInput(),
-                        info: 'Suppress withCommas for four-digit integers, for improved readability.'
-                    }),
-                    formField({
-                        field: 'withPlusSign',
-                        inline: true,
-                        item: switchInput(),
-                        info: 'Use explicit plus sign for positive numbers.'
-                    }),
-                    formField({
-                        field: 'withSignGlyph',
-                        inline: true,
-                        item: switchInput(),
-                        info: 'Use up/down glyphs to indicate sign.'
-                    }),
-                    formField({
-                        field: 'strictZero',
-                        inline: true,
-                        item: switchInput(),
-                        info: 'Retain underlying sign of small numbers formatted as zero due to precision.'
-                    })
-                ]
-            })
-        });
-    }
-});
+type ColorBind = 'positiveColor' | 'negativeColor' | 'neutralColor';
 
-const colorInput = hoistCmp.factory<HoistProps<NumberFormatsPanelModel> & {bind: string}>(
-    ({bind, model}) =>
-        input({
-            type: 'color',
-            value: model.formModel.values[bind],
-            onChange: e => {
-                model.formModel.getField(bind).setValue(e.target.value);
-            }
-        })
+const colorInput = hoistCmp.factory<
+    HoistProps<NumberFormatsPanelModel> & {bind: ColorBind; title: string}
+>(({bind, title, model}) =>
+    input({
+        type: 'color',
+        title,
+        className: 'tbox-formats-color',
+        value: model[bind],
+        onChange: e => model.setBindable(bind, e.target.value)
+    })
 );

@@ -1,7 +1,5 @@
-import {FormModel} from '@xh/hoist/cmp/form';
 import {code} from '@xh/hoist/cmp/layout';
-import {HoistModel, managed} from '@xh/hoist/core';
-import {DateFormatOptions} from '@xh/hoist/format';
+import {HoistModel} from '@xh/hoist/core';
 import * as formatFunctions from '@xh/hoist/format/FormatDate';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import moment from 'moment';
@@ -19,7 +17,11 @@ export class DateFormatsPanelModel extends HoistModel {
         undefined
     ];
 
-    @managed formModel: FormModel;
+    @bindable fnName = 'fmtDate';
+    @bindable fmt: string = null;
+    @bindable nullDisplay: string = null;
+    @bindable tooltip = false;
+
     @bindable.ref tryItData = new Date();
 
     get testResults() {
@@ -35,42 +37,26 @@ export class DateFormatsPanelModel extends HoistModel {
     }
 
     get enableFmt() {
-        return this.formModel.values.fnName === 'fmtDate';
+        return this.fnName === 'fmtDate';
     }
 
     constructor() {
         super();
         makeObservable(this);
-
-        const optFields: Array<keyof DateFormatOptions> = ['fmt', 'nullDisplay', 'tooltip'];
-
-        this.formModel = new FormModel({
-            fields: [
-                {name: 'fnName', displayName: 'Formatter'},
-                ...optFields.map(f => ({name: f, displayName: f}))
-            ],
-            initialValues: {
-                fnName: 'fmtDate',
-                fmt: null,
-                tooltip: false,
-                nullDisplay: null
-            }
-        });
     }
 
     //------------------
     // Implementation
     //------------------
     private getResult(input: Date) {
-        const formVals = this.formModel.getData(),
-            options = {
-                tooltip: formVals.tooltip ? d => `${d}` : undefined,
-                fmt: this.enableFmt && formVals.fmt ? formVals.fmt : undefined,
-                nullDisplay: formVals.nullDisplay != null ? formVals.nullDisplay : undefined
-            };
+        const options = {
+            tooltip: this.tooltip ? d => `${d}` : undefined,
+            fmt: this.enableFmt && this.fmt ? this.fmt : undefined,
+            nullDisplay: this.nullDisplay != null ? this.nullDisplay : undefined
+        };
 
         try {
-            return formatFunctions[formVals.fnName](input, options);
+            return formatFunctions[this.fnName](input, options);
         } catch (e) {
             this.logError(e);
             return '#exception#';

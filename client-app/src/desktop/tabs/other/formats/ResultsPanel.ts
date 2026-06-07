@@ -16,7 +16,7 @@ export const resultsPanel = hoistCmp.factory<DateFormatsPanelModel | NumberForma
             flex: 'none',
             width: '100%',
             maxWidth: 720,
-            height: '100%',
+            maxHeight: '100%',
             className: 'tbox-formats-tab__panel',
             item: div({
                 className: 'tbox-formats-tab__results',

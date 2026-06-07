@@ -83,6 +83,11 @@
 
   &__option {
     display: flex;
+    flex-direction: column;
+  }
+
+  &__option-row {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--xh-pad-px);
@@ -99,6 +104,14 @@
     flex: none;
     display: flex;
     align-items: center;
+  }
+
+  // Optional explanatory text below an option row (label/control), muted and smaller.
+  &__option-info {
+    margin-top: 2px;
+    color: var(--xh-text-color-muted);
+    font-size: 0.85em;
+    line-height: 1.35;
   }
 
   &__resource {

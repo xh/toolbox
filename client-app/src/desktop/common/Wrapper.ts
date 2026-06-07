@@ -148,20 +148,32 @@ interface WrapperOptionProps extends HoistProps {
     label: ReactNode;
     /** The control element (e.g. `switchInput`, `select`, `numberInput`) shown at the right. */
     control: ReactElement;
+    /**
+     * Optional explanatory text rendered, muted, on its own line below the label/control row.
+     * Use to describe what the option does or why a developer might reach for it.
+     */
+    info?: ReactNode;
 }
 
 /**
  * A single labeled row within a Wrapper `options` section — a consistent label-left / control-right
  * layout so display options read uniformly across examples regardless of the underlying control.
+ * An optional `info` line renders muted helper text below the row for added context.
  */
 export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOptionProps>({
     displayName: 'WrapperOption',
-    render({label, control}) {
+    render({label, control, info}) {
         return div({
             className: 'tbox-wrapper__option',
             items: [
-                div({className: 'tbox-wrapper__option-label', item: label}),
-                div({className: 'tbox-wrapper__option-control', item: control})
+                div({
+                    className: 'tbox-wrapper__option-row',
+                    items: [
+                        div({className: 'tbox-wrapper__option-label', item: label}),
+                        div({className: 'tbox-wrapper__option-control', item: control})
+                    ]
+                }),
+                div({className: 'tbox-wrapper__option-info', item: info, omit: !info})
             ]
         });
     }

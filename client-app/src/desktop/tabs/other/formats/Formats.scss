@@ -24,60 +24,21 @@
     }
   }
 
-  // Scrolling wrapper so the results table stays within the (overflow-hidden) demo card.
+  // Scrolling wrapper so a tall results table stays within the (overflow-hidden) demo card.
   &__results {
-    height: 100%;
+    flex: 1;
+    min-height: 0;
     overflow: auto;
   }
 }
 
-// Display options rendered in the Wrapper info rail.
-.tbox-formats-options {
-  display: flex;
-  flex-direction: column;
-  gap: var(--xh-pad-px);
-
-  .xh-form-field {
-    margin: 0;
-  }
-
-  // Mono labels show the actual API option names. Fixed width keeps inline switch rows
-  // (label left, control right) from colliding with the longer camelCase names.
-  .xh-form-field__label {
-    width: 150px;
-    font-family: var(--xh-font-family-mono);
-    font-size: 0.8em;
-    // Allow the longer camelCase API names to wrap within their box rather than overrun
-    // the inline control (switch) to their right.
-    white-space: normal;
-    overflow-wrap: anywhere;
-    line-height: 1.25;
-  }
-
-  // Custom positive / negative / neutral color swatches, shown when colorSpec === 'custom'.
-  &__colors {
-    display: flex;
-    align-items: center;
-    gap: var(--xh-pad-half-px);
-
-    input[type='color'] {
-      width: 28px;
-      height: 22px;
-      padding: 0;
-      border: var(--xh-border-solid);
-      border-radius: 3px;
-      background: none;
-      cursor: pointer;
-    }
-  }
-
-  &__colors-label {
-    font-family: var(--xh-font-family-mono);
-    font-size: 0.85em;
-    color: var(--xh-text-color-muted);
-
-    &:not(:first-child) {
-      margin-left: var(--xh-pad-half-px);
-    }
-  }
+// Color swatches for the custom colorSpec option, shown in the Wrapper info rail.
+.tbox-formats-color {
+  width: 28px;
+  height: 22px;
+  padding: 0;
+  border: var(--xh-border-solid);
+  border-radius: 3px;
+  background: none;
+  cursor: pointer;
 }
