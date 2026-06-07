@@ -24,7 +24,11 @@ export const markdownPanel = hoistCmp.factory({
                 "Hoist's `Markdown` component wraps the `react-markdown` library to render a",
                 'Markdown string as a React element tree. Content can be imported directly',
                 'from `.md` files or supplied at runtime, and the rendered output can be',
-                'styled with your own CSS. Edit the source on the left to see it render live.'
+                'styled with your own CSS. Edit the source on the left to see it render live.',
+                '',
+                'In fact, the description text you are reading right now is itself rendered with',
+                '`Markdown` - the Wrapper info rail runs every example description through the',
+                'same component.'
             ],
             links: [
                 {
@@ -32,6 +36,10 @@ export const markdownPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {url: '$HR/cmp/markdown/Markdown.ts', notes: 'Hoist component.'},
+                {
+                    url: '$TB/client-app/src/desktop/common/Wrapper.ts',
+                    notes: 'Renders each example description in the info rail via the Markdown component.'
+                },
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/MarkdownPanel.scss',
                     notes: 'Custom styles applied via toggle.'
