@@ -25,7 +25,7 @@ export const optionsWidget = hoistCmp.factory({
                     }),
                     div({
                         className: 'xh-pad',
-                        item: `A stateful, outlined SegmentedControl. "${model.value}" is selected.`
+                        item: `A stateful SegmentedControl. "${model.value}" is selected.`
                     })
                 ]
             })

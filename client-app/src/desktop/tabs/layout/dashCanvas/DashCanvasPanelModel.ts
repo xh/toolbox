@@ -48,7 +48,7 @@ export class DashCanvasPanelModel extends HoistModel {
 
     private createDashCanvasModel() {
         return new DashCanvasModel({
-            persistWith: {localStorageKey: 'dashCanvasExampleState'},
+            persistWith: {localStorageKey: 'dashCanvasExampleStateV2'},
             allowsDrop: true,
             initialState,
             viewSpecDefaults: {
@@ -74,8 +74,8 @@ export class DashCanvasPanelModel extends HoistModel {
                     groupName: 'Grid Widgets'
                 },
                 {
-                    id: 'buttons',
-                    title: 'Buttons',
+                    id: 'options',
+                    title: 'Options',
                     icon: Icon.settings(),
                     content: optionsWidget,
                     width: 4,
@@ -137,10 +137,10 @@ const initialState = [
             w: 4,
             h: 3
         },
-        viewSpecId: 'buttons',
-        title: 'Buttons 1',
+        viewSpecId: 'options',
+        title: 'Options 1',
         state: {
-            value: 'Button 1'
+            value: 'Option 1'
         }
     },
     {
@@ -150,10 +150,10 @@ const initialState = [
             w: 4,
             h: 3
         },
-        viewSpecId: 'buttons',
-        title: 'Buttons 2',
+        viewSpecId: 'options',
+        title: 'Options 2',
         state: {
-            value: 'Button 2'
+            value: 'Option 2'
         }
     },
     {
@@ -163,10 +163,10 @@ const initialState = [
             w: 4,
             h: 3
         },
-        viewSpecId: 'buttons',
-        title: 'Buttons 3',
+        viewSpecId: 'options',
+        title: 'Options 3',
         state: {
-            value: 'Button 3'
+            value: 'Option 3'
         }
     },
     {

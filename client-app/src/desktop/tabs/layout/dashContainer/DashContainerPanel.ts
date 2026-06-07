@@ -102,7 +102,7 @@ class DashContainerPanelModel extends HoistModel {
 
     @managed
     dashContainerModel = new DashContainerModel({
-        persistWith: {localStorageKey: 'dashContainerExampleState'},
+        persistWith: {localStorageKey: 'dashContainerExampleStateV2'},
         showMenuButton: true,
         initialState: [
             {
@@ -122,7 +122,7 @@ class DashContainerPanelModel extends HoistModel {
                         width: 40,
                         content: [
                             {type: 'view', id: 'chart'},
-                            {type: 'view', id: 'buttons', height: '200px'}
+                            {type: 'view', id: 'options', height: '200px'}
                         ]
                     }
                 ]
@@ -139,8 +139,8 @@ class DashContainerPanelModel extends HoistModel {
                 content: gridWidget
             },
             {
-                id: 'buttons',
-                title: 'Buttons',
+                id: 'options',
+                title: 'Options',
                 icon: Icon.settings(),
                 content: optionsWidget
             },
@@ -168,6 +168,7 @@ class DashContainerPanelModel extends HoistModel {
             {
                 id: 'error',
                 title: 'Error Example',
+                icon: Icon.skull(),
                 content: errorWidget({componentName: 'DashContainer'})
             }
         ]
