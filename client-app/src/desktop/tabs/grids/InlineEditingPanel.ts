@@ -1,5 +1,5 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {filler, hbox, hspacer} from '@xh/hoist/cmp/layout';
+import {filler, hbox, hspacer, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {ValidationState} from '@xh/hoist/data';
 import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
@@ -110,7 +110,7 @@ export const inlineEditingPanel = hoistCmp.factory({
 const tbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
     const {gridModel} = model;
     return toolbar(
-        'Add rows',
+        span('Add rows'),
         buttonGroup(
             button({icon: Icon.add(), text: '1', onClick: () => model.add(1)}),
             button({icon: Icon.add(), text: '5', onClick: () => model.add(5)}),
@@ -128,6 +128,7 @@ const tbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
             text: 'Edit first amount',
             onClick: () => model.beginEditAsync({colId: 'amount'})
         }),
+        '-',
         button({
             icon: Icon.stopCircle(),
             text: 'Stop editing',
@@ -199,9 +200,11 @@ const bbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
             onClick: () => model.revert(),
             disabled: !store.isModified
         }),
+        hspacer(5),
         button({
             icon: Icon.check(),
             text: 'Commit all',
+            outlined: true,
             intent: 'success',
             onClick: () => model.commitAllAsync(),
             disabled: !store.isModified
