@@ -9,7 +9,7 @@ import {menu, menuDivider, popover} from '@xh/hoist/kit/blueprint';
 import {wait} from '@xh/hoist/promise';
 import {parseMenuItems} from '@xh/hoist/utils/impl';
 import {usStates} from '../../../core/data';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import {BasicPanelModel} from './BasicPanelModel';
 
 export const basicPanel = hoistCmp.factory({
@@ -47,6 +47,10 @@ export const basicPanel = hoistCmp.factory({
                     notes: 'Hoist component model (for resize / collapse).'
                 }
             ],
+            options: wrapperOption({
+                label: 'Compact Header',
+                control: switchInput({model, bind: 'compactHeader'})
+            }),
             item: panel({
                 title: 'Basic Panel',
                 icon: Icon.window(),
@@ -59,11 +63,6 @@ export const basicPanel = hoistCmp.factory({
                     resizable: false
                 },
                 headerItems: [
-                    switchInput({
-                        label: 'Compact Header',
-                        labelSide: 'left',
-                        bind: 'compactHeader'
-                    }),
                     button({
                         tooltip: 'Header Button',
                         icon: Icon.gear(),

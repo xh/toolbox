@@ -3,11 +3,10 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {box, filler, h3, hbox, p, strong} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 
 export const panelSizingPanel = hoistCmp.factory({
     model: creates(() => PanelSizingModel),
@@ -49,19 +48,16 @@ export const panelSizingPanel = hoistCmp.factory({
                     notes: 'Hoist component model (for resize / collapse).'
                 }
             ],
+            options: wrapperOption({
+                label: 'Resize While Dragging',
+                control: switchInput({model, bind: 'resizeWhileDragging'})
+            }),
             item: panel({
                 title: 'Panel Sizing',
                 icon: Icon.window(),
                 modelConfig: {modalSupport: true, collapsible: false, resizable: false},
                 height: '60vh',
                 width: '90%',
-                bbar: toolbar(
-                    filler(),
-                    switchInput({
-                        label: 'Resize While Dragging',
-                        bind: 'resizeWhileDragging'
-                    })
-                ),
                 items: [
                     hbox({
                         flex: 1,

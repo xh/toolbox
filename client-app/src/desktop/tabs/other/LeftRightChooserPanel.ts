@@ -1,6 +1,5 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {span} from '@xh/hoist/cmp/layout';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -47,6 +46,20 @@ export const leftRightChooserPanel = hoistCmp.factory({
                     notes: 'Optional filter component.'
                 }
             ],
+            options: wrapperOption({
+                label: 'Filter match mode',
+                control: select({
+                    model,
+                    bind: 'matchMode',
+                    width: 150,
+                    enableFilter: false,
+                    options: [
+                        {label: 'Start', value: 'start'},
+                        {label: 'Start of word', value: 'startWord'},
+                        {label: 'Any', value: 'any'}
+                    ]
+                })
+            }),
             item: panel({
                 width: 700,
                 height: 400,
@@ -56,11 +69,6 @@ export const leftRightChooserPanel = hoistCmp.factory({
                 bbar: [
                     leftRightChooserFilter({
                         matchMode: model.matchMode
-                    }),
-                    span('Filter match mode:'),
-                    select({
-                        bind: 'matchMode',
-                        options: ['start', 'startWord', 'any']
                     })
                 ]
             })

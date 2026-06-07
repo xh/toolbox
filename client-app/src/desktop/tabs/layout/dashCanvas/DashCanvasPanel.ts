@@ -1,13 +1,12 @@
-import {box, filler, frame, hframe, span} from '@xh/hoist/cmp/layout';
+import {box, frame, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
 import {dashCanvasWidgetChooser} from '@xh/hoist/desktop/cmp/dash/canvas/widgetchooser/DashCanvasWidgetChooser';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../../common';
+import {wrapper, wrapperOption} from '../../../common';
 import {DashCanvasPanelModel} from './DashCanvasPanelModel';
 import './DashCanvasPanel.scss';
 
@@ -15,6 +14,7 @@ export const dashCanvasPanel = hoistCmp.factory({
     model: creates(() => DashCanvasPanelModel),
 
     render({model}) {
+        const {dashCanvasModel} = model;
         return wrapper({
             title: 'DashCanvas',
             icon: Icon.layout(),
@@ -31,15 +31,85 @@ export const dashCanvasPanel = hoistCmp.factory({
                 'This example also demonstrates `DashCanvasWidgetChooser`, a ready-made',
                 'sidebar for browsing and dragging available widgets onto the canvas.'
             ],
+            options: [
+                wrapperOption({
+                    label: 'Render Dashboard',
+                    control: switchInput({model, bind: 'renderDashboard'})
+                }),
+                wrapperOption({
+                    label: 'Widget Chooser',
+                    control: switchInput({model, bind: 'showWidgetChooser'})
+                }),
+                wrapperOption({
+                    label: 'Columns',
+                    control: numberInput({
+                        model: dashCanvasModel,
+                        bind: 'columns',
+                        width: 70,
+                        commitOnChange: true
+                    })
+                }),
+                wrapperOption({
+                    label: 'Row Height',
+                    control: numberInput({
+                        model: dashCanvasModel,
+                        bind: 'rowHeight',
+                        width: 70,
+                        valueLabel: 'px',
+                        commitOnChange: true
+                    })
+                }),
+                wrapperOption({
+                    label: 'Compact',
+                    control: select({
+                        model: dashCanvasModel,
+                        bind: 'compact',
+                        width: 130,
+                        enableFilter: false,
+                        options: [
+                            {label: 'Vertical', value: 'vertical'},
+                            {label: 'Horizontal', value: 'horizontal'},
+                            {label: 'Off', value: false}
+                        ]
+                    })
+                }),
+                wrapperOption({
+                    label: 'Show Background',
+                    control: switchInput({model: dashCanvasModel, bind: 'showGridBackground'})
+                }),
+                wrapperOption({
+                    label: 'Layout Locked',
+                    control: switchInput({model: dashCanvasModel, bind: 'layoutLocked'})
+                }),
+                wrapperOption({
+                    label: 'Content Locked',
+                    control: switchInput({model: dashCanvasModel, bind: 'contentLocked'})
+                }),
+                wrapperOption({
+                    label: 'Rename Locked',
+                    control: switchInput({model: dashCanvasModel, bind: 'renameLocked'})
+                }),
+                button({
+                    text: 'Clear',
+                    icon: Icon.cross(),
+                    width: '100%',
+                    onClick: () => model.clearCanvas()
+                }),
+                button({
+                    text: 'Reset State',
+                    icon: Icon.reset(),
+                    width: '100%',
+                    onClick: () => model.resetState()
+                })
+            ],
             item: panel({
                 className: 'dash-canvas-droppable-demo',
                 width: '100%',
                 height: '100%',
-                tbar: tbar(),
                 item: hframe(
                     model.renderDashboard
                         ? dashCanvas({
-                              omit: !model.dashCanvasModel // model is not created until async load of symbols completes
+                              omit: !dashCanvasModel // model is not created until async load of symbols completes
                           })
                         : frame({
                               item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
@@ -50,11 +120,10 @@ export const dashCanvasPanel = hoistCmp.factory({
                         width: 310,
                         style: {borderLeft: '1px solid var(--xh-border-color)'},
                         item: dashCanvasWidgetChooser({
-                            dashCanvasModel: model.dashCanvasModel
+                            dashCanvasModel
                         })
                     })
-                ),
-                bbar: bbar()
+                )
             }),
             links: [
                 {
@@ -86,90 +155,3 @@ export const dashCanvasPanel = hoistCmp.factory({
         });
     }
 });
-
-const commitOnChange = true;
-const tbar = hoistCmp.factory<DashCanvasPanelModel>(({model}) =>
-    toolbar(
-        span('Columns'),
-        numberInput({
-            width: 40,
-            bind: 'columns',
-            commitOnChange,
-            model: model.dashCanvasModel
-        }),
-        '-',
-        span('Row Height'),
-        numberInput({
-            width: 60,
-            bind: 'rowHeight',
-            valueLabel: 'px',
-            commitOnChange,
-            model: model.dashCanvasModel
-        }),
-        '-',
-        span('Compact'),
-        select({
-            width: 120,
-            bind: 'compact',
-            model: model.dashCanvasModel,
-            options: ['vertical', 'horizontal', false]
-        }),
-        '-',
-        switchInput({
-            label: 'Show Background',
-            bind: 'showGridBackground',
-            labelSide: 'left',
-            model: model.dashCanvasModel
-        }),
-        filler(),
-        button({
-            text: 'Widget Chooser',
-            icon: Icon.boxFull(),
-            outlined: !model.showWidgetChooser,
-            active: model.showWidgetChooser,
-            onClick: () => (model.showWidgetChooser = !model.showWidgetChooser)
-        })
-    )
-);
-
-const bbar = hoistCmp.factory<DashCanvasPanelModel>(({model}) =>
-    toolbar(
-        switchInput({
-            label: 'Render Dashboard',
-            bind: 'renderDashboard',
-            labelSide: 'left'
-        }),
-        '-',
-        switchInput({
-            label: 'Layout Locked',
-            bind: 'layoutLocked',
-            labelSide: 'left',
-            model: model.dashCanvasModel
-        }),
-        '-',
-        switchInput({
-            label: 'Content Locked',
-            bind: 'contentLocked',
-            labelSide: 'left',
-            model: model.dashCanvasModel
-        }),
-        '-',
-        switchInput({
-            label: 'Rename Locked',
-            bind: 'renameLocked',
-            labelSide: 'left',
-            model: model.dashCanvasModel
-        }),
-        filler(),
-        button({
-            text: 'Clear',
-            icon: Icon.cross(),
-            onClick: () => model.clearCanvas()
-        }),
-        button({
-            text: 'Reset State',
-            icon: Icon.reset(),
-            onClick: () => model.resetState()
-        })
-    )
-);

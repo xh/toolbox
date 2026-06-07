@@ -1,11 +1,11 @@
 import {div, filler, hbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, Intent} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import './Buttons.scss';
 
 class ButtonsModel extends HoistModel {
@@ -21,7 +21,7 @@ class ButtonsModel extends HoistModel {
 
 export const buttonsPanel = hoistCmp.factory({
     model: creates(ButtonsModel),
-    render() {
+    render({model}) {
         return wrapper({
             title: 'Buttons',
             icon: Icon.checkCircle(),
@@ -44,29 +44,20 @@ export const buttonsPanel = hoistCmp.factory({
                     notes: 'Bindable input that groups buttons into a single-select control.'
                 }
             ],
+            options: [
+                wrapperOption({
+                    label: 'Disable All',
+                    control: switchInput({model, bind: 'disableButtons'})
+                }),
+                wrapperOption({
+                    label: 'All Active',
+                    control: switchInput({model, bind: 'activeButtons'})
+                })
+            ],
             item: div({
                 className: 'tbox-buttons',
                 item: [
-                    buttonPanel({
-                        headerItems: [
-                            switchInput({
-                                label: 'Dark Mode',
-                                labelSide: 'left',
-                                bind: 'darkTheme',
-                                model: XH.appContainerModel.themeModel
-                            }),
-                            switchInput({
-                                label: 'Disable All',
-                                labelSide: 'left',
-                                bind: 'disableButtons'
-                            }),
-                            switchInput({
-                                label: 'All Active',
-                                labelSide: 'left',
-                                bind: 'activeButtons'
-                            })
-                        ]
-                    }),
+                    buttonPanel(),
                     buttonPanel({intent: 'primary'}),
                     buttonPanel({intent: 'success'}),
                     buttonPanel({intent: 'warning'}),
