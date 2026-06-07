@@ -15,22 +15,8 @@ export class RelativeTimestampPanelModel extends HoistModel {
     @bindable relativeTo: RelativeTimestampOptions['relativeTo'];
     @bindable localDateMode: RelativeTimestampOptions['localDateMode'] = null;
 
-    @bindable currentTimestamp: Date = new Date();
-    @bindable pastTimestamp: Date;
-    @bindable futureTimestamp: Date;
-
-    @bindable lastFocusedControl = 'setToNow';
-
-    get timestamp() {
-        switch (this.lastFocusedControl) {
-            case 'futureDatePicker':
-                return this.futureTimestamp;
-            case 'pastDatePicker':
-                return this.pastTimestamp;
-            default:
-                return this.currentTimestamp;
-        }
-    }
+    /** The target timestamp rendered relative to "now". */
+    @bindable.ref timestamp: Date = new Date();
 
     constructor() {
         super();
@@ -39,8 +25,12 @@ export class RelativeTimestampPanelModel extends HoistModel {
 
     @action
     setToNow() {
-        this.lastFocusedControl = 'setToNow';
-        this.pastTimestamp = this.futureTimestamp = null;
-        this.currentTimestamp = new Date();
+        this.timestamp = new Date();
+    }
+
+    /** Set the target timestamp to an offset (in ms) from now - negative for the past. */
+    @action
+    setOffset(ms: number) {
+        this.timestamp = new Date(Date.now() + ms);
     }
 }

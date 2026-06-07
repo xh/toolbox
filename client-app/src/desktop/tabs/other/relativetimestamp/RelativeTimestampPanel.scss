@@ -1,0 +1,24 @@
+.tb-rel-ts {
+  gap: var(--xh-pad-px);
+
+  &__value {
+    font-size: 2.4em;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  &__abs {
+    color: var(--xh-text-color-muted);
+    font-size: 1.1em;
+    font-family: var(--xh-font-family-mono);
+  }
+}
+
+// Full-width row of quick-set timestamp presets in the info rail.
+.tb-rel-ts__presets {
+  width: 100%;
+
+  .xh-button {
+    flex: 1;
+  }
+}
