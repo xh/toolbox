@@ -2,15 +2,14 @@ import {library} from '@fortawesome/fontawesome-svg-core';
 import {faIcons} from '@fortawesome/pro-regular-svg-icons';
 import {div, filler, placeholder, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {select, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
 import {copyToClipboard} from '@xh/hoist/utils/js';
 import {isEmpty, without} from 'lodash';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import './IconsPanel.scss';
 
 // Register a custom icon - not pre-imported by `Icon` - and use it as this tab's title icon
@@ -20,7 +19,7 @@ library.add(faIcons);
 
 export const iconsPanel = hoistCmp.factory({
     model: creates(() => IconsPanelModel),
-    render() {
+    render({model}) {
         return wrapper({
             title: 'Icons',
             icon: Icon.icon({iconName: 'icons'}),
@@ -57,6 +56,41 @@ export const iconsPanel = hoistCmp.factory({
                         'in the Hoist Icon class, but can be easily added.'
                 }
             ],
+            options: [
+                wrapperOption({
+                    label: 'Style',
+                    control: select({
+                        model,
+                        bind: 'prefix',
+                        width: 150,
+                        enableFilter: false,
+                        hideSelectedOptionCheck: true,
+                        options: [
+                            {value: 'far', label: 'Regular'},
+                            {value: 'fas', label: 'Solid'},
+                            {value: 'fal', label: 'Light'},
+                            {value: 'fat', label: 'Thin'}
+                        ]
+                    })
+                }),
+                wrapperOption({
+                    label: 'Intent',
+                    control: select({
+                        model,
+                        bind: 'intent',
+                        width: 150,
+                        enableFilter: false,
+                        hideSelectedOptionCheck: true,
+                        options: [
+                            {value: 'neutral', label: 'Neutral'},
+                            {value: 'primary', label: 'Primary'},
+                            {value: 'success', label: 'Success'},
+                            {value: 'warning', label: 'Warning'},
+                            {value: 'danger', label: 'Danger'}
+                        ]
+                    })
+                })
+            ],
             item: panel({
                 className: 'tb-icons-panel',
                 tbar: tbar(),
@@ -77,35 +111,6 @@ const tbar = hoistCmp.factory<IconsPanelModel>(({model}) =>
             commitOnChange: true,
             flex: 1,
             maxWidth: 320
-        }),
-        toolbarSep(),
-        span('Style:'),
-        buttonGroupInput({
-            model,
-            bind: 'prefix',
-            minimal: true,
-            outlined: true,
-            items: [
-                button({text: 'Regular', value: 'far'}),
-                button({text: 'Solid', value: 'fas'}),
-                button({text: 'Light', value: 'fal'}),
-                button({text: 'Thin', value: 'fat'})
-            ]
-        }),
-        toolbarSep(),
-        span('Intent:'),
-        buttonGroupInput({
-            model,
-            bind: 'intent',
-            minimal: true,
-            outlined: true,
-            items: [
-                button({text: 'Neutral', value: 'neutral'}),
-                button({text: 'Primary', value: 'primary', intent: 'primary'}),
-                button({text: 'Success', value: 'success', intent: 'success'}),
-                button({text: 'Warning', value: 'warning', intent: 'warning'}),
-                button({text: 'Danger', value: 'danger', intent: 'danger'})
-            ]
         }),
         filler(),
         span({className: 'tb-icons-count', item: `${model.iconNames.length} icons`})
