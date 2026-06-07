@@ -1,4 +1,4 @@
-import {creates, hoistCmp, HoistModel, managed, Corner} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, Corner, LoadSpec} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -90,8 +90,6 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                 })
             ],
             item: panel({
-                title: 'Loading Indicator',
-                icon: Icon.spinner(),
                 height: '60vh',
                 width: '90%',
                 item: sampleGrid({omitGridTools: true, omitMask: true}),
@@ -107,7 +105,7 @@ export const loadingIndicatorPanel = hoistCmp.factory({
 
 class LoadingIndicatorPanelModel extends HoistModel {
     @bindable seconds = 3;
-    @bindable message = '';
+    @bindable message = 'Loading';
     @bindable corner: Corner = 'br';
     @bindable spinner = true;
 
@@ -118,16 +116,18 @@ class LoadingIndicatorPanelModel extends HoistModel {
         makeObservable(this);
     }
 
-    override async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec: LoadSpec) {
         const {loadObserver, message, seconds} = this,
             interval = (seconds / 3) * SECONDS;
+
         loadObserver.setMessage(message);
+
+        await wait(interval);
+        if (message) loadObserver.setMessage(message + ' - still working...');
+        await wait(interval);
+        if (message) loadObserver.setMessage(message + ' - almost finished...');
+        await wait(interval);
         await this.sampleGridModel.loadAsync(loadSpec);
-        await wait(interval);
-        if (message) loadObserver.setMessage(message + ' - Still Loading...');
-        await wait(interval);
-        if (message) loadObserver.setMessage(message + ' - Almost Finished...');
-        await wait(interval);
         loadObserver.setMessage(message);
     }
 }
