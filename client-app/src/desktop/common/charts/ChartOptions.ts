@@ -1,7 +1,7 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {HoistModel} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
+import {select} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {ReactElement} from 'react';
 import {wrapperOption} from '../Wrapper';
@@ -24,14 +24,20 @@ export function chartDisplayOptions(model: ChartExampleModel): ReactElement[] {
     return [
         wrapperOption({
             label: 'Aspect Ratio',
-            control: numberInput({
+            control: select({
                 model,
                 bind: 'aspectRatio',
-                min: 0,
-                width: 90,
-                commitOnChange: true,
-                selectOnFocus: true
-            })
+                width: 150,
+                enableFilter: false,
+                hideSelectedOptionCheck: true,
+                options: [
+                    {label: 'Unconstrained', value: null},
+                    {label: '2:1 (wide)', value: 2},
+                    {label: '3:2', value: 1.5},
+                    {label: '1:1 (square)', value: 1}
+                ]
+            }),
+            info: 'Width-to-height ratio for the chart; unconstrained fills the available space.'
         }),
         wrapperOption({
             label: 'Context Menu',
