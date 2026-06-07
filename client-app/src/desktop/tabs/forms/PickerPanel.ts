@@ -1,7 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {div, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {picker} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -488,8 +487,6 @@ const demoRow = hoistCmp.factory(({label, info, children}) =>
 // Model
 //------------------------------------------------------------------
 class PickerPanelModel extends HoistModel {
-    @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
-
     // Toolbar
     @bindable toolbarStates: string[] = [];
     @bindable toolbarPriority: string = null;

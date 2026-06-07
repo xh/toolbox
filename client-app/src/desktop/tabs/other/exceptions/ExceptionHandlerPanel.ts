@@ -125,7 +125,7 @@ const exceptionButton = hoistCmp.factory<ExceptionHandlerModel>({
         return button({
             text: `Simulate a ${capitalize(type)} Exception`,
             icon: Icon[iconName]({size: 'lg'}),
-            height: 100,
+            height: 70,
             width: 250,
             margin: 10,
             intent: isRoutine ? 'primary' : 'danger',

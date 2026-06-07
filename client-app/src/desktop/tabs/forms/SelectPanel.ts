@@ -1,6 +1,5 @@
 import {box, div, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp, HoistModel, lookup, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -463,8 +462,6 @@ const demoRow = hoistCmp.factory(({label, info, children}) =>
 // Model
 //------------------------------------------------------------------
 class SelectPanelModel extends HoistModel {
-    @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
-
     // Toolbar
     @bindable toolbarState: string = null;
     @bindable toolbarMulti: string[] = [];

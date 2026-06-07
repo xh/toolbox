@@ -1,7 +1,6 @@
 import {card} from '@xh/hoist/cmp/card';
 import {div, hframe, span, vbox} from '@xh/hoist/cmp/layout';
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     buttonGroupInput,
@@ -462,8 +461,6 @@ const demoRow = hoistCmp.factory(({label, info, children}) =>
 // Model
 //------------------------------------------------------------------
 class InputsPanelModel extends HoistModel {
-    @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
-
     // Text inputs
     @bindable textInput1: string = null;
     @bindable textInput2: string = `support@xh.io`;

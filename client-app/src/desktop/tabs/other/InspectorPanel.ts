@@ -64,7 +64,7 @@ export const inspectorPanel = hoistCmp.factory({
                                 text: `${active ? 'Deactivate' : 'Activate'} Inspector`,
                                 intent: active ? 'warning' : 'success',
                                 icon: Icon.search({size: 'lg'}),
-                                height: 100,
+                                height: 70,
                                 width: 200,
                                 marginTop: 10,
                                 minimal: false,

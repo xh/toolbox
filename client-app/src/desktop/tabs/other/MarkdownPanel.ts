@@ -57,6 +57,7 @@ export const markdownPanel = hoistCmp.factory({
                     panel({
                         title: 'Source Text',
                         icon: Icon.edit(),
+                        compactHeader: true,
                         flex: 2,
                         minWidth: 0,
                         item: codeInput({
@@ -69,6 +70,7 @@ export const markdownPanel = hoistCmp.factory({
                     panel({
                         title: 'Rendered Markdown',
                         icon: Icon.icon({prefix: 'fab', iconName: 'markdown'}),
+                        compactHeader: true,
                         className: model.useCustomStyles ? 'tb-markdown-panel--styled' : undefined,
                         flex: 3,
                         minWidth: 0,

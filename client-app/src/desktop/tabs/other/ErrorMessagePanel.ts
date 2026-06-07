@@ -6,7 +6,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {makeObservable, bindable} from '@xh/hoist/mobx';
 import {wrapper} from '../../common';
-import './ClockPanel.scss';
 
 export const errorMessagePanel = hoistCmp.factory({
     model: creates(() => ErrorMessagePanelModel),
@@ -56,7 +55,7 @@ export const errorMessagePanel = hoistCmp.factory({
                             button({
                                 text: 'Simulate an Error',
                                 icon: Icon.skull({size: 'lg'}),
-                                height: 100,
+                                height: 70,
                                 width: 200,
                                 marginTop: 10,
                                 intent: 'danger',
