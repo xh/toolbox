@@ -1,5 +1,5 @@
 import {form, formFieldSet} from '@xh/hoist/cmp/form';
-import {box, div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
+import {box, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -17,7 +17,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {SubformsFieldModel} from '@xh/hoist/cmp/form';
 import {Icon} from '@xh/hoist/icon';
 import {isNil} from 'lodash';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import './FormPanel.scss';
 import {FormPanelModel} from './FormPanelModel';
 import {badge} from '@xh/hoist/cmp/badge';
@@ -26,7 +26,8 @@ export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
     className: 'tb-form-panel',
 
-    render({className}) {
+    render({className, model}) {
+        const {formModel} = model;
         return wrapper({
             title: 'FormModel',
             icon: Icon.edit(),
@@ -60,11 +61,37 @@ export const formPanel = hoistCmp.factory({
                     notes: 'Binds an input to a FormModel field, with label and validation display.'
                 }
             ],
+            options: [
+                wrapperOption({
+                    label: 'Commit on change',
+                    control: switchInput({model, bind: 'commitOnChange'})
+                }),
+                wrapperOption({
+                    label: 'Inline labels',
+                    control: switchInput({model, bind: 'inline'})
+                }),
+                wrapperOption({
+                    label: 'Minimal validation',
+                    control: switchInput({model, bind: 'minimal'})
+                }),
+                wrapperOption({
+                    label: 'US date formats',
+                    control: switchInput({model, bind: 'usDateFormat'})
+                }),
+                wrapperOption({
+                    label: 'Read-only',
+                    control: switchInput({model: formModel, bind: 'readonly'})
+                }),
+                wrapperOption({
+                    label: 'Disabled',
+                    control: switchInput({model: formModel, bind: 'disabled'})
+                })
+            ],
             item: panel({
                 className,
                 width: 950,
                 height: 575,
-                item: hframe(formContent(), displayOptions())
+                item: formContent()
             })
         });
     }
@@ -289,48 +316,6 @@ const references = hoistCmp.factory<FormPanelModel>(({model}) => {
                 onClick: () => references.add()
             })
         ]
-    });
-});
-
-const displayOptions = hoistCmp.factory<FormPanelModel>(({model}) => {
-    const {formModel} = model;
-    return panel({
-        title: 'Display Options',
-        className: 'tbox-display-opts',
-        icon: Icon.settings(),
-        compactHeader: true,
-        modelConfig: {side: 'right', defaultSize: 220, resizable: false},
-        item: div({
-            className: 'tbox-display-opts__inner',
-            items: [
-                switchInput({
-                    bind: 'commitOnChange',
-                    label: 'Commit on change'
-                }),
-                switchInput({
-                    bind: 'inline',
-                    label: 'Inline labels'
-                }),
-                switchInput({
-                    bind: 'minimal',
-                    label: 'Minimal validation display'
-                }),
-                switchInput({
-                    bind: 'usDateFormat',
-                    label: 'US date formats'
-                }),
-                switchInput({
-                    model: formModel,
-                    bind: 'readonly',
-                    label: 'Read-only'
-                }),
-                switchInput({
-                    model: formModel,
-                    bind: 'disabled',
-                    label: 'Disabled'
-                })
-            ]
-        })
     });
 });
 

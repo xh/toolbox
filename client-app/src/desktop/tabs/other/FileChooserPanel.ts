@@ -10,7 +10,7 @@ import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import {isEmpty} from 'lodash';
 import {MouseEvent} from 'react';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import './FileChooserPanel.scss';
 
 // Use decimal MB so the size hint (formatted via `filesize`, decimal by default) reads cleanly.
@@ -35,7 +35,7 @@ const ACCEPT_OPTIONS = [
 export const fileChooserPanel = hoistCmp.factory({
     model: creates(() => FileChooserPanelModel),
 
-    render() {
+    render({model}) {
         return wrapper({
             title: 'FileChooser',
             icon: Icon.copy(),
@@ -78,6 +78,70 @@ export const fileChooserPanel = hoistCmp.factory({
                     notes: 'The underlying drag-and-drop file selection library.'
                 }
             ],
+            options: [
+                wrapperOption({
+                    label: 'Accept',
+                    control: picker({
+                        model,
+                        bind: 'acceptedTypes',
+                        enableMulti: true,
+                        enableClear: true,
+                        enableSelectAll: true,
+                        displayNoun: 'type',
+                        placeholder: 'Any type',
+                        width: 180,
+                        multiSelectShowCount: true,
+                        multiSelectButtonStyle: 'values',
+                        options: ACCEPT_OPTIONS
+                    })
+                }),
+                wrapperOption({
+                    label: 'Max files',
+                    control: select({
+                        model,
+                        bind: 'maxFiles',
+                        width: 110,
+                        hideDropdownIndicator: true,
+                        options: [
+                            {value: null, label: 'No limit'},
+                            {value: 1, label: '1'},
+                            {value: 3, label: '3'},
+                            {value: 10, label: '10'}
+                        ]
+                    })
+                }),
+                wrapperOption({
+                    label: 'Max size',
+                    control: select({
+                        model,
+                        bind: 'maxFileSize',
+                        width: 110,
+                        hideDropdownIndicator: true,
+                        options: [
+                            {value: null, label: 'No limit'},
+                            {value: MB, label: '1 MB'},
+                            {value: 5 * MB, label: '5 MB'},
+                            {value: 25 * MB, label: '25 MB'}
+                        ]
+                    })
+                }),
+                wrapperOption({
+                    label: 'Target',
+                    control: segmentedControl({
+                        model,
+                        bind: 'placement',
+                        options: [
+                            {value: 'left', label: 'Left'},
+                            {value: 'top', label: 'Top'},
+                            {value: 'hidden', label: 'Hidden'}
+                        ]
+                    })
+                }),
+                wrapperOption({
+                    label: 'Disable',
+                    control: switchInput({model, bind: 'disabled'})
+                })
+            ],
             item: vframe({
                 flex: 1,
                 width: '100%',
@@ -101,60 +165,6 @@ const configChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
             flex: 'none',
             width: 960,
             height: 400,
-            tbar: [
-                span('Accept:'),
-                picker({
-                    bind: 'acceptedTypes',
-                    enableMulti: true,
-                    enableClear: true,
-                    enableSelectAll: true,
-                    displayNoun: 'type',
-                    placeholder: 'Any type',
-                    width: 200,
-                    multiSelectShowCount: true,
-                    multiSelectButtonStyle: 'values',
-                    options: ACCEPT_OPTIONS
-                }),
-                toolbarSep(),
-                span('Max files:'),
-                select({
-                    bind: 'maxFiles',
-                    width: 90,
-                    hideDropdownIndicator: true,
-                    options: [
-                        {value: null, label: 'No limit'},
-                        {value: 1, label: '1'},
-                        {value: 3, label: '3'},
-                        {value: 10, label: '10'}
-                    ]
-                }),
-                toolbarSep(),
-                span('Max size:'),
-                select({
-                    bind: 'maxFileSize',
-                    width: 100,
-                    hideDropdownIndicator: true,
-                    options: [
-                        {value: null, label: 'No limit'},
-                        {value: MB, label: '1 MB'},
-                        {value: 5 * MB, label: '5 MB'},
-                        {value: 25 * MB, label: '25 MB'}
-                    ]
-                }),
-                toolbarSep(),
-                span('Target:'),
-                segmentedControl({
-                    bind: 'placement',
-                    options: [
-                        {value: 'left', label: 'Left'},
-                        {value: 'top', label: 'Top'},
-                        {value: 'hidden', label: 'Hidden'}
-                    ]
-                }),
-                toolbarSep(),
-                span('Disable: '),
-                switchInput({bind: 'disabled'})
-            ],
             item: fileChooser({model: chooserModel, dropTargetPlacement: placement}),
             bbar: [
                 button({
