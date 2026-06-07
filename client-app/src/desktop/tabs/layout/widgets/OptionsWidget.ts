@@ -6,6 +6,13 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {segmentedControl} from '@xh/hoist/desktop/cmp/input';
 import {DashViewModel} from '@xh/hoist/desktop/cmp/dash/DashViewModel';
 
+const OPTIONS = [
+    {value: 'Live', label: 'Live', icon: Icon.bolt()},
+    {value: 'Hourly', label: 'Hourly', icon: Icon.clock()},
+    {value: 'Daily', label: 'Daily', icon: Icon.calendar()}
+];
+const DEFAULT_VALUE = OPTIONS[0].value;
+
 export const optionsWidget = hoistCmp.factory({
     model: creates(() => OptionsWidgetModel),
     render({model}) {
@@ -13,16 +20,7 @@ export const optionsWidget = hoistCmp.factory({
             item: vbox({
                 padding: 10,
                 items: [
-                    segmentedControl({
-                        model,
-                        bind: 'value',
-                        outlined: true,
-                        options: [
-                            {value: 'Live', label: 'Live', icon: Icon.bolt()},
-                            {value: 'Hourly', label: 'Hourly', icon: Icon.clock()},
-                            {value: 'Daily', label: 'Daily', icon: Icon.calendar()}
-                        ]
-                    }),
+                    segmentedControl({model, bind: 'value', outlined: true, options: OPTIONS}),
                     div({
                         className: 'xh-pad',
                         item: `A stateful SegmentedControl. "${model.value}" is selected.`
@@ -34,7 +32,7 @@ export const optionsWidget = hoistCmp.factory({
 });
 
 class OptionsWidgetModel extends HoistModel {
-    @bindable value: string;
+    @bindable value: string = DEFAULT_VALUE;
     @lookup(DashViewModel) viewModel: DashViewModel;
 
     constructor() {
@@ -44,11 +42,24 @@ class OptionsWidgetModel extends HoistModel {
 
     override onLinked() {
         const {viewModel} = this;
-        this.value = viewModel.viewState ? viewModel.viewState.value : 'Live';
+
+        // Sync the selection FROM the hosting view's state - on initial load and whenever it is
+        // reloaded (e.g. the dashboard's "Reset State" action reuses this view and resets its
+        // state). Guard against stale / obsolete persisted values by falling back to the default.
+        this.addReaction({
+            track: () => viewModel.viewState?.value,
+            run: value =>
+                this.setBindable(
+                    'value',
+                    OPTIONS.some(o => o.value === value) ? value : DEFAULT_VALUE
+                ),
+            fireImmediately: true
+        });
+
+        // Publish the selection back TO the view's state so it persists.
         this.addReaction({
             track: () => this.value,
-            run: value => (viewModel.viewState = {value}),
-            fireImmediately: true
+            run: value => (viewModel.viewState = {value})
         });
     }
 }
