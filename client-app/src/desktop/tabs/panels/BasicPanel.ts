@@ -37,7 +37,7 @@ export const basicPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/desktop/cmp/panel/README.md',
+                    url: '$HR/desktop/cmp/panel/README.md#basic-usage',
                     text: 'Panel docs',
                     notes: 'Desktop panel guide (toolbars, masks, sizing).'
                 },

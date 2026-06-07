@@ -34,12 +34,12 @@ export const panelSizingPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/desktop/cmp/panel/README.md',
+                    url: '$HR/desktop/cmp/panel/README.md#collapsing-and-resizing',
                     text: 'Panel docs',
                     notes: 'Desktop panel guide (sizing, collapse, modal support).'
                 },
                 {
-                    url: '$HR/docs/persistence.md',
+                    url: '$HR/docs/persistence.md#built-in-model-support',
                     text: 'Persistence docs',
                     notes: 'Guide to persisting UI state such as panel size.'
                 },

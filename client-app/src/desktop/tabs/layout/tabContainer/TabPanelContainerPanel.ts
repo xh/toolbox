@@ -29,7 +29,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/cmp/tab/README.md',
+                    url: '$HR/cmp/tab/README.md#tabcontainermodel',
                     text: 'Tabs docs',
                     notes: 'Tabbed interface guide.'
                 },

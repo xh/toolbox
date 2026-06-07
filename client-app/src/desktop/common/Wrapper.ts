@@ -93,7 +93,7 @@ interface ResourcesProps extends HoistProps {
 const resources = hoistCmp.factory<ResourcesProps>({
     render({links}) {
         if (isEmpty(links)) return null;
-        // Group by kind for a consistent display (code, then docs, then external). Sort is stable,
+        // Group by kind for a consistent display (docs, then code, then external). Sort is stable,
         // so each tab's spec order carries through as an intentional within-kind secondary sort.
         const sortedLinks = [...links].sort(
             (a, b) => LINK_KIND_ORDER[linkKind(a.url)] - LINK_KIND_ORDER[linkKind(b.url)]
@@ -148,13 +148,16 @@ const collapsedRail = hoistCmp.factory({
 type LinkKind = 'code' | 'doc' | 'external';
 
 function linkKind(url: string): LinkKind {
-    if (url.endsWith('.md')) return 'doc';
-    if (url.startsWith('http')) return 'external';
+    // Classify on the path alone — doc links may carry a `#section` anchor (e.g.
+    // `$HR/desktop/cmp/panel/README.md#mask`) that would otherwise mask the `.md` suffix.
+    const path = url.split('#')[0];
+    if (path.endsWith('.md')) return 'doc';
+    if (path.startsWith('http')) return 'external';
     return 'code';
 }
 
-/** Display order applied to the Resources list: code samples first, then docs, then external. */
-const LINK_KIND_ORDER: Record<LinkKind, number> = {code: 0, doc: 1, external: 2};
+/** Display order applied to the Resources list: docs first, then code samples, then external. */
+const LINK_KIND_ORDER: Record<LinkKind, number> = {doc: 0, code: 1, external: 2};
 
 /** Icon shown beside a resource link, distinguishing its kind. */
 function linkIcon(url: string): ReactElement {

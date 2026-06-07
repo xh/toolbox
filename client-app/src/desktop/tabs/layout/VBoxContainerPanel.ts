@@ -20,7 +20,7 @@ export const vboxContainerPanel = hoistCmp.factory(() =>
                 notes: 'This example.'
             },
             {
-                url: '$HR/cmp/layout/README.md',
+                url: '$HR/cmp/layout/README.md#core-components',
                 text: 'Layout docs',
                 notes: 'Layout containers guide.'
             },

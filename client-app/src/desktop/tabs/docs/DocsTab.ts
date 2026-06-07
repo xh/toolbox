@@ -418,7 +418,7 @@ const feedbackPanel = hoistCmp.factory<DocsPanelModel>({
 // Content body
 //------------------
 const contentBody = hoistCmp.factory<DocsPanelModel>(({model}) => {
-    const {content, activeDoc} = model,
+    const {content, activeDoc, pendingScrollSection} = model,
         scrollRef = useRef<HTMLDivElement>(null);
 
     // Scroll to top when the active doc changes
@@ -458,20 +458,23 @@ const contentBody = hoistCmp.factory<DocsPanelModel>(({model}) => {
         };
         container.addEventListener('scroll', onScroll, {passive: true});
 
-        // If the URL has a hash fragment, scroll to the matching section.
-        const hash = window.location.hash?.slice(1);
-        if (hash) {
-            window.requestAnimationFrame(() => {
-                const target = document.getElementById(hash);
-                if (target) {
-                    target.scrollIntoView({block: 'start'});
-                    model.setActiveSection(hash);
-                }
-            });
-        }
-
         return () => container.removeEventListener('scroll', onScroll);
     }, [model, content]);
+
+    // Honor a deep-link's requested section: once content has rendered (so the H2 IDs assigned
+    // above exist), scroll to the matching heading and clear the request. Keyed on the pending
+    // section too, so same-doc section links re-scroll without a content reload.
+    useEffect(() => {
+        if (!content || !pendingScrollSection) return;
+        window.requestAnimationFrame(() => {
+            const target = document.getElementById(pendingScrollSection);
+            if (target) {
+                target.scrollIntoView({block: 'start'});
+                model.setActiveSection(pendingScrollSection);
+            }
+            model.clearPendingScrollSection();
+        });
+    }, [model, content, pendingScrollSection]);
 
     // Handle clicks on links within the rendered markdown.
     const handleLinkClick = useCallback(

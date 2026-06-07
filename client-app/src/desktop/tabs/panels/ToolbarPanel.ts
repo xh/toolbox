@@ -30,7 +30,7 @@ export const toolbarPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/desktop/cmp/panel/README.md',
+                    url: '$HR/desktop/cmp/panel/README.md#toolbars',
                     text: 'Panel docs',
                     notes: 'Desktop panel guide; panels host toolbars via tbar and bbar.'
                 },

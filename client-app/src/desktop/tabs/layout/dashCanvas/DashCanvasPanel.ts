@@ -62,7 +62,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/desktop/cmp/dash/README.md',
+                    url: '$HR/desktop/cmp/dash/README.md#dashcanvas',
                     text: 'Dashboard docs',
                     notes: 'Dashboard system guide (DashCanvas and DashContainer).'
                 },

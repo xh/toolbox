@@ -259,7 +259,7 @@ export class AppModel extends BaseAppModel {
                     {
                         name: 'docs',
                         path: '/docs',
-                        children: [{name: 'docRef', path: '/:source/:docId'}]
+                        children: [{name: 'docRef', path: '/:source/:docId?section'}]
                     },
                     {
                         name: 'examples',

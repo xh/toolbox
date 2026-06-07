@@ -34,7 +34,7 @@ export const maskPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/desktop/cmp/panel/README.md',
+                    url: '$HR/desktop/cmp/panel/README.md#mask',
                     text: 'Panel docs',
                     notes: 'Desktop panel guide, including the mask prop.'
                 },

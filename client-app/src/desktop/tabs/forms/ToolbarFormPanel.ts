@@ -51,7 +51,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/cmp/form/README.md',
+                    url: '$HR/cmp/form/README.md#formmodel',
                     text: 'Form docs',
                     notes: 'Form infrastructure guide and validation concepts.'
                 },
