@@ -17,15 +17,15 @@ export const gridTreeMapPanel = hoistCmp.factory({
     render({model}) {
         return wrapper({
             title: 'Grid TreeMap',
-            icon: Icon.gridLarge(),
+            icon: Icon.treeMap(),
             description: [
                 'TreeMaps render hierarchical data as nested, color-coded rectangles. This',
                 'heatmap-style view encodes two dimensions of each record in the size and',
                 'color of its tile.',
                 '',
                 'This example binds a TreeMap to the same `Store` and selection model as the',
-                'grid beside it, keeping the two views in sync. Use the toolbar to adjust',
-                'clustering, heat, color mode, theme, and tiling algorithm.'
+                'grid beside it, keeping the two views in sync. Use the options at left to',
+                'adjust heat, color mode, theme, tiling algorithm, and clustering.'
             ],
             links: [
                 {
@@ -44,11 +44,11 @@ export const gridTreeMapPanel = hoistCmp.factory({
                 }
             ],
             options: [
+                ...treeMapDisplayOptions(model.treeMapModel),
                 wrapperOption({
-                    label: 'Enable Cluster',
+                    label: 'Enable clustering',
                     control: switchInput({model, bind: 'cluster'})
-                }),
-                ...treeMapDisplayOptions(model.treeMapModel)
+                })
             ],
             item: panel({
                 height: '100%',

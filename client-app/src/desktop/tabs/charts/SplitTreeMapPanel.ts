@@ -17,15 +17,15 @@ export const splitTreeMapPanel = hoistCmp.factory({
     render({model}) {
         return wrapper({
             title: 'Split TreeMap',
-            icon: Icon.gridLarge(),
+            icon: Icon.treeMap(),
             description: [
                 'A SplitTreeMap renders two TreeMaps together, partitioning records into two',
                 'groups. It is most commonly used to separate positive and negative values',
                 'into distinct heatmaps.',
                 '',
                 'Like the standard TreeMap it binds to a `Store` and stays in sync with the',
-                'grid beside it. Use the toolbar to adjust orientation, heat, color mode,',
-                'theme, and tiling algorithm.'
+                'grid beside it. Use the options at left to adjust orientation, heat, color',
+                'mode, theme, and tiling algorithm.'
             ],
             links: [
                 {

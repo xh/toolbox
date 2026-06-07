@@ -12,7 +12,7 @@ export const simpleTreeMapPanel = hoistCmp.factory({
     render({model}) {
         return wrapper({
             title: 'Simple TreeMap',
-            icon: Icon.gridLarge(),
+            icon: Icon.treeMap(),
             description: [
                 'TreeMap visualizations are provided via the Highcharts library, wrapped by',
                 'Hoist components and models that bind directly to a `Store` or `GridModel`',
@@ -23,8 +23,9 @@ export const simpleTreeMapPanel = hoistCmp.factory({
                 'Highcharts as an application dependency.'
             ],
             options: [
+                ...treeMapDisplayOptions(model.treeMapModel),
                 wrapperOption({
-                    label: 'Enable Cluster',
+                    label: 'Enable clustering',
                     control: switchInput({model, bind: 'cluster'})
                 }),
                 wrapperOption({
@@ -44,8 +45,7 @@ export const simpleTreeMapPanel = hoistCmp.factory({
                         disabled: !model.cluster,
                         width: 70
                     })
-                }),
-                ...treeMapDisplayOptions(model.treeMapModel)
+                })
             ],
             item: panel({
                 height: '60vh',
