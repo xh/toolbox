@@ -113,7 +113,7 @@ const tbar = hoistCmp.factory<IconsPanelModel>(({model}) =>
             maxWidth: 320
         }),
         filler(),
-        span({className: 'tb-icons-count', item: `${model.iconNames.length} icons`})
+        span(`${model.iconNames.length} icons`)
     )
 );
 
