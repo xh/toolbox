@@ -18,35 +18,34 @@ code.tb-code-link {
   }
 }
 
+// Left sub-tab navigation: a lightly styled vertical rail with rounded, hoverable items and a
+// clear active state (filled highlight + left accent bar) for a more polished, modern feel.
 .tb-switcher.xh-tab-switcher--left {
-  width: 140px;
+  width: 150px;
+  padding: var(--xh-pad-half-px);
   border-right: var(--xh-border-solid);
-}
 
-.tbox-display-opts {
-  .xh-panel-header {
-    color: var(--xh-text-color);
-    background-color: var(--xh-bg-alt);
+  .bp6-tab {
+    margin: 0 0 2px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    color: var(--xh-text-color-muted);
+    font-weight: 500;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease,
+      box-shadow 0.15s ease;
 
-    .xh-button--minimal {
-      color: var(--xh-text-color) !important;
-    }
-  }
-
-  &__inner {
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    padding: var(--xh-pad-px) var(--xh-pad-half-px);
-
-    .xh-input,
-    .xh-button {
-      margin: var(--xh-pad-half-px);
-      flex: none;
+    &:hover {
+      color: var(--xh-text-color);
+      background-color: var(--xh-bg-alt);
     }
 
-    label {
-      margin: 0 var(--xh-pad-half-px);
+    &[aria-selected='true'] {
+      color: var(--xh-text-color);
+      background-color: var(--xh-bg-highlight);
+      font-weight: 600;
+      box-shadow: inset 3px 0 0 var(--xh-blue);
     }
   }
 }
