@@ -63,14 +63,14 @@ export const leftRightChooserPanel = hoistCmp.factory({
             item: panel({
                 width: 700,
                 height: 400,
-                item: leftRightChooser({
-                    flex: 1
-                }),
-                bbar: [
+                tbar: [
                     leftRightChooserFilter({
                         matchMode: model.matchMode
                     })
-                ]
+                ],
+                item: leftRightChooser({
+                    flex: 1
+                })
             })
         });
     }
