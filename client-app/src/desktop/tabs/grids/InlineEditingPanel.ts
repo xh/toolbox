@@ -121,7 +121,7 @@ const tbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
         button({
             icon: Icon.edit(),
             text: 'Edit first row',
-            onClick: () => model.beginEditAsync()
+            onClick: () => model.beginEditAsync({colId: 'name'})
         }),
         button({
             icon: Icon.edit(),
