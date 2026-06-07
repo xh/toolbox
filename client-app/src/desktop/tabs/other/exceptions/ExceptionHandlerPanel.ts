@@ -2,7 +2,7 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {wrapper} from '../../../common';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {p, vframe, hframe, div, hbox, label, filler} from '@xh/hoist/cmp/layout';
+import {vframe, hframe, div, hbox, label, filler} from '@xh/hoist/cmp/layout';
 import {buttonGroupInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {ExceptionHandlerModel} from './ExceptionHandlerModel';
@@ -14,17 +14,22 @@ export const exceptionHandlerPanel = hoistCmp.factory({
         return wrapper({
             title: 'Exception Handler',
             icon: Icon.skull(),
-            description: div(
-                p(
-                    'Hoist provides centralized exception handling for applications, including a managed display of the error to the user and options for introspection, tracking, and notifying back-end administrators of the problem.'
-                ),
-                p(
-                    'Some errors may require an app refresh, while others do not. Errors may also be marked as "routine" and need not reveal further details to the user beyond the stringified error message. Users also have the option to send a message to the configured support email address to report additional information about the error.'
-                ),
-                p(
-                    'XH.handleException() provides a convenient API for apps to handle exceptions and is typically called directly in catch blocks. Promise.catchDefault() provides a convenient API to the same functionality in Promise chains.'
-                )
-            ),
+            description: [
+                'Hoist provides centralized exception handling for applications, including a',
+                'managed display of the error to the user and options for introspection,',
+                'tracking, and notifying back-end administrators of the problem.',
+                '',
+                'Some errors may require an app refresh, while others do not. Errors may also',
+                'be marked as "routine" and need not reveal further details to the user beyond',
+                'the stringified error message. Users also have the option to send a message',
+                'to the configured support email address to report additional information',
+                'about the error.',
+                '',
+                '`XH.handleException()` provides a convenient API for apps to handle',
+                'exceptions and is typically called directly in catch blocks.',
+                '`Promise.catchDefault()` provides a convenient API to the same functionality',
+                'in Promise chains.'
+            ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/exceptions/ExceptionHandlerPanel.ts',

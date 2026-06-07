@@ -10,11 +10,12 @@ export const cardPanel = hoistCmp.factory(() =>
         title: 'Card',
         icon: Icon.addressCard(),
         description: [
-            p('A Card is a bordered container for grouping related content.'),
-            p('Cards support titles, icons, intent-based styling, and collapsibility.'),
-            p(
-                'Children are arranged vertically by default, but this and other aspects of its inner layout can be customized via contentBoxProps.'
-            )
+            'A `Card` is a bordered container for grouping related content.',
+            '',
+            'Cards support titles, icons, intent-based styling, and collapsibility.',
+            '',
+            'Children are arranged vertically by default, but this and other aspects of its',
+            'inner layout can be customized via `contentBoxProps`.'
         ],
         links: [
             {

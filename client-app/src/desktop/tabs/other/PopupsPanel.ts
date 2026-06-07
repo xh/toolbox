@@ -23,15 +23,17 @@ export const popupsPanel = hoistCmp.factory(() => {
     return wrapper({
         title: 'Popups',
         icon: Icon.comment(),
-        description: div(
-            p('Popups notify users about important events or prompt them to confirm an action.'),
-            p(
-                "The Message component provides modal alerts in Hoist but is rarely used directly. Instead, the XH.message(), XH.alert(), XH.confirm(), and XH.prompt() methods offer convenient APIs to trigger them, each returning a Promise that resolves with the user's response."
-            ),
-            p(
-                'For non-modal notifications, use XH.toast() for a transient message or XH.showBanner() for a persistent one.'
-            )
-        ),
+        description: [
+            'Popups notify users about important events or prompt them to confirm an action.',
+            '',
+            'The `Message` component provides modal alerts in Hoist but is rarely used',
+            'directly. Instead, the `XH.message()`, `XH.alert()`, `XH.confirm()`, and',
+            '`XH.prompt()` methods offer convenient APIs to trigger them, each returning a',
+            "Promise that resolves with the user's response.",
+            '',
+            'For non-modal notifications, use `XH.toast()` for a transient message or',
+            '`XH.showBanner()` for a persistent one.'
+        ],
         links: [
             {url: '$TB/client-app/src/desktop/tabs/other/PopupsPanel.ts', notes: 'This example.'},
             {

@@ -17,8 +17,14 @@ export const pinPadPanel = hoistCmp.factory({
         return wrapper({
             title: 'PinPad',
             icon: Icon.unlock(),
-            description:
-                'PinPad is a specialized numeric input for lightweight authentication, such as unlocking a kiosk or confirming a sensitive action. Its PinPadModel drives the displayed header, subheader, and error text and exposes the entered value, letting the application validate the PIN, enforce attempt limits, and lock out repeated failures. Enter the PIN 12345 below to unlock the demo.',
+            description: [
+                '`PinPad` is a specialized numeric input for lightweight authentication, such',
+                'as unlocking a kiosk or confirming a sensitive action. Its `PinPadModel`',
+                'drives the displayed header, subheader, and error text and exposes the',
+                'entered value, letting the application validate the PIN, enforce attempt',
+                'limits, and lock out repeated failures. Enter the PIN 12345 below to unlock',
+                'the demo.'
+            ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/PinPadPanel.ts',

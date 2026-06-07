@@ -1,5 +1,5 @@
 import {form, formFieldSet} from '@xh/hoist/cmp/form';
-import {box, div, filler, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
+import {box, div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -31,12 +31,14 @@ export const formPanel = hoistCmp.factory({
             title: 'FormModel',
             icon: Icon.edit(),
             description: [
-                p(
-                    'Forms provide a standard way for validating and editing data. The Form component provides the ability to centrally control certain properties on all its contained FormFields and bind them to a FormModel. The FormModel provides an observable API for loading, validating, and submitting the data to back-end services.'
-                ),
-                p(
-                    'This example also demonstrates customizing the style of FormField via CSS variables.'
-                )
+                'Forms provide a standard way for validating and editing data. The `Form`',
+                'component provides the ability to centrally control certain properties on all',
+                'its contained `FormField`s and bind them to a `FormModel`. The `FormModel`',
+                'provides an observable API for loading, validating, and submitting the data',
+                'to back-end services.',
+                '',
+                'This example also demonstrates customizing the style of `FormField` via CSS',
+                'variables.'
             ],
             links: [
                 {

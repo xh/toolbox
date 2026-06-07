@@ -1,5 +1,5 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {hframe, p, tileFrame} from '@xh/hoist/cmp/layout';
+import {hframe, tileFrame} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -35,12 +35,14 @@ export const tileFrameContainerPanel = hoistCmp.factory({
             title: 'TileFrame',
             icon: Icon.gridLarge(),
             description: [
-                p(
-                    'TileFrame renders its children as equally-sized tiles, resized and arranged to fill the available space within the container while maintaining even padding between tiles and keeping tile width / height as close to a specified ratio as possible.'
-                ),
-                p(
-                    'Try resizing your browser window to see the tiling in action. The outer panel in this example is sized relative to the viewport - as its size changes, the tiles will be re-arranged to make the best use of the space available.'
-                )
+                '`TileFrame` renders its children as equally-sized tiles, resized and arranged',
+                'to fill the available space within the container while maintaining even',
+                'padding between tiles and keeping tile width / height as close to a specified',
+                'ratio as possible.',
+                '',
+                'Try resizing your browser window to see the tiling in action. The outer panel',
+                'in this example is sized relative to the viewport - as its size changes, the',
+                'tiles will be re-arranged to make the best use of the space available.'
             ],
             links: [
                 {

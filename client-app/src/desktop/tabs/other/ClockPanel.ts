@@ -18,10 +18,11 @@ export const clockPanel = hoistCmp.factory({
         return wrapper({
             title: 'Clock',
             icon: Icon.clock(),
-            description: `
-                    A clock will display the current time, either for browser local time (the default)
-                    or for a configurable timezone. It fetches timezone offsets from the server to
-                    support any Java-style timezone ID.`,
+            description: [
+                'A clock will display the current time, either for browser local time (the',
+                'default) or for a configurable timezone. It fetches timezone offsets from the',
+                'server to support any Java-style timezone ID.'
+            ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/ClockPanel.ts',

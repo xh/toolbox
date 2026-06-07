@@ -1,4 +1,3 @@
-import {p} from '@xh/hoist/cmp/layout';
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -9,12 +8,13 @@ export const treeGridPanel = hoistCmp.factory(() =>
         title: 'Tree Grid',
         icon: Icon.grid(),
         description: [
-            p(
-                "Hoist's Grid renders hierarchical tree data directly, building on ag-Grid's support for nested data rows. The GroupingChooser component lets users control the tree hierarchy, with optional persistence of their favorite groupings."
-            ),
-            p(
-                'Applications supply standard record data with child nodes nested under their parents. Aggregations can be provided alongside the data or computed within the grid via ag-Grid aggregation configs.'
-            )
+            "Hoist's `Grid` renders hierarchical tree data directly, building on ag-Grid's",
+            'support for nested data rows. The `GroupingChooser` component lets users control',
+            'the tree hierarchy, with optional persistence of their favorite groupings.',
+            '',
+            'Applications supply standard record data with child nodes nested under their',
+            'parents. Aggregations can be provided alongside the data or computed within the',
+            'grid via ag-Grid aggregation configs.'
         ],
         links: [
             {

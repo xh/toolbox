@@ -1,7 +1,4 @@
-import {elementFactory, hoistCmp} from '@xh/hoist/core';
-import {a, p} from '@xh/hoist/cmp/layout';
-
-const em = elementFactory('em');
+import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {sampleColumnGroupsGrid, wrapper} from '../../common';
@@ -11,23 +8,16 @@ export const columnGroupsGridPanel = hoistCmp.factory(() =>
         title: 'Grouped Columns',
         icon: Icon.gridPanel(),
         description: [
-            p(
-                'Hoist React grids support column grouping as described in the ',
-                a({
-                    href: 'https://www.ag-grid.com/javascript-data-grid/column-groups/',
-                    target: '_blank',
-                    item: 'ag-Grid documentation'
-                }),
-                '.'
-            ),
-            p(
-                "Note that column group configurations must be provided either a headerName or groupId property, which must be unique within the GridModel. Column groups in Hoist React are also 'sealed', meaning that columns may be reordered ",
-                em('within'),
-                ' the group in which they are defined but not broken out from them.'
-            ),
-            p(
-                "This grid also persists its state (column order, sizing, and visibility) to the browser's local storage."
-            )
+            'Hoist React grids support column grouping as described in the [ag-Grid',
+            'documentation](https://www.ag-grid.com/javascript-data-grid/column-groups/).',
+            '',
+            'Note that column group configurations must be provided either a `headerName` or',
+            '`groupId` property, which must be unique within the `GridModel`. Column groups in',
+            "Hoist React are also 'sealed', meaning that columns may be reordered *within* the",
+            'group in which they are defined but not broken out from them.',
+            '',
+            'This grid also persists its state (column order, sizing, and visibility) to the',
+            "browser's local storage."
         ],
         links: [
             {

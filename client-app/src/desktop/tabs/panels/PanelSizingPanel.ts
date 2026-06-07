@@ -1,7 +1,7 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {box, div, filler, h3, hbox, p, strong} from '@xh/hoist/cmp/layout';
+import {box, filler, h3, hbox, p, strong} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -16,17 +16,18 @@ export const panelSizingPanel = hoistCmp.factory({
         return wrapper({
             title: 'Panel Sizing',
             icon: Icon.window(),
-            description: div(
-                p(
-                    'Panels support collapsing, drag-and-drop resizing, and a toggleable modal view via their PanelModel config, optionally saving their sizing state in a per-user preference.'
-                ),
-                p(
-                    "By default the panel content does not re-layout until the resize bar is dropped. Immediate or 'animated' resizing can be turned on by setting the PanelModel config resizeWhileDragging to true."
-                ),
-                p(
-                    'Note that the child panels below are also configured with their compactHeader prop set to true.'
-                )
-            ),
+            description: [
+                'Panels support collapsing, drag-and-drop resizing, and a toggleable modal',
+                'view via their `PanelModel` config, optionally saving their sizing state in a',
+                'per-user preference.',
+                '',
+                'By default the panel content does not re-layout until the resize bar is',
+                "dropped. Immediate or 'animated' resizing can be turned on by setting the",
+                '`PanelModel` config `resizeWhileDragging` to `true`.',
+                '',
+                'Note that the child panels below are also configured with their',
+                '`compactHeader` prop set to `true`.'
+            ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.ts',

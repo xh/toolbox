@@ -1,5 +1,5 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {box, br, hbox, p} from '@xh/hoist/cmp/layout';
+import {box, br, hbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -15,16 +15,18 @@ export const dockContainerPanel = hoistCmp.factory({
             title: 'Dock Container',
             icon: Icon.gridPanel(),
             description: [
-                p(
-                    'DockContainer provides a user-friendly way to display multiple views simultaneously as docked overlays.'
-                ),
-                p(
-                    'Users can choose which views are expanded or collapsed at any given time, or if so enabled they can pop a view out of the dock and display it as a modal dialog.'
-                ),
-                p(
-                    'The states for docked views are based on the "compose" dialog within the ubiquitous Gmail web client, and docked views are generally intended for data entry forms, detail views, and other similar UI elements.'
-                ),
-                p('Use the buttons below to test adding views to a container within this tab.')
+                '`DockContainer` provides a user-friendly way to display multiple views',
+                'simultaneously as docked overlays.',
+                '',
+                'Users can choose which views are expanded or collapsed at any given time, or',
+                'if so enabled they can pop a view out of the dock and display it as a modal',
+                'dialog.',
+                '',
+                'The states for docked views are based on the "compose" dialog within the',
+                'ubiquitous Gmail web client, and docked views are generally intended for data',
+                'entry forms, detail views, and other similar UI elements.',
+                '',
+                'Use the buttons below to test adding views to a container within this tab.'
             ],
             links: [
                 {

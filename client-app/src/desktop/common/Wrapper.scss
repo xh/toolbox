@@ -35,6 +35,16 @@
       padding: 1px 3px;
       border-radius: 3px;
     }
+
+    ul,
+    ol {
+      margin: var(--xh-pad-half-px) 0;
+      padding-left: 1.4em;
+    }
+
+    li {
+      margin-bottom: 2px;
+    }
   }
 
   &__divider {

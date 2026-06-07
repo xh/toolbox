@@ -2,7 +2,7 @@ import {creates, hoistCmp, HoistModel, managed, Corner} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {p, span} from '@xh/hoist/cmp/layout';
+import {span} from '@xh/hoist/cmp/layout';
 import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -19,12 +19,14 @@ export const loadingIndicatorPanel = hoistCmp.factory({
             title: 'Loading Indicator',
             icon: Icon.spinner(),
             description: [
-                p(
-                    'Loading Indicators display an unobtrusive overlay in the corner of a component with a spinner and/or message. They indicate that a longer-running operation is in progress without using a modal Mask.'
-                ),
-                p(
-                    'A convenient way to display a loading indicator is via the loadingIndicator property of Panel. This prop can accept a fully configured loadingIndicator element or (most commonly) a TaskObserver instance to automatically show the indicator when a task is pending.'
-                )
+                'Loading Indicators display an unobtrusive overlay in the corner of a',
+                'component with a spinner and/or message. They indicate that a longer-running',
+                'operation is in progress without using a modal `Mask`.',
+                '',
+                'A convenient way to display a loading indicator is via the `loadingIndicator`',
+                'property of `Panel`. This prop can accept a fully configured',
+                '`loadingIndicator` element or (most commonly) a `TaskObserver` instance to',
+                'automatically show the indicator when a task is pending.'
             ],
             links: [
                 {

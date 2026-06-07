@@ -1,6 +1,6 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faIcons} from '@fortawesome/pro-regular-svg-icons';
-import {a, div, filler, p, placeholder, span} from '@xh/hoist/cmp/layout';
+import {div, filler, placeholder, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
@@ -25,19 +25,19 @@ export const iconsPanel = hoistCmp.factory({
             title: 'Icons',
             icon: Icon.icon({iconName: 'icons'}),
             description: [
-                p(
-                    'Hoist includes the latest version of the ubiquitous ',
-                    a({
-                        href: 'https://fontawesome.com/icons',
-                        target: '_blank',
-                        item: 'Font Awesome'
-                    }),
-                    ' library and its companion project, react-fontawesome. Hoist exports an Icon constant to expose a preselected set of icons as element factories. This ensures that many of the most common glyphs are built-in (while also mapping icons to several concepts particular to finance and trading).'
-                ),
-                p(
-                    "Apps are not limited to the set of FA icons imported by the framework. Developers can use any icon from the library, as long as they import those glyphs directly and register them with FA to include them in the bundled output. The icon shown in this tab's title is one such custom import."
-                ),
-                p('Browse the built-in set below, and click any icon to copy its factory call.')
+                'Hoist includes the latest version of the ubiquitous [Font',
+                'Awesome](https://fontawesome.com/icons) library and its companion project,',
+                'react-fontawesome. Hoist exports an `Icon` constant to expose a preselected',
+                'set of icons as element factories. This ensures that many of the most common',
+                'glyphs are built-in (while also mapping icons to several concepts particular',
+                'to finance and trading).',
+                '',
+                'Apps are not limited to the set of FA icons imported by the framework.',
+                'Developers can use any icon from the library, as long as they import those',
+                'glyphs directly and register them with FA to include them in the bundled',
+                "output. The icon shown in this tab's title is one such custom import.",
+                '',
+                'Browse the built-in set below, and click any icon to copy its factory call.'
             ],
             links: [
                 {

@@ -1,9 +1,10 @@
 import {div, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {markdown} from '@xh/hoist/cmp/markdown';
 import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {isEmpty} from 'lodash';
+import {isArray, isEmpty} from 'lodash';
 import {ReactElement, ReactNode} from 'react';
 import {toolboxLink, ToolboxLinkProps} from '../../core/cmp/ToolboxLink';
 import type {AppModel} from '../AppModel';
@@ -16,8 +17,15 @@ export interface WrapperProps extends HoistProps {
     /** Optional icon shown beside the title in the info rail header. */
     icon?: ReactElement;
 
-    /** Intro text or description for the Component/pattern demo'd by this tab. */
-    description?: ReactNode;
+    /**
+     * Intro text for the Component/pattern demo'd by this tab, as Markdown. Rendered in the info
+     * rail via Hoist's `markdown` component, so backticks for code symbols, `[text](url)` links,
+     * and blank-line-separated paragraphs all work. May be provided as a single string or as an
+     * array of lines, which are joined with newlines — within a paragraph these render as spaces
+     * (not breaks), so a long description can be wrapped across array entries for readable source,
+     * with an empty-string entry marking a paragraph break.
+     */
+    description?: string | string[];
 
     /**
      * Links to display for this tab, pointing either to relevant source code within XH
@@ -44,6 +52,7 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
 
 const infoRail = hoistCmp.factory<WrapperProps>({
     render({title, icon, description, links}) {
+        const intro = isArray(description) ? description.join('\n') : description;
         return panel({
             className: 'tbox-wrapper__rail',
             title,
@@ -63,12 +72,12 @@ const infoRail = hoistCmp.factory<WrapperProps>({
                 items: [
                     div({
                         className: 'tbox-wrapper__intro',
-                        item: description,
-                        omit: !description
+                        item: markdown({content: intro, lineBreaks: false}),
+                        omit: !intro
                     }),
                     div({
                         className: 'tbox-wrapper__divider',
-                        omit: !description || isEmpty(links)
+                        omit: !intro || isEmpty(links)
                     }),
                     resources({links})
                 ]

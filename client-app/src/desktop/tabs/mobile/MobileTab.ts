@@ -1,6 +1,6 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faPhoneLaptop} from '@fortawesome/pro-regular-svg-icons';
-import {a, filler, hframe, img, p, span} from '@xh/hoist/cmp/layout';
+import {filler, hframe, img, span} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -21,17 +21,11 @@ export const mobileTab = hoistCmp.factory(() =>
         title: 'Mobile',
         icon: Icon.mobile(),
         description: [
-            p(
-                'Mobile apps share many of the same components and logic as their desktop counterparts, with some mobile-specific Hoist components that are supported by the open-source framework ',
-                a({href: 'https://onsen.io', target: '_blank', item: 'Onsen'}),
-                ' to improve the native mobile UI experience. Explore the Toolbox Mobile App on your device at ',
-                a({
-                    href: 'https://toolbox.xh.io/mobile',
-                    target: '_blank',
-                    item: 'toolbox.xh.io/mobile'
-                }),
-                '.'
-            )
+            'Mobile apps share many of the same components and logic as their desktop',
+            'counterparts, with some mobile-specific Hoist components that are supported by',
+            'the open-source framework [Onsen](https://onsen.io) to improve the native mobile',
+            'UI experience. Explore the Toolbox Mobile App on your device at',
+            '[toolbox.xh.io/mobile](https://toolbox.xh.io/mobile).'
         ],
         links: [
             {url: '$TB/client-app/src/desktop/tabs/mobile/MobileTab.ts', notes: 'This example.'},

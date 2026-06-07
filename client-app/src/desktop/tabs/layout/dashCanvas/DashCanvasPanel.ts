@@ -1,5 +1,5 @@
-import {box, filler, frame, hframe, p, span} from '@xh/hoist/cmp/layout';
-import {creates, elementFactory, hoistCmp} from '@xh/hoist/core';
+import {box, filler, frame, hframe, span} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
 import {dashCanvasWidgetChooser} from '@xh/hoist/desktop/cmp/dash/canvas/widgetchooser/DashCanvasWidgetChooser';
@@ -11,8 +11,6 @@ import {wrapper} from '../../../common';
 import {DashCanvasPanelModel} from './DashCanvasPanelModel';
 import './DashCanvasPanel.scss';
 
-const em = elementFactory('em');
-
 export const dashCanvasPanel = hoistCmp.factory({
     model: creates(() => DashCanvasPanelModel),
 
@@ -21,17 +19,17 @@ export const dashCanvasPanel = hoistCmp.factory({
             title: 'DashCanvas',
             icon: Icon.layout(),
             description: [
-                p(
-                    'DashCanvas is configured via a DashCanvasModel and renders user-arrangeable widgets in a drag-and-drop grid layout.'
-                ),
-                p(
-                    'Unlike DashContainer, this component scales only the ',
-                    em('width'),
-                    " of its widgets as overall size changes, keeping heights fixed and scrolling as needed. This makes it well-suited for report-style dashboards with content that won't compress well on smaller screens. Use DashContainer when a space-filling layout is preferred."
-                ),
-                p(
-                    'This example also demonstrates DashCanvasWidgetChooser, a ready-made sidebar for browsing and dragging available widgets onto the canvas.'
-                )
+                '`DashCanvas` is configured via a `DashCanvasModel` and renders',
+                'user-arrangeable widgets in a drag-and-drop grid layout.',
+                '',
+                'Unlike `DashContainer`, this component scales only the *width* of its widgets',
+                'as overall size changes, keeping heights fixed and scrolling as needed. This',
+                "makes it well-suited for report-style dashboards with content that won't",
+                'compress well on smaller screens. Use `DashContainer` when a space-filling',
+                'layout is preferred.',
+                '',
+                'This example also demonstrates `DashCanvasWidgetChooser`, a ready-made',
+                'sidebar for browsing and dragging available widgets onto the canvas.'
             ],
             item: panel({
                 className: 'dash-canvas-droppable-demo',

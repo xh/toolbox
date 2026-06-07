@@ -1,5 +1,5 @@
 import {badge} from '@xh/hoist/cmp/badge';
-import {code, div, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
+import {div, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
 import {picker} from '@xh/hoist/desktop/cmp/input';
@@ -39,24 +39,19 @@ export const pickerPanel = hoistCmp.factory({
     displayName: 'PickerPanel',
     model: creates(() => PickerPanelModel),
 
-    render({model}) {
+    render() {
         return wrapper({
             title: 'Picker',
             icon: Icon.list(),
             description: [
-                p(
-                    code('Picker'),
-                    ' presents its options in a popover dropdown triggered by a compact button showing the current value or a summary. Supports single and multi-select modes.'
-                ),
-                p(
-                    'Designed for space-constrained areas such as toolbars, where a traditional ',
-                    code({
-                        className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('select'),
-                        item: 'Select'
-                    }),
-                    ' component — especially in multi-select "tag picker" mode — is too wide. In multi-mode, displays a compact summary (e.g. "3 selected") rather than listing all selected values inline.'
-                )
+                '`Picker` presents its options in a popover dropdown triggered by a compact',
+                'button showing the current value or a summary. Supports single and',
+                'multi-select modes.',
+                '',
+                'Designed for space-constrained areas such as toolbars, where a traditional',
+                '`Select` component — especially in multi-select "tag picker" mode — is too',
+                'wide. In multi-mode, displays a compact summary (e.g. "3 selected") rather',
+                'than listing all selected values inline.'
             ],
             links: [
                 {

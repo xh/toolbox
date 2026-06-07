@@ -20,15 +20,16 @@ export const basicPanel = hoistCmp.factory({
             title: 'Intro',
             icon: Icon.window(),
             description: [
-                p(
-                    'Panels are a core building block for layouts in Hoist. They support an optional header bar with props to configure an icon, title and custom header items, props for top and bottom toolbars, and an optional model to manage their sizing.'
-                ),
-                p(
-                    'Panels also provide a convenient prop for establishing an ErrorBoundary around its contents, allowing the managed isolation of application content.'
-                ),
-                p(
-                    'See the other tabs at left for additional features and conveniences, including built-in integrations with other Hoist components such as masks.'
-                )
+                'Panels are a core building block for layouts in Hoist. They support an',
+                'optional header bar with props to configure an icon, title and custom header',
+                'items, props for top and bottom toolbars, and an optional model to manage',
+                'their sizing.',
+                '',
+                'Panels also provide a convenient prop for establishing an `ErrorBoundary`',
+                'around its contents, allowing the managed isolation of application content.',
+                '',
+                'See the other tabs at left for additional features and conveniences,',
+                'including built-in integrations with other Hoist components such as masks.'
             ],
             links: [
                 {

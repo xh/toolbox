@@ -1,9 +1,7 @@
-import {creates, elementFactory, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
-import {hframe, p} from '@xh/hoist/cmp/layout';
-
-const em = elementFactory('em');
+import {hframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {wrapper} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
@@ -19,14 +17,16 @@ export const agGridView = hoistCmp.factory({
             title: 'ag-Grid Wrapper',
             icon: Icon.gridPanel(),
             description: [
-                p(
-                    'The Hoist agGrid component provides a much more minimal wrapper for ag-Grid, supporting direct use of the library with limited enhancements for consistent Hoist styling, layout support, keyboard navigation, and a backing model for convenient access to the ag-Grid APIs and other utility methods.'
-                ),
-                p(
-                    'This wrapper does ',
-                    em('not'),
-                    ' include a number of Hoist enhancements provided by the core Grid component, including store support, grid state, enhanced column and renderer APIs, absolute value sorting, and enhanced server-side Excel exports. Use of this wrapper is encouraged only when advanced ag-Grid features (such as pivoting) are required.'
-                )
+                'The Hoist `agGrid` component provides a much more minimal wrapper for',
+                'ag-Grid, supporting direct use of the library with limited enhancements for',
+                'consistent Hoist styling, layout support, keyboard navigation, and a backing',
+                'model for convenient access to the ag-Grid APIs and other utility methods.',
+                '',
+                'This wrapper does *not* include a number of Hoist enhancements provided by',
+                'the core `Grid` component, including store support, grid state, enhanced',
+                'column and renderer APIs, absolute value sorting, and enhanced server-side',
+                'Excel exports. Use of this wrapper is encouraged only when advanced ag-Grid',
+                'features (such as pivoting) are required.'
             ],
             links: [
                 {

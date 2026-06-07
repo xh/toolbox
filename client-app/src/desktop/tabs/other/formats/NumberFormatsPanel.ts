@@ -1,5 +1,5 @@
 import {form} from '@xh/hoist/cmp/form';
-import {a, code, div, hbox, input, p} from '@xh/hoist/cmp/layout';
+import {code, div, hbox, input} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistProps} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -25,17 +25,18 @@ export const numberFormatsPanel = hoistCmp.factory({
             title: 'Format Numbers',
             icon: Icon.print(),
             description: [
-                p(
-                    'Hoist provides a collection of number formatting functions in @xh/hoist/format. The main method is fmtNumber which provides several useful options. More specific methods delegate to fmtNumber and set useful defaults.'
-                ),
-                p(
-                    'fmtNumber is backed by ',
-                    a({href: 'https://numbrojs.com/', target: '_blank', item: 'numbro.js'}),
-                    ' and makes the full numbro API available via the formatConfig property, which takes a numbro configuration object.'
-                ),
-                p(
-                    'All Hoist formatting functions support the asHtml option to produce a raw HTML string rather than a React element, making them useful in both React and non-React contexts.'
-                )
+                'Hoist provides a collection of number formatting functions in',
+                '`@xh/hoist/format`. The main method is `fmtNumber` which provides several',
+                'useful options. More specific methods delegate to `fmtNumber` and set useful',
+                'defaults.',
+                '',
+                '`fmtNumber` is backed by [numbro.js](https://numbrojs.com/) and makes the',
+                'full numbro API available via the `formatConfig` property, which takes a',
+                'numbro configuration object.',
+                '',
+                'All Hoist formatting functions support the `asHtml` option to produce a raw',
+                'HTML string rather than a React element, making them useful in both React and',
+                'non-React contexts.'
             ],
             links: [
                 {

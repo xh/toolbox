@@ -3,7 +3,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame, p} from '@xh/hoist/cmp/layout';
+import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
@@ -25,12 +25,15 @@ export const dashContainerPanel = hoistCmp.factory({
             title: 'Dash Container',
             icon: Icon.layout(),
             description: [
-                p(
-                    'DashContainer is configured and managed via a DashContainerModel and lets users drag and drop content into tabbed and split-pane layouts. It also supports publishing observable state, managed mounting and unmounting of inactive tabs, and lazy refreshing of the active view.'
-                ),
-                p(
-                    'Unlike DashCanvas, it fills the available space, resizing its widgets in both dimensions as the layout changes. Use the controls below to add views and to unmount and restore the dashboard, demonstrating that its state is preserved.'
-                )
+                '`DashContainer` is configured and managed via a `DashContainerModel` and lets',
+                'users drag and drop content into tabbed and split-pane layouts. It also',
+                'supports publishing observable state, managed mounting and unmounting of',
+                'inactive tabs, and lazy refreshing of the active view.',
+                '',
+                'Unlike `DashCanvas`, it fills the available space, resizing its widgets in',
+                'both dimensions as the layout changes. Use the controls below to add views',
+                'and to unmount and restore the dashboard, demonstrating that its state is',
+                'preserved.'
             ],
             item: panel({
                 width: '100%',

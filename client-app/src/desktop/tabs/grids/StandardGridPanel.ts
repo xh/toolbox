@@ -1,5 +1,4 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {a, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {sampleGrid, wrapper} from '../../common';
@@ -9,18 +8,14 @@ export const standardGridPanel = hoistCmp.factory(() =>
         title: 'Standard Grid',
         icon: Icon.gridPanel(),
         description: [
-            p(
-                'Grids are at the heart of many Hoist React projects, and Grid, GridModel, and related helper components are key elements of the framework.'
-            ),
-            p(
-                'We rely on ',
-                a({
-                    href: 'https://www.ag-grid.com/javascript-data-grid/',
-                    target: '_blank',
-                    item: 'ag-Grid'
-                }),
-                ' to provide the core component, with Hoist layering on a normalized API as well as custom integrations for observable row selection, data stores, sorting, filtering, a custom column selection UI, server-side exports, enhanced column definitions, absolute value sorting, and more.'
-            )
+            'Grids are at the heart of many Hoist React projects, and `Grid`, `GridModel`, and',
+            'related helper components are key elements of the framework.',
+            '',
+            'We rely on [ag-Grid](https://www.ag-grid.com/javascript-data-grid/) to provide',
+            'the core component, with Hoist layering on a normalized API as well as custom',
+            'integrations for observable row selection, data stores, sorting, filtering, a',
+            'custom column selection UI, server-side exports, enhanced column definitions,',
+            'absolute value sorting, and more.'
         ],
         links: [
             {

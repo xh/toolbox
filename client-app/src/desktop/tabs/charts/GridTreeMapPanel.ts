@@ -1,6 +1,6 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {filler, hframe, p, span} from '@xh/hoist/cmp/layout';
+import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {grid} from '@xh/hoist/cmp/grid';
 import {treeMap} from '@xh/hoist/cmp/treemap';
@@ -19,12 +19,13 @@ export const gridTreeMapPanel = hoistCmp.factory({
             title: 'Grid TreeMap',
             icon: Icon.gridLarge(),
             description: [
-                p(
-                    'TreeMaps render hierarchical data as nested, color-coded rectangles. This heatmap-style view encodes two dimensions of each record in the size and color of its tile.'
-                ),
-                p(
-                    'This example binds a TreeMap to the same Store and selection model as the grid beside it, keeping the two views in sync. Use the toolbar to adjust clustering, heat, color mode, theme, and tiling algorithm.'
-                )
+                'TreeMaps render hierarchical data as nested, color-coded rectangles. This',
+                'heatmap-style view encodes two dimensions of each record in the size and',
+                'color of its tile.',
+                '',
+                'This example binds a TreeMap to the same `Store` and selection model as the',
+                'grid beside it, keeping the two views in sync. Use the toolbar to adjust',
+                'clustering, heat, color mode, theme, and tiling algorithm.'
             ],
             links: [
                 {

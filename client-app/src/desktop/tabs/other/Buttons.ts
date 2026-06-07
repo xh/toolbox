@@ -1,4 +1,4 @@
-import {div, filler, hbox, li, p, ul} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -25,17 +25,17 @@ export const buttonsPanel = hoistCmp.factory({
         return wrapper({
             title: 'Buttons',
             icon: Icon.checkCircle(),
-            description: div(
-                p(
-                    'Hoist desktop Buttons are built on the Blueprint library and accept all props supported by the underlying Blueprint button. Beyond text, icon, and onClick, the most common props for customizing their appearance are:'
-                ),
-                ul(
-                    li('intent: [primary|success|warning|danger]'),
-                    li('minimal: true|false'),
-                    li('outlined: true|false')
-                ),
-                p('Each intent is shown below, within both panel and toolbar containers.')
-            ),
+            description: [
+                'Hoist desktop Buttons are built on the Blueprint library and accept all props',
+                'supported by the underlying Blueprint button. Beyond `text`, `icon`, and',
+                '`onClick`, the most common props for customizing their appearance are:',
+                '',
+                '- `intent`: [primary|success|warning|danger]',
+                '- `minimal`: true|false',
+                '- `outlined`: true|false',
+                '',
+                'Each intent is shown below, within both panel and toolbar containers.'
+            ],
             links: [
                 {url: '$TB/client-app/src/desktop/tabs/other/Buttons.ts', notes: 'This example.'},
                 {url: '$HR/desktop/cmp/button/Button.ts', notes: 'Hoist component.'},

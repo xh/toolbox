@@ -1,4 +1,4 @@
-import {box, code, div, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
+import {box, div, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, lookup, XH} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
@@ -45,24 +45,17 @@ export const selectPanel = hoistCmp.factory({
     displayName: 'SelectPanel',
     model: creates(() => SelectPanelModel),
 
-    render({model}) {
+    render() {
         return wrapper({
             title: 'Select',
             icon: Icon.list(),
             description: [
-                p(
-                    code('Select'),
-                    ' is a managed combobox/dropdown input supporting single and multi-value selection, async server-side queries, creatable entries, grouped options, and windowed rendering for large lists.'
-                ),
-                p(
-                    'For a more compact trigger suited to toolbars, see the companion ',
-                    code({
-                        className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('picker'),
-                        item: 'Picker'
-                    }),
-                    ' component.'
-                )
+                '`Select` is a managed combobox/dropdown input supporting single and',
+                'multi-value selection, async server-side queries, creatable entries, grouped',
+                'options, and windowed rendering for large lists.',
+                '',
+                'For a more compact trigger suited to toolbars, see the companion `Picker`',
+                'component.'
             ],
             links: [
                 {

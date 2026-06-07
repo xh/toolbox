@@ -1,6 +1,6 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faMarkdown} from '@fortawesome/free-brands-svg-icons';
-import {p, span} from '@xh/hoist/cmp/layout';
+import {span} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {codeInput, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -22,9 +22,12 @@ export const markdownPanel = hoistCmp.factory({
         return wrapper({
             title: 'Markdown',
             icon: Icon.icon({prefix: 'fab', iconName: 'markdown'}),
-            description: p(
-                "Hoist's Markdown component wraps the react-markdown library to render a Markdown string as a React element tree. Content can be imported directly from .md files or supplied at runtime, and the rendered output can be styled with your own CSS. Edit the source on the left to see it render live."
-            ),
+            description: [
+                "Hoist's `Markdown` component wraps the `react-markdown` library to render a",
+                'Markdown string as a React element tree. Content can be imported directly',
+                'from `.md` files or supplied at runtime, and the rendered output can be',
+                'styled with your own CSS. Edit the source on the left to see it render live.'
+            ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/MarkdownPanel.ts',

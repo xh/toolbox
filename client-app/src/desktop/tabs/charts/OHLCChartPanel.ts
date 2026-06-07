@@ -1,5 +1,5 @@
 import {chart} from '@xh/hoist/cmp/chart';
-import {filler, p, span} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
@@ -17,15 +17,17 @@ export const ohlcChartPanel = hoistCmp.factory({
             title: 'OHLC Chart',
             icon: Icon.chartLine(),
             description: [
-                p(
-                    'Hoist provides a lightweight wrapper around the Highcharts charting and visualization library. This integration includes the Chart component to handle rendering, layout, and resizing, plus an observable ChartModel class to hold the chart config and data series.'
-                ),
-                p(
-                    'This example renders financial data as an OHLC (open-high-low-close) chart, and shows how to reach through ChartModel to the underlying Highcharts API directly via the "Call chart API" button.'
-                ),
-                p(
-                    'Note that applications must license and specify a compatible version of Highcharts as an application dependency.'
-                )
+                'Hoist provides a lightweight wrapper around the Highcharts charting and',
+                'visualization library. This integration includes the `Chart` component to',
+                'handle rendering, layout, and resizing, plus an observable `ChartModel` class',
+                'to hold the chart config and data series.',
+                '',
+                'This example renders financial data as an OHLC (open-high-low-close) chart,',
+                'and shows how to reach through `ChartModel` to the underlying Highcharts API',
+                'directly via the "Call chart API" button.',
+                '',
+                'Note that applications must license and specify a compatible version of',
+                'Highcharts as an application dependency.'
             ],
             item: panel({
                 height: '60vh',

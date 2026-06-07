@@ -1,6 +1,6 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {action, makeObservable, observable} from '@xh/hoist/mobx';
-import {filler, p, span} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {zoneGrid, ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {select} from '@xh/hoist/desktop/cmp/input';
@@ -25,10 +25,10 @@ export const zoneGridPanel = hoistCmp.factory({
             title: 'Zone Grid',
             icon: Icon.gridLarge(),
             description: [
-                p(
-                    'The ZoneGrid component leverages an underlying Grid / GridModel instance to display multi-line full-width rows with configurable fields.'
-                ),
-                p('Typically used to display dense information when horizontal space is limited.')
+                'The `ZoneGrid` component leverages an underlying `Grid` / `GridModel`',
+                'instance to display multi-line full-width rows with configurable fields.',
+                '',
+                'Typically used to display dense information when horizontal space is limited.'
             ],
             links: [
                 {

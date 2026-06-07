@@ -11,9 +11,12 @@ export const appNotificationsPanel = hoistCmp.factory(() =>
     wrapper({
         title: 'App Notifications',
         icon: Icon.rocket(),
-        description: p(
-            "Hoist surfaces important runtime events without interrupting the user's work. The framework detects new app versions and prompts for a refresh via an unobtrusive banner, and can suspend an idle session to reduce server load before prompting the user to reload. The two tiles below trigger each behavior on demand."
-        ),
+        description: [
+            "Hoist surfaces important runtime events without interrupting the user's work. The",
+            'framework detects new app versions and prompts for a refresh via an unobtrusive',
+            'banner, and can suspend an idle session to reduce server load before prompting',
+            'the user to reload. The two tiles below trigger each behavior on demand.'
+        ],
         links: [
             {
                 url: '$TB/client-app/src/desktop/tabs/other/AppNotificationsPanel.ts',

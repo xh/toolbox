@@ -1,5 +1,5 @@
 import {card} from '@xh/hoist/cmp/card';
-import {code, div, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
+import {div, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -32,41 +32,21 @@ export const inputsPanel = hoistCmp.factory({
     displayName: 'InputsPanel',
     model: creates(() => InputsPanelModel),
 
-    render({model}) {
+    render() {
         return wrapper({
             title: 'HoistInputs',
             icon: Icon.edit(),
             description: [
-                p(
-                    code('HoistInput'),
-                    ' provides a common interface and integration points for a variety of core Components used to enter and edit data in applications. They present a consistent API for editing data with MobX, React, and the underlying widgets provided by libraries such as Blueprint and Onsen.'
-                ),
-                p(
-                    'Any HoistInput can be bound to a data source using the ',
-                    code('bind'),
-                    ' and ',
-                    code('model'),
-                    ' props. They can also be nested within a ',
-                    code('formField'),
-                    ' to integrate tightly with ',
-                    code('FormModel'),
-                    ' for validation and labelling.'
-                ),
-                p(
-                    'See the dedicated tabs for ',
-                    code({
-                        className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('select'),
-                        item: 'Select'
-                    }),
-                    ' and ',
-                    code({
-                        className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('picker'),
-                        item: 'Picker'
-                    }),
-                    ' components.'
-                )
+                '`HoistInput` provides a common interface and integration points for a variety',
+                'of core Components used to enter and edit data in applications. They present',
+                'a consistent API for editing data with MobX, React, and the underlying',
+                'widgets provided by libraries such as Blueprint and Onsen.',
+                '',
+                'Any HoistInput can be bound to a data source using the `bind` and `model`',
+                'props. They can also be nested within a `formField` to integrate tightly with',
+                '`FormModel` for validation and labelling.',
+                '',
+                'See the dedicated tabs for `Select` and `Picker` components.'
             ],
             links: [
                 {

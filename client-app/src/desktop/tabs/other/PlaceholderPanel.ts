@@ -16,12 +16,13 @@ export const placeholderPanel = hoistCmp.factory({
             title: 'Placeholder',
             icon: Icon.stop(),
             description: [
-                p(
-                    "The Placeholder component is useful to occupy a portion of an application's layout when the primary content is not yet ready to show - e.g. for a master-detail view where the detail is blank until a record is selected."
-                ),
-                p(
-                    'Placeholders center their contents and are styled with a muted text color. If the first child of a placeholder is an Icon element, it will be automatically styled as below.'
-                )
+                "The `Placeholder` component is useful to occupy a portion of an application's",
+                'layout when the primary content is not yet ready to show - e.g. for a',
+                'master-detail view where the detail is blank until a record is selected.',
+                '',
+                'Placeholders center their contents and are styled with a muted text color. If',
+                'the first child of a placeholder is an `Icon` element, it will be',
+                'automatically styled as below.'
             ],
             links: [
                 {

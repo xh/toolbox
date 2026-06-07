@@ -1,4 +1,4 @@
-import {li, p, ul, vframe} from '@xh/hoist/cmp/layout';
+import {p, vframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -12,21 +12,18 @@ export const inspectorPanel = hoistCmp.factory({
             title: 'Inspector',
             icon: Icon.search(),
             description: [
-                p({
-                    style: {marginBottom: 0},
-                    item: 'Hoist Inspector is a developer tool built directly into the Hoist UI. It lists every active HoistModel and HoistService instance in the running application and lets you browse their observable state live, with no extra setup:'
-                }),
-                ul(
-                    li(
-                        'Enumerable properties + getters for the selected instance load within the docked detail grid.'
-                    ),
-                    li('Getters can be evaluated by clicking (...) to display their value.'),
-                    li(
-                        'All observable properties (including getters) reactively update when their value changes.'
-                    ),
-                    li('Click ', Icon.star(), ' to pin a property to the top of your list.'),
-                    li('Click ', Icon.terminal(), ' to log an instance or property to the console.')
-                )
+                'Hoist Inspector is a developer tool built directly into the Hoist UI. It',
+                'lists every active `HoistModel` and `HoistService` instance in the running',
+                'application and lets you browse their observable state live, with no extra',
+                'setup:',
+                '',
+                '- Enumerable properties + getters for the selected instance load within the',
+                '  docked detail grid.',
+                '- Getters can be evaluated by clicking (...) to display their value.',
+                '- All observable properties (including getters) reactively update when their',
+                '  value changes.',
+                '- Click the star icon to pin a property to the top of your list.',
+                '- Click the terminal icon to log an instance or property to the console.'
             ],
             links: [
                 {

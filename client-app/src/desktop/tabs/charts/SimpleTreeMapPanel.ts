@@ -1,4 +1,4 @@
-import {p, span} from '@xh/hoist/cmp/layout';
+import {span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -16,12 +16,13 @@ export const simpleTreeMapPanel = hoistCmp.factory({
             title: 'Simple TreeMap',
             icon: Icon.gridLarge(),
             description: [
-                p(
-                    'TreeMap visualizations are provided via the Highcharts library, wrapped by Hoist components and models that bind directly to a Store or GridModel and tune the map defaults for visualizing financial data. The base TreeMap is shown below; see the other tabs on this page for more advanced variations.'
-                ),
-                p(
-                    'Note that applications must license and specify a compatible version of Highcharts as an application dependency.'
-                )
+                'TreeMap visualizations are provided via the Highcharts library, wrapped by',
+                'Hoist components and models that bind directly to a `Store` or `GridModel`',
+                'and tune the map defaults for visualizing financial data. The base TreeMap is',
+                'shown below; see the other tabs on this page for more advanced variations.',
+                '',
+                'Note that applications must license and specify a compatible version of',
+                'Highcharts as an application dependency.'
             ],
             item: panel({
                 height: '60vh',

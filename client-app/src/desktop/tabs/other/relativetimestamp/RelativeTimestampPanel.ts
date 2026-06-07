@@ -33,8 +33,12 @@ export const relativeTimestampPanel = hoistCmp.factory({
         return wrapper({
             title: 'Relative Timestamp',
             icon: Icon.clock(),
-            description:
-                'RelativeTimestamp displays a timestamp in terms of how long ago, or how far in the future, it falls relative to the present moment (for example, "5 minutes ago"). It updates itself on a regular interval to stay current and renders the difference in a friendly, readable form.',
+            description: [
+                '`RelativeTimestamp` displays a timestamp in terms of how long ago, or how far',
+                'in the future, it falls relative to the present moment (for example, "5',
+                'minutes ago"). It updates itself on a regular interval to stay current and',
+                'renders the difference in a friendly, readable form.'
+            ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/relativetimestamp/RelativeTimestampPanel.ts',

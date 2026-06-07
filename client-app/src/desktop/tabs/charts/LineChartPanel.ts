@@ -1,5 +1,5 @@
 import {chart} from '@xh/hoist/cmp/chart';
-import {filler, p, span} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {picker, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -16,15 +16,16 @@ export const lineChartPanel = hoistCmp.factory({
             title: 'Line Chart',
             icon: Icon.chartLine(),
             description: [
-                p(
-                    'Hoist provides a lightweight wrapper around the Highcharts charting and visualization library. This integration includes the Chart component to handle rendering, layout, and resizing, plus an observable ChartModel class to hold the chart config and data series.'
-                ),
-                p(
-                    'The example below plots one or more user-selected symbols as line series and shows how to customize the chart context menu.'
-                ),
-                p(
-                    'Note that applications must license and specify a compatible version of Highcharts as an application dependency.'
-                )
+                'Hoist provides a lightweight wrapper around the Highcharts charting and',
+                'visualization library. This integration includes the `Chart` component to',
+                'handle rendering, layout, and resizing, plus an observable `ChartModel` class',
+                'to hold the chart config and data series.',
+                '',
+                'The example below plots one or more user-selected symbols as line series and',
+                'shows how to customize the chart context menu.',
+                '',
+                'Note that applications must license and specify a compatible version of',
+                'Highcharts as an application dependency.'
             ],
             item: panel({
                 height: '60vh',

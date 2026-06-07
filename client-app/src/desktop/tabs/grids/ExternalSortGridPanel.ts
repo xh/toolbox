@@ -1,5 +1,5 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {filler, hframe, p, span} from '@xh/hoist/cmp/layout';
+import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {
@@ -23,10 +23,12 @@ export const externalSortGridPanel = hoistCmp.factory({
             title: 'External Sort',
             icon: Icon.gridPanel(),
             description: [
-                p(
-                    'Grids can optionally manage their sort externally. In the below example, we react to GridModel.sortBy to offload sorting to external logic. Sorted rows can be limited after sorting, facilitating showing a subset of large datasets.'
-                ),
-                p('This pattern could be used to similarly offload sorting to the server.')
+                'Grids can optionally manage their sort externally. In the below example, we',
+                'react to `GridModel.sortBy` to offload sorting to external logic. Sorted rows',
+                'can be limited after sorting, facilitating showing a subset of large',
+                'datasets.',
+                '',
+                'This pattern could be used to similarly offload sorting to the server.'
             ],
             links: [
                 {

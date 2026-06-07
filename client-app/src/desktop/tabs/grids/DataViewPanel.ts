@@ -1,6 +1,6 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, p} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {storeFilterField} from '@xh/hoist/cmp/store';
@@ -17,9 +17,11 @@ export const dataViewPanel = hoistCmp.factory({
             title: 'DataView',
             icon: Icon.addressCard(),
             description: [
-                p(
-                    'DataView renders each store record as a custom "card" component rather than a row of columns, making it a good fit for richer, non-tabular layouts. It is backed by a Grid and GridModel under the hood, so it inherits grid features such as sorting, selection, and store binding while leaving the rendering of each item entirely up to the application.'
-                )
+                '`DataView` renders each store record as a custom "card" component rather than',
+                'a row of columns, making it a good fit for richer, non-tabular layouts. It is',
+                'backed by a `Grid` and `GridModel` under the hood, so it inherits grid',
+                'features such as sorting, selection, and store binding while leaving the',
+                'rendering of each item entirely up to the application.'
             ],
             links: [
                 {

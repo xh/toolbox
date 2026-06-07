@@ -1,5 +1,5 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {hframe, filler, p} from '@xh/hoist/cmp/layout';
+import {hframe, filler} from '@xh/hoist/cmp/layout';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {storeFilterField} from '@xh/hoist/cmp/store';
@@ -24,15 +24,16 @@ export const columnFilteringPanel = hoistCmp.factory({
             title: 'Column Filtering',
             icon: Icon.filter(),
             description: [
-                p(
-                    'Grids support column-based filtering of their underlying store data. To enable, set the GridModel.filterModel config to a GridFilterModel (or true to create one with defaults) and set filterable: true on the columns you wish to filter.'
-                ),
-                p(
-                    'Applications may also wish to use a FilterChooser to allow the user to filter the store data via a single "omni-box" style text control.'
-                ),
-                p(
-                    'The example below shows both of these methods being used together on a single store.'
-                )
+                'Grids support column-based filtering of their underlying store data. To',
+                'enable, set the `GridModel.filterModel` config to a `GridFilterModel` (or',
+                '`true` to create one with defaults) and set `filterable: true` on the columns',
+                'you wish to filter.',
+                '',
+                'Applications may also wish to use a `FilterChooser` to allow the user to',
+                'filter the store data via a single "omni-box" style text control.',
+                '',
+                'The example below shows both of these methods being used together on a single',
+                'store.'
             ],
             links: [
                 {

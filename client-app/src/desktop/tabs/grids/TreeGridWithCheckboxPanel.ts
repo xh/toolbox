@@ -1,4 +1,3 @@
-import {p} from '@xh/hoist/cmp/layout';
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -9,9 +8,10 @@ export const treeGridWithCheckboxPanel = hoistCmp.factory(() =>
         title: 'Tree Grid with Checkboxes',
         icon: Icon.grid(),
         description: [
-            p(
-                'This example builds on the Tree Grid, adding a checkbox to every node via a custom column renderer. Checkbox values are synchronized up and down the hierarchy using the StoreRecord API, so toggling a parent updates its descendants and a node reflects the state of its children.'
-            )
+            'This example builds on the Tree Grid, adding a checkbox to every node via a',
+            'custom column renderer. Checkbox values are synchronized up and down the',
+            'hierarchy using the `StoreRecord` API, so toggling a parent updates its',
+            'descendants and a node reflects the state of its children.'
         ],
         links: [
             {

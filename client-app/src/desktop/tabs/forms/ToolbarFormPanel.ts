@@ -1,6 +1,6 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, p, span, vbox} from '@xh/hoist/cmp/layout';
+import {filler, span, vbox} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -33,13 +33,17 @@ export const toolbarFormPanel = hoistCmp.factory({
             title: 'Toolbar Form',
             icon: Icon.edit(),
             description: [
-                p('Forms and FormFields can also be used inside Toolbars.'),
-                p(
-                    'When using a FormField within a Toolbar, it is not necessary to set the inline prop. FormFields within Toolbars are always displayed as if inline: true. For validation, it is recommended to set minimal: true on your FormFields or via Form.fieldDefaults. When not using minimal validation, validation messages will be shown to the right of the FormField.'
-                ),
-                p(
-                    'Using TextArea, JSONInput or Slider inputs within Toolbars is not currently supported, and may lead to unwanted sizing side effects.'
-                )
+                'Forms and `FormField`s can also be used inside Toolbars.',
+                '',
+                'When using a `FormField` within a Toolbar, it is not necessary to set the',
+                '`inline` prop. `FormField`s within Toolbars are always displayed as if',
+                '`inline: true`. For validation, it is recommended to set `minimal: true` on',
+                'your `FormField`s or via `Form.fieldDefaults`. When not using minimal',
+                'validation, validation messages will be shown to the right of the',
+                '`FormField`.',
+                '',
+                'Using `TextArea`, `JSONInput` or `Slider` inputs within Toolbars is not',
+                'currently supported, and may lead to unwanted sizing side effects.'
             ],
             links: [
                 {

@@ -1,6 +1,6 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {filler, hframe, p, span} from '@xh/hoist/cmp/layout';
+import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {grid} from '@xh/hoist/cmp/grid';
 import {splitTreeMap} from '@xh/hoist/cmp/treemap';
@@ -19,12 +19,13 @@ export const splitTreeMapPanel = hoistCmp.factory({
             title: 'Split TreeMap',
             icon: Icon.gridLarge(),
             description: [
-                p(
-                    'A SplitTreeMap renders two TreeMaps together, partitioning records into two groups. It is most commonly used to separate positive and negative values into distinct heatmaps.'
-                ),
-                p(
-                    'Like the standard TreeMap it binds to a Store and stays in sync with the grid beside it. Use the toolbar to adjust orientation, heat, color mode, theme, and tiling algorithm.'
-                )
+                'A SplitTreeMap renders two TreeMaps together, partitioning records into two',
+                'groups. It is most commonly used to separate positive and negative values',
+                'into distinct heatmaps.',
+                '',
+                'Like the standard TreeMap it binds to a `Store` and stays in sync with the',
+                'grid beside it. Use the toolbar to adjust orientation, heat, color mode,',
+                'theme, and tiling algorithm.'
             ],
             links: [
                 {

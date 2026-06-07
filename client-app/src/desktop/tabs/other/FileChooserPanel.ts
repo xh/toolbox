@@ -1,4 +1,4 @@
-import {box, filler, img, p, span, vframe, vspacer} from '@xh/hoist/cmp/layout';
+import {box, filler, img, span, vframe, vspacer} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses, XH} from '@xh/hoist/core';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -40,18 +40,24 @@ export const fileChooserPanel = hoistCmp.factory({
             title: 'FileChooser',
             icon: Icon.copy(),
             description: [
-                p(
-                    'FileChooser selects one or more files from the local filesystem, wrapping the third-party react-dropzone library to support both drag-and-drop and click-to-browse selection. It also includes an optional grid (shown by default) that lists the selected files and lets the user remove them.'
-                ),
-                p(
-                    'This component should be provided with a FileChooserModel instance, as the model holds an observable collection of File objects and provides a public API to manipulate the selection. The application is responsible for processing the selected files (e.g. by uploading them to a server) and clearing the selection when complete.'
-                ),
-                p(
-                    'Use the controls below to vary the accepted types and size/count limits - the empty-state hint updates to summarize the active configuration. Changing a limit re-creates the chooser, clearing any current selection.'
-                ),
-                p(
-                    'The second example is a single-image chooser that supplies a custom fileDisplay to preview the selected PNG in place, with a footer to replace or clear it.'
-                )
+                '`FileChooser` selects one or more files from the local filesystem, wrapping',
+                'the third-party react-dropzone library to support both drag-and-drop and',
+                'click-to-browse selection. It also includes an optional grid (shown by',
+                'default) that lists the selected files and lets the user remove them.',
+                '',
+                'This component should be provided with a `FileChooserModel` instance, as the',
+                'model holds an observable collection of File objects and provides a public',
+                'API to manipulate the selection. The application is responsible for',
+                'processing the selected files (e.g. by uploading them to a server) and',
+                'clearing the selection when complete.',
+                '',
+                'Use the controls below to vary the accepted types and size/count limits - the',
+                'empty-state hint updates to summarize the active configuration. Changing a',
+                'limit re-creates the chooser, clearing any current selection.',
+                '',
+                'The second example is a single-image chooser that supplies a custom',
+                '`fileDisplay` to preview the selected PNG in place, with a footer to replace',
+                'or clear it.'
             ],
             links: [
                 {

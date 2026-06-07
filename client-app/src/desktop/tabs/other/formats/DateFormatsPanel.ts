@@ -1,5 +1,5 @@
 import {form} from '@xh/hoist/cmp/form';
-import {a, code, div, p} from '@xh/hoist/cmp/layout';
+import {code, div} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -19,17 +19,18 @@ export const dateFormatsPanel = hoistCmp.factory({
             title: 'Format Dates',
             icon: Icon.print(),
             description: [
-                p(
-                    'Hoist provides a collection of date formatting functions in @xh/hoist/format. The main method is fmtDate which provides a few useful options.'
-                ),
-                p(
-                    'fmtDate is backed by ',
-                    a({href: 'https://momentjs.com/', target: '_blank', item: 'moment.js'}),
-                    ', and makes the full moment API available via the fmt option, which takes a moment.js format string. Convenience methods delegate to fmtDate with a useful fmt default.'
-                ),
-                p(
-                    'All Hoist formatting functions support the asHtml option to produce a raw HTML string rather than a React element, making them useful in both React and non-React contexts.'
-                )
+                'Hoist provides a collection of date formatting functions in',
+                '`@xh/hoist/format`. The main method is `fmtDate` which provides a few useful',
+                'options.',
+                '',
+                '`fmtDate` is backed by [moment.js](https://momentjs.com/), and makes the full',
+                'moment API available via the `fmt` option, which takes a moment.js format',
+                'string. Convenience methods delegate to `fmtDate` with a useful `fmt`',
+                'default.',
+                '',
+                'All Hoist formatting functions support the `asHtml` option to produce a raw',
+                'HTML string rather than a React element, making them useful in both React and',
+                'non-React contexts.'
             ],
             links: [
                 {

@@ -1,5 +1,4 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {a, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -22,14 +21,14 @@ export const restGridPanel = hoistCmp.factory({
             title: 'REST Editor',
             icon: Icon.edit(),
             description: [
-                p(
-                    'RestGrid and its associated components provide a quick way to implement basic CRUD functionality for domain objects managed by the Hoist Grails server.'
-                ),
-                p(
-                    'Use the toolbar buttons or double-click a record to display its associated add/edit form, including type-specific editor fields. These grids are especially useful when building lookup tables of simple objects and are used throughout the ',
-                    a({href: '/admin', target: '_blank', item: 'Hoist Admin Console'}),
-                    '.'
-                )
+                '`RestGrid` and its associated components provide a quick way to implement',
+                'basic CRUD functionality for domain objects managed by the Hoist Grails',
+                'server.',
+                '',
+                'Use the toolbar buttons or double-click a record to display its associated',
+                'add/edit form, including type-specific editor fields. These grids are',
+                'especially useful when building lookup tables of simple objects and are used',
+                'throughout the [Hoist Admin Console](/admin).'
             ],
             links: [
                 {
