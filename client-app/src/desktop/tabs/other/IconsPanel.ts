@@ -74,6 +74,7 @@ const tbar = hoistCmp.factory<IconsPanelModel>(({model}) =>
             leftIcon: Icon.search(),
             enableClear: true,
             placeholder: 'Filter icons by name...',
+            commitOnChange: true,
             flex: 1,
             maxWidth: 320
         }),
@@ -156,8 +157,8 @@ class IconsPanelModel extends HoistModel {
 
     @computed
     get iconNames(): string[] {
-        const query = this.query.trim().toLowerCase();
-        const all = getAllIconNames();
+        const query = this.query?.trim().toLowerCase(),
+            all = getAllIconNames();
         return query ? all.filter(name => name.toLowerCase().includes(query)) : all;
     }
 

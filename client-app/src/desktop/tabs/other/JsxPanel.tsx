@@ -44,15 +44,17 @@ export const jsxPanel = hoistCmp.factory(() =>
                 panel({
                     flex: 1,
                     className: 'tb-jsx-example',
-                    icon: Icon.factory({prefix: 'fas'}),
                     title: 'Using Factories',
+                    icon: Icon.factory({prefix: 'fas'}),
+                    compactHeader: true,
                     item: renderCode(getElemExample())
                 }),
                 panel({
                     flex: 1,
                     className: 'tb-jsx-example',
-                    icon: Icon.code(),
                     title: 'Using JSX',
+                    icon: Icon.code(),
+                    compactHeader: true,
                     item: renderCode(getJsxExample())
                 })
             ]
