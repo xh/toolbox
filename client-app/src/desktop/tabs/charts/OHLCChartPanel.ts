@@ -4,9 +4,9 @@ import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import {OHLCChartModel} from './OHLCChartModel';
 
 export const ohlcChartPanel = hoistCmp.factory({
@@ -29,6 +29,17 @@ export const ohlcChartPanel = hoistCmp.factory({
                 'Note that applications must license and specify a compatible version of',
                 'Highcharts as an application dependency.'
             ],
+            options: wrapperOption({
+                label: 'Aspect Ratio',
+                control: numberInput({
+                    model,
+                    bind: 'aspectRatio',
+                    commitOnChange: true,
+                    selectOnFocus: true,
+                    min: 0,
+                    width: 70
+                })
+            }),
             item: panel({
                 height: '60vh',
                 width: '90%',
@@ -67,15 +78,6 @@ const tbar = hoistCmp.factory<OHLCChartModel>(({model}) => {
             options: model.symbols,
             enableFilter: false,
             width: 120
-        }),
-        toolbarSep(),
-        span('Aspect Ratio'),
-        numberInput({
-            width: 50,
-            bind: 'aspectRatio',
-            commitOnChange: true,
-            selectOnFocus: true,
-            min: 0
         }),
         filler(),
         button({

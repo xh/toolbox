@@ -1,14 +1,13 @@
 import {clock} from '@xh/hoist/cmp/clock';
-import {div, hframe, span, vbox} from '@xh/hoist/cmp/layout';
+import {div, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {numberInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {TIME_FMT} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import './ClockPanel.scss';
 
 export const clockPanel = hoistCmp.factory({
@@ -30,6 +29,29 @@ export const clockPanel = hoistCmp.factory({
                 },
                 {url: '$HR/cmp/clock/Clock.ts', notes: 'Hoist component.'}
             ],
+            options: [
+                wrapperOption({
+                    label: 'Format',
+                    control: textInput({model, bind: 'format', width: 120, placeholder: TIME_FMT})
+                }),
+                wrapperOption({
+                    label: 'Interval (ms)',
+                    control: numberInput({
+                        model,
+                        bind: 'updateInterval',
+                        width: 90,
+                        placeholder: `${ONE_SECOND}`
+                    })
+                }),
+                wrapperOption({
+                    label: 'Prefix',
+                    control: textInput({model, bind: 'prefix', width: 120})
+                }),
+                wrapperOption({
+                    label: 'Suffix',
+                    control: textInput({model, bind: 'suffix', width: 120})
+                })
+            ],
             item: panel({
                 width: 700,
                 item: hframe({
@@ -46,37 +68,7 @@ export const clockPanel = hoistCmp.factory({
                         clockCard({label: 'Tokyo', timezone: 'Asia/Tokyo'}),
                         clockCard({label: 'Bad Timezone', timezone: 'NoSuchZone'})
                     ]
-                }),
-                bbar: [
-                    span('Format'),
-                    textInput({
-                        bind: 'format',
-                        width: 100,
-                        placeholder: TIME_FMT
-                    }),
-                    toolbarSep(),
-                    span('Update Interval (ms)'),
-                    numberInput({
-                        model,
-                        bind: 'updateInterval',
-                        width: 60,
-                        placeholder: `${ONE_SECOND}`
-                    }),
-                    toolbarSep(),
-                    span('Prefix'),
-                    textInput({
-                        model,
-                        bind: 'prefix',
-                        width: 90
-                    }),
-                    toolbarSep(),
-                    span('Suffix'),
-                    textInput({
-                        model,
-                        bind: 'suffix',
-                        width: 90
-                    })
-                ]
+                })
             })
         });
     }

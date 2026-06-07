@@ -43,15 +43,15 @@ export const dataViewPanel = hoistCmp.factory({
                 className: 'tb-dataview-panel',
                 width: 600,
                 height: '50vh',
-                item: dataView(),
-                bbar: [
+                tbar: [
                     refreshButton({
                         text: 'Load new (random) records',
                         target: model
                     }),
                     filler(),
                     storeFilterField({store: model.dataViewModel.store})
-                ]
+                ],
+                item: dataView()
             })
         });
     }

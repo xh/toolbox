@@ -1,14 +1,12 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faMarkdown} from '@fortawesome/free-brands-svg-icons';
-import {span} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {codeInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import './MarkdownPanel.scss';
 import content from './MarkdownPanelContent.md';
 
@@ -48,6 +46,10 @@ export const markdownPanel = hoistCmp.factory({
                     notes: 'The underlying Markdown rendering library.'
                 }
             ],
+            options: wrapperOption({
+                label: 'Custom styles',
+                control: switchInput({model, bind: 'useCustomStyles'})
+            }),
             item: panel({
                 className: 'tb-markdown-panel',
                 contentBoxProps: {flexDirection: 'row', padding: true, gap: true},
@@ -75,19 +77,6 @@ export const markdownPanel = hoistCmp.factory({
                             collapsible: false,
                             resizable: false
                         },
-                        tbar: toolbar(
-                            span('Custom styles'),
-                            switchInput({bind: 'useCustomStyles'}),
-                            model.useCustomStyles
-                                ? span({
-                                      style: {
-                                          color: 'var(--xh-text-color-muted)',
-                                          fontSize: '0.85em'
-                                      },
-                                      item: 'App-provided CSS class applied to rendered output'
-                                  })
-                                : null
-                        ),
                         scrollable: true,
                         contentBoxProps: {padding: '10px 20px'},
                         item: markdown({content: model.content, lineBreaks: false})

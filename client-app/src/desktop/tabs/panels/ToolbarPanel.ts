@@ -7,13 +7,13 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon, xhLogo} from '@xh/hoist/icon';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {usStates} from '../../../core/data';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
 export const toolbarPanel = hoistCmp.factory({
     model: creates(ToolbarPanelModel),
 
-    render() {
+    render({model}) {
         return wrapper({
             title: 'Toolbar',
             icon: Icon.add(),
@@ -36,6 +36,10 @@ export const toolbarPanel = hoistCmp.factory({
                 },
                 {url: '$HR/desktop/cmp/toolbar/Toolbar.ts', notes: 'Hoist component.'}
             ],
+            options: wrapperOption({
+                label: 'Compact',
+                control: switchInput({model, bind: 'compact'})
+            }),
             item: panel({
                 title: 'Toolbar',
                 icon: Icon.add(),
@@ -137,11 +141,6 @@ const bottomBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
     toolbar({
         compact: model.compact,
         items: [
-            switchInput({
-                label: 'Compact',
-                bind: 'compact'
-            }),
-            toolbarSep(),
             buttonGroupInput({
                 bind: 'visible',
                 items: [

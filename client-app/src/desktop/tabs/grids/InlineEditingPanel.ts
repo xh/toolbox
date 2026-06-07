@@ -1,14 +1,13 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {filler, hbox, hframe, hspacer, span} from '@xh/hoist/cmp/layout';
+import {filler, hbox, hspacer} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {ValidationState} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common';
-import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
+import {wrapper, wrapperOption} from '../../common';
 import './InlineEditingPanel.scss';
 import {InlineEditingPanelModel} from './InlineEditingPanelModel';
 import classNames from 'classnames';
@@ -64,6 +63,30 @@ export const inlineEditingPanel = hoistCmp.factory({
                     notes: 'Store field config, including the validation rules applied here.'
                 }
             ],
+            // Generic grid display options omitted here (distracting from the editing demo); only
+            // this example's own editing-behavior controls are surfaced.
+            options: [
+                wrapperOption({
+                    label: 'Full-row editing',
+                    control: switchInput({model, bind: 'fullRowEditing'})
+                }),
+                wrapperOption({
+                    label: 'Async validation',
+                    control: switchInput({model, bind: 'asyncValidation'})
+                }),
+                wrapperOption({
+                    label: 'Edit with',
+                    control: segmentedControl({
+                        model,
+                        bind: 'clicksToEdit',
+                        options: [
+                            {value: 2, label: '2 clicks'},
+                            {value: 1, label: '1 click'},
+                            {value: -1, label: 'disabled'}
+                        ]
+                    })
+                })
+            ],
             item: panel({
                 className: classNames(
                     model.isModal ? '' : 'tb-grid-wrapper-panel',
@@ -76,7 +99,7 @@ export const inlineEditingPanel = hoistCmp.factory({
                  * with showIsPopup=true when opened from within a GridModel in dialog.
                  * {@see https://github.com/xh/hoist-react/issues/4061}
                  */
-                item: hframe(grid({agOptions: {popupParent: null}}), gridOptionsPanel()),
+                item: grid({agOptions: {popupParent: null}}),
                 bbar: bbar(),
                 model: model.panelModel
             })
@@ -139,11 +162,7 @@ const tbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
             intent: 'primary',
             onClick: () => model.revert(),
             disabled: !store.isModified
-        }),
-        filler(),
-        storeDirtyIndicator(),
-        '-',
-        storeValidIndicator()
+        })
     );
 });
 
@@ -194,33 +213,13 @@ const storeValidIndicator = hoistCmp.factory<InlineEditingPanelModel>(({model}) 
     });
 });
 
-const bbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
+const bbar = hoistCmp.factory<InlineEditingPanelModel>(() => {
     return toolbar(
-        switchInput({
-            bind: 'fullRowEditing',
-            label: 'Full-row editing',
-            labelSide: 'left'
-        }),
-        '-',
-        switchInput({
-            bind: 'asyncValidation',
-            label: 'Async validation',
-            labelSide: 'left'
-        }),
-        '-',
-        span('Edit with: '),
-        buttonGroupInput({
-            bind: 'clicksToEdit',
-            outlined: true,
-            items: [
-                button({text: '2 clicks', value: 2}),
-                button({text: '1 click', value: 1}),
-                button({text: 'disabled', value: -1})
-            ]
-        }),
-        hspacer(),
-        span(`${model.clicksToEditNote}`),
         filler(),
-        gridCountLabel()
+        gridCountLabel(),
+        '-',
+        storeDirtyIndicator(),
+        '-',
+        storeValidIndicator()
     );
 });

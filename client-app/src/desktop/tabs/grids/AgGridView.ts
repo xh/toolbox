@@ -1,11 +1,10 @@
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
-import {hframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {wrapper} from '../../common';
+import {agGridDisplayOptions, wrapper} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
-import {agGridOptionsPanel} from '../../common/grid/options/AgGridOptionsPanel';
 
 export const agGridView = hoistCmp.factory({
     model: creates(AgGridViewModel),
@@ -53,27 +52,41 @@ export const agGridView = hoistCmp.factory({
                     notes: 'ag-Grid documentation, covering advanced features such as pivoting.'
                 }
             ],
+            options: [
+                ...agGridDisplayOptions(agGridModel),
+                button({
+                    text: 'Save grid state',
+                    icon: Icon.save(),
+                    width: '100%',
+                    onClick: () =>
+                        XH.localStorageService.set('agGridWrapperState', agGridModel.getState())
+                }),
+                button({
+                    text: 'Load grid state',
+                    icon: Icon.grid(),
+                    width: '100%',
+                    onClick: () =>
+                        agGridModel.setState(XH.localStorageService.get('agGridWrapperState'))
+                })
+            ],
             item: panel({
                 className: 'tb-grid-wrapper-panel',
                 width: '100%',
                 mask: 'onLoad',
-                item: hframe(
-                    agGrid({
-                        model: agGridModel,
-                        columnDefs,
-                        rowData: [],
-                        defaultColDef: {
-                            sortable: true,
-                            resizable: true,
-                            filter: true
-                        },
-                        sideBar: true,
-                        rowSelection: {
-                            mode: 'singleRow'
-                        }
-                    }),
-                    agGridOptionsPanel({model: agGridModel})
-                )
+                item: agGrid({
+                    model: agGridModel,
+                    columnDefs,
+                    rowData: [],
+                    defaultColDef: {
+                        sortable: true,
+                        resizable: true,
+                        filter: true
+                    },
+                    sideBar: true,
+                    rowSelection: {
+                        mode: 'singleRow'
+                    }
+                })
             })
         });
     }

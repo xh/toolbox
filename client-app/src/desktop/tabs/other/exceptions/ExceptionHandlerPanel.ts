@@ -1,16 +1,16 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {wrapper} from '../../../common';
+import {wrapper, wrapperOption} from '../../../common';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {vframe, hframe, div, hbox, label, filler} from '@xh/hoist/cmp/layout';
-import {buttonGroupInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {vframe, div} from '@xh/hoist/cmp/layout';
+import {segmentedControl, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {ExceptionHandlerModel} from './ExceptionHandlerModel';
 import {capitalize} from 'lodash';
 
 export const exceptionHandlerPanel = hoistCmp.factory({
     model: creates(ExceptionHandlerModel),
-    render() {
+    render({model}) {
         return wrapper({
             title: 'Exception Handler',
             icon: Icon.skull(),
@@ -53,17 +53,53 @@ export const exceptionHandlerPanel = hoistCmp.factory({
                     notes: 'Hoist Promise enhancements; see .catchDefault().'
                 }
             ],
-            item: panel({
-                width: 700,
-                item: hframe(buttonContainer(), displayOptions())
-            })
+            options: [
+                wrapperOption({
+                    label: 'Title',
+                    control: textInput({model, bind: 'title', placeholder: 'Error', width: 150})
+                }),
+                wrapperOption({
+                    label: 'Message',
+                    control: textInput({
+                        model,
+                        bind: 'message',
+                        placeholder: '[Exception Message]',
+                        width: 150
+                    })
+                }),
+                wrapperOption({
+                    label: 'Log On Server',
+                    control: switchInput({model, bind: 'logOnServer'})
+                }),
+                wrapperOption({
+                    label: 'Show Alert',
+                    control: switchInput({model, bind: 'showAlert'})
+                }),
+                wrapperOption({
+                    label: 'Require Reload',
+                    control: switchInput({model, bind: 'requireReload', disabled: !model.showAlert})
+                }),
+                wrapperOption({
+                    label: 'Alert Type',
+                    control: segmentedControl({
+                        model,
+                        bind: 'alertType',
+                        disabled: !model.showAlert,
+                        options: [
+                            {value: 'dialog', label: 'Dialog'},
+                            {value: 'toast', label: 'Toast'}
+                        ]
+                    })
+                })
+            ],
+            item: buttonContainer()
         });
     }
 });
 
 const buttonContainer = hoistCmp.factory(() =>
     panel({
-        flex: 1,
+        width: 540,
         item: vframe({
             margin: 10,
             items: [
@@ -98,74 +134,3 @@ const exceptionButton = hoistCmp.factory<ExceptionHandlerModel>({
         });
     }
 });
-
-const displayOptions = hoistCmp.factory<ExceptionHandlerModel>(({model}) =>
-    panel({
-        title: 'Options',
-        icon: Icon.settings(),
-        className: 'tbox-display-opts',
-        compactHeader: true,
-        modelConfig: {side: 'right', defaultSize: 250, resizable: false},
-        item: div({
-            className: 'tbox-display-opts__inner',
-            items: [
-                'Title',
-                textInput({
-                    bind: 'title',
-                    placeholder: 'Error',
-                    width: null
-                }),
-                'Message',
-                textInput({
-                    bind: 'message',
-                    placeholder: '[Exception Message]',
-                    width: null
-                }),
-                switchInput({
-                    bind: 'logOnServer',
-                    label: 'Log On Server',
-                    labelSide: 'left'
-                }),
-                switchInput({
-                    bind: 'showAlert',
-                    label: 'Show Alert',
-                    labelSide: 'left'
-                }),
-                switchInput({
-                    bind: 'requireReload',
-                    label: 'Require Reload',
-                    labelSide: 'left',
-                    disabled: !model.showAlert
-                }),
-                hbox({
-                    alignItems: 'center',
-                    items: [
-                        label({
-                            className: `bp6-control bp6-switch bp6-inline bp6-align-right xh-input xh-switch-input${
-                                !model.showAlert ? ' bp6-disabled xh-input-disabled' : ''
-                            }`,
-                            item: 'Alert Type'
-                        }),
-                        filler(),
-                        buttonGroupInput({
-                            bind: 'alertType',
-                            disabled: !model.showAlert,
-                            items: [
-                                button({
-                                    margin: 0,
-                                    text: 'Dialog',
-                                    value: 'dialog'
-                                }),
-                                button({
-                                    margin: 0,
-                                    text: 'Toast',
-                                    value: 'toast'
-                                })
-                            ]
-                        })
-                    ]
-                })
-            ]
-        })
-    })
-);

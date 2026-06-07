@@ -1,13 +1,13 @@
 import {div, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
-import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, HoistProps, useLocalModel} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {isArray, isEmpty} from 'lodash';
 import {ReactElement, ReactNode} from 'react';
 import {toolboxLink, ToolboxLinkProps} from '../../core/cmp/ToolboxLink';
-import type {AppModel} from '../AppModel';
 import './Wrapper.scss';
 
 export interface WrapperProps extends HoistProps {
@@ -28,6 +28,20 @@ export interface WrapperProps extends HoistProps {
     description?: string | string[];
 
     /**
+     * Controls that customize how *this example is displayed* — e.g. switches, selects, and
+     * number inputs that toggle chrome, themes, sizing, or modes. Rendered in a consistent
+     * "Options" section in the info rail, below the description and above the resource links,
+     * so the demo content itself stays focused on what it is demonstrating.
+     *
+     * Provide already-constructed control elements (each owning its own `model` / `bind`), most
+     * commonly wrapped with the `wrapperOption` helper for a consistent labeled row. A demo
+     * *trigger* that re-runs the example to reflect changed options (e.g. a "Load Now" button) also
+     * belongs here — render it as a full-width `button` after the option rows. Controls intrinsic to
+     * the thing being demonstrated should stay in the demo content.
+     */
+    options?: ReactNode;
+
+    /**
      * Links to display for this tab, pointing either to relevant source code within XH
      * repos or to external sites. Provided as objects with `url` and optional `text` / `notes`.
      */
@@ -38,21 +52,40 @@ export interface WrapperProps extends HoistProps {
 export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
     displayName: 'Wrapper',
     className: 'tbox-wrapper',
-    render({className, title, icon, description, links, children}) {
-        const collapsed = (XH.appModel as AppModel).wrapperRailCollapsed;
+    render({className, title, icon, description, options, links, children}) {
+        const railModel = useLocalModel(WrapperRailModel);
         return hframe({
             className,
             items: [
-                collapsed ? collapsedRail() : infoRail({title, icon, description, links}),
+                railModel.collapsed
+                    ? collapsedRail({railModel})
+                    : infoRail({title, icon, description, options, links, railModel}),
                 vframe({className: 'tbox-wrapper__demo', items: children})
             ]
         });
     }
 });
 
-const infoRail = hoistCmp.factory<WrapperProps>({
-    render({title, icon, description, links}) {
-        const intro = isArray(description) ? description.join('\n') : description;
+/** Per-tab, in-memory collapse state for the info rail (intentionally not persisted or shared). */
+class WrapperRailModel extends HoistModel {
+    @bindable collapsed = false;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
+}
+
+interface InfoRailProps extends WrapperProps {
+    railModel: WrapperRailModel;
+}
+
+const infoRail = hoistCmp.factory<InfoRailProps>({
+    render({title, icon, description, options, links, railModel}) {
+        const intro = isArray(description) ? description.join('\n') : description,
+            hasIntro = !!intro,
+            hasOptions = !isEmpty(options),
+            hasLinks = !isEmpty(links);
         return panel({
             className: 'tbox-wrapper__rail',
             title,
@@ -63,8 +96,7 @@ const infoRail = hoistCmp.factory<WrapperProps>({
                 button({
                     icon: Icon.chevronLeft(),
                     title: 'Collapse info panel',
-                    onClick: () =>
-                        (XH.appModel as AppModel).setBindable('wrapperRailCollapsed', true)
+                    onClick: () => railModel.setBindable('collapsed', true)
                 })
             ],
             item: div({
@@ -73,15 +105,64 @@ const infoRail = hoistCmp.factory<WrapperProps>({
                     div({
                         className: 'tbox-wrapper__intro',
                         item: markdown({content: intro, lineBreaks: false}),
-                        omit: !intro
+                        omit: !hasIntro
                     }),
                     div({
                         className: 'tbox-wrapper__divider',
-                        omit: !intro || isEmpty(links)
+                        omit: !(hasIntro && hasOptions)
+                    }),
+                    optionsSection({options}),
+                    div({
+                        className: 'tbox-wrapper__divider',
+                        omit: !((hasIntro || hasOptions) && hasLinks)
                     }),
                     resources({links})
                 ]
             })
+        });
+    }
+});
+
+interface OptionsSectionProps extends HoistProps {
+    options?: ReactNode;
+}
+
+const optionsSection = hoistCmp.factory<OptionsSectionProps>({
+    render({options}) {
+        // `isEmpty` treats undefined and `[]` as empty but a React element (a non-empty object) or
+        // a non-empty array as present — which is exactly the "has renderable content" test we want
+        // for the element/array values examples pass here.
+        if (isEmpty(options)) return null;
+        return div({
+            className: 'tbox-wrapper__options',
+            items: [
+                div({className: 'tbox-wrapper__options-label', item: 'Options'}),
+                div({className: 'tbox-wrapper__options-body', item: options})
+            ]
+        });
+    }
+});
+
+interface WrapperOptionProps extends HoistProps {
+    /** Short label shown at the left of the row. */
+    label: ReactNode;
+    /** The control element (e.g. `switchInput`, `select`, `numberInput`) shown at the right. */
+    control: ReactElement;
+}
+
+/**
+ * A single labeled row within a Wrapper `options` section — a consistent label-left / control-right
+ * layout so display options read uniformly across examples regardless of the underlying control.
+ */
+export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOptionProps>({
+    displayName: 'WrapperOption',
+    render({label, control}) {
+        return div({
+            className: 'tbox-wrapper__option',
+            items: [
+                div({className: 'tbox-wrapper__option-label', item: label}),
+                div({className: 'tbox-wrapper__option-control', item: control})
+            ]
         });
     }
 });
@@ -126,9 +207,9 @@ const resources = hoistCmp.factory<ResourcesProps>({
     }
 });
 
-const collapsedRail = hoistCmp.factory({
-    render() {
-        const expand = () => (XH.appModel as AppModel).setBindable('wrapperRailCollapsed', false);
+const collapsedRail = hoistCmp.factory<{railModel: WrapperRailModel} & HoistProps>({
+    render({railModel}) {
+        const expand = () => railModel.setBindable('collapsed', false);
         return vbox({
             className: 'tbox-wrapper__rail-collapsed',
             title: 'Show info panel',

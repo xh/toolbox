@@ -1,5 +1,5 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {filler, hframe, span} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {
@@ -13,7 +13,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common';
-import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
 import {ExternalSortGridPanelModel} from './ExternalSortGridPanelModel';
 
 export const externalSortGridPanel = hoistCmp.factory({
@@ -45,11 +44,12 @@ export const externalSortGridPanel = hoistCmp.factory({
                     notes: 'Observe GridModel.sortBy to drive externally-managed sorting.'
                 }
             ],
+            // Grid display options intentionally omitted here — not relevant to the sort demo.
             item: panel({
                 className: 'tb-grid-wrapper-panel tb-external-sort-panel',
                 mask: 'onLoad',
                 tbar: tbar(),
-                item: hframe(grid(), gridOptionsPanel())
+                item: grid()
             })
         });
     }

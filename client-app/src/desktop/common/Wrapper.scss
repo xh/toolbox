@@ -59,13 +59,46 @@
     gap: var(--xh-pad-half-px);
   }
 
-  &__resources-label {
+  &__resources-label,
+  &__options-label {
     margin-bottom: var(--xh-pad-half-px);
     text-transform: uppercase;
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.09em;
     color: var(--xh-text-color-muted);
+  }
+
+  // Consolidated demo display-options, between the description and the resource links.
+  &__options {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__options-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-pad-half-px);
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--xh-pad-px);
+    min-height: 26px;
+  }
+
+  &__option-label {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.9em;
+  }
+
+  &__option-control {
+    flex: none;
+    display: flex;
+    align-items: center;
   }
 
   &__resource {

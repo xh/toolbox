@@ -2,14 +2,12 @@ import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {span} from '@xh/hoist/cmp/layout';
 import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {mask} from '@xh/hoist/cmp/mask';
-import {sampleGrid, SampleGridModel, wrapper} from '../../common';
+import {sampleGrid, SampleGridModel, wrapper, wrapperOption} from '../../common';
 
 export const maskPanel = hoistCmp.factory({
     model: creates(() => MaskPanelModel),
@@ -44,41 +42,42 @@ export const maskPanel = hoistCmp.factory({
                     notes: 'Hoist model for tracking async tasks - can be linked to masks.'
                 }
             ],
+            options: [
+                wrapperOption({
+                    label: 'Load for (secs)',
+                    control: numberInput({model, bind: 'seconds', width: 70, min: 0, max: 10})
+                }),
+                wrapperOption({
+                    label: 'Message',
+                    control: textInput({
+                        model,
+                        bind: 'message',
+                        width: 150,
+                        placeholder: 'optional text'
+                    })
+                }),
+                wrapperOption({
+                    label: 'Inline',
+                    control: switchInput({model, bind: 'inline'})
+                }),
+                wrapperOption({
+                    label: 'Spinner',
+                    control: switchInput({model, bind: 'spinner'})
+                }),
+                button({
+                    text: 'Load Now',
+                    icon: Icon.refresh(),
+                    intent: 'primary',
+                    width: '100%',
+                    onClick: () => model.refreshAsync()
+                })
+            ],
             item: panel({
                 title: 'Mask',
                 icon: Icon.mask({prefix: 'fas'}),
                 height: '60vh',
                 width: '90%',
                 item: sampleGrid({omitGridTools: true, omitMask: true}),
-                bbar: [
-                    span('Load for'),
-                    numberInput({
-                        bind: 'seconds',
-                        width: 40,
-                        min: 0,
-                        max: 10
-                    }),
-                    span('secs with'),
-                    textInput({
-                        bind: 'message',
-                        width: 120,
-                        placeholder: 'optional text'
-                    }),
-                    toolbarSep(),
-                    switchInput({
-                        bind: 'inline',
-                        label: 'Inline:',
-                        labelSide: 'left'
-                    }),
-                    toolbarSep(),
-                    switchInput({
-                        bind: 'spinner',
-                        label: 'Spinner:',
-                        labelSide: 'left'
-                    }),
-                    toolbarSep(),
-                    refreshButton({text: 'Load Now'})
-                ],
                 mask: mask({
                     spinner: model.spinner,
                     inline: model.inline,

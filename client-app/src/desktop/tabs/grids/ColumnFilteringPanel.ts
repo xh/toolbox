@@ -1,5 +1,5 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {hframe, filler} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {storeFilterField} from '@xh/hoist/cmp/store';
@@ -14,12 +14,12 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {ColumnFilteringPanelModel} from './ColumnFilteringPanelModel';
-import {wrapper} from '../../common';
-import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
+import {wrapper, wrapperOption} from '../../common';
 
 export const columnFilteringPanel = hoistCmp.factory({
     model: creates(ColumnFilteringPanelModel),
-    render() {
+    render({model}) {
+        const {filterModel} = model.gridModel;
         return wrapper({
             title: 'Column Filtering',
             icon: Icon.filter(),
@@ -62,10 +62,25 @@ export const columnFilteringPanel = hoistCmp.factory({
                     notes: 'FieldSpec for field managed by the FilterChooserModel.'
                 }
             ],
+            // Generic grid display options omitted here (distracting in a filtering demo); only
+            // this example's own filter controls are surfaced.
+            options: [
+                wrapperOption({
+                    label: 'Commit on change',
+                    control: switchInput({model: filterModel, bind: 'commitOnChange'})
+                }),
+                button({
+                    icon: Icon.filter(),
+                    text: 'View Grid Filters',
+                    intent: 'primary',
+                    width: '100%',
+                    onClick: () => filterModel.openDialog()
+                })
+            ],
             item: panel({
                 className: 'tb-grid-wrapper-panel tb-column-filtering-panel',
                 tbar: tbar(),
-                item: hframe(grid(), gridOptionsPanel()),
+                item: grid(),
                 bbar: bbar()
             })
         });
@@ -83,21 +98,8 @@ const tbar = hoistCmp.factory(() =>
     )
 );
 
-const bbar = hoistCmp.factory<ColumnFilteringPanelModel>(({model}) => {
-    const {filterModel} = model.gridModel;
+const bbar = hoistCmp.factory<ColumnFilteringPanelModel>(() => {
     return toolbar(
-        button({
-            icon: Icon.filter(),
-            text: 'View Grid Filters',
-            intent: 'primary',
-            onClick: () => filterModel.openDialog()
-        }),
-        '-',
-        switchInput({
-            model: filterModel,
-            bind: 'commitOnChange',
-            label: 'Commit on change'
-        }),
         filler(),
         gridCountLabel(),
         '-',

@@ -1,17 +1,15 @@
-import {span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {treeMap} from '@xh/hoist/cmp/treemap';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common';
+import {treeMapDisplayOptions, wrapper, wrapperOption} from '../../common';
 import {SimpleTreeMapModel} from './SimpleTreeMapModel';
 
 export const simpleTreeMapPanel = hoistCmp.factory({
     model: creates(SimpleTreeMapModel),
 
-    render() {
+    render({model}) {
         return wrapper({
             title: 'Simple TreeMap',
             icon: Icon.gridLarge(),
@@ -24,11 +22,35 @@ export const simpleTreeMapPanel = hoistCmp.factory({
                 'Note that applications must license and specify a compatible version of',
                 'Highcharts as an application dependency.'
             ],
+            options: [
+                wrapperOption({
+                    label: 'Enable Cluster',
+                    control: switchInput({model, bind: 'cluster'})
+                }),
+                wrapperOption({
+                    label: 'Threshold Width (px)',
+                    control: numberInput({
+                        model,
+                        bind: 'clusterWidthThreshold',
+                        disabled: !model.cluster,
+                        width: 70
+                    })
+                }),
+                wrapperOption({
+                    label: 'Threshold Height (px)',
+                    control: numberInput({
+                        model,
+                        bind: 'clusterHeightThreshold',
+                        disabled: !model.cluster,
+                        width: 70
+                    })
+                }),
+                ...treeMapDisplayOptions(model.treeMapModel)
+            ],
             item: panel({
                 height: '60vh',
                 width: '90%',
                 mask: 'onLoad',
-                tbar: tbar(),
                 item: treeMap()
             }),
             links: [
@@ -53,78 +75,3 @@ export const simpleTreeMapPanel = hoistCmp.factory({
         });
     }
 });
-
-const tbar = hoistCmp.factory<SimpleTreeMapModel>(({model}) =>
-    toolbar(
-        span('Enable Cluster'),
-        switchInput({
-            bind: 'cluster'
-        }),
-        span('Threshold Width (px)'),
-        numberInput({
-            disabled: !model.cluster,
-            width: 50,
-            bind: 'clusterWidthThreshold'
-        }),
-        span('Threshold Height (px)'),
-        numberInput({
-            disabled: !model.cluster,
-            width: 50,
-            bind: 'clusterHeightThreshold'
-        }),
-        '-',
-        span('Max Heat'),
-        select({
-            model: model.treeMapModel,
-            bind: 'maxHeat',
-            width: 120,
-            enableFilter: false,
-            options: [
-                {label: 'None (auto)', value: undefined},
-                {label: '0.5', value: 0.5},
-                {label: '1', value: 1},
-                {label: '2', value: 2}
-            ]
-        }),
-        '-',
-        span('Color Mode'),
-        select({
-            model: model.treeMapModel,
-            bind: 'colorMode',
-            width: 120,
-            enableFilter: false,
-            options: [
-                {label: 'Linear', value: 'linear'},
-                {label: 'Wash', value: 'wash'},
-                {label: 'None', value: 'none'}
-            ]
-        }),
-        '-',
-        span('Theme'),
-        select({
-            model: model.treeMapModel,
-            bind: 'theme',
-            width: 120,
-            enableFilter: false,
-            options: [
-                {label: 'Default', value: undefined},
-                {label: 'Light', value: 'light'},
-                {label: 'Dark', value: 'dark'}
-            ]
-        }),
-        '-',
-        span('Algorithm'),
-        select({
-            model: model.treeMapModel,
-            bind: 'algorithm',
-            width: 120,
-            enableFilter: false,
-            options: [
-                {label: 'Squarified', value: 'squarified'},
-                {label: 'Slice and Dice', value: 'sliceAndDice'},
-                {label: 'Stripes', value: 'stripes'},
-                {label: 'Strip', value: 'strip'}
-            ]
-        })
-    )
-);
