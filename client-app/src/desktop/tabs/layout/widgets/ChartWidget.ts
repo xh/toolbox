@@ -96,11 +96,14 @@ class ChartWidgetModel extends HoistModel {
             track: () => this.price,
             run: price => {
                 if (this.dashViewModel) {
-                    this.dashViewModel.titleDetails = fmtPrice(price, {
+                    // Lead with a middot so the live price reads as a distinct segment after the
+                    // title (fullTitle joins title + titleDetails with a space): "Live Chart - $142".
+                    const formatted = fmtPrice(price, {
                         precision: 2,
                         prefix: '$',
                         asHtml: true
-                    }) as string;
+                    });
+                    this.dashViewModel.titleDetails = `· ${formatted}`;
                 }
             }
         });
