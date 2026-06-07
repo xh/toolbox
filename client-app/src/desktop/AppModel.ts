@@ -426,7 +426,7 @@ export class AppModel extends BaseAppModel {
                 }
             },
             {id: 'docs', icon: Icon.book(), content: docsTab},
-            {id: 'examples', icon: Icon.books(), content: examplesTab}
+            {id: 'examples', title: 'Example Apps', icon: Icon.books(), content: examplesTab}
         ];
         return new TabContainerModel({
             persistWith: {localStorageKey: 'tabState'},
