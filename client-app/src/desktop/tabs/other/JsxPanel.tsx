@@ -23,7 +23,11 @@ export const jsxPanel = hoistCmp.factory(() =>
             'We believe that the factory approach excels for declarative specification of',
             'code-heavy element trees. For element trees with a significant amount of',
             'hypertext, JSX might be a better choice. Both can be used interchangeably, even',
-            'within the same render method.'
+            'within the same render method.',
+            '',
+            "The two snippets below are rendered with Hoist's `codeInput` (powered by CodeMirror",
+            '6), each using the language mode best suited to its syntax - plain JavaScript on the',
+            'left and JSX on the right.'
         ],
         links: [
             {url: '$TB/client-app/src/desktop/tabs/other/JsxPanel.tsx', notes: 'This example.'},
@@ -47,7 +51,7 @@ export const jsxPanel = hoistCmp.factory(() =>
                     title: 'Using Factories',
                     icon: Icon.factory({prefix: 'fas'}),
                     compactHeader: true,
-                    item: renderCode(getElemExample())
+                    item: renderCode(getElemExample(), 'js')
                 }),
                 panel({
                     flex: 1,
@@ -55,7 +59,7 @@ export const jsxPanel = hoistCmp.factory(() =>
                     title: 'Using JSX',
                     icon: Icon.code(),
                     compactHeader: true,
-                    item: renderCode(getJsxExample())
+                    item: renderCode(getJsxExample(), 'jsx')
                 })
             ]
         })
@@ -65,13 +69,14 @@ export const jsxPanel = hoistCmp.factory(() =>
 //------------------------
 // Implementation
 //------------------------
-function renderCode(value: string) {
+function renderCode(value: string, language: string) {
     return codeInput({
         flex: 1,
         width: null,
         height: null,
         readonly: true,
-        language: 'js',
+        highlightActiveLine: true,
+        language,
         value: value.trim()
     });
 }
