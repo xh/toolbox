@@ -2,13 +2,12 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {ColumnFilteringPanelModel} from './ColumnFilteringPanelModel';
-import {wrapper, wrapperOption} from '../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../common';
 
 export const columnFilteringPanel = hoistCmp.factory({
     model: creates(ColumnFilteringPanelModel),
@@ -63,11 +62,9 @@ export const columnFilteringPanel = hoistCmp.factory({
                     label: 'Commit on change',
                     control: switchInput({model: filterModel, bind: 'commitOnChange'})
                 }),
-                button({
+                wrapperAction({
                     icon: Icon.filter(),
                     text: 'View Grid Filters',
-                    intent: 'primary',
-                    width: '100%',
                     onClick: () => filterModel.openDialog()
                 })
             ],

@@ -1,7 +1,7 @@
 import {div, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {hoistCmp, HoistModel, HoistProps, useLocalModel} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, ButtonProps} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -178,6 +178,19 @@ export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOption
         });
     }
 });
+
+/**
+ * A full-width, non-minimal action button for a Wrapper `options` section - i.e. a demo *trigger*
+ * (e.g. "Load Now") or a utility action that acts on the example. Standardizes the action-button
+ * look across examples (filled, stretched to the rail width).
+ *
+ * Intent convention: use `intent: 'primary'` for the single action that drives the example's core
+ * behavior (the "run it" trigger); leave neutral (no intent) for secondary utilities; use
+ * `intent: 'danger'` for destructive actions (clear / reset).
+ */
+export function wrapperAction(props: ButtonProps): ReactElement {
+    return button({minimal: false, width: '100%', ...props});
+}
 
 interface ResourcesProps extends HoistProps {
     links?: ToolboxLinkProps[];

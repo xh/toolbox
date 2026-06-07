@@ -1,11 +1,12 @@
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {hoistCmp, HoistModel, HoistProps, useLocalModel} from '@xh/hoist/core';
 import {select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {sample} from 'lodash';
 import {ReactElement} from 'react';
-import {wrapperOption} from '../../Wrapper';
+import {wrapperAction, wrapperOption} from '../../Wrapper';
 
 /**
  * Standard AG Grid display-option rows (sizing mode + styling switches) for a Wrapper `options`
@@ -86,20 +87,55 @@ export function gridDisplayOptions(model: GridModel): ReactElement[] {
  */
 export function gridDisplayActions(model: GridModel): ReactElement[] {
     return [
-        button({
+        wrapperAction({
             text: 'Select random record',
             icon: Icon.random(),
-            width: '100%',
             onClick: () => {
                 const rec = sample(model.store.records);
                 if (rec) model.selModel.select(rec);
             }
         }),
-        button({
+        wrapperAction({
             text: 'Scroll to selection',
             icon: Icon.crosshairs(),
-            width: '100%',
             onClick: () => model.ensureSelectionVisibleAsync()
         })
     ];
 }
+
+/** Per-button local state tracking whether the tree is currently fully expanded. */
+class ExpandCollapseModel extends HoistModel {
+    @bindable expanded = false;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
+}
+
+/**
+ * A toggle action that expands or collapses all rows of a tree `GridModel`. Tracks its own
+ * expand/collapse state so a single button can flip between the two.
+ */
+interface ExpandCollapseButtonProps extends HoistProps {
+    gridModel: GridModel;
+}
+
+export const expandCollapseButton = hoistCmp.factory<ExpandCollapseButtonProps>({
+    displayName: 'ExpandCollapseButton',
+    render({gridModel}) {
+        const model = useLocalModel(ExpandCollapseModel);
+        return wrapperAction({
+            text: model.expanded ? 'Collapse all' : 'Expand all',
+            icon: model.expanded ? Icon.collapse() : Icon.expand(),
+            onClick: () => {
+                if (model.expanded) {
+                    gridModel.collapseAll();
+                } else {
+                    gridModel.expandAll();
+                }
+                model.setBindable('expanded', !model.expanded);
+            }
+        });
+    }
+});

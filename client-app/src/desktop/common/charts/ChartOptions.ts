@@ -1,10 +1,9 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {HoistModel} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {ReactElement} from 'react';
-import {wrapperOption} from '../Wrapper';
+import {wrapperAction, wrapperOption} from '../Wrapper';
 
 /** Shape a chart example model must satisfy to render the shared chart display options. */
 export type ChartExampleModel = HoistModel & {
@@ -49,10 +48,10 @@ export function chartDisplayOptions(model: ChartExampleModel): ReactElement[] {
                 options: model.contextMenuOptions
             })
         }),
-        button({
+        wrapperAction({
             text: 'Call chart API',
             icon: Icon.code(),
-            width: '100%',
+            intent: 'primary',
             onClick: () => model.callChartApi()
         })
     ];

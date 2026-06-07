@@ -1,9 +1,8 @@
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {agGridDisplayOptions, wrapper} from '../../common';
+import {agGridDisplayOptions, wrapper, wrapperAction} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
 
 export const agGridView = hoistCmp.factory({
@@ -54,17 +53,15 @@ export const agGridView = hoistCmp.factory({
             ],
             options: [
                 ...agGridDisplayOptions(agGridModel),
-                button({
+                wrapperAction({
                     text: 'Save grid state',
                     icon: Icon.save(),
-                    width: '100%',
                     onClick: () =>
                         XH.localStorageService.set('agGridWrapperState', agGridModel.getState())
                 }),
-                button({
+                wrapperAction({
                     text: 'Load grid state',
                     icon: Icon.grid(),
-                    width: '100%',
                     onClick: () =>
                         agGridModel.setState(XH.localStorageService.get('agGridWrapperState'))
                 })

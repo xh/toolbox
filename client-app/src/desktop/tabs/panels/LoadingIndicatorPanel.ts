@@ -4,10 +4,9 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {loadingIndicator} from '@xh/hoist/cmp/loadingindicator';
-import {sampleGrid, SampleGridModel, wrapper, wrapperOption} from '../../common';
+import {sampleGrid, SampleGridModel, wrapper, wrapperAction, wrapperOption} from '../../common';
 
 export const loadingIndicatorPanel = hoistCmp.factory({
     model: creates(() => LoadingIndicatorPanelModel),
@@ -78,11 +77,10 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     label: 'Spinner',
                     control: switchInput({model, bind: 'spinner'})
                 }),
-                button({
+                wrapperAction({
                     text: 'Load Now',
                     icon: Icon.refresh(),
                     intent: 'primary',
-                    width: '100%',
                     onClick: () => model.refreshAsync()
                 })
             ],

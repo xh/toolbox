@@ -2,10 +2,9 @@ import {library} from '@fortawesome/fontawesome-svg-core';
 import {faPhoneLaptop} from '@fortawesome/pro-regular-svg-icons';
 import {hframe, img} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common';
+import {wrapper, wrapperAction} from '../../common';
 // @ts-ignore
 import mobileImageForm from './MobileImageForm.png';
 // @ts-ignore
@@ -51,11 +50,10 @@ export const mobileTab = hoistCmp.factory(() =>
             }
         ],
         options: [
-            button({
+            wrapperAction({
                 text: 'Mail yourself a link',
                 icon: Icon.envelope(),
                 intent: 'primary',
-                minimal: false,
                 onClick: () => {
                     XH.fetch({url: 'emailMobileLink/send'});
                     XH.toast({
@@ -66,10 +64,9 @@ export const mobileTab = hoistCmp.factory(() =>
                     });
                 }
             }),
-            button({
+            wrapperAction({
                 text: 'Open in this browser',
                 icon: Icon.mobile(),
-                minimal: false,
                 onClick: () => XH.openWindow('/mobile')
             })
         ],

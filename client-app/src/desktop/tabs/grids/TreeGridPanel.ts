@@ -3,6 +3,7 @@ import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {
+    expandCollapseButton,
     gridDisplayActions,
     gridDisplayOptions,
     sampleTreeGrid,
@@ -63,6 +64,7 @@ export const treeGridPanel = hoistCmp.factory({
                         ]
                     })
                 }),
+                expandCollapseButton({gridModel}),
                 ...gridDisplayActions(gridModel)
             ],
             item: panel({
