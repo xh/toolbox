@@ -30,7 +30,7 @@ export const toolbarFormPanel = hoistCmp.factory({
         const {topFormModel, bottomFormModel} = model;
 
         return wrapper({
-            title: 'Toolbar Form',
+            title: 'Toolbar Forms',
             icon: Icon.edit(),
             description: [
                 'Forms and `FormField`s can also be used inside Toolbars.',

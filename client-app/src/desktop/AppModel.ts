@@ -196,7 +196,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'inputs', path: '/inputs'},
                             {name: 'select', path: '/select'},
                             {name: 'picker', path: '/picker'},
-                            {name: 'toolbarForm', path: '/toolbarForm'}
+                            {name: 'toolbarForms', path: '/toolbarForms'}
                         ]
                     },
                     {
@@ -370,7 +370,7 @@ export class AppModel extends BaseAppModel {
                         {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
                         {id: 'select', title: 'Select', content: selectPanel},
                         {id: 'picker', title: 'Picker', content: pickerPanel},
-                        {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
+                        {id: 'toolbarForms', title: 'Toolbar Forms', content: toolbarFormPanel}
                     ]
                 }
             },
