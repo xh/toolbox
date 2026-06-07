@@ -1,12 +1,11 @@
 import {box, frame, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas} from '@xh/hoist/desktop/cmp/dash';
 import {dashCanvasWidgetChooser} from '@xh/hoist/desktop/cmp/dash/canvas/widgetchooser/DashCanvasWidgetChooser';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper, wrapperOption} from '../../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../../common';
 import {DashCanvasPanelModel} from './DashCanvasPanelModel';
 import './DashCanvasPanel.scss';
 
@@ -89,16 +88,16 @@ export const dashCanvasPanel = hoistCmp.factory({
                     label: 'Rename Locked',
                     control: switchInput({model: dashCanvasModel, bind: 'renameLocked'})
                 }),
-                button({
+                wrapperAction({
                     text: 'Clear',
                     icon: Icon.cross(),
-                    width: '100%',
+                    intent: 'danger',
                     onClick: () => model.clearCanvas()
                 }),
-                button({
+                wrapperAction({
                     text: 'Reset State',
                     icon: Icon.reset(),
-                    width: '100%',
+                    intent: 'danger',
                     onClick: () => model.resetState()
                 })
             ],

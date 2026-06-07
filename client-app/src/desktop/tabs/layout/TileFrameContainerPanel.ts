@@ -1,11 +1,10 @@
 import {tileFrame} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {numberInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon, xhLogo} from '@xh/hoist/icon';
 import {action, bindable, makeObservable} from '@xh/hoist/mobx';
-import {wrapper, wrapperOption} from '../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../common';
 import './TileFrameContainerPanel.scss';
 
 export const tileFrameContainerPanel = hoistCmp.factory({
@@ -98,10 +97,10 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                         stepSize: 10
                     })
                 }),
-                button({
+                wrapperAction({
                     text: 'Reset',
                     icon: Icon.reset(),
-                    width: '100%',
+                    intent: 'danger',
                     onClick: () => model.reset()
                 })
             ],

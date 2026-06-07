@@ -4,7 +4,6 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {
     buttonWidget,
@@ -14,7 +13,7 @@ import {
     treeGridWidget,
     errorWidget
 } from '../widgets';
-import {wrapper, wrapperOption} from '../../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../../common';
 
 export const dashContainerPanel = hoistCmp.factory({
     model: creates(() => DashContainerPanelModel),
@@ -50,10 +49,10 @@ export const dashContainerPanel = hoistCmp.factory({
                     label: 'Rename Locked',
                     control: switchInput({model: model.dashContainerModel, bind: 'renameLocked'})
                 }),
-                button({
+                wrapperAction({
                     text: 'Reset & Clear State',
                     icon: Icon.reset(),
-                    width: '100%',
+                    intent: 'danger',
                     onClick: () => model.resetState()
                 })
             ],
