@@ -76,7 +76,7 @@ export const inputsPanel = hoistCmp.factory({
                 item: hframe({
                     gap: true,
                     padding: true,
-                    items: [column1(), column2(), column3(), column4()]
+                    items: [column1(), column2(), column3()]
                 }),
                 bbar: inputsTbar({compact: true})
             })
@@ -230,6 +230,41 @@ const column2 = hoistCmp.factory<InputsPanelModel>(() =>
                         })
                     })
                 ]
+            }),
+            card({
+                title: 'Sliders',
+                icon: Icon.settings(),
+                items: [
+                    demoRow({
+                        label: 'Slider',
+                        info: 'max, min, stepSize, labelStepSize',
+                        item: slider({
+                            bind: 'slider1',
+                            max: 100,
+                            min: 0,
+                            labelStepSize: 25,
+                            stepSize: 1
+                        })
+                    }),
+                    demoRow({
+                        label: 'Slider',
+                        info: 'multi-value, labelRenderer',
+                        item: slider({
+                            bind: 'slider2',
+                            min: 50000,
+                            max: 150000,
+                            labelStepSize: 25000,
+                            stepSize: 1000,
+                            labelRenderer: v =>
+                                `$${fmtThousands(v, {
+                                    label: true,
+                                    precision: 0,
+                                    labelCls: null,
+                                    asHtml: true
+                                })}`
+                        })
+                    })
+                ]
             })
         ]
     })
@@ -314,15 +349,7 @@ const column3 = hoistCmp.factory<InputsPanelModel>(() =>
                         })
                     })
                 ]
-            })
-        ]
-    })
-);
-
-const column4 = hoistCmp.factory<InputsPanelModel>(() =>
-    vbox({
-        flex: 1,
-        items: [
+            }),
             card({
                 title: 'Toggles',
                 icon: Icon.checkSquare(),
@@ -350,41 +377,6 @@ const column4 = hoistCmp.factory<InputsPanelModel>(() =>
                             bind: 'switchVal',
                             label: 'Enabled:',
                             labelSide: 'left'
-                        })
-                    })
-                ]
-            }),
-            card({
-                title: 'Sliders',
-                icon: Icon.settings(),
-                items: [
-                    demoRow({
-                        label: 'Slider',
-                        info: 'max, min, stepSize, labelStepSize',
-                        item: slider({
-                            bind: 'slider1',
-                            max: 100,
-                            min: 0,
-                            labelStepSize: 25,
-                            stepSize: 1
-                        })
-                    }),
-                    demoRow({
-                        label: 'Slider',
-                        info: 'multi-value, labelRenderer',
-                        item: slider({
-                            bind: 'slider2',
-                            min: 50000,
-                            max: 150000,
-                            labelStepSize: 25000,
-                            stepSize: 1000,
-                            labelRenderer: v =>
-                                `$${fmtThousands(v, {
-                                    label: true,
-                                    precision: 0,
-                                    labelCls: null,
-                                    asHtml: true
-                                })}`
                         })
                     })
                 ]
