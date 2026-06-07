@@ -1,13 +1,8 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
+import {grid} from '@xh/hoist/cmp/grid';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {
-    button,
-    colAutosizeButton,
-    colChooserButton,
-    exportButton
-} from '@xh/hoist/desktop/cmp/button';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -93,12 +88,6 @@ const tbar = hoistCmp.factory(() =>
             placeholder: 'Filter with bound FilterChooser...'
         }),
         '-',
-        gridCountLabel({unit: 'companies'}),
-        '-',
-        storeFilterField({placeholder: 'Quick filter...'}),
-        '-',
-        colAutosizeButton(),
-        colChooserButton(),
-        exportButton()
+        storeFilterField({placeholder: 'Quick filter...'})
     )
 );
