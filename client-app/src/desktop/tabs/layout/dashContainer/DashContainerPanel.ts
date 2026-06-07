@@ -102,29 +102,35 @@ class DashContainerPanelModel extends HoistModel {
 
     @managed
     dashContainerModel = new DashContainerModel({
-        persistWith: {localStorageKey: 'dashContainerExampleStateV2'},
+        persistWith: {localStorageKey: 'dashContainerExampleStateV3'},
         showMenuButton: true,
         initialState: [
             {
                 type: 'row',
                 content: [
                     {
-                        type: 'stack',
-                        width: 60,
+                        type: 'column',
+                        width: 72,
                         content: [
-                            {type: 'view', id: 'grid'},
-                            {type: 'view', id: 'treeGrid'},
-                            {type: 'view', id: 'error'}
+                            {type: 'view', id: 'treeGrid', height: 60},
+                            {
+                                type: 'row',
+                                height: 40,
+                                content: [
+                                    {type: 'view', id: 'chart', width: 52},
+                                    {
+                                        type: 'stack',
+                                        width: 48,
+                                        content: [
+                                            {type: 'view', id: 'options'},
+                                            {type: 'view', id: 'error'}
+                                        ]
+                                    }
+                                ]
+                            }
                         ]
                     },
-                    {
-                        type: 'column',
-                        width: 40,
-                        content: [
-                            {type: 'view', id: 'chart'},
-                            {type: 'view', id: 'options', height: '200px'}
-                        ]
-                    }
+                    {type: 'view', id: 'grid', width: 28}
                 ]
             }
         ],
