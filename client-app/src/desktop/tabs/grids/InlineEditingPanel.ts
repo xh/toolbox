@@ -2,7 +2,7 @@ import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, hspacer} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {ValidationState} from '@xh/hoist/data';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -108,60 +108,31 @@ export const inlineEditingPanel = hoistCmp.factory({
 });
 
 const tbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
-    const {store, gridModel} = model;
+    const {gridModel} = model;
     return toolbar(
-        button({
-            icon: Icon.add(),
-            text: 'Add',
-            onClick: () => model.add(1)
-        }),
-        button({
-            icon: Icon.add(),
-            text: 'Add 5',
-            onClick: () => model.add(5)
-        }),
-        button({
-            icon: Icon.add(),
-            text: 'Add 1k',
-            onClick: () => model.add(1000)
-        }),
-        button({
-            icon: Icon.add(),
-            text: 'Add 10k',
-            onClick: () => model.add(10000)
-        }),
+        'Add rows',
+        buttonGroup(
+            button({icon: Icon.add(), text: '1', onClick: () => model.add(1)}),
+            button({icon: Icon.add(), text: '5', onClick: () => model.add(5)}),
+            button({icon: Icon.add(), text: '1k', onClick: () => model.add(1000)}),
+            button({icon: Icon.add(), text: '10k', onClick: () => model.add(10000)})
+        ),
         '-',
         button({
             icon: Icon.edit(),
-            text: 'First Row',
+            text: 'Edit first row',
             onClick: () => model.beginEditAsync()
         }),
         button({
             icon: Icon.edit(),
-            text: 'First Row (Amount)',
+            text: 'Edit first amount',
             onClick: () => model.beginEditAsync({colId: 'amount'})
         }),
-        '-',
         button({
             icon: Icon.stopCircle(),
-            text: 'Stop Editing',
+            text: 'Stop editing',
             onClick: () => model.endEditAsync(),
             disabled: !gridModel.isEditing
-        }),
-        '-',
-        button({
-            icon: Icon.check(),
-            text: 'Commit All',
-            intent: 'success',
-            onClick: () => model.commitAllAsync(),
-            disabled: !store.isModified
-        }),
-        button({
-            icon: Icon.undo(),
-            text: 'Revert All',
-            intent: 'primary',
-            onClick: () => model.revert(),
-            disabled: !store.isModified
         })
     );
 });
@@ -213,13 +184,27 @@ const storeValidIndicator = hoistCmp.factory<InlineEditingPanelModel>(({model}) 
     });
 });
 
-const bbar = hoistCmp.factory<InlineEditingPanelModel>(() => {
+const bbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
+    const {store} = model;
     return toolbar(
-        filler(),
         gridCountLabel(),
         '-',
         storeDirtyIndicator(),
         '-',
-        storeValidIndicator()
+        storeValidIndicator(),
+        filler(),
+        button({
+            icon: Icon.undo(),
+            text: 'Revert all',
+            onClick: () => model.revert(),
+            disabled: !store.isModified
+        }),
+        button({
+            icon: Icon.check(),
+            text: 'Commit all',
+            intent: 'success',
+            onClick: () => model.commitAllAsync(),
+            disabled: !store.isModified
+        })
     );
 });
