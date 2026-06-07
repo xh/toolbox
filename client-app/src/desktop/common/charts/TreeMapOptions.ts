@@ -6,7 +6,7 @@ import {wrapperOption} from '../Wrapper';
 /**
  * The standard TreeMap appearance options (heat, color mode, theme, tiling algorithm) as a set of
  * `wrapperOption` rows for a Wrapper `options` section. Shared across the TreeMap examples, which
- * otherwise duplicate these identical selects. Bind directly to the supplied model — either a
+ * otherwise duplicate these identical selects. Bind directly to the supplied model - either a
  * `TreeMapModel` or a `SplitTreeMapModel`, both of which expose these appearance properties.
  */
 export function treeMapDisplayOptions(model: TreeMapModel | SplitTreeMapModel): ReactElement[] {

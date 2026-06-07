@@ -21,14 +21,14 @@ export interface WrapperProps extends HoistProps {
      * Intro text for the Component/pattern demo'd by this tab, as Markdown. Rendered in the info
      * rail via Hoist's `markdown` component, so backticks for code symbols, `[text](url)` links,
      * and blank-line-separated paragraphs all work. May be provided as a single string or as an
-     * array of lines, which are joined with newlines — within a paragraph these render as spaces
+     * array of lines, which are joined with newlines - within a paragraph these render as spaces
      * (not breaks), so a long description can be wrapped across array entries for readable source,
      * with an empty-string entry marking a paragraph break.
      */
     description?: string | string[];
 
     /**
-     * Controls that customize how *this example is displayed* — e.g. switches, selects, and
+     * Controls that customize how *this example is displayed* - e.g. switches, selects, and
      * number inputs that toggle chrome, themes, sizing, or modes. Rendered in a consistent
      * "Options" section in the info rail, below the description and above the resource links,
      * so the demo content itself stays focused on what it is demonstrating.
@@ -36,7 +36,7 @@ export interface WrapperProps extends HoistProps {
      * Provide already-constructed control elements (each owning its own `model` / `bind`), most
      * commonly wrapped with the `wrapperOption` helper for a consistent labeled row. A demo
      * *trigger* that re-runs the example to reflect changed options (e.g. a "Load Now" button) also
-     * belongs here — render it as a full-width `button` after the option rows. Controls intrinsic to
+     * belongs here - render it as a full-width `button` after the option rows. Controls intrinsic to
      * the thing being demonstrated should stay in the demo content.
      */
     options?: ReactNode;
@@ -130,7 +130,7 @@ interface OptionsSectionProps extends HoistProps {
 const optionsSection = hoistCmp.factory<OptionsSectionProps>({
     render({options}) {
         // `isEmpty` treats undefined and `[]` as empty but a React element (a non-empty object) or
-        // a non-empty array as present — which is exactly the "has renderable content" test we want
+        // a non-empty array as present - which is exactly the "has renderable content" test we want
         // for the element/array values examples pass here.
         if (isEmpty(options)) return null;
         return div({
@@ -156,7 +156,7 @@ interface WrapperOptionProps extends HoistProps {
 }
 
 /**
- * A single labeled row within a Wrapper `options` section — a consistent label-left / control-right
+ * A single labeled row within a Wrapper `options` section - a consistent label-left / control-right
  * layout so display options read uniformly across examples regardless of the underlying control.
  * An optional `info` line renders muted helper text below the row for added context.
  */
@@ -241,7 +241,7 @@ const collapsedRail = hoistCmp.factory<{railModel: WrapperRailModel} & HoistProp
 type LinkKind = 'code' | 'doc' | 'external';
 
 function linkKind(url: string): LinkKind {
-    // Classify on the path alone — doc links may carry a `#section` anchor (e.g.
+    // Classify on the path alone - doc links may carry a `#section` anchor (e.g.
     // `$HR/desktop/cmp/panel/README.md#mask`) that would otherwise mask the `.md` suffix.
     const path = url.split('#')[0];
     if (path.endsWith('.md')) return 'doc';

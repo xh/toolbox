@@ -20,7 +20,7 @@ export const simpleRoutingPanel = hoistCmp.factory({
                 '',
                 `Given a URL such as [${routePath}](${routedUrl}), where 123 is a record ID, we`,
                 'can auto-select the matching record in the grid. Updates to application state',
-                'can be pushed back to the URL — try selecting a different record in the grid',
+                'can be pushed back to the URL - try selecting a different record in the grid',
                 'and observe the URL change.',
                 '',
                 'Note that this routing relies on an appropriate route path being defined in the',

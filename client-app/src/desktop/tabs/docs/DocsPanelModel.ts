@@ -201,7 +201,7 @@ export class DocsPanelModel extends HoistModel {
         this.searchMode ? this.exitSearchMode() : this.enterSearchMode();
     }
 
-    /** Enter search mode — switches content area to search results view. */
+    /** Enter search mode - switches content area to search results view. */
     @action
     enterSearchMode() {
         this.searchMode = true;
@@ -211,7 +211,7 @@ export class DocsPanelModel extends HoistModel {
         this.docService.ensureIndexBuilt();
     }
 
-    /** Exit search mode — returns to normal doc viewing. */
+    /** Exit search mode - returns to normal doc viewing. */
     @action
     exitSearchMode() {
         this.searchMode = false;
@@ -220,7 +220,7 @@ export class DocsPanelModel extends HoistModel {
         this.selectedSearchIdx = -1;
     }
 
-    /** Select a search result — navigate to the doc and exit search. */
+    /** Select a search result - navigate to the doc and exit search. */
     @action
     selectSearchResult(entry: DocEntry) {
         this.navigateToDoc(entry.id, entry.source);
@@ -263,7 +263,7 @@ export class DocsPanelModel extends HoistModel {
         }
     }
 
-    /** Update the active section — called from scroll-based observation in the view. */
+    /** Update the active section - called from scroll-based observation in the view. */
     @action
     setActiveSection(sectionId: string) {
         this.activeSection = sectionId;
@@ -323,7 +323,7 @@ export class DocsPanelModel extends HoistModel {
         await XH.trackService.pushPendingAsync();
 
         this.closeFeedbackPanel();
-        XH.successToast('Feedback submitted — thank you!');
+        XH.successToast('Feedback submitted - thank you!');
     }
 
     //------------------

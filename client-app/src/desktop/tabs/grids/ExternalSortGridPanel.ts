@@ -44,7 +44,7 @@ export const externalSortGridPanel = hoistCmp.factory({
                     notes: 'Observe GridModel.sortBy to drive externally-managed sorting.'
                 }
             ],
-            // Grid display options intentionally omitted here — not relevant to the sort demo.
+            // Grid display options intentionally omitted here - not relevant to the sort demo.
             item: panel({
                 className: 'tb-grid-wrapper-panel tb-external-sort-panel',
                 mask: 'onLoad',

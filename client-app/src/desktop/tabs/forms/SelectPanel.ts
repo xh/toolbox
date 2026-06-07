@@ -162,7 +162,7 @@ const column1 = hoistCmp.factory<SelectPanelModel>(() =>
             }),
             demoRow({
                 label: 'Multi-select',
-                info: 'enableMulti, enableClear — tag picker mode',
+                info: 'enableMulti, enableClear - tag picker mode',
                 item: select({
                     bind: 'multiStates',
                     options: usStates,
@@ -254,7 +254,7 @@ const column2 = hoistCmp.factory<SelectPanelModel>(() =>
             }),
             demoRow({
                 label: 'Creatable',
-                info: 'enableCreate — type a new entry',
+                info: 'enableCreate - type a new entry',
                 item: select({
                     bind: 'creatableValue',
                     options: restaurants,
@@ -306,7 +306,7 @@ const column2 = hoistCmp.factory<SelectPanelModel>(() =>
             }),
             demoRow({
                 label: 'Large list (windowed)',
-                info: 'enableWindowed — 2,000 items virtualized',
+                info: 'enableWindowed - 2,000 items virtualized',
                 item: select({
                     bind: 'bigValue',
                     options: LARGE_OPTIONS,
@@ -368,7 +368,7 @@ const column3 = hoistCmp.factory<SelectPanelModel>(() =>
             }),
             demoRow({
                 label: 'Wide menu',
-                info: 'menuWidth: 350 — dropdown wider than input',
+                info: 'menuWidth: 350 - dropdown wider than input',
                 item: select({
                     bind: 'wideMenu',
                     options: restaurants,

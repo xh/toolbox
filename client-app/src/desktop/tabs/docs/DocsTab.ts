@@ -239,7 +239,7 @@ const breadcrumb = hoistCmp.factory<DocsPanelModel>({
                     item: sourceLabel
                 }),
                 span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()}),
-                // Category dropdown — scoped to the active source's categories
+                // Category dropdown - scoped to the active source's categories
                 popover({
                     position: 'bottom-left',
                     minimal: true,
@@ -438,7 +438,7 @@ const contentBody = hoistCmp.factory<DocsPanelModel>(({model}) => {
             if (i < secs.length) h2.id = secs[i].id;
         });
 
-        // Track active section based on scroll position — the last H2 that has
+        // Track active section based on scroll position - the last H2 that has
         // scrolled past the top of the container is considered "active".
         let ticking = false;
         const onScroll = () => {
