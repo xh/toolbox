@@ -6,7 +6,7 @@ import {frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {
-    buttonWidget,
+    optionsWidget,
     chartWidget,
     gridWidget,
     panelWidget,
@@ -141,8 +141,8 @@ class DashContainerPanelModel extends HoistModel {
             {
                 id: 'buttons',
                 title: 'Buttons',
-                icon: Icon.stop(),
-                content: buttonWidget
+                icon: Icon.settings(),
+                content: optionsWidget
             },
             {
                 id: 'chart',
@@ -162,6 +162,7 @@ class DashContainerPanelModel extends HoistModel {
             {
                 id: 'treeGrid',
                 title: 'Tree Grid',
+                icon: Icon.treeList(),
                 content: treeGridWidget
             },
             {

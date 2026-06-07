@@ -4,7 +4,7 @@ import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx'
 import {Icon} from '@xh/hoist/icon';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {
-    buttonWidget,
+    optionsWidget,
     chartWidget,
     errorWidget,
     gridWidget,
@@ -67,6 +67,7 @@ export class DashCanvasPanelModel extends HoistModel {
                 {
                     id: 'treeGrid',
                     title: 'Tree Grid',
+                    icon: Icon.treeList(),
                     content: treeGridWidget,
                     width: 12,
                     height: 8,
@@ -75,8 +76,8 @@ export class DashCanvasPanelModel extends HoistModel {
                 {
                     id: 'buttons',
                     title: 'Buttons',
-                    icon: Icon.stop(),
-                    content: buttonWidget,
+                    icon: Icon.settings(),
+                    content: optionsWidget,
                     width: 4,
                     height: 2,
                     allowRename: false,

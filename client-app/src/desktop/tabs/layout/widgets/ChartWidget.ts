@@ -1,11 +1,11 @@
 import {creates, hoistCmp, lookup, managed} from '@xh/hoist/core';
 import {box} from '@xh/hoist/cmp/layout';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
-import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
+import {segmentedControl, select} from '@xh/hoist/desktop/cmp/input';
 import {chart} from '@xh/hoist/cmp/chart';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {DashCanvasViewModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
-import {button, modalToggleButton} from '@xh/hoist/desktop/cmp/button';
+import {modalToggleButton} from '@xh/hoist/desktop/cmp/button';
 import {ONE_DAY} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {LineChartModel} from '../../charts/LineChartModel';
@@ -41,13 +41,13 @@ export const chartWidget = hoistCmp.factory({
 });
 
 const rangeSelector = hoistCmp.factory(() =>
-    buttonGroupInput({
+    segmentedControl({
         bind: 'range',
-        items: [
-            button({text: '7D', value: 7}),
-            button({text: '30D', value: 30}),
-            button({text: '60D', value: 60}),
-            button({text: '90D', value: 90})
+        options: [
+            {value: 7, label: '7D'},
+            {value: 30, label: '30D'},
+            {value: 60, label: '60D'},
+            {value: 90, label: '90D'}
         ],
         className: 'tb-chart-widget__buttons'
     })
