@@ -1,6 +1,6 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faPhoneLaptop} from '@fortawesome/pro-regular-svg-icons';
-import {filler, hframe, img, span} from '@xh/hoist/cmp/layout';
+import {hframe, img} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -50,34 +50,31 @@ export const mobileTab = hoistCmp.factory(() =>
                 notes: 'The underlying mobile UI framework.'
             }
         ],
+        options: [
+            button({
+                text: 'Mail yourself a link',
+                icon: Icon.envelope(),
+                intent: 'primary',
+                minimal: false,
+                onClick: () => {
+                    XH.fetch({url: 'emailMobileLink/send'});
+                    XH.toast({
+                        icon: Icon.mail(),
+                        message:
+                            'Sent a link to your email address - open and launch on your phone.',
+                        timeout: 10000
+                    });
+                }
+            }),
+            button({
+                text: 'Open in this browser',
+                icon: Icon.mobile(),
+                minimal: false,
+                onClick: () => XH.openWindow('/mobile')
+            })
+        ],
         item: panel({
             className: 'tb-mobile',
-            bbar: [
-                filler(),
-                button({
-                    text: 'Mail yourself a link to Toolbox Mobile',
-                    icon: Icon.envelope(),
-                    intent: 'primary',
-                    minimal: false,
-                    onClick: () => {
-                        XH.fetch({url: 'emailMobileLink/send'});
-                        XH.toast({
-                            icon: Icon.mail(),
-                            message:
-                                'Sent a link to your email address - open and launch on your phone.',
-                            timeout: 10000
-                        });
-                    }
-                }),
-                span('or'),
-                button({
-                    text: 'Open Toolbox Mobile in this browser',
-                    icon: Icon.mobile(),
-                    minimal: false,
-                    onClick: () => XH.openWindow('/mobile')
-                }),
-                filler()
-            ],
             item: hframe({
                 className: 'tb-mobile__screenshots',
                 items: [
