@@ -1,10 +1,8 @@
 import {form} from '@xh/hoist/cmp/form';
-import {code, div} from '@xh/hoist/cmp/layout';
+import {div} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {buttonGroupInput, dateInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {dateInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../../common';
 import {DateFormatsPanelModel} from './DateFormatsPanelModel';
@@ -28,9 +26,9 @@ export const dateFormatsPanel = hoistCmp.factory({
                 'string. Convenience methods delegate to `fmtDate` with a useful `fmt`',
                 'default.',
                 '',
-                'All Hoist formatting functions support the `asHtml` option to produce a raw',
-                'HTML string rather than a React element, making them useful in both React and',
-                'non-React contexts.'
+                'Pick a function and adjust its options at left to see how each date below is',
+                'formatted. All Hoist formatting functions also support the `asHtml` option to',
+                'produce a raw HTML string rather than a React element.'
             ],
             links: [
                 {
@@ -52,65 +50,48 @@ export const dateFormatsPanel = hoistCmp.factory({
                     notes: 'The underlying date parsing and formatting library.'
                 }
             ],
-            item: panel({
-                className: 'tbox-formats-tab',
-                height: 500,
-                contentBoxProps: {flexDirection: 'row', padding: true, gap: true},
-                items: [
-                    paramsPanel(),
-                    resultsPanel({
-                        tryItInput: dateInput({timePrecision: 'minute', textAlign: 'right'})
-                    })
-                ]
+            options: dateOptions(),
+            item: resultsPanel({
+                tryItInput: dateInput({timePrecision: 'minute', textAlign: 'right'})
             })
         });
     }
 });
 
-const paramsPanel = hoistCmp.factory<DateFormatsPanelModel>({
+const dateOptions = hoistCmp.factory<DateFormatsPanelModel>({
     render({model}) {
         return form({
-            fieldDefaults: {inline: true},
-            item: panel({
-                title: 'Function + Options',
-                compactHeader: true,
-                className: 'tbox-formats-tab__panel',
-                tbar: [
+            fieldDefaults: {inline: false, commitOnChange: true},
+            item: div({
+                className: 'tbox-formats-options',
+                items: [
                     formField({
                         field: 'fnName',
-                        label: null,
-                        item: buttonGroupInput({
-                            outlined: true,
-                            intent: 'primary',
-                            items: [
-                                button({value: 'fmtDate', text: code('fmtDate')}),
-                                button({value: 'fmtCompactDate', text: code('fmtCompactDate')}),
-                                button({value: 'fmtDateTime', text: code('fmtDateTime')}),
-                                button({value: 'fmtTime', text: code('fmtTime')})
-                            ]
+                        label: 'Function',
+                        item: select({
+                            enableFilter: false,
+                            hideSelectedOptionCheck: true,
+                            options: ['fmtDate', 'fmtCompactDate', 'fmtDateTime', 'fmtTime']
                         })
+                    }),
+                    formField({
+                        field: 'fmt',
+                        disabled: !model.enableFmt,
+                        item: textInput(),
+                        info: 'A moment.js format string. Only applies to fmtDate.'
+                    }),
+                    formField({
+                        field: 'nullDisplay',
+                        item: textInput({width: 80}),
+                        info: 'Custom return for null values.'
+                    }),
+                    formField({
+                        field: 'tooltip',
+                        inline: true,
+                        item: switchInput(),
+                        info: 'Show the full date in a tooltip on hover.'
                     })
-                ],
-                item: div({
-                    className: 'tbox-formats-tab__form',
-                    items: [
-                        formField({
-                            field: 'fmt',
-                            disabled: !model.enableFmt,
-                            item: textInput({commitOnChange: true}),
-                            info: 'A moment.js format string.'
-                        }),
-                        formField({
-                            field: 'nullDisplay',
-                            item: textInput({commitOnChange: true, width: 50}),
-                            info: 'Custom return for null values.'
-                        }),
-                        formField({
-                            field: 'tooltip',
-                            item: switchInput()
-                        })
-                    ]
-                })
+                ]
             })
         });
     }

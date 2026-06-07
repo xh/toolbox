@@ -1,16 +1,15 @@
 import {form} from '@xh/hoist/cmp/form';
-import {code, div, hbox, input} from '@xh/hoist/cmp/layout';
+import {div, input} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistProps} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
-    buttonGroupInput,
     numberInput,
+    segmentedControl,
+    select,
     slider,
     switchInput,
     textInput
 } from '@xh/hoist/desktop/cmp/input';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../../common';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
@@ -34,9 +33,9 @@ export const numberFormatsPanel = hoistCmp.factory({
                 'full numbro API available via the `formatConfig` property, which takes a',
                 'numbro configuration object.',
                 '',
-                'All Hoist formatting functions support the `asHtml` option to produce a raw',
-                'HTML string rather than a React element, making them useful in both React and',
-                'non-React contexts.'
+                'Pick a function and adjust its options at left to see how each value below is',
+                'formatted. All Hoist formatting functions also support the `asHtml` option to',
+                'produce a raw HTML string rather than a React element.'
             ],
             links: [
                 {
@@ -58,175 +57,163 @@ export const numberFormatsPanel = hoistCmp.factory({
                     notes: 'The underlying number formatting library.'
                 }
             ],
-            item: panel({
-                className: 'tbox-formats-tab',
-                contentBoxProps: {flexDirection: 'row', padding: true, gap: true},
-                items: [
-                    paramsPanel(),
-                    resultsPanel({
-                        tryItInput: numberInput({
-                            selectOnFocus: true,
-                            placeholder: 'Enter a value to test'
-                        })
-                    })
-                ]
+            options: numberOptions(),
+            item: resultsPanel({
+                tryItInput: numberInput({
+                    selectOnFocus: true,
+                    placeholder: 'Enter a value to test'
+                })
             })
         });
     }
 });
 
-const paramsPanel = hoistCmp.factory<NumberFormatsPanelModel>({
+const numberOptions = hoistCmp.factory<NumberFormatsPanelModel>({
     render({model}) {
         return form({
-            fieldDefaults: {inline: true},
-            item: panel({
-                title: 'Function + Options',
-                compactHeader: true,
-                className: 'tbox-formats-tab__panel',
-                tbar: [
+            fieldDefaults: {inline: false, commitOnChange: true},
+            item: div({
+                className: 'tbox-formats-options',
+                items: [
                     formField({
                         field: 'fnName',
-                        label: null,
-                        item: buttonGroupInput({
-                            outlined: true,
-                            intent: 'primary',
-                            items: [
-                                button({value: 'fmtNumber', text: code('fmtNumber')}),
-                                button({value: 'fmtQuantity', text: code('fmtQuantity')}),
-                                button({value: 'fmtPrice', text: code('fmtPrice')}),
-                                button({value: 'fmtPercent', text: code('fmtPercent')}),
-                                button({value: 'fmtThousands', text: code('fmtThousands')}),
-                                button({value: 'fmtMillions', text: code('fmtMillions')}),
-                                button({value: 'fmtBillions', text: code('fmtBillions')})
+                        label: 'Function',
+                        item: select({
+                            enableFilter: false,
+                            hideSelectedOptionCheck: true,
+                            options: [
+                                'fmtNumber',
+                                'fmtQuantity',
+                                'fmtPrice',
+                                'fmtPercent',
+                                'fmtThousands',
+                                'fmtMillions',
+                                'fmtBillions'
                             ]
                         })
+                    }),
+                    formField({
+                        field: 'colorSpec',
+                        item: segmentedControl({
+                            options: [
+                                {value: true, label: 'true'},
+                                {value: false, label: 'false'},
+                                {value: 'custom', label: 'Custom'}
+                            ]
+                        }),
+                        info: 'Color positive / negative / neutral values.'
+                    }),
+                    div({
+                        className: 'tbox-formats-options__colors',
+                        omit: model.formModel.values.colorSpec !== 'custom',
+                        items: [
+                            div({className: 'tbox-formats-options__colors-label', item: 'pos'}),
+                            colorInput({bind: 'positiveColor'}),
+                            div({className: 'tbox-formats-options__colors-label', item: 'neg'}),
+                            colorInput({bind: 'negativeColor'}),
+                            div({
+                                className: 'tbox-formats-options__colors-label',
+                                item: 'neutral'
+                            }),
+                            colorInput({bind: 'neutralColor'})
+                        ]
+                    }),
+                    formField({
+                        field: 'precision',
+                        item: slider({
+                            min: -1,
+                            max: 12,
+                            showTrackFill: false,
+                            labelStepSize: 13,
+                            labelRenderer: val => (val === -1 ? `'auto'` : val)
+                        }),
+                        info: `Set to 'auto' to base precision on scale of value, or # for fixed precision.`
+                    }),
+                    formField({
+                        field: 'zeroPad',
+                        item: slider({
+                            min: -2,
+                            max: 11,
+                            showTrackFill: false,
+                            labelStepSize: 13,
+                            labelRenderer: val => {
+                                switch (val) {
+                                    case -2:
+                                        return 'unset';
+                                    case -1:
+                                        return 'false';
+                                    case 0:
+                                        return 'true';
+                                    default:
+                                        return val;
+                                }
+                            }
+                        }),
+                        info: 'false to show only significant digits, true to pad out to precision, # to pad to custom length.'
+                    }),
+                    formField({
+                        field: 'label',
+                        item: textInput({width: 60}),
+                        info: 'Suffix characters, typically used for units.'
+                    }),
+                    formField({
+                        field: 'prefix',
+                        item: textInput({width: 60}),
+                        info: 'Inserted between the number and its sign (e.g. $).'
+                    }),
+                    formField({
+                        field: 'nullDisplay',
+                        item: textInput({width: 60}),
+                        info: 'Custom return for null values.'
+                    }),
+                    formField({
+                        field: 'zeroDisplay',
+                        item: textInput({width: 60}),
+                        info: 'Custom return for 0 values.'
+                    }),
+                    formField({
+                        field: 'ledger',
+                        inline: true,
+                        item: switchInput(),
+                        info: 'Use ledger formatting, with parens to indicate negative numbers.'
+                    }),
+                    formField({
+                        field: 'forceLedgerAlign',
+                        inline: true,
+                        item: switchInput(),
+                        info: 'Ensure mixed pos + neg values vertically align in ledger format.'
+                    }),
+                    formField({
+                        field: 'withCommas',
+                        inline: true,
+                        item: switchInput(),
+                        info: 'Use comma as thousands delimiter.'
+                    }),
+                    formField({
+                        field: 'omitFourDigitComma',
+                        inline: true,
+                        item: switchInput(),
+                        info: 'Suppress withCommas for four-digit integers, for improved readability.'
+                    }),
+                    formField({
+                        field: 'withPlusSign',
+                        inline: true,
+                        item: switchInput(),
+                        info: 'Use explicit plus sign for positive numbers.'
+                    }),
+                    formField({
+                        field: 'withSignGlyph',
+                        inline: true,
+                        item: switchInput(),
+                        info: 'Use up/down glyphs to indicate sign.'
+                    }),
+                    formField({
+                        field: 'strictZero',
+                        inline: true,
+                        item: switchInput(),
+                        info: 'Retain underlying sign of small numbers formatted as zero due to precision.'
                     })
-                ],
-                item: div({
-                    className: 'tbox-formats-tab__form',
-                    items: [
-                        formField({
-                            field: 'colorSpec',
-                            item: buttonGroupInput({
-                                items: [
-                                    button({text: code('true'), value: true}),
-                                    button({text: code('false'), value: false}),
-                                    button({text: 'Custom', value: 'custom'})
-                                ]
-                            })
-                        }),
-                        hbox({
-                            className: 'xh-form-field',
-                            omit: model.formModel.values.colorSpec !== 'custom',
-                            items: [
-                                div({
-                                    className: 'xh-form-field-label',
-                                    item: 'pos / neg / neutral'
-                                }),
-                                colorInput({bind: 'positiveColor'}),
-                                colorInput({bind: 'negativeColor'}),
-                                colorInput({bind: 'neutralColor'})
-                            ]
-                        }),
-                        formField({
-                            field: 'forceLedgerAlign',
-                            item: switchInput(),
-                            info: 'Ensure mixed pos + neg values vertically align in ledger format.'
-                        }),
-                        formField({
-                            field: 'label',
-                            item: textInput({commitOnChange: true, width: 50}),
-                            info: 'Suffix characters, typically used for units.'
-                        }),
-                        formField({
-                            field: 'ledger',
-                            item: switchInput(),
-                            info: 'Use ledger formatting, with parens to indicate negative numbers.'
-                        }),
-                        formField({
-                            field: 'nullDisplay',
-                            item: textInput({commitOnChange: true, width: 50}),
-                            info: 'Custom return for null values.'
-                        }),
-                        formField({
-                            field: 'omitFourDigitComma',
-                            item: switchInput(),
-                            info: 'Suppress withCommas for four-digit integers, for improved readability.'
-                        }),
-                        formField({
-                            field: 'precision',
-                            item: slider({
-                                min: -1,
-                                max: 12,
-                                width: 500,
-                                showTrackFill: false,
-                                labelRenderer: val => {
-                                    switch (val) {
-                                        case -2:
-                                            return 'Unset';
-                                        case -1:
-                                            return `'auto'`;
-                                        default:
-                                            return val;
-                                    }
-                                }
-                            }),
-                            info: `Set to 'auto' to base precision on scale of value, or # for fixed precision.`
-                        }),
-                        formField({
-                            field: 'prefix',
-                            item: textInput({commitOnChange: true, width: 50}),
-                            info: 'Inserted between the number and its sign (e.g. $).'
-                        }),
-                        formField({
-                            field: 'strictZero',
-                            item: switchInput(),
-                            info: 'true to retain underlying sign of small numbers formatted as zero due to precision'
-                        }),
-                        formField({
-                            field: 'withCommas',
-                            item: switchInput(),
-                            info: 'use comma as thousands delimiter'
-                        }),
-                        formField({
-                            field: 'withPlusSign',
-                            item: switchInput(),
-                            info: 'use explicit plus sign for positive numbers'
-                        }),
-                        formField({
-                            field: 'withSignGlyph',
-                            item: switchInput(),
-                            info: 'use up/down glyphs to indicate sign'
-                        }),
-                        formField({
-                            field: 'zeroDisplay',
-                            item: textInput({commitOnChange: true, width: 50}),
-                            info: 'custom return for 0 values'
-                        }),
-                        formField({
-                            field: 'zeroPad',
-                            item: slider({
-                                min: -2,
-                                max: 11,
-                                width: 500,
-                                showTrackFill: false,
-                                labelRenderer: val => {
-                                    switch (val) {
-                                        case -2:
-                                            return 'unset';
-                                        case -1:
-                                            return 'false';
-                                        case 0:
-                                            return 'true';
-                                        default:
-                                            return val;
-                                    }
-                                }
-                            }),
-                            info: 'false to show only significant digits, true to pad out to precision, # to pad to custom length'
-                        })
-                    ]
-                })
+                ]
             })
         });
     }
