@@ -64,9 +64,14 @@ export const maskPanel = hoistCmp.factory({
                     control: switchInput({model, bind: 'spinner'})
                 }),
                 wrapperAction({
-                    text: 'Load Now',
-                    icon: Icon.refresh(),
+                    // Bind to the same TaskObserver that drives the mask, so the trigger itself
+                    // reflects the loading state it kicks off.
+                    text: model.loadObserver.isPending ? 'Loading...' : 'Load Now',
+                    icon: model.loadObserver.isPending
+                        ? Icon.spinner({spin: true})
+                        : Icon.refresh(),
                     intent: 'primary',
+                    disabled: model.loadObserver.isPending,
                     onClick: () => model.refreshAsync()
                 })
             ],
