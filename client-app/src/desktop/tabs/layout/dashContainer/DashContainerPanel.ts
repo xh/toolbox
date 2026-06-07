@@ -146,10 +146,9 @@ class DashContainerPanelModel extends HoistModel {
             },
             {
                 id: 'chart',
-                title: 'Chart',
+                title: 'Live Chart',
                 icon: Icon.chartLine(),
                 unique: true,
-                refreshMode: 'onShowAlways',
                 content: chartWidget
             },
             {

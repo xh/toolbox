@@ -1,6 +1,5 @@
-import {isEmpty} from 'lodash';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {
@@ -15,21 +14,9 @@ import {
 export class DashCanvasPanelModel extends HoistModel {
     @bindable renderDashboard = true;
     @bindable showWidgetChooser = true;
-    @observable.ref allSymbols: string[] = [];
 
     @managed
-    @observable.ref
-    dashCanvasModel: DashCanvasModel;
-
-    override async doLoadAsync(loadSpec) {
-        if (isEmpty(this.allSymbols)) {
-            const symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
-            runInAction(() => {
-                this.allSymbols = symbols.slice(0, 5);
-                this.dashCanvasModel = this.createDashCanvasModel();
-            });
-        }
-    }
+    dashCanvasModel = this.createDashCanvasModel();
 
     constructor() {
         super();
@@ -85,23 +72,13 @@ export class DashCanvasPanelModel extends HoistModel {
                 },
                 {
                     id: 'chart',
-                    title: 'Multi-Chart',
+                    title: 'Live Chart',
                     icon: Icon.chartLine(),
                     unique: true,
                     content: chartWidget,
                     width: 12,
                     height: 5
                 },
-                ...this.allSymbols.map(symbol => ({
-                    id: 'singleSeriesChart-' + symbol,
-                    title: symbol + ' Chart',
-                    groupName: 'Single Series Charts',
-                    icon: Icon.chartLine(),
-                    unique: true,
-                    content: chartWidget,
-                    width: 12,
-                    height: 5
-                })),
                 {
                     id: 'panel',
                     title: 'Panel',
