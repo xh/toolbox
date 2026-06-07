@@ -1,12 +1,11 @@
 import {chart} from '@xh/hoist/cmp/chart';
-import {filler, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
+import {span} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper, wrapperOption} from '../../common';
+import {chartDisplayOptions, wrapper} from '../../common';
 import {OHLCChartModel} from './OHLCChartModel';
 
 export const ohlcChartPanel = hoistCmp.factory({
@@ -29,17 +28,7 @@ export const ohlcChartPanel = hoistCmp.factory({
                 'Note that applications must license and specify a compatible version of',
                 'Highcharts as an application dependency.'
             ],
-            options: wrapperOption({
-                label: 'Aspect Ratio',
-                control: numberInput({
-                    model,
-                    bind: 'aspectRatio',
-                    commitOnChange: true,
-                    selectOnFocus: true,
-                    min: 0,
-                    width: 70
-                })
-            }),
+            options: chartDisplayOptions(model),
             item: panel({
                 height: '60vh',
                 width: '90%',
@@ -78,19 +67,6 @@ const tbar = hoistCmp.factory<OHLCChartModel>(({model}) => {
             options: model.symbols,
             enableFilter: false,
             width: 120
-        }),
-        filler(),
-        button({
-            text: 'Call chart API',
-            icon: Icon.code(),
-            disabled: !model.chartModel.highchart,
-            onClick: () => {
-                const xExtremes = model.chartModel.highchart.axes[0].getExtremes();
-                XH.alert({
-                    title: 'X-axis extremes - as read from chart API',
-                    message: JSON.stringify(xExtremes)
-                });
-            }
         })
     );
 });

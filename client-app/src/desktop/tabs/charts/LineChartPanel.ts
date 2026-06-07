@@ -1,17 +1,16 @@
 import {chart} from '@xh/hoist/cmp/chart';
-import {filler, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {picker, select} from '@xh/hoist/desktop/cmp/input';
+import {picker} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common';
+import {chartDisplayOptions, wrapper} from '../../common';
 import {LineChartModel} from './LineChartModel';
 
 export const lineChartPanel = hoistCmp.factory({
     model: creates(LineChartModel),
 
-    render() {
+    render({model}) {
         return wrapper({
             title: 'Line Chart',
             icon: Icon.chartLine(),
@@ -27,12 +26,13 @@ export const lineChartPanel = hoistCmp.factory({
                 'Note that applications must license and specify a compatible version of',
                 'Highcharts as an application dependency.'
             ],
+            options: chartDisplayOptions(model),
             item: panel({
                 height: '60vh',
                 width: '90%',
                 mask: 'onLoad',
                 tbar: tbar(),
-                item: chart()
+                item: chart({aspectRatio: model.aspectRatio})
             }),
             links: [
                 {
@@ -68,13 +68,6 @@ const tbar = hoistCmp.factory<LineChartModel>(({model}) => {
             buttonProps: {icon: Icon.chartLine()},
             placeholder: 'Symbols...',
             width: 200
-        }),
-        filler(),
-        span('Context Menu'),
-        select({
-            bind: 'currentContextMenu',
-            options: model.contextMenuOptions,
-            enableFilter: false
         })
     );
 });

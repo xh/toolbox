@@ -13,6 +13,8 @@ export class LineChartModel extends HoistModel {
     @bindable currentSymbols: string[] = [];
     @observable.ref symbols: string[] = [];
 
+    @bindable aspectRatio: number = null;
+
     @bindable currentContextMenu = null;
     contextMenuOptions = [
         {
@@ -51,6 +53,17 @@ export class LineChartModel extends HoistModel {
         });
 
         this.chartModel = this.getChartModel();
+    }
+
+    /** Demonstrate reaching through ChartModel to the underlying Highcharts API. */
+    callChartApi() {
+        const {highchart} = this.chartModel;
+        if (!highchart) return;
+        const xExtremes = highchart.axes[0].getExtremes();
+        XH.alert({
+            title: 'X-axis extremes - as read from chart API',
+            message: JSON.stringify(xExtremes)
+        });
     }
 
     override async doLoadAsync(loadSpec) {

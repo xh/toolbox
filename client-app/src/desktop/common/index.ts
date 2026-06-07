@@ -1,3 +1,4 @@
+export * from './charts/ChartOptions';
 export * from './charts/TreeMapOptions';
 export * from './grid/options/GridDisplayOptions';
 export * from './grid/SampleGrid';
