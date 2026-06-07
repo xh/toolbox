@@ -20,7 +20,7 @@ export const standardGridPanel = hoistCmp.factory({
                 'Grids are at the heart of many Hoist React projects, and `Grid`, `GridModel`, and',
                 'related helper components are key elements of the framework.',
                 '',
-                'We rely on [ag-Grid](https://www.ag-grid.com/javascript-data-grid/) to provide',
+                'We rely on [AG Grid](https://www.ag-grid.com/javascript-data-grid/) to provide',
                 'the core component, with Hoist layering on a normalized API as well as custom',
                 'integrations for observable row selection, data stores, sorting, filtering, a',
                 'custom column selection UI, server-side exports, enhanced column definitions,',
@@ -49,8 +49,8 @@ export const standardGridPanel = hoistCmp.factory({
                 },
                 {
                     url: 'https://www.ag-grid.com/javascript-data-grid/',
-                    text: 'ag-Grid Docs',
-                    notes: 'API documentation and guides for the underlying ag-grid library.'
+                    text: 'AG Grid Docs',
+                    notes: 'API documentation and guides for the underlying AG Grid library.'
                 }
             ],
             options: [...gridDisplayOptions(gridModel), ...gridDisplayActions(gridModel)],

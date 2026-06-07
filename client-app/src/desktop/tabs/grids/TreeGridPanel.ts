@@ -19,13 +19,13 @@ export const treeGridPanel = hoistCmp.factory({
             title: 'Tree Grid',
             icon: Icon.grid(),
             description: [
-                "Hoist's `Grid` renders hierarchical tree data directly, building on ag-Grid's",
+                "Hoist's `Grid` renders hierarchical tree data directly, building on AG Grid's",
                 'support for nested data rows. The `GroupingChooser` component lets users control',
                 'the tree hierarchy, with optional persistence of their favorite groupings.',
                 '',
                 'Applications supply standard record data with child nodes nested under their',
                 'parents. Aggregations can be provided alongside the data or computed within the',
-                'grid via ag-Grid aggregation configs.'
+                'grid via AG Grid aggregation configs.'
             ],
             links: [
                 {

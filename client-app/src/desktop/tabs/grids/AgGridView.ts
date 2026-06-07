@@ -13,18 +13,18 @@ export const agGridView = hoistCmp.factory({
         const {agGridModel, columnDefs} = model;
 
         return wrapper({
-            title: 'ag-Grid Wrapper',
+            title: 'AG Grid Wrapper',
             icon: Icon.gridPanel(),
             description: [
                 'The Hoist `agGrid` component provides a much more minimal wrapper for',
-                'ag-Grid, supporting direct use of the library with limited enhancements for',
+                'AG Grid, supporting direct use of the library with limited enhancements for',
                 'consistent Hoist styling, layout support, keyboard navigation, and a backing',
-                'model for convenient access to the ag-Grid APIs and other utility methods.',
+                'model for convenient access to the AG Grid APIs and other utility methods.',
                 '',
                 'This wrapper does *not* include a number of Hoist enhancements provided by',
                 'the core `Grid` component, including store support, grid state, enhanced',
                 'column and renderer APIs, absolute value sorting, and enhanced server-side',
-                'Excel exports. Use of this wrapper is encouraged only when advanced ag-Grid',
+                'Excel exports. Use of this wrapper is encouraged only when advanced AG Grid',
                 'features (such as pivoting) are required.'
             ],
             links: [
@@ -40,7 +40,7 @@ export const agGridView = hoistCmp.factory({
                 {url: '$HR/cmp/ag-grid/AgGrid.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/cmp/ag-grid/AgGridModel.ts',
-                    notes: 'Backing model with access to the ag-Grid APIs.'
+                    notes: 'Backing model with access to the AG Grid APIs.'
                 },
                 {
                     url: '$HR/cmp/grid/Grid.ts',
@@ -48,8 +48,8 @@ export const agGridView = hoistCmp.factory({
                 },
                 {
                     url: 'https://www.ag-grid.com/javascript-data-grid/',
-                    text: 'ag-Grid Docs',
-                    notes: 'ag-Grid documentation, covering advanced features such as pivoting.'
+                    text: 'AG Grid Docs',
+                    notes: 'AG Grid documentation, covering advanced features such as pivoting.'
                 }
             ],
             options: [

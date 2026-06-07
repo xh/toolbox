@@ -74,7 +74,7 @@ export const aboutToolboxWidget = hoistCmp.factory({
                         item: tbody(
                             row('Hoist React', hrVersion),
                             row('React', get('reactVersion')),
-                            row('ag-Grid', get('agGridVersion')),
+                            row('AG Grid', get('agGridVersion')),
                             row('Blueprint Core', get('blueprintCoreVersion')),
                             row('MobX', get('mobxVersion'))
                         )

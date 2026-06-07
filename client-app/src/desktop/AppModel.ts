@@ -301,15 +301,15 @@ export class AppModel extends BaseAppModel {
                     tabs: [
                         {id: 'standard', content: standardGridPanel},
                         {id: 'tree', content: treeGridPanel},
-                        {id: 'columnFiltering', content: columnFilteringPanel},
-                        {id: 'inlineEditing', content: inlineEditingPanel},
-                        {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
-                        {id: 'dataview', title: 'DataView', content: dataViewPanel},
                         {
                             id: 'treeWithCheckBox',
                             title: 'Tree w/CheckBox',
                             content: treeGridWithCheckboxPanel
                         },
+                        {id: 'columnFiltering', content: columnFilteringPanel},
+                        {id: 'inlineEditing', content: inlineEditingPanel},
+                        {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
+                        {id: 'dataview', title: 'DataView', content: dataViewPanel},
                         {
                             id: 'groupedCols',
                             title: 'Grouped Columns',
@@ -317,7 +317,7 @@ export class AppModel extends BaseAppModel {
                         },
                         {id: 'externalSort', content: externalSortGridPanel},
                         {id: 'rest', title: 'REST Editor', content: restGridPanel},
-                        {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
+                        {id: 'agGrid', title: 'AG Grid Wrapper', content: agGridView}
                     ]
                 }
             },

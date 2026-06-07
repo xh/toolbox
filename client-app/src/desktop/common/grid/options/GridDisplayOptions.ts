@@ -8,7 +8,7 @@ import {ReactElement} from 'react';
 import {wrapperOption} from '../../Wrapper';
 
 /**
- * Standard ag-Grid display-option rows (sizing mode + styling switches) for a Wrapper `options`
+ * Standard AG Grid display-option rows (sizing mode + styling switches) for a Wrapper `options`
  * section, bound directly to the supplied `AgGridModel`. Shared by the grid examples.
  *
  * Note: the app-wide Dark Mode toggle is intentionally NOT included here — theme is controlled
@@ -41,7 +41,7 @@ export function agGridDisplayOptions(model: AgGridModel): ReactElement[] {
 }
 
 /**
- * Full `GridModel` display-option rows for a Wrapper `options` section: the standard ag-Grid styling
+ * Full `GridModel` display-option rows for a Wrapper `options` section: the standard AG Grid styling
  * options plus GridModel-level Tree Style (tree grids only) and empty text. Bound directly to the
  * supplied `GridModel`.
  */

@@ -16,7 +16,7 @@ export const columnGroupsGridPanel = hoistCmp.factory({
             title: 'Grouped Columns',
             icon: Icon.gridPanel(),
             description: [
-                'Hoist React grids support column grouping as described in the [ag-Grid',
+                'Hoist React grids support column grouping as described in the [AG Grid',
                 'documentation](https://www.ag-grid.com/javascript-data-grid/column-groups/).',
                 '',
                 'Note that column group configurations must be provided either a `headerName` or',
