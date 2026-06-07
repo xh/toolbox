@@ -18,9 +18,9 @@ export const optionsWidget = hoistCmp.factory({
                         bind: 'value',
                         outlined: true,
                         options: [
-                            {value: 'Option 1', label: 'Option 1', icon: Icon.chartLine()},
-                            {value: 'Option 2', label: 'Option 2', icon: Icon.gear()},
-                            {value: 'Option 3', label: 'Option 3', icon: Icon.skull()}
+                            {value: 'Live', label: 'Live', icon: Icon.bolt()},
+                            {value: 'Hourly', label: 'Hourly', icon: Icon.clock()},
+                            {value: 'Daily', label: 'Daily', icon: Icon.calendar()}
                         ]
                     }),
                     div({
@@ -44,7 +44,7 @@ class OptionsWidgetModel extends HoistModel {
 
     override onLinked() {
         const {viewModel} = this;
-        this.value = viewModel.viewState ? viewModel.viewState.value : 'Option 1';
+        this.value = viewModel.viewState ? viewModel.viewState.value : 'Live';
         this.addReaction({
             track: () => this.value,
             run: value => (viewModel.viewState = {value}),

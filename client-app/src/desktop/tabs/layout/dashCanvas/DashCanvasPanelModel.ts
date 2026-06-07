@@ -111,39 +111,26 @@ const initialState = [
         layout: {
             x: 0,
             y: 5,
-            w: 4,
+            w: 6,
             h: 3
         },
         viewSpecId: 'options',
         title: 'Options 1',
         state: {
-            value: 'Option 1'
+            value: 'Live'
         }
     },
     {
         layout: {
-            x: 4,
+            x: 6,
             y: 5,
-            w: 4,
+            w: 6,
             h: 3
         },
         viewSpecId: 'options',
         title: 'Options 2',
         state: {
-            value: 'Option 2'
-        }
-    },
-    {
-        layout: {
-            x: 8,
-            y: 5,
-            w: 4,
-            h: 3
-        },
-        viewSpecId: 'options',
-        title: 'Options 3',
-        state: {
-            value: 'Option 3'
+            value: 'Daily'
         }
     },
     {
