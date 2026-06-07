@@ -1,4 +1,4 @@
-import {box, filler, img, span, vframe, vspacer} from '@xh/hoist/cmp/layout';
+import {box, filler, hframe, img, span, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses, XH} from '@xh/hoist/core';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -51,13 +51,13 @@ export const fileChooserPanel = hoistCmp.factory({
                 'processing the selected files (e.g. by uploading them to a server) and',
                 'clearing the selection when complete.',
                 '',
-                'Use the controls below to vary the accepted types and size/count limits - the',
+                'Use the controls at left to vary the accepted types and size/count limits - the',
                 'empty-state hint updates to summarize the active configuration. Changing a',
                 'limit re-creates the chooser, clearing any current selection.',
                 '',
-                'The second example is a single-image chooser that supplies a custom',
-                '`fileDisplay` to preview the selected PNG in place, with a footer to replace',
-                'or clear it.'
+                'Below are two compact single-file choosers: a default one in its minimal',
+                'single-file mode, and one supplying a custom `fileDisplay` to preview the',
+                'selected PNG in place, with a footer to replace or clear it.'
             ],
             links: [
                 {
@@ -147,7 +147,9 @@ export const fileChooserPanel = hoistCmp.factory({
                 width: '100%',
                 overflow: 'auto',
                 alignItems: 'center',
-                items: [configChooserPanel(), vspacer(), imageChooserPanel()]
+                gap: 20,
+                padding: 4,
+                items: [configChooserPanel(), singleFileCard()]
             })
         });
     }
@@ -188,18 +190,59 @@ const configChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
 });
 
 /**
+ * A dedicated card pairing two compact single-file choosers, side by side: a default chooser in
+ * its minimal single-file mode, and one with a custom in-place image preview.
+ */
+const singleFileCard = hoistCmp.factory({
+    render() {
+        return panel({
+            title: 'Single-File Choosers',
+            icon: Icon.copy(),
+            compactHeader: true,
+            className: 'tb-filechooser-pair',
+            flex: 'none',
+            item: hframe({
+                gap: 16,
+                padding: 16,
+                items: [basicChooserPanel(), imageChooserPanel()]
+            })
+        });
+    }
+});
+
+/**
+ * Default single-file chooser - no extra configuration, shown as-is in single-file mode.
+ */
+const basicChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
+    model: uses(() => FileChooserPanelModel),
+    render({model}) {
+        return panel({
+            title: 'Default',
+            icon: Icon.fileText(),
+            compactHeader: true,
+            className: 'tb-filechooser-example',
+            flex: 'none',
+            width: 360,
+            height: 300,
+            item: fileChooser({model: model.basicChooserModel})
+        });
+    }
+});
+
+/**
  * Single-image chooser demonstrating a custom `fileDisplay` (in-place image preview).
  */
 const imageChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
     model: uses(() => FileChooserPanelModel),
     render({model}) {
         return panel({
-            title: 'Other › FileChooser - custom image preview',
+            title: 'Custom Image Preview',
             icon: Icon.fileImage(),
+            compactHeader: true,
             className: 'tb-filechooser-example',
             flex: 'none',
-            width: 500,
-            height: 280,
+            width: 360,
+            height: 300,
             item: fileChooser({model: model.imageChooserModel, fileDisplay: imagePreview})
         });
     }
@@ -297,6 +340,9 @@ class FileChooserPanelModel extends HoistModel {
     @managed
     @observable.ref
     chooserModel: FileChooserModel;
+
+    @managed
+    basicChooserModel = new FileChooserModel({maxFiles: 1});
 
     @managed
     imageChooserModel = new FileChooserModel({accept: ['.png'], maxFiles: 1});
