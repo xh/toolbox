@@ -1,5 +1,4 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {filler} from '@xh/hoist/cmp/layout';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {storeFilterField} from '@xh/hoist/cmp/store';
@@ -80,8 +79,7 @@ export const columnFilteringPanel = hoistCmp.factory({
             item: panel({
                 className: 'tb-grid-wrapper-panel tb-column-filtering-panel',
                 tbar: tbar(),
-                item: grid(),
-                bbar: bbar()
+                item: grid()
             })
         });
     }
@@ -94,17 +92,13 @@ const tbar = hoistCmp.factory(() =>
             enableClear: true,
             placeholder: 'Filter with bound FilterChooser...'
         }),
-        storeFilterField({placeholder: 'Quick filter...'})
-    )
-);
-
-const bbar = hoistCmp.factory<ColumnFilteringPanelModel>(() => {
-    return toolbar(
-        filler(),
-        gridCountLabel(),
+        '-',
+        gridCountLabel({unit: 'companies'}),
+        '-',
+        storeFilterField({placeholder: 'Quick filter...'}),
         '-',
         colAutosizeButton(),
         colChooserButton(),
         exportButton()
-    );
-});
+    )
+);
