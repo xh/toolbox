@@ -1,4 +1,4 @@
-import {div, filler, p, span} from '@xh/hoist/cmp/layout';
+import {div, filler, p} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -47,10 +47,18 @@ export const basicPanel = hoistCmp.factory({
                     notes: 'Hoist component model (for resize / collapse).'
                 }
             ],
-            options: wrapperOption({
-                label: 'Compact Header',
-                control: switchInput({model, bind: 'compactHeader'})
-            }),
+            options: [
+                wrapperOption({
+                    label: 'Compact Header',
+                    control: switchInput({model, bind: 'compactHeader'}),
+                    info: 'Render the panel header in a denser, shorter style.'
+                }),
+                wrapperOption({
+                    label: 'Context Menu',
+                    control: switchInput({model, bind: 'showContextMenu'}),
+                    info: 'Add a custom right-click context menu to the panel.'
+                })
+            ],
             item: panel({
                 title: 'Basic Panel',
                 icon: Icon.window(),
@@ -100,11 +108,6 @@ export const basicPanel = hoistCmp.factory({
                                 }
                             ])
                         )
-                    }),
-                    filler(),
-                    span('Context Menu'),
-                    switchInput({
-                        bind: 'showContextMenu'
                     })
                 ],
                 items: [
