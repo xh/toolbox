@@ -10,7 +10,7 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon/Icon';
 
 // Mocked live-monitor parameters - tuned to keep the random walk in a believable band.
-const TICK_INTERVAL = 1 * SECONDS,
+const TICK_INTERVAL = 3 * SECONDS,
     START_PRICE = 142.0,
     BAND_CENTER = 142.0,
     MAX_STEP = 0.35, // Largest move (USD) on any single tick.
