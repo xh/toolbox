@@ -51,7 +51,7 @@ export class NumberFormatsPanelModel extends HoistModel {
     @bindable negativeColor = '#cc0000';
     @bindable neutralColor = '#999999';
 
-    @bindable tryItData: number;
+    @bindable tryItData: number = 1234567.89;
 
     get testResults() {
         return this.testData.map(data => ({

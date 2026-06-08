@@ -1,4 +1,4 @@
-import {hbox, input} from '@xh/hoist/cmp/layout';
+import {hbox, input, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistProps} from '@xh/hoist/core';
 import {
     numberInput,
@@ -77,6 +77,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Color Spec',
+                    propName: 'NumberFormatOptions.colorSpec',
                     control: segmentedControl({
                         model,
                         bind: 'colorSpec',
@@ -104,6 +105,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Precision',
+                    propName: 'NumberFormatOptions.precision',
                     control: select({
                         model,
                         bind: 'precision',
@@ -116,6 +118,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Zero Pad',
+                    propName: 'NumberFormatOptions.zeroPad',
                     control: select({
                         model,
                         bind: 'zeroPad',
@@ -133,51 +136,61 @@ export const numberFormatsPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Ledger',
+                    propName: 'NumberFormatOptions.ledger',
                     control: switchInput({model, bind: 'ledger'}),
                     info: 'Use ledger formatting, with parens to indicate negative numbers.'
                 }),
                 wrapperOption({
                     label: 'Force Ledger Align',
+                    propName: 'NumberFormatOptions.forceLedgerAlign',
                     control: switchInput({model, bind: 'forceLedgerAlign'}),
                     info: 'Ensure mixed pos + neg values vertically align in ledger format.'
                 }),
                 wrapperOption({
                     label: 'With Commas',
+                    propName: 'NumberFormatOptions.withCommas',
                     control: switchInput({model, bind: 'withCommas'}),
                     info: 'Use a comma as the thousands delimiter.'
                 }),
                 wrapperOption({
                     label: 'Omit 4-Digit Comma',
+                    propName: 'NumberFormatOptions.omitFourDigitComma',
                     control: switchInput({model, bind: 'omitFourDigitComma'}),
                     info: 'Suppress withCommas for four-digit integers, for improved readability.'
                 }),
                 wrapperOption({
                     label: 'With Plus Sign',
+                    propName: 'NumberFormatOptions.withPlusSign',
                     control: switchInput({model, bind: 'withPlusSign'}),
                     info: 'Use an explicit plus sign for positive numbers.'
                 }),
                 wrapperOption({
                     label: 'With Sign Glyph',
+                    propName: 'NumberFormatOptions.withSignGlyph',
                     control: switchInput({model, bind: 'withSignGlyph'}),
                     info: 'Use up / down glyphs to indicate sign.'
                 }),
                 wrapperOption({
                     label: 'Strict Zero',
+                    propName: 'NumberFormatOptions.strictZero',
                     control: switchInput({model, bind: 'strictZero'}),
                     info: 'Retain the underlying sign of small numbers formatted as zero due to precision.'
                 }),
                 wrapperOption({
                     label: 'Label',
+                    propName: 'NumberFormatOptions.label',
                     control: textInput({model, bind: 'label', commitOnChange: true, width: 90}),
                     info: 'Suffix characters, typically used for units.'
                 }),
                 wrapperOption({
                     label: 'Prefix',
+                    propName: 'NumberFormatOptions.prefix',
                     control: textInput({model, bind: 'prefix', commitOnChange: true, width: 90}),
                     info: 'Inserted between the number and its sign (e.g. $).'
                 }),
                 wrapperOption({
                     label: 'Null Display',
+                    propName: 'FormatOptions.nullDisplay',
                     control: textInput({
                         model,
                         bind: 'nullDisplay',
@@ -188,6 +201,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Zero Display',
+                    propName: 'NumberFormatOptions.zeroDisplay',
                     control: textInput({
                         model,
                         bind: 'zeroDisplay',
@@ -198,14 +212,34 @@ export const numberFormatsPanel = hoistCmp.factory({
                 })
             ],
             item: resultsPanel({
-                tryItInput: numberInput({
-                    selectOnFocus: true,
-                    placeholder: 'Enter a value to test'
-                })
+                tryItInput: customValueInput()
             })
         });
     }
 });
+
+// Custom-value row for the results table: a left-aligned label paired with a right-aligned,
+// commitOnChange numberInput so the prepopulated value reformats live as the user types.
+// Receives its `bind` prop via cloneElement in ResultsPanel and forwards it to the input.
+const customValueInput = hoistCmp.factory<HoistProps<NumberFormatsPanelModel> & {bind?: string}>(
+    ({bind}) =>
+        hbox({
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 8,
+            width: '100%',
+            items: [
+                span({className: 'tbox-formats-tab__custom-label', item: 'Custom value:'}),
+                numberInput({
+                    bind,
+                    commitOnChange: true,
+                    selectOnFocus: true,
+                    textAlign: 'right',
+                    flex: 1
+                })
+            ]
+        })
+);
 
 type ColorBind = 'positiveColor' | 'negativeColor' | 'neutralColor';
 

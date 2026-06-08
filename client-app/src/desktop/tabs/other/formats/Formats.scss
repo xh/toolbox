@@ -24,6 +24,12 @@
     }
   }
 
+  // Leading label for the custom-value input row, kept left-aligned and muted.
+  &__custom-label {
+    color: var(--xh-text-color-muted);
+    white-space: nowrap;
+  }
+
   // Scrolling wrapper so a tall results table stays within the (overflow-hidden) demo card.
   &__results {
     flex: 1;

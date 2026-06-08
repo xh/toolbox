@@ -1,20 +1,25 @@
-import {code} from '@xh/hoist/cmp/layout';
 import {HoistModel} from '@xh/hoist/core';
 import * as formatFunctions from '@xh/hoist/format/FormatDate';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import moment from 'moment';
 
 export class DateFormatsPanelModel extends HoistModel {
-    testData = [
-        moment().toDate(),
-        moment().add(-3, 'days').toDate(),
-        moment().add(-3, 'months').toDate(),
-        moment('2020-01-20 12:00').toDate(),
-        moment(0).toDate(),
-        moment('1969-07-20 04:17').toDate(),
-        moment('1776-07-04').toDate(),
-        null,
-        undefined
+    // Recognizable, evocative sample dates paired with a short human label for the input column.
+    // Mixes date-only and date-time values (and edge times like midnight / noon) to exercise the
+    // different formatting functions, while reading cleanly on the left.
+    testData: Array<{date: Date; label: string}> = [
+        {date: moment().toDate(), label: 'Today, right now'},
+        {date: moment().startOf('day').toDate(), label: 'Today, midnight'},
+        {date: moment('2026-01-01 13:00').toDate(), label: "New Year's, 1pm"},
+        {date: moment('2026-07-04 00:00').toDate(), label: 'Midnight, July 4th'},
+        {date: moment('2024-02-29 12:00').toDate(), label: 'Leap day, noon'},
+        {date: moment('2026-03-31 17:00').toDate(), label: 'End of Q1, 5pm'},
+        {date: moment('1969-07-20 20:17').toDate(), label: 'Moon landing'},
+        {date: moment('1776-07-04').toDate(), label: 'Declaration signed'},
+        {date: moment(0).toDate(), label: 'Unix epoch'},
+        {date: moment('2099-12-31 23:59').toDate(), label: "Far future, New Year's Eve"},
+        {date: null, label: 'Null value'},
+        {date: undefined, label: 'Undefined value'}
     ];
 
     @bindable fnName = 'fmtDate';
@@ -25,10 +30,10 @@ export class DateFormatsPanelModel extends HoistModel {
     @bindable.ref tryItData = new Date();
 
     get testResults() {
-        return this.testData.map(data => ({
-            data,
-            formattedData: nilAwareFormat(data?.toString() ?? data),
-            result: this.getResult(data)
+        return this.testData.map(({date, label}) => ({
+            data: date,
+            formattedData: label,
+            result: this.getResult(date)
         }));
     }
 
@@ -62,10 +67,4 @@ export class DateFormatsPanelModel extends HoistModel {
             return '#exception#';
         }
     }
-}
-
-function nilAwareFormat(val: any) {
-    if (val === undefined) return code('undefined');
-    if (val === null) return code('null');
-    return val;
 }

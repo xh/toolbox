@@ -61,6 +61,7 @@ export const dateFormatsPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Format String',
+                    propName: 'DateFormatOptions.fmt',
                     control: textInput({
                         model,
                         bind: 'fmt',
@@ -73,6 +74,7 @@ export const dateFormatsPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Null Display',
+                    propName: 'DateFormatOptions.nullDisplay',
                     control: textInput({
                         model,
                         bind: 'nullDisplay',
@@ -83,6 +85,7 @@ export const dateFormatsPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Tooltip',
+                    propName: 'FormatOptions.tooltip',
                     control: switchInput({model, bind: 'tooltip'}),
                     info: 'Show the full date in a tooltip on hover.'
                 })
