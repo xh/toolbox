@@ -13,6 +13,7 @@ export function treeMapDisplayOptions(model: TreeMapModel | SplitTreeMapModel): 
     return [
         wrapperOption({
             label: 'Max Heat',
+            propName: 'TreeMapConfig.maxHeat',
             control: select({
                 model,
                 bind: 'maxHeat',
@@ -28,6 +29,7 @@ export function treeMapDisplayOptions(model: TreeMapModel | SplitTreeMapModel): 
         }),
         wrapperOption({
             label: 'Color Mode',
+            propName: 'TreeMapConfig.colorMode',
             control: select({
                 model,
                 bind: 'colorMode',
@@ -42,6 +44,7 @@ export function treeMapDisplayOptions(model: TreeMapModel | SplitTreeMapModel): 
         }),
         wrapperOption({
             label: 'Theme',
+            propName: 'TreeMapConfig.theme',
             control: select({
                 model,
                 bind: 'theme',
@@ -56,6 +59,7 @@ export function treeMapDisplayOptions(model: TreeMapModel | SplitTreeMapModel): 
         }),
         wrapperOption({
             label: 'Algorithm',
+            propName: 'TreeMapConfig.algorithm',
             control: select({
                 model,
                 bind: 'algorithm',

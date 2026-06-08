@@ -9,16 +9,26 @@ import {ReactElement} from 'react';
 import {wrapperAction, wrapperOption} from '../../Wrapper';
 
 /**
- * Standard AG Grid display-option rows (sizing mode + styling switches) for a Wrapper `options`
+ * Standard grid display-option rows (sizing mode + styling switches) for a Wrapper `options`
  * section, bound directly to the supplied `AgGridModel`. Shared by the grid examples.
+ *
+ * These styling options are declared on both `GridConfig` and `AgGridModelConfig` (a `GridModel`
+ * passes them through to the `AgGridModel` it owns). `configClass` controls which interface the
+ * hover disclosure points a developer at: callers driving a higher-level `GridModel` should pass
+ * `'GridConfig'` (the config they actually construct), so we don't send them to the underlying
+ * `AgGridModel` they never touch directly; the standalone AG Grid example leaves the default.
  *
  * Note: the app-wide Dark Mode toggle is intentionally NOT included here - theme is controlled
  * globally via the app options menu rather than duplicated onto every grid example.
  */
-export function agGridDisplayOptions(model: AgGridModel): ReactElement[] {
+export function agGridDisplayOptions(
+    model: AgGridModel,
+    configClass: string = 'AgGridModelConfig'
+): ReactElement[] {
     return [
         wrapperOption({
             label: 'Sizing Mode',
+            propName: `${configClass}.sizingMode`,
             control: select({
                 model,
                 bind: 'sizingMode',
@@ -32,27 +42,52 @@ export function agGridDisplayOptions(model: AgGridModel): ReactElement[] {
                 ]
             })
         }),
-        wrapperOption({label: 'Hide Headers', control: switchInput({model, bind: 'hideHeaders'})}),
-        wrapperOption({label: 'Striped', control: switchInput({model, bind: 'stripeRows'})}),
-        wrapperOption({label: 'Row Borders', control: switchInput({model, bind: 'rowBorders'})}),
-        wrapperOption({label: 'Cell Borders', control: switchInput({model, bind: 'cellBorders'})}),
-        wrapperOption({label: 'Hover', control: switchInput({model, bind: 'showHover'})}),
-        wrapperOption({label: 'Cell Focus', control: switchInput({model, bind: 'showCellFocus'})})
+        wrapperOption({
+            label: 'Hide Headers',
+            propName: `${configClass}.hideHeaders`,
+            control: switchInput({model, bind: 'hideHeaders'})
+        }),
+        wrapperOption({
+            label: 'Striped',
+            propName: `${configClass}.stripeRows`,
+            control: switchInput({model, bind: 'stripeRows'})
+        }),
+        wrapperOption({
+            label: 'Row Borders',
+            propName: `${configClass}.rowBorders`,
+            control: switchInput({model, bind: 'rowBorders'})
+        }),
+        wrapperOption({
+            label: 'Cell Borders',
+            propName: `${configClass}.cellBorders`,
+            control: switchInput({model, bind: 'cellBorders'})
+        }),
+        wrapperOption({
+            label: 'Hover',
+            propName: `${configClass}.showHover`,
+            control: switchInput({model, bind: 'showHover'})
+        }),
+        wrapperOption({
+            label: 'Cell Focus',
+            propName: `${configClass}.showCellFocus`,
+            control: switchInput({model, bind: 'showCellFocus'})
+        })
     ];
 }
 
 /**
- * Full `GridModel` display-option rows for a Wrapper `options` section: the standard AG Grid styling
- * options plus GridModel-level Tree Style (tree grids only) and empty text. Bound directly to the
- * supplied `GridModel`.
+ * Full `GridModel` display-option rows for a Wrapper `options` section: the standard styling options
+ * plus GridModel-level Tree Style (tree grids only) and empty text. Bound directly to the supplied
+ * `GridModel`, with the hover disclosure pointing at `GridConfig` (the config a developer sets up).
  */
 export function gridDisplayOptions(model: GridModel): ReactElement[] {
     return [
-        ...agGridDisplayOptions(model.agGridModel),
+        ...agGridDisplayOptions(model.agGridModel, 'GridConfig'),
         ...(model.treeMode
             ? [
                   wrapperOption({
                       label: 'Tree Style',
+                      propName: 'GridConfig.treeStyle',
                       control: select({
                           model,
                           bind: 'treeStyle',
@@ -75,6 +110,7 @@ export function gridDisplayOptions(model: GridModel): ReactElement[] {
             : []),
         wrapperOption({
             label: 'Empty Text',
+            propName: 'GridConfig.emptyText',
             control: textInput({model, bind: 'emptyText', width: 140})
         })
     ];

@@ -41,6 +41,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Columns',
+                    propName: 'DashCanvasConfig.columns',
                     control: numberInput({
                         model: dashCanvasModel,
                         bind: 'columns',
@@ -50,6 +51,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Row Height',
+                    propName: 'DashCanvasConfig.rowHeight',
                     control: numberInput({
                         model: dashCanvasModel,
                         bind: 'rowHeight',
@@ -60,6 +62,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Compact',
+                    propName: 'DashCanvasConfig.compact',
                     control: select({
                         model: dashCanvasModel,
                         bind: 'compact',
@@ -74,18 +77,22 @@ export const dashCanvasPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Show Background',
+                    propName: 'DashCanvasConfig.showGridBackground',
                     control: switchInput({model: dashCanvasModel, bind: 'showGridBackground'})
                 }),
                 wrapperOption({
                     label: 'Layout Locked',
+                    propName: 'DashCanvasConfig.layoutLocked',
                     control: switchInput({model: dashCanvasModel, bind: 'layoutLocked'})
                 }),
                 wrapperOption({
                     label: 'Content Locked',
+                    propName: 'DashCanvasConfig.contentLocked',
                     control: switchInput({model: dashCanvasModel, bind: 'contentLocked'})
                 }),
                 wrapperOption({
                     label: 'Rename Locked',
+                    propName: 'DashCanvasConfig.renameLocked',
                     control: switchInput({model: dashCanvasModel, bind: 'renameLocked'})
                 }),
                 wrapperAction({

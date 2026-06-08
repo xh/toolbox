@@ -59,6 +59,7 @@ export const iconsPanel = hoistCmp.factory({
             options: [
                 wrapperOption({
                     label: 'Style',
+                    propName: 'IconProps.prefix',
                     control: select({
                         model,
                         bind: 'prefix',
@@ -75,6 +76,7 @@ export const iconsPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Intent',
+                    propName: 'IconProps.intent',
                     control: select({
                         model,
                         bind: 'intent',

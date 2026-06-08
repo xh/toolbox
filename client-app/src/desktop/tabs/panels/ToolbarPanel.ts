@@ -16,7 +16,7 @@ export const toolbarPanel = hoistCmp.factory({
     render({model}) {
         return wrapper({
             title: 'Toolbar',
-            icon: Icon.add(),
+            icon: Icon.window(),
             description: [
                 'Toolbars are horizontal or vertical containers with distinct styling and',
                 'managed spacing between their items. Top and bottom toolbar support is built',
@@ -38,6 +38,7 @@ export const toolbarPanel = hoistCmp.factory({
             ],
             options: wrapperOption({
                 label: 'Compact',
+                propName: 'ToolbarProps.compact',
                 control: switchInput({model, bind: 'compact'})
             }),
             item: panel({

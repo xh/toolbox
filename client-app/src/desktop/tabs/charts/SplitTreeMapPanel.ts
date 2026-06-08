@@ -46,6 +46,7 @@ export const splitTreeMapPanel = hoistCmp.factory({
             options: [
                 wrapperOption({
                     label: 'Orientation',
+                    propName: 'SplitTreeMapConfig.orientation',
                     control: select({
                         model: model.splitTreeMapModel,
                         bind: 'orientation',

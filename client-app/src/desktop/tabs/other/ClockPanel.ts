@@ -32,10 +32,12 @@ export const clockPanel = hoistCmp.factory({
             options: [
                 wrapperOption({
                     label: 'Format',
+                    propName: 'ClockProps.format',
                     control: textInput({model, bind: 'format', width: 120, placeholder: TIME_FMT})
                 }),
                 wrapperOption({
                     label: 'Interval (ms)',
+                    propName: 'ClockProps.updateInterval',
                     control: numberInput({
                         model,
                         bind: 'updateInterval',
@@ -45,10 +47,12 @@ export const clockPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Prefix',
+                    propName: 'ClockProps.prefix',
                     control: textInput({model, bind: 'prefix', width: 120})
                 }),
                 wrapperOption({
                     label: 'Suffix',
+                    propName: 'ClockProps.suffix',
                     control: textInput({model, bind: 'suffix', width: 120})
                 })
             ],

@@ -64,14 +64,17 @@ export const formPanel = hoistCmp.factory({
             options: [
                 wrapperOption({
                     label: 'Commit on change',
+                    propName: 'FormFieldProps.commitOnChange',
                     control: switchInput({model, bind: 'commitOnChange'})
                 }),
                 wrapperOption({
                     label: 'Inline labels',
+                    propName: 'FormFieldProps.inline',
                     control: switchInput({model, bind: 'inline'})
                 }),
                 wrapperOption({
                     label: 'Minimal validation',
+                    propName: 'FormFieldProps.minimal',
                     control: switchInput({model, bind: 'minimal'})
                 }),
                 wrapperOption({
@@ -80,10 +83,12 @@ export const formPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Read-only',
+                    propName: 'FormModel.readonly',
                     control: switchInput({model: formModel, bind: 'readonly'})
                 }),
                 wrapperOption({
                     label: 'Disabled',
+                    propName: 'FormModel.disabled',
                     control: switchInput({model: formModel, bind: 'disabled'})
                 })
             ],

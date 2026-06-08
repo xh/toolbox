@@ -56,10 +56,12 @@ export const exceptionHandlerPanel = hoistCmp.factory({
             options: [
                 wrapperOption({
                     label: 'Title',
+                    propName: 'ExceptionHandlerOptions.title',
                     control: textInput({model, bind: 'title', placeholder: 'Error', width: 150})
                 }),
                 wrapperOption({
                     label: 'Message',
+                    propName: 'ExceptionHandlerOptions.message',
                     control: textInput({
                         model,
                         bind: 'message',
@@ -69,18 +71,22 @@ export const exceptionHandlerPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Log On Server',
+                    propName: 'ExceptionHandlerOptions.logOnServer',
                     control: switchInput({model, bind: 'logOnServer'})
                 }),
                 wrapperOption({
                     label: 'Show Alert',
+                    propName: 'ExceptionHandlerOptions.showAlert',
                     control: switchInput({model, bind: 'showAlert'})
                 }),
                 wrapperOption({
                     label: 'Require Reload',
+                    propName: 'ExceptionHandlerOptions.requireReload',
                     control: switchInput({model, bind: 'requireReload', disabled: !model.showAlert})
                 }),
                 wrapperOption({
                     label: 'Alert Type',
+                    propName: 'ExceptionHandlerOptions.alertType',
                     control: segmentedControl({
                         model,
                         bind: 'alertType',

@@ -52,6 +52,7 @@ export const treeGridPanel = hoistCmp.factory({
                 ...gridDisplayOptions(gridModel),
                 wrapperOption({
                     label: 'Summary Row',
+                    propName: 'GridConfig.showSummary',
                     control: select({
                         model: gridModel,
                         bind: 'showSummary',

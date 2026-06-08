@@ -23,6 +23,7 @@ export function chartDisplayOptions(model: ChartExampleModel): ReactElement[] {
     return [
         wrapperOption({
             label: 'Aspect Ratio',
+            propName: 'ChartProps.aspectRatio',
             control: select({
                 model,
                 bind: 'aspectRatio',

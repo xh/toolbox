@@ -50,6 +50,7 @@ export const panelSizingPanel = hoistCmp.factory({
             ],
             options: wrapperOption({
                 label: 'Resize While Dragging',
+                propName: 'PanelConfig.resizeWhileDragging',
                 control: switchInput({model, bind: 'resizeWhileDragging'})
             }),
             item: panel({

@@ -54,6 +54,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
             options: [
                 wrapperOption({
                     label: 'Target',
+                    propName: 'RelativeTimestampProps.timestamp',
                     control: dateInput({
                         model,
                         bind: 'timestamp',
@@ -75,28 +76,38 @@ export const relativeTimestampPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Allow Future',
+                    propName: 'RelativeTimestampOptions.allowFuture',
                     control: switchInput({model, bind: 'allowFuture'}),
                     info: 'Render future timestamps; otherwise they fall back to the empty result.'
                 }),
-                wrapperOption({label: 'Short', control: switchInput({model, bind: 'short'})}),
+                wrapperOption({
+                    label: 'Short',
+                    propName: 'RelativeTimestampOptions.short',
+                    control: switchInput({model, bind: 'short'})
+                }),
                 wrapperOption({
                     label: 'Prefix',
+                    propName: 'RelativeTimestampOptions.prefix',
                     control: textInput({model, bind: 'prefix', width: 140})
                 }),
                 wrapperOption({
                     label: 'Future Suffix',
+                    propName: 'RelativeTimestampOptions.futureSuffix',
                     control: textInput({model, bind: 'futureSuffix', width: 140})
                 }),
                 wrapperOption({
                     label: 'Past Suffix',
+                    propName: 'RelativeTimestampOptions.pastSuffix',
                     control: textInput({model, bind: 'pastSuffix', width: 140})
                 }),
                 wrapperOption({
                     label: 'Equal String',
+                    propName: 'RelativeTimestampOptions.equalString',
                     control: textInput({model, bind: 'equalString', width: 140})
                 }),
                 wrapperOption({
                     label: 'Epsilon (secs)',
+                    propName: 'RelativeTimestampOptions.epsilon',
                     control: numberInput({
                         model,
                         bind: 'epsilon',
@@ -108,10 +119,12 @@ export const relativeTimestampPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Empty Result',
+                    propName: 'RelativeTimestampOptions.emptyResult',
                     control: textInput({model, bind: 'emptyResult', width: 140})
                 }),
                 wrapperOption({
                     label: 'LocalDate Mode',
+                    propName: 'RelativeTimestampOptions.localDateMode',
                     control: select({
                         model,
                         bind: 'localDateMode',
@@ -123,6 +136,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Relative To',
+                    propName: 'RelativeTimestampOptions.relativeTo',
                     control: dateInput({
                         model,
                         bind: 'relativeTo',

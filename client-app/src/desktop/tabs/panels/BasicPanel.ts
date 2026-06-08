@@ -50,6 +50,7 @@ export const basicPanel = hoistCmp.factory({
             options: [
                 wrapperOption({
                     label: 'Compact Header',
+                    propName: 'PanelProps.compactHeader',
                     control: switchInput({model, bind: 'compactHeader'}),
                     info: 'Render the panel header in a denser, shorter style.'
                 }),

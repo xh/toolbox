@@ -48,6 +48,7 @@ export const maskPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Message',
+                    propName: 'MaskProps.message',
                     control: textInput({
                         model,
                         bind: 'message',
@@ -57,10 +58,12 @@ export const maskPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Inline',
+                    propName: 'MaskProps.inline',
                     control: switchInput({model, bind: 'inline'})
                 }),
                 wrapperOption({
                     label: 'Spinner',
+                    propName: 'MaskProps.spinner',
                     control: switchInput({model, bind: 'spinner'})
                 }),
                 wrapperAction({

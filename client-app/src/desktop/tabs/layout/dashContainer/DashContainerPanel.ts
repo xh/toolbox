@@ -39,14 +39,17 @@ export const dashContainerPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Layout Locked',
+                    propName: 'DashContainerConfig.layoutLocked',
                     control: switchInput({model: model.dashContainerModel, bind: 'layoutLocked'})
                 }),
                 wrapperOption({
                     label: 'Content Locked',
+                    propName: 'DashContainerConfig.contentLocked',
                     control: switchInput({model: model.dashContainerModel, bind: 'contentLocked'})
                 }),
                 wrapperOption({
                     label: 'Rename Locked',
+                    propName: 'DashContainerConfig.renameLocked',
                     control: switchInput({model: model.dashContainerModel, bind: 'renameLocked'})
                 }),
                 wrapperAction({

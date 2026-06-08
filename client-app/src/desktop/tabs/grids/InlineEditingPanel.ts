@@ -68,6 +68,7 @@ export const inlineEditingPanel = hoistCmp.factory({
             options: [
                 wrapperOption({
                     label: 'Full-row editing',
+                    propName: 'GridConfig.fullRowEditing',
                     control: switchInput({model, bind: 'fullRowEditing'})
                 }),
                 wrapperOption({
@@ -76,6 +77,7 @@ export const inlineEditingPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Edit with',
+                    propName: 'GridConfig.clicksToEdit',
                     control: segmentedControl({
                         model,
                         bind: 'clicksToEdit',

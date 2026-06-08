@@ -59,14 +59,17 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Ratio',
+                    propName: 'TileFrameProps.desiredRatio',
                     control: numberInput({...numConf, bind: 'desiredRatio', stepSize: 0.5})
                 }),
                 wrapperOption({
                     label: 'Spacing',
+                    propName: 'TileFrameProps.spacing',
                     control: numberInput({...numConf, bind: 'spacing'})
                 }),
                 wrapperOption({
                     label: 'Min Width',
+                    propName: 'TileFrameProps.minTileWidth',
                     control: numberInput({
                         ...numConf,
                         bind: 'minTileWidth',
@@ -75,6 +78,7 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Max Width',
+                    propName: 'TileFrameProps.maxTileWidth',
                     control: numberInput({
                         ...numConf,
                         bind: 'maxTileWidth',
@@ -83,6 +87,7 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Min Height',
+                    propName: 'TileFrameProps.minTileHeight',
                     control: numberInput({
                         ...numConf,
                         bind: 'minTileHeight',
@@ -91,6 +96,7 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Max Height',
+                    propName: 'TileFrameProps.maxTileHeight',
                     control: numberInput({
                         ...numConf,
                         bind: 'maxTileHeight',

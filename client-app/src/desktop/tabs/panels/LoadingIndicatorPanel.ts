@@ -51,6 +51,7 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Message',
+                    propName: 'LoadingIndicatorProps.message',
                     control: textInput({
                         model,
                         bind: 'message',
@@ -60,6 +61,7 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Corner',
+                    propName: 'LoadingIndicatorProps.corner',
                     control: select({
                         model,
                         bind: 'corner',
@@ -75,6 +77,7 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Spinner',
+                    propName: 'LoadingIndicatorProps.spinner',
                     control: switchInput({model, bind: 'spinner'})
                 }),
                 wrapperAction({

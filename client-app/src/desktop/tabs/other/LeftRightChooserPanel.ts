@@ -48,6 +48,7 @@ export const leftRightChooserPanel = hoistCmp.factory({
             ],
             options: wrapperOption({
                 label: 'Filter match mode',
+                propName: 'LeftRightChooserFilterProps.matchMode',
                 control: select({
                     model,
                     bind: 'matchMode',

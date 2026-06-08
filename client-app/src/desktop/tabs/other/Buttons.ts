@@ -47,10 +47,12 @@ export const buttonsPanel = hoistCmp.factory({
             options: [
                 wrapperOption({
                     label: 'Disable All',
+                    propName: 'ButtonProps.disabled',
                     control: switchInput({model, bind: 'disableButtons'})
                 }),
                 wrapperOption({
                     label: 'All Active',
+                    propName: 'ButtonProps.active',
                     control: switchInput({model, bind: 'activeButtons'})
                 })
             ],
