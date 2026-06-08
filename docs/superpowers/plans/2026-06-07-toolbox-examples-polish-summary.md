@@ -2,8 +2,10 @@
 
 **Date:** 2026-06-07
 **Branch:** `wrapper-redesign`
-**Status:** Ongoing. This is a companion/orientation doc for picking the work back up with fresh
-context. Read this first, then the two foundational docs below.
+**Status:** Implementation essentially complete; handing off for **final code review**. This is a
+companion/orientation doc for picking the work back up with fresh context. Read this first (see the
+"Latest session" section below for the newest work + review pointers), then the two foundational
+docs below.
 
 ## Purpose of this doc
 
@@ -49,11 +51,26 @@ Props: `title` (required), `icon?`, `description?` (string | string[] **Markdown
   lines render space-joined; an **empty-string entry** is a paragraph break (NOT `+` concatenation -
   that coerces to comma-joined text and was a real bug we fixed). Backticks, `[text](url)` links work.
 
-### `wrapperOption({label, control, info?})` - one display-option row
+### `wrapperOption({label, control, info?, propName?})` - one display-option row
 The standard label-left / control-right row used by every example's Options section. `info?` renders
 muted helper text below the row (a reusable pattern - good for explaining what an option does;
 the formatter examples use it heavily). **Pass `model` explicitly** to controls in the rail
 (`switchInput({model, bind})`) - don't rely on context reaching the rail.
+
+**`propName?`** (added this session) names the **qualified** Hoist API the option maps to, as
+`Interface.property` - e.g. `MaskProps.inline`, `GridConfig.stripeRows`, `FormModel.readonly`. On
+row hover the human `label` swaps in place for this monospace name (a `title` tooltip on the option
+gives the full value when the pill ellipsizes). Conventions when setting it:
+- Use the interface a developer actually reaches for: a component's `*Props` for a component prop, a
+  model's `*Config` for a construction config key, the `*Model` for a runtime-settable bindable.
+- **Point at the most specific class the dev constructs, not an underlying/parent one.** e.g. the
+  standard grids' styling options are `GridConfig.*` (the GridModel config a dev builds), even though
+  the shared helper binds through to the underlying `AgGridModel`; only the standalone AG Grid
+  example uses `AgGridModelConfig.*`. Likewise `DashCanvasConfig`/`DashContainerConfig` (not base
+  `DashConfig`) for the dash locks.
+- Only set it for clean 1:1 mappings; leave demo-only / multi-prop / non-API controls label-only.
+- Names were verified against the framework types via the hoist-react reference - re-verify if you
+  touch them.
 
 ### `wrapperAction({...})` - a rail action button
 Full-width, non-minimal button for a rail action/trigger. **Intent convention (apply consistently):**
@@ -67,7 +84,10 @@ Full-width, non-minimal button for a rail action/trigger. **Intent convention (a
 - `treeMapDisplayOptions(model)` - the shared TreeMap appearance selects.
 - `chartDisplayOptions(model)` - shared chart options (aspect ratio as a labeled select, context menu,
   "Call chart API" action).
-- `gridDisplayOptions(model)` / `agGridDisplayOptions(model)` - shared grid styling option rows.
+- `gridDisplayOptions(model)` / `agGridDisplayOptions(model, configClass?)` - shared grid styling
+  option rows. `agGridDisplayOptions` takes a `configClass` string (default `'AgGridModelConfig'`)
+  used only for the `propName` hover hint; `gridDisplayOptions` passes `'GridConfig'` so the
+  GridModel-based examples point devs at the config they actually construct.
 - `gridDisplayActions(model)` - grid selection-demo actions.
 - `expandCollapseButton({gridModel})` - a toggle action for tree grids (wraps `GridModel`
   expandAll/collapseAll with its own toggle state).
@@ -124,11 +144,53 @@ Full-width, non-minimal button for a rail action/trigger. **Intent convention (a
 - **App shell:** left sub-tab nav restyled (rounded items, hover, active pill + accent bar);
   top-level "Examples" tab relabeled "Example Apps".
 
+## Latest session (2026-06-07, continued) - new work + notes for the reviewer
+
+A follow-on session added the items below (each its own commit on top of `7fb81d95`; tree is clean
+apart from the untracked `OPTIONS-PANEL-EVALUATION.md`). A fresh agent is expected to do **final
+code reviews** next - the pointers here flag the judgment calls worth a closer look.
+
+**New work (commits):**
+- **Options prop-name disclosure** (`9347ead1`, `356b5b5d`, `68b42bdc`) - the `wrapperOption.propName`
+  feature above (hover-swap + `title` tooltip), plus single-click expand on the collapsed rail. The
+  qualified names were filled in across ~all example Options and verified against framework types.
+- **Dock Container** (`826a7319`) - actions moved to rail `wrapperAction`s; demo region is a
+  space-filling card with a reactive `placeholder` (live docked-view count). Fixed `' Error View'`.
+- **FileChooser** (`a9a364a7`) - reframed as two equal `card`s (top: configurable chooser fills;
+  bottom: two compact single-file choosers sharing space), max-width capped, copy trimmed.
+- **Format Dates/Numbers** (`e2a8b63d`) - date samples now `{date, label}` pairs (human left-column
+  descriptions instead of raw `toString()`); number "Custom value" row labeled + prepopulated +
+  `selectOnFocus`.
+- **Mobile** (`1d8eca78`) - replaced the dated baked-frame screenshots with a CSS device frame
+  (`phoneFrame` in `MobileTab.ts`): bezel, large radius, faux status bar (clock + "XH mobile" +
+  signal/battery), home-indicator pill, side buttons. **Frame coloration AND the screenshot content
+  both track the desktop theme** via `XH.darkTheme` (theme-aware CSS vars + light/dark capture pairs).
+  Two screens (home + form), each captured per theme. See `tabs/mobile/README.md`.
+- **Misc tweaks** - Toolbar inner panel retitled "Panel with Toolbars" + `Icon.window()` (`1f721907`);
+  Panel Sizing Expand/Collapse All moved to rail, inner tbar removed (`81f8fa10`); Relative Timestamp
+  output got internal vertical padding (uncommitted at handoff unless noted).
+
+**Notes for the reviewer (judgment calls to sanity-check):**
+- **propName accuracy.** A few are routed indirectly: Mask/LoadingIndicator "Message" map to
+  `MaskProps.message` / `LoadingIndicatorProps.message` though the demo drives them via a
+  `TaskObserver`; `PanelConfig.resizeWhileDragging` is set at construction but toggled at runtime in
+  the demo. These were deliberate "what would a dev type" calls - worth a glance.
+- **Mobile screenshots.** They are real captures, but `html2canvas` blanks navigated Onsen swiper
+  slides in **light** theme (only the root slide captures); the light Form shot was taken by
+  temporarily making Form the root page (reverted). The mobile client is slated for a redesign, so
+  these are deliberately "good enough" placeholders - the `README.md` documents recapture.
+- **Reverted experiment.** Per-sub-tab icons in the left switcher were tried and **reverted** (a
+  design review judged the shared feature-icons added noise / false grouping). The switcher stays
+  text-only at 150px with the existing modern hover/active styling. Don't re-add without a rethink.
+
 ## Framework bugs filed against hoist-react (found during this work)
 
 - **#4418** - `GridModel.beginEditAsync()` ignores a record id of `0` (falsy check). Worked around in
   the Inline Editing example by passing the `StoreRecord` instance.
 - **#4419** - `SegmentedControl` option labels don't wrap/truncate gracefully when space-constrained.
+- **#4420** - `LoadingIndicator`'s spinner inherits the global `--xh-spinner-color` and reads
+  low-contrast against the indicator's own background in both themes (weaker than its message text).
+  No Toolbox override involved; suggested scoping the spinner to `--xh-loading-indicator-color`.
 - (Earlier) a `core/README.md` doc clarification re: `@managed` vs context lookup - see auto-memory.
 
 ## Open items / things to watch
