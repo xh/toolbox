@@ -42,8 +42,8 @@ export const toolbarPanel = hoistCmp.factory({
                 control: switchInput({model, bind: 'compact'})
             }),
             item: panel({
-                title: 'Toolbar',
-                icon: Icon.add(),
+                title: 'Panel with Toolbars',
+                icon: Icon.window(),
                 height: '60vh',
                 width: '90%',
                 tbar: topBar(),
