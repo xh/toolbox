@@ -1,6 +1,6 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faPhoneLaptop} from '@fortawesome/pro-regular-svg-icons';
-import {hframe, img} from '@xh/hoist/cmp/layout';
+import {div, hframe, img, span} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -8,15 +8,23 @@ import {wrapper, wrapperAction} from '../../common';
 // @ts-ignore
 import mobileImageForm from './MobileImageForm.png';
 // @ts-ignore
-import mobileImageGrid from './MobileImageGrid.png';
+import mobileImageFormLight from './MobileImageFormLight.png';
 // @ts-ignore
 import mobileImageHome from './MobileImageHome.png';
+// @ts-ignore
+import mobileImageHomeLight from './MobileImageHomeLight.png';
 import './MobileTab.scss';
 
 library.add(faPhoneLaptop);
 
-export const mobileTab = hoistCmp.factory(() =>
-    wrapper({
+export const mobileTab = hoistCmp.factory(() => {
+    // Track the desktop app's theme: pick matching light/dark screen captures and flag the frame
+    // (which recolors via the `--light` modifier in MobileTab.scss). `XH.darkTheme` is observable,
+    // so this re-renders when the user toggles the theme.
+    const {darkTheme} = XH,
+        homeImage = darkTheme ? mobileImageHome : mobileImageHomeLight,
+        formImage = darkTheme ? mobileImageForm : mobileImageFormLight;
+    return wrapper({
         title: 'Mobile',
         icon: Icon.mobile(),
         description: [
@@ -71,15 +79,62 @@ export const mobileTab = hoistCmp.factory(() =>
             })
         ],
         item: panel({
-            className: 'tb-mobile',
+            className: darkTheme ? 'tb-mobile' : 'tb-mobile tb-mobile--light',
             item: hframe({
                 className: 'tb-mobile__screenshots',
-                items: [
-                    img({src: mobileImageHome}),
-                    img({src: mobileImageGrid}),
-                    img({src: mobileImageForm})
-                ]
+                items: [phoneFrame(homeImage), phoneFrame(formImage)]
             })
         })
-    })
-);
+    });
+});
+
+/**
+ * Wrap a frameless mobile screen capture in a sleek, modern device frame - a thin dark bezel with
+ * a large continuous corner radius, a dynamic-island pill, subtle side buttons, and a soft drop
+ * shadow. The screen reserves a top status-bar gap and a bottom home-indicator gap (dark "OS
+ * chrome" bands) so the rounded corners clip those bands rather than the app content - mirroring a
+ * real device, where the OS chrome keeps content clear of the corners. The source image should be
+ * a clean screenshot of just the app screen (no device chrome) at a ~9:19.5 phone aspect ratio; it
+ * crops to fit via `object-fit: cover`. See MobileTab.scss and the README alongside the screenshots.
+ */
+function phoneFrame(src: string) {
+    return div({
+        className: 'tb-mobile__device',
+        items: [
+            statusBar(),
+            div({
+                className: 'tb-mobile__screen',
+                item: img({className: 'tb-mobile__shot', src})
+            }),
+            div({className: 'tb-mobile__home'})
+        ]
+    });
+}
+
+/**
+ * A faux iOS-style status bar drawn into the top chrome gap: a clock at left and, at right, a cute
+ * "XH mobile" carrier label beside a CSS signal-strength meter and a battery glyph. Purely
+ * decorative - it fills the top band so the framed screenshot doesn't read as oddly cropped.
+ */
+function statusBar() {
+    return div({
+        className: 'tb-mobile__statusbar',
+        items: [
+            span({className: 'tb-mobile__clock', item: '9:41'}),
+            div({
+                className: 'tb-mobile__status-right',
+                items: [
+                    div({
+                        className: 'tb-mobile__signal',
+                        items: [0, 1, 2, 3].map(i => div({key: i, className: 'tb-mobile__bar'}))
+                    }),
+                    span({className: 'tb-mobile__carrier', item: 'XH mobile'}),
+                    div({
+                        className: 'tb-mobile__battery',
+                        item: div({className: 'tb-mobile__battery-fill'})
+                    })
+                ]
+            })
+        ]
+    });
+}
