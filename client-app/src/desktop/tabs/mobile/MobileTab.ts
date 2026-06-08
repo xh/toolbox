@@ -1,9 +1,11 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faPhoneLaptop} from '@fortawesome/pro-regular-svg-icons';
+import {clock} from '@xh/hoist/cmp/clock';
 import {div, hframe, img, span} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {SECONDS} from '@xh/hoist/utils/datetime';
 import {wrapper, wrapperAction} from '../../common';
 // @ts-ignore
 import mobileImageForm from './MobileImageForm.png';
@@ -120,7 +122,9 @@ function statusBar() {
     return div({
         className: 'tb-mobile__statusbar',
         items: [
-            span({className: 'tb-mobile__clock', item: '9:41'}),
+            // Real system time via Hoist's `clock`, styled to match. iOS-style `h:mm`, ticking
+            // every few seconds (the minutes display only needs a coarse refresh).
+            clock({className: 'tb-mobile__clock', format: 'h:mm', updateInterval: 5 * SECONDS}),
             div({
                 className: 'tb-mobile__status-right',
                 items: [
