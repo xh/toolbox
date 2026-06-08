@@ -70,7 +70,7 @@ export const dateFormatsPanel = hoistCmp.factory({
                         placeholder: 'e.g. MMM DD',
                         width: 130
                     }),
-                    info: 'A moment.js format string. Only applies to fmtDate.'
+                    info: 'moment.js format; fmtDate only.'
                 }),
                 wrapperOption({
                     label: 'Null Display',
@@ -87,7 +87,7 @@ export const dateFormatsPanel = hoistCmp.factory({
                     label: 'Tooltip',
                     propName: 'FormatOptions.tooltip',
                     control: switchInput({model, bind: 'tooltip'}),
-                    info: 'Show the full date in a tooltip on hover.'
+                    info: 'Show the full date on hover.'
                 })
             ],
             item: resultsPanel({

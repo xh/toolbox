@@ -73,7 +73,8 @@ export const dashCanvasPanel = hoistCmp.factory({
                             {label: 'Horizontal', value: 'horizontal'},
                             {label: 'Off', value: false}
                         ]
-                    })
+                    }),
+                    info: 'How widgets collapse to fill gaps.'
                 }),
                 wrapperOption({
                     label: 'Show Background',
@@ -83,17 +84,20 @@ export const dashCanvasPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Layout Locked',
                     propName: 'DashCanvasConfig.layoutLocked',
-                    control: switchInput({model: dashCanvasModel, bind: 'layoutLocked'})
+                    control: switchInput({model: dashCanvasModel, bind: 'layoutLocked'}),
+                    info: 'Prevent moving or resizing widgets.'
                 }),
                 wrapperOption({
                     label: 'Content Locked',
                     propName: 'DashCanvasConfig.contentLocked',
-                    control: switchInput({model: dashCanvasModel, bind: 'contentLocked'})
+                    control: switchInput({model: dashCanvasModel, bind: 'contentLocked'}),
+                    info: 'Prevent adding or removing widgets.'
                 }),
                 wrapperOption({
                     label: 'Rename Locked',
                     propName: 'DashCanvasConfig.renameLocked',
-                    control: switchInput({model: dashCanvasModel, bind: 'renameLocked'})
+                    control: switchInput({model: dashCanvasModel, bind: 'renameLocked'}),
+                    info: 'Prevent renaming views.'
                 }),
                 wrapperAction({
                     text: 'Clear',

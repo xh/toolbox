@@ -26,7 +26,8 @@ export const simpleTreeMapPanel = hoistCmp.factory({
                 ...treeMapDisplayOptions(model.treeMapModel),
                 wrapperOption({
                     label: 'Enable clustering',
-                    control: switchInput({model, bind: 'cluster'})
+                    control: switchInput({model, bind: 'cluster'}),
+                    info: 'Group sub-threshold nodes into one.'
                 }),
                 wrapperOption({
                     label: 'Threshold Width (px)',

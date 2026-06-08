@@ -65,7 +65,8 @@ export const formPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Commit on change',
                     propName: 'FormFieldProps.commitOnChange',
-                    control: switchInput({model, bind: 'commitOnChange'})
+                    control: switchInput({model, bind: 'commitOnChange'}),
+                    info: 'Commit on each keystroke, not on blur.'
                 }),
                 wrapperOption({
                     label: 'Inline labels',
@@ -75,7 +76,8 @@ export const formPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Minimal validation',
                     propName: 'FormFieldProps.minimal',
-                    control: switchInput({model, bind: 'minimal'})
+                    control: switchInput({model, bind: 'minimal'}),
+                    info: 'Show errors as a red outline only.'
                 }),
                 wrapperOption({
                     label: 'US date formats',

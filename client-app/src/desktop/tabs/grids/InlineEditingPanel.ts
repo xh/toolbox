@@ -69,7 +69,8 @@ export const inlineEditingPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Full-row editing',
                     propName: 'GridConfig.fullRowEditing',
-                    control: switchInput({model, bind: 'fullRowEditing'})
+                    control: switchInput({model, bind: 'fullRowEditing'}),
+                    info: 'Edit a whole row, not one cell.'
                 }),
                 wrapperOption({
                     label: 'Async validation',

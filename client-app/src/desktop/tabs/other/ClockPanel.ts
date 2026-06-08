@@ -33,7 +33,8 @@ export const clockPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Format',
                     propName: 'ClockProps.format',
-                    control: textInput({model, bind: 'format', width: 120, placeholder: TIME_FMT})
+                    control: textInput({model, bind: 'format', width: 120, placeholder: TIME_FMT}),
+                    info: 'A moment.js format string.'
                 }),
                 wrapperOption({
                     label: 'Interval (ms)',

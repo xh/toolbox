@@ -72,17 +72,24 @@ export const exceptionHandlerPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Log On Server',
                     propName: 'ExceptionHandlerOptions.logOnServer',
-                    control: switchInput({model, bind: 'logOnServer'})
+                    control: switchInput({model, bind: 'logOnServer'}),
+                    info: "Log to the server's Admin Console."
                 }),
                 wrapperOption({
                     label: 'Show Alert',
                     propName: 'ExceptionHandlerOptions.showAlert',
-                    control: switchInput({model, bind: 'showAlert'})
+                    control: switchInput({model, bind: 'showAlert'}),
+                    info: 'Off handles the exception silently.'
                 }),
                 wrapperOption({
                     label: 'Require Reload',
                     propName: 'ExceptionHandlerOptions.requireReload',
-                    control: switchInput({model, bind: 'requireReload', disabled: !model.showAlert})
+                    control: switchInput({
+                        model,
+                        bind: 'requireReload',
+                        disabled: !model.showAlert
+                    }),
+                    info: 'Force a full app reload to dismiss.'
                 }),
                 wrapperOption({
                     label: 'Alert Type',

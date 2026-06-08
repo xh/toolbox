@@ -59,7 +59,8 @@ export const maskPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Inline',
                     propName: 'MaskProps.inline',
-                    control: switchInput({model, bind: 'inline'})
+                    control: switchInput({model, bind: 'inline'}),
+                    info: 'Mask this panel, not the viewport.'
                 }),
                 wrapperOption({
                     label: 'Spinner',

@@ -40,17 +40,20 @@ export const dashContainerPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Layout Locked',
                     propName: 'DashContainerConfig.layoutLocked',
-                    control: switchInput({model: model.dashContainerModel, bind: 'layoutLocked'})
+                    control: switchInput({model: model.dashContainerModel, bind: 'layoutLocked'}),
+                    info: 'Prevent re-arranging views.'
                 }),
                 wrapperOption({
                     label: 'Content Locked',
                     propName: 'DashContainerConfig.contentLocked',
-                    control: switchInput({model: model.dashContainerModel, bind: 'contentLocked'})
+                    control: switchInput({model: model.dashContainerModel, bind: 'contentLocked'}),
+                    info: 'Prevent adding or removing views.'
                 }),
                 wrapperOption({
                     label: 'Rename Locked',
                     propName: 'DashContainerConfig.renameLocked',
-                    control: switchInput({model: model.dashContainerModel, bind: 'renameLocked'})
+                    control: switchInput({model: model.dashContainerModel, bind: 'renameLocked'}),
+                    info: 'Prevent renaming views.'
                 }),
                 wrapperAction({
                     text: 'Reset & Clear State',

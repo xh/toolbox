@@ -25,7 +25,8 @@ export function treeMapDisplayOptions(model: TreeMapModel | SplitTreeMapModel): 
                     {label: '1', value: 1},
                     {label: '2', value: 2}
                 ]
-            })
+            }),
+            info: 'Clamps the hottest-color value.'
         }),
         wrapperOption({
             label: 'Color Mode',

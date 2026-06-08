@@ -47,7 +47,8 @@ export const gridTreeMapPanel = hoistCmp.factory({
                 ...treeMapDisplayOptions(model.treeMapModel),
                 wrapperOption({
                     label: 'Enable clustering',
-                    control: switchInput({model, bind: 'cluster'})
+                    control: switchInput({model, bind: 'cluster'}),
+                    info: 'Group tiny nodes into one cluster.'
                 })
             ],
             item: panel({

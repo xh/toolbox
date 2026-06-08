@@ -52,12 +52,12 @@ export const basicPanel = hoistCmp.factory({
                     label: 'Compact Header',
                     propName: 'PanelProps.compactHeader',
                     control: switchInput({model, bind: 'compactHeader'}),
-                    info: 'Render the panel header in a denser, shorter style.'
+                    info: 'Render a denser, shorter header.'
                 }),
                 wrapperOption({
                     label: 'Context Menu',
                     control: switchInput({model, bind: 'showContextMenu'}),
-                    info: 'Add a custom right-click context menu to the panel.'
+                    info: 'Add a right-click context menu.'
                 })
             ],
             item: panel({

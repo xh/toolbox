@@ -95,7 +95,8 @@ export const fileChooserPanel = hoistCmp.factory({
                         multiSelectShowCount: true,
                         multiSelectButtonStyle: 'values',
                         options: ACCEPT_OPTIONS
-                    })
+                    }),
+                    info: 'Allowed extensions or MIME types.'
                 }),
                 wrapperOption({
                     label: 'Max files',

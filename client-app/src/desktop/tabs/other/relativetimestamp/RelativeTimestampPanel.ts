@@ -67,23 +67,24 @@ export const relativeTimestampPanel = hoistCmp.factory({
                 buttonGroup({
                     className: 'tb-rel-ts__presets',
                     items: [
-                        button({text: '-1 day', onClick: () => model.setOffset(-DAYS)}),
+                        button({text: '-90 days', onClick: () => model.setOffset(-90 * DAYS)}),
                         button({text: '-1 hr', onClick: () => model.setOffset(-HOURS)}),
                         button({text: 'Now', onClick: () => model.setToNow()}),
                         button({text: '+1 hr', onClick: () => model.setOffset(HOURS)}),
-                        button({text: '+1 day', onClick: () => model.setOffset(DAYS)})
+                        button({text: '+7 days', onClick: () => model.setOffset(7 * DAYS)})
                     ]
                 }),
                 wrapperOption({
                     label: 'Allow Future',
                     propName: 'RelativeTimestampOptions.allowFuture',
                     control: switchInput({model, bind: 'allowFuture'}),
-                    info: 'Render future timestamps; otherwise they fall back to the empty result.'
+                    info: 'Render future timestamps.'
                 }),
                 wrapperOption({
                     label: 'Short',
                     propName: 'RelativeTimestampOptions.short',
-                    control: switchInput({model, bind: 'short'})
+                    control: switchInput({model, bind: 'short'}),
+                    info: `Abbreviate units, e.g. '1m'.`
                 }),
                 wrapperOption({
                     label: 'Prefix',
@@ -115,7 +116,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                         min: 0,
                         width: 90
                     }),
-                    info: 'Differences within this many seconds render as the equal string.'
+                    info: 'Treat diffs within this as equal.'
                 }),
                 wrapperOption({
                     label: 'Empty Result',
@@ -132,7 +133,8 @@ export const relativeTimestampPanel = hoistCmp.factory({
                         options: ['always', 'useTimeForSameDay', 'useTimeFor24Hr'],
                         placeholder: '',
                         enableClear: true
-                    })
+                    }),
+                    info: 'Compare by calendar day.'
                 }),
                 wrapperOption({
                     label: 'Relative To',
@@ -144,7 +146,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                         timePrecision: 'second',
                         showActionsBar: true
                     }),
-                    info: 'Compare against this moment instead of the present.'
+                    info: 'Compare against this, not now.'
                 })
             ],
             item: panel({

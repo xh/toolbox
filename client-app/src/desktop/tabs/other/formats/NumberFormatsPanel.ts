@@ -87,7 +87,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                             {value: 'custom', label: 'Custom'}
                         ]
                     }),
-                    info: 'Color positive / negative / neutral values, or supply custom colors.'
+                    info: 'Color by sign, or set custom colors.'
                 }),
                 wrapperOption({
                     omit: model.colorSpec !== 'custom',
@@ -101,7 +101,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                             colorInput({bind: 'neutralColor', title: 'Neutral'})
                         ]
                     }),
-                    info: 'Positive / negative / neutral colors.'
+                    info: 'Positive / negative / neutral.'
                 }),
                 wrapperOption({
                     label: 'Precision',
@@ -114,7 +114,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                         hideSelectedOptionCheck: true,
                         options: [{label: 'auto', value: -1}, ...range(0, 13)]
                     }),
-                    info: `Set to 'auto' to base precision on the scale of the value, or a number for fixed precision.`
+                    info: `'auto' scales to the value, or fix it.`
                 }),
                 wrapperOption({
                     label: 'Zero Pad',
@@ -132,61 +132,61 @@ export const numberFormatsPanel = hoistCmp.factory({
                             ...range(1, 12)
                         ]
                     }),
-                    info: 'false shows only significant digits, true pads out to precision, or pad to a custom length.'
+                    info: 'Pad to precision or a set length.'
                 }),
                 wrapperOption({
                     label: 'Ledger',
                     propName: 'NumberFormatOptions.ledger',
                     control: switchInput({model, bind: 'ledger'}),
-                    info: 'Use ledger formatting, with parens to indicate negative numbers.'
+                    info: 'Parenthesize negatives, ledger-style.'
                 }),
                 wrapperOption({
                     label: 'Force Ledger Align',
                     propName: 'NumberFormatOptions.forceLedgerAlign',
                     control: switchInput({model, bind: 'forceLedgerAlign'}),
-                    info: 'Ensure mixed pos + neg values vertically align in ledger format.'
+                    info: 'Align mixed signs in ledger format.'
                 }),
                 wrapperOption({
                     label: 'With Commas',
                     propName: 'NumberFormatOptions.withCommas',
                     control: switchInput({model, bind: 'withCommas'}),
-                    info: 'Use a comma as the thousands delimiter.'
+                    info: 'Comma thousands separator.'
                 }),
                 wrapperOption({
                     label: 'Omit 4-Digit Comma',
                     propName: 'NumberFormatOptions.omitFourDigitComma',
                     control: switchInput({model, bind: 'omitFourDigitComma'}),
-                    info: 'Suppress withCommas for four-digit integers, for improved readability.'
+                    info: 'Drop the comma in 4-digit integers.'
                 }),
                 wrapperOption({
                     label: 'With Plus Sign',
                     propName: 'NumberFormatOptions.withPlusSign',
                     control: switchInput({model, bind: 'withPlusSign'}),
-                    info: 'Use an explicit plus sign for positive numbers.'
+                    info: 'Show a + on positive numbers.'
                 }),
                 wrapperOption({
                     label: 'With Sign Glyph',
                     propName: 'NumberFormatOptions.withSignGlyph',
                     control: switchInput({model, bind: 'withSignGlyph'}),
-                    info: 'Use up / down glyphs to indicate sign.'
+                    info: 'Up / down glyphs for sign.'
                 }),
                 wrapperOption({
                     label: 'Strict Zero',
                     propName: 'NumberFormatOptions.strictZero',
                     control: switchInput({model, bind: 'strictZero'}),
-                    info: 'Retain the underlying sign of small numbers formatted as zero due to precision.'
+                    info: 'Keep the sign of near-zero values.'
                 }),
                 wrapperOption({
                     label: 'Label',
                     propName: 'NumberFormatOptions.label',
                     control: textInput({model, bind: 'label', commitOnChange: true, width: 90}),
-                    info: 'Suffix characters, typically used for units.'
+                    info: 'Suffix text, typically units.'
                 }),
                 wrapperOption({
                     label: 'Prefix',
                     propName: 'NumberFormatOptions.prefix',
                     control: textInput({model, bind: 'prefix', commitOnChange: true, width: 90}),
-                    info: 'Inserted between the number and its sign (e.g. $).'
+                    info: 'Sits between sign and number, e.g. $.'
                 }),
                 wrapperOption({
                     label: 'Null Display',

@@ -60,7 +60,8 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Ratio',
                     propName: 'TileFrameProps.desiredRatio',
-                    control: numberInput({...numConf, bind: 'desiredRatio', stepSize: 0.5})
+                    control: numberInput({...numConf, bind: 'desiredRatio', stepSize: 0.5}),
+                    info: 'Target width:height per tile.'
                 }),
                 wrapperOption({
                     label: 'Spacing',

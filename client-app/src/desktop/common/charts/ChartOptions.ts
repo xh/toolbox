@@ -37,7 +37,7 @@ export function chartDisplayOptions(model: ChartExampleModel): ReactElement[] {
                     {label: '1:1 (square)', value: 1}
                 ]
             }),
-            info: 'Width-to-height ratio for the chart; unconstrained fills the available space.'
+            info: 'Chart width-to-height ratio.'
         }),
         wrapperOption({
             label: 'Context Menu',

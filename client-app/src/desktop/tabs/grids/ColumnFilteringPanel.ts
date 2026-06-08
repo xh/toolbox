@@ -61,7 +61,8 @@ export const columnFilteringPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Commit on change',
                     propName: 'GridFilterModelConfig.commitOnChange',
-                    control: switchInput({model: filterModel, bind: 'commitOnChange'})
+                    control: switchInput({model: filterModel, bind: 'commitOnChange'}),
+                    info: 'Apply filter edits immediately.'
                 }),
                 wrapperAction({
                     icon: Icon.filter(),
