@@ -178,6 +178,8 @@ export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOption
     render({label, control, propName, info}) {
         return div({
             className: 'tbox-wrapper__option',
+            // Native tooltip with the full property name - useful when the revealed pill ellipsizes.
+            title: propName,
             items: [
                 div({
                     className: 'tbox-wrapper__option-row',
@@ -192,8 +194,7 @@ export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOption
                                       }),
                                       code({
                                           className: 'tbox-wrapper__option-prop',
-                                          item: propName,
-                                          title: propName
+                                          item: propName
                                       })
                                   ]
                                 : label
