@@ -1,12 +1,12 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {box, filler, h3, hbox, p, strong} from '@xh/hoist/cmp/layout';
+import {box, h3, hbox, p, strong} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {wrapper, wrapperOption} from '../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../common';
 
 export const panelSizingPanel = hoistCmp.factory({
     model: creates(() => PanelSizingModel),
@@ -48,11 +48,25 @@ export const panelSizingPanel = hoistCmp.factory({
                     notes: 'Hoist component model (for resize / collapse).'
                 }
             ],
-            options: wrapperOption({
-                label: 'Resize While Dragging',
-                propName: 'PanelConfig.resizeWhileDragging',
-                control: switchInput({model, bind: 'resizeWhileDragging'})
-            }),
+            options: [
+                wrapperOption({
+                    label: 'Resize While Dragging',
+                    propName: 'PanelConfig.resizeWhileDragging',
+                    control: switchInput({model, bind: 'resizeWhileDragging'})
+                }),
+                wrapperAction({
+                    text: 'Expand All',
+                    icon: Icon.expand(),
+                    disabled: model.allExpanded,
+                    onClick: () => model.setCollapsedAll(false)
+                }),
+                wrapperAction({
+                    text: 'Collapse All',
+                    icon: Icon.collapse(),
+                    disabled: model.allCollapsed,
+                    onClick: () => model.setCollapsedAll(true)
+                })
+            ],
             item: panel({
                 title: 'Panel Sizing',
                 icon: Icon.window(),
@@ -80,20 +94,7 @@ export const panelSizingPanel = hoistCmp.factory({
                                     padding: '0 6 6 6',
                                     display: 'block',
                                     overflowY: 'auto'
-                                }),
-                                tbar: [
-                                    filler(),
-                                    button({
-                                        text: 'Expand All',
-                                        disabled: model.allExpanded,
-                                        onClick: () => model.setCollapsedAll(false)
-                                    }),
-                                    button({
-                                        text: 'Collapse All',
-                                        disabled: model.allCollapsed,
-                                        onClick: () => model.setCollapsedAll(true)
-                                    })
-                                ]
+                                })
                             }),
                             panel({
                                 title: 'Right Panel',
