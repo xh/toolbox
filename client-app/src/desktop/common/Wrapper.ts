@@ -1,4 +1,4 @@
-import {div, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {code, div, hframe, span, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {hoistCmp, HoistModel, HoistProps, useLocalModel} from '@xh/hoist/core';
 import {button, ButtonProps} from '@xh/hoist/desktop/cmp/button';
@@ -144,10 +144,22 @@ const optionsSection = hoistCmp.factory<OptionsSectionProps>({
 });
 
 interface WrapperOptionProps extends HoistProps {
-    /** Short label shown at the left of the row. */
+    /** Short, human-friendly label shown at the left of the row. */
     label: ReactNode;
     /** The control element (e.g. `switchInput`, `select`, `numberInput`) shown at the right. */
     control: ReactElement;
+    /**
+     * The qualified name of the Hoist API this option controls, when it maps 1:1 onto a single
+     * named property - as `Interface.property`, e.g. `GridConfig.stripeRows`, `MaskProps.inline`,
+     * or `FormModel.readonly`. The owning interface is the one a developer would reach for: a
+     * component's `*Props` for a component prop, a model's `*Config` for a config key, or the
+     * `*Model` for a runtime-settable property. When set, this is revealed in monospace - swapped
+     * in place for the human `label` - while the row is hovered, so a developer who reaches for an
+     * option immediately sees the literal property to wire up and where it lives, without the
+     * everyday labels having to read as code. Omit where an option does not map cleanly onto one
+     * named property (those stay label-only).
+     */
+    propName?: string;
     /**
      * Optional explanatory text rendered, muted, on its own line below the label/control row.
      * Use to describe what the option does or why a developer might reach for it.
@@ -158,18 +170,34 @@ interface WrapperOptionProps extends HoistProps {
 /**
  * A single labeled row within a Wrapper `options` section - a consistent label-left / control-right
  * layout so display options read uniformly across examples regardless of the underlying control.
- * An optional `info` line renders muted helper text below the row for added context.
+ * An optional `info` line renders muted helper text below the row for added context. When a
+ * `propName` is supplied, hovering the row swaps the label in place for the literal property name.
  */
 export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOptionProps>({
     displayName: 'WrapperOption',
-    render({label, control, info}) {
+    render({label, control, propName, info}) {
         return div({
             className: 'tbox-wrapper__option',
             items: [
                 div({
                     className: 'tbox-wrapper__option-row',
                     items: [
-                        div({className: 'tbox-wrapper__option-label', item: label}),
+                        div({
+                            className: 'tbox-wrapper__option-label',
+                            items: propName
+                                ? [
+                                      span({
+                                          className: 'tbox-wrapper__option-label-text',
+                                          item: label
+                                      }),
+                                      code({
+                                          className: 'tbox-wrapper__option-prop',
+                                          item: propName,
+                                          title: propName
+                                      })
+                                  ]
+                                : label
+                        }),
                         div({className: 'tbox-wrapper__option-control', item: control})
                     ]
                 }),
@@ -238,7 +266,7 @@ const collapsedRail = hoistCmp.factory<{railModel: WrapperRailModel} & HoistProp
         return vbox({
             className: 'tbox-wrapper__rail-collapsed',
             title: 'Show info panel',
-            onDoubleClick: expand,
+            onClick: expand,
             items: [
                 button({icon: Icon.chevronRight(), title: 'Show info panel', onClick: expand}),
                 Icon.info({className: 'tbox-wrapper__rail-collapsed-hint'})

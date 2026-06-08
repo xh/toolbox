@@ -100,6 +100,47 @@
     font-size: 0.9em;
   }
 
+  // When an option declares a `propName`, the human label and the literal property name are
+  // stacked in the same grid cell so swapping between them on hover causes no layout shift.
+  &__option-label:has(.tbox-wrapper__option-prop) {
+    display: grid;
+    align-items: center;
+  }
+
+  &__option-label-text,
+  &__option-prop {
+    grid-area: 1 / 1;
+    min-width: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  &__option-prop {
+    justify-self: start;
+    max-width: 100%;
+    font-family: var(--xh-font-family-mono);
+    // Sized to fit the qualified `Interface.property` names within the rail; the longest still
+    // ellipsize with the full name available via the element's title tooltip.
+    font-size: 0.8em;
+    color: var(--xh-text-color);
+    background-color: var(--xh-bg-alt);
+    padding: 1px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  // Reveal the property name (and hide the label) while anywhere in the option row is hovered.
+  &__option:hover &__option-label-text {
+    opacity: 0;
+  }
+
+  &__option:hover &__option-prop {
+    opacity: 1;
+  }
+
   &__option-control {
     flex: none;
     display: flex;
