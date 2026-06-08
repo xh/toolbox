@@ -1,16 +1,16 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {box, br, hbox} from '@xh/hoist/cmp/layout';
+import {box, br, frame, p, placeholder} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {DockContainerModel, dockContainer} from '@xh/hoist/desktop/cmp/dock';
-import {sampleGrid, wrapper} from '../../common';
+import {sampleGrid, wrapper, wrapperAction} from '../../common';
 import {errorWidget} from './widgets';
 
 export const dockContainerPanel = hoistCmp.factory({
     model: creates(() => DockContainerPanelModel),
 
     render({model}) {
+        const {viewCount} = model;
         return wrapper({
             title: 'Dock Container',
             icon: Icon.gridPanel(),
@@ -26,7 +26,7 @@ export const dockContainerPanel = hoistCmp.factory({
                 'ubiquitous Gmail web client, and docked views are generally intended for data',
                 'entry forms, detail views, and other similar UI elements.',
                 '',
-                'Use the buttons below to test adding views to a container within this tab.'
+                'Use the actions in the Options panel to add views to the container in this tab.'
             ],
             links: [
                 {
@@ -43,83 +43,99 @@ export const dockContainerPanel = hoistCmp.factory({
                     notes: 'Hoist view model - created by DockContainerModel in its ctor from provided configs.'
                 }
             ],
-            items: [
-                hbox({
-                    width: 800,
-                    alignItems: 'center',
-                    items: [
-                        button({
-                            ...btnCfg,
-                            text: 'Simple View',
-                            onClick: () => model.addNewDockedView(true, true)
-                        }),
-                        button({
-                            ...btnCfg,
-                            text: 'Complex View',
-                            onClick: () => {
-                                model.addView({
-                                    id: 'gridView',
-                                    title: 'A complex docked component',
-                                    icon: Icon.gridPanel(),
-                                    content: () =>
-                                        sampleGrid({omitGridTools: true, width: 500, height: 400}),
-                                    onClose: () =>
-                                        XH.toast({
-                                            message: 'Thanks for checking out the view!',
-                                            intent: 'success'
-                                        })
-                                });
-                            }
-                        }),
-                        button({
-                            ...btnCfg,
-                            text: ' Error View',
-                            onClick: () =>
-                                model.addView({
-                                    id: 'errorView',
-                                    title: 'A problematic component',
-                                    icon: Icon.skull(),
-                                    content: () =>
-                                        errorWidget({
-                                            componentName: 'DockContainer',
-                                            width: 500,
-                                            height: 400
-                                        }),
-                                    onClose: () =>
-                                        XH.confirm({
-                                            message: 'Are you sure you want to close this view?',
-                                            title: 'Close view?'
-                                        })
-                                })
-                        }),
-                        button({
-                            ...btnCfg,
-                            text: 'w/Dialog disabled',
-                            onClick: () => model.addNewDockedView(false, true)
-                        }),
-                        button({
-                            ...btnCfg,
-                            text: 'w/Close disabled',
-                            onClick: () => model.addNewDockedView(true, false)
-                        })
-                    ]
+            options: [
+                wrapperAction({
+                    icon: Icon.add(),
+                    text: 'Simple View',
+                    onClick: () => model.addNewDockedView(true, true)
                 }),
-                dockContainer()
-            ]
+                wrapperAction({
+                    icon: Icon.add(),
+                    text: 'Complex View',
+                    onClick: () => {
+                        model.addView({
+                            id: 'gridView',
+                            title: 'A complex docked component',
+                            icon: Icon.gridPanel(),
+                            content: () =>
+                                sampleGrid({omitGridTools: true, width: 500, height: 400}),
+                            onClose: () =>
+                                XH.toast({
+                                    message: 'Thanks for checking out the view!',
+                                    intent: 'success'
+                                })
+                        });
+                    }
+                }),
+                wrapperAction({
+                    icon: Icon.add(),
+                    text: 'Error View',
+                    onClick: () =>
+                        model.addView({
+                            id: 'errorView',
+                            title: 'A problematic component',
+                            icon: Icon.skull(),
+                            content: () =>
+                                errorWidget({
+                                    componentName: 'DockContainer',
+                                    width: 500,
+                                    height: 400
+                                }),
+                            onClose: () =>
+                                XH.confirm({
+                                    message: 'Are you sure you want to close this view?',
+                                    title: 'Close view?'
+                                })
+                        })
+                }),
+                wrapperAction({
+                    icon: Icon.add(),
+                    text: 'w/Dialog disabled',
+                    onClick: () => model.addNewDockedView(false, true)
+                }),
+                wrapperAction({
+                    icon: Icon.add(),
+                    text: 'w/Close disabled',
+                    onClick: () => model.addNewDockedView(true, false)
+                })
+            ],
+            item: panel({
+                height: '60vh',
+                width: '90%',
+                item: frame({
+                    position: 'relative',
+                    items: [
+                        placeholder({
+                            flex: 1,
+                            items: [
+                                Icon.gridPanel(),
+                                p(
+                                    viewCount
+                                        ? `${viewCount} docked ${viewCount === 1 ? 'view' : 'views'}`
+                                        : 'No docked views yet'
+                                ),
+                                p(
+                                    viewCount
+                                        ? 'Docked views appear along the bottom of this container.'
+                                        : 'Add one from the Options panel to dock it along the bottom of this container.'
+                                )
+                            ]
+                        }),
+                        dockContainer()
+                    ]
+                })
+            })
         });
     }
 });
 
-const btnCfg = {
-    icon: Icon.add(),
-    minimal: false,
-    flex: 1,
-    margin: 5
-};
-
 class DockContainerPanelModel extends HoistModel {
     @managed
     dockContainerModel = new DockContainerModel();
+
+    get viewCount() {
+        return this.dockContainerModel.views.length;
+    }
 
     addView(cfg) {
         this.dockContainerModel.addView(cfg);
