@@ -61,7 +61,8 @@ export const agGridView = hoistCmp.factory({
                 }),
                 wrapperAction({
                     text: 'Load grid state',
-                    icon: Icon.grid(),
+                    icon: Icon.download(),
+                    disabled: !XH.localStorageService.get('agGridWrapperState'),
                     onClick: () =>
                         agGridModel.setState(XH.localStorageService.get('agGridWrapperState'))
                 })
