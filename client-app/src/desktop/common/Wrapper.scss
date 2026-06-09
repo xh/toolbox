@@ -3,6 +3,14 @@
   gap: 12px;
   padding: 16px;
 
+  // "Floating card" drop shadow shared by the rail, demo frame, and collapsed rail. Kept very
+  // faint in light theme; dark theme needs a deeper shadow to read against the dark patterned
+  // backdrop, where a near-transparent black shadow would otherwise be invisible.
+  --tbox-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  .xh-dark & {
+    --tbox-card-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
+  }
+
   // Texture layer behind the rail and demo, so both read as cards floating over a patterned
   // surface. The XH monogram tile is painted here by the shared tile system (see
   // core/XhTilePatterns.scss, `.tbox-wrapper::before`); this rule just establishes the layer.
@@ -28,7 +36,7 @@
     border: var(--xh-border-solid);
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tbox-card-shadow);
   }
 
   &__rail-body {
@@ -207,7 +215,7 @@
       border: var(--xh-border-solid);
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      box-shadow: var(--tbox-card-shadow);
     }
   }
 
@@ -219,7 +227,7 @@
     padding-top: var(--xh-pad-half-px);
     border: var(--xh-border-solid);
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tbox-card-shadow);
     cursor: pointer;
   }
 

@@ -64,7 +64,7 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
                 hasRailContent
                     ? railModel.collapsed
                         ? collapsedRail({railModel})
-                        : infoRail({title, icon, description, options, links, railModel})
+                        : infoRail({title, icon, intro, options, links, railModel})
                     : null,
                 vframe({className: 'tbox-wrapper__demo', items: children})
             ]
@@ -82,14 +82,15 @@ class WrapperRailModel extends HoistModel {
     }
 }
 
-interface InfoRailProps extends WrapperProps {
+interface InfoRailProps extends Omit<WrapperProps, 'description'> {
+    /** Normalized intro Markdown (joined upstream from `WrapperProps.description`). */
+    intro?: string;
     railModel: WrapperRailModel;
 }
 
 const infoRail = hoistCmp.factory<InfoRailProps>({
-    render({title, icon, description, options, links, railModel}) {
-        const intro = isArray(description) ? description.join('\n') : description,
-            hasIntro = !!intro,
+    render({title, icon, intro, options, links, railModel}) {
+        const hasIntro = !!intro,
             hasOptions = !isEmpty(options),
             hasLinks = !isEmpty(links);
         return panel({

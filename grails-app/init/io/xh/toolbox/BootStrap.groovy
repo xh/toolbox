@@ -278,7 +278,7 @@ class BootStrap implements LogSupport {
                 type: 'string',
                 defaultValue: 'IBM Plex Sans',
                 groupName: 'Toolbox',
-                notes: 'App UI font, toggled via the in-app Options dialog. Either "IBM Plex Sans" or "Inter"; drives the runtime --font-family override applied by the desktop AppModel.'
+                notes: 'App UI font, toggled via the in-app Options dialog. Either "IBM Plex Sans" or "Inter".'
             ),
             new PreferenceSpec(
                 name: 'contactAppState',
@@ -286,13 +286,6 @@ class BootStrap implements LogSupport {
                 defaultValue: [],
                 groupName: 'Toolbox - Example Apps',
                 notes: 'Holds favorites, grid state, and displayMode prefs for the XH Contact example app.'
-            ),
-            new PreferenceSpec(
-                name: 'wrapperRailCollapsed',
-                type: 'bool',
-                defaultValue: false,
-                groupName: 'Toolbox',
-                notes: 'True to collapse the Wrapper info rail (title/intro/links) shown on component demo tabs. Persists globally across tabs.'
             ),
             new PreferenceSpec(
                 name: 'todoTasks',
