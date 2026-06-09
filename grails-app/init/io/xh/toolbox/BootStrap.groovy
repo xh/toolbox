@@ -274,6 +274,13 @@ class BootStrap implements LogSupport {
                 notes: 'True to render the main app menu button using the alternate user profile (initials) mode.'
             ),
             new PreferenceSpec(
+                name: 'font',
+                type: 'string',
+                defaultValue: 'IBM Plex Sans',
+                groupName: 'Toolbox',
+                notes: 'App UI font, toggled via the in-app Options dialog. Either "IBM Plex Sans" or "Inter"; drives the runtime --font-family override applied by the desktop AppModel.'
+            ),
+            new PreferenceSpec(
                 name: 'contactAppState',
                 type: 'json',
                 defaultValue: [],

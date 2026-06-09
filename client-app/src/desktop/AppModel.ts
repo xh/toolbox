@@ -1,17 +1,15 @@
-import {span} from '@xh/hoist/cmp/layout';
+import {box, div, span, vbox} from '@xh/hoist/cmp/layout';
 import {TabConfig, TabContainerModel, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
 import {InitContext, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {
-    autoRefreshAppOption,
-    sizingModeAppOption,
-    themeAppOption
-} from '@xh/hoist/desktop/cmp/appOption';
+import {autoRefreshAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {makeObservable, runInAction} from '@xh/hoist/mobx';
+import {ReactElement} from 'react';
 import {isEmpty} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
+import {cardChoiceInput} from './common';
 import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
@@ -93,6 +91,7 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
+        this.applyFont(XH.getPref('font'));
         await XH.installServicesAsync([DocService, GitHubService, PortfolioService], ctx);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
@@ -116,7 +115,41 @@ export class AppModel extends BaseAppModel {
 
     override getAppOptions() {
         return [
-            themeAppOption(),
+            // The two visual "appearance" choices lead the dialog as chunky, macOS-Settings-style
+            // preview cards (custom `cardChoiceInput`), followed by the compact behavior controls.
+            // Theme mirrors Hoist's built-in `themeAppOption` (xhTheme pref + XH.setTheme).
+            {
+                name: 'theme',
+                prefName: 'xhTheme',
+                valueSetter: v => XH.setTheme(v),
+                formField: {
+                    label: 'Theme',
+                    item: cardChoiceInput([
+                        {value: 'light', label: 'Light', preview: this.themeSwatch('light')},
+                        {value: 'dark', label: 'Dark', preview: this.themeSwatch('dark')},
+                        {value: 'system', label: 'System', preview: this.themeSwatch('system')}
+                    ])
+                }
+            },
+            {
+                name: 'font',
+                valueGetter: () => XH.getPref('font'),
+                valueSetter: v => {
+                    XH.setPref('font', v);
+                    this.applyFont(v);
+                },
+                formField: {
+                    label: 'Font',
+                    item: cardChoiceInput([
+                        {
+                            value: 'IBM Plex Sans',
+                            label: 'IBM Plex Sans',
+                            preview: this.fontSwatch('IBM Plex Sans')
+                        },
+                        {value: 'Inter', label: 'Inter', preview: this.fontSwatch('Inter')}
+                    ])
+                }
+            },
             sizingModeAppOption(),
             autoRefreshAppOption(),
             {
@@ -133,6 +166,53 @@ export class AppModel extends BaseAppModel {
                 }
             }
         ];
+    }
+
+    /**
+     * Apply the saved font preference by toggling the body class that activates IBM Plex Sans;
+     * its absence falls back to Hoist's default Inter. See `tbox-font--plex` in App.scss.
+     */
+    private applyFont(font: string) {
+        document.body.classList.toggle('tbox-font--plex', font === 'IBM Plex Sans');
+    }
+
+    /** A mini app-window mockup used as a theme-choice card preview (fixed light/dark, not live). */
+    private themeSwatch(mode: 'light' | 'dark' | 'system'): ReactElement {
+        return div({
+            className: `tbox-theme-swatch tbox-theme-swatch--${mode}`,
+            items: [
+                div({
+                    className: 'tbox-theme-swatch__chrome',
+                    items: [0, 1, 2].map(i => div({key: i, className: 'tbox-theme-swatch__dot'}))
+                }),
+                div({
+                    className: 'tbox-theme-swatch__content',
+                    items: [
+                        div({className: 'tbox-theme-swatch__accent'}),
+                        div({className: 'tbox-theme-swatch__line'}),
+                        div({className: 'tbox-theme-swatch__line tbox-theme-swatch__line--short'})
+                    ]
+                })
+            ]
+        });
+    }
+
+    /** A live type specimen rendered in the given face, used as a font-choice card preview. */
+    private fontSwatch(font: 'IBM Plex Sans' | 'Inter'): ReactElement {
+        const isPlex = font === 'IBM Plex Sans';
+        return vbox({
+            className: 'tbox-font-swatch',
+            style: {
+                fontFamily: isPlex
+                    ? "'IBM Plex Sans', system-ui, sans-serif"
+                    : 'Inter, system-ui, sans-serif',
+                fontFeatureSettings: isPlex ? "'zero', 'ss01'" : 'normal'
+            },
+            items: [
+                box({className: 'tbox-font-swatch__big', item: 'Aa'}),
+                box({className: 'tbox-font-swatch__small', item: '0123'})
+            ]
+        });
     }
 
     override getRoutes() {

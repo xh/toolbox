@@ -6,5 +6,6 @@ export * from './grid/SampleGridModel';
 export * from './grid/SampleTreeGrid';
 export * from './grid/SampleTreeGridModel';
 export * from './grid/SampleColumnGroupsGrid';
+export * from './CardChoiceInput';
 export * from './ExplodingPanel';
 export * from './Wrapper';

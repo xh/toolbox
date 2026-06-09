@@ -1,0 +1,59 @@
+// Chunky, macOS-Settings-style choice cards rendered by `cardChoiceInput` on top of Hoist's
+// `buttonGroupInput`. Each child Button is restyled from a pill into a large preview surface with
+// a label beneath; the selected button (`.bp6-active`) gains an accent ring + lift.
+.tbox-card-choice.xh-button-group-input {
+  gap: 12px;
+
+  .tbox-card-choice__card.bp6-button {
+    // Reset Blueprint's pill look so the card surface shows through.
+    display: block;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    border-radius: 10px;
+    background: var(--xh-bg-alt);
+    border: 1px solid var(--xh-border-color);
+    box-shadow: none;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease,
+      transform 0.15s ease;
+
+    // Blueprint wraps button content in a text span - let it fill the card.
+    .bp6-button-text {
+      flex: 1;
+      width: 100%;
+      margin: 0;
+    }
+
+    &:hover {
+      border-color: var(--xh-blue);
+      transform: translateY(-1px);
+    }
+
+    // Selected card: accent ring + lift, echoing the macOS Appearance picker.
+    &.bp6-active,
+    &.bp6-active:hover {
+      background: var(--xh-bg-alt);
+      border-color: var(--xh-blue);
+      box-shadow: 0 0 0 2px var(--xh-blue);
+    }
+  }
+
+  .tbox-card-choice__body {
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px 6px;
+  }
+
+  .tbox-card-choice__label {
+    font-size: var(--xh-font-size-small-px);
+    font-weight: 500;
+    color: var(--xh-text-color-muted);
+  }
+
+  .bp6-active .tbox-card-choice__label {
+    color: var(--xh-text-color);
+    font-weight: 600;
+  }
+}
