@@ -13,12 +13,14 @@ that automate that process.
 
 ## CI (`ci.yml`)
 
-Runs automatically on pushes and pull requests to `develop`. Includes three independent jobs:
+Runs automatically on pushes and pull requests to `develop`. Includes four independent jobs:
 
 - **Build** — checks out the project, sets up Java and Gradle, and runs `./gradlew build` to
   validate the Grails server compiles successfully.
 - **Lint** — sets up Node.js (version from `client-app/.nvmrc`), installs JS dependencies via
   `yarn install --frozen-lockfile`, and runs `yarn lint` to validate the client code.
+- **Scripts** — runs the unit test for `.github/scripts/build-tag.sh` (the snapshot build-tag
+  sanitizer), so a regression fails the PR rather than emitting an invalid image tag at build time.
 - **Dependency Submission** — generates and submits a Gradle dependency graph to GitHub, enabling
   Dependabot vulnerability alerts for all server-side dependencies.
 
