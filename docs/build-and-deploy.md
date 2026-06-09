@@ -13,14 +13,12 @@ that automate that process.
 
 ## CI (`ci.yml`)
 
-Runs automatically on pushes and pull requests to `develop`. Includes four independent jobs:
+Runs automatically on pushes and pull requests to `develop`. Includes three independent jobs:
 
 - **Build** — checks out the project, sets up Java and Gradle, and runs `./gradlew build` to
   validate the Grails server compiles successfully.
 - **Lint** — sets up Node.js (version from `client-app/.nvmrc`), installs JS dependencies via
   `yarn install --frozen-lockfile`, and runs `yarn lint` to validate the client code.
-- **Scripts** — runs the unit test for `.github/scripts/build-tag.sh` (the snapshot build-tag
-  sanitizer), so a regression fails the PR rather than emitting an invalid image tag at build time.
 - **Dependency Submission** — generates and submits a Gradle dependency graph to GitHub, enabling
   Dependabot vulnerability alerts for all server-side dependencies.
 
@@ -39,15 +37,16 @@ land in quick succession.
 
 The workflow runs in three stages:
 
-- **prepare** — snaps a single timestamp and derives two identifiers from it via
-  `.github/scripts/build-tag.sh`, exposed as job outputs. `app-build` is the readable value
-  (`<ref>_<sha>_<timestamp>`, e.g. `develop_9fab876_2026-06-06T17:17Z`) baked into `appBuild` on both
-  client and server and shown in-app. `image-tag` is the immutable ECR image tag
+- **prepare** — uses the shared `xh/hoist-dev-utils` `build-snapshot-tag` composite action to derive
+  two identifiers from a single snapped timestamp, exposed as job outputs. `app-build` is the
+  readable value (`<ref>_<sha>_<timestamp>`, e.g. `develop_9fab876_2026-06-06T17:17Z`) baked into
+  `appBuild` on both client and server and shown in-app. `image-tag` is the immutable ECR image tag
   (`snap_<ref>_<sha>_<ts>`). Both come from the one timestamp, so a run's two values correspond. The
-  script makes `image-tag` a total function — a valid Docker/ECR tag for any ref (allowlist charset,
+  action makes `image-tag` a total function — a valid Docker/ECR tag for any ref (allowlist charset,
   bounded length, colon-free), so the build always proceeds — and those container-tag constraints
   apply only to `image-tag`, never to the displayed `appBuild`. `app-build` is consumed by both build
-  jobs, so client and server always report the same build (what the version-skew check compares).
+  jobs, so client and server always report the same build (what the version-skew check compares). The
+  action (and its unit test) live in hoist-dev-utils, shared across XH app repos.
 - **build-tomcat** / **build-nginx** (parallel) — build the Grails WAR (via `./gradlew war`, default
   SNAPSHOT version from `gradle.properties`) and the client assets (`yarn lint` + `yarn build`)
   respectively, and push each to the run's *immutable* `image-tag` in ECR — **not** `:snapshot`.

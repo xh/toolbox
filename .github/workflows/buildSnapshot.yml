@@ -32,22 +32,15 @@ jobs:
             app-build: ${{ steps.tag.outputs.app-build }}
             image-tag: ${{ steps.tag.outputs.image-tag }}
         steps:
-        - uses: actions/checkout@v6
-
-        # Snap the timestamp once, then derive both identifiers from it (see
-        # build-tag.sh) so a run's values correspond:
-        #   app-build — readable value baked into `appBuild` on client + server and
-        #               shown in-app; consumed by both build jobs so they always agree.
-        #   image-tag — sanitized, snap_-prefixed ECR tag used for push, promote, and
-        #               the lifecycle cleanup. Container-tag constraints live here only.
+        # Build identifiers come from the shared dev-utils composite action — one
+        # unit-tested implementation, consumed by every app repo. It snaps a single
+        # timestamp and emits both `app-build` (readable, baked into appBuild on client
+        # + server, shown in-app) and `image-tag` (sanitized, snap_-prefixed, immutable
+        # ECR tag for push/promote/cleanup); container-tag constraints live in the action,
+        # never on the displayed appBuild.
         - name: Generate build identifiers
           id: tag
-          run: |
-              ts=$(date -u +'%Y-%m-%dT%H:%MZ')
-              {
-                  echo "app-build=$(BUILD_TS="$ts" bash .github/scripts/build-tag.sh app)"
-                  echo "image-tag=$(BUILD_TS="$ts" bash .github/scripts/build-tag.sh image)"
-              } >> "$GITHUB_OUTPUT"
+          uses: xh/hoist-dev-utils/.github/actions/build-snapshot-tag@master
 
     build-tomcat:
         needs: prepare

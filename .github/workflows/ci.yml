@@ -79,20 +79,6 @@ jobs:
         - name: Yarn lint
           run: cd client-app && yarn lint
 
-    scripts:
-
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-
-        # Unit-tests the snapshot build-tag sanitizer (.github/scripts/build-tag.sh).
-        # A regression here fails the PR rather than producing an invalid ECR tag at
-        # build time, keeping the sanitizer a provably-total function.
-        steps:
-        - uses: actions/checkout@v6
-        - name: Test build-tag sanitizer
-          run: bash .github/scripts/build-tag.test.sh
-
     dependency-submission:
 
         runs-on: ubuntu-latest
