@@ -53,13 +53,19 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
     displayName: 'Wrapper',
     className: 'tbox-wrapper',
     render({className, title, icon, description, options, links, children}) {
-        const railModel = useLocalModel(WrapperRailModel);
+        const railModel = useLocalModel(WrapperRailModel),
+            intro = isArray(description) ? description.join('\n') : description,
+            // Omit the info rail entirely when there is nothing to show in it, so the demo simply
+            // fills the frame (rather than rendering an empty rail beside it).
+            hasRailContent = !!title || !!intro || !isEmpty(options) || !isEmpty(links);
         return hframe({
             className,
             items: [
-                railModel.collapsed
-                    ? collapsedRail({railModel})
-                    : infoRail({title, icon, description, options, links, railModel}),
+                hasRailContent
+                    ? railModel.collapsed
+                        ? collapsedRail({railModel})
+                        : infoRail({title, icon, description, options, links, railModel})
+                    : null,
                 vframe({className: 'tbox-wrapper__demo', items: children})
             ]
         });
