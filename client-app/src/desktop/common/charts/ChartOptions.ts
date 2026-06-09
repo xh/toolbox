@@ -5,11 +5,23 @@ import {Icon} from '@xh/hoist/icon';
 import {ReactElement} from 'react';
 import {wrapperAction, wrapperOption} from '../Wrapper';
 
+/**
+ * Context-menu mode bound by the chart examples: `null` (Highcharts default), `false` (no menu),
+ * or `'custom'` (a hand-built `ContextMenuSpec`).
+ */
+export type ChartContextMenuMode = null | false | 'custom';
+
+/** Shared context-menu mode options - identical across the chart examples. */
+export const chartContextMenuOptions: Array<{label: string; value: ChartContextMenuMode}> = [
+    {label: 'Default', value: null},
+    {label: 'None', value: false},
+    {label: 'Custom', value: 'custom'}
+];
+
 /** Shape a chart example model must satisfy to render the shared chart display options. */
 export type ChartExampleModel = HoistModel & {
     aspectRatio: number;
-    currentContextMenu: any;
-    contextMenuOptions: Array<{label: string; value: any}>;
+    currentContextMenu: ChartContextMenuMode;
     chartModel: ChartModel;
     callChartApi: () => void;
 };
@@ -46,7 +58,7 @@ export function chartDisplayOptions(model: ChartExampleModel): ReactElement[] {
                 bind: 'currentContextMenu',
                 width: 130,
                 enableFilter: false,
-                options: model.contextMenuOptions
+                options: chartContextMenuOptions
             })
         }),
         wrapperAction({

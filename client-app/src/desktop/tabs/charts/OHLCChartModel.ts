@@ -6,18 +6,14 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
+import {ChartContextMenuMode} from '../../common';
 
 export class OHLCChartModel extends HoistModel {
     @bindable currentSymbol: string = '';
     @bindable.ref symbols: string[] = [];
     @bindable aspectRatio: number = null;
 
-    @bindable currentContextMenu = null;
-    contextMenuOptions = [
-        {label: 'Default', value: null},
-        {label: 'None', value: false},
-        {label: 'Custom', value: 'custom'}
-    ];
+    @bindable currentContextMenu: ChartContextMenuMode = null;
 
     @managed
     @observable.ref
@@ -37,6 +33,7 @@ export class OHLCChartModel extends HoistModel {
         this.addReaction({
             track: () => this.currentContextMenu,
             run: () => {
+                XH.safeDestroy(this.chartModel);
                 this.chartModel = this.getChartModel();
                 this.loadAsync();
             }

@@ -8,6 +8,7 @@ import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
+import {ChartContextMenuMode} from '../../common';
 
 export class LineChartModel extends HoistModel {
     @bindable currentSymbols: string[] = [];
@@ -15,21 +16,7 @@ export class LineChartModel extends HoistModel {
 
     @bindable aspectRatio: number = null;
 
-    @bindable currentContextMenu = null;
-    contextMenuOptions = [
-        {
-            label: 'Default',
-            value: null
-        },
-        {
-            label: 'None',
-            value: false
-        },
-        {
-            label: 'Custom',
-            value: 'custom'
-        }
-    ];
+    @bindable currentContextMenu: ChartContextMenuMode = null;
 
     @managed
     @observable.ref
@@ -47,6 +34,7 @@ export class LineChartModel extends HoistModel {
         this.addReaction({
             track: () => this.currentContextMenu,
             run: () => {
+                XH.safeDestroy(this.chartModel);
                 this.chartModel = this.getChartModel();
                 this.loadAsync();
             }
