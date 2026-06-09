@@ -56,10 +56,11 @@ class OptionsWidgetModel extends HoistModel {
             fireImmediately: true
         });
 
-        // Publish the selection back TO the view's state so it persists.
+        // Publish the selection back TO the view's state so it persists. Use the framework's
+        // `setViewState` action, which pushes the new state to the view's registered providers.
         this.addReaction({
             track: () => this.value,
-            run: value => (viewModel.viewState = {value})
+            run: value => viewModel.setViewState({value})
         });
     }
 }
