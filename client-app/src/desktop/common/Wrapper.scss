@@ -3,32 +3,17 @@
   gap: 12px;
   padding: 16px;
 
-  // Single XH mark (from favicon.svg) centered in a padded square tile, inlined as a data-URI
-  // mask so its color comes from `background-color` below (monochrome, light/dark safe). Defined
-  // once here and referenced by the texture layer.
-  --tbox-xh-tile: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20860%20860'%3E%3Cpath%20transform='translate%28264.7%20300%29'%20d='M300,22.6H197.5l-32.2,96.6l-32.2-96.6H30.6L66.4,130L30.6,237.4h102.5l32.2-96.6l32.2,96.6H300L264.2,130L300,22.6z'/%3E%3C/svg%3E");
-
-  // Subtle XH-mark texture behind the rail and demo, so both read as cards floating over a
-  // surface. Rendered as a CSS mask painted with a theme color (monochrome, light/dark safe) at
-  // a low opacity, tiled sparsely - quiet texture, not branding. Cards sit above via z-index and
-  // are opaque, so the texture only breathes through the surrounding padding and gutter.
+  // Texture layer behind the rail and demo, so both read as cards floating over a patterned
+  // surface. The XH monogram tile is painted here by the shared tile system (see
+  // core/XhTilePatterns.scss, `.tbox-wrapper::before`); this rule just establishes the layer.
+  // The cards sit above it via z-index and are opaque, so the tile breathes through the
+  // surrounding padding and gutter.
   &::before {
     content: '';
     position: absolute;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background-color: var(--xh-text-color);
-    // Light needs a higher alpha than dark to read at the same barely-there weight (faint black on
-    // white is less visible than faint white on a dark surface).
-    opacity: 0.026;
-    -webkit-mask: var(--tbox-xh-tile) 0 0 / 200px 200px repeat;
-    mask: var(--tbox-xh-tile) 0 0 / 200px 200px repeat;
-  }
-
-  // Dark surfaces need a touch more to register at the same perceived weight.
-  .xh-dark &::before {
-    opacity: 0.03;
   }
 
   // Lift the rail and demo above the texture layer.

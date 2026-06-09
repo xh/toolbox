@@ -1,7 +1,4 @@
 .tb-mobile {
-  width: 100%;
-  height: 100%;
-
   // Frame coloration tracks the desktop app's theme: a dark device by default, a light/silver one
   // when the `--light` modifier is applied (set from `XH.darkTheme` in MobileTab.ts). The screenshot
   // content swaps to a matching light/dark capture there as well.
@@ -25,13 +22,15 @@
       inset 0 0 0 1px rgba(255, 255, 255, 0.7), inset 0 0 0 2px rgba(0, 0, 0, 0.12);
   }
 
+  // Row of the two device frames floating on the wrapper's tiled background (no surrounding card).
+  // Fills the demo height so the phones run nearly full-height, leaving a slim margin top/bottom;
+  // width stays hugged to the pair, so the tile shows down the sides.
   &__screenshots {
     flex: 1;
     min-height: 0;
-    justify-content: center;
     align-items: center;
-    gap: clamp(16px, 4%, 56px);
-    padding: var(--xh-pad-double-px);
+    gap: 40px;
+    padding: 14px 0;
   }
 
   // A modern smartphone: thin dark bezel, large continuous-corner radius, dynamic-island pill,
@@ -42,7 +41,7 @@
     flex: 0 1 auto;
     display: flex;
     flex-direction: column;
-    height: min(100%, 660px);
+    height: min(100%, 760px);
     aspect-ratio: 421 / 880; // screen aspect (393/852) plus the bezel padding
     padding: 9px;
     border-radius: 46px;

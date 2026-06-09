@@ -1,9 +1,8 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faPhoneLaptop} from '@fortawesome/pro-regular-svg-icons';
 import {clock} from '@xh/hoist/cmp/clock';
-import {div, hframe, img, span} from '@xh/hoist/cmp/layout';
+import {div, hbox, img, span} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {wrapper, wrapperAction} from '../../common';
@@ -80,12 +79,14 @@ export const mobileTab = hoistCmp.factory(() => {
                 onClick: () => XH.openWindow('/mobile')
             })
         ],
-        item: panel({
-            className: darkTheme ? 'tb-mobile' : 'tb-mobile tb-mobile--light',
-            item: hframe({
-                className: 'tb-mobile__screenshots',
-                items: [phoneFrame(homeImage), phoneFrame(formImage)]
-            })
+        // The two device-framed screenshots float directly on the wrapper's tiled background (no
+        // surrounding card) - each phone is self-framed, so the demo region just centers the pair
+        // and the XH monogram shows around them. `tb-mobile` carries the theme-aware frame vars.
+        item: hbox({
+            className: darkTheme
+                ? 'tb-mobile tb-mobile__screenshots'
+                : 'tb-mobile tb-mobile__screenshots tb-mobile--light',
+            items: [phoneFrame(homeImage), phoneFrame(formImage)]
         })
     });
 });
