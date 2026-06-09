@@ -121,6 +121,7 @@ export class AppModel extends BaseAppModel {
             {
                 name: 'theme',
                 prefName: 'xhTheme',
+                refreshRequired: false,
                 valueSetter: v => XH.setTheme(v),
                 formField: {
                     label: 'Theme',
@@ -133,6 +134,7 @@ export class AppModel extends BaseAppModel {
             },
             {
                 name: 'font',
+                refreshRequired: false,
                 valueGetter: () => XH.getPref('font'),
                 valueSetter: v => {
                     XH.setPref('font', v);
@@ -506,7 +508,7 @@ export class AppModel extends BaseAppModel {
                 }
             },
             {id: 'docs', icon: Icon.book(), content: docsTab},
-            {id: 'examples', title: 'Example Apps', icon: Icon.books(), content: examplesTab}
+            {id: 'examples', title: 'Example Apps', icon: Icon.boxFull(), content: examplesTab}
         ];
         return new TabContainerModel({
             persistWith: {localStorageKey: 'tabState'},
