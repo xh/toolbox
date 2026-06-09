@@ -1,7 +1,6 @@
 import {card} from '@xh/hoist/cmp/card';
-import {code, div, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
+import {div, hframe, span, vbox} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     buttonGroupInput,
@@ -32,60 +31,52 @@ export const inputsPanel = hoistCmp.factory({
     displayName: 'InputsPanel',
     model: creates(() => InputsPanelModel),
 
-    render({model}) {
+    render() {
         return wrapper({
+            title: 'HoistInputs',
+            icon: Icon.edit(),
             description: [
-                p(
-                    code('HoistInput'),
-                    ' provides a common interface and integration points for a variety of core Components used to enter and edit data in applications. They present a consistent API for editing data with MobX, React, and the underlying widgets provided by libraries such as Blueprint and Onsen.'
-                ),
-                p(
-                    'Any HoistInput can be bound to a data source using the ',
-                    code('bind'),
-                    ' and ',
-                    code('model'),
-                    ' props. They can also be nested within a ',
-                    code('formField'),
-                    ' to integrate tightly with ',
-                    code('FormModel'),
-                    ' for validation and labelling.'
-                ),
-                p(
-                    'See the dedicated tabs for ',
-                    code({
-                        className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('select'),
-                        item: 'Select'
-                    }),
-                    ' and ',
-                    code({
-                        className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('picker'),
-                        item: 'Picker'
-                    }),
-                    ' components.'
-                )
+                '`HoistInput` provides a common interface and integration points for a variety',
+                'of core Components used to enter and edit data in applications. They present',
+                'a consistent API for editing data with MobX, React, and the underlying',
+                'widgets provided by libraries such as Blueprint and Onsen.',
+                '',
+                'Any HoistInput can be bound to a data source using the `bind` and `model`',
+                'props. They can also be nested within a `formField` to integrate tightly with',
+                '`FormModel` for validation and labelling.',
+                '',
+                'See the dedicated tabs for `Select` and `Picker` components.'
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/forms/InputsPanel.ts',
                     notes: 'This example.'
                 },
-                {url: '$HR/cmp/input/HoistInputModel.ts', notes: 'HoistInput Base Class'},
-                {url: '$HR/desktop/cmp/input', notes: 'Hoist Inputs'}
+                {
+                    url: '$HR/cmp/input/README.md',
+                    text: 'Inputs docs',
+                    notes: 'Input components guide and shared concepts.'
+                },
+                {
+                    url: '$HR/cmp/input/HoistInputModel.ts',
+                    notes: 'Base class shared by all Hoist inputs.'
+                },
+                {
+                    url: '$HR/desktop/cmp/input',
+                    text: 'Input package',
+                    notes: 'The full set of desktop Hoist input components.'
+                }
             ],
             item: panel({
-                title: 'Forms › HoistInputs',
                 className: 'tb-inputs-panel',
-                icon: Icon.edit(),
-                width: '90%',
-                maxWidth: 1400,
+                width: '100%',
+                height: '100%',
                 scrollable: true,
                 tbar: inputsTbar({compact: false}),
                 item: hframe({
                     gap: true,
                     padding: true,
-                    items: [column1(), column2(), column3(), column4()]
+                    items: [column1(), column2(), column3()]
                 }),
                 bbar: inputsTbar({compact: true})
             })
@@ -239,6 +230,41 @@ const column2 = hoistCmp.factory<InputsPanelModel>(() =>
                         })
                     })
                 ]
+            }),
+            card({
+                title: 'Sliders',
+                icon: Icon.settings(),
+                items: [
+                    demoRow({
+                        label: 'Slider',
+                        info: 'max, min, stepSize, labelStepSize',
+                        item: slider({
+                            bind: 'slider1',
+                            max: 100,
+                            min: 0,
+                            labelStepSize: 25,
+                            stepSize: 1
+                        })
+                    }),
+                    demoRow({
+                        label: 'Slider',
+                        info: 'multi-value, labelRenderer',
+                        item: slider({
+                            bind: 'slider2',
+                            min: 50000,
+                            max: 150000,
+                            labelStepSize: 25000,
+                            stepSize: 1000,
+                            labelRenderer: v =>
+                                `$${fmtThousands(v, {
+                                    label: true,
+                                    precision: 0,
+                                    labelCls: null,
+                                    asHtml: true
+                                })}`
+                        })
+                    })
+                ]
             })
         ]
     })
@@ -323,15 +349,7 @@ const column3 = hoistCmp.factory<InputsPanelModel>(() =>
                         })
                     })
                 ]
-            })
-        ]
-    })
-);
-
-const column4 = hoistCmp.factory<InputsPanelModel>(() =>
-    vbox({
-        flex: 1,
-        items: [
+            }),
             card({
                 title: 'Toggles',
                 icon: Icon.checkSquare(),
@@ -359,41 +377,6 @@ const column4 = hoistCmp.factory<InputsPanelModel>(() =>
                             bind: 'switchVal',
                             label: 'Enabled:',
                             labelSide: 'left'
-                        })
-                    })
-                ]
-            }),
-            card({
-                title: 'Sliders',
-                icon: Icon.settings(),
-                items: [
-                    demoRow({
-                        label: 'Slider',
-                        info: 'max, min, stepSize, labelStepSize',
-                        item: slider({
-                            bind: 'slider1',
-                            max: 100,
-                            min: 0,
-                            labelStepSize: 25,
-                            stepSize: 1
-                        })
-                    }),
-                    demoRow({
-                        label: 'Slider',
-                        info: 'multi-value, labelRenderer',
-                        item: slider({
-                            bind: 'slider2',
-                            min: 50000,
-                            max: 150000,
-                            labelStepSize: 25000,
-                            stepSize: 1000,
-                            labelRenderer: v =>
-                                `$${fmtThousands(v, {
-                                    label: true,
-                                    precision: 0,
-                                    labelCls: null,
-                                    asHtml: true
-                                })}`
                         })
                     })
                 ]
@@ -470,8 +453,6 @@ const demoRow = hoistCmp.factory(({label, info, children}) =>
 // Model
 //------------------------------------------------------------------
 class InputsPanelModel extends HoistModel {
-    @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
-
     // Text inputs
     @bindable textInput1: string = null;
     @bindable textInput2: string = `support@xh.io`;

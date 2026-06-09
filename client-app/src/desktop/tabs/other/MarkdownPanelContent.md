@@ -77,7 +77,7 @@ This demo includes a few customizations worth noting:
   to handle overflow and spacing around the rendered content.
 - Toggle the **Custom styles** switch in the toolbar above to apply an optional set of
   CSS styles to the rendered output. The `markdown` component renders unstyled HTML by
-  default — apps can add their own styles for headings, tables, code blocks, links,
+  default - apps can add their own styles for headings, tables, code blocks, links,
   and more via a wrapping CSS class.
 
 ## Importing Markdown from Source Files

@@ -1,14 +1,13 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {filler, hbox, hframe, hspacer, p, span} from '@xh/hoist/cmp/layout';
+import {filler, hbox, hspacer, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {ValidationState} from '@xh/hoist/data';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
+import {segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common';
-import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
+import {wrapper, wrapperOption} from '../../common';
 import './InlineEditingPanel.scss';
 import {InlineEditingPanelModel} from './InlineEditingPanelModel';
 import classNames from 'classnames';
@@ -18,26 +17,80 @@ export const inlineEditingPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'Inline Editing',
+            icon: Icon.edit(),
             description: [
-                p(
-                    'Grids support inline editing of their underlying store records. To enable, set editable:true on columns that should allow editing and (optionally) configure a type-appropriate editor.'
-                ),
-                p(
-                    'The Column.editable config also takes a function, allowing field-level editing to be conditional based upon the data or some other state, as demonstrated in the example below. This example also applies a custom style to highlight the editable cells in the grid, which are given the .xh-cell--editable CSS class by the toolkit.'
-                ),
-                p(
-                    'Store fields can be configured with validation rules, much like forms, allowing the application to require resolution before persisting to the back-end. Cells with invalid values are styled with a red corner flag by default. (Try setting a negative amount in any row to test.)'
-                )
+                'Grids support inline editing of their underlying store records. To enable,',
+                'set `editable: true` on columns that should allow editing and (optionally)',
+                'configure a type-appropriate editor.',
+                '',
+                'The `Column.editable` config also takes a function, allowing field-level',
+                'editing to be conditional based upon the data or some other state, as',
+                'demonstrated in the example below. This example also applies a custom style',
+                'to highlight the editable cells in the grid, which are given the',
+                '`.xh-cell--editable` CSS class by the toolkit.',
+                '',
+                'Store fields can be configured with validation rules, much like forms,',
+                'allowing the application to require resolution before persisting to the',
+                'back-end. Cells with invalid values are styled with a red corner flag by',
+                'default. (Try setting a negative amount in any row to test.)'
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/grids/InlineEditingPanel.ts',
                     notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide and core concepts.'
+                },
+                {
+                    url: '$HR/data/README.md',
+                    text: 'Data docs',
+                    notes: 'Store, fields, and the validation used here.'
+                },
+                {
+                    url: '$HR/cmp/grid/columns/Column.ts',
+                    notes: 'Column config, including the editable flag and editor.'
+                },
+                {
+                    url: '$HR/desktop/cmp/grid/editors/index.ts',
+                    notes: 'Type-specific inline editor components.'
+                },
+                {
+                    url: '$HR/data/Field.ts',
+                    notes: 'Store field config, including the validation rules applied here.'
                 }
             ],
+            // Generic grid display options omitted here (distracting from the editing demo); only
+            // this example's own editing-behavior controls are surfaced.
+            options: [
+                wrapperOption({
+                    label: 'Full-row editing',
+                    propName: 'GridConfig.fullRowEditing',
+                    control: switchInput({model, bind: 'fullRowEditing'}),
+                    info: 'Edit a whole row, not one cell.'
+                }),
+                wrapperOption({
+                    label: 'Async validation',
+                    control: switchInput({model, bind: 'asyncValidation'})
+                }),
+                wrapperOption({
+                    label: 'Edit with',
+                    propName: 'GridConfig.clicksToEdit',
+                    control: segmentedControl({
+                        model,
+                        bind: 'clicksToEdit',
+                        options: [
+                            {value: 2, label: '2 clicks'},
+                            {value: 1, label: '1 click'},
+                            {value: -1, label: 'disabled'}
+                        ]
+                    })
+                })
+            ],
             item: panel({
-                title: 'Grids › Inline Editing',
-                icon: Icon.edit(),
                 className: classNames(
                     model.isModal ? '' : 'tb-grid-wrapper-panel',
                     'tb-inline-editing-panel',
@@ -49,7 +102,7 @@ export const inlineEditingPanel = hoistCmp.factory({
                  * with showIsPopup=true when opened from within a GridModel in dialog.
                  * {@see https://github.com/xh/hoist-react/issues/4061}
                  */
-                item: hframe(grid({agOptions: {popupParent: null}}), gridOptionsPanel()),
+                item: grid({agOptions: {popupParent: null}}),
                 bbar: bbar(),
                 model: model.panelModel
             })
@@ -58,65 +111,33 @@ export const inlineEditingPanel = hoistCmp.factory({
 });
 
 const tbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
-    const {store, gridModel} = model;
+    const {gridModel} = model;
     return toolbar(
-        button({
-            icon: Icon.add(),
-            text: 'Add',
-            onClick: () => model.add(1)
-        }),
-        button({
-            icon: Icon.add(),
-            text: 'Add 5',
-            onClick: () => model.add(5)
-        }),
-        button({
-            icon: Icon.add(),
-            text: 'Add 1k',
-            onClick: () => model.add(1000)
-        }),
-        button({
-            icon: Icon.add(),
-            text: 'Add 10k',
-            onClick: () => model.add(10000)
-        }),
+        span('Add rows'),
+        buttonGroup(
+            button({icon: Icon.add(), text: '1', onClick: () => model.add(1)}),
+            button({icon: Icon.add(), text: '5', onClick: () => model.add(5)}),
+            button({icon: Icon.add(), text: '1k', onClick: () => model.add(1000)}),
+            button({icon: Icon.add(), text: '10k', onClick: () => model.add(10000)})
+        ),
         '-',
         button({
             icon: Icon.edit(),
-            text: 'First Row',
-            onClick: () => model.beginEditAsync()
+            text: 'Edit first row',
+            onClick: () => model.beginEditAsync({colId: 'name'})
         }),
         button({
             icon: Icon.edit(),
-            text: 'First Row (Amount)',
+            text: 'Edit first amount',
             onClick: () => model.beginEditAsync({colId: 'amount'})
         }),
         '-',
         button({
             icon: Icon.stopCircle(),
-            text: 'Stop Editing',
+            text: 'Stop editing',
             onClick: () => model.endEditAsync(),
             disabled: !gridModel.isEditing
-        }),
-        '-',
-        button({
-            icon: Icon.check(),
-            text: 'Commit All',
-            intent: 'success',
-            onClick: () => model.commitAllAsync(),
-            disabled: !store.isModified
-        }),
-        button({
-            icon: Icon.undo(),
-            text: 'Revert All',
-            intent: 'primary',
-            onClick: () => model.revert(),
-            disabled: !store.isModified
-        }),
-        filler(),
-        storeDirtyIndicator(),
-        '-',
-        storeValidIndicator()
+        })
     );
 });
 
@@ -168,32 +189,28 @@ const storeValidIndicator = hoistCmp.factory<InlineEditingPanelModel>(({model}) 
 });
 
 const bbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
+    const {store} = model;
     return toolbar(
-        switchInput({
-            bind: 'fullRowEditing',
-            label: 'Full-row editing',
-            labelSide: 'left'
-        }),
+        gridCountLabel(),
         '-',
-        switchInput({
-            bind: 'asyncValidation',
-            label: 'Async validation',
-            labelSide: 'left'
-        }),
+        storeDirtyIndicator(),
         '-',
-        span('Edit with: '),
-        buttonGroupInput({
-            bind: 'clicksToEdit',
-            outlined: true,
-            items: [
-                button({text: '2 clicks', value: 2}),
-                button({text: '1 click', value: 1}),
-                button({text: 'disabled', value: -1})
-            ]
-        }),
-        hspacer(),
-        span(`${model.clicksToEditNote}`),
+        storeValidIndicator(),
         filler(),
-        gridCountLabel()
+        button({
+            icon: Icon.undo(),
+            text: 'Revert all',
+            onClick: () => model.revert(),
+            disabled: !store.isModified
+        }),
+        hspacer(5),
+        button({
+            icon: Icon.check(),
+            text: 'Commit all',
+            outlined: true,
+            intent: 'success',
+            onClick: () => model.commitAllAsync(),
+            disabled: !store.isModified
+        })
     );
 });

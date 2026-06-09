@@ -1,4 +1,5 @@
-import {box, filler, img, p, span, vframe, vspacer} from '@xh/hoist/cmp/layout';
+import {box, filler, img, span, vframe} from '@xh/hoist/cmp/layout';
+import {card} from '@xh/hoist/cmp/card';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses, XH} from '@xh/hoist/core';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -10,11 +11,15 @@ import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import {isEmpty} from 'lodash';
 import {MouseEvent} from 'react';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import './FileChooserPanel.scss';
 
 // Use decimal MB so the size hint (formatted via `filesize`, decimal by default) reads cleanly.
 const MB = 1_000_000;
+
+// Cap the (equal-sized) cards so they stay balanced rather than stretching edge-to-edge on a wide
+// screen; below this they flex to fill the centered demo region.
+const CARD_MAX_WIDTH = 880;
 
 const ACCEPT_OPTIONS = [
     '.csv',
@@ -35,21 +40,25 @@ const ACCEPT_OPTIONS = [
 export const fileChooserPanel = hoistCmp.factory({
     model: creates(() => FileChooserPanelModel),
 
-    render() {
+    render({model}) {
         return wrapper({
+            title: 'FileChooser',
+            icon: Icon.copy(),
             description: [
-                p(
-                    'A component to select one or more files from the local filesystem. Wraps the third-party react-dropzone component to provide both drag-and-drop and click-to-browse file selection. Expands upon this core functionality with an optional grid (enabled by default) displaying the list of selected files and allowing the user to remove files from the selection.'
-                ),
-                p(
-                    'This component should be provided with a FileChooserModel instance, as the model holds an observable collection of File objects and provides a public API to manipulate the selection. The application is responsible for processing the selected files (e.g. by uploading them to a server) and clearing the selection when complete.'
-                ),
-                p(
-                    'Use the controls below to vary the accepted types and size/count limits - the empty-state hint updates to summarize the active configuration. Changing a limit re-creates the chooser, clearing any current selection.'
-                ),
-                p(
-                    'The second example is a single-image chooser that supplies a custom `fileDisplay` to preview the selected PNG in place, with a footer to replace or clear it.'
-                )
+                '`FileChooser` selects files from the local filesystem, wrapping the react-dropzone',
+                'library for both drag-and-drop and click-to-browse. It can also show a grid (on by',
+                'default) listing the selected files for removal.',
+                '',
+                'Provide it a `FileChooserModel`, which holds the observable file collection and the',
+                'API to manipulate it. Your app processes the files (e.g. uploads them) and clears',
+                'the selection when done.',
+                '',
+                'Use the Options below to vary the accepted types and size/count limits on the',
+                'configurable chooser above; changing a limit re-creates the chooser.',
+                '',
+                'The lower card pairs two compact single-file choosers - a default minimal one and',
+                'one with a custom `fileDisplay` image preview - showing use in space-constrained',
+                'layouts.'
             ],
             links: [
                 {
@@ -59,103 +68,138 @@ export const fileChooserPanel = hoistCmp.factory({
                 {
                     url: '$HR/desktop/cmp/filechooser/FileChooser.ts',
                     notes: 'Hoist component for selecting and queuing files for upload.'
+                },
+                {
+                    url: '$HR/desktop/cmp/filechooser/FileChooserModel.ts',
+                    notes: 'Holds the observable file selection and its public API.'
+                },
+                {
+                    url: 'https://react-dropzone.js.org/',
+                    text: 'react-dropzone',
+                    notes: 'The underlying drag-and-drop file selection library.'
                 }
+            ],
+            options: [
+                wrapperOption({
+                    label: 'Accept',
+                    propName: 'FileChooserConfig.accept',
+                    control: picker({
+                        model,
+                        bind: 'acceptedTypes',
+                        enableMulti: true,
+                        enableClear: true,
+                        enableSelectAll: true,
+                        displayNoun: 'type',
+                        placeholder: 'Any type',
+                        width: 180,
+                        multiSelectShowCount: true,
+                        multiSelectButtonStyle: 'values',
+                        options: ACCEPT_OPTIONS
+                    }),
+                    info: 'Allowed extensions or MIME types.'
+                }),
+                wrapperOption({
+                    label: 'Max files',
+                    propName: 'FileChooserConfig.maxFiles',
+                    control: select({
+                        model,
+                        bind: 'maxFiles',
+                        width: 110,
+                        hideDropdownIndicator: true,
+                        options: [
+                            {value: null, label: 'No limit'},
+                            {value: 1, label: '1'},
+                            {value: 3, label: '3'},
+                            {value: 10, label: '10'}
+                        ]
+                    })
+                }),
+                wrapperOption({
+                    label: 'Max size',
+                    propName: 'FileChooserConfig.maxFileSize',
+                    control: select({
+                        model,
+                        bind: 'maxFileSize',
+                        width: 110,
+                        hideDropdownIndicator: true,
+                        options: [
+                            {value: null, label: 'No limit'},
+                            {value: MB, label: '1 MB'},
+                            {value: 5 * MB, label: '5 MB'},
+                            {value: 25 * MB, label: '25 MB'}
+                        ]
+                    })
+                }),
+                wrapperOption({
+                    label: 'Target',
+                    propName: 'FileChooserProps.dropTargetPlacement',
+                    control: segmentedControl({
+                        model,
+                        bind: 'placement',
+                        options: [
+                            {value: 'left', label: 'Left'},
+                            {value: 'top', label: 'Top'},
+                            {value: 'hidden', label: 'Hidden'}
+                        ]
+                    })
+                }),
+                wrapperOption({
+                    label: 'Disable',
+                    propName: 'FileChooserModel.disabled',
+                    control: switchInput({model, bind: 'disabled'})
+                })
             ],
             item: vframe({
                 flex: 1,
                 width: '100%',
-                overflow: 'auto',
                 alignItems: 'center',
-                items: [configChooserPanel(), vspacer(), imageChooserPanel()]
+                gap: 12,
+                items: [configChooserCard(), singleFileCard()]
             })
         });
     }
 });
 
 /**
- * Multi-purpose chooser with live controls over accept / limits / target placement.
+ * Top card: the multi-purpose chooser with live controls over accept / limits / target placement,
+ * filling the card with its Browse / selected-count / Clear-all actions as a footer toolbar row.
  */
-const configChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
+const configChooserCard = hoistCmp.factory<FileChooserPanelModel>({
     model: uses(() => FileChooserPanelModel),
     render({model}) {
         const {chooserModel, disabled, placement} = model;
-        return panel({
-            title: 'Other › FileChooser',
+        return card({
+            title: 'Configurable Chooser',
             icon: Icon.copy(),
-            className: 'tb-filechooser-example',
-            flex: 'none',
-            width: 960,
-            height: 400,
-            tbar: [
-                span('Accept:'),
-                picker({
-                    bind: 'acceptedTypes',
-                    enableMulti: true,
-                    enableClear: true,
-                    enableSelectAll: true,
-                    displayNoun: 'type',
-                    placeholder: 'Any type',
-                    width: 200,
-                    multiSelectShowCount: true,
-                    multiSelectButtonStyle: 'values',
-                    options: ACCEPT_OPTIONS
+            className: 'tb-filechooser-card',
+            flex: 1,
+            width: '100%',
+            maxWidth: CARD_MAX_WIDTH,
+            contentBoxProps: {flexDirection: 'column', flex: 1},
+            items: [
+                fileChooser({
+                    flex: 1,
+                    model: chooserModel,
+                    dropTargetPlacement: placement
                 }),
-                toolbarSep(),
-                span('Max files:'),
-                select({
-                    bind: 'maxFiles',
-                    width: 90,
-                    hideDropdownIndicator: true,
-                    options: [
-                        {value: null, label: 'No limit'},
-                        {value: 1, label: '1'},
-                        {value: 3, label: '3'},
-                        {value: 10, label: '10'}
+                toolbar({
+                    items: [
+                        button({
+                            disabled,
+                            outlined: true,
+                            text: 'Browse',
+                            icon: Icon.arrowUpFromBracket({intent: 'primary'}),
+                            onClick: () => chooserModel.openFileBrowser()
+                        }),
+                        filler(),
+                        span(`${pluralize('file', chooserModel.files.length, true)} selected`),
+                        toolbarSep(),
+                        button({
+                            text: 'Clear all',
+                            intent: 'danger',
+                            onClick: () => chooserModel.clear()
+                        })
                     ]
-                }),
-                toolbarSep(),
-                span('Max size:'),
-                select({
-                    bind: 'maxFileSize',
-                    width: 100,
-                    hideDropdownIndicator: true,
-                    options: [
-                        {value: null, label: 'No limit'},
-                        {value: MB, label: '1 MB'},
-                        {value: 5 * MB, label: '5 MB'},
-                        {value: 25 * MB, label: '25 MB'}
-                    ]
-                }),
-                toolbarSep(),
-                span('Target:'),
-                segmentedControl({
-                    bind: 'placement',
-                    options: [
-                        {value: 'left', label: 'Left'},
-                        {value: 'top', label: 'Top'},
-                        {value: 'hidden', label: 'Hidden'}
-                    ]
-                }),
-                toolbarSep(),
-                span('Disable: '),
-                switchInput({bind: 'disabled'})
-            ],
-            item: fileChooser({model: chooserModel, dropTargetPlacement: placement}),
-            bbar: [
-                button({
-                    disabled,
-                    outlined: true,
-                    text: 'Browse',
-                    icon: Icon.arrowUpFromBracket({intent: 'primary'}),
-                    onClick: () => chooserModel.openFileBrowser()
-                }),
-                filler(),
-                span(`${pluralize('file', chooserModel.files.length, true)} selected`),
-                toolbarSep(),
-                button({
-                    text: 'Clear all',
-                    intent: 'danger',
-                    onClick: () => chooserModel.clear()
                 })
             ]
         });
@@ -163,19 +207,55 @@ const configChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
 });
 
 /**
- * Single-image chooser demonstrating a custom `fileDisplay` (in-place image preview).
+ * Bottom card (same footprint as the top): pairs two deliberately compact single-file choosers
+ * side by side - a default chooser in its minimal single-file mode, and one with a custom in-place
+ * image preview. Each is captioned with a lightweight nested-card legend rather than a panel header.
  */
-const imageChooserPanel = hoistCmp.factory<FileChooserPanelModel>({
+const singleFileCard = hoistCmp.factory({
+    render() {
+        return card({
+            title: 'Single-File Choosers',
+            icon: Icon.file(),
+            className: 'tb-filechooser-card',
+            flex: 1,
+            width: '100%',
+            maxWidth: CARD_MAX_WIDTH,
+            contentBoxProps: {flexDirection: 'row', flex: 1, gap: 16},
+            items: [basicChooserCard(), imageChooserCard()]
+        });
+    }
+});
+
+/**
+ * Default single-file chooser - no extra configuration, shown as-is in single-file mode. Captioned
+ * with a light legend title rather than a panel header.
+ */
+const basicChooserCard = hoistCmp.factory<FileChooserPanelModel>({
     model: uses(() => FileChooserPanelModel),
     render({model}) {
-        return panel({
-            title: 'Other › FileChooser - custom image preview',
-            icon: Icon.fileImage(),
-            className: 'tb-filechooser-example',
-            flex: 'none',
-            width: 500,
-            height: 280,
-            item: fileChooser({model: model.imageChooserModel, fileDisplay: imagePreview})
+        return card({
+            title: 'Default',
+            className: 'tb-filechooser-card',
+            flex: 1,
+            contentBoxProps: {flex: 1},
+            item: fileChooser({flex: 1, model: model.basicChooserModel})
+        });
+    }
+});
+
+/**
+ * Single-image chooser demonstrating a custom `fileDisplay` (in-place image preview). Captioned
+ * with a light legend title rather than a panel header.
+ */
+const imageChooserCard = hoistCmp.factory<FileChooserPanelModel>({
+    model: uses(() => FileChooserPanelModel),
+    render({model}) {
+        return card({
+            title: 'Custom image preview',
+            className: 'tb-filechooser-card',
+            flex: 1,
+            contentBoxProps: {flex: 1},
+            item: fileChooser({flex: 1, model: model.imageChooserModel, fileDisplay: imagePreview})
         });
     }
 });
@@ -272,6 +352,9 @@ class FileChooserPanelModel extends HoistModel {
     @managed
     @observable.ref
     chooserModel: FileChooserModel;
+
+    @managed
+    basicChooserModel = new FileChooserModel({maxFiles: 1});
 
     @managed
     imageChooserModel = new FileChooserModel({accept: ['.png'], maxFiles: 1});

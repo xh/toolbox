@@ -3,6 +3,7 @@ import {tabContainer} from '@xh/hoist/cmp/tab';
 import {webSocketIndicator} from '@xh/hoist/cmp/websocket';
 import {hoistCmp, HoistUser, uses} from '@xh/hoist/core';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
+import {themeToggleButton} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dynamicTabSwitcher} from '@xh/hoist/desktop/cmp/tab';
 import {profilePic, welcomeMsg} from '../core/cmp';
@@ -28,12 +29,16 @@ export const AppComponent = hoistCmp({
                 leftItems: [dynamicTabSwitcher()],
                 rightItems: [
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
-                    appBarSeparator()
+                    appBarSeparator(),
+                    themeToggleButton()
                 ],
                 hideRefreshButton: false,
                 appMenuButtonProps: {
                     renderWithUserProfile,
                     hideLogoutItem: false,
+                    // Theme toggle is exposed directly in the AppBar above, so hide the duplicate
+                    // app-menu entry (the modal Options dialog still offers theme + "system" sync).
+                    hideThemeItem: true,
                     extraItems: [welcomeMsg({multiline: true})]
                 }
             }),

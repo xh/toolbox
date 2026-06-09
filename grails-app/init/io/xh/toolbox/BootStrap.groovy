@@ -274,18 +274,18 @@ class BootStrap implements LogSupport {
                 notes: 'True to render the main app menu button using the alternate user profile (initials) mode.'
             ),
             new PreferenceSpec(
+                name: 'font',
+                type: 'string',
+                defaultValue: 'IBM Plex Sans',
+                groupName: 'Toolbox',
+                notes: 'App UI font, toggled via the in-app Options dialog. Either "IBM Plex Sans" or "Inter".'
+            ),
+            new PreferenceSpec(
                 name: 'contactAppState',
                 type: 'json',
                 defaultValue: [],
                 groupName: 'Toolbox - Example Apps',
                 notes: 'Holds favorites, grid state, and displayMode prefs for the XH Contact example app.'
-            ),
-            new PreferenceSpec(
-                name: 'expandDockedLinks',
-                type: 'bool',
-                defaultValue: false,
-                groupName: 'Toolbox',
-                notes: 'True to expand the docked linked panel by default, false to start collapsed.'
             ),
             new PreferenceSpec(
                 name: 'todoTasks',

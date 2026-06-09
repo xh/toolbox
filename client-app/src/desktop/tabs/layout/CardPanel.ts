@@ -7,12 +7,15 @@ import {wrapper} from '../../common';
 
 export const cardPanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'Card',
+        icon: Icon.addressCard(),
         description: [
-            p('A Card is a bordered container for grouping related content.'),
-            p('Cards support titles, icons, intent-based styling, and collapsibility.'),
-            p(
-                'Children are arranged vertically by default, but this and other aspects of its inner layout can be customized via contentBoxProps.'
-            )
+            'A `Card` is a bordered container for grouping related content.',
+            '',
+            'Cards support titles, icons, intent-based styling, and collapsibility.',
+            '',
+            'Children are arranged vertically by default, but this and other aspects of its',
+            'inner layout can be customized via `contentBoxProps`.'
         ],
         links: [
             {
@@ -25,14 +28,12 @@ export const cardPanel = hoistCmp.factory(() =>
             },
             {
                 url: '$HR/cmp/card/CardModel.ts',
-                notes: 'Hoist CardModel.'
+                notes: 'Hoist model for configuring and interacting with cards.'
             }
         ],
         item: panel({
-            title: 'Layout › Card',
-            icon: Icon.addressCard(),
-            height: 600,
-            width: 800,
+            height: '60vh',
+            width: '90%',
             item: vbox({
                 flex: 1,
                 overflow: 'auto',

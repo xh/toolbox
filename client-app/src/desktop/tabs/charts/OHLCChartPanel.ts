@@ -1,12 +1,11 @@
 import {chart} from '@xh/hoist/cmp/chart';
-import {filler, p, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
+import {span} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common';
+import {chartDisplayOptions, wrapper} from '../../common';
 import {OHLCChartModel} from './OHLCChartModel';
 
 export const ohlcChartPanel = hoistCmp.factory({
@@ -14,19 +13,25 @@ export const ohlcChartPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'OHLC Chart',
+            icon: Icon.chartLine(),
             description: [
-                p(
-                    'Hoist provides a lightweight wrapper around the Highcharts charting and visualization library. This integration includes the Chart component to handle basic rendering, layout, and resizing and a ChartModel class to hold an observable config and data series.'
-                ),
-                p(
-                    'Note that applications must license and specify a compatible version of Highcharts as an application dependency.'
-                )
+                'Hoist provides a lightweight wrapper around the Highcharts charting and',
+                'visualization library. This integration includes the `Chart` component to',
+                'handle rendering, layout, and resizing, plus an observable `ChartModel` class',
+                'to hold the chart config and data series.',
+                '',
+                'This example renders financial data as an OHLC (open-high-low-close) chart,',
+                'and shows how to reach through `ChartModel` to the underlying Highcharts API',
+                'directly via the "Call chart API" button.',
+                '',
+                'Note that applications must license and specify a compatible version of',
+                'Highcharts as an application dependency.'
             ],
+            options: chartDisplayOptions(model),
             item: panel({
-                title: 'Charts › OHLC',
-                icon: Icon.chartLine(),
-                width: '80%',
-                height: '60%',
+                height: '60vh',
+                width: '90%',
                 mask: 'onLoad',
                 tbar: tbar(),
                 item: chart({aspectRatio: model.aspectRatio})
@@ -62,28 +67,6 @@ const tbar = hoistCmp.factory<OHLCChartModel>(({model}) => {
             options: model.symbols,
             enableFilter: false,
             width: 120
-        }),
-        toolbarSep(),
-        span('Aspect Ratio'),
-        numberInput({
-            width: 50,
-            bind: 'aspectRatio',
-            commitOnChange: true,
-            selectOnFocus: true,
-            min: 0
-        }),
-        filler(),
-        button({
-            text: 'Call chart API',
-            icon: Icon.code(),
-            disabled: !model.chartModel.highchart,
-            onClick: () => {
-                const xExtremes = model.chartModel.highchart.axes[0].getExtremes();
-                XH.alert({
-                    title: 'X-axis extremes - as read from chart API',
-                    message: JSON.stringify(xExtremes)
-                });
-            }
         })
     );
 });

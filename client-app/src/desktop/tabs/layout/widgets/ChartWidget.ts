@@ -1,61 +1,71 @@
-import {creates, hoistCmp, lookup, managed} from '@xh/hoist/core';
-import {box} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, HoistModel, lookup, managed} from '@xh/hoist/core';
+import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
-import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
-import {chart} from '@xh/hoist/cmp/chart';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {DashCanvasViewModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
-import {button, modalToggleButton} from '@xh/hoist/desktop/cmp/button';
-import {ONE_DAY} from '@xh/hoist/utils/datetime';
+import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
+import {modalToggleButton} from '@xh/hoist/desktop/cmp/button';
+import {fmtPrice} from '@xh/hoist/format';
+import {Timer} from '@xh/hoist/utils/async';
+import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {LineChartModel} from '../../charts/LineChartModel';
-import './ChartWidget.scss';
+
+// Mocked live-monitor parameters - tuned to keep the random walk in a believable band.
+const TICK_INTERVAL = 3 * SECONDS,
+    START_PRICE = 142.0,
+    BAND_CENTER = 142.0,
+    MAX_STEP = 0.35, // Largest move (USD) on any single tick.
+    REVERSION = 0.05, // Pull back toward center, keeping the walk from wandering off.
+    HISTORY_LENGTH = 90; // Rolling window of points retained on the chart.
 
 export const chartWidget = hoistCmp.factory({
     model: creates(() => ChartWidgetModel),
     render({model}) {
-        const {panelModel, symbols, dashViewModel} = model,
+        const {panelModel, dashViewModel} = model,
             modalOpts = {
                 title: dashViewModel.fullTitle,
                 icon: dashViewModel.icon,
-                headerItems: [rangeSelector({model}), modalToggleButton({panelModel})]
+                headerItems: [modalToggleButton({panelModel})]
             };
 
         return panel({
             model: panelModel,
             ...(panelModel.isModal ? modalOpts : {}),
-            item: chart(),
-            bbar: !model.presetSymbol
-                ? [
-                      box('Symbol: '),
-                      select({
-                          bind: 'currentSymbols',
-                          options: symbols,
-                          enableFilter: false,
-                          enableMulti: true
-                      })
-                  ]
-                : null
+            item: chart({model: model.chartModel})
         });
     }
 });
 
-const rangeSelector = hoistCmp.factory(() =>
-    buttonGroupInput({
-        bind: 'range',
-        items: [
-            button({text: '7D', value: 7}),
-            button({text: '30D', value: 30}),
-            button({text: '60D', value: 60}),
-            button({text: '90D', value: 90})
-        ],
-        className: 'tb-chart-widget__buttons'
-    })
-);
-
-class ChartWidgetModel extends LineChartModel {
-    @bindable range = 30;
+/**
+ * Self-contained mock of a real-time price monitor.
+ *
+ * Generates a natural, mean-reverting random walk on a Timer, pushing each new tick onto a
+ * Highcharts spline series and floating the latest price up to the hosting view's title via
+ * `DashViewModel.titleDetails`.
+ */
+class ChartWidgetModel extends HoistModel {
     @lookup(DashViewModel) dashViewModel: DashViewModel;
+
+    @observable.ref data: [number, number][] = [];
+    @bindable price = START_PRICE;
+
+    @managed chartModel = new ChartModel({
+        highchartsConfig: {
+            chart: {type: 'spline', animation: false},
+            title: {text: null},
+            legend: {enabled: false},
+            exporting: {enabled: false},
+            tooltip: {valuePrefix: '$', valueDecimals: 2},
+            xAxis: {type: 'datetime'},
+            yAxis: {title: {text: 'USD'}},
+            plotOptions: {
+                spline: {
+                    marker: {enabled: false},
+                    lineWidth: 2
+                }
+            }
+        }
+    });
+
     @managed panelModel = new PanelModel({
         modalSupport: true,
         showModalToggleButton: false,
@@ -63,38 +73,44 @@ class ChartWidgetModel extends LineChartModel {
         resizable: false
     });
 
-    get presetSymbol() {
-        return this.dashViewModel?.viewSpec.id.split('-')[1];
-    }
+    @managed
+    timer = Timer.create({
+        runFn: () => this.addTick(),
+        interval: TICK_INTERVAL,
+        delay: true
+    });
 
     constructor() {
         super();
         makeObservable(this);
 
-        this.addReaction({
-            track: () => [this.range, this.chartModel.series],
-            run: () => {
-                if (!this.chartModel.series[0] || !this.chartModel.highchart) return;
-                const endDate = new Date(),
-                    startDate = new Date(endDate.getTime() - ONE_DAY * this.range);
+        // Seed the chart with a short history so it reads as a live monitor on first render.
+        this.seedHistory();
 
-                this.chartModel.highchart.xAxis[0].setExtremes(
-                    startDate.getTime(),
-                    endDate.getTime()
-                );
+        this.addReaction({
+            track: () => this.data,
+            run: () => this.chartModel.setSeries({name: 'Price', data: this.data})
+        });
+
+        this.addReaction({
+            track: () => this.price,
+            run: price => {
+                if (this.dashViewModel) {
+                    // Lead with a middot so the live price reads as a distinct segment after the
+                    // title (fullTitle joins title + titleDetails with a space): "Live Chart - $142".
+                    const formatted = fmtPrice(price, {
+                        precision: 2,
+                        prefix: '$',
+                        asHtml: true
+                    });
+                    this.dashViewModel.titleDetails = `· ${formatted}`;
+                }
             }
         });
     }
 
     override onLinked() {
-        const {dashViewModel, panelModel} = this;
-
-        if (this.presetSymbol) {
-            dashViewModel.title = this.presetSymbol;
-            this.currentSymbols = [this.presetSymbol];
-        }
-
-        dashViewModel.extraMenuItems = [
+        this.dashViewModel.extraMenuItems = [
             {
                 text: 'Print chart',
                 icon: Icon.print(),
@@ -106,22 +122,48 @@ class ChartWidgetModel extends LineChartModel {
                 actionFn: () => this.chartModel.highchart.downloadCSV()
             }
         ];
+    }
 
-        if (dashViewModel instanceof DashCanvasViewModel) {
-            dashViewModel.headerItems = [
-                rangeSelector({model: this}),
-                modalToggleButton({panelModel})
-            ];
+    /** Build an initial back-fill of points ending at "now" so the chart starts populated. */
+    private seedHistory() {
+        const now = Date.now(),
+            data: [number, number][] = [];
 
-            this.chartModel.updateHighchartsConfig({
-                rangeSelector: {enabled: false},
-                exporting: {enabled: false}
-            });
+        let price = START_PRICE;
+        for (let i = HISTORY_LENGTH; i > 0; i--) {
+            price = this.nextPrice(price);
+            data.push([now - i * TICK_INTERVAL, round(price)]);
         }
 
-        // Demo dynamic titleDetails with ticking timestamp in view title.
-        setInterval(() => {
-            dashViewModel.titleDetails = new Date().toTimeString().split(' ')[0];
-        }, 1000);
+        runInAction(() => {
+            this.data = data;
+            this.price = data[data.length - 1][1];
+        });
     }
+
+    /** Advance the walk by one tick, append a new point, and drop the oldest. */
+    private addTick() {
+        const price = this.nextPrice(this.price),
+            point: [number, number] = [Date.now(), round(price)];
+
+        runInAction(() => {
+            this.data = [...this.data.slice(-(HISTORY_LENGTH - 1)), point];
+            this.price = point[1];
+        });
+    }
+
+    /**
+     * Compute the next price via a mean-reverting random walk: a small random step combined with
+     * a gentle pull back toward the band center. This keeps movement natural - never spiky or
+     * unbounded - while still drifting believably.
+     */
+    private nextPrice(price: number): number {
+        const step = (Math.random() - 0.5) * 2 * MAX_STEP,
+            reversion = (BAND_CENTER - price) * REVERSION;
+        return price + step + reversion;
+    }
+}
+
+function round(v: number): number {
+    return Math.round(v * 100) / 100;
 }

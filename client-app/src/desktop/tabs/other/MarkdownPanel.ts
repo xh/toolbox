@@ -1,14 +1,12 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faMarkdown} from '@fortawesome/free-brands-svg-icons';
-import {p, span, vbox} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {codeInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import './MarkdownPanel.scss';
 import content from './MarkdownPanelContent.md';
 
@@ -20,9 +18,18 @@ export const markdownPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
-            description: p(
-                'Hoist supplies a markdown component that wraps the react-markdown library and will convert a markdown string into a React element tree.'
-            ),
+            title: 'Markdown',
+            icon: Icon.icon({prefix: 'fab', iconName: 'markdown'}),
+            description: [
+                "Hoist's `Markdown` component wraps the `react-markdown` library to render a",
+                'Markdown string as a React element tree. Content can be imported directly',
+                'from `.md` files or supplied at runtime, and the rendered output can be',
+                'styled with your own CSS. Edit the source on the left to see it render live.',
+                '',
+                'In fact, the description text you are reading right now is itself rendered with',
+                '`Markdown` - the Wrapper info rail runs every example description through the',
+                'same component.'
+            ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/MarkdownPanel.ts',
@@ -30,56 +37,59 @@ export const markdownPanel = hoistCmp.factory({
                 },
                 {url: '$HR/cmp/markdown/Markdown.ts', notes: 'Hoist component.'},
                 {
+                    url: '$TB/client-app/src/desktop/common/Wrapper.ts',
+                    notes: 'Renders each example description in the info rail via the Markdown component.'
+                },
+                {
                     url: '$TB/client-app/src/desktop/tabs/other/MarkdownPanel.scss',
                     notes: 'Custom styles applied via toggle.'
                 },
                 {
                     url: '$TB/client-app/src/types.d.ts',
                     notes: 'Module declaration for .md file imports.'
+                },
+                {
+                    url: 'https://github.com/remarkjs/react-markdown',
+                    text: 'react-markdown',
+                    notes: 'The underlying Markdown rendering library.'
                 }
             ],
-            item: vbox({
-                width: 800,
-                height: '80%',
-                gap: true,
+            options: wrapperOption({
+                label: 'Custom styles',
+                control: switchInput({model, bind: 'useCustomStyles'})
+            }),
+            item: panel({
+                className: 'tb-markdown-panel',
+                contentBoxProps: {flexDirection: 'row', padding: true, gap: true},
                 items: [
-                    panel({
-                        title: 'Rendered Markdown',
-                        icon: Icon.icon({prefix: 'fab', iconName: 'markdown'}),
-                        className: model.useCustomStyles ? 'tb-markdown-panel--styled' : undefined,
-                        modelConfig: {
-                            modalSupport: true,
-                            collapsible: false,
-                            resizable: false
-                        },
-                        tbar: toolbar(
-                            span('Custom styles'),
-                            switchInput({bind: 'useCustomStyles'}),
-                            model.useCustomStyles
-                                ? span({
-                                      style: {
-                                          color: 'var(--xh-text-color-muted)',
-                                          fontSize: '0.85em'
-                                      },
-                                      item: 'App-provided CSS class applied to rendered output'
-                                  })
-                                : null
-                        ),
-                        flex: 3,
-                        scrollable: true,
-                        contentBoxProps: {padding: '10px 20px'},
-                        item: markdown({content: model.content, lineBreaks: false})
-                    }),
                     panel({
                         title: 'Source Text',
                         icon: Icon.edit(),
+                        compactHeader: true,
                         flex: 2,
+                        minWidth: 0,
                         item: codeInput({
                             bind: 'content',
                             commitOnChange: true,
                             width: '100%',
                             height: '100%'
                         })
+                    }),
+                    panel({
+                        title: 'Rendered Markdown',
+                        icon: Icon.icon({prefix: 'fab', iconName: 'markdown'}),
+                        compactHeader: true,
+                        className: model.useCustomStyles ? 'tb-markdown-panel--styled' : undefined,
+                        flex: 3,
+                        minWidth: 0,
+                        modelConfig: {
+                            modalSupport: true,
+                            collapsible: false,
+                            resizable: false
+                        },
+                        scrollable: true,
+                        contentBoxProps: {padding: '10px 20px'},
+                        item: markdown({content: model.content, lineBreaks: false})
                     })
                 ]
             })

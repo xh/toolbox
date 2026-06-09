@@ -48,7 +48,7 @@ export class ExamplesTabModel extends HoistModel {
             ]
         },
         {
-            title: 'Contact',
+            title: 'Contacts',
             icon: Icon.users(),
             path: 'contact',
             srcPath: 'contact',
@@ -60,7 +60,7 @@ export class ExamplesTabModel extends HoistModel {
             ]
         },
         {
-            title: 'TODO',
+            title: '#TODO',
             icon: Icon.clipboard(),
             path: 'todo',
             srcPath: 'todo',
