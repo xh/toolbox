@@ -2,15 +2,23 @@
 
 ## 9.0-SNAPSHOT - unreleased
 
-* Downgraded toolbox build toolchain back to JDK 21 — JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
-* Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
+### New Features
+
+* Redesigned the desktop component-demo `Wrapper`: a collapsible left info rail now unifies each tab's title, intro text, and reference links (replacing the full-width description band and the docked links panel), and redundant breadcrumb titles were removed from the demo panels.
+* Consolidated each example's scattered display-option controls into the Wrapper rail's new Options section via shared `wrapperOption` / `wrapperAction` helpers, with on-hover disclosure of the underlying Hoist API (e.g. `GridConfig.stripeRows`) each option maps to.
+* Polished nearly every desktop example tab - layout, copy, icons, controls, and assorted bug fixes - to more clearly showcase idiomatic Hoist usage for developers and prospective clients evaluating the framework.
+* Replaced the dated mobile-tab screenshots with a theme-aware CSS device frame, and refreshed the DashCanvas / DashContainer examples with a live random-walk Chart widget and a stateful `SegmentedControl` Options widget.
+* Added an IBM Plex Sans font preference to the desktop app, selectable alongside the theme via new macOS-style card pickers in the Options dialog.
 
 ### Technical
 
-* Redesigned the desktop component-demo `Wrapper`: a collapsible left info rail now unifies each tab's title, intro text, and reference links (replacing the full-width description band and the docked links panel), and redundant breadcrumb titles were removed from the demo panels.
+* Downgraded toolbox build toolchain back to JDK 21 — JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
+* Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
 
 ### Libraries
 
+* @xh/hoist `85.0 → 86.0`
+* hoist-core `39.0 → 41.0`
 * ag-Grid `34.2 → 35.3`
 
 ## 8.4.0 - 2026-04-30
