@@ -19,6 +19,7 @@
 ### Libraries
 
 * @xh/hoist `85.0 → 86.0`
+* @xh/hoist-dev-utils `12.2 → 13.0` — breaking: `.md` imports now resolve to raw text content (was a URL to fetch).
 * hoist-core `39.0 → 41.0`
 * ag-Grid `34.2 → 35.3`
 
