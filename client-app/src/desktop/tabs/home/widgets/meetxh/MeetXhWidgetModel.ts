@@ -18,8 +18,6 @@ export class MeetXhWidgetModel extends HoistModel {
     @observable.ref contacts: XhContact[] = [];
     @observable spotlightId: string = null;
 
-    private rotateTimer: Timer;
-
     get spotlightContact(): XhContact {
         return this.contacts.find(it => it.id === this.spotlightId);
     }
@@ -30,7 +28,7 @@ export class MeetXhWidgetModel extends HoistModel {
     }
 
     override onLinked() {
-        this.rotateTimer = this.markManaged(
+        this.markManaged(
             Timer.create({
                 runFn: () => this.shuffle(),
                 interval: 25 * SECONDS,
