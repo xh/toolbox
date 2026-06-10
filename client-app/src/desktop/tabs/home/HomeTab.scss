@@ -1,0 +1,15 @@
+.tb-home {
+  // Floating-card shadow shared with the example-tab Wrapper treatment (see Wrapper.scss).
+  --tbox-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+
+  .xh-dark & {
+    --tbox-card-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
+  }
+
+  .xh-dash-tab {
+    border: var(--xh-border-solid);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--tbox-card-shadow);
+  }
+}

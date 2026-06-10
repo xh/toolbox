@@ -1,85 +1,50 @@
 import {br, fragment} from '@xh/hoist/cmp/layout';
 import {managed, HoistModel, XH} from '@xh/hoist/core';
-import {DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
+import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {Icon} from '@xh/hoist/icon';
 import {aboutToolboxWidget} from './widgets/AboutToolboxWidget';
 import {activityWidget} from './widgets/activity/ActivityWidget';
-import {roadmapWidget} from './widgets/roadmap/RoadmapWidget';
 import {welcomeWidget} from './widgets/WelcomeWidget';
 
 export class HomeTabModel extends HoistModel {
     @managed
-    dashModel;
+    dashModel: DashCanvasModel;
 
     constructor() {
         super();
-        this.dashModel = new DashContainerModel({
-            persistWith: {localStorageKey: 'homeDashboard'},
-            showMenuButton: true,
-            initialState: [
-                {
-                    type: 'row',
-                    content: [
-                        {
-                            type: 'column',
-                            width: '850px',
-                            content: [
-                                {
-                                    type: 'stack',
-                                    height: '350px',
-                                    content: [{type: 'view', id: 'welcome', height: '370px'}]
-                                },
-                                {
-                                    type: 'row',
-                                    content: [
-                                        {
-                                            type: 'stack',
-                                            width: '350px',
-                                            content: [{type: 'view', id: 'about'}]
-                                        },
-                                        {
-                                            type: 'stack',
-                                            content: [{type: 'view', id: 'roadmap'}]
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            type: 'stack',
-                            content: [{type: 'view', id: 'activity'}]
-                        }
-                    ]
-                }
-            ],
+        this.dashModel = new DashCanvasModel({
+            persistWith: {localStorageKey: 'homeDashCanvas'},
+            columns: 12,
+            rowHeight: 50,
+            compact: 'vertical',
+            margin: [12, 12],
+            containerPadding: [16, 16],
+            viewSpecDefaults: {unique: true},
             viewSpecs: [
                 {
                     id: 'welcome',
                     title: 'Welcome',
-                    unique: true,
+                    icon: Icon.home(),
                     content: welcomeWidget,
-                    icon: Icon.home()
+                    hidePanelHeader: true
                 },
                 {
-                    id: 'about',
-                    title: 'About Toolbox',
-                    unique: true,
-                    content: aboutToolboxWidget,
-                    icon: Icon.info()
-                },
-                {
-                    id: 'roadmap',
-                    title: 'Hoist Roadmap',
-                    unique: true,
-                    content: roadmapWidget,
-                    icon: Icon.mapSigns()
+                    id: 'underTheHood',
+                    title: 'Under the Hood',
+                    icon: Icon.info(),
+                    content: aboutToolboxWidget
                 },
                 {
                     id: 'activity',
                     title: 'Hoist Commits',
-                    content: activityWidget,
-                    icon: Icon.icon({iconName: 'github', prefix: 'fab'})
+                    icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
+                    content: activityWidget
                 }
+            ],
+            initialState: [
+                {viewSpecId: 'welcome', layout: {x: 0, y: 0, w: 7, h: 6}},
+                {viewSpecId: 'underTheHood', layout: {x: 7, y: 0, w: 5, h: 6}},
+                {viewSpecId: 'activity', layout: {x: 4, y: 6, w: 8, h: 7}}
             ],
             extraMenuItems: [
                 {
@@ -95,7 +60,7 @@ export class HomeTabModel extends HoistModel {
         const confirmed = await XH.confirm({
             title: 'Please confirm...',
             message: fragment(
-                'This will reset your home dashboard to its default settings, including any widget and grid customizations.',
+                'This will reset your home dashboard to its default layout, including any widget customizations.',
                 br(),
                 br(),
                 'Are you sure you wish to continue?'
@@ -103,6 +68,6 @@ export class HomeTabModel extends HoistModel {
             confirmProps: {text: 'Yes, restore defaults'}
         });
 
-        if (confirmed) await this.dashModel.restoreDefaultsAsync();
+        if (confirmed) this.dashModel.restoreDefaults();
     }
 }
