@@ -205,9 +205,21 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'newsSources',
                 valueType: 'json',
+                // NewsAPI source IDs (https://newsapi.org/sources). Many sources NewsAPI lists no
+                // longer return any articles - this set was verified to currently return stories
+                // (with images). Note the `google-news` aggregator is intentionally omitted: it
+                // returns self-referential entries and HTML-laden descriptions that read poorly.
                 defaultValue: [
+                    'associated-press': 'Associated Press',
+                    'bbc-news': 'BBC News',
                     cnn: 'CNN',
-                    'google-news': 'Google News'
+                    'nbc-news': 'NBC News',
+                    'cbs-news': 'CBS News',
+                    'abc-news': 'ABC News',
+                    'usa-today': 'USA Today',
+                    'the-washington-post': 'The Washington Post',
+                    bloomberg: 'Bloomberg',
+                    'the-verge': 'The Verge'
                 ],
                 groupName: 'Toolbox - Example Apps'
             ),
