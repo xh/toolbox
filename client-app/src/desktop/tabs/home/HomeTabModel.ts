@@ -75,9 +75,9 @@ export class HomeTabModel extends HoistModel {
                 {viewSpecId: 'startHere', layout: {x: 7, y: 0, w: 5, h: 6}},
                 {viewSpecId: 'releases', layout: {x: 0, y: 6, w: 4, h: 7}},
                 {viewSpecId: 'activity', layout: {x: 4, y: 6, w: 8, h: 7}},
-                {viewSpecId: 'meetXh', layout: {x: 0, y: 13, w: 5, h: 5}},
-                {viewSpecId: 'underTheHood', layout: {x: 5, y: 13, w: 4, h: 5}},
-                {viewSpecId: 'feedback', layout: {x: 9, y: 13, w: 3, h: 5}}
+                {viewSpecId: 'meetXh', layout: {x: 0, y: 13, w: 5, h: 6}},
+                {viewSpecId: 'underTheHood', layout: {x: 5, y: 13, w: 4, h: 6}},
+                {viewSpecId: 'feedback', layout: {x: 9, y: 13, w: 3, h: 6}}
             ],
             extraMenuItems: [
                 {

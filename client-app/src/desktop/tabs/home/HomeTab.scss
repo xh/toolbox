@@ -6,6 +6,12 @@
     --tbox-card-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
   }
 
+  // The rounded card border below is the only frame these widgets need - suppress the
+  // square default border DashCanvas paints on the react-grid-layout wrapper itself.
+  .react-grid-item {
+    border: none;
+  }
+
   .xh-dash-tab {
     border: var(--xh-border-solid);
     border-radius: 8px;
