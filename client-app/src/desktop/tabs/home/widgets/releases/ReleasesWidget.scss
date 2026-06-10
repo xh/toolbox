@@ -5,14 +5,18 @@
   }
 
   &__card {
+    // Card background, also used by the clamped-body fade below so it tracks the hover state.
+    --tb-release-card-bg: var(--xh-bg);
+
     border: var(--xh-border-solid);
     border-radius: var(--xh-border-radius-px);
     padding: var(--xh-pad-px);
     cursor: pointer;
+    background-color: var(--tb-release-card-bg);
     transition: background-color 0.15s ease;
 
     &:hover {
-      background-color: var(--xh-bg-alt);
+      --tb-release-card-bg: var(--xh-bg-alt);
     }
   }
 
@@ -57,13 +61,13 @@
     font-size: var(--xh-font-size-small-px);
     color: var(--xh-text-color-muted);
 
-    // Fade out clamped content.
+    // Fade out clamped content, tracking the card's hover background.
     &::after {
       content: '';
       position: absolute;
       inset: auto 0 0 0;
       height: 24px;
-      background: linear-gradient(transparent, var(--xh-bg));
+      background: linear-gradient(transparent, var(--tb-release-card-bg));
     }
 
     h2,
