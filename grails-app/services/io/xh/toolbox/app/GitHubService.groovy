@@ -73,7 +73,7 @@ class GitHubService extends BaseService {
     }
 
     void forceRefresh() {
-        logInfo("Forced refresh of commit history requested")
+        logInfo("Forced refresh of GitHub data requested")
         refreshTimer.forceRun()
     }
 
@@ -253,6 +253,7 @@ class GitHubService extends BaseService {
     }
 
     private Map fetchReleases(String repoName) {
+        // Unlike commits, releases are capped at a recent window - no pagination needed.
         def query = """
 query XHRepoReleases {
     repository(owner: "xh", name: "$repoName") {
