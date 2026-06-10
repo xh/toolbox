@@ -13,13 +13,13 @@
 
 ### Technical
 
-* Downgraded toolbox build toolchain back to JDK 21 — JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
+* Downgraded toolbox build toolchain back to JDK 21 - JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
 * Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
 
 ### Libraries
 
 * @xh/hoist `85.0 → 86.0`
-* @xh/hoist-dev-utils `12.2 → 13.0` — breaking: `.md` imports now resolve to raw text content (was a URL to fetch).
+* @xh/hoist-dev-utils `12.2 → 13.0` - breaking: `.md` imports now resolve to raw text content (was a URL to fetch).
 * hoist-core `39.0 → 41.0`
 * ag-Grid `34.2 → 35.3`
 

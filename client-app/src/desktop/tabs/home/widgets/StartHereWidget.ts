@@ -16,25 +16,25 @@ const ITEMS: StartHereItem[] = [
     {
         icon: Icon.book(),
         title: 'New to Hoist? Start with the docs',
-        blurb: 'Core concepts, components, and patterns — searchable, right here in Toolbox.',
+        blurb: 'Core concepts, components, and patterns - searchable, right here in Toolbox.',
         onClick: () => XH.navigate('default.docs')
     },
     {
         icon: Icon.grid(),
         title: 'Tour the grids',
-        blurb: "Hoist's flagship component — start with the standard grid and work up to tree maps.",
+        blurb: "Hoist's flagship component - start with the standard grid and work up to tree maps.",
         onClick: () => XH.navigate('default.grids')
     },
     {
         icon: Icon.rocket(),
         title: 'Browse the example apps',
-        blurb: 'Complete mini-apps — portfolio, weather, contacts, news, and more.',
+        blurb: 'Complete mini-apps - portfolio, weather, contacts, news, and more.',
         onClick: () => XH.navigate('default.examples')
     },
     {
         icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
         title: 'Read the source',
-        blurb: 'hoist-react on GitHub — the entire framework, in the open.',
+        blurb: 'hoist-react on GitHub - the entire framework, in the open.',
         onClick: () => XH.openWindow('https://github.com/xh/hoist-react', 'gitlink')
     },
     {
