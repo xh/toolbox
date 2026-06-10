@@ -2,7 +2,7 @@ import {br, fragment} from '@xh/hoist/cmp/layout';
 import {managed, HoistModel, XH} from '@xh/hoist/core';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {Icon} from '@xh/hoist/icon';
-import {aboutToolboxWidget} from './widgets/AboutToolboxWidget';
+import {underTheHoodWidget} from './widgets/UnderTheHoodWidget';
 import {activityWidget} from './widgets/activity/ActivityWidget';
 import {releasesWidget} from './widgets/releases/ReleasesWidget';
 import {startHereWidget} from './widgets/StartHereWidget';
@@ -40,7 +40,7 @@ export class HomeTabModel extends HoistModel {
                     id: 'underTheHood',
                     title: 'Under the Hood',
                     icon: Icon.info(),
-                    content: aboutToolboxWidget
+                    content: underTheHoodWidget
                 },
                 {
                     id: 'activity',
