@@ -4,6 +4,7 @@ import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {Icon} from '@xh/hoist/icon';
 import {aboutToolboxWidget} from './widgets/AboutToolboxWidget';
 import {activityWidget} from './widgets/activity/ActivityWidget';
+import {startHereWidget} from './widgets/StartHereWidget';
 import {welcomeWidget} from './widgets/WelcomeWidget';
 
 export class HomeTabModel extends HoistModel {
@@ -29,6 +30,12 @@ export class HomeTabModel extends HoistModel {
                     hidePanelHeader: true
                 },
                 {
+                    id: 'startHere',
+                    title: 'Start Here',
+                    icon: Icon.mapSigns(),
+                    content: startHereWidget
+                },
+                {
                     id: 'underTheHood',
                     title: 'Under the Hood',
                     icon: Icon.info(),
@@ -43,7 +50,8 @@ export class HomeTabModel extends HoistModel {
             ],
             initialState: [
                 {viewSpecId: 'welcome', layout: {x: 0, y: 0, w: 7, h: 6}},
-                {viewSpecId: 'underTheHood', layout: {x: 7, y: 0, w: 5, h: 6}},
+                {viewSpecId: 'startHere', layout: {x: 7, y: 0, w: 5, h: 6}},
+                {viewSpecId: 'underTheHood', layout: {x: 0, y: 6, w: 4, h: 7}},
                 {viewSpecId: 'activity', layout: {x: 4, y: 6, w: 8, h: 7}}
             ],
             extraMenuItems: [
