@@ -20,6 +20,15 @@ export class ActivityWidgetModel extends HoistModel {
         return head(this.gridModel.groupBy);
     }
 
+    get commitCount(): number {
+        return XH.gitHubService.allCommits.length;
+    }
+
+    get monthCommitCount(): number {
+        const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+        return XH.gitHubService.allCommits.filter(it => it.committedDate.getTime() > cutoff).length;
+    }
+
     constructor() {
         super();
 
@@ -92,6 +101,7 @@ export class ActivityWidgetModel extends HoistModel {
                 {
                     colId: 'changedLines',
                     headerName: 'Δ Lines',
+                    hidden: true,
                     width: 120,
                     align: 'center',
                     rendererIsComplex: true,
@@ -116,6 +126,7 @@ export class ActivityWidgetModel extends HoistModel {
                 {
                     field: 'changedFiles',
                     headerName: Icon.file(),
+                    hidden: true,
                     align: 'center',
                     width: 60
                 },
