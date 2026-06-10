@@ -4,6 +4,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
+import {tooltip} from '@xh/hoist/kit/blueprint';
 import './MeetXhWidget.scss';
 import {MeetXhWidgetModel} from './MeetXhWidgetModel';
 
@@ -28,8 +29,8 @@ export const meetXhWidget = hoistCmp.factory({
                 compact: true,
                 items: [
                     button({
-                        text: 'Meet the team',
-                        icon: Icon.users(),
+                        text: 'Open Contacts example app',
+                        icon: Icon.openExternal(),
                         onClick: () => XH.openWindow('/contact', 'contact')
                     }),
                     filler(),
@@ -90,13 +91,16 @@ const avatarRow = hoistCmp.factory<MeetXhWidgetModel>({
             items: model.contacts
                 .filter(it => it.id !== model.spotlightId)
                 .map(c =>
-                    img({
-                        className: 'tb-meet-xh__avatar',
+                    tooltip({
                         key: c.id,
-                        src: model.profilePicUrl(c),
-                        alt: c.name,
-                        title: c.name,
-                        onClick: () => model.spotlight(c.id)
+                        content: c.name,
+                        placement: 'top',
+                        item: img({
+                            className: 'tb-meet-xh__avatar',
+                            src: model.profilePicUrl(c),
+                            alt: c.name,
+                            onClick: () => model.spotlight(c.id)
+                        })
                     })
                 )
         });
