@@ -177,6 +177,14 @@ class BootStrap implements LogSupport {
                 note: 'List of repos from which Toolbox will pull commits to display on its dashboard.'
             ),
             new ConfigSpec(
+                name: 'gitHubReleaseRepos',
+                valueType: 'json',
+                defaultValue: ['hoist-react', 'hoist-core'],
+                clientVisible: true,
+                groupName: 'GitHub Integration',
+                note: 'List of repos from which Toolbox will pull published GitHub releases to display on its home page.'
+            ),
+            new ConfigSpec(
                 name: 'gitHubWebhookTriggerSecret',
                 valueType: 'string',
                 defaultValue: 'realSecretGoesHere',
@@ -291,6 +299,13 @@ class BootStrap implements LogSupport {
                 defaultValue: 'IBM Plex Sans',
                 groupName: 'Toolbox',
                 notes: 'App UI font, toggled via the in-app Options dialog. Either "IBM Plex Sans" or "Inter".'
+            ),
+            new PreferenceSpec(
+                name: 'homeFeedback',
+                type: 'json',
+                defaultValue: [:],
+                groupName: 'Toolbox',
+                notes: 'Response state for the home page "Enjoying Hoist?" feedback widget.'
             ),
             new PreferenceSpec(
                 name: 'contactAppState',
