@@ -4,6 +4,7 @@
 
 ### New Features
 
+* Redesigned the desktop app home page as a modern `DashCanvas` dashboard - featuring a hero welcome, a Start Here launchpad for first-time visitors, an auto-updating feed of hoist-react and hoist-core GitHub releases, a refreshed commit-activity grid with live stats floated into its title, a Team Spotlight introducing XH's engineers via the Contact app's real data, live version info, and a lightweight "Enjoying Hoist?" feedback widget built on Hoist's activity tracking.
 * Redesigned the desktop component-demo `Wrapper`: a collapsible left info rail now unifies each tab's title, intro text, and reference links (replacing the full-width description band and the docked links panel), and redundant breadcrumb titles were removed from the demo panels.
 * Consolidated each example's scattered display-option controls into the Wrapper rail's new Options section via shared `wrapperOption` / `wrapperAction` helpers, with on-hover disclosure of the underlying Hoist API (e.g. `GridConfig.stripeRows`) each option maps to.
 * Polished nearly every desktop example tab - layout, copy, icons, controls, and assorted bug fixes - to more clearly showcase idiomatic Hoist usage for developers and prospective clients evaluating the framework.
@@ -13,6 +14,8 @@
 
 ### Technical
 
+* Extended the server-side `GitHubService` to fetch published GitHub releases alongside commits via the GraphQL API, cached and replicated cluster-wide and pushed to clients over WebSockets (new `gitHubReleaseRepos` config).
+* Removed the long-stale Hoist Roadmap widget, its admin console editor, and backing `Phase`/`Project` domain classes - the auto-updating Releases and Commits feeds now tell that story without manual curation.
 * Downgraded toolbox build toolchain back to JDK 21 - JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
 * Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
 
