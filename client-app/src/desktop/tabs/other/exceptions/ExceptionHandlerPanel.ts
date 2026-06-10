@@ -112,7 +112,9 @@ export const exceptionHandlerPanel = hoistCmp.factory({
 
 const buttonContainer = hoistCmp.factory(() =>
     panel({
-        width: 540,
+        // Sized to match the sibling Error Message demo card.
+        width: 700,
+        height: 350,
         item: vframe({
             margin: 10,
             items: [
