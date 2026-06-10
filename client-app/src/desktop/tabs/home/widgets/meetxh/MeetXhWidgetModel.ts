@@ -1,0 +1,70 @@
+import {HoistModel, LoadSpec, XH} from '@xh/hoist/core';
+import {action, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {Timer} from '@xh/hoist/utils/async';
+import {SECONDS} from '@xh/hoist/utils/datetime';
+import {sample} from 'lodash';
+
+export interface XhContact {
+    id: string;
+    name: string;
+    location: string;
+    email: string;
+    bio: string;
+    profilePicture: string;
+    tags: string[];
+}
+
+export class MeetXhWidgetModel extends HoistModel {
+    @observable.ref contacts: XhContact[] = [];
+    @observable spotlightId: string = null;
+
+    private rotateTimer: Timer;
+
+    get spotlightContact(): XhContact {
+        return this.contacts.find(it => it.id === this.spotlightId);
+    }
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
+
+    override onLinked() {
+        this.rotateTimer = this.markManaged(
+            Timer.create({
+                runFn: () => this.shuffle(),
+                interval: 25 * SECONDS,
+                delay: true
+            })
+        );
+    }
+
+    override async doLoadAsync(loadSpec: LoadSpec) {
+        try {
+            const contacts = await XH.fetchJson({url: 'contacts', loadSpec});
+            runInAction(() => {
+                this.contacts = contacts;
+                this.spotlightId = sample(contacts)?.id;
+            });
+        } catch (e) {
+            // Degrade gracefully - widget falls back to static contact CTAs.
+            this.logError('Failed to load XH contacts', e);
+        }
+    }
+
+    @action
+    shuffle() {
+        const {contacts, spotlightId} = this;
+        if (contacts.length < 2) return;
+        this.spotlightId = sample(contacts.filter(it => it.id !== spotlightId)).id;
+    }
+
+    @action
+    spotlight(id: string) {
+        this.spotlightId = id;
+    }
+
+    profilePicUrl(contact: XhContact): string {
+        return `/public/contact-images/${contact.profilePicture ?? 'no-profile.png'}`;
+    }
+}

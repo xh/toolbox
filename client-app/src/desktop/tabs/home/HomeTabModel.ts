@@ -4,6 +4,8 @@ import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {Icon} from '@xh/hoist/icon';
 import {underTheHoodWidget} from './widgets/UnderTheHoodWidget';
 import {activityWidget} from './widgets/activity/ActivityWidget';
+import {feedbackWidget} from './widgets/feedback/FeedbackWidget';
+import {meetXhWidget} from './widgets/meetxh/MeetXhWidget';
 import {releasesWidget} from './widgets/releases/ReleasesWidget';
 import {startHereWidget} from './widgets/StartHereWidget';
 import {welcomeWidget} from './widgets/WelcomeWidget';
@@ -53,6 +55,19 @@ export class HomeTabModel extends HoistModel {
                     title: 'Hoist Releases',
                     icon: Icon.tag(),
                     content: releasesWidget
+                },
+                {
+                    id: 'meetXh',
+                    title: 'Meet XH',
+                    icon: Icon.users(),
+                    content: meetXhWidget
+                },
+                {
+                    id: 'feedback',
+                    title: 'Enjoying Hoist?',
+                    icon: Icon.comment(),
+                    content: feedbackWidget,
+                    hidePanelHeader: true
                 }
             ],
             initialState: [
@@ -60,7 +75,9 @@ export class HomeTabModel extends HoistModel {
                 {viewSpecId: 'startHere', layout: {x: 7, y: 0, w: 5, h: 6}},
                 {viewSpecId: 'underTheHood', layout: {x: 0, y: 6, w: 4, h: 7}},
                 {viewSpecId: 'releases', layout: {x: 4, y: 6, w: 4, h: 7}},
-                {viewSpecId: 'activity', layout: {x: 8, y: 6, w: 4, h: 7}}
+                {viewSpecId: 'activity', layout: {x: 8, y: 6, w: 4, h: 7}},
+                {viewSpecId: 'meetXh', layout: {x: 0, y: 13, w: 5, h: 5}},
+                {viewSpecId: 'feedback', layout: {x: 9, y: 13, w: 3, h: 5}}
             ],
             extraMenuItems: [
                 {
