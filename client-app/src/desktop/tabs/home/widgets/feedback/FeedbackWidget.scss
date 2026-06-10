@@ -25,6 +25,10 @@
   &__ratings {
     gap: var(--xh-pad-double-px);
     margin-top: var(--xh-pad-px);
+
+    .xh-button {
+      padding: var(--xh-pad-px) var(--xh-pad-double-px);
+    }
   }
 
   &__actions {

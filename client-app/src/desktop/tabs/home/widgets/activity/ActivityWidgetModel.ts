@@ -193,12 +193,14 @@ export class ActivityWidgetModel extends HoistModel {
     override onLinked() {
         // Float a live summary of overall commit activity up into the hosting view's title via
         // DashViewModel.titleDetails - leading middot reads as a segment after the title.
+        // Note we deliberately avoid an "all-time" total here - loaded history can be capped
+        // via the gitHubMaxPagesPerLoad config, so only the recent window is reliably complete.
         this.addReaction({
             track: () => this.commitCount,
             run: () => {
                 const {dashViewModel, commitCount, monthCommitCount} = this;
                 if (dashViewModel && commitCount) {
-                    dashViewModel.titleDetails = `· ${commitCount.toLocaleString()} all-time · ${monthCommitCount.toLocaleString()} in the last 30 days`;
+                    dashViewModel.titleDetails = `· ${monthCommitCount.toLocaleString()} in the last 30 days`;
                 }
             },
             fireImmediately: true
