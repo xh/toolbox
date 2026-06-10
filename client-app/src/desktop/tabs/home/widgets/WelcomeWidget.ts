@@ -47,7 +47,7 @@ export const welcomeWidget = hoistCmp.factory({
                                 }),
                                 button({
                                     text: 'Browse the Source',
-                                    icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
+                                    icon: Icon.code(),
                                     minimal: false,
                                     onClick: () =>
                                         XH.openWindow(

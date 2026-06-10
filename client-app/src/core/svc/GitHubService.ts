@@ -1,8 +1,13 @@
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faGithub} from '@fortawesome/free-brands-svg-icons';
 import {HoistService, InitContext, LoadSpec, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {forOwn, sortBy} from 'lodash';
+
+// Register the GitHub brand icon for use across commit/release widgets and toasts.
+library.add(faGithub);
 
 export interface RepoCommitHistory {
     repo: string;

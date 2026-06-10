@@ -32,7 +32,7 @@ const ITEMS: StartHereItem[] = [
         onClick: () => XH.navigate('default.examples')
     },
     {
-        icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
+        icon: Icon.code(),
         title: 'Read the source',
         blurb: 'hoist-react on GitHub - the entire framework, in the open.',
         onClick: () => XH.openWindow('https://github.com/xh/hoist-react', 'gitlink')

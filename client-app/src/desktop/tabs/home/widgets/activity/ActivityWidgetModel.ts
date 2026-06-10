@@ -2,7 +2,8 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {span, div, vbox, p} from '@xh/hoist/cmp/layout';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
-import {managed, HoistModel, XH} from '@xh/hoist/core';
+import {lookup, managed, HoistModel, XH} from '@xh/hoist/core';
+import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -10,6 +11,9 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head} from 'lodash';
 
 export class ActivityWidgetModel extends HoistModel {
+    @lookup(DashViewModel)
+    private dashViewModel: DashViewModel;
+
     @managed
     gridModel: GridModel;
 
@@ -183,6 +187,21 @@ export class ActivityWidgetModel extends HoistModel {
         this.addReaction({
             track: () => XH.gitHubService.allCommits,
             run: () => this.loadAsync()
+        });
+    }
+
+    override onLinked() {
+        // Float a live summary of overall commit activity up into the hosting view's title via
+        // DashViewModel.titleDetails - leading middot reads as a segment after the title.
+        this.addReaction({
+            track: () => this.commitCount,
+            run: () => {
+                const {dashViewModel, commitCount, monthCommitCount} = this;
+                if (dashViewModel && commitCount) {
+                    dashViewModel.titleDetails = `· ${commitCount.toLocaleString()} all-time · ${monthCommitCount.toLocaleString()} in the last 30 days`;
+                }
+            },
+            fireImmediately: true
         });
     }
 

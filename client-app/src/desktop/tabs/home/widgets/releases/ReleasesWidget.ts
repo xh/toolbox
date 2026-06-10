@@ -3,7 +3,6 @@ import {div, filler, hbox, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {creates, hoistCmp, HoistProps, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {Release} from '../../../../../core/svc/GitHubService';
 import './ReleasesWidget.scss';
@@ -13,7 +12,7 @@ export const releasesWidget = hoistCmp.factory({
     displayName: 'ReleasesWidget',
     model: creates(ReleasesWidgetModel),
     render({model}) {
-        const {releases, recentCount} = model;
+        const {releases} = model;
 
         if (!releases.length) {
             return panel({
@@ -28,10 +27,7 @@ export const releasesWidget = hoistCmp.factory({
 
         return panel({
             className: 'tb-releases',
-            tbar: toolbar({
-                compact: true,
-                items: [Icon.tag(), span(`${recentCount} releases in the last 90 days`), filler()]
-            }),
+            scrollable: true,
             item: vbox({
                 className: 'tb-releases__list',
                 items: releases.map(it => releaseCard({release: it, key: it.id}))

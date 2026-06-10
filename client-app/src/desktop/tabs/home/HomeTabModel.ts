@@ -70,14 +70,25 @@ export class HomeTabModel extends HoistModel {
                     hidePanelHeader: true
                 }
             ],
+            // Note titles are deliberately repeated here - DashCanvasModel.loadState() takes the
+            // title from each state entry verbatim when (re)applying state to existing views, so
+            // omitting them would wipe the header titles on a restore-defaults.
             initialState: [
-                {viewSpecId: 'welcome', layout: {x: 0, y: 0, w: 7, h: 6}},
-                {viewSpecId: 'startHere', layout: {x: 7, y: 0, w: 5, h: 6}},
-                {viewSpecId: 'releases', layout: {x: 0, y: 6, w: 4, h: 7}},
-                {viewSpecId: 'activity', layout: {x: 4, y: 6, w: 8, h: 7}},
-                {viewSpecId: 'meetXh', layout: {x: 0, y: 13, w: 5, h: 6}},
-                {viewSpecId: 'underTheHood', layout: {x: 5, y: 13, w: 4, h: 6}},
-                {viewSpecId: 'feedback', layout: {x: 9, y: 13, w: 3, h: 6}}
+                {viewSpecId: 'welcome', title: 'Welcome', layout: {x: 0, y: 0, w: 7, h: 6}},
+                {viewSpecId: 'startHere', title: 'Start Here', layout: {x: 7, y: 0, w: 5, h: 6}},
+                {viewSpecId: 'releases', title: 'Hoist Releases', layout: {x: 0, y: 6, w: 4, h: 7}},
+                {viewSpecId: 'activity', title: 'Hoist Commits', layout: {x: 4, y: 6, w: 8, h: 7}},
+                {viewSpecId: 'meetXh', title: 'Meet XH', layout: {x: 0, y: 13, w: 5, h: 6}},
+                {
+                    viewSpecId: 'underTheHood',
+                    title: 'Under the Hood',
+                    layout: {x: 5, y: 13, w: 4, h: 6}
+                },
+                {
+                    viewSpecId: 'feedback',
+                    title: 'Enjoying Hoist?',
+                    layout: {x: 9, y: 13, w: 3, h: 6}
+                }
             ],
             extraMenuItems: [
                 {
