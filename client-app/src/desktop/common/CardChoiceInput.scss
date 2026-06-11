@@ -27,16 +27,16 @@
     }
 
     &:hover {
-      border-color: var(--xh-blue);
+      border-color: var(--xh-intent-primary);
       transform: translateY(-1px);
     }
 
-    // Selected card: accent ring + lift, echoing the macOS Appearance picker.
+    // Selected card: accent ring + lift.
     &.bp6-active,
     &.bp6-active:hover {
       background: var(--xh-bg-alt);
-      border-color: var(--xh-blue);
-      box-shadow: 0 0 0 2px var(--xh-blue);
+      border-color: var(--xh-intent-primary);
+      box-shadow: 0 0 0 2px var(--xh-intent-primary);
     }
   }
 
