@@ -28,7 +28,7 @@ export const welcomeWidget = hoistCmp.factory({
                         p(
                             'Hoist is ',
                             link('Extremely Heavy', 'https://xh.io'),
-                            "'s full-stack toolkit for data-dense enterprise web apps: a curated React + MobX front end - grids, charts, dashboards, forms, and data - on a Grails / Spring Boot server platform. Refined over a decade of continuous development on demanding real-world apps."
+                            "'s full-stack toolkit for building data-dense enterprise web apps: a curated React + MobX front end - grids, charts, dashboards, forms, and data - on a Grails / Spring Boot server platform. Refined over a decade of continuous development on demanding real-world apps."
                         ),
                         p(
                             'Toolbox is a live reference app: every component and pattern demoed here is the real framework, and the full ',
