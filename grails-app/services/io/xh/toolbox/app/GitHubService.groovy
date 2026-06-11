@@ -24,7 +24,7 @@ import static io.xh.hoist.util.DateTimeUtils.MINUTES
  * Queries commit history and release data via the GitHub GraphQL API (https://docs.github.com/).
  * Will load the entire commit history for a configured list of repos then cache the results
  * centrally here and load differential updates on a timer to keep the cache fresh. Releases are
- * loaded alongside commits on the same timer from a separately configured list of repos.
+ * loaded alongside commits on the same timer from the same configured list of repos.
  *
  * This service requires several config keys to operate. It checks the "gitHubAccessToken" string
  * config on startup to determine if it should do any work at all.
@@ -37,7 +37,7 @@ class GitHubService extends BaseService {
 
     String telemetryPrefix = 'toolbox.github'
 
-    static clearCachesConfigs = ['gitHubRepos', 'gitHubReleaseRepos', 'gitHubAccessToken', 'gitHubMaxPagesPerLoad']
+    static clearCachesConfigs = ['gitHubRepos', 'gitHubAccessToken', 'gitHubMaxPagesPerLoad']
 
     ConfigService configService
     WebSocketService webSocketService
@@ -201,7 +201,7 @@ class GitHubService extends BaseService {
             return
         }
 
-        def repos = configService.getList('gitHubReleaseRepos', []),
+        def repos = configService.getList('gitHubRepos', []),
             changed = false
 
         span('getReleases')
@@ -354,6 +354,6 @@ query XHRepoCommits {
     }
 
     Map getAdminStats() { [
-        config: configForAdminStats('gitHubAccessToken', 'gitHubRepos', 'gitHubReleaseRepos', 'gitHubMaxPagesPerLoad')
+        config: configForAdminStats('gitHubAccessToken', 'gitHubRepos', 'gitHubMaxPagesPerLoad')
     ]}
 }
