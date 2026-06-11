@@ -23,6 +23,7 @@ export class HomeTabModel extends HoistModel {
             compact: 'vertical',
             margin: [12, 12],
             containerPadding: [16, 16],
+            renameLocked: true,
             viewSpecDefaults: {unique: true},
             viewSpecs: [
                 {
