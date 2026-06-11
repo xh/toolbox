@@ -22,7 +22,7 @@ const ITEMS: StartHereItem[] = [
     {
         icon: Icon.grid(),
         title: 'Tour the grids',
-        blurb: "Hoist's deep integration of AG Grid - start with the standard grid and work up to tree maps.",
+        blurb: 'The heart of most Hoist apps - start with the standard grid and work up to tree maps.',
         onClick: () => XH.navigate('default.grids')
     },
     {
