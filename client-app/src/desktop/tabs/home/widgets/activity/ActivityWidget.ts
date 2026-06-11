@@ -7,7 +7,7 @@ import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {repoFilterSelect} from '../RepoFilterSelect';
+import {repoFilterPicker} from '../RepoFilterPicker';
 import './ActivityWidget.scss';
 import {ActivityWidgetModel} from './ActivityWidgetModel';
 
@@ -29,7 +29,7 @@ const bbar = hoistCmp.factory({
         return toolbar({
             compact: true,
             items: [
-                repoFilterSelect(),
+                repoFilterPicker(),
                 toolbarSep(),
                 select({
                     width: 140,

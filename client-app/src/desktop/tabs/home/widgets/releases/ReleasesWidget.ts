@@ -6,7 +6,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {Release} from '../../../../../core/svc/GitHubService';
-import {repoFilterSelect} from '../RepoFilterSelect';
+import {repoFilterPicker} from '../RepoFilterPicker';
 import './ReleasesWidget.scss';
 import {ReleasesWidgetModel} from './ReleasesWidgetModel';
 
@@ -38,7 +38,7 @@ export const releasesWidget = hoistCmp.factory({
                 : placeholder(Icon.tag(), 'No releases for the selected repos.'),
             bbar: toolbar({
                 compact: true,
-                items: [repoFilterSelect(), filler()]
+                items: [repoFilterPicker(), filler()]
             })
         });
     }
