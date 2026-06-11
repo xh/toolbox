@@ -22,7 +22,7 @@ const ITEMS: StartHereItem[] = [
     {
         icon: Icon.grid(),
         title: 'Tour the grids',
-        blurb: "Hoist's flagship component - start with the standard grid and work up to tree maps.",
+        blurb: "Hoist's deep integration of AG Grid - start with the standard grid and work up to tree maps.",
         onClick: () => XH.navigate('default.grids')
     },
     {
@@ -34,8 +34,8 @@ const ITEMS: StartHereItem[] = [
     {
         icon: Icon.code(),
         title: 'Read the source',
-        blurb: 'hoist-react on GitHub - the entire framework, in the open.',
-        onClick: () => XH.openWindow('https://github.com/xh/hoist-react', 'gitlink')
+        blurb: 'hoist-react and hoist-core on GitHub - the client and server libraries behind this app.',
+        onClick: () => XH.openWindow('https://github.com/xh', 'gitlink')
     },
     {
         icon: Icon.terminal(),
