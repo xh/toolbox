@@ -179,10 +179,10 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'gitHubReleaseRepos',
                 valueType: 'json',
-                defaultValue: ['hoist-react', 'hoist-core'],
+                defaultValue: ['hoist-react', 'hoist-core', 'toolbox', 'hoist-dev-utils'],
                 clientVisible: true,
                 groupName: 'GitHub Integration',
-                note: 'List of repos from which Toolbox will pull published GitHub releases to display on its home page.'
+                note: 'List of repos from which Toolbox will pull published GitHub releases to display on its home page. Best kept in sync with gitHubRepos so the home page commit and release feeds offer the same repo filters.'
             ),
             new ConfigSpec(
                 name: 'gitHubWebhookTriggerSecret',

@@ -3,8 +3,10 @@ import {div, filler, hbox, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {creates, hoistCmp, HoistProps, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {Release} from '../../../../../core/svc/GitHubService';
+import {repoFilterSelect} from '../RepoFilterSelect';
 import './ReleasesWidget.scss';
 import {ReleasesWidgetModel} from './ReleasesWidgetModel';
 
@@ -12,9 +14,9 @@ export const releasesWidget = hoistCmp.factory({
     displayName: 'ReleasesWidget',
     model: creates(ReleasesWidgetModel),
     render({model}) {
-        const {releases} = model;
+        const {allReleases, releases} = model;
 
-        if (!releases.length) {
+        if (!allReleases.length) {
             return panel({
                 className: 'tb-releases',
                 item: placeholder(
@@ -28,9 +30,15 @@ export const releasesWidget = hoistCmp.factory({
         return panel({
             className: 'tb-releases',
             scrollable: true,
-            item: vbox({
-                className: 'tb-releases__list',
-                items: releases.map(it => releaseCard({release: it, key: it.id}))
+            item: releases.length
+                ? vbox({
+                      className: 'tb-releases__list',
+                      items: releases.map(it => releaseCard({release: it, key: it.id}))
+                  })
+                : placeholder(Icon.tag(), 'No releases for the selected repos.'),
+            bbar: toolbar({
+                compact: true,
+                items: [repoFilterSelect(), filler()]
             })
         });
     }
@@ -42,6 +50,11 @@ interface ReleaseCardProps {
 
 const releaseCard = hoistCmp.factory<HoistProps & ReleaseCardProps>(({release}) => {
     const {repo, tagName, publishedAt, description, url} = release;
+
+    // GitHub's auto-generated release bodies all lead with the same "What's Changed" heading -
+    // pure noise when every card would repeat it, so strip before rendering.
+    const notes = description?.replace(/^#{1,6}\s*What's Changed\s*/i, '').trim();
+
     return div({
         className: 'tb-releases__card',
         onClick: () => XH.openWindow(url, 'gitlink'),
@@ -55,10 +68,10 @@ const releaseCard = hoistCmp.factory<HoistProps & ReleaseCardProps>(({release}) 
                     relativeTimestamp({timestamp: publishedAt})
                 ]
             }),
-            description
+            notes
                 ? div({
                       className: 'tb-releases__card-body',
-                      item: markdown({content: description})
+                      item: markdown({content: notes})
                   })
                 : null
         ]

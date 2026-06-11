@@ -7,12 +7,17 @@ import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {head} from 'lodash';
+import {head, uniq} from 'lodash';
+import {Commit} from '../../../../../core/svc/GitHubService';
 
 export class ActivityWidgetModel extends HoistModel {
     @lookup(DashViewModel)
     private dashViewModel: DashViewModel;
+
+    /** Repos to filter to - empty means show all. */
+    @bindable.ref selectedRepos: string[] = [];
 
     @managed
     gridModel: GridModel;
@@ -24,17 +29,29 @@ export class ActivityWidgetModel extends HoistModel {
         return head(this.gridModel.groupBy);
     }
 
+    /** Commits to display, filtered by any repo selection. */
+    get commits(): Commit[] {
+        const {selectedRepos} = this,
+            all = XH.gitHubService.allCommits;
+        return selectedRepos.length ? all.filter(it => selectedRepos.includes(it.repo)) : all;
+    }
+
+    get repoOptions(): string[] {
+        return uniq(XH.gitHubService.allCommits.map(it => it.repo)).sort();
+    }
+
     get commitCount(): number {
-        return XH.gitHubService.allCommits.length;
+        return this.commits.length;
     }
 
     get monthCommitCount(): number {
         const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
-        return XH.gitHubService.allCommits.filter(it => it.committedDate.getTime() > cutoff).length;
+        return this.commits.filter(it => it.committedDate.getTime() > cutoff).length;
     }
 
     constructor() {
         super();
+        makeObservable(this);
 
         const openUrlAction = {
             text: 'Open on Github',
@@ -185,7 +202,7 @@ export class ActivityWidgetModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => XH.gitHubService.allCommits,
+            track: () => this.commits,
             run: () => this.loadAsync()
         });
     }
@@ -208,7 +225,7 @@ export class ActivityWidgetModel extends HoistModel {
     }
 
     override async doLoadAsync() {
-        this.gridModel.loadData(XH.gitHubService.allCommits);
+        this.gridModel.loadData(this.commits);
     }
 
     private onRowDoubleClicked = params => {

@@ -1,13 +1,35 @@
 import {lookup, HoistModel, XH} from '@xh/hoist/core';
 import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {uniq} from 'lodash';
 import {Release} from '../../../../../core/svc/GitHubService';
 
 export class ReleasesWidgetModel extends HoistModel {
     @lookup(DashViewModel)
     private dashViewModel: DashViewModel;
 
-    get releases(): Release[] {
+    /** Repos to filter to - empty means show all. */
+    @bindable.ref selectedRepos: string[] = [];
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
+
+    get allReleases(): Release[] {
         return XH.gitHubService.allReleases;
+    }
+
+    /** Releases to display, filtered by any repo selection. */
+    get releases(): Release[] {
+        const {allReleases, selectedRepos} = this;
+        return selectedRepos.length
+            ? allReleases.filter(it => selectedRepos.includes(it.repo))
+            : allReleases;
+    }
+
+    get repoOptions(): string[] {
+        return uniq(this.allReleases.map(it => it.repo)).sort();
     }
 
     get recentCount(): number {
@@ -18,6 +40,7 @@ export class ReleasesWidgetModel extends HoistModel {
     override onLinked() {
         // Float a live release-cadence summary up into the hosting view's title via
         // DashViewModel.titleDetails - leading middot reads as a segment after the title.
+        // Tracks the filtered set, so the stat respects any repo selection.
         this.addReaction({
             track: () => this.releases,
             run: () => {
