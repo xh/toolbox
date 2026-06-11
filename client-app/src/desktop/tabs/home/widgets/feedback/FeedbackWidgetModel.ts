@@ -1,13 +1,11 @@
-import {HoistModel, persist, XH} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
 import {action, bindable, makeObservable, runInAction} from '@xh/hoist/mobx';
 
 export type HoistRating = 'negative' | 'neutral' | 'positive';
 
 export class FeedbackWidgetModel extends HoistModel {
-    override persistWith = {prefKey: 'homeFeedback'};
-
-    @bindable @persist rating: HoistRating = null;
-    @bindable @persist commentSent: boolean = false;
+    @bindable rating: HoistRating = null;
+    @bindable commentSent: boolean = false;
     @bindable comment: string = '';
 
     constructor() {

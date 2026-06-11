@@ -301,13 +301,6 @@ class BootStrap implements LogSupport {
                 notes: 'App UI font, toggled via the in-app Options dialog. Either "IBM Plex Sans" or "Inter".'
             ),
             new PreferenceSpec(
-                name: 'homeFeedback',
-                type: 'json',
-                defaultValue: [:],
-                groupName: 'Toolbox',
-                notes: 'Response state for the home page "Enjoying Hoist?" feedback widget.'
-            ),
-            new PreferenceSpec(
                 name: 'contactAppState',
                 type: 'json',
                 defaultValue: [],
