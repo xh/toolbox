@@ -16,7 +16,7 @@ const ITEMS: StartHereItem[] = [
     {
         icon: Icon.book(),
         title: 'New to Hoist? Start with the docs',
-        blurb: 'Core concepts, components, and patterns - searchable, right here in Toolbox.',
+        blurb: 'Core concepts, components, and patterns - searchable right here in Toolbox.',
         onClick: () => XH.navigate('default.docs')
     },
     {
