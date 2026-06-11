@@ -7,6 +7,7 @@ import io.xh.hoist.pref.PrefService
 import io.xh.hoist.telemetry.trace.TraceService
 import io.xh.hoist.config.ConfigSpec
 import io.xh.hoist.pref.PreferenceSpec
+import io.xh.toolbox.user.RoleService
 import io.xh.toolbox.user.User
 
 import java.time.LocalDate
@@ -19,6 +20,7 @@ class BootStrap implements LogSupport {
 
     ConfigService configService
     PrefService prefService
+    RoleService roleService
     TraceService traceService
 
     def init = {servletContext ->
@@ -28,11 +30,14 @@ class BootStrap implements LogSupport {
             ensureRequiredConfigsCreated()
             ensureRequiredPrefsCreated()
             createLocalAdminUserIfNeeded()
+            ensureTestUsersCreated()
 
             def services = xhServices.findAll {
                 it.class.canonicalName.startsWith(this.class.package.name)
             }
             parallelInit(services)
+
+            grantTestUserRoles()
 
             JavaTest.helloWorld()
         }
@@ -63,6 +68,56 @@ class BootStrap implements LogSupport {
 
             logInfo("Local admin user available as per instanceConfig", adminUsername)
         }
+    }
+
+    /**
+     * Create predictable local test users for the Playwright suite and interactive dev work, plus
+     * (in `grantTestUserRoles`, called after `parallelInit`) assign the roles they need to drive
+     * admin-gated and unprivileged-user paths.
+     *
+     * Only runs when `isLocalDevelopment` and a `testUserPassword` instance config is set, so
+     * deployed environments are never affected.
+     *
+     * Pair with `APP_TOOLBOX_OAUTH_PROVIDER=NONE` to disable OAuth and show the Hoist login form.
+     */
+    @Transactional
+    private void ensureTestUsersCreated() {
+        if (!isLocalDevelopment) return
+
+        String testPassword = getInstanceConfig('testUserPassword')
+        if (!testPassword) {
+            logDebug('No testUserPassword instance config found - skipping test user creation')
+            return
+        }
+
+        ensureTestUser('test-admin@xh.io', 'Test Admin', testPassword)
+        ensureTestUser('test-user@xh.io', 'Test User', testPassword)
+
+        logInfo('Local test users configured for password-based login')
+    }
+
+    private void ensureTestUser(String email, String name, String password) {
+        def user = User.findByEmail(email)
+        if (!user) {
+            new User(email: email, password: password, name: name).save(flush: true)
+        } else if (!user.checkPassword(password)) {
+            user.password = password
+            user.save(flush: true)
+        }
+    }
+
+    /**
+     * Assign Hoist roles to the bootstrapped test users. Called from `init` after `parallelInit`
+     * so the role cache is ready and `roleService.assignRole` (which is @Transactional via
+     * DefaultRoleUpdateService) joins a proper Spring proxy. `test-user@xh.io` is intentionally
+     * left without any role so the suite can exercise unprivileged-user paths.
+     */
+    private void grantTestUserRoles() {
+        if (!isLocalDevelopment) return
+        if (!getInstanceConfig('testUserPassword')) return
+
+        def admin = User.findByEmail('test-admin@xh.io')
+        if (admin) roleService.assignRole(admin, 'HOIST_ADMIN')
     }
 
     private void logStartupMsg() {

@@ -1,12 +1,10 @@
 package io.xh.toolbox.user
 
+import io.xh.hoist.security.HoistPasswordEncoder
 import io.xh.hoist.user.HoistUser
-import org.jasypt.util.password.BasicPasswordEncryptor
 
 
 class User implements HoistUser {
-
-    private static encryptor = new BasicPasswordEncryptor()
 
     // Email captured and stored as username.
     String email
@@ -36,7 +34,7 @@ class User implements HoistUser {
     }
 
     boolean checkPassword(String plainPassword) {
-        password ? encryptor.checkPassword(plainPassword, password) : false
+        HoistPasswordEncoder.matches(plainPassword, password)
     }
 
     //------------------------------
@@ -61,7 +59,7 @@ class User implements HoistUser {
     }
 
     private encodePassword() {
-        password = password ? encryptor.encryptPassword(password) : null
+        password = HoistPasswordEncoder.encode(password)
     }
 
     Map formatForJSON() {
