@@ -1,18 +1,30 @@
-import {hoistCmp} from '@xh/hoist/core';
+import {hoistCmp, HoistModel} from '@xh/hoist/core';
 import {picker} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 
 /**
- * Compact multi-select `Picker` for filtering the GitHub feed widgets by repo. Expects to resolve
- * a host model with a bindable `selectedRepos: string[]` and a `repoOptions: string[]` getter -
- * shared by the Releases and Commits widgets. No selection means "all repos".
+ * Contract for the host model backing a {@link repoFilterPicker}, implemented by both the Releases
+ * and Commits widget models. Typing the shared picker against this interface lets it resolve either
+ * widget's model from context with full type safety.
  */
-export const repoFilterPicker = hoistCmp.factory({
+export interface RepoFilterModel extends HoistModel {
+    /** Bindable set of selected repo names to filter on. Empty means "all repos". */
+    selectedRepos: string[];
+    /** Full set of repo names available to filter on. */
+    readonly repoOptions: string[];
+}
+
+/**
+ * Compact multi-select `Picker` for filtering the GitHub feed widgets by repo, resolving its host
+ * `RepoFilterModel` from context - shared by the Releases and Commits widgets. No selection means
+ * "all repos".
+ */
+export const repoFilterPicker = hoistCmp.factory<RepoFilterModel>({
     displayName: 'RepoFilterPicker',
     render({model}) {
         return picker({
             bind: 'selectedRepos',
-            options: (model as any).repoOptions,
+            options: model.repoOptions,
             enableMulti: true,
             enableClear: true,
             enableSelectAll: true,

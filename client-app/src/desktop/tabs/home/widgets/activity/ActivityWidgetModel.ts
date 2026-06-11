@@ -10,8 +10,9 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head, uniq} from 'lodash';
 import {Commit} from '../../../../../core/svc/GitHubService';
+import {RepoFilterModel} from '../RepoFilterPicker';
 
-export class ActivityWidgetModel extends HoistModel {
+export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
     @lookup(DashViewModel)
     private dashViewModel: DashViewModel;
 

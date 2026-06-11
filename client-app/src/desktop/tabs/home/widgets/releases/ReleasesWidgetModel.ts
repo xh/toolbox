@@ -3,8 +3,9 @@ import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {uniq} from 'lodash';
 import {Release} from '../../../../../core/svc/GitHubService';
+import {RepoFilterModel} from '../RepoFilterPicker';
 
-export class ReleasesWidgetModel extends HoistModel {
+export class ReleasesWidgetModel extends HoistModel implements RepoFilterModel {
     @lookup(DashViewModel)
     private dashViewModel: DashViewModel;
 
