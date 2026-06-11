@@ -29,8 +29,7 @@ export class HomeTabModel extends HoistModel {
                     id: 'welcome',
                     title: 'Welcome',
                     icon: Icon.home(),
-                    content: welcomeWidget,
-                    hidePanelHeader: true
+                    content: welcomeWidget
                 },
                 {
                     id: 'startHere',
@@ -66,8 +65,7 @@ export class HomeTabModel extends HoistModel {
                     id: 'feedback',
                     title: 'Enjoying Hoist?',
                     icon: Icon.comment(),
-                    content: feedbackWidget,
-                    hidePanelHeader: true
+                    content: feedbackWidget
                 }
             ],
             // Note titles are deliberately repeated here - DashCanvasModel.loadState() takes the
