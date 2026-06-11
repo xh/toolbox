@@ -123,7 +123,6 @@ export class ActivityWidgetModel extends HoistModel {
                 {
                     colId: 'changedLines',
                     headerName: 'Δ Lines',
-                    hidden: true,
                     width: 120,
                     align: 'center',
                     rendererIsComplex: true,
