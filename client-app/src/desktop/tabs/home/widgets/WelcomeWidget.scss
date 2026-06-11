@@ -37,6 +37,7 @@
   &__ctas {
     gap: var(--xh-pad-px);
     margin-top: var(--xh-pad-px);
+    flex: none;
     flex-wrap: wrap;
   }
 }
