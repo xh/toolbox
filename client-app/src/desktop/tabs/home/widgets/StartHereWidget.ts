@@ -54,6 +54,7 @@ export const startHereWidget = hoistCmp.factory({
     render() {
         return panel({
             className: 'tb-start-here',
+            scrollable: true,
             item: vbox({
                 className: 'tb-start-here__items',
                 items: ITEMS.map(it =>

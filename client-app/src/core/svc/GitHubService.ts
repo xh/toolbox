@@ -100,10 +100,14 @@ export class GitHubService extends HoistService {
                     // Minor translations here on client for convenience.
                     v.commits.forEach(it => {
                         it.authorEmail = it.author.email;
-                        // Fall back to the email handle for authors with no GitHub name on
-                        // record - typically bots with noreply addresses (e.g. dependabot).
+                        // Authors with no GitHub name on record come through with their email as
+                        // the name (typically bots with noreply addresses, e.g. dependabot) -
+                        // trim those down to the bare email handle.
+                        const {name} = it.author;
                         it.authorName =
-                            it.author.name || it.authorEmail.split('@')[0].replace(/^\d+\+/, '');
+                            name && !name.includes('@')
+                                ? name
+                                : it.authorEmail.split('@')[0].replace(/^\d+\+/, '');
                         it.committedDate = new Date(it.committedDate);
                         it.committedDay = LocalDate.from(it.committedDate);
                         it.isRelease =
