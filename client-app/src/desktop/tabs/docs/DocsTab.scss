@@ -204,17 +204,8 @@
       background-color: var(--xh-bg-highlight);
     }
 
-    // Links
-    a {
-      color: var(--xh-blue);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.15s ease;
-
-      &:hover {
-        border-bottom-color: var(--xh-blue);
-      }
-    }
+    // Links deliberately unstyled - they pick up Blueprint's theme-aware anchor color and
+    // hover underline, matching links elsewhere in the app (e.g. the home page widgets).
 
     // Lists
     ul,
