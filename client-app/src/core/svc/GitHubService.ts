@@ -100,7 +100,10 @@ export class GitHubService extends HoistService {
                     // Minor translations here on client for convenience.
                     v.commits.forEach(it => {
                         it.authorEmail = it.author.email;
-                        it.authorName = it.author.name || it.authorEmail;
+                        // Fall back to the email handle for authors with no GitHub name on
+                        // record - typically bots with noreply addresses (e.g. dependabot).
+                        it.authorName =
+                            it.author.name || it.authorEmail.split('@')[0].replace(/^\d+\+/, '');
                         it.committedDate = new Date(it.committedDate);
                         it.committedDay = LocalDate.from(it.committedDate);
                         it.isRelease =

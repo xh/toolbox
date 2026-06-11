@@ -3,9 +3,10 @@ import {gridCountLabel} from '@xh/hoist/cmp/grid/helpers/GridCountLabel';
 import {filler} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
-import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {gridFindField} from '@xh/hoist/desktop/cmp/grid';
+import {segmentedControl} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {repoFilterPicker} from '../RepoFilterPicker';
 import './ActivityWidget.scss';
@@ -31,18 +32,20 @@ const bbar = hoistCmp.factory({
             items: [
                 repoFilterPicker(),
                 toolbarSep(),
-                select({
-                    width: 140,
+                segmentedControl({
                     bind: 'groupBy',
+                    compact: true,
                     options: [
-                        {value: 'committedDay', label: 'By Day'},
-                        {value: 'repo', label: 'By Repo'},
-                        {value: null, label: 'Ungrouped'}
+                        {value: 'committedDay', icon: Icon.calendar()},
+                        {value: 'repo', icon: Icon.code()},
+                        {value: 'authorName', icon: Icon.user()},
+                        {value: null, label: '', icon: Icon.list()}
                     ]
                 }),
-                filterChooser({placeholder: 'Filter commits...', flex: 5}),
                 filler(),
                 gridCountLabel({unit: 'commit'}),
+                toolbarSep(),
+                gridFindField({width: 180}),
                 toolbarSep(),
                 colChooserButton()
             ]

@@ -1,4 +1,3 @@
-import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {span, div, vbox, p} from '@xh/hoist/cmp/layout';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
@@ -21,9 +20,6 @@ export class ActivityWidgetModel extends HoistModel {
 
     @managed
     gridModel: GridModel;
-
-    @managed
-    filterChooserModel: FilterChooserModel;
 
     get groupBy() {
         return head(this.gridModel.groupBy);
@@ -67,6 +63,7 @@ export class ActivityWidgetModel extends HoistModel {
                 p('Have you properly configured the gitHubAccessToken config?')
             ]),
             colChooserModel: true,
+            filterModel: true,
             expandLevel: 1,
             sortBy: 'committedDate|desc',
             groupBy: 'committedDay',
@@ -97,6 +94,7 @@ export class ActivityWidgetModel extends HoistModel {
                 },
                 {
                     field: 'repo',
+                    filterable: true,
                     width: 140,
                     pinned: true,
                     align: 'right',
@@ -105,17 +103,20 @@ export class ActivityWidgetModel extends HoistModel {
                 },
                 {
                     field: 'messageHeadline',
+                    filterable: true,
                     flex: 1,
                     minWidth: 200,
                     tooltip: true
                 },
                 {
                     field: 'authorName',
+                    filterable: true,
                     autosizeMaxWidth: 170,
                     width: 170
                 },
                 {
                     field: 'authorEmail',
+                    filterable: true,
                     hidden: true,
                     width: 170
                 },
@@ -146,6 +147,7 @@ export class ActivityWidgetModel extends HoistModel {
                 },
                 {
                     field: 'changedFiles',
+                    filterable: true,
                     headerName: Icon.file(),
                     hidden: true,
                     align: 'center',
@@ -154,11 +156,13 @@ export class ActivityWidgetModel extends HoistModel {
                 {
                     ...localDateCol,
                     field: 'committedDay',
+                    filterable: true,
                     hidden: true
                 },
                 {
                     ...dateTimeCol,
-                    field: 'committedDate'
+                    field: 'committedDate',
+                    filterable: true
                 },
                 {
                     ...actionCol,
@@ -183,22 +187,6 @@ export class ActivityWidgetModel extends HoistModel {
                     return value;
                 }
             }
-        });
-
-        this.filterChooserModel = new FilterChooserModel({
-            bind: this.gridModel.store,
-            fieldSpecs: [
-                'repo',
-                'authorName',
-                'authorEmail',
-                'committedDay',
-                'changedFiles',
-                'isRelease',
-                {
-                    field: 'messageHeadline',
-                    enableValues: false
-                }
-            ]
         });
 
         this.addReaction({
