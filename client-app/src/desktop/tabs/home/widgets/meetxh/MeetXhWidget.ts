@@ -95,11 +95,13 @@ const avatarRow = hoistCmp.factory<MeetXhWidgetModel>({
                         key: c.id,
                         content: c.name,
                         placement: 'top',
+                        // Click goes on the tooltip's target wrapper - Blueprint renders the
+                        // wrapped child with pointer-events: none, so the img can't take it.
+                        targetProps: {onClick: () => model.spotlight(c.id)},
                         item: img({
                             className: 'tb-meet-xh__avatar',
                             src: model.profilePicUrl(c),
-                            alt: c.name,
-                            onClick: () => model.spotlight(c.id)
+                            alt: c.name
                         })
                     })
                 )

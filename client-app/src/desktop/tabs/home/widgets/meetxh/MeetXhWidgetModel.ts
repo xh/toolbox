@@ -18,6 +18,9 @@ export class MeetXhWidgetModel extends HoistModel {
     @observable.ref contacts: XhContact[] = [];
     @observable spotlightId: string = null;
 
+    /** Timestamp of the last user-driven spotlight pick - rotation holds off while recent. */
+    private lastUserPick = 0;
+
     get spotlightContact(): XhContact {
         return this.contacts.find(it => it.id === this.spotlightId);
     }
@@ -30,7 +33,10 @@ export class MeetXhWidgetModel extends HoistModel {
     override onLinked() {
         this.markManaged(
             Timer.create({
-                runFn: () => this.shuffle(),
+                runFn: () => {
+                    // Don't auto-rotate away from a member the user just chose to view.
+                    if (Date.now() - this.lastUserPick > 20 * SECONDS) this.shuffle();
+                },
                 interval: 25 * SECONDS,
                 delay: true
             })
@@ -60,6 +66,7 @@ export class MeetXhWidgetModel extends HoistModel {
     @action
     spotlight(id: string) {
         this.spotlightId = id;
+        this.lastUserPick = Date.now();
     }
 
     profilePicUrl(contact: XhContact): string {
