@@ -1,5 +1,5 @@
 import {markdown} from '@xh/hoist/cmp/markdown';
-import {div, filler, hbox, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, placeholder, span} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {creates, hoistCmp, HoistProps, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -30,11 +30,11 @@ export const releasesWidget = hoistCmp.factory({
         return panel({
             className: 'tb-releases',
             scrollable: true,
-            item: releases.length
-                ? vbox({
-                      className: 'tb-releases__list',
-                      items: releases.map(it => releaseCard({release: it, key: it.id}))
-                  })
+            // Make the panel's own (scrolling) content box the flex column for our cards,
+            // avoiding an extra wrapper layer.
+            contentBoxProps: {display: 'flex', className: 'tb-releases__list'},
+            items: releases.length
+                ? releases.map(it => releaseCard({release: it, key: it.id}))
                 : placeholder(Icon.tag(), 'No releases for the selected repos.'),
             bbar: toolbar({
                 compact: true,

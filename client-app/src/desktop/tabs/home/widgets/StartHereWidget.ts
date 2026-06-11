@@ -1,4 +1,4 @@
-import {div, vbox} from '@xh/hoist/cmp/layout';
+import {div} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -55,27 +55,27 @@ export const startHereWidget = hoistCmp.factory({
         return panel({
             className: 'tb-start-here',
             scrollable: true,
-            item: vbox({
-                className: 'tb-start-here__items',
-                items: ITEMS.map(it =>
-                    div({
-                        className: 'tb-start-here__item',
-                        key: it.title,
-                        onClick: it.onClick,
-                        items: [
-                            div({className: 'tb-start-here__item-icon', item: it.icon}),
-                            div({
-                                className: 'tb-start-here__item-text',
-                                items: [
-                                    div({className: 'tb-start-here__item-title', item: it.title}),
-                                    div({className: 'tb-start-here__item-blurb', item: it.blurb})
-                                ]
-                            }),
-                            Icon.chevronRight({className: 'tb-start-here__item-caret'})
-                        ]
-                    })
-                )
-            })
+            // Make the panel's own (scrolling) content box the flex column for our items,
+            // avoiding an extra wrapper layer.
+            contentBoxProps: {display: 'flex', className: 'tb-start-here__items'},
+            items: ITEMS.map(it =>
+                div({
+                    className: 'tb-start-here__item',
+                    key: it.title,
+                    onClick: it.onClick,
+                    items: [
+                        div({className: 'tb-start-here__item-icon', item: it.icon}),
+                        div({
+                            className: 'tb-start-here__item-text',
+                            items: [
+                                div({className: 'tb-start-here__item-title', item: it.title}),
+                                div({className: 'tb-start-here__item-blurb', item: it.blurb})
+                            ]
+                        }),
+                        Icon.chevronRight({className: 'tb-start-here__item-caret'})
+                    ]
+                })
+            )
         });
     }
 });
