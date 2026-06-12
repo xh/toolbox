@@ -6,7 +6,6 @@ import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONSerializer
 import io.xh.hoist.monitor.MonitorStatusReport
 import io.xh.hoist.track.TrackLog
-import io.xh.hoist.util.Utils
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.core5.http.io.entity.StringEntity
 
@@ -38,9 +37,9 @@ class SlackAlertService extends BaseService {
     // Implementation
     //------------------------
     private void sendMonitorStatusReport(MonitorStatusReport report) {
-        if (!enabled) return
+        if (!enabled || !config.monitorAlertsEnabled) return
 
-        sendSlackMessage("""
+        sendSlackMessage(config.channel, """
 Monitor Status Report:
 ${report.title}
 ${alertSummary(report)}
@@ -48,9 +47,9 @@ ${alertSummary(report)}
     }
 
     private void sendClientErrorReport(TrackLog tl) {
-        if (!enabled) return
+        if (!enabled || !config.clientErrorsEnabled) return
 
-        sendSlackMessage("""
+        sendSlackMessage(config.channel, """
 Client Error Report:
 Error: ${tl.errorSummary}
 User: ${tl.username}
@@ -64,13 +63,14 @@ Time: ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
         """)
     }
 
-    private void sendSlackMessage(message) {
+    private void sendSlackMessage(String channel, String text, List blocks = null) {
         span('sendMessage').run {
             def client = new JSONClient(),
                 post = new HttpPost('https://slack.com/api/chat.postMessage'),
-                body = JSONSerializer.serialize([channel: config.channel, text: message]),
-                entity = new StringEntity(body)
+                payload = [channel: channel, text: text]
+            if (blocks) payload.blocks = blocks
 
+            def entity = new StringEntity(JSONSerializer.serialize(payload))
             post.setHeader('Content-type', 'application/json')
             post.setHeader('Authorization', "Bearer ${config.oauthToken}")
             post.setEntity(entity)
@@ -98,11 +98,11 @@ Time: ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
     }
 
     private boolean getEnabled() {
-        return !Utils.isLocalDevelopment && config.enabled
+        return config.enabled && config.oauthToken
     }
 
-    private Map getConfig() {
-        return configService.getMap('slackAlertConfig', [enabled: false])
+    private SlackAlertConfig getConfig() {
+        return configService.getObject(SlackAlertConfig)
     }
 
     Map getAdminStats() {
