@@ -45,7 +45,6 @@ export class FeedbackWidgetModel extends HoistModel {
         window.addEventListener('pagehide', this.onPageHide); // unload backstop (see beaconFlush)
     }
 
-    @action
     skipComment() {
         // Explicit "no comment" - emit sentiment only, ignoring any stray draft text.
         this.sendAliveAsync({rating: this.rating}, {showToast: false});
@@ -90,8 +89,12 @@ export class FeedbackWidgetModel extends HoistModel {
             this.comment = '';
             this.commentSent = true;
         });
-        await XH.trackService.pushPendingAsync();
-        if (showToast) XH.successToast('Thank you - your feedback has been sent!');
+        try {
+            await XH.trackService.pushPendingAsync();
+            if (showToast) XH.successToast('Thank you - your feedback has been sent!');
+        } catch (e) {
+            XH.handleException(e, {showAlert: false});
+        }
     }
 
     /** Inactivity-timer / unmount path: capture the rating plus any sitting draft, no toast. */
