@@ -86,18 +86,20 @@ Slack naively would double the Slack posts the same way.
 The widget holds the chosen rating in model state on click and emits a single track entry only at
 a resolution point. The governing rule:
 
-> A written comment is sent **only** via an explicit Submit. Every automatic path - inactivity
-> timeout, page unload/unmount - sends sentiment-only. A typed-but-unsubmitted comment is a draft,
-> not a submission.
+> Every resolution path emits exactly one entry capturing the rating plus whatever comment text
+> exists at that moment. Explicit Submit, the inactivity timeout, and the `pagehide` backstop all
+> include a sitting draft if one is present; **Skip** is the one explicit "no comment" signal and
+> sends the rating only. Submit, Skip, and the timeout then move the widget to "thanks", so a
+> captured draft cannot be re-submitted.
 
 #### Capture paths
 
 | Path | Trigger | Mechanism | Payload | Reliability |
 |------|---------|-----------|---------|-------------|
-| Submit | user clicks "Send to XH" with text | `XH.track` + `pushPendingAsync` | `{rating, userMessage}` | reliable (page alive) |
+| Submit | user clicks "Send to XH" | `XH.track` + `pushPendingAsync` | `{rating, userMessage}` | reliable (page alive) |
 | Skip | user clicks "Skip" | `XH.track` + `pushPendingAsync` | `{rating}` | reliable (page alive) |
-| Inactivity | 30s with no textarea change | `XH.track` + `pushPendingAsync` | `{rating}` | reliable (page alive) - primary safety net |
-| Abandon | `pagehide` while unsent | `navigator.sendBeacon` | `{rating}` | best-effort, survives teardown |
+| Inactivity | 30s with no textarea change | `XH.track` + `pushPendingAsync` | `{rating, userMessage?}` | reliable (page alive) - primary safety net |
+| Abandon | `pagehide` while unsent | `navigator.sendBeacon` | `{rating, userMessage?}` | best-effort, survives teardown |
 
 #### Inactivity timer
 
@@ -105,9 +107,11 @@ a resolution point. The governing rule:
 - **Reset on every keystroke** so an actively-composing user never trips it. Wiring: set
   `commitOnChange: true` on the `textArea` and add a model reaction `{track: () => this.comment,
   run: () => this.scheduleFlush()}` (or an equivalent `onChange` that re-arms the debounce).
-- When it fires, send a sentiment-only entry and move the widget to its "thanks" state so a stale
-  draft cannot later double-submit. (Judgment call: discarding a 30s-idle unsent draft is
-  acceptable; flag if we want to keep the box open instead.)
+- When it fires, send one entry capturing the rating plus whatever text is currently in the box,
+  then move the widget to its "thanks" state so the captured draft cannot later be re-submitted.
+  This means a 30s-idle partial draft is sent as-is, which is slightly unusual but deliberately
+  chosen over the alternative (leaving the box open and submitting in the background), which would
+  let a user who types, pauses, types more, pauses again, etc. trigger several "draft" submissions.
 - The 30s duration is a single named constant, easy to tune.
 
 #### Abandon via sendBeacon (the showcase technique)
@@ -134,8 +138,9 @@ navigator.sendBeacon(url, body);
   param check, and needs no XSRF header (none exists). It is queued by the browser and survives
   teardown.
 - `entry` mirrors the shape `TrackService.toServerJson` produces: `msg`, `category: 'Feedback'`,
-  `data: {rating}`, `clientUsername`, `appVersion`, `clientAppCode`, `loadId`, `tabId`, `url`,
-  `timestamp`. The server enriches the remaining columns from request headers.
+  `data: {rating, userMessage?}` (the sitting draft, if any), `clientUsername`, `appVersion`,
+  `clientAppCode`, `loadId`, `tabId`, `url`, `timestamp`. The server enriches the remaining columns
+  from request headers.
 - `pagehide` (not `visibilitychange: 'hidden'`) is used so an alt-tab mid-compose does not
   prematurely fire. Code comments will explain why beacon beats a normal request here, so the
   example teaches the technique.
@@ -204,21 +209,40 @@ and uses it as Toolbox's first demonstration of `TypedConfigMap` / `ConfigServic
 
 ```groovy
 class SlackAlertConfig extends TypedConfigMap {
-    /** Master switch - when false (the default), no Slack posts are sent. */
+    /** Master switch - when false (the default), the service posts nothing at all. */
     boolean enabled = false
     /** Slack bot OAuth token (xoxb-...). Required for any posting. */
     String oauthToken = null
-    /** Default channel for monitor + client-error alerts. */
+
+    /** Channel for monitor status + client-error alerts. */
     String channel = null
     /** Optional separate channel for user feedback; falls back to `channel` when blank. */
     String feedbackChannel = null
+
+    /** Post monitor status reports (gated under `enabled`). */
+    boolean monitorAlertsEnabled = false
+    /** Post client-error reports (gated under `enabled`). */
+    boolean clientErrorsEnabled = false
+    /** Post user feedback (gated under `enabled`). */
+    boolean feedbackEnabled = false
 
     SlackAlertConfig(Map args) { init(args) }
 }
 ```
 
+Each notification type the service controls has its own explicit on/off flag, all gated under the
+master `enabled` switch + a present `oauthToken`. **Everything defaults off** (master and all three
+per-type flags), so a fresh config posts nothing, and an operator or local-dev validator opts in
+exactly to the path they want by setting the master switch plus the specific sub-key (e.g.
+`enabled: true, oauthToken, feedbackChannel, feedbackEnabled: true` to validate feedback alone).
 Per the hoist-core guidance, the constructor calls `init(args)` (not `super(args)`), so declared
 defaults are not overwritten.
+
+**Deploy migration note.** Any existing deployed `slackAlertConfig` (today an `enabled: true`
+config implicitly posts monitor + client-error reports) will stop posting those once the per-type
+flags default off. To preserve current behavior, the live config must add
+`monitorAlertsEnabled: true` and `clientErrorsEnabled: true`. This is a one-time, intentional config
+update and must be called out in the changelog / upgrade note.
 
 **3b. Bootstrap the config.** Add a `ConfigSpec` for `slackAlertConfig` to
 `ensureRequiredConfigsCreated`, binding the typed class and giving safe disabled defaults. The
@@ -228,10 +252,13 @@ defaults are not overwritten.
 new ConfigSpec(
     name: 'slackAlertConfig',
     valueType: 'json',
-    defaultValue: [enabled: false, oauthToken: null, channel: null, feedbackChannel: null],
+    defaultValue: [
+        enabled: false, oauthToken: null, channel: null, feedbackChannel: null,
+        monitorAlertsEnabled: false, clientErrorsEnabled: false, feedbackEnabled: false
+    ],
     typedClass: SlackAlertConfig,
     groupName: 'Slack Integration',
-    note: 'Slack bot token + target channels for monitor alerts, client-error reports, and user feedback. Disabled by default.'
+    note: 'Slack bot token + target channels for monitor alerts, client-error reports, and user feedback. All disabled by default; enable the master flag plus the specific per-type flag(s) to post.'
 )
 ```
 
@@ -242,19 +269,23 @@ to the Admin Console inventory for the first time.
 `configService.getObject(SlackAlertConfig)`. The feedback channel resolves as
 `config.feedbackChannel ?: config.channel`.
 
-**3d. Enablement.** Change `getEnabled()` from `!Utils.isLocalDevelopment && config.enabled` to:
+**3d. Enablement.** The master `getEnabled()` changes from `!Utils.isLocalDevelopment &&
+config.enabled` to a purely config-driven check, and each send path additionally gates on its own
+per-type flag:
 
 ```groovy
 private boolean getEnabled() {
     return config.enabled && config.oauthToken
 }
+// sendMonitorStatusReport:  if (!enabled || !config.monitorAlertsEnabled) return
+// sendClientErrorReport:    if (!enabled || !config.clientErrorsEnabled) return
+// sendFeedbackReport:       if (!enabled || !config.feedbackEnabled) return
 ```
 
-Enablement is now purely config-driven: the bootstrapped default is cleanly disabled (`enabled:
-false`, null token), so the service is quietly off until an operator sets real values - and a
-developer can test end-to-end locally by setting the config. Note: this also lets the existing
-monitor/client-error posts fire locally if a developer opts in by setting the config - an
-intentional, explicit-opt-in behavior change.
+Because everything defaults off, dropping the `!Utils.isLocalDevelopment` guard is safe: no path
+fires in local dev (or anywhere) unless its flags are explicitly turned on. This both makes the
+integration locally testable per-path and resolves the earlier concern about the existing
+monitor/client-error posts firing in dev - they now require an explicit opt-in on their own flags.
 
 ### Part 4 - Email (no code change)
 
