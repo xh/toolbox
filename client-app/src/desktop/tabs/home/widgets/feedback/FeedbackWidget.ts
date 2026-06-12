@@ -70,6 +70,7 @@ const commentPrompt = hoistCmp.factory<FeedbackWidgetModel>({
                 }),
                 textArea({
                     bind: 'comment',
+                    commitOnChange: true,
                     placeholder: negative
                         ? 'What is missing, broken, or confusing?'
                         : 'Optional - a sentence or two is plenty.',
