@@ -6,6 +6,7 @@ import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONSerializer
 import io.xh.hoist.monitor.MonitorStatusReport
 import io.xh.hoist.track.TrackLog
+import io.xh.hoist.util.Utils
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.core5.http.io.entity.StringEntity
 
@@ -28,6 +29,7 @@ class SlackAlertService extends BaseService {
             topic: 'xhTrackReceived',
             onMessage: {TrackLog tl ->
                 if (tl.isClientError) sendClientErrorReport(tl)
+                else if (tl.category == 'Feedback') sendFeedbackReport(tl)
             },
             primaryOnly: true
         )
@@ -61,6 +63,63 @@ URL: ${tl.url}
 Time: ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
 ---------------------------------
         """)
+    }
+
+    private void sendFeedbackReport(TrackLog tl) {
+        if (!enabled || !config.feedbackEnabled) return
+
+        def data = tl.dataAsObject ?: [:],
+            rating = data.rating as String,
+            userMessage = data.userMessage as String,
+            channel = config.feedbackChannel ?: config.channel
+
+        if (!channel) {
+            logWarn('Feedback received but no Slack channel configured', [user: tl.username])
+            return
+        }
+
+        sendSlackMessage(channel, feedbackFallbackText(tl, rating, userMessage), feedbackBlocks(tl, rating, userMessage))
+    }
+
+    private List feedbackBlocks(TrackLog tl, String rating, String userMessage) {
+        def blocks = [
+            [type: 'header', text: [type: 'plain_text', text: ':speech_balloon: User Feedback', emoji: true]],
+            [type: 'section', text: [type: 'mrkdwn', text: "*Sentiment:* ${ratingEmoji(rating)} ${rating ?: 'n/a'}".toString()]]
+        ]
+        if (userMessage) {
+            def quoted = userMessage.replaceAll('\n', '\n> ')
+            blocks << [type: 'section', text: [type: 'mrkdwn', text: "> ${quoted}".toString()]]
+        }
+        blocks << [type: 'context', elements: [[type: 'mrkdwn', text: feedbackMeta(tl)]]]
+        return blocks
+    }
+
+    private String ratingEmoji(String rating) {
+        switch (rating) {
+            case 'positive': return ':smiley:'
+            case 'neutral':  return ':neutral_face:'
+            case 'negative': return ':slightly_frowning_face:'
+            default:         return ':grey_question:'
+        }
+    }
+
+    private String feedbackMeta(TrackLog tl) {
+        [
+            "*User:* ${tl.username}",
+            "*App:* ${Utils.appName} (${Utils.appCode})",
+            "*Version:* ${tl.appVersion}",
+            "*Env:* ${tl.appEnvironment}",
+            "*Browser:* ${tl.browser}",
+            "*Device:* ${tl.device}",
+            "*Submitted:* ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}"
+        ].join('  |  ').toString()
+    }
+
+    private String feedbackFallbackText(TrackLog tl, String rating, String userMessage) {
+        def parts = ["User Feedback from ${tl.username}"]
+        if (rating) parts << "(${rating})"
+        if (userMessage) parts << "- ${userMessage}"
+        return parts.join(' ').toString()
     }
 
     private void sendSlackMessage(String channel, String text, List blocks = null) {
