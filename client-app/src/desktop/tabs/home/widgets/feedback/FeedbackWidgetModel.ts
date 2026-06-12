@@ -107,10 +107,37 @@ export class FeedbackWidgetModel extends HoistModel {
         );
     }
 
-    /** Page-teardown path - filled in by Task 5. */
+    /**
+     * Page-teardown path. A normal fetch started during unload is routinely cancelled by the
+     * browser, and would also race TrackService's own `beforeunload` flush. navigator.sendBeacon
+     * posts the entry directly to the track endpoint - queued by the browser, surviving teardown -
+     * bypassing TrackService's pending buffer entirely. Best-effort by design.
+     */
     private beaconFlush() {
         if (this.sent || !this.rating) return;
-        // (Task 5 posts the entry via navigator.sendBeacon here.)
+        this.markSent();
+
+        const userMessage = this.comment?.trim(),
+            data: PlainObject = userMessage
+                ? {rating: this.rating, userMessage}
+                : {rating: this.rating},
+            entry = {
+                msg: this.trackMessage(data),
+                category: 'Feedback',
+                data,
+                severity: 'INFO',
+                clientUsername: XH.getUsername(),
+                appVersion: XH.getEnv('clientVersion'),
+                clientAppCode: XH.clientAppCode,
+                loadId: XH.loadId,
+                tabId: XH.tabId,
+                url: window.location.href,
+                timestamp: Date.now()
+            },
+            url = `${XH.baseUrl}xh/track?clientUsername=${encodeURIComponent(XH.getUsername())}`,
+            body = new Blob([JSON.stringify({entries: [entry]})], {type: 'application/json'});
+
+        navigator.sendBeacon(url, body);
     }
 
     private markSent() {
