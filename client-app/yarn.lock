@@ -2,35 +2,35 @@
 # yarn lockfile v1
 
 
-"@auth0/auth0-auth-js@1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@auth0/auth0-auth-js/-/auth0-auth-js-1.6.0.tgz#be80c2945d1baeb9eb3946646dabfb7316a749d8"
-  integrity sha512-/WYYNlsqhWA6I60pMVLFVeOgjOUCLdJThEAsjN8pAgYY09BTxbPaRIEVDgGu6ckoJpkmKvEYlHPO/vwRNrvX6w==
+"@auth0/auth0-auth-js@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-auth-js/-/auth0-auth-js-1.7.0.tgz#be0870e8a721ad73e4f28d8505528ed69e799724"
+  integrity sha512-SxF5WcPehbLOPwGrM+mqqVhnwZ3ZHEfM2wI/Yc3h0Kn1MM78seegxj7PrKoEMMRIfslDyHG+UNlOuobY8YOcKg==
   dependencies:
     jose "^6.0.8"
     openid-client "^6.8.0"
 
-"@auth0/auth0-spa-js@~2.20.0":
-  version "2.20.0"
-  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-2.20.0.tgz#8338ce93def2c29b56b0cf9088f33847d26c22e5"
-  integrity sha512-XKIfFgsz4M1h2qyGhxLb33k1i8eL7Nost+EmYIOY5givxZuzWOCmhzmwnXjprqYsT+dRGu6ORT29IuTd1rwDYQ==
+"@auth0/auth0-spa-js@~2.21.1":
+  version "2.21.1"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-2.21.1.tgz#d4aa4e51e61d2990efd428387c0ef650f691514f"
+  integrity sha512-Z4HfUZ/bSJLjobcWvRzh762jsJjXZdqh4Lmu+Ho8qNfldL6B+6RUMw3BJmwRMiWPoeLFvL25eTAMCxaLiULFSQ==
   dependencies:
-    "@auth0/auth0-auth-js" "1.6.0"
+    "@auth0/auth0-auth-js" "1.7.0"
     browser-tabs-lock "1.3.0"
     dpop "2.1.1"
     es-cookie "1.3.2"
 
-"@azure/msal-browser@~5.11.0":
-  version "5.11.0"
-  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-5.11.0.tgz#02cf20824a4a1815abb50ef88d891087b73009c7"
-  integrity sha512-zkGNYS3TwY8lUpPIafAmsFCYZbgFixY9y/LZB9GUg0IILoHTqpN26j5OrkL1AQThh/YdZsawe4iWXfp85lFVxg==
+"@azure/msal-browser@~5.13.0":
+  version "5.13.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-5.13.0.tgz#754b0a26e0a50d9df7bafda927a7200f5da212e3"
+  integrity sha512-Ea23x0U8XNFY+qJ9T44zO2BbY+AHdb+WdjmYnx36OhJ/KO+PGU5pmsNHf1DCElYX+6wyVRJz1HFeCPC/cHbRug==
   dependencies:
-    "@azure/msal-common" "16.6.2"
+    "@azure/msal-common" "16.8.0"
 
-"@azure/msal-common@16.6.2":
-  version "16.6.2"
-  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-16.6.2.tgz#4aa791db2c4f37f503bfe10f5aec76fd552daf8e"
-  integrity sha512-hQjjsekAjB00cM1EmatWJlzhEoK2Qhz7Rj5gvM6tYf8iL7RM3tkxlpU9fG0+ofkulzg9AEEA6dIEnSmDr5ZqUA==
+"@azure/msal-common@16.8.0":
+  version "16.8.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-16.8.0.tgz#8f077b2439d5dc8013ac2267cd09a99c4b2e442a"
+  integrity sha512-5S4RHOcInL2Nu2U217tDZbWGI6StMfcWCrA7TWvWdJmXQ+cYrrIqr84AsN62fGh2MDBysiBJPt6CfWceJfloEA==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.29.7":
   version "7.29.7"
@@ -3106,12 +3106,12 @@
     webpackbar "~7.0.0"
 
 "@xh/hoist@^87.0.0-SNAPSHOT":
-  version "87.0.0-SNAPSHOT.1781544533515"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-87.0.0-SNAPSHOT.1781544533515.tgz#1d757acf49c5c79018060ffbf01349568280fc9b"
-  integrity sha512-tRwwzReWu7OF3TYINoFicqvTdbHZGJeUg6Qy9/NxrsBPgrNQh0miJRAPgIv1OIMIkeDbcPGlcjT+AZq2xqD7sQ==
+  version "87.0.0-SNAPSHOT.1781549725709"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-87.0.0-SNAPSHOT.1781549725709.tgz#d69e2c17d2f0e98a09ac8301b133528e842761e9"
+  integrity sha512-QjiMDV+vTvb+HR3hQEMx9qLwSI/mBWTDuIHKZSvgfsJ2VENGOsvwCslexyiJRhZ3ZWreGiD7yPrp++XO7VPoOQ==
   dependencies:
-    "@auth0/auth0-spa-js" "~2.20.0"
-    "@azure/msal-browser" "~5.11.0"
+    "@auth0/auth0-spa-js" "~2.21.1"
+    "@azure/msal-browser" "~5.13.0"
     "@blueprintjs/core" "^6.3.2"
     "@blueprintjs/datetime" "^6.0.6"
     "@codemirror/commands" "~6.10.3"
@@ -3141,7 +3141,7 @@
     jwt-decode "~4.0.0"
     lodash "~4.18.0"
     lodash-inflection "~1.5.0"
-    mobx "~6.15.0"
+    mobx "~6.16.1"
     mobx-react-lite "~4.1.0"
     moment "~2.30.1"
     numbro "~2.5.0"
@@ -6930,10 +6930,10 @@ mobx-react-lite@~4.1.0:
   dependencies:
     use-sync-external-store "^1.4.0"
 
-mobx@~6.15.0:
-  version "6.15.4"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.15.4.tgz#045c64b07ce73e5c5cad474c369f2e0d6be7c2af"
-  integrity sha512-do+2UsEKRVT70W/QqP2F2sju2x4p2xZo+5/azXqKjXgTk2jfmzsLjzwW0YI8CBEjy4ZUdU8EunXocXXwJdCrtw==
+mobx@~6.16.1:
+  version "6.16.1"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.16.1.tgz#8b3166186d1298b1848395e10e64b5c43d6dc43b"
+  integrity sha512-syNcDdX3KT+Jq3je6eGjBhuc24Z68td2VG0zNFqRswaE433D9SNH5VRy/xrGbJsUixfppLLccXhAW9JSf6n+SQ==
 
 moment@2.x, moment@~2.30.1:
   version "2.30.1"
