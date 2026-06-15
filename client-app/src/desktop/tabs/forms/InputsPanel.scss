@@ -7,4 +7,20 @@
   &__label {
     font-weight: 500;
   }
+
+  // Responsive masonry of category cards. `columns: <min-width> <max-count>` fits as many
+  // columns of at least the min width as the viewport allows, capped at the max — so the
+  // layout flows 3 -> 2 -> 1 as the panel narrows, with the browser balancing column heights.
+  &__masonry {
+    padding: var(--xh-pad-double-px);
+    columns: 340px 3;
+    column-gap: var(--xh-pad-double-px);
+
+    // Each card is a column item: keep it whole, fill the column, match the column gap.
+    > * {
+      break-inside: avoid;
+      width: 100%;
+      margin-bottom: var(--xh-pad-double-px);
+    }
+  }
 }

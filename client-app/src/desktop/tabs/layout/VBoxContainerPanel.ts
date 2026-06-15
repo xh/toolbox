@@ -1,23 +1,32 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {box, p, vbox} from '@xh/hoist/cmp/layout';
+import {box, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
 
 export const vboxContainerPanel = hoistCmp.factory(() =>
     wrapper({
-        description: p(
-            'A VBox lays out its children vertically, rendering a Box with flexDirection:column.'
-        ),
+        title: 'VBox',
+        icon: Icon.box(),
+        description: [
+            '`VBox` lays out its children in a vertical column. It is a thin wrapper over',
+            '`Box` (`flexDirection: column`) that exposes flexbox and Hoist layout properties',
+            'such as `flex`, `height`, `gap`, and `alignItems` directly as component props, as',
+            'shown by the mix of flexed and fixed-height boxes below.'
+        ],
         links: [
             {
-                url: '$HR/cmp/layout/Box.ts',
-                notes: 'Hoist Box components.'
-            }
+                url: '$TB/client-app/src/desktop/tabs/layout/VBoxContainerPanel.ts',
+                notes: 'This example.'
+            },
+            {
+                url: '$HR/cmp/layout/README.md#core-components',
+                text: 'Layout docs',
+                notes: 'Layout containers guide.'
+            },
+            {url: '$HR/cmp/layout/Box.ts', notes: 'The Box component and its layout props.'}
         ],
         item: panel({
-            title: 'Layout › VBox',
-            icon: Icon.box(),
             height: 400,
             width: 700,
             item: vbox({

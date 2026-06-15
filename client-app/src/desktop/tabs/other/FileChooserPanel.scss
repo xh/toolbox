@@ -1,5 +1,8 @@
-// Give the example panels a visible border (Hoist panels are effectively borderless by default).
-// Set it directly at higher specificity than the framework's `.xh-panel` rule.
-.xh-panel.tb-filechooser-example {
-  border: 1px solid var(--xh-border-color);
+// The `card` root renders as a <fieldset> with `display: block`, so its flex:1 content box does not
+// stretch to fill the card height on its own (leaving a gap below the content). Make the card a flex
+// column so the legend sits on top and the content box fills the remaining height - letting the
+// fileChooser inside flex to fill the card.
+.tb-filechooser-card {
+  display: flex;
+  flex-direction: column;
 }
