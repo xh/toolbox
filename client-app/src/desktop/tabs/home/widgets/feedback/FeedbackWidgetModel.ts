@@ -143,6 +143,6 @@ export class FeedbackWidgetModel extends HoistModel {
     }
 
     private trackMessage(data: PlainObject): string {
-        return data.userMessage ? 'User submitted feedback' : `Hoist sentiment: ${data.rating}`;
+        return `Hoist feedback: ${data.rating}`;
     }
 }
