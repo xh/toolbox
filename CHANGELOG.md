@@ -19,7 +19,7 @@
 * Removed the long-stale Hoist Roadmap widget, its admin console editor, and backing `Phase`/`Project` domain classes - the auto-updating Releases and Commits feeds now tell that story without manual curation.
 * Downgraded toolbox build toolchain back to JDK 21 - JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
 * Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
-* The feedback widget now coalesces each interaction (sentiment click plus optional comment) into a single activity-tracking entry on the client, using a typing-reset inactivity timer and a `navigator.sendBeacon` backstop on page unload - eliminating duplicate feedback emails/Slack posts and demonstrating reliable capture during teardown.
+* The feedback widget now coalesces each interaction (sentiment click plus optional comment) into a single activity-tracking entry on the client, using a typing-reset inactivity timer plus a page-teardown flush that reacts to `XH.pageState` and relies on `TrackService`'s keepalive flush - eliminating duplicate feedback emails/Slack posts and capturing reliably on unload.
 * Adopted hoist-core's `TypedConfigMap` for `slackAlertConfig` (Toolbox's first use of typed soft-config value access via `ConfigService.getObject`), and gave the Slack service explicit per-notification-type enable flags (`monitorAlertsEnabled`, `clientErrorsEnabled`, `feedbackEnabled`), all disabled by default. Note: existing deployed `slackAlertConfig` entries must set `monitorAlertsEnabled`/`clientErrorsEnabled` to true to keep posting those alerts.
 
 ### Libraries
