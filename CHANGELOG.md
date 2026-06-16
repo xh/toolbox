@@ -2,6 +2,15 @@
 
 ## 9.0.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added Slack as a second channel for home-page user feedback: feedback now posts a Block Kit message to a configurable Slack channel alongside the existing email notification, demonstrating an outbound Slack integration via the Slack Web API.
+
+### Technical
+
+* The feedback widget now coalesces each interaction (sentiment click plus optional comment) into a single activity-tracking entry on the client, using a typing-reset inactivity timer plus a page-teardown flush that reacts to `XH.pageState` and relies on `TrackService`'s keepalive flush - eliminating duplicate feedback emails/Slack posts and capturing reliably on unload.
+* Typed the `slackAlertConfig` soft config with hoist-core's `TypedConfigMap` (Toolbox's first use of `ConfigService.getObject`), adding per-notification-type enable flags.
+
 ## 8.5.0 - 2026-06-12
 
 ### New Features
@@ -13,7 +22,6 @@
 * Replaced the dated mobile-tab screenshots with a theme-aware CSS device frame, and refreshed the DashCanvas / DashContainer examples with a live random-walk Chart widget and a stateful `SegmentedControl` Options widget.
 * Added an IBM Plex Sans font preference to the desktop app, selectable alongside the theme via new macOS-style card pickers in the Options dialog.
 * Overhauled the News example with cleaner card image handling, a master-detail reading pane, and a refreshed set of working NewsAPI sources.
-* Added Slack as a second channel for home-page user feedback: feedback now posts a Block Kit message to a configurable Slack channel alongside the existing email notification, demonstrating an outbound Slack integration via the Slack Web API.
 
 ### Technical
 
@@ -21,8 +29,6 @@
 * Removed the long-stale Hoist Roadmap widget, its admin console editor, and backing `Phase`/`Project` domain classes - the auto-updating Releases and Commits feeds now tell that story without manual curation.
 * Downgraded toolbox build toolchain back to JDK 21 - JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
 * Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
-* The feedback widget now coalesces each interaction (sentiment click plus optional comment) into a single activity-tracking entry on the client, using a typing-reset inactivity timer plus a page-teardown flush that reacts to `XH.pageState` and relies on `TrackService`'s keepalive flush - eliminating duplicate feedback emails/Slack posts and capturing reliably on unload.
-* Adopted hoist-core's `TypedConfigMap` for `slackAlertConfig` (Toolbox's first use of typed soft-config value access via `ConfigService.getObject`), and gave the Slack service explicit per-notification-type enable flags (`monitorAlertsEnabled`, `clientErrorsEnabled`, `feedbackEnabled`), all disabled by default. Note: existing deployed `slackAlertConfig` entries must set `monitorAlertsEnabled`/`clientErrorsEnabled` to true to keep posting those alerts.
 
 ### Libraries
 
