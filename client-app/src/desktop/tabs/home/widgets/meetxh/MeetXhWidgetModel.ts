@@ -45,7 +45,7 @@ export class MeetXhWidgetModel extends HoistModel {
 
     override async doLoadAsync(loadSpec: LoadSpec) {
         try {
-            const contacts = await XH.fetchJson({url: 'contacts', loadSpec});
+            const contacts = await XH.fetchJson({url: 'contacts'}, {loadSpec});
             runInAction(() => {
                 this.contacts = contacts;
                 this.spotlightId = sample(contacts)?.id;
