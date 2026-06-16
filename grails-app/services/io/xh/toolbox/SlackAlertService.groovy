@@ -66,7 +66,10 @@ Time: ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
     }
 
     private void sendFeedbackReport(TrackLog tl) {
-        if (!enabled || !config.feedbackEnabled) return
+        if (!enabled || !config.feedbackEnabled) {
+            logDebug('Skipping Slack feedback post - not enabled', [enabled: enabled, feedbackEnabled: config.feedbackEnabled])
+            return
+        }
 
         def data = tl.dataAsObject ?: [:],
             rating = data.rating as String,
@@ -78,12 +81,13 @@ Time: ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
             return
         }
 
+        logInfo('Posting user feedback to Slack', [channel: channel, rating: rating, user: tl.username])
         sendSlackMessage(channel, feedbackFallbackText(tl, rating, userMessage), feedbackBlocks(tl, rating, userMessage))
     }
 
     private List feedbackBlocks(TrackLog tl, String rating, String userMessage) {
         def blocks = [
-            [type: 'header', text: [type: 'plain_text', text: ':speech_balloon: User Feedback', emoji: true]],
+            [type: 'header', text: [type: 'plain_text', text: 'User Feedback']],
             [type: 'section', text: [type: 'mrkdwn', text: "*Sentiment:* ${ratingEmoji(rating)} ${rating ?: 'n/a'}".toString()]]
         ]
         if (userMessage) {
@@ -134,7 +138,14 @@ Time: ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
             post.setHeader('Authorization', "Bearer ${config.oauthToken}")
             post.setEntity(entity)
 
-            client.executeAsMap(post)
+            // Slack returns HTTP 200 with `{ok: false, error: ...}` on logical failures
+            // (bad token, bot not in channel, etc.), so check the body, not just the status.
+            def resp = client.executeAsMap(post)
+            if (resp?.ok != true) {
+                logError('Slack chat.postMessage failed', [channel: channel, error: resp?.error])
+            } else {
+                logDebug('Slack message posted', [channel: channel])
+            }
         }
     }
 
