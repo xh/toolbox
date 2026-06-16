@@ -22,9 +22,6 @@ export class FeedbackWidgetModel extends HoistModel {
     // Inactivity timer. debounce() gives us reset-on-call semantics plus a .cancel().
     private scheduleFlush = debounce(() => this.flushAuto(), INACTIVITY_TIMEOUT);
 
-    // Stable handler reference so add/removeEventListener target the same function.
-    private onPageHide = () => this.beaconFlush();
-
     constructor() {
         super();
         makeObservable(this);
@@ -35,14 +32,24 @@ export class FeedbackWidgetModel extends HoistModel {
                 if (this.rating && !this.sent) this.scheduleFlush();
             }
         });
+        // Capture an unsent rating on real page teardown via Hoist's managed page-lifecycle
+        // observable. We react to the terminal states only - NOT 'hidden', since a benign tab
+        // switch must not finalize a still-composing entry (unloadFlush self-guards otherwise).
+        this.addReaction({
+            track: () => XH.pageState,
+            run: state => {
+                if (state === 'frozen' || state === 'terminated') this.unloadFlush();
+            }
+        });
     }
 
     @action
     setRating(rating: HoistRating) {
         this.rating = rating;
         // Defer the track call: a rating plus a later comment must coalesce into ONE entry.
-        this.scheduleFlush(); // start the inactivity timer
-        window.addEventListener('pagehide', this.onPageHide); // unload backstop (see beaconFlush)
+        // The inactivity timer and the pageState reaction (set up in the constructor) handle the
+        // auto/unload capture paths; both self-guard on `rating`/`sent`.
+        this.scheduleFlush();
     }
 
     skipComment() {
@@ -108,36 +115,22 @@ export class FeedbackWidgetModel extends HoistModel {
     }
 
     /**
-     * Page-teardown path. A normal fetch started during unload is routinely cancelled by the
-     * browser, and would also race TrackService's own `beforeunload` flush. navigator.sendBeacon
-     * posts the entry directly to the track endpoint - queued by the browser, surviving teardown -
-     * bypassing TrackService's pending buffer entirely. Best-effort by design.
+     * Page-teardown path, driven by the `XH.pageState` reaction on `frozen`/`terminated`. We defer
+     * queueing to coalesce, so here we queue the entry and ask TrackService to flush it with
+     * `keepalive` - which survives teardown and reuses the framework's auth/serialization (vs. a
+     * hand-rolled beacon). Reacting to the terminal states only (not `hidden`) means a mid-compose
+     * tab switch does not prematurely finalize a sentiment-only entry.
      */
-    private beaconFlush() {
+    private unloadFlush() {
         if (this.sent || !this.rating) return;
         this.markSent();
 
         const userMessage = this.comment?.trim(),
             data: PlainObject = userMessage
                 ? {rating: this.rating, userMessage}
-                : {rating: this.rating},
-            entry = {
-                msg: this.trackMessage(data),
-                category: 'Feedback',
-                data,
-                severity: 'INFO',
-                clientUsername: XH.getUsername(),
-                appVersion: XH.getEnv('clientVersion'),
-                clientAppCode: XH.clientAppCode,
-                loadId: XH.loadId,
-                tabId: XH.tabId,
-                url: window.location.href,
-                timestamp: Date.now()
-            },
-            url = `${XH.baseUrl}xh/track?clientUsername=${encodeURIComponent(XH.getUsername())}`,
-            body = new Blob([JSON.stringify({entries: [entry]})], {type: 'application/json'});
-
-        navigator.sendBeacon(url, body);
+                : {rating: this.rating};
+        XH.track({category: 'Feedback', message: this.trackMessage(data), data, logData: true});
+        XH.trackService.pushPendingAsync({keepalive: true});
     }
 
     private markSent() {
@@ -147,7 +140,6 @@ export class FeedbackWidgetModel extends HoistModel {
 
     private clearPending() {
         this.scheduleFlush.cancel();
-        window.removeEventListener('pagehide', this.onPageHide);
     }
 
     private trackMessage(data: PlainObject): string {
