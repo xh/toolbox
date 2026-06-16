@@ -1,5 +1,4 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {a, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -19,19 +18,35 @@ import {numberInput, switchInput, textArea} from '@xh/hoist/desktop/cmp/input';
 export const restGridPanel = hoistCmp.factory({
     render() {
         return wrapper({
+            title: 'REST Editor',
+            icon: Icon.edit(),
             description: [
-                p(
-                    'RestGrid and its associated components provide a quick way to implement basic CRUD functionality for domain objects managed by the Hoist Grails server.'
-                ),
-                p(
-                    'Use the toolbar buttons or double-click a record to display its associated add/edit form, including type-specific editor fields. These grids are especially useful when building lookup tables of simple objects and are used throughout the ',
-                    a({href: '/admin', target: '_blank', item: 'Hoist Admin Console'}),
-                    '.'
-                )
+                '`RestGrid` and its associated components provide a quick way to implement',
+                'basic CRUD functionality for domain objects managed by the Hoist Grails',
+                'server.',
+                '',
+                'Use the toolbar buttons or double-click a record to display its associated',
+                'add/edit form, including type-specific editor fields. These grids are',
+                'especially useful when building lookup tables of simple objects and are used',
+                'throughout the [Hoist Admin Console](/admin).'
+            ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/grids/RestGridPanel.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide and core concepts.'
+                },
+                {url: '$HR/desktop/cmp/rest/RestGrid.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/desktop/cmp/rest/RestGridModel.ts',
+                    notes: 'Hoist model defining the store, columns, editors, and actions.'
+                }
             ],
             item: panel({
-                title: 'Grids › REST Editor',
-                icon: Icon.edit(),
                 className: 'tb-grid-wrapper-panel',
                 item: restGrid({modelConfig: modelSpec})
             })

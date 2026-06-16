@@ -1,5 +1,5 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {filler, hframe, p, span} from '@xh/hoist/cmp/layout';
+import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
@@ -27,11 +27,9 @@ export const columnChooserPanel = hoistCmp.factory({
     model: creates(() => ColumnChooserPanelModel),
     render({model}) {
         return wrapper({
-            description: [
-                p(
-                    'The new ColumnChooser component provides a modern interface for managing grid column visibility, ordering, and pinning with drag-and-drop support and column group hierarchy.'
-                )
-            ],
+            title: 'New Column Chooser',
+            description:
+                'The new ColumnChooser component provides a modern interface for managing grid column visibility, ordering, and pinning with drag-and-drop support and column group hierarchy.',
             item: panel({
                 title: 'Grids › Column Chooser',
                 icon: Icon.gridPanel(),

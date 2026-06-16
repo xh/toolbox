@@ -1,11 +1,11 @@
 .tb-welcome-widget {
   &__logo {
-    padding: var(--xh-pad-px);
-    border-right: var(--xh-border-solid);
+    padding: var(--xh-pad-double-px);
     display: flex;
     justify-content: center;
     flex-direction: column;
     width: 25%;
+    min-width: 140px;
 
     img {
       object-fit: contain !important;
@@ -14,20 +14,30 @@
     }
   }
 
-  &__greeting {
-    height: 100%;
-    width: 75%;
-    margin: auto 0;
+  &__content {
+    flex: 1;
     overflow-y: auto;
     padding: var(--xh-pad-double-px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-pad-px);
 
     p {
+      margin: 0;
       font-size: var(--xh-font-size-large-px);
-
-      &.tb-welcome-widget__signoff {
-        text-align: right;
-        margin: var(--xh-pad-double-px) var(--xh-pad-double-px) 0 0;
-      }
+      line-height: 1.5;
     }
+  }
+
+  &__headline {
+    font-size: 1.8em;
+    font-weight: 500;
+  }
+
+  &__ctas {
+    gap: var(--xh-pad-px);
+    margin-top: var(--xh-pad-px);
+    flex: none;
+    flex-wrap: wrap;
   }
 }

@@ -3,7 +3,6 @@ import {TabConfig} from '@xh/hoist/cmp/tab';
 import {InitContext, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {phaseRestPanel, projectRestPanel} from './roadmap';
 import {
     asyncLoopPanel,
     columnChooserTestPanel,
@@ -36,14 +35,6 @@ export class AppModel extends HoistAdminAppModel {
         return [
             ...super.getTabRoutes(),
             {
-                name: 'roadmap',
-                path: '/roadmap',
-                children: [
-                    {name: 'projects', path: '/projects'},
-                    {name: 'phases', path: '/phases'}
-                ]
-            },
-            {
                 name: 'tests',
                 path: '/tests',
                 children: [
@@ -70,18 +61,6 @@ export class AppModel extends HoistAdminAppModel {
         const switcher = {mode: 'static'};
         return [
             ...super.createTabs(),
-            {
-                id: 'roadmap',
-                title: 'Roadmap',
-                icon: Icon.mapSigns(),
-                content: {
-                    switcher,
-                    tabs: [
-                        {id: 'phases', icon: Icon.calendar(), content: phaseRestPanel},
-                        {id: 'projects', icon: Icon.checkCircle(), content: projectRestPanel}
-                    ]
-                }
-            },
             {
                 id: 'tests',
                 icon: Icon.stopwatch(),

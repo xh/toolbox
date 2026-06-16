@@ -1,34 +1,46 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {box, div, filler, h3, hbox, p, strong} from '@xh/hoist/cmp/layout';
+import {box, h3, hbox, p, strong} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {wrapper} from '../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../common';
 
 export const panelSizingPanel = hoistCmp.factory({
     model: creates(() => PanelSizingModel),
 
     render({model}) {
         return wrapper({
-            description: div(
-                p(
-                    'Panels support collapsing, drag-and-drop resizing, and a toggleable modal view via their PanelModel config, optionally saving their sizing state in a per-user preference.'
-                ),
-                p(
-                    "By default the panel content does not re-layout until the resize bar is dropped. Immediate or 'animated' resizing can be turned on by setting the PanelModel config resizeWhileDragging to true."
-                ),
-                p(
-                    'Note that the child panels below are also configured with their compactHeader prop set to true.'
-                )
-            ),
+            title: 'Panel Sizing',
+            icon: Icon.window(),
+            description: [
+                'Panels support collapsing, drag-and-drop resizing, and a toggleable modal',
+                'view via their `PanelModel` config, optionally saving their sizing state in a',
+                'per-user preference.',
+                '',
+                'By default the panel content does not re-layout until the resize bar is',
+                "dropped. Immediate or 'animated' resizing can be turned on by setting the",
+                '`PanelModel` config `resizeWhileDragging` to `true`.',
+                '',
+                'Note that the child panels below are also configured with their',
+                '`compactHeader` prop set to `true`.'
+            ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.ts',
                     notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/panel/README.md#collapsing-and-resizing',
+                    text: 'Panel docs',
+                    notes: 'Desktop panel guide (sizing, collapse, modal support).'
+                },
+                {
+                    url: '$HR/docs/persistence.md#built-in-model-support',
+                    text: 'Persistence docs',
+                    notes: 'Guide to persisting UI state such as panel size.'
                 },
                 {url: '$HR/desktop/cmp/panel/Panel.ts', notes: 'Hoist component.'},
                 {
@@ -36,19 +48,32 @@ export const panelSizingPanel = hoistCmp.factory({
                     notes: 'Hoist component model (for resize / collapse).'
                 }
             ],
+            options: [
+                wrapperOption({
+                    label: 'Resize While Dragging',
+                    propName: 'PanelConfig.resizeWhileDragging',
+                    control: switchInput({model, bind: 'resizeWhileDragging'}),
+                    info: 'Resize live, not on release.'
+                }),
+                wrapperAction({
+                    text: 'Expand All',
+                    icon: Icon.expand(),
+                    disabled: model.allExpanded,
+                    onClick: () => model.setCollapsedAll(false)
+                }),
+                wrapperAction({
+                    text: 'Collapse All',
+                    icon: Icon.collapse(),
+                    disabled: model.allCollapsed,
+                    onClick: () => model.setCollapsedAll(true)
+                })
+            ],
             item: panel({
-                title: 'Panels › Panel Sizing',
-                modelConfig: {modalSupport: true, collapsible: false, resizable: false},
+                title: 'Panel Sizing',
                 icon: Icon.window(),
+                modelConfig: {modalSupport: true, collapsible: false, resizable: false},
                 height: '60vh',
-                width: '80%',
-                bbar: toolbar(
-                    filler(),
-                    switchInput({
-                        label: 'Resize While Dragging',
-                        bind: 'resizeWhileDragging'
-                    })
-                ),
+                width: '90%',
                 items: [
                     hbox({
                         flex: 1,
@@ -70,20 +95,7 @@ export const panelSizingPanel = hoistCmp.factory({
                                     padding: '0 6 6 6',
                                     display: 'block',
                                     overflowY: 'auto'
-                                }),
-                                tbar: [
-                                    filler(),
-                                    button({
-                                        text: 'Expand All',
-                                        disabled: model.allExpanded,
-                                        onClick: () => model.setCollapsedAll(false)
-                                    }),
-                                    button({
-                                        text: 'Collapse All',
-                                        disabled: model.allCollapsed,
-                                        onClick: () => model.setCollapsedAll(true)
-                                    })
-                                ]
+                                })
                             }),
                             panel({
                                 title: 'Right Panel',
@@ -156,7 +168,7 @@ class PanelSizingModel extends HoistModel {
 
     @managed
     leftPanelModel = new PanelModel({
-        defaultSize: '30%',
+        defaultSize: '20%',
         maxSize: 300,
         minSize: 30,
         side: 'left'
@@ -164,7 +176,7 @@ class PanelSizingModel extends HoistModel {
 
     @managed
     rightPanelModel = new PanelModel({
-        defaultSize: '30%',
+        defaultSize: '20%',
         maxSize: 300,
         minSize: 30,
         side: 'right'
