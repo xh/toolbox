@@ -25,6 +25,9 @@ export interface CustomColumn {
  * measure-family, ...). `chooserGroup`s deliberately slice along a *different* axis - identifiers
  * vs. classification, P&L by period rather than by type - so the chooser's available-columns grid
  * groups differently than the headers, which is the more interesting case to test.
+ *
+ * The long tail of columns starts hidden (see `lf`), leaving a focused ~2 dozen-column default view
+ * that the chooser reveals - realistic for a blotter and ensuring the chooser always has content.
  */
 export function generateGridData(size: GridSize): {
     columns: ColumnOrGroupSpec[];
@@ -108,6 +111,8 @@ interface LeafDef {
     chooserGroup: string;
     /** Smallest size at which this leaf appears. */
     tier: Tier;
+    /** Hidden in the grid by default (still listed in the chooser). */
+    hidden: boolean;
 }
 
 interface GroupDef {
@@ -118,8 +123,16 @@ interface GroupDef {
 
 type Node = LeafDef | GroupDef;
 
-const lf = (id: string, name: string, kind: Kind, chooserGroup: string, tier: Tier = 'large') =>
-    ({id, name, kind, chooserGroup, tier}) as LeafDef;
+// `hidden` defaults to true for `large`-tier leaves (the long tail starts hidden); pass explicitly
+// to override - e.g. hide a secondary `medium` column so the default size also has hidden columns.
+const lf = (
+    id: string,
+    name: string,
+    kind: Kind,
+    chooserGroup: string,
+    tier: Tier = 'large',
+    hidden?: boolean
+) => ({id, name, kind, chooserGroup, tier, hidden: hidden ?? tier === 'large'}) as LeafDef;
 
 const grp = (id: string, name: string, children: Node[]) => ({id, name, children}) as GroupDef;
 
@@ -172,8 +185,8 @@ const riskGroup = grp('grp-risk', 'Risk', [
     grp('grp-greeks', 'Greeks', [
         lf('delta', 'Delta', 'ratio', 'Greeks', 'small'),
         lf('gamma', 'Gamma', 'ratio', 'Greeks', 'medium'),
-        lf('vega', 'Vega', 'ratio', 'Greeks', 'medium'),
-        lf('theta', 'Theta', 'ratio', 'Greeks', 'medium'),
+        lf('vega', 'Vega', 'ratio', 'Greeks', 'medium', true),
+        lf('theta', 'Theta', 'ratio', 'Greeks', 'medium', true),
         lf('rho', 'Rho', 'ratio', 'Greeks'),
         lf('vanna', 'Vanna', 'ratio', 'Greeks'),
         lf('volga', 'Volga', 'ratio', 'Greeks'),
@@ -187,7 +200,7 @@ const riskGroup = grp('grp-risk', 'Risk', [
         lf('dv01', 'DV01', 'amount', 'Rates Risk', 'medium'),
         lf('ir01', 'IR01', 'amount', 'Rates Risk'),
         lf('pv01', 'PV01', 'amount', 'Rates Risk'),
-        lf('duration', 'Duration', 'ratio', 'Rates Risk', 'medium'),
+        lf('duration', 'Duration', 'ratio', 'Rates Risk', 'medium', true),
         lf('modDuration', 'Mod. Duration', 'ratio', 'Rates Risk'),
         lf('convexity', 'Convexity', 'ratio', 'Rates Risk'),
         ...RATE_TENORS.map(t => lf(`krd${t}`, `KRD ${t}`, 'amount', 'Rates Risk'))
@@ -205,7 +218,7 @@ const CATALOG: GroupDef[] = [
     grp('grp-security', 'Security', [
         lf('symbol', 'Symbol', 'text', 'Identifiers', 'small'),
         lf('description', 'Description', 'text', 'Identifiers'),
-        lf('underlyer', 'Underlyer', 'text', 'Identifiers', 'medium'),
+        lf('underlyer', 'Underlyer', 'text', 'Identifiers', 'medium', true),
         lf('underlyerType', 'Underlyer Type', 'text', 'Identifiers'),
         lf('cusip', 'CUSIP', 'text', 'Identifiers'),
         lf('isin', 'ISIN', 'text', 'Identifiers'),
@@ -225,7 +238,7 @@ const CATALOG: GroupDef[] = [
     grp('grp-account', 'Account', [
         lf('fund', 'Fund', 'text', 'Ownership'),
         lf('portfolio', 'Portfolio', 'text', 'Ownership', 'small'),
-        lf('subPortfolio', 'Sub-Portfolio', 'text', 'Ownership', 'medium'),
+        lf('subPortfolio', 'Sub-Portfolio', 'text', 'Ownership', 'medium', true),
         lf('strategy', 'Strategy', 'text', 'Ownership', 'medium'),
         lf('book', 'Book', 'text', 'Ownership'),
         lf('desk', 'Desk', 'text', 'Ownership'),
@@ -248,7 +261,7 @@ const CATALOG: GroupDef[] = [
         lf('tradedQty', 'Traded Qty', 'int', 'Quantity & Price'),
         lf('openQty', 'Open Qty', 'int', 'Quantity & Price'),
         lf('price', 'Price', 'price', 'Quantity & Price', 'small'),
-        lf('priceLocal', 'Price (Local)', 'price', 'Quantity & Price', 'medium'),
+        lf('priceLocal', 'Price (Local)', 'price', 'Quantity & Price', 'medium', true),
         lf('sodPrice', 'SOD Price', 'price', 'Quantity & Price'),
         lf('prevPrice', 'Prev Price', 'price', 'Quantity & Price'),
         lf('bid', 'Bid', 'price', 'Quantity & Price'),
@@ -257,7 +270,7 @@ const CATALOG: GroupDef[] = [
         lf('vwap', 'VWAP', 'price', 'Quantity & Price'),
         lf('multiplier', 'Multiplier', 'ratio', 'Quantity & Price'),
         lf('factor', 'Factor', 'ratio', 'Quantity & Price'),
-        lf('fxRate', 'FX Rate', 'ratio', 'Quantity & Price', 'medium'),
+        lf('fxRate', 'FX Rate', 'ratio', 'Quantity & Price', 'medium', true),
         lf('spreadBps', 'Spread (bps)', 'ratio', 'Quantity & Price')
     ]),
     grp('grp-valuation', 'Valuation', [
@@ -265,7 +278,7 @@ const CATALOG: GroupDef[] = [
         lf('marketValueLocal', 'MV (Local)', 'amount', 'Valuation'),
         lf('notional', 'Notional', 'amount', 'Valuation', 'medium'),
         lf('notionalLocal', 'Notional (Local)', 'amount', 'Valuation'),
-        lf('cost', 'Cost', 'amount', 'Valuation', 'medium'),
+        lf('cost', 'Cost', 'amount', 'Valuation', 'medium', true),
         lf('costLocal', 'Cost (Local)', 'amount', 'Valuation'),
         lf('avgCost', 'Avg Cost', 'price', 'Valuation'),
         lf('accruedInterest', 'Accrued Int.', 'amount', 'Valuation'),
@@ -277,7 +290,7 @@ const CATALOG: GroupDef[] = [
         lf('longExposure', 'Long Exp.', 'amount', 'Exposure'),
         lf('shortExposure', 'Short Exp.', 'amount', 'Exposure'),
         lf('exposurePct', 'Exp. %', 'pct', 'Exposure'),
-        lf('portfolioWeight', 'Weight', 'pct', 'Exposure', 'medium'),
+        lf('portfolioWeight', 'Weight', 'pct', 'Exposure', 'medium', true),
         lf('deltaAdjExposure', 'Delta-Adj. Exp.', 'amount', 'Exposure'),
         lf('betaAdjExposure', 'Beta-Adj. Exp.', 'amount', 'Exposure')
     ]),
@@ -345,6 +358,7 @@ function toColumnSpec(node: Node): ColumnOrGroupSpec {
             };
         if (fmt.align) spec.align = fmt.align;
         if (fmt.renderer) spec.renderer = fmt.renderer;
+        if (node.hidden) spec.hidden = true;
         return spec;
     }
     return {
