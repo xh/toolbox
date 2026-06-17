@@ -17,7 +17,7 @@ export class OHLCChartModel extends HoistModel {
 
     @managed
     @observable.ref
-    chartModel: ChartModel;
+    accessor chartModel: ChartModel;
 
     constructor() {
         super();
