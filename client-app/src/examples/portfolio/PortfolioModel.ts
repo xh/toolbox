@@ -57,7 +57,9 @@ export class PortfolioModel extends HoistModel {
         );
         loadSpec.abortIfNeeded();
 
-        const session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp', loadSpec);
+        const session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp', {
+            loadSpec
+        });
         store.loadData([session.initialPositions.root]);
         session.onUpdate = ({data}) => {
             posGridModel.loadTimestamp = Date.now();

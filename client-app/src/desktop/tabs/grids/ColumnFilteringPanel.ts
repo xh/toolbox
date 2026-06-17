@@ -1,41 +1,42 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {hframe, filler, p} from '@xh/hoist/cmp/layout';
-import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
+import {grid} from '@xh/hoist/cmp/grid';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {
-    button,
-    colAutosizeButton,
-    colChooserButton,
-    exportButton
-} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {ColumnFilteringPanelModel} from './ColumnFilteringPanelModel';
-import {wrapper} from '../../common';
-import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
+import {wrapper, wrapperAction, wrapperOption} from '../../common';
 
 export const columnFilteringPanel = hoistCmp.factory({
     model: creates(ColumnFilteringPanelModel),
-    render() {
+    render({model}) {
+        const {filterModel} = model.gridModel;
         return wrapper({
+            title: 'Column Filtering',
+            icon: Icon.filter(),
             description: [
-                p(
-                    'Grids support column-based filtering of their underlying store data. To enable, set the GridModel.filterModel config to a GridFilterModel (or true) and set filterable: true on the columns you wish to filter.'
-                ),
-                p(
-                    'Applications may also wish to use a FilterChooser to allow the user to filter the store data via a single "omni-box" style text control.'
-                ),
-                p(
-                    'The example below shows both of these methods being used together on a single store.'
-                )
+                'Grids support column-based filtering of their underlying store data. To',
+                'enable, set the `GridModel.filterModel` config to a `GridFilterModel` (or',
+                '`true` to create one with defaults) and set `filterable: true` on the columns',
+                'you wish to filter.',
+                '',
+                'Applications may also wish to use a `FilterChooser` to allow the user to',
+                'filter the store data via a single "omni-box" style text control.',
+                '',
+                'The example below shows both of these methods being used together on a single',
+                'store.'
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/grids/ColumnFilteringPanel.ts',
                     notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide and core concepts.'
                 },
                 {
                     url: '$HR/cmp/grid/filter/GridFilterModel.ts',
@@ -54,13 +55,25 @@ export const columnFilteringPanel = hoistCmp.factory({
                     notes: 'FieldSpec for field managed by the FilterChooserModel.'
                 }
             ],
+            // Generic grid display options omitted here (distracting in a filtering demo); only
+            // this example's own filter controls are surfaced.
+            options: [
+                wrapperOption({
+                    label: 'Commit on change',
+                    propName: 'GridFilterModelConfig.commitOnChange',
+                    control: switchInput({model: filterModel, bind: 'commitOnChange'}),
+                    info: 'Apply filter edits immediately.'
+                }),
+                wrapperAction({
+                    icon: Icon.filter(),
+                    text: 'View Grid Filters',
+                    onClick: () => filterModel.openDialog()
+                })
+            ],
             item: panel({
-                title: 'Grids › Column Filtering',
-                icon: Icon.filter(),
                 className: 'tb-grid-wrapper-panel tb-column-filtering-panel',
                 tbar: tbar(),
-                item: hframe(grid(), gridOptionsPanel()),
-                bbar: bbar()
+                item: grid()
             })
         });
     }
@@ -73,30 +86,7 @@ const tbar = hoistCmp.factory(() =>
             enableClear: true,
             placeholder: 'Filter with bound FilterChooser...'
         }),
+        '-',
         storeFilterField({placeholder: 'Quick filter...'})
     )
 );
-
-const bbar = hoistCmp.factory<ColumnFilteringPanelModel>(({model}) => {
-    const {filterModel} = model.gridModel;
-    return toolbar(
-        button({
-            icon: Icon.filter(),
-            text: 'View Grid Filters',
-            intent: 'primary',
-            onClick: () => filterModel.openDialog()
-        }),
-        '-',
-        switchInput({
-            model: filterModel,
-            bind: 'commitOnChange',
-            label: 'Commit on change'
-        }),
-        filler(),
-        gridCountLabel(),
-        '-',
-        colAutosizeButton(),
-        colChooserButton(),
-        exportButton()
-    );
-});

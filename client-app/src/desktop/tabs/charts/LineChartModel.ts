@@ -8,26 +8,15 @@ import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
+import {ChartContextMenuMode} from '../../common';
 
 export class LineChartModel extends HoistModel {
     @bindable currentSymbols: string[] = [];
     @observable.ref symbols: string[] = [];
 
-    @bindable currentContextMenu = null;
-    contextMenuOptions = [
-        {
-            label: 'Default',
-            value: null
-        },
-        {
-            label: 'None',
-            value: false
-        },
-        {
-            label: 'Custom',
-            value: 'custom'
-        }
-    ];
+    @bindable aspectRatio: number = null;
+
+    @bindable currentContextMenu: ChartContextMenuMode = null;
 
     @managed
     @observable.ref
@@ -45,12 +34,24 @@ export class LineChartModel extends HoistModel {
         this.addReaction({
             track: () => this.currentContextMenu,
             run: () => {
+                XH.safeDestroy(this.chartModel);
                 this.chartModel = this.getChartModel();
                 this.loadAsync();
             }
         });
 
         this.chartModel = this.getChartModel();
+    }
+
+    /** Demonstrate reaching through ChartModel to the underlying Highcharts API. */
+    callChartApi() {
+        const {highchart} = this.chartModel;
+        if (!highchart) return;
+        const xExtremes = highchart.axes[0].getExtremes();
+        XH.alert({
+            title: 'X-axis extremes - as read from chart API',
+            message: JSON.stringify(xExtremes)
+        });
     }
 
     override async doLoadAsync(loadSpec) {

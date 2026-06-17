@@ -1,4 +1,4 @@
-import {div, filler, p, span} from '@xh/hoist/cmp/layout';
+import {div, filler, p} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -9,7 +9,7 @@ import {menu, menuDivider, popover} from '@xh/hoist/kit/blueprint';
 import {wait} from '@xh/hoist/promise';
 import {parseMenuItems} from '@xh/hoist/utils/impl';
 import {usStates} from '../../../core/data';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import {BasicPanelModel} from './BasicPanelModel';
 
 export const basicPanel = hoistCmp.factory({
@@ -17,21 +17,29 @@ export const basicPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'Intro',
+            icon: Icon.window(),
             description: [
-                p(
-                    'Panels are a core building block for layouts in Hoist. They support an optional header bar with props to configure an icon, title and custom header items, props for top and bottom toolbars, and an optional model to manage their sizing.'
-                ),
-                p(
-                    'Panels also provide a convenient prop for establishing an ErrorBoundary around its contents, allowing the managed isolation of application content.'
-                ),
-                p(
-                    'See the other tabs at left for additional features and conveniences, including built-in integrations with other Hoist components such as masks.'
-                )
+                'Panels are a core building block for layouts in Hoist. They support an',
+                'optional header bar with props to configure an icon, title and custom header',
+                'items, props for top and bottom toolbars, and an optional model to manage',
+                'their sizing.',
+                '',
+                'Panels also provide a convenient prop for establishing an `ErrorBoundary`',
+                'around its contents, allowing the managed isolation of application content.',
+                '',
+                'See the other tabs at left for additional features and conveniences,',
+                'including built-in integrations with other Hoist components such as masks.'
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/panels/BasicPanel.ts',
                     notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/panel/README.md#basic-usage',
+                    text: 'Panel docs',
+                    notes: 'Desktop panel guide (toolbars, masks, sizing).'
                 },
                 {url: '$HR/desktop/cmp/panel/Panel.ts', notes: 'Hoist component.'},
                 {
@@ -39,11 +47,24 @@ export const basicPanel = hoistCmp.factory({
                     notes: 'Hoist component model (for resize / collapse).'
                 }
             ],
+            options: [
+                wrapperOption({
+                    label: 'Compact Header',
+                    propName: 'PanelProps.compactHeader',
+                    control: switchInput({model, bind: 'compactHeader'}),
+                    info: 'Render a denser, shorter header.'
+                }),
+                wrapperOption({
+                    label: 'Context Menu',
+                    control: switchInput({model, bind: 'showContextMenu'}),
+                    info: 'Add a right-click context menu.'
+                })
+            ],
             item: panel({
+                title: 'Basic Panel',
                 icon: Icon.window(),
-                title: 'Panels › Intro',
-                height: 400,
-                width: 700,
+                height: '60vh',
+                width: '90%',
                 compactHeader: model.compactHeader,
                 modelConfig: {
                     errorBoundary: true,
@@ -51,11 +72,6 @@ export const basicPanel = hoistCmp.factory({
                     resizable: false
                 },
                 headerItems: [
-                    switchInput({
-                        label: 'Compact Header',
-                        labelSide: 'left',
-                        bind: 'compactHeader'
-                    }),
                     button({
                         tooltip: 'Header Button',
                         icon: Icon.gear(),
@@ -93,11 +109,6 @@ export const basicPanel = hoistCmp.factory({
                                 }
                             ])
                         )
-                    }),
-                    filler(),
-                    span('Context Menu'),
-                    switchInput({
-                        bind: 'showContextMenu'
                     })
                 ],
                 items: [

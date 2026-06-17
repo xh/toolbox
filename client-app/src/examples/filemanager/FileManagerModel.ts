@@ -5,15 +5,34 @@ import {computed, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {filesize} from 'filesize';
-import {downloadBlob} from '@xh/hoist/utils/js';
 import {filter, find, pull} from 'lodash';
 import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
+import {downloadBlob} from '@xh/hoist/utils/js';
 
 export class FileManagerModel extends HoistModel {
     override telemetryPrefix = 'toolbox.client.fileManager';
 
+    // Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
+    // accepted file types for sanity (and to demo the `accepts` prop).
+    private acceptedFileTypes: string[] = [
+        '.txt',
+        '.png',
+        '.gif',
+        '.jpg',
+        '.doc',
+        '.docx',
+        '.xls',
+        '.xlsx',
+        '.ppt',
+        '.pptx',
+        '.pdf'
+    ];
+
     @managed
-    chooserModel = new FileChooserModel();
+    chooserModel = new FileChooserModel({
+        accept: this.acceptedFileTypes,
+        maskOnDrag: false
+    });
 
     @managed
     gridModel = new GridModel({
@@ -33,9 +52,9 @@ export class FileManagerModel extends HoistModel {
             {field: 'name', flex: 1},
             {
                 field: 'size',
-                width: 90,
                 align: 'right',
-                renderer: v => filesize(v)
+                renderer: v => filesize(v),
+                flex: 1
             },
             {
                 field: 'status',
@@ -97,7 +116,8 @@ export class FileManagerModel extends HoistModel {
         const uploads = this.chooserModel.files,
             deletes = this.getFilesToDelete();
 
-        return this.rootSpan('save')
+        return this.runner()
+            .span('save')
             .run(async ctx => {
                 let uploadPromise, deletePromise;
 
@@ -107,23 +127,27 @@ export class FileManagerModel extends HoistModel {
                         formData.append(`file-${idx}`, file, file.name);
                     });
 
-                    uploadPromise = XH.fetch({
-                        url: 'fileManager/upload',
-                        method: 'POST',
-                        body: formData,
-                        headers: {'Content-Type': null},
-                        span: ctx.span
-                    });
+                    uploadPromise = XH.fetch(
+                        {
+                            url: 'fileManager/upload',
+                            method: 'POST',
+                            body: formData,
+                            headers: {'Content-Type': null}
+                        },
+                        ctx
+                    );
                 }
 
                 if (deletes.length) {
                     deletePromise = Promise.all(
                         deletes.map(it => {
-                            return ctx
-                                .fetchJson({
+                            return XH.fetchJson(
+                                {
                                     url: 'fileManager/delete',
                                     params: {filename: it.name}
-                                })
+                                },
+                                ctx
+                            )
                                 .then(ret => {
                                     if (!ret.success) throw `Unable to delete ${it.name}`;
                                 })
@@ -149,7 +173,8 @@ export class FileManagerModel extends HoistModel {
     async downloadSelectedAsync() {
         if (!this.enableDownload) return;
 
-        await this.rootSpan('download')
+        await this.runner()
+            .span('download')
             .run(async ctx => {
                 const sel = this.gridModel.selectedRecord,
                     {name} = sel.data,
@@ -172,11 +197,11 @@ export class FileManagerModel extends HoistModel {
     // Implementation
     //---------------
     override async doLoadAsync(loadSpec) {
-        await this.runOn(loadSpec)
-            .newSpan('load')
-            .withTrack({category: 'File Manager', message: 'Loaded Files'})
+        await this.runner({loadSpec})
+            .span('load')
+            .track({category: 'File Manager', message: 'Loaded Files'})
             .run(async ctx => {
-                const files = await ctx.fetchJson({url: 'fileManager/list'});
+                const files = await XH.fetchJson({url: 'fileManager/list'}, ctx);
                 files.forEach(file => {
                     file.status = 'Saved';
                 });

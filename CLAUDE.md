@@ -307,6 +307,10 @@ Run both simultaneously:
 - Terminal 1: `./gradlew bootRun`
 - Terminal 2: `cd client-app && yarn start`
 
+For the full local-run guide — local Hoist checkouts, multiple instances, on-device mobile testing
+over a network IP, HTTPS, and troubleshooting (including the server timezone check) — see
+[`docs/running-locally.md`](docs/running-locally.md).
+
 ### App URLs during Local Development
 
 The webpack dev server runs on **`http://localhost:3000`**. Each file in `client-app/src/apps/`
@@ -382,6 +386,24 @@ distinguishable from framework spans in the trace view.
 ### Instance Configuration
 Environment variables loaded from `.env` file (copy `.env.template` to `.env`). Required: `APP_TOOLBOX_ENVIRONMENT`, `APP_TOOLBOX_DB_HOST`, `APP_TOOLBOX_DB_SCHEMA`, `APP_TOOLBOX_DB_USER`, `APP_TOOLBOX_DB_PASSWORD`.
 
+## Operating the Deployed App on AWS
+
+Toolbox is deployed to XH's AWS on ECS (cluster `toolbox`, services `toolbox-dev` / `toolbox-prod`).
+For troubleshooting, log inspection, DB queries, and manual deploy/scale operations against the
+**deployed** environment, see [`docs/aws-access.md`](docs/aws-access.md). That runbook covers SSO
+profile setup (`xh-toolbox-ro` read-only, `xh-toolbox-rw` for writes), SSM port-forwarding to RDS via
+ECS Exec, CloudWatch log access, and the per-command confirmation protocol for write operations.
+
+This repo is **public**: the runbook deliberately omits the AWS account ID, Identity Center URL/ARN,
+RDS endpoints, internal DNS, and DB credentials. Those operational values live in the `Toolbox AWS
+Ops` item in the `XH Team` 1Password vault — fetch them with the `op` CLI
+(`op read "op://XH Team/Toolbox AWS Ops/<field>"`) when running commands from the runbook. Never
+write those values into checked-in files.
+
+**Safety protocol for AI agents** (full table in the runbook): reads against dev proceed without
+confirmation; writes against dev, and anything (read or write) against prod, require explicit
+per-command user confirmation — propose the exact command and wait for "go".
+
 ## Changelog
 
 Toolbox maintains a `CHANGELOG.md` that is parsed at build time by `changelog-parser` (via
@@ -446,5 +468,5 @@ is broken.
 
 XH / Hoist framework developers can optionally check out the framework libraries as sibling
 directories for inline development of the libraries. This is not required for app development.
-- **`../hoist-core`** — Groovy/Java backend framework. Enable with `runHoistInline=true` in `gradle.properties`.
+- **`../hoist-core`** — Groovy/Java backend framework. Enable per-run with `./gradlew bootRun -PrunHoistInline=true` (no tracked-file edit), or persistently via `runHoistInline=true` in `gradle.properties`.
 - **`../hoist-react`** — React frontend library. Enable with `yarn startWithHoist` from `client-app/`.

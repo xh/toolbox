@@ -26,13 +26,21 @@ jobs:
     prepare:
 
         runs-on: ubuntu-latest
-        permissions: {}
+        permissions:
+            contents: read
         outputs:
-            build-tag: ${{ steps.tag.outputs.build-tag }}
+            app-build: ${{ steps.tag.outputs.app-build }}
+            image-tag: ${{ steps.tag.outputs.image-tag }}
         steps:
-        - name: Generate build tag
+        # Build identifiers come from the shared dev-utils composite action — one
+        # unit-tested implementation, consumed by every app repo. It snaps a single
+        # timestamp and emits both `app-build` (readable, baked into appBuild on client
+        # + server, shown in-app) and `image-tag` (sanitized, snap_-prefixed, immutable
+        # ECR tag for push/promote/cleanup); container-tag constraints live in the action,
+        # never on the displayed appBuild.
+        - name: Generate build identifiers
           id: tag
-          run: echo "build-tag=${GITHUB_SHA::7}_${GITHUB_REF_NAME}_$(date -u +'%Y-%m-%dT%H:%MZ')" >> "$GITHUB_OUTPUT"
+          uses: xh/hoist-dev-utils/.github/actions/build-snapshot-tag@master
 
     build-tomcat:
         needs: prepare
@@ -48,7 +56,7 @@ jobs:
           uses: actions/setup-java@v5
           with:
               java-version: '21'
-              distribution: 'zulu'
+              distribution: 'temurin'
 
         - name: Setup Gradle
           uses: gradle/actions/setup-gradle@v6
@@ -58,7 +66,7 @@ jobs:
               build-scan-terms-of-use-agree: 'yes'
 
         - name: Build WAR
-          run: ./gradlew -PxhAppBuild="${{ needs.prepare.outputs.build-tag }}" war
+          run: ./gradlew -PxhAppBuild="${{ needs.prepare.outputs.app-build }}" war
 
         - name: Copy WAR into Docker context
           run: cp build/libs/*.war docker/tomcat/app.war
@@ -73,12 +81,16 @@ jobs:
         - name: Login to Amazon ECR
           uses: aws-actions/amazon-ecr-login@v2
 
+        # Push to the immutable per-build tag, NOT :snapshot. The :snapshot deploy
+        # pointer is advanced later by the `promote` job, and only once both images
+        # for this run exist — so the deployed pair can never straddle two runs.
         - name: Build and push tomcat image
           env:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+              IMAGE_TAG: ${{ needs.prepare.outputs.image-tag }}
           run: |
-              docker build -t "$ECR_ROOT/${{ env.TOMCAT_IMAGE }}:snapshot" docker/tomcat
-              docker push "$ECR_ROOT/${{ env.TOMCAT_IMAGE }}:snapshot"
+              docker build -t "$ECR_ROOT/${{ env.TOMCAT_IMAGE }}:$IMAGE_TAG" docker/tomcat
+              docker push "$ECR_ROOT/${{ env.TOMCAT_IMAGE }}:$IMAGE_TAG"
 
     build-nginx:
         needs: prepare
@@ -124,7 +136,7 @@ jobs:
           run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
 
         - name: Install and upgrade dependencies, lint, and build client app
-          run: cd client-app && yarn install && yarn upgrade && yarn lint && yarn build --env appBuild="${{ needs.prepare.outputs.build-tag }}"
+          run: cd client-app && yarn install && yarn upgrade && yarn lint && yarn build --env appBuild="${{ needs.prepare.outputs.app-build }}"
 
         # `yarn upgrade` rewrites yarn.lock when any semver-compatible transitive
         # has moved. That's expected and usually too noisy to act on — but a
@@ -168,9 +180,50 @@ jobs:
         - name: Login to Amazon ECR
           uses: aws-actions/amazon-ecr-login@v2
 
+        # Push to the immutable per-build tag, NOT :snapshot (see build-tomcat).
         - name: Build and push nginx image
           env:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+              IMAGE_TAG: ${{ needs.prepare.outputs.image-tag }}
           run: |
-              docker build -t "$ECR_ROOT/${{ env.NGINX_IMAGE }}:snapshot" docker/nginx
-              docker push "$ECR_ROOT/${{ env.NGINX_IMAGE }}:snapshot"
+              docker build -t "$ECR_ROOT/${{ env.NGINX_IMAGE }}:$IMAGE_TAG" docker/nginx
+              docker push "$ECR_ROOT/${{ env.NGINX_IMAGE }}:$IMAGE_TAG"
+
+    promote:
+        # Advance the mutable :snapshot deploy pointer ONLY after BOTH images for
+        # this run have built and pushed. This is the atomicity guarantee that fixes
+        # the client/server skew: the pair that gets deployed always comes from a
+        # single run, so re-running one build job in isolation can no longer desync
+        # what's live. Deploy Snapshot keys on this workflow's success, so it won't
+        # fire until the retag below has happened.
+        needs: [ prepare, build-tomcat, build-nginx ]
+
+        runs-on: ubuntu-latest
+        # No GitHub token scopes needed — only AWS credentials from secrets.
+        permissions: {}
+
+        steps:
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v6
+          with:
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region: ${{ secrets.AWS_REGION }}
+
+        # Registry-side manifest copy — retags the existing build images to
+        # :snapshot without pulling or moving any layers. After this, each deployed
+        # image carries both its immutable snap_ tag and :snapshot.
+        - name: Retag build images as :snapshot
+          env:
+              IMAGE_TAG: ${{ needs.prepare.outputs.image-tag }}
+          run: |
+              for image in "${{ env.TOMCAT_IMAGE }}" "${{ env.NGINX_IMAGE }}"; do
+                  manifest=$(aws ecr batch-get-image \
+                      --repository-name "$image" \
+                      --image-ids imageTag="$IMAGE_TAG" \
+                      --query 'images[0].imageManifest' --output text)
+                  aws ecr put-image \
+                      --repository-name "$image" \
+                      --image-tag snapshot \
+                      --image-manifest "$manifest"
+              done

@@ -1,13 +1,9 @@
-import {creates, elementFactory, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
-import {hframe, p} from '@xh/hoist/cmp/layout';
-
-const em = elementFactory('em');
 import {Icon} from '@xh/hoist/icon/Icon';
-import {wrapper} from '../../common';
+import {agGridDisplayOptions, wrapper, wrapperAction} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
-import {agGridOptionsPanel} from '../../common/grid/options/AgGridOptionsPanel';
 
 export const agGridView = hoistCmp.factory({
     model: creates(AgGridViewModel),
@@ -16,39 +12,79 @@ export const agGridView = hoistCmp.factory({
         const {agGridModel, columnDefs} = model;
 
         return wrapper({
+            title: 'AG Grid Wrapper',
+            icon: Icon.gridPanel(),
             description: [
-                p(
-                    'The Hoist agGrid component provides a much more minimal wrapper for ag-Grid, supporting direct use of the library with limited enhancements for consistent Hoist styling, layout support, keyboard navigation, and a backing model for convenient access to the ag-Grid APIs and other utility methods.'
-                ),
-                p(
-                    'This wrapper does ',
-                    em('not'),
-                    ' include a number of Hoist enhancements provided by the core Grid component, including store support, grid state, enhanced column and renderer APIs, absolute value sorting, and enhanced server-side Excel exports. Use of this wrapper is encouraged only when advanced ag-Grid features (such as pivoting) are required.'
-                )
+                'The Hoist `agGrid` component provides a much more minimal wrapper for',
+                'AG Grid, supporting direct use of the library with limited enhancements for',
+                'consistent Hoist styling, layout support, keyboard navigation, and a backing',
+                'model for convenient access to the AG Grid APIs and other utility methods.',
+                '',
+                'This wrapper does *not* include a number of Hoist enhancements provided by',
+                'the core `Grid` component, including store support, grid state, enhanced',
+                'column and renderer APIs, absolute value sorting, and enhanced server-side',
+                'Excel exports. Use of this wrapper is encouraged only when advanced AG Grid',
+                'features (such as pivoting) are required.'
+            ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/grids/AgGridView.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Guide to the full-featured Hoist grid.'
+                },
+                {url: '$HR/cmp/ag-grid/AgGrid.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/cmp/ag-grid/AgGridModel.ts',
+                    notes: 'Backing model with access to the AG Grid APIs.'
+                },
+                {
+                    url: '$HR/cmp/grid/Grid.ts',
+                    notes: 'The full-featured Hoist grid, preferred for most use cases.'
+                },
+                {
+                    url: 'https://www.ag-grid.com/javascript-data-grid/',
+                    text: 'AG Grid Docs',
+                    notes: 'AG Grid documentation, covering advanced features such as pivoting.'
+                }
+            ],
+            options: [
+                ...agGridDisplayOptions(agGridModel),
+                wrapperAction({
+                    text: 'Save grid state',
+                    icon: Icon.save(),
+                    onClick: () =>
+                        XH.localStorageService.set('agGridWrapperState', agGridModel.getState())
+                }),
+                wrapperAction({
+                    text: 'Load grid state',
+                    icon: Icon.download(),
+                    disabled: !XH.localStorageService.get('agGridWrapperState'),
+                    onClick: () =>
+                        agGridModel.setState(XH.localStorageService.get('agGridWrapperState'))
+                })
             ],
             item: panel({
-                title: 'Grids › ag-Grid Wrapper',
-                icon: Icon.gridPanel(),
                 className: 'tb-grid-wrapper-panel',
-                width: '95%',
+                width: '100%',
                 mask: 'onLoad',
-                item: hframe(
-                    agGrid({
-                        model: agGridModel,
-                        columnDefs,
-                        rowData: [],
-                        defaultColDef: {
-                            sortable: true,
-                            resizable: true,
-                            filter: true
-                        },
-                        sideBar: true,
-                        rowSelection: {
-                            mode: 'singleRow'
-                        }
-                    }),
-                    agGridOptionsPanel({model: agGridModel})
-                )
+                item: agGrid({
+                    model: agGridModel,
+                    columnDefs,
+                    rowData: [],
+                    defaultColDef: {
+                        sortable: true,
+                        resizable: true,
+                        filter: true
+                    },
+                    sideBar: true,
+                    rowSelection: {
+                        mode: 'singleRow'
+                    }
+                })
             })
         });
     }

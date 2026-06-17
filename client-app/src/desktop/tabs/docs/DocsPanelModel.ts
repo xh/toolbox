@@ -64,6 +64,13 @@ export class DocsPanelModel extends HoistModel {
     @observable
     activeSection: string = null;
 
+    /**
+     * Section slug a deep-link has requested we scroll to once content renders. Consumed and
+     * cleared by the view; not persisted to the URL (sections are scroll-to-on-arrival targets).
+     */
+    @observable
+    pendingScrollSection: string = null;
+
     @bindable
     feedbackMessage: string = '';
 
@@ -147,23 +154,39 @@ export class DocsPanelModel extends HoistModel {
         return getDocExamples(this.activeDoc.id);
     }
 
-    /** Navigate to a specific doc by source + ID. Updates grid selection, content, and route. */
+    /**
+     * Navigate to a specific doc by source + ID, optionally scrolling to a section (an H2 slug).
+     * Updates grid selection, content, and route. If the requested doc is already active, only
+     * the section scroll is (re)triggered.
+     */
     @action
-    navigateToDoc(docId: string, source?: string) {
+    navigateToDoc(docId: string, source?: string, section?: string) {
         const entry = source
             ? this.docService.getDocEntry(docId, source)
             : this.docService.getDocEntry(docId);
-        if (!entry || (entry.id === this.activeDoc?.id && entry.source === this.activeDoc?.source))
+        if (!entry) return;
+
+        const sameDoc = entry.id === this.activeDoc?.id && entry.source === this.activeDoc?.source;
+        if (sameDoc) {
+            if (section) this.pendingScrollSection = section;
             return;
+        }
 
         const recId = `${entry.source}:${entry.id}`;
         this.gridModel.selectAsync(recId, {ensureVisible: true});
 
         this.activeDoc = entry;
         this.activeSection = null;
+        this.pendingScrollSection = section ?? null;
         this.searchMode = false;
         this.loadContentAsync(entry);
         this.updateRouteFromDoc();
+    }
+
+    /** Clear the pending scroll-to-section request, once the view has consumed it. */
+    @action
+    clearPendingScrollSection() {
+        this.pendingScrollSection = null;
     }
 
     /** Navigate to the first doc in a given source + category. */
@@ -178,7 +201,7 @@ export class DocsPanelModel extends HoistModel {
         this.searchMode ? this.exitSearchMode() : this.enterSearchMode();
     }
 
-    /** Enter search mode — switches content area to search results view. */
+    /** Enter search mode - switches content area to search results view. */
     @action
     enterSearchMode() {
         this.searchMode = true;
@@ -188,7 +211,7 @@ export class DocsPanelModel extends HoistModel {
         this.docService.ensureIndexBuilt();
     }
 
-    /** Exit search mode — returns to normal doc viewing. */
+    /** Exit search mode - returns to normal doc viewing. */
     @action
     exitSearchMode() {
         this.searchMode = false;
@@ -197,7 +220,7 @@ export class DocsPanelModel extends HoistModel {
         this.selectedSearchIdx = -1;
     }
 
-    /** Select a search result — navigate to the doc and exit search. */
+    /** Select a search result - navigate to the doc and exit search. */
     @action
     selectSearchResult(entry: DocEntry) {
         this.navigateToDoc(entry.id, entry.source);
@@ -240,7 +263,7 @@ export class DocsPanelModel extends HoistModel {
         }
     }
 
-    /** Update the active section — called from scroll-based observation in the view. */
+    /** Update the active section - called from scroll-based observation in the view. */
     @action
     setActiveSection(sectionId: string) {
         this.activeSection = sectionId;
@@ -300,7 +323,7 @@ export class DocsPanelModel extends HoistModel {
         await XH.trackService.pushPendingAsync();
 
         this.closeFeedbackPanel();
-        XH.successToast('Feedback submitted — thank you!');
+        XH.successToast('Feedback submitted - thank you!');
     }
 
     //------------------
@@ -345,11 +368,13 @@ export class DocsPanelModel extends HoistModel {
     private loadNav() {
         this.gridModel.loadData(this.buildTreeData());
 
-        const ref = this.docRefFromRoute(XH.routerState.params);
-        const registry = this.docService.registry;
-        const initialDoc =
-            (ref && this.docService.getDocEntry(ref.docId, ref.source)) || registry[0];
-        if (initialDoc) this.navigateToDoc(initialDoc.id, initialDoc.source);
+        const ref = this.docRefFromRoute(XH.routerState.params),
+            registry = this.docService.registry,
+            fromRoute = ref && this.docService.getDocEntry(ref.docId, ref.source),
+            initialDoc = fromRoute || registry[0];
+        if (initialDoc) {
+            this.navigateToDoc(initialDoc.id, initialDoc.source, fromRoute ? ref.section : null);
+        }
     }
 
     /**
@@ -434,7 +459,7 @@ export class DocsPanelModel extends HoistModel {
         if (!name.startsWith(this.BASE_ROUTE)) return;
 
         const ref = this.docRefFromRoute(params);
-        if (ref) this.navigateToDoc(ref.docId, ref.source);
+        if (ref) this.navigateToDoc(ref.docId, ref.source, ref.section);
     }
 
     /** Doc → route: push active doc ID into the URL. */
@@ -459,10 +484,14 @@ export class DocsPanelModel extends HoistModel {
         return docId.replaceAll('/', '~');
     }
 
-    private docRefFromRoute(params: Record<string, string>): {source: string; docId: string} {
-        const {source, docId} = params;
+    private docRefFromRoute(params: Record<string, string>): {
+        source: string;
+        docId: string;
+        section: string;
+    } {
+        const {source, docId, section} = params;
         if (!source || !docId) return null;
-        return {source, docId: docId.replaceAll('~', '/')};
+        return {source, docId: docId.replaceAll('~', '/'), section: section ?? null};
     }
 
     private async loadContentAsync(entry: DocEntry) {

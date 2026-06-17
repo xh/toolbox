@@ -1,4 +1,4 @@
-import {HoistModel, LoadSpec, managed, persist} from '@xh/hoist/core';
+import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
@@ -138,17 +138,16 @@ export class WeatherDashModel extends HoistModel {
         const {selectedCity} = this;
         if (!selectedCity) return;
 
-        return this.runOn(loadSpec)
-            .newSpan('dashLoad')
+        await this.runner({loadSpec})
+            .span('dashLoad')
             .run(async ctx => {
                 ctx.span.setTags({city: selectedCity});
 
                 const params = {city: selectedCity},
                     [currentWeather, forecast] = await Promise.all([
-                        ctx.fetchJson({url: 'weather/current', params}),
-                        ctx.fetchJson({url: 'weather/forecast', params})
+                        XH.fetchJson({url: 'weather/current', params}, ctx),
+                        XH.fetchJson({url: 'weather/forecast', params}, ctx)
                     ]);
-
                 runInAction(() => {
                     this.currentWeather = currentWeather;
                     this.forecast = forecast;

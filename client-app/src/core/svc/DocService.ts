@@ -91,15 +91,20 @@ export class DocService extends HoistService {
         const cached = this.cache.get(cacheKey);
         if (cached) return cached;
 
-        return this.rootSpan('getContent').run(async ctx => {
-            const resp = await ctx.fetchJson({
-                url: 'docs/content',
-                params: {source, docId}
+        return this.runner()
+            .span('getContent')
+            .run(async ctx => {
+                const resp = await XH.fetchJson(
+                    {
+                        url: 'docs/content',
+                        params: {source, docId}
+                    },
+                    ctx
+                );
+                const content = resp.content;
+                this.cache.set(cacheKey, content);
+                return content;
             });
-            const content = resp.content;
-            this.cache.set(cacheKey, content);
-            return content;
-        });
     }
 
     /**
@@ -144,26 +149,28 @@ export class DocService extends HoistService {
     // Implementation
     //------------------
     private async loadRegistryAsync() {
-        return this.rootSpan('loadRegistry').run(async ctx => {
-            const resp = await ctx.fetchJson({url: 'docs/registry'});
-            const sourceCount = Object.keys(resp.sources).length;
+        return this.runner()
+            .span('loadRegistry')
+            .run(async ctx => {
+                const resp = await XH.fetchJson({url: 'docs/registry'}, ctx);
+                const sourceCount = Object.keys(resp.sources).length;
 
-            this.logInfo(
-                `Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`
-            );
+                this.logInfo(
+                    `Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`
+                );
 
-            runInAction(() => {
-                this.registry = resp.entries.map(e => ({
-                    id: e.id,
-                    source: e.source,
-                    title: e.title,
-                    category: e.category,
-                    description: e.description,
-                    keywords: e.keywords ?? []
-                }));
-                this.sourceInfo = resp.sources;
+                runInAction(() => {
+                    this.registry = resp.entries.map(e => ({
+                        id: e.id,
+                        source: e.source,
+                        title: e.title,
+                        category: e.category,
+                        description: e.description,
+                        keywords: e.keywords ?? []
+                    }));
+                    this.sourceInfo = resp.sources;
+                });
             });
-        });
     }
 
     private async buildIndexAsync() {

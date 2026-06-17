@@ -1,6 +1,6 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, p} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {storeFilterField} from '@xh/hoist/cmp/store';
@@ -14,26 +14,44 @@ export const dataViewPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
+            title: 'DataView',
+            icon: Icon.addressCard(),
             description: [
-                p(
-                    'The DataView component leverages an underlying Grid / GridModel instance to display individual component "cards" for each rendered item.'
-                )
+                '`DataView` renders each store record as a custom "card" component rather than',
+                'a row of columns, making it a good fit for richer, non-tabular layouts. It is',
+                'backed by a `Grid` and `GridModel` under the hood, so it inherits grid',
+                'features such as sorting, selection, and store binding while leaving the',
+                'rendering of each item entirely up to the application.'
+            ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/grids/DataViewPanel.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide that DataView builds on.'
+                },
+                {url: '$HR/cmp/dataview/DataView.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/cmp/dataview/DataViewModel.ts',
+                    notes: 'Hoist model for configuring and interacting with DataViews.'
+                }
             ],
             item: panel({
                 className: 'tb-dataview-panel',
-                title: 'Grids › DataView',
-                icon: Icon.addressCard(),
-                width: 700,
-                height: 400,
-                item: dataView(),
-                bbar: [
+                width: 600,
+                height: '50vh',
+                tbar: [
                     refreshButton({
                         text: 'Load new (random) records',
                         target: model
                     }),
                     filler(),
                     storeFilterField({store: model.dataViewModel.store})
-                ]
+                ],
+                item: dataView()
             })
         });
     }

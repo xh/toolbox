@@ -81,7 +81,7 @@ export class DirectoryPanelModel extends HoistModel {
     //------------------------
     override async doLoadAsync(loadSpec: LoadSpec) {
         const {gridModel} = this;
-        const contacts = await XH.contactService.getContactsAsync(loadSpec);
+        const contacts = await XH.contactService.getContactsAsync({loadSpec});
 
         runInAction(() => {
             this.tagList = uniq(contacts.flatMap(it => it.tags ?? [])).sort() as string[];

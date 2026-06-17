@@ -1,4 +1,11 @@
-import {CallContext, HoistAuthModel, IdentityInfo, managed, PlainObject, XH} from '@xh/hoist/core';
+import {
+    CallContextLike,
+    HoistAuthModel,
+    IdentityInfo,
+    managed,
+    PlainObject,
+    XH
+} from '@xh/hoist/core';
 import {AuthZeroClient, AuthZeroClientConfig} from '@xh/hoist/security/authzero';
 import {MsalClient, MsalClientConfig} from '@xh/hoist/security/msal';
 
@@ -13,7 +20,7 @@ export class AuthModel extends HoistAuthModel {
     @managed
     client: AuthZeroClient | MsalClient;
 
-    override async completeAuthAsync(ctx: CallContext): Promise<IdentityInfo> {
+    override async completeAuthAsync(ctx: CallContextLike): Promise<IdentityInfo> {
         this.setMaskMsg('Authenticating...');
 
         // Toolbox's server-provided configuration allows for OAuth to be disabled entirely, falling back to a username

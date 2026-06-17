@@ -1,7 +1,7 @@
 import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
-import {appendFilter, FilterLike} from '@xh/hoist/data';
+import {appendFilter, FilterLike, StoreRecord} from '@xh/hoist/data';
 import {uniq, map} from 'lodash';
 
 import {newsPanelItem} from './NewsPanelItem';
@@ -32,7 +32,8 @@ export class NewsPanelModel extends HoistModel {
         },
         onRowDoubleClicked: this.onRowDoubleClicked,
         renderer: (v, {record}) => newsPanelItem({record}),
-        itemHeight: 120,
+        itemHeight: 140,
+        showHover: true,
         rowBorders: true,
         stripeRows: true
     });
@@ -54,10 +55,10 @@ export class NewsPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
-        await this.runOn(loadSpec)
-            .newSpan('load')
+        await this.runner({loadSpec})
+            .span('load')
             .run(async ctx => {
-                const stories = await ctx.fetchJson({url: 'news'});
+                const stories = await XH.fetchJson({url: 'news'}, ctx);
                 this.completeLoad(stories);
             });
     }
@@ -85,8 +86,12 @@ export class NewsPanelModel extends HoistModel {
         this.lastRefresh = new Date();
     }
 
-    private onRowDoubleClicked({data: record}) {
-        const url = record.get('url');
+    openStory(record: StoreRecord) {
+        const url = record?.get('url');
         if (url) XH.openWindow(url, 'tb-news');
+    }
+
+    private onRowDoubleClicked({data: record}) {
+        this.openStory(record);
     }
 }

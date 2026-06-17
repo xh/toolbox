@@ -1,59 +1,120 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {wrapper} from '../../../common';
+import {wrapper, wrapperOption} from '../../../common';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {p, vframe, hframe, div, hbox, label, filler} from '@xh/hoist/cmp/layout';
-import {buttonGroupInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {vframe, div} from '@xh/hoist/cmp/layout';
+import {segmentedControl, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {ExceptionHandlerModel} from './ExceptionHandlerModel';
 import {capitalize} from 'lodash';
 
 export const exceptionHandlerPanel = hoistCmp.factory({
     model: creates(ExceptionHandlerModel),
-    render() {
+    render({model}) {
         return wrapper({
-            description: div(
-                p(
-                    'Hoist provides centralized exception handling for Hoist Applications, including providing a managed display of the exception to the user, and providing options for introspection, tracking and notification of the problem to back-end administrators.'
-                ),
-                p(
-                    'Some errors may require an app refresh, while others do not. Errors may also be marked as "routine" and need not reveal further details to the user beyond the stringified error message. Users also have the option to send a message to the configured support email address to report additional information about the error.'
-                ),
-                p(
-                    'XH.handleException() provides a convenient API for apps to handle exceptions and is typically called directly in catch blocks. Promise.catchDefault() provides a convenient API to the same functionality in Promise chains.'
-                )
-            ),
+            title: 'Exception Handler',
+            icon: Icon.skull(),
+            description: [
+                'Hoist provides centralized exception handling for applications, including a',
+                'managed display of the error to the user and options for introspection,',
+                'tracking, and notifying back-end administrators of the problem.',
+                '',
+                'Some errors may require an app refresh, while others do not. Errors may also',
+                'be marked as "routine" and need not reveal further details to the user beyond',
+                'the stringified error message. Users also have the option to send a message',
+                'to the configured support email address to report additional information',
+                'about the error.',
+                '',
+                '`XH.handleException()` provides a convenient API for apps to handle',
+                'exceptions and is typically called directly in catch blocks.',
+                '`Promise.catchDefault()` provides a convenient API to the same functionality',
+                'in Promise chains.'
+            ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/exceptions/ExceptionHandlerPanel.ts',
-                    notes: 'This example'
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/docs/error-handling.md',
+                    text: 'Error handling docs',
+                    notes: 'Centralized exception handling and display guide.'
                 },
                 {
                     url: '$HR/core/XH.ts',
-                    notes: 'XH top-level Singleton model - see .handleException()'
+                    notes: 'Top-level singleton; see .handleException().'
                 },
                 {
-                    url: '$HR/core/exception/ExceptionHandler.ts',
-                    notes: 'ExceptionHandler Base Class'
+                    url: '$HR/core/ExceptionHandler.ts',
+                    notes: 'Implementation behind XH.handleException().'
                 },
                 {
                     url: '$HR/promise/Promise.ts',
-                    notes: 'Hoist promise enhancement methods - see .catchDefault()'
+                    notes: 'Hoist Promise enhancements; see .catchDefault().'
                 }
             ],
-            item: panel({
-                title: 'Other > Exception Handler',
-                icon: Icon.skull(),
-                width: 700,
-                item: hframe(buttonContainer(), displayOptions())
-            })
+            options: [
+                wrapperOption({
+                    label: 'Title',
+                    propName: 'ExceptionHandlerOptions.title',
+                    control: textInput({model, bind: 'title', placeholder: 'Error', width: 150})
+                }),
+                wrapperOption({
+                    label: 'Message',
+                    propName: 'ExceptionHandlerOptions.message',
+                    control: textInput({
+                        model,
+                        bind: 'message',
+                        placeholder: '[Exception Message]',
+                        width: 150
+                    })
+                }),
+                wrapperOption({
+                    label: 'Log On Server',
+                    propName: 'ExceptionHandlerOptions.logOnServer',
+                    control: switchInput({model, bind: 'logOnServer'}),
+                    info: "Log to the server's Admin Console."
+                }),
+                wrapperOption({
+                    label: 'Show Alert',
+                    propName: 'ExceptionHandlerOptions.showAlert',
+                    control: switchInput({model, bind: 'showAlert'}),
+                    info: 'Off handles the exception silently.'
+                }),
+                wrapperOption({
+                    label: 'Require Reload',
+                    propName: 'ExceptionHandlerOptions.requireReload',
+                    control: switchInput({
+                        model,
+                        bind: 'requireReload',
+                        disabled: !model.showAlert
+                    }),
+                    info: 'Force a full app reload to dismiss.'
+                }),
+                wrapperOption({
+                    label: 'Alert Type',
+                    propName: 'ExceptionHandlerOptions.alertType',
+                    control: segmentedControl({
+                        model,
+                        bind: 'alertType',
+                        disabled: !model.showAlert,
+                        options: [
+                            {value: 'dialog', label: 'Dialog'},
+                            {value: 'toast', label: 'Toast'}
+                        ]
+                    })
+                })
+            ],
+            item: buttonContainer()
         });
     }
 });
 
 const buttonContainer = hoistCmp.factory(() =>
     panel({
-        flex: 1,
+        // Sized to match the sibling Error Message demo card.
+        width: 700,
+        height: 350,
         item: vframe({
             margin: 10,
             items: [
@@ -79,7 +140,7 @@ const exceptionButton = hoistCmp.factory<ExceptionHandlerModel>({
         return button({
             text: `Simulate a ${capitalize(type)} Exception`,
             icon: Icon[iconName]({size: 'lg'}),
-            height: 100,
+            height: 70,
             width: 250,
             margin: 10,
             intent: isRoutine ? 'primary' : 'danger',
@@ -88,74 +149,3 @@ const exceptionButton = hoistCmp.factory<ExceptionHandlerModel>({
         });
     }
 });
-
-const displayOptions = hoistCmp.factory<ExceptionHandlerModel>(({model}) =>
-    panel({
-        title: 'Options',
-        icon: Icon.settings(),
-        className: 'tbox-display-opts',
-        compactHeader: true,
-        modelConfig: {side: 'right', defaultSize: 250, resizable: false},
-        item: div({
-            className: 'tbox-display-opts__inner',
-            items: [
-                'Title',
-                textInput({
-                    bind: 'title',
-                    placeholder: 'Error',
-                    width: null
-                }),
-                'Message',
-                textInput({
-                    bind: 'message',
-                    placeholder: '[Exception Message]',
-                    width: null
-                }),
-                switchInput({
-                    bind: 'logOnServer',
-                    label: 'Log On Server',
-                    labelSide: 'left'
-                }),
-                switchInput({
-                    bind: 'showAlert',
-                    label: 'Show Alert',
-                    labelSide: 'left'
-                }),
-                switchInput({
-                    bind: 'requireReload',
-                    label: 'Require Reload',
-                    labelSide: 'left',
-                    disabled: !model.showAlert
-                }),
-                hbox({
-                    alignItems: 'center',
-                    items: [
-                        label({
-                            className: `bp6-control bp6-switch bp6-inline bp6-align-right xh-input xh-switch-input${
-                                !model.showAlert ? ' bp6-disabled xh-input-disabled' : ''
-                            }`,
-                            item: 'Alert Type'
-                        }),
-                        filler(),
-                        buttonGroupInput({
-                            bind: 'alertType',
-                            disabled: !model.showAlert,
-                            items: [
-                                button({
-                                    margin: 0,
-                                    text: 'Dialog',
-                                    value: 'dialog'
-                                }),
-                                button({
-                                    margin: 0,
-                                    text: 'Toast',
-                                    value: 'toast'
-                                })
-                            ]
-                        })
-                    ]
-                })
-            ]
-        })
-    })
-);

@@ -1,5 +1,5 @@
 import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
-import {HoistModel, LoadSpec, managed, persist} from '@xh/hoist/core';
+import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -120,13 +120,17 @@ export class RecallsPanelModel extends HoistModel {
     //------------------------
     override async doLoadAsync(loadSpec: LoadSpec) {
         const {gridModel} = this;
-        return this.runOn(loadSpec)
-            .newSpan('load')
+
+        await this.runner({loadSpec})
+            .span('load')
             .run(async ctx => {
-                let entries = await ctx.fetchJson({
-                    url: 'recalls',
-                    params: {searchQuery: this.searchQuery}
-                });
+                let entries = await XH.fetchJson(
+                    {
+                        url: 'recalls',
+                        params: {searchQuery: this.searchQuery}
+                    },
+                    ctx
+                );
 
                 // Approximate (and enforce) a unique id for this rather opaque API
                 entries.forEach(it => {
