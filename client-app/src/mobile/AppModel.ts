@@ -9,6 +9,7 @@ import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {runInAction} from '@xh/hoist/mobx';
 import {BaseAppModel} from '../BaseAppModel';
 import {PortfolioService} from '../core/svc/PortfolioService';
+import {NavBladeModel} from './cmp/navBlade/NavBladeModel';
 import {buttonPage} from './buttons/ButtonPage';
 import {chartPage} from './charts/ChartPage';
 import {treeMapPage} from './treemap/TreeMapPage';
@@ -29,6 +30,9 @@ import {popupsPage} from './popups/PopupsPage';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
+
+    @managed
+    navBladeModel: NavBladeModel = new NavBladeModel();
 
     @managed
     navigatorModel: NavigatorModel = new NavigatorModel({
