@@ -92,7 +92,7 @@ class ColumnChooserPanelModel extends HoistModel {
             },
             sortBy: 'lastName',
             emptyText: 'No records found...',
-            colChooserModel: true,
+            colChooserModel: {showColumnLibrary: true, width: 650},
             enableExport: true,
             lockColumnGroups,
             columns: [
