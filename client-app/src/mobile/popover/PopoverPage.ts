@@ -5,39 +5,50 @@ import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {popover} from '@xh/hoist/mobile/cmp/popover';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
+import {exampleScreen} from '../cmp/example/ExampleScreen';
 
 import './PopoverPage.scss';
 
 export const popoverPage = hoistCmp.factory({
     model: creates(() => PopoverPageModel),
     render({model}) {
-        return panel({
+        return exampleScreen({
             title: 'Popovers',
             icon: Icon.openExternal(),
-            className: 'tb-page xh-tiled-bg',
-            items: [
-                filler(),
-                popoverCard({
-                    text: 'Show Popover below',
-                    popoverProps: {
-                        position: 'bottom'
-                    }
-                }),
-                popoverCard({
-                    text: 'Show Popover with backdrop',
-                    popoverProps: {
-                        backdrop: true
-                    }
-                }),
-                popoverCard({
-                    text: 'Show controlled Popover',
-                    popoverProps: {
-                        isOpen: model.isOpen,
-                        onInteraction: nextOpenState => (model.isOpen = nextOpenState)
-                    }
-                }),
-                filler()
-            ]
+            description: [
+                '`Popover` displays floating content anchored to a target element, with optional',
+                'backdrop and controlled open state. Tap the buttons below to see each mode.'
+            ],
+            links: [
+                {url: '$TB/client-app/src/mobile/popover/PopoverPage.ts', notes: 'This example.'},
+                {url: '$HR/mobile/cmp/popover/Popover.ts', text: 'Popover source'}
+            ],
+            item: panel({
+                className: 'tb-page xh-tiled-bg',
+                items: [
+                    filler(),
+                    popoverCard({
+                        text: 'Show Popover below',
+                        popoverProps: {
+                            position: 'bottom'
+                        }
+                    }),
+                    popoverCard({
+                        text: 'Show Popover with backdrop',
+                        popoverProps: {
+                            backdrop: true
+                        }
+                    }),
+                    popoverCard({
+                        text: 'Show controlled Popover',
+                        popoverProps: {
+                            isOpen: model.isOpen,
+                            onInteraction: nextOpenState => (model.isOpen = nextOpenState)
+                        }
+                    }),
+                    filler()
+                ]
+            })
         });
     }
 });

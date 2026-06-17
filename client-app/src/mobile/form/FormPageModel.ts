@@ -7,6 +7,9 @@ import {movies} from '../../core/data';
 export class FormPageModel extends HoistModel {
     @bindable minimal: boolean;
     @bindable readonly: boolean;
+    @bindable commitOnChange: boolean = false;
+    @bindable requiredMarkers: boolean = true;
+    @bindable density: 'comfortable' | 'compact' = 'comfortable';
     readonly movies: PlainObject[] = movies;
 
     constructor() {

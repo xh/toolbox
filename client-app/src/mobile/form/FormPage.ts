@@ -1,8 +1,7 @@
 import {form, formFieldSet} from '@xh/hoist/cmp/form';
-import {div, filler, hbox, vbox} from '@xh/hoist/cmp/layout';
+import {div, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {fmtPercent} from '@xh/hoist/format';
-import './FormPage.scss';
 import {Icon} from '@xh/hoist/icon';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {formField} from '@xh/hoist/mobile/cmp/form';
@@ -13,44 +12,87 @@ import {
     dateInput,
     label,
     numberInput,
-    searchInput,
     select,
     switchInput,
     textArea,
     textInput
 } from '@xh/hoist/mobile/cmp/input';
-import {menuButton} from '@xh/hoist/mobile/cmp/menu';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {LocalDate} from '@xh/hoist/utils/datetime';
+import {exampleAction, exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
+import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 
 export const formPage = hoistCmp.factory({
     model: creates(FormPageModel),
 
     render({model}) {
-        return panel({
-            title: 'Form',
+        return exampleScreen({
+            title: 'Forms',
             icon: Icon.edit(),
-            scrollable: true,
-            className: 'tb-page tb-form-page xh-tiled-bg',
-            items: [formCmp(), results()],
-            bbar: [
-                setFocusMenu(),
-                filler(),
-                checkboxButton({model: model.formModel, bind: 'readonly', text: 'Readonly'}),
-                checkboxButton({bind: 'minimal', text: 'Min. validation'})
-            ]
+            description: [
+                "Hoist's `FormModel` binds inputs to observable state with built-in validation. This",
+                'example shows the common input types in a single form, with display options moved',
+                'into this sheet so they apply live to the fields behind it.'
+            ],
+            options: [
+                exampleOption({
+                    label: 'Read-only',
+                    control: switchInput({model: model.formModel, bind: 'readonly'})
+                }),
+                exampleOption({
+                    label: 'Minimal validation',
+                    control: switchInput({model, bind: 'minimal'})
+                }),
+                exampleOption({
+                    label: 'Commit on change',
+                    control: switchInput({model, bind: 'commitOnChange'})
+                }),
+                exampleOption({
+                    label: 'Required markers',
+                    control: switchInput({model, bind: 'requiredMarkers'})
+                }),
+                exampleOption({
+                    label: 'Density',
+                    control: buttonGroupInput({
+                        model,
+                        bind: 'density',
+                        items: [
+                            button({value: 'comfortable', text: 'Comfortable'}),
+                            button({value: 'compact', text: 'Compact'})
+                        ]
+                    })
+                }),
+                exampleAction({
+                    text: 'Reset form',
+                    icon: Icon.reset(),
+                    onClick: () => model.formModel.reset()
+                })
+            ],
+            links: [
+                {url: '$TB/client-app/src/mobile/form/FormPage.ts', notes: 'This example.'},
+                {
+                    url: '$HR/cmp/form/README.md',
+                    text: 'Forms docs',
+                    notes: 'FormModel, validation & binding'
+                }
+            ],
+            item: formDemo()
         });
     }
 });
 
-const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
-    const {minimal, movies} = model;
-
-    return div({
-        className: 'tb-card',
-        items: form({
-            fieldDefaults: {minimal},
+const formDemo = hoistCmp.factory<FormPageModel>(({model}) => {
+    const {minimal, commitOnChange, requiredMarkers, density, movies} = model;
+    return panel({
+        scrollable: true,
+        className: `tb-form-page tb-form-page--${density}`,
+        item: form({
+            fieldDefaults: {
+                minimal,
+                commitOnChange,
+                requiredIndicator: requiredMarkers ? '*' : ''
+            },
             items: vbox(
                 formFieldSet({
                     title: 'Field Set 1',
@@ -73,10 +115,7 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
                         }),
                         formField({
                             field: 'movie',
-                            item: select({
-                                placeholder: 'Select a Movie...',
-                                options: movies
-                            })
+                            item: select({placeholder: 'Select a Movie...', options: movies})
                         })
                     ]
                 }),
@@ -94,10 +133,7 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
                         }),
                         formField({
                             field: 'percentage',
-                            item: numberInput({
-                                scaleFactor: 100,
-                                valueLabel: '%'
-                            })
+                            item: numberInput({scaleFactor: 100, valueLabel: '%'})
                         }),
                         formField({
                             field: 'date',
@@ -108,55 +144,40 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
                                 valueType: 'localDate'
                             })
                         }),
-                        hbox({
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            items: [
-                                formField({
-                                    field: 'enabled',
-                                    item: checkbox()
-                                }),
-                                formField({
-                                    field: 'enabled',
-                                    item: switchInput()
-                                }),
-                                formField({
-                                    field: 'enabled',
-                                    label: null, // checkboxButton is self-labelling, using fieldName for its text by default
-                                    item: checkboxButton()
-                                })
-                            ]
-                        }),
+                        booleanInputs(),
                         formField({
                             field: 'buttonGroup',
                             item: buttonGroupInput(
-                                button({
-                                    text: 'Button 1',
-                                    value: 'button1'
-                                }),
-                                button({
-                                    icon: Icon.moon(),
-                                    value: 'button2'
-                                }),
-                                button({
-                                    icon: Icon.skull(),
-                                    text: 'Button 2',
-                                    value: 'button3'
-                                })
+                                button({text: 'List', value: 'button1'}),
+                                button({text: 'Grid', value: 'button2'}),
+                                button({text: 'Chart', value: 'button3'})
                             )
                         }),
-                        formField({
-                            field: 'notes',
-                            item: textArea()
-                        }),
-                        formField({
-                            field: 'searchQuery',
-                            item: searchInput()
-                        })
+                        formField({field: 'notes', item: textArea()})
                     ]
-                })
+                }),
+                results()
             )
         })
+    });
+});
+
+// The teaching point of the example: one field ('enabled'), bound to three different Hoist controls.
+// Captioned so each control reads as a distinct variant (mobile has no radio input - the third is the
+// button-style checkbox).
+const booleanInputs = hoistCmp.factory(() => {
+    return div({
+        className: 'tb-form-page__booleans',
+        items: [
+            div({className: 'tb-form-page__booleans-title', item: 'Boolean inputs'}),
+            div({
+                className: 'tb-form-page__booleans-sub',
+                item: 'One field, three Hoist controls.'
+            }),
+            formField({field: 'enabled', label: 'Checkbox', item: checkbox()}),
+            formField({field: 'enabled', label: 'Switch', item: switchInput()}),
+            formField({field: 'enabled', label: 'Button', item: checkboxButton()})
+        ]
     });
 });
 
@@ -172,8 +193,7 @@ const results = hoistCmp.factory(() => {
             fieldResult({field: 'date', renderer: v => v?.toString()}),
             fieldResult({field: 'enabled', renderer: v => (v ? 'Yes' : 'No')}),
             fieldResult({field: 'buttonGroup'}),
-            fieldResult({field: 'notes'}),
-            fieldResult({field: 'searchQuery'})
+            fieldResult({field: 'notes'})
         ]
     });
 });
@@ -185,20 +205,5 @@ const fieldResult = hoistCmp.factory<FormPageModel>(({model, field, renderer}) =
     return div({
         className: 'tb-form-page__result',
         items: [label(displayName), div(renderedVal ?? '-')]
-    });
-});
-
-const setFocusMenu = hoistCmp.factory<FormPageModel>(({model}) => {
-    const fields = model.formModel.fieldList,
-        menuItems = fields.map(f => ({
-            text: f.displayName,
-            actionFn: () => f.focus()
-        }));
-
-    return menuButton({
-        icon: Icon.target(),
-        title: 'Focus',
-        menuPosition: 'top',
-        menuItems
     });
 });

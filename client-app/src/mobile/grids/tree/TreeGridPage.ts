@@ -8,8 +8,9 @@ import {
     expandToLevelButton
 } from '@xh/hoist/mobile/cmp/button';
 import {groupingChooser} from '@xh/hoist/mobile/cmp/grouping';
-import {checkboxButton, select} from '@xh/hoist/mobile/cmp/input';
+import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {exampleOption, exampleScreen} from '../../cmp/example/ExampleScreen';
 import {TreeGridPageModel} from './TreeGridPageModel';
 
 export const treeGridPage = hoistCmp.factory({
@@ -17,42 +18,58 @@ export const treeGridPage = hoistCmp.factory({
 
     render({model}) {
         const {gridModel} = model;
-        return panel({
+        return exampleScreen({
             title: 'Tree Grids',
             icon: Icon.treeList(),
-            tbar: [
-                groupingChooser({maxWidth: 250}),
-                filler(),
-                expandToLevelButton(),
-                colAutosizeButton(),
-                colChooserButton()
+            description: [
+                "Hoist's `Grid` renders hierarchical tree data from a `Store` whose records carry",
+                'children. Group with the chooser above the grid, and restyle the tree groups with the',
+                'options here.'
             ],
-            item: grid(),
-            bbar: [
-                select({
-                    width: 200,
-                    model: gridModel,
-                    bind: 'treeStyle',
-                    options: [
-                        {value: TreeStyle.NONE, label: 'None'},
-                        {value: TreeStyle.HIGHLIGHTS, label: 'Highlight Groups'},
-                        {value: TreeStyle.COLORS, label: 'Color Groups'},
-                        {value: TreeStyle.BORDERS, label: 'Group Borders'},
-                        {
-                            value: TreeStyle.HIGHLIGHTS_AND_BORDERS,
-                            label: 'Highlight Groups w/Borders'
-                        },
-                        {value: TreeStyle.COLORS_AND_BORDERS, label: 'Color Groups w/Borders'}
-                    ]
+            options: [
+                exampleOption({
+                    label: 'Tree style',
+                    control: select({
+                        width: 220,
+                        model: gridModel,
+                        bind: 'treeStyle',
+                        options: [
+                            {value: TreeStyle.NONE, label: 'None'},
+                            {value: TreeStyle.HIGHLIGHTS, label: 'Highlight Groups'},
+                            {value: TreeStyle.COLORS, label: 'Color Groups'},
+                            {value: TreeStyle.BORDERS, label: 'Group Borders'},
+                            {value: TreeStyle.HIGHLIGHTS_AND_BORDERS, label: 'Highlight w/Borders'},
+                            {value: TreeStyle.COLORS_AND_BORDERS, label: 'Color w/Borders'}
+                        ]
+                    })
                 }),
-                filler(),
-                checkboxButton({
-                    text: 'Borders',
-                    model: gridModel,
-                    bind: 'rowBorders'
+                exampleOption({
+                    label: 'Row borders',
+                    control: switchInput({model: gridModel, bind: 'rowBorders'})
                 })
             ],
-            mask: 'onLoad'
+            links: [
+                {
+                    url: '$TB/client-app/src/mobile/grids/tree/TreeGridPage.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Tree grids & grouping'
+                }
+            ],
+            item: panel({
+                mask: 'onLoad',
+                tbar: [
+                    groupingChooser({maxWidth: 250}),
+                    filler(),
+                    expandToLevelButton(),
+                    colAutosizeButton(),
+                    colChooserButton()
+                ],
+                item: grid()
+            })
         });
     }
 });
