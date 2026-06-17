@@ -243,6 +243,22 @@ class BootStrap implements LogSupport {
                 groupName: 'Toolbox - Example Apps'
             ),
             new ConfigSpec(
+                name: 'slackAlertConfig',
+                valueType: 'json',
+                defaultValue: [
+                    enabled: false,
+                    oauthToken: null,
+                    channel: null,
+                    feedbackChannel: null,
+                    monitorAlertsEnabled: false,
+                    clientErrorsEnabled: false,
+                    feedbackEnabled: false
+                ],
+                typedClass: SlackAlertConfig,
+                groupName: 'Slack Integration',
+                note: 'Slack bot token + target channels for monitor alerts, client-error reports, and user feedback. All disabled by default; set enabled plus the specific per-type flag(s) and channel(s) to post.'
+            ),
+            new ConfigSpec(
                 name: 'sourceUrls',
                 valueType: 'json',
                 defaultValue: [

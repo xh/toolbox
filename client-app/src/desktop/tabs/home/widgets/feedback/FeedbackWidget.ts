@@ -58,7 +58,7 @@ const ratingPrompt = hoistCmp.factory<FeedbackWidgetModel>({
 
 const commentPrompt = hoistCmp.factory<FeedbackWidgetModel>({
     render({model}) {
-        const negative = model.rating === 'negative';
+        const negative = model.rating !== 'positive';
         return vbox({
             className: 'tb-feedback__inner',
             items: [
@@ -70,9 +70,10 @@ const commentPrompt = hoistCmp.factory<FeedbackWidgetModel>({
                 }),
                 textArea({
                     bind: 'comment',
+                    commitOnChange: true,
                     placeholder: negative
                         ? 'What is missing, broken, or confusing?'
-                        : 'Optional - a sentence or two is plenty.',
+                        : 'Optional - but we would love to hear more.',
                     flex: 1,
                     width: '100%',
                     autoFocus: negative
