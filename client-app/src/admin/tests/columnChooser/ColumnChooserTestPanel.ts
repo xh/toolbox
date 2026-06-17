@@ -57,7 +57,7 @@ export const columnChooserTestPanel = hoistCmp.factory({
                         icon: Icon.gridPanel(),
                         modelConfig: {
                             side: 'left',
-                            defaultSize: 340,
+                            defaultSize: 600,
                             collapsible: true,
                             resizable: true
                         },
