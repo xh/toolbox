@@ -78,8 +78,6 @@ All changed files pass `tsc --noEmit` (0 errors), ESLint, and Prettier.
   as the mobile ColChooser uses); persist per user via `@persist`/`PrefService`. Widgets mirror the
   desktop `HomeTab` set (Welcome, Start Here, Hoist Releases, Recent Commits, Meet XH, Enjoying
   Hoist) backed by existing `GitHubService` etc.
-- **Edge-swipe to open the blade** from sub-pages (currently the hamburger only shows at root, per
-  the mockups; edge-swipe is the intended from-anywhere gesture, left as a tunable enhancement).
 - **In-app docs reader** - deferred by design.
 
 ### Follow-up considerations
@@ -87,3 +85,8 @@ All changed files pass `tsc --noEmit` (0 errors), ESLint, and Prettier.
 - Per-page app-bar title: the mockups show the example name in the app bar on sub-pages; today the
   global app bar shows the app name + back, and the example name lives in the sheet peek bar. A
   consolidation pass could route the page title into the app bar via `XH.routerState`.
+- Edge-swipe to open the blade: NOT viable as a from-anywhere gesture - the Navigator already uses
+  edge-swipe as its back gesture (the design handoff did not account for this). A possible narrow
+  follow-up is to open the blade on edge-swipe only at the home/root page, where there is no page to
+  pop, and only if it composes cleanly with the Navigator's existing back-swipe handling. The
+  hamburger remains the primary trigger. Not in scope now.
