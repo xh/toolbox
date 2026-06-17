@@ -61,7 +61,7 @@ export const exampleScreen = hoistCmp.factory<ExampleScreenProps>({
                         isExpanded: model.isExpanded,
                         onExpandedChange: v => model.setBindable('isExpanded', v),
                         peekItem: peekBar({title, icon, optionsCount}),
-                        item: sheetBody({model, title, description, options, links})
+                        item: sheetBody({model, description, options, links})
                     })
                 ]
             })
@@ -102,7 +102,6 @@ const peekBar = hoistCmp.factory({
 
 interface SheetBodyArgs {
     model: ExampleScreenModel;
-    title: ReactNode;
     description?: string | string[];
     options?: ReactNode;
     links?: ToolboxLinkProps[];
@@ -110,7 +109,7 @@ interface SheetBodyArgs {
 
 // Plain helper (not a factory) so the local ExampleScreenModel passed in resolves directly; its
 // observable reads happen during the parent `exampleScreen` render, which keeps them reactive.
-function sheetBody({model, title, description, options, links}: SheetBodyArgs): ReactElement {
+function sheetBody({model, description, options, links}: SheetBodyArgs): ReactElement {
     // Only show a segment button when that segment has content - never lead to an empty sub-tab.
     // Info is the always-present anchor (and the default), so the active segment can never point at
     // an omitted one.
@@ -119,7 +118,6 @@ function sheetBody({model, title, description, options, links}: SheetBodyArgs): 
     return vbox({
         className: 'tb-example-screen__sheet-body',
         items: [
-            div({className: 'tb-example-screen__sheet-title', item: title}),
             segmentedControl({
                 className: 'tb-example-screen__segments',
                 model,

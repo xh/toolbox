@@ -73,13 +73,6 @@
   //------------------------
   // Expanded sheet body
   //------------------------
-  &__sheet-title {
-    font-size: var(--xh-font-size-large-px);
-    font-weight: 600;
-    color: var(--xh-text-color);
-    padding: var(--xh-pad-half-px) 0;
-  }
-
   &__segments {
     // `segmentedControl` fills the row with equal-width segments by default (fill: true).
     margin-bottom: var(--xh-pad-px);
