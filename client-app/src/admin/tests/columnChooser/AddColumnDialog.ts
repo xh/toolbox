@@ -12,10 +12,12 @@ import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {dialog} from '@xh/hoist/kit/blueprint';
 import {action, makeObservable, observable} from '@xh/hoist/mobx';
+import {GroupOption} from './generateColumns';
 
 /** Host that owns the grid the new column will be added to. */
 export interface AddColumnHost {
-    groupIds: string[];
+    groupOptions: GroupOption[];
+    chooserGroupIds: string[];
     addColumn(spec: ColumnSpec, group: string): void;
 }
 
@@ -32,6 +34,7 @@ export class AddColumnDialogModel extends HoistModel {
             {name: 'chooserDescription', displayName: 'Description'},
             {name: 'type', displayName: 'Type', initialValue: 'string'},
             {name: 'group', displayName: 'Column Group'},
+            {name: 'chooserGroup', displayName: 'Chooser Group'},
             {name: 'pinned', displayName: 'Pinned'},
             {name: 'excludeFromChooser', displayName: 'Exclude from Chooser', initialValue: false},
             {name: 'movable', displayName: 'Movable', initialValue: true},
@@ -74,6 +77,7 @@ export class AddColumnDialogModel extends HoistModel {
                 field: {name: id, type: v.type},
                 chooserName: v.chooserName,
                 chooserDescription: v.chooserDescription || undefined,
+                chooserGroup: v.chooserGroup || undefined,
                 headerName: v.chooserName,
                 excludeFromChooser: v.excludeFromChooser,
                 movable: v.movable,
@@ -130,9 +134,18 @@ const formContents = hoistCmp.factory<AddColumnDialogModel>(({model}) =>
                     formField({
                         field: 'group',
                         item: select({
-                            options: model.host.groupIds,
+                            options: model.host.groupOptions,
                             enableCreate: true,
                             placeholder: '(top level)'
+                        })
+                    }),
+                    formField({
+                        field: 'chooserGroup',
+                        item: select({
+                            options: model.host.chooserGroupIds,
+                            enableCreate: true,
+                            enableClear: true,
+                            placeholder: '(none)'
                         })
                     }),
                     formField({

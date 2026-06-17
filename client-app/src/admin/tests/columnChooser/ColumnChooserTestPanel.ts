@@ -11,10 +11,12 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
 import {addColumnDialog, AddColumnDialogModel, AddColumnHost} from './AddColumnDialog';
 import {
-    collectGroupIds,
+    collectChooserGroups,
+    collectGroups,
     CustomColumn,
     generateGridData,
     GridSize,
+    GroupOption,
     mergeCustomColumns
 } from './generateColumns';
 
@@ -59,7 +61,11 @@ export const columnChooserTestPanel = hoistCmp.factory({
                             collapsible: true,
                             resizable: true
                         },
-                        item: columnChooser({gridModel: model.gridModel, flex: 1})
+                        item: columnChooser({
+                            gridModel: model.gridModel,
+                            showColumnLibrary: true,
+                            flex: 1
+                        })
                     }),
                     panel({flex: 1, item: grid({model: model.gridModel})}),
                     panel({
@@ -103,10 +109,20 @@ class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
         return JSON.stringify(this.gridModel.columnState, null, 2);
     }
 
-    /** Generated group ids + any new groups created via the Add Column form. */
-    get groupIds(): string[] {
-        const base = collectGroupIds(this.baseColumns),
-            custom = this.customColumns.map(c => c.group).filter(g => g && !base.includes(g));
+    /** Generated groups (id + header label) + any new groups created via the Add Column form. */
+    get groupOptions(): GroupOption[] {
+        const base = collectGroups(this.baseColumns),
+            baseIds = new Set(base.map(o => o.value)),
+            custom = this.customColumns.map(c => c.group).filter(g => g && !baseIds.has(g));
+        return [...base, ...Array.from(new Set(custom)).map(g => ({value: g, label: g}))];
+    }
+
+    /** Generated chooser groups + any new ones created via the Add Column form. */
+    get chooserGroupIds(): string[] {
+        const base = collectChooserGroups(this.baseColumns),
+            custom = this.customColumns
+                .map(c => c.spec.chooserGroup)
+                .filter(g => g && !base.includes(g));
         return [...base, ...Array.from(new Set(custom))];
     }
 
