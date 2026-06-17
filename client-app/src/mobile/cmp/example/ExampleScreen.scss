@@ -81,18 +81,8 @@
   }
 
   &__segments {
+    // `segmentedControl` fills the row with equal-width segments by default (fill: true).
     margin-bottom: var(--xh-pad-px);
-    width: 100%;
-
-    // Even, full-width segments rather than buttons sized to their text.
-    .xh-button-group {
-      display: flex;
-      width: 100%;
-    }
-
-    .xh-button {
-      flex: 1;
-    }
   }
 
   //------------------------

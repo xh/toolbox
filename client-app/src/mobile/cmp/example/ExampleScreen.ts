@@ -3,7 +3,7 @@ import {markdown} from '@xh/hoist/cmp/markdown';
 import {hoistCmp, HoistProps, useLocalModel} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {button, ButtonProps} from '@xh/hoist/mobile/cmp/button';
-import {buttonGroupInput} from '@xh/hoist/mobile/cmp/input';
+import {segmentedControl} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {isArray, isEmpty} from 'lodash';
 import {Children, ReactElement, ReactNode} from 'react';
@@ -120,15 +120,15 @@ function sheetBody({model, title, description, options, links}: SheetBodyArgs): 
         className: 'tb-example-screen__sheet-body',
         items: [
             div({className: 'tb-example-screen__sheet-title', item: title}),
-            buttonGroupInput({
+            segmentedControl({
                 className: 'tb-example-screen__segments',
                 model,
                 bind: 'segment',
-                items: [
-                    button({value: 'info', text: 'Info'}),
-                    hasOptions ? button({value: 'options', text: 'Options'}) : null,
-                    hasResources ? button({value: 'resources', text: 'Resources'}) : null
-                ].filter(Boolean)
+                options: [
+                    {value: 'info', label: 'Info'},
+                    ...(hasOptions ? [{value: 'options', label: 'Options'}] : []),
+                    ...(hasResources ? [{value: 'resources', label: 'Resources'}] : [])
+                ]
             }),
             segmentContent({model, description, options, links})
         ]
