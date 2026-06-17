@@ -199,25 +199,33 @@ hoist-core SNAPSHOT, so the bundled content stays close to `develop`. The same t
 the `xh:using-hoist-core-reference` skill for the routing table and the full install/upgrade
 procedure.
 
-### github (opt-in)
+### GitHub MCP Server (opt-in)
 
-A Docker-based server providing GitHub API tools (issues, PRs, code search, etc.) via the official
-`github-mcp-server` image. This server is configured in `.mcp.json` but **not enabled by default**
-— it requires Docker and a GitHub token, which not all developers will have running. If you work
-with GitHub issues, PRs, or code search, enabling it is recommended. To do so:
+A Docker-based server providing GitHub API tools (issues, PRs, code search, etc.) via the
+official `github-mcp-server` image. Configured in `.mcp.json` but **not enabled by default** —
+it requires Docker and an authenticated GitHub CLI, which not every developer keeps running.
 
-1. Install and start **Docker**
-2. Set the **`GITHUB_TOKEN`** environment variable to a GitHub Personal Access Token
-3. Add `"github"` to `enabledMcpjsonServers` in `.claude/settings.local.json`:
+**To enable:**
+
+1. Install and start **Docker**.
+2. Install the **GitHub CLI** (`brew install gh`) and authenticate with `gh auth login`. The
+   server invokes `gh auth token` at startup to fetch a token from the macOS Keychain (or
+   `gh`'s credential store on other platforms), so no plaintext token needs to live in your
+   shell environment.
+3. Add `"github"` to `enabledMcpjsonServers` in `.claude/settings.local.json` (local settings
+   merge with the shared `settings.json` — enabling locally does not affect other developers):
    ```json
    {
      "enabledMcpjsonServers": ["hoist-react", "hoist-core", "github"]
    }
    ```
 
-Local settings merge with the shared `settings.json`, so enabling it locally does not affect other
-developers. If Docker is not running or the token is not set when the server is enabled, Claude
-Code may show errors on startup — remove `"github"` from your local settings to resolve.
+If Docker is not running or `gh` is not authenticated when the server is enabled, Claude Code
+may show errors on startup — remove `"github"` from your local settings to resolve.
+
+**Fallback when not enabled:** The `gh` CLI provides functionally equivalent access to the same
+operations (`gh pr view`, `gh issue list`, `gh api`, `gh pr create`, etc.). Prefer `gh` over
+crafting raw `curl` calls to the GitHub API.
 
 ### jetbrains (opt-in)
 
@@ -299,6 +307,10 @@ Run both simultaneously:
 - Terminal 1: `./gradlew bootRun`
 - Terminal 2: `cd client-app && yarn start`
 
+For the full local-run guide — local Hoist checkouts, multiple instances, on-device mobile testing
+over a network IP, HTTPS, and troubleshooting (including the server timezone check) — see
+[`docs/running-locally.md`](docs/running-locally.md).
+
 ### App URLs during Local Development
 
 The webpack dev server runs on **`http://localhost:3000`**. Each file in `client-app/src/apps/`
@@ -374,6 +386,24 @@ distinguishable from framework spans in the trace view.
 ### Instance Configuration
 Environment variables loaded from `.env` file (copy `.env.template` to `.env`). Required: `APP_TOOLBOX_ENVIRONMENT`, `APP_TOOLBOX_DB_HOST`, `APP_TOOLBOX_DB_SCHEMA`, `APP_TOOLBOX_DB_USER`, `APP_TOOLBOX_DB_PASSWORD`.
 
+## Operating the Deployed App on AWS
+
+Toolbox is deployed to XH's AWS on ECS (cluster `toolbox`, services `toolbox-dev` / `toolbox-prod`).
+For troubleshooting, log inspection, DB queries, and manual deploy/scale operations against the
+**deployed** environment, see [`docs/aws-access.md`](docs/aws-access.md). That runbook covers SSO
+profile setup (`xh-toolbox-ro` read-only, `xh-toolbox-rw` for writes), SSM port-forwarding to RDS via
+ECS Exec, CloudWatch log access, and the per-command confirmation protocol for write operations.
+
+This repo is **public**: the runbook deliberately omits the AWS account ID, Identity Center URL/ARN,
+RDS endpoints, internal DNS, and DB credentials. Those operational values live in the `Toolbox AWS
+Ops` item in the `XH Team` 1Password vault — fetch them with the `op` CLI
+(`op read "op://XH Team/Toolbox AWS Ops/<field>"`) when running commands from the runbook. Never
+write those values into checked-in files.
+
+**Safety protocol for AI agents** (full table in the runbook): reads against dev proceed without
+confirmation; writes against dev, and anything (read or write) against prod, require explicit
+per-command user confirmation — propose the exact command and wait for "go".
+
 ## Changelog
 
 Toolbox maintains a `CHANGELOG.md` that is parsed at build time by `changelog-parser` (via
@@ -438,5 +468,5 @@ is broken.
 
 XH / Hoist framework developers can optionally check out the framework libraries as sibling
 directories for inline development of the libraries. This is not required for app development.
-- **`../hoist-core`** — Groovy/Java backend framework. Enable with `runHoistInline=true` in `gradle.properties`.
+- **`../hoist-core`** — Groovy/Java backend framework. Enable per-run with `./gradlew bootRun -PrunHoistInline=true` (no tracked-file edit), or persistently via `runHoistInline=true` in `gradle.properties`.
 - **`../hoist-react`** — React frontend library. Enable with `yarn startWithHoist` from `client-app/`.

@@ -1,4 +1,4 @@
-import {div, p} from '@xh/hoist/cmp/layout';
+import {div} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -11,18 +11,27 @@ export const tabPanelContainerPanel = hoistCmp.factory({
 
     render() {
         return wrapper({
+            title: 'Tabs',
+            icon: Icon.tab(),
             description: [
-                p(
-                    'TabContainer is configured and managed via a TabContainerModel and supports route-based navigation, managed mounting/unmounting of inactive tabs, automatic refreshing of a newly activated tab, and a built-in ErrorBoundary to prevent an unhandled error in one tab from crashing the entire app.'
-                ),
-                p(
-                    "The controls for switching tabs can be placed on any side of the container, or omitted, via the model's switcher config."
-                )
+                '`TabContainer` is configured and managed via a `TabContainerModel` and',
+                'supports route-based navigation, managed mounting/unmounting of inactive',
+                'tabs, automatic refreshing of a newly activated tab, and a built-in',
+                '`ErrorBoundary` to prevent an unhandled error in one tab from crashing the',
+                'entire app.',
+                '',
+                'The controls for switching tabs can be placed on any side of the container,',
+                "or omitted, via the model's switcher config."
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/layout/tabContainer/TabPanelContainerPanel.ts',
                     notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/tab/README.md#tabcontainermodel',
+                    text: 'Tabs docs',
+                    notes: 'Tabbed interface guide.'
                 },
                 {
                     url: '$TB/client-app/src/desktop/AppModel.ts',
@@ -39,11 +48,9 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Layout › Tabs',
-                icon: Icon.tab(),
                 className: 'tb-layout-tabs',
-                width: 750,
-                height: 400,
+                height: '60vh',
+                width: '90%',
                 item: tabContainer()
             })
         });

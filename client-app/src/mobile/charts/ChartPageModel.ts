@@ -33,10 +33,7 @@ export class ChartPageModel extends HoistModel {
 
         let series =
             (await XH.portfolioService
-                .getOHLCChartSeriesAsync({
-                    symbol: this.currentSymbol,
-                    loadSpec
-                })
+                .getOHLCChartSeriesAsync(this.currentSymbol, loadSpec)
                 .catchDefault()) ?? {};
 
         const groupPixelWidth = 5;

@@ -3,7 +3,16 @@ import {FormModel} from '@xh/hoist/cmp/form';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {div, frame} from '@xh/hoist/cmp/layout';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp, HoistModel, lookup, managed, PersistOptions, XH} from '@xh/hoist/core';
+import {
+    creates,
+    hoistCmp,
+    HoistModel,
+    lookup,
+    managed,
+    persistOptions,
+    PersistOptions,
+    XH
+} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {required} from '@xh/hoist/data';
 import {DashCanvasModel, DashContainerModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
@@ -16,6 +25,8 @@ import {get} from 'lodash';
 import {sampleGrid, SampleGridModel} from '../../../desktop/common';
 
 export class ViewManagerTestModel extends HoistModel {
+    override telemetryPrefix = 'toolbox.client.viewManager';
+
     @managed @observable.ref accessor viewManagerModel: ViewManagerModel;
 
     /** FormModel for model configs and component props. */
@@ -136,18 +147,26 @@ export class ViewManagerTestModel extends HoistModel {
                 initialViewName
             } = data;
 
-        const newModel = await ViewManagerModel.createAsync({
-            type,
-            instance,
-            typeDisplayName,
-            globalDisplayName,
-            manageGlobal,
-            enableGlobal,
-            enableSharing,
-            enableDefault,
-            enableAutoSave,
-            initialViewSpec: views => views.find(v => v.name == initialViewName) ?? views[0]
-        });
+        const newModel = await this.runner()
+            .span('testRebuild')
+            .run(ctx =>
+                ViewManagerModel.createAsync(
+                    {
+                        type,
+                        instance,
+                        typeDisplayName,
+                        globalDisplayName,
+                        manageGlobal,
+                        enableGlobal,
+                        enableSharing,
+                        enableDefault,
+                        enableAutoSave,
+                        initialViewSpec: views =>
+                            views.find(v => v.name == initialViewName) ?? views[0]
+                    },
+                    ctx
+                )
+            );
 
         runInAction(() => {
             this.viewManagerModel = newModel;
@@ -190,7 +209,7 @@ export class ViewManagerTestModel extends HoistModel {
         });
 
         this.panelPctModel = new PanelModel({
-            persistWith: {...persistWith, path: 'panelPct'},
+            persistWith: persistOptions(persistWith, {path: 'panelPct'}),
             side: 'right',
             defaultSize: '50%'
         });

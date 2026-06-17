@@ -1,4 +1,6 @@
-.xh-viewport {
-  background-image: url('./img/xh-logo-bg.png');
-  background-size: 127px 50px;
-}
+// Shared Toolbox styles, imported by both the desktop and mobile AppComponents.
+
+// XH monogram tile patterns - drives the viewport (load / login backdrop), the example-tab
+// Wrapper texture, and `xh-tiled-bg`. The viewport background formerly set here (a tiled
+// `xh-logo-bg.png`) is now owned by this partial via the shared `--tbox-tile` var.
+@use './XhTilePatterns';

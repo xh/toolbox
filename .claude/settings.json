@@ -73,5 +73,9 @@
         "repo": "xh/hoist-ai"
       }
     }
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
   }
 }

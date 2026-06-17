@@ -9,6 +9,8 @@ import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
 
 export class RecallsPanelModel extends HoistModel {
+    override telemetryPrefix = 'toolbox.client.recalls';
+
     override persistWith = PERSIST_APP;
 
     @bindable accessor searchQuery: string = '';
@@ -118,13 +120,16 @@ export class RecallsPanelModel extends HoistModel {
         const {gridModel} = this;
 
         try {
-            await this.runner(loadSpec)
-                .newSpan('toolbox.client.recalls.load')
+            await this.runner({loadSpec})
+                .span('load')
                 .run(async ctx => {
-                    let entries = await ctx.fetchJson({
-                        url: 'recalls',
-                        params: {searchQuery: this.searchQuery}
-                    });
+                    let entries = await XH.fetchJson(
+                        {
+                            url: 'recalls',
+                            params: {searchQuery: this.searchQuery}
+                        },
+                        ctx
+                    );
 
                     if (loadSpec.isStale) return;
 

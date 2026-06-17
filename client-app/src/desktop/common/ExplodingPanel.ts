@@ -13,6 +13,8 @@ export const explodingPanel = hoistCmp.factory({
             alignItems: 'center',
             justifyContent: 'center',
             padding: 10,
+            maxWidth: 500,
+            margin: '0 auto',
             items: [
                 p(
                     'If the button below is clicked too many times, this component will throw an exception during rendering.'

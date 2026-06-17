@@ -78,7 +78,11 @@ export class InlineEditingPanelModel extends HoistModel {
     }
 
     async beginEditAsync(opts?) {
-        await this.gridModel.beginEditAsync(opts);
+        // This grid disables row selection (selModel: null), so beginEditAsync has no selected -
+        // or, with selection off, "selectable" - row to fall back to. Target the first record
+        // explicitly so the "Edit first row / amount" actions work. Pass the StoreRecord itself
+        // (not its id) since the first record's id is 0, which beginEditAsync treats as falsy.
+        await this.gridModel.beginEditAsync({record: this.store.records[0], ...opts});
     }
 
     async endEditAsync() {

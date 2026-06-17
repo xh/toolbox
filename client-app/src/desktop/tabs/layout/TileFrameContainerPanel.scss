@@ -1,8 +1,4 @@
 .tb-tileframe {
-  flex: none;
-  width: 60vw;
-  max-height: 60vh;
-
   &__tile {
     border: 2px solid var(--xh-intent-primary-darker);
   }

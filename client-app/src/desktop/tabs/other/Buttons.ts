@@ -1,11 +1,11 @@
-import {div, filler, hbox, li, p, ul} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
+import {div, filler, hbox} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, HoistModel, Intent} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import './Buttons.scss';
 
 class ButtonsModel extends HoistModel {
@@ -16,42 +16,45 @@ class ButtonsModel extends HoistModel {
 
 export const buttonsPanel = hoistCmp.factory({
     model: creates(ButtonsModel),
-    render() {
+    render({model}) {
         return wrapper({
-            description: div(
-                p(
-                    'Hoist Desktop Buttons are implemented using the Blueprint library, and take all props supported by the Blueprint component. In addition to text, icon, and onClick, core props for customizing buttons include:'
-                ),
-                ul(
-                    li('intent: [primary|success|warning|danger]'),
-                    li('minimal: true|false'),
-                    li('outlined: true|false')
-                ),
-                p('Buttons are shown below contained within both panel and toolbar components.')
-            ),
+            title: 'Buttons',
+            icon: Icon.checkCircle(),
+            description: [
+                'Hoist desktop Buttons are built on the Blueprint library and accept all props',
+                'supported by the underlying Blueprint button. Beyond `text`, `icon`, and',
+                '`onClick`, the most common props for customizing their appearance are:',
+                '',
+                '- `intent`: [primary|success|warning|danger]',
+                '- `minimal`: true|false',
+                '- `outlined`: true|false',
+                '',
+                'Each intent is shown below, within both panel and toolbar containers.'
+            ],
+            links: [
+                {url: '$TB/client-app/src/desktop/tabs/other/Buttons.ts', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/button/Button.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/desktop/cmp/input/ButtonGroupInput.ts',
+                    notes: 'Bindable input that groups buttons into a single-select control.'
+                }
+            ],
+            options: [
+                wrapperOption({
+                    label: 'Disable All',
+                    propName: 'ButtonProps.disabled',
+                    control: switchInput({model, bind: 'disableButtons'})
+                }),
+                wrapperOption({
+                    label: 'All Active',
+                    propName: 'ButtonProps.active',
+                    control: switchInput({model, bind: 'activeButtons'})
+                })
+            ],
             item: div({
                 className: 'tbox-buttons',
                 item: [
-                    buttonPanel({
-                        headerItems: [
-                            switchInput({
-                                label: 'Dark Mode',
-                                labelSide: 'left',
-                                bind: 'darkTheme',
-                                model: XH.appContainerModel.themeModel
-                            }),
-                            switchInput({
-                                label: 'Disable All',
-                                labelSide: 'left',
-                                bind: 'disableButtons'
-                            }),
-                            switchInput({
-                                label: 'All Active',
-                                labelSide: 'left',
-                                bind: 'activeButtons'
-                            })
-                        ]
-                    }),
+                    buttonPanel(),
                     buttonPanel({intent: 'primary'}),
                     buttonPanel({intent: 'success'}),
                     buttonPanel({intent: 'warning'}),

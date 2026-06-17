@@ -1,9 +1,5 @@
 .tbox-formats-tab {
-  margin-bottom: var(--xh-pad-px);
-
   &__panel {
-    border: var(--xh-border-solid);
-
     table {
       width: 100%;
 
@@ -18,7 +14,7 @@
       }
 
       td {
-        padding: 5px;
+        padding: 5px 10px;
         text-align: right;
 
         &.outputColumn {
@@ -28,23 +24,27 @@
     }
   }
 
-  &__form {
-    overflow-y: auto;
-
-    .xh-form-field {
-      align-items: flex-start;
-      border-bottom: var(--xh-border-solid);
-      margin: 0;
-      padding: 15px 10px;
-
-      .bp6-slider {
-        margin-top: 2px; // avoid clipped slider handle
-      }
-    }
-
-    .xh-form-field__label {
-      width: 200px;
-      font-family: var(--xh-font-family-mono);
-    }
+  // Leading label for the custom-value input row, kept left-aligned and muted.
+  &__custom-label {
+    color: var(--xh-text-color-muted);
+    white-space: nowrap;
   }
+
+  // Scrolling wrapper so a tall results table stays within the (overflow-hidden) demo card.
+  &__results {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+}
+
+// Color swatches for the custom colorSpec option, shown in the Wrapper info rail.
+.tbox-formats-color {
+  width: 28px;
+  height: 22px;
+  padding: 0;
+  border: var(--xh-border-solid);
+  border-radius: 3px;
+  background: none;
+  cursor: pointer;
 }

@@ -1,14 +1,13 @@
 import {clock} from '@xh/hoist/cmp/clock';
-import {div, hframe, span, vbox} from '@xh/hoist/cmp/layout';
+import {div, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {numberInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {TIME_FMT} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import './ClockPanel.scss';
 
 export const clockPanel = hoistCmp.factory({
@@ -16,10 +15,13 @@ export const clockPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
-            description: `
-                    A clock will display the current time, either for browser local time (the default)
-                    or for a configurable timezone. It fetches timezone offsets from the server to
-                    support any Java-style timezone ID.`,
+            title: 'Clock',
+            icon: Icon.clock(),
+            description: [
+                'A clock will display the current time, either for browser local time (the',
+                'default) or for a configurable timezone. It fetches timezone offsets from the',
+                'server to support any Java-style timezone ID.'
+            ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/ClockPanel.ts',
@@ -27,9 +29,35 @@ export const clockPanel = hoistCmp.factory({
                 },
                 {url: '$HR/cmp/clock/Clock.ts', notes: 'Hoist component.'}
             ],
+            options: [
+                wrapperOption({
+                    label: 'Format',
+                    propName: 'ClockProps.format',
+                    control: textInput({model, bind: 'format', width: 120, placeholder: TIME_FMT}),
+                    info: 'A moment.js format string.'
+                }),
+                wrapperOption({
+                    label: 'Interval (ms)',
+                    propName: 'ClockProps.updateInterval',
+                    control: numberInput({
+                        model,
+                        bind: 'updateInterval',
+                        width: 90,
+                        placeholder: `${ONE_SECOND}`
+                    })
+                }),
+                wrapperOption({
+                    label: 'Prefix',
+                    propName: 'ClockProps.prefix',
+                    control: textInput({model, bind: 'prefix', width: 120})
+                }),
+                wrapperOption({
+                    label: 'Suffix',
+                    propName: 'ClockProps.suffix',
+                    control: textInput({model, bind: 'suffix', width: 120})
+                })
+            ],
             item: panel({
-                title: 'Other › Clock',
-                icon: Icon.clock(),
                 width: 700,
                 item: hframe({
                     className: 'tb-clock-container',
@@ -45,37 +73,7 @@ export const clockPanel = hoistCmp.factory({
                         clockCard({label: 'Tokyo', timezone: 'Asia/Tokyo'}),
                         clockCard({label: 'Bad Timezone', timezone: 'NoSuchZone'})
                     ]
-                }),
-                bbar: [
-                    span('Format'),
-                    textInput({
-                        bind: 'format',
-                        width: 100,
-                        placeholder: TIME_FMT
-                    }),
-                    toolbarSep(),
-                    span('Update Interval (ms)'),
-                    numberInput({
-                        model,
-                        bind: 'updateInterval',
-                        width: 60,
-                        placeholder: `${ONE_SECOND}`
-                    }),
-                    toolbarSep(),
-                    span('Prefix'),
-                    textInput({
-                        model,
-                        bind: 'prefix',
-                        width: 90
-                    }),
-                    toolbarSep(),
-                    span('Suffix'),
-                    textInput({
-                        model,
-                        bind: 'suffix',
-                        width: 90
-                    })
-                ]
+                })
             })
         });
     }

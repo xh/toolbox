@@ -1,4 +1,4 @@
-import {p, vframe} from '@xh/hoist/cmp/layout';
+import {vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {errorMessage} from '@xh/hoist/cmp/error';
@@ -6,7 +6,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {wrapper} from '../../common';
-import './ClockPanel.scss';
 
 export const errorMessagePanel = hoistCmp.factory({
     model: creates(() => ErrorMessagePanelModel),
@@ -15,24 +14,29 @@ export const errorMessagePanel = hoistCmp.factory({
         const {error} = model;
 
         return wrapper({
+            title: 'Error Message',
+            icon: Icon.skull(),
             description: [
-                p(
-                    'The ErrorMessage component displays an exception or other custom error message. It supports an optional button to trigger an action that might resolve the error, such as retrying a failed data load.'
-                ),
-                p(
-                    'Consider using an ErrorMessage to replace another, primary component in your app when an error prevents that component from displaying as it should.'
-                )
+                'The `ErrorMessage` component displays an exception or other custom error',
+                'message. It supports an optional button to trigger an action that might',
+                'resolve the error, such as retrying a failed data load.',
+                '',
+                'Consider using an `ErrorMessage` to replace another, primary component in',
+                'your app when an error prevents that component from displaying as it should.'
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/ErrorMessagePanel.ts',
-                    notes: 'This example'
+                    notes: 'This example.'
                 },
-                {url: '$HR/desktop/cmp/error/ErrorMessage.ts', notes: 'ErrorMessage source'}
+                {
+                    url: '$HR/docs/error-handling.md',
+                    text: 'Error handling docs',
+                    notes: 'Centralized exception handling and display guide.'
+                },
+                {url: '$HR/cmp/error/ErrorMessage.ts', notes: 'Hoist component.'}
             ],
             item: panel({
-                title: 'Other › Error Message',
-                icon: Icon.skull(),
                 width: 700,
                 height: 350,
                 items: [
@@ -51,7 +55,7 @@ export const errorMessagePanel = hoistCmp.factory({
                             button({
                                 text: 'Simulate an Error',
                                 icon: Icon.skull({size: 'lg'}),
-                                height: 100,
+                                height: 70,
                                 width: 200,
                                 marginTop: 10,
                                 intent: 'danger',

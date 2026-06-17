@@ -1,10 +1,9 @@
-import {isEmpty} from 'lodash';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, observable, runInAction} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {
-    buttonWidget,
+    optionsWidget,
     chartWidget,
     errorWidget,
     gridWidget,
@@ -15,21 +14,9 @@ import {
 export class DashCanvasPanelModel extends HoistModel {
     @bindable accessor renderDashboard = true;
     @bindable accessor showWidgetChooser = true;
-    @observable.ref accessor allSymbols: string[] = [];
 
     @managed
-    @observable.ref
-    accessor dashCanvasModel: DashCanvasModel;
-
-    override async doLoadAsync(loadSpec) {
-        if (isEmpty(this.allSymbols)) {
-            const symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
-            runInAction(() => {
-                this.allSymbols = symbols.slice(0, 5);
-                this.dashCanvasModel = this.createDashCanvasModel();
-            });
-        }
-    }
+    dashCanvasModel = this.createDashCanvasModel();
 
     clearCanvas() {
         this.dashCanvasModel.viewModels.forEach(it => this.dashCanvasModel.removeView(it.id));
@@ -43,7 +30,7 @@ export class DashCanvasPanelModel extends HoistModel {
 
     private createDashCanvasModel() {
         return new DashCanvasModel({
-            persistWith: {localStorageKey: 'dashCanvasExampleState'},
+            persistWith: {localStorageKey: 'dashCanvasExampleStateV2'},
             allowsDrop: true,
             initialState,
             viewSpecDefaults: {
@@ -62,16 +49,17 @@ export class DashCanvasPanelModel extends HoistModel {
                 {
                     id: 'treeGrid',
                     title: 'Tree Grid',
+                    icon: Icon.treeList(),
                     content: treeGridWidget,
                     width: 12,
                     height: 8,
                     groupName: 'Grid Widgets'
                 },
                 {
-                    id: 'buttons',
-                    title: 'Buttons',
-                    icon: Icon.stop(),
-                    content: buttonWidget,
+                    id: 'options',
+                    title: 'Options',
+                    icon: Icon.settings(),
+                    content: optionsWidget,
                     width: 4,
                     height: 2,
                     allowRename: false,
@@ -79,23 +67,13 @@ export class DashCanvasPanelModel extends HoistModel {
                 },
                 {
                     id: 'chart',
-                    title: 'Multi-Chart',
+                    title: 'Live Chart',
                     icon: Icon.chartLine(),
                     unique: true,
                     content: chartWidget,
                     width: 12,
                     height: 5
                 },
-                ...this.allSymbols.map(symbol => ({
-                    id: 'singleSeriesChart-' + symbol,
-                    title: symbol + ' Chart',
-                    groupName: 'Single Series Charts',
-                    icon: Icon.chartLine(),
-                    unique: true,
-                    content: chartWidget,
-                    width: 12,
-                    height: 5
-                })),
                 {
                     id: 'panel',
                     title: 'Panel',
@@ -128,39 +106,26 @@ const initialState = [
         layout: {
             x: 0,
             y: 5,
-            w: 4,
+            w: 6,
             h: 3
         },
-        viewSpecId: 'buttons',
-        title: 'Buttons 1',
+        viewSpecId: 'options',
+        title: 'Options 1',
         state: {
-            value: 'Button 1'
+            value: 'Live'
         }
     },
     {
         layout: {
-            x: 4,
+            x: 6,
             y: 5,
-            w: 4,
+            w: 6,
             h: 3
         },
-        viewSpecId: 'buttons',
-        title: 'Buttons 2',
+        viewSpecId: 'options',
+        title: 'Options 2',
         state: {
-            value: 'Button 2'
-        }
-    },
-    {
-        layout: {
-            x: 8,
-            y: 5,
-            w: 4,
-            h: 3
-        },
-        viewSpecId: 'buttons',
-        title: 'Buttons 3',
-        state: {
-            value: 'Button 3'
+            value: 'Daily'
         }
     },
     {

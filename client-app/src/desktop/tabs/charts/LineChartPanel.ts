@@ -1,34 +1,38 @@
 import {chart} from '@xh/hoist/cmp/chart';
-import {filler, p, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {picker, select} from '@xh/hoist/desktop/cmp/input';
+import {picker} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common';
+import {chartDisplayOptions, wrapper} from '../../common';
 import {LineChartModel} from './LineChartModel';
 
 export const lineChartPanel = hoistCmp.factory({
     model: creates(LineChartModel),
 
-    render() {
+    render({model}) {
         return wrapper({
+            title: 'Line Chart',
+            icon: Icon.chartLine(),
             description: [
-                p(
-                    'Hoist provides a lightweight wrapper around the Highcharts charting and visualization library. This integration includes the Chart component to handle basic rendering, layout, and resizing and a ChartModel class to hold an observable config and data series.'
-                ),
-                p(
-                    'Note that applications must license and specify a compatible version of Highcharts as an application dependency.'
-                )
+                'Hoist provides a lightweight wrapper around the Highcharts charting and',
+                'visualization library. This integration includes the `Chart` component to',
+                'handle rendering, layout, and resizing, plus an observable `ChartModel` class',
+                'to hold the chart config and data series.',
+                '',
+                'The example below plots one or more user-selected symbols as line series and',
+                'shows how to customize the chart context menu.',
+                '',
+                'Note that applications must license and specify a compatible version of',
+                'Highcharts as an application dependency.'
             ],
+            options: chartDisplayOptions(model),
             item: panel({
-                title: 'Charts › Line',
-                icon: Icon.chartLine(),
-                width: '80%',
-                height: '60%',
+                height: '60vh',
+                width: '90%',
                 mask: 'onLoad',
                 tbar: tbar(),
-                item: chart()
+                item: chart({aspectRatio: model.aspectRatio})
             }),
             links: [
                 {
@@ -64,13 +68,6 @@ const tbar = hoistCmp.factory<LineChartModel>(({model}) => {
             buttonProps: {icon: Icon.chartLine()},
             placeholder: 'Symbols...',
             width: 200
-        }),
-        filler(),
-        span('Context Menu'),
-        select({
-            bind: 'currentContextMenu',
-            options: model.contextMenuOptions,
-            enableFilter: false
         })
     );
 });
