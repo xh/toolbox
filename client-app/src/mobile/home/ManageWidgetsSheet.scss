@@ -1,0 +1,91 @@
+// The Manage-widgets sheet reuses the shared pull-up sheet; give it a taller expanded snap so both
+// groups are visible at once on a typical phone.
+.tb-pull-up-sheet.tb-manage-widgets {
+  --tb-sheet-expanded-h: 88%;
+}
+
+.tb-manage-widgets {
+  //------------------------
+  // Peek-bar header (title + Done)
+  //------------------------
+  &__header {
+    align-items: center;
+    width: 100%;
+  }
+
+  &__title {
+    font-size: var(--xh-font-size-large-px);
+    font-weight: 600;
+    color: var(--xh-text-color);
+  }
+
+  &__done {
+    color: var(--xh-orange);
+    font-weight: 600;
+  }
+
+  //------------------------
+  // Body / groups
+  //------------------------
+  &__group {
+    margin-bottom: var(--xh-pad-px);
+  }
+
+  &__group-label {
+    padding: var(--xh-pad-px) 0 var(--xh-pad-half-px);
+    font-size: var(--xh-font-size-small-px);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    // A min height keeps each group a viable drop target even when empty.
+    min-height: 24px;
+  }
+
+  &__empty {
+    padding: var(--xh-pad-px) 0;
+    font-size: var(--xh-font-size-small-px);
+    font-style: italic;
+    color: var(--xh-text-color-muted);
+  }
+
+  //------------------------
+  // Row: drag handle + icon + title + membership toggle
+  //------------------------
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: var(--xh-pad-px);
+    padding: var(--xh-pad-half-px) 0;
+
+    &--dragging {
+      background: var(--xh-bg-alt);
+      border-radius: var(--xh-border-radius-px);
+    }
+  }
+
+  &__grip {
+    flex: none;
+    padding: var(--xh-pad-half-px);
+    color: var(--xh-text-color-muted);
+    cursor: grab;
+    touch-action: none;
+  }
+
+  &__row-icon {
+    flex: none;
+    width: 20px;
+    text-align: center;
+    color: var(--xh-intent-primary);
+  }
+
+  &__row-title {
+    font-size: var(--xh-font-size-px);
+    color: var(--xh-text-color);
+  }
+}

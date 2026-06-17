@@ -64,20 +64,37 @@ so they can later graduate into the shared `@xh/hoist/mobile` kit (the brief exp
   panel-in-panel), label-above fields with required `*` markers and 16px inputs, captioned boolean
   trio (Checkbox · Switch · Button - mobile has no radio input), and options (Read-only, Minimal
   validation, Commit on change, Required markers, Density, Reset form) moved into the sheet.
+- **Home widget dashboard (move C) - COMPLETE.** Static HomePage replaced with a personalizable
+  vertical stack of quiet collapsible widget cards (`cmp/WidgetCard` + a `home/widgets` catalog:
+  Welcome, Start Here, Hoist Releases, Recent Commits, Meet XH, Enjoying Hoist?). Mirrors the desktop
+  home set - Meet XH and Enjoying Hoist? reuse the platform-agnostic desktop widget *models*; Releases
+  and Recent Commits read live from `GitHubService` (now installed on mobile) as compact tappable
+  lists rather than grids. `HomeModel` (owned by `AppModel`) holds the two ordered membership lists
+  (on-home XOR available, reconciled against the live catalog), per-widget collapsed state, and the
+  transient manage-sheet state. The app-bar pencil (home root only) opens a "Manage widgets" sheet
+  that reuses `pullUpSheet`: two groups with membership toggles + drag-reorder
+  (`@xh/hoist/kit/react-beautiful-dnd`, as the mobile ColChooser), an Available empty-state, a Done
+  affordance, and a home empty-state when every widget is removed. Verified on-device: render,
+  collapse, manage-sheet toggle (moves widgets between groups + updates the stack live), reorder
+  (logic + live re-render), and all six widgets rendering real data. No console errors.
 
-All changed files pass `tsc --noEmit` (0 errors), ESLint, and Prettier.
+All changed files pass `tsc --noEmit` (0 errors), ESLint, Stylelint, and Prettier.
+
+#### Move C persistence note
+
+Membership/order/collapsed state persists per user via `@persist` against a new server preference,
+`mobileHomeWidgets` (added to `BootStrap.ensureRequiredPrefsCreated`). Hoist's
+`PersistenceProvider.create` fails gently, so until a backend built from this tree registers the pref
+the dashboard simply runs on defaults (no crash - verified). End-to-end persistence therefore
+activates once the mobile-upgrade backend (re)starts or is deployed; it could not be exercised in the
+current local session because port 8080 was held by a sibling `../toolbox` checkout's backend, which
+lacks this pref - left untouched rather than torn down.
 
 ### Remaining
 
 - **Convert the other 9 example pages** to `exampleScreen` (Charts, Tree Map, Containers, Panels,
   Buttons, Icons, Popovers, Popups, PinPad). Mechanical - follow the Grids/Forms pattern: keep
   demo-intrinsic controls in the demo, move display options into `exampleOption` rows.
-- **Home widget dashboard (move C)** - not started. Welcome-as-widget vertical stack with quiet
-  panel headers + collapse-to-title; a pull-up **Manage widgets** sheet (reusing `pullUpSheet`) with
-  On your home / Available groups, membership toggles + drag-reorder (`@xh/hoist/kit/react-beautiful-dnd`,
-  as the mobile ColChooser uses); persist per user via `@persist`/`PrefService`. Widgets mirror the
-  desktop `HomeTab` set (Welcome, Start Here, Hoist Releases, Recent Commits, Meet XH, Enjoying
-  Hoist) backed by existing `GitHubService` etc.
 - **In-app docs reader** - deferred by design.
 
 ### Follow-up considerations

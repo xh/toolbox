@@ -8,7 +8,9 @@ import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {runInAction} from '@xh/hoist/mobx';
 import {BaseAppModel} from '../BaseAppModel';
+import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
+import {HomeModel} from './home/HomeModel';
 import {NavBladeModel} from './cmp/navBlade/NavBladeModel';
 import {buttonPage} from './buttons/ButtonPage';
 import {chartPage} from './charts/ChartPage';
@@ -33,6 +35,9 @@ export class AppModel extends BaseAppModel {
 
     @managed
     navBladeModel: NavBladeModel = new NavBladeModel();
+
+    @managed
+    homeModel: HomeModel = new HomeModel();
 
     @managed
     navigatorModel: NavigatorModel = new NavigatorModel({
@@ -166,7 +171,7 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
-        await XH.installServicesAsync([PortfolioService], ctx);
+        await XH.installServicesAsync([GitHubService, PortfolioService], ctx);
     }
 
     override async doLoadAsync(loadSpec) {

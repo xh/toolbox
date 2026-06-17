@@ -33,6 +33,15 @@ export const AppComponent = hoistCmp({
                         onClick: () => model.navBladeModel.open()
                     })
                 ],
+                // Pencil opens the home Manage-widgets sheet. Like the hamburger, it belongs only on
+                // the home root - sub-pages have no widget dashboard to customize.
+                rightItems: [
+                    button({
+                        icon: Icon.edit(),
+                        omit: model.navigatorModel.stack.length > 1,
+                        onClick: () => model.homeModel.setBindable('isManaging', true)
+                    })
+                ],
                 appMenuButtonProps: {
                     hideLogoutItem: false,
                     // Theme now lives in the blade footer and the Options dialog - hide the
