@@ -111,6 +111,11 @@ interface SheetBodyArgs {
 // Plain helper (not a factory) so the local ExampleScreenModel passed in resolves directly; its
 // observable reads happen during the parent `exampleScreen` render, which keeps them reactive.
 function sheetBody({model, title, description, options, links}: SheetBodyArgs): ReactElement {
+    // Only show a segment button when that segment has content - never lead to an empty sub-tab.
+    // Info is the always-present anchor (and the default), so the active segment can never point at
+    // an omitted one.
+    const hasOptions = Children.toArray(options).length > 0,
+        hasResources = !isEmpty(links);
     return vbox({
         className: 'tb-example-screen__sheet-body',
         items: [
@@ -121,9 +126,9 @@ function sheetBody({model, title, description, options, links}: SheetBodyArgs): 
                 bind: 'segment',
                 items: [
                     button({value: 'info', text: 'Info'}),
-                    button({value: 'options', text: 'Options'}),
-                    button({value: 'resources', text: 'Resources'})
-                ]
+                    hasOptions ? button({value: 'options', text: 'Options'}) : null,
+                    hasResources ? button({value: 'resources', text: 'Resources'}) : null
+                ].filter(Boolean)
             }),
             segmentContent({model, description, options, links})
         ]
