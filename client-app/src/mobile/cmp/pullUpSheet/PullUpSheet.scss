@@ -33,7 +33,9 @@
     display: flex;
     flex-direction: column;
     height: var(--tb-sheet-expanded-h);
-    background: var(--xh-bg-alt);
+    // Use the standard app background (rather than the lighter --xh-bg-alt) in both themes - it
+    // reads as a recessed drawer surface and interacts better with the controls inside the sheet.
+    background: var(--xh-bg);
     border-top: var(--xh-border-solid);
     border-radius: 16px 16px 0 0;
     box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.4);
