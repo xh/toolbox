@@ -1,6 +1,5 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {button} from '@xh/hoist/mobile/cmp/button';
-import {buttonGroupInput} from '@xh/hoist/mobile/cmp/input';
+import {segmentedControl} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {splitTreeMap, treeMap} from '@xh/hoist/cmp/treemap';
 import {Icon} from '@xh/hoist/icon';
@@ -20,12 +19,13 @@ export const treeMapPage = hoistCmp.factory({
             options: [
                 exampleOption({
                     label: 'Type',
-                    control: buttonGroupInput({
+                    control: segmentedControl({
                         model,
                         bind: 'type',
-                        items: [
-                            button({text: 'Simple', value: 'treeMap'}),
-                            button({text: 'Split', value: 'splitTreeMap'})
+                        fill: false,
+                        options: [
+                            {value: 'treeMap', label: 'Simple'},
+                            {value: 'splitTreeMap', label: 'Split'}
                         ]
                     })
                 })

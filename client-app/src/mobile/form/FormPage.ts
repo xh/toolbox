@@ -12,6 +12,7 @@ import {
     dateInput,
     label,
     numberInput,
+    segmentedControl,
     select,
     switchInput,
     textArea,
@@ -54,12 +55,13 @@ export const formPage = hoistCmp.factory({
                 }),
                 exampleOption({
                     label: 'Density',
-                    control: buttonGroupInput({
+                    control: segmentedControl({
                         model,
                         bind: 'density',
-                        items: [
-                            button({value: 'comfortable', text: 'Comfortable'}),
-                            button({value: 'compact', text: 'Compact'})
+                        fill: false,
+                        options: [
+                            {value: 'comfortable', label: 'Comfortable'},
+                            {value: 'compact', label: 'Compact'}
                         ]
                     })
                 }),
