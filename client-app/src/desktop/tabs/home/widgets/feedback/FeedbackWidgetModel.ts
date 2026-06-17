@@ -116,10 +116,13 @@ export class FeedbackWidgetModel extends HoistModel {
 
     /**
      * Page-teardown path, driven by the `XH.pageState` reaction on `frozen`/`terminated`. We defer
-     * queueing to coalesce, so here we queue the entry and ask TrackService to flush it with
-     * `keepalive` - which survives teardown and reuses the framework's auth/serialization (vs. a
-     * hand-rolled beacon). Reacting to the terminal states only (not `hidden`) means a mid-compose
-     * tab switch does not prematurely finalize a sentiment-only entry.
+     * queueing to coalesce, so here we queue the entry and flush it immediately. `TrackService`
+     * routes the flush through a `keepalive` request once the page is non-visible, so it survives
+     * teardown while reusing the framework's auth/serialization.
+     *
+     * The explicit flush guarantees this entry lands in the same teardown tick, regardless of
+     * ordering with TrackService's own page-hidden flush. Reacting to the terminal states only (not
+     * `hidden`) means a mid-compose tab switch does not prematurely finalize a sentiment-only entry.
      */
     private unloadFlush() {
         if (this.sent || !this.rating) return;
@@ -130,7 +133,7 @@ export class FeedbackWidgetModel extends HoistModel {
                 ? {rating: this.rating, userMessage}
                 : {rating: this.rating};
         XH.track({category: 'Feedback', message: this.trackMessage(data), data, logData: true});
-        XH.trackService.pushPendingAsync({keepalive: true});
+        XH.trackService.pushPendingAsync();
     }
 
     private markSent() {

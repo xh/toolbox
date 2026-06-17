@@ -3106,9 +3106,9 @@
     webpackbar "~7.0.0"
 
 "@xh/hoist@^87.0.0-SNAPSHOT":
-  version "87.0.0-SNAPSHOT.1781549725709"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-87.0.0-SNAPSHOT.1781549725709.tgz#d69e2c17d2f0e98a09ac8301b133528e842761e9"
-  integrity sha512-QjiMDV+vTvb+HR3hQEMx9qLwSI/mBWTDuIHKZSvgfsJ2VENGOsvwCslexyiJRhZ3ZWreGiD7yPrp++XO7VPoOQ==
+  version "87.0.0-SNAPSHOT.1781712520953"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-87.0.0-SNAPSHOT.1781712520953.tgz#be2128ac98f2844fc92b861b772eae6cf8f0305c"
+  integrity sha512-O+80xFp6xR2cvptGLTAy1NfYrhOiSl9CzqOicWMn4kQzGCzdA6O+pwJPkhDy0DCviX164EU6HA9QIohwiZaA3Q==
   dependencies:
     "@auth0/auth0-spa-js" "~2.21.1"
     "@azure/msal-browser" "~5.13.0"
@@ -4366,9 +4366,9 @@ domhandler@^4.0.0, domhandler@^4.2.0, domhandler@^4.3.1:
     domelementtype "^2.2.0"
 
 dompurify@~3.4.0:
-  version "3.4.10"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.4.10.tgz#96704295b4d8aeefcc8c7a90caa579b0ad69e46a"
-  integrity sha512-0xzNv0e7oYC6yyuOGZIABPM4qtg3QxLFniDNPP4ZP90wR8Yq3zgwpRbrNiT4N3IKqDbbYFEJLV+JWEs19aZ//w==
+  version "3.4.11"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.4.11.tgz#29c8ba496475f279ef4015784068452fb14a0680"
+  integrity sha512-zhlUV12GsaRzMsf9q5M254YhA4+VuF0fG+QFqu6aYpoGlKtz+w8//jBcGVYBgQkR5GHjUomejY84AV+/uPbWdw==
   optionalDependencies:
     "@types/trusted-types" "^2.0.7"
 
@@ -7139,9 +7139,9 @@ onetime@^7.0.0:
     mimic-function "^5.0.0"
 
 onsenui@~2.12.8:
-  version "2.12.8"
-  resolved "https://registry.yarnpkg.com/onsenui/-/onsenui-2.12.8.tgz#861490e84818881f9521fc000f4f92ac79758745"
-  integrity sha512-ju5c2nP/pW7ZIOALqG2yVmjlIa2S6Men2winRKB8E7qtMkjSpMcHD6aRLMZZ4bGRLIiubpT7psdXWLWOc/lEyA==
+  version "2.12.9"
+  resolved "https://registry.yarnpkg.com/onsenui/-/onsenui-2.12.9.tgz#92daea60a2ab69a92e1f2fb281955bfc8effa09b"
+  integrity sha512-eKaO0emfw56Cugh0P2EV5l7ckAbhU/kULgos08IqkuVSmGNt4LJMls2tBUdgz3mZwbGLDq0hQiuhxIreP3Plug==
 
 open@^10.0.3:
   version "10.2.0"
