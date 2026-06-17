@@ -9,6 +9,8 @@
 * Consolidated each example's scattered display-option controls into the Wrapper rail's new Options section via shared `wrapperOption` / `wrapperAction` helpers, with on-hover disclosure of the underlying Hoist API (e.g. `GridConfig.stripeRows`) each option maps to.
 * Polished nearly every desktop example tab - layout, copy, icons, controls, and assorted bug fixes - to more clearly showcase idiomatic Hoist usage for developers and prospective clients evaluating the framework.
 * Replaced the dated mobile-tab screenshots with a theme-aware CSS device frame, and refreshed the DashCanvas / DashContainer examples with a live random-walk Chart widget and a stateful `SegmentedControl` Options widget.
+* Began carrying the desktop redesign to the mobile (phone) client with a new left navigation blade - a hamburger/scrim drawer grouping the example catalog into expandable categories with theme and settings docked in its footer - while the built-in mobile `AppMenu` drops its now-redundant theme toggle (theme now lives in the blade and the Options dialog).
+* Introduced a consistent mobile example-screen pattern: each demo stays full-bleed while a new pull-up sheet surfaces Info, Options, and Resources with a live options-count peek chip, applied so far to the Grids, Tree Grids, Zone Grids, DataView, and Forms examples - with Forms re-cut into light collapsible field sets, a captioned boolean-control trio, and its display options moved into the sheet.
 * Added an IBM Plex Sans font preference to the desktop app, selectable alongside the theme via new macOS-style card pickers in the Options dialog.
 * Overhauled the News example with cleaner card image handling, a master-detail reading pane, and a refreshed set of working NewsAPI sources.
 
