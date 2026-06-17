@@ -38,12 +38,21 @@
     background: var(--xh-bg);
     border-top: var(--xh-border-solid);
     border-radius: 16px 16px 0 0;
-    box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.4);
+    // Light mode: a soft lift. (Dark mode overridden below - a black shadow is invisible there.)
+    box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.12);
     pointer-events: auto;
     // Collapsed: push the panel down so only the peek bar remains on screen.
     transform: translateY(calc(100% - var(--tb-sheet-peek-h)));
     transition: transform 200ms ease;
     will-change: transform;
+
+    // A black drop shadow is invisible on the dark drawer surface; use a faint light top-edge
+    // highlight (with a soft ambient) so the drawer still reads as separated from the content behind.
+    body.xh-dark & {
+      box-shadow:
+        0 -1px 0 rgba(255, 255, 255, 0.08),
+        0 -8px 24px rgba(0, 0, 0, 0.5);
+    }
   }
 
   &--expanded &__panel {
