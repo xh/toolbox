@@ -145,9 +145,13 @@ class SlackAlertService extends BaseService {
 
     private List feedbackBlocks(TrackLog tl, String rating, String userMessage) {
         List<Map> blocks = [
-            [type: 'header', text: [type: 'plain_text', text: "User Feedback: ${tl.username}".toString()]],
-            [type: 'section', text: [type: 'mrkdwn', text: "${ratingEmoji(rating)} ${rating ?: 'n/a'}".toString()]]
+            [type: 'header', text: [type: 'plain_text', text: "User Feedback: ${tl.username}".toString()]]
         ]
+        // Sentiment comes only from the home-page widget; Hoist's built-in feedback dialog has
+        // none, so omit the line entirely rather than rendering an empty "n/a" rating.
+        if (rating) {
+            blocks << [type: 'section', text: [type: 'mrkdwn', text: "${ratingEmoji(rating)} ${rating}".toString()]]
+        }
         if (userMessage) {
             String quoted = userMessage.replaceAll('\n', '\n> ')
             blocks << [type: 'section', text: [type: 'mrkdwn', text: "> ${quoted}".toString()]]
