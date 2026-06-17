@@ -1,0 +1,83 @@
+// Shared styling for the GitHub-backed mobile home widgets (Releases, Recent Commits) - a compact,
+// tappable list of rows, each led by a colored repo chip mirroring the desktop widgets.
+.tb-github-widget {
+  display: flex;
+  flex-direction: column;
+
+  &__empty {
+    padding: var(--xh-pad-half-px) 0;
+    color: var(--xh-text-color-muted);
+    font-style: italic;
+  }
+
+  &__row {
+    align-items: center;
+    gap: var(--xh-pad-px);
+    padding: var(--xh-pad-px) 0;
+    border-bottom: var(--xh-border-solid);
+    cursor: pointer;
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+  }
+
+  &__repo {
+    flex: none;
+    align-self: flex-start;
+    padding: 2px 8px;
+    border-radius: var(--xh-border-radius-px);
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-gray-light);
+
+    &--hoist-react {
+      background-color: var(--xh-orange-muted);
+    }
+
+    &--hoist-core {
+      background-color: var(--xh-blue-muted);
+    }
+
+    &--hoist-dev-utils {
+      background-color: var(--xh-red-muted);
+    }
+
+    &--toolbox {
+      background-color: var(--xh-green-muted);
+    }
+  }
+
+  &__row-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__row-title {
+    font-size: var(--xh-font-size-px);
+    color: var(--xh-text-color);
+    // Keep long commit subjects to a single line within the card.
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__row-sub {
+    margin-top: 2px;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__row-dot {
+    margin: 0 5px;
+  }
+
+  &__row-chevron {
+    flex: none;
+    color: var(--xh-text-color-muted);
+  }
+}
