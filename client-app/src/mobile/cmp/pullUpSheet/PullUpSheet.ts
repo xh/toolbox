@@ -17,12 +17,10 @@ export interface PullUpSheetProps extends HoistProps {
      */
     peekItem: ReactNode;
 
-    className?: string;
-
-    /** Expanded body (passed as `item`/`items` / children), revealed when the sheet is open. */
-    children?: ReactNode;
-
-    /** Optional content pinned to the bottom of the panel, below the scrolling body (e.g. an action). */
+    /**
+     * Optional content pinned to the bottom of the panel, below the scrolling body (e.g. an action).
+     * The expanded body itself is passed via `item`/`items` and read from the inherited `children`.
+     */
     footerItem?: ReactNode;
 }
 
