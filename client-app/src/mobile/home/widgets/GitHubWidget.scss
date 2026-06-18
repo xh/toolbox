@@ -52,6 +52,26 @@
     }
   }
 
+  // Single-line variant (Releases): chip + tag on the left, recency on the right, no chevron.
+  &__row--inline {
+    .tb-github-widget__repo {
+      align-self: center;
+    }
+  }
+
+  &__tag {
+    font-size: var(--xh-font-size-px);
+    color: var(--xh-text-color);
+    white-space: nowrap;
+  }
+
+  &__date {
+    flex: none;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+    white-space: nowrap;
+  }
+
   &__row-text {
     flex: 1;
     min-width: 0;

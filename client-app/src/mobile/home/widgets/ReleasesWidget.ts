@@ -1,24 +1,21 @@
-import {div, hbox, span, vbox} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
 import {Release} from '../../../core/svc/GitHubService';
 import './GitHubWidget.scss';
 
-// Cap the in-card list so a single widget stays a reasonable height; the full history lives on GitHub.
-const MAX_ROWS = 10;
-
 /**
- * Mobile Hoist Releases widget - a compact, tappable list of the most recent published releases
- * across the Hoist repos, read live from {@link GitHubService}. The phone-right subset of the
- * desktop releases panel: repo, tag, and recency, without the desktop's repo filter toolbar.
+ * Mobile Hoist Releases widget - shows the single most recent published release for each Hoist repo,
+ * read live from {@link GitHubService}, sorted so the repo with the newest release sits on top. A
+ * compact, tappable single-line row per repo (chip, tag, recency) - the phone-right subset of the
+ * desktop releases panel, without its repo filter toolbar.
  */
 export const releasesWidget = hoistCmp.factory({
     displayName: 'ReleasesWidget',
     render() {
-        const releases = XH.gitHubService.allReleases;
+        const latest = latestReleasePerRepo();
 
-        if (!releases.length) {
+        if (!latest.length) {
             return div({
                 className: 'tb-github-widget__empty',
                 item: 'GitHub release data unavailable.'
@@ -27,29 +24,38 @@ export const releasesWidget = hoistCmp.factory({
 
         return div({
             className: 'tb-github-widget',
-            items: releases.slice(0, MAX_ROWS).map(it => releaseRow({release: it, key: it.id}))
+            items: latest.map(it => releaseRow({release: it, key: it.id}))
         });
     }
 });
 
+// `allReleases` is sorted most-recent-first, so the first time we see a repo is its newest release,
+// and the picks come out already ordered by release date (newest repo on top).
+function latestReleasePerRepo(): Release[] {
+    const seen = new Set<string>(),
+        ret: Release[] = [];
+    for (const release of XH.gitHubService.allReleases) {
+        if (!seen.has(release.repo)) {
+            seen.add(release.repo);
+            ret.push(release);
+        }
+    }
+    return ret;
+}
+
 const releaseRow = hoistCmp.factory<HoistProps & {release: Release}>(({release}) => {
     const {repo, tagName, publishedAt, url} = release;
     return hbox({
-        className: 'tb-github-widget__row',
+        className: 'tb-github-widget__row tb-github-widget__row--inline',
         onClick: () => XH.openWindow(url, 'gitlink'),
         items: [
             span({className: `tb-github-widget__repo tb-github-widget__repo--${repo}`, item: repo}),
-            vbox({
-                className: 'tb-github-widget__row-text',
-                items: [
-                    div({className: 'tb-github-widget__row-title', item: tagName}),
-                    div({
-                        className: 'tb-github-widget__row-sub',
-                        item: relativeTimestamp({timestamp: publishedAt})
-                    })
-                ]
-            }),
-            Icon.chevronRight({className: 'tb-github-widget__row-chevron'})
+            span({className: 'tb-github-widget__tag', item: tagName}),
+            filler(),
+            span({
+                className: 'tb-github-widget__date',
+                item: relativeTimestamp({timestamp: publishedAt, short: false})
+            })
         ]
     });
 });
