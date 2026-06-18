@@ -20,8 +20,23 @@
   }
 
   &__done {
-    color: var(--xh-orange);
+    // Override the framework's minimal-button text color (higher specificity) to brand orange.
+    color: var(--xh-orange) !important;
     font-weight: 600;
+  }
+
+  //------------------------
+  // Pinned reset action (sheet footer)
+  //------------------------
+  &__reset {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--xh-pad-half-px);
+    padding: var(--xh-pad-px);
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-px);
+    cursor: pointer;
   }
 
   //------------------------

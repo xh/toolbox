@@ -36,9 +36,34 @@ export class HomeModel extends HoistModel {
     /** Transient: whether the Manage-widgets pull-up sheet is expanded. */
     @bindable isManaging = false;
 
+    /**
+     * Snapshot of the home ids the dashboard is *displaying*, frozen while the Manage sheet is open.
+     * Null when not managing - the dashboard then tracks the live committed state. See
+     * {@link dashboardWidgets}.
+     */
+    @observable.ref private frozenDashboardIds: string[] = null;
+
     constructor() {
         super();
         makeObservable(this);
+
+        // Defer the dashboard's reflow of widget order/membership until the Manage sheet closes, so
+        // dnd reordering inside the sheet stays smooth (the dashboard's widgets are comparatively
+        // heavy to re-render). While managing, the dashboard renders a frozen snapshot; on dismiss it
+        // syncs to the committed state with a single re-render.
+        this.addReaction({
+            track: () => this.isManaging,
+            run: managing =>
+                runInAction(() => {
+                    this.frozenDashboardIds = managing ? this.resolvedHomeIds : null;
+                })
+        });
+    }
+
+    /** Widgets the home dashboard should render - frozen to a snapshot while managing (see above). */
+    get dashboardWidgets(): WidgetSpec[] {
+        const ids = this.frozenDashboardIds ?? this.resolvedHomeIds;
+        return ids.map(widgetSpec).filter(Boolean);
     }
 
     //------------------------

@@ -25,7 +25,7 @@ export const homePage = hoistCmp.factory({
                 items: [
                     div({
                         className: 'tb-home__stack xh-tiled-bg',
-                        item: isEmpty(model.homeWidgets) ? emptyState() : stack({model})
+                        item: isEmpty(model.dashboardWidgets) ? emptyState() : stack({model})
                     }),
                     manageWidgetsSheet()
                 ]
@@ -37,7 +37,7 @@ export const homePage = hoistCmp.factory({
 const stack = hoistCmp.factory<HomeModel>(({model}) =>
     div({
         className: 'tb-home__cards',
-        items: model.homeWidgets.map(w =>
+        items: model.dashboardWidgets.map(w =>
             widgetCard({
                 key: w.id,
                 title: w.title,

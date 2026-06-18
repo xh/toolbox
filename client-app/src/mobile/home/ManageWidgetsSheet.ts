@@ -1,5 +1,5 @@
 import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
-import {hoistCmp, uses} from '@xh/hoist/core';
+import {hoistCmp, HoistProps, uses} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {dragDropContext, draggable, droppable} from '@xh/hoist/kit/react-beautiful-dnd';
 import {button} from '@xh/hoist/mobile/cmp/button';
@@ -7,9 +7,10 @@ import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import classNames from 'classnames';
 import {isEmpty} from 'lodash';
 import {ReactElement} from 'react';
+import {createPortal} from 'react-dom';
 import {pullUpSheet} from '../cmp/pullUpSheet/PullUpSheet';
 import {HomeModel} from './HomeModel';
-import {WidgetSpec, widgetSpec} from './widgets/WidgetCatalog';
+import {WidgetSpec} from './widgets/WidgetCatalog';
 import './ManageWidgetsSheet.scss';
 
 /**
@@ -26,20 +27,30 @@ export const manageWidgetsSheet = hoistCmp.factory({
     render({model}) {
         if (!model.isManaging) return null;
 
-        return pullUpSheet({
-            className: 'tb-manage-widgets',
-            isExpanded: true,
-            onExpandedChange: v => model.setBindable('isManaging', v),
-            peekItem: header(model),
-            item: sheetBody(model)
-        });
+        // Portal the sheet to <body> so it (and its dnd content) escapes the Onsen navigator's Swiper
+        // wrapper, which carries an (identity) CSS transform. That transform is a containing block for
+        // the drag clone's position:fixed and would offset the floating row below the finger;
+        // rendering at <body> leaves no transformed ancestor, so the in-place clone tracks the
+        // pointer. (Paired with the sheet panel's transform-free `bottom` slide - see PullUpSheet.)
+        return createPortal(
+            pullUpSheet({
+                className: 'tb-manage-widgets',
+                isExpanded: true,
+                onExpandedChange: v => model.setBindable('isManaging', v),
+                peekItem: header(),
+                item: sheetBody(),
+                footerItem: resetFooter()
+            }),
+            document.body
+        );
     }
 });
 
-// Plain helpers (not factories) so the HomeModel passed in resolves directly; observable reads happen
-// during the parent `manageWidgetsSheet` render, keeping membership reactive.
-function header(model: HomeModel): ReactElement {
-    return hbox({
+// Internal/private components - they omit the `model` config and auto-resolve the contextual
+// HomeModel established by the parent `manageWidgetsSheet`; the factory generic just types `model`.
+
+const header = hoistCmp.factory<HomeModel>(({model}) =>
+    hbox({
         className: 'tb-manage-widgets__header',
         items: [
             span({className: 'tb-manage-widgets__title', item: 'Manage widgets'}),
@@ -51,33 +62,50 @@ function header(model: HomeModel): ReactElement {
                 onClick: () => model.setBindable('isManaging', false)
             })
         ]
-    });
-}
+    })
+);
 
-function sheetBody(model: HomeModel): ReactElement {
-    return div({
+// Pinned footer action: reset the dashboard to its default widget layout. A plain clickable row
+// (not a Hoist button) so the muted styling isn't fought by the framework's button color rules.
+const resetFooter = hoistCmp.factory<HomeModel>(({model}) =>
+    div({
+        className: 'tb-manage-widgets__reset',
+        onClick: () => model.restoreDefaults(),
+        items: [Icon.reset(), span('Reset to default layout')]
+    })
+);
+
+const sheetBody = hoistCmp.factory<HomeModel>(({model}) =>
+    div({
         className: 'tb-manage-widgets__body',
         item: dragDropContext({
             onDragEnd: model.onDragEnd,
             items: [
-                group(model, 'home', 'On your home', model.homeWidgets, [
-                    'No widgets on your home yet - toggle one on below.'
-                ]),
-                group(model, 'available', 'Available', model.availableWidgets, [
-                    'Every widget is on your home.'
-                ])
+                group({
+                    droppableId: 'home',
+                    label: 'On your home',
+                    widgets: model.homeWidgets,
+                    emptyText: 'No widgets on your home yet - toggle one on below.'
+                }),
+                group({
+                    droppableId: 'available',
+                    label: 'Available',
+                    widgets: model.availableWidgets,
+                    emptyText: 'You have added all the widgets.'
+                })
             ]
         })
-    });
+    })
+);
+
+interface GroupProps extends HoistProps {
+    droppableId: string;
+    label: string;
+    widgets: WidgetSpec[];
+    emptyText: string;
 }
 
-function group(
-    model: HomeModel,
-    droppableId: string,
-    label: string,
-    widgets: WidgetSpec[],
-    emptyText: string[]
-): ReactElement {
+const group = hoistCmp.factory<GroupProps>(({droppableId, label, widgets, emptyText}) => {
     const onHome = droppableId === 'home';
     return div({
         className: 'tb-manage-widgets__group',
@@ -85,44 +113,39 @@ function group(
             div({className: 'tb-manage-widgets__group-label', item: label}),
             droppable({
                 droppableId,
-                // Render the drag clone into <body>. The sheet's panel uses a CSS transform (for its
-                // slide animation), which makes it the containing block for the clone's
-                // position:fixed - so without this the floating row is offset well below the finger.
-                // renderClone + getContainerForClone portal the clone to <body>, escaping that
-                // transformed ancestor and keeping it under the pointer.
-                getContainerForClone: () => document.body,
-                renderClone: (dndProps, dndState, rubric) =>
-                    rowContent(model, widgetSpec(rubric.draggableId), onHome, dndProps, dndState),
                 children: dndProps =>
                     div({
                         className: 'tb-manage-widgets__list',
                         ref: dndProps.innerRef,
                         items: [
                             isEmpty(widgets)
-                                ? div({
-                                      className: 'tb-manage-widgets__empty',
-                                      item: emptyText[0]
-                                  })
-                                : widgets.map((w, idx) => widgetRow(model, w, idx, onHome)),
+                                ? div({className: 'tb-manage-widgets__empty', item: emptyText})
+                                : widgets.map((w, idx) => widgetRow({key: w.id, w, idx, onHome})),
                             dndProps.placeholder
                         ]
                     })
             })
         ]
     });
+});
+
+interface WidgetRowProps extends HoistProps<HomeModel> {
+    w: WidgetSpec;
+    idx: number;
+    onHome: boolean;
 }
 
-function widgetRow(model: HomeModel, w: WidgetSpec, idx: number, onHome: boolean): ReactElement {
-    return draggable({
+const widgetRow = hoistCmp.factory<WidgetRowProps>(({model, w, idx, onHome}) =>
+    draggable({
         key: w.id,
         draggableId: w.id,
         index: idx,
         children: (dndProps, dndState) => rowContent(model, w, onHome, dndProps, dndState)
-    });
-}
+    })
+);
 
-// Shared row markup, used both for the in-list item and the floating drag clone (see the droppable's
-// renderClone above).
+// Row markup rendered inside the draggable's render-prop. A plain helper (not a factory) since it
+// receives rbd's dnd props directly and reads no observables of its own.
 function rowContent(
     model: HomeModel,
     w: WidgetSpec,

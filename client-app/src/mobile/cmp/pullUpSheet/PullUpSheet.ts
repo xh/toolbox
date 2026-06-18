@@ -21,6 +21,9 @@ export interface PullUpSheetProps extends HoistProps {
 
     /** Expanded body (passed as `item`/`items` / children), revealed when the sheet is open. */
     children?: ReactNode;
+
+    /** Optional content pinned to the bottom of the panel, below the scrolling body (e.g. an action). */
+    footerItem?: ReactNode;
 }
 
 /**
@@ -34,11 +37,21 @@ export interface PullUpSheetProps extends HoistProps {
 export const pullUpSheet = hoistCmp.factory<PullUpSheetProps>({
     displayName: 'PullUpSheet',
 
-    render({isExpanded, onExpandedChange, peekItem, children, className}) {
+    render({isExpanded, onExpandedChange, peekItem, children, footerItem, className}) {
         // Track pointer start to distinguish a tap (toggle) from a vertical drag (directional snap).
         let startY: number = null;
 
-        const onPointerDown = (e: any) => (startY = e.clientY);
+        const onPointerDown = (e: any) => {
+            // Ignore taps that start on an interactive control in the peek (e.g. a "Done" button) -
+            // let the control handle its own click. Otherwise the peek's pointerup would toggle/close
+            // the sheet *before* the synthesized click fires, leaking a ghost click to whatever is
+            // revealed underneath (e.g. navigating into a widget behind the sheet).
+            if (e.target?.closest?.('button, .xh-button, a, input, [role="button"]')) {
+                startY = null;
+                return;
+            }
+            startY = e.clientY;
+        };
         const onPointerUp = (e: any) => {
             if (startY == null) return;
             const dy = e.clientY - startY;
@@ -75,7 +88,10 @@ export const pullUpSheet = hoistCmp.factory<PullUpSheetProps>({
                                 div({className: 'tb-pull-up-sheet__peek-content', item: peekItem})
                             ]
                         }),
-                        div({className: 'tb-pull-up-sheet__body', item: children})
+                        div({className: 'tb-pull-up-sheet__body', item: children}),
+                        footerItem
+                            ? div({className: 'tb-pull-up-sheet__footer', item: footerItem})
+                            : null
                     ]
                 })
             ]
