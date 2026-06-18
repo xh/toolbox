@@ -44,7 +44,9 @@ export const widgetCard = hoistCmp.factory<WidgetCardProps>({
                         filler(),
                         div({
                             className: 'tb-widget-card__header-chevron',
-                            item: collapsed ? Icon.chevronDown() : Icon.chevronUp()
+                            // Mirror the tree-grid disclosure pattern: collapsed points right (>),
+                            // expanded points down (v).
+                            item: collapsed ? Icon.chevronRight() : Icon.chevronDown()
                         })
                     ]
                 }),
