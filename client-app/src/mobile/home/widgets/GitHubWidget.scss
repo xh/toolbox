@@ -75,12 +75,27 @@
     white-space: nowrap;
   }
 
-  &__row-text {
-    flex: 1;
+  // Two-line variant (Recent Commits): chip + subject on the first line, author + recency on a
+  // full-width second line. No chevron - the whole row is tappable.
+  &__row--commit {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
+  }
+
+  &__commit-head {
+    align-items: center;
+    gap: var(--xh-pad-px);
     min-width: 0;
+
+    .tb-github-widget__repo {
+      align-self: center;
+    }
   }
 
   &__row-title {
+    flex: 1;
+    min-width: 0;
     font-size: var(--xh-font-size-px);
     color: var(--xh-text-color);
     // Keep long commit subjects to a single line within the card.
@@ -89,18 +104,19 @@
     white-space: nowrap;
   }
 
+  // Full-width metadata line - a flex row so the author, separator, and relative timestamp (itself a
+  // flex box) always stay on a single line rather than wrapping; clips rather than wraps if too long.
   &__row-sub {
-    margin-top: 2px;
+    display: flex;
+    align-items: baseline;
+    min-width: 0;
     font-size: var(--xh-font-size-small-px);
     color: var(--xh-text-color-muted);
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   &__row-dot {
     margin: 0 5px;
-  }
-
-  &__row-chevron {
-    flex: none;
-    color: var(--xh-text-color-muted);
   }
 }
