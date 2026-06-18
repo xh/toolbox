@@ -15,25 +15,25 @@ const ITEMS: StartHereItem[] = [
     {
         icon: Icon.grid(),
         title: 'Tour the grids',
-        blurb: "Backed by Hoist's observable Stores - filtering, grouping, tree data, and more.",
+        blurb: 'Filtering, grouping, tree data',
         onClick: () => XH.navigate('default.grids')
     },
     {
         icon: Icon.edit(),
         title: 'Explore the forms',
-        blurb: 'Model-bound inputs with validation, displayed cleanly on the phone.',
+        blurb: 'Model-bound inputs + validation',
         onClick: () => XH.navigate('default.form')
     },
     {
         icon: Icon.book(),
-        title: 'New to Hoist? Read the docs',
-        blurb: 'Core concepts, components, and patterns over on GitHub.',
+        title: 'Read the docs',
+        blurb: 'Core concepts on GitHub',
         onClick: () => XH.openWindow('https://github.com/xh/hoist-react#readme', 'gitlink')
     },
     {
         icon: Icon.code(),
         title: 'Read the source',
-        blurb: 'hoist-react and hoist-core - the client and server libraries behind this app.',
+        blurb: 'hoist-react + hoist-core',
         onClick: () => XH.openWindow('https://github.com/xh', 'gitlink')
     }
 ];
