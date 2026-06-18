@@ -46,6 +46,30 @@ body.xh-app {
   --font-feature-settings: 'tnum', 'zero', 'ss01';
 }
 
+// App bar: the XH glyph logo (set as the app-bar icon in AppComponent) plus a tighter left cluster
+// so the hamburger, logo, and title sit close together.
+.xh-appbar.xh-toolbar {
+  .tb-appbar-logo {
+    display: block;
+    height: 20px;
+    width: auto;
+  }
+
+  // The logo is the toolbar's only direct button child. Drop the inter-item gap before it and trim
+  // its horizontal padding so it nests close to the hamburger. (Selector matches the toolbar's own
+  // item-spacing specificity and wins by source order.)
+  > .xh-button {
+    margin-left: 0;
+    padding-left: var(--xh-pad-half-px);
+    padding-right: var(--xh-pad-half-px);
+  }
+
+  // Trim the hamburger's trailing padding to close the remaining gap to the logo.
+  .xh-appbar-left .xh-button {
+    padding-right: var(--xh-pad-half-px);
+  }
+}
+
 .tb-page {
   .tb-card {
     margin: var(--xh-pad-double-px);

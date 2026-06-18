@@ -1,4 +1,5 @@
 import {hoistCmp, XH, uses, HoistUser} from '@xh/hoist/core';
+import {img} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
 import {button} from '@xh/hoist/mobile/cmp/button';
@@ -7,6 +8,8 @@ import {Icon} from '@xh/hoist/icon';
 import {profilePic} from '../core/cmp';
 import {AppModel} from './AppModel';
 import {navBlade} from './cmp/navBlade/NavBlade';
+// @ts-ignore
+import xhLogo from '../core/img/xh-logo.png';
 import '../core/Toolbox.scss';
 import './App.scss';
 
@@ -22,7 +25,7 @@ export const AppComponent = hoistCmp({
         return panel({
             tbar: appBar({
                 omit: XH.isLandscape,
-                icon: Icon.boxFull({size: 'lg', prefix: 'fal'}),
+                icon: img({className: 'tb-appbar-logo', src: xhLogo, alt: 'XH'}),
                 hideRefreshButton: false,
                 // Hamburger opens the navigation blade. Shown only at the root of the nav stack,
                 // where the back button is absent - on sub-pages the back button owns the left slot.
