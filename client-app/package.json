@@ -16,7 +16,7 @@
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
     "startAndAnalyze": "yarn start --env analyzeBundles",
     "startWithIp": "yarn start --env devHost=$(ipconfig getifaddr en0)",
-    "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
+    "startWithHoist": "(cd ../../hoist-react && yarn install) && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
     "startWithHoistAndAnalyze": "yarn startWithHoist --env analyzeBundles",
     "startWithHoistAndIp": "yarn startWithHoist --env devHost=$(ipconfig getifaddr en0)",
     "startWithHoistSecure": "yarn startWithHoist --env devHttps=true --env devHost=toolbox-local.xh.io"
