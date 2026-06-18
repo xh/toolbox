@@ -23,8 +23,11 @@ export const GridTestPanel = hoistCmp({
                     mask: 'onLoad',
                     item: grid({
                         agOptions: {
-                            isRowSelectable: ({data: record}) =>
-                                !model.disableSelect || record.get('day') > 0
+                            rowSelection: {
+                                mode: 'singleRow',
+                                isRowSelectable: ({data: record}) =>
+                                    !model.disableSelect || record.get('day') > 0
+                            }
                         }
                     })
                 }),
@@ -39,10 +42,19 @@ export const GridTestPanel = hoistCmp({
 const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
     toolbar(
         tooltip({
-            content: 'ID prefix',
+            content: 'Use an incremental numeric id as grid id.',
+            item: switchInput({
+                bind: 'numericId',
+                label: 'Numeric Id',
+                labelSide: 'left'
+            })
+        }),
+        tooltip({
+            content: 'ID prefix (for non-incremental ids))',
             item: numberInput({
                 bind: 'idSeed',
-                width: 40
+                width: 40,
+                disabled: model.numericId
             })
         }),
         tooltip({
@@ -62,7 +74,7 @@ const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
         toolbarSep(),
         refreshButton({
             text: 'Load Grid',
-            model
+            target: model
         }),
         button({
             text: 'Clear Grid',
@@ -123,8 +135,8 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
         }),
         toolbarSep(),
         switchInput({
-            bind: 'disableXssProtection',
-            label: 'Disable XSS',
+            bind: 'enableXssProtection',
+            label: 'Enable XSS',
             labelSide: 'left'
         }),
         toolbarSep(),

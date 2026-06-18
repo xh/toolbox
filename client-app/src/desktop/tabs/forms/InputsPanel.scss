@@ -1,42 +1,26 @@
-.toolbox-inputs-panel {
-  &__column {
-    width: 30%;
-    flex: 1;
-    overflow-y: auto !important;
-    margin: var(--xh-pad-px);
-    border: var(--xh-border-solid);
+.tb-inputs-panel {
+  &__row {
+    margin-bottom: var(--xh-pad-double-px);
+    flex-shrink: 0;
+  }
 
-    &:nth-child(2) {
-      margin: var(--xh-pad-px) 0;
-    }
+  &__label {
+    font-weight: 500;
+  }
 
-    .inputs-panel-field-box {
-      padding: var(--xh-pad-half-px) var(--xh-pad-half-px) 0 var(--xh-pad-half-px);
-      flex: none;
+  // Responsive masonry of category cards. `columns: <min-width> <max-count>` fits as many
+  // columns of at least the min width as the viewport allows, capped at the max — so the
+  // layout flows 3 -> 2 -> 1 as the panel narrows, with the browser balancing column heights.
+  &__masonry {
+    padding: var(--xh-pad-double-px);
+    columns: 340px 3;
+    column-gap: var(--xh-pad-double-px);
 
-      &:nth-child(odd) {
-        background-color: var(--xh-grid-bg-odd);
-      }
-
-      .inputs-panel-field-display {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        padding: 2px 4px;
-        max-width: 300px;
-        font-size: var(--xh-font-size-small-px);
-        font-family: var(--xh-font-family-mono);
-        background-color: var(--xh-bg-alt);
-        border: var(--xh-border-solid);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .xh-form-field .xh-form-field-label {
-        font-size: var(--xh-font-size-large-px);
-        margin-bottom: var(--xh-pad-half-px);
-      }
+    // Each card is a column item: keep it whole, fill the column, match the column gap.
+    > * {
+      break-inside: avoid;
+      width: 100%;
+      margin-bottom: var(--xh-pad-double-px);
     }
   }
 }

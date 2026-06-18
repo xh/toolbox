@@ -1,9 +1,9 @@
 package io.xh.toolbox.recalls
 
-import io.xh.hoist.security.Access
+import io.xh.hoist.security.AccessAll
 import io.xh.toolbox.BaseController
 
-@Access(['APP_READER'])
+@AccessAll
 class RecallsController extends BaseController {
 
     def recallsService

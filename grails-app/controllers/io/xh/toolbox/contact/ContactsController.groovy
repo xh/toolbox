@@ -3,13 +3,13 @@ package io.xh.toolbox.contact
 import grails.gorm.transactions.Transactional
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.exception.NotAuthorizedException
-import io.xh.hoist.security.Access
+import io.xh.hoist.security.AccessAll
 import io.xh.toolbox.BaseController
 
 import static io.xh.hoist.json.JSONSerializer.serializePretty
 
 
-@Access(['APP_READER'])
+@AccessAll
 class ContactsController extends BaseController {
 
     def configService

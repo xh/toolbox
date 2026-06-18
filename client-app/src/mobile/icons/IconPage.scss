@@ -1,12 +1,12 @@
-.icon-page {
+.tb-icon-page {
   table {
-    width: 100%;
+    max-width: 100%;
     border-collapse: collapse;
 
     th {
       width: 25%;
       padding: var(--xh-pad-half-px);
-      text-transform: uppercase;
+      text-transform: capitalize;
       background-color: var(--xh-grid-header-bg);
       border-bottom: var(--xh-border-solid);
     }
@@ -20,6 +20,11 @@
 
       td {
         padding: var(--xh-pad-px);
+
+        &:first-child {
+          font-family: var(--xh-font-family-mono);
+          font-size: var(--xh-font-size-small-em);
+        }
 
         &:not(:first-child) {
           text-align: center;

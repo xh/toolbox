@@ -1,27 +1,30 @@
 package io.xh.toolbox.app
 
-import groovy.util.logging.Slf4j
+
 import io.xh.hoist.BaseService
+import io.xh.hoist.cache.Cache
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONSerializer
 import io.xh.hoist.websocket.WebSocketService
+import io.xh.hoist.util.Timer
 import io.xh.toolbox.github.Commit
 import io.xh.toolbox.github.CommitHistory
+import io.xh.toolbox.github.Release
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.core5.http.io.entity.StringEntity
-
 
 import java.time.Instant
 
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
 /**
- * Service to load commits from the default branches (develop) of XH's GitHub repos.
+ * Service to load commits and published releases from XH GitHub repos.
  *
- * Queries commit history via the GitHub GraphQL API (https://docs.github.com/). Will load the
- * entire commit history for a configured list of repos then cache the results centrally here and
- * load differential updates on a timer to keep the cache fresh.
+ * Queries commit history and release data via the GitHub GraphQL API (https://docs.github.com/).
+ * Will load the entire commit history for a configured list of repos then cache the results
+ * centrally here and load differential updates on a timer to keep the cache fresh. Releases are
+ * loaded alongside commits on the same timer from the same configured list of repos.
  *
  * This service requires several config keys to operate. It checks the "gitHubAccessToken" string
  * config on startup to determine if it should do any work at all.
@@ -30,59 +33,99 @@ import static io.xh.hoist.util.DateTimeUtils.MINUTES
  * environments, where a developer might wish to enable this service to load *some* commits but
  * has no reason to load the entire history. (Set to a value of 1 to work in this mode.)
  */
-@Slf4j
 class GitHubService extends BaseService {
+
+    String telemetryPrefix = 'toolbox.github'
 
     static clearCachesConfigs = ['gitHubRepos', 'gitHubAccessToken', 'gitHubMaxPagesPerLoad']
 
     ConfigService configService
     WebSocketService webSocketService
-    Map<String, CommitHistory> commitsByRepo = new HashMap()
-
-    void init() {
-        if (configService.getString('gitHubAccessToken', 'none') == 'none') {
-            logWarn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
-        } else {
-            createTimer(
-                runFn: this.&loadCommitsForAllRepos,
-                interval: 'gitHubCommitsRefreshMins',
-                intervalUnits: MINUTES
-            )
-        }
-    }
-
-    /** Return the cached history of commits for a single repo, by name. */
-    CommitHistory getCommitsForRepo(String repoName) {commitsByRepo[repoName]}
 
     /**
-     * Reload commit history for all configured repos from GitHub API.
-     * @param forceFullLoad - true to drop any already loaded history, false (default) to do an
-     *      incremental load of new commits only.
+     * Non-expiring, replicated cache of commit history by repo name.
+     * Populated via primaryOnly timer to keep the cache hot at all times.
      */
-    Map<String, CommitHistory> loadCommitsForAllRepos(Boolean forceFullLoad = false) {
+    private Cache<String, CommitHistory> commitsByRepoCache = createCache(
+        name: 'commitsByRepo',
+        replicate: true
+    )
+
+    /**
+     * Non-expiring, replicated cache of published (non-draft, non-prerelease) releases by repo
+     * name, most recent first. Populated via the same primaryOnly timer as commits.
+     */
+    private Cache<String, List<Release>> releasesByRepoCache = createCache(
+        name: 'releasesByRepo',
+        replicate: true
+    )
+
+    private Timer refreshTimer
+
+    void init() {
+        refreshTimer = createTimer(
+            name: 'loadGitHubData',
+            runFn: this.&loadAllGitHubData,
+            interval: 'gitHubCommitsRefreshMins',
+            intervalUnits: MINUTES,
+            primaryOnly: true
+        )
+    }
+
+    void forceRefresh() {
+        logInfo("Forced refresh of GitHub data requested")
+        refreshTimer.forceRun()
+    }
+
+    /** Return map of all available commit histories, keyed by repo name. */
+    Map<String, CommitHistory> getCommitsByRepo() {
+        commitsByRepoCache.map
+    }
+
+    /** Return cached commit history for a single repo. */
+    CommitHistory getCommitsForRepo(String repoName) {
+        commitsByRepoCache.get(repoName)
+    }
+
+    /** Return map of all available published releases, keyed by repo name. */
+    Map<String, List<Release>> getReleasesByRepo() {
+        releasesByRepoCache.map
+    }
+
+
+    //------------------
+    // Implementation
+    //------------------
+    private void loadAllGitHubData() {
+        loadCommitsForAllRepos()
+        loadReleasesForAllRepos()
+    }
+
+    private void loadCommitsForAllRepos(Boolean forceFullLoad = false) {
+        if (configService.getString('gitHubAccessToken', 'none') == 'none') {
+            logWarn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
+            return
+        }
+
         def repos = configService.getList('gitHubRepos', []),
             newCommitCount = 0
 
-        withInfo("Refreshing GitHub commits for ${repos.size()} configured repositories") {
-            repos.each{
-                def newCommits = loadCommitsForRepo(it as String, forceFullLoad)
-                newCommitCount += newCommits.size()
-            }
+        span('getCommits')
+            .logInfo("Refreshing GitHub commits for ${repos.size()} configured repositories")
+            .run {
+                repos.each {
+                    def newCommits = loadCommitsForRepo(it as String, forceFullLoad)
+                    newCommitCount += newCommits.size()
+                }
 
-            if (newCommitCount) {
-                logDebug("Found $newCommitCount new commits - pushing update...")
-                pushUpdate()
+                if (newCommitCount) {
+                    logDebug("Found $newCommitCount new commits - pushing update...")
+                    pushUpdate()
+                }
             }
-        }
-
-        return commitsByRepo
     }
 
-    /**
-     * Reload commit history for a single repo, by name.
-     * @return collection of newly loaded commits, if any.
-     */
-    List<Commit> loadCommitsForRepo(String repoName, Boolean forceFullLoad = false) {
+    private List<Commit> loadCommitsForRepo(String repoName, Boolean forceFullLoad = false) {
         def hadError = false,
             hasNextPage = true,
             cursor = '',
@@ -100,14 +143,14 @@ class GitHubService extends BaseService {
         while (hasNextPage && pageCount <= maxPagesToLoad && !hadError) {
             withDebug("Fetching page ${pageCount} for repo ${repoName}") {
                 try {
-                    def response = loadCommitsForRepoInternal(repoName, commitHistory.lastCommitTimestamp, cursor)
+                    def response = fetchPage(repoName, commitHistory.lastCommitTimestamp, cursor)
                     if (response?.data?.repository?.name != repoName) {
                         throw new RuntimeException("JSON returned by GitHub API not in expected format")
                     }
 
                     def history = response.data.repository.defaultBranchRef.target.history,
                         pageInfo = history.pageInfo,
-                        rawCommits = history.nodes as List
+                        rawCommits = history.nodes as List<Map>
 
                     logDebug("Fetched ${newCommits.size() + rawCommits.size()} / ${history.totalCount} commits for this batch")
                     cursor = pageInfo.endCursor
@@ -139,41 +182,116 @@ class GitHubService extends BaseService {
             }
         }
 
-        // This filter is important, as our update checks will include the commit that occurred on
-        // commitHistory.lastCommitTimestamp.
-        newCommits = newCommits.findAll{!commitHistory.hasCommit(it)}
-
         if (hadError) {
             logError('Error during commit load', 'no commits will be updated')
             return []
-        } else if (!newCommits) {
-            logDebug('Commit load complete', 'no new commits found')
-            return []
-        } else {
-            logDebug('Commit load complete', "${newCommits.size()} new commits")
-            commitHistory.updateWithNewCommits(newCommits)
-            this.commitsByRepo.put(repoName, commitHistory)
-            return newCommits
+        }
+
+        // Always update commit history, even if no new commits were found. This will update the
+        // lastUpdated timestamp and confirm we were able to successfully check for commits.
+        newCommits = commitHistory.updateWithNewCommits(newCommits)
+        logDebug('Commit load complete', "${newCommits.size()} new commits")
+        commitsByRepoCache.put(repoName, commitHistory)
+        return newCommits
+    }
+
+    private void loadReleasesForAllRepos() {
+        if (configService.getString('gitHubAccessToken', 'none') == 'none') {
+            logWarn('Required "gitHubAccessToken" config not present or set to "none" - no releases will be loaded from GitHub.')
+            return
+        }
+
+        def repos = configService.getList('gitHubRepos', []),
+            changed = false
+
+        span('getReleases')
+            .logInfo("Refreshing GitHub releases for ${repos.size()} configured repositories")
+            .run {
+                repos.each {
+                    def repoName = it as String,
+                        newReleases = loadReleasesForRepo(repoName)
+
+                    // Null indicates a fetch/parse error - leave any cached data in place.
+                    if (newReleases != null) {
+                        def prior = releasesByRepoCache.get(repoName)
+                        if (prior*.id != newReleases*.id) changed = true
+                        releasesByRepoCache.put(repoName, newReleases)
+                    }
+                }
+
+                if (changed) {
+                    logDebug('Found new or changed releases - pushing update...')
+                    pushUpdate()
+                }
+            }
+    }
+
+    private List<Release> loadReleasesForRepo(String repoName) {
+        try {
+            def response = fetchReleases(repoName)
+            if (response?.data?.repository?.name != repoName) {
+                throw new RuntimeException("JSON returned by GitHub API not in expected format")
+            }
+
+            def rawReleases = response.data.repository.releases.nodes as List<Map>
+            return rawReleases
+                .findAll {!it.isDraft && !it.isPrerelease}
+                .collect {raw ->
+                    new Release(
+                        repo: repoName,
+                        tagName: raw.tagName,
+                        name: raw.name,
+                        description: raw.description,
+                        publishedAt: raw.publishedAt,
+                        url: raw.url
+                    )
+                }
+        } catch (e) {
+            logError("Failure fetching releases for $repoName", e)
+            return null
         }
     }
 
+    private Map fetchReleases(String repoName) {
+        // Unlike commits, releases are capped at a recent window - no pagination needed.
+        def query = """
+query XHRepoReleases {
+    repository(owner: "xh", name: "$repoName") {
+        name
+        releases(first: 20, orderBy: {field: CREATED_AT, direction: DESC}) {
+            nodes {
+                tagName
+                name
+                description
+                publishedAt
+                url
+                isPrerelease
+                isDraft
+            }
+        }
+    }
+}
+"""
+        postGraphQL([query: query])
+    }
 
-    //------------------------
-    // Implementation
-    //------------------------
-    private Map loadCommitsForRepoInternal(String repoName, String sinceTimestamp = null, String cursor = null) {
-        def query = getCommitsQueryJson(repoName, sinceTimestamp, cursor),
+    private Map fetchPage(String repoName, String sinceTimestamp = null, String cursor = null) {
+        postGraphQL(getQueryJson(repoName, sinceTimestamp, cursor))
+    }
+
+    private Map postGraphQL(queryPayload) {
+        def body = queryPayload instanceof String ? queryPayload : JSONSerializer.serialize(queryPayload),
             post = new HttpPost('https://api.github.com/graphql')
 
         post.setHeader('Accept', 'application/json')
         post.setHeader('Content-type', 'application/json')
         post.setHeader('Authorization', "bearer ${configService.getString('gitHubAccessToken')}")
-        post.setEntity(new StringEntity(query))
+        post.setEntity(new StringEntity(body))
 
         jsonClient.executeAsMap(post)
     }
 
-    private String getCommitsQueryJson(String repoName, String sinceTimestamp, String cursor) {
+    private String getQueryJson(String repoName, String sinceTimestamp, String cursor) {
         def query = """
 query XHRepoCommits {
     repository(owner: "xh", name: "$repoName") {
@@ -218,23 +336,24 @@ query XHRepoCommits {
 
     private JSONClient _jsonClient
     private JSONClient getJsonClient() {
-        if (!_jsonClient) {
-            _jsonClient = new JSONClient()
-        }
-        return _jsonClient
+        _jsonClient ?= new JSONClient()
     }
 
     private void pushUpdate() {
-        webSocketService.pushToChannels(
-            webSocketService.allChannels*.key, 'gitHubUpdate',
-            [timestamp: Instant.now()]
-        )
+        webSocketService.pushToAllChannels('gitHubUpdate', [timestamp: Instant.now()])
     }
 
     void clearCaches() {
-        this._jsonClient = null
-        this.commitsByRepo = new HashMap()
-        this.loadCommitsForAllRepos()
+        _jsonClient = null
+        if (isPrimary) {
+            commitsByRepoCache.clear()
+            releasesByRepoCache.clear()
+            forceRefresh()
+        }
+        super.clearCaches()
     }
 
+    Map getAdminStats() { [
+        config: configForAdminStats('gitHubAccessToken', 'gitHubRepos', 'gitHubMaxPagesPerLoad')
+    ]}
 }

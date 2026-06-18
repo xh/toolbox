@@ -1,29 +1,18 @@
-import {HoistAppModel, XH, managed} from '@xh/hoist/core';
-import {OauthService} from '../../core/svc/OauthService';
+import {InitContext, managed} from '@xh/hoist/core';
 import {NewsPanelModel} from './NewsPanelModel';
+import {BaseAppModel} from '../../BaseAppModel';
 
-export class AppModel extends HoistAppModel {
+export class AppModel extends BaseAppModel {
     static instance: AppModel;
     @managed newsPanelModel: NewsPanelModel;
 
-    static override async preAuthAsync() {
-        await XH.installServicesAsync(OauthService);
-    }
-
-    override async initAsync() {
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
         this.newsPanelModel = new NewsPanelModel();
-        this.loadAsync();
-    }
-
-    override async logoutAsync() {
-        await XH.oauthService.logoutAsync();
+        this.loadAsync({span: ctx.span});
     }
 
     override async doLoadAsync(loadSpec) {
         await this.newsPanelModel.loadAsync(loadSpec);
-    }
-
-    override get supportsVersionBar(): boolean {
-        return window.self === window.top;
     }
 }

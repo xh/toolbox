@@ -1,0 +1,50 @@
+.tbox-formats-tab {
+  &__panel {
+    table {
+      width: 100%;
+
+      tr {
+        background-color: var(--xh-grid-bg);
+
+        &:nth-child(odd) {
+          td {
+            background-color: var(--xh-grid-bg-odd);
+          }
+        }
+      }
+
+      td {
+        padding: 5px 10px;
+        text-align: right;
+
+        &.outputColumn {
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+
+  // Leading label for the custom-value input row, kept left-aligned and muted.
+  &__custom-label {
+    color: var(--xh-text-color-muted);
+    white-space: nowrap;
+  }
+
+  // Scrolling wrapper so a tall results table stays within the (overflow-hidden) demo card.
+  &__results {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+}
+
+// Color swatches for the custom colorSpec option, shown in the Wrapper info rail.
+.tbox-formats-color {
+  width: 28px;
+  height: 22px;
+  padding: 0;
+  border: var(--xh-border-solid);
+  border-radius: 3px;
+  background: none;
+  cursor: pointer;
+}

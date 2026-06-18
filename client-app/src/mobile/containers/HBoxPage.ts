@@ -4,13 +4,13 @@ import {box, div, hbox} from '@xh/hoist/cmp/layout';
 
 export const hboxPage = hoistCmp.factory({
     render() {
-        const defaults = {padding: 10, className: 'toolbox-containers-box'};
+        const defaults = {padding: 10, className: 'tb-containers-box'};
 
         return panel({
-            className: 'toolbox-containers-page',
+            className: 'tb-containers-page',
             items: [
                 div({
-                    className: 'toolbox-description',
+                    className: 'tb-description',
                     item: `
                         An hbox lays out its children horizontally, rendering a box with flexDirection 
                         set to row.

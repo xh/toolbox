@@ -3,7 +3,7 @@ import {fragment} from '@xh/hoist/cmp/layout';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
-import {cloneDeep} from 'lodash';
+import {cloneDeep, times} from 'lodash';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {GridTestData} from './GridTestData';
 import {GridTestMetrics} from './GridTestMetrics';
@@ -11,7 +11,6 @@ import {GridTestMetrics} from './GridTestMetrics';
 const pnlColumn: ColumnSpec = {
     absSort: true,
     align: 'right',
-    width: 120,
     renderer: numberRenderer({
         precision: 0,
         ledger: true,
@@ -20,8 +19,9 @@ const pnlColumn: ColumnSpec = {
     })
 };
 
+const PERSIST_KEY = 'adminGridTest';
 export class GridTestModel extends HoistModel {
-    override persistWith = {localStorageKey: 'persistTest'};
+    override persistWith = {localStorageKey: PERSIST_KEY};
 
     // Total count (approx) of all nodes generated (parents + children).
     @bindable recordCount = 200000;
@@ -31,12 +31,14 @@ export class GridTestModel extends HoistModel {
     @bindable idSeed = 1;
     // True to generate data in tree structure.
     @bindable tree = false;
+    // True to use an incremental numeric id as grid id.
+    @bindable numericId = false;
     // True to show summary row.
     @bindable showSummary = false;
     // True to use tree root node as summary row.
     @bindable loadRootAsSummary = false;
-    // True to turn off default XSS protection at store level.
-    @bindable disableXssProtection = true;
+    // True to enable XSS protection at store level.
+    @bindable enableXssProtection = false;
     // Value > 0 will trigger creation of additional (null value) fields on the store to
     // help stress-test stores with a wide array of fields.
     @bindable extraFieldCount = 50;
@@ -67,7 +69,7 @@ export class GridTestModel extends HoistModel {
     includeHiddenColumns = false;
 
     @bindable
-    @persist.with({path: 'gridPersistType', buffer: 500}) // test persist.with!
+    @persist.with({path: 'gridPersistType', debounce: 500}) // test persist.with!
     persistType = null;
 
     @managed
@@ -102,7 +104,7 @@ export class GridTestModel extends HoistModel {
                 this.colChooserWidth,
                 this.colChooserHeight,
                 this.lockColumnGroups,
-                this.disableXssProtection,
+                this.enableXssProtection,
                 this.extraFieldCount
             ],
             run: () => {
@@ -158,14 +160,14 @@ export class GridTestModel extends HoistModel {
     }
 
     private createGridModel() {
-        const {persistType, disableXssProtection, extraFieldCount} = this,
+        const {persistType, enableXssProtection, extraFieldCount} = this,
             storeConf: StoreConfig = {
                 freezeData: false,
                 idEncodesTreePath: true
             };
 
-        if (disableXssProtection) {
-            storeConf.fieldDefaults = {disableXssProtection};
+        if (enableXssProtection) {
+            storeConf.fieldDefaults = {enableXssProtection};
         }
 
         if (this.tree && this.showSummary && this.loadRootAsSummary) {
@@ -191,7 +193,7 @@ export class GridTestModel extends HoistModel {
         }
 
         return new GridModel({
-            persistWith: persistType ? {[persistType]: 'persistTest'} : null,
+            persistWith: persistType ? {[persistType]: PERSIST_KEY} : null,
             selModel: {mode: 'multiple'},
             sortBy: 'id',
             emptyText: 'No records found...',
@@ -199,6 +201,7 @@ export class GridTestModel extends HoistModel {
             lockColumnGroups: this.lockColumnGroups,
             store: storeConf,
             treeMode: this.tree,
+            levelLabels: times(5, n => `Level ${n}`),
             showSummary: this.showSummary,
             colChooserModel: {
                 commitOnChange: this.colChooserCommitOnChange,
@@ -215,20 +218,17 @@ export class GridTestModel extends HoistModel {
             columns: [
                 {
                     field: 'id',
-                    width: 140,
                     isTreeColumn: this.tree
                 },
                 {
                     field: 'symbol',
                     agOptions: {
                         filter: 'agTextColumnFilter',
-                        suppressMenu: false
-                    },
-                    width: 200
+                        suppressHeaderMenuButton: false
+                    }
                 },
                 {
-                    field: 'trader',
-                    width: 200
+                    field: 'trader'
                 },
                 {
                     groupId: 'pnl',
@@ -242,7 +242,6 @@ export class GridTestModel extends HoistModel {
                 {
                     field: 'volume',
                     align: 'right',
-                    width: 130,
                     highlightOnChange: true,
                     renderer: millionsRenderer({
                         precision: 2,
@@ -253,7 +252,6 @@ export class GridTestModel extends HoistModel {
                 {
                     field: 'complex',
                     align: 'right',
-                    width: 130,
                     renderer: (v, {record}) => {
                         return fragment(
                             fmtMillions(record.data.volume, {precision: 2, label: true}),

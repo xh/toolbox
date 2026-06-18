@@ -1,4 +1,4 @@
-import {box, code, filler, p} from '@xh/hoist/cmp/layout';
+import {box, filler, p} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -9,16 +9,36 @@ import {wrapper} from '../../common';
 
 export const appNotificationsPanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'App Notifications',
+        icon: Icon.rocket(),
+        description: [
+            "Hoist surfaces important runtime events without interrupting the user's work. The",
+            'framework detects new app versions and prompts for a refresh via an unobtrusive',
+            'banner, and can suspend an idle session to reduce server load before prompting',
+            'the user to reload. The two tiles below trigger each behavior on demand.'
+        ],
         links: [
             {
+                url: '$TB/client-app/src/desktop/tabs/other/AppNotificationsPanel.ts',
+                notes: 'This example.'
+            },
+            {
+                url: '$HR/svc/README.md',
+                text: 'Services docs',
+                notes: 'Built-in services guide.'
+            },
+            {
                 url: '$HR/svc/EnvironmentService.ts',
-                notes: 'EnvironmentService checks for updated versions and alerts after a new release, if enabled.'
+                notes: 'Checks for updated versions and alerts after a new release, if enabled.'
             },
             {
                 url: '$HR/svc/IdleService.ts',
-                notes: 'Idle Service listens for user interactions and triggers the IdlePanel, if enabled.'
+                notes: 'Listens for user interactions and triggers the IdlePanel, if enabled.'
             },
-            {url: '$HR/desktop/appcontainer/IdlePanel.ts', notes: 'IdlePanel Component'}
+            {
+                url: '$HR/desktop/appcontainer/suspend/IdlePanel.ts',
+                notes: 'Panel shown when an idle session is suspended.'
+            }
         ],
         item: box({
             className: 'tb-app-notifications',
@@ -71,11 +91,7 @@ const idleServiceTile = hoistCmp.factory(() =>
                 This feature is recommended for apps that are rapidly polling or receiving 
                 updates from the server that generate load on back-end APIs.
             `),
-            p(
-                `Idle detection is enabled and configured via the `,
-                code('xhIdleConfig'),
-                ` app config.`
-            ),
+            p('Idle detection is enabled and configured via the xhIdleConfig app config.'),
             p('Click below to put Toolbox to sleep.'),
             filler()
         ],

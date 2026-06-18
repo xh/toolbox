@@ -1,6 +1,6 @@
-import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {checkboxRenderer, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {dateIs, lengthIs, numberIs, required, Store} from '@xh/hoist/data';
+import {dateIs, lengthIs, numberIs, required, Store, StoreRecord} from '@xh/hoist/data';
 import {
     actionCol,
     booleanEditor,
@@ -11,13 +11,13 @@ import {
     textAreaEditor,
     textEditor
 } from '@xh/hoist/desktop/cmp/grid';
+import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
-import {withDebug} from '@xh/hoist/utils/js';
 
 export class InlineEditingPanelModel extends HoistModel {
     @bindable
@@ -36,6 +36,13 @@ export class InlineEditingPanelModel extends HoistModel {
     @bindable
     clicksToEdit = 2;
 
+    @managed
+    panelModel: PanelModel;
+
+    get isModal() {
+        return this.panelModel?.isModal;
+    }
+
     get clicksToEditNote() {
         const {clicksToEdit} = this;
         if (clicksToEdit === 1) return 'Single-click a row above to edit';
@@ -46,6 +53,7 @@ export class InlineEditingPanelModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
+        this.panelModel = this.createPanelModel();
         this.store = this.createStore();
         this.gridModel = this.createGridModel();
 
@@ -69,13 +77,16 @@ export class InlineEditingPanelModel extends HoistModel {
             });
         }
 
-        withDebug(`Adding ${count} Records`, () => this.store.addRecords(data), this);
-
-        this.gridModel.beginEditAsync({record: firstId});
+        this.withInfo(`Adding ${count} Records`, () => this.store.addRecords(data));
+        this.gridModel.beginEditAsync({record: firstId, colId: 'name'});
     }
 
     async beginEditAsync(opts?) {
-        await this.gridModel.beginEditAsync(opts);
+        // This grid disables row selection (selModel: null), so beginEditAsync has no selected -
+        // or, with selection off, "selectable" - row to fall back to. Target the first record
+        // explicitly so the "Edit first row / amount" actions work. Pass the StoreRecord itself
+        // (not its id) since the first record's id is 0, which beginEditAsync treats as falsy.
+        await this.gridModel.beginEditAsync({record: this.store.records[0], ...opts});
     }
 
     async endEditAsync() {
@@ -118,7 +129,7 @@ export class InlineEditingPanelModel extends HoistModel {
     }
 
     @action
-    private commitRecord(record) {
+    private commitRecord(record: StoreRecord) {
         const {store} = this;
 
         if (record.isAdd) {
@@ -139,6 +150,13 @@ export class InlineEditingPanelModel extends HoistModel {
         this.store.revertRecords(record);
     }
 
+    private createPanelModel() {
+        return new PanelModel({
+            modalSupport: true,
+            collapsible: false,
+            resizable: false
+        });
+    }
     private createStore() {
         return new Store({
             validationIsComplex: false,
@@ -158,9 +176,14 @@ export class InlineEditingPanelModel extends HoistModel {
                             when: (f, {category}) => category === 'US',
                             check: async ({value}) => {
                                 if (this.asyncValidation) await wait(1000);
-                                return isNil(value) || value < 10
-                                    ? 'Records where `category` is "US" require `amount` of 10 or greater.'
-                                    : null;
+                                if (isNil(value) || value < 10) {
+                                    return 'Records where `category` is "US" require `amount` of 10 or greater.';
+                                } else if (value > 50) {
+                                    return {
+                                        severity: 'warning',
+                                        message: 'Amounts over 50 may require additional approval.'
+                                    };
+                                }
                             }
                         }
                     ]
@@ -168,10 +191,21 @@ export class InlineEditingPanelModel extends HoistModel {
                 {
                     name: 'date',
                     type: 'localDate',
-                    rules: [dateIs({min: LocalDate.today().startOfYear(), max: 'today'})]
+                    rules: [
+                        dateIs({min: LocalDate.today().startOfYear(), max: 'today'}),
+                        ({value}) =>
+                            value && !value.isWeekday
+                                ? {severity: 'info', message: 'Date falls on a weekend.'}
+                                : null
+                    ]
                 },
                 {
                     name: 'restricted',
+                    type: 'bool',
+                    defaultValue: false
+                },
+                {
+                    name: 'enabled',
                     type: 'bool',
                     defaultValue: false
                 },
@@ -192,6 +226,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     name: 'Record 0',
                     category: 'US',
                     amount: 50,
+                    enabled: true,
                     date: LocalDate.today(),
                     description: 'This is a record'
                 },
@@ -200,6 +235,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     name: 'Record 1',
                     category: 'EU',
                     amount: 25,
+                    enabled: null,
                     date: LocalDate.today().add(-6, 'months'),
                     description: 'This is a record'
                 },
@@ -208,6 +244,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     name: 'Restricted',
                     category: 'BRIC',
                     amount: 30,
+                    enabled: false,
                     restricted: true,
                     description:
                         'Demos conditional editing - in this example, setting restricted boolean to true on a record disables editing of other fields.'
@@ -267,6 +304,16 @@ export class InlineEditingPanelModel extends HoistModel {
                     editable: true,
                     editor: booleanEditor,
                     renderer: v => (v ? Icon.lock({className: 'xh-warning'}) : '')
+                },
+                {
+                    field: 'enabled',
+                    headerName: Icon.checkSquare(),
+                    width: 40,
+                    align: 'center',
+                    resizable: false,
+                    editable: ifNotRestricted,
+                    editor: props => booleanEditor({...props, quickToggle: !this.fullRowEditing}),
+                    renderer: checkboxRenderer({displayUnsetState: true})
                 },
                 {
                     field: 'name',

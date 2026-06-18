@@ -4,13 +4,13 @@ import {box, div, vbox} from '@xh/hoist/cmp/layout';
 
 export const vboxPage = hoistCmp.factory({
     render() {
-        const defaults = {padding: 10, className: 'toolbox-containers-box'};
+        const defaults = {padding: 10, className: 'tb-containers-box'};
 
         return panel({
-            className: 'toolbox-containers-page',
+            className: 'tb-containers-page',
             items: [
                 div({
-                    className: 'toolbox-description',
+                    className: 'tb-description',
                     item: `
                         A vbox lays out its children vertically, rendering a box with flexDirection 
                         set to column.

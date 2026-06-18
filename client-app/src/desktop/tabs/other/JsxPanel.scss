@@ -1,6 +1,12 @@
-.toolbox-jsx-example {
-  width: 40vw;
-  max-width: 650px;
-  margin: 0 var(--xh-pad-px) var(--xh-pad-double-px) var(--xh-pad-px);
+// Fill the demo region; the outer card border/radius come from .tbox-wrapper__demo > .xh-panel.
+.tb-jsx-panel {
+  width: 100%;
+  height: 100%;
+}
+
+// Two equal, bordered code panes. min-width: 0 lets each pane hold its flex share and scroll
+// long lines internally rather than forcing the layout to overflow.
+.tb-jsx-example {
+  min-width: 0;
   border: var(--xh-border-solid);
 }

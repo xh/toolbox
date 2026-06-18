@@ -1,26 +1,21 @@
-import {hframe, placeholder} from '@xh/hoist/cmp/layout';
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {placeholder} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {dashContainer} from '@xh/hoist/desktop/cmp/dash';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {chartsPanel} from './charts/ChartsPanel';
-import {DetailPanelModel} from './DetailPanelModel';
-import {ordersPanel} from './OrdersPanel';
+import {DetailModel} from './DetailModel';
 
 export const detailPanel = hoistCmp.factory({
-    model: creates(DetailPanelModel),
+    model: creates(DetailModel),
 
     render({model}) {
-        const {panelSizingModel, positionId, collapsed} = model;
-
-        const items = positionId
-            ? [ordersPanel(), chartsPanel()]
-            : [placeholder('Select a position to view details.')];
+        const {panelModel, positionId} = model;
 
         return panel({
-            model: panelSizingModel,
-            title: collapsed ? 'Position Details' : null,
-            icon: collapsed ? Icon.detail() : null,
-            item: hframe(items)
+            model: panelModel,
+            collapsedTitle: 'Position Details',
+            collapsedIcon: Icon.detail(),
+            item: positionId ? dashContainer() : placeholder('Select a position to view details.')
         });
     }
 });

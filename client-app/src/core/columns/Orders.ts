@@ -1,6 +1,5 @@
+import {ColumnSpec, dateTime, localDate} from '@xh/hoist/cmp/grid';
 import {fmtDate, fmtNumber, numberRenderer} from '@xh/hoist/format';
-import {dateTimeCol} from '@xh/hoist/cmp/grid';
-import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
 export const symbolCol: ColumnSpec = {
     field: {
@@ -60,12 +59,22 @@ export const priceCol: ColumnSpec = {
     renderer: numberRenderer({precision: 2})
 };
 
-export const timeCol: ColumnSpec = {
-    ...dateTimeCol,
+export const orderExecTime: ColumnSpec = {
+    ...dateTime,
     field: {
         name: 'time',
         type: 'date',
         displayName: 'Exec Time'
+    },
+    align: 'left'
+};
+
+export const orderExecDay: ColumnSpec = {
+    ...localDate,
+    field: {
+        name: 'day',
+        type: 'localDate',
+        displayName: 'Exec Day'
     },
     align: 'left'
 };
@@ -84,7 +93,6 @@ export const closingPriceSparklineCol: ColumnSpec = {
         cellRendererParams: {
             sparklineOptions: {
                 axis: {type: 'time'},
-                crosshairs: {xLine: {enabled: false}},
                 tooltip: {
                     renderer: ({xValue, yValue}) => ({
                         title: fmtDate(xValue, {fmt: 'MM/DD/YYYY'}),

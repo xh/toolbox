@@ -1,0 +1,11 @@
+.tb-containers-page .xh-panel__content {
+  & > .xh-hbox,
+  & > .xh-vbox {
+    flex: 1;
+  }
+
+  .tb-containers-box {
+    border: var(--xh-border-solid);
+    font-family: var(--xh-font-family-mono);
+  }
+}

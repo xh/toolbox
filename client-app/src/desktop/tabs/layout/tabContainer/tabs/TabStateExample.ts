@@ -17,7 +17,7 @@ export const tabStateExample = hoistCmp.factory({
             placesTab = find(tabs, {id: 'places'});
 
         return panel({
-            className: 'child-tabcontainer',
+            className: 'tb-layout-tabs__child',
             bbar: [
                 switchInput({
                     model: peopleTab,
@@ -55,7 +55,7 @@ class TabStateExampleModel extends HoistModel {
     showBadge = true;
 
     @managed
-    stateTabModel = new TabContainerModel(createContainerModelConfig({}));
+    stateTabModel = new TabContainerModel(createContainerModelConfig());
 
     constructor() {
         super();

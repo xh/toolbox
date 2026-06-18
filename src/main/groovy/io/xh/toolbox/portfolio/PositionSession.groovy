@@ -51,7 +51,7 @@ class PositionSession implements JSONFormat {
                     update << newPos
                 }
 
-                newPos.children.each { Position newPosChild ->
+                newPos.children?.each { Position newPosChild ->
                     computeDiffRecursive(newPosChild, id)
                 }
 
@@ -70,7 +70,7 @@ class PositionSession implements JSONFormat {
 
     private Map<String, Position> getMappedPositions(Position pos, Map<String, Position> col = [:]) {
         col[pos.id] = pos
-        pos.children.each { getMappedPositions(it, col) }
+        pos.children?.each { getMappedPositions(it, col) }
         return col
     }
 

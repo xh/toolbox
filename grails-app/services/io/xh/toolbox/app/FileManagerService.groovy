@@ -2,7 +2,7 @@ package io.xh.toolbox.app
 
 import io.xh.hoist.BaseService
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
@@ -70,4 +70,7 @@ class FileManagerService extends BaseService {
         return configService.getString('fileManagerStoragePath')
     }
 
+    Map getAdminStats() {[
+        config: configForAdminStats('fileManagerStoragePath')
+    ]}
 }

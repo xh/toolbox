@@ -1,21 +1,31 @@
-import {HoistAppModel, XH} from '@xh/hoist/core';
-import {themeAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
+import {InitContext, XH} from '@xh/hoist/core';
+import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import {sizingModeAppOption, themeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {Icon} from '@xh/hoist/icon';
-import {OauthService} from '../../core/svc/OauthService';
+import {BaseAppModel} from '../../BaseAppModel';
 import {PortfolioService} from '../../core/svc/PortfolioService';
 
-export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
-export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
-
-export class AppModel extends HoistAppModel {
+export class AppModel extends BaseAppModel {
     static instance: AppModel;
 
-    static override async preAuthAsync() {
-        await XH.installServicesAsync(OauthService);
-    }
+    portfolioViewManager: ViewManagerModel;
 
-    override async initAsync() {
-        await XH.installServicesAsync(PortfolioService);
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
+        await XH.installServicesAsync([PortfolioService], ctx);
+
+        // Constructed here, in initAsync, so we can await the async factory and ensure that all
+        // saved views are loaded and the desired option has been preselected before the model
+        // is used to construct component-level models within PortfolioModel.
+        this.portfolioViewManager = await ViewManagerModel.createAsync(
+            {
+                type: 'portfolioLayout',
+                typeDisplayName: 'Layout',
+                enableDefault: true,
+                manageGlobal: XH.getUser().isHoistAdmin
+            },
+            ctx
+        );
 
         this.addReaction({
             track: () => XH.webSocketService.connected,
@@ -23,16 +33,8 @@ export class AppModel extends HoistAppModel {
         });
     }
 
-    override async logoutAsync() {
-        await XH.oauthService.logoutAsync();
-    }
-
     override getAppOptions() {
         return [themeAppOption(), sizingModeAppOption()];
-    }
-
-    override get supportsVersionBar(): boolean {
-        return window.self === window.top;
     }
 
     private updateWebsocketAlertBanner() {

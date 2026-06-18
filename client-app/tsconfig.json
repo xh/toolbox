@@ -1,23 +1,29 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "Node",
-    "skipLibCheck": true,
     "allowSyntheticDefaultImports":  true,
-    "resolveJsonModule":  true,
+    "experimentalDecorators": true,
+    "jsx": "react",
+    "lib": ["dom", "es2022"],
+    "module": "ES2022",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "noImplicitOverride": true,
-    "jsx": "react",
+    "resolveJsonModule":  true,
+    "skipLibCheck": true,
+    "target": "ES2022",
     "useDefineForClassFields": true,
+
+    // Supports inline development of hoist-react in a wrapper project.
+    // Ignored if hoist-react is not found at the relative path below.
     "paths": {
       "@xh/hoist/*": ["../../hoist-react/*"]
-    },
-    "lib": [
-      "dom",
-      "es2022"
-    ]
+    }
+
   },
+  // Reference hoist-react as a composite build.
+  // Allows for distinct tsconfig options in hoist-react vs. this application.
+  "references": [
+    {"path":  "./node_modules/@xh/hoist"}
+  ],
   "include": ["src"]
 }

@@ -13,7 +13,7 @@ export const gridDetailPage = hoistCmp.factory({
 
         const row = (title, value, renderer?) =>
             div({
-                className: 'toolbox-detail-row',
+                className: 'tb-detail-row',
                 items: [div(title), div(renderer && !isNil(value) ? renderer(value) : value)]
             });
 
@@ -21,7 +21,7 @@ export const gridDetailPage = hoistCmp.factory({
             title: record?.company ?? '',
             mask: 'onLoad',
             icon: Icon.fund(),
-            className: 'toolbox-detail-page',
+            className: 'tb-detail-page',
             items: [
                 row('ID', record?.id),
                 row('Company', record?.company),

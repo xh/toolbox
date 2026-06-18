@@ -1,4 +1,4 @@
-.form-page {
+.tb-form-page {
   .xh-form-field {
     margin: 0 0 var(--xh-pad-px);
 
@@ -7,20 +7,16 @@
     }
   }
 
-  .form-field-result {
+  &__result {
     margin-bottom: var(--xh-pad-px);
 
     .xh-input-label {
+      color: var(--xh-text-color-muted);
       margin-bottom: var(--xh-pad-half-px);
     }
 
     div:not(.xh-input-label) {
-      font-size: 14px;
-      min-height: 16px;
-    }
-
-    &:last-of-type {
-      margin: 0;
+      margin-left: var(--xh-pad-px);
     }
   }
 }

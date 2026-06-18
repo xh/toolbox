@@ -1,23 +1,56 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
+import {div, hr} from '@xh/hoist/cmp/layout';
+import {type ContextMenuSpec, HoistModel, managed, XH} from '@xh/hoist/core';
+import {fmtDate} from '@xh/hoist/format';
 import {observable, makeObservable, runInAction, bindable} from '@xh/hoist/mobx';
+import {Icon} from '@xh/hoist/icon';
+import {pluralize} from '@xh/hoist/utils/js';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
+import {ChartContextMenuMode} from '../../common';
 
 export class LineChartModel extends HoistModel {
-    @bindable currentSymbol: string = '';
+    @bindable currentSymbols: string[] = [];
     @observable.ref symbols: string[] = [];
 
+    @bindable aspectRatio: number = null;
+
+    @bindable currentContextMenu: ChartContextMenuMode = null;
+
     @managed
-    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
+    @observable.ref
+    chartModel: ChartModel;
 
     constructor() {
         super();
         makeObservable(this);
 
         this.addReaction({
-            track: () => this.currentSymbol,
+            track: () => this.currentSymbols,
             run: () => this.loadAsync()
+        });
+
+        this.addReaction({
+            track: () => this.currentContextMenu,
+            run: () => {
+                XH.safeDestroy(this.chartModel);
+                this.chartModel = this.getChartModel();
+                this.loadAsync();
+            }
+        });
+
+        this.chartModel = this.getChartModel();
+    }
+
+    /** Demonstrate reaching through ChartModel to the underlying Highcharts API. */
+    callChartApi() {
+        const {highchart} = this.chartModel;
+        if (!highchart) return;
+        const xExtremes = highchart.axes[0].getExtremes();
+        XH.alert({
+            title: 'X-axis extremes - as read from chart API',
+            message: JSON.stringify(xExtremes)
         });
     }
 
@@ -27,25 +60,36 @@ export class LineChartModel extends HoistModel {
             runInAction(() => (this.symbols = symbols.slice(0, 5)));
         }
 
-        if (!this.currentSymbol) {
-            runInAction(() => (this.currentSymbol = this.symbols[0]));
+        if (isEmpty(this.currentSymbols)) {
+            runInAction(() => (this.currentSymbols = [this.symbols[0]]));
+            return; // Reaction to `currentSymbol` value change will trigger final run.
         }
 
-        let series =
-            (await XH.portfolioService
-                .getLineChartSeriesAsync({
-                    symbol: this.currentSymbol,
-                    dimension: 'close',
-                    loadSpec
-                })
-                .catchDefault()) ?? {};
+        let series = await Promise.all(
+            this.currentSymbols.map(
+                it =>
+                    XH.portfolioService
+                        .getLineChartSeriesAsync({symbol: it, dimension: 'close'}, loadSpec)
+                        .catchDefault() ?? {}
+            )
+        );
 
-        Object.assign(series, {
+        Object.assign(series[0], {
             type: 'area',
             animation: true
         });
 
         this.chartModel.setSeries(series);
+    }
+
+    private getChartModel() {
+        return new ChartModel({
+            highchartsConfig: this.getChartModelCfg(),
+            contextMenu:
+                this.currentContextMenu === 'custom'
+                    ? this.customContextMenu
+                    : this.currentContextMenu
+        });
     }
 
     private getChartModelCfg() {
@@ -54,8 +98,9 @@ export class LineChartModel extends HoistModel {
             chart: {zoomType: 'x'},
             navigator: {enabled: true},
             rangeSelector: {enabled: true},
-            exporting: {enabled: true},
+            exporting: {enabled: false},
             legend: {enabled: false},
+            tooltip: {shared: true},
             scrollbar: {enabled: false},
             xAxis: {type: 'datetime'},
             yAxis: {title: {text: 'USD'}},
@@ -77,4 +122,45 @@ export class LineChartModel extends HoistModel {
             }
         };
     }
+
+    private customContextMenu: ContextMenuSpec<ChartMenuToken, ChartMenuContext> = [
+        'viewFullscreen',
+        'copyToClipboard',
+        'printChart',
+        '-',
+        {
+            text: 'Images',
+            items: ['downloadJPEG', 'downloadPNG', 'downloadSVG', 'downloadPDF']
+        },
+        '-',
+        {
+            text: 'Data',
+            items: ['downloadCSV', 'downloadXLS']
+        },
+        '-',
+        {
+            text: 'Sample Custom Function',
+            icon: Icon.json(),
+            actionFn: (menuItemEvent, {point, points}) => {
+                const otherPtsCount = points.length - 1,
+                    message = div({
+                        items: point
+                            ? [
+                                  'Custom chart menu items have access to the clicked point(s) in the series.',
+                                  div(`${point.series.name}: (${fmtDate(point.x)}, ${point.y})`),
+                                  ...(!otherPtsCount
+                                      ? []
+                                      : [
+                                            hr(),
+                                            `${otherPtsCount} other ${pluralize('point', otherPtsCount)} available.`
+                                        ])
+                              ]
+                            : [
+                                  'Custom chart menu items have access to the clicked point in the series, when a point is active when opening the context menu.'
+                              ]
+                    });
+                XH.successToast({message});
+            }
+        }
+    ];
 }

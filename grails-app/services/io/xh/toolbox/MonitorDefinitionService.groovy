@@ -1,28 +1,25 @@
 package io.xh.toolbox
 
-import grails.gorm.transactions.ReadOnly
-import groovy.time.TimeCategory
-import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.monitor.MonitorResult
-import io.xh.hoist.track.TrackLog
+import io.xh.hoist.monitor.MonitorSpec
+import io.xh.hoist.monitor.provided.DefaultMonitorDefinitionService
+
+import static io.xh.hoist.monitor.MonitorMetricType.*
 import io.xh.toolbox.app.FileManagerService
 import io.xh.toolbox.app.GitHubService
 import io.xh.toolbox.app.NewsService
 import io.xh.toolbox.app.RecallsService
-import io.xh.toolbox.github.CommitHistory
 import io.xh.toolbox.portfolio.PortfolioService
 
+import java.time.Duration
+import java.time.Instant
 
-import static io.xh.hoist.monitor.MonitorStatus.OK
-import static io.xh.hoist.monitor.MonitorStatus.FAIL
-import static io.xh.hoist.monitor.MonitorStatus.WARN
-import static io.xh.hoist.monitor.MonitorStatus.INACTIVE
+import static io.xh.hoist.monitor.MonitorStatus.*
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
-import static java.lang.Runtime.runtime
 import static java.lang.System.currentTimeMillis
 
-class MonitorDefinitionService extends BaseService {
+class MonitorDefinitionService extends DefaultMonitorDefinitionService {
 
     ConfigService configService
     FileManagerService fileManagerService
@@ -31,66 +28,162 @@ class MonitorDefinitionService extends BaseService {
     PortfolioService portfolioService
     RecallsService recallsService
 
-    /**
-     * Check the count of news stories loaded by NewsService
-     */
-    def newsStoryCount(MonitorResult result) {
-        result.metric = newsService.itemCount
+    @Override
+    void init() {
+        super.init()
+
+        ensureRequiredMonitorsCreated([
+
+            // Portfolio
+            new MonitorSpec(
+                code         : 'instrumentCount',
+                name         : 'Portfolio: Instruments',
+                metricType   : Floor,
+                metricUnit   : 'instruments',
+                warnThreshold: 500,
+                failThreshold: 1,
+                active       : true
+            ),
+            new MonitorSpec(
+                code         : 'rawPositionCount',
+                name         : 'Portfolio: Raw Positions',
+                metricType   : Floor,
+                metricUnit   : 'positions',
+                failThreshold: 1,
+                active       : true
+            ),
+
+            // Data Services
+            new MonitorSpec(
+                code         : 'gitHubLastUpdateMins',
+                name         : 'GitHub: Last Update Check',
+                metricType   : Ceil,
+                metricUnit   : 'minutes since last refresh',
+                warnThreshold: 70,
+                failThreshold: 140,
+                active       : true
+            ),
+            new MonitorSpec(
+                code         : 'newsLastUpdateMins',
+                name         : 'News: Last Update Check',
+                metricType   : Ceil,
+                metricUnit   : 'minutes since last story',
+                warnThreshold: 2160,
+                failThreshold: 4320,
+                active       : true,
+                primaryOnly  : true
+            ),
+            new MonitorSpec(
+                code       : 'recallsFetchStatus',
+                name       : 'Recalls: API Connection Status',
+                metricType : None,
+                active     : true,
+                primaryOnly: true
+            ),
+
+            // File Manager
+            new MonitorSpec(
+                code         : 'fileManagerStorageUsedMb',
+                name         : 'File Manager: Storage Used',
+                metricType   : Ceil,
+                metricUnit   : 'MB',
+                warnThreshold: 16,
+                failThreshold: 100,
+                active       : true
+            ),
+
+            // Test / Demo
+            new MonitorSpec(
+                code         : 'metric1337Monitor',
+                name         : 'Always 1337',
+                metricType   : Floor,
+                failThreshold: 1337,
+                active       : true
+            ),
+            new MonitorSpec(
+                code      : 'divideByZeroMonitor',
+                name      : 'Always throws',
+                metricType: None,
+                active    : false
+            )
+        ])
+    }
+
+
+    /** Always fail attempting to divide by zero, to demonstrate built-in exception handling. */
+    def divideByZeroMonitor(MonitorResult result) {
+        result.message = 'Trying to divide by zero'
+        result.metric = 1 / (1 - 1)
+    }
+
+    /** Report storage space used by uploaded files in the FileManager app, in megabytes. */
+    def fileManagerStorageUsedMb(MonitorResult result) {
+        def bytes = fileManagerService.list()
+            .sum { it.length() } ?: 0
+        result.metric = ((double) (bytes / (1024 * 1024))).round(2)
     }
 
     /**
-     * Always returns the value 1337 and a message
+     * Report age of the least recently updated GitHub CommitHistory and generally validate that
+     * all configured repos have been loaded with at least some commits.
      */
+    def gitHubLastUpdateMins(MonitorResult result) {
+        def repos = configService.getList('gitHubRepos', []) as List<String>
+        Instant leastRecentUpdate = null
+
+        if (repos.empty) {
+            result.status = INACTIVE
+            result.message = "No GitHub repos configured for loading."
+            return
+        }
+
+        def missingRepos = []
+        repos.each { repo ->
+            def commitHistory = gitHubService.getCommitsForRepo(repo)
+            if (commitHistory?.size()) {
+                leastRecentUpdate = leastRecentUpdate
+                    ? [leastRecentUpdate, commitHistory.lastUpdated].min()
+                    : commitHistory.lastUpdated
+            } else {
+                missingRepos << repo
+            }
+        }
+
+        if (missingRepos) {
+            result.status = FAIL
+            result.message = "Commit history not loaded for configured repo(s): ${missingRepos.toListString()}"
+            return
+        }
+
+        result.metric = Duration.between(leastRecentUpdate, Instant.now()).toMinutes()
+    }
+
+    /** Count instruments in the Portfolio example. */
+    def instrumentCount(MonitorResult result) {
+        result.metric = portfolioService.portfolio.instruments.size()
+    }
+
+    /** Always returns the value 1337 and a message, to demonstrate the wonders of the number 1337. */
     def metric1337Monitor(MonitorResult result) {
         result.metric = 1337
         result.message = 'This metric is always 1337!'
     }
 
-    /**
-     * A monitor that attempts to divide by zero
-     */
-    def divideByZeroMonitor(MonitorResult result){
-        result.message = 'Trying to divide by zero'
-        result.metric = 1 / (1-1)
-    }
-
-    /**
-     * Check when the last update to the news was fetched.
-     * If no news stories have been fetched at all, we consider that a failure.
-     */
-    def lastUpdateAgeMins(MonitorResult result) {
-        if (newsService.lastTimestamp) {
-            def diffMs = currentTimeMillis() - newsService.lastTimestamp.time,
+    /** Report how long ago the latest news update was fetched, or fail if no stories are loaded. */
+    def newsLastUpdateMins(MonitorResult result) {
+        def lastTimestamp = newsService.lastTimestamp
+        if (lastTimestamp) {
+            def diffMs = currentTimeMillis() - lastTimestamp.time,
                 diffMins = Math.floor(diffMs / MINUTES)
             result.metric = diffMins
         } else {
             result.metric = -1
             result.status = FAIL
-            result.message = 'Have not yet loaded any stories'
+            result.message = 'No news stories loaded'
         }
     }
 
-    /**
-     * Check whether or not the NewsService has loaded stories from all its sources.
-     */
-    def loadedSourcesCount(MonitorResult result) {
-        result.metric = newsService.loadedSourcesCount
-        result.status = newsService.allSourcesLoaded ? OK : FAIL
-    }
-
-    /**
-     * Check the storage space used by uploaded files in the FileManager app, in megabytes
-     */
-    def storageSpaceUsed(MonitorResult result) {
-        // sum up the sizes of all uploaded files as MB
-        def bytes = fileManagerService.list()
-                .sum {it.length()} ?: 0
-        result.metric = ((double)(bytes / (1024 * 1024))).round(2)
-    }
-
-    /**
-     * Check whether or not we connected to the FDA server successfully for drug recall information.
-     */
+    /** Check ability to connect to the FDA API for drug recall example app. */
     def recallsFetchStatus(MonitorResult result) {
         recallsService.fetchRecalls('')
         def code = recallsService.lastResponseCode
@@ -104,96 +197,10 @@ class MonitorDefinitionService extends BaseService {
         }
     }
 
-    /**
-     * Check the current memory usage of the server machine (in %)
-     */
-    def memoryUsage(MonitorResult result) {
-        result.metric = ((double) (runtime.freeMemory() / runtime.totalMemory() * 100))
-                .round(2)
+    /** Count positions in the Portfolio example. */
+    def rawPositionCount(MonitorResult result) {
+        result.metric = portfolioService.portfolio.rawPositions.size()
     }
 
-    /**
-     * Check the current number of positions in the Portfolio example
-     */
-    def positionCount(MonitorResult result) {
-        result.metric = portfolioService.data.rawPositions.size()
-    }
 
-    /**
-     * Check the current number of instruments in the Portfolio example
-     */
-    def instrumentCount(MonitorResult result) {
-        result.metric = portfolioService.data.instruments.size()
-    }
-
-    /**
-     * Check when the most recent prices in the Portfolio example were generated
-     */
-    def pricesAgeMs(MonitorResult result) {
-        result.metric = currentTimeMillis() - portfolioService.data.timeCreated.time
-    }
-
-    /**
-     * Count the number of commits loaded from GitHub.
-     */
-    def gitHubCommitCount(MonitorResult result) {
-        def repos = configService.getList('gitHubRepos', []),
-            commitCount = 0
-
-        if (repos.empty) {
-            result.status = INACTIVE
-            result.message = "No GitHub repos configured for loading."
-            return
-        }
-
-        repos.each {repo ->
-            commitCount += gitHubService.getCommitsForRepo(repo).commits.size()
-        }
-
-        result.metric = commitCount
-        result.message = "Loaded ${commitCount} commits from ${repos.size()} repos."
-    }
-
-    /**
-     * Check the age of the most recent commit loaded from GitHub.
-     */
-    def gitHubMostRecentCommitAgeMins(MonitorResult result) {
-        def repos = configService.getList('gitHubRepos', []),
-            maxDate = null
-
-        if (repos.empty) {
-            result.status = INACTIVE
-            result.message = "No GitHub repos configured for loading."
-            return
-        }
-
-        repos.each {repo ->
-            def commitHistory = gitHubService.getCommitsForRepo(repo)
-            maxDate = [maxDate, commitHistory.commits.first()?.committedDate].max()
-        }
-
-        if (maxDate) {
-            def diffMs = currentTimeMillis() - maxDate.time,
-                diffMins = Math.floor(diffMs / MINUTES)
-            result.metric = diffMins
-            result.message = "Latest commit @ ${maxDate.format('MMM d h:mma zzz')}"
-        } else {
-            result.status = FAIL
-            result.message = "Commits not loaded, or could not determine latest commit."
-        }
-    }
-
-    /**
-     * Check the longest page load time in the last hour
-     */
-    @ReadOnly
-    def longestPageLoadMs(MonitorResult result) {
-        def now = new Date()
-        def earlier = null
-        use (TimeCategory) {
-            earlier = now - 1.hours
-        }
-        def worstLoadTime = TrackLog.withCriteria {between('dateCreated', earlier, now)}.max{it.elapsed}?.elapsed
-        result.metric = worstLoadTime ?: 0
-    }
 }

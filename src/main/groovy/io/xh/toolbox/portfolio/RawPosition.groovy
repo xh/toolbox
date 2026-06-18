@@ -1,8 +1,8 @@
 package io.xh.toolbox.portfolio
 
-import io.xh.hoist.json.JSONFormatCached
+import io.xh.hoist.json.JSONFormat
 
-class RawPosition extends JSONFormatCached {
+class RawPosition {
 
     // Core position
     final Instrument instrument
@@ -11,11 +11,6 @@ class RawPosition extends JSONFormatCached {
     final String trader
     final Long cost
     final Long endQty
-
-    // Pricing related
-    final Double endPx
-    final Long mktVal
-    final Long pnl
 
     String getRegion() { instrument.region }
     String getSector() { instrument.sector }
@@ -28,33 +23,6 @@ class RawPosition extends JSONFormatCached {
         trader = mp.trader
         cost = mp.cost as Long
         endQty = mp.endQty as Long
-        endPx = mp.endPx as Double
-        mktVal = (endQty * endPx).round()
-        pnl = mktVal - cost
     }
 
-
-    RawPosition repricePosition(Double endPx) {
-        return new RawPosition(
-                instrument: this.instrument,
-                model: this.model,
-                fund: this.fund,
-                trader: this.trader,
-                cost: this.cost,
-                endQty: this.endQty,
-                endPx: endPx
-        )
-    }
-
-
-    Map formatForJSON() {
-        return [
-                symbol: symbol,
-                model : model,
-                fund  : fund,
-                trader: trader,
-                mktVal: mktVal,
-                pnl   : pnl
-        ]
-    }
 }

@@ -1,12 +1,10 @@
 package io.xh.toolbox.data
 
-import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.json.JSONParser
 
 import java.time.LocalDate
 
-@Slf4j
 class TradeService extends BaseService {
 
     private Map trades
@@ -28,20 +26,24 @@ class TradeService extends BaseService {
         try {
             def mockData = applicationContext.getResource('classpath:MockTradesData.json'),
                 trades = JSONParser.parseArray(mockData.inputStream),
-                dateRange = 30
+                dateRange = 30,
+                tagRange = 5
 
             trades.each {it ->
                 it.profit_loss = Math.round(it.profit_loss * Math.random())
                 it.trade_volume = it.trade_volume * 1000000
                 it.active = it.trade_volume.toBigInteger() % 6 == 0
                 it.trade_date = LocalDate.now().minusDays(Math.round(dateRange * Math.random()))
+                it.tags = (0..Math.floor(tagRange * Math.random())).findAll { it > 0 }.collect { 'tag' + it}
+                if (it.id % 8 == 0) it.city = null
+                if (it.id % 9 == 0) it.profit_loss = null
             }
 
             ret = [
                 trades: trades,
                 summary: [
                     id          : 'summary',
-                    profit_loss : trades.sum { it.profit_loss },
+                    profit_loss : trades.sum { it.profit_loss ?: 0 },
                     trade_volume: trades.sum { it.trade_volume }
                 ]
             ]

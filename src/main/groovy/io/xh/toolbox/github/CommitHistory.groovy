@@ -2,31 +2,41 @@ package io.xh.toolbox.github
 
 import io.xh.hoist.json.JSONFormat
 
+import java.time.Instant
+
 class CommitHistory implements JSONFormat {
 
     String repo
     String lastCommitTimestamp
-    Date firstLoaded
-    Date lastUpdated
+    Instant firstLoaded
+    Instant lastUpdated
     // TODO - sortedSet for commits?
     List<Commit> commits
 
-    CommitHistory(String repo, List<Commit> commits = []) {
-        this.repo = repo
-        this.commits = commits
-        this.firstLoaded = this.lastUpdated = new Date()
+    CommitHistory(String forRepo) {
+        repo = forRepo
+        commits = []
+        firstLoaded = lastUpdated = Instant.now()
         sortCommits()
     }
 
-    void updateWithNewCommits(List<Commit> newCommits) {
+    List<Commit> updateWithNewCommits(List<Commit> newCommits) {
+        def now = Instant.now()
+        firstLoaded = firstLoaded ?: now
+        lastUpdated = now
+
         newCommits = newCommits.findAll{!hasCommit(it)}
         commits.addAll(0, newCommits)
-        lastUpdated = new Date()
         sortCommits()
+        return newCommits
     }
 
     boolean hasCommit(Commit commit) {
         return commits.find{it.id == commit.id} != null
+    }
+
+    int size() {
+        return commits.size()
     }
 
     private void sortCommits() {

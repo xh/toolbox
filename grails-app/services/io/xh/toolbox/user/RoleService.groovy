@@ -1,33 +1,34 @@
 package io.xh.toolbox.user
 
-import io.xh.hoist.user.BaseRoleService
-
-import static io.xh.hoist.util.Utils.configService
+import io.xh.hoist.role.provided.DefaultRoleService
 
 /**
- * Every user in Toolbox is granted the base APP_READER role by default - this ensures that any
- * newly created users logging in via OAuth can immediately access the app.
+ * Toolbox leverages Hoist's built-in, database-backed Role management and its associated Admin Console UI.
  *
- * Other roles (HOIST_ADMIN) are sourced from a soft-configuration map of role -> username[].
+ * @see io.xh.hoist.role.provided.DefaultRoleService for details on this out-of-the-box option for Roles.
+ * @see io.xh.hoist.role.BaseRoleService for details on how to implement an alternate, entirely custom approach.
  */
-class RoleService extends BaseRoleService {
+class RoleService extends DefaultRoleService {
 
-    static String READER_ROLE = 'APP_READER'
+    /**
+     * Toolbox does not currently connect to an external directory, but supports a `mockDirectoryGroups` config
+     * so we can simulate directory group lookups and see all group-related controls in the Admin Console Roles UI.
+     *
+     * Config should be JSON formatted like: `{"testGroupName": ["user1@example.com", "user2@example.com"]}`.
+     *
+     * This mock code also supports use of the special group name `sim_error` to mock a lookup failure.
+     */
+    protected Map<String, Object> doLoadUsersForDirectoryGroups(Set<String> groups, boolean strictMode) {
+        def config = configService.getMap('mockDirectoryGroups', [:])
 
-
-    Map<String, Set<String>> getAllRoleAssignments() {
-        def ret = new HashMap<>()
-        def confRoles = configService.getMap('roles')
-        confRoles.each{role, users ->
-            ret[role] = users.toSet()
+        return groups.collectEntries { group ->
+            if (config[group]) return [group, config[group] as Set]
+            if (group == 'sim_error') {
+                def e = new RuntimeException('There was a simulated error looking up directory groups.')
+                if (strictMode) throw e
+                logError('There was an error', e)
+            }
+            return [group, [] as Set]
         }
-
-        // All users are granted a READER_ROLE as per class doc comment.
-        def allUsernames = User.list().collect{user -> user.email}
-        ret.put(READER_ROLE, new HashSet(allUsernames))
-
-        return ret
     }
-
-
 }

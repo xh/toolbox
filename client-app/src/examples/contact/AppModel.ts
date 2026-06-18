@@ -1,25 +1,14 @@
-import {HoistAppModel, XH} from '@xh/hoist/core';
-import {OauthService} from '../../core/svc/OauthService';
+import {InitContext, XH} from '@xh/hoist/core';
 import {ContactService} from './svc/ContactService';
+import {BaseAppModel} from '../../BaseAppModel';
 
 export const PERSIST_APP = {prefKey: 'contactAppState'};
 
-export class AppModel extends HoistAppModel {
+export class AppModel extends BaseAppModel {
     static instance: AppModel;
 
-    static override async preAuthAsync() {
-        await XH.installServicesAsync(OauthService);
-    }
-
-    override async initAsync() {
-        await XH.installServicesAsync(ContactService);
-    }
-
-    override async logoutAsync() {
-        await XH.oauthService.logoutAsync();
-    }
-
-    override get supportsVersionBar(): boolean {
-        return window.self === window.top;
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
+        await XH.installServicesAsync([ContactService], ctx);
     }
 }

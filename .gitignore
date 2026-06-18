@@ -1,5 +1,4 @@
 # IDE Files (mostly)
-###################
 .idea/*
 !/.idea/scopes/
 !/.idea/copyright/
@@ -7,23 +6,28 @@
 .settings
 .project
 .classpath
+.vscode/tasks.json
+.claude/scheduled_tasks.lock
 
-# Compiled source #
-###################
+# Local instance configs w/secrets
+toolbox.yml
+.env
+
+# Compiled source
 .gradle/
 build/
 bin/
 out/
 /client-app/build/
 /client-app/node_modules/
+/client-app/tsconfig.tsbuildinfo
 
-# Logs #
-########
+# Logs + temp
 toolbox-logs/
 *.log
+.tmp
 
-# OS generated files #
-######################
+# OS generated files
 .DS_Store
 .DS_Store?
 ehthumbs.db

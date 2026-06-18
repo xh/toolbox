@@ -1,4 +1,4 @@
-import {filler, fragment, p} from '@xh/hoist/cmp/layout';
+import {filler, p, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -15,29 +15,36 @@ export const fileManager = hoistCmp.factory({
     render({model}) {
         return panel({
             title: 'File Manager',
-            icon: Icon.folder(),
+            icon: Icon.fileText(),
             className: 'file-manager',
             mask: 'onLoad',
             width: 700,
             height: 500,
-            items: [
-                grid(),
-                fileChooser({
-                    accept: acceptedFileTypes,
-                    showFileGrid: false,
-                    targetText: fragment(
-                        p('Drag-and-drop new files here to queue for upload, or click to browse.'),
+            item: fileChooser({
+                item: grid(),
+                emptyDisplay: vframe({
+                    className: 'xh-pad',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    },
+                    items: [
+                        p('Drag-and-drop new files here to queue for upload.'),
                         p('(Note that not all file types will be accepted.)')
-                    ),
-                    height: 150
+                    ]
                 })
-            ],
+            }),
             bbar: [
                 button({
                     text: 'Reset',
                     icon: Icon.reset(),
                     disabled: !model.pendingChangeCount,
                     onClick: () => model.resetAndLoadAsync()
+                }),
+                button({
+                    text: 'Browse',
+                    icon: Icon.arrowUpFromBracket({intent: 'primary'}),
+                    onClick: () => model.chooserModel.openFileBrowser()
                 }),
                 filler(),
                 button({
@@ -58,19 +65,3 @@ export const fileManager = hoistCmp.factory({
         });
     }
 });
-
-// Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
-// accepted file types for sanity (and to demo the `accepts` prop).
-const acceptedFileTypes: string[] = [
-    '.txt',
-    '.png',
-    '.gif',
-    '.jpg',
-    '.doc',
-    '.docx',
-    '.xls',
-    '.xlsx',
-    '.ppt',
-    '.pptx',
-    '.pdf'
-];

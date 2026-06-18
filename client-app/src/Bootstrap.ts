@@ -1,7 +1,9 @@
 /**
- * Bootstrap File.
- *
- * This file is imported by each of the client apps, and runs shared code.
+ * Bootstrap routine for registering common client-side licenses and other low-level library setup.
+ * Common routines to go in this file include:
+ *  - TypeScript module augmentation
+ *  - AG Grid license registration and feature registration.
+ *  - Highcharts feature registration.
  */
 
 //-----------------------------------------------------------------
@@ -9,10 +11,10 @@
 //-----------------------------------------------------------------
 import {XH} from '@xh/hoist/core';
 import {when} from '@xh/hoist/mobx';
+
 import {ContactService} from './examples/contact/svc/ContactService';
 import {GitHubService} from './core/svc/GitHubService';
 import {PortfolioService} from './core/svc/PortfolioService';
-import {OauthService} from './core/svc/OauthService';
 import {TaskService} from './examples/todo/TaskService';
 
 declare module '@xh/hoist/core' {
@@ -20,56 +22,106 @@ declare module '@xh/hoist/core' {
     export interface XHApi {
         contactService: ContactService;
         gitHubService: GitHubService;
-        oauthService: OauthService;
         portfolioService: PortfolioService;
         taskService: TaskService;
     }
-    // @ts-ignore - Help IntelliJ recognize uses of injected service methods on the `XH` singleton.
-    export const XH: XHApi;
 
     export interface HoistUser {
         profilePicUrl: string;
     }
 }
 
-import {installAgGrid} from '@xh/hoist/kit/ag-grid';
-import {installHighcharts} from '@xh/hoist/kit/highcharts';
+//-----------------------------------------------------------------
+// Hoist Configuration
+//-----------------------------------------------------------------
 
 //-----------------------------------------------------------------
 // ag-Grid -- Import and Register
+//
+// IMPORTANT: If you are using enterprise version in your app
+// you must provide your own license
 //-----------------------------------------------------------------
-import {ModuleRegistry} from '@ag-grid-community/core';
-import '@ag-grid-community/styles/ag-grid.css';
-import '@ag-grid-community/styles/ag-theme-balham.css';
-import {AgGridReact} from '@ag-grid-community/react';
-import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model';
-import agPkg from '@ag-grid-community/core/package.json';
+import {installAgGrid} from '@xh/hoist/kit/ag-grid';
+import {ModuleRegistry, provideGlobalGridOptions} from 'ag-grid-community';
+import {LicenseManager} from 'ag-grid-enterprise';
+import {AgGridReact} from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-balham.css';
 
-// Enterprise features
-// IMPORTANT: If you are using enterprise version in your app, you must provide your own license
-import {LicenseManager} from '@ag-grid-enterprise/core';
-import {ClipboardModule} from '@ag-grid-enterprise/clipboard';
-import {MenuModule} from '@ag-grid-enterprise/menu';
-import {RowGroupingModule} from '@ag-grid-enterprise/row-grouping';
-// Fancy features for the raw agGrid Component example...
-import {SideBarModule} from '@ag-grid-enterprise/side-bar';
-import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel';
-import {FiltersToolPanelModule} from '@ag-grid-enterprise/filter-tool-panel';
-// Feature for the portfolio sparklines example
-import {SparklinesModule} from '@ag-grid-enterprise/sparklines';
-
-ModuleRegistry.registerModules([
+// 1) Standard community modules - required for all Hoist Apps.
+import {
+    CellStyleModule,
+    ClientSideRowModelApiModule,
     ClientSideRowModelModule,
+    ColumnApiModule,
+    CustomEditorModule,
+    PinnedRowModule,
+    RenderApiModule,
+    RowApiModule,
+    RowAutoHeightModule,
+    RowSelectionModule,
+    RowStyleModule,
+    ScrollApiModule,
+    TextEditorModule,
+    TextFilterModule,
+    TooltipModule
+} from 'ag-grid-community';
+ModuleRegistry.registerModules([
+    CellStyleModule,
+    ClientSideRowModelApiModule,
+    ClientSideRowModelModule,
+    ColumnApiModule,
+    CustomEditorModule,
+    PinnedRowModule,
+    RenderApiModule,
+    RowApiModule,
+    RowAutoHeightModule,
+    RowSelectionModule,
+    RowStyleModule,
+    ScrollApiModule,
+    TextEditorModule,
+    TextFilterModule,
+    TooltipModule
+]);
+
+// 2) Typical enterprise modules - useful for most apps.
+import {
+    CellSelectionModule,
     ClipboardModule,
     MenuModule,
     RowGroupingModule,
-    SideBarModule,
-    ColumnsToolPanelModule,
-    FiltersToolPanelModule,
-    SparklinesModule
+    TreeDataModule
+} from 'ag-grid-enterprise';
+ModuleRegistry.registerModules([
+    CellSelectionModule,
+    ClipboardModule,
+    MenuModule,
+    RowGroupingModule,
+    TreeDataModule
 ]);
 
-installAgGrid(AgGridReact, agPkg.version);
+// 3) Toolbox specific modules - for "direct" AG Grid usage demo, not typically required.
+import {
+    ColumnsToolPanelModule,
+    FiltersToolPanelModule,
+    PivotModule,
+    SideBarModule,
+    SparklinesModule
+} from 'ag-grid-enterprise';
+import {NumberFilterModule} from 'ag-grid-community';
+import {AgChartsCommunityModule} from 'ag-charts-community';
+ModuleRegistry.registerModules([
+    ColumnsToolPanelModule,
+    FiltersToolPanelModule,
+    NumberFilterModule,
+    PivotModule,
+    SideBarModule,
+    SparklinesModule.with(AgChartsCommunityModule),
+    TextFilterModule
+]);
+
+provideGlobalGridOptions({theme: 'legacy'});
+installAgGrid(AgGridReact as any, ClientSideRowModelModule.version);
 
 when(
     () => XH.appIsRunning,
@@ -83,17 +135,23 @@ when(
 // Highcharts - Import and Register
 // You must provide a license for any features (e.g. highstock) that require it
 //-------------------------------------------------------------------------------
+import {installHighcharts} from '@xh/hoist/kit/highcharts';
 import Highcharts from 'highcharts/highstock';
-import highchartsExportData from 'highcharts/modules/export-data';
-import highchartsExporting from 'highcharts/modules/exporting';
-import highchartsHeatmap from 'highcharts/modules/heatmap';
-import highchartsOfflineExporting from 'highcharts/modules/offline-exporting';
-import highchartsTree from 'highcharts/modules/treemap';
 
-highchartsExporting(Highcharts);
-highchartsOfflineExporting(Highcharts);
-highchartsExportData(Highcharts);
-highchartsTree(Highcharts);
-highchartsHeatmap(Highcharts);
+// Check https://api.highcharts.com/highcharts/ for modules that require other base modules and import in order
+import 'highcharts/modules/exporting';
+import 'highcharts/modules/heatmap';
+import 'highcharts/modules/treemap';
+
+// `highcharts-more` must be imported before `solid-gauge`
+import 'highcharts/highcharts-more';
+import 'highcharts/modules/solid-gauge';
+
+// `treegraph` must be imported after `treemap`
+import 'highcharts/modules/treegraph';
+
+// `export-data` + `offline-exporting` must be imported after `exporting`
+import 'highcharts/modules/export-data';
+import 'highcharts/modules/offline-exporting';
 
 installHighcharts(Highcharts);

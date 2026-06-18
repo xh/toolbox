@@ -1,5 +1,5 @@
 import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -9,6 +9,8 @@ import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
 
 export class RecallsPanelModel extends HoistModel {
+    override telemetryPrefix = 'toolbox.client.recalls';
+
     override persistWith = PERSIST_APP;
 
     @bindable
@@ -116,26 +118,32 @@ export class RecallsPanelModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    override async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec: LoadSpec) {
         const {gridModel} = this;
 
         try {
-            let entries = await XH.fetchJson({
-                url: 'recalls',
-                params: {searchQuery: this.searchQuery},
-                loadSpec
-            });
+            await this.runner({loadSpec})
+                .span('load')
+                .run(async ctx => {
+                    let entries = await XH.fetchJson(
+                        {
+                            url: 'recalls',
+                            params: {searchQuery: this.searchQuery}
+                        },
+                        ctx
+                    );
 
-            if (loadSpec.isStale) return;
+                    if (loadSpec.isStale) return;
 
-            // Approximate (and enforce) a unique id for this rather opaque API
-            entries.forEach(it => {
-                it.id = it.openfda.brand_name[0] + it.recall_number;
-            });
-            entries = uniqBy(entries, 'id');
+                    // Approximate (and enforce) a unique id for this rather opaque API
+                    entries.forEach(it => {
+                        it.id = it.openfda.brand_name[0] + it.recall_number;
+                    });
+                    entries = uniqBy(entries, 'id');
 
-            gridModel.loadData(entries);
-            await gridModel.preSelectFirstAsync();
+                    gridModel.loadData(entries);
+                    await gridModel.preSelectFirstAsync();
+                });
         } catch (e) {
             XH.handleException(e);
         }

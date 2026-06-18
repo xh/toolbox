@@ -1,3 +1,0 @@
-{
-  "extends": ["@xh/eslint-config", "prettier"]
-}

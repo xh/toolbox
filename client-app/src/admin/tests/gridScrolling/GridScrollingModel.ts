@@ -34,7 +34,7 @@ export class GridScrollingModel extends HoistModel {
         super();
         makeObservable(this);
         this.addReaction({
-            track: () => [this.rowData, this.columnDefs, this.isColVirtualizationEnabled],
+            track: () => [this.rowData, this.columnDefs, this.isColVirtualizationEnabled] as const,
             run: ([data]) => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();

@@ -1,31 +1,57 @@
 package io.xh.toolbox.security
 
-import groovy.util.logging.Slf4j
+import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.ReadOnly
 import io.xh.hoist.security.BaseAuthenticationService
-import io.xh.hoist.user.HoistUser
 import io.xh.toolbox.user.User
 import io.xh.toolbox.user.UserService
 
-import javax.servlet.http.HttpServletResponse
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletRequest
 
-@Slf4j
-class AuthenticationService extends BaseAuthenticationService  {
+import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
-    Auth0Service auth0Service
+/**
+ * Toolbox's implementation of Hoist's {@link BaseAuthenticationService} contract for handling
+ * authentication. This example is atypical of most application implementations of this service
+ * in that it supports a fallback option for local username/password login as well as OAuth.
+ *
+ * Use the `oauthProvider` instance config to set the OAuth provider to use, or `NONE` to disable.
+ *
+ * It can also delegate to either {@link AuthZeroTokenService} or {@link EntraIdTokenService} to
+ * validate JWTs when in OAuth mode, to support testing flows against either provider.
+ */
+@GrailsCompileStatic
+class AuthenticationService extends BaseAuthenticationService {
+
+    AuthZeroTokenService authZeroTokenService
+    EntraIdTokenService entraIdTokenService
     UserService userService
 
-    /** Add whitelist entry for OauthConfigController to allow client to call prior to auth. */
-    protected List<String> whitelistURIs = [
-        '/oauthConfig',
-        '/gitHub/webhookTrigger',
-        *super.whitelistURIs
-    ]
+    private String AUTH_HEADER = 'Authorization'
 
-    protected boolean isWhitelist(HttpServletRequest request) {
-        def uri = request.requestURI
-        return whitelistURIs.any{uri.endsWith(it)} || isWhitelistFile(uri)
+    AuthenticationService() {
+        super()
+        whitelistURIs.push('/gitHub/webhookTrigger')
+    }
+
+    Map getClientConfig() {
+        switch (oauthProvider) {
+            case 'AUTH_ZERO':
+                return [useOAuth: true, *: authZeroTokenService.getClientConfig()];
+            case 'ENTRA_ID':
+                return [useOAuth: true, *: entraIdTokenService.getClientConfig()];
+            default:
+                return [useOAuth: false]
+        }
+    }
+
+    String getOauthProvider() {
+        getInstanceConfig('oauthProvider') ?: 'AUTH_ZERO'
+    }
+
+    boolean getUseOAuth() {
+        getInstanceConfig('oauthProvider') != 'NONE'
     }
 
     /**
@@ -35,22 +61,28 @@ class AuthenticationService extends BaseAuthenticationService  {
      * first identity check back to the server.
      */
     protected boolean completeAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        def token = request.getHeader('x-xh-idt')
+        if (!useOAuth) return true
 
-        // No token found - TODO - explain why we are returning true under these particular conditions.
-        if (!token) {
-            return (isAjax(request) || !acceptHtml(request) || isWhitelistFile(request.requestURI))
+        String token = request.getHeader(AUTH_HEADER)?.replace('Bearer ', '')
+        TokenValidationResult tokenResult = null
+
+        if (token) {
+            tokenResult = oauthProvider == 'AUTH_ZERO' ?
+                authZeroTokenService.validateToken(token) :
+                entraIdTokenService.validateToken(token)
+
+        } else {
+            logTrace("Unable to validate inbound request - no token presented in header")
         }
 
-        def tokenResult = auth0Service.validateToken(token)
-        if (!tokenResult.isValid) {
-            logDebug("Invalid token result - user will not be installed on session - return 401", tokenResult.exception)
-            return true
+        if (tokenResult) {
+            def user = userService.getOrCreateFromTokenResult(tokenResult)
+            setUser(request, user)
+            logDebug('User read from token and set on session', [_username: user.username])
+        } else {
+            logDebug('Invalid token - no user set on session - return 401')
         }
 
-        def user = userService.getOrCreateFromJwtResult(tokenResult)
-        setUser(request, user)
-        logDebug("User read from token and set on request", "username: ${user.username}")
         return true
     }
 
@@ -73,22 +105,23 @@ class AuthenticationService extends BaseAuthenticationService  {
     }
 
 
+    @Override
+    Map getAdminStats() {
+        return [
+            *: super.getAdminStats(),
+            oauthProvider: oauthProvider,
+            clientConfig: clientConfig
+        ]
+    }
+
+
     //------------------------
     // Implementation
     //------------------------
     @ReadOnly
-    private HoistUser lookupUser(String username, String password) {
+    private User lookupUser(String username, String password) {
         def user = User.findByEmailAndEnabled(username, true)
         return user?.checkPassword(password) ? user : null
-    }
-
-    private static boolean isAjax(HttpServletRequest request) {
-        return request.getHeader('X-Requested-With') == 'XMLHttpRequest'
-    }
-
-    private static boolean acceptHtml(HttpServletRequest request) {
-        def accept = request.getHeader('ACCEPT')
-        return accept && (accept.contains('*/*') || accept.contains('html'))
     }
 
 }

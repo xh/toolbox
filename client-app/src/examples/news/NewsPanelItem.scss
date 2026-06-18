@@ -1,54 +1,139 @@
-.toolbox-news-panel {
+.tb-news-panel {
+  .ag-row {
+    overflow: hidden;
+  }
+
+  // Carry the cell's (fixed, itemHeight-driven) height down through AG's cell wrappers so the
+  // item's `height: 100%` chain resolves to a definite value. Without this the story image sizes
+  // to its own intrinsic aspect ratio and inflates the row past itemHeight.
+  .ag-cell-wrapper,
+  .ag-cell-value {
+    height: 100%;
+  }
+
   .news-item {
-    p,
-    span {
-      /* BOTH of the following are required for text-overflow */
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    // Cap the reading width and center it - keeps line lengths comfortable on wide displays.
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: var(--xh-pad-px);
+    gap: var(--xh-pad-px);
+    align-items: stretch;
+    cursor: pointer;
+
+    &__body {
+      flex: 1 1 auto;
+      // Required for child text to ellipsis/clamp within a flex item.
+      min-width: 0;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    // Single line, ellipsized to fit the dense list row.
+    &__meta {
       white-space: nowrap;
       overflow: hidden;
-    }
-
-    .text-container {
-      margin-left: var(--xh-pad-px);
-      display: flex;
-      flex: 2;
-      flex-direction: column;
-      line-height: 26px;
-    }
-
-    .overflow-ellipsis {
       text-overflow: ellipsis;
-      white-space: nowrap;
     }
 
-    &--title {
+    &__title {
       font-size: var(--xh-font-size-large-px);
-      font-weight: bold;
-      margin-bottom: 0;
-    }
-
-    &--text {
-      opacity: 0.8;
-      color: var(--xh-grid-text-color);
-      margin-bottom: 0;
-    }
-
-    .img-container {
-      flex: 1;
-      padding: var(--xh-pad-half-px) var(--xh-pad-px);
-    }
-
-    &--img {
-      display: flex;
-      align-items: flex-start;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--xh-text-color);
+      // Clamp to two lines, with ellipsis on overflow.
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
-    img {
-      width: 80%;
-      height: auto;
-      margin-left: auto;
-      margin-right: auto;
-      display: block;
+    &__desc {
+      font-size: var(--xh-font-size-px);
+      line-height: 1.4;
+      color: var(--xh-text-color-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
+
+    // Fixed side thumbnail.
+    &__media {
+      flex: 0 0 auto;
+      width: 200px;
+      height: 100%;
+      border-radius: calc(var(--xh-border-radius-px) * 1.5);
+    }
+  }
+}
+
+// Master-detail reading pane shown alongside the story list.
+.tb-news-detail {
+  // Full-width hero image.
+  &__hero {
+    flex: 0 0 auto;
+    height: 200px;
+  }
+
+  &__content {
+    flex: 1 1 auto;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-pad-px);
+    padding: var(--xh-pad-double-px);
+  }
+
+  // Larger than the list title, shown in full (no clamp).
+  &__title {
+    font-size: calc(var(--xh-font-size-large-px) * 1.15);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--xh-text-color);
+  }
+
+  &__body {
+    font-size: var(--xh-font-size-px);
+    line-height: 1.5;
+    color: var(--xh-text-color);
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--xh-pad-double-px);
+
+    .xh-button {
+      min-width: 220px;
+    }
+  }
+}
+
+//------------------------
+// Bits shared by the list card and the detail reading pane.
+//------------------------
+.news-item__meta,
+.tb-news-detail__meta {
+  font-size: var(--xh-font-size-small-px);
+  text-transform: uppercase;
+  color: var(--xh-text-color-accent);
+}
+
+.news-item__media,
+.tb-news-detail__hero {
+  overflow: hidden;
+  // Visible while the image loads and behind any transparent areas.
+  background-color: var(--xh-bg-alt);
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    // Fill the box regardless of source aspect ratio, cropping rather than
+    // distorting or leaving whitespace.
+    object-fit: cover;
   }
 }

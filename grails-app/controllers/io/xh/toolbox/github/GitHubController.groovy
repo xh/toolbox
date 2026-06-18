@@ -26,6 +26,15 @@ class GitHubController extends BaseController {
         }
     }
 
+    def allReleases() {
+        def ret = gitHubService.releasesByRepo
+        if (ret.isEmpty()) {
+            throw new DataNotAvailableException("GitHub releases have not been loaded on this Toolbox instance - the service might not be configured to run.")
+        } else {
+            renderJSON(ret)
+        }
+    }
+
     /**
      * Called by webhook registered on GitHub under our XH org.
      *
@@ -37,7 +46,7 @@ class GitHubController extends BaseController {
      */
     def webhookTrigger() {
         def valid = validateGitHubSignature(request.reader.text, request.getHeader('x-hub-signature-256'))
-        if (valid) gitHubService.loadCommitsForAllRepos()
+        if (valid) gitHubService.forceRefresh()
         renderJSON(success: valid)
     }
 

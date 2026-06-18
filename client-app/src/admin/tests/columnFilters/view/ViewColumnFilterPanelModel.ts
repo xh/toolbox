@@ -1,10 +1,10 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {Cube, View} from '@xh/hoist/data';
-import {ColumnSpec, GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
+import {ColumnSpec, GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
-import {observable, makeObservable, comparer} from '@xh/hoist/mobx';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {CompoundFilter, Cube, FieldFilter, View} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
+import {comparer, makeObservable, observable} from '@xh/hoist/mobx';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
     @observable.ref filterJson: string = JSON.stringify(null);
@@ -35,7 +35,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
 
         // Update filter JSON
         this.addReaction({
-            track: () => this.query.filter,
+            track: () => this.query.filter as FieldFilter | CompoundFilter,
             run: filter => {
                 this.filterJson = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
             }
@@ -73,9 +73,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
 
         return new Cube({
             idSpec: 'id',
-            fieldDefaults: {
-                disableXssProtection: true
-            },
             fields: [
                 {name: 'symbol', isDimension: true},
                 {name: 'sector', isDimension: true},
@@ -140,10 +137,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
             treeMode: true,
             store: {
                 freezeData: true,
-                idEncodesTreePath: true,
-                fieldDefaults: {
-                    disableXssProtection: true
-                }
+                idEncodesTreePath: true
             },
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'cubeLabel',
@@ -152,6 +146,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
             enableExport: true,
             colDefaults: {filterable: true},
             filterModel: {bind: view},
+            levelLabels: () => [...this.groupingChooserModel.valueDisplayNames, 'Orders'],
             columns: [
                 {
                     field: 'id',
