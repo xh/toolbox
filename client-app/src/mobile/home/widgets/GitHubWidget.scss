@@ -75,26 +75,20 @@
     white-space: nowrap;
   }
 
-  // Two-line variant (Recent Commits): chip + subject on the first line, author + recency on a
-  // full-width second line. No chevron - the whole row is tappable.
+  // Two-line variant (Recent Commits): a leading chip badge beside a text column holding the subject
+  // and, aligned beneath it, the author + recency meta line. No chevron - the whole row is tappable.
   &__row--commit {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 3px;
+    align-items: flex-start;
   }
 
-  &__commit-head {
-    align-items: center;
-    gap: var(--xh-pad-px);
+  &__commit-body {
+    flex: 1;
     min-width: 0;
-
-    .tb-github-widget__repo {
-      align-self: center;
-    }
+    // A little breathing room between the subject and its metadata line.
+    gap: var(--xh-pad-half-px);
   }
 
   &__row-title {
-    flex: 1;
     min-width: 0;
     font-size: var(--xh-font-size-px);
     color: var(--xh-text-color);
