@@ -136,4 +136,18 @@ export class NavBladeModel extends HoistModel {
         if (route === HOME_ROUTE) return name === HOME_ROUTE;
         return name === route || name.startsWith(route + '.');
     }
+
+    /**
+     * Display title for the active section, shown in the app bar in place of the app name. Resolves
+     * the current route against the nav catalog, matching the nearest ancestor section - so a
+     * drilldown route (e.g. a grid's single-record detail) keeps its parent section's title.
+     */
+    get activeTitle(): string {
+        if (this.isRouteActive(HOME_ROUTE)) return 'Home';
+        for (const group of this.groups) {
+            const item = group.items.find(it => this.isRouteActive(it.route));
+            if (item) return item.text;
+        }
+        return XH.clientAppName;
+    }
 }

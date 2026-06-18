@@ -26,6 +26,8 @@ export const AppComponent = hoistCmp({
             tbar: appBar({
                 omit: XH.isLandscape,
                 icon: img({className: 'tb-appbar-logo', src: xhLogo, alt: 'XH'}),
+                // Show the active section in place of the app name (parent section for drilldowns).
+                title: model.navBladeModel.activeTitle,
                 hideRefreshButton: false,
                 // Hamburger opens the navigation blade. Shown only at the root of the nav stack,
                 // where the back button is absent - on sub-pages the back button owns the left slot.
