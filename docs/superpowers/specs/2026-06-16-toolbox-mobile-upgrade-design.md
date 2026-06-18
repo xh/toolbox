@@ -78,17 +78,43 @@ so they can later graduate into the shared `@xh/hoist/mobile` kit (the brief exp
   collapse, manage-sheet toggle (moves widgets between groups + updates the stack live), reorder
   (logic + live re-render), and all six widgets rendering real data. No console errors.
 
+- **Home dashboard polish pass (post-move-C) - COMPLETE & verified.**
+  - *App bar:* replaced the box icon with the XH glyph logo (`core/img/xh-logo.png`) and tightened
+    the hamburger/logo/title cluster; the title now shows the active section (via
+    `NavBladeModel.activeTitle`, ancestor-matched so drilldowns keep the parent section name, e.g.
+    "Tree Grids"); Home shows "Home".
+  - *Fonts:* mobile app now ships IBM Plex Sans (standard) + IBM Plex Mono (mono) unconditionally
+    (`@ibm/plex-sans` + new `@ibm/plex-mono`), applied on `body.xh-app` - no font option yet.
+  - *Widgets:* softer card radius (10px) + wider gutter; lighter header/headline weights; tree-grid
+    disclosure chevrons (collapsed `>`, expanded `v`); taller/rounder widget buttons via scoped
+    `--xh-button-*` vars; slimmer Start Here blurbs. Releases widget shows one latest release per repo
+    (single-line rows, mono version, date right-aligned); Recent Commits is a two-line layout (subject
+    line 1; chip + author + date right-aligned on line 2).
+  - *Manage sheet dnd:* fixed the drag-clone vertical offset (Onsen Swiper wrapper + the sheet panel
+    both had transforms that became the fixed-clone containing block) by portaling the sheet to
+    `<body>` and sliding the panel via `bottom` not `transform`; fixed a Done-tap ghost-click leak
+    (peek now ignores taps on interactive controls); deferred the dashboard re-render while managing
+    (frozen snapshot, syncs on dismiss) for smooth reordering. Added a pinned "Reset to default
+    layout" footer (new `pullUpSheet` `footerItem` slot) and an orange Done CTA. Internal sheet
+    components refactored to `hoistCmp` factories that auto-resolve the contextual `HomeModel`.
+
 All changed files pass `tsc --noEmit` (0 errors), ESLint, Stylelint, and Prettier.
 
-#### Move C persistence note
+#### Move C persistence note - VERIFIED end-to-end
 
 Membership/order/collapsed state persists per user via `@persist` against a new server preference,
-`mobileHomeWidgets` (added to `BootStrap.ensureRequiredPrefsCreated`). Hoist's
-`PersistenceProvider.create` fails gently, so until a backend built from this tree registers the pref
-the dashboard simply runs on defaults (no crash - verified). End-to-end persistence therefore
-activates once the mobile-upgrade backend (re)starts or is deployed; it could not be exercised in the
-current local session because port 8080 was held by a sibling `../toolbox` checkout's backend, which
-lacks this pref - left untouched rather than torn down.
+`mobileHomeWidgets` (added to `BootStrap.ensureRequiredPrefsCreated`). Verified this session by
+restarting the mobile-upgrade backend on :8080 so the pref registered: changed membership/order/
+collapse, reloaded, and the state restored exactly (server pref JSON matched the model). Hoist's
+`PersistenceProvider.create` also fails gently, so a backend without the pref runs on defaults rather
+than crashing.
+
+#### Local-run gotcha discovered this session
+
+`yarn startWithHoist` (inline hoist-react) hardcoded `cd ../toolbox/client-app`, so from a
+differently-named checkout it served the **sibling `../toolbox`** tree (old code). Fixed to a scoped
+subshell `(cd ../../hoist-react && yarn install)` so it serves the invoking checkout. To run inline
+from this checkout: `yarn --cwd client-app start --env inlineHoist --env devHost=$(ipconfig getifaddr en0)`.
 
 ### Remaining
 
@@ -99,9 +125,9 @@ lacks this pref - left untouched rather than torn down.
 
 ### Follow-up considerations
 
-- Per-page app-bar title: the mockups show the example name in the app bar on sub-pages; today the
-  global app bar shows the app name + back, and the example name lives in the sheet peek bar. A
-  consolidation pass could route the page title into the app bar via `XH.routerState`.
+- Per-page app-bar title: DONE in the polish pass - the app bar now shows the active section name
+  (resolved from the nav catalog, parent-section for drilldowns). The example name still also appears
+  in the sheet peek bar; de-duplicating those two could be a future tidy-up.
 - Edge-swipe to open the blade: NOT viable as a from-anywhere gesture - the Navigator already uses
   edge-swipe as its back gesture (the design handoff did not account for this). A possible narrow
   follow-up is to open the blade on edge-swipe only at the home/root page, where there is no page to
