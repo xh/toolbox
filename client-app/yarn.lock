@@ -1865,6 +1865,13 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.4.3.tgz#c2b9d2e374ee62c586d3adbea87199b1d7a7a6ba"
   integrity sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==
 
+"@ibm/plex-mono@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@ibm/plex-mono/-/plex-mono-1.1.0.tgz#5406e372e2807b3cc1e78be6b8ea64256135c12d"
+  integrity sha512-hpsdRxR3BRJkC6wGM4MZcUFD6C8M+mmK76RtAy/hlsfPro9FzpXVdIWC+G3jeQOXof109dxlUvmeKxpeKUG68A==
+  dependencies:
+    "@ibm/telemetry-js" "^1.6.1"
+
 "@ibm/plex-sans@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@ibm/plex-sans/-/plex-sans-1.1.0.tgz#44a45a8e269870221c431eb4e8023dca6ed21ceb"

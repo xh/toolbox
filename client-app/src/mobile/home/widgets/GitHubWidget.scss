@@ -61,7 +61,9 @@
 
   &__tag {
     font-family: var(--xh-font-family-mono);
-    font-size: var(--xh-font-size-px);
+    // Mono renders chunkier than the surrounding sans, so drop to the small size to keep the version
+    // in scale with the repo chip and the relative date sharing its row.
+    font-size: var(--xh-font-size-small-px);
     color: var(--xh-text-color);
     white-space: nowrap;
   }
