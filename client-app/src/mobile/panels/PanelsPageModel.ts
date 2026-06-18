@@ -10,11 +10,13 @@ export class PanelsPageModel extends HoistModel {
         tabs: [
             {
                 id: 'panel',
-                content: panelPage
+                content: panelPage,
+                title: 'Intro'
             },
             {
                 id: 'scrollablePanel',
-                content: scrollablePanelPage
+                content: scrollablePanelPage,
+                title: 'Scrollable'
             }
         ]
     });

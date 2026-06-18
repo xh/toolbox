@@ -2,8 +2,8 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {filler, p, span} from '@xh/hoist/cmp/layout';
-import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
+import {p} from '@xh/hoist/cmp/layout';
+import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import {ScrollablePanelPageModel} from './ScrollablePanelPageModel';
 
 export const scrollablePanelPage = hoistCmp.factory({
@@ -27,17 +27,34 @@ export const scrollablePanelPage = hoistCmp.factory({
             );
         }
 
-        return panel({
-            scrollable: true,
+        return exampleScreen({
             title: 'Scrollable Panel',
             icon: Icon.favorite(),
-            className: 'tb-panels-scrollable-panel',
-            items,
-            bbar: toolbar(
-                filler(),
-                span('Add lots of content'),
-                switchInput({bind: 'showLongContent'})
-            )
+            description: [
+                'A `Panel` with `scrollable: true` lets its inner content scroll when it overflows the',
+                'available height. Toggle the option here to add enough content to overflow and watch',
+                'the panel scroll.'
+            ],
+            options: [
+                exampleOption({
+                    label: 'Add lots of content',
+                    control: switchInput({model, bind: 'showLongContent'})
+                })
+            ],
+            links: [
+                {
+                    url: '$TB/client-app/src/mobile/panels/ScrollablePanelPage.ts',
+                    notes: 'This example.'
+                },
+                {url: '$HR/mobile/cmp/panel/Panel.ts', text: 'Panel source'}
+            ],
+            item: panel({
+                scrollable: true,
+                title: 'Scrollable Panel',
+                icon: Icon.favorite(),
+                className: 'tb-panels-scrollable-panel',
+                items
+            })
         });
     }
 });
