@@ -1,11 +1,11 @@
 import {createRef} from 'react';
 import {GridConfig, GridModel} from '@xh/hoist/cmp/grid';
+import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
 import './SampleGrid.scss';
 import {
@@ -20,8 +20,6 @@ import {
 } from '../../../core/columns';
 
 export class SampleGridModel extends HoistModel {
-    @observable groupBy: string = null;
-
     panelRef = createRef<HTMLDivElement>();
 
     viewDetailsAction = {
@@ -87,13 +85,13 @@ export class SampleGridModel extends HoistModel {
     };
 
     @managed gridModel: GridModel;
+    @managed groupingChooserModel: GroupingChooserModel;
 
     constructor({gridConfig}: {gridConfig?: Partial<GridConfig>} = {}) {
         super();
-        makeObservable(this);
 
         this.gridModel = new GridModel({
-            experimental: {enableFullWidthScroll: true},
+            enableFullWidthScroll: true,
             selModel: {mode: 'multiple'},
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',
@@ -117,8 +115,11 @@ export class SampleGridModel extends HoistModel {
                 this.viewDetailsAction,
                 this.terminateAction,
                 '-',
-                ...GridModel.defaultContextMenu
+                ...GridModel.defaults.contextMenu
             ],
+            levelLabels: () => {
+                return [...this.groupingChooserModel.valueDisplayNames, 'Company'];
+            },
             groupSortFn: (a, b, groupField) => {
                 if (a === b) return 0;
                 if (groupField === 'winLose') {
@@ -203,6 +204,17 @@ export class SampleGridModel extends HoistModel {
             ],
             ...gridConfig
         });
+
+        this.groupingChooserModel = new GroupingChooserModel({
+            bind: this.gridModel,
+            allowEmpty: true,
+            commitOnChange: true,
+            dimensions: [
+                {name: 'city', displayName: 'City'},
+                {name: 'winLose', displayName: 'Win/Lose'}
+            ],
+            initialValue: []
+        });
     }
 
     override async doLoadAsync(loadSpec) {
@@ -239,20 +251,9 @@ export class SampleGridModel extends HoistModel {
         });
     }
 
-    @action
-    private setGroupBy(groupBy: string) {
-        this.groupBy = groupBy;
-
-        // Always select first when regrouping.
-        const groupByArr = groupBy ? groupBy.split(',') : [];
-        this.gridModel.setGroupBy(groupByArr);
-        this.gridModel.preSelectFirstAsync();
-    }
-
-    @action
     private restoreDefaultsFn() {
         // Reset defaults to Display Options panel
-        this.setGroupBy(null);
+        this.groupingChooserModel.setValue([]);
         this.gridModel.sizingMode = XH.sizingMode;
         this.gridModel.hideHeaders = false;
         this.gridModel.stripeRows = true;

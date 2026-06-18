@@ -1,0 +1,8 @@
+// The `card` root renders as a <fieldset> with `display: block`, so its flex:1 content box does not
+// stretch to fill the card height on its own (leaving a gap below the content). Make the card a flex
+// column so the legend sits on top and the content box fills the remaining height - letting the
+// fileChooser inside flex to fill the card.
+.tb-filechooser-card {
+  display: flex;
+  flex-direction: column;
+}

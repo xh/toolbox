@@ -1,20 +1,22 @@
-import {box, div, filler, hframe, label, vbox, vframe, vspacer} from '@xh/hoist/cmp/layout';
+import {box, hbox, vframe} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {switchInput, dateInput, numberInput, textInput, select} from '@xh/hoist/desktop/cmp/input';
+import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
+import {dateInput, numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {fmtDateTime} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {HOURS, DAYS} from '@xh/hoist/utils/datetime';
 import {isNil, omitBy} from 'lodash';
-import {wrapper} from '../../../common';
+import {wrapper, wrapperOption} from '../../../common';
 import {RelativeTimestampPanelModel} from './RelativeTimestampPanelModel';
-import {LocalDate} from '@xh/hoist/utils/datetime';
+import './RelativeTimestampPanel.scss';
 
 export const relativeTimestampPanel = hoistCmp.factory({
     model: creates(() => RelativeTimestampPanelModel),
 
     render({model}) {
-        const options = omitBy(
+        const rtProps = omitBy(
             {
                 allowFuture: model.allowFuture,
                 short: model.short,
@@ -31,149 +33,139 @@ export const relativeTimestampPanel = hoistCmp.factory({
         );
 
         return wrapper({
-            description: `
-                A relative timestamp will display a given timestamp in terms of how far long ago /
-                in the future it is relative to the present moment. The component will update
-                itself on a regular interval to stay current, and displays the time difference
-                in a friendly and readable manner.
-            `,
+            title: 'Relative Timestamp',
+            icon: Icon.clock(),
+            description: [
+                '`RelativeTimestamp` displays a timestamp in terms of how long ago, or how far',
+                'in the future, it falls relative to the present moment (for example, "5',
+                'minutes ago"). It updates itself on a regular interval to stay current and',
+                'renders the difference in a friendly, readable form.',
+                '',
+                'Pick a target moment below, then tune the display options to see how the output',
+                'changes.'
+            ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.ts',
+                    url: '$TB/client-app/src/desktop/tabs/other/relativetimestamp/RelativeTimestampPanel.ts',
                     notes: 'This example.'
                 },
                 {url: '$HR/cmp/relativetimestamp/RelativeTimestamp.ts', notes: 'Hoist component.'}
             ],
+            options: [
+                wrapperOption({
+                    label: 'Target',
+                    propName: 'RelativeTimestampProps.timestamp',
+                    control: dateInput({
+                        model,
+                        bind: 'timestamp',
+                        width: 170,
+                        timePrecision: 'second',
+                        showActionsBar: true
+                    }),
+                    info: 'The moment rendered relative to now.'
+                }),
+                buttonGroup({
+                    className: 'tb-rel-ts__presets',
+                    items: [
+                        button({text: '-90 days', onClick: () => model.setOffset(-90 * DAYS)}),
+                        button({text: '-1 hr', onClick: () => model.setOffset(-HOURS)}),
+                        button({text: 'Now', onClick: () => model.setToNow()}),
+                        button({text: '+1 hr', onClick: () => model.setOffset(HOURS)}),
+                        button({text: '+7 days', onClick: () => model.setOffset(7 * DAYS)})
+                    ]
+                }),
+                wrapperOption({
+                    label: 'Allow Future',
+                    propName: 'RelativeTimestampOptions.allowFuture',
+                    control: switchInput({model, bind: 'allowFuture'}),
+                    info: 'Render future timestamps.'
+                }),
+                wrapperOption({
+                    label: 'Short',
+                    propName: 'RelativeTimestampOptions.short',
+                    control: switchInput({model, bind: 'short'}),
+                    info: `Abbreviate units, e.g. '1m'.`
+                }),
+                wrapperOption({
+                    label: 'Prefix',
+                    propName: 'RelativeTimestampOptions.prefix',
+                    control: textInput({model, bind: 'prefix', width: 140})
+                }),
+                wrapperOption({
+                    label: 'Future Suffix',
+                    propName: 'RelativeTimestampOptions.futureSuffix',
+                    control: textInput({model, bind: 'futureSuffix', width: 140})
+                }),
+                wrapperOption({
+                    label: 'Past Suffix',
+                    propName: 'RelativeTimestampOptions.pastSuffix',
+                    control: textInput({model, bind: 'pastSuffix', width: 140})
+                }),
+                wrapperOption({
+                    label: 'Equal String',
+                    propName: 'RelativeTimestampOptions.equalString',
+                    control: textInput({model, bind: 'equalString', width: 140})
+                }),
+                wrapperOption({
+                    label: 'Epsilon (secs)',
+                    propName: 'RelativeTimestampOptions.epsilon',
+                    control: numberInput({
+                        model,
+                        bind: 'epsilon',
+                        displayWithCommas: true,
+                        min: 0,
+                        width: 90
+                    }),
+                    info: 'Treat diffs within this as equal.'
+                }),
+                wrapperOption({
+                    label: 'Empty Result',
+                    propName: 'RelativeTimestampOptions.emptyResult',
+                    control: textInput({model, bind: 'emptyResult', width: 140})
+                }),
+                wrapperOption({
+                    label: 'LocalDate Mode',
+                    propName: 'RelativeTimestampOptions.localDateMode',
+                    control: select({
+                        model,
+                        bind: 'localDateMode',
+                        width: 150,
+                        options: ['always', 'useTimeForSameDay', 'useTimeFor24Hr'],
+                        placeholder: '',
+                        enableClear: true
+                    }),
+                    info: 'Compare by calendar day.'
+                }),
+                wrapperOption({
+                    label: 'Relative To',
+                    propName: 'RelativeTimestampOptions.relativeTo',
+                    control: dateInput({
+                        model,
+                        bind: 'relativeTo',
+                        width: 170,
+                        timePrecision: 'second',
+                        showActionsBar: true
+                    }),
+                    info: 'Compare against this, not now.'
+                })
+            ],
             item: panel({
-                title: 'Other › Relative Timestamp',
-                icon: Icon.clock(),
-                width: 840,
-                items: [
-                    hframe({
-                        items: [
-                            panel({
-                                item: vframe(
-                                    box({
-                                        style: {fontSize: '1.8em'},
-                                        margin: '10 10 40 10',
-                                        item: relativeTimestamp({
-                                            bind: 'timestamp',
-                                            options
-                                        })
-                                    }),
-                                    vbox({
-                                        margin: '10 10 10 10',
-                                        style: {opacity: 0.5},
-                                        items: [
-                                            label('Timestamp: '),
-                                            new Date(model.timestamp).toString()
-                                        ]
-                                    })
-                                ),
-                                bbar: [
-                                    filler(),
-                                    dateInput({
-                                        bind: 'pastTimestamp',
-                                        placeholder: '< Set to past',
-                                        maxDate: new Date(),
-                                        timePrecision: 'second',
-                                        showActionsBar: true,
-                                        onChange: () => {
-                                            model.currentTimestamp = model.futureTimestamp = null;
-                                            model.lastFocusedControl = 'pastDatePicker';
-                                        }
-                                    }),
-                                    button({
-                                        text: 'Set to now',
-                                        intent: 'primary',
-                                        icon: Icon.clock(),
-                                        minimal: false,
-                                        width: 130,
-                                        onClick: () => model.setToNow()
-                                    }),
-                                    dateInput({
-                                        bind: 'futureTimestamp',
-                                        placeholder: 'Set to future >',
-                                        minDate: LocalDate.today(),
-                                        timePrecision: 'second',
-                                        showActionsBar: true,
-                                        onChange: () => {
-                                            model.currentTimestamp = model.pastTimestamp = null;
-                                            model.lastFocusedControl = 'futureDatePicker';
-                                        }
-                                    }),
-                                    filler()
-                                ]
-                            }),
-                            panel({
-                                title: 'Options',
-                                icon: Icon.settings(),
-                                className: 'tbox-display-opts',
-                                compactHeader: true,
-                                modelConfig: {side: 'right', defaultSize: 250, resizable: false},
-                                item: div({
-                                    className: 'tbox-display-opts__inner',
-                                    items: [
-                                        switchInput({
-                                            label: 'Allow Future',
-                                            labelSide: 'left',
-                                            bind: 'allowFuture'
-                                        }),
-                                        switchInput({
-                                            label: 'Short',
-                                            labelSide: 'left',
-                                            bind: 'short'
-                                        }),
-                                        vspacer(5),
-                                        label('Future Suffix'),
-                                        textInput({
-                                            bind: 'futureSuffix'
-                                        }),
-                                        label('Past Suffix'),
-                                        textInput({
-                                            bind: 'pastSuffix'
-                                        }),
-                                        label('Equal String'),
-                                        textInput({
-                                            bind: 'equalString'
-                                        }),
-                                        label('Epsilon (in seconds)'),
-                                        numberInput({
-                                            bind: 'epsilon',
-                                            displayWithCommas: true,
-                                            min: 0
-                                        }),
-                                        label('Empty Result'),
-                                        textInput({
-                                            bind: 'emptyResult'
-                                        }),
-                                        label('Prefix'),
-                                        textInput({
-                                            bind: 'prefix'
-                                        }),
-                                        label('LocalDate Mode'),
-                                        select({
-                                            options: [
-                                                'always',
-                                                'useTimeForSameDay',
-                                                'useTimeFor24Hr'
-                                            ],
-                                            placeholder: '',
-                                            enableClear: true,
-                                            bind: 'localDateMode'
-                                        }),
-                                        label('Relative To'),
-                                        dateInput({
-                                            bind: 'relativeTo',
-                                            timePrecision: 'second',
-                                            showActionsBar: true
-                                        })
-                                    ]
-                                })
-                            })
-                        ]
-                    })
-                ]
+                width: 600,
+                item: vframe({
+                    className: 'tb-rel-ts',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    items: [
+                        box({
+                            className: 'tb-rel-ts__value',
+                            item: relativeTimestamp({bind: 'timestamp', ...rtProps})
+                        }),
+                        hbox({
+                            className: 'tb-rel-ts__abs',
+                            items: ['as of ', fmtDateTime(model.timestamp)]
+                        })
+                    ]
+                })
             })
         });
     }

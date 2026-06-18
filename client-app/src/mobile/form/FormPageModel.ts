@@ -20,9 +20,24 @@ export class FormPageModel extends HoistModel {
             {name: 'name', rules: [required, lengthIs({min: 8})]},
             {name: 'customer', rules: [required]},
             {name: 'movie', rules: [required]},
-            {name: 'salary'},
+            {
+                name: 'salary',
+                rules: [
+                    ({value}) =>
+                        value < 10_000 ? {severity: 'warning', message: 'Salary seems low.'} : null
+                ]
+            },
             {name: 'percentage'},
-            {name: 'date', rules: [required]},
+            {
+                name: 'date',
+                rules: [
+                    required,
+                    ({value}) =>
+                        value && !value.isWeekday
+                            ? {severity: 'info', message: 'Selected date falls on a weekend.'}
+                            : null
+                ]
+            },
             {name: 'enabled'},
             {name: 'buttonGroup', initialValue: 'button2'},
             {name: 'notes'},

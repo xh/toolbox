@@ -1,4 +1,4 @@
-import {HoistModel, lookup, managed} from '@xh/hoist/core';
+import {HoistModel, lookup, managed, persistOptions} from '@xh/hoist/core';
 import {DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -37,7 +37,7 @@ export class DetailModel extends HoistModel {
 
         this.dashModel = new DashContainerModel({
             showMenuButton: true,
-            persistWith: {...persistWith, path: 'detailDash'},
+            persistWith: persistOptions(persistWith, {path: 'detailDash', settleTime: 1500}),
             viewSpecs: [
                 {
                     id: 'orders',
@@ -62,7 +62,7 @@ export class DetailModel extends HoistModel {
         });
 
         this.panelModel = new PanelModel({
-            persistWith: {...persistWith, path: 'detailPanel'},
+            persistWith: persistOptions(persistWith, {path: 'detailPanel'}),
             defaultSize: 400,
             side: 'bottom',
             renderMode: 'unmountOnHide'

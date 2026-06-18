@@ -8,6 +8,8 @@ import io.xh.hoist.cache.CacheEntryChanged
 import java.time.LocalDate
 
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
+import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
+import static io.xh.hoist.util.Utils.isLocalDevelopment
 import static java.lang.Thread.sleep
 import static TestUtils.*
 
@@ -36,7 +38,12 @@ class TestCacheService extends BaseService {
 
     void init() {
         super.init()
-        initData()
+
+        if (isLocalDevelopment && !getInstanceConfig('initTestCacheServices')) {
+            logInfo("Disabled by default in local development mode - set initTestCacheServices instance config to override")
+        } else {
+            initData()
+        }
     }
 
     private void initData() {

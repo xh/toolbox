@@ -1,68 +1,238 @@
 .tbox-wrapper {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding-top: 10px;
+  position: relative;
+  gap: 12px;
+  padding: 16px;
 
-  > .xh-panel {
-    border: var(--xh-border-solid);
+  // "Floating card" drop shadow shared by the rail, demo frame, and collapsed rail. Kept very
+  // faint in light theme; dark theme needs a deeper shadow to read against the dark patterned
+  // backdrop, where a near-transparent black shadow would otherwise be invisible.
+  --tbox-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  .xh-dark & {
+    --tbox-card-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
   }
 
-  &__description {
-    flex: none !important;
-    width: 700px;
-    margin-bottom: var(--xh-pad-px);
-    border-radius: var(--xh-border-radius-px);
+  // Texture layer behind the rail and demo, so both read as cards floating over a patterned
+  // surface. The XH monogram tile is painted here by the shared tile system (see
+  // core/XhTilePatterns.scss, `.tbox-wrapper::before`); this rule just establishes the layer.
+  // The cards sit above it via z-index and are opaque, so the tile breathes through the
+  // surrounding padding and gutter.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
 
-    .xh-panel__content {
-      padding: var(--xh-title-pad-px);
-      background-color: var(--xh-bg-alt);
-    }
+  // Lift the rail and demo above the texture layer.
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 
-    p:last-child {
-      margin-bottom: 0;
+  // Fixed-width info rail: constant silhouette across tabs.
+  &__rail {
+    flex: none;
+    border: var(--xh-border-solid);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--tbox-card-shadow);
+  }
+
+  &__rail-body {
+    overflow: auto;
+    padding: var(--xh-pad-px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-pad-px);
+    line-height: 1.5;
+  }
+
+  &__intro {
+    p {
+      margin: 0 0 var(--xh-pad-half-px);
+      &:last-child {
+        margin: 0;
+      }
     }
 
     code {
       font-family: var(--xh-font-family-mono);
-      font-size: 0.9em;
-      background-color: #d1e5f2;
-      padding: 2px;
+      font-size: 0.85em;
+      color: var(--xh-text-color);
+      background-color: var(--xh-bg-alt);
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
 
-      .xh-dark & {
-        background-color: #212121;
-      }
+    ul,
+    ol {
+      margin: var(--xh-pad-half-px) 0;
+      padding-left: 1.4em;
+    }
+
+    li {
+      margin-bottom: 2px;
     }
   }
 
-  &__links {
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+  &__divider {
+    flex: none;
+    height: 1px;
+    background: var(--xh-border-color);
+  }
 
-    tr {
-      &:nth-child(even) {
-        background-color: var(--xh-grid-bg-odd);
-      }
-    }
+  &__resources {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-pad-half-px);
+  }
 
-    th,
-    td {
-      padding: var(--xh-pad-half-px) var(--xh-pad-px) var(--xh-pad-px) var(--xh-pad-px);
-      vertical-align: top;
-    }
+  &__resources-label,
+  &__options-label {
+    margin-bottom: var(--xh-pad-half-px);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    color: var(--xh-text-color-muted);
+  }
 
-    th {
-      white-space: nowrap;
-      text-align: left;
-    }
+  // Consolidated demo display-options, between the description and the resource links.
+  &__options {
+    display: flex;
+    flex-direction: column;
+  }
 
-    td {
-      width: 100%;
+  &__options-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-pad-half-px);
+  }
+
+  &__option {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__option-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--xh-pad-px);
+    min-height: 26px;
+  }
+
+  &__option-label {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.9em;
+  }
+
+  // When an option declares a `propName`, the human label and the literal property name are
+  // stacked in the same grid cell so swapping between them on hover causes no layout shift.
+  &__option-label:has(.tbox-wrapper__option-prop) {
+    display: grid;
+    align-items: center;
+  }
+
+  &__option-label-text,
+  &__option-prop {
+    grid-area: 1 / 1;
+    min-width: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  &__option-prop {
+    justify-self: start;
+    max-width: 100%;
+    font-family: var(--xh-font-family-mono);
+    // Sized to fit the qualified `Interface.property` names within the rail; the longest still
+    // ellipsize with the full name available via the element's title tooltip.
+    font-size: 0.8em;
+    color: var(--xh-text-color);
+    background-color: var(--xh-bg-alt);
+    padding: 1px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  // Reveal the property name (and hide the label) while anywhere in the option row is hovered.
+  &__option:hover &__option-label-text {
+    opacity: 0;
+  }
+
+  &__option:hover &__option-prop {
+    opacity: 1;
+  }
+
+  &__option-control {
+    flex: none;
+    display: flex;
+    align-items: center;
+  }
+
+  // Optional explanatory text below an option row (label/control), muted and smaller.
+  &__option-info {
+    margin-top: 2px;
+    color: var(--xh-text-color-muted);
+    font-size: 0.85em;
+    line-height: 1.35;
+  }
+
+  &__resource {
+    display: flex;
+    gap: var(--xh-pad-half-px);
+    align-items: baseline;
+
+    .xh-icon {
+      flex: none;
+      font-size: 0.85em;
+      color: var(--xh-text-color-muted);
     }
+  }
+
+  &__resource-note {
+    color: var(--xh-text-color-muted);
+    font-size: 0.9em;
+    line-height: 1.35;
+  }
+
+  // Flexible demo region. Fills with space-filling demos (aligning to the rail) and centers
+  // intrinsically-sized demos. No extra padding of its own; spacing comes from .tbox-wrapper.
+  &__demo {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    align-items: center;
+
+    > .xh-panel {
+      margin: 0;
+      border: var(--xh-border-solid);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--tbox-card-shadow);
+    }
+  }
+
+  // Slim bordered card shown when the rail is collapsed (matches the rail/demo card style).
+  &__rail-collapsed {
+    flex: none;
+    width: 36px;
+    align-items: center;
+    padding-top: var(--xh-pad-half-px);
+    border: var(--xh-border-solid);
+    border-radius: 8px;
+    box-shadow: var(--tbox-card-shadow);
+    cursor: pointer;
+  }
+
+  &__rail-collapsed-hint {
+    margin-top: var(--xh-pad-half-px);
+    color: var(--xh-text-color-muted);
   }
 }

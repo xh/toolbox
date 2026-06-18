@@ -30,10 +30,9 @@ module.exports = (env = {}) => {
     return configureWebpack({
         appCode: 'toolbox',
         appName: 'Toolbox',
-        appVersion: '7.0-SNAPSHOT',
+        appVersion: '9.0-SNAPSHOT',
         favicon: './public/favicon.svg',
         devServerOpenPage: 'app/',
-        dupePackageCheckExcludes: ['es-abstract', 'tslib'],
         sourceMaps: 'devOnly',
         preloadBackgroundColor: '#f7931c',
         // Use React prod mode, primarily to avoid console warnings for react 18

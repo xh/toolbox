@@ -2,7 +2,10 @@ package io.xh.toolbox
 
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.monitor.MonitorResult
+import io.xh.hoist.monitor.MonitorSpec
 import io.xh.hoist.monitor.provided.DefaultMonitorDefinitionService
+
+import static io.xh.hoist.monitor.MonitorMetricType.*
 import io.xh.toolbox.app.FileManagerService
 import io.xh.toolbox.app.GitHubService
 import io.xh.toolbox.app.NewsService
@@ -12,10 +15,7 @@ import io.xh.toolbox.portfolio.PortfolioService
 import java.time.Duration
 import java.time.Instant
 
-import static io.xh.hoist.monitor.MonitorStatus.OK
-import static io.xh.hoist.monitor.MonitorStatus.FAIL
-import static io.xh.hoist.monitor.MonitorStatus.WARN
-import static io.xh.hoist.monitor.MonitorStatus.INACTIVE
+import static io.xh.hoist.monitor.MonitorStatus.*
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 import static java.lang.System.currentTimeMillis
 
@@ -33,89 +33,79 @@ class MonitorDefinitionService extends DefaultMonitorDefinitionService {
         super.init()
 
         ensureRequiredMonitorsCreated([
-            [
-                code      : 'divideByZeroMonitor',
-                name      : 'Always throws',
-                metricType: 'None',
-                active    : false
-            ],
-            [
-                code         : 'fileManagerStorageUsedMb',
-                name         : 'File Manager: Storage Used',
-                metricType   : 'Ceil',
-                metricUnit   : 'MB',
-                warnThreshold: 16,
-                failThreshold: 100,
+
+            // Portfolio
+            new MonitorSpec(
+                code         : 'instrumentCount',
+                name         : 'Portfolio: Instruments',
+                metricType   : Floor,
+                metricUnit   : 'instruments',
+                warnThreshold: 500,
+                failThreshold: 1,
                 active       : true
-            ],
-            [
+            ),
+            new MonitorSpec(
+                code         : 'rawPositionCount',
+                name         : 'Portfolio: Raw Positions',
+                metricType   : Floor,
+                metricUnit   : 'positions',
+                failThreshold: 1,
+                active       : true
+            ),
+
+            // Data Services
+            new MonitorSpec(
                 code         : 'gitHubLastUpdateMins',
                 name         : 'GitHub: Last Update Check',
-                metricType   : 'Ceil',
+                metricType   : Ceil,
                 metricUnit   : 'minutes since last refresh',
                 warnThreshold: 70,
                 failThreshold: 140,
                 active       : true
-            ],
-            [
-                code         : 'instrumentCount',
-                name         : 'Portfolio: Instruments',
-                metricType   : 'Floor',
-                metricUnit   : 'instruments',
-                warnThreshold: 500,
-                failThreshold: 1,
-                active       : true,
-            ],
-            [
-                code         : 'metric1337Monitor',
-                name         : 'Always 1337',
-                metricType   : 'Floor',
-                failThreshold: 1337,
-                active       : true
-            ],
-            [
+            ),
+            new MonitorSpec(
                 code         : 'newsLastUpdateMins',
                 name         : 'News: Last Update Check',
-                metricType   : 'Ceil',
+                metricType   : Ceil,
                 metricUnit   : 'minutes since last story',
                 warnThreshold: 2160,
                 failThreshold: 4320,
                 active       : true,
                 primaryOnly  : true
-            ],
-            [
-                code         : 'newsLoadedSourcesCount',
-                name         : 'News: Loaded Sources',
-                metricType   : 'Floor',
-                metricUnit   : 'sources',
-                failThreshold: 1,
-                active       : true,
-                primaryOnly  : true
-            ],
-            [
-                code         : 'newsStoryCount',
-                name         : 'News: Story Count',
-                metricType   : 'Floor',
-                metricUnit   : 'stories',
-                failThreshold: 1,
-                active       : true,
-                primaryOnly  : true
-            ],
-            [
-                code         : 'rawPositionCount',
-                name         : 'Portfolio: Raw Positions',
-                metricType   : 'Floor',
-                metricUnit   : 'positions',
-                failThreshold: 1,
-                active       : true,
-            ],
-            [
+            ),
+            new MonitorSpec(
                 code       : 'recallsFetchStatus',
                 name       : 'Recalls: API Connection Status',
-                metricType : 'None',
+                metricType : None,
                 active     : true,
                 primaryOnly: true
-            ]
+            ),
+
+            // File Manager
+            new MonitorSpec(
+                code         : 'fileManagerStorageUsedMb',
+                name         : 'File Manager: Storage Used',
+                metricType   : Ceil,
+                metricUnit   : 'MB',
+                warnThreshold: 16,
+                failThreshold: 100,
+                active       : true
+            ),
+
+            // Test / Demo
+            new MonitorSpec(
+                code         : 'metric1337Monitor',
+                name         : 'Always 1337',
+                metricType   : Floor,
+                failThreshold: 1337,
+                active       : true
+            ),
+            new MonitorSpec(
+                code      : 'divideByZeroMonitor',
+                name      : 'Always throws',
+                metricType: None,
+                active    : false
+            )
         ])
     }
 
@@ -179,28 +169,18 @@ class MonitorDefinitionService extends DefaultMonitorDefinitionService {
         result.message = 'This metric is always 1337!'
     }
 
-    /** Report when the latest news update was fetched, or fail if no stories are loaded. */
+    /** Report how long ago the latest news update was fetched, or fail if no stories are loaded. */
     def newsLastUpdateMins(MonitorResult result) {
-        if (newsService.lastTimestamp) {
-            def diffMs = currentTimeMillis() - newsService.lastTimestamp.time,
+        def lastTimestamp = newsService.lastTimestamp
+        if (lastTimestamp) {
+            def diffMs = currentTimeMillis() - lastTimestamp.time,
                 diffMins = Math.floor(diffMs / MINUTES)
             result.metric = diffMins
         } else {
             result.metric = -1
             result.status = FAIL
-            result.message = 'Have not yet loaded any stories'
+            result.message = 'No news stories loaded'
         }
-    }
-
-    /** Count news stories loaded by NewsService. */
-    def newsStoryCount(MonitorResult result) {
-        result.metric = newsService.itemCount
-    }
-
-    /** Check if NewsService has loaded stories from all its sources. */
-    def newsLoadedSourcesCount(MonitorResult result) {
-        result.metric = newsService.loadedSourcesCount
-        result.status = newsService.allSourcesLoaded ? OK : FAIL
     }
 
     /** Check ability to connect to the FDA API for drug recall example app. */

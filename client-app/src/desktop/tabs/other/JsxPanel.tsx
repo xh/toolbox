@@ -1,49 +1,65 @@
-import {hframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp} from '@xh/hoist/core';
 import {codeInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import React from 'react';
 import {wrapper} from '../../common';
 import './JsxPanel.scss';
 
 export const jsxPanel = hoistCmp.factory(() =>
     wrapper({
+        title: 'JSX',
+        icon: Icon.code(),
         description: [
-            <p>
-                JSX is the XML-like extension to Javascript typically used to specify and configure
-                React components. While most React guides and examples on the web will use JSX,
-                Hoist React provides an alternative native Javascript syntax based on a factory
-                pattern.
-            </p>,
-            <p>
-                Hoist encourages the use of its <code>elemFactory()</code> method to create and
-                export factory methods for custom components. These methods take a configuration
-                object where properties and child elements are specified without any wrapping braces
-                or additional syntax required.
-            </p>,
-            <p>
-                We believe that the factory approach excels for declarative specification of
-                code-heavy element trees. For element trees with a significant amount of hypertext,
-                JSX might be a better choice. Both can be used interchangably, even within the same
-                render method.
-            </p>
+            'JSX is the XML-like extension to Javascript typically used to specify and',
+            'configure React components. While most React guides and examples on the web will',
+            'use JSX, Hoist React provides an alternative native Javascript syntax based on a',
+            'factory pattern.',
+            '',
+            'Hoist encourages the use of its `elemFactory()` method to create and export',
+            'factory methods for custom components. These methods take a configuration object',
+            'where properties and child elements are specified without any wrapping braces or',
+            'additional syntax required.',
+            '',
+            'We believe that the factory approach excels for declarative specification of',
+            'code-heavy element trees. For element trees with a significant amount of',
+            'hypertext, JSX might be a better choice. Both can be used interchangeably, even',
+            'within the same render method.',
+            '',
+            "The two snippets below are rendered with Hoist's `codeInput` (powered by CodeMirror",
+            '6), each using the language mode best suited to its syntax - plain JavaScript on the',
+            'left and JSX on the right.'
         ],
-        item: hframe({
+        links: [
+            {url: '$TB/client-app/src/desktop/tabs/other/JsxPanel.tsx', notes: 'This example.'},
+            {
+                url: '$HR/core/README.md',
+                text: 'Core docs',
+                notes: 'Core framework guide, including element factories.'
+            },
+            {
+                url: '$HR/core/elem.ts',
+                notes: 'elemFactory() and related helpers for the Hoist factory syntax.'
+            }
+        ],
+        item: panel({
+            className: 'tb-jsx-panel',
+            contentBoxProps: {flexDirection: 'row', padding: true, gap: true},
             items: [
                 panel({
                     flex: 1,
                     className: 'tb-jsx-example',
-                    icon: Icon.factory({prefix: 'fas', size: 'lg'}),
                     title: 'Using Factories',
-                    item: renderCode(getElemExample())
+                    icon: Icon.factory({prefix: 'fas'}),
+                    compactHeader: true,
+                    item: renderCode(getElemExample(), 'js')
                 }),
                 panel({
                     flex: 1,
                     className: 'tb-jsx-example',
-                    icon: Icon.code({size: 'lg'}),
                     title: 'Using JSX',
-                    item: renderCode(getJsxExample())
+                    icon: Icon.code(),
+                    compactHeader: true,
+                    item: renderCode(getJsxExample(), 'jsx')
                 })
             ]
         })
@@ -53,12 +69,14 @@ export const jsxPanel = hoistCmp.factory(() =>
 //------------------------
 // Implementation
 //------------------------
-function renderCode(value: string) {
+function renderCode(value: string, language: string) {
     return codeInput({
         flex: 1,
         width: null,
         height: null,
         readonly: true,
+        highlightActiveLine: true,
+        language,
         value: value.trim()
     });
 }
@@ -83,7 +101,7 @@ render() {
                  )
             }),
             logViewer({model}),
-            mask({model: loadModel})
+            mask({model: loadObserver})
         ]
     });
 }
@@ -120,7 +138,7 @@ render() {
                 <Grid model={files} />
             </Panel>
             <LogViewer model={model} />
-            <Mask model={loadModel} />
+            <Mask model={loadObserver} />
         </HFrame>
     );
 }

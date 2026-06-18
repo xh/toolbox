@@ -15,6 +15,5 @@ XH.renderApp({
     authModelClass: AuthModel,
     isMobileApp: false,
     enableLogout: true,
-    webSocketsEnabled: true,
     checkAccess: () => true
 });

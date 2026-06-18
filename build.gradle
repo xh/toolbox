@@ -3,33 +3,31 @@ import static java.lang.Boolean.parseBoolean
 buildscript {
     repositories {
         mavenCentral()
-        gradlePluginPortal()
-        maven {url 'https://repo.grails.org/grails/core'}
+        maven {url = 'https://repo.grails.org/grails/restricted'}
     }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "org.grails.plugins:hibernate5:$grailsHibernatePluginVersion"
-        classpath "co.uzzu.dotenv:gradle:$dotEnvGradlePluginVersion"
+    dependencies { // Not Published to Gradle Plugin Portal
+        classpath platform("org.apache.grails:grails-bom:$grailsVersion")
+        classpath "org.apache.grails:grails-data-hibernate5"
+        classpath "org.apache.grails:grails-gradle-plugins"
     }
 }
 
-version xhAppVersion
-group xhAppPackage
-
-apply plugin:'idea'
-apply plugin:'war'
-apply plugin:'org.grails.grails-web'
-
-// Must be applied to root project - matters when running Toolbox in a wrapper project mode w/hoist-core.
-// See README.md for more details on this configuration, including contents of top-level build.gradle file.
-gradle.rootProject {
-    apply plugin:'co.uzzu.dotenv.gradle'
+plugins {
+    id 'idea'
+    id 'war'
+    id 'co.uzzu.dotenv.gradle' version "$dotEnvGradlePluginVersion"
 }
+
+// Not Published to Gradle Plugin Portal
+apply plugin: "org.apache.grails.gradle.grails-web"
+
+version = xhAppVersion
+group = xhAppPackage
 
 repositories {
     mavenCentral()
-    maven {url 'https://repo.grails.org/grails/core'}
-    maven {url 'https://repo.xh.io/content/groups/public/'}
+    maven {url = 'https://repo.grails.org/grails/restricted'}
+    maven {url = 'https://central.sonatype.com/repository/maven-snapshots'}
 }
 
 configurations {
@@ -43,51 +41,19 @@ springBoot {
     mainClass = xhAppPackage + ".Application"
 }
 
-if (parseBoolean(runHoistInline)) {
-    println "${xhAppName}: running with Hoist Core INLINE...."
-    grails.plugins {
-        implementation project(":hoist-core")
-    }
-} else {
-    println "${xhAppName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
-    dependencies {
-        implementation "io.xh:hoist-core:$hoistCoreVersion"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(Integer.parseInt(majorJavaVersion))
     }
 }
 
-dependencies {
-    // For server-side JWT validation.
-    implementation "org.bitbucket.b_c:jose4j:0.9.6"
-
-    // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
-    // MySQL for deployed instances, or more stateful local workstation setups.
-    runtimeOnly "com.h2database:h2:2.2.224"
-    runtimeOnly "mysql:mysql-connector-java:8.0.33"
-
-    // For hot reloading
-    developmentOnly "io.methvin:directory-watcher:0.15.0"
-    if (parseBoolean(enableHotSwap)) {
-        developmentOnly "io.xh:groovyReset:1.0"
-    }
-}
-
-// Avoid unexpected errors with overly-long classpath on Windows development machines.
-grails {
-    pathingJar = true
-}
-
-Map hoistMetaData = [
-    'info.xh.appCode': xhAppCode,
-    'info.xh.appName': xhAppName,
-    'info.xh.appPackage': xhAppPackage,
-    'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN'
-]
 
 def allJvmArgs = [
     '-Dspring.output.ansi.enabled=always',
     '-XX:TieredStopAtLevel=1',
+    '-XX:CICompilerCount=3',
     '-Xmx' + localDevXmx,
-    "--add-modules=java.se",
     "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
     "--add-opens=java.base/java.lang=ALL-UNNAMED",
     "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
@@ -96,22 +62,106 @@ def allJvmArgs = [
     "--add-opens=java.base/java.util=ALL-UNNAMED"
 ]
 
-
-
 if (parseBoolean(enableHotSwap)) {
-    def groovyReset = configurations.developmentOnly.resolve().find {it.name.contains("groovyReset")}
+
+    // Enhance JVM args, including Groovy Reset as agent
+    def groovyReset = configurations.detachedConfiguration(
+        dependencies.create("io.xh:groovyReset:1.0")
+    )
     allJvmArgs += [
         '-XX:HotswapAgent=fatjar',
         '-XX:+AllowEnhancedClassRedefinition',
-        '-javaagent:' + groovyReset.absolutePath
+        "-Dspring.devtools.restart.enabled=false",
+        "-Dspring.devtools.livereload.enabled=false",
+        "-javaagent:" + groovyReset.singleFile.absolutePath
     ]
 }
 
-bootRun {
-    ignoreExitValue true
-    systemProperties System.properties
+dependencies {
+    // If `runHoistInline` is true, `hoistCoreVersion` will be ignored and local hoist-core will be used instead.
+    implementation "io.xh:hoist-core:$hoistCoreVersion"
+
+    // For server-side JWT validation.
+    implementation "org.bitbucket.b_c:jose4j:0.9.6"
+
+    // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
+    // MySQL for deployed instances, or more stateful local workstation setups.
+    runtimeOnly "com.h2database:h2"
+    runtimeOnly "com.mysql:mysql-connector-j:8.4.0"
+
+    // Stifle dev errors on Macs
+    developmentOnly "io.methvin:directory-watcher:0.19.1"
+    console "org.apache.grails:grails-console"
+}
+
+//------------------------------------------------------------------
+// hoist-core MCP server + CLI tools — version-locked launchers
+//------------------------------------------------------------------
+configurations {
+    hoistCoreCli
+}
+
+dependencies {
+    hoistCoreCli "io.xh:hoist-core-mcp:${hoistCoreVersion}:all@jar"
+}
+
+tasks.register('installHoistCoreTools', Sync) {
+    description = 'Install version-locked launchers for the hoist-core MCP server and CLI tools.'
+    group = 'hoist'
+    from configurations.hoistCoreCli
+    into "$buildDir/hoist-core-tools/lib"
+    doLast {
+        def jar = fileTree("$buildDir/hoist-core-tools/lib").singleFile
+        def binDir = file('bin')
+        binDir.mkdirs()
+        ['mcp', 'docs', 'symbols'].each { topic ->
+            def args = topic == 'mcp' ? '--source bundled' : "cli ${topic}"
+            new File(binDir, "hoist-core-${topic}").with {
+                text = "#!/usr/bin/env bash\nexec java -jar \"${jar.absolutePath}\" ${args} \"\$@\"\n"
+                setExecutable(true)
+            }
+            new File(binDir, "hoist-core-${topic}.bat").text =
+                "@echo off\r\njava -jar \"${jar.absolutePath}\" ${args} %*\r\n"
+        }
+    }
+}
+
+Map hoistMetaData = [
+    'info.xh.appCode': xhAppCode,
+    'info.xh.appName': xhAppName,
+    'info.xh.appPackage': xhAppPackage,
+    'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN',
+    'info.xh.hoistReactVersion': new groovy.json.JsonSlurper()
+        .parse(file('client-app/package.json'))
+        .dependencies['@xh/hoist']
+        .replaceAll(/[\^~]/, '')
+]
+
+//-------------------------
+// Trampoline  jvmArgs
+//-------------------------
+// Properties that describe the daemon's own JDK install. Forwarding them to a forked toolchain
+// JVM that runs a different JDK corrupts it - e.g. `java.home` makes the forked JVM resolve its
+// internal modules against the wrong install, surfacing as `NoClassDefFoundError` on any code
+// path that touches ICU (regex normalization, JCE init, java.text.Normalizer).
+def jdkInstallProps = [
+    'java.class.path', 'java.class.version', 'java.home', 'java.library.path',
+    'java.runtime.name', 'java.runtime.version', 'java.specification.name',
+    'java.specification.vendor', 'java.specification.version',
+    'java.vendor', 'java.vendor.url', 'java.vendor.url.bug', 'java.vendor.version',
+    'java.version', 'java.version.date',
+    'java.vm.compressedOopsMode', 'java.vm.info', 'java.vm.name',
+    'java.vm.specification.name', 'java.vm.specification.vendor', 'java.vm.specification.version',
+    'java.vm.vendor', 'java.vm.version', 'jdk.debug'
+] as Set
+
+def execTasks = tasks.matching {it.name == 'bootRun' || it.name == 'console'}
+execTasks.configureEach {
+    ignoreExitValue = true
+    // Forward daemon `-D` properties (e.g. `bootRun -Dserver.port=8081`) but skip the
+    // JDK-install descriptors above.
+    systemProperties System.properties.findAll { k, _ -> !jdkInstallProps.contains(k) }
     jvmArgs(allJvmArgs)
-    sourceResources sourceSets.main
     systemProperties hoistMetaData
     // Bring .env sourced environment variables into bootRun JVM process.
     environment env.allVariables()
@@ -131,7 +181,6 @@ idea {
     }
 }
 
-
 //--------------------------------------------------
 // Extensions to build.info (Hoist-Core requirement)
 //--------------------------------------------------
@@ -144,9 +193,14 @@ tasks.war.doFirst {
 }
 
 // Ensure that all variables defined in .env.template are set in local .env
-tasks.bootRun.doFirst {
-    def missingEnvVars = env.allVariablesOrNull().findAll {it.value == null}.collect {it.key}
-    if (missingEnvVars) {
-        throw new GradleException("Environment variables listed in .env.template not set in local .env file as required: ${missingEnvVars}")
+execTasks.all {task ->
+    task.doFirst {
+        def missingEnvVars = env.allVariablesOrNull().findAll { it.value == null }.collect { it.key }
+        if (missingEnvVars) {
+            throw new GradleException("Environment variables listed in .env.template not set in local .env file as required: ${missingEnvVars}")
+        }
     }
 }
+
+
+
