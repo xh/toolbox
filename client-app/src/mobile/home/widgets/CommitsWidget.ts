@@ -1,4 +1,4 @@
-import {div, span, vbox} from '@xh/hoist/cmp/layout';
+import {div, filler, span, vbox} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
 import {Commit} from '../../../core/svc/GitHubService';
@@ -40,7 +40,7 @@ const commitRow = hoistCmp.factory<HoistProps & {commit: Commit}>(({commit}) => 
         items: [
             // Line 1: commit subject, full width and left-aligned across every row (single line).
             div({className: 'tb-github-widget__row-title', item: messageHeadline}),
-            // Line 2: repo chip badge + author + recency, all on a single line.
+            // Line 2: repo chip badge on the left, author + recency pushed to the right.
             div({
                 className: 'tb-github-widget__row-sub',
                 items: [
@@ -48,6 +48,7 @@ const commitRow = hoistCmp.factory<HoistProps & {commit: Commit}>(({commit}) => 
                         className: `tb-github-widget__repo tb-github-widget__repo--${repo}`,
                         item: repo
                     }),
+                    filler(),
                     span(authorName),
                     span({className: 'tb-github-widget__row-dot', item: '·'}),
                     relativeTimestamp({timestamp: committedDate, short: false})
