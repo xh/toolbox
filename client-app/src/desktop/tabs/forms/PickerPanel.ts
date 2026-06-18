@@ -87,7 +87,7 @@ export const pickerPanel = hoistCmp.factory({
 //------------------------------------------------------------------
 // Toolbar demonstrating the primary use case: compact multi-select
 //------------------------------------------------------------------
-const pickerToolbar = hoistCmp.factory<PickerPanelModel>(({model}) =>
+const pickerToolbar = hoistCmp.factory<PickerPanelModel>(() =>
     toolbar(
         picker({
             bind: 'toolbarStates',
@@ -114,7 +114,7 @@ const pickerToolbar = hoistCmp.factory<PickerPanelModel>(({model}) =>
 //------------------------------------------------------------------
 // Compact bottom toolbar
 //------------------------------------------------------------------
-const compactToolbar = hoistCmp.factory<PickerPanelModel>(({model}) =>
+const compactToolbar = hoistCmp.factory<PickerPanelModel>(() =>
     toolbar({
         compact: true,
         items: [
@@ -262,7 +262,7 @@ const column1 = hoistCmp.factory<PickerPanelModel>(() =>
 //------------------------------------------------------------------
 // Column 2: Advanced features
 //------------------------------------------------------------------
-const column2 = hoistCmp.factory<PickerPanelModel>(({model}) =>
+const column2 = hoistCmp.factory<PickerPanelModel>(() =>
     vbox({
         flex: 1,
         padding: 20,

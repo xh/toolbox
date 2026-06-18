@@ -340,7 +340,7 @@ class GroupingChooserWidgetModel extends BaseWidgetModel {
 
 const groupingChooserWidget = hoistCmp.factory({
     model: creates(GroupingChooserWidgetModel),
-    render({model}) {
+    render() {
         return widget(groupingChooser({flex: 1}));
     }
 });
@@ -364,7 +364,7 @@ class FilterChooserWidgetModel extends BaseWidgetModel {
 
 const filterChooserWidget = hoistCmp.factory({
     model: creates(FilterChooserWidgetModel),
-    render({model}) {
+    render() {
         return widget(filterChooser({flex: 1}));
     }
 });
@@ -396,7 +396,7 @@ class gridWidgetModel extends BaseWidgetModel {
 
 const gridWidget = hoistCmp.factory({
     model: creates(gridWidgetModel),
-    render({model}) {
+    render() {
         return widget(sampleGrid({omitGridTools: true}));
     }
 });

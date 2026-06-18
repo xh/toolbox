@@ -8,7 +8,7 @@ import {AppModel} from '../AppModel';
 export const currentConditionsWidget = hoistCmp.factory({
     model: creates(() => CurrentConditionsModel),
 
-    render({model}) {
+    render() {
         const {currentWeather} = AppModel.instance.weatherDashModel;
         if (!currentWeather) return null;
 
