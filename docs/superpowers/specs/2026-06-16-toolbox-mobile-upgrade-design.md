@@ -55,11 +55,16 @@ so they can later graduate into the shared `@xh/hoist/mobile` kit (the brief exp
   in place; sub-item navigation closes the blade; back button replaces the hamburger on sub-pages;
   Theme toggles from the footer (app + blade re-theme, sheet stays open); Settings opens the Options
   dialog; AppMenu no longer shows a Theme item. No console errors.
-- **Example-screen pattern (move B) - foundation + 5 of 14 examples.** `pullUpSheet` +
+- **Example-screen pattern (move B) - COMPLETE, all 14 examples.** `pullUpSheet` +
   `exampleScreen` verified: peek bar, expand/collapse + scrim, Info (markdown), Options (labeled
   rows with working controls), segmented switching, and **live binding** (toggling an option updates
-  the demo behind the sheet - confirmed via Forms "Required markers"). Converted: **Grids, Tree
-  Grids, Zone Grids, DataViews, Forms.**
+  the demo behind the sheet - confirmed via Forms "Required markers" and Scrollable Panel "Add lots
+  of content"). Converted: **Grids, Tree Grids, Zone Grids, DataViews, Forms, Charts, Tree Map,
+  Buttons, Icons, Popovers, Popups, Containers, Panels, PinPad.** The two tab-container examples
+  (Containers, Panels) wrap *each* tab's content in its own `exampleScreen` and move the Onsen tab
+  switcher to the top (`switcher: {orientation: 'top'}`) so the per-tab pull-up sheet at the bottom
+  never collides with it - mirroring how the desktop wraps each tab in its own `wrapper`. PinPad
+  gained a "Reset" option in its sheet (mirroring desktop).
 - **Forms worked example - COMPLETE.** Light collapsible field-set headers (no bordered
   panel-in-panel), label-above fields with required `*` markers and 16px inputs, captioned boolean
   trio (Checkbox · Switch · Button - mobile has no radio input), and options (Read-only, Minimal
@@ -118,9 +123,6 @@ from this checkout: `yarn --cwd client-app start --env inlineHoist --env devHost
 
 ### Remaining
 
-- **Convert the other 9 example pages** to `exampleScreen` (Charts, Tree Map, Containers, Panels,
-  Buttons, Icons, Popovers, Popups, PinPad). Mechanical - follow the Grids/Forms pattern: keep
-  demo-intrinsic controls in the demo, move display options into `exampleOption` rows.
 - **In-app docs reader** - deferred by design.
 
 ### Follow-up considerations
