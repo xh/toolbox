@@ -3,7 +3,8 @@
   flex-direction: column;
   background: var(--xh-bg-alt);
   border: var(--xh-border-solid);
-  border-radius: var(--xh-border-radius-px);
+  // Softer, card-like corners - a deliberate step up from the global 4px token for the dashboard.
+  border-radius: 10px;
   overflow: hidden;
 
   //------------------------

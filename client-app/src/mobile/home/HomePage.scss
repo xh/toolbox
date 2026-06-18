@@ -18,7 +18,8 @@
   &__cards {
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-px);
+    // A touch more breathing room between cards than the base pad.
+    gap: 16px;
     padding: var(--xh-pad-px);
   }
 
