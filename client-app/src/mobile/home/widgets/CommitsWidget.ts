@@ -1,4 +1,4 @@
-import {div, hbox, span, vbox} from '@xh/hoist/cmp/layout';
+import {div, span, vbox} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
 import {Commit} from '../../../core/svc/GitHubService';
@@ -34,29 +34,23 @@ export const commitsWidget = hoistCmp.factory({
 
 const commitRow = hoistCmp.factory<HoistProps & {commit: Commit}>(({commit}) => {
     const {repo, messageHeadline, authorName, committedDate, url} = commit;
-    return hbox({
+    return vbox({
         className: 'tb-github-widget__row tb-github-widget__row--commit',
         onClick: () => XH.openWindow(url, 'gitlink'),
         items: [
-            // Leading repo chip badge, aligned to the top of the text column beside it.
-            span({
-                className: `tb-github-widget__repo tb-github-widget__repo--${repo}`,
-                item: repo
-            }),
-            // Text column: subject (single line, ellipsized) above the author + recency meta line,
-            // so the meta aligns under the subject rather than hanging out under the chip.
-            vbox({
-                className: 'tb-github-widget__commit-body',
+            // Line 1: commit subject, full width and left-aligned across every row (single line).
+            div({className: 'tb-github-widget__row-title', item: messageHeadline}),
+            // Line 2: repo chip badge + author + recency, all on a single line.
+            div({
+                className: 'tb-github-widget__row-sub',
                 items: [
-                    div({className: 'tb-github-widget__row-title', item: messageHeadline}),
-                    div({
-                        className: 'tb-github-widget__row-sub',
-                        items: [
-                            span(authorName),
-                            span({className: 'tb-github-widget__row-dot', item: '·'}),
-                            relativeTimestamp({timestamp: committedDate, short: false})
-                        ]
-                    })
+                    span({
+                        className: `tb-github-widget__repo tb-github-widget__repo--${repo}`,
+                        item: repo
+                    }),
+                    span(authorName),
+                    span({className: 'tb-github-widget__row-dot', item: '·'}),
+                    relativeTimestamp({timestamp: committedDate, short: false})
                 ]
             })
         ]
