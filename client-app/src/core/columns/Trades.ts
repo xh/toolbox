@@ -1,4 +1,4 @@
-import {ExcelFormat, localDateCol} from '@xh/hoist/cmp/grid';
+import {ExcelFormat, localDateCol, tags} from '@xh/hoist/cmp/grid';
 import {dateRenderer, millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
@@ -6,7 +6,8 @@ export const profitLossCol: ColumnSpec = {
     field: {
         name: 'profit_loss',
         type: 'number',
-        displayName: 'P&L'
+        displayName: 'P&L',
+        description: 'Annual Profit & Loss YTD (EBITDA)'
     },
     width: 130,
     align: 'right',
@@ -17,8 +18,7 @@ export const profitLossCol: ColumnSpec = {
         ledger: true,
         colorSpec: true
     }),
-    excelFormat: ExcelFormat.LEDGER_COLOR,
-    chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
+    excelFormat: ExcelFormat.LEDGER_COLOR
 };
 
 export const winLoseCol: ColumnSpec = {
@@ -30,7 +30,8 @@ export const tradeVolumeCol: ColumnSpec = {
     field: {
         name: 'trade_volume',
         type: 'number',
-        displayName: 'Volume'
+        displayName: 'Volume',
+        description: 'Daily Volume of Shares (Estimated, avg. YTD)'
     },
     width: 110,
     align: 'right',
@@ -42,8 +43,7 @@ export const tradeVolumeCol: ColumnSpec = {
     cellClassRules: {
         'tb-sample-grid__high-volume-cell': ({value}) => value >= 9000000000
     },
-    excelFormat: ExcelFormat.NUM_DELIMITED,
-    chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
+    excelFormat: ExcelFormat.NUM_DELIMITED
 };
 
 export const tradeDateCol: ColumnSpec = {
@@ -51,9 +51,20 @@ export const tradeDateCol: ColumnSpec = {
     field: {
         name: 'trade_date',
         type: 'localDate',
-        displayName: 'Date'
+        displayName: 'Date',
+        description: 'Date of last trade (including related derivatives)'
+    }
+};
+
+export const tagsCol: ColumnSpec = {
+    ...tags,
+    field: {
+        name: 'tags',
+        type: 'tags',
+        displayName: 'Tags'
     },
-    chooserDescription: 'Date of last trade (including related derivatives)'
+    width: 210,
+    chooserDescription: 'Tags associated with this trade'
 };
 
 export const dayOfWeekCol: ColumnSpec = {

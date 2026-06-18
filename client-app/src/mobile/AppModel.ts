@@ -1,10 +1,12 @@
-import {loadAllAsync, managed, XH} from '@xh/hoist/core';
+import {InitContext, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
     themeAppOption
 } from '@xh/hoist/mobile/cmp/appOption';
+import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
+import {runInAction} from '@xh/hoist/mobx';
 import {BaseAppModel} from '../BaseAppModel';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {buttonPage} from './buttons/ButtonPage';
@@ -138,12 +140,29 @@ export class AppModel extends BaseAppModel {
     }
 
     override getAppOptions() {
-        return [themeAppOption(), sizingModeAppOption(), autoRefreshAppOption()];
+        return [
+            themeAppOption(),
+            sizingModeAppOption(),
+            autoRefreshAppOption(),
+            {
+                name: 'appMenuButtonWithUserProfile',
+                valueSetter: v => {
+                    runInAction(() => (this.renderWithUserProfile = v));
+                    XH.setPref('appMenuButtonWithUserProfile', v);
+                },
+                valueGetter: () => XH.getPref('appMenuButtonWithUserProfile'),
+                formField: {
+                    label: 'Profile pic app menu',
+                    info: 'Render the App Menu button using your profile pic',
+                    item: switchInput()
+                }
+            }
+        ];
     }
 
-    override async initAsync() {
-        await super.initAsync();
-        await XH.installServicesAsync(PortfolioService);
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
+        await XH.installServicesAsync([PortfolioService], ctx);
     }
 
     override async doLoadAsync(loadSpec) {

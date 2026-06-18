@@ -8,7 +8,7 @@ import {AuthModel} from '../core/AuthModel';
 
 XH.renderApp({
     clientAppCode: 'contact',
-    clientAppName: 'XH Contact',
+    clientAppName: 'XH Contacts',
     componentClass: AppComponent,
     modelClass: AppModel,
     containerClass: AppContainer,

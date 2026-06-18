@@ -116,14 +116,14 @@ export class OrdersModel extends HoistModel {
         }
 
         try {
-            const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec}),
-                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync({
-                    symbols: uniq(map(orders, 'symbol')),
+            const orders = await XH.portfolioService.getOrdersAsync(positionId, loadSpec),
+                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync(
+                    uniq(map(orders, 'symbol')),
                     loadSpec
-                });
+                );
             if (loadSpec.isStale) return;
 
-            dashViewModel.title = `Orders (${orders.length})`;
+            dashViewModel.titleDetails = `(${orders.length})`;
             orders.forEach(order => (order.closingPrices = sparklineSeries[order.symbol]));
             gridModel.loadData(orders);
 

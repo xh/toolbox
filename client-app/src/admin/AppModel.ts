@@ -1,9 +1,8 @@
 import {AppModel as HoistAdminAppModel} from '@xh/hoist/admin/AppModel';
 import {TabConfig} from '@xh/hoist/cmp/tab';
-import {XH} from '@xh/hoist/core';
+import {InitContext, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {phaseRestPanel, projectRestPanel} from './roadmap';
 import {
     asyncLoopPanel,
     storeColumnFilterPanel,
@@ -23,10 +22,9 @@ import {
 export class AppModel extends HoistAdminAppModel {
     static instance: AppModel;
 
-    override async initAsync() {
-        await super.initAsync();
-        await XH.installServicesAsync(PortfolioService);
-        XH.fetchService.autoGenCorrelationIds = true;
+    override async initAsync(ctx: InitContext) {
+        await super.initAsync(ctx);
+        await XH.installServicesAsync([PortfolioService], ctx);
     }
 
     //------------------------
@@ -35,14 +33,6 @@ export class AppModel extends HoistAdminAppModel {
     override getTabRoutes() {
         return [
             ...super.getTabRoutes(),
-            {
-                name: 'roadmap',
-                path: '/roadmap',
-                children: [
-                    {name: 'projects', path: '/projects'},
-                    {name: 'phases', path: '/phases'}
-                ]
-            },
             {
                 name: 'tests',
                 path: '/tests',
@@ -66,25 +56,14 @@ export class AppModel extends HoistAdminAppModel {
     }
 
     override createTabs() {
+        const switcher = {mode: 'static'};
         return [
             ...super.createTabs(),
-            {
-                id: 'roadmap',
-                title: 'Roadmap',
-                icon: Icon.mapSigns(),
-                content: {
-                    switcher: {orientation: 'left'},
-                    tabs: [
-                        {id: 'projects', icon: Icon.checkCircle(), content: projectRestPanel},
-                        {id: 'phases', icon: Icon.calendar(), content: phaseRestPanel}
-                    ]
-                }
-            },
             {
                 id: 'tests',
                 icon: Icon.stopwatch(),
                 content: {
-                    switcher: {orientation: 'left'},
+                    switcher,
                     tabs: [
                         {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
                         {id: 'cube', title: 'Cube Data', content: CubeTestPanel},

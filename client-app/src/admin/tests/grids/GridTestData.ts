@@ -1,6 +1,6 @@
 import {random, reduce, sample, times, isEmpty} from 'lodash';
 import {PlainObject} from '@xh/hoist/core';
-import {logDebug} from '@xh/hoist/utils/log';
+import {logDebug} from '@xh/hoist/utils/js';
 
 export class GridTestData {
     rows: PlainObject[] = [];

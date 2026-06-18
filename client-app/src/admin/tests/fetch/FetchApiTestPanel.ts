@@ -53,7 +53,7 @@ export const FetchApiTestPanel = hoistCmp({
                     })
                 }),
                 mask({
-                    bind: model.loadModel,
+                    bind: model.loadObserver,
                     spinner: true
                 })
             ]

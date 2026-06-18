@@ -9,8 +9,8 @@ import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, observable, makeObservable, runInAction, computed} from '@xh/hoist/mobx';
 import {forEachAsync, Timer, whileAsync} from '@xh/hoist/utils/async';
-import {withDebug} from '@xh/hoist/utils/log';
-import {sampleGrid} from '../../../desktop/common/grid/SampleGrid';
+import {withDebug} from '@xh/hoist/utils/js';
+import {sampleGrid} from '../../../desktop/common';
 import {times} from 'lodash';
 import {wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -32,8 +32,8 @@ export const asyncLoopPanel = hoistCmp.factory({
 });
 
 const tbar = hoistCmp.factory<AsyncLoopPanelModel>(({model}) => {
-    const {loadModel, lastRunDuration} = model,
-        {isPending} = loadModel;
+    const {loadObserver, lastRunDuration} = model,
+        {isPending} = loadObserver;
 
     return toolbar({
         items: [

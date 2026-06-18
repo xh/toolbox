@@ -73,9 +73,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
 
         return new Cube({
             idSpec: 'id',
-            fieldDefaults: {
-                disableXssProtection: true
-            },
             fields: [
                 {name: 'symbol', isDimension: true},
                 {name: 'sector', isDimension: true},
@@ -140,10 +137,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
             treeMode: true,
             store: {
                 freezeData: true,
-                idEncodesTreePath: true,
-                fieldDefaults: {
-                    disableXssProtection: true
-                }
+                idEncodesTreePath: true
             },
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'cubeLabel',

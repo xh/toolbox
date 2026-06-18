@@ -1,14 +1,15 @@
 package io.xh.toolbox.files
 
-import io.xh.hoist.security.Access
+import io.xh.hoist.security.AccessRequiresRole
 import io.xh.toolbox.BaseController
 
-@Access(['HOIST_ADMIN_READER'])
+
+@AccessRequiresRole('HOIST_ADMIN_READER')
 class FileManagerController extends BaseController {
 
     def fileManagerService
 
-    @Access(['HOIST_ADMIN'])
+    @AccessRequiresRole('HOIST_ADMIN')
     def upload() {
         fileManagerService.saveFromRequest(request)
         renderJSON(success: true)
@@ -34,13 +35,13 @@ class FileManagerController extends BaseController {
         )
     }
 
-    @Access(['HOIST_ADMIN'])
+    @AccessRequiresRole('HOIST_ADMIN')
     def delete(String filename) {
         def success = fileManagerService.delete(filename)
         renderJSON(success: success)
     }
 
-    @Access(['HOIST_ADMIN'])
+    @AccessRequiresRole('HOIST_ADMIN')
     def deleteAll() {
         def ret = fileManagerService.deleteAll()
         renderJSON(ret)

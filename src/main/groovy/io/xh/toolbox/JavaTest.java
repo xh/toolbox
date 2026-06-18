@@ -27,7 +27,7 @@ public class JavaTest {
                 NewsService.class
         );
 
-        log.info("I can confirm that this is a hospitable environment for mixed-java/groovy code");
-        log.info("I am able to reference stubs for " + classes.size() + " groovy test classes");
+        log.info("Verified compilation of mixed Java/Groovy sources");
+        log.info("Resolved stubs for {} enumerated test Groovy classes from Java", classes.size());
     }
 }

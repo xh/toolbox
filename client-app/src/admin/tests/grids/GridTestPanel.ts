@@ -23,8 +23,11 @@ export const GridTestPanel = hoistCmp({
                     mask: 'onLoad',
                     item: grid({
                         agOptions: {
-                            isRowSelectable: ({data: record}) =>
-                                !model.disableSelect || record.get('day') > 0
+                            rowSelection: {
+                                mode: 'singleRow',
+                                isRowSelectable: ({data: record}) =>
+                                    !model.disableSelect || record.get('day') > 0
+                            }
                         }
                     })
                 }),
@@ -132,8 +135,8 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
         }),
         toolbarSep(),
         switchInput({
-            bind: 'disableXssProtection',
-            label: 'Disable XSS',
+            bind: 'enableXssProtection',
+            label: 'Enable XSS',
             labelSide: 'left'
         }),
         toolbarSep(),
@@ -194,6 +197,12 @@ const bbar2 = hoistCmp.factory<GridTestModel>(({model}) =>
         switchInput({
             bind: 'includeCollapsedChildren',
             label: 'Include Collapsed Children',
+            labelSide: 'left'
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'includeHiddenColumns',
+            label: 'Include Hidden Cols',
             labelSide: 'left'
         })
     )
