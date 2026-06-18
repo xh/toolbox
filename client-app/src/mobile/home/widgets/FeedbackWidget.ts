@@ -31,7 +31,7 @@ const ratingPrompt = hoistCmp.factory<FeedbackWidgetModel>({
             items: [
                 div({
                     className: 'tb-feedback__sub',
-                    item: 'One tap - painless, and genuinely read by the team.'
+                    item: 'One tap - painless, and read by the team.'
                 }),
                 hbox({
                     className: 'tb-feedback__ratings',
@@ -104,7 +104,7 @@ const thanks = hoistCmp.factory<FeedbackWidgetModel>({
             className: 'tb-feedback__inner tb-feedback__inner--thanks',
             items: [
                 Icon.checkCircle({size: '2x', intent: 'success'}),
-                div({className: 'tb-feedback__question', item: 'Thanks for your feedback!'}),
+                div({className: 'tb-feedback__question', item: 'Thank you for your feedback.'}),
                 button({text: 'Update your rating', minimal: true, onClick: () => model.reset()})
             ]
         });
