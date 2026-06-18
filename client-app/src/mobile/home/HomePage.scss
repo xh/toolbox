@@ -20,7 +20,12 @@
     flex-direction: column;
     // A touch more breathing room between cards than the base pad.
     gap: 16px;
-    padding: var(--xh-pad-px);
+    padding: 8px;
+
+    // Give widget buttons more vertical presence and rounder corners than the compact mobile
+    // default (28px / 4px), via button CSS vars so every widget's buttons stay consistent.
+    --xh-button-height: 40px;
+    --xh-button-border-radius-px: 8px;
   }
 
   //------------------------
