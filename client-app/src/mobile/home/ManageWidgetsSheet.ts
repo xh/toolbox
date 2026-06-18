@@ -9,7 +9,7 @@ import {isEmpty} from 'lodash';
 import {ReactElement} from 'react';
 import {pullUpSheet} from '../cmp/pullUpSheet/PullUpSheet';
 import {HomeModel} from './HomeModel';
-import {WidgetSpec} from './widgets/WidgetCatalog';
+import {WidgetSpec, widgetSpec} from './widgets/WidgetCatalog';
 import './ManageWidgetsSheet.scss';
 
 /**
@@ -85,6 +85,14 @@ function group(
             div({className: 'tb-manage-widgets__group-label', item: label}),
             droppable({
                 droppableId,
+                // Render the drag clone into <body>. The sheet's panel uses a CSS transform (for its
+                // slide animation), which makes it the containing block for the clone's
+                // position:fixed - so without this the floating row is offset well below the finger.
+                // renderClone + getContainerForClone portal the clone to <body>, escaping that
+                // transformed ancestor and keeping it under the pointer.
+                getContainerForClone: () => document.body,
+                renderClone: (dndProps, dndState, rubric) =>
+                    rowContent(model, widgetSpec(rubric.draggableId), onHome, dndProps, dndState),
                 children: dndProps =>
                     div({
                         className: 'tb-manage-widgets__list',
@@ -109,30 +117,41 @@ function widgetRow(model: HomeModel, w: WidgetSpec, idx: number, onHome: boolean
         key: w.id,
         draggableId: w.id,
         index: idx,
-        children: (dndProps, dndState) =>
+        children: (dndProps, dndState) => rowContent(model, w, onHome, dndProps, dndState)
+    });
+}
+
+// Shared row markup, used both for the in-list item and the floating drag clone (see the droppable's
+// renderClone above).
+function rowContent(
+    model: HomeModel,
+    w: WidgetSpec,
+    onHome: boolean,
+    dndProps,
+    dndState
+): ReactElement {
+    return div({
+        className: classNames(
+            'tb-manage-widgets__row',
+            dndState.isDragging && 'tb-manage-widgets__row--dragging'
+        ),
+        ref: dndProps.innerRef,
+        ...dndProps.draggableProps,
+        items: [
+            // Drag handle owns the drag gesture, so the toggle stays independently tappable.
             div({
-                className: classNames(
-                    'tb-manage-widgets__row',
-                    dndState.isDragging && 'tb-manage-widgets__row--dragging'
-                ),
-                ref: dndProps.innerRef,
-                ...dndProps.draggableProps,
-                items: [
-                    // Drag handle owns the drag gesture, so the toggle stays independently tappable.
-                    div({
-                        className: 'tb-manage-widgets__grip',
-                        ...dndProps.dragHandleProps,
-                        item: Icon.grip({prefix: 'fas'})
-                    }),
-                    div({className: 'tb-manage-widgets__row-icon', item: w.icon}),
-                    span({className: 'tb-manage-widgets__row-title', item: w.title}),
-                    filler(),
-                    switchInput({
-                        // Mobile SwitchInputProps mistypes `value` as string; it is a boolean control.
-                        value: onHome as any,
-                        onChange: v => model.setOnHome(w.id, v)
-                    })
-                ]
+                className: 'tb-manage-widgets__grip',
+                ...dndProps.dragHandleProps,
+                item: Icon.grip({prefix: 'fas'})
+            }),
+            div({className: 'tb-manage-widgets__row-icon', item: w.icon}),
+            span({className: 'tb-manage-widgets__row-title', item: w.title}),
+            filler(),
+            switchInput({
+                // Mobile SwitchInputProps mistypes `value` as string; it is a boolean control.
+                value: onHome as any,
+                onChange: v => model.setOnHome(w.id, v)
             })
+        ]
     });
 }
