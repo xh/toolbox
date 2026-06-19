@@ -1,59 +1,142 @@
-import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
-import {lengthIs, required} from '@xh/hoist/data';
+import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
+import {dateIs, lengthIs, numberIs, required, validEmail} from '@xh/hoist/data';
+import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {movies} from '../../core/data';
+import {LocalDate} from '@xh/hoist/utils/datetime';
+import {filter} from 'lodash';
 
 export class FormPageModel extends HoistModel {
-    @bindable minimal: boolean;
-    @bindable readonly: boolean;
+    // Display options, bound to the example sheet.
+    @bindable minimal: boolean = false;
     @bindable commitOnChange: boolean = false;
     @bindable requiredMarkers: boolean = true;
     @bindable density: 'comfortable' | 'compact' = 'comfortable';
-    readonly movies: PlainObject[] = movies;
 
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @managed
+    validateTask = TaskObserver.trackLast();
+
+    readonly regionOptions = ['California', 'London', 'Montreal', 'New York'];
+    readonly reasonOptions = ['New Job', 'Retirement', 'Terminated', 'Other'];
 
     @managed
     formModel: FormModel = new FormModel({
         fields: [
-            {name: 'name', rules: [required, lengthIs({min: 8})]},
-            {name: 'customer', rules: [required]},
-            {name: 'movie', rules: [required]},
+            {name: 'firstName', rules: [required, lengthIs({max: 20})]},
+            {name: 'lastName', rules: [required, lengthIs({max: 20})]},
+            {name: 'fullName', readonly: true},
             {
-                name: 'salary',
-                rules: [
-                    ({value}) =>
-                        value < 10_000 ? {severity: 'warning', message: 'Salary seems low.'} : null
-                ]
+                name: 'email',
+                initialValue: 'support@xh.io',
+                rules: [required, validEmail]
             },
-            {name: 'percentage'},
             {
-                name: 'date',
+                name: 'region',
                 rules: [
                     required,
                     ({value}) =>
-                        value && !value.isWeekday
-                            ? {severity: 'info', message: 'Selected date falls on a weekend.'}
+                        ['London', 'Montreal'].includes(value)
+                            ? {
+                                  severity: 'warning',
+                                  message: 'Region is outside primary operating areas.'
+                              }
                             : null
                 ]
             },
-            {name: 'enabled'},
-            {name: 'buttonGroup', initialValue: 'button2'},
-            {name: 'notes'},
-            {name: 'searchQuery', displayName: 'Search'}
+            {
+                name: 'startDate',
+                displayName: 'Hire Date',
+                initialValue: LocalDate.today(),
+                rules: [required, dateIs({max: 'today'})]
+            },
+            {
+                name: 'endDate',
+                rules: [
+                    {
+                        when: ({value}, {startDate}) => startDate && value,
+                        check: ({value, displayName}, {startDate}) =>
+                            value < startDate ? `${displayName} must be after the hire date.` : null
+                    }
+                ]
+            },
+            {name: 'reasonForLeaving'},
+            {name: 'isManager', initialValue: false, rules: [required]},
+            {
+                name: 'yearsExperience',
+                rules: [
+                    numberIs({min: 0, max: 100}),
+                    ({value}) =>
+                        value > 50
+                            ? {severity: 'info', message: 'You have extensive experience!'}
+                            : null,
+                    {
+                        when: (f, {isManager}) => isManager,
+                        check: [
+                            required,
+                            ({value}) => {
+                                if (value < 10) {
+                                    return {
+                                        severity: 'error',
+                                        message: '10+ years required for managers.'
+                                    };
+                                }
+                                if (value < 15) {
+                                    return {
+                                        severity: 'warning',
+                                        message: '15+ years recommended for managers.'
+                                    };
+                                }
+                                return null;
+                            }
+                        ]
+                    }
+                ]
+            },
+            {name: 'notes', rules: [required, lengthIs({min: 10, max: 300})]}
         ]
     });
 
-    async queryCustomersAsync(query) {
-        const results = await XH.fetchJson({url: 'customer', params: {query}});
-        return results.map(it => {
-            const value = it.id,
-                label = it.company;
-            return {value, label};
-        });
+    constructor() {
+        super();
+        makeObservable(this);
+
+        const {formModel} = this;
+        this.addReaction(
+            {
+                track: () => [formModel.values.firstName, formModel.values.lastName],
+                run: ([firstName, lastName]) => {
+                    formModel.setValues({
+                        fullName: `${firstName ?? '[???]'} ${lastName ?? '[???]'}`
+                    });
+                },
+                fireImmediately: true
+            },
+            {
+                track: () => formModel.values.endDate,
+                run: endDate => {
+                    const reasonField = formModel.fields.reasonForLeaving;
+                    reasonField.setDisabled(!endDate);
+                    if (!endDate) reasonField.setValue(null);
+                },
+                fireImmediately: true
+            }
+        );
+    }
+
+    async submitAsync() {
+        const {formModel} = this,
+            isValid = await formModel.validateAsync().linkTo(this.validateTask);
+
+        if (isValid) {
+            XH.alert({
+                title: 'Submitted',
+                icon: Icon.check(),
+                message: `Thanks, ${formModel.values.fullName}. Your candidate form was submitted.`
+            });
+            formModel.reset();
+        } else {
+            const errCount = filter(formModel.fields, f => f.isNotValid).length;
+            XH.dangerToast(`Cannot submit - ${errCount} field(s) failed validation.`);
+        }
     }
 }

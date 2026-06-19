@@ -35,45 +35,6 @@
     }
   }
 
-  //------------------------
-  // Boolean inputs - one field, three Hoist controls, captioned so the teaching point reads.
-  //------------------------
-  &__booleans {
-    margin: 0 0 var(--xh-pad-double-px);
-
-    .xh-form-field {
-      margin: 0 0 var(--xh-pad-px);
-    }
-  }
-
-  &__booleans-title {
-    font-size: var(--xh-font-size-px);
-    font-weight: 600;
-    color: var(--xh-text-color);
-  }
-
-  &__booleans-sub {
-    font-size: var(--xh-font-size-small-px);
-    color: var(--xh-text-color-muted);
-    margin-bottom: var(--xh-pad-px);
-  }
-
-  //------------------------
-  // Live result readout
-  //------------------------
-  &__result {
-    margin-bottom: var(--xh-pad-px);
-
-    .xh-input-label {
-      color: var(--xh-text-color-muted);
-      margin-bottom: var(--xh-pad-half-px);
-    }
-
-    div:not(.xh-input-label) {
-      margin-left: var(--xh-pad-px);
-    }
-  }
-
   // Compact density tightens the vertical rhythm.
   &--compact {
     .xh-form-field {
