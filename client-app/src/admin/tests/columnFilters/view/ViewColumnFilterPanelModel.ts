@@ -37,7 +37,8 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         this.addReaction({
             track: () => this.query.filter as FieldFilter | CompoundFilter,
             run: filter => {
-                this.filterJson = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
+                // Readonly jsonInput auto-formats for display - no need to pretty-print here.
+                this.filterJson = JSON.stringify(filter?.toJSON() ?? null);
             }
         });
 

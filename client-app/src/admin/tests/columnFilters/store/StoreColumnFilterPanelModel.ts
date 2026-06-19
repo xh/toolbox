@@ -22,7 +22,8 @@ export class StoreColumnFilterPanelModel extends HoistModel {
         this.addReaction({
             track: () => this.gridModel.filterModel.filter as FieldFilter | CompoundFilter,
             run: filter => {
-                this.filterJson = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
+                // Readonly jsonInput auto-formats for display - no need to pretty-print here.
+                this.filterJson = JSON.stringify(filter?.toJSON() ?? null);
             }
         });
     }
