@@ -12,6 +12,7 @@ import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {HomeModel} from './home/HomeModel';
 import {NavBladeModel} from './cmp/navBlade/NavBladeModel';
+import {badgePage} from './badge/BadgePage';
 import {buttonPage} from './buttons/ButtonPage';
 import {chartPage} from './charts/ChartPage';
 import {treeMapPage} from './treemap/TreeMapPage';
@@ -26,10 +27,12 @@ import {zoneGridPage} from './grids/zone/ZoneGridPage';
 import {homePage} from './home/HomePage';
 import {iconPage} from './icons/IconPage';
 import {inputsPage} from './inputs/InputsPage';
+import {maskPage} from './mask/MaskPage';
 import {panelsPage} from './panels/PanelsPage';
 import {pinPadPage} from './pinPad/PinPadPage';
 import {popoverPage} from './popover/PopoverPage';
 import {popupsPage} from './popups/PopupsPage';
+import {tabsPage} from './tabs/TabsPage';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
@@ -57,10 +60,13 @@ export class AppModel extends BaseAppModel {
             {id: 'treeMap', content: treeMapPage},
             {id: 'containers', content: containersPage},
             {id: 'panels', content: panelsPage},
+            {id: 'tabs', content: tabsPage},
             {id: 'popovers', content: popoverPage},
             {id: 'popups', content: popupsPage},
+            {id: 'badges', content: badgePage},
             {id: 'buttons', content: buttonPage},
             {id: 'icons', content: iconPage},
+            {id: 'mask', content: maskPage},
             {id: 'pinPad', content: pinPadPage}
         ]
     });
@@ -130,6 +136,10 @@ export class AppModel extends BaseAppModel {
                         path: '/panels'
                     },
                     {
+                        name: 'tabs',
+                        path: '/tabs'
+                    },
+                    {
                         name: 'popovers',
                         path: '/popovers'
                     },
@@ -138,12 +148,20 @@ export class AppModel extends BaseAppModel {
                         path: '/popups'
                     },
                     {
+                        name: 'badges',
+                        path: '/badges'
+                    },
+                    {
                         name: 'buttons',
                         path: '/buttons'
                     },
                     {
                         name: 'icons',
                         path: '/icons'
+                    },
+                    {
+                        name: 'mask',
+                        path: '/mask'
                     },
                     {
                         name: 'pinPad',

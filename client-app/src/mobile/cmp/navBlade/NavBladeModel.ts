@@ -75,7 +75,8 @@ export class NavBladeModel extends HoistModel {
             icon: Icon.layout(),
             items: [
                 {text: 'Containers', route: 'default.containers'},
-                {text: 'Panels', route: 'default.panels'}
+                {text: 'Panels', route: 'default.panels'},
+                {text: 'Tabs', route: 'default.tabs'}
             ]
         },
         {
@@ -83,8 +84,10 @@ export class NavBladeModel extends HoistModel {
             text: 'Components',
             icon: Icon.cube(),
             items: [
+                {text: 'Badges', route: 'default.badges'},
                 {text: 'Buttons', route: 'default.buttons'},
                 {text: 'Icons', route: 'default.icons'},
+                {text: 'Mask', route: 'default.mask'},
                 {text: 'PinPad', route: 'default.pinPad'},
                 {text: 'Popovers', route: 'default.popovers'},
                 {text: 'Popups', route: 'default.popups'}
