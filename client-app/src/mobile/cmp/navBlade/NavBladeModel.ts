@@ -66,7 +66,7 @@ export class NavBladeModel extends HoistModel {
             icon: Icon.edit(),
             items: [
                 {text: 'Forms', route: 'default.form'},
-                {text: 'PinPad', route: 'default.pinPad'}
+                {text: 'Inputs', route: 'default.inputs'}
             ]
         },
         {
@@ -85,6 +85,7 @@ export class NavBladeModel extends HoistModel {
             items: [
                 {text: 'Buttons', route: 'default.buttons'},
                 {text: 'Icons', route: 'default.icons'},
+                {text: 'PinPad', route: 'default.pinPad'},
                 {text: 'Popovers', route: 'default.popovers'},
                 {text: 'Popups', route: 'default.popups'}
             ]

@@ -25,6 +25,7 @@ import {treeGridPage} from './grids/tree/TreeGridPage';
 import {zoneGridPage} from './grids/zone/ZoneGridPage';
 import {homePage} from './home/HomePage';
 import {iconPage} from './icons/IconPage';
+import {inputsPage} from './inputs/InputsPage';
 import {panelsPage} from './panels/PanelsPage';
 import {pinPadPage} from './pinPad/PinPadPage';
 import {popoverPage} from './popover/PopoverPage';
@@ -51,6 +52,7 @@ export class AppModel extends BaseAppModel {
             {id: 'zoneGrid', content: zoneGridPage},
             {id: 'dataview', content: dataViewPage},
             {id: 'form', content: formPage},
+            {id: 'inputs', content: inputsPage},
             {id: 'charts', content: chartPage},
             {id: 'treeMap', content: treeMapPage},
             {id: 'containers', content: containersPage},
@@ -106,6 +108,10 @@ export class AppModel extends BaseAppModel {
                     {
                         name: 'form',
                         path: '/form'
+                    },
+                    {
+                        name: 'inputs',
+                        path: '/inputs'
                     },
                     {
                         name: 'charts',
