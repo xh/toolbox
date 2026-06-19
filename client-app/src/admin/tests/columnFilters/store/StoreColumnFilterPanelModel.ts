@@ -3,13 +3,17 @@ import {boolCheckCol, ExcelFormat, GridModel, localDateCol} from '@xh/hoist/cmp/
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {CompoundFilter, FieldFilter} from '@xh/hoist/data';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {computed, makeObservable} from '@xh/hoist/mobx';
 
 export class StoreColumnFilterPanelModel extends HoistModel {
-    @bindable.ref filterJson: FieldFilter | CompoundFilter = null;
-
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;
+
+    /** The active filter, rendered as JSON by a readonly jsonInput. */
+    @computed
+    get filterJson(): FieldFilter | CompoundFilter {
+        return this.gridModel.filterModel.filter as FieldFilter | CompoundFilter;
+    }
 
     constructor() {
         super();
@@ -17,15 +21,6 @@ export class StoreColumnFilterPanelModel extends HoistModel {
 
         this.gridModel = this.createGridModel();
         this.filterChooserModel = this.createFilterChooserModel();
-
-        // Update filter JSON
-        this.addReaction({
-            track: () => this.gridModel.filterModel.filter as FieldFilter | CompoundFilter,
-            run: filter => {
-                // jsonInput renders this readonly - JSON.stringify calls filter.toJSON() for us.
-                this.filterJson = filter;
-            }
-        });
     }
 
     override async doLoadAsync(loadSpec) {
