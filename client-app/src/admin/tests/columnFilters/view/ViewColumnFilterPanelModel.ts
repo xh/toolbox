@@ -1,13 +1,13 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {ColumnSpec, GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {CompoundFilter, Cube, FieldFilter, View} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {comparer, makeObservable, observable} from '@xh/hoist/mobx';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
-    @observable.ref filterJson: string = JSON.stringify(null);
+    @observable.ref filterJson: PlainObject = null;
 
     @managed cube: Cube;
     @managed view: View;
@@ -37,8 +37,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         this.addReaction({
             track: () => this.query.filter as FieldFilter | CompoundFilter,
             run: filter => {
-                // Readonly jsonInput auto-formats for display - no need to pretty-print here.
-                this.filterJson = JSON.stringify(filter?.toJSON() ?? null);
+                this.filterJson = filter?.toJSON();
             }
         });
 
