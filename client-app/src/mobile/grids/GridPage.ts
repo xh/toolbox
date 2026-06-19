@@ -44,8 +44,16 @@ export const gridPage = hoistCmp.factory({
                     control: switchInput({model: gridModel, bind: 'rowBorders'})
                 }),
                 exampleOption({
+                    label: 'Cell borders',
+                    control: switchInput({model: gridModel, bind: 'cellBorders'})
+                }),
+                exampleOption({
                     label: 'Stripe rows',
                     control: switchInput({model: gridModel, bind: 'stripeRows'})
+                }),
+                exampleOption({
+                    label: 'Hide headers',
+                    control: switchInput({model: gridModel, bind: 'hideHeaders'})
                 })
             ],
             links: [

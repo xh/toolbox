@@ -1,6 +1,11 @@
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {SplitTreeMapModel, TreeMapModel} from '@xh/hoist/cmp/treemap';
+import {
+    SplitTreeMapModel,
+    TreeMapAlgorithm,
+    TreeMapColorMode,
+    TreeMapModel
+} from '@xh/hoist/cmp/treemap';
 import {Store} from '@xh/hoist/data';
 import {fmtMillions} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -8,6 +13,10 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 export class TreeMapPageModel extends HoistModel {
     @bindable
     type: 'treeMap' | 'splitTreeMap' = 'treeMap';
+
+    // Display options applied live to both the simple and split maps.
+    @bindable colorMode: TreeMapColorMode = 'linear';
+    @bindable algorithm: TreeMapAlgorithm = 'squarified';
 
     @managed
     store = new Store({
@@ -58,6 +67,16 @@ export class TreeMapPageModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
+        this.addReaction({
+            track: () => [this.colorMode, this.algorithm] as const,
+            run: ([colorMode, algorithm]) => {
+                this.treeMapModel.setBindable('colorMode', colorMode);
+                this.treeMapModel.setBindable('algorithm', algorithm);
+                this.splitTreeMapModel.setColorMode(colorMode);
+                this.splitTreeMapModel.setAlgorithm(algorithm);
+            },
+            fireImmediately: true
+        });
     }
 
     override async doLoadAsync() {

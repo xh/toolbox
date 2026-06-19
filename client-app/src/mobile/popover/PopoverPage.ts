@@ -1,13 +1,16 @@
 import {hoistCmp, HoistModel, creates} from '@xh/hoist/core';
-import {observable, makeObservable} from '@xh/hoist/mobx';
+import {bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {div, filler, h1, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {popover} from '@xh/hoist/mobile/cmp/popover';
 import {button} from '@xh/hoist/mobile/cmp/button';
+import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {Icon} from '@xh/hoist/icon';
-import {exampleScreen} from '../cmp/example/ExampleScreen';
+import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 
 import './PopoverPage.scss';
+
+type PopoverPosition = 'auto' | 'top' | 'bottom' | 'left' | 'right';
 
 export const popoverPage = hoistCmp.factory({
     model: creates(() => PopoverPageModel),
@@ -17,7 +20,32 @@ export const popoverPage = hoistCmp.factory({
             icon: Icon.openExternal(),
             description: [
                 '`Popover` displays floating content anchored to a target element, with optional',
-                'backdrop and controlled open state. Tap the buttons below to see each mode.'
+                'backdrop and controlled open state. Adjust the options here to reposition the first',
+                'popover, then tap a button below to open it.'
+            ],
+            options: [
+                exampleOption({
+                    label: 'Position',
+                    control: select({
+                        width: 130,
+                        model,
+                        bind: 'position',
+                        enableFilter: false,
+                        hideSelectedOptionCheck: true,
+                        options: [
+                            {value: 'auto', label: 'Auto'},
+                            {value: 'top', label: 'Top'},
+                            {value: 'bottom', label: 'Bottom'},
+                            {value: 'left', label: 'Left'},
+                            {value: 'right', label: 'Right'}
+                        ]
+                    })
+                }),
+                exampleOption({
+                    label: 'Backdrop',
+                    control: switchInput({model, bind: 'backdrop'}),
+                    info: 'Dim the rest of the screen behind the popover.'
+                })
             ],
             links: [
                 {url: '$TB/client-app/src/mobile/popover/PopoverPage.ts', notes: 'This example.'},
@@ -28,19 +56,11 @@ export const popoverPage = hoistCmp.factory({
                 items: [
                     filler(),
                     popoverCard({
-                        text: 'Show Popover below',
-                        popoverProps: {
-                            position: 'bottom'
-                        }
+                        text: 'Configurable Popover',
+                        popoverProps: {position: model.position, backdrop: model.backdrop}
                     }),
                     popoverCard({
-                        text: 'Show Popover with backdrop',
-                        popoverProps: {
-                            backdrop: true
-                        }
-                    }),
-                    popoverCard({
-                        text: 'Show controlled Popover',
+                        text: 'Controlled Popover',
                         popoverProps: {
                             isOpen: model.isOpen,
                             onInteraction: nextOpenState => (model.isOpen = nextOpenState)
@@ -76,9 +96,11 @@ const popoverContent = hoistCmp.factory({
 });
 
 /**
- * LocalModel used to demonstrate opening a Popover in controlled mode
+ * LocalModel used to drive the configurable and controlled Popover examples.
  */
 class PopoverPageModel extends HoistModel {
+    @bindable position: PopoverPosition = 'bottom';
+    @bindable backdrop: boolean = false;
     @observable isOpen: boolean = false;
 
     constructor() {

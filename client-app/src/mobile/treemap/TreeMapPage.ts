@@ -1,5 +1,5 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {segmentedControl} from '@xh/hoist/mobile/cmp/input';
+import {segmentedControl, select} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {splitTreeMap, treeMap} from '@xh/hoist/cmp/treemap';
 import {Icon} from '@xh/hoist/icon';
@@ -26,6 +26,35 @@ export const treeMapPage = hoistCmp.factory({
                         options: [
                             {value: 'treeMap', label: 'Simple'},
                             {value: 'splitTreeMap', label: 'Split'}
+                        ]
+                    })
+                }),
+                exampleOption({
+                    label: 'Color mode',
+                    control: segmentedControl({
+                        model,
+                        bind: 'colorMode',
+                        fill: false,
+                        options: [
+                            {value: 'linear', label: 'Linear'},
+                            {value: 'wash', label: 'Wash'},
+                            {value: 'none', label: 'None'}
+                        ]
+                    })
+                }),
+                exampleOption({
+                    label: 'Tiling',
+                    control: select({
+                        width: 150,
+                        model,
+                        bind: 'algorithm',
+                        enableFilter: false,
+                        hideSelectedOptionCheck: true,
+                        options: [
+                            {value: 'squarified', label: 'Squarified'},
+                            {value: 'sliceAndDice', label: 'Slice & Dice'},
+                            {value: 'stripes', label: 'Stripes'},
+                            {value: 'strip', label: 'Strip'}
                         ]
                     })
                 })

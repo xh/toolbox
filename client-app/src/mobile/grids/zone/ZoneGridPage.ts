@@ -5,7 +5,8 @@ import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {zoneMapperButton} from '@xh/hoist/mobile/cmp/button';
-import {exampleScreen} from '../../cmp/example/ExampleScreen';
+import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
+import {exampleOption, exampleScreen} from '../../cmp/example/ExampleScreen';
 import {ZoneGridPageModel} from './ZoneGridPageModel';
 
 export const zoneGridPage = hoistCmp.factory({
@@ -21,6 +22,30 @@ export const zoneGridPage = hoistCmp.factory({
                 '`ZoneGrid` leverages an underlying `Grid` to render multi-line, full-width rows -',
                 'mapping fields into top/bottom and left/right zones. Tap the mapper above the grid to',
                 'remap which fields appear in each zone.'
+            ],
+            options: [
+                exampleOption({
+                    label: 'Sizing mode',
+                    control: select({
+                        width: 140,
+                        model: gridModel,
+                        bind: 'sizingMode',
+                        options: [
+                            {label: 'Tiny', value: 'tiny'},
+                            {label: 'Compact', value: 'compact'},
+                            {label: 'Standard', value: 'standard'},
+                            {label: 'Large', value: 'large'}
+                        ]
+                    })
+                }),
+                exampleOption({
+                    label: 'Row borders',
+                    control: switchInput({model: gridModel, bind: 'rowBorders'})
+                }),
+                exampleOption({
+                    label: 'Stripe rows',
+                    control: switchInput({model: gridModel, bind: 'stripeRows'})
+                })
             ],
             links: [
                 {

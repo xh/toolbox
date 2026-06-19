@@ -46,6 +46,14 @@ export const treeGridPage = hoistCmp.factory({
                 exampleOption({
                     label: 'Row borders',
                     control: switchInput({model: gridModel, bind: 'rowBorders'})
+                }),
+                exampleOption({
+                    label: 'Cell borders',
+                    control: switchInput({model: gridModel, bind: 'cellBorders'})
+                }),
+                exampleOption({
+                    label: 'Summary row',
+                    control: switchInput({model: gridModel, bind: 'showSummary'})
                 })
             ],
             links: [
