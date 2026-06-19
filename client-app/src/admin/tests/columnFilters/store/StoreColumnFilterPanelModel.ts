@@ -1,12 +1,12 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {boolCheckCol, ExcelFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {CompoundFilter, FieldFilter} from '@xh/hoist/data';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class StoreColumnFilterPanelModel extends HoistModel {
-    @bindable.ref filterJson: PlainObject = null;
+    @bindable.ref filterJson: FieldFilter | CompoundFilter = null;
 
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;
@@ -22,7 +22,8 @@ export class StoreColumnFilterPanelModel extends HoistModel {
         this.addReaction({
             track: () => this.gridModel.filterModel.filter as FieldFilter | CompoundFilter,
             run: filter => {
-                this.filterJson = filter?.toJSON();
+                // jsonInput renders this readonly - JSON.stringify calls filter.toJSON() for us.
+                this.filterJson = filter;
             }
         });
     }
