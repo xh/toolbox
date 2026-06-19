@@ -32,6 +32,7 @@ import {panelsPage} from './panels/PanelsPage';
 import {pinPadPage} from './pinPad/PinPadPage';
 import {popoverPage} from './popover/PopoverPage';
 import {popupsPage} from './popups/PopupsPage';
+import {selectPage} from './select/SelectPage';
 import {tabsPage} from './tabs/TabsPage';
 
 export class AppModel extends BaseAppModel {
@@ -56,6 +57,7 @@ export class AppModel extends BaseAppModel {
             {id: 'dataview', content: dataViewPage},
             {id: 'form', content: formPage},
             {id: 'inputs', content: inputsPage},
+            {id: 'select', content: selectPage},
             {id: 'charts', content: chartPage},
             {id: 'treeMap', content: treeMapPage},
             {id: 'containers', content: containersPage},
@@ -118,6 +120,10 @@ export class AppModel extends BaseAppModel {
                     {
                         name: 'inputs',
                         path: '/inputs'
+                    },
+                    {
+                        name: 'select',
+                        path: '/select'
                     },
                     {
                         name: 'charts',

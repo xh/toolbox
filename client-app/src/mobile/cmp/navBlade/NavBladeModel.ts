@@ -66,7 +66,8 @@ export class NavBladeModel extends HoistModel {
             icon: Icon.edit(),
             items: [
                 {text: 'Forms', route: 'default.form'},
-                {text: 'Inputs', route: 'default.inputs'}
+                {text: 'Inputs', route: 'default.inputs'},
+                {text: 'Select', route: 'default.select'}
             ]
         },
         {
