@@ -13,7 +13,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
     @managed filterChooserModel: FilterChooserModel;
     @managed groupingChooserModel: GroupingChooserModel;
 
-    /** The active filter, rendered as JSON by a readonly jsonInput. */
     @computed
     get filterJson(): FieldFilter | CompoundFilter {
         return this.view?.filter as FieldFilter | CompoundFilter;

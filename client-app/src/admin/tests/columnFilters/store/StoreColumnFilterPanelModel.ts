@@ -9,7 +9,6 @@ export class StoreColumnFilterPanelModel extends HoistModel {
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;
 
-    /** The active filter, rendered as JSON by a readonly jsonInput. */
     @computed
     get filterJson(): FieldFilter | CompoundFilter {
         return this.gridModel.filterModel.filter as FieldFilter | CompoundFilter;
