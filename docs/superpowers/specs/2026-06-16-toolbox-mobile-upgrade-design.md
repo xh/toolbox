@@ -65,10 +65,11 @@ so they can later graduate into the shared `@xh/hoist/mobile` kit (the brief exp
   switcher to the top (`switcher: {orientation: 'top'}`) so the per-tab pull-up sheet at the bottom
   never collides with it - mirroring how the desktop wraps each tab in its own `wrapper`. PinPad
   gained a "Reset" option in its sheet (mirroring desktop).
-- **Forms worked example - COMPLETE.** Light collapsible field-set headers (no bordered
-  panel-in-panel), label-above fields with required `*` markers and 16px inputs, captioned boolean
-  trio (Checkbox · Switch · Button - mobile has no radio input), and options (Read-only, Minimal
-  validation, Commit on change, Required markers, Density, Reset form) moved into the sheet.
+- **Forms worked example - COMPLETE, later reworked (see build-out below).** Light collapsible
+  field-set headers (no bordered panel-in-panel), label-above fields with required `*` markers and
+  16px inputs, and display options moved into the sheet. The generic first cut (name / customer /
+  movie + a captioned boolean trio) was subsequently recast as a validated candidate-intake form -
+  see the example library build-out section.
 - **Home widget dashboard (move C) - COMPLETE.** Static HomePage replaced with a personalizable
   vertical stack of quiet collapsible widget cards (`cmp/WidgetCard` + a `home/widgets` catalog:
   Welcome, Start Here, Hoist Releases, Recent Commits, Meet XH, Enjoying Hoist?). Mirrors the desktop
@@ -103,6 +104,38 @@ so they can later graduate into the shared `@xh/hoist/mobile` kit (the brief exp
     layout" footer (new `pullUpSheet` `footerItem` slot) and an orange Done CTA. Internal sheet
     components refactored to `hoistCmp` factories that auto-resolve the contextual `HomeModel`.
 
+- **Example library build-out (post-move-B) - COMPLETE & verified on-device.** Beyond the initial
+  conversion, the example set was enriched and expanded, leaning on the now-scalable options sheet:
+  - *More display options* surfaced across existing examples (all mobile-sensible and
+    runtime-settable): Grid (cell borders, hide headers), Zone Grid (sizing mode, row borders, stripe
+    rows), Tree Grid (cell borders, summary row), TreeMap (color mode + tiling algorithm, applied live
+    to both the simple and split maps), DataView (item height), Panels/Intro (mask, loading indicator,
+    show-header), Popovers (position + backdrop). `showHover` was deliberately *excluded* - no hover
+    on touch. Buttons intentionally keeps showing all intents (easier to scan than a toggle), and
+    HBox/VBox were left untouched pending further thought.
+  - *Icons* reworked from a static three-column table into a filterable, tap-to-copy gallery (name
+    filter, Style + Intent options, live count), mirroring the desktop rework.
+  - *Forms* recast as a mock candidate-intake form (validation + field-set grouping): two collapsible
+    `FormFieldSet`s (Candidate Details / Employment) with required / length / email / date / numeric
+    rules, a conditional rule (years-experience required with a higher bar for managers), a cross-field
+    rule (end date after hire date), a computed full name, and a reason-for-leaving field enabled only
+    once an end date is set. Submit validates and reports failures via toast. Mirrors the desktop
+    example; the desktop `enableMulti` tags field and references subform are omitted (mobile `Select`
+    has no multi-select).
+  - *New examples:* **Inputs** (gallery of Text / NumberInput / DateInput / Choices / Toggles cards,
+    plus a global Disabled option - the building blocks, distinct from the validation-focused Forms
+    example), **Select** (basic, `enableFilter`, async `queryFn` full-screen picker via
+    `enableFullscreen`, `enableCreate`), **Badge** (intents + compact + in-context counts), **Mask**
+    (show / spinner / message toggles + a timed "mask for 3 seconds" action), **Tabs**
+    (`TabContainer` with icon + title tabs and a switcher-position top/bottom option).
+  - *Nav reorg:* PinPad moved from Forms to Components. The nav blade now reads Grids & Data · Charts ·
+    Forms (Forms, Inputs, Select) · Layout (Containers, Panels, Tabs) · Components (Badges, Buttons,
+    Icons, Mask, PinPad, Popovers, Popups) - **19 example screens** total (plus Home).
+  - *Framework change (hoist-react):* added an `equalSegmentWidths` prop (default `true`) to the
+    mobile `SegmentedControl` so fill-mode segments divide the row into equal parts (the iOS/Material
+    convention) rather than each sizing to its content. Committed to hoist-react `develop` and pushed;
+    the interim Toolbox CSS override was removed once the framework default landed.
+
 All changed files pass `tsc --noEmit` (0 errors), ESLint, Stylelint, and Prettier.
 
 #### Move C persistence note - VERIFIED end-to-end
@@ -123,7 +156,17 @@ from this checkout: `yarn --cwd client-app start --env inlineHoist --env devHost
 
 ### Remaining
 
-- **In-app docs reader** - deferred by design.
+- **In-app docs reader** - deferred by design (mobile Resources links open the system browser until
+  it exists).
+- **`TextInput.leftIcon` on mobile (dependency, not app work)** - the Icons filter and the email /
+  filter fields in the Inputs, Forms, and Select examples pass `leftIcon`. The glyph renders only
+  once a published `@xh/hoist` snapshot includes the hoist-react `TextInput.leftIcon` addition
+  (currently local-only, tangled with separate login-screen WIP). `enableClear` already works on the
+  bundled build, so the fields are fully functional without the icon in the meantime.
+
+No other planned mobile work is outstanding - moves A, B, C, the polish pass, and the example
+library build-out are all complete and verified. Optional, not planned: further dedicated input
+sub-tabs beyond Select, and the app-bar / peek-bar title de-duplication noted below.
 
 ### Follow-up considerations
 
