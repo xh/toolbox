@@ -143,6 +143,17 @@ export class NavBladeModel extends HoistModel {
     }
 
     /**
+     * True when the active route is a destination reachable directly from the blade - i.e. Home or
+     * one of the catalog's leaf items - as opposed to a deeper drilldown (e.g. a grid's single-record
+     * detail). Drives the app bar's left slot: top-level pages keep the hamburger (open the blade);
+     * drilldowns show the back affordance instead.
+     */
+    get isTopLevelRoute(): boolean {
+        const {name} = XH.routerState;
+        return name === HOME_ROUTE || this.groups.some(g => g.items.some(it => it.route === name));
+    }
+
+    /**
      * Display title for the active section, shown in the app bar in place of the app name. Resolves
      * the current route against the nav catalog, matching the nearest ancestor section - so a
      * drilldown route (e.g. a grid's single-record detail) keeps its parent section's title.

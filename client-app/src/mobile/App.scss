@@ -46,27 +46,31 @@ body.xh-app {
   --font-feature-settings: 'tnum', 'zero', 'ss01';
 }
 
-// App bar: the XH glyph logo (set as the app-bar icon in AppComponent) plus a tighter left cluster
-// so the hamburger, logo, and title sit close together.
+// App bar: the hamburger glyph and the XH logo live together in a single button that opens the nav
+// blade, giving that control one large, easy-to-hit tap target on the left of the bar.
 .xh-appbar.xh-toolbar {
-  .tb-appbar-logo {
-    display: block;
-    height: 20px;
-    width: auto;
-  }
-
-  // The logo is the toolbar's only direct button child. Drop the inter-item gap before it and trim
-  // its horizontal padding so it nests close to the hamburger. (Selector matches the toolbar's own
-  // item-spacing specificity and wins by source order.)
-  > .xh-button {
-    margin-left: 0;
-    padding-left: var(--xh-pad-half-px);
-    padding-right: var(--xh-pad-half-px);
-  }
-
-  // Trim the hamburger's trailing padding to close the remaining gap to the logo.
+  // Keep the back button's trailing padding tight - it owns the left slot on sub-pages.
   .xh-appbar-left .xh-button {
     padding-right: var(--xh-pad-half-px);
+  }
+
+  // The combined hamburger + logo button. Its contents are small, so we grow the button's padding
+  // (part of its clickable surface, unlike margin) to swallow the surrounding whitespace and stretch
+  // it to the full bar height, then pull the box back with negative vertical margins so the contents
+  // stay put. Net: same look, a much larger touch surface.
+  .xh-appbar-left .tb-appbar-hamburger.xh-button {
+    align-self: stretch;
+    height: auto;
+    margin-top: calc(-1 * var(--xh-pad-half-px));
+    margin-bottom: calc(-1 * var(--xh-pad-half-px));
+    padding-left: var(--xh-pad-px);
+    padding-right: var(--xh-pad-px);
+
+    .tb-appbar-logo {
+      display: block;
+      height: 20px;
+      width: auto;
+    }
   }
 }
 

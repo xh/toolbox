@@ -25,16 +25,21 @@ export const AppComponent = hoistCmp({
         return panel({
             tbar: appBar({
                 omit: XH.isLandscape,
-                icon: img({className: 'tb-appbar-logo', src: xhLogo, alt: 'XH'}),
                 // Show the active section in place of the app name (parent section for drilldowns).
                 title: model.navBladeModel.activeTitle,
                 hideRefreshButton: false,
-                // Hamburger opens the navigation blade. Shown only at the root of the nav stack,
-                // where the back button is absent - on sub-pages the back button owns the left slot.
+                // The back affordance is for drilldowns only; top-level pages keep the hamburger.
+                hideBackButton: model.navBladeModel.isTopLevelRoute,
+                // The hamburger glyph and the XH logo together form a single, generously sized button
+                // that opens the navigation blade. Shown on every blade-navigable page (Home and the
+                // top-level examples) so the menu is always one tap away - drilldown pages drop it and
+                // show the back button instead.
                 leftItems: [
                     button({
+                        className: 'tb-appbar-hamburger',
                         icon: Icon.bars(),
-                        omit: model.navigatorModel.stack.length > 1,
+                        text: img({className: 'tb-appbar-logo', src: xhLogo, alt: 'XH'}),
+                        omit: !model.navBladeModel.isTopLevelRoute,
                         onClick: () => model.navBladeModel.open()
                     })
                 ],
