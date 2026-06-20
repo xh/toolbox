@@ -4,6 +4,7 @@ import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {exampleScreen} from '../cmp/example/ExampleScreen';
+import './PopupsPage.scss';
 
 export const popupsPage = hoistCmp.factory({
     render() {
@@ -21,13 +22,13 @@ export const popupsPage = hoistCmp.factory({
                 className: 'tb-page xh-tiled-bg',
                 scrollable: true,
                 items: [
-                    renderCard('Alert', () => {
+                    renderCard('Alert', 'Single-button acknowledgement', () => {
                         XH.alert({
                             title: 'Alert',
                             message: 'This is an alert dialog.'
                         });
                     }),
-                    renderCard('Confirm', () => {
+                    renderCard('Confirm', 'Confirm or cancel a choice', () => {
                         XH.confirm({
                             title: 'Confirm',
                             message: 'This is a confirm dialog.'
@@ -38,14 +39,14 @@ export const popupsPage = hoistCmp.factory({
                             })
                         );
                     }),
-                    renderCard('Extra Confirm', () => {
+                    renderCard('Extra Confirm', 'Requires an explicit opt-in', () => {
                         XH.confirm({
                             title: 'Extra Confirm',
                             message: 'This is a confirm dialog with extra confirm.',
                             extraConfirmText: 'I agree'
                         });
                     }),
-                    renderCard('Prompt', () => {
+                    renderCard('Prompt', 'Collects text input', () => {
                         XH.prompt<string>({
                             title: 'Prompt',
                             message: 'This is a prompt dialog.'
@@ -55,7 +56,7 @@ export const popupsPage = hoistCmp.factory({
                             })
                         );
                     }),
-                    renderCard('Message', () => {
+                    renderCard('Message', 'Custom buttons and icons', () => {
                         XH.confirm({
                             title: 'Message',
                             icon: Icon.comment(),
@@ -65,13 +66,13 @@ export const popupsPage = hoistCmp.factory({
                             cancelAlign: 'left'
                         });
                     }),
-                    renderCard('Toast', () => {
+                    renderCard('Toast', 'Brief, auto-dismissing notice', () => {
                         XH.toast({
                             message: 'This is a toast.',
                             icon: Icon.comment()
                         });
                     }),
-                    renderCard('Danger Toast', () => {
+                    renderCard('Danger Toast', 'Error-styled toast', () => {
                         XH.dangerToast({
                             message: fragment('This is a toast shown via XH.dangerToast()'),
                             icon: Icon.skull()
@@ -83,11 +84,12 @@ export const popupsPage = hoistCmp.factory({
     }
 });
 
-function renderCard(title, onClick) {
+function renderCard(title, subtitle, onClick) {
     return div({
-        className: 'tb-card',
+        className: 'tb-card tb-popups-card',
         items: [
             div({className: 'tb-card__title', item: title}),
+            div({className: 'tb-popups-card__subtitle', item: subtitle}),
             button({
                 text: `Show ${title}`,
                 onClick
