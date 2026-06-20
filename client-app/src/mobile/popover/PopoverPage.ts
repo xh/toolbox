@@ -21,7 +21,7 @@ export const popoverPage = hoistCmp.factory({
     model: creates(() => PopoverPageModel),
     render({model}) {
         return exampleScreen({
-            title: 'Popovers',
+            title: 'Popover',
             icon: Icon.openExternal(),
             description: [
                 '`Popover` floats content beside a target element - ideal for compact, contextual UI',

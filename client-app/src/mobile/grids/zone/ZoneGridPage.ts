@@ -16,7 +16,7 @@ export const zoneGridPage = hoistCmp.factory({
             {gridModel} = zoneGridModel;
 
         return exampleScreen({
-            title: 'Zone Grids',
+            title: 'ZoneGrid',
             icon: Icon.gridLarge(),
             description: [
                 '`ZoneGrid` leverages an underlying `Grid` to render multi-line, full-width rows -',

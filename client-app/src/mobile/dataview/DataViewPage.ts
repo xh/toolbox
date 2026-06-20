@@ -11,7 +11,7 @@ export const dataViewPage = hoistCmp.factory({
 
     render({model}) {
         return exampleScreen({
-            title: 'DataViews',
+            title: 'DataView',
             icon: Icon.addressCard(),
             description: [
                 '`DataView` leverages an underlying `Grid` / `GridModel` to render a custom component',

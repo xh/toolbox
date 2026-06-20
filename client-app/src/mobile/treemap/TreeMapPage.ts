@@ -10,7 +10,7 @@ export const treeMapPage = hoistCmp.factory({
     model: creates(TreeMapPageModel),
     render({model}) {
         return exampleScreen({
-            title: 'Tree Map',
+            title: 'TreeMap',
             icon: Icon.treeMap(),
             description: [
                 '`TreeMap` renders hierarchical data as nested, sized tiles via Highcharts.',

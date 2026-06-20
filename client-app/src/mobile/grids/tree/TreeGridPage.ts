@@ -19,7 +19,7 @@ export const treeGridPage = hoistCmp.factory({
     render({model}) {
         const {gridModel} = model;
         return exampleScreen({
-            title: 'Tree Grids',
+            title: 'TreeGrid',
             icon: Icon.treeList(),
             description: [
                 "Hoist's `Grid` renders hierarchical tree data from a `Store` whose records carry",

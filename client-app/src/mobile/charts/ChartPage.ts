@@ -11,7 +11,7 @@ export const chartPage = hoistCmp.factory({
 
     render({model}) {
         return exampleScreen({
-            title: 'Charts',
+            title: 'Chart',
             icon: Icon.chartLine(),
             description: [
                 '`Chart` wraps Highcharts with a Hoist-friendly, observable API. Pick a symbol here to',

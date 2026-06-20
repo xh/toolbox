@@ -15,7 +15,7 @@ export const gridPage = hoistCmp.factory({
     render({model}) {
         const {gridModel} = model;
         return exampleScreen({
-            title: 'Grids',
+            title: 'Grid',
             icon: Icon.gridPanel(),
             description: [
                 '`Grid` and its `GridModel` are at the heart of many Hoist applications, providing a',

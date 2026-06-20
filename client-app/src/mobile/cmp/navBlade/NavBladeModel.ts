@@ -6,7 +6,7 @@ import {ReactElement} from 'react';
 /** A single navigable leaf within the blade - maps to a fully-qualified app route. */
 export interface NavBladeItem {
     text: string;
-    /** Fully-qualified route name, e.g. `default.grids`. */
+    /** Fully-qualified route name, e.g. `default.grid`. */
     route: string;
 }
 
@@ -45,10 +45,10 @@ export class NavBladeModel extends HoistModel {
             text: 'Grids & Data',
             icon: Icon.grid(),
             items: [
-                {text: 'Grids', route: 'default.grids'},
-                {text: 'Tree Grids', route: 'default.treegrids'},
-                {text: 'Zone Grids', route: 'default.zoneGrid'},
-                {text: 'DataViews', route: 'default.dataview'}
+                {text: 'Grid', route: 'default.grid'},
+                {text: 'TreeGrid', route: 'default.treeGrid'},
+                {text: 'ZoneGrid', route: 'default.zoneGrid'},
+                {text: 'DataView', route: 'default.dataView'}
             ]
         },
         {
@@ -56,8 +56,8 @@ export class NavBladeModel extends HoistModel {
             text: 'Charts',
             icon: Icon.chartLine(),
             items: [
-                {text: 'Charts', route: 'default.charts'},
-                {text: 'Tree Map', route: 'default.treeMap'}
+                {text: 'Chart', route: 'default.chart'},
+                {text: 'TreeMap', route: 'default.treeMap'}
             ]
         },
         {
@@ -65,7 +65,7 @@ export class NavBladeModel extends HoistModel {
             text: 'Forms',
             icon: Icon.edit(),
             items: [
-                {text: 'Forms', route: 'default.form'},
+                {text: 'Form', route: 'default.form'},
                 {text: 'Inputs', route: 'default.inputs'},
                 {text: 'Select', route: 'default.select'}
             ]
@@ -76,7 +76,7 @@ export class NavBladeModel extends HoistModel {
             icon: Icon.layout(),
             items: [
                 {text: 'Containers', route: 'default.containers'},
-                {text: 'Panels', route: 'default.panels'},
+                {text: 'Panel', route: 'default.panel'},
                 {text: 'Tabs', route: 'default.tabs'}
             ]
         },
@@ -90,7 +90,7 @@ export class NavBladeModel extends HoistModel {
                 {text: 'Icons', route: 'default.icons'},
                 {text: 'Mask', route: 'default.mask'},
                 {text: 'PinPad', route: 'default.pinPad'},
-                {text: 'Popovers', route: 'default.popovers'},
+                {text: 'Popover', route: 'default.popover'},
                 {text: 'Popups', route: 'default.popups'}
             ]
         }

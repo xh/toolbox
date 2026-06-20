@@ -16,7 +16,7 @@ const ITEMS: StartHereItem[] = [
         icon: Icon.grid(),
         title: 'Tour the grids',
         blurb: 'Filtering, grouping, tree data',
-        onClick: () => XH.navigate('default.grids')
+        onClick: () => XH.navigate('default.grid')
     },
     {
         icon: Icon.edit(),

@@ -23,7 +23,7 @@ export const formPage = hoistCmp.factory({
 
     render({model}) {
         return exampleScreen({
-            title: 'Forms',
+            title: 'Form',
             icon: Icon.edit(),
             description: [
                 "Hoist's `FormModel` binds inputs to observable state with built-in validation - here a",

@@ -19,7 +19,7 @@ export const panelsPage = hoistCmp.factory({
     render({model}) {
         const {mask, loadingIndicator} = model;
         return exampleScreen({
-            title: 'Panels',
+            title: 'Panel',
             icon: Icon.window(),
             description: [
                 '`Panel` is a core building block for layouts in Hoist. It supports an optional header',

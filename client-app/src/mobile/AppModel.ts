@@ -49,21 +49,21 @@ export class AppModel extends BaseAppModel {
         track: true,
         pages: [
             {id: 'default', content: homePage},
-            {id: 'grids', content: gridPage},
+            {id: 'grid', content: gridPage},
             {id: 'gridDetail', content: gridDetailPage},
-            {id: 'treegrids', content: treeGridPage},
+            {id: 'treeGrid', content: treeGridPage},
             {id: 'treeGridDetail', content: treeGridDetailPage},
             {id: 'zoneGrid', content: zoneGridPage},
-            {id: 'dataview', content: dataViewPage},
+            {id: 'dataView', content: dataViewPage},
             {id: 'form', content: formPage},
             {id: 'inputs', content: inputsPage},
             {id: 'select', content: selectPage},
-            {id: 'charts', content: chartPage},
+            {id: 'chart', content: chartPage},
             {id: 'treeMap', content: treeMapPage},
             {id: 'containers', content: containersPage},
-            {id: 'panels', content: panelsPage},
+            {id: 'panel', content: panelsPage},
             {id: 'tabs', content: tabsPage},
-            {id: 'popovers', content: popoverPage},
+            {id: 'popover', content: popoverPage},
             {id: 'popups', content: popupsPage},
             {id: 'badges', content: badgePage},
             {id: 'buttons', content: buttonPage},
@@ -80,8 +80,8 @@ export class AppModel extends BaseAppModel {
                 path: '/mobile',
                 children: [
                     {
-                        name: 'grids',
-                        path: '/grids',
+                        name: 'grid',
+                        path: '/grid',
                         children: [
                             {
                                 name: 'gridDetail',
@@ -90,8 +90,8 @@ export class AppModel extends BaseAppModel {
                         ]
                     },
                     {
-                        name: 'treegrids',
-                        path: '/treegrids',
+                        name: 'treeGrid',
+                        path: '/treeGrid',
                         children: [
                             {
                                 name: 'treeGridDetail',
@@ -110,8 +110,8 @@ export class AppModel extends BaseAppModel {
                         ]
                     },
                     {
-                        name: 'dataview',
-                        path: '/dataview'
+                        name: 'dataView',
+                        path: '/dataView'
                     },
                     {
                         name: 'form',
@@ -126,8 +126,8 @@ export class AppModel extends BaseAppModel {
                         path: '/select'
                     },
                     {
-                        name: 'charts',
-                        path: '/charts'
+                        name: 'chart',
+                        path: '/chart'
                     },
                     {
                         name: 'treeMap',
@@ -138,16 +138,16 @@ export class AppModel extends BaseAppModel {
                         path: '/containers'
                     },
                     {
-                        name: 'panels',
-                        path: '/panels'
+                        name: 'panel',
+                        path: '/panel'
                     },
                     {
                         name: 'tabs',
                         path: '/tabs'
                     },
                     {
-                        name: 'popovers',
-                        path: '/popovers'
+                        name: 'popover',
+                        path: '/popover'
                     },
                     {
                         name: 'popups',
