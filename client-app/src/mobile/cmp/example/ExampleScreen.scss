@@ -74,7 +74,7 @@
   // Expanded sheet body
   //------------------------
   &__segments {
-    margin-bottom: var(--xh-pad-px);
+    margin: var(--xh-pad-px) 0;
   }
 
   //------------------------
@@ -95,6 +95,12 @@
   //------------------------
   // Options segment
   //------------------------
+  // Full-width action buttons (exampleAction) sit directly in the options list with no row wrapper,
+  // so give them breathing room from the option rows above and from each other.
+  &__options > .xh-button {
+    margin-top: var(--xh-pad-double-px);
+  }
+
   &__option {
     padding: var(--xh-pad-px) 0;
     border-bottom: var(--xh-border-solid);

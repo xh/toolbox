@@ -4,11 +4,12 @@
 
 ### New Features
 
+* Carried the desktop redesign to the mobile (phone) client with a new left navigation blade - a hamburger/scrim drawer that groups the example catalog into expandable categories and docks theme and settings in its footer, reachable from every top-level screen; the built-in mobile `AppMenu` drops its now-redundant theme toggle.
+* Gave every mobile example a consistent screen pattern: the demo stays full-bleed while a new pull-up sheet surfaces Info, Options, and Resources (switched via the new mobile `SegmentedControl`) with a live options-count peek chip.
+* Replaced the static mobile home page with a personalizable widget dashboard - quiet collapsible cards (Welcome, Start Here, Hoist Releases, Recent Commits, Meet XH, Enjoying Hoist?) mirroring the desktop home set, with an app-bar pencil opening a "Manage widgets" sheet to toggle membership and drag-reorder widgets (via `react-beautiful-dnd`), persisted per user via `@persist`.
+* Expanded and refreshed the mobile example library - added Inputs, Select, Badge, Mask, and Tabs screens plus a filterable, tap-to-copy Icons gallery, recast Forms as a validated candidate-intake form, surfaced runtime display options across examples, and rationalized example names to a consistent singular/plural scheme.
 * Added Slack as a second channel for home-page user feedback: feedback now posts a Block Kit message to a configurable Slack channel alongside the existing email notification, demonstrating an outbound Slack integration via the Slack Web API.
 * Improved the formatting on pre-existing Slack alerts for client error and status monitor reporting.
-* Began carrying the desktop redesign to the mobile (phone) client with a new left navigation blade - a hamburger/scrim drawer grouping the example catalog into expandable categories with theme and settings docked in its footer - while the built-in mobile `AppMenu` drops its now-redundant theme toggle (theme now lives in the blade and the Options dialog).
-* Introduced a consistent mobile example-screen pattern across the example screens: each demo stays full-bleed while a new pull-up sheet surfaces Info, Options, and Resources (switched via the new mobile `SegmentedControl`) with a live options-count peek chip - and re-cut the Forms example with light collapsible field sets, a captioned boolean-control trio, and its display options moved into the sheet.
-* Replaced the static mobile home page with a personalizable widget dashboard: a vertical stack of quiet collapsible widget cards (Welcome, Start Here, Hoist Releases, Recent Commits, Meet XH, Enjoying Hoist?) mirroring the desktop home set, with an app-bar pencil opening a "Manage widgets" pull-up sheet to toggle membership and drag-reorder widgets (via `react-beautiful-dnd`, as the mobile ColChooser) - all persisted per user via a `@persist` preference.
 
 ### Technical
 
