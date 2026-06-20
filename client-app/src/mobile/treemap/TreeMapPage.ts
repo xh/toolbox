@@ -61,7 +61,16 @@ export const treeMapPage = hoistCmp.factory({
             ],
             links: [
                 {url: '$TB/client-app/src/mobile/treemap/TreeMapPage.ts', notes: 'This example.'},
-                {url: '$HR/cmp/treemap/README.md', text: 'TreeMap docs'}
+                {
+                    url: '$HR/cmp/treemap/TreeMapModel.ts',
+                    text: 'TreeMapModel',
+                    notes: 'Config for the map; SplitTreeMap composes two.'
+                },
+                {
+                    url: 'https://api.highcharts.com/highcharts/',
+                    text: 'Highcharts API',
+                    notes: 'Underlying treemap series config.'
+                }
             ],
             item: panel({
                 mask: 'onLoad',

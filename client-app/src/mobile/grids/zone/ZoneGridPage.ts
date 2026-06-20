@@ -52,7 +52,16 @@ export const zoneGridPage = hoistCmp.factory({
                     url: '$TB/client-app/src/mobile/grids/zone/ZoneGridPage.ts',
                     notes: 'This example.'
                 },
-                {url: '$HR/cmp/zoneGrid/README.md', text: 'ZoneGrid docs', notes: 'Zones & mapping'}
+                {
+                    url: '$HR/cmp/zoneGrid/ZoneGridModel.ts',
+                    text: 'ZoneGridModel',
+                    notes: 'Zones & field mapping.'
+                },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Underlying grid features.'
+                }
             ],
             item: panel({
                 mask: 'onLoad',

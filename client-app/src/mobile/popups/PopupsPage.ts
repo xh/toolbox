@@ -16,7 +16,17 @@ export const popupsPage = hoistCmp.factory({
                 'simple `XH` calls (most returning a Promise). Tap a card below to trigger one.'
             ],
             links: [
-                {url: '$TB/client-app/src/mobile/popups/PopupsPage.ts', notes: 'This example.'}
+                {url: '$TB/client-app/src/mobile/popups/PopupsPage.ts', notes: 'This example.'},
+                {
+                    url: '$HR/appcontainer/README.md',
+                    text: 'Dialogs & Toasts',
+                    notes: 'Alerts, confirms, prompts, messages, toasts.'
+                },
+                {
+                    url: '$HR/core/XH.ts',
+                    text: 'XH',
+                    notes: 'XH.alert / confirm / prompt / message / toast.'
+                }
             ],
             item: panel({
                 className: 'tb-page xh-tiled-bg',

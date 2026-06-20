@@ -41,7 +41,12 @@ export const dataViewPage = hoistCmp.factory({
             ],
             links: [
                 {url: '$TB/client-app/src/mobile/dataview/DataViewPage.ts', notes: 'This example.'},
-                {url: '$HR/cmp/dataview/README.md', text: 'DataView docs'}
+                {url: '$HR/cmp/dataview/DataView.ts', text: 'DataView source'},
+                {
+                    url: '$HR/cmp/dataview/DataViewModel.ts',
+                    text: 'DataViewModel',
+                    notes: 'Renderer & store config.'
+                }
             ],
             item: panel({mask: 'onLoad', item: dataView()})
         });

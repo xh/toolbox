@@ -31,7 +31,16 @@ export const chartPage = hoistCmp.factory({
             ],
             links: [
                 {url: '$TB/client-app/src/mobile/charts/ChartPage.ts', notes: 'This example.'},
-                {url: '$HR/cmp/chart/README.md', text: 'Chart docs'}
+                {
+                    url: '$HR/cmp/chart/ChartModel.ts',
+                    text: 'ChartModel',
+                    notes: 'Holds the Highcharts config.'
+                },
+                {
+                    url: 'https://api.highcharts.com/highcharts/',
+                    text: 'Highcharts API',
+                    notes: 'Reference for the chart config object.'
+                }
             ],
             item: panel({mask: 'onLoad', item: chart()})
         });
