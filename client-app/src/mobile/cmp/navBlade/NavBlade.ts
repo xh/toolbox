@@ -22,7 +22,7 @@ export const navBlade = hoistCmp.factory({
             items: [
                 div({
                     className: 'tb-nav-blade__scrim',
-                    onClick: () => model.setBindable('isOpen', false)
+                    onClick: () => (model.isOpen = false)
                 }),
                 div({
                     className: 'tb-nav-blade__drawer',
@@ -153,7 +153,7 @@ const bladeFooter = hoistCmp.factory<NavBladeModel>({
                     text: 'Settings',
                     minimal: true,
                     onClick: () => {
-                        model.setBindable('isOpen', false);
+                        model.isOpen = false;
                         XH.showOptionsDialog();
                     }
                 })

@@ -104,7 +104,7 @@ export class NavBladeModel extends HoistModel {
         // that originates outside the blade (mirrors how Hoist's built-in dialogs self-dismiss).
         this.addReaction({
             track: () => XH.routerState,
-            run: () => this.setBindable('isOpen', false)
+            run: () => (this.isOpen = false)
         });
     }
 
@@ -132,7 +132,7 @@ export class NavBladeModel extends HoistModel {
     /** Navigate to the given route and close the blade. */
     navigateTo(route: string) {
         XH.navigate(route);
-        this.setBindable('isOpen', false);
+        this.isOpen = false;
     }
 
     /** True if the given route is the user's current location (or an ancestor of it). */

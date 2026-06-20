@@ -36,7 +36,7 @@ export const manageWidgetsSheet = hoistCmp.factory({
             pullUpSheet({
                 className: 'tb-manage-widgets',
                 isExpanded: true,
-                onExpandedChange: v => model.setBindable('isManaging', v),
+                onExpandedChange: v => (model.isManaging = v),
                 peekItem: header(),
                 item: sheetBody(),
                 footerItem: resetFooter()
@@ -59,7 +59,7 @@ const header = hoistCmp.factory<HomeModel>(({model}) =>
                 className: 'tb-manage-widgets__done',
                 text: 'Done',
                 minimal: true,
-                onClick: () => model.setBindable('isManaging', false)
+                onClick: () => (model.isManaging = false)
             })
         ]
     })

@@ -70,8 +70,10 @@ export class TreeMapPageModel extends HoistModel {
         this.addReaction({
             track: () => [this.colorMode, this.algorithm] as const,
             run: ([colorMode, algorithm]) => {
-                this.treeMapModel.setBindable('colorMode', colorMode);
-                this.treeMapModel.setBindable('algorithm', algorithm);
+                this.treeMapModel.colorMode = colorMode;
+                this.treeMapModel.algorithm = algorithm;
+                // SplitTreeMapModel exposes colorMode/algorithm as read-only getters; its setter
+                // methods fan the change out to both the primary and secondary child maps.
                 this.splitTreeMapModel.setColorMode(colorMode);
                 this.splitTreeMapModel.setAlgorithm(algorithm);
             },

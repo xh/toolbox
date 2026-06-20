@@ -59,7 +59,7 @@ export const exampleScreen = hoistCmp.factory<ExampleScreenProps>({
                     div({className: 'tb-example-screen__demo', item: children}),
                     pullUpSheet({
                         isExpanded: model.isExpanded,
-                        onExpandedChange: v => model.setBindable('isExpanded', v),
+                        onExpandedChange: v => (model.isExpanded = v),
                         peekItem: peekBar({title, icon, optionsCount}),
                         item: sheetBody({model, description, options, links})
                     })

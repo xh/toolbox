@@ -49,7 +49,7 @@ export const AppComponent = hoistCmp({
                     button({
                         icon: Icon.edit(),
                         omit: model.navigatorModel.stack.length > 1,
-                        onClick: () => model.homeModel.setBindable('isManaging', true)
+                        onClick: () => (model.homeModel.isManaging = true)
                     })
                 ],
                 appMenuButtonProps: {
