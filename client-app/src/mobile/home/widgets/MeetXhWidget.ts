@@ -11,7 +11,9 @@ import './MeetXhWidget.scss';
  */
 export const meetXhWidget = hoistCmp.factory({
     displayName: 'MeetXhWidget',
-    model: creates(MeetXhWidgetModel),
+    // No auto-rotation on mobile - it shifts the card height. Spotlight is random on first load;
+    // the shuffle button loads another. (Demoware: no need to step through every contact.)
+    model: creates(() => new MeetXhWidgetModel({autoRotate: false})),
     render({model}) {
         const c = model.spotlightContact;
 
