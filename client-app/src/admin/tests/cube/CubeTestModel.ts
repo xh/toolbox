@@ -19,7 +19,7 @@ export class CubeTestModel extends HoistModel {
 
     @bindable includeGlobalAgg = true;
     @bindable includeLeaves = false;
-    @bindable.ref fundFilter = null;
+    @bindable.ref fundFilter: string[] = null;
     @bindable showSummary = false;
     @bindable updateFreq = -1;
     @bindable updateCount = 5;

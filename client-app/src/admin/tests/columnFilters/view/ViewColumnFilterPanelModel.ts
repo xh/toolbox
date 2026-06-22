@@ -7,7 +7,7 @@ import {numberRenderer} from '@xh/hoist/format';
 import {comparer, makeObservable, observable} from '@xh/hoist/mobx';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
-    @observable.ref filterJson: string = JSON.stringify(null);
+    @observable filterJson: string = JSON.stringify(null);
 
     @managed cube: Cube;
     @managed view: View;
