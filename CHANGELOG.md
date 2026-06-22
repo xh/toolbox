@@ -4,11 +4,11 @@
 
 ### New Features
 
-* Carried the desktop redesign to the mobile (phone) client, fronted by a new left navigation blade - a hamburger/scrim drawer grouping the example catalog into expandable categories with theme and settings docked in its footer; the built-in mobile `AppMenu` drops its now-redundant theme toggle.
-* Gave every mobile example a consistent screen pattern: the demo stays full-bleed while a pull-up sheet surfaces Info, Options, and Resources via the new mobile `SegmentedControl`, with a live options-count peek chip.
-* Replaced the static mobile home page with a personalizable widget dashboard of collapsible cards (Welcome, Start Here, Hoist Releases, Recent Commits, Meet XH, Enjoying Hoist?) mirroring desktop, with a "Manage widgets" sheet to toggle and drag-reorder widgets (`react-beautiful-dnd`), persisted per user via `@persist`.
-* Expanded the mobile example library: new Inputs, Select, Badge, Mask, and Tabs screens, a filterable tap-to-copy Icons gallery, Forms recast as a validated candidate-intake form, runtime display options across examples, and example names rationalized to a consistent scheme.
-* Brought the in-app documentation reader to mobile at parity with desktop - a "Docs" resource now opens inside Toolbox (markdown, section jump, tap-to-copy code, doc-to-doc links) rather than ejecting to GitHub; its platform-neutral core (a headless `DocViewModel` and shared `docContent` body) was extracted to a new `core/docs` module shared by both clients.
+* Carried the desktop redesign to the mobile (phone) client, fronted by a new left navigation blade - a drawer grouping the example catalog into expandable categories with theme and settings docked in its footer.
+* Gave every mobile example a consistent screen pattern: the demo stays full-bleed while a pull-up sheet surfaces Info, Options, and Resources.
+* Replaced the static mobile home page with a personalizable widget dashboard of collapsible cards (Welcome, Start Here, Hoist Releases, Recent Commits, Meet XH, Enjoying Hoist?) mirroring desktop, with a "Manage widgets" sheet to toggle and drag-reorder widgets.
+* Expanded the mobile example library: new Inputs, Select, Badge, Mask, and Tabs screens, a filterable tap-to-copy Icons gallery, Forms recast as a validated candidate-intake form, and expanded runtime display options across examples.
+* Added an in-app documentation reader to the mobile client - tapping a "Docs" resource link opens that doc inside Toolbox with rendered markdown, an "On this page" section jump, tap-to-copy code blocks, and in-content doc-to-doc links; its platform-neutral core code is shared by both clients.
 * Added Slack as a second channel for home-page user feedback: feedback now posts a Block Kit message to a configurable Slack channel alongside the existing email notification, demonstrating an outbound Slack integration via the Slack Web API.
 * Improved the formatting on pre-existing Slack alerts for client error and status monitor reporting.
 
