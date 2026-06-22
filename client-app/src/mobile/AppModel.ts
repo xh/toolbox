@@ -77,109 +77,50 @@ export class AppModel extends BaseAppModel {
     });
 
     override getRoutes() {
+        // The in-app docs reader is registered as a drilldown child of every example, so opening a
+        // doc from an example stacks the reader on top of it - the standard app-bar back button and
+        // the Navigator edge-swipe then both return to the example, exactly like the grid -> detail
+        // drilldown. It is also registered as a standalone child of `default` for cold deep-links and
+        // the home page, where there is no example to return to.
+        const docsRoute = () => ({name: 'docs', path: '/docs/:source/:docId?section'});
+
+        const examples = [
+            {name: 'grid', path: '/grid', children: [{name: 'gridDetail', path: '/:id<\\d+>'}]},
+            {
+                name: 'treeGrid',
+                path: '/treeGrid',
+                children: [{name: 'treeGridDetail', path: '/:id'}]
+            },
+            {
+                name: 'zoneGrid',
+                path: '/zoneGrid',
+                children: [{name: 'gridDetail', path: '/:id<\\d+>'}]
+            },
+            {name: 'dataView', path: '/dataView', children: []},
+            {name: 'form', path: '/form', children: []},
+            {name: 'inputs', path: '/inputs', children: []},
+            {name: 'select', path: '/select', children: []},
+            {name: 'chart', path: '/chart', children: []},
+            {name: 'treeMap', path: '/treeMap', children: []},
+            {name: 'containers', path: '/containers', children: []},
+            {name: 'panel', path: '/panel', children: []},
+            {name: 'tabs', path: '/tabs', children: []},
+            {name: 'popover', path: '/popover', children: []},
+            {name: 'popups', path: '/popups', children: []},
+            {name: 'badges', path: '/badges', children: []},
+            {name: 'buttons', path: '/buttons', children: []},
+            {name: 'icons', path: '/icons', children: []},
+            {name: 'mask', path: '/mask', children: []},
+            {name: 'pinPad', path: '/pinPad', children: []}
+        ];
+
         return [
             {
                 name: 'default',
                 path: '/mobile',
                 children: [
-                    {
-                        name: 'grid',
-                        path: '/grid',
-                        children: [
-                            {
-                                name: 'gridDetail',
-                                path: '/:id<\\d+>'
-                            }
-                        ]
-                    },
-                    {
-                        name: 'treeGrid',
-                        path: '/treeGrid',
-                        children: [
-                            {
-                                name: 'treeGridDetail',
-                                path: '/:id'
-                            }
-                        ]
-                    },
-                    {
-                        name: 'zoneGrid',
-                        path: '/zoneGrid',
-                        children: [
-                            {
-                                name: 'gridDetail',
-                                path: '/:id<\\d+>'
-                            }
-                        ]
-                    },
-                    {
-                        name: 'dataView',
-                        path: '/dataView'
-                    },
-                    {
-                        name: 'form',
-                        path: '/form'
-                    },
-                    {
-                        name: 'inputs',
-                        path: '/inputs'
-                    },
-                    {
-                        name: 'select',
-                        path: '/select'
-                    },
-                    {
-                        name: 'chart',
-                        path: '/chart'
-                    },
-                    {
-                        name: 'treeMap',
-                        path: '/treeMap'
-                    },
-                    {
-                        name: 'containers',
-                        path: '/containers'
-                    },
-                    {
-                        name: 'panel',
-                        path: '/panel'
-                    },
-                    {
-                        name: 'tabs',
-                        path: '/tabs'
-                    },
-                    {
-                        name: 'popover',
-                        path: '/popover'
-                    },
-                    {
-                        name: 'popups',
-                        path: '/popups'
-                    },
-                    {
-                        name: 'badges',
-                        path: '/badges'
-                    },
-                    {
-                        name: 'buttons',
-                        path: '/buttons'
-                    },
-                    {
-                        name: 'icons',
-                        path: '/icons'
-                    },
-                    {
-                        name: 'mask',
-                        path: '/mask'
-                    },
-                    {
-                        name: 'pinPad',
-                        path: '/pinPad'
-                    },
-                    {
-                        name: 'docs',
-                        path: '/docs/:source/:docId?section'
-                    }
+                    ...examples.map(r => ({...r, children: [...r.children, docsRoute()]})),
+                    docsRoute()
                 ]
             }
         ];

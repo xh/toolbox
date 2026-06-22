@@ -155,9 +155,19 @@ export class DocViewModel extends HoistModel {
         if (ref) this.navigateToDoc(ref.docId, ref.source, ref.section);
     }
 
+    /**
+     * Whether the given route name is one this viewer should sync with. Defaults to any route at or
+     * below `BASE_ROUTE` (covers desktop's `default.docs` tab and its `.docRef` child). The mobile
+     * reader overrides this, since it also mounts as a drilldown child of each example
+     * (`default.<example>.docs`), which does not share the `default.docs` prefix.
+     */
+    protected isDocsRoute(name: string): boolean {
+        return name.startsWith(this.BASE_ROUTE);
+    }
+
     private updateDocFromRoute() {
         const {name, params} = XH.routerState;
-        if (!name.startsWith(this.BASE_ROUTE)) return;
+        if (!this.isDocsRoute(name)) return;
         const ref = this.docRefFromRoute(params);
         if (ref) this.navigateToDoc(ref.docId, ref.source, ref.section);
     }
@@ -165,7 +175,7 @@ export class DocViewModel extends HoistModel {
     private updateRouteFromDoc() {
         const {activeDoc, BASE_ROUTE, docRouteName} = this,
             {name} = XH.routerState;
-        if (!name.startsWith(BASE_ROUTE)) return;
+        if (!this.isDocsRoute(name)) return;
 
         if (activeDoc) {
             XH.navigate(

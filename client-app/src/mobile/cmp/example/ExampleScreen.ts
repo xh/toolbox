@@ -9,7 +9,6 @@ import {isArray, isEmpty} from 'lodash';
 import {Children, ReactElement, ReactNode} from 'react';
 import {docRouteParams} from '../../../core/docs/DocUtils';
 import {toolboxUrl, ToolboxLinkProps} from '../../../core/cmp/ToolboxLink';
-import {MOBILE_DOCS_ROUTE} from '../../docs/DocsPage';
 import {pullUpSheet} from '../pullUpSheet/PullUpSheet';
 import {ExampleScreenModel} from './ExampleScreenModel';
 import './ExampleScreen.scss';
@@ -290,15 +289,16 @@ function defaultLinkText(url: string): string {
 
 /**
  * Doc links deep-link into the in-app reader; code/external links open the system browser. The
- * mobile reader carries the doc params (`~`-encoded `docId` + optional `section`) directly on its
- * single {@link MOBILE_DOCS_ROUTE} Navigator route, with no `docRef` child as on desktop.
+ * reader is opened as a `docs` drilldown child of the current example route (via `appendRoute`), so
+ * it stacks on top of the example and the standard back button / edge-swipe return to it. The doc
+ * params (`~`-encoded `docId` + an optional `section`) ride on that route segment.
  */
 function openResource(url: string) {
     const ref = docRouteParams(url);
     if (ref) {
         const params: Record<string, string> = {source: ref.source, docId: ref.docId};
         if (ref.section) params.section = ref.section;
-        XH.navigate(MOBILE_DOCS_ROUTE, params);
+        XH.appendRoute('docs', params);
         return;
     }
     window.open(toolboxUrl(url), '_blank');

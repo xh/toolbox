@@ -10,13 +10,6 @@ import {DocsPageModel} from './DocsPageModel';
 import './DocsPage.scss';
 
 /**
- * Route name of the mobile in-app docs reader. The doc params (`source`, `~`-encoded `docId`, and
- * an optional `section` query param) ride directly on this single Navigator page route. Shared with
- * the example Resources links so the deep-link target lives in one place.
- */
-export const MOBILE_DOCS_ROUTE = 'default.docs';
-
-/**
  * Mobile Navigator page for the in-app documentation reader. Renders a single doc via the shared
  * `docContent` body component, with a breadcrumb context row and an "On this page" section-jump
  * menu in a top toolbar. Back navigation is provided automatically by the Navigator for pushed pages.
