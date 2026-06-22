@@ -1,12 +1,15 @@
 import {hoistCmp, XH, uses, HoistUser} from '@xh/hoist/core';
+import {img} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
+import {button} from '@xh/hoist/mobile/cmp/button';
 import {navigator} from '@xh/hoist/mobile/cmp/navigator';
-import {hbox} from '@xh/hoist/cmp/layout';
-import {badge} from '@xh/hoist/cmp/badge';
 import {Icon} from '@xh/hoist/icon';
 import {profilePic} from '../core/cmp';
 import {AppModel} from './AppModel';
+import {navBlade} from './cmp/navBlade/NavBlade';
+// @ts-ignore
+import xhLogo from '../core/img/xh-logo.png';
 import '../core/Toolbox.scss';
 import './App.scss';
 
@@ -22,29 +25,42 @@ export const AppComponent = hoistCmp({
         return panel({
             tbar: appBar({
                 omit: XH.isLandscape,
-                icon: Icon.boxFull({size: 'lg', prefix: 'fal'}),
+                // Show the active section in place of the app name (parent section for drilldowns).
+                title: model.navBladeModel.activeTitle,
                 hideRefreshButton: false,
+                // The back affordance is for drilldowns only; top-level pages keep the hamburger.
+                hideBackButton: model.navBladeModel.isTopLevelRoute,
+                // The hamburger glyph and the XH logo together form a single, generously sized button
+                // that opens the navigation blade. Shown on every blade-navigable page (Home and the
+                // top-level examples) so the menu is always one tap away - drilldown pages drop it and
+                // show the back button instead.
+                leftItems: [
+                    button({
+                        className: 'tb-appbar-hamburger',
+                        icon: Icon.bars(),
+                        text: img({className: 'tb-appbar-logo', src: xhLogo, alt: 'XH'}),
+                        omit: !model.navBladeModel.isTopLevelRoute,
+                        onClick: () => model.navBladeModel.open()
+                    })
+                ],
+                // Pencil opens the home Manage-widgets sheet. Like the hamburger, it belongs only on
+                // the home root - sub-pages have no widget dashboard to customize.
+                rightItems: [
+                    button({
+                        icon: Icon.edit(),
+                        omit: model.navigatorModel.stack.length > 1,
+                        onClick: () => (model.homeModel.isManaging = true)
+                    })
+                ],
                 appMenuButtonProps: {
                     hideLogoutItem: false,
+                    // Theme now lives in the blade footer and the Options dialog - hide the
+                    // now-redundant copy in the AppMenu.
                     hideThemeItem: true,
-                    renderWithUserProfile,
-                    extraItems: [
-                        {
-                            text: hbox(
-                                XH.darkTheme ? 'Light Theme' : 'Dark Theme',
-                                badge({
-                                    item: 'Try Me',
-                                    intent: 'primary',
-                                    compact: true
-                                })
-                            ),
-                            icon: XH.darkTheme ? Icon.sun({prefix: 'fas'}) : Icon.moon(),
-                            actionFn: () => XH.toggleTheme()
-                        }
-                    ]
+                    renderWithUserProfile
                 }
             }),
-            item: navigator()
+            items: [navigator(), navBlade({model: model.navBladeModel})]
         });
     }
 });

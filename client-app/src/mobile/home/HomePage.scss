@@ -1,0 +1,47 @@
+.tb-home {
+  height: 100%;
+
+  // Relative frame so the Manage-widgets sheet overlays the scrolling stack (plain div, since Hoist
+  // layout boxes force inline position:relative which would break the absolutely-positioned sheet).
+  &__frame {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+  }
+
+  &__stack {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+  }
+
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    // A touch more breathing room between cards than the base pad.
+    gap: 16px;
+    padding: 8px;
+  }
+
+  //------------------------
+  // Empty state (all widgets removed)
+  //------------------------
+  &__empty {
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: var(--xh-pad-half-px);
+    color: var(--xh-text-color-muted);
+    text-align: center;
+    padding: var(--xh-pad-double-px);
+
+    p {
+      margin: 0;
+      font-size: var(--xh-font-size-px);
+    }
+  }
+
+  &__empty-hint {
+    font-size: var(--xh-font-size-small-px);
+  }
+}

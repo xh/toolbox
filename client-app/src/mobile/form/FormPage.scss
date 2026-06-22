@@ -1,22 +1,44 @@
 .tb-form-page {
+  padding: var(--xh-pad-px);
+
+  // Room to breathe: label-above fields on a steady vertical rhythm.
   .xh-form-field {
-    margin: 0 0 var(--xh-pad-px);
+    margin: 0 0 var(--xh-pad-double-px);
 
     &:last-of-type {
       margin: 0;
     }
+
+    // 16px minimum input text in production avoids iOS Safari auto-zoom on focus.
+    input,
+    textarea {
+      font-size: 16px;
+    }
   }
 
-  &__result {
-    margin-bottom: var(--xh-pad-px);
+  // Field Sets become light, collapsible small-caps section headers - no bordered panel-in-panel.
+  .xh-form-field-set {
+    border: none;
+    padding: 0;
+    margin: 0 0 var(--xh-pad-double-px);
 
-    .xh-input-label {
+    > legend,
+    .xh-form-field-set__header {
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: var(--xh-font-size-small-px);
+      font-weight: 700;
       color: var(--xh-text-color-muted);
-      margin-bottom: var(--xh-pad-half-px);
+      padding-bottom: var(--xh-pad-half-px);
+      margin-bottom: var(--xh-pad-px);
+      border-bottom: var(--xh-border-solid);
     }
+  }
 
-    div:not(.xh-input-label) {
-      margin-left: var(--xh-pad-px);
+  // Compact density tightens the vertical rhythm.
+  &--compact {
+    .xh-form-field {
+      margin-bottom: var(--xh-pad-px);
     }
   }
 }

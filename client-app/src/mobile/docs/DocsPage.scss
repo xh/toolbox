@@ -1,0 +1,13 @@
+.tb-docs-page {
+  &__crumb {
+    align-items: center;
+    gap: var(--xh-pad-half-px);
+    padding: 0 var(--xh-pad-px);
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__crumb-sep {
+    opacity: 0.6;
+  }
+}

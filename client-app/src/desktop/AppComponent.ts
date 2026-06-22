@@ -26,7 +26,7 @@ export const AppComponent = hoistCmp({
             tbar: appBar({
                 icon: img({src: xhLogo, onClick: () => model.goHome()}),
                 title: null,
-                leftItems: [dynamicTabSwitcher()],
+                leftItems: [dynamicTabSwitcher({testId: 'top-level-tabs'})],
                 rightItems: [
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
                     appBarSeparator(),

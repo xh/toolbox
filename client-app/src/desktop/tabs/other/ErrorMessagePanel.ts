@@ -49,7 +49,7 @@ export const errorMessagePanel = hoistCmp.factory({
                         }
                     }),
                     vframe({
-                        omit: error,
+                        omit: !!error,
                         items: [
                             'Everything is OK right now, but....',
                             button({
@@ -73,7 +73,7 @@ export const errorMessagePanel = hoistCmp.factory({
 });
 
 class ErrorMessagePanelModel extends HoistModel {
-    @bindable.ref error = null;
+    @bindable.ref error: unknown = null;
 
     constructor() {
         super();
