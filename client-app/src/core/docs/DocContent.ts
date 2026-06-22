@@ -1,6 +1,7 @@
 import {div} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {hoistCmp, uses, XH} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
 import React, {useCallback, useEffect, useRef} from 'react';
 import {DocViewModel} from './DocViewModel';
 import './DocContent.scss';
@@ -121,7 +122,9 @@ export const docContent = hoistCmp.factory<DocViewModel>({
         if (!content) return null;
 
         return div({
-            className,
+            // Mobile has no hover, so the copy controls are always visible there; on desktop the
+            // `--mobile` modifier is absent and the controls reveal on code-block hover (see SCSS).
+            className: XH.isMobileApp ? `${className} tb-doc-content--mobile` : className,
             ref: scrollRef,
             onClick: handleLinkClick,
             item: div({
@@ -131,6 +134,11 @@ export const docContent = hoistCmp.factory<DocViewModel>({
         });
     }
 });
+
+// Pre-rendered SVG markup for the copy control's two states. Built once via `Icon.x({asHtml})`
+// since the buttons live in imperative DOM (see `addCopyButtons`) rather than React elements.
+const COPY_ICON_HTML = Icon.clipboard({asHtml: true}),
+    COPIED_ICON_HTML = Icon.check({asHtml: true, intent: 'success'});
 
 /**
  * Inject a copy button into each fenced code block. This is deliberately imperative DOM work: the
@@ -149,14 +157,14 @@ function addCopyButtons(container: HTMLElement): Array<() => void> {
         btn.type = 'button';
         btn.className = 'tb-doc-content__copy';
         btn.setAttribute('aria-label', 'Copy code');
-        btn.textContent = 'Copy';
+        btn.innerHTML = COPY_ICON_HTML;
         const onClick = (e: MouseEvent) => {
             e.stopPropagation();
             copyTextToClipboard(code.textContent ?? '').then(
                 () => {
-                    btn.textContent = 'Copied';
+                    btn.innerHTML = COPIED_ICON_HTML;
                     XH.toast({message: 'Copied to clipboard', intent: 'success'});
-                    window.setTimeout(() => (btn.textContent = 'Copy'), 1500);
+                    window.setTimeout(() => (btn.innerHTML = COPY_ICON_HTML), 1500);
                 },
                 () => XH.toast({message: 'Copy failed', intent: 'danger'})
             );
