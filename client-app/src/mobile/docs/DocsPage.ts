@@ -1,7 +1,8 @@
-import {filler, hbox, span} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {menuButton} from '@xh/hoist/mobile/cmp/menu';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {docContent} from '../../core/docs/DocContent';
 import {DocService} from '../../core/svc/DocService';
@@ -36,7 +37,7 @@ const breadcrumbBar = hoistCmp.factory<DocsPageModel>({
         const {activeSource, activeCategory, sections} = model;
         if (!activeSource) return null;
         const sourceLabel = DocService.instance.getSourceLabel(activeSource);
-        return hbox({
+        return toolbar({
             className: 'tb-docs-page__crumb',
             items: [
                 span({className: 'tb-docs-page__crumb-src', item: sourceLabel}),
