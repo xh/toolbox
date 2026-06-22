@@ -2,6 +2,7 @@ import {div} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {hoistCmp, uses, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
+import {copyToClipboard} from '@xh/hoist/utils/js';
 import React, {useCallback, useEffect, useRef} from 'react';
 import {DocViewModel} from './DocViewModel';
 import './DocContent.scss';
@@ -160,7 +161,7 @@ function addCopyButtons(container: HTMLElement): Array<() => void> {
         btn.innerHTML = COPY_ICON_HTML;
         const onClick = (e: MouseEvent) => {
             e.stopPropagation();
-            copyTextToClipboard(code.textContent ?? '').then(
+            copyToClipboard(code.textContent ?? '').then(
                 () => {
                     btn.innerHTML = COPIED_ICON_HTML;
                     XH.toast({message: 'Copied to clipboard', intent: 'success'});
@@ -174,43 +175,4 @@ function addCopyButtons(container: HTMLElement): Array<() => void> {
         cleanups.push(() => btn.removeEventListener('click', onClick));
     });
     return cleanups;
-}
-
-/**
- * Copy text to the clipboard. Prefers the async Clipboard API, but falls back to a hidden-textarea
- * `execCommand('copy')` when it is unavailable - notably when the app is served over plain HTTP on a
- * LAN IP (e.g. on-device testing), where the Clipboard API is gated behind a secure context. The
- * fallback must run inside the user's tap (a trusted gesture) and uses a Range-based selection so it
- * also works on iOS Safari, where `textarea.select()` alone does not enable the copy command.
- */
-function copyTextToClipboard(text: string): Promise<void> {
-    if (navigator.clipboard?.writeText) {
-        return navigator.clipboard.writeText(text);
-    }
-
-    return new Promise((resolve, reject) => {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.setAttribute('readonly', '');
-        ta.style.position = 'fixed';
-        ta.style.top = '-1000px';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-
-        const selection = document.getSelection(),
-            range = document.createRange();
-        range.selectNodeContents(ta);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        ta.setSelectionRange(0, text.length);
-
-        try {
-            document.execCommand('copy') ? resolve() : reject(new Error('Copy command rejected'));
-        } catch (e) {
-            reject(e);
-        } finally {
-            selection.removeAllRanges();
-            document.body.removeChild(ta);
-        }
-    });
 }

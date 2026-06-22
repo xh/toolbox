@@ -1,4 +1,4 @@
-import {InitContext, loadAllAsync, managed, XH} from '@xh/hoist/core';
+import {InitContext, managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
@@ -153,6 +153,6 @@ export class AppModel extends BaseAppModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        await loadAllAsync([], loadSpec);
+        await XH.gitHubService.loadAsync(loadSpec);
     }
 }
