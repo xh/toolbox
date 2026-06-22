@@ -18,7 +18,7 @@ export const treeGridPanel = hoistCmp.factory({
         const {gridModel} = model;
         return wrapper({
             title: 'Tree Grid',
-            icon: Icon.grid(),
+            icon: Icon.treeList(),
             description: [
                 "Hoist's `Grid` renders hierarchical tree data directly, building on AG Grid's",
                 'support for nested data rows. The `GroupingChooser` component lets users control',
