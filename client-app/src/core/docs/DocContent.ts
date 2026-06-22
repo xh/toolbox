@@ -137,7 +137,7 @@ export const docContent = hoistCmp.factory<DocViewModel>({
 
 // Pre-rendered SVG markup for the copy control's two states. Built once via `Icon.x({asHtml})`
 // since the buttons live in imperative DOM (see `addCopyButtons`) rather than React elements.
-const COPY_ICON_HTML = Icon.clipboard({asHtml: true}),
+const COPY_ICON_HTML = Icon.copy({asHtml: true}),
     COPIED_ICON_HTML = Icon.check({asHtml: true, intent: 'success'});
 
 /**
