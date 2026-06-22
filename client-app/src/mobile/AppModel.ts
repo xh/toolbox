@@ -8,8 +8,10 @@ import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {runInAction} from '@xh/hoist/mobx';
 import {BaseAppModel} from '../BaseAppModel';
+import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
+import {docsPage} from './docs/DocsPage';
 import {HomeModel} from './home/HomeModel';
 import {NavBladeModel} from './cmp/navBlade/NavBladeModel';
 import {badgePage} from './badge/BadgePage';
@@ -69,7 +71,8 @@ export class AppModel extends BaseAppModel {
             {id: 'buttons', content: buttonPage},
             {id: 'icons', content: iconPage},
             {id: 'mask', content: maskPage},
-            {id: 'pinPad', content: pinPadPage}
+            {id: 'pinPad', content: pinPadPage},
+            {id: 'docs', content: docsPage}
         ]
     });
 
@@ -172,6 +175,11 @@ export class AppModel extends BaseAppModel {
                     {
                         name: 'pinPad',
                         path: '/pinPad'
+                    },
+                    {
+                        name: 'docs',
+                        path: '/docs',
+                        children: [{name: 'docRef', path: '/:source/:docId?section'}]
                     }
                 ]
             }
@@ -201,7 +209,7 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
-        await XH.installServicesAsync([GitHubService, PortfolioService], ctx);
+        await XH.installServicesAsync([DocService, GitHubService, PortfolioService], ctx);
     }
 
     override async doLoadAsync(loadSpec) {
