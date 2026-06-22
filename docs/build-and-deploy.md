@@ -114,14 +114,30 @@ in the `/docker/` directory. See the
 [hoist-react app build guide](https://github.com/xh/hoist-react/blob/develop/docs/build-and-deploy-app.md#docker-container-images)
 for details on the base images and container structure.
 
+## AWS Authentication (OIDC)
+
+Every job that touches AWS (ECR push/pull, the `:snapshot` retag in `promote`, and the ECS
+`update-service` deploys) authenticates with **GitHub OIDC** rather than long-lived access keys.
+Each such job:
+
+- declares `permissions: id-token: write` (alongside `contents: read`), which lets the runner mint
+  a short-lived GitHub OIDC token, and
+- passes `role-to-assume: arn:aws:iam::<account-id>:role/xh-github-actions-deploy` to
+  `aws-actions/configure-aws-credentials`, which exchanges that token for temporary STS credentials.
+
+The `xh-github-actions-deploy` IAM role trusts the `token.actions.githubusercontent.com` OIDC
+provider for the `xh` GitHub org and grants only what these workflows need: ECR authorization plus
+push/pull on `xh/*` repositories, and `ecs:UpdateService` / `ecs:DescribeServices` for the forced
+deployments. No static AWS keys are stored as repo secrets, so there is nothing to rotate. Jobs that
+do not touch AWS (e.g. `prepare`, `validate`, `release`) do not request `id-token` and keep a minimal
+permission scope.
+
 ## Required Secrets
 
 | Secret | Used By | Purpose |
 |--------|---------|---------|
-| `AWS_ACCESS_KEY_ID` | Build + Deploy | AWS credentials for ECR and ECS access |
-| `AWS_SECRET_ACCESS_KEY` | Build + Deploy | AWS credentials for ECR and ECS access |
 | `AWS_REGION` | Build + Deploy | AWS region for ECR and ECS |
-| `AWS_ACCOUNT_ID` | Build | Used to construct the ECR registry URL |
+| `AWS_ACCOUNT_ID` | Build + Deploy | Used to construct the ECR registry URL and the OIDC role ARN |
 | `FONTAWESOME_PACKAGE_TOKEN` | CI, Build | Auth token for the Font Awesome Pro npm registry (`npm.fontawesome.com`) |
 | `GITHUB_TOKEN` | Build Release | Provided automatically by GitHub Actions; used for `gh release create` |
 
