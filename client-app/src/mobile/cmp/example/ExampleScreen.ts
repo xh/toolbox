@@ -1,12 +1,13 @@
 import {div, filler, hbox, span, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
-import {hoistCmp, HoistProps, useLocalModel} from '@xh/hoist/core';
+import {hoistCmp, HoistProps, useLocalModel, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {button, ButtonProps} from '@xh/hoist/mobile/cmp/button';
 import {segmentedControl} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {isArray, isEmpty} from 'lodash';
 import {Children, ReactElement, ReactNode} from 'react';
+import {docRouteParams} from '../../../core/docs/DocUtils';
 import {toolboxUrl, ToolboxLinkProps} from '../../../core/cmp/ToolboxLink';
 import {pullUpSheet} from '../pullUpSheet/PullUpSheet';
 import {ExampleScreenModel} from './ExampleScreenModel';
@@ -226,8 +227,7 @@ const resourcesSegment = hoistCmp.factory({
             items: sorted.map(link =>
                 hbox({
                     className: 'tb-example-screen__resource',
-                    // No in-app docs reader on mobile yet - all links open in the system browser.
-                    onClick: () => window.open(toolboxUrl(link.url), '_blank'),
+                    onClick: () => openResource(link.url),
                     items: [
                         div({
                             className: 'tb-example-screen__resource-icon',
@@ -285,4 +285,16 @@ function defaultLinkText(url: string): string {
     const start = url.lastIndexOf('/'),
         end = url.includes('#') ? url.lastIndexOf('#') : url.length;
     return url.substring(start + 1, end);
+}
+
+/** Doc links deep-link into the in-app reader; code/external links open the system browser. */
+function openResource(url: string) {
+    const ref = docRouteParams(url);
+    if (ref) {
+        const params: Record<string, string> = {source: ref.source, docId: ref.docId};
+        if (ref.section) params.section = ref.section;
+        XH.navigate('default.docs.docRef', params);
+        return;
+    }
+    window.open(toolboxUrl(url), '_blank');
 }
