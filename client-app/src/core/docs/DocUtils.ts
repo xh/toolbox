@@ -108,7 +108,7 @@ export function extractSections(content: string): DocSection[] {
 }
 
 /** Remove inline markdown formatting (code, bold, italic, links) to get plain text. */
-export function stripInlineMarkdown(text: string): string {
+function stripInlineMarkdown(text: string): string {
     return text
         .replace(/`([^`]*)`/g, '$1')
         .replace(/\*\*([^*]*)\*\*/g, '$1')
