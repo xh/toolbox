@@ -1,6 +1,6 @@
 # Changelog
 
-## 9.0.0-SNAPSHOT - unreleased
+## 9.0.0 - 2026-06-22
 
 ### New Features
 
