@@ -64,7 +64,7 @@ export function resolveDocLink(currentDoc: DocEntry, href: string): DocEntry | u
     }
 
     if (currentDoc.source === 'hoist-core') {
-        const reactMatch = cleanHref.match(/^(?:\.\.\/)*hoist-react\/(.+)$/);
+        const reactMatch = resolved.match(/^(?:\.\.\/)*hoist-react\/(.+)$/);
         if (reactMatch) {
             return docService.registry.find(
                 e => e.source === 'hoist-react' && e.id === reactMatch[1]

@@ -72,6 +72,7 @@ export class DocsPanelModel extends DocViewModel {
     }
 
     override onLinked() {
+        super.onLinked();
         this.loadNav();
     }
 

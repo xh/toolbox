@@ -9,20 +9,22 @@ import {extractSections, resolveDocLink} from './DocUtils';
  * markdown content, parsed H2 sections, active/pending-scroll section state, and the bidirectional
  * sync between the active doc and the docs route.
  *
- * Both platforms anchor their docs route at `default.docs`, but the route *shape* differs: desktop
- * hangs a `docRef` child off the docs tab (`default.docs.docRef`), while mobile carries the doc
- * params directly on a single Navigator page route (`default.docs`). Subclasses set `docRouteName`
- * accordingly. Subclasses also add platform-specific chrome (desktop: tree-grid nav, search,
- * feedback dock; mobile: a Navigator page) and may override `onDocActivated` to react to doc changes.
+ * The route *shape* differs by platform, so subclasses set `docRouteName` and `isDocsRoute`: desktop
+ * hangs a `docRef` child off the docs tab (`default.docs.docRef`), while mobile mounts the reader as a
+ * drilldown child of the current example (`default.<example>.docs`) plus a standalone `default.docs`.
+ * Subclasses also add platform-specific chrome (desktop: tree-grid nav, search, feedback dock; mobile:
+ * a Navigator page) and may override `onDocActivated` to react to doc changes.
+ *
+ * Abstract: never instantiated directly - both platforms subclass it.
  */
-export class DocViewModel extends HoistModel {
+export abstract class DocViewModel extends HoistModel {
     protected readonly BASE_ROUTE = 'default.docs';
 
     /**
-     * Full route name that carries a specific doc's params. Defaults to the bare `BASE_ROUTE`, which
-     * is the platform-neutral anchor both clients share. The desktop viewer overrides this to add its
-     * `.docRef` child segment; the mobile reader carries the params directly on `BASE_ROUTE` and so
-     * uses this default as-is.
+     * Full route name to write a specific doc's params back to. Defaults to the bare `BASE_ROUTE`
+     * (the platform-neutral anchor). The desktop viewer overrides this to add its `.docRef` child
+     * segment; the mobile reader overrides it to the live current route name, so write-backs from
+     * in-content links stay on whichever `*.docs` route is currently active.
      */
     protected get docRouteName(): string {
         return this.BASE_ROUTE;
@@ -47,9 +49,16 @@ export class DocViewModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
+    }
 
+    /**
+     * Wire the route-sync reaction once linked (the Hoist-idiomatic place for reactions, vs. the
+     * constructor). Tracks the full `routerState` ref so route-*name* changes are caught too, not just
+     * param changes. Subclasses that override `onLinked` must call `super.onLinked()`.
+     */
+    override onLinked() {
         this.addReaction({
-            track: () => XH.routerState.params,
+            track: () => XH.routerState,
             run: () => this.updateDocFromRoute()
         });
     }
@@ -208,8 +217,12 @@ export class DocViewModel extends HoistModel {
             const content = await this.docService
                 .fetchContentAsync(entry.source, entry.id)
                 .linkTo(this.loadContentTask);
+            // Discard if the active doc changed while this fetch was in flight, so a slow earlier
+            // request cannot overwrite the content of a later navigation.
+            if (entry !== this.activeDoc) return;
             runInAction(() => (this.content = content));
         } catch (e) {
+            if (entry !== this.activeDoc) return;
             runInAction(() => {
                 this.content = `## Error Loading Document\n\nFailed to load **${entry.title}**.\n\n\`${e.message}\``;
             });

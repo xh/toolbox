@@ -18,6 +18,7 @@ export class DocsPageModel extends DocViewModel {
     }
 
     override onLinked() {
+        super.onLinked();
         this.loadInitialDocFromRoute();
     }
 }

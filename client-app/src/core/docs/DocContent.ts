@@ -14,7 +14,7 @@ import './DocContent.scss';
 export const docContent = hoistCmp.factory<DocViewModel>({
     displayName: 'DocContent',
     model: uses(DocViewModel),
-    className: 'xh-doc-content',
+    className: 'tb-doc-content',
 
     render({model, className}) {
         const {content, activeDoc, pendingScrollSection} = model,
@@ -125,7 +125,7 @@ export const docContent = hoistCmp.factory<DocViewModel>({
             ref: scrollRef,
             onClick: handleLinkClick,
             item: div({
-                className: 'xh-doc-content__inner',
+                className: 'tb-doc-content__inner',
                 item: markdown({content, lineBreaks: false})
             })
         });
@@ -141,13 +141,13 @@ export const docContent = hoistCmp.factory<DocViewModel>({
 function addCopyButtons(container: HTMLElement): Array<() => void> {
     const cleanups: Array<() => void> = [];
     container.querySelectorAll('pre').forEach(pre => {
-        if (pre.querySelector('.xh-doc-content__copy')) return;
+        if (pre.querySelector('.tb-doc-content__copy')) return;
         const code = pre.querySelector('code');
         if (!code) return;
 
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'xh-doc-content__copy';
+        btn.className = 'tb-doc-content__copy';
         btn.setAttribute('aria-label', 'Copy code');
         btn.textContent = 'Copy';
         const onClick = (e: MouseEvent) => {
