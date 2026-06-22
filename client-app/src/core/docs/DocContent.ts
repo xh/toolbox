@@ -152,8 +152,7 @@ function addCopyButtons(container: HTMLElement): Array<() => void> {
         btn.textContent = 'Copy';
         const onClick = (e: MouseEvent) => {
             e.stopPropagation();
-            const text = code.textContent ?? '';
-            navigator.clipboard?.writeText(text).then(
+            copyTextToClipboard(code.textContent ?? '').then(
                 () => {
                     btn.textContent = 'Copied';
                     XH.toast({message: 'Copied to clipboard', intent: 'success'});
@@ -167,4 +166,43 @@ function addCopyButtons(container: HTMLElement): Array<() => void> {
         cleanups.push(() => btn.removeEventListener('click', onClick));
     });
     return cleanups;
+}
+
+/**
+ * Copy text to the clipboard. Prefers the async Clipboard API, but falls back to a hidden-textarea
+ * `execCommand('copy')` when it is unavailable - notably when the app is served over plain HTTP on a
+ * LAN IP (e.g. on-device testing), where the Clipboard API is gated behind a secure context. The
+ * fallback must run inside the user's tap (a trusted gesture) and uses a Range-based selection so it
+ * also works on iOS Safari, where `textarea.select()` alone does not enable the copy command.
+ */
+function copyTextToClipboard(text: string): Promise<void> {
+    if (navigator.clipboard?.writeText) {
+        return navigator.clipboard.writeText(text);
+    }
+
+    return new Promise((resolve, reject) => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+
+        const selection = document.getSelection(),
+            range = document.createRange();
+        range.selectNodeContents(ta);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        ta.setSelectionRange(0, text.length);
+
+        try {
+            document.execCommand('copy') ? resolve() : reject(new Error('Copy command rejected'));
+        } catch (e) {
+            reject(e);
+        } finally {
+            selection.removeAllRanges();
+            document.body.removeChild(ta);
+        }
+    });
 }
