@@ -6,7 +6,7 @@ import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/form
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class StoreColumnFilterPanelModel extends HoistModel {
-    @bindable.ref filterJson: string = JSON.stringify(null);
+    @bindable filterJson: string = JSON.stringify(null);
 
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;

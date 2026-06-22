@@ -31,7 +31,7 @@ export abstract class DocViewModel extends HoistModel {
     }
 
     @observable.ref activeDoc: DocEntry = null;
-    @observable.ref content: string = null;
+    @observable content: string = null;
     @observable activeSection: string = null;
 
     /**
