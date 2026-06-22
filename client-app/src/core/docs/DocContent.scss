@@ -1,0 +1,171 @@
+.xh-doc-content {
+  overflow: auto;
+  flex: 1;
+
+  pre {
+    position: relative;
+  }
+
+  &__inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 40px 60px;
+
+    // Headings
+    h1 {
+      font-size: 1.8em;
+      border-bottom: 2px solid var(--xh-orange);
+      padding-bottom: 10px;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 1.4em;
+      border-bottom: 1px solid var(--xh-border-color);
+      padding-bottom: 6px;
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 1.15em;
+      margin-top: 24px;
+      margin-bottom: 12px;
+    }
+
+    h4 {
+      font-size: 1.05em;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    // Code blocks
+    pre {
+      background-color: var(--xh-bg-alt);
+      border: 1px solid var(--xh-border-color);
+      border-radius: 6px;
+      padding: 14px 18px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 16px 0;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+      font-size: 0.88em;
+    }
+
+    // Inline code
+    :not(pre) > code {
+      background-color: var(--xh-bg-alt);
+      border: 1px solid var(--xh-border-color);
+      border-radius: 3px;
+      padding: 1px 6px;
+    }
+
+    // Tables
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0;
+      font-size: 0.95em;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--xh-border-color);
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--xh-bg-alt);
+      font-weight: 600;
+    }
+
+    tr:hover td {
+      background-color: var(--xh-bg-highlight);
+    }
+
+    // Links deliberately unstyled - they pick up Blueprint's theme-aware anchor color and
+    // hover underline, matching links elsewhere in the app (e.g. the home page widgets).
+
+    // Lists
+    ul,
+    ol {
+      padding-left: 24px;
+      margin: 12px 0;
+    }
+
+    li {
+      margin: 6px 0;
+      line-height: 1.6;
+    }
+
+    li > ul,
+    li > ol {
+      margin: 4px 0;
+    }
+
+    // Blockquotes
+    blockquote {
+      border-left: 4px solid var(--xh-orange);
+      margin: 16px 0;
+      padding: 8px 16px;
+      background-color: var(--xh-bg-alt);
+      border-radius: 0 6px 6px 0;
+
+      p:first-child {
+        margin-top: 0;
+      }
+      p:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    // Horizontal rules
+    hr {
+      border: none;
+      border-top: 1px solid var(--xh-border-color);
+      margin: 32px 0;
+    }
+
+    // Paragraphs
+    p {
+      line-height: 1.7;
+      margin: 14px 0;
+    }
+
+    // Images - constrain width
+    img {
+      max-width: 100%;
+      border-radius: 4px;
+    }
+
+    // Strong emphasis
+    strong {
+      font-weight: 600;
+    }
+  }
+
+  &__copy {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--xh-border-color);
+    background: var(--xh-bg);
+    color: var(--xh-text-color-muted);
+    cursor: pointer;
+    opacity: 0.75;
+
+    &:hover {
+      opacity: 1;
+      color: var(--xh-text-color);
+    }
+  }
+}
