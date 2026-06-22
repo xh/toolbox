@@ -171,8 +171,7 @@ function rowContent(
             span({className: 'tb-manage-widgets__row-title', item: w.title}),
             filler(),
             switchInput({
-                // Mobile SwitchInputProps mistypes `value` as string; it is a boolean control.
-                value: onHome as any,
+                value: onHome,
                 onChange: v => model.setOnHome(w.id, v)
             })
         ]
