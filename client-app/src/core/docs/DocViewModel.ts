@@ -7,13 +7,25 @@ import {extractSections, resolveDocLink} from './DocUtils';
 /**
  * Shared, platform-neutral base for the documentation viewer. Owns the active doc, its loaded
  * markdown content, parsed H2 sections, active/pending-scroll section state, and the bidirectional
- * sync between the active doc and the `default.docs.docRef` route (identical on desktop + mobile).
+ * sync between the active doc and the docs route.
  *
- * Subclasses add platform-specific chrome (desktop: tree-grid nav, search, feedback dock; mobile:
- * a Navigator page) and may override `onDocActivated` to react to doc changes.
+ * Both platforms anchor their docs route at `default.docs`, but the route *shape* differs: desktop
+ * hangs a `docRef` child off the docs tab (`default.docs.docRef`), while mobile carries the doc
+ * params directly on a single Navigator page route (`default.docs`). Subclasses set `docRouteName`
+ * accordingly. Subclasses also add platform-specific chrome (desktop: tree-grid nav, search,
+ * feedback dock; mobile: a Navigator page) and may override `onDocActivated` to react to doc changes.
  */
 export class DocViewModel extends HoistModel {
     protected readonly BASE_ROUTE = 'default.docs';
+
+    /**
+     * Full route name that carries a specific doc's params. Defaults to the desktop shape
+     * (`<BASE_ROUTE>.docRef`); the mobile reader overrides this to `BASE_ROUTE` itself, since its
+     * Navigator page route holds the params directly with no child segment.
+     */
+    protected get docRouteName(): string {
+        return `${this.BASE_ROUTE}.docRef`;
+    }
 
     @observable.ref activeDoc: DocEntry = null;
     @observable.ref content: string = null;
@@ -140,13 +152,13 @@ export class DocViewModel extends HoistModel {
     }
 
     private updateRouteFromDoc() {
-        const {activeDoc, BASE_ROUTE} = this,
+        const {activeDoc, BASE_ROUTE, docRouteName} = this,
             {name} = XH.routerState;
         if (!name.startsWith(BASE_ROUTE)) return;
 
         if (activeDoc) {
             XH.navigate(
-                `${BASE_ROUTE}.docRef`,
+                docRouteName,
                 {source: activeDoc.source, docId: this.docIdToRoute(activeDoc.id)},
                 {replace: true}
             );

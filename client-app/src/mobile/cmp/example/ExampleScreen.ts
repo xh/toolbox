@@ -287,13 +287,17 @@ function defaultLinkText(url: string): string {
     return url.substring(start + 1, end);
 }
 
-/** Doc links deep-link into the in-app reader; code/external links open the system browser. */
+/**
+ * Doc links deep-link into the in-app reader; code/external links open the system browser. The
+ * mobile reader carries the doc params directly on its single `default.docs` Navigator route (no
+ * `docRef` child as on desktop).
+ */
 function openResource(url: string) {
     const ref = docRouteParams(url);
     if (ref) {
         const params: Record<string, string> = {source: ref.source, docId: ref.docId};
         if (ref.section) params.section = ref.section;
-        XH.navigate('default.docs.docRef', params);
+        XH.navigate('default.docs', params);
         return;
     }
     window.open(toolboxUrl(url), '_blank');
