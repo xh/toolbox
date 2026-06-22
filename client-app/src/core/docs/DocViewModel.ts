@@ -19,12 +19,13 @@ export class DocViewModel extends HoistModel {
     protected readonly BASE_ROUTE = 'default.docs';
 
     /**
-     * Full route name that carries a specific doc's params. Defaults to the desktop shape
-     * (`<BASE_ROUTE>.docRef`); the mobile reader overrides this to `BASE_ROUTE` itself, since its
-     * Navigator page route holds the params directly with no child segment.
+     * Full route name that carries a specific doc's params. Defaults to the bare `BASE_ROUTE`, which
+     * is the platform-neutral anchor both clients share. The desktop viewer overrides this to add its
+     * `.docRef` child segment; the mobile reader carries the params directly on `BASE_ROUTE` and so
+     * uses this default as-is.
      */
     protected get docRouteName(): string {
-        return `${this.BASE_ROUTE}.docRef`;
+        return this.BASE_ROUTE;
     }
 
     @observable.ref activeDoc: DocEntry = null;
@@ -120,6 +121,16 @@ export class DocViewModel extends HoistModel {
     @action
     setActiveSection(sectionId: string) {
         this.activeSection = sectionId;
+    }
+
+    /**
+     * Request a scroll to the given H2 section. Routes through `pendingScrollSection` so the single
+     * scroll-and-track path in `docContent` (shared by deep-link arrivals) does the work, rather than
+     * each caller reaching into the DOM.
+     */
+    @action
+    scrollToSection(sectionId: string) {
+        this.pendingScrollSection = sectionId;
     }
 
     @action

@@ -133,8 +133,10 @@ export const docContent = hoistCmp.factory<DocViewModel>({
 });
 
 /**
- * Inject a copy button into each fenced code block. Returns cleanup fns to remove listeners.
- * Guards against double-injection by checking for an existing copy button on the pre element.
+ * Inject a copy button into each fenced code block. This is deliberately imperative DOM work: the
+ * `markdown` component renders opaque HTML that is not addressable from React, so the buttons are
+ * appended directly to the rendered `<pre>` elements after each content render. Returns cleanup fns
+ * to remove listeners; guards against double-injection by checking for an existing button on the pre.
  */
 function addCopyButtons(container: HTMLElement): Array<() => void> {
     const cleanups: Array<() => void> = [];

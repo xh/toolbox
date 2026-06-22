@@ -75,6 +75,11 @@ export class DocsPanelModel extends DocViewModel {
         this.loadNav();
     }
 
+    /** Desktop hangs the active doc off a `docRef` child of the docs tab route. */
+    protected override get docRouteName(): string {
+        return `${this.BASE_ROUTE}.docRef`;
+    }
+
     /** Sync grid selection + exit search whenever a doc is activated. */
     protected override onDocActivated(entry: DocEntry) {
         const recId = `${entry.source}:${entry.id}`;
