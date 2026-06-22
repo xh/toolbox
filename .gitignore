@@ -27,6 +27,14 @@ toolbox-logs/
 *.log
 .tmp
 
+# Playwright artifacts (the playwright/ project has its own .gitignore but list root-level
+# entries here as a backstop for accidental commits from the repo root).
+/playwright/node_modules/
+/playwright/.auth/
+/playwright/test-results/
+/playwright/playwright-report/
+/playwright/results.xml
+
 # OS generated files
 .DS_Store
 .DS_Store?

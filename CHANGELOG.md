@@ -43,6 +43,14 @@
 * Downgraded toolbox build toolchain back to JDK 21 - JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
 * Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
 
+### New Features
+
+* Added a Playwright end-to-end testing setup at `playwright/` — a standalone npm project that drives a real Toolbox instance against bootstrapped local test users, providing the foundation for systematic Hoist-aware browser testing across the desktop app, admin console, and (planned) a dedicated component-scenario host sub-app.
+
+### Technical
+
+* Bootstrap now creates `test-admin@xh.io` and `test-user@xh.io` in local dev when `APP_TOOLBOX_TEST_USER_PASSWORD` is set, with `test-admin` granted `HOIST_ADMIN` via `RoleService`. Pair with `APP_TOOLBOX_OAUTH_PROVIDER=NONE` for the Hoist password login form used by the new Playwright suite.
+
 ### Libraries
 
 * @xh/hoist `85.0 → 86.0`
