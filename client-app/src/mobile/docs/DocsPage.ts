@@ -19,12 +19,12 @@ export const docsPage = hoistCmp.factory({
     model: creates(DocsPageModel),
 
     render({model}) {
-        const {activeDoc, loadContentTask} = model;
+        const {activeDoc} = model;
         return panel({
             className: 'tb-docs-page',
             title: activeDoc?.title ?? 'Docs',
             icon: Icon.book(),
-            mask: loadContentTask,
+            mask: 'onLoad',
             tbar: breadcrumbBar(),
             item: docContent({model})
         });

@@ -70,7 +70,7 @@ const navPanel = hoistCmp.factory<DocsPanelModel>({
 //------------------
 const contentPanel = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
-        const {activeDoc, loadContentTask, searchMode} = model;
+        const {activeDoc, searchMode} = model;
 
         if (searchMode) return searchPanel();
 
@@ -110,7 +110,7 @@ const contentPanel = hoistCmp.factory<DocsPanelModel>({
                 ]
             }),
             item: docContent(),
-            mask: loadContentTask
+            mask: 'onLoad'
         });
     }
 });

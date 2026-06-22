@@ -1,4 +1,4 @@
-import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSpec, XH} from '@xh/hoist/core';
 import {action, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {DocService} from '../svc/DocService';
 import {DocCategory, DocEntry, DocSection} from './types';
@@ -39,8 +39,6 @@ export abstract class DocViewModel extends HoistModel {
      * the view; not persisted to the URL (sections are scroll-to-on-arrival targets).
      */
     @observable pendingScrollSection: string = null;
-
-    @managed loadContentTask: TaskObserver = TaskObserver.trackLast();
 
     protected get docService(): DocService {
         return DocService.instance;
@@ -116,8 +114,9 @@ export abstract class DocViewModel extends HoistModel {
         this.activeDoc = entry;
         this.activeSection = null;
         this.pendingScrollSection = section ?? null;
+        this.content = null;
         this.onDocActivated(entry);
-        this.loadContentAsync(entry);
+        this.loadAsync();
         this.updateRouteFromDoc();
     }
 
@@ -211,20 +210,24 @@ export abstract class DocViewModel extends HoistModel {
         return {source, docId: docId.replaceAll('~', '/'), section: section ?? null};
     }
 
-    private async loadContentAsync(entry: DocEntry) {
-        runInAction(() => (this.content = null));
+    /**
+     * Load the active doc's markdown content. Triggered via `loadAsync()` on navigation (and on the
+     * standard mount / refresh / auto-refresh entry points). Routing this through the managed load
+     * lifecycle gives us `loadObserver` for masking and, crucially, `loadSpec.isStale` - so a slow
+     * earlier fetch cannot overwrite the content of a later navigation. `content` is cleared by
+     * `navigateToDoc` on a doc change (not here), so an auto-refresh of the same doc never blanks it.
+     */
+    override async doLoadAsync(loadSpec: LoadSpec) {
+        const {activeDoc} = this;
+        if (!activeDoc) return;
         try {
-            const content = await this.docService
-                .fetchContentAsync(entry.source, entry.id)
-                .linkTo(this.loadContentTask);
-            // Discard if the active doc changed while this fetch was in flight, so a slow earlier
-            // request cannot overwrite the content of a later navigation.
-            if (entry !== this.activeDoc) return;
+            const content = await this.docService.fetchContentAsync(activeDoc.source, activeDoc.id);
+            if (loadSpec.isStale) return;
             runInAction(() => (this.content = content));
         } catch (e) {
-            if (entry !== this.activeDoc) return;
+            if (loadSpec.isStale) return;
             runInAction(() => {
-                this.content = `## Error Loading Document\n\nFailed to load **${entry.title}**.\n\n\`${e.message}\``;
+                this.content = `## Error Loading Document\n\nFailed to load **${activeDoc.title}**.\n\n\`${e.message}\``;
             });
             XH.handleException(e, {showAlert: false});
         }
