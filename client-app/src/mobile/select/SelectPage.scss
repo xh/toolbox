@@ -1,0 +1,20 @@
+.tb-select-page {
+  &__row {
+    padding: var(--xh-pad-px) 0;
+  }
+
+  &__label {
+    font-size: var(--xh-font-size-px);
+    color: var(--xh-text-color);
+  }
+
+  &__info {
+    margin-top: 2px;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__control {
+    margin-top: var(--xh-pad-half-px);
+  }
+}

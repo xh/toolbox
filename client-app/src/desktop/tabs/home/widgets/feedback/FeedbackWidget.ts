@@ -29,7 +29,7 @@ const ratingPrompt = hoistCmp.factory<FeedbackWidgetModel>({
                 div({className: 'tb-feedback__question', item: 'Enjoying Hoist?'}),
                 div({
                     className: 'tb-feedback__sub',
-                    item: 'One click - painless, and genuinely read by the team.'
+                    item: 'One click - painless, and read by the team.'
                 }),
                 hbox({
                     className: 'tb-feedback__ratings',

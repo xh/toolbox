@@ -9,7 +9,7 @@ export const treeGridWithCheckboxPanel = hoistCmp.factory({
         const {gridModel} = model;
         return wrapper({
             title: 'Tree Grid with Checkboxes',
-            icon: Icon.grid(),
+            icon: Icon.treeList(),
             description: [
                 'This example builds on the Tree Grid, adding a checkbox to every node via a',
                 'custom column renderer. Checkbox values are synchronized up and down the',

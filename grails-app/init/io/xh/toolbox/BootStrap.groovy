@@ -352,6 +352,13 @@ class BootStrap implements LogSupport {
                 type: 'json',
                 defaultValue: [],
                 groupName: 'Toolbox'
+            ),
+            new PreferenceSpec(
+                name: 'mobileHomeWidgets',
+                type: 'json',
+                defaultValue: [:],
+                groupName: 'Toolbox',
+                notes: 'Per-user mobile home dashboard state: widget membership/order (homeIds, availableIds) and collapsed widget ids.'
             )
         ])
     }
