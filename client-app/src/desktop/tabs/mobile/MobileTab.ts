@@ -3,7 +3,7 @@ import {div, hbox, img, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {ReactElement} from 'react';
 import {wrapper, wrapperAction} from '../../common';
@@ -95,15 +95,10 @@ const FEATURES: MobileFeature[] = [
 
 /** Tracks which screen of the feature tour is active. */
 class MobileTabModel extends HoistModel {
-    @bindable selectedIdx = 0;
+    @bindable accessor selectedIdx = 0;
 
     get selected(): MobileFeature {
         return FEATURES[this.selectedIdx];
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 }
 

@@ -1,50 +1,36 @@
 import {HoistModel, PlainObject} from '@xh/hoist/core';
-import {bindable, observable, makeObservable} from '@xh/hoist/mobx';
+import {bindable, observable} from '@xh/hoist/mobx';
 import {times} from 'lodash';
 
 export class SelectTestModel extends HoistModel {
-    @bindable
-    selectValue: string;
+    @bindable accessor selectValue: string;
 
-    @bindable
-    creatableValue: string;
+    @bindable accessor creatableValue: string;
 
-    @bindable
-    asyncValue: number;
+    @bindable accessor asyncValue: number;
 
-    @bindable
-    asyncCreatableValue: number;
+    @bindable accessor asyncCreatableValue: number;
 
-    @bindable
-    groupedValue: string;
+    @bindable accessor groupedValue: string;
 
-    @bindable.ref
-    objectValue: PlainObject;
+    @bindable.ref accessor objectValue: PlainObject;
 
-    @bindable
-    bigValue: number;
+    @bindable accessor bigValue: number;
 
-    @bindable
-    numOptions = 1000;
+    @bindable accessor numOptions = 1000;
 
-    @observable
-    bigOptions;
+    @observable accessor bigOptions;
 
-    @bindable
-    asyncCreatableValue2: number;
+    @bindable accessor asyncCreatableValue2: number;
 
-    @bindable.ref
-    objectValue2: PlainObject;
+    @bindable.ref accessor objectValue2: PlainObject;
 
-    @bindable.ref
-    enableMultiLeftIcon: string[];
+    @bindable.ref accessor enableMultiLeftIcon: string[];
 
-    @bindable.ref
-    enableMultiMenuOpen: string[];
+    @bindable.ref accessor enableMultiMenuOpen: string[];
 
     constructor() {
         super();
-        makeObservable(this);
         this.addReaction({
             track: () => this.numOptions,
             run: () => (this.bigOptions = times(this.numOptions, i => `option: ${i}`)),

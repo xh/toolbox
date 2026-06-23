@@ -2,16 +2,16 @@ import {FormModel} from '@xh/hoist/cmp/form';
 import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {dateIs, lengthIs, numberIs, required, validEmail} from '@xh/hoist/data';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {filter} from 'lodash';
 
 export class FormPageModel extends HoistModel {
     // Display options, bound to the example sheet.
-    @bindable minimal: boolean = false;
-    @bindable commitOnChange: boolean = false;
-    @bindable requiredMarkers: boolean = true;
-    @bindable density: 'comfortable' | 'compact' = 'comfortable';
+    @bindable accessor minimal: boolean = false;
+    @bindable accessor commitOnChange: boolean = false;
+    @bindable accessor requiredMarkers: boolean = true;
+    @bindable accessor density: 'comfortable' | 'compact' = 'comfortable';
 
     @managed
     validateTask = TaskObserver.trackLast();
@@ -98,7 +98,6 @@ export class FormPageModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         const {formModel} = this;
         this.addReaction(

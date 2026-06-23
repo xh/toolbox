@@ -6,7 +6,7 @@ import {button} from '@xh/hoist/mobile/cmp/button';
 import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/mobile/cmp/toolbar';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import './PanelsPage.scss';
 
@@ -90,11 +90,6 @@ export const panelsPage = hoistCmp.factory({
 });
 
 class PanelsPageModel extends HoistModel {
-    @bindable mask: boolean = false;
-    @bindable loadingIndicator: boolean = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor mask: boolean = false;
+    @bindable accessor loadingIndicator: boolean = false;
 }

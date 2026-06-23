@@ -1,5 +1,5 @@
 import {HoistModel, LoadSpec, XH} from '@xh/hoist/core';
-import {action, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, computed, observable, runInAction} from '@xh/hoist/mobx';
 import {DocService} from '../svc/DocService';
 import {DocCategory, DocEntry, DocSection} from './types';
 import {extractSections, resolveDocLink} from './DocUtils';
@@ -30,23 +30,18 @@ export abstract class DocViewModel extends HoistModel {
         return this.BASE_ROUTE;
     }
 
-    @observable.ref activeDoc: DocEntry = null;
-    @observable content: string = null;
-    @observable activeSection: string = null;
+    @observable.ref accessor activeDoc: DocEntry = null;
+    @observable accessor content: string = null;
+    @observable accessor activeSection: string = null;
 
     /**
      * Section slug a deep-link requested we scroll to once content renders. Consumed and cleared by
      * the view; not persisted to the URL (sections are scroll-to-on-arrival targets).
      */
-    @observable pendingScrollSection: string = null;
+    @observable accessor pendingScrollSection: string = null;
 
     protected get docService(): DocService {
         return DocService.instance;
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     /**

@@ -5,7 +5,7 @@ import {autoRefreshAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/a
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {makeObservable, runInAction} from '@xh/hoist/mobx';
+import {runInAction} from '@xh/hoist/mobx';
 import {ReactElement} from 'react';
 import {isEmpty} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
@@ -80,11 +80,6 @@ import {
 export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     @managed
     tabModel: TabContainerModel = this.createTabContainerModel();

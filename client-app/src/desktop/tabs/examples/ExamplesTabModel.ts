@@ -1,7 +1,7 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {makeObservable, bindable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {p, strong} from '@xh/hoist/cmp/layout';
 
 export class ExamplesTabModel extends HoistModel {
@@ -13,7 +13,7 @@ export class ExamplesTabModel extends HoistModel {
         side: 'left'
     });
 
-    @bindable activeApp: string = 'Portfolio';
+    @bindable accessor activeApp: string = 'Portfolio';
 
     get activeAppConfig() {
         return this.examples.find(it => it.title === this.activeApp);
@@ -113,9 +113,4 @@ export class ExamplesTabModel extends HoistModel {
             ]
         }
     ];
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 }

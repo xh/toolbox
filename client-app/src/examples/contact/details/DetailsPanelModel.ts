@@ -1,13 +1,12 @@
 import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {required} from '@xh/hoist/data/validation/constraints';
-import {makeObservable, observable, action} from '@xh/hoist/mobx';
+import {observable, action} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
 import {DirectoryPanelModel} from '../DirectoryPanelModel';
 
 export class DetailsPanelModel extends HoistModel {
-    @observable.ref
-    currentRecord: StoreRecord;
+    @observable.ref accessor currentRecord: StoreRecord;
 
     @managed
     formModel: FormModel;
@@ -20,7 +19,6 @@ export class DetailsPanelModel extends HoistModel {
 
     constructor(directoryPanelModel) {
         super();
-        makeObservable(this);
         this.directoryPanelModel = directoryPanelModel;
 
         this.formModel = new FormModel({
