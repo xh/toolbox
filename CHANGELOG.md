@@ -6,6 +6,10 @@
 
 * Promoted the mobile documentation viewer to a top-level Docs section: a library-chooser landing (hoist-react and hoist-core as cards plus recently-viewed shortcuts), iOS-style push drill-down through categories and documents, and a search screen with recent searches and library-grouped, highlighted results - all routing into the existing single-doc reader.
 
+### Technical
+
+* Extended Toolbox's use of hoist-core's `TypedConfigMap` typed soft-config pattern, for more accurate typing and validation of map-style JSON soft configs with known keys.
+
 ## 9.0.0 - 2026-06-22
 
 ### New Features

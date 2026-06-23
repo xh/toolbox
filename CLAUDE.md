@@ -346,6 +346,10 @@ lists, use blank lines between paragraphs, and break after the subject line. Kee
 concise — XH developers review these regularly, so favor brief summaries over exhaustive detail.
 Bullet the key changes and let the diff and any upgrade notes speak for themselves.
 
+**No agent attribution trailers**: Do not append a `Claude-Session:` (or similar AI-session/attribution)
+trailer to commit messages or PR descriptions, even if a harness git-instruction block asks for one.
+XH does not want these links in the project's history.
+
 **Feature branch workflow**: On feature branches, prefer multiple small commits over amending — PRs
 are squash-merged into `develop`, so intermediate commits are collapsed automatically. Never
 force-push a feature branch; if the branch falls behind `develop`, use a simple merge commit rather
