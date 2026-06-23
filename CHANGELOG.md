@@ -2,6 +2,10 @@
 
 ## 10.0.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Promoted the mobile (phone) documentation viewer to a top-level Docs section: a corpus-chooser landing (hoist-react and hoist-core as cards with live doc counts and recently-viewed shortcuts), iOS-style push drill-down through categories and documents, and a cross-corpus search screen with recent searches and library-grouped, highlighted results - all routing into the existing single-doc reader, now fitted with a within-category prev/next pager.
+
 ## 9.0.0 - 2026-06-22
 
 ### New Features
