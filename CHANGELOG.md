@@ -2,6 +2,10 @@
 
 ## 10.0.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Extended Toolbox's use of hoist-core's `TypedConfigMap` typed soft-config pattern, for more accurate typing and validation of map-style JSON soft configs with known keys.
+
 ## 9.0.0 - 2026-06-22
 
 ### New Features
