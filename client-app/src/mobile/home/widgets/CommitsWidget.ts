@@ -1,0 +1,57 @@
+import {div, filler, span, vbox} from '@xh/hoist/cmp/layout';
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
+import {Commit} from '../../../core/svc/GitHubService';
+import './GitHubWidget.scss';
+
+// Cap the in-card list so a single widget stays a reasonable height; the full history lives on GitHub.
+const MAX_ROWS = 10;
+
+/**
+ * Mobile Recent Commits widget - a compact, tappable list of the latest commits across the Hoist
+ * repos, read live from {@link GitHubService}.
+ */
+export const commitsWidget = hoistCmp.factory({
+    displayName: 'CommitsWidget',
+    render() {
+        const commits = XH.gitHubService.allCommits;
+
+        if (!commits.length) {
+            return div({
+                className: 'tb-github-widget__empty',
+                item: 'GitHub commit data unavailable.'
+            });
+        }
+
+        return div({
+            className: 'tb-github-widget',
+            items: commits.slice(0, MAX_ROWS).map(it => commitRow({commit: it, key: it.id}))
+        });
+    }
+});
+
+const commitRow = hoistCmp.factory<HoistProps & {commit: Commit}>(({commit}) => {
+    const {repo, messageHeadline, authorName, committedDate, url} = commit;
+    return vbox({
+        className: 'tb-github-widget__row tb-github-widget__row--commit',
+        onClick: () => XH.openWindow(url, 'gitlink'),
+        items: [
+            // Line 1: repo chip badge on the left, author + recency pushed to the right.
+            div({
+                className: 'tb-github-widget__row-sub',
+                items: [
+                    span({
+                        className: `tb-github-widget__repo tb-github-widget__repo--${repo}`,
+                        item: repo
+                    }),
+                    filler(),
+                    span(authorName),
+                    span({className: 'tb-github-widget__row-dot', item: '·'}),
+                    relativeTimestamp({timestamp: committedDate, short: false})
+                ]
+            }),
+            // Line 2: commit subject, full width and left-aligned across every row (single line).
+            div({className: 'tb-github-widget__row-title', item: messageHeadline})
+        ]
+    });
+});

@@ -1,7 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hbox, hframe, hspacer, placeholder, span} from '@xh/hoist/cmp/layout';
-import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp, uses, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dockContainer} from '@xh/hoist/desktop/cmp/dock';
@@ -11,8 +10,8 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuItem, popover, tooltip} from '@xh/hoist/kit/blueprint';
 import {pluralize} from '@xh/hoist/utils/js';
-import React, {useCallback, useEffect, useRef} from 'react';
-import {resolveDocLink} from './docRegistry';
+import {useEffect, useRef} from 'react';
+import {docContent} from '../../../core/docs/DocContent';
 import {DocsPanelModel} from './DocsPanelModel';
 import {DocService} from '../../../core/svc/DocService';
 import './DocsTab.scss';
@@ -71,7 +70,7 @@ const navPanel = hoistCmp.factory<DocsPanelModel>({
 //------------------
 const contentPanel = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
-        const {activeDoc, loadContentTask, searchMode} = model;
+        const {activeDoc, searchMode} = model;
 
         if (searchMode) return searchPanel();
 
@@ -110,8 +109,8 @@ const contentPanel = hoistCmp.factory<DocsPanelModel>({
                     })
                 ]
             }),
-            item: contentBody(),
-            mask: loadContentTask
+            item: docContent(),
+            mask: 'onLoad'
         });
     }
 });
@@ -412,121 +411,6 @@ const feedbackPanel = hoistCmp.factory<DocsPanelModel>({
             )
         });
     }
-});
-
-//------------------
-// Content body
-//------------------
-const contentBody = hoistCmp.factory<DocsPanelModel>(({model}) => {
-    const {content, activeDoc, pendingScrollSection} = model,
-        scrollRef = useRef<HTMLDivElement>(null);
-
-    // Scroll to top when the active doc changes
-    useEffect(() => {
-        scrollRef.current?.scrollTo(0, 0);
-    }, [activeDoc]);
-
-    // After content renders: assign slug IDs to H2 elements and track active section.
-    useEffect(() => {
-        const container = scrollRef.current;
-        if (!container || !content) return;
-
-        // Assign IDs to H2s from the model's parsed sections, ensuring 1:1 correspondence.
-        const headings = container.querySelectorAll('h2'),
-            secs = model.sections;
-        headings.forEach((h2, i) => {
-            if (i < secs.length) h2.id = secs[i].id;
-        });
-
-        // Track active section based on scroll position - the last H2 that has
-        // scrolled past the top of the container is considered "active".
-        let ticking = false;
-        const onScroll = () => {
-            if (ticking) return;
-            ticking = true;
-            window.requestAnimationFrame(() => {
-                const containerTop = container.getBoundingClientRect().top;
-                let activeId: string = null;
-                container.querySelectorAll('h2[id]').forEach(h2 => {
-                    if (h2.getBoundingClientRect().top <= containerTop + 60) {
-                        activeId = h2.id;
-                    }
-                });
-                if (activeId !== model.activeSection) model.setActiveSection(activeId);
-                ticking = false;
-            });
-        };
-        container.addEventListener('scroll', onScroll, {passive: true});
-
-        return () => container.removeEventListener('scroll', onScroll);
-    }, [model, content]);
-
-    // Honor a deep-link's requested section: once content has rendered (so the H2 IDs assigned
-    // above exist), scroll to the matching heading and clear the request. Keyed on the pending
-    // section too, so same-doc section links re-scroll without a content reload.
-    useEffect(() => {
-        if (!content || !pendingScrollSection) return;
-        window.requestAnimationFrame(() => {
-            const target = document.getElementById(pendingScrollSection);
-            if (target) {
-                target.scrollIntoView({block: 'start'});
-                model.setActiveSection(pendingScrollSection);
-            }
-            model.clearPendingScrollSection();
-        });
-    }, [model, content, pendingScrollSection]);
-
-    // Handle clicks on links within the rendered markdown.
-    const handleLinkClick = useCallback(
-        (e: React.MouseEvent<HTMLDivElement>) => {
-            const anchor = (e.target as HTMLElement).closest('a');
-            if (!anchor) return;
-
-            const href = anchor.getAttribute('href');
-            if (!href) return;
-
-            // Anchor-only links: scroll to the section within the current doc.
-            if (href.startsWith('#')) {
-                e.preventDefault();
-                const sectionId = href.slice(1),
-                    el = document.getElementById(sectionId);
-                if (el) {
-                    el.scrollIntoView({behavior: 'smooth', block: 'start'});
-                    model.setActiveSection(sectionId);
-                }
-                return;
-            }
-
-            // Try to resolve as an internal doc link
-            if (activeDoc && !href.startsWith('http')) {
-                e.preventDefault();
-                const target = resolveDocLink(activeDoc, href);
-                if (target) model.navigateToDoc(target.id, target.source);
-                // Unresolved relative links (e.g. .ts source files) are silently
-                // consumed to prevent the browser from navigating away from the SPA.
-                return;
-            }
-
-            // External links: open in new tab
-            if (href.startsWith('http')) {
-                e.preventDefault();
-                window.open(href, '_blank', 'noopener');
-            }
-        },
-        [model, activeDoc]
-    );
-
-    if (!content) return null;
-
-    return div({
-        className: 'tb-docs__content-body',
-        ref: scrollRef,
-        onClick: handleLinkClick,
-        item: div({
-            className: 'tb-docs__content-inner',
-            item: markdown({content, lineBreaks: false})
-        })
-    });
 });
 
 //------------------

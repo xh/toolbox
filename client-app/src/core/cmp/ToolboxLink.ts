@@ -1,5 +1,6 @@
 import {a} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
+import {docRouteParams} from '../docs/DocUtils';
 
 export interface ToolboxLinkProps extends HoistProps {
     /**
@@ -60,30 +61,6 @@ export function toolboxUrl(url: string) {
 }
 
 const DOCS_ROUTE = 'default.docs.docRef';
-
-/** Source repo tokens (matching the `$HR`/`$HC` url prefixes) → doc viewer source names. */
-const DOC_SOURCE_TOKENS: Record<string, string> = {
-    $HR: 'hoist-react',
-    $HC: 'hoist-core'
-};
-
-/**
- * Parse a Markdown doc url (e.g. `$HR/cmp/grid/README.md#tree-grids`) into the params needed to
- * route into Toolbox's document viewer: the `source` repo, the `docId` (file path, with `/`
- * encoded as `~` for the route), and an optional `section` (an H2 slug). Returns null for any url
- * that is not a repo-relative `.md` doc, so source-code and external links fall through to the
- * standard external-link behavior.
- */
-function docRouteParams(url: string): {source: string; docId: string; section: string} | null {
-    const [token, ...rest] = url.split('/');
-    const source = DOC_SOURCE_TOKENS[token];
-    if (!source || rest.length === 0) return null;
-
-    const [path, section] = rest.join('/').split('#');
-    if (!path.endsWith('.md')) return null;
-
-    return {source, docId: path.replaceAll('/', '~'), section: section ?? null};
-}
 
 function createDefaultText(url: string) {
     const start = url.lastIndexOf('/'),

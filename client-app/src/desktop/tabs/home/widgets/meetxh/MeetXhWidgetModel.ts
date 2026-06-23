@@ -21,16 +21,23 @@ export class MeetXhWidgetModel extends HoistModel {
     /** Timestamp of the last user-driven spotlight pick - rotation holds off while recent. */
     private lastUserPick = 0;
 
+    /** Whether to auto-rotate the spotlight on a timer (default true; mobile opts out). */
+    private readonly autoRotate: boolean;
+
     get spotlightContact(): XhContact {
         return this.contacts.find(it => it.id === this.spotlightId);
     }
 
-    constructor() {
+    constructor({autoRotate = true}: {autoRotate?: boolean} = {}) {
         super();
         makeObservable(this);
+        this.autoRotate = autoRotate;
     }
 
     override onLinked() {
+        // Mobile opts out of auto-rotation - it shifts the card height; there, first-load
+        // randomization plus the manual shuffle button are enough.
+        if (!this.autoRotate) return;
         this.markManaged(
             Timer.create({
                 runFn: () => {

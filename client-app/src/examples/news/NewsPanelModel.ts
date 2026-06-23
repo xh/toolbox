@@ -41,7 +41,7 @@ export class NewsPanelModel extends HoistModel {
     @observable.ref
     sourceOptions: string[] = [];
     @bindable.ref
-    private sourceFilterValues = null;
+    private sourceFilterValues: string[] = null;
     private lastRefresh: Date;
 
     constructor() {

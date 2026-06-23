@@ -4,3 +4,17 @@
 // Wrapper texture, and `xh-tiled-bg`. The viewport background formerly set here (a tiled
 // `xh-logo-bg.png`) is now owned by this partial via the shared `--tbox-tile` var.
 @use './XhTilePatterns';
+
+// Mirror the active theme's color-scheme onto <html>. Hoist applies the theme (color-scheme and
+// the --xh-* vars) to <body>, leaving the document root light. Browsers derive the backdrop of
+// their own chrome and the overscroll / safe areas from the *root* element, so a light root reads
+// as a jarring light band behind a dark app - most visibly in mobile Safari's top and bottom bars.
+// Declaring color-scheme on <html> gives the root canvas a matching dark (or light) UA backdrop.
+// (Reads the theme class Hoist sets on the direct child <body> via :has().)
+html {
+  color-scheme: light;
+
+  &:has(> body.xh-dark) {
+    color-scheme: dark;
+  }
+}
