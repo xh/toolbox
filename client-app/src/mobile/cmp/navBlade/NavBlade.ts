@@ -66,6 +66,15 @@ const bladeNav = hoistCmp.factory<NavBladeModel>({
                     active: model.isRouteActive(model.homeRoute),
                     onClick: () => model.navigateTo(model.homeRoute)
                 }),
+                // Docs is a top-level destination, not an example - it sits directly under Home,
+                // separated from the example-category groups by a hairline rule.
+                navRow({
+                    icon: Icon.book(),
+                    text: 'Docs',
+                    active: model.isRouteActive(model.docsRoute),
+                    onClick: () => model.navigateTo(model.docsRoute)
+                }),
+                div({className: 'tb-nav-blade__rule'}),
                 ...model.groups.map(group => navGroup({model, group}))
             ]
         });

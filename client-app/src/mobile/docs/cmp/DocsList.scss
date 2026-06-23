@@ -1,0 +1,68 @@
+// Shared list styling for the docs drill-down screens (corpus category list + category doc list).
+.tb-docs-list {
+  &__header {
+    padding: var(--xh-pad-px);
+    border-bottom: var(--xh-border-solid);
+  }
+
+  &__header-title {
+    font-size: var(--xh-font-size-large-px);
+    font-weight: 600;
+    color: var(--xh-text-color);
+  }
+
+  &__header-sub {
+    margin-top: 2px;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__row {
+    align-items: center;
+    gap: var(--xh-pad-px);
+    min-height: 52px;
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+    border-bottom: var(--xh-border-solid);
+    cursor: pointer;
+
+    &:active {
+      background: var(--xh-bg-highlight);
+    }
+  }
+
+  &__row-icon {
+    flex: none;
+    width: 20px;
+    text-align: center;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__row-text {
+    overflow: hidden;
+  }
+
+  &__row-title {
+    font-size: var(--xh-font-size-px);
+    color: var(--xh-text-color);
+  }
+
+  &__row-subtitle {
+    margin-top: 1px;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__row-count {
+    flex: none;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__row-chevron {
+    flex: none;
+    color: var(--xh-text-color-muted);
+  }
+}

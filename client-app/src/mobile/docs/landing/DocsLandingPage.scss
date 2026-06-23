@@ -1,0 +1,158 @@
+.tb-docs-landing {
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--xh-pad-px) + var(--xh-pad-half-px));
+    padding: var(--xh-pad-px) var(--xh-pad-double-px);
+  }
+
+  //------------------------
+  // Search trigger
+  //------------------------
+  &__search {
+    align-items: center;
+    gap: var(--xh-pad-half-px);
+    height: 40px;
+    padding: 0 var(--xh-pad-px);
+    background: var(--xh-bg-alt);
+    border: var(--xh-border-solid);
+    border-radius: var(--xh-border-radius-px);
+    color: var(--xh-text-color-muted);
+    cursor: pointer;
+
+    &:active {
+      background: var(--xh-bg-highlight);
+    }
+  }
+
+  &__search-icon {
+    color: var(--xh-text-color-muted);
+  }
+
+  &__search-text {
+    font-size: var(--xh-font-size-px);
+  }
+
+  //------------------------
+  // Intro
+  //------------------------
+  &__intro {
+    font-size: var(--xh-font-size-px);
+    color: var(--xh-text-color-muted);
+    line-height: 1.4;
+  }
+
+  //------------------------
+  // Corpus cards
+  //------------------------
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-pad-half-px);
+  }
+
+  &__card {
+    align-items: center;
+    gap: var(--xh-pad-px);
+    padding: var(--xh-pad-px);
+    background: var(--xh-bg-alt);
+    border: var(--xh-border-solid);
+    border-radius: var(--xh-border-radius-px);
+    cursor: pointer;
+
+    &:active {
+      background: var(--xh-bg-highlight);
+    }
+  }
+
+  &__card-icon {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    border-radius: var(--xh-border-radius-px);
+    background: var(--xh-bg);
+    color: var(--xh-orange);
+  }
+
+  &__card-text {
+    overflow: hidden;
+  }
+
+  &__card-label {
+    font-size: var(--xh-font-size-large-px);
+    font-weight: 600;
+    color: var(--xh-text-color);
+  }
+
+  &__card-tagline {
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__card-count {
+    margin-top: 2px;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__card-chevron {
+    flex: none;
+    color: var(--xh-text-color-muted);
+  }
+
+  //------------------------
+  // Recently viewed
+  //------------------------
+  &__section-title {
+    margin: var(--xh-pad-half-px) 0;
+    font-size: var(--xh-font-size-small-px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__recent-row {
+    align-items: center;
+    gap: var(--xh-pad-px);
+    height: 52px;
+    padding: 0 var(--xh-pad-px);
+    border-bottom: var(--xh-border-solid);
+    cursor: pointer;
+
+    &:active {
+      background: var(--xh-bg-highlight);
+    }
+  }
+
+  &__recent-icon {
+    flex: none;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__recent-text {
+    overflow: hidden;
+  }
+
+  &__recent-title {
+    font-size: var(--xh-font-size-px);
+    color: var(--xh-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__recent-src {
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__recent-chevron {
+    flex: none;
+    color: var(--xh-text-color-muted);
+  }
+}

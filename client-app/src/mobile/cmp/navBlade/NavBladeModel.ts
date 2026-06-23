@@ -2,6 +2,7 @@ import {HoistModel, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {ReactElement} from 'react';
+import {DocService} from '../../../core/svc/DocService';
 
 /** A single navigable leaf within the blade - maps to a fully-qualified app route. */
 export interface NavBladeItem {
@@ -21,6 +22,16 @@ export interface NavBladeGroup {
 /** Route name of the standalone Home destination. */
 const HOME_ROUTE = 'default';
 
+/** Route name of the standalone Docs section (the corpus-chooser landing). */
+const DOCS_ROUTE = 'default.docs';
+
+/**
+ * App-bar center title for docs drill-down screens. The shell's `appBar` falls back to the app name
+ * on an empty string, so we use a single space to leave it visually blank - the large in-body title
+ * and the parent-named back chevron carry the context (iOS large-title style).
+ */
+const BLANK_TITLE = ' ';
+
 /**
  * State + behavior for the mobile navigation blade (left drawer).
  *
@@ -37,6 +48,10 @@ export class NavBladeModel extends HoistModel {
 
     get homeRoute(): string {
         return HOME_ROUTE;
+    }
+
+    get docsRoute(): string {
+        return DOCS_ROUTE;
     }
 
     readonly groups: NavBladeGroup[] = [
@@ -150,20 +165,56 @@ export class NavBladeModel extends HoistModel {
      */
     get isTopLevelRoute(): boolean {
         const {name} = XH.routerState;
-        return name === HOME_ROUTE || this.groups.some(g => g.items.some(it => it.route === name));
+        return (
+            name === HOME_ROUTE ||
+            name === DOCS_ROUTE ||
+            this.groups.some(g => g.items.some(it => it.route === name))
+        );
     }
 
     /**
      * Display title for the active section, shown in the app bar in place of the app name. Resolves
      * the current route against the nav catalog, matching the nearest ancestor section - so a
-     * drilldown route (e.g. a grid's single-record detail) keeps its parent section's title.
+     * drilldown route (e.g. a grid's single-record detail) keeps its parent section's title. Docs
+     * drill-down screens (and the example doc reader) render their own large in-body title, so the
+     * bar is left blank there.
      */
     get activeTitle(): string {
-        if (this.isRouteActive(HOME_ROUTE)) return 'Home';
+        const {name} = XH.routerState;
+        if (name === HOME_ROUTE) return 'Home';
+        if (name === DOCS_ROUTE) return 'Docs';
+        if (name.startsWith(DOCS_ROUTE + '.') || name.endsWith('.doc')) return BLANK_TITLE;
         for (const group of this.groups) {
             const item = group.items.find(it => this.isRouteActive(it.route));
             if (item) return item.text;
         }
         return XH.clientAppName;
+    }
+
+    /**
+     * Parent-screen name for the app-bar back chevron on the docs drill-down (iOS Settings style:
+     * "< Docs", "< Hoist React", "< Concepts"). Returns null elsewhere so non-docs back buttons stay
+     * icon-only, matching the rest of the app.
+     */
+    get backLabel(): string {
+        const {name, params} = XH.routerState,
+            docService = DocService.instance;
+        switch (name) {
+            case 'default.docs.corpus':
+            case 'default.docs.search':
+                return 'Docs';
+            case 'default.docs.corpus.category':
+                return docService.getSourceLabel(params.source);
+            case 'default.docs.corpus.category.doc': {
+                const cat = docService
+                    .getCategories(params.source)
+                    .find(c => c.id === params.categoryId);
+                return cat?.title ?? docService.getSourceLabel(params.source);
+            }
+            case 'default.docs.search.doc':
+                return 'Search';
+            default:
+                return null;
+        }
     }
 }

@@ -12,6 +12,10 @@ import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {docsPage} from './docs/DocsPage';
+import {docsLandingPage} from './docs/landing/DocsLandingPage';
+import {docsCorpusPage} from './docs/corpus/DocsCorpusPage';
+import {docsCategoryPage} from './docs/category/DocsCategoryPage';
+import {docsSearchPage} from './docs/search/DocsSearchPage';
 import {HomeModel} from './home/HomeModel';
 import {NavBladeModel} from './cmp/navBlade/NavBladeModel';
 import {badgePage} from './badge/BadgePage';
@@ -72,17 +76,24 @@ export class AppModel extends BaseAppModel {
             {id: 'icons', content: iconPage},
             {id: 'mask', content: maskPage},
             {id: 'pinPad', content: pinPadPage},
-            {id: 'docs', content: docsPage}
+            // Standalone Docs section: landing (corpus chooser) -> corpus -> category -> reader,
+            // plus a dedicated search screen. The reader (`doc`) is reused at every mount point.
+            {id: 'docs', content: docsLandingPage},
+            {id: 'corpus', content: docsCorpusPage},
+            {id: 'category', content: docsCategoryPage},
+            {id: 'search', content: docsSearchPage},
+            {id: 'doc', content: docsPage}
         ]
     });
 
     override getRoutes() {
-        // The in-app docs reader is registered as a drilldown child of every example, so opening a
-        // doc from an example stacks the reader on top of it - the standard app-bar back button and
-        // the Navigator edge-swipe then both return to the example, exactly like the grid -> detail
-        // drilldown. It is also registered as a standalone child of `default` for cold deep-links and
-        // the home page, where there is no example to return to.
-        const docsRoute = () => ({name: 'docs', path: '/docs/:source/:docId?section'});
+        // The single-doc reader (`doc`) is registered at three nodes, so its back-target always
+        // follows its push origin via the Navigator stack: (1) a drilldown child of every example
+        // (a Resources doc link stacks the reader on the example, back returns there); (2) the deepest
+        // segment of the standalone docs browse stack (back climbs to the category doc list); and
+        // (3) a child of the search screen (back returns to the results). The standalone Docs section
+        // (`docs`) is the corpus-chooser landing - a top-level destination reached from the nav blade.
+        const docReaderRoute = () => ({name: 'doc', path: '/doc/:source/:docId?section'});
 
         const examples = [
             {name: 'grid', path: '/grid', children: [{name: 'gridDetail', path: '/:id<\\d+>'}]},
@@ -119,8 +130,29 @@ export class AppModel extends BaseAppModel {
                 name: 'default',
                 path: '/mobile',
                 children: [
-                    ...examples.map(r => ({...r, children: [...r.children, docsRoute()]})),
-                    docsRoute()
+                    ...examples.map(r => ({...r, children: [...r.children, docReaderRoute()]})),
+                    {
+                        name: 'docs',
+                        path: '/docs',
+                        children: [
+                            {
+                                name: 'corpus',
+                                path: '/browse/:source',
+                                children: [
+                                    {
+                                        name: 'category',
+                                        path: '/:categoryId',
+                                        children: [{name: 'doc', path: '/:docId?section'}]
+                                    }
+                                ]
+                            },
+                            {
+                                name: 'search',
+                                path: '/search',
+                                children: [{name: 'doc', path: '/:source/:docId?section'}]
+                            }
+                        ]
+                    }
                 ]
             }
         ];
