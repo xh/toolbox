@@ -39,7 +39,8 @@ export class NewsPanelModel extends HoistModel {
     });
 
     @observable.ref accessor sourceOptions: string[] = [];
-    @bindable.ref private accessor sourceFilterValues = null;
+
+    @bindable.ref private accessor sourceFilterValues: string[] = null;
     private lastRefresh: Date;
 
     constructor() {

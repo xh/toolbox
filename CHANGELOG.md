@@ -1,6 +1,28 @@
 # Changelog
 
-## 9.0.0-SNAPSHOT - unreleased
+## 10.0.0-SNAPSHOT - unreleased
+
+## 9.0.0 - 2026-06-22
+
+### New Features
+
+* Carried the desktop redesign to the mobile (phone) client, fronted by a new left navigation blade - a drawer grouping the example catalog into expandable categories with theme and settings docked in its footer.
+* Gave every mobile example a consistent screen pattern: the demo stays full-bleed while a pull-up sheet surfaces Info, Options, and Resources.
+* Replaced the static mobile home page with a personalizable widget dashboard of collapsible cards (Welcome, Start Here, Hoist Releases, Recent Commits, Meet XH, Enjoying Hoist?) mirroring desktop, with a "Manage widgets" sheet to toggle and drag-reorder widgets.
+* Expanded the mobile example library: new Inputs, Select, Badge, Mask, and Tabs screens, a filterable tap-to-copy Icons gallery, Forms recast as a validated candidate-intake form, and expanded runtime display options across examples.
+* Added an in-app documentation reader to the mobile client - tapping a "Docs" resource link opens that doc inside Toolbox with rendered markdown, an "On this page" section jump, tap-to-copy code blocks, and in-content doc-to-doc links; its platform-neutral core code is shared by both clients.
+* Added Slack as a second channel for home-page user feedback: feedback now posts a Block Kit message to a configurable Slack channel alongside the existing email notification, demonstrating an outbound Slack integration via the Slack Web API.
+* Improved the formatting on pre-existing Slack alerts for client error and status monitor reporting.
+
+### Technical
+
+* The feedback widget now coalesces each interaction (sentiment click plus optional comment) into a single activity-tracking entry on the client, using a typing-reset inactivity timer plus a page-teardown flush that reacts to `XH.pageState` and relies on `TrackService`'s keepalive flush - eliminating duplicate feedback emails/Slack posts and capturing reliably on unload.
+* Typed the `slackAlertConfig` soft config with hoist-core's `TypedConfigMap`, adding per-notification-type enable flags.
+* Instrumented `SlackAlertService`'s send path with a Hoist `ObservedRun` counter (`toolbox.slack.messagesSent`, tagged by message type and an automatic success/failure outcome), demonstrating the framework's OTEL metrics builder alongside its tracing.
+
+### Libraries
+
+* @xh/hoist `86.0 → 87.0`
 
 ## 8.5.0 - 2026-06-12
 

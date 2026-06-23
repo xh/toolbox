@@ -44,10 +44,7 @@ class OptionsWidgetModel extends HoistModel {
         this.addReaction({
             track: () => viewModel.viewState?.value,
             run: value =>
-                this.setBindable(
-                    'value',
-                    OPTIONS.some(o => o.value === value) ? value : DEFAULT_VALUE
-                ),
+                (this.value = OPTIONS.some(o => o.value === value) ? value : DEFAULT_VALUE),
             fireImmediately: true
         });
 

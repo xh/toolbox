@@ -165,7 +165,7 @@ export const expandCollapseButton = hoistCmp.factory<ExpandCollapseButtonProps>(
                 } else {
                     gridModel.expandAll();
                 }
-                model.setBindable('expanded', !model.expanded);
+                model.expanded = !model.expanded;
             }
         });
     }

@@ -14,7 +14,7 @@ export const panelSizingPanel = hoistCmp.factory({
     render({model}) {
         return wrapper({
             title: 'Panel Sizing',
-            icon: Icon.window(),
+            icon: Icon.expand(),
             description: [
                 'Panels support collapsing, drag-and-drop resizing, and a toggleable modal',
                 'view via their `PanelModel` config, optionally saving their sizing state in a',

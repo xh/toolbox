@@ -49,7 +49,7 @@ export const errorMessagePanel = hoistCmp.factory({
                         }
                     }),
                     vframe({
-                        omit: error,
+                        omit: !!error,
                         items: [
                             'Everything is OK right now, but....',
                             button({
@@ -73,7 +73,7 @@ export const errorMessagePanel = hoistCmp.factory({
 });
 
 class ErrorMessagePanelModel extends HoistModel {
-    @bindable.ref accessor error = null;
+    @bindable.ref accessor error: unknown = null;
 
     // Manufacture an error. In the real world, this code would do something that might break
     // like load/process data from an API, but still follow pattern of setting and clearing an

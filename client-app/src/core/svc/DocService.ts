@@ -1,7 +1,7 @@
 import {HoistService, InitContext, XH} from '@xh/hoist/core';
 import {observable, runInAction} from '@xh/hoist/mobx';
 import MiniSearch from 'minisearch';
-import {DocCategory, DocEntry, DocSourceInfo} from '../../desktop/tabs/docs/docRegistry';
+import {DocCategory, DocEntry, DocSourceInfo} from '../docs/types';
 
 export interface DocSearchResult {
     entry: DocEntry;
