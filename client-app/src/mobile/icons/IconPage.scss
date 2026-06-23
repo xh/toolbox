@@ -1,35 +1,52 @@
 .tb-icon-page {
-  table {
-    max-width: 100%;
-    border-collapse: collapse;
+  .tb-icon-page__count {
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+    padding-right: var(--xh-pad-half-px);
+  }
 
-    th {
-      width: 25%;
-      padding: var(--xh-pad-half-px);
-      text-transform: capitalize;
-      background-color: var(--xh-grid-header-bg);
-      border-bottom: var(--xh-border-solid);
+  // Wrapping grid of equal-size tiles.
+  &__gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: var(--xh-pad-px);
+    padding: var(--xh-pad-px);
+  }
+
+  &__tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--xh-pad-half-px);
+    padding: var(--xh-pad-px) var(--xh-pad-half-px);
+    border: var(--xh-border-solid);
+    border-radius: 8px;
+    background-color: var(--xh-bg-alt);
+    cursor: pointer;
+    overflow: hidden;
+
+    &:active {
+      background-color: var(--xh-bg-highlight);
     }
+  }
 
-    tr {
-      background-color: var(--xh-grid-bg);
+  &__glyph {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--xh-text-color);
+  }
 
-      &:nth-child(odd) {
-        background-color: var(--xh-grid-bg-odd);
-      }
-
-      td {
-        padding: var(--xh-pad-px);
-
-        &:first-child {
-          font-family: var(--xh-font-family-mono);
-          font-size: var(--xh-font-size-small-em);
-        }
-
-        &:not(:first-child) {
-          text-align: center;
-        }
-      }
-    }
+  &__name {
+    width: 100%;
+    text-align: center;
+    font-family: var(--xh-font-family-mono);
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

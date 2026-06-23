@@ -1,16 +1,47 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
-import {observable, makeObservable, action} from '@xh/hoist/mobx';
 import {p} from '@xh/hoist/cmp/layout';
+import {Icon} from '@xh/hoist/icon';
+import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
+import {action, makeObservable, observable} from '@xh/hoist/mobx';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {wait} from '@xh/hoist/promise';
+import {exampleAction, exampleScreen} from '../cmp/example/ExampleScreen';
 import './PinPadPage.scss';
 
 export const pinPadPage = hoistCmp.factory({
     model: creates(() => PinPadPageModel),
 
     render({model}) {
-        return !model.loggedIn ? pinPad() : secretPlans();
+        return exampleScreen({
+            title: 'PinPad',
+            icon: Icon.unlock(),
+            description: [
+                '`PinPad` is a specialized numeric input for lightweight authentication, such as',
+                'unlocking a kiosk or confirming a sensitive action.',
+                '',
+                'Its `PinPadModel` drives the displayed header, subheader, and error text and exposes',
+                'the entered value, letting the application validate the PIN, enforce attempt limits,',
+                'and lock out repeated failures.',
+                '',
+                'Enter the PIN **12345** below to unlock the demo.'
+            ],
+            options: [
+                exampleAction({
+                    text: 'Reset',
+                    icon: Icon.reset(),
+                    onClick: () => model.reset()
+                })
+            ],
+            links: [
+                {url: '$TB/client-app/src/mobile/pinPad/PinPadPage.ts', notes: 'This example.'},
+                {url: '$HR/cmp/pinpad/PinPad.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/cmp/pinpad/PinPadModel.ts',
+                    notes: 'Hoist component model - primary API and configuration point for pin pads.'
+                }
+            ],
+            item: !model.loggedIn ? pinPad() : secretPlans()
+        });
     }
 });
 
@@ -93,5 +124,19 @@ class PinPadPageModel extends HoistModel {
 
             this.attempts++;
         }
+    }
+
+    @action
+    reset() {
+        const {pinPadModel: pad} = this;
+
+        pad.headerText = 'Enter PIN...';
+        pad.subHeaderText = '';
+        pad.errorText = '';
+        pad.disabled = false;
+        pad.clear();
+
+        this.attempts = 0;
+        this.loggedIn = false;
     }
 }

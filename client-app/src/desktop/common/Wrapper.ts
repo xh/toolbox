@@ -103,7 +103,7 @@ const infoRail = hoistCmp.factory<InfoRailProps>({
                 button({
                     icon: Icon.chevronLeft(),
                     title: 'Collapse info panel',
-                    onClick: () => railModel.setBindable('collapsed', true)
+                    onClick: () => (railModel.collapsed = true)
                 })
             ],
             item: div({
@@ -270,7 +270,7 @@ const resources = hoistCmp.factory<ResourcesProps>({
 
 const collapsedRail = hoistCmp.factory<{railModel: WrapperRailModel} & HoistProps>({
     render({railModel}) {
-        const expand = () => railModel.setBindable('collapsed', false);
+        const expand = () => (railModel.collapsed = false);
         return vbox({
             className: 'tbox-wrapper__rail-collapsed',
             title: 'Show info panel',

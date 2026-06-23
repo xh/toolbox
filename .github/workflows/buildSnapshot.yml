@@ -47,6 +47,7 @@ jobs:
 
         runs-on: ubuntu-latest
         permissions:
+            id-token: write
             contents: read
 
         steps:
@@ -74,8 +75,7 @@ jobs:
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v6
           with:
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/xh-github-actions-deploy
               aws-region: ${{ secrets.AWS_REGION }}
 
         - name: Login to Amazon ECR
@@ -97,6 +97,7 @@ jobs:
 
         runs-on: ubuntu-latest
         permissions:
+            id-token: write
             contents: read
 
         steps:
@@ -173,8 +174,7 @@ jobs:
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v6
           with:
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/xh-github-actions-deploy
               aws-region: ${{ secrets.AWS_REGION }}
 
         - name: Login to Amazon ECR
@@ -199,15 +199,16 @@ jobs:
         needs: [ prepare, build-tomcat, build-nginx ]
 
         runs-on: ubuntu-latest
-        # No GitHub token scopes needed — only AWS credentials from secrets.
-        permissions: {}
+        # id-token: write lets this job mint a GitHub OIDC token to assume the AWS deploy role.
+        permissions:
+            id-token: write
+            contents: read
 
         steps:
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v6
           with:
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/xh-github-actions-deploy
               aws-region: ${{ secrets.AWS_REGION }}
 
         # Registry-side manifest copy — retags the existing build images to
