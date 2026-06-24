@@ -76,6 +76,27 @@ export const numberFormatsPanel = hoistCmp.factory({
                     })
                 }),
                 wrapperOption({
+                    omit: model.fnName !== 'fmtQuantity',
+                    label: 'Lossless',
+                    propName: 'QuantityFormatOptions.lossless',
+                    control: switchInput({model, bind: 'lossless'}),
+                    info: 'Compact to m/b only when no precision is lost, else render the full value.'
+                }),
+                wrapperOption({
+                    omit: model.fnName !== 'fmtQuantity',
+                    label: 'Use Millions',
+                    propName: 'QuantityFormatOptions.useMillions',
+                    control: switchInput({model, bind: 'useMillions'}),
+                    info: 'Compact values >= 1 million into units of millions (m).'
+                }),
+                wrapperOption({
+                    omit: model.fnName !== 'fmtQuantity',
+                    label: 'Use Billions',
+                    propName: 'QuantityFormatOptions.useBillions',
+                    control: switchInput({model, bind: 'useBillions'}),
+                    info: 'Compact values >= 1 billion into units of billions (b).'
+                }),
+                wrapperOption({
                     label: 'Color Spec',
                     propName: 'NumberFormatOptions.colorSpec',
                     control: segmentedControl({
@@ -112,9 +133,13 @@ export const numberFormatsPanel = hoistCmp.factory({
                         width: 100,
                         enableFilter: false,
                         hideSelectedOptionCheck: true,
-                        options: [{label: 'auto', value: -1}, ...range(0, 13)]
+                        options: [
+                            {label: 'null', value: -2},
+                            {label: 'auto', value: -1},
+                            ...range(0, 13)
+                        ]
                     }),
-                    info: `'auto' scales to the value, or fix it.`
+                    info: `null for full precision, 'auto' to scale to the value, or fix it.`
                 }),
                 wrapperOption({
                     label: 'Zero Pad',
