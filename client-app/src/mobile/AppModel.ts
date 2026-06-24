@@ -4,9 +4,7 @@ import {
     sizingModeAppOption,
     themeAppOption
 } from '@xh/hoist/mobile/cmp/appOption';
-import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
-import {runInAction} from '@xh/hoist/mobx';
 import {BaseAppModel} from '../BaseAppModel';
 import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
@@ -159,24 +157,7 @@ export class AppModel extends BaseAppModel {
     }
 
     override getAppOptions() {
-        return [
-            themeAppOption(),
-            sizingModeAppOption(),
-            autoRefreshAppOption(),
-            {
-                name: 'appMenuButtonWithUserProfile',
-                valueSetter: v => {
-                    runInAction(() => (this.renderWithUserProfile = v));
-                    XH.setPref('appMenuButtonWithUserProfile', v);
-                },
-                valueGetter: () => XH.getPref('appMenuButtonWithUserProfile'),
-                formField: {
-                    label: 'Profile pic app menu',
-                    info: 'Render the App Menu button using your profile pic',
-                    item: switchInput()
-                }
-            }
-        ];
+        return [themeAppOption(), sizingModeAppOption(), autoRefreshAppOption()];
     }
 
     override async initAsync(ctx: InitContext) {

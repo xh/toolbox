@@ -6,6 +6,12 @@
 
 * Adopted hoist-react's new `JsonInput` `autoFormat` prop in the column-filter test panels, dropping manual `JSON.stringify` pre-indentation now that readonly inputs format their content for display automatically.
 
+## 9.1.1 - 2026-06-24
+
+### Bug Fixes
+
+* Fixed the mobile App Menu button to always render as the user's profile pic, so it no longer appears as a second hamburger alongside the nav-blade button when the (desktop-only) "profile pic menu" preference is off.
+
 ## 9.1.0 - 2026-06-24
 
 ### New Features
