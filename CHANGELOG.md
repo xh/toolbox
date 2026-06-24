@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.1.1 - 2026-06-24
+
+### Bug Fixes
+
+* Fixed the mobile App Menu button to always render as the user's profile pic, so it no longer appears as a second hamburger alongside the nav-blade button when the (desktop-only) "profile pic menu" preference is off.
+
 ## 9.1.0 - 2026-06-24
 
 ### New Features
