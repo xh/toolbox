@@ -174,34 +174,8 @@ code.tb-code-link {
   }
 }
 
-// Left sub-tab navigation: a lightly styled vertical rail with rounded, hoverable items and a
-// clear active state (filled highlight + left accent bar) for a more polished, modern feel.
+// Fixed width for the left sub-tab navigation rail. The modern rail treatment (rounded, hoverable
+// items with a filled active pill) is now provided by the hoist-react framework default.
 .tb-switcher.xh-tab-switcher--left {
   width: 150px;
-  padding: var(--xh-pad-half-px);
-  border-right: var(--xh-border-solid);
-
-  .bp6-tab {
-    margin: 0 0 2px;
-    padding: 5px 10px;
-    border-radius: 6px;
-    color: var(--xh-text-color-muted);
-    font-weight: 500;
-    transition:
-      background-color 0.15s ease,
-      color 0.15s ease,
-      box-shadow 0.15s ease;
-
-    &:hover {
-      color: var(--xh-text-color);
-      background-color: var(--xh-bg-alt);
-    }
-
-    &[aria-selected='true'] {
-      color: var(--xh-text-color);
-      background-color: var(--xh-bg-highlight);
-      font-weight: 600;
-      box-shadow: inset 3px 0 0 var(--xh-blue);
-    }
-  }
 }
