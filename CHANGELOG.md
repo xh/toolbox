@@ -49,6 +49,10 @@
 
 * @xh/hoist `86.0 → 87.0`
 
+### Libraries
+
+* React `18.2 → 19.2`
+
 ## 8.5.0 - 2026-06-12
 
 ### New Features
