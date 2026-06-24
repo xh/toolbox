@@ -61,13 +61,14 @@ mention only if the developer asks or `gh` is genuinely unavailable.
 ## Phase 1: Preconditions
 
 Gather state and surface any concerns. **These are strong warnings, not hard gates** - the
-developer can always override (they may be on a hotfix branch, or knowingly releasing off an
-unusual state). Present problems clearly and ask before proceeding; do not block.
+developer can always override (they may be releasing from `master` directly, or knowingly releasing
+off an unusual state). Present problems clearly and ask before proceeding; do not block.
 
 Run these checks:
 
-1. **On `develop`?** `git rev-parse --abbrev-ref HEAD`. The standard path runs on `develop`. If on
-   another branch, this may be a hotfix (see Phase 3's hotfix note) - confirm with the developer.
+1. **On `develop`?** `git rev-parse --abbrev-ref HEAD`. The standard path runs on `develop`.
+   Releasing directly from `master` is also valid when `develop` is mid-major and can't take a
+   versioned Hoist release (see the note in Phase 3); on any other branch, confirm with the developer.
 2. **Clean working tree?** `git status --porcelain`. If dirty, warn strongly - the release adds
    commits and a clean tree gives a clean rollback point.
 3. **Synced with origin?** `git fetch origin` then compare `develop` to `origin/develop`
@@ -131,7 +132,7 @@ against the actually-installed release (`yarn lint`). If this review shows any s
 adapted to not-yet-released breaking changes, flag it now and expect Phase 3 to confirm it. Either
 way, two possibilities when it's incompatible:
 - This should wait for the matching Hoist release, or
-- This is actually a **hotfix release** (see the hotfix note in Phase 3).
+- Ship the release directly from `master` instead of `develop` (see the note in Phase 3).
 
 In the clean cases (matching release exists, or no breaking-change adaptation), proceed.
 
@@ -174,8 +175,8 @@ cd client-app && yarn lint
 `yarn lint` now includes `tsc` (`lint:types`), so it **type-checks Toolbox against the `@xh/hoist`
 you just installed** - the same check CI and the release build run. A type error here almost
 certainly means Toolbox uses an API that exists on the SNAPSHOT line but **not** in this release.
-If so, **stop**: this should wait for the matching Hoist release, or become a hotfix (see the note
-below). Do not proceed to commit a release that fails this check.
+If so, **stop**: this should wait for the matching Hoist release, or be shipped directly from
+`master` instead (see the note below). Do not proceed to commit a release that fails this check.
 
 **Caveat - make sure the check is honest.** Type-checking is only truthful when `tsc` resolves
 `@xh/hoist` from `node_modules` (the installed release), which is the default. If the developer has
@@ -184,13 +185,20 @@ below). Do not proceed to commit a release that fails this check.
 this gate, confirm that `paths` block is still commented out (its default state); if it's enabled,
 have the developer re-comment it, then re-run.
 
-> **Hotfix note (non-standard path - detect and defer, do not automate).** The hotfix situation
-> arises when Toolbox on `develop` has already adopted breaking changes for an unreleased Hoist
-> snapshot, so `develop` *cannot* take a versioned Hoist release. The resolution is to branch off
-> `master`, cherry-pick only the changes to ship, and run Build Release with **`is-hotfix=true`**
-> from that branch. This skill focuses on the standard path. If Phase 2.4 or the Phase 3 type-check
-> reveals this situation, surface it and sketch the branch-off-master / cherry-pick / `is-hotfix`
-> approach, then defer to the developer - they should already be operating in that mode.
+> **Note - releasing directly from `master` when `develop` is mid-major (supported, and NOT a
+> "hotfix").** When Toolbox on `develop` has adopted breaking changes for an unreleased Hoist
+> snapshot, `develop` *cannot* take a versioned Hoist release - but you can still ship the next
+> patch/minor on the current released line directly from `master`, which already sits on the last
+> release with its release-pinned libraries. Adapt the flow: **skip the develop-side library swap
+> (Phases 3 and 5)**, commit the fix(es) and a finalized CHANGELOG section straight onto `master`
+> (Phase 4), trigger Build Release from `master` (Phase 8), then - in place of the Phase 9 restore -
+> **merge `master` back into `develop`**, resolving the CHANGELOG so the unreleased `x.y-SNAPSHOT`
+> header stays on top with the newly released section below it. This is still an ordinary sequential
+> release (the version is just the next increment from the latest tag). The library "hotfix" concept
+> - shipping an *older* line after a newer major has already released - does **not** apply to an app
+> with a single production line, which only ever moves forward. When Phase 2.4 or the Phase 3
+> type-check surfaces this situation, confirm the master-direct path with the developer before
+> proceeding.
 
 ---
 
@@ -289,9 +297,9 @@ Before triggering anything, read `docs/build-and-deploy.md` (from the repo root 
 "Build Release", "Deploy Release", and AWS sections) and verify it still confirms the specifics
 this phase relies on - they can drift if the workflows are edited:
 
-- Workflow filenames (`buildRelease.yml`, `deployRelease.yml`) and their inputs (`version`,
-  `is-hotfix`).
-- Build Release is manually triggered **from `master`** (the `validate` job rejects `develop`).
+- Workflow filenames (`buildRelease.yml`, `deployRelease.yml`) and the Build Release input
+  (`version`).
+- Build Release is manually triggered **from `master`** (the `validate` job runs only from `master`).
 - Deploy Release fires **automatically** on a successful Build Release and targets the
   **`toolbox-prod`** ECS service (cluster `toolbox`).
 
@@ -306,11 +314,10 @@ back in sync.
 Confirm the version with the developer one last time, then:
 
 ```bash
-gh workflow run buildRelease.yml --ref master -f version=<version> -f is-hotfix=false
+gh workflow run buildRelease.yml --ref master -f version=<version>
 ```
 
-(`--ref master` is required - the workflow's `validate` job refuses to run a standard release from
-`develop`.)
+(`--ref master` is required - the workflow's `validate` job runs only from `master`.)
 
 ### 2. Watch Build Release
 
