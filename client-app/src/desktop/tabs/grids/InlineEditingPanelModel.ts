@@ -19,6 +19,17 @@ import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
 
+// Real category values come first (seed data + the `category === 'US'` validation rely on them),
+// padded past react-windowed-select's threshold so the `category` editor exercises windowed mode.
+const CATEGORY_OPTIONS = [
+    'US',
+    'BRIC',
+    'Emerging Markets',
+    'EU',
+    'Asia/Pac',
+    ...Array.from({length: 120}, (_, i) => `Region ${i + 1} - extended market category label`)
+];
+
 export class InlineEditingPanelModel extends HoistModel {
     @bindable
     asyncValidation = false;
@@ -332,11 +343,14 @@ export class InlineEditingPanelModel extends HoistModel {
                     field: 'category',
                     width: 80,
                     editable: ifNotRestricted,
+                    // enableWindowed with a large option list in a narrow cell - the dropdown menu
+                    // auto-sizes to the widest option rather than being clamped to the cell width.
                     editor: props =>
                         selectEditor({
                             ...props,
                             inputProps: {
-                                options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
+                                enableWindowed: true,
+                                options: CATEGORY_OPTIONS
                             }
                         })
                 },
