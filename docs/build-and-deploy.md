@@ -73,6 +73,14 @@ cluster / `toolbox-dev` service.
 
 ## Build Release (`buildRelease.yml`)
 
+> **Orchestrating a release:** Don't run these release steps by hand. The `release-toolbox` skill
+> (`/release-toolbox`) is the authoritative runbook - it swaps the Hoist libraries to their
+> released versions, finalizes the `CHANGELOG`, manages the `develop` -> `master` ff-merge, triggers
+> and watches the workflows below, and restores `develop` afterward, with a confirmation gate at
+> every mutating step. The sections here document the underlying mechanics that skill relies on; if
+> you change a workflow's inputs, branch rules, or the auto-deploy behavior, update the skill to
+> match.
+
 Builds a numbered release as Docker images and pushes them to ECR. **Manually triggered** from the
 `master` branch via `workflow_dispatch`. Requires two inputs:
 

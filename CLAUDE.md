@@ -390,6 +390,17 @@ distinguishable from framework spans in the trace view.
 ### Instance Configuration
 Environment variables loaded from `.env` file (copy `.env.template` to `.env`). Required: `APP_TOOLBOX_ENVIRONMENT`, `APP_TOOLBOX_DB_HOST`, `APP_TOOLBOX_DB_SCHEMA`, `APP_TOOLBOX_DB_USER`, `APP_TOOLBOX_DB_PASSWORD`.
 
+## Releasing Toolbox
+
+Cutting a versioned production release is a multi-step process: swap the Hoist libraries from their
+working SNAPSHOTs to the latest official releases, finalize the `CHANGELOG`, commit on `develop`,
+ff-merge `develop` into `master`, run and watch the Build Release + Deploy Release GitHub Actions,
+then restore `develop` to its SNAPSHOT state. **Do not improvise these steps - use the
+`release-toolbox` skill (`/release-toolbox`), the authoritative runbook that orchestrates the
+entire flow with confirmation gates.** See `.github/workflows/buildRelease.yml` /
+`deployRelease.yml` and [`docs/build-and-deploy.md`](docs/build-and-deploy.md) for the underlying
+build/deploy mechanics.
+
 ## Operating the Deployed App on AWS
 
 Toolbox is deployed to XH's AWS on ECS (cluster `toolbox`, services `toolbox-dev` / `toolbox-prod`).
