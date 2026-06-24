@@ -1,5 +1,5 @@
 import {form, formFieldSet} from '@xh/hoist/cmp/form';
-import {hbox, hspacer, vbox} from '@xh/hoist/cmp/layout';
+import {vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {formField} from '@xh/hoist/mobile/cmp/form';
@@ -110,9 +110,6 @@ const formDemo = hoistCmp.factory<FormPageModel>(({model}) => {
                     title: 'Candidate Details',
                     modelConfig: {collapsible: true},
                     items: [
-                        hbox(Icon.factory(), hspacer(), 'factory'),
-                        hbox(Icon.placeholder(), hspacer(), 'placeholder'),
-                        hbox(Icon.gauge(), hspacer(), 'gauge'),
                         formField({field: 'firstName', item: textInput({enableClear: true})}),
                         formField({field: 'lastName', item: textInput({enableClear: true})}),
                         formField({field: 'fullName'}),
