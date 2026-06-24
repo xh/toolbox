@@ -1,5 +1,11 @@
 # Changelog
 
+## 10.0-SNAPSHOT - unreleased
+
+### Technical
+
+* Adopted hoist-react's new `JsonInput` `autoFormat` prop in the column-filter test panels, dropping manual `JSON.stringify` pre-indentation now that readonly inputs format their content for display automatically.
+
 ## 9.1.0 - 2026-06-24
 
 ### New Features
