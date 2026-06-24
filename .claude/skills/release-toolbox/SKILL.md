@@ -26,9 +26,17 @@ develop (snaps) --[swap to releases + finalize CHANGELOG, commit]--> develop (re
 Three invariants that drive the whole process - keep them in mind:
 
 1. **The app's release version is never written into code.** The version (e.g. `10.0.0`) is passed
-   to the build only as `-PxhAppVersion`. `gradle.properties` `xhAppVersion` and
-   `client-app/package.json` `version` stay on their working `x.y-SNAPSHOT` value across the
-   release. The git tag deliberately points at a SNAPSHOT commit - that's expected, not a bug.
+   to the build only as `-PxhAppVersion` (see the comment in `buildRelease.yml`). `gradle.properties`
+   `xhAppVersion` and `client-app/package.json` `version` stay on their working `x.y-SNAPSHOT` value
+   across the release. The git tag deliberately points at a SNAPSHOT commit - that's expected, not a
+   bug. **Corollary: after a release, `master` permanently sits on a commit whose `xhAppVersion` /
+   `package.json` version read `x.y-SNAPSHOT`. That is the *app* version, and it is correct - it is
+   NOT a sign that the Phase 9 SNAPSHOT restore leaked onto master.** What distinguishes master from
+   develop is the *library* versions, never the app version: master carries the **release-pinned**
+   Hoist libraries as shipped (e.g. `@xh/hoist 86.1.0`, `hoistCoreVersion 40.1.0`), while only
+   `develop` is restored to library SNAPSHOTs. So to sanity-check master after a release, read the
+   **Hoist library** versions (they must be the released ones) - not the app version string, which
+   stays SNAPSHOT by design.
 
 2. **The app SNAPSHOT version lives in three places that must stay in sync** - `gradle.properties`
    `xhAppVersion`, `client-app/package.json` `version`, and the `CHANGELOG.md` unreleased header.
@@ -344,7 +352,10 @@ release.
 
 ## Phase 9: Restore develop to working SNAPSHOTs
 
-With the release confirmed, return `develop` to its canary state. Switch back first:
+With the release confirmed, return `develop` to its canary state. **This entire phase happens on
+`develop` only - never touch `master`.** master must stay frozen on the release commit (release-pinned
+libraries, as shipped); restoring SNAPSHOTs there would break invariant #1 and make master no longer
+match the released code. Switch back first:
 
 ```bash
 git checkout develop
