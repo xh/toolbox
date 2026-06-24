@@ -155,13 +155,12 @@ const codeCard = hoistCmp.factory(() =>
         title: 'JsonInput',
         items: [
             demoRow({
-                label: 'autoFormat, enableSearch, showFullscreenButton',
+                label: 'enableSearch, showFullscreenButton',
                 item: jsonInput({
                     className: 'xh-border',
                     bind: 'jsonInput',
                     height: 180,
                     width: '100%',
-                    autoFormat: true,
                     enableSearch: true
                 })
             })
