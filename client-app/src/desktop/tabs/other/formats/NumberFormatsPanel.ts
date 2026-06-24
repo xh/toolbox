@@ -76,6 +76,27 @@ export const numberFormatsPanel = hoistCmp.factory({
                     })
                 }),
                 wrapperOption({
+                    omit: model.fnName !== 'fmtQuantity',
+                    label: 'Lossless',
+                    propName: 'QuantityFormatOptions.lossless',
+                    control: switchInput({model, bind: 'lossless'}),
+                    info: 'Compact to m/b only when no precision is lost.'
+                }),
+                wrapperOption({
+                    omit: model.fnName !== 'fmtQuantity',
+                    label: 'Use Millions',
+                    propName: 'QuantityFormatOptions.useMillions',
+                    control: switchInput({model, bind: 'useMillions'}),
+                    info: 'Compact values >= 1m into units of millions.'
+                }),
+                wrapperOption({
+                    omit: model.fnName !== 'fmtQuantity',
+                    label: 'Use Billions',
+                    propName: 'QuantityFormatOptions.useBillions',
+                    control: switchInput({model, bind: 'useBillions'}),
+                    info: 'Compact values >= 1b into units of billions.'
+                }),
+                wrapperOption({
                     label: 'Color Spec',
                     propName: 'NumberFormatOptions.colorSpec',
                     control: segmentedControl({

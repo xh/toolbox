@@ -23,10 +23,13 @@ export class NumberFormatsPanelModel extends HoistModel {
         123400.1,
         123450, // tests that rightmost zero is not cut off when precision: 0 && zeroPad: false
         920120.21343,
+        7100000, // fmtQuantity + lossless: collapses to 7.1m (no precision lost)
+        7100100, // fmtQuantity + lossless: stays 7,100,100 (would lose precision as 7.10m)
         12345600,
         100000001,
         123456789.12,
         1234567890.12,
+        5000000000, // fmtQuantity + lossless: collapses to 5b (no precision lost)
         1.23456e14,
         null,
         undefined
@@ -37,11 +40,14 @@ export class NumberFormatsPanelModel extends HoistModel {
     @bindable forceLedgerAlign = true;
     @bindable label: string = null;
     @bindable ledger = false;
+    @bindable lossless = false;
     @bindable nullDisplay: string = null;
     @bindable omitFourDigitComma = false;
     @bindable precision = -1; // -1 => 'auto'
     @bindable prefix: string = null;
     @bindable strictZero = true;
+    @bindable useMillions = true;
+    @bindable useBillions = true;
     @bindable withCommas = true;
     @bindable withPlusSign = false;
     @bindable withSignGlyph = false;
@@ -93,7 +99,11 @@ export class NumberFormatsPanelModel extends HoistModel {
             withCommas: this.withCommas,
             withPlusSign: this.withPlusSign,
             withSignGlyph: this.withSignGlyph,
-            zeroPad: this.toZeroPad(this.zeroPad)
+            zeroPad: this.toZeroPad(this.zeroPad),
+            // fmtQuantity-specific options - ignored by the other functions.
+            useMillions: this.useMillions,
+            useBillions: this.useBillions,
+            lossless: this.lossless
         };
 
         try {
