@@ -51,9 +51,9 @@ export class NumberFormatsPanelModel extends HoistModel {
     @bindable zeroPad = -2; // -2 => undefined, -1 => false, 0 => true, # => pad length
 
     // fmtQuantity-only options.
-    @bindable lossless = false;
     @bindable useMillions = true;
     @bindable useBillions = true;
+    @bindable lossless = false;
     @bindable positiveColor = '#00aa00';
     @bindable negativeColor = '#cc0000';
     @bindable neutralColor = '#999999';
@@ -101,9 +101,9 @@ export class NumberFormatsPanelModel extends HoistModel {
             withPlusSign: this.withPlusSign,
             withSignGlyph: this.withSignGlyph,
             zeroPad: this.toZeroPad(this.zeroPad),
-            lossless: this.lossless,
             useMillions: this.useMillions,
-            useBillions: this.useBillions
+            useBillions: this.useBillions,
+            lossless: this.lossless
         };
 
         try {
