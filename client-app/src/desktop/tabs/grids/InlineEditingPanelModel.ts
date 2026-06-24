@@ -19,8 +19,8 @@ import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
 
-// Real category values come first (seed data + the `category === 'US'` validation rely on them),
-// padded past react-windowed-select's threshold so the `category` editor exercises windowed mode.
+// Real values first (seed data + `category === 'US'` validation need them), padded past the
+// windowing threshold so the `category` editor exercises windowed mode.
 const CATEGORY_OPTIONS = [
     'US',
     'BRIC',
@@ -343,8 +343,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     field: 'category',
                     width: 80,
                     editable: ifNotRestricted,
-                    // enableWindowed with a large option list in a narrow cell - the dropdown menu
-                    // auto-sizes to the widest option rather than being clamped to the cell width.
+                    // Windowed editor in a narrow cell - menu auto-sizes to content, not cell width.
                     editor: props =>
                         selectEditor({
                             ...props,
