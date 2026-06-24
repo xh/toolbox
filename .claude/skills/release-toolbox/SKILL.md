@@ -118,8 +118,10 @@ break against the latest release. Before pinning, assess this:
 - Consult the hoist-react changelog / upgrade notes for what changed between the latest release and
   the snap (the hoist-react reference tools or the sibling `../hoist-react` checkout if present).
 
-If there is any sign Toolbox has adapted to not-yet-released breaking changes, **stop and ask the
-developer.** Two possibilities:
+This review is an early read; the **authoritative** confirmation is the type-check Phase 3 runs
+against the actually-installed release (`yarn lint`). If this review shows any sign Toolbox has
+adapted to not-yet-released breaking changes, flag it now and expect Phase 3 to confirm it. Either
+way, two possibilities when it's incompatible:
 - This should wait for the matching Hoist release, or
 - This is actually a **hotfix release** (see the hotfix note in Phase 3).
 
@@ -153,15 +155,32 @@ cd client-app && yarn install
 (Do not run `startWithHoist` / `runHoistInline` - the release must build against the published
 libraries, not local sibling checkouts.)
 
-Optionally sanity-check that the client still lints/builds against the release
-(`cd client-app && yarn lint`); surface any failure to the developer - it likely indicates the
-breaking-change-adaptation problem from Phase 2.4 and may mean this should be a hotfix.
+### Verify compatibility against the installed release (the real gate)
+
+This is the authoritative confirmation of the Phase 2.4 assessment - run it, don't skip it:
+
+```bash
+cd client-app && yarn lint
+```
+
+`yarn lint` now includes `tsc` (`lint:types`), so it **type-checks Toolbox against the `@xh/hoist`
+you just installed** - the same check CI and the release build run. A type error here almost
+certainly means Toolbox uses an API that exists on the SNAPSHOT line but **not** in this release.
+If so, **stop**: this should wait for the matching Hoist release, or become a hotfix (see the note
+below). Do not proceed to commit a release that fails this check.
+
+**Caveat - make sure the check is honest.** Type-checking is only truthful when `tsc` resolves
+`@xh/hoist` from `node_modules` (the installed release), which is the default. If the developer has
+**uncommented the `paths` mapping in `client-app/tsconfig.json`** for local hoist-react development,
+`tsc` resolves against their local sibling checkout instead and will **false-pass**. Before trusting
+this gate, confirm that `paths` block is still commented out (its default state); if it's enabled,
+have the developer re-comment it, then re-run.
 
 > **Hotfix note (non-standard path - detect and defer, do not automate).** The hotfix situation
 > arises when Toolbox on `develop` has already adopted breaking changes for an unreleased Hoist
 > snapshot, so `develop` *cannot* take a versioned Hoist release. The resolution is to branch off
 > `master`, cherry-pick only the changes to ship, and run Build Release with **`is-hotfix=true`**
-> from that branch. This skill focuses on the standard path. If Phase 2.4 or the lint/build check
+> from that branch. This skill focuses on the standard path. If Phase 2.4 or the Phase 3 type-check
 > reveals this situation, surface it and sketch the branch-off-master / cherry-pick / `is-hotfix`
 > approach, then defer to the developer - they should already be operating in that mode.
 

@@ -18,7 +18,10 @@ Runs automatically on pushes and pull requests to `develop`. Includes three inde
 - **Build** — checks out the project, sets up Java and Gradle, and runs `./gradlew build` to
   validate the Grails server compiles successfully.
 - **Lint** — sets up Node.js (version from `client-app/.nvmrc`), installs JS dependencies via
-  `yarn install --frozen-lockfile`, and runs `yarn lint` to validate the client code.
+  `yarn install --frozen-lockfile`, and runs `yarn lint` to validate the client code. `yarn lint`
+  covers ESLint, Stylelint, and a `tsc` type-check (`lint:types`) — so this job (and the client
+  build in Build Snapshot / Build Release, which also run `yarn lint`) type-checks against the
+  installed `@xh/hoist`, catching use of APIs not present in the resolved/released version.
 - **Dependency Submission** — generates and submits a Gradle dependency graph to GitHub, enabling
   Dependabot vulnerability alerts for all server-side dependencies.
 
