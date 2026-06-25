@@ -1,5 +1,7 @@
 # Changelog
 
+## 10.0-SNAPSHOT - unreleased
+
 ## 9.2.0 - 2026-06-25
 
 ### Technical
