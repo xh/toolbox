@@ -45,7 +45,7 @@ const bbar = hoistCmp.factory(() =>
         groupingChooser(),
         filler(),
         gridCountLabel({
-            includeChildren: true
+            includeMode: 'all'
         })
     )
 );

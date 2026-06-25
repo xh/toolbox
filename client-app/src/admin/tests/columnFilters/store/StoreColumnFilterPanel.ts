@@ -42,7 +42,7 @@ const tbar = hoistCmp.factory(() =>
 const bbar = hoistCmp.factory(() =>
     toolbar(
         gridCountLabel({
-            includeChildren: true
+            includeMode: 'all'
         })
     )
 );

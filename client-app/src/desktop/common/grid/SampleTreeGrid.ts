@@ -27,7 +27,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 groupingChooser(),
                 expandToLevelButton(),
                 filler(),
-                gridCountLabel({includeChildren: true}),
+                gridCountLabel({includeMode: 'leaves'}),
                 '-',
                 gridFindField(),
                 '-',
