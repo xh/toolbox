@@ -29,6 +29,7 @@ export class NumberFormatsPanelModel extends HoistModel {
         100000001,
         123456789.12,
         1234567890.12,
+        5000000000, // fmtQuantity + lossless: collapses to 5b (no precision lost)
         1.23456e14,
         null,
         undefined

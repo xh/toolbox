@@ -18,9 +18,9 @@ export const AppComponent = hoistCmp({
     model: uses(AppModel),
 
     render({model}) {
-        const renderWithUserProfile = model.renderWithUserProfile
-            ? (user: HoistUser) => profilePic({user})
-            : false;
+        // The mobile top bar already carries a dedicated hamburger (the nav blade button), so the
+        // App Menu button always renders as the user's profile pic - never a second hamburger.
+        const renderWithUserProfile = (user: HoistUser) => profilePic({user});
 
         return panel({
             tbar: appBar({
