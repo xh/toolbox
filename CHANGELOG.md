@@ -2,6 +2,12 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+## 9.2.1 - 2026-06-25
+
+### Bug Fixes
+
+* Fixed broken JSON/code syntax highlighting caused by a duplicate `@codemirror/language` version in the client lockfile; de-duplicated `yarn.lock` so a single CodeMirror language package resolves.
+
 ## 9.2.0 - 2026-06-25
 
 ### Technical
