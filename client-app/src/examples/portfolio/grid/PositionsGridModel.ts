@@ -3,11 +3,12 @@ import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
+import type {Position} from '../../../core/svc/PortfolioService';
 import {PortfolioModel} from '../PortfolioModel';
 
 export class PositionsGridModel extends HoistModel {
     readonly parentModel: PortfolioModel;
-    @managed gridModel: GridModel;
+    @managed gridModel: GridModel<Position>;
 
     @bindable loadTimestamp: number;
 
@@ -25,7 +26,7 @@ export class PositionsGridModel extends HoistModel {
         this.parentModel = parentModel;
         this.persistWith = this.parentModel.persistWith;
 
-        this.gridModel = new GridModel({
+        this.gridModel = new GridModel<Position>({
             persistWith: {...this.persistWith, path: 'portfolioGrid'},
             expandLevel: 1,
             levelLabels: () => this.parentModel.groupingChooserModel.valueDisplayNames,

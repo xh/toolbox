@@ -1,6 +1,7 @@
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {Store, StoreRecord} from '@xh/hoist/data';
+import type {Position} from '../../core/svc/PortfolioService';
 import {waitFor} from '@xh/hoist/promise';
 import {round} from 'lodash';
 import {PositionSession} from '../../core/positions/PositionSession';
@@ -22,7 +23,7 @@ export class PortfolioModel extends HoistModel {
     @managed posGridModel: PositionsGridModel;
     @managed posMapModel: PositionsMapModel;
 
-    get selectedPosition(): StoreRecord {
+    get selectedPosition(): StoreRecord<Position> {
         return this.posGridModel.selectedRecord;
     }
 

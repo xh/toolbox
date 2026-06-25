@@ -3,10 +3,22 @@ import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {ONE_SECOND} from '@xh/hoist/utils/datetime';
+import {LocalDate, ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {uniqBy} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
+
+/** A single FDA drug recall record. */
+export interface Recall {
+    classification: string;
+    brandName: string;
+    genericName: string;
+    status: string;
+    recallingFirm: string;
+    recallDate: LocalDate;
+    description: string;
+    reason: string;
+}
 
 export class RecallsPanelModel extends HoistModel {
     override telemetryPrefix = 'toolbox.client.recalls';
@@ -24,7 +36,7 @@ export class RecallsPanelModel extends HoistModel {
     detailsPanelModel = new DetailsPanelModel();
 
     @managed
-    gridModel = new GridModel({
+    gridModel = new GridModel<Recall>({
         store: {
             processRawData: this.processRecord,
             fields: [
