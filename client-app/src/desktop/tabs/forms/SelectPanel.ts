@@ -10,7 +10,11 @@ import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import './SelectPanel.scss';
 
-const LARGE_OPTIONS = Array.from({length: 2000}, (_, i) => `Item ${i + 1}`);
+// Varied label lengths so the windowed menu visibly auto-sizes to its widest content.
+const LARGE_OPTIONS = Array.from(
+    {length: 2000},
+    (_, i) => `Item ${i + 1}${i % 7 === 0 ? ' - a longer descriptive option label' : ''}`
+);
 
 const STATUS_OPTIONS = [
     {
@@ -306,7 +310,7 @@ const column2 = hoistCmp.factory<SelectPanelModel>(() =>
             }),
             demoRow({
                 label: 'Large list (windowed)',
-                info: 'enableWindowed - 2,000 items virtualized',
+                info: 'enableWindowed - 2,000 items virtualized, menu auto-sizes to content',
                 item: select({
                     bind: 'bigValue',
                     options: LARGE_OPTIONS,
