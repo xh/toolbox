@@ -14,9 +14,9 @@
   // To demo Column.cellClassRules
   .ag-row:not(.ag-row-pinned) {
     .tb-sample-grid__high-volume-cell {
-      color: var(--xh-intent-warning-darker);
-      border-left: 4px solid var(--xh-intent-warning-darker) !important;
-      background-color: var(--xh-intent-warning-trans1);
+      color: var(--xh-intent-warning-text-color);
+      border-left: 4px solid var(--xh-intent-warning) !important;
+      border-right: 4px solid var(--xh-intent-warning) !important;
     }
   }
 }

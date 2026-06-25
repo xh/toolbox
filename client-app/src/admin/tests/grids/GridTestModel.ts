@@ -37,8 +37,8 @@ export class GridTestModel extends HoistModel {
     @bindable showSummary = false;
     // True to use tree root node as summary row.
     @bindable loadRootAsSummary = false;
-    // True to turn off default XSS protection at store level.
-    @bindable disableXssProtection = true;
+    // True to enable XSS protection at store level.
+    @bindable enableXssProtection = false;
     // Value > 0 will trigger creation of additional (null value) fields on the store to
     // help stress-test stores with a wide array of fields.
     @bindable extraFieldCount = 50;
@@ -63,6 +63,10 @@ export class GridTestModel extends HoistModel {
     @bindable
     @persist
     includeCollapsedChildren = true;
+
+    @bindable
+    @persist
+    includeHiddenColumns = false;
 
     @bindable
     @persist.with({path: 'gridPersistType', debounce: 500}) // test persist.with!
@@ -93,13 +97,14 @@ export class GridTestModel extends HoistModel {
                 this.autosizeMode,
                 this.renderedRowsOnly,
                 this.includeCollapsedChildren,
+                this.includeHiddenColumns,
                 this.persistType,
                 this.colChooserCommitOnChange,
                 this.colChooserShowRestoreDefaults,
                 this.colChooserWidth,
                 this.colChooserHeight,
                 this.lockColumnGroups,
-                this.disableXssProtection,
+                this.enableXssProtection,
                 this.extraFieldCount
             ],
             run: () => {
@@ -155,14 +160,14 @@ export class GridTestModel extends HoistModel {
     }
 
     private createGridModel() {
-        const {persistType, disableXssProtection, extraFieldCount} = this,
+        const {persistType, enableXssProtection, extraFieldCount} = this,
             storeConf: StoreConfig = {
                 freezeData: false,
                 idEncodesTreePath: true
             };
 
-        if (disableXssProtection) {
-            storeConf.fieldDefaults = {disableXssProtection};
+        if (enableXssProtection) {
+            storeConf.fieldDefaults = {enableXssProtection};
         }
 
         if (this.tree && this.showSummary && this.loadRootAsSummary) {
@@ -207,7 +212,8 @@ export class GridTestModel extends HoistModel {
             autosizeOptions: {
                 mode: this.autosizeMode,
                 renderedRowsOnly: this.renderedRowsOnly,
-                includeCollapsedChildren: this.includeCollapsedChildren
+                includeCollapsedChildren: this.includeCollapsedChildren,
+                includeHiddenColumns: this.includeHiddenColumns
             },
             columns: [
                 {

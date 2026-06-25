@@ -4,16 +4,19 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {CompoundFilter, Cube, FieldFilter, View} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {comparer, makeObservable, observable} from '@xh/hoist/mobx';
+import {comparer, makeObservable, computed} from '@xh/hoist/mobx';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
-    @observable.ref filterJson: string = JSON.stringify(null);
-
     @managed cube: Cube;
     @managed view: View;
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;
     @managed groupingChooserModel: GroupingChooserModel;
+
+    @computed
+    get filterJson(): FieldFilter | CompoundFilter {
+        return this.view?.filter as FieldFilter | CompoundFilter;
+    }
 
     private get query() {
         const dimensions = this.groupingChooserModel?.value;
@@ -32,14 +35,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         this.groupingChooserModel = this.createGroupingChooserModel();
 
         this.view.setStores(this.gridModel.store);
-
-        // Update filter JSON
-        this.addReaction({
-            track: () => this.query.filter as FieldFilter | CompoundFilter,
-            run: filter => {
-                this.filterJson = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
-            }
-        });
 
         // Update cube view when query changes
         this.addReaction({
@@ -73,9 +68,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
 
         return new Cube({
             idSpec: 'id',
-            fieldDefaults: {
-                disableXssProtection: true
-            },
             fields: [
                 {name: 'symbol', isDimension: true},
                 {name: 'sector', isDimension: true},
@@ -140,10 +132,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
             treeMode: true,
             store: {
                 freezeData: true,
-                idEncodesTreePath: true,
-                fieldDefaults: {
-                    disableXssProtection: true
-                }
+                idEncodesTreePath: true
             },
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'cubeLabel',

@@ -1,15 +1,14 @@
-import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
 import {action, bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {div, hbox} from '@xh/hoist/cmp/layout';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {withFilterByField, withFilterByKey} from '@xh/hoist/data';
+import {StoreRecord, appendFilter, FilterLike} from '@xh/hoist/data';
 import {isEmpty, uniq, without} from 'lodash';
 
 import {PERSIST_APP} from './AppModel';
 import {favoriteButton} from './cmp/FavoriteButton';
 import {DetailsPanelModel} from './details/DetailsPanelModel';
 import {cellPhoneCol, emailCol, locationCol, nameCol, workPhoneCol} from '../../core/columns';
-import {FilterLike} from '@xh/hoist/data/filter/Types';
 
 /**
  * Primary model to load a list of contacts from the server and manage filter and selection state.
@@ -50,20 +49,20 @@ export class DirectoryPanelModel extends HoistModel {
         const gridModel = (this.gridModel = this.createGridModel());
         this.detailsPanelModel = new DetailsPanelModel(this);
 
-        this.addReaction({
-            track: () => gridModel.selectedRecord,
-            run: rec => this.detailsPanelModel.setCurrentRecord(rec)
-        });
-
-        this.addReaction({
-            track: () => this.locationFilter,
-            run: () => this.updateLocationFilter()
-        });
-
-        this.addReaction({
-            track: () => this.tagFilters,
-            run: () => this.updateTagFilter()
-        });
+        this.addReaction(
+            {
+                track: () => gridModel.selectedRecord,
+                run: rec => this.detailsPanelModel.setCurrentRecord(rec)
+            },
+            {
+                track: () => this.locationFilter,
+                run: () => this.updateLocationFilter()
+            },
+            {
+                track: () => this.tagFilters,
+                run: () => this.updateTagFilter()
+            }
+        );
     }
 
     async updateContactAsync(id, data) {
@@ -71,7 +70,7 @@ export class DirectoryPanelModel extends HoistModel {
         await this.loadAsync();
     }
 
-    toggleFavorite(record) {
+    toggleFavorite(record: StoreRecord) {
         XH.contactService.toggleFavorite(record.id);
         // Update store directly, to avoid more heavyweight full reload.
         this.gridModel.store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
@@ -80,19 +79,22 @@ export class DirectoryPanelModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    override async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec: LoadSpec) {
         const {gridModel} = this;
 
         try {
             const contacts = await XH.contactService.getContactsAsync();
+            if (loadSpec.isStale) return;
+
             runInAction(() => {
                 this.tagList = uniq(contacts.flatMap(it => it.tags ?? [])).sort() as string[];
                 this.locationList = uniq(contacts.map(it => it.location)).sort() as string[];
             });
 
             gridModel.loadData(contacts);
-            gridModel.preSelectFirstAsync();
+            await gridModel.preSelectFirstAsync();
         } catch (e) {
+            if (loadSpec.isStale) return;
             XH.handleException(e);
         }
     }
@@ -104,7 +106,7 @@ export class DirectoryPanelModel extends HoistModel {
                 ? {field: 'location', op: '=', value: locationFilter}
                 : null;
 
-        const filter = withFilterByField(store.filter, newFilter, 'location');
+        const filter = appendFilter(store.filter?.removeFieldFilters('location'), newFilter);
         store.setFilter(filter);
     }
 
@@ -114,11 +116,11 @@ export class DirectoryPanelModel extends HoistModel {
             newFilter = !isEmpty(tagFilters)
                 ? {
                       key: 'tags',
-                      testFn: rec => tagFilters.every(tag => rec.data.tags?.includes(tag))
+                      testFn: rec => tagFilters.some(tag => rec.data.tags?.includes(tag))
                   }
                 : null;
 
-        const filter = withFilterByKey(store.filter, newFilter, 'tags');
+        const filter = appendFilter(store.filter?.removeFunctionFilters('tags'), newFilter);
         store.setFilter(filter);
     }
 
@@ -140,7 +142,7 @@ export class DirectoryPanelModel extends HoistModel {
             colDefaults: {width: 160},
             persistWith: this.persistWith,
             groupBy: 'isFavorite',
-            groupRowRenderer: ({value}) => (value === 'true' ? 'Favorites' : 'XH Engineers'),
+            groupRowRenderer: ({value}) => (value === true ? 'Favorites' : 'XH Engineers'),
             groupSortFn: (a, b) => (a < b ? 1 : -1),
             columns: [
                 {

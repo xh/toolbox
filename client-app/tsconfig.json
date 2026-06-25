@@ -5,7 +5,7 @@
     "jsx": "react",
     "lib": ["dom", "es2022"],
     "module": "ES2022",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "noImplicitOverride": true,
     "resolveJsonModule":  true,
@@ -13,11 +13,20 @@
     "target": "ES2022",
     "useDefineForClassFields": true,
 
-    // Supports inline development of hoist-react in a wrapper project.
-    // Ignored if hoist-react is not found at the relative path below.
-    "paths": {
-      "@xh/hoist/*": ["../../hoist-react/*"]
-    }
+    // Inline hoist-react development - commented out by default (see docs/running-locally.md).
+    //
+    // Left off, `tsc` resolves `@xh/hoist` against the installed published version in
+    // node_modules - the same thing CI and the release build check, and what the app actually
+    // ships. Enabling it points type-checking at a local sibling checkout instead, which can
+    // FALSE-PASS: code using APIs that exist only on the unreleased SNAPSHOT line (e.g. a new prop)
+    // type-checks locally but breaks against the released library.
+    //
+    // Uncomment ONLY while actively developing hoist-react inline (`yarn startWithHoist`) and you
+    // need Toolbox to see local type-signature changes. Re-comment before committing - do not
+    // commit it enabled.
+    // "paths": {
+    //   "@xh/hoist/*": ["../../hoist-react/*"]
+    // }
 
   },
   // Reference hoist-react as a composite build.

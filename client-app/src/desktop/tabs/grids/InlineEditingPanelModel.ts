@@ -11,12 +11,24 @@ import {
     textAreaEditor,
     textEditor
 } from '@xh/hoist/desktop/cmp/grid';
+import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
+
+// Real values first (seed data + `category === 'US'` validation need them), padded past the
+// windowing threshold so the `category` editor exercises windowed mode.
+const CATEGORY_OPTIONS = [
+    'US',
+    'BRIC',
+    'Emerging Markets',
+    'EU',
+    'Asia/Pac',
+    ...Array.from({length: 120}, (_, i) => `Region ${i + 1} - extended market category label`)
+];
 
 export class InlineEditingPanelModel extends HoistModel {
     @bindable
@@ -35,6 +47,13 @@ export class InlineEditingPanelModel extends HoistModel {
     @bindable
     clicksToEdit = 2;
 
+    @managed
+    panelModel: PanelModel;
+
+    get isModal() {
+        return this.panelModel?.isModal;
+    }
+
     get clicksToEditNote() {
         const {clicksToEdit} = this;
         if (clicksToEdit === 1) return 'Single-click a row above to edit';
@@ -45,6 +64,7 @@ export class InlineEditingPanelModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
+        this.panelModel = this.createPanelModel();
         this.store = this.createStore();
         this.gridModel = this.createGridModel();
 
@@ -73,7 +93,11 @@ export class InlineEditingPanelModel extends HoistModel {
     }
 
     async beginEditAsync(opts?) {
-        await this.gridModel.beginEditAsync(opts);
+        // This grid disables row selection (selModel: null), so beginEditAsync has no selected -
+        // or, with selection off, "selectable" - row to fall back to. Target the first record
+        // explicitly so the "Edit first row / amount" actions work. Pass the StoreRecord itself
+        // (not its id) since the first record's id is 0, which beginEditAsync treats as falsy.
+        await this.gridModel.beginEditAsync({record: this.store.records[0], ...opts});
     }
 
     async endEditAsync() {
@@ -137,6 +161,13 @@ export class InlineEditingPanelModel extends HoistModel {
         this.store.revertRecords(record);
     }
 
+    private createPanelModel() {
+        return new PanelModel({
+            modalSupport: true,
+            collapsible: false,
+            resizable: false
+        });
+    }
     private createStore() {
         return new Store({
             validationIsComplex: false,
@@ -156,9 +187,14 @@ export class InlineEditingPanelModel extends HoistModel {
                             when: (f, {category}) => category === 'US',
                             check: async ({value}) => {
                                 if (this.asyncValidation) await wait(1000);
-                                return isNil(value) || value < 10
-                                    ? 'Records where `category` is "US" require `amount` of 10 or greater.'
-                                    : null;
+                                if (isNil(value) || value < 10) {
+                                    return 'Records where `category` is "US" require `amount` of 10 or greater.';
+                                } else if (value > 50) {
+                                    return {
+                                        severity: 'warning',
+                                        message: 'Amounts over 50 may require additional approval.'
+                                    };
+                                }
                             }
                         }
                     ]
@@ -166,7 +202,13 @@ export class InlineEditingPanelModel extends HoistModel {
                 {
                     name: 'date',
                     type: 'localDate',
-                    rules: [dateIs({min: LocalDate.today().startOfYear(), max: 'today'})]
+                    rules: [
+                        dateIs({min: LocalDate.today().startOfYear(), max: 'today'}),
+                        ({value}) =>
+                            value && !value.isWeekday
+                                ? {severity: 'info', message: 'Date falls on a weekend.'}
+                                : null
+                    ]
                 },
                 {
                     name: 'restricted',
@@ -281,7 +323,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     align: 'center',
                     resizable: false,
                     editable: ifNotRestricted,
-                    editor: props => booleanEditor({...props, quickToggle: true}),
+                    editor: props => booleanEditor({...props, quickToggle: !this.fullRowEditing}),
                     renderer: checkboxRenderer({displayUnsetState: true})
                 },
                 {
@@ -301,11 +343,13 @@ export class InlineEditingPanelModel extends HoistModel {
                     field: 'category',
                     width: 80,
                     editable: ifNotRestricted,
+                    // Windowed editor in a narrow cell - menu auto-sizes to content, not cell width.
                     editor: props =>
                         selectEditor({
                             ...props,
                             inputProps: {
-                                options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
+                                enableWindowed: true,
+                                options: CATEGORY_OPTIONS
                             }
                         })
                 },

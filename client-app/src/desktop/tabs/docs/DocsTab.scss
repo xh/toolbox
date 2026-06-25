@@ -1,0 +1,117 @@
+// Override Blueprint's inverted tooltip colors to follow the app theme.
+.tb-docs-tooltip.bp6-tooltip {
+  .bp6-popover-content {
+    background: var(--xh-bg);
+    color: var(--xh-text-color);
+  }
+
+  .bp6-popover-arrow-fill {
+    fill: var(--xh-border-color);
+  }
+}
+
+.tb-docs {
+  // Navigation sidebar
+  &__nav {
+    .xh-grid {
+      .ag-row {
+        cursor: pointer;
+      }
+
+      // Style group rows (source + category levels)
+      .ag-row-group {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+
+  // Content toolbar
+  &__content-toolbar {
+    border-bottom: 2px solid var(--xh-orange);
+  }
+
+  // Breadcrumb navigation
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+
+    &-btn {
+      font-weight: 500;
+      border-bottom: 1px dashed var(--xh-border-color);
+      border-radius: 0;
+      padding-bottom: 1px;
+
+      &:hover {
+        border-bottom-color: var(--xh-orange);
+      }
+    }
+
+    &-sep {
+      color: var(--xh-text-color-muted);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    &-section {
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  // Content area
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  // Search results
+  &__search-results {
+    overflow: auto;
+    flex: 1;
+    padding: 16px 24px;
+  }
+
+  &__search-result {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--xh-border-color);
+    transition: background-color 0.1s ease;
+
+    &:hover {
+      background-color: var(--xh-bg-highlight);
+    }
+
+    &--selected {
+      border-left: 3px solid var(--xh-orange);
+      padding-left: 13px;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &-header {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    &-title {
+      font-weight: 500;
+      font-size: var(--xh-font-size-large-px);
+    }
+
+    &-desc {
+      color: var(--xh-text-color-muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+  }
+}

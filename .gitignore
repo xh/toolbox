@@ -6,6 +6,8 @@
 .settings
 .project
 .classpath
+.vscode/tasks.json
+.claude/scheduled_tasks.lock
 
 # Local instance configs w/secrets
 toolbox.yml
@@ -20,9 +22,10 @@ out/
 /client-app/node_modules/
 /client-app/tsconfig.tsbuildinfo
 
-# Logs
+# Logs + temp
 toolbox-logs/
 *.log
+.tmp
 
 # OS generated files
 .DS_Store

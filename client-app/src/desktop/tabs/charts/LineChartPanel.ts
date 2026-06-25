@@ -1,0 +1,73 @@
+import {chart} from '@xh/hoist/cmp/chart';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {picker} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon} from '@xh/hoist/icon';
+import {chartDisplayOptions, wrapper} from '../../common';
+import {LineChartModel} from './LineChartModel';
+
+export const lineChartPanel = hoistCmp.factory({
+    model: creates(LineChartModel),
+
+    render({model}) {
+        return wrapper({
+            title: 'Line Chart',
+            icon: Icon.chartLine(),
+            description: [
+                'Hoist provides a lightweight wrapper around the Highcharts charting and',
+                'visualization library. This integration includes the `Chart` component to',
+                'handle rendering, layout, and resizing, plus an observable `ChartModel` class',
+                'to hold the chart config and data series.',
+                '',
+                'The example below plots one or more user-selected symbols as line series and',
+                'shows how to customize the chart context menu.',
+                '',
+                'Note that applications must license and specify a compatible version of',
+                'Highcharts as an application dependency.'
+            ],
+            options: chartDisplayOptions(model),
+            item: panel({
+                height: '60vh',
+                width: '90%',
+                mask: 'onLoad',
+                tbar: tbar(),
+                item: chart({aspectRatio: model.aspectRatio})
+            }),
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/charts/LineChartPanel.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/chart/Chart.ts',
+                    notes: 'Hoist wrapper component for Chart sizing and layout.'
+                },
+                {
+                    url: '$HR/cmp/chart/ChartModel.ts',
+                    notes: 'Hoist model with observable Chart config and series.'
+                },
+                {
+                    text: 'Highcharts Docs',
+                    url: 'https://api.highcharts.com/highstock/',
+                    notes: 'Library API documentation.'
+                }
+            ]
+        });
+    }
+});
+
+const tbar = hoistCmp.factory<LineChartModel>(({model}) => {
+    return toolbar(
+        picker({
+            bind: 'currentSymbols',
+            options: model.symbols,
+            enableMulti: true,
+            enableSelectAll: true,
+            displayNoun: 'symbol',
+            buttonProps: {icon: Icon.chartLine()},
+            placeholder: 'Symbols...',
+            width: 200
+        })
+    );
+});

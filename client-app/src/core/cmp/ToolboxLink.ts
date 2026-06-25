@@ -1,5 +1,6 @@
 import {a} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
+import {docRouteParams} from '../docs/DocUtils';
 
 export interface ToolboxLinkProps extends HoistProps {
     /**
@@ -30,6 +31,22 @@ export const [ToolboxLink, toolboxLink] = hoistCmp.withFactory<ToolboxLinkProps>
     displayName: 'ToolboxLink',
 
     render({text, url}) {
+        // Markdown docs route into Toolbox's own document viewer for a fluid, in-app experience
+        // rather than bouncing the user out to GitHub.
+        const docRef = docRouteParams(url);
+        if (docRef) {
+            const params: Record<string, string> = {source: docRef.source, docId: docRef.docId};
+            if (docRef.section) params.section = docRef.section;
+            return a({
+                href: XH.router.buildPath(DOCS_ROUTE, params),
+                item: text || createDefaultText(url),
+                onClick: e => {
+                    e.preventDefault();
+                    XH.navigate(DOCS_ROUTE, params);
+                }
+            });
+        }
+
         return a({
             href: toolboxUrl(url),
             item: text || createDefaultText(url),
@@ -42,6 +59,8 @@ export function toolboxUrl(url: string) {
     const sourceUrls = XH.getConf('sourceUrls');
     return url.replace('$TB', sourceUrls.toolbox).replace('$HR', sourceUrls.hoistReact);
 }
+
+const DOCS_ROUTE = 'default.docs.docRef';
 
 function createDefaultText(url: string) {
     const start = url.lastIndexOf('/'),

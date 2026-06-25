@@ -1,7 +1,5 @@
-import {FormModel} from '@xh/hoist/cmp/form';
 import {code} from '@xh/hoist/cmp/layout';
-import {HoistModel, managed} from '@xh/hoist/core';
-import {NumberFormatOptions} from '@xh/hoist/format/FormatNumber';
+import {HoistModel} from '@xh/hoist/core';
 import * as formatFunctions from '@xh/hoist/format/FormatNumber';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {isBoolean} from 'lodash';
@@ -25,17 +23,43 @@ export class NumberFormatsPanelModel extends HoistModel {
         123400.1,
         123450, // tests that rightmost zero is not cut off when precision: 0 && zeroPad: false
         920120.21343,
+        7100100, // tests fmtQuantity `lossless` - stays full, does not collapse to 7.10m
+        7120000, // tests fmtQuantity `lossless` - collapses cleanly to 7.12m
         12345600,
         100000001,
         123456789.12,
         1234567890.12,
+        5000000000, // fmtQuantity + lossless: collapses to 5b (no precision lost)
         1.23456e14,
         null,
         undefined
     ];
 
-    @managed formModel: FormModel;
-    @bindable tryItData: number;
+    @bindable fnName = 'fmtNumber';
+    @bindable colorSpec: boolean | 'custom' = true;
+    @bindable forceLedgerAlign = true;
+    @bindable label: string = null;
+    @bindable ledger = false;
+    @bindable nullDisplay: string = null;
+    @bindable omitFourDigitComma = false;
+    @bindable precision = -1; // -2 => null (full), -1 => 'auto'
+    @bindable prefix: string = null;
+    @bindable strictZero = true;
+    @bindable withCommas = true;
+    @bindable withPlusSign = false;
+    @bindable withSignGlyph = false;
+    @bindable zeroDisplay: string = null;
+    @bindable zeroPad = -2; // -2 => undefined, -1 => false, 0 => true, # => pad length
+
+    // fmtQuantity-only options.
+    @bindable useMillions = true;
+    @bindable useBillions = true;
+    @bindable lossless = false;
+    @bindable positiveColor = '#00aa00';
+    @bindable negativeColor = '#cc0000';
+    @bindable neutralColor = '#999999';
+
+    @bindable tryItData: number = 1234567.89;
 
     get testResults() {
         return this.testData.map(data => ({
@@ -52,98 +76,52 @@ export class NumberFormatsPanelModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
-
-        const optFields: Array<keyof NumberFormatOptions> = [
-            'colorSpec',
-            'forceLedgerAlign',
-            'label',
-            'ledger',
-            'nullDisplay',
-            'omitFourDigitComma',
-            'precision',
-            'prefix',
-            'strictZero',
-            'withCommas',
-            'withPlusSign',
-            'withSignGlyph',
-            'zeroDisplay',
-            'zeroPad'
-        ];
-
-        this.formModel = new FormModel({
-            fields: [
-                {name: 'fnName', displayName: 'Formatter'},
-                ...optFields.map(f => ({name: f, displayName: f})),
-                {name: 'positiveColor', displayName: 'colorSpec.pos'},
-                {name: 'negativeColor', displayName: 'colorSpec.neg'},
-                {name: 'neutralColor', displayName: 'colorSpec.neutral'}
-            ],
-            initialValues: {
-                fnName: 'fmtNumber',
-                colorSpec: true,
-                forceLedgerAlign: true,
-                label: null,
-                ledger: false,
-                nullDisplay: null,
-                omitFourDigitComma: false,
-                precision: -1,
-                prefix: null,
-                strictZero: true,
-                withCommas: true,
-                withPlusSign: false,
-                withSignGlyph: false,
-                zeroPad: -2,
-                positiveColor: '#00aa00',
-                negativeColor: '#cc0000',
-                neutralColor: '#999999'
-            }
-        });
     }
 
     //------------------
     // Implementation
     //------------------
     private getResult(input: number) {
-        const formVals = this.formModel.getData();
         const options = {
-            colorSpec: isBoolean(formVals.colorSpec)
-                ? formVals.colorSpec
+            colorSpec: isBoolean(this.colorSpec)
+                ? this.colorSpec
                 : {
-                      pos: {color: formVals.positiveColor},
-                      neg: {color: formVals.negativeColor},
-                      neutral: {color: formVals.neutralColor}
+                      pos: {color: this.positiveColor},
+                      neg: {color: this.negativeColor},
+                      neutral: {color: this.neutralColor}
                   },
-            forceLedgerAlign: formVals.forceLedgerAlign,
-            label: formVals.label ? formVals.label : undefined,
-            ledger: formVals.ledger,
-            nullDisplay: formVals.nullDisplay != null ? formVals.nullDisplay : undefined,
-            omitFourDigitComma: formVals.omitFourDigitComma,
-            precision: this.toPrecision(formVals.precision),
-            prefix: formVals.prefix,
-            strictZero: formVals.strictZero,
-            withCommas: formVals.withCommas,
-            withPlusSign: formVals.withPlusSign,
-            withSignGlyph: formVals.withSignGlyph,
-            zeroPad: this.toZeroPad(formVals.zeroPad)
+            forceLedgerAlign: this.forceLedgerAlign,
+            label: this.label ? this.label : undefined,
+            ledger: this.ledger,
+            nullDisplay: this.nullDisplay != null ? this.nullDisplay : undefined,
+            omitFourDigitComma: this.omitFourDigitComma,
+            precision: this.toPrecision(this.precision),
+            prefix: this.prefix,
+            strictZero: this.strictZero,
+            withCommas: this.withCommas,
+            withPlusSign: this.withPlusSign,
+            withSignGlyph: this.withSignGlyph,
+            zeroPad: this.toZeroPad(this.zeroPad),
+            useMillions: this.useMillions,
+            useBillions: this.useBillions,
+            lossless: this.lossless
         };
 
         try {
-            return formatFunctions[formVals.fnName](input, options);
+            return formatFunctions[this.fnName](input, options);
         } catch (e) {
             this.logError(e);
             return '#exception#';
         }
     }
 
-    private toPrecision(formVal) {
-        switch (formVal) {
-            case -1:
-                return 'auto';
-            default:
-                return formVal;
-        }
+    private toPrecision(formVal: number) {
+        if (formVal === -2) return null;
+        if (formVal === -1) return 'auto';
+        return formVal;
     }
-    private toZeroPad(formVal) {
+
+    private toZeroPad(formVal: number) {
         switch (formVal) {
             case -2:
                 return undefined;

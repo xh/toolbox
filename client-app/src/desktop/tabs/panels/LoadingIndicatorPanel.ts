@@ -1,0 +1,136 @@
+import {creates, hoistCmp, HoistModel, managed, Corner, LoadSpec} from '@xh/hoist/core';
+import {wait} from '@xh/hoist/promise';
+import {Icon} from '@xh/hoist/icon';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {SECONDS} from '@xh/hoist/utils/datetime';
+import {loadingIndicator} from '@xh/hoist/cmp/loadingindicator';
+import {sampleGrid, SampleGridModel, wrapper, wrapperAction, wrapperOption} from '../../common';
+
+export const loadingIndicatorPanel = hoistCmp.factory({
+    model: creates(() => LoadingIndicatorPanelModel),
+
+    render({model}) {
+        return wrapper({
+            title: 'Loading Indicator',
+            icon: Icon.spinner(),
+            description: [
+                'Loading Indicators display an unobtrusive overlay in the corner of a',
+                'component with a spinner and/or message. They indicate that a longer-running',
+                'operation is in progress without using a modal `Mask`.',
+                '',
+                'A convenient way to display a loading indicator is via the `loadingIndicator`',
+                'property of `Panel`. This prop can accept a fully configured',
+                '`loadingIndicator` element or (most commonly) a `TaskObserver` instance to',
+                'automatically show the indicator when a task is pending.'
+            ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/panels/LoadingIndicatorPanel.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/panel/README.md',
+                    text: 'Panel docs',
+                    notes: 'Desktop panel guide, including the loadingIndicator prop.'
+                },
+                {
+                    url: '$HR/cmp/loadingindicator/LoadingIndicator.ts',
+                    notes: 'Hoist component.'
+                },
+                {
+                    url: '$HR/core/TaskObserver.ts',
+                    notes: 'Hoist model for tracking async tasks - can be linked to indicators.'
+                }
+            ],
+            options: [
+                wrapperOption({
+                    label: 'Load for (secs)',
+                    control: numberInput({model, bind: 'seconds', width: 70, min: 0, max: 10})
+                }),
+                wrapperOption({
+                    label: 'Message',
+                    propName: 'LoadingIndicatorProps.message',
+                    control: textInput({
+                        model,
+                        bind: 'message',
+                        width: 150,
+                        placeholder: 'optional text'
+                    })
+                }),
+                wrapperOption({
+                    label: 'Corner',
+                    propName: 'LoadingIndicatorProps.corner',
+                    control: select({
+                        model,
+                        bind: 'corner',
+                        enableFilter: false,
+                        width: 130,
+                        options: [
+                            {label: 'Top Left', value: 'tl'},
+                            {label: 'Top Right', value: 'tr'},
+                            {label: 'Bottom Left', value: 'bl'},
+                            {label: 'Bottom Right', value: 'br'}
+                        ]
+                    })
+                }),
+                wrapperOption({
+                    label: 'Spinner',
+                    propName: 'LoadingIndicatorProps.spinner',
+                    control: switchInput({model, bind: 'spinner'})
+                }),
+                wrapperAction({
+                    // Bind to the same TaskObserver that drives the loading indicator, so the
+                    // trigger itself reflects the loading state it kicks off.
+                    text: model.loadObserver.isPending ? 'Loading...' : 'Load Now',
+                    icon: model.loadObserver.isPending
+                        ? Icon.spinner({spin: true})
+                        : Icon.refresh(),
+                    intent: 'primary',
+                    disabled: model.loadObserver.isPending,
+                    onClick: () => model.refreshAsync()
+                })
+            ],
+            item: panel({
+                height: '60vh',
+                width: '90%',
+                item: sampleGrid({omitGridTools: true, omitMask: true}),
+                loadingIndicator: loadingIndicator({
+                    spinner: model.spinner,
+                    corner: model.corner,
+                    bind: model.loadObserver
+                })
+            })
+        });
+    }
+});
+
+class LoadingIndicatorPanelModel extends HoistModel {
+    @bindable seconds = 3;
+    @bindable message = 'Loading';
+    @bindable corner: Corner = 'br';
+    @bindable spinner = true;
+
+    @managed sampleGridModel = new SampleGridModel();
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
+
+    override async doLoadAsync(loadSpec: LoadSpec) {
+        const {loadObserver, message, seconds} = this,
+            interval = (seconds / 3) * SECONDS;
+
+        loadObserver.setMessage(message);
+
+        await wait(interval);
+        if (message) loadObserver.setMessage(message + ' - still working...');
+        await wait(interval);
+        if (message) loadObserver.setMessage(message + ' - almost finished...');
+        await wait(interval);
+        await this.sampleGridModel.loadAsync(loadSpec);
+        loadObserver.setMessage(message);
+    }
+}

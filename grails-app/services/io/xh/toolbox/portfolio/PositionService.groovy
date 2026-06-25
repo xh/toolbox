@@ -9,7 +9,7 @@ import static io.xh.hoist.util.DateTimeUtils.getSECONDS
 
 class PositionService extends BaseService {
 
-    private Map<String, PositionSession> sessions = new ConcurrentHashMap()
+    private Map<String, PositionSession> sessions = new ConcurrentHashMap<String, PositionSession>()
 
     def portfolioService,
         webSocketService,
@@ -251,6 +251,7 @@ class PositionService extends BaseService {
 
 
     void pushUpdatesToAllSessions() {
+        if (!portfolioService.portfolioAvailable) return
         cullSessions()
         sessions.values().each {
             it.pushUpdate()
@@ -267,8 +268,8 @@ class PositionService extends BaseService {
         }
     }
 
-    private Map getConfig() {
-        configService.getMap('portfolioConfigs')
+    private PortfolioConfig getConfig() {
+        configService.getObject(PortfolioConfig)
     }
 
     Map getAdminStats() {[
