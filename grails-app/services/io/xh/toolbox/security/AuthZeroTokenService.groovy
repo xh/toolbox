@@ -16,6 +16,8 @@ import static java.lang.System.currentTimeMillis
  */
 class AuthZeroTokenService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.auth'
+
     static clearCachesConfigs = ['auth0Config']
 
     AuthenticationService authenticationService
@@ -26,7 +28,7 @@ class AuthZeroTokenService extends BaseService {
     Map getClientConfig() {
         return [
             provider: 'AUTH_ZERO',
-            *: config
+            *: config.formatForJSON()
         ]
     }
 
@@ -91,18 +93,20 @@ class AuthZeroTokenService extends BaseService {
 
     private JsonWebKeySet createKeySet() {
         def url = "https://$domain/.well-known/jwks.json"
-        withInfo(['Fetching JWKS', url]) {
-            def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
-                ret = new JsonWebKeySet(jwksJson)
-            if (!ret.jsonWebKeys) {
-                throw new RuntimeException('Unable to build valid key set from remote JWKS endpoint.')
+        span('getAuth0JWKS')
+            .logInfo(['Fetching JWKS', url])
+            .run {
+                def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
+                    ret = new JsonWebKeySet(jwksJson)
+                if (!ret.jsonWebKeys) {
+                    throw new RuntimeException('Unable to build valid key set from remote JWKS endpoint.')
+                }
+                ret
             }
-            return ret
-        }
     }
 
-    private getConfig() {
-        configService.getMap('auth0Config')
+    private Auth0Config getConfig() {
+        configService.getObject(Auth0Config)
     }
 
     private String getClientId() {

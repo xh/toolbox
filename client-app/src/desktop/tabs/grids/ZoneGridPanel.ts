@@ -1,6 +1,6 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {action, makeObservable, observable} from '@xh/hoist/mobx';
-import {filler, p, span} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {zoneGrid, ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {select} from '@xh/hoist/desktop/cmp/input';
@@ -22,33 +22,34 @@ export const zoneGridPanel = hoistCmp.factory({
     model: creates(() => ZoneGridPanelModel),
     render() {
         return wrapper({
+            title: 'Zone Grid',
+            icon: Icon.gridLarge(),
             description: [
-                p(
-                    'The ZoneGrid component leverages an underlying Grid / GridModel instance to display multi-line full-width rows with configurable fields.'
-                ),
-                p('Typically used to display dense information when horizontal space is limited.')
+                'The `ZoneGrid` component leverages an underlying `Grid` / `GridModel`',
+                'instance to display multi-line full-width rows with configurable fields.',
+                '',
+                'Typically used to display dense information when horizontal space is limited.'
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/grids/ZoneGridPanel.ts',
                     notes: 'This example.'
                 },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide that ZoneGrid builds on.'
+                },
                 {url: '$HR/cmp/zoneGrid/ZoneGrid.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/cmp/zoneGrid/ZoneGridModel.ts',
-                    notes: 'Hoist model for configuring and interacting with Zone Grids.'
-                },
-                {
-                    url: '$HR/cmp/zoneGrid/impl/ZoneGridPersistenceModel.ts',
-                    notes: 'Hoist model for persisting Zone Grid state.'
+                    notes: 'Hoist model for configuring and interacting with Zone Grids, including persistence.'
                 }
             ],
             item: panel({
-                title: 'Grids › Zone Grid',
-                icon: Icon.gridLarge(),
                 className: 'tb-zone-grid-panel',
-                width: 500,
-                height: 700,
+                width: 600,
+                height: '50vh',
                 item: zoneGrid(),
                 tbar: [
                     span('Group by:'),

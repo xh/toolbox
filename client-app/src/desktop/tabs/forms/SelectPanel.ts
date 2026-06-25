@@ -1,6 +1,5 @@
-import {box, code, div, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp, HoistModel, lookup, XH} from '@xh/hoist/core';
+import {box, div, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -11,7 +10,11 @@ import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import './SelectPanel.scss';
 
-const LARGE_OPTIONS = Array.from({length: 2000}, (_, i) => `Item ${i + 1}`);
+// Varied label lengths so the windowed menu visibly auto-sizes to its widest content.
+const LARGE_OPTIONS = Array.from(
+    {length: 2000},
+    (_, i) => `Item ${i + 1}${i % 7 === 0 ? ' - a longer descriptive option label' : ''}`
+);
 
 const STATUS_OPTIONS = [
     {
@@ -45,22 +48,17 @@ export const selectPanel = hoistCmp.factory({
     displayName: 'SelectPanel',
     model: creates(() => SelectPanelModel),
 
-    render({model}) {
+    render() {
         return wrapper({
+            title: 'Select',
+            icon: Icon.list(),
             description: [
-                p(
-                    code('Select'),
-                    ' is a managed combobox/dropdown input supporting single and multi-value selection, async server-side queries, creatable entries, grouped options, and windowed rendering for large lists.'
-                ),
-                p(
-                    'For a more compact trigger suited to toolbars, see the companion ',
-                    code({
-                        className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('picker'),
-                        item: 'Picker'
-                    }),
-                    ' component.'
-                )
+                '`Select` is a managed combobox/dropdown input supporting single and',
+                'multi-value selection, async server-side queries, creatable entries, grouped',
+                'options, and windowed rendering for large lists.',
+                '',
+                'For a more compact trigger suited to toolbars, see the companion `Picker`',
+                'component.'
             ],
             links: [
                 {
@@ -68,14 +66,22 @@ export const selectPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/cmp/input/README.md',
+                    text: 'Inputs docs',
+                    notes: 'Input components guide and shared concepts.'
+                },
+                {
                     url: '$HR/desktop/cmp/input/Select.ts',
                     notes: 'Hoist Select component.'
+                },
+                {
+                    url: '$HR/cmp/input/HoistInputModel.ts',
+                    notes: 'Base class shared by all Hoist inputs.'
                 }
             ],
             item: panel({
-                title: 'Forms › Select',
-                icon: Icon.list(),
-                width: '90%',
+                width: '100%',
+                height: '100%',
                 maxWidth: 1100,
                 scrollable: true,
                 item: hframe(column1(), column2(), column3()),
@@ -160,7 +166,7 @@ const column1 = hoistCmp.factory<SelectPanelModel>(() =>
             }),
             demoRow({
                 label: 'Multi-select',
-                info: 'enableMulti, enableClear — tag picker mode',
+                info: 'enableMulti, enableClear - tag picker mode',
                 item: select({
                     bind: 'multiStates',
                     options: usStates,
@@ -252,7 +258,7 @@ const column2 = hoistCmp.factory<SelectPanelModel>(() =>
             }),
             demoRow({
                 label: 'Creatable',
-                info: 'enableCreate — type a new entry',
+                info: 'enableCreate - type a new entry',
                 item: select({
                     bind: 'creatableValue',
                     options: restaurants,
@@ -304,7 +310,7 @@ const column2 = hoistCmp.factory<SelectPanelModel>(() =>
             }),
             demoRow({
                 label: 'Large list (windowed)',
-                info: 'enableWindowed — 2,000 items virtualized',
+                info: 'enableWindowed - 2,000 items virtualized, menu auto-sizes to content',
                 item: select({
                     bind: 'bigValue',
                     options: LARGE_OPTIONS,
@@ -366,7 +372,7 @@ const column3 = hoistCmp.factory<SelectPanelModel>(() =>
             }),
             demoRow({
                 label: 'Wide menu',
-                info: 'menuWidth: 350 — dropdown wider than input',
+                info: 'menuWidth: 350 - dropdown wider than input',
                 item: select({
                     bind: 'wideMenu',
                     options: restaurants,
@@ -460,8 +466,6 @@ const demoRow = hoistCmp.factory(({label, info, children}) =>
 // Model
 //------------------------------------------------------------------
 class SelectPanelModel extends HoistModel {
-    @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
-
     // Toolbar
     @bindable toolbarState: string = null;
     @bindable toolbarMulti: string[] = [];

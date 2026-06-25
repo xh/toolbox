@@ -42,13 +42,18 @@ springBoot {
 }
 
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(Integer.parseInt(majorJavaVersion))
+    }
+}
+
+
 def allJvmArgs = [
     '-Dspring.output.ansi.enabled=always',
-    '-XX:+TieredCompilation',
     '-XX:TieredStopAtLevel=1',
     '-XX:CICompilerCount=3',
     '-Xmx' + localDevXmx,
-    "--add-modules=java.se",
     "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
     "--add-opens=java.base/java.lang=ALL-UNNAMED",
     "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
@@ -82,12 +87,89 @@ dependencies {
     // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
     // MySQL for deployed instances, or more stateful local workstation setups.
     runtimeOnly "com.h2database:h2"
-    runtimeOnly "mysql:mysql-connector-java:8.0.33"
+    runtimeOnly "com.mysql:mysql-connector-j:8.4.0"
 
     // Stifle dev errors on Macs
     developmentOnly "io.methvin:directory-watcher:0.19.1"
     console "org.apache.grails:grails-console"
 }
+
+//------------------------------------------------------------------
+// hoist-core MCP server + CLI tools — version-locked launchers
+//------------------------------------------------------------------
+// hoist-ai-snippet: hoist-core-install/v1 -- DO NOT REMOVE (drift marker, see hoist-core/mcp/README.md)
+configurations {
+    hoistCoreCli
+}
+
+dependencies {
+    // Resolve the active hoist-core version lazily from the runtime classpath. Works whether
+    // hoist-core is declared directly, via gradle.properties, or pulled in transitively via a
+    // client plugin -- the install task stays aligned with whatever hoist-core version actually
+    // resolves at build time.
+    hoistCoreCli providers.provider {
+        def hc = configurations.runtimeClasspath.incoming.resolutionResult.allComponents
+            .find { it.moduleVersion?.group == 'io.xh' && it.moduleVersion?.name == 'hoist-core' }
+        if (!hc) throw new GradleException(
+            'hoist-core not found on the runtimeClasspath -- cannot install hoist-core tools.')
+        "io.xh:hoist-core-mcp:${hc.moduleVersion.version}:all@jar"
+    }
+}
+
+tasks.register('installHoistCoreTools', Sync) {
+    description = 'Install version-locked launchers for the hoist-core MCP server and CLI tools.'
+    group = 'hoist'
+    from configurations.hoistCoreCli
+    into layout.buildDirectory.dir('hoist-core-tools/lib')
+    doLast {
+        def jar = fileTree(layout.buildDirectory.dir('hoist-core-tools/lib')).singleFile
+        def binDir = file('bin')
+        binDir.mkdirs()
+        def launcherNames = []
+        ['mcp', 'docs', 'symbols'].each { topic ->
+            // mcp mode: pass --source bundled so the server reads JAR-embedded content. Without
+            //           this, HoistCoreMcpServer defaults to local mode and fails when the app
+            //           has no hoist-core checkout sibling.
+            // docs/symbols: dispatched via `cli`, which routes to picocli (defaults to bundled).
+            def args = topic == 'mcp' ? '--source bundled' : "cli ${topic}"
+            // The bash launcher resolves `java` from PATH, falling back to JAVA_HOME, so it
+            // works under MCP clients launched from non-interactive shells where a JDK version
+            // manager (mise, asdf, jenv) may not have activated.
+            new File(binDir, "hoist-core-${topic}").with {
+                text = """\
+#!/usr/bin/env bash
+if command -v java >/dev/null 2>&1; then
+    JAVA=java
+elif [ -n "\$JAVA_HOME" ] && [ -x "\$JAVA_HOME/bin/java" ]; then
+    JAVA="\$JAVA_HOME/bin/java"
+else
+    cat >&2 <<'EOF'
+[hoist-core] ERROR: 'java' not on PATH and JAVA_HOME is unset or invalid.
+
+If you use a JDK version manager (mise, asdf, jenv), it likely activates only in
+interactive shells - but this script runs in the non-interactive shell launched by
+your MCP client. Either export JAVA_HOME from a non-interactive init file (e.g.
+~/.bash_profile, ~/.zshenv) so it is visible here, or activate the version manager
+from one of those files. Pointing JAVA_HOME at any JDK 17+ install is sufficient.
+EOF
+    exit 1
+fi
+exec "\$JAVA" -jar "${jar.absolutePath}" ${args} "\$@"
+"""
+                setExecutable(true)
+            }
+            new File(binDir, "hoist-core-${topic}.bat").text =
+                "@echo off\r\njava -jar \"${jar.absolutePath}\" ${args} %*\r\n"
+            launcherNames << "hoist-core-${topic}"
+            launcherNames << "hoist-core-${topic}.bat"
+        }
+        // Generated launchers embed an absolute path to the resolved JAR, so they are
+        // machine-specific and must not be committed. Write a scoped bin/.gitignore that
+        // excludes only the generated launchers, leaving the rest of bin/ untouched.
+        new File(binDir, '.gitignore').text = launcherNames.sort().join('\n') + '\n'
+    }
+}
+// end hoist-ai-snippet
 
 Map hoistMetaData = [
     'info.xh.appCode': xhAppCode,
@@ -103,10 +185,27 @@ Map hoistMetaData = [
 //-------------------------
 // Trampoline  jvmArgs
 //-------------------------
+// Properties that describe the daemon's own JDK install. Forwarding them to a forked toolchain
+// JVM that runs a different JDK corrupts it - e.g. `java.home` makes the forked JVM resolve its
+// internal modules against the wrong install, surfacing as `NoClassDefFoundError` on any code
+// path that touches ICU (regex normalization, JCE init, java.text.Normalizer).
+def jdkInstallProps = [
+    'java.class.path', 'java.class.version', 'java.home', 'java.library.path',
+    'java.runtime.name', 'java.runtime.version', 'java.specification.name',
+    'java.specification.vendor', 'java.specification.version',
+    'java.vendor', 'java.vendor.url', 'java.vendor.url.bug', 'java.vendor.version',
+    'java.version', 'java.version.date',
+    'java.vm.compressedOopsMode', 'java.vm.info', 'java.vm.name',
+    'java.vm.specification.name', 'java.vm.specification.vendor', 'java.vm.specification.version',
+    'java.vm.vendor', 'java.vm.version', 'jdk.debug'
+] as Set
+
 def execTasks = tasks.matching {it.name == 'bootRun' || it.name == 'console'}
 execTasks.configureEach {
     ignoreExitValue = true
-    systemProperties System.properties
+    // Forward daemon `-D` properties (e.g. `bootRun -Dserver.port=8081`) but skip the
+    // JDK-install descriptors above.
+    systemProperties System.properties.findAll { k, _ -> !jdkInstallProps.contains(k) }
     jvmArgs(allJvmArgs)
     systemProperties hoistMetaData
     // Bring .env sourced environment variables into bootRun JVM process.

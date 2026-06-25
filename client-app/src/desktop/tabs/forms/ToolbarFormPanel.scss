@@ -1,0 +1,11 @@
+// Vertical stack of equal-width toolbars: fills the demo region up to a max width, then centers.
+.tb-toolbar-form {
+  width: 100%;
+  max-width: 900px;
+  align-items: stretch;
+  gap: var(--xh-pad-px);
+
+  .xh-toolbar {
+    border: var(--xh-border-solid);
+  }
+}

@@ -1,28 +1,22 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {Content, HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
+import {Content, managed, XH} from '@xh/hoist/core';
 import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
-import {DocCategory, DocEntry, DocExampleLink, getDocExamples} from './docRegistry';
-import {DocSearchResult, DocService} from '../../../core/svc/DocService';
-
-export interface DocSection {
-    id: string;
-    title: string;
-}
+import {DocViewModel} from '../../../core/docs/DocViewModel';
+import {getCategoryIcon, getSourceIcon} from '../../../core/docs/DocIcons';
+import {DocEntry, DocExampleLink, getDocExamples} from './docRegistry';
+import {DocSearchResult} from '../../../core/svc/DocService';
 
 /**
  * Primary model for the Docs viewer tab.
  *
- * Manages a tree-based navigation grid of hoist-react and hoist-core documentation,
- * full-text search mode with ranked results, and loading of markdown content
- * for the selected doc. Active doc selection is synced with the URL via a
- * route parameter (e.g. /app/docs/core).
+ * Extends DocViewModel for shared viewer state and extends it with desktop-specific chrome:
+ * a tree-based navigation grid, full-text search mode with ranked results, and a feedback dock.
+ * Active doc selection is synced with the URL via a route parameter (e.g. /app/docs/core).
  */
-export class DocsPanelModel extends HoistModel {
-    private readonly BASE_ROUTE = 'default.docs';
-
+export class DocsPanelModel extends DocViewModel {
     @managed
     gridModel: GridModel;
 
@@ -52,24 +46,8 @@ export class DocsPanelModel extends HoistModel {
     @observable
     selectedSearchIdx: number = -1;
 
-    @observable.ref
-    activeDoc: DocEntry = null;
-
-    @observable.ref
-    content: string = null;
-
-    @managed
-    loadContentTask: TaskObserver = TaskObserver.trackLast();
-
-    @observable
-    activeSection: string = null;
-
     @bindable
     feedbackMessage: string = '';
-
-    private get docService(): DocService {
-        return DocService.instance;
-    }
 
     constructor() {
         super();
@@ -90,86 +68,31 @@ export class DocsPanelModel extends HoistModel {
             {
                 track: () => this.gridModel.selectedRecord,
                 run: rec => this.onSelectionChange(rec)
-            },
-            {
-                track: () => XH.routerState.params,
-                run: () => this.updateDocFromRoute()
             }
         );
     }
 
     override onLinked() {
+        super.onLinked();
         this.loadNav();
     }
 
-    /** The source info for the currently active doc. */
-    @computed
-    get activeSource(): string | null {
-        return this.activeDoc?.source ?? null;
+    /** Desktop hangs the active doc off a `docRef` child of the docs tab route. */
+    protected override get docRouteName(): string {
+        return `${this.BASE_ROUTE}.docRef`;
     }
 
-    /** The category of the currently active doc. */
-    @computed
-    get activeCategory(): DocCategory | null {
-        if (!this.activeDoc) return null;
-        const cats = this.docService.getCategories(this.activeDoc.source);
-        return cats.find(c => c.id === this.activeDoc.category) ?? null;
-    }
-
-    /** Sibling docs in the same source + category as the active doc. */
-    @computed
-    get activeCategorySiblings(): DocEntry[] {
-        if (!this.activeDoc) return [];
-        return this.docService.getDocsByCategory(this.activeDoc.source, this.activeDoc.category);
-    }
-
-    /** Categories for the active doc's source, filtered to those with at least one doc. */
-    @computed
-    get activeSourceCategories(): DocCategory[] {
-        if (!this.activeDoc) return [];
-        const {source} = this.activeDoc;
-        return this.docService
-            .getCategories(source)
-            .filter(cat => this.docService.getDocsByCategory(source, cat.id).length > 0);
-    }
-
-    /** H2-level sections parsed from the current document content. */
-    @computed
-    get sections(): DocSection[] {
-        if (!this.content) return [];
-        return extractSections(this.content);
+    /** Sync grid selection + exit search whenever a doc is activated. */
+    protected override onDocActivated(entry: DocEntry) {
+        const recId = `${entry.source}:${entry.id}`;
+        this.gridModel.selectAsync(recId, {ensureVisible: true});
+        this.searchMode = false;
     }
 
     /** Toolbox example tabs relevant to the active doc. */
     @computed
     get activeDocExamples(): DocExampleLink[] {
-        if (!this.activeDoc) return [];
-        return getDocExamples(this.activeDoc.id);
-    }
-
-    /** Navigate to a specific doc by source + ID. Updates grid selection, content, and route. */
-    @action
-    navigateToDoc(docId: string, source?: string) {
-        const entry = source
-            ? this.docService.getDocEntry(docId, source)
-            : this.docService.getDocEntry(docId);
-        if (!entry || (entry.id === this.activeDoc?.id && entry.source === this.activeDoc?.source))
-            return;
-
-        const recId = `${entry.source}:${entry.id}`;
-        this.gridModel.selectAsync(recId, {ensureVisible: true});
-
-        this.activeDoc = entry;
-        this.activeSection = null;
-        this.searchMode = false;
-        this.loadContentAsync(entry);
-        this.updateRouteFromDoc();
-    }
-
-    /** Navigate to the first doc in a given source + category. */
-    navigateToCategory(source: string, categoryId: string) {
-        const firstDoc = this.docService.getDocsByCategory(source, categoryId)[0];
-        if (firstDoc) this.navigateToDoc(firstDoc.id, firstDoc.source);
+        return this.activeDoc ? getDocExamples(this.activeDoc.id) : [];
     }
 
     /** Toggle search mode on/off. */
@@ -178,7 +101,7 @@ export class DocsPanelModel extends HoistModel {
         this.searchMode ? this.exitSearchMode() : this.enterSearchMode();
     }
 
-    /** Enter search mode — switches content area to search results view. */
+    /** Enter search mode - switches content area to search results view. */
     @action
     enterSearchMode() {
         this.searchMode = true;
@@ -188,7 +111,7 @@ export class DocsPanelModel extends HoistModel {
         this.docService.ensureIndexBuilt();
     }
 
-    /** Exit search mode — returns to normal doc viewing. */
+    /** Exit search mode - returns to normal doc viewing. */
     @action
     exitSearchMode() {
         this.searchMode = false;
@@ -197,7 +120,7 @@ export class DocsPanelModel extends HoistModel {
         this.selectedSearchIdx = -1;
     }
 
-    /** Select a search result — navigate to the doc and exit search. */
+    /** Select a search result - navigate to the doc and exit search. */
     @action
     selectSearchResult(entry: DocEntry) {
         this.navigateToDoc(entry.id, entry.source);
@@ -238,12 +161,6 @@ export class DocsPanelModel extends HoistModel {
                 this.exitSearchMode();
                 break;
         }
-    }
-
-    /** Update the active section — called from scroll-based observation in the view. */
-    @action
-    setActiveSection(sectionId: string) {
-        this.activeSection = sectionId;
     }
 
     /**
@@ -300,7 +217,7 @@ export class DocsPanelModel extends HoistModel {
         await XH.trackService.pushPendingAsync();
 
         this.closeFeedbackPanel();
-        XH.successToast('Feedback submitted — thank you!');
+        XH.successToast('Feedback submitted - thank you!');
     }
 
     //------------------
@@ -345,11 +262,13 @@ export class DocsPanelModel extends HoistModel {
     private loadNav() {
         this.gridModel.loadData(this.buildTreeData());
 
-        const ref = this.docRefFromRoute(XH.routerState.params);
-        const registry = this.docService.registry;
-        const initialDoc =
-            (ref && this.docService.getDocEntry(ref.docId, ref.source)) || registry[0];
-        if (initialDoc) this.navigateToDoc(initialDoc.id, initialDoc.source);
+        const ref = this.docRefFromRoute(XH.routerState.params),
+            registry = this.docService.registry,
+            fromRoute = ref && this.docService.getDocEntry(ref.docId, ref.source),
+            initialDoc = fromRoute || registry[0];
+        if (initialDoc) {
+            this.navigateToDoc(initialDoc.id, initialDoc.source, fromRoute ? ref.section : null);
+        }
     }
 
     /**
@@ -428,144 +347,12 @@ export class DocsPanelModel extends HoistModel {
         this.navigateToDoc(docId, source);
     }
 
-    /** Route → doc: sync active doc when the URL changes. */
-    private updateDocFromRoute() {
-        const {name, params} = XH.routerState;
-        if (!name.startsWith(this.BASE_ROUTE)) return;
-
-        const ref = this.docRefFromRoute(params);
-        if (ref) this.navigateToDoc(ref.docId, ref.source);
-    }
-
-    /** Doc → route: push active doc ID into the URL. */
-    private updateRouteFromDoc() {
-        const {activeDoc, BASE_ROUTE} = this,
-            {name} = XH.routerState;
-
-        if (!name.startsWith(BASE_ROUTE)) return;
-
-        if (activeDoc) {
-            XH.navigate(
-                `${BASE_ROUTE}.docRef`,
-                {source: activeDoc.source, docId: this.docIdToRoute(activeDoc.id)},
-                {replace: true}
-            );
-        } else {
-            XH.navigate(BASE_ROUTE, {replace: true});
-        }
-    }
-
-    private docIdToRoute(docId: string): string {
-        return docId.replaceAll('/', '~');
-    }
-
-    private docRefFromRoute(params: Record<string, string>): {source: string; docId: string} {
-        const {source, docId} = params;
-        if (!source || !docId) return null;
-        return {source, docId: docId.replaceAll('~', '/')};
-    }
-
-    private async loadContentAsync(entry: DocEntry) {
-        runInAction(() => (this.content = null));
-        try {
-            const content = await this.docService
-                .fetchContentAsync(entry.source, entry.id)
-                .linkTo(this.loadContentTask);
-            runInAction(() => (this.content = content));
-        } catch (e) {
-            runInAction(() => {
-                this.content = `## Error Loading Document\n\nFailed to load **${entry.title}**.\n\n\`${e.message}\``;
-            });
-            XH.handleException(e, {showAlert: false});
-        }
-    }
-
+    /** Delegate to the shared doc-icon helpers (kept as instance methods for view call-sites). */
     getCategoryIcon(categoryId: string) {
-        switch (categoryId) {
-            case 'app-development':
-                return Icon.code();
-            case 'components':
-                return Icon.gridPanel();
-            case 'concepts':
-                return Icon.book();
-            case 'core':
-                return Icon.gear();
-            case 'core-features':
-                return Icon.boxFull();
-            case 'core-framework':
-                return Icon.gear();
-            case 'desktop':
-                return Icon.desktop();
-            case 'devops':
-                return Icon.server();
-            case 'grails-platform':
-                return Icon.database();
-            case 'infrastructure':
-                return Icon.server();
-            case 'mobile':
-                return Icon.mobile();
-            case 'overview':
-                return Icon.home();
-            case 'supporting':
-                return Icon.cube();
-            case 'upgrade':
-                return Icon.arrowUp();
-            case 'utilities':
-                return Icon.wrench();
-            default:
-                return Icon.folder();
-        }
+        return getCategoryIcon(categoryId);
     }
 
     getSourceIcon(sourceName: string) {
-        switch (sourceName) {
-            case 'hoist-react':
-                return Icon.icon({iconName: 'react', prefix: 'fab'});
-            case 'hoist-core':
-                return Icon.server();
-            default:
-                return Icon.folder();
-        }
+        return getSourceIcon(sourceName);
     }
-}
-
-//------------------
-// Section parsing
-//------------------
-/**
- * Parse H2 headings from raw markdown content into navigable sections.
- */
-function extractSections(content: string): DocSection[] {
-    const regex = /^## (.+)$/gm;
-    const sections: DocSection[] = [],
-        slugCounts = new Map<string, number>();
-    let match: RegExpExecArray;
-    while ((match = regex.exec(content)) !== null) {
-        const title = stripInlineMarkdown(match[1].trim());
-        let id = slugify(title);
-        const count = slugCounts.get(id) || 0;
-        if (count > 0) id += `-${count}`;
-        slugCounts.set(id, count + 1);
-        sections.push({id, title});
-    }
-    return sections;
-}
-
-/** Remove inline markdown formatting (code, bold, italic, links) to get plain text. */
-function stripInlineMarkdown(text: string): string {
-    return text
-        .replace(/`([^`]*)`/g, '$1')
-        .replace(/\*\*([^*]*)\*\*/g, '$1')
-        .replace(/\*([^*]*)\*/g, '$1')
-        .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-        .trim();
-}
-
-/** Convert text to a URL-safe slug: lowercase, strip special chars, hyphenate spaces. */
-function slugify(text: string): string {
-    return text
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/[\s-]+/g, '-')
-        .replace(/^-+|-+$/g, '');
 }

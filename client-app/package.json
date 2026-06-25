@@ -1,6 +1,6 @@
 {
   "name": "toolbox",
-  "version": "9.0-SNAPSHOT",
+  "version": "10.0-SNAPSHOT",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -9,13 +9,15 @@
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "yarn lint:all",
     "validateDocs": "node scripts/validate-doc-registry.mjs",
-    "lint:all": "yarn lint:code && yarn lint:styles",
+    "lint:all": "yarn lint:code && yarn lint:styles && yarn lint:types",
     "lint:code": "eslint .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
+    "lint:types": "tsc",
     "prepare": "cd .. && husky client-app/.husky",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
     "startAndAnalyze": "yarn start --env analyzeBundles",
-    "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
+    "startWithIp": "yarn start --env devHost=$(ipconfig getifaddr en0)",
+    "startWithHoist": "(cd ../../hoist-react && yarn install) && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
     "startWithHoistAndAnalyze": "yarn startWithHoist --env analyzeBundles",
     "startWithHoistAndIp": "yarn startWithHoist --env devHost=$(ipconfig getifaddr en0)",
     "startWithHoistSecure": "yarn startWithHoist --env devHttps=true --env devHost=toolbox-local.xh.io"
@@ -31,12 +33,14 @@
     ]
   },
   "dependencies": {
-    "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^83.0.0-SNAPSHOT",
+    "@fortawesome/free-brands-svg-icons": "^7.2.0",
+    "@ibm/plex-mono": "^1.1.0",
+    "@ibm/plex-sans": "^1.1.0",
+    "@xh/hoist": "^87.0.0-SNAPSHOT",
     "@xh/package-template": "~3.0.1",
-    "ag-grid-community": "~34.2.0",
-    "ag-grid-enterprise": "~34.2.0",
-    "ag-grid-react": "~34.2.0",
+    "ag-grid-community": "~35.3.0",
+    "ag-grid-enterprise": "~35.3.0",
+    "ag-grid-react": "~35.3.0",
     "core-js": "3.x",
     "highcharts": "12.x",
     "lodash": "4.x",
@@ -48,12 +52,12 @@
   "devDependencies": {
     "@types/react": "18.x",
     "@types/react-dom": "18.x",
-    "@xh/hoist-dev-utils": "11.x",
+    "@xh/hoist-dev-utils": "13.x",
     "cross-env": "10.x",
     "eslint": "10.x",
     "eslint-config-prettier": "10.x",
     "husky": "9.x",
-    "lint-staged": "16.x",
+    "lint-staged": "17.x",
     "postcss": "8.x",
     "prettier": "3.x",
     "stylelint": "17.x",
@@ -63,8 +67,7 @@
   "resolutions": {
     "@types/react": "18.x",
     "@types/react-dom": "18.x",
-    "core-js": "3.x",
-    "jquery": "3.x"
+    "core-js": "3.x"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

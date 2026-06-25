@@ -1,7 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
-import {code, div, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
+import {div, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {picker} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -39,22 +38,19 @@ export const pickerPanel = hoistCmp.factory({
     displayName: 'PickerPanel',
     model: creates(() => PickerPanelModel),
 
-    render({model}) {
+    render() {
         return wrapper({
+            title: 'Picker',
+            icon: Icon.list(),
             description: [
-                p(
-                    code('Picker'),
-                    ' presents its options in a popover dropdown triggered by a compact button showing the current value or a summary. Supports single and multi-select modes.'
-                ),
-                p(
-                    'Designed for space-constrained areas such as toolbars, where a traditional ',
-                    code({
-                        className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('select'),
-                        item: 'Select'
-                    }),
-                    ' component — especially in multi-select "tag picker" mode — is too wide. In multi-mode, displays a compact summary (e.g. "3 selected") rather than listing all selected values inline.'
-                )
+                '`Picker` presents its options in a popover dropdown triggered by a compact',
+                'button showing the current value or a summary. Supports single and',
+                'multi-select modes.',
+                '',
+                'Designed for space-constrained areas such as toolbars, where a traditional',
+                '`Select` component - especially in multi-select "tag picker" mode - is too',
+                'wide. In multi-mode, displays a compact summary (e.g. "3 selected") rather',
+                'than listing all selected values inline.'
             ],
             links: [
                 {
@@ -62,15 +58,23 @@ export const pickerPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
+                    url: '$HR/cmp/input/README.md',
+                    text: 'Inputs docs',
+                    notes: 'Input components guide and shared concepts.'
+                },
+                {
                     url: '$HR/desktop/cmp/input/Picker.ts',
                     notes: 'Hoist Picker component.'
+                },
+                {
+                    url: '$HR/cmp/input/HoistInputModel.ts',
+                    notes: 'Base class shared by all Hoist inputs.'
                 }
             ],
             item: panel({
-                title: 'Forms › Picker',
-                icon: Icon.list(),
-                width: '90%',
-                maxWidth: 1000,
+                width: '100%',
+                height: '100%',
+                maxWidth: 1100,
                 scrollable: true,
                 item: hframe(column1(), column2(), column3()),
                 tbar: pickerToolbar(),
@@ -174,6 +178,37 @@ const column1 = hoistCmp.factory<PickerPanelModel>(() =>
                 })
             }),
             demoRow({
+                label: 'Multi-select (values style)',
+                info: 'multiSelectButtonStyle: "values" - shows comma-separated labels with overflow ellipsis',
+                item: picker({
+                    bind: 'valuesStates',
+                    options: usStates,
+                    enableMulti: true,
+                    enableClear: true,
+                    enableSelectAll: true,
+                    displayNoun: 'state',
+                    multiSelectButtonStyle: 'values',
+                    width: 220,
+                    testId: 'values-states'
+                })
+            }),
+            demoRow({
+                label: 'Multi-select (values + count badge)',
+                info: 'multiSelectShowCount: true - adds a small count badge to the left of the labels',
+                item: picker({
+                    bind: 'valuesCountStates',
+                    options: usStates,
+                    enableMulti: true,
+                    enableClear: true,
+                    enableSelectAll: true,
+                    displayNoun: 'state',
+                    multiSelectButtonStyle: 'values',
+                    multiSelectShowCount: true,
+                    width: 220,
+                    testId: 'values-count-states'
+                })
+            }),
+            demoRow({
                 label: 'Simple options',
                 info: 'Primitive string options, enableClear',
                 item: picker({
@@ -197,7 +232,7 @@ const column1 = hoistCmp.factory<PickerPanelModel>(() =>
             }),
             demoRow({
                 label: 'Compact',
-                info: 'compact: true — standalone, outside toolbar',
+                info: 'compact: true - standalone, outside toolbar',
                 item: picker({
                     bind: 'compactStates',
                     options: usStates,
@@ -211,7 +246,7 @@ const column1 = hoistCmp.factory<PickerPanelModel>(() =>
             }),
             demoRow({
                 label: 'Minimal popover',
-                info: 'popoverMinimal: true — no arrow or border',
+                info: 'popoverMinimal: true - no arrow or border',
                 item: picker({
                     bind: 'minimalPopoverState',
                     options: usStates,
@@ -346,7 +381,7 @@ const column2 = hoistCmp.factory<PickerPanelModel>(({model}) =>
             }),
             demoRow({
                 label: 'Large list (virtual)',
-                info: '500 options — virtualized via react-window',
+                info: '500 options - virtualized via react-window',
                 item: picker({
                     bind: 'largeListValues',
                     options: LARGE_OPTIONS,
@@ -452,8 +487,6 @@ const demoRow = hoistCmp.factory(({label, info, children}) =>
 // Model
 //------------------------------------------------------------------
 class PickerPanelModel extends HoistModel {
-    @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
-
     // Toolbar
     @bindable toolbarStates: string[] = [];
     @bindable toolbarPriority: string = null;
@@ -461,10 +494,12 @@ class PickerPanelModel extends HoistModel {
     // Column 1
     @bindable singleState: string = null;
     @bindable multiStates: string[] = [];
+    @bindable valuesStates: string[] = [];
+    @bindable valuesCountStates: string[] = [];
     @bindable simpleOption: string = null;
     @bindable compactStates: string[] = [];
 
-    // Column 3 — intents
+    // Column 3 - intents
     @bindable intentPrimary: string = null;
     @bindable intentSuccess: string = null;
     @bindable intentWarning: string = null;

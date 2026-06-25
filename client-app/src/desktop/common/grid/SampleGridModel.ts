@@ -115,7 +115,7 @@ export class SampleGridModel extends HoistModel {
                 this.viewDetailsAction,
                 this.terminateAction,
                 '-',
-                ...GridModel.defaultContextMenu
+                ...GridModel.defaults.contextMenu
             ],
             levelLabels: () => {
                 return [...this.groupingChooserModel.valueDisplayNames, 'Company'];

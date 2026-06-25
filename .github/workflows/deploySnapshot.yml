@@ -17,26 +17,31 @@ on:
                 default: '3'
                 type: string
 
+env:
+    CLUSTER_NAME: toolbox
+    SERVICE_NAME: toolbox-dev
+
 jobs:
     deploy:
 
         if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
         runs-on: ubuntu-latest
-        # No GitHub token scopes needed — this job only uses AWS credentials from secrets.
-        permissions: {}
+        # id-token: write lets this job mint a GitHub OIDC token to assume the AWS deploy role.
+        permissions:
+            id-token: write
+            contents: read
 
         steps:
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v6
           with:
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/xh-github-actions-deploy
               aws-region: ${{ secrets.AWS_REGION }}
 
         - name: Deploy to ECS
           run: |
               aws ecs update-service \
-                  --cluster toolbox \
-                  --service toolbox-dev \
+                  --cluster ${{ env.CLUSTER_NAME }} \
+                  --service ${{ env.SERVICE_NAME }} \
                   --desired-count ${{ inputs.desiredCount || '3' }} \
                   --force-new-deployment

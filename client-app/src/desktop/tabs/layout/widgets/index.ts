@@ -1,4 +1,4 @@
-export * from './ButtonWidget';
+export * from './OptionsWidget';
 export * from './ChartWidget';
 export * from './GridWidget';
 export * from './PanelWidget';

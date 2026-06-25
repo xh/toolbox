@@ -22,6 +22,8 @@ import static java.lang.System.currentTimeMillis
  */
 class EntraIdTokenService extends BaseService {
 
+    String telemetryPrefix = 'toolbox.auth'
+
     static clearCachesConfigs = ['entraIdConfig']
 
     AuthenticationService authenticationService
@@ -33,7 +35,7 @@ class EntraIdTokenService extends BaseService {
         return [
             provider: 'ENTRA_ID',
             authority: authority,
-            *: config
+            *: config.formatForJSON()
         ]
     }
 
@@ -98,18 +100,20 @@ class EntraIdTokenService extends BaseService {
 
     private JsonWebKeySet createKeySet() {
         def url = "https://login.microsoftonline.com/${tenantId}/discovery/keys?appid=${clientId}"
-        withInfo(['Fetching JWKS', url]) {
-            def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
-                ret = new JsonWebKeySet(jwksJson)
-            if (!ret.jsonWebKeys) {
-                throw new RuntimeException('Unable to build valid key set from remote JWKS endpoint.')
+        span('getEntraJWKS')
+            .logInfo(['Fetching JWKS', url])
+            .run {
+                def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
+                    ret = new JsonWebKeySet(jwksJson)
+                if (!ret.jsonWebKeys) {
+                    throw new RuntimeException('Unable to build valid key set from remote JWKS endpoint.')
+                }
+                return ret
             }
-            return ret
-        }
     }
 
-    private getConfig() {
-        configService.getMap('entraIdConfig')
+    private EntraIdConfig getConfig() {
+        configService.getObject(EntraIdConfig)
     }
 
     private String getClientId() {

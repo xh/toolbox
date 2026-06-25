@@ -1,23 +1,57 @@
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {span} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {buttonGroupInput, segmentedControl, select} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 import {createContainerModelConfig} from './SimpleExample';
 
 export const customExample = hoistCmp.factory({
     model: creates(() => CustomExampleModel),
 
     render({model}) {
+        const {detachedTabModel} = model,
+            tabOptions = detachedTabModel.tabs.map(t => ({
+                value: t.id,
+                label: t.title as string,
+                icon: t.icon
+            }));
+
         return panel({
-            className: 'child-tabcontainer',
-            tbar: model.detachedTabModel.tabs.map(childModel =>
-                button({
-                    intent: childModel.isActive ? 'primary' : null,
-                    text: childModel.title,
-                    onClick: () => model.detachedTabModel.activateTab(childModel.id)
+            className: 'tb-layout-tabs__child',
+            tbar: [
+                segmentedControl({
+                    model: detachedTabModel,
+                    bind: 'activeTabId',
+                    intent: 'primary',
+                    options: tabOptions
+                }),
+                '-',
+                buttonGroupInput({
+                    model: detachedTabModel,
+                    bind: 'activeTabId',
+                    outlined: true,
+                    intent: 'primary',
+                    items: tabOptions.map(o =>
+                        button({value: o.value, icon: o.icon, text: o.label})
+                    )
+                }),
+                '-',
+                select({
+                    model: detachedTabModel,
+                    bind: 'activeTabId',
+                    options: tabOptions,
+                    width: 140
                 })
-            ),
-            item: tabContainer({model: model.detachedTabModel, switcher: false})
+            ],
+            item: tabContainer({model: detachedTabModel, switcher: false}),
+            bbar: [
+                Icon.infoCircle(),
+                span(
+                    'The top toolbar demonstrates three possible approaches to custom switchers via bound HoistInputs.'
+                )
+            ]
         });
     }
 });

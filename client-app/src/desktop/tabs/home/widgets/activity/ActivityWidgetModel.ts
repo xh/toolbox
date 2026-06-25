@@ -1,27 +1,54 @@
-import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {span, div, vbox, p} from '@xh/hoist/cmp/layout';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
-import {managed, HoistModel, XH} from '@xh/hoist/core';
+import {lookup, managed, HoistModel, XH} from '@xh/hoist/core';
+import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {head} from 'lodash';
+import {head, uniq} from 'lodash';
+import {Commit} from '../../../../../core/svc/GitHubService';
+import {RepoFilterModel} from '../RepoFilterPicker';
 
-export class ActivityWidgetModel extends HoistModel {
+export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
+    @lookup(DashViewModel)
+    private dashViewModel: DashViewModel;
+
+    /** Repos to filter to - empty means show all. */
+    @bindable.ref selectedRepos: string[] = [];
+
     @managed
     gridModel: GridModel;
-
-    @managed
-    filterChooserModel: FilterChooserModel;
 
     get groupBy() {
         return head(this.gridModel.groupBy);
     }
 
+    /** Commits to display, filtered by any repo selection. */
+    get commits(): Commit[] {
+        const {selectedRepos} = this,
+            all = XH.gitHubService.allCommits;
+        return selectedRepos.length ? all.filter(it => selectedRepos.includes(it.repo)) : all;
+    }
+
+    get repoOptions(): string[] {
+        return uniq(XH.gitHubService.allCommits.map(it => it.repo)).sort();
+    }
+
+    get commitCount(): number {
+        return this.commits.length;
+    }
+
+    get monthCommitCount(): number {
+        const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+        return this.commits.filter(it => it.committedDate.getTime() > cutoff).length;
+    }
+
     constructor() {
         super();
+        makeObservable(this);
 
         const openUrlAction = {
             text: 'Open on Github',
@@ -37,10 +64,11 @@ export class ActivityWidgetModel extends HoistModel {
                 p('Have you properly configured the gitHubAccessToken config?')
             ]),
             colChooserModel: true,
+            filterModel: true,
             expandLevel: 1,
             sortBy: 'committedDate|desc',
             groupBy: 'committedDay',
-            contextMenu: [openUrlAction, '-', ...GridModel.defaultContextMenu],
+            contextMenu: [openUrlAction, '-', ...GridModel.defaults.contextMenu],
             store: {
                 fields: [
                     {name: 'repo', type: 'string'},
@@ -67,6 +95,7 @@ export class ActivityWidgetModel extends HoistModel {
                 },
                 {
                     field: 'repo',
+                    filterable: true,
                     width: 140,
                     pinned: true,
                     align: 'right',
@@ -75,17 +104,20 @@ export class ActivityWidgetModel extends HoistModel {
                 },
                 {
                     field: 'messageHeadline',
+                    filterable: true,
                     flex: 1,
                     minWidth: 200,
                     tooltip: true
                 },
                 {
                     field: 'authorName',
+                    filterable: true,
                     autosizeMaxWidth: 170,
                     width: 170
                 },
                 {
                     field: 'authorEmail',
+                    filterable: true,
                     hidden: true,
                     width: 170
                 },
@@ -115,18 +147,22 @@ export class ActivityWidgetModel extends HoistModel {
                 },
                 {
                     field: 'changedFiles',
+                    filterable: true,
                     headerName: Icon.file(),
+                    hidden: true,
                     align: 'center',
                     width: 60
                 },
                 {
                     ...localDateCol,
                     field: 'committedDay',
+                    filterable: true,
                     hidden: true
                 },
                 {
                     ...dateTimeCol,
-                    field: 'committedDate'
+                    field: 'committedDate',
+                    filterable: true
                 },
                 {
                     ...actionCol,
@@ -153,30 +189,31 @@ export class ActivityWidgetModel extends HoistModel {
             }
         });
 
-        this.filterChooserModel = new FilterChooserModel({
-            bind: this.gridModel.store,
-            fieldSpecs: [
-                'repo',
-                'authorName',
-                'authorEmail',
-                'committedDay',
-                'changedFiles',
-                'isRelease',
-                {
-                    field: 'messageHeadline',
-                    enableValues: false
-                }
-            ]
-        });
-
         this.addReaction({
-            track: () => XH.gitHubService.allCommits,
+            track: () => this.commits,
             run: () => this.loadAsync()
         });
     }
 
+    override onLinked() {
+        // Float a live summary of overall commit activity up into the hosting view's title via
+        // DashViewModel.titleDetails - leading middot reads as a segment after the title.
+        // Note we deliberately avoid an "all-time" total here - loaded history can be capped
+        // via the gitHubMaxPagesPerLoad config, so only the recent window is reliably complete.
+        this.addReaction({
+            track: () => this.commitCount,
+            run: () => {
+                const {dashViewModel, commitCount, monthCommitCount} = this;
+                if (dashViewModel && commitCount) {
+                    dashViewModel.titleDetails = `· ${monthCommitCount.toLocaleString()} in the last 30 days`;
+                }
+            },
+            fireImmediately: true
+        });
+    }
+
     override async doLoadAsync() {
-        this.gridModel.loadData(XH.gitHubService.allCommits);
+        this.gridModel.loadData(this.commits);
     }
 
     private onRowDoubleClicked = params => {

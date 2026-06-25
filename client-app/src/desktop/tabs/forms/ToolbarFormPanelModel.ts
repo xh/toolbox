@@ -10,8 +10,7 @@ export class ToolbarFormPanelModel extends HoistModel {
             {name: 'number1', initialValue: random(0, 10000000)},
             {name: 'date1'},
             {name: 'buttonGroup1', initialValue: 'button2'},
-            {name: 'bool1', rules: [required]},
-            {name: 'bool2'}
+            {name: 'bool1', rules: [required]}
         ]
     });
 

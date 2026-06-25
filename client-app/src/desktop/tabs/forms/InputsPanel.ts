@@ -1,7 +1,6 @@
 import {card} from '@xh/hoist/cmp/card';
-import {code, div, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
+import {div, span, vbox} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     buttonGroupInput,
@@ -32,361 +31,371 @@ export const inputsPanel = hoistCmp.factory({
     displayName: 'InputsPanel',
     model: creates(() => InputsPanelModel),
 
-    render({model}) {
+    render() {
         return wrapper({
+            title: 'Hoist Inputs',
+            icon: Icon.edit(),
             description: [
-                p(
-                    code('HoistInput'),
-                    ' provides a common interface and integration points for a variety of core Components used to enter and edit data in applications. They present a consistent API for editing data with MobX, React, and the underlying widgets provided by libraries such as Blueprint and Onsen.'
-                ),
-                p(
-                    'Any HoistInput can be bound to a data source using the ',
-                    code('bind'),
-                    ' and ',
-                    code('model'),
-                    ' props. They can also be nested within a ',
-                    code('formField'),
-                    ' to integrate tightly with ',
-                    code('FormModel'),
-                    ' for validation and labelling.'
-                ),
-                p(
-                    'See the dedicated tabs for ',
-                    code({
-                        className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('select'),
-                        item: 'Select'
-                    }),
-                    ' and ',
-                    code({
-                        className: 'tb-code-link',
-                        onClick: () => model.tabContainerModel.activateTab('picker'),
-                        item: 'Picker'
-                    }),
-                    ' components.'
-                )
+                '`HoistInput` provides a common interface and integration points for a variety',
+                'of core Components used to enter and edit data in applications. They present',
+                'a consistent API for editing data with MobX, React, and the underlying',
+                'widgets provided by libraries such as Blueprint and Onsen.',
+                '',
+                'Any HoistInput can be bound to a data source using the `bind` and `model`',
+                'props. They can also be nested within a `formField` to integrate tightly with',
+                '`FormModel` for validation and labelling.',
+                '',
+                'See the dedicated tabs for `Select` and `Picker` components.'
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/forms/InputsPanel.ts',
                     notes: 'This example.'
                 },
-                {url: '$HR/cmp/input/HoistInputModel.ts', notes: 'HoistInput Base Class'},
-                {url: '$HR/desktop/cmp/input', notes: 'Hoist Inputs'}
+                {
+                    url: '$HR/cmp/input/README.md',
+                    text: 'Inputs docs',
+                    notes: 'Input components guide and shared concepts.'
+                },
+                {
+                    url: '$HR/cmp/input/HoistInputModel.ts',
+                    notes: 'Base class shared by all Hoist inputs.'
+                },
+                {
+                    url: '$HR/desktop/cmp/input',
+                    text: 'Input package',
+                    notes: 'The full set of desktop Hoist input components.'
+                }
             ],
             item: panel({
-                title: 'Forms › HoistInputs',
                 className: 'tb-inputs-panel',
-                icon: Icon.edit(),
-                width: '90%',
-                maxWidth: 1400,
+                width: '100%',
+                height: '100%',
                 scrollable: true,
-                tbar: inputsTbar({compact: false}),
-                item: hframe({
-                    gap: true,
-                    padding: true,
-                    items: [column1(), column2(), column3(), column4()]
+                // Both toolbars pinned at the bottom - shows how these inputs render in a dense
+                // toolbar. Placed in the bbar so they stay out of scroll.
+                bbar: div({
+                    items: [inputsTbar({compact: true}), inputsTbar()]
                 }),
-                bbar: inputsTbar({compact: true})
+                // The masonry is the panel's scrolling body directly (no wrapper div). It can't be
+                // the overflow element itself - a multi-column container under a constrained height
+                // spawns extra horizontal columns instead of scrolling - so the scrollable panel
+                // body scrolls it. Cards flow into 1-3 columns by width, balanced by height (SCSS).
+                item: div({
+                    className: 'tb-inputs-panel__masonry',
+                    items: [
+                        textCard(),
+                        codeCard(),
+                        numbersCard(),
+                        dateCard(),
+                        segmentedControlCard(),
+                        buttonGroupCard(),
+                        radioCard(),
+                        toggleCard(),
+                        sliderCard()
+                    ]
+                })
             })
         });
     }
 });
 
-const column1 = hoistCmp.factory<InputsPanelModel>(() =>
-    vbox({
-        flex: 1,
+//------------------------------------------------------------------
+// Cards - rendered as a flat, ordered set into the masonry above.
+//------------------------------------------------------------------
+const textCard = hoistCmp.factory(() =>
+    card({
+        title: 'Text',
         items: [
-            card({
-                title: 'Text',
-                icon: Icon.edit(),
-                items: [
-                    demoRow({
-                        label: 'TextInput',
-                        info: 'autoFocus',
-                        item: textInput({
-                            bind: 'textInput1',
-                            autoFocus: true
-                        })
-                    }),
-                    demoRow({
-                        label: 'TextInput',
-                        info: 'placeholder, round, leftIcon, enableClear',
-                        item: textInput({
-                            bind: 'textInput2',
-                            placeholder: 'user@company.com',
-                            round: true,
-                            leftIcon: Icon.mail(),
-                            enableClear: true
-                        })
-                    }),
-                    demoRow({
-                        label: 'TextInput',
-                        info: 'type: password, selectOnFocus',
-                        item: textInput({
-                            bind: 'textInput3',
-                            type: 'password',
-                            selectOnFocus: true
-                        })
-                    }),
-                    demoRow({
-                        label: 'TextArea',
-                        info: 'placeholder, selectOnFocus',
-                        item: textArea({
-                            bind: 'textArea',
-                            placeholder: 'Tell us your thoughts...',
-                            selectOnFocus: true,
-                            height: 100,
-                            width: '100%'
-                        })
-                    })
-                ]
+            demoRow({
+                label: 'TextInput',
+                info: 'autoFocus',
+                item: textInput({
+                    bind: 'textInput1',
+                    autoFocus: true
+                })
             }),
-            card({
-                title: 'Code',
-                icon: Icon.json(),
-                items: [
-                    demoRow({
-                        label: 'JsonInput',
-                        info: 'enableSearch, showFullscreenButton',
-                        item: jsonInput({
-                            className: 'xh-border',
-                            bind: 'jsonInput',
-                            height: 180,
-                            width: '100%',
-                            enableSearch: true
-                        })
-                    })
-                ]
+            demoRow({
+                label: 'TextInput',
+                info: 'placeholder, round, leftIcon, enableClear',
+                item: textInput({
+                    bind: 'textInput2',
+                    placeholder: 'user@company.com',
+                    round: true,
+                    leftIcon: Icon.mail(),
+                    enableClear: true
+                })
+            }),
+            demoRow({
+                label: 'TextInput',
+                info: 'type: password, selectOnFocus',
+                item: textInput({
+                    bind: 'textInput3',
+                    type: 'password',
+                    selectOnFocus: true
+                })
+            }),
+            demoRow({
+                label: 'TextArea',
+                info: 'placeholder, selectOnFocus',
+                item: textArea({
+                    bind: 'textArea',
+                    placeholder: 'Tell us your thoughts...',
+                    selectOnFocus: true,
+                    height: 100,
+                    width: '100%'
+                })
             })
         ]
     })
 );
 
-const column2 = hoistCmp.factory<InputsPanelModel>(() =>
-    vbox({
-        flex: 1,
+const codeCard = hoistCmp.factory(() =>
+    card({
+        title: 'JsonInput',
         items: [
-            card({
-                title: 'Numbers',
-                icon: Icon.calculator(),
-                items: [
-                    demoRow({
-                        label: 'NumberInput',
-                        info: 'stepSize, majorStepSize, minorStepSize',
-                        item: numberInput({
-                            bind: 'numberInput1',
-                            stepSize: 1000,
-                            majorStepSize: 100000,
-                            minorStepSize: 100
-                        })
-                    }),
-                    demoRow({
-                        label: 'NumberInput',
-                        info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
-                        item: numberInput({
-                            bind: 'numberInput2',
-                            enableShorthandUnits: true,
-                            displayWithCommas: true,
-                            selectOnFocus: true
-                        })
-                    }),
-                    demoRow({
-                        label: 'NumberInput',
-                        info: 'scaleFactor, valueLabel',
-                        item: numberInput({
-                            bind: 'numberInput3',
-                            scaleFactor: 100,
-                            valueLabel: '%'
-                        })
-                    })
-                ]
-            }),
-            card({
-                title: 'Date Inputs',
-                icon: Icon.calendar(),
-                items: [
-                    demoRow({
-                        label: 'DateInput',
-                        info: 'minDate, maxDate, enableClear',
-                        item: dateInput({
-                            bind: 'dateInput1',
-                            placeholder: 'YYYY-MM-DD',
-                            minDate: moment().subtract(5, 'weeks').toDate(),
-                            maxDate: moment().add(2, 'weeks').toDate(),
-                            enableClear: true,
-                            width: 160
-                        })
-                    }),
-                    demoRow({
-                        label: 'DateInput',
-                        info: 'timePrecision: minute',
-                        item: dateInput({
-                            bind: 'dateInput2',
-                            showActionsBar: true,
-                            timePrecision: 'minute',
-                            timePickerProps: {useAmPm: true},
-                            width: 160
-                        })
-                    }),
-                    demoRow({
-                        label: 'DateInput',
-                        info: 'valueType: localDate',
-                        item: dateInput({
-                            bind: 'dateInput3',
-                            valueType: 'localDate',
-                            width: 130
-                        })
-                    })
-                ]
+            demoRow({
+                label: 'autoFormat, enableSearch, showFullscreenButton',
+                item: jsonInput({
+                    className: 'xh-border',
+                    bind: 'jsonInput',
+                    height: 180,
+                    width: '100%',
+                    autoFormat: true,
+                    enableSearch: true
+                })
             })
         ]
     })
 );
 
-const column3 = hoistCmp.factory<InputsPanelModel>(() =>
-    vbox({
-        flex: 1,
+const numbersCard = hoistCmp.factory(() =>
+    card({
+        title: 'NumberInput',
         items: [
-            card({
-                title: 'Multiple Choice',
-                icon: Icon.list(),
-                items: [
-                    demoRow({
-                        label: 'SegmentedControl',
-                        info: 'icon + text options',
-                        item: segmentedControl({
-                            bind: 'segmentedControl',
-                            options: scOptions
-                        })
-                    }),
-                    demoRow({
-                        label: 'SegmentedControl',
-                        info: 'intent: primary, icon + text options',
-                        item: segmentedControl({
-                            bind: 'segmentedControl',
-                            intent: 'primary',
-                            options: scOptions
-                        })
-                    }),
-                    demoRow({
-                        label: 'ButtonGroupInput',
-                        info: 'Icon + text buttons',
-                        item: buttonGroupInput({
-                            bind: 'buttonGroupInput',
-                            items: bgButtons()
-                        })
-                    }),
-                    demoRow({
-                        label: 'ButtonGroupInput',
-                        info: 'outlined, intent: primary',
-                        item: buttonGroupInput({
-                            bind: 'buttonGroupInput',
-                            outlined: true,
-                            intent: 'primary',
-                            items: bgButtons()
-                        })
-                    }),
-                    demoRow({
-                        label: 'RadioInput',
-                        info: 'disabled option',
-                        item: radioInput({
-                            bind: 'radioInput',
-                            options: [
-                                'Steak',
-                                'Chicken',
-                                {label: 'Fish', value: 'Fish', disabled: true}
-                            ]
-                        })
-                    }),
-                    demoRow({
-                        label: 'RadioInput',
-                        info: 'inline, disabled option',
-                        item: radioInput({
-                            bind: 'radioInput',
-                            inline: true,
-                            options: [
-                                'Steak',
-                                'Chicken',
-                                {label: 'Fish', value: 'Fish', disabled: true}
-                            ]
-                        })
-                    })
-                ]
+            demoRow({
+                label: 'stepSize, majorStepSize, minorStepSize',
+                item: numberInput({
+                    bind: 'numberInput1',
+                    stepSize: 1000,
+                    majorStepSize: 100000,
+                    minorStepSize: 100
+                })
+            }),
+            demoRow({
+                label: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
+                item: numberInput({
+                    bind: 'numberInput2',
+                    enableShorthandUnits: true,
+                    displayWithCommas: true,
+                    selectOnFocus: true
+                })
+            }),
+            demoRow({
+                label: 'scaleFactor, valueLabel',
+                item: numberInput({
+                    bind: 'numberInput3',
+                    scaleFactor: 100,
+                    valueLabel: '%'
+                })
             })
         ]
     })
 );
 
-const column4 = hoistCmp.factory<InputsPanelModel>(() =>
-    vbox({
-        flex: 1,
+const dateCard = hoistCmp.factory(() =>
+    card({
+        title: 'DateInput',
         items: [
-            card({
-                title: 'Toggles',
-                icon: Icon.checkSquare(),
-                items: [
-                    demoRow({
-                        label: 'Checkbox',
-                        info: 'Basic boolean toggle',
-                        item: checkbox({
-                            bind: 'checkbox',
-                            label: 'enabled'
-                        })
-                    }),
-                    demoRow({
-                        label: 'SwitchInput',
-                        info: 'labelSide: left',
-                        item: switchInput({
-                            bind: 'switchVal',
-                            label: 'Enabled:',
-                            labelSide: 'left'
-                        })
-                    }),
-                    demoRow({
-                        label: 'CheckboxButton',
-                        info: 'Button-based boolean toggle',
-                        item: checkboxButton({
-                            bind: 'checkboxButton',
-                            text: 'Active'
-                        })
-                    })
-                ]
+            demoRow({
+                label: 'minDate, maxDate, enableClear',
+                item: dateInput({
+                    bind: 'dateInput1',
+                    placeholder: 'YYYY-MM-DD',
+                    minDate: moment().subtract(5, 'weeks').toDate(),
+                    maxDate: moment().add(2, 'weeks').toDate(),
+                    enableClear: true,
+                    width: 160
+                })
             }),
-            card({
-                title: 'Sliders',
-                icon: Icon.settings(),
-                items: [
-                    demoRow({
-                        label: 'Slider',
-                        info: 'max, min, stepSize, labelStepSize',
-                        item: slider({
-                            bind: 'slider1',
-                            max: 100,
-                            min: 0,
-                            labelStepSize: 25,
-                            stepSize: 1
-                        })
-                    }),
-                    demoRow({
-                        label: 'Slider',
-                        info: 'multi-value, labelRenderer',
-                        item: slider({
-                            bind: 'slider2',
-                            min: 50000,
-                            max: 150000,
-                            labelStepSize: 25000,
-                            stepSize: 1000,
-                            labelRenderer: v =>
-                                `$${fmtThousands(v, {
-                                    label: true,
-                                    precision: 0,
-                                    labelCls: null,
-                                    asHtml: true
-                                })}`
-                        })
-                    })
-                ]
+            demoRow({
+                label: 'timePrecision: minute',
+                item: dateInput({
+                    bind: 'dateInput2',
+                    showActionsBar: true,
+                    timePrecision: 'minute',
+                    timePickerProps: {useAmPm: true},
+                    width: 160
+                })
+            }),
+            demoRow({
+                label: 'valueType: localDate',
+                item: dateInput({
+                    bind: 'dateInput3',
+                    valueType: 'localDate',
+                    width: 130
+                })
+            })
+        ]
+    })
+);
+
+const sliderCard = hoistCmp.factory(() =>
+    card({
+        title: 'Slider',
+        items: [
+            demoRow({
+                label: 'max, min, stepSize, labelStepSize',
+                item: slider({
+                    bind: 'slider1',
+                    width: '100%',
+                    max: 100,
+                    min: 0,
+                    labelStepSize: 25,
+                    stepSize: 1
+                })
+            }),
+            demoRow({
+                label: 'multi-value, labelRenderer',
+                item: slider({
+                    bind: 'slider2',
+                    width: '100%',
+                    min: 50000,
+                    max: 150000,
+                    labelStepSize: 50000,
+                    stepSize: 1000,
+                    labelRenderer: v =>
+                        `$${fmtThousands(v, {
+                            label: true,
+                            precision: 0,
+                            labelCls: null,
+                            asHtml: true
+                        })}`
+                })
+            })
+        ]
+    })
+);
+
+const segmentedControlCard = hoistCmp.factory(() =>
+    card({
+        title: 'SegmentedControl',
+        items: [
+            demoRow({
+                label: 'Icon + text options',
+                item: segmentedControl({
+                    bind: 'segmentedControl',
+                    options: scOptions
+                })
+            }),
+            demoRow({
+                label: 'Intent: primary',
+                item: segmentedControl({
+                    bind: 'segmentedControl',
+                    intent: 'primary',
+                    options: scOptions
+                })
+            }),
+            demoRow({
+                label: 'Outlined, intent: primary',
+                item: segmentedControl({
+                    bind: 'segmentedControl',
+                    outlined: true,
+                    intent: 'primary',
+                    options: scOptions
+                })
+            }),
+            demoRow({
+                label: 'Per-option intents - selected fills, unselected hints',
+                item: segmentedControl({
+                    bind: 'optionIntent',
+                    options: [
+                        {label: 'Primary', value: 'primary', intent: 'primary'},
+                        {label: 'Success', value: 'success', intent: 'success'},
+                        {label: 'Warning', value: 'warning', intent: 'warning'},
+                        {label: 'Danger', value: 'danger', intent: 'danger'}
+                    ]
+                })
+            })
+        ]
+    })
+);
+
+const buttonGroupCard = hoistCmp.factory(() =>
+    card({
+        title: 'ButtonGroupInput',
+        items: [
+            demoRow({
+                label: 'Icon + text buttons',
+                item: buttonGroupInput({
+                    bind: 'buttonGroupInput',
+                    items: bgButtons()
+                })
+            }),
+            demoRow({
+                label: 'Outlined, intent: primary',
+                item: buttonGroupInput({
+                    bind: 'buttonGroupInput',
+                    outlined: true,
+                    intent: 'primary',
+                    items: bgButtons()
+                })
+            })
+        ]
+    })
+);
+
+const radioCard = hoistCmp.factory(() =>
+    card({
+        title: 'RadioInput',
+        items: [
+            demoRow({
+                label: 'With a disabled option',
+                item: radioInput({
+                    bind: 'radioInput',
+                    options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
+                })
+            }),
+            demoRow({
+                label: 'Inline, with a disabled option',
+                item: radioInput({
+                    bind: 'radioInput',
+                    inline: true,
+                    options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
+                })
+            })
+        ]
+    })
+);
+
+const toggleCard = hoistCmp.factory(() =>
+    card({
+        title: 'Toggles',
+        items: [
+            demoRow({
+                label: 'CheckboxButton',
+                info: 'Button-based boolean toggle',
+                item: checkboxButton({
+                    bind: 'checkboxButton',
+                    text: 'Enabled'
+                })
+            }),
+            demoRow({
+                label: 'Checkbox',
+                info: 'Basic boolean toggle',
+                item: checkbox({
+                    bind: 'checkbox',
+                    label: 'enabled'
+                })
+            }),
+            demoRow({
+                label: 'SwitchInput',
+                info: 'labelSide: left',
+                item: switchInput({
+                    bind: 'switchVal',
+                    label: 'Enabled:',
+                    labelSide: 'left'
+                })
             })
         ]
     })
@@ -408,7 +417,8 @@ const scOptions = [
 ];
 
 //------------------------------------------------------------------
-// Toolbar with inputs - used as both tbar (standard) and bbar (compact)
+// Toolbar with inputs - rendered twice at top (standard + compact) to show how
+// these controls render in a dense toolbar.
 //------------------------------------------------------------------
 const inputsTbar = hoistCmp.factory<InputsPanelModel>(({compact}) =>
     toolbar({
@@ -432,6 +442,8 @@ const inputsTbar = hoistCmp.factory<InputsPanelModel>(({compact}) =>
                 items: bgButtons()
             }),
             '-',
+            checkboxButton({bind: 'checkboxButton', text: 'Enabled'}),
+            '-',
             switchInput({bind: 'tbarSwitch', label: 'Enabled:', labelSide: 'left'})
         ]
     })
@@ -446,6 +458,7 @@ const demoRow = hoistCmp.factory(({label, info, children}) =>
         items: [
             span({className: 'tb-inputs-panel__label', item: label}),
             span({
+                omit: !info,
                 className: 'xh-text-color-muted xh-font-size-small',
                 style: {marginTop: 2},
                 item: info
@@ -459,8 +472,6 @@ const demoRow = hoistCmp.factory(({label, info, children}) =>
 // Model
 //------------------------------------------------------------------
 class InputsPanelModel extends HoistModel {
-    @lookup(TabContainerModel) tabContainerModel: TabContainerModel;
-
     // Text inputs
     @bindable textInput1: string = null;
     @bindable textInput2: string = `support@xh.io`;
@@ -493,6 +504,7 @@ class InputsPanelModel extends HoistModel {
     @bindable checkboxButton: boolean = null;
     @bindable buttonGroupInput: string = 'area';
     @bindable segmentedControl: string = 'strategy';
+    @bindable optionIntent: string = 'danger';
     @bindable radioInput: string = null;
 
     // Compact toolbar inputs

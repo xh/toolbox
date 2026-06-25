@@ -1,5 +1,5 @@
 import {form, formFieldSet} from '@xh/hoist/cmp/form';
-import {box, div, filler, hbox, hframe, p, span, vbox} from '@xh/hoist/cmp/layout';
+import {box, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -17,7 +17,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {SubformsFieldModel} from '@xh/hoist/cmp/form';
 import {Icon} from '@xh/hoist/icon';
 import {isNil} from 'lodash';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import './FormPanel.scss';
 import {FormPanelModel} from './FormPanelModel';
 import {badge} from '@xh/hoist/cmp/badge';
@@ -26,32 +26,79 @@ export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
     className: 'tb-form-panel',
 
-    render({className}) {
+    render({className, model}) {
+        const {formModel} = model;
         return wrapper({
+            title: 'FormModel',
+            icon: Icon.edit(),
             description: [
-                p(
-                    'Forms provide a standard way for validating and editing data. The Form component provides the ability to centrally control certain properties on all its contained FormFields and bind them to a FormModel. The FormModel provides an observable API for loading, validating, and submitting the data to back-end services.'
-                ),
-                p(
-                    'This example also demonstrates customizing the style of FormField via CSS variables.'
-                )
+                'Forms provide a standard way for validating and editing data. The `Form`',
+                'component provides the ability to centrally control certain properties on all',
+                'its contained `FormField`s and bind them to a `FormModel`. The `FormModel`',
+                'provides an observable API for loading, validating, and submitting the data',
+                'to back-end services.',
+                '',
+                'This example also demonstrates customizing the style of `FormField` via CSS',
+                'variables.'
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/forms/FormPanel.ts',
                     notes: 'This example.'
                 },
-                {url: '$HR/cmp/form/Form.ts', notes: 'Form Component'},
-                {url: '$HR/cmp/form/FormModel.ts', notes: 'Form Model'},
-                {url: '$HR/desktop/cmp/form/FormField.ts', notes: 'Form Field'}
+                {
+                    url: '$HR/cmp/form/README.md#formmodel',
+                    text: 'Form docs',
+                    notes: 'Form infrastructure guide and validation concepts.'
+                },
+                {url: '$HR/cmp/form/Form.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/cmp/form/FormModel.ts',
+                    notes: 'Observable model for loading, validating, and submitting form data.'
+                },
+                {
+                    url: '$HR/desktop/cmp/form/FormField.ts',
+                    notes: 'Binds an input to a FormModel field, with label and validation display.'
+                }
+            ],
+            options: [
+                wrapperOption({
+                    label: 'Commit on change',
+                    propName: 'FormFieldProps.commitOnChange',
+                    control: switchInput({model, bind: 'commitOnChange'}),
+                    info: 'Commit on each keystroke, not on blur.'
+                }),
+                wrapperOption({
+                    label: 'Inline labels',
+                    propName: 'FormFieldProps.inline',
+                    control: switchInput({model, bind: 'inline'})
+                }),
+                wrapperOption({
+                    label: 'Minimal validation',
+                    propName: 'FormFieldProps.minimal',
+                    control: switchInput({model, bind: 'minimal'}),
+                    info: 'Show errors as a red outline only.'
+                }),
+                wrapperOption({
+                    label: 'US date formats',
+                    control: switchInput({model, bind: 'usDateFormat'})
+                }),
+                wrapperOption({
+                    label: 'Read-only',
+                    propName: 'FormModel.readonly',
+                    control: switchInput({model: formModel, bind: 'readonly'})
+                }),
+                wrapperOption({
+                    label: 'Disabled',
+                    propName: 'FormModel.disabled',
+                    control: switchInput({model: formModel, bind: 'disabled'})
+                })
             ],
             item: panel({
-                title: 'Forms › FormModel',
-                icon: Icon.edit(),
                 className,
                 width: 950,
                 height: 575,
-                item: hframe(formContent(), displayOptions())
+                item: formContent()
             })
         });
     }
@@ -155,19 +202,31 @@ const tags = hoistCmp.factory(() =>
 );
 
 const startAndEndDate = hoistCmp.factory<FormPanelModel>(({model}) => {
-    const flex = model.inline ? null : 1;
+    const flex = model.inline ? null : 1,
+        dateFormatProps = model.usDateFormat
+            ? {parseStrings: ['MM/DD/YY', 'MM/DD/YYYY'], formatString: 'MM/DD/YYYY'}
+            : {};
     return box({
         flexDirection: model.inline ? 'column' : 'row',
         items: [
             formField({
                 field: 'startDate',
                 flex,
-                item: dateInput({valueType: 'localDate', width: 150})
+                item: dateInput({
+                    valueType: 'localDate',
+                    width: 150,
+                    ...dateFormatProps
+                })
             }),
             formField({
                 field: 'endDate',
                 flex,
-                item: dateInput({valueType: 'localDate', width: 150, enableClear: true})
+                item: dateInput({
+                    valueType: 'localDate',
+                    width: 150,
+                    enableClear: true,
+                    ...dateFormatProps
+                })
             })
         ]
     });
@@ -264,44 +323,6 @@ const references = hoistCmp.factory<FormPanelModel>(({model}) => {
                 onClick: () => references.add()
             })
         ]
-    });
-});
-
-const displayOptions = hoistCmp.factory<FormPanelModel>(({model}) => {
-    const {formModel} = model;
-    return panel({
-        title: 'Display Options',
-        className: 'tbox-display-opts',
-        icon: Icon.settings(),
-        compactHeader: true,
-        modelConfig: {side: 'right', defaultSize: 220, resizable: false},
-        item: div({
-            className: 'tbox-display-opts__inner',
-            items: [
-                switchInput({
-                    bind: 'commitOnChange',
-                    label: 'Commit on change'
-                }),
-                switchInput({
-                    bind: 'inline',
-                    label: 'Inline labels'
-                }),
-                switchInput({
-                    bind: 'minimal',
-                    label: 'Minimal validation display'
-                }),
-                switchInput({
-                    model: formModel,
-                    bind: 'readonly',
-                    label: 'Read-only'
-                }),
-                switchInput({
-                    model: formModel,
-                    bind: 'disabled',
-                    label: 'Disabled'
-                })
-            ]
-        })
     });
 });
 

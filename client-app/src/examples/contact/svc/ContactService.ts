@@ -1,4 +1,4 @@
-import {HoistService, persist, XH} from '@xh/hoist/core';
+import {HoistService, persist} from '@xh/hoist/core';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {without} from 'lodash';
 
@@ -9,6 +9,8 @@ import {PERSIST_APP} from '../AppModel';
  * Favorites are persisted for each user using the Hoist preference system.
  */
 export class ContactService extends HoistService {
+    override telemetryPrefix = 'toolbox.client.contacts';
+
     static instance: ContactService;
 
     override persistWith = PERSIST_APP;
@@ -24,27 +26,32 @@ export class ContactService extends HoistService {
     }
 
     async getContactsAsync() {
-        const ret = await XH.fetchJson({url: 'contacts'});
-        ret.forEach(it => {
-            it.isFavorite = this.userFaves.includes(it.id);
-            it.profilePicture = `../../public/contact-images/${
-                it.profilePicture ?? 'no-profile.png'
-            }`;
-        });
-        return ret;
+        return this.runner()
+            .span('getContacts')
+            .fetchJson({url: 'contacts'})
+            .tap(ret => {
+                ret.forEach(it => {
+                    it.isFavorite = this.userFaves.includes(it.id);
+                    it.profilePicture = `../../public/contact-images/${
+                        it.profilePicture ?? 'no-profile.png'
+                    }`;
+                });
+            });
     }
 
     async updateContactAsync(id, update) {
-        await XH.fetchService.postJson({
-            url: `contacts/update/${id}`,
-            body: update,
-            track: {
-                category: 'Contacts',
-                message: `Updated contact`,
-                data: {id, ...update},
-                logData: true
-            }
-        });
+        await this.runner()
+            .span('update')
+            .postJson({
+                url: `contacts/update/${id}`,
+                body: update,
+                track: {
+                    category: 'Contacts',
+                    message: `Updated contact`,
+                    data: {id, ...update},
+                    logData: true
+                }
+            });
     }
 
     @action

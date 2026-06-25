@@ -1,3 +1,79 @@
+// Mobile app font: IBM Plex Sans (standard) + IBM Plex Mono (mono), matching the desktop's adopted
+// app font. The @font-face rules bundle from the `@ibm/plex-*` dependencies (webpack resolves `~` to
+// node_modules). Unlike desktop, mobile ships IBM Plex unconditionally for now - no font option yet.
+// `--xh-font-family` / `--xh-font-family-mono` read these `--font-family*` vars, cascading the font
+// across the app; `zero`/`ss01` enable IBM Plex's slashed zero and single-story letterforms.
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-weight: 400;
+  font-display: block;
+  src: url('~@ibm/plex-sans/fonts/complete/woff2/IBMPlexSans-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-weight: 500;
+  font-display: block;
+  src: url('~@ibm/plex-sans/fonts/complete/woff2/IBMPlexSans-Medium.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-weight: 600;
+  font-display: block;
+  src: url('~@ibm/plex-sans/fonts/complete/woff2/IBMPlexSans-SemiBold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-weight: 700;
+  font-display: block;
+  src: url('~@ibm/plex-sans/fonts/complete/woff2/IBMPlexSans-Bold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-weight: 400;
+  font-display: block;
+  src: url('~@ibm/plex-mono/fonts/complete/woff2/IBMPlexMono-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-weight: 600;
+  font-display: block;
+  src: url('~@ibm/plex-mono/fonts/complete/woff2/IBMPlexMono-SemiBold.woff2') format('woff2');
+}
+
+body.xh-app {
+  --font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-family-mono: 'IBM Plex Mono', Monaco, Consolas, monospace;
+  --font-feature-settings: 'tnum', 'zero', 'ss01';
+}
+
+// App bar: the hamburger glyph and the XH logo live together in a single button that opens the nav
+// blade, giving that control one large, easy-to-hit tap target on the left of the bar.
+.xh-appbar.xh-toolbar {
+  // Keep the back button's trailing padding tight - it owns the left slot on sub-pages.
+  .xh-appbar-left .xh-button {
+    padding-right: var(--xh-pad-half-px);
+  }
+
+  // The combined hamburger + logo button. Its contents are small, so we grow the button's padding
+  // (part of its clickable surface, unlike margin) to swallow the surrounding whitespace and stretch
+  // it to the full bar height, then pull the box back with negative vertical margins so the contents
+  // stay put. Net: same look, a much larger touch surface.
+  .xh-appbar-left .tb-appbar-hamburger.xh-button {
+    align-self: stretch;
+    height: auto;
+    margin-top: calc(-1 * var(--xh-pad-half-px));
+    margin-bottom: calc(-1 * var(--xh-pad-half-px));
+    padding-left: var(--xh-pad-px);
+    padding-right: var(--xh-pad-px);
+
+    .tb-appbar-logo {
+      display: block;
+      height: 20px;
+      width: auto;
+    }
+  }
+}
+
 .tb-page {
   .tb-card {
     margin: var(--xh-pad-double-px);

@@ -48,6 +48,7 @@ export const CITIES = [
 ];
 
 export class WeatherDashModel extends HoistModel {
+    override telemetryPrefix = 'toolbox.client.weather';
     override persistWith = {localStorageKey: 'xhWeatherDash'};
 
     @bindable @persist selectedCity: string = 'New York';
@@ -137,21 +138,26 @@ export class WeatherDashModel extends HoistModel {
         const {selectedCity} = this;
         if (!selectedCity) return;
 
-        try {
-            const [currentWeather, forecast] = await Promise.all([
-                XH.fetchJson({url: 'weather/current', params: {city: selectedCity}, loadSpec}),
-                XH.fetchJson({url: 'weather/forecast', params: {city: selectedCity}, loadSpec})
-            ]);
+        await this.runner({loadSpec})
+            .span('dashLoad')
+            .run(async ctx => {
+                ctx.span.setTags({city: selectedCity});
 
-            if (loadSpec.isStale) return;
+                const params = {city: selectedCity},
+                    [currentWeather, forecast] = await Promise.all([
+                        XH.fetchJson({url: 'weather/current', params}, ctx),
+                        XH.fetchJson({url: 'weather/forecast', params}, ctx)
+                    ]);
+                if (loadSpec.isStale) return;
 
-            runInAction(() => {
-                this.currentWeather = currentWeather;
-                this.forecast = forecast;
+                runInAction(() => {
+                    this.currentWeather = currentWeather;
+                    this.forecast = forecast;
+                });
+            })
+            .catch(e => {
+                if (loadSpec.isAutoRefresh || loadSpec.isStale) return;
+                XH.handleException(e);
             });
-        } catch (e) {
-            if (loadSpec.isAutoRefresh || loadSpec.isStale) return;
-            XH.handleException(e);
-        }
     }
 }
