@@ -1,10 +1,17 @@
 # Changelog
 
-## 10.0-SNAPSHOT - unreleased
+## 9.2.0 - 2026-06-25
 
 ### Technical
 
 * Adopted hoist-react's new `JsonInput` `autoFormat` prop in the column-filter test panels, dropping manual `JSON.stringify` pre-indentation now that readonly inputs format their content for display automatically.
+* Demoed hoist-react's windowed `Select` / `SelectEditor` menu auto-sizing: the Forms > Select "Large list (windowed)" example now uses varied-length labels, and the Grids > Inline Editing `category` editor uses a windowed dropdown in a narrow cell so the menu visibly grows to fit its widest option.
+* Wired up the Other > Format Numbers demo to exercise `fmtQuantity`'s new `lossless` option (with `useMillions` / `useBillions` switches) and `fmtNumber`'s `null` full-precision handling, with sample values that show the lossless cutoff collapsing to m/b units only when no precision is lost.
+* Removed Toolbox's bespoke vertical sub-tab switcher styling now that hoist-react provides the rounded-pill treatment by default, retaining only the app-specific fixed rail width.
+
+### Libraries
+
+* @xh/hoist `86.1.0 → 86.2.0`
 
 ## 9.1.1 - 2026-06-24
 

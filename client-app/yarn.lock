@@ -1031,7 +1031,7 @@
     "@codemirror/view" "^6.17.0"
     "@lezer/common" "^1.0.0"
 
-"@codemirror/commands@~6.10.3":
+"@codemirror/commands@^6.10.3":
   version "6.10.4"
   resolved "https://registry.yarnpkg.com/@codemirror/commands/-/commands-6.10.4.tgz#64dec1bd043976eb344e3cc9d15af13b6f724bfd"
   integrity sha512-Ryk9y9T0FFVF0cUGhAknveAyUOl/A1qReTFi+qPKtOh2Z9F4AUBz3XOrYD4ZEgZirdugVzHvd/2/Wcwy5OliTg==
@@ -1279,7 +1279,7 @@
     "@lezer/lr" "^1.0.0"
     "@lezer/yaml" "^1.0.0"
 
-"@codemirror/language-data@~6.5.2":
+"@codemirror/language-data@^6.5.2":
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/@codemirror/language-data/-/language-data-6.5.2.tgz#404dc3d50a80d0f76bc8f81f93cc1d82e322417c"
   integrity sha512-CPkWBKrNS8stYbEU5kwBwTf3JB1kghlbh4FSAwzGW2TEscdeHHH4FGysREW86Mqnj3Qn09s0/6Ea/TutmoTobg==
@@ -1308,10 +1308,22 @@
     "@codemirror/language" "^6.0.0"
     "@codemirror/legacy-modes" "^6.4.0"
 
-"@codemirror/language@^6.0.0", "@codemirror/language@^6.3.0", "@codemirror/language@^6.4.0", "@codemirror/language@^6.6.0", "@codemirror/language@^6.8.0", "@codemirror/language@~6.12.3":
+"@codemirror/language@^6.0.0", "@codemirror/language@^6.3.0", "@codemirror/language@^6.4.0", "@codemirror/language@^6.6.0", "@codemirror/language@^6.8.0":
   version "6.12.3"
   resolved "https://registry.yarnpkg.com/@codemirror/language/-/language-6.12.3.tgz#0b220182973a4c19850b29f7dd82aec1bbae3d7e"
   integrity sha512-QwCZW6Tt1siP37Jet9Tb02Zs81TQt6qQrZR2H+eGMcFsL1zMrk2/b9CLC7/9ieP1fjIUMgviLWMmgiHoJrj+ZA==
+  dependencies:
+    "@codemirror/state" "^6.0.0"
+    "@codemirror/view" "^6.23.0"
+    "@lezer/common" "^1.5.0"
+    "@lezer/highlight" "^1.0.0"
+    "@lezer/lr" "^1.0.0"
+    style-mod "^4.0.0"
+
+"@codemirror/language@^6.12.3":
+  version "6.12.4"
+  resolved "https://registry.yarnpkg.com/@codemirror/language/-/language-6.12.4.tgz#01e70fd5aa3a8a067ff1dfec75d5b6394cdfa058"
+  integrity sha512-1q4PaT+o6PbgpkJt4Q8Fv5XJxTy4FUZ4MWETtyiDw3J0Pyr9E2vqcKL+k9wcvjNTIsauxvE7OfmWj3FRPHQ76A==
   dependencies:
     "@codemirror/state" "^6.0.0"
     "@codemirror/view" "^6.23.0"
@@ -1327,7 +1339,7 @@
   dependencies:
     "@codemirror/language" "^6.0.0"
 
-"@codemirror/lint@^6.0.0", "@codemirror/lint@~6.9.6":
+"@codemirror/lint@^6.0.0", "@codemirror/lint@^6.9.6":
   version "6.9.7"
   resolved "https://registry.yarnpkg.com/@codemirror/lint/-/lint-6.9.7.tgz#841fc733674389d91fe49a1c34027ad3babdf105"
   integrity sha512-28/+iWLYxKxsvGYhSYL7zaCZqLz5+FFFDq9tVsvGv9kv8RY4fFAchJ5WX9M3YrrRlTIsECjsXPqeNgnSmNP2dg==
@@ -1340,13 +1352,6 @@
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/@codemirror/state/-/state-6.7.0.tgz#624c3504dc3d04e727dd49711fb75244e675e8e7"
   integrity sha512-Zbl9NyscLMZkfXPQnNAIIAFftidrA1UbcJEIMp24C0Bukc2I5T8wJS0wsXYsnDOqCFJUeJ1BITGNs5CqPDSmSg==
-  dependencies:
-    "@marijn/find-cluster-break" "^1.0.0"
-
-"@codemirror/state@~6.6.0":
-  version "6.6.0"
-  resolved "https://registry.yarnpkg.com/@codemirror/state/-/state-6.6.0.tgz#b88dbdc14aea4ace3c6d67bb77fe28bb84e4394e"
-  integrity sha512-4nbvra5R5EtiCzr9BTHiTLc+MLXK2QGiAVYMyi8PkQd3SR+6ixar/Q/01Fa21TBIDOZXgeWV4WppsQolSreAPQ==
   dependencies:
     "@marijn/find-cluster-break" "^1.0.0"
 
@@ -3119,20 +3124,20 @@
     webpack-dev-server "~5.2.0"
     webpackbar "~7.0.0"
 
-"@xh/hoist@^87.0.0-SNAPSHOT":
-  version "87.0.0-SNAPSHOT.1782344121799"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-87.0.0-SNAPSHOT.1782344121799.tgz#ac81aa19ea8b467c0f59051a446596260377773e"
-  integrity sha512-vDmR3JvmavUKq3AEXbxYjqaDSp5q/o+dEoK2Ed6WjReX5Dooowt4C1ojd7Dfs2AtvtD3coFU8JBza3q+Cd5dww==
+"@xh/hoist@86.2.0":
+  version "86.2.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-86.2.0.tgz#031b37edc53b7e3066d7e25113134f81625a5883"
+  integrity sha512-kiD+wkg8O6xY9BrYf+JK13NTSeZaS/HTX/EhHyX8v+KKc89ewLkoHa5EDw9pHuIuAeEo1Z3SPnbKqv9rJSGr5Q==
   dependencies:
     "@auth0/auth0-spa-js" "~2.21.1"
     "@azure/msal-browser" "~5.14.0"
     "@blueprintjs/core" "^6.3.2"
     "@blueprintjs/datetime" "^6.0.6"
-    "@codemirror/commands" "~6.10.3"
-    "@codemirror/language" "~6.12.3"
-    "@codemirror/language-data" "~6.5.2"
-    "@codemirror/lint" "~6.9.6"
-    "@codemirror/state" "~6.6.0"
+    "@codemirror/commands" "^6.10.3"
+    "@codemirror/language" "^6.12.3"
+    "@codemirror/language-data" "^6.5.2"
+    "@codemirror/lint" "^6.9.6"
+    "@codemirror/state" "^6.7.0"
     "@codemirror/view" "^6.43.0"
     "@fortawesome/fontawesome-pro" "^7.2.0"
     "@fortawesome/fontawesome-svg-core" "^7.2.0"
