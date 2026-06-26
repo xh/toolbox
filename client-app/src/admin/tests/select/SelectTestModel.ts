@@ -42,12 +42,9 @@ export class SelectTestModel extends HoistModel {
     @bindable.ref
     enableMultiMenuOpen: string[];
 
-    // ID value + lookupFn examples, pre-populated to verify label (not raw id) on mount
+    // ID value + generateOptionFn example, pre-populated to verify label (not raw id) on mount
     @bindable
     idNotInOpts: number = 99;
-
-    @bindable
-    idQueryLookup: number = 3;
 
     constructor() {
         super();
@@ -59,7 +56,7 @@ export class SelectTestModel extends HoistModel {
         });
     }
 
-    // All of the records to power the select option and lookupFn.
+    // All of the records to power the select options and generateOptionFn.
     get employees(): any[] {
         return [
             {id: 1, name: 'Alice Chen', isActive: true},

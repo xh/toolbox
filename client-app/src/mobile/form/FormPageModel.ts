@@ -93,8 +93,7 @@ export class FormPageModel extends HoistModel {
                 ]
             },
             {name: 'notes', rules: [required, lengthIs({min: 10, max: 300})]},
-            {name: 'employeeId', displayName: 'Employee (using ID)', initialValue: 99},
-            {name: 'customerId', displayName: 'Customer (using ID)', initialValue: 6} // Multiples of 3 are inactive.
+            {name: 'employeeId', displayName: 'Employee (using ID)', initialValue: 99}
         ]
     });
 
@@ -142,7 +141,7 @@ export class FormPageModel extends HoistModel {
         }
     }
 
-    // All of the records to power the select option and lookupFn.
+    // All of the records to power the select options and generateOptionFn.
     get employees(): any[] {
         return [
             {id: 1, name: 'Alice Chen', isActive: true},
@@ -163,22 +162,5 @@ export class FormPageModel extends HoistModel {
     // Lookup returns both selectable and not-selectable records.
     lookupEmployeeById(id: number) {
         return this.employees.find(it => it.id === id);
-    }
-
-    async queryCustomersAsync(query) {
-        const results = await XH.fetchJson({
-            url: 'customer',
-            params: {query, activeOnly: true}
-        });
-        return results.map(it => {
-            const value = it.id,
-                label = it.company;
-            return {value, label};
-        });
-    }
-
-    async lookupCustomerByIdAsync(id) {
-        const result = await XH.fetchJson({url: 'customer', params: {id}});
-        return {value: result.id, label: result.company};
     }
 }

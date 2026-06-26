@@ -171,20 +171,12 @@ const formDemo = hoistCmp.factory<FormPageModel>(({model}) => {
                             item: select({
                                 placeholder: 'Select an employee...',
                                 options: model.selectableEmployees,
-                                lookupFn: id => model.lookupEmployeeById(id),
+                                generateOptionFn: id => {
+                                    const emp = model.lookupEmployeeById(id);
+                                    return emp ? {label: emp.name, value: emp.id} : null;
+                                },
                                 valueField: 'id',
                                 labelField: 'name'
-                            })
-                        }),
-                        formField({
-                            field: 'customerId',
-                            item: select({
-                                placeholder: 'Search customers...',
-                                title: 'Search customers...',
-                                enableFilter: true,
-                                enableFullscreen: true,
-                                queryFn: q => model.queryCustomersAsync(q),
-                                lookupFn: v => model.lookupCustomerByIdAsync(v)
                             })
                         })
                     ]

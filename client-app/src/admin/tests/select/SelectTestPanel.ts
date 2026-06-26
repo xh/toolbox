@@ -112,31 +112,22 @@ export const SelectTestPanel = hoistCmp({
                             closeMenuOnSelect: false
                         }
                     }),
-                    // ID value + lookupFn examples, all pre-populated with a numeric id.
-                    // Should display the label on mount, not the raw id number.
+                    // ID value + generateOptionFn example, pre-populated with a numeric id whose
+                    // value is not in the options list. Should display the label on mount, not
+                    // the raw id number.
                     example({
-                        name: 'starting ID value, options (value not in list), lookupFn',
+                        name: 'starting ID value, options (value not in list), generateOptionFn',
                         bind: 'idNotInOpts',
                         selectProps: {
                             options: model.selectableEmployees,
-                            lookupFn: id => model.lookupEmployeeById(id),
+                            generateOptionFn: id => {
+                                const emp = model.lookupEmployeeById(id);
+                                return emp ? {label: emp.name, value: emp.id} : null;
+                            },
                             labelField: 'name',
                             valueField: 'id',
                             enableClear: true,
                             placeholder: 'Select an employee...'
-                        }
-                    }),
-                    example({
-                        name: 'starting ID value, queryFn, lookupFn',
-                        bind: 'idQueryLookup',
-                        selectProps: {
-                            width: 200,
-                            valueField: 'id',
-                            labelField: 'company',
-                            enableClear: true,
-                            queryFn: queryCustomersAsync,
-                            lookupFn: lookupCustomerByIdAsync,
-                            placeholder: 'Search customers...'
                         }
                     })
                 ]
@@ -208,11 +199,6 @@ async function queryCustomersAsync(query) {
         url: 'customer',
         params: {query, activeOnly: true}
     });
-}
-
-// Resolves a single customer id to its full option, for display before any query runs.
-async function lookupCustomerByIdAsync(id: number) {
-    return XH.fetchJson({url: 'customer', params: {id}});
 }
 
 const recipes = [
