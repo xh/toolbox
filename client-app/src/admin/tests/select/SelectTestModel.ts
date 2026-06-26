@@ -42,6 +42,10 @@ export class SelectTestModel extends HoistModel {
     @bindable.ref
     enableMultiMenuOpen: string[];
 
+    // ID value + generateOptionFn example, pre-populated to verify label (not raw id) on mount
+    @bindable
+    idNotInOpts: number = 99;
+
     constructor() {
         super();
         makeObservable(this);
@@ -50,5 +54,28 @@ export class SelectTestModel extends HoistModel {
             run: () => (this.bigOptions = times(this.numOptions, i => `option: ${i}`)),
             fireImmediately: true
         });
+    }
+
+    // All of the records to power the select options and generateOptionFn.
+    get employees(): any[] {
+        return [
+            {id: 1, name: 'Alice Chen', isActive: true},
+            {id: 2, name: 'Bob Park', isActive: true},
+            {id: 3, name: 'Carol Diaz', isActive: true},
+            {id: 4, name: 'Dave Kim', isActive: false},
+            {id: 5, name: 'Eve Singh', isActive: true},
+            {id: 6, name: 'Fred Rogers', isActive: true},
+            {id: 99, name: 'Zara Quinn', isActive: false}
+        ];
+    }
+
+    // Only active employee records are selectable.
+    get selectableEmployees() {
+        return this.employees.filter(it => it.isActive);
+    }
+
+    // Lookup returns both selectable and not-selectable records.
+    lookupEmployeeById(id: number) {
+        return this.employees.find(it => it.id === id);
     }
 }

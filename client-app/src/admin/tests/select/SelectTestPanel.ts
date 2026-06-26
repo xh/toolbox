@@ -111,6 +111,24 @@ export const SelectTestPanel = hoistCmp({
                             hideSelectedOptions: false,
                             closeMenuOnSelect: false
                         }
+                    }),
+                    // ID value + generateOptionFn example, pre-populated with a numeric id whose
+                    // value is not in the options list. Should display the label on mount, not
+                    // the raw id number.
+                    example({
+                        name: 'starting ID value, options (value not in list), generateOptionFn',
+                        bind: 'idNotInOpts',
+                        selectProps: {
+                            options: model.selectableEmployees,
+                            generateOptionFn: id => {
+                                const emp = model.lookupEmployeeById(id);
+                                return emp ? {label: emp.name, value: emp.id} : null;
+                            },
+                            labelField: 'name',
+                            valueField: 'id',
+                            enableClear: true,
+                            placeholder: 'Select an employee...'
+                        }
                     })
                 ]
             })
@@ -179,7 +197,7 @@ const customerProps = {
 async function queryCustomersAsync(query) {
     return XH.fetchJson({
         url: 'customer',
-        params: {query}
+        params: {query, activeOnly: true}
     });
 }
 
