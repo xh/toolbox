@@ -12,6 +12,7 @@ import {
     ScenarioConfig
 } from '@xh/hoist/data';
 import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
+import {filesize} from 'filesize';
 import {round} from 'lodash';
 import {HttpIngestAdapter} from './ingest/HttpIngestAdapter';
 import {WebSocketIngestAdapter} from './ingest/WebSocketIngestAdapter';
@@ -438,6 +439,10 @@ export class DataLabModel extends HoistModel {
     }
 
     fmtBytes(v: number): string {
-        return v == null ? '-' : `${round(v).toLocaleString()} B`;
+        if (v == null) return '-';
+        // `filesize` expects a non-negative magnitude; heap deltas can be negative under the
+        // degraded (no forced-GC) measurement path, so format the magnitude and re-apply the sign.
+        const s = filesize(Math.abs(v), {round: 1});
+        return v < 0 ? `-${s}` : s;
     }
 }
