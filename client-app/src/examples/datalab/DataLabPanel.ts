@@ -164,7 +164,11 @@ const scorecard = hoistCmp.factory<DataLabModel>({
             title: 'Scorecard',
             icon: Icon.gauge(),
             compactHeader: true,
-            item: vframe({
+            // Scrollable so the full scorecard is always reachable - the panel is the flex-middle of
+            // the results stack, so a plain `div` (natural height) + panel overflow beats a `vframe`
+            // whose rows would flex-shrink and clip when vertical space is tight.
+            scrollable: true,
+            item: div({
                 className: 'xh-pad tb-datalab__scorecard',
                 items: [
                     statRow(
