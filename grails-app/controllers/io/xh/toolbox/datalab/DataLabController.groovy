@@ -21,6 +21,7 @@ import io.xh.toolbox.BaseController
 class DataLabController extends BaseController {
 
     DataLabService dataLabService
+    DataLabPushService dataLabPushService
 
     /**
      * Return a seeded leaf-row snapshot whose shape is driven by request params.
@@ -39,6 +40,23 @@ class DataLabController extends BaseController {
      */
     def diff() {
         renderJSON(dataLabService.generateBatch(parseUpdateParams()))
+    }
+
+    /**
+     * Begin a WebSocket update stream for the calling client. The client first obtains its
+     * `channelKey` from XH.webSocketService and subscribes to the DataLabPushService.TOPIC, then
+     * calls this action to start the server-side push loop with its scenario knobs.
+     * Params: channelKey + the update params above PLUS ratePerSec, durationSec.
+     */
+    def streamStart() {
+        dataLabPushService.start(params.channelKey as String, parseStreamParams())
+        renderJSON(success: true)
+    }
+
+    /** Stop the WebSocket update stream for the calling client's channelKey. */
+    def streamStop() {
+        dataLabPushService.stop(params.channelKey as String)
+        renderJSON(success: true)
     }
 
     //------------------------
@@ -61,6 +79,13 @@ class DataLabController extends BaseController {
             breadth  : asInt(params.breadth),
             batchSize: asInt(params.batchSize),
             iteration: asInt(params.iteration)
+        ].findAll { k, v -> v != null }
+    }
+
+    private Map parseStreamParams() {
+        return parseUpdateParams() + [
+            ratePerSec : asLong(params.ratePerSec),
+            durationSec: asInt(params.durationSec)
         ].findAll { k, v -> v != null }
     }
 
