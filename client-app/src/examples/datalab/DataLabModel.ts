@@ -299,7 +299,14 @@ export class DataLabModel extends HoistModel {
                 });
                 await adapter.loadSnapshotAsync(rows);
             };
+            // Calibration teardown: empty the calibration rows to a TRUE-EMPTY pipeline (not a
+            // snapshot reload) so each calibration cycle leaves no residual heap. The harness also
+            // uses adapter.clearPipelineAsync() directly to reach the empty-pipeline heap baseline.
             const clearAsync = async () => {
+                await adapter.clearPipelineAsync();
+            };
+            // Restores the snapshot the harness clears to capture the fixed empty-pipeline baseline.
+            const reloadSnapshotAsync = async () => {
                 await adapter.loadSnapshotAsync(snapshotRows);
             };
 
@@ -309,7 +316,8 @@ export class DataLabModel extends HoistModel {
                 adapter,
                 nextBatchAsync,
                 loadNRowsAsync,
-                clearAsync
+                clearAsync,
+                reloadSnapshotAsync
             });
 
             this.setLastResult(result);
@@ -386,6 +394,14 @@ export class DataLabModel extends HoistModel {
         const a = runs[0].result,
             b = runs[1].result,
             metrics: Array<[string, number, number]> = [
+                // Pipeline (cube + view) is the PRIMARY compute - surfaced first, ahead of the
+                // genTransaction grid-relay Compute rows below.
+                [
+                    'Pipeline median (ms)',
+                    a.scorecard.pipeline.medianMs,
+                    b.scorecard.pipeline.medianMs
+                ],
+                ['Pipeline p95 (ms)', a.scorecard.pipeline.p95Ms, b.scorecard.pipeline.p95Ms],
                 ['Compute median (ms)', a.scorecard.compute.medianMs, b.scorecard.compute.medianMs],
                 ['Compute p95 (ms)', a.scorecard.compute.p95Ms, b.scorecard.compute.p95Ms],
                 [
