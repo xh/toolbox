@@ -1,3 +1,4 @@
+import {FormModel} from '@xh/hoist/cmp/form';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
@@ -5,12 +6,12 @@ import {
     BaselineAdapter,
     DEFAULT_PROTOCOL,
     MeasurementHarness,
+    numberIs,
+    required,
     RunResult,
-    ScenarioConfig,
-    Transport,
-    UpdatePattern
+    ScenarioConfig
 } from '@xh/hoist/data';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
 import {round} from 'lodash';
 import {HttpIngestAdapter} from './ingest/HttpIngestAdapter';
 import {WebSocketIngestAdapter} from './ingest/WebSocketIngestAdapter';
@@ -68,8 +69,13 @@ export class DataLabModel extends HoistModel {
     /** Run-history VM: each completed run persisted as a named scorecard. */
     runViewManager: ViewManagerModel;
 
-    /** The editable scenario - the single config object handed to the harness. */
-    @observable.ref scenario: ScenarioConfig = defaultScenario();
+    /**
+     * The editable scenario knobs. Field values persist to / restore from named profiles natively
+     * via the scenario {@link ViewManagerModel} (see `persistWith` below) - selecting a saved view
+     * re-applies its values, and the ViewManager's own Save / Save As controls capture them. The
+     * full {@link ScenarioConfig} handed to the harness is derived from these fields (see `scenario`).
+     */
+    @managed scenarioForm: FormModel;
 
     /** The live baseline adapter for the current/last run - its gridModel is mounted by the panel. */
     @managed @observable.ref adapter: BaselineAdapter = null;
@@ -106,6 +112,56 @@ export class DataLabModel extends HoistModel {
         this.scenarioViewManager = appModel.scenarioViewManager;
         this.runViewManager = appModel.runViewManager;
 
+        // Editable knobs as a validated FormModel. Persisting via the scenario ViewManager makes
+        // saved profiles a native concern: the framework applies a selected view's values to these
+        // fields and harvests them on save - no manual blob read/write.
+        const d = defaultScenario();
+        this.scenarioForm = new FormModel({
+            persistWith: {viewManagerModel: this.scenarioViewManager},
+            fields: [
+                {
+                    name: 'leafRowCount',
+                    displayName: 'Leaf rows',
+                    initialValue: d.dataset.leafRowCount,
+                    rules: [required, numberIs({min: 1})]
+                },
+                {
+                    name: 'dimensionCount',
+                    displayName: 'Dimensions',
+                    initialValue: d.dataset.dimensions.length,
+                    rules: [required, numberIs({min: 0})]
+                },
+                {
+                    name: 'fieldCount',
+                    displayName: 'Fields',
+                    initialValue: d.dataset.fieldCount,
+                    rules: [required, numberIs({min: 1})]
+                },
+                {
+                    name: 'pattern',
+                    displayName: 'Update pattern',
+                    initialValue: d.update.pattern
+                },
+                {
+                    name: 'transport',
+                    displayName: 'Transport',
+                    initialValue: d.update.transport
+                },
+                {
+                    name: 'batchSize',
+                    displayName: 'Batch size',
+                    initialValue: d.update.batchSize,
+                    rules: [required, numberIs({min: 1})]
+                },
+                {
+                    name: 'breadth',
+                    displayName: 'Update breadth',
+                    initialValue: d.update.breadth,
+                    rules: [required, numberIs({min: 1})]
+                }
+            ]
+        });
+
         this.comparisonGridModel = new GridModel({
             store: {idSpec: 'id'},
             emptyText: 'Select two saved runs to compare',
@@ -131,11 +187,8 @@ export class DataLabModel extends HoistModel {
             fireImmediately: true
         });
 
-        // When the user selects a saved scenario profile, load its value into the editable scenario.
-        this.addReaction({
-            track: () => this.scenarioViewManager.view,
-            run: () => this.syncScenarioFromView()
-        });
+        // Note: selecting a saved scenario profile re-applies its values to `scenarioForm`
+        // automatically via the registered ViewManager persistence provider - no reaction needed.
 
         // Hydrate any persisted run history from the active run-history view.
         this.addReaction({
@@ -146,72 +199,52 @@ export class DataLabModel extends HoistModel {
     }
 
     //------------------------------------------------------------------------------------------------
-    // Scenario editing - convenience setters for the most-edited knobs (bound to Hoist inputs)
+    // Scenario - the full config handed to the harness, derived from the editable form knobs
     //------------------------------------------------------------------------------------------------
 
-    @action
-    setScenario(scenario: ScenarioConfig) {
-        this.scenario = scenario;
+    /**
+     * The complete {@link ScenarioConfig} for a run, projected from the editable {@link scenarioForm}
+     * over the fixed defaults (field-type mix, aggregators, seed, rate, protocol). `dimensionCount`
+     * expands to a `dim0..dimN` array; the active profile's name (if any) labels the scenario.
+     */
+    @computed
+    get scenario(): ScenarioConfig {
+        const d = defaultScenario(),
+            v = this.scenarioForm.values,
+            dimCount = Math.max(0, v.dimensionCount ?? d.dataset.dimensions.length),
+            dimensions = Array.from({length: dimCount}, (_, i) => `dim${i}`);
+        return {
+            ...d,
+            name: this.scenarioViewManager.view?.name ?? d.name,
+            dataset: {
+                ...d.dataset,
+                leafRowCount: v.leafRowCount,
+                fieldCount: v.fieldCount,
+                dimensions
+            },
+            update: {
+                ...d.update,
+                pattern: v.pattern,
+                transport: v.transport,
+                batchSize: v.batchSize,
+                breadth: v.breadth
+            }
+        };
     }
 
-    @action
-    updateDataset(patch: Partial<ScenarioConfig['dataset']>) {
-        this.scenario = {...this.scenario, dataset: {...this.scenario.dataset, ...patch}};
-    }
-
-    @action
-    updateUpdateCfg(patch: Partial<ScenarioConfig['update']>) {
-        this.scenario = {...this.scenario, update: {...this.scenario.update, ...patch}};
-    }
-
-    get leafRowCount(): number {
-        return this.scenario.dataset.leafRowCount;
-    }
-    set leafRowCount(v: number) {
-        this.updateDataset({leafRowCount: v});
-    }
-
-    get dimensionCount(): number {
-        return this.scenario.dataset.dimensions.length;
-    }
-    set dimensionCount(n: number) {
-        const dims = Array.from({length: Math.max(0, n)}, (_, i) => `dim${i}`);
-        this.updateDataset({dimensions: dims});
-    }
-
-    get pattern(): UpdatePattern {
-        return this.scenario.update.pattern;
-    }
-    set pattern(v: UpdatePattern) {
-        this.updateUpdateCfg({pattern: v});
-    }
-
-    get transport(): Transport {
-        return this.scenario.update.transport;
-    }
-    set transport(v: Transport) {
-        this.updateUpdateCfg({transport: v});
-    }
-
-    //------------------------------------------------------------------------------------------------
-    // Scenario persistence (ViewManager JsonBlobs)
-    //------------------------------------------------------------------------------------------------
-
-    /** Save the current editable scenario as a new named profile. */
+    /**
+     * Save the current knob values as a new named profile. The ViewManager harvests the registered
+     * `scenarioForm` provider's state via `getValue()` - the form fields ARE the persisted value.
+     */
     async saveScenarioAsAsync(name: string) {
         await this.scenarioViewManager.saveAsAsync({
             name,
             group: null,
-            description: this.scenario.notes ?? null,
+            description: null,
             isShared: false,
             isGlobal: false,
-            value: {scenario: this.scenario} as PlainObject
+            value: this.scenarioViewManager.getValue()
         });
-    }
-
-    private syncScenarioFromView() {
-        const value = this.scenarioViewManager.view?.value as PlainObject;
-        if (value?.scenario) this.setScenario(value.scenario as ScenarioConfig);
     }
 
     //------------------------------------------------------------------------------------------------

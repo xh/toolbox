@@ -1,7 +1,9 @@
+import {form} from '@xh/hoist/cmp/form';
 import {grid} from '@xh/hoist/cmp/grid';
 import {box, div, filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {formField} from '@xh/hoist/desktop/cmp/form';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -27,73 +29,54 @@ export const dataLabPanel = hoistCmp.factory({
 //------------------------------------------------------------------------------------------------
 const controlsPanel = hoistCmp.factory<DataLabModel>({
     render({model}) {
-        const {scenario, running} = model;
+        const {running} = model;
         return panel({
             title: 'Scenario',
             icon: Icon.gears(),
             compactHeader: true,
             modelConfig: {side: 'left', defaultSize: 360, collapsible: true},
             items: [
-                vframe({
-                    className: 'xh-pad',
+                form({
+                    model: model.scenarioForm,
+                    fieldDefaults: {inline: true, labelWidth: 130},
                     items: [
-                        knob('Leaf rows', numberInput({bind: 'leafRowCount', model, width: 140})),
-                        knob(
-                            'Dimensions',
-                            numberInput({bind: 'dimensionCount', model, width: 140})
-                        ),
-                        knob(
-                            'Fields',
-                            numberInput({
-                                value: scenario.dataset.fieldCount,
-                                onChange: v => model.updateDataset({fieldCount: v as number}),
-                                width: 140
-                            })
-                        ),
-                        knob(
-                            'Update pattern',
-                            select({
-                                bind: 'pattern',
-                                model,
-                                enableFilter: false,
-                                options: [
-                                    'steadyTrickle',
-                                    'periodicBurst',
-                                    'broadReplace',
-                                    'targetedNarrow'
-                                ],
-                                width: 180
-                            })
-                        ),
-                        knob(
-                            'Transport',
-                            select({
-                                bind: 'transport',
-                                model,
-                                enableFilter: false,
-                                options: [
-                                    {value: 'http', label: 'HTTP poll'},
-                                    {value: 'webSocket', label: 'WebSocket push'}
-                                ],
-                                width: 180
-                            })
-                        ),
-                        knob(
-                            'Batch size',
-                            numberInput({
-                                value: scenario.update.batchSize,
-                                onChange: v => model.updateUpdateCfg({batchSize: v as number}),
-                                width: 140
-                            })
-                        ),
-                        knob(
-                            'Update breadth',
-                            numberInput({
-                                value: scenario.update.breadth,
-                                onChange: v => model.updateUpdateCfg({breadth: v as number}),
-                                width: 140
-                            })
-                        )
+                        div({
+                            className: 'xh-pad',
+                            items: [
+                                formField({field: 'leafRowCount', item: numberInput({width: 140})}),
+                                formField({
+                                    field: 'dimensionCount',
+                                    item: numberInput({width: 140})
+                                }),
+                                formField({field: 'fieldCount', item: numberInput({width: 140})}),
+                                formField({
+                                    field: 'pattern',
+                                    item: select({
+                                        enableFilter: false,
+                                        options: [
+                                            'steadyTrickle',
+                                            'periodicBurst',
+                                            'broadReplace',
+                                            'targetedNarrow'
+                                        ],
+                                        width: 180
+                                    })
+                                }),
+                                formField({
+                                    field: 'transport',
+                                    item: select({
+                                        enableFilter: false,
+                                        options: [
+                                            {value: 'http', label: 'HTTP poll'},
+                                            {value: 'webSocket', label: 'WebSocket push'}
+                                        ],
+                                        width: 180
+                                    })
+                                }),
+                                formField({field: 'batchSize', item: numberInput({width: 140})}),
+                                formField({field: 'breadth', item: numberInput({width: 140})})
+                            ]
+                        })
                     ]
                 })
             ],
@@ -118,13 +101,6 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
         });
     }
 });
-
-const knob = (label: string, input) =>
-    hbox({
-        className: 'tb-datalab__knob',
-        alignItems: 'center',
-        items: [box({width: 130, item: label}), filler(), input]
-    });
 
 function promptSaveScenario(model: DataLabModel) {
     XH.prompt<string>({
