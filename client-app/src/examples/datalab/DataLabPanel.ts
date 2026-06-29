@@ -188,8 +188,8 @@ const scorecard = hoistCmp.factory<DataLabModel>({
             item: div({
                 className: 'xh-pad tb-datalab__scorecard',
                 items: [
-                    sectionLabel('Timings'),
-                    timingRow('', ['Median', 'p95'], true),
+                    // Header row doubles as the section title: 'Timings' sits in the metric column.
+                    timingRow('Timings', ['Median', 'p95'], true),
                     timingRow('Compute (genTransaction)', [
                         model.fmtMs(sc.compute.medianMs),
                         model.fmtMs(sc.compute.p95Ms)
