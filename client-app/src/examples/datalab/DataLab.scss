@@ -13,12 +13,26 @@
     font-size: var(--xh-font-size-small);
   }
 
-  &__stat {
+  &__t-row {
+    display: flex;
     margin-bottom: 6px;
   }
 
-  &__stat-label {
+  &__t-row--header {
+    margin-bottom: 4px;
+    color: var(--xh-text-color-muted);
+    text-transform: uppercase;
+    font-size: var(--xh-font-size-small);
+  }
+
+  &__t-metric {
+    width: 220px;
     font-weight: 600;
+  }
+
+  &__t-val {
+    width: 90px;
+    text-align: right;
   }
 
   &__kv {

@@ -38,19 +38,27 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
             items: [
                 form({
                     model: model.scenarioForm,
-                    fieldDefaults: {inline: true, labelWidth: 130},
+                    // Stacked (non-inline) layout: label + info note render above each input, giving
+                    // both the descriptions and the controls room to breathe in the narrow panel.
+                    fieldDefaults: {inline: false},
                     items: [
                         div({
                             className: 'xh-pad',
                             items: [
-                                formField({field: 'leafRowCount', item: numberInput({width: 140})}),
+                                formField({
+                                    field: 'leafRowCount',
+                                    info: 'Detail rows loaded before aggregation.',
+                                    item: numberInput({width: 140})
+                                }),
                                 formField({
                                     field: 'dimensionCount',
+                                    info: 'Cube grouping levels - sets aggregation depth.',
                                     item: numberInput({width: 140})
                                 }),
                                 formField({field: 'fieldCount', item: numberInput({width: 140})}),
                                 formField({
                                     field: 'pattern',
+                                    info: 'Shape of the update stream over time.',
                                     item: select({
                                         enableFilter: false,
                                         options: [
@@ -64,6 +72,7 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                 }),
                                 formField({
                                     field: 'transport',
+                                    info: 'Delivery channel for updates: poll vs push.',
                                     item: select({
                                         enableFilter: false,
                                         options: [
@@ -73,8 +82,16 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                         width: 180
                                     })
                                 }),
-                                formField({field: 'batchSize', item: numberInput({width: 140})}),
-                                formField({field: 'breadth', item: numberInput({width: 140})})
+                                formField({
+                                    field: 'batchSize',
+                                    info: 'Records changed per update tick.',
+                                    item: numberInput({width: 140})
+                                }),
+                                formField({
+                                    field: 'breadth',
+                                    info: 'Fields changed per updated record.',
+                                    item: numberInput({width: 140})
+                                })
                             ]
                         })
                     ]
@@ -171,21 +188,20 @@ const scorecard = hoistCmp.factory<DataLabModel>({
             item: div({
                 className: 'xh-pad tb-datalab__scorecard',
                 items: [
-                    statRow(
-                        'Compute (genTransaction)',
+                    sectionLabel('Timings'),
+                    timingRow('', ['Median', 'p95'], true),
+                    timingRow('Compute (genTransaction)', [
                         model.fmtMs(sc.compute.medianMs),
                         model.fmtMs(sc.compute.p95Ms)
-                    ),
-                    statRow(
-                        'Bridge (applyTransaction)',
+                    ]),
+                    timingRow('Bridge (applyTransaction)', [
                         model.fmtMs(sc.bridgeCall.medianMs),
                         model.fmtMs(sc.bridgeCall.p95Ms)
-                    ),
-                    statRow(
-                        'Render (deferred frame)',
+                    ]),
+                    timingRow('Render (deferred frame)', [
                         model.fmtMs(sc.render.medianMs),
                         model.fmtMs(sc.render.p95Ms)
-                    ),
+                    ]),
                     sectionLabel('Heap by layer'),
                     kv('Cube store records', model.fmtBytes(sc.heap.cubeStoreRecords)),
                     kv('Grid store records', model.fmtBytes(sc.heap.gridStoreRecords)),
@@ -209,13 +225,14 @@ const scorecard = hoistCmp.factory<DataLabModel>({
     }
 });
 
-const statRow = (label: string, median: string, p95: string) =>
+// One timing row: a metric label followed by N right-aligned value cells. The same helper renders
+// the header (isHeader) and each data row, so adding a column (e.g. min/max) is just another value.
+const timingRow = (label: string, values: string[], isHeader = false) =>
     hbox({
-        className: 'tb-datalab__stat',
+        className: `tb-datalab__t-row${isHeader ? ' tb-datalab__t-row--header' : ''}`,
         items: [
-            box({width: 220, item: span({className: 'tb-datalab__stat-label', item: label})}),
-            box({width: 120, item: `median ${median}`}),
-            box({item: `p95 ${p95}`})
+            box({className: 'tb-datalab__t-metric', item: label}),
+            ...values.map(v => box({className: 'tb-datalab__t-val', item: v}))
         ]
     });
 
