@@ -136,7 +136,7 @@ const liveGrid = hoistCmp.factory<DataLabModel>({
             title: 'Live Grid (drives the bridge measurement)',
             icon: Icon.grid(),
             compactHeader: true,
-            modelConfig: {defaultSize: 240, collapsible: true},
+            modelConfig: {side: 'top', defaultSize: 240, collapsible: true},
             item: gridModel
                 ? grid({model: gridModel})
                 : div({
@@ -230,7 +230,7 @@ const comparisonPanel = hoistCmp.factory<DataLabModel>({
             title: 'Compare Saved Runs',
             icon: Icon.balanceScale(),
             compactHeader: true,
-            modelConfig: {defaultSize: 260, collapsible: true},
+            modelConfig: {side: 'bottom', defaultSize: 260, collapsible: true},
             tbar: toolbar({
                 compact: true,
                 items: [
