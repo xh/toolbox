@@ -190,7 +190,14 @@ const scorecard = hoistCmp.factory<DataLabModel>({
                 items: [
                     // Header row doubles as the section title: 'Timings' sits in the metric column.
                     timingRow('Timings', ['Median', 'p95'], true),
-                    timingRow('Compute (genTransaction)', [
+                    // Pipeline (cube ingest + connected-View re-aggregation, Boundaries 1-4) is the
+                    // PRIMARY compute - the real engine cost. Surfaced FIRST; the genTransaction
+                    // Compute row below is reframed as the final grid-relay stage.
+                    timingRow('Pipeline (cube + view)', [
+                        model.fmtMs(sc.pipeline.medianMs),
+                        model.fmtMs(sc.pipeline.p95Ms)
+                    ]),
+                    timingRow('Compute (genTransaction, grid relay)', [
                         model.fmtMs(sc.compute.medianMs),
                         model.fmtMs(sc.compute.p95Ms)
                     ]),
