@@ -11,6 +11,7 @@ import {
     RunResult,
     ScenarioConfig
 } from '@xh/hoist/data';
+import {fmtDateTimeSec} from '@xh/hoist/format';
 import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
 import {filesize} from 'filesize';
 import {round} from 'lodash';
@@ -338,7 +339,7 @@ export class DataLabModel extends HoistModel {
     //------------------------------------------------------------------------------------------------
 
     private async persistRunAsync(result: RunResult) {
-        const label = `${result.scenario.name} @ ${result.env.capturedAt}`,
+        const label = `${result.scenario.name} @ ${fmtDateTimeSec(result.env.capturedAt)}`,
             run: SavedRun = {label, savedAt: result.env.capturedAt, result};
 
         this.setSavedRuns([...this.savedRuns, run]);
