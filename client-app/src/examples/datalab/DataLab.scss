@@ -1,0 +1,35 @@
+.tb-datalab {
+    &__knob {
+        margin-bottom: 8px;
+    }
+
+    &__hint {
+        color: var(--xh-text-color-muted);
+        font-style: italic;
+    }
+
+    &__section {
+        margin-top: 12px;
+        margin-bottom: 4px;
+        font-weight: 600;
+        color: var(--xh-text-color-muted);
+        text-transform: uppercase;
+        font-size: var(--xh-font-size-small);
+    }
+
+    &__stat {
+        margin-bottom: 6px;
+    }
+
+    &__stat-label {
+        font-weight: 600;
+    }
+
+    &__kv {
+        margin-bottom: 2px;
+    }
+
+    &__scorecard {
+        overflow-y: auto;
+    }
+}

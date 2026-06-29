@@ -33,6 +33,21 @@ export class ExamplesTabModel extends HoistModel {
             ]
         },
         {
+            title: 'Data Lab',
+            icon: Icon.experiment(),
+            path: 'datalab',
+            srcPath: 'datalab',
+            text: [
+                p('A measurement harness for the Hoist data pipeline.'),
+                p(
+                    'Pick or edit a scenario (dataset shape + update pattern + transport), run it through the framework MeasurementHarness, and read an on-screen scorecard: compute vs bridge timings (median + p95), heap by layer, row counts, and environment metadata.'
+                ),
+                p(
+                    'Scenario configs and run scorecards are saved as named views, and two saved runs can be compared side-by-side. Data is served by an out-of-process Grails test API over HTTP or WebSocket push.'
+                )
+            ]
+        },
+        {
             title: 'Weather',
             icon: Icon.sun(),
             path: 'weather',
