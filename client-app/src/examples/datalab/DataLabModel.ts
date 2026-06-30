@@ -72,7 +72,7 @@ function defaultScenario(): ScenarioConfig {
  *  - Holds an editable {@link ScenarioConfig} (the 02-01 knobs), bound to Hoist inputs in the panel.
  *  - OWNS THE TRANSPORT: pre-fetches the snapshot over the chosen transport (HTTP or WebSocket,
  *    Task 1 adapters) and pre-loads it into a {@link BaselineAdapter} BEFORE running; supplies the
- *    injected per-iteration `nextBatchAsync` + calibration callbacks. The harness fetches nothing.
+ *    injected per-iteration `nextBatchAsync` + per-record sizing callbacks. The harness fetches nothing.
  *  - Persists named, shareable scenario profiles via a {@link ViewManagerModel}; keeps run history
  *    as transient, localStorage-backed local state (`savedRuns`) - runs are not curated views.
  *  - Computes side-by-side deltas / percent change between two selected saved runs.
@@ -313,24 +313,24 @@ export class DataLabModel extends HoistModel {
             // harness's bridgeCall (applyTransaction) reflects the real JS-to-AG-Grid crossing.
             this.setAdapter(adapter);
 
-            // 3. Build the injected per-iteration data-provider + heap-calibration callbacks. For WS
+            // 3. Build the injected per-iteration data-provider + per-record sizing callbacks. For WS
             //    the harness pulls each buffered/incoming pushed batch; for HTTP it polls the next
-            //    deterministic diff. Calibration rows are pulled from the same transport.
+            //    deterministic diff. Sizing rows are pulled from the same transport.
             const nextBatchAsync = ws
                 ? () => ws.nextBatchAsync()
                 : () => http.nextDiffAsync(scenario);
 
-            const calHttp = new HttpIngestAdapter();
+            const sizingHttp = new HttpIngestAdapter();
             const loadNRowsAsync = async (n: number) => {
-                const rows = await calHttp.loadSnapshotAsync({
+                const rows = await sizingHttp.loadSnapshotAsync({
                     ...scenario,
                     dataset: {...dataset, leafRowCount: n}
                 });
                 await adapter.loadSnapshotAsync(rows);
             };
-            // Calibration teardown: empty the calibration rows to a TRUE-EMPTY pipeline (not a
-            // snapshot reload) so each calibration cycle leaves no residual heap. The harness also
-            // uses adapter.clearPipelineAsync() directly to reach the empty-pipeline heap baseline.
+            // Sizing teardown: empty the sizing rows to a TRUE-EMPTY pipeline (not a snapshot
+            // reload) so each sizing cycle leaves no residual heap. The harness also uses
+            // adapter.clearPipelineAsync() directly to reach the empty-pipeline heap baseline.
             const clearAsync = async () => {
                 await adapter.clearPipelineAsync();
             };
@@ -340,7 +340,7 @@ export class DataLabModel extends HoistModel {
             };
 
             // 4. Run the scenario through the endpoint-agnostic harness and persist the RunResult.
-            //    onProgress drives the mask message (baseline / calibrate / iteration x of y).
+            //    onProgress drives the mask message (measuring memory / performance x of y).
             const result = await new MeasurementHarness().runScenarioAsync({
                 scenario,
                 adapter,

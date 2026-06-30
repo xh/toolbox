@@ -93,7 +93,7 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                             className: 'xh-pad',
                             items: [
                                 // Measurement-pass toggles - each pass is independent and optional
-                                // (at least one required). Memory off skips the 50k calibration churn;
+                                // (at least one required). Memory off skips the 50k per-record sizing churn;
                                 // performance off skips warmup + the measured timing loop.
                                 formField({
                                     field: 'measureMemory',
