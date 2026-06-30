@@ -36,7 +36,7 @@ class DataLabController extends BaseController {
      * Return one deterministic update batch for the given iteration cursor. Successive polls with an
      * incrementing `iteration` return successive deterministic batches (the HTTP-poll equivalent of a
      * WebSocket stream).
-     * Params: the shape params above PLUS pattern, breadth, batchSize, iteration.
+     * Params: the shape params above PLUS cadence, updateMode, breadth, batchSize, iteration.
      */
     def diff() {
         renderJSON(dataLabService.generateBatch(parseUpdateParams()))
@@ -75,10 +75,11 @@ class DataLabController extends BaseController {
 
     private Map parseUpdateParams() {
         return parseShapeParams() + [
-            pattern  : params.pattern ?: null,
-            breadth  : asInt(params.breadth),
-            batchSize: asInt(params.batchSize),
-            iteration: asInt(params.iteration)
+            cadence   : params.cadence ?: null,
+            updateMode: params.updateMode ?: null,
+            breadth   : asInt(params.breadth),
+            batchSize : asInt(params.batchSize),
+            iteration : asInt(params.iteration)
         ].findAll { k, v -> v != null }
     }
 

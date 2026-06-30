@@ -56,7 +56,7 @@ class DataLabPushService extends BaseService {
      *
      * @param channelKey - the client's unique WebSocket connection key.
      * @param scenarioParams - the shape + update knobs (leafRowCount, fieldCount, fieldTypeMix,
-     *        dimensions, seed, pattern, breadth, batchSize) PLUS streaming knobs:
+     *        dimensions, seed, cadence, updateMode, breadth, batchSize) PLUS streaming knobs:
      *          - ratePerSec  (double) - batches pushed per second. Default 10.
      *          - durationSec (int)    - auto-stop after this many seconds; <=0 means run until stopped.
      */
