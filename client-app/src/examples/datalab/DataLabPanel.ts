@@ -1,4 +1,4 @@
-import {form} from '@xh/hoist/cmp/form';
+import {form, formFieldSet} from '@xh/hoist/cmp/form';
 import {grid} from '@xh/hoist/cmp/grid';
 import {box, div, filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, PlainObject} from '@xh/hoist/core';
@@ -94,12 +94,13 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                     // both the descriptions and the controls room to breathe in the narrow panel.
                     fieldDefaults: {inline: false},
                     items: [
-                        div({
-                            className: 'xh-pad',
+                        // Measurement passes - each is independent and optional (at least one
+                        // required). Memory off skips the 50k per-record sizing churn; performance off
+                        // skips warmup + the measured timing loop and disables the Update stream below.
+                        formFieldSet({
+                            title: 'Measurement passes',
+                            icon: Icon.gauge(),
                             items: [
-                                // Measurement-pass toggles - each pass is independent and optional
-                                // (at least one required). Memory off skips the 50k per-record sizing churn;
-                                // performance off skips warmup + the measured timing loop.
                                 formField({
                                     field: 'measureMemory',
                                     info: 'Attribute retained heap by layer (empty baseline + per-record sizing).',
@@ -109,9 +110,14 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                     field: 'measurePerformance',
                                     info: 'Time update flow at steady state (pipeline + grid-sync, median + p95).',
                                     item: switchInput()
-                                }),
-                                // Dataset shape - loaded as the snapshot by BOTH passes, so always live.
-                                sectionLabel('Dataset shape'),
+                                })
+                            ]
+                        }),
+                        // Dataset shape - loaded as the snapshot by BOTH passes, so always live.
+                        formFieldSet({
+                            title: 'Dataset shape',
+                            icon: Icon.grid(),
+                            items: [
                                 formField({
                                     field: 'leafRowCount',
                                     info: 'Detail rows loaded before aggregation.',
@@ -122,14 +128,17 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                     info: 'Cube grouping levels - sets aggregation depth.',
                                     item: numberInput({width: 140})
                                 }),
-                                formField({field: 'fieldCount', item: numberInput({width: 140})}),
-                                // Update stream - performance pass only. The header notes when the
-                                // pass is off and these knobs therefore do nothing.
-                                sectionLabel(
-                                    perfOff
-                                        ? 'Update stream (performance pass off)'
-                                        : 'Update stream'
-                                ),
+                                formField({field: 'fieldCount', item: numberInput({width: 140})})
+                            ]
+                        }),
+                        // Update stream - performance pass only. The title notes when the pass is off
+                        // and these knobs therefore do nothing.
+                        formFieldSet({
+                            title: perfOff
+                                ? 'Update stream (performance pass off)'
+                                : 'Update stream',
+                            icon: Icon.bolt(),
+                            items: [
                                 formField({
                                     field: 'updateMode',
                                     info: 'Incremental per-row diffs vs a full re-snapshot each tick.',
