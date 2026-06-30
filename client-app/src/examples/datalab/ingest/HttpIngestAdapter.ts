@@ -8,11 +8,11 @@ import {ScenarioConfig} from '@xh/hoist/data';
  * measurement harness (hoist-react) fetches nothing itself. It pulls the seeded, out-of-process
  * test data served by the Toolbox Grails `dataLab` API (snapshot + diff endpoints) and hands back
  * plain row arrays. The caller (DataLabModel) then feeds those rows to the framework
- * `CandidateAdapter` at the two invariant ingest ops - `loadSnapshotAsync` and `applyDiffAsync` -
+ * `DataLayerAdapter` at the two invariant ingest ops - `loadSnapshotAsync` and `applyDiffAsync` -
  * so only the delivery mechanism differs from the WebSocket adapter; the ingest contract is shared.
  *
  * The adapter does not measure and does not touch the Cube directly - it only translates HTTP
- * responses into row batches.
+ * responses into row diffs.
  */
 export class HttpIngestAdapter {
     /** Monotonic cursor handed to the server so successive polls return successive batches. */

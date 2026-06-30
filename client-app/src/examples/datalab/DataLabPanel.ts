@@ -232,7 +232,7 @@ const scorecard = hoistCmp.factory<DataLabModel>({
         const {scorecard: sc, env, overheadMs} = lastResult,
             // Timings and heap are nullable - a run may have skipped the performance or memory pass.
             // Render each section only when its pass ran; row counts + environment always render.
-            {pipeline, compute, bridgeCall, render, heap, rowCounts} = sc;
+            {engine, genTxn, bridgeCall, render, heap, rowCounts} = sc;
         return panel({
             title: 'Scorecard',
             icon: Icon.gauge(),
@@ -244,20 +244,20 @@ const scorecard = hoistCmp.factory<DataLabModel>({
             item: div({
                 className: 'xh-pad tb-datalab__scorecard',
                 items: [
-                    // Timings (performance pass). Pipeline (cube ingest + connected-View
-                    // re-aggregation, Boundaries 1-4) is the PRIMARY compute - the real engine cost.
-                    // Surfaced FIRST; the genTransaction Compute row is the final grid-relay stage.
-                    ...(pipeline && compute && bridgeCall && render
+                    // Timings (performance pass). Engine (cube ingest + connected-View
+                    // re-aggregation, Boundaries 1-4) is the PRIMARY data-layer cost - the real engine
+                    // work. Surfaced FIRST; the genTransaction build row is the first grid-relay stage.
+                    ...(engine && genTxn && bridgeCall && render
                         ? [
                               // Header row doubles as the section title: 'Timings' sits in the metric column.
                               timingRow('Timings', ['Median', 'p95'], true),
-                              timingRow('Pipeline (cube + view)', [
-                                  model.fmtMs(pipeline.medianMs),
-                                  model.fmtMs(pipeline.p95Ms)
+                              timingRow('Engine (cube + view)', [
+                                  model.fmtMs(engine.medianMs),
+                                  model.fmtMs(engine.p95Ms)
                               ]),
-                              timingRow('Compute (genTransaction, grid relay)', [
-                                  model.fmtMs(compute.medianMs),
-                                  model.fmtMs(compute.p95Ms)
+                              timingRow('Build txn (genTransaction)', [
+                                  model.fmtMs(genTxn.medianMs),
+                                  model.fmtMs(genTxn.p95Ms)
                               ]),
                               timingRow('Bridge (applyTransaction)', [
                                   model.fmtMs(bridgeCall.medianMs),

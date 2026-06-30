@@ -72,7 +72,7 @@ function defaultScenario(): ScenarioConfig {
  *  - Holds an editable {@link ScenarioConfig} (the 02-01 knobs), bound to Hoist inputs in the panel.
  *  - OWNS THE TRANSPORT: pre-fetches the snapshot over the chosen transport (HTTP or WebSocket,
  *    Task 1 adapters) and pre-loads it into a {@link BaselineAdapter} BEFORE running; supplies the
- *    injected per-iteration `nextBatchAsync` + per-record sizing callbacks. The harness fetches nothing.
+ *    injected per-iteration `nextDiffAsync` + per-record sizing callbacks. The harness fetches nothing.
  *  - Persists named, shareable scenario profiles via a {@link ViewManagerModel}; keeps run history
  *    as transient, localStorage-backed local state (`savedRuns`) - runs are not curated views.
  *  - Computes side-by-side deltas / percent change between two selected saved runs.
@@ -314,10 +314,10 @@ export class DataLabModel extends HoistModel {
             this.setAdapter(adapter);
 
             // 3. Build the injected per-iteration data-provider + per-record sizing callbacks. For WS
-            //    the harness pulls each buffered/incoming pushed batch; for HTTP it polls the next
+            //    the harness pulls each buffered/incoming pushed diff; for HTTP it polls the next
             //    deterministic diff. Sizing rows are pulled from the same transport.
-            const nextBatchAsync = ws
-                ? () => ws.nextBatchAsync()
+            const nextDiffAsync = ws
+                ? () => ws.nextDiffAsync()
                 : () => http.nextDiffAsync(scenario);
 
             const sizingHttp = new HttpIngestAdapter();
@@ -344,7 +344,7 @@ export class DataLabModel extends HoistModel {
             const result = await new MeasurementHarness().runScenarioAsync({
                 scenario,
                 adapter,
-                nextBatchAsync,
+                nextDiffAsync,
                 loadNRowsAsync,
                 clearAsync,
                 reloadSnapshotAsync,
@@ -430,15 +430,15 @@ export class DataLabModel extends HoistModel {
             b = runs[1].result.scorecard,
             metrics: Array<[string, number, number]> = [];
 
-        // Timings (performance pass). Pipeline (cube + view) is the PRIMARY compute - surfaced first,
-        // ahead of the genTransaction grid-relay Compute rows.
-        if (a.pipeline && b.pipeline) {
-            metrics.push(['Pipeline median (ms)', a.pipeline.medianMs, b.pipeline.medianMs]);
-            metrics.push(['Pipeline p95 (ms)', a.pipeline.p95Ms, b.pipeline.p95Ms]);
+        // Timings (performance pass). Engine (cube + view) is the PRIMARY data-layer cost - surfaced
+        // first, ahead of the genTransaction grid-relay rows.
+        if (a.engine && b.engine) {
+            metrics.push(['Engine median (ms)', a.engine.medianMs, b.engine.medianMs]);
+            metrics.push(['Engine p95 (ms)', a.engine.p95Ms, b.engine.p95Ms]);
         }
-        if (a.compute && b.compute) {
-            metrics.push(['Compute median (ms)', a.compute.medianMs, b.compute.medianMs]);
-            metrics.push(['Compute p95 (ms)', a.compute.p95Ms, b.compute.p95Ms]);
+        if (a.genTxn && b.genTxn) {
+            metrics.push(['Build txn median (ms)', a.genTxn.medianMs, b.genTxn.medianMs]);
+            metrics.push(['Build txn p95 (ms)', a.genTxn.p95Ms, b.genTxn.p95Ms]);
         }
         if (a.bridgeCall && b.bridgeCall) {
             metrics.push(['Bridge median (ms)', a.bridgeCall.medianMs, b.bridgeCall.medianMs]);
