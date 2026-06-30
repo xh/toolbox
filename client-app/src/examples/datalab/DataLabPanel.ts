@@ -87,8 +87,12 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
             icon: Icon.gears(),
             compactHeader: true,
             modelConfig: {side: 'left', defaultSize: 360, collapsible: true},
-            items: [
-                form({
+            // Scrollable + padded so the field sets sit inset from the panel edges and the full form
+            // stays reachable when it runs past the fold.
+            scrollable: true,
+            item: div({
+                className: 'xh-pad',
+                item: form({
                     model: model.scenarioForm,
                     // Stacked (non-inline) layout: label + info note render above each input, giving
                     // both the descriptions and the controls room to breathe in the narrow panel.
@@ -196,7 +200,7 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                         })
                     ]
                 })
-            ],
+            }),
             bbar: toolbar({
                 items: [
                     filler(),
