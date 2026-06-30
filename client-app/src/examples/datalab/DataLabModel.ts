@@ -1,5 +1,5 @@
 import {FormModel} from '@xh/hoist/cmp/form';
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {ColumnRenderer, GridModel} from '@xh/hoist/cmp/grid';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {HoistModel, managed, persist, PlainObject, TaskObserver, XH} from '@xh/hoist/core';
 import {
@@ -13,7 +13,7 @@ import {
     RunResult,
     ScenarioConfig
 } from '@xh/hoist/data';
-import {fmtDateTimeSec} from '@xh/hoist/format';
+import {fmtDateTimeSec, fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
 import {filesize} from 'filesize';
 import {round} from 'lodash';
@@ -38,6 +38,16 @@ const atLeastOnePass: Constraint = (_fieldState, allValues) => {
     }
     return null;
 };
+
+/** Unit of a comparison metric - drives how its run/delta values render. */
+type CompareUnit = 'ms' | 'bytes' | 'count';
+
+/**
+ * Renders a comparison run/delta value by its row's unit: bytes and counts as whole numbers (with
+ * comma separators), timings with a couple of decimals. Both via the Hoist number formatter.
+ */
+const compareValueRenderer: ColumnRenderer<number> = (v, {record}) =>
+    v == null ? '' : fmtNumber(v, {precision: record.data.unit === 'ms' ? 2 : 0});
 
 /** Sensible starter scenario - editable in the UI and overwritten when a saved profile loads. */
 function defaultScenario(): ScenarioConfig {
@@ -209,15 +219,39 @@ export class DataLabModel extends HoistModel {
             emptyText: 'Select two saved runs to compare',
             columns: [
                 {field: 'metric', width: 220},
-                {field: 'runA', headerName: 'Run A', width: 130, align: 'right'},
-                {field: 'runB', headerName: 'Run B', width: 130, align: 'right'},
-                {field: 'delta', headerName: 'Delta', width: 130, align: 'right'},
+                {
+                    field: 'runA',
+                    headerName: 'Run A',
+                    width: 130,
+                    align: 'right',
+                    renderer: compareValueRenderer
+                },
+                {
+                    field: 'runB',
+                    headerName: 'Run B',
+                    width: 130,
+                    align: 'right',
+                    renderer: compareValueRenderer
+                },
+                {
+                    field: 'delta',
+                    headerName: 'Delta',
+                    width: 130,
+                    align: 'right',
+                    renderer: compareValueRenderer
+                },
                 {
                     field: 'pct',
                     headerName: '% Change',
                     width: 110,
                     align: 'right',
-                    renderer: v => (v == null ? '-' : `${v}%`)
+                    // Up / down arrow glyph by sign, with a trailing '%' label.
+                    renderer: numberRenderer({
+                        precision: 1,
+                        label: '%',
+                        withSignGlyph: true,
+                        nullDisplay: '-'
+                    })
                 }
             ]
         });
@@ -434,55 +468,73 @@ export class DataLabModel extends HoistModel {
         // non-null on each side (e.g. a memory-only run vs a both run yields heap + row-count rows).
         const a = runs[0].result.scorecard,
             b = runs[1].result.scorecard,
-            metrics: Array<[string, number, number]> = [];
+            metrics: Array<[string, number, number, CompareUnit]> = [];
 
         // Timings (performance pass). Engine (cube + view) is the PRIMARY data-layer cost - surfaced
         // first, ahead of the genTransaction grid-relay rows.
         if (a.engine && b.engine) {
-            metrics.push(['Engine median (ms)', a.engine.medianMs, b.engine.medianMs]);
-            metrics.push(['Engine p95 (ms)', a.engine.p95Ms, b.engine.p95Ms]);
+            metrics.push(['Engine median (ms)', a.engine.medianMs, b.engine.medianMs, 'ms']);
+            metrics.push(['Engine p95 (ms)', a.engine.p95Ms, b.engine.p95Ms, 'ms']);
         }
         if (a.genTxn && b.genTxn) {
-            metrics.push(['Build txn median (ms)', a.genTxn.medianMs, b.genTxn.medianMs]);
-            metrics.push(['Build txn p95 (ms)', a.genTxn.p95Ms, b.genTxn.p95Ms]);
+            metrics.push(['Build txn median (ms)', a.genTxn.medianMs, b.genTxn.medianMs, 'ms']);
+            metrics.push(['Build txn p95 (ms)', a.genTxn.p95Ms, b.genTxn.p95Ms, 'ms']);
         }
         if (a.bridgeCall && b.bridgeCall) {
-            metrics.push(['Bridge median (ms)', a.bridgeCall.medianMs, b.bridgeCall.medianMs]);
-            metrics.push(['Bridge p95 (ms)', a.bridgeCall.p95Ms, b.bridgeCall.p95Ms]);
+            metrics.push([
+                'Bridge median (ms)',
+                a.bridgeCall.medianMs,
+                b.bridgeCall.medianMs,
+                'ms'
+            ]);
+            metrics.push(['Bridge p95 (ms)', a.bridgeCall.p95Ms, b.bridgeCall.p95Ms, 'ms']);
         }
         if (a.render && b.render) {
-            metrics.push(['Render median (ms)', a.render.medianMs, b.render.medianMs]);
+            metrics.push(['Render median (ms)', a.render.medianMs, b.render.medianMs, 'ms']);
         }
 
         // Heap by layer (memory pass).
         if (a.heap && b.heap) {
-            metrics.push(['Heap total (bytes)', a.heap.totalHeapDelta, b.heap.totalHeapDelta]);
+            metrics.push([
+                'Heap total (bytes)',
+                a.heap.totalHeapDelta,
+                b.heap.totalHeapDelta,
+                'bytes'
+            ]);
             metrics.push([
                 'Cube records (bytes)',
                 a.heap.cubeStoreRecords,
-                b.heap.cubeStoreRecords
+                b.heap.cubeStoreRecords,
+                'bytes'
             ]);
             metrics.push([
                 'Grid records (bytes)',
                 a.heap.gridStoreRecords,
-                b.heap.gridStoreRecords
+                b.heap.gridStoreRecords,
+                'bytes'
             ]);
-            metrics.push(['View rows (bytes)', a.heap.viewResultRows, b.heap.viewResultRows]);
+            metrics.push([
+                'View rows (bytes)',
+                a.heap.viewResultRows,
+                b.heap.viewResultRows,
+                'bytes'
+            ]);
             metrics.push([
                 'AG Grid remainder (bytes)',
                 a.heap.agGridInternals,
-                b.heap.agGridInternals
+                b.heap.agGridInternals,
+                'bytes'
             ]);
         }
 
         // Row counts - always present (the scenario is loaded in every run path).
-        metrics.push(['Leaf rows', a.rowCounts.leaf, b.rowCounts.leaf]);
-        metrics.push(['Grid rows', a.rowCounts.gridRows, b.rowCounts.gridRows]);
+        metrics.push(['Leaf rows', a.rowCounts.leaf, b.rowCounts.leaf, 'count']);
+        metrics.push(['Grid rows', a.rowCounts.gridRows, b.rowCounts.gridRows, 'count']);
 
-        return metrics.map(([metric, valA, valB], idx) => {
+        return metrics.map(([metric, valA, valB, unit], idx) => {
             const delta = valB - valA,
                 pct = valA !== 0 ? round((delta / valA) * 100, 1) : null;
-            return {id: idx, metric, runA: valA, runB: valB, delta, pct};
+            return {id: idx, metric, runA: valA, runB: valB, delta, pct, unit};
         });
     }
 

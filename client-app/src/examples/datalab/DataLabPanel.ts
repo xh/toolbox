@@ -355,7 +355,8 @@ const sectionLabel = (text: string) => div({className: 'tb-datalab__section', it
 //------------------------------------------------------------------------------------------------
 const comparisonPanel = hoistCmp.factory<DataLabModel>({
     render({model}) {
-        const options = model.savedRuns.map(r => r.label);
+        // Newest run on top - savedRuns is appended chronologically, so reverse for the pickers.
+        const options = model.savedRuns.map(r => r.label).reverse();
         return panel({
             title: 'Compare Saved Runs',
             icon: Icon.balanceScale(),
