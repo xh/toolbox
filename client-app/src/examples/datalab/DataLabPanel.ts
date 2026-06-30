@@ -120,7 +120,7 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                         // Dataset shape - loaded as the snapshot by BOTH passes, so always live.
                         formFieldSet({
                             title: 'Dataset shape',
-                            icon: Icon.grid(),
+                            icon: Icon.cube(),
                             items: [
                                 formField({
                                     field: 'leafRowCount',
@@ -195,6 +195,18 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                         width: 140,
                                         disabled: perfOff || fullReplace
                                     })
+                                })
+                            ]
+                        }),
+                        // Grid - GridModel switches driven onto the measured grid (more to come).
+                        formFieldSet({
+                            title: 'Grid',
+                            icon: Icon.gridPanel(),
+                            items: [
+                                formField({
+                                    field: 'useVirtualColumns',
+                                    info: 'Virtualize columns (essential for wide column sets - without it the grid can crash rendering them all).',
+                                    item: switchInput()
                                 })
                             ]
                         })

@@ -71,7 +71,8 @@ function defaultScenario(): ScenarioConfig {
             durationSec: 5
         },
         protocol: {...DEFAULT_PROTOCOL},
-        measure: {memory: true, performance: true}
+        measure: {memory: true, performance: true},
+        grid: {useVirtualColumns: true}
     };
 }
 
@@ -210,6 +211,11 @@ export class DataLabModel extends HoistModel {
                     displayName: 'Measure performance',
                     initialValue: d.measure.performance,
                     rules: [atLeastOnePass]
+                },
+                {
+                    name: 'useVirtualColumns',
+                    displayName: 'Virtual columns',
+                    initialValue: d.grid.useVirtualColumns
                 }
             ]
         });
@@ -300,7 +306,8 @@ export class DataLabModel extends HoistModel {
                 batchSize: v.batchSize,
                 breadth: v.breadth
             },
-            measure: {memory: v.measureMemory, performance: v.measurePerformance}
+            measure: {memory: v.measureMemory, performance: v.measurePerformance},
+            grid: {useVirtualColumns: v.useVirtualColumns}
         };
     }
 
@@ -337,7 +344,8 @@ export class DataLabModel extends HoistModel {
         // Fresh baseline adapter per run so each iteration starts from a clean pipeline/heap.
         const adapter = new BaselineAdapter({
             dimensions: dataset.dimensions,
-            aggregators: dataset.aggregators?.length ? dataset.aggregators : null
+            aggregators: dataset.aggregators?.length ? dataset.aggregators : null,
+            useVirtualColumns: scenario.grid.useVirtualColumns
         });
 
         try {
