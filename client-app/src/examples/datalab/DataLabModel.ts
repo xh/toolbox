@@ -4,6 +4,7 @@ import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {HoistModel, managed, persist, PlainObject, TaskObserver, XH} from '@xh/hoist/core';
 import {
     BaselineAdapter,
+    Constraint,
     DEFAULT_PROTOCOL,
     MeasurementHarness,
     MeasurementProgress,
@@ -26,6 +27,18 @@ export interface SavedRun {
     result: RunResult;
 }
 
+/**
+ * Cross-field rule on the two measurement-pass toggles: at least one pass must be enabled (a run
+ * with neither has nothing to measure). Applied to both `measureMemory` and `measurePerformance` so
+ * the error surfaces on whichever the user just cleared.
+ */
+const atLeastOnePass: Constraint = (_fieldState, allValues) => {
+    if (!allValues.measureMemory && !allValues.measurePerformance) {
+        return 'Enable at least one measurement pass (memory or performance).';
+    }
+    return null;
+};
+
 /** Sensible starter scenario - editable in the UI and overwritten when a saved profile loads. */
 function defaultScenario(): ScenarioConfig {
     return {
@@ -47,7 +60,8 @@ function defaultScenario(): ScenarioConfig {
             transport: 'http',
             durationSec: 5
         },
-        protocol: {...DEFAULT_PROTOCOL}
+        protocol: {...DEFAULT_PROTOCOL},
+        measure: {memory: true, performance: true}
     };
 }
 
@@ -174,6 +188,18 @@ export class DataLabModel extends HoistModel {
                     displayName: 'Update breadth',
                     initialValue: d.update.breadth,
                     rules: [required, numberIs({min: 1})]
+                },
+                {
+                    name: 'measureMemory',
+                    displayName: 'Measure memory',
+                    initialValue: d.measure.memory,
+                    rules: [atLeastOnePass]
+                },
+                {
+                    name: 'measurePerformance',
+                    displayName: 'Measure performance',
+                    initialValue: d.measure.performance,
+                    rules: [atLeastOnePass]
                 }
             ]
         });
@@ -239,7 +265,8 @@ export class DataLabModel extends HoistModel {
                 transport: v.transport,
                 batchSize: v.batchSize,
                 breadth: v.breadth
-            }
+            },
+            measure: {memory: v.measureMemory, performance: v.measurePerformance}
         };
     }
 
@@ -251,6 +278,11 @@ export class DataLabModel extends HoistModel {
     // the harness's onProgress updates its message. `isPending` is also the re-entry guard.
     async runAsync() {
         if (this.taskObserver.isPending) return;
+        // At least one measurement pass must be enabled - a run with neither has nothing to measure.
+        if (!this.scenario.measure.memory && !this.scenario.measure.performance) {
+            XH.dangerToast('Enable at least one measurement pass (memory or performance).');
+            return;
+        }
         await this.doRunAsync().linkTo(this.taskObserver);
     }
 
@@ -391,54 +423,55 @@ export class DataLabModel extends HoistModel {
         const runs = this.comparedRuns;
         if (runs.length < 2) return [];
 
-        const a = runs[0].result,
-            b = runs[1].result,
-            metrics: Array<[string, number, number]> = [
-                // Pipeline (cube + view) is the PRIMARY compute - surfaced first, ahead of the
-                // genTransaction grid-relay Compute rows below.
-                [
-                    'Pipeline median (ms)',
-                    a.scorecard.pipeline.medianMs,
-                    b.scorecard.pipeline.medianMs
-                ],
-                ['Pipeline p95 (ms)', a.scorecard.pipeline.p95Ms, b.scorecard.pipeline.p95Ms],
-                ['Compute median (ms)', a.scorecard.compute.medianMs, b.scorecard.compute.medianMs],
-                ['Compute p95 (ms)', a.scorecard.compute.p95Ms, b.scorecard.compute.p95Ms],
-                [
-                    'Bridge median (ms)',
-                    a.scorecard.bridgeCall.medianMs,
-                    b.scorecard.bridgeCall.medianMs
-                ],
-                ['Bridge p95 (ms)', a.scorecard.bridgeCall.p95Ms, b.scorecard.bridgeCall.p95Ms],
-                ['Render median (ms)', a.scorecard.render.medianMs, b.scorecard.render.medianMs],
-                [
-                    'Heap total (bytes)',
-                    a.scorecard.heap.totalHeapDelta,
-                    b.scorecard.heap.totalHeapDelta
-                ],
-                [
-                    'Cube records (bytes)',
-                    a.scorecard.heap.cubeStoreRecords,
-                    b.scorecard.heap.cubeStoreRecords
-                ],
-                [
-                    'Grid records (bytes)',
-                    a.scorecard.heap.gridStoreRecords,
-                    b.scorecard.heap.gridStoreRecords
-                ],
-                [
-                    'View rows (bytes)',
-                    a.scorecard.heap.viewResultRows,
-                    b.scorecard.heap.viewResultRows
-                ],
-                [
-                    'AG Grid remainder (bytes)',
-                    a.scorecard.heap.agGridInternals,
-                    b.scorecard.heap.agGridInternals
-                ],
-                ['Leaf rows', a.scorecard.rowCounts.leaf, b.scorecard.rowCounts.leaf],
-                ['Grid rows', a.scorecard.rowCounts.gridRows, b.scorecard.rowCounts.gridRows]
-            ];
+        // The two passes are optional, so timings and heap may be null on either run. Compare only
+        // the metrics BOTH runs measured - a row is included only when its underlying stat is
+        // non-null on each side (e.g. a memory-only run vs a both run yields heap + row-count rows).
+        const a = runs[0].result.scorecard,
+            b = runs[1].result.scorecard,
+            metrics: Array<[string, number, number]> = [];
+
+        // Timings (performance pass). Pipeline (cube + view) is the PRIMARY compute - surfaced first,
+        // ahead of the genTransaction grid-relay Compute rows.
+        if (a.pipeline && b.pipeline) {
+            metrics.push(['Pipeline median (ms)', a.pipeline.medianMs, b.pipeline.medianMs]);
+            metrics.push(['Pipeline p95 (ms)', a.pipeline.p95Ms, b.pipeline.p95Ms]);
+        }
+        if (a.compute && b.compute) {
+            metrics.push(['Compute median (ms)', a.compute.medianMs, b.compute.medianMs]);
+            metrics.push(['Compute p95 (ms)', a.compute.p95Ms, b.compute.p95Ms]);
+        }
+        if (a.bridgeCall && b.bridgeCall) {
+            metrics.push(['Bridge median (ms)', a.bridgeCall.medianMs, b.bridgeCall.medianMs]);
+            metrics.push(['Bridge p95 (ms)', a.bridgeCall.p95Ms, b.bridgeCall.p95Ms]);
+        }
+        if (a.render && b.render) {
+            metrics.push(['Render median (ms)', a.render.medianMs, b.render.medianMs]);
+        }
+
+        // Heap by layer (memory pass).
+        if (a.heap && b.heap) {
+            metrics.push(['Heap total (bytes)', a.heap.totalHeapDelta, b.heap.totalHeapDelta]);
+            metrics.push([
+                'Cube records (bytes)',
+                a.heap.cubeStoreRecords,
+                b.heap.cubeStoreRecords
+            ]);
+            metrics.push([
+                'Grid records (bytes)',
+                a.heap.gridStoreRecords,
+                b.heap.gridStoreRecords
+            ]);
+            metrics.push(['View rows (bytes)', a.heap.viewResultRows, b.heap.viewResultRows]);
+            metrics.push([
+                'AG Grid remainder (bytes)',
+                a.heap.agGridInternals,
+                b.heap.agGridInternals
+            ]);
+        }
+
+        // Row counts - always present (the scenario is loaded in every run path).
+        metrics.push(['Leaf rows', a.rowCounts.leaf, b.rowCounts.leaf]);
+        metrics.push(['Grid rows', a.rowCounts.gridRows, b.rowCounts.gridRows]);
 
         return metrics.map(([metric, valA, valB], idx) => {
             const delta = valB - valA,

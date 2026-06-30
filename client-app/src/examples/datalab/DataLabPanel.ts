@@ -4,7 +4,7 @@ import {box, div, filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout
 import {creates, hoistCmp, PlainObject} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
@@ -92,6 +92,19 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                         div({
                             className: 'xh-pad',
                             items: [
+                                // Measurement-pass toggles - each pass is independent and optional
+                                // (at least one required). Memory off skips the 50k calibration churn;
+                                // performance off skips warmup + the measured timing loop.
+                                formField({
+                                    field: 'measureMemory',
+                                    info: 'Attribute retained heap by layer (empty baseline + per-record sizing).',
+                                    item: switchInput()
+                                }),
+                                formField({
+                                    field: 'measurePerformance',
+                                    info: 'Time update flow at steady state (pipeline + grid-sync, median + p95).',
+                                    item: switchInput()
+                                }),
                                 formField({
                                     field: 'leafRowCount',
                                     info: 'Detail rows loaded before aggregation.',
@@ -216,7 +229,10 @@ const scorecard = hoistCmp.factory<DataLabModel>({
             });
         }
 
-        const {scorecard: sc, env, overheadMs} = lastResult;
+        const {scorecard: sc, env, overheadMs} = lastResult,
+            // Timings and heap are nullable - a run may have skipped the performance or memory pass.
+            // Render each section only when its pass ran; row counts + environment always render.
+            {pipeline, compute, bridgeCall, render, heap, rowCounts} = sc;
         return panel({
             title: 'Scorecard',
             icon: Icon.gauge(),
@@ -228,44 +244,55 @@ const scorecard = hoistCmp.factory<DataLabModel>({
             item: div({
                 className: 'xh-pad tb-datalab__scorecard',
                 items: [
-                    // Header row doubles as the section title: 'Timings' sits in the metric column.
-                    timingRow('Timings', ['Median', 'p95'], true),
-                    // Pipeline (cube ingest + connected-View re-aggregation, Boundaries 1-4) is the
-                    // PRIMARY compute - the real engine cost. Surfaced FIRST; the genTransaction
-                    // Compute row below is reframed as the final grid-relay stage.
-                    timingRow('Pipeline (cube + view)', [
-                        model.fmtMs(sc.pipeline.medianMs),
-                        model.fmtMs(sc.pipeline.p95Ms)
-                    ]),
-                    timingRow('Compute (genTransaction, grid relay)', [
-                        model.fmtMs(sc.compute.medianMs),
-                        model.fmtMs(sc.compute.p95Ms)
-                    ]),
-                    timingRow('Bridge (applyTransaction)', [
-                        model.fmtMs(sc.bridgeCall.medianMs),
-                        model.fmtMs(sc.bridgeCall.p95Ms)
-                    ]),
-                    timingRow('Render (deferred frame)', [
-                        model.fmtMs(sc.render.medianMs),
-                        model.fmtMs(sc.render.p95Ms)
-                    ]),
-                    sectionLabel('Heap by layer'),
-                    kv('Cube store records', model.fmtBytes(sc.heap.cubeStoreRecords)),
-                    kv('Grid store records', model.fmtBytes(sc.heap.gridStoreRecords)),
-                    kv('View result rows', model.fmtBytes(sc.heap.viewResultRows)),
-                    kv('AG Grid remainder', model.fmtBytes(sc.heap.agGridInternals)),
-                    kv('Total heap delta', model.fmtBytes(sc.heap.totalHeapDelta)),
+                    // Timings (performance pass). Pipeline (cube ingest + connected-View
+                    // re-aggregation, Boundaries 1-4) is the PRIMARY compute - the real engine cost.
+                    // Surfaced FIRST; the genTransaction Compute row is the final grid-relay stage.
+                    ...(pipeline && compute && bridgeCall && render
+                        ? [
+                              // Header row doubles as the section title: 'Timings' sits in the metric column.
+                              timingRow('Timings', ['Median', 'p95'], true),
+                              timingRow('Pipeline (cube + view)', [
+                                  model.fmtMs(pipeline.medianMs),
+                                  model.fmtMs(pipeline.p95Ms)
+                              ]),
+                              timingRow('Compute (genTransaction, grid relay)', [
+                                  model.fmtMs(compute.medianMs),
+                                  model.fmtMs(compute.p95Ms)
+                              ]),
+                              timingRow('Bridge (applyTransaction)', [
+                                  model.fmtMs(bridgeCall.medianMs),
+                                  model.fmtMs(bridgeCall.p95Ms)
+                              ]),
+                              timingRow('Render (deferred frame)', [
+                                  model.fmtMs(render.medianMs),
+                                  model.fmtMs(render.p95Ms)
+                              ])
+                          ]
+                        : []),
+                    // Heap by layer (memory pass).
+                    ...(heap
+                        ? [
+                              sectionLabel('Heap by layer'),
+                              kv('Cube store records', model.fmtBytes(heap.cubeStoreRecords)),
+                              kv('Grid store records', model.fmtBytes(heap.gridStoreRecords)),
+                              kv('View result rows', model.fmtBytes(heap.viewResultRows)),
+                              kv('AG Grid remainder', model.fmtBytes(heap.agGridInternals)),
+                              kv('Total heap delta', model.fmtBytes(heap.totalHeapDelta))
+                          ]
+                        : []),
                     sectionLabel('Row counts'),
                     kv(
                         'Leaf / Aggregate / Grid',
-                        `${sc.rowCounts.leaf} / ${sc.rowCounts.aggregate} / ${sc.rowCounts.gridRows}`
+                        `${rowCounts.leaf} / ${rowCounts.aggregate} / ${rowCounts.gridRows}`
                     ),
                     sectionLabel('Environment'),
                     kv('Heap method', env.heapMethod),
                     kv('Cross-origin isolated', String(env.crossOriginIsolated)),
                     kv('expose-gc available', String(env.exposeGc)),
                     kv('precise-memory (heuristic)', String(env.preciseMemory)),
-                    kv('Instrumentation overhead', model.fmtMs(overheadMs))
+                    ...(overheadMs != null
+                        ? [kv('Instrumentation overhead', model.fmtMs(overheadMs))]
+                        : [])
                 ]
             })
         });
