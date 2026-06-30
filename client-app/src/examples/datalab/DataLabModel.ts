@@ -1,7 +1,7 @@
 import {FormModel} from '@xh/hoist/cmp/form';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
-import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
+import {HoistModel, managed, persist, PlainObject, XH} from '@xh/hoist/core';
 import {
     BaselineAdapter,
     DEFAULT_PROTOCOL,
@@ -57,8 +57,8 @@ function defaultScenario(): ScenarioConfig {
  *  - OWNS THE TRANSPORT: pre-fetches the snapshot over the chosen transport (HTTP or WebSocket,
  *    Task 1 adapters) and pre-loads it into a {@link BaselineAdapter} BEFORE running; supplies the
  *    injected per-iteration `nextBatchAsync` + calibration callbacks. The harness fetches nothing.
- *  - Persists named scenario profiles and completed run scorecards as JsonBlobs via two
- *    {@link ViewManagerModel}s ("profiles and runs are data, not code").
+ *  - Persists named, shareable scenario profiles via a {@link ViewManagerModel}; keeps run history
+ *    as transient, localStorage-backed local state (`savedRuns`) - runs are not curated views.
  *  - Computes side-by-side deltas / percent change between two selected saved runs.
  *
  * The live grid (`adapter.gridModel`) is exposed so the panel can MOUNT it - mounting populates
@@ -68,8 +68,6 @@ function defaultScenario(): ScenarioConfig {
 export class DataLabModel extends HoistModel {
     /** Scenario VM: named, shareable scenario-config profiles. */
     scenarioViewManager: ViewManagerModel;
-    /** Run-history VM: each completed run persisted as a named scorecard. */
-    runViewManager: ViewManagerModel;
 
     /**
      * The editable scenario knobs. Field values persist to / restore from named profiles natively
@@ -90,8 +88,15 @@ export class DataLabModel extends HoistModel {
     /** Result of the most recent run, shown on the scorecard. */
     @observable.ref lastResult: RunResult = null;
 
-    /** Runs accumulated this session (also persisted via the run-history VM). */
-    @observable.ref savedRuns: SavedRun[] = [];
+    /**
+     * Run history - transient, un-named measurement records. These are NOT shared, curated, or
+     * named views, so they are deliberately NOT a ViewManager concern; they persist to browser
+     * localStorage purely so a tab refresh doesn't discard a session's runs. Cleared in bulk via
+     * {@link clearSavedRunsAsync} when the history outgrows its usefulness.
+     */
+    @observable.ref
+    @persist.with({localStorageKey: 'dataLab.savedRuns'})
+    savedRuns: SavedRun[] = [];
 
     /** The two saved runs selected for side-by-side comparison (by label). */
     @bindable.ref compareLabels: string[] = [];
@@ -105,14 +110,12 @@ export class DataLabModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
-        // The two ViewManagers are created at app level (see AppModel.initAsync) so their saved
-        // views load before this model is constructed - the same placement Portfolio uses.
+        // The scenario ViewManager is created at app level so its saved views are loaded before
+        // this model is constructed; adopt it here.
         const appModel = XH.appModel as unknown as {
             scenarioViewManager: ViewManagerModel;
-            runViewManager: ViewManagerModel;
         };
         this.scenarioViewManager = appModel.scenarioViewManager;
-        this.runViewManager = appModel.runViewManager;
 
         // Editable knobs as a validated FormModel. Persisting via the scenario ViewManager makes
         // saved profiles a native concern: the framework applies a selected view's values to these
@@ -191,13 +194,7 @@ export class DataLabModel extends HoistModel {
 
         // Note: selecting a saved scenario profile re-applies its values to `scenarioForm`
         // automatically via the registered ViewManager persistence provider - no reaction needed.
-
-        // Hydrate any persisted run history from the active run-history view.
-        this.addReaction({
-            track: () => this.runViewManager.view,
-            run: () => this.syncRunsFromView(),
-            fireImmediately: true
-        });
+        // Run history (`savedRuns`) likewise hydrates itself from localStorage via @persist.
     }
 
     //------------------------------------------------------------------------------------------------
@@ -232,21 +229,6 @@ export class DataLabModel extends HoistModel {
                 breadth: v.breadth
             }
         };
-    }
-
-    /**
-     * Save the current knob values as a new named profile. The ViewManager harvests the registered
-     * `scenarioForm` provider's state via `getValue()` - the form fields ARE the persisted value.
-     */
-    async saveScenarioAsAsync(name: string) {
-        await this.scenarioViewManager.saveAsAsync({
-            name,
-            group: null,
-            description: null,
-            isShared: false,
-            isGlobal: false,
-            value: this.scenarioViewManager.getValue()
-        });
     }
 
     //------------------------------------------------------------------------------------------------
@@ -321,7 +303,7 @@ export class DataLabModel extends HoistModel {
             });
 
             this.setLastResult(result);
-            await this.persistRunAsync(result);
+            this.recordRun(result);
             this.statusText = 'Run complete.';
         } catch (e) {
             XH.handleException(e);
@@ -346,34 +328,30 @@ export class DataLabModel extends HoistModel {
     // Run persistence + comparison
     //------------------------------------------------------------------------------------------------
 
-    private async persistRunAsync(result: RunResult) {
+    // Append the completed run. The @persist provider on `savedRuns` writes the new array through
+    // to localStorage automatically - no explicit save call.
+    @action
+    private recordRun(result: RunResult) {
         const label = `${result.scenario.name} @ ${fmtDateTimeSec(result.env.capturedAt)}`,
             run: SavedRun = {label, savedAt: result.env.capturedAt, result};
+        this.savedRuns = [...this.savedRuns, run];
+    }
 
-        this.setSavedRuns([...this.savedRuns, run]);
-        await this.runViewManager.saveAsAsync({
-            name: label,
-            group: null,
-            description: null,
-            isShared: false,
-            isGlobal: false,
-            value: {run} as PlainObject
+    /** Discard all run history (with confirmation). Emptying the array clears the localStorage entry. */
+    async clearSavedRunsAsync() {
+        if (!this.savedRuns.length) return;
+        const confirmed = await XH.confirm({
+            title: 'Clear Run History',
+            message: `Discard all ${this.savedRuns.length} saved run(s)? This cannot be undone.`,
+            confirmProps: {text: 'Clear', intent: 'danger'}
         });
+        if (confirmed) this.clearSavedRuns();
     }
 
     @action
-    private setSavedRuns(runs: SavedRun[]) {
-        this.savedRuns = runs;
-    }
-
-    private syncRunsFromView() {
-        const value = this.runViewManager.view?.value as PlainObject;
-        if (value?.run) {
-            const run = value.run as SavedRun;
-            if (!this.savedRuns.some(it => it.label === run.label)) {
-                this.setSavedRuns([...this.savedRuns, run]);
-            }
-        }
+    private clearSavedRuns() {
+        this.savedRuns = [];
+        this.compareLabels = [];
     }
 
     /** The two runs currently selected for comparison, resolved from labels. */

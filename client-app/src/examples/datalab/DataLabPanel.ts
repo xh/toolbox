@@ -1,7 +1,7 @@
 import {form} from '@xh/hoist/cmp/form';
 import {grid} from '@xh/hoist/cmp/grid';
 import {box, div, filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
@@ -98,13 +98,7 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                 })
             ],
             bbar: toolbar({
-                compact: true,
                 items: [
-                    button({
-                        text: 'Save Profile',
-                        icon: Icon.add(),
-                        onClick: () => promptSaveScenario(model)
-                    }),
                     filler(),
                     button({
                         text: running ? 'Running...' : 'Run Scenario',
@@ -118,16 +112,6 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
         });
     }
 });
-
-function promptSaveScenario(model: DataLabModel) {
-    XH.prompt<string>({
-        title: 'Save Scenario Profile',
-        message: 'Name this scenario profile:',
-        input: {initialValue: model.scenario.name}
-    }).then(name => {
-        if (name) model.saveScenarioAsAsync(name);
-    });
-}
 
 //------------------------------------------------------------------------------------------------
 // Right: live grid (mounts agApi) + scorecard + comparison
@@ -278,6 +262,13 @@ const comparisonPanel = hoistCmp.factory<DataLabModel>({
                         width: 220,
                         value: model.compareLabels[1] ?? null,
                         onChange: v => (model.compareLabels = [model.compareLabels[0], v as string])
+                    }),
+                    filler(),
+                    button({
+                        text: 'Clear History',
+                        icon: Icon.delete(),
+                        disabled: !options.length,
+                        onClick: () => model.clearSavedRunsAsync()
                     })
                 ]
             }),
