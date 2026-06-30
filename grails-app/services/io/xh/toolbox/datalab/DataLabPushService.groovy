@@ -22,11 +22,11 @@ import java.util.concurrent.ConcurrentHashMap
  * at {@link #TICK_MS}; each active {@link Stream} advances at its own configured `ratePerSec` and
  * stops itself once `durationSec` elapses. Inactive/closed channels are culled automatically.
  *
- * Honored update patterns (delegated to DataLabService.generateBatch):
- *  - steadyTrickle  - small batches at a steady rate.
- *  - periodicBurst  - large batches at intervals, small in between.
- *  - broadReplace   - emits a full re-snapshot signal (op:'replace') driving client Cube.loadDataAsync.
- *  - targetedNarrow - small batches touching few fields on few records.
+ * Honored update knobs (delegated to DataLabService.generateBatch) - orthogonal axes:
+ *  - cadence    'steady' (constant batches) | 'burst' (spikes every 5th tick, lighter between).
+ *  - updateMode 'incremental' (per-row diffs) | 'fullReplace' (re-snapshot signal, op:'replace',
+ *               driving client Cube.loadDataAsync).
+ *  - batchSize / breadth - magnitude knobs (rows per tick / fields per row), independent of the above.
  */
 class DataLabPushService extends BaseService {
 
@@ -63,7 +63,11 @@ class DataLabPushService extends BaseService {
     void start(String channelKey, Map scenarioParams) {
         if (!channelKey) return
         streams[channelKey] = new Stream(channelKey, scenarioParams ?: [:])
-        logInfo("Started DataLab push stream", [channel: channelKey, pattern: scenarioParams?.pattern])
+        logInfo("Started DataLab push stream", [
+            channel: channelKey,
+            cadence: scenarioParams?.cadence,
+            updateMode: scenarioParams?.updateMode
+        ])
     }
 
     /** Stop and remove the stream for the given channel. Safe to call when no stream exists. */

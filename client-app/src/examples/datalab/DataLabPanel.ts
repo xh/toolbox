@@ -1,7 +1,7 @@
 import {form} from '@xh/hoist/cmp/form';
 import {grid} from '@xh/hoist/cmp/grid';
 import {box, div, filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp, PlainObject} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
@@ -24,12 +24,59 @@ export const dataLabPanel = hoistCmp.factory({
     }
 });
 
+// The update stream is described by ORTHOGONAL axes (see UpdateConfig): `updateMode` (incremental
+// diff vs full re-snapshot) and `cadence` (steady vs bursty over time), with `batchSize`/`breadth`
+// as independent magnitude knobs. Each option's description states how it relates to those knobs.
+const UPDATE_MODE_OPTIONS = [
+    {
+        value: 'incremental',
+        label: 'Incremental diff',
+        description:
+            'Per-row diffs applied via Cube.updateDataAsync. Shaped by the Batch size and Update ' +
+            'breadth knobs.'
+    },
+    {
+        value: 'fullReplace',
+        label: 'Full replace',
+        description:
+            'A full re-snapshot each tick (Cube.loadDataAsync), not a diff. Batch size, breadth, ' +
+            'and cadence do not apply. Stresses worst-case full-replace cost.'
+    }
+];
+
+const CADENCE_OPTIONS = [
+    {
+        value: 'steady',
+        label: 'Steady',
+        description: 'Constant load - every tick changes Batch size rows at a steady rate.'
+    },
+    {
+        value: 'burst',
+        label: 'Burst',
+        description:
+            'Spiky load - every 5th tick spikes to ~10x Batch size, lighter in between. Batch ' +
+            'size is the baseline it scales around. Stresses jank under spikes.'
+    }
+];
+
+const describedOption = (opt: PlainObject) =>
+    div({
+        className: 'tb-datalab__pattern-opt',
+        items: [
+            div({className: 'tb-datalab__pattern-opt-label', item: opt.label}),
+            div({className: 'tb-datalab__pattern-opt-desc', item: opt.description})
+        ]
+    });
+
 //------------------------------------------------------------------------------------------------
 // Left: scenario picker + knob editor + run controls
 //------------------------------------------------------------------------------------------------
 const controlsPanel = hoistCmp.factory<DataLabModel>({
     render({model}) {
-        const {running} = model;
+        const running = model.taskObserver.isPending,
+            // A full re-snapshot ignores batch/breadth/cadence - disable them so the UI can't imply
+            // they apply (the original confusion: knobs that silently did nothing).
+            fullReplace = model.scenarioForm.values.updateMode === 'fullReplace';
         return panel({
             title: 'Scenario',
             icon: Icon.gears(),
@@ -57,17 +104,26 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                 }),
                                 formField({field: 'fieldCount', item: numberInput({width: 140})}),
                                 formField({
-                                    field: 'pattern',
-                                    info: 'Shape of the update stream over time.',
+                                    field: 'updateMode',
+                                    info: 'Incremental per-row diffs vs a full re-snapshot each tick.',
                                     item: select({
                                         enableFilter: false,
-                                        options: [
-                                            'steadyTrickle',
-                                            'periodicBurst',
-                                            'broadReplace',
-                                            'targetedNarrow'
-                                        ],
-                                        width: 180
+                                        options: UPDATE_MODE_OPTIONS,
+                                        optionRenderer: describedOption,
+                                        width: 180,
+                                        menuWidth: 380
+                                    })
+                                }),
+                                formField({
+                                    field: 'cadence',
+                                    info: 'Temporal shape of the update stream over time.',
+                                    item: select({
+                                        enableFilter: false,
+                                        options: CADENCE_OPTIONS,
+                                        optionRenderer: describedOption,
+                                        disabled: fullReplace,
+                                        width: 180,
+                                        menuWidth: 380
                                     })
                                 }),
                                 formField({
@@ -85,12 +141,12 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                 formField({
                                     field: 'batchSize',
                                     info: 'Records changed per update tick.',
-                                    item: numberInput({width: 140})
+                                    item: numberInput({width: 140, disabled: fullReplace})
                                 }),
                                 formField({
                                     field: 'breadth',
                                     info: 'Fields changed per updated record.',
-                                    item: numberInput({width: 140})
+                                    item: numberInput({width: 140, disabled: fullReplace})
                                 })
                             ]
                         })
@@ -120,7 +176,7 @@ const resultsPanel = hoistCmp.factory<DataLabModel>({
     render({model}) {
         return panel({
             item: vframe(liveGrid(), scorecard(), comparisonPanel()),
-            mask: model.running
+            mask: model.taskObserver
         });
     }
 });

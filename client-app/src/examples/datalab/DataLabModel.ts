@@ -1,11 +1,12 @@
 import {FormModel} from '@xh/hoist/cmp/form';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
-import {HoistModel, managed, persist, PlainObject, XH} from '@xh/hoist/core';
+import {HoistModel, managed, persist, PlainObject, TaskObserver, XH} from '@xh/hoist/core';
 import {
     BaselineAdapter,
     DEFAULT_PROTOCOL,
     MeasurementHarness,
+    MeasurementProgress,
     numberIs,
     required,
     RunResult,
@@ -38,7 +39,8 @@ function defaultScenario(): ScenarioConfig {
             seed: 0
         },
         update: {
-            pattern: 'steadyTrickle',
+            cadence: 'steady',
+            updateMode: 'incremental',
             breadth: 1,
             batchSize: 10,
             ratePerSec: 10,
@@ -101,8 +103,12 @@ export class DataLabModel extends HoistModel {
     /** The two saved runs selected for side-by-side comparison (by label). */
     @bindable.ref compareLabels: string[] = [];
 
-    @bindable running = false;
-    @bindable statusText: string = null;
+    /**
+     * Drives the results-panel mask and surfaces coarse run status (the harness reports progress
+     * through to its `message`, e.g. "Measuring 7 of 20"). `isPending` also gates the Run control,
+     * so it is the single source of truth for "a run is in flight".
+     */
+    taskObserver = TaskObserver.trackLast();
 
     /** Grid for the side-by-side comparison; reloaded from {@link comparisonRows} via reaction. */
     @managed comparisonGridModel: GridModel;
@@ -143,9 +149,14 @@ export class DataLabModel extends HoistModel {
                     rules: [required, numberIs({min: 1})]
                 },
                 {
-                    name: 'pattern',
-                    displayName: 'Update pattern',
-                    initialValue: d.update.pattern
+                    name: 'cadence',
+                    displayName: 'Cadence',
+                    initialValue: d.update.cadence
+                },
+                {
+                    name: 'updateMode',
+                    displayName: 'Update mode',
+                    initialValue: d.update.updateMode
                 },
                 {
                     name: 'transport',
@@ -223,7 +234,8 @@ export class DataLabModel extends HoistModel {
             },
             update: {
                 ...d.update,
-                pattern: v.pattern,
+                cadence: v.cadence,
+                updateMode: v.updateMode,
                 transport: v.transport,
                 batchSize: v.batchSize,
                 breadth: v.breadth
@@ -235,11 +247,14 @@ export class DataLabModel extends HoistModel {
     // Run - the integration seam with the endpoint-agnostic harness (02-05)
     //------------------------------------------------------------------------------------------------
 
+    // Mask + status are driven by `taskObserver`: linking the run makes it pending (mask shows), and
+    // the harness's onProgress updates its message. `isPending` is also the re-entry guard.
     async runAsync() {
-        if (this.running) return;
-        this.running = true;
-        this.statusText = 'Fetching snapshot...';
+        if (this.taskObserver.isPending) return;
+        await this.doRunAsync().linkTo(this.taskObserver);
+    }
 
+    private async doRunAsync() {
         const scenario = this.scenario,
             {dataset, update} = scenario;
 
@@ -256,6 +271,7 @@ export class DataLabModel extends HoistModel {
         try {
             // 2. PRE-FETCH the snapshot over the chosen transport and PRE-LOAD it into the adapter
             //    BEFORE handing the adapter to the harness (the harness verifies it is non-empty).
+            this.taskObserver.setMessage('Fetching snapshot...');
             const snapshotRows = ws
                 ? await ws.loadSnapshotAsync(scenario)
                 : await http.loadSnapshotAsync(scenario);
@@ -264,7 +280,6 @@ export class DataLabModel extends HoistModel {
             // Expose the adapter so the panel mounts adapter.gridModel -> populates agApi -> the
             // harness's bridgeCall (applyTransaction) reflects the real JS-to-AG-Grid crossing.
             this.setAdapter(adapter);
-            this.statusText = 'Running scenario...';
 
             // 3. Build the injected per-iteration data-provider + heap-calibration callbacks. For WS
             //    the harness pulls each buffered/incoming pushed batch; for HTTP it polls the next
@@ -293,25 +308,32 @@ export class DataLabModel extends HoistModel {
             };
 
             // 4. Run the scenario through the endpoint-agnostic harness and persist the RunResult.
+            //    onProgress drives the mask message (baseline / calibrate / iteration x of y).
             const result = await new MeasurementHarness().runScenarioAsync({
                 scenario,
                 adapter,
                 nextBatchAsync,
                 loadNRowsAsync,
                 clearAsync,
-                reloadSnapshotAsync
+                reloadSnapshotAsync,
+                onProgress: p => this.updateProgress(p)
             });
 
             this.setLastResult(result);
             this.recordRun(result);
-            this.statusText = 'Run complete.';
         } catch (e) {
             XH.handleException(e);
-            this.statusText = 'Run failed.';
         } finally {
             if (ws) await ws.stopAsync();
-            this.running = false;
         }
+    }
+
+    /** Map a harness progress update to a human-readable mask message. */
+    private updateProgress(p: MeasurementProgress) {
+        const {stage, current, total} = p;
+        this.taskObserver.setMessage(
+            current != null && total != null ? `${stage} ${current} of ${total}...` : `${stage}...`
+        );
     }
 
     @action

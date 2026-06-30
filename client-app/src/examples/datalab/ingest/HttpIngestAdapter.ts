@@ -34,7 +34,7 @@ export class HttpIngestAdapter {
     /**
      * Fetch the next deterministic update batch (an HTTP poll). Returns the batch's `rows` array -
      * each successive call advances the iteration cursor, so the server returns the next batch.
-     * A `broadReplace` batch arrives with `op: 'replace'`; the caller decides whether to re-snapshot.
+     * A `fullReplace` update arrives with `op: 'replace'`; the caller decides whether to re-snapshot.
      */
     async nextDiffAsync(scenario: ScenarioConfig): Promise<PlainObject[]> {
         const batch = await XH.fetchJson({
@@ -67,7 +67,8 @@ export class HttpIngestAdapter {
     private updateParams(scenario: ScenarioConfig): PlainObject {
         const {update} = scenario;
         return {
-            pattern: update.pattern,
+            cadence: update.cadence,
+            updateMode: update.updateMode,
             breadth: update.breadth,
             batchSize: update.batchSize
         };

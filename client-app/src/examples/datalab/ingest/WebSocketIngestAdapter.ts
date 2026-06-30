@@ -87,7 +87,8 @@ export class WebSocketIngestAdapter {
             params: {
                 channelKey: XH.webSocketService.channelKey,
                 ...this.shapeParams(scenario),
-                pattern: update.pattern,
+                cadence: update.cadence,
+                updateMode: update.updateMode,
                 breadth: update.breadth,
                 batchSize: update.batchSize,
                 ratePerSec: update.ratePerSec,

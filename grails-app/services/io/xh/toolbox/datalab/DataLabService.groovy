@@ -88,11 +88,13 @@ class DataLabService extends BaseService {
      * Both the HTTP diff endpoint and the WebSocket push service call this so the two transports carry
      * the IDENTICAL batch shape - the client ingest adapter resolves either to Cube.updateDataAsync.
      * Each returned map carries the row 'id' plus only the changed value fields (count driven by
-     * `breadth`), except for the 'broadReplace' pattern which signals a full re-snapshot.
+     * `breadth`), except for a 'fullReplace' update which signals a full re-snapshot.
      *
-     * Supported update params:
-     *  - pattern   (String) - 'steadyTrickle' | 'periodicBurst' | 'broadReplace' | 'targetedNarrow'.
-     *                          Default 'steadyTrickle'. Drives effective batch size + cadence.
+     * Supported update params (orthogonal axes - see UpdateConfig client-side):
+     *  - cadence    (String) - 'steady' | 'burst'. Default 'steady'. Temporal shape: 'burst' spikes
+     *                          every 5th tick to 10x batch, lighter between. Orthogonal to breadth.
+     *  - updateMode (String) - 'incremental' | 'fullReplace'. Default 'incremental'. 'fullReplace'
+     *                          emits a re-snapshot signal; batch/breadth/cadence do not apply.
      *  - breadth   (int)    - number of value fields changed per updated row. Default 1.
      *  - batchSize (int)    - base number of rows changed per batch. Default 10.
      *  - iteration (int)    - monotonic cursor; successive iterations return successive deterministic
@@ -109,37 +111,33 @@ class DataLabService extends BaseService {
      */
     Map generateBatch(Map updateParams) {
         def spec = resolveSpec(updateParams)
-        String pattern = (updateParams.pattern ?: 'steadyTrickle') as String
+        String cadence = (updateParams.cadence ?: 'steady') as String
+        String updateMode = (updateParams.updateMode ?: 'incremental') as String
         int breadth = asInt(updateParams.breadth, 1)
         int baseBatch = asInt(updateParams.batchSize, 10)
         int iteration = asInt(updateParams.iteration, 0)
 
-        // broadReplace: emit a re-snapshot signal rather than a diff. The client reloads the full
-        // snapshot (Cube.loadDataAsync) on this op; no per-row diff is carried.
-        if (pattern == 'broadReplace') {
+        // fullReplace: emit a re-snapshot signal rather than a diff. The client reloads the full
+        // snapshot (Cube.loadDataAsync) on this op; no per-row diff is carried. Batch size, breadth,
+        // and cadence do not apply - every tick is the whole dataset.
+        if (updateMode == 'fullReplace') {
             return [op: 'replace', iteration: iteration, rows: []]
         }
 
-        // Pattern shapes effective batch size + breadth:
-        //  - steadyTrickle : small, constant batches.
-        //  - periodicBurst : large batches on a periodic cadence, small in between.
-        //  - targetedNarrow: small batches touching few fields (narrow breadth) on few records.
+        // Cadence shapes the effective per-tick batch size, orthogonal to breadth:
+        //  - steady: constant baseBatch every tick.
+        //  - burst : every 5th tick spikes to 10x baseBatch; the ticks between run a light trough.
         int effectiveBatch
-        int effectiveBreadth = breadth
-        switch (pattern) {
-            case 'periodicBurst':
-                // Every 5th iteration is a burst (10x), otherwise a small trickle.
+        switch (cadence) {
+            case 'burst':
                 effectiveBatch = (iteration % 5 == 0) ? baseBatch * 10 : Math.max(1, (int) (baseBatch / 5))
                 break
-            case 'targetedNarrow':
-                effectiveBatch = Math.max(1, (int) (baseBatch / 2))
-                effectiveBreadth = Math.min(breadth, 1)
-                break
-            case 'steadyTrickle':
+            case 'steady':
             default:
                 effectiveBatch = baseBatch
                 break
         }
+        int effectiveBreadth = breadth
 
         // Per-batch RNG seeded from (seed, iteration) so each successive poll/push is deterministic
         // yet distinct - reproducible across HTTP and WS paths for the same (seed, iteration).
