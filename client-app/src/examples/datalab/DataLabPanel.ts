@@ -74,9 +74,14 @@ const describedOption = (opt: PlainObject) =>
 const controlsPanel = hoistCmp.factory<DataLabModel>({
     render({model}) {
         const running = model.taskObserver.isPending,
+            {values} = model.scenarioForm,
+            // The update-stream knobs apply ONLY to the performance pass - the memory pass loads the
+            // snapshot and applies no updates. With performance off, disable them so the UI can't
+            // imply they do anything.
+            perfOff = !values.measurePerformance,
             // A full re-snapshot ignores batch/breadth/cadence - disable them so the UI can't imply
             // they apply (the original confusion: knobs that silently did nothing).
-            fullReplace = model.scenarioForm.values.updateMode === 'fullReplace';
+            fullReplace = values.updateMode === 'fullReplace';
         return panel({
             title: 'Scenario',
             icon: Icon.gears(),
@@ -105,6 +110,8 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                     info: 'Time update flow at steady state (pipeline + grid-sync, median + p95).',
                                     item: switchInput()
                                 }),
+                                // Dataset shape - loaded as the snapshot by BOTH passes, so always live.
+                                sectionLabel('Dataset shape'),
                                 formField({
                                     field: 'leafRowCount',
                                     info: 'Detail rows loaded before aggregation.',
@@ -116,6 +123,13 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                     item: numberInput({width: 140})
                                 }),
                                 formField({field: 'fieldCount', item: numberInput({width: 140})}),
+                                // Update stream - performance pass only. The header notes when the
+                                // pass is off and these knobs therefore do nothing.
+                                sectionLabel(
+                                    perfOff
+                                        ? 'Update stream (performance pass off)'
+                                        : 'Update stream'
+                                ),
                                 formField({
                                     field: 'updateMode',
                                     info: 'Incremental per-row diffs vs a full re-snapshot each tick.',
@@ -123,6 +137,7 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                         enableFilter: false,
                                         options: UPDATE_MODE_OPTIONS,
                                         optionRenderer: describedOption,
+                                        disabled: perfOff,
                                         width: 180,
                                         menuWidth: 380
                                     })
@@ -134,7 +149,7 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                         enableFilter: false,
                                         options: CADENCE_OPTIONS,
                                         optionRenderer: describedOption,
-                                        disabled: fullReplace,
+                                        disabled: perfOff || fullReplace,
                                         width: 180,
                                         menuWidth: 380
                                     })
@@ -148,18 +163,25 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                             {value: 'http', label: 'HTTP poll'},
                                             {value: 'webSocket', label: 'WebSocket push'}
                                         ],
+                                        disabled: perfOff,
                                         width: 180
                                     })
                                 }),
                                 formField({
                                     field: 'batchSize',
                                     info: 'Records changed per update tick.',
-                                    item: numberInput({width: 140, disabled: fullReplace})
+                                    item: numberInput({
+                                        width: 140,
+                                        disabled: perfOff || fullReplace
+                                    })
                                 }),
                                 formField({
                                     field: 'breadth',
                                     info: 'Fields changed per updated record.',
-                                    item: numberInput({width: 140, disabled: fullReplace})
+                                    item: numberInput({
+                                        width: 140,
+                                        disabled: perfOff || fullReplace
+                                    })
                                 })
                             ]
                         })

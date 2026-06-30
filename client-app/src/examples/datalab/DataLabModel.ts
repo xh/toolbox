@@ -290,9 +290,15 @@ export class DataLabModel extends HoistModel {
         const scenario = this.scenario,
             {dataset, update} = scenario;
 
-        // 1. Select the ingest adapter per the transport knob (Task 1). The UI owns ALL fetch.
+        // 1. Select the ingest adapter per the transport knob (Task 1). The UI owns ALL fetch. The
+        //    WebSocket stream is only spun up when the performance pass will actually consume diffs -
+        //    a memory-only run applies no updates, so transport is irrelevant and HTTP fetches the
+        //    snapshot either way.
         const http = new HttpIngestAdapter(),
-            ws = update.transport === 'webSocket' ? new WebSocketIngestAdapter() : null;
+            ws =
+                scenario.measure.performance && update.transport === 'webSocket'
+                    ? new WebSocketIngestAdapter()
+                    : null;
 
         // Fresh baseline adapter per run so each iteration starts from a clean pipeline/heap.
         const adapter = new BaselineAdapter({
