@@ -3,6 +3,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {box, div, filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, PlainObject} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {fileChooser} from '@xh/hoist/desktop/cmp/filechooser';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -425,7 +426,42 @@ const comparisonPanel = hoistCmp.factory<DataLabModel>({
                     })
                 ]
             }),
-            item: grid({model: model.comparisonGridModel})
+            item: hframe(importPanel(), grid({model: model.comparisonGridModel}))
+        });
+    }
+});
+
+/**
+ * Import run JSON back into the run history - a single RunResult or an Export-All array. The chosen
+ * file is shape-validated by the model before any run enters `savedRuns`, so a malformed file is
+ * rejected rather than crashing the comparison grid.
+ */
+const importPanel = hoistCmp.factory<DataLabModel>({
+    render({model}) {
+        const {importChooserModel} = model,
+            hasFile = !!importChooserModel.files.length;
+        return panel({
+            title: 'Import Runs',
+            icon: Icon.upload(),
+            compactHeader: true,
+            modelConfig: {side: 'left', defaultSize: 300, collapsible: true},
+            item: vframe({
+                className: 'xh-pad',
+                item: fileChooser({model: importChooserModel, flex: 1})
+            }),
+            bbar: toolbar({
+                compact: true,
+                items: [
+                    filler(),
+                    button({
+                        text: 'Import',
+                        icon: Icon.upload(),
+                        intent: 'primary',
+                        disabled: !hasFile,
+                        onClick: () => model.importSelectedFileAsync()
+                    })
+                ]
+            })
         });
     }
 });

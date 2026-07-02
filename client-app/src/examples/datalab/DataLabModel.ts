@@ -15,11 +15,12 @@ import {
     ScenarioConfig,
     UpdateCadence
 } from '@xh/hoist/data';
+import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {fmtDateTimeSec, fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
-import {downloadBlob} from '@xh/hoist/utils/js';
+import {downloadBlob, pluralize} from '@xh/hoist/utils/js';
 import {filesize} from 'filesize';
-import {minBy, round, sortBy, uniqBy} from 'lodash';
+import {isNumber, isPlainObject, minBy, round, sortBy, uniqBy} from 'lodash';
 import {HttpIngestAdapter} from './ingest/HttpIngestAdapter';
 import {WebSocketIngestAdapter} from './ingest/WebSocketIngestAdapter';
 
@@ -140,6 +141,64 @@ function fileTimestamp(): string {
     return new Date().toISOString().replace(/[:.]/g, '-');
 }
 
+//------------------------------------------------------------------------------------------------
+// Import validation (Security V5 / import threat T-03-02)
+//
+// Imported run JSON is UNTRUSTED input. Every parsed object is shape-validated against the RunResult
+// contract BEFORE it is trusted - a malformed entry is rejected (never added to savedRuns) so it can
+// never crash the comparison grid or poison the stats package. EnvMetadata is required so a run's
+// origin machine is never lost (Pitfall 6). Parsing is JSON.parse only - never eval.
+//------------------------------------------------------------------------------------------------
+
+/** A stage timing must be either null or a TimingStat-shaped object (numeric median + p95). */
+function isValidStage(stage: unknown): boolean {
+    if (stage == null) return true;
+    if (!isPlainObject(stage)) return false;
+    const s = stage as PlainObject;
+    return isNumber(s.medianMs) && isNumber(s.p95Ms);
+}
+
+/** Heap attribution must be null (memory pass skipped) or carry numeric per-layer + total fields. */
+function isValidHeap(heap: unknown): boolean {
+    if (heap == null) return true;
+    if (!isPlainObject(heap)) return false;
+    const h = heap as PlainObject;
+    return (
+        isNumber(h.totalHeapDelta) &&
+        isNumber(h.cubeStoreRecords) &&
+        isNumber(h.gridStoreRecords) &&
+        isNumber(h.viewResultRows) &&
+        isNumber(h.agGridInternals)
+    );
+}
+
+/** Shape-validate an untrusted parsed object against the RunResult contract before trusting it. */
+function isValidRunResult(obj: unknown): obj is RunResult {
+    if (!isPlainObject(obj)) return false;
+    const r = obj as PlainObject;
+
+    // scenario + env (EnvMetadata) must be present - env preserves the origin machine (Pitfall 6).
+    if (!isPlainObject(r.scenario) || !isPlainObject(r.env)) return false;
+
+    // scorecard must be present with the expected numeric-or-null stage fields + heap.
+    const sc = r.scorecard as PlainObject;
+    if (!isPlainObject(sc)) return false;
+    if (
+        !isValidStage(sc.engine) ||
+        !isValidStage(sc.genTxn) ||
+        !isValidStage(sc.bridgeCall) ||
+        !isValidStage(sc.render) ||
+        !isValidHeap(sc.heap)
+    ) {
+        return false;
+    }
+
+    // rowCounts must be present with numeric leaf / aggregate / gridRows (always populated on a run).
+    const rc = sc.rowCounts as PlainObject;
+    if (!isPlainObject(rc)) return false;
+    return isNumber(rc.leaf) && isNumber(rc.aggregate) && isNumber(rc.gridRows);
+}
+
 /**
  * Cross-field rule on the two measurement-pass toggles: at least one pass must be enabled (a run
  * with neither has nothing to measure). Applied to both `measureMemory` and `measurePerformance` so
@@ -250,6 +309,9 @@ export class DataLabModel extends HoistModel {
 
     /** Grid for the side-by-side comparison; reloaded from {@link comparisonRows} via reaction. */
     @managed comparisonGridModel: GridModel;
+
+    /** File selection for importing run JSON - single `.json` file, validated before it is trusted. */
+    @managed importChooserModel = new FileChooserModel({accept: ['.json'], maxFiles: 1});
 
     constructor() {
         super();
@@ -849,6 +911,74 @@ export class DataLabModel extends HoistModel {
     private downloadJson(payload: unknown, filename: string) {
         const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
         downloadBlob(blob, filename);
+    }
+
+    //------------------------------------------------------------------------------------------------
+    // Import - bring run JSON files back into savedRuns for cross-machine comparison (D-11)
+    //------------------------------------------------------------------------------------------------
+
+    /** Read the file selected in {@link importChooserModel} and import its run(s). */
+    async importSelectedFileAsync() {
+        const file = this.importChooserModel.files[0];
+        if (!file) {
+            XH.warningToast('Choose a run JSON file to import first.');
+            return;
+        }
+        const text = await file.text();
+        await this.importRunsAsync(text);
+        this.importChooserModel.clear();
+    }
+
+    /**
+     * Import run JSON text into {@link savedRuns}. Accepts either a single RunResult object or an
+     * array of them (from Export All). Untrusted input: parses with JSON.parse (never eval) inside a
+     * try/catch, then shape-validates each parsed entry against the RunResult contract before trusting
+     * it. Malformed entries are rejected (never added, never rendered) so a bad file cannot crash the
+     * comparison grid. EnvMetadata is carried through so each run's origin machine is preserved.
+     */
+    async importRunsAsync(text: string) {
+        let parsed: unknown;
+        try {
+            parsed = JSON.parse(text);
+        } catch (e) {
+            XH.dangerToast('Import failed - the file is not valid JSON.');
+            return;
+        }
+
+        const candidates = Array.isArray(parsed) ? parsed : [parsed],
+            valid: RunResult[] = [];
+        let rejected = 0;
+        for (const c of candidates) {
+            if (isValidRunResult(c)) valid.push(c);
+            else rejected++;
+        }
+
+        if (!valid.length) {
+            XH.dangerToast('Import failed - no valid run(s) found in the file.');
+            return;
+        }
+
+        this.addImportedRuns(valid);
+
+        const importedMsg = `Imported ${pluralize('run', valid.length, true)}.`;
+        if (rejected) {
+            XH.warningToast(
+                `${importedMsg} Skipped ${pluralize('invalid entry', rejected, true)}.`
+            );
+        } else {
+            XH.successToast(importedMsg);
+        }
+    }
+
+    // Append validated imported runs. Setting a NEW savedRuns array writes through @persist.
+    @action
+    private addImportedRuns(results: RunResult[]) {
+        const runs = results.map<SavedRun>(result => ({
+            label: `${result.scenario.name} @ ${fmtDateTimeSec(result.env.capturedAt)}`,
+            savedAt: result.env.capturedAt,
+            result
+        }));
+        this.savedRuns = [...this.savedRuns, ...runs];
     }
 
     //------------------------------------------------------------------------------------------------
