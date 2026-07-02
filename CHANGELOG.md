@@ -2,6 +2,10 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+### Bug Fixes
+
+* Restored the local-development guard on `SlackAlertService` so a developer's local instance never posts monitor, client-error, or feedback alerts to the live Slack channel.
+
 ## 9.2.1 - 2026-06-25
 
 ### Bug Fixes
