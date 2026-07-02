@@ -28,7 +28,7 @@ class AuthZeroTokenService extends BaseService {
     Map getClientConfig() {
         return [
             provider: 'AUTH_ZERO',
-            *: config
+            *: config.formatForJSON()
         ]
     }
 
@@ -105,8 +105,8 @@ class AuthZeroTokenService extends BaseService {
             }
     }
 
-    private getConfig() {
-        configService.getMap('auth0Config')
+    private Auth0Config getConfig() {
+        configService.getObject(Auth0Config)
     }
 
     private String getClientId() {

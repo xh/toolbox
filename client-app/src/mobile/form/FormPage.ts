@@ -1,204 +1,187 @@
 import {form, formFieldSet} from '@xh/hoist/cmp/form';
-import {div, filler, hbox, vbox} from '@xh/hoist/cmp/layout';
+import {vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {fmtPercent} from '@xh/hoist/format';
-import './FormPage.scss';
 import {Icon} from '@xh/hoist/icon';
-import {button} from '@xh/hoist/mobile/cmp/button';
 import {formField} from '@xh/hoist/mobile/cmp/form';
 import {
-    buttonGroupInput,
-    checkbox,
-    checkboxButton,
     dateInput,
-    label,
     numberInput,
-    searchInput,
+    segmentedControl,
     select,
     switchInput,
     textArea,
     textInput
 } from '@xh/hoist/mobile/cmp/input';
-import {menuButton} from '@xh/hoist/mobile/cmp/menu';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {LocalDate} from '@xh/hoist/utils/datetime';
+import {exampleAction, exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
+import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 
 export const formPage = hoistCmp.factory({
     model: creates(FormPageModel),
 
     render({model}) {
-        return panel({
+        return exampleScreen({
             title: 'Form',
             icon: Icon.edit(),
-            scrollable: true,
-            className: 'tb-page tb-form-page xh-tiled-bg',
-            items: [formCmp(), results()],
-            bbar: [
-                setFocusMenu(),
-                filler(),
-                checkboxButton({model: model.formModel, bind: 'readonly', text: 'Readonly'}),
-                checkboxButton({bind: 'minimal', text: 'Min. validation'})
-            ]
+            description: [
+                "Hoist's `FormModel` binds inputs to observable state with built-in validation - here a",
+                'mock candidate intake form. Required, length, email, date, and numeric rules run live,',
+                'with conditional rules (years of experience is required, with a higher bar, only for',
+                'managers) and cross-field rules (end date must follow the hire date).',
+                '',
+                '`FormFieldSet` groups related fields into collapsible sections. Use the options here to',
+                'change how validation and the fields are displayed.'
+            ],
+            options: [
+                exampleOption({
+                    label: 'Read-only',
+                    control: switchInput({model: model.formModel, bind: 'readonly'})
+                }),
+                exampleOption({
+                    label: 'Minimal validation',
+                    control: switchInput({model, bind: 'minimal'}),
+                    info: 'Show errors as a red outline only.'
+                }),
+                exampleOption({
+                    label: 'Commit on change',
+                    control: switchInput({model, bind: 'commitOnChange'})
+                }),
+                exampleOption({
+                    label: 'Required markers',
+                    control: switchInput({model, bind: 'requiredMarkers'})
+                }),
+                exampleOption({
+                    label: 'Density',
+                    control: segmentedControl({
+                        model,
+                        bind: 'density',
+                        fill: false,
+                        options: [
+                            {value: 'comfortable', label: 'Comfortable'},
+                            {value: 'compact', label: 'Compact'}
+                        ]
+                    })
+                }),
+                exampleAction({
+                    text: 'Submit',
+                    icon: Icon.check(),
+                    intent: 'success',
+                    onClick: () => model.submitAsync()
+                }),
+                exampleAction({
+                    text: 'Reset',
+                    icon: Icon.reset(),
+                    onClick: () => model.formModel.reset()
+                })
+            ],
+            links: [
+                {url: '$TB/client-app/src/mobile/form/FormPage.ts', notes: 'This example.'},
+                {
+                    url: '$HR/cmp/form/README.md#formmodel',
+                    text: 'Forms docs',
+                    notes: 'FormModel, validation & binding.'
+                },
+                {url: '$HR/cmp/form/FormModel.ts', notes: 'Observable model for form data.'},
+                {
+                    url: '$HR/mobile/cmp/form/FormField.ts',
+                    notes: 'Binds an input to a FormModel field, with label and validation display.'
+                }
+            ],
+            item: formDemo()
         });
     }
 });
 
-const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
-    const {minimal, movies} = model;
-
-    return div({
-        className: 'tb-card',
-        items: form({
-            fieldDefaults: {minimal},
+const formDemo = hoistCmp.factory<FormPageModel>(({model}) => {
+    const {minimal, commitOnChange, requiredMarkers, density} = model;
+    return panel({
+        scrollable: true,
+        className: `tb-form-page tb-form-page--${density}`,
+        item: form({
+            fieldDefaults: {
+                minimal,
+                commitOnChange,
+                requiredIndicator: requiredMarkers ? '*' : ''
+            },
             items: vbox(
                 formFieldSet({
-                    title: 'Field Set 1',
+                    title: 'Candidate Details',
                     modelConfig: {collapsible: true},
                     items: [
+                        formField({field: 'firstName', item: textInput({enableClear: true})}),
+                        formField({field: 'lastName', item: textInput({enableClear: true})}),
+                        formField({field: 'fullName'}),
                         formField({
-                            field: 'name',
-                            info: 'Min. 8 chars',
-                            item: textInput({enableClear: true})
-                        }),
-                        formField({
-                            field: 'customer',
-                            item: select({
-                                placeholder: 'Search customers...',
-                                title: 'Search customers...',
-                                enableFilter: true,
-                                enableFullscreen: true,
-                                queryFn: q => model.queryCustomersAsync(q)
+                            field: 'email',
+                            item: textInput({
+                                leftIcon: Icon.mail(),
+                                enableClear: true,
+                                placeholder: 'user@company.com'
                             })
                         }),
                         formField({
-                            field: 'movie',
+                            field: 'region',
                             item: select({
-                                placeholder: 'Select a Movie...',
-                                options: movies
+                                placeholder: 'Select a region...',
+                                options: model.regionOptions
                             })
                         })
                     ]
                 }),
                 formFieldSet({
                     className: 'xh-margin-top',
-                    title: 'Field Set 2',
+                    title: 'Employment',
                     modelConfig: {collapsible: true},
                     items: [
                         formField({
-                            field: 'salary',
-                            item: numberInput({
-                                enableShorthandUnits: false,
-                                displayWithCommas: true
-                            })
-                        }),
-                        formField({
-                            field: 'percentage',
-                            item: numberInput({
-                                scaleFactor: 100,
-                                valueLabel: '%'
-                            })
-                        }),
-                        formField({
-                            field: 'date',
+                            field: 'startDate',
                             item: dateInput({
-                                minDate: LocalDate.today().subtract(2),
-                                maxDate: LocalDate.today().add(1, 'month'),
-                                textAlign: 'right',
-                                valueType: 'localDate'
+                                valueType: 'localDate',
+                                maxDate: LocalDate.today()
                             })
                         }),
-                        hbox({
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            items: [
-                                formField({
-                                    field: 'enabled',
-                                    item: checkbox()
-                                }),
-                                formField({
-                                    field: 'enabled',
-                                    item: switchInput()
-                                }),
-                                formField({
-                                    field: 'enabled',
-                                    label: null, // checkboxButton is self-labelling, using fieldName for its text by default
-                                    item: checkboxButton()
-                                })
-                            ]
+                        formField({
+                            field: 'endDate',
+                            item: dateInput({valueType: 'localDate', enableClear: true})
                         }),
                         formField({
-                            field: 'buttonGroup',
-                            item: buttonGroupInput(
-                                button({
-                                    text: 'Button 1',
-                                    value: 'button1'
-                                }),
-                                button({
-                                    icon: Icon.moon(),
-                                    value: 'button2'
-                                }),
-                                button({
-                                    icon: Icon.skull(),
-                                    text: 'Button 2',
-                                    value: 'button3'
-                                })
-                            )
+                            field: 'reasonForLeaving',
+                            item: select({
+                                placeholder: 'Select a reason...',
+                                options: model.reasonOptions
+                            })
                         }),
+                        formField({field: 'isManager', item: switchInput()}),
                         formField({
-                            field: 'notes',
-                            item: textArea()
+                            field: 'yearsExperience',
+                            item: numberInput({min: 0, max: 100})
                         }),
+                        formField({field: 'notes', item: textArea()})
+                    ]
+                }),
+                formFieldSet({
+                    className: 'xh-margin-top',
+                    title: 'Field Set 3',
+                    modelConfig: {collapsible: true},
+                    items: [
                         formField({
-                            field: 'searchQuery',
-                            item: searchInput()
+                            field: 'employeeId',
+                            item: select({
+                                placeholder: 'Select an employee...',
+                                options: model.selectableEmployees,
+                                generateOptionFn: id => {
+                                    const emp = model.lookupEmployeeById(id);
+                                    return emp ? {label: emp.name, value: emp.id} : null;
+                                },
+                                valueField: 'id',
+                                labelField: 'name'
+                            })
                         })
                     ]
                 })
             )
         })
-    });
-});
-
-const results = hoistCmp.factory(() => {
-    return div({
-        className: 'tb-card',
-        items: [
-            fieldResult({field: 'name'}),
-            fieldResult({field: 'customer'}),
-            fieldResult({field: 'movie'}),
-            fieldResult({field: 'salary'}),
-            fieldResult({field: 'percentage', renderer: v => fmtPercent(v, {nullDisplay: '-'})}),
-            fieldResult({field: 'date', renderer: v => v?.toString()}),
-            fieldResult({field: 'enabled', renderer: v => (v ? 'Yes' : 'No')}),
-            fieldResult({field: 'buttonGroup'}),
-            fieldResult({field: 'notes'}),
-            fieldResult({field: 'searchQuery'})
-        ]
-    });
-});
-
-const fieldResult = hoistCmp.factory<FormPageModel>(({model, field, renderer}) => {
-    const {displayName, value} = model.formModel.fields[field],
-        renderedVal = renderer ? renderer(value) : value;
-
-    return div({
-        className: 'tb-form-page__result',
-        items: [label(displayName), div(renderedVal ?? '-')]
-    });
-});
-
-const setFocusMenu = hoistCmp.factory<FormPageModel>(({model}) => {
-    const fields = model.formModel.fieldList,
-        menuItems = fields.map(f => ({
-            text: f.displayName,
-            actionFn: () => f.focus()
-        }));
-
-    return menuButton({
-        icon: Icon.target(),
-        title: 'Focus',
-        menuPosition: 'top',
-        menuItems
     });
 });

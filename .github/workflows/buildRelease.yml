@@ -13,11 +13,6 @@ on:
                 description: 'Release Version (e.g. 9.0.0)'
                 required: true
                 type: string
-            is-hotfix:
-                description: 'As hotfix. Check when releasing a hotfix to a version other than the latest.'
-                required: true
-                default: false
-                type: boolean
 
 # Run all release builds one-by-one, but never cancel a release build due to another one.
 concurrency:
@@ -30,9 +25,10 @@ env:
 
 jobs:
     validate:
-        # Guards against accidental release from develop. Requires master for standard
-        # releases and a branch other than master (or develop) when is-hotfix is set.
-        if: github.ref != 'refs/heads/develop' && ((github.ref == 'refs/heads/master') != inputs.is-hotfix)
+        # Releases are always cut from master, which tracks the last released code. This guards
+        # against an accidental release from develop (which carries unreleased SNAPSHOT work) or
+        # any other branch.
+        if: github.ref == 'refs/heads/master'
 
         runs-on: ubuntu-latest
         permissions:
@@ -49,7 +45,6 @@ jobs:
           uses: xh/hoist-dev-utils/.github/actions/validate-release-version@master
           with:
               version: ${{ inputs.version }}
-              is-hotfix: ${{ inputs.is-hotfix }}
 
     prepare:
         needs: validate
@@ -68,6 +63,7 @@ jobs:
 
         runs-on: ubuntu-latest
         permissions:
+            id-token: write
             contents: read
 
         steps:
@@ -97,8 +93,7 @@ jobs:
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v6
           with:
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/xh-github-actions-deploy
               aws-region: ${{ secrets.AWS_REGION }}
 
         - name: Login to Amazon ECR
@@ -120,6 +115,7 @@ jobs:
 
         runs-on: ubuntu-latest
         permissions:
+            id-token: write
             contents: read
 
         steps:
@@ -163,8 +159,7 @@ jobs:
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v6
           with:
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/xh-github-actions-deploy
               aws-region: ${{ secrets.AWS_REGION }}
 
         - name: Login to Amazon ECR
@@ -203,6 +198,5 @@ jobs:
           uses: xh/hoist-dev-utils/.github/actions/create-tag-and-github-release@master
           with:
               version: ${{ inputs.version }}
-              is-hotfix: ${{ inputs.is-hotfix }}
           env:
               GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

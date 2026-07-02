@@ -23,10 +23,13 @@ export class NumberFormatsPanelModel extends HoistModel {
         123400.1,
         123450, // tests that rightmost zero is not cut off when precision: 0 && zeroPad: false
         920120.21343,
+        7100100, // tests fmtQuantity `lossless` - stays full, does not collapse to 7.10m
+        7120000, // tests fmtQuantity `lossless` - collapses cleanly to 7.12m
         12345600,
         100000001,
         123456789.12,
         1234567890.12,
+        5000000000, // fmtQuantity + lossless: collapses to 5b (no precision lost)
         1.23456e14,
         null,
         undefined
@@ -39,7 +42,7 @@ export class NumberFormatsPanelModel extends HoistModel {
     @bindable ledger = false;
     @bindable nullDisplay: string = null;
     @bindable omitFourDigitComma = false;
-    @bindable precision = -1; // -1 => 'auto'
+    @bindable precision = -1; // -2 => null (full), -1 => 'auto'
     @bindable prefix: string = null;
     @bindable strictZero = true;
     @bindable withCommas = true;
@@ -47,6 +50,11 @@ export class NumberFormatsPanelModel extends HoistModel {
     @bindable withSignGlyph = false;
     @bindable zeroDisplay: string = null;
     @bindable zeroPad = -2; // -2 => undefined, -1 => false, 0 => true, # => pad length
+
+    // fmtQuantity-only options.
+    @bindable useMillions = true;
+    @bindable useBillions = true;
+    @bindable lossless = false;
     @bindable positiveColor = '#00aa00';
     @bindable negativeColor = '#cc0000';
     @bindable neutralColor = '#999999';
@@ -93,7 +101,10 @@ export class NumberFormatsPanelModel extends HoistModel {
             withCommas: this.withCommas,
             withPlusSign: this.withPlusSign,
             withSignGlyph: this.withSignGlyph,
-            zeroPad: this.toZeroPad(this.zeroPad)
+            zeroPad: this.toZeroPad(this.zeroPad),
+            useMillions: this.useMillions,
+            useBillions: this.useBillions,
+            lossless: this.lossless
         };
 
         try {
@@ -105,7 +116,9 @@ export class NumberFormatsPanelModel extends HoistModel {
     }
 
     private toPrecision(formVal: number) {
-        return formVal === -1 ? 'auto' : formVal;
+        if (formVal === -2) return null;
+        if (formVal === -1) return 'auto';
+        return formVal;
     }
 
     private toZeroPad(formVal: number) {

@@ -13,9 +13,11 @@ export const resultsPanel = hoistCmp.factory<DateFormatsPanelModel | NumberForma
         return panel({
             title: 'Input › Output',
             compactHeader: true,
-            // Static content - size the card to exactly what its two columns (plus the
-            // custom-value row) require, letting the Wrapper demo region center it.
+            // Static content - size the card to its two columns (plus the custom-value row),
+            // letting the Wrapper demo region center it. A min width keeps the card from
+            // jumping around as the formatted output changes width.
             flex: 'none',
+            minWidth: 500,
             maxHeight: '100%',
             className: 'tbox-formats-tab__panel',
             item: div({

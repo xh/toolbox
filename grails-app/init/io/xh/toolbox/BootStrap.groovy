@@ -7,6 +7,9 @@ import io.xh.hoist.pref.PrefService
 import io.xh.hoist.telemetry.trace.TraceService
 import io.xh.hoist.config.ConfigSpec
 import io.xh.hoist.pref.PreferenceSpec
+import io.xh.toolbox.portfolio.PortfolioConfig
+import io.xh.toolbox.security.Auth0Config
+import io.xh.toolbox.security.EntraIdConfig
 import io.xh.toolbox.user.User
 
 import java.time.LocalDate
@@ -88,8 +91,11 @@ class BootStrap implements LogSupport {
                 valueType: 'json',
                 defaultValue: [
                     clientId: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
-                    domain: 'login.xh.io'
+                    domain: 'login.xh.io',
+                    authZeroClientOptions: [useCookiesForTransactions: false],
+                    reloginEnabled: true
                 ],
+                typedClass: Auth0Config,
                 groupName: 'Auth',
                 note: 'OAuth config for the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
             ),
@@ -135,8 +141,12 @@ class BootStrap implements LogSupport {
                 valueType: 'json',
                 defaultValue: [
                     clientId: '5d933976-8fe4-40fc-bc13-b9d239a2efe5',
-                    tenantId: '51759969-dc12-46ec-a1e9-2532084dc881'
+                    tenantId: '51759969-dc12-46ec-a1e9-2532084dc881',
+                    enableTelemetry: true,
+                    reloginEnabled: true,
+                    msalClientOptions: [:]
                 ],
+                typedClass: EntraIdConfig,
                 groupName: 'Auth',
                 note: 'OAuth config for the Toolbox app registered at our Azure Entra ID tenant. For testing Entra ID as an alternate OAuth provider.'
             ),
@@ -234,6 +244,7 @@ class BootStrap implements LogSupport {
                     updatePctPriceRange: 0.025,
                     pushUpdatesIntervalSecs: 5
                 ],
+                typedClass: PortfolioConfig,
                 groupName: 'Toolbox - Example Apps'
             ),
             new ConfigSpec(
@@ -241,6 +252,22 @@ class BootStrap implements LogSupport {
                 valueType: 'string',
                 defaultValue: 'api.fda.gov',
                 groupName: 'Toolbox - Example Apps'
+            ),
+            new ConfigSpec(
+                name: 'slackAlertConfig',
+                valueType: 'json',
+                defaultValue: [
+                    enabled: false,
+                    oauthToken: null,
+                    channel: null,
+                    feedbackChannel: null,
+                    monitorAlertsEnabled: false,
+                    clientErrorsEnabled: false,
+                    feedbackEnabled: false
+                ],
+                typedClass: SlackAlertConfig,
+                groupName: 'Slack Integration',
+                note: 'Slack bot token + target channels for monitor alerts, client-error reports, and user feedback. All disabled by default; set enabled plus the specific per-type flag(s) and channel(s) to post.'
             ),
             new ConfigSpec(
                 name: 'sourceUrls',
@@ -336,6 +363,13 @@ class BootStrap implements LogSupport {
                 type: 'json',
                 defaultValue: [],
                 groupName: 'Toolbox'
+            ),
+            new PreferenceSpec(
+                name: 'mobileHomeWidgets',
+                type: 'json',
+                defaultValue: [:],
+                groupName: 'Toolbox',
+                notes: 'Per-user mobile home dashboard state: widget membership/order (homeIds, availableIds) and collapsed widget ids.'
             )
         ])
     }
