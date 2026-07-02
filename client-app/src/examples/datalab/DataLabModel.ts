@@ -6,17 +6,20 @@ import {
     BaselineAdapter,
     Constraint,
     DEFAULT_PROTOCOL,
+    EnvMetadata,
     MeasurementHarness,
     MeasurementProgress,
     numberIs,
     required,
     RunResult,
-    ScenarioConfig
+    ScenarioConfig,
+    UpdateCadence
 } from '@xh/hoist/data';
 import {fmtDateTimeSec, fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
+import {downloadBlob} from '@xh/hoist/utils/js';
 import {filesize} from 'filesize';
-import {round} from 'lodash';
+import {minBy, round, sortBy, uniqBy} from 'lodash';
 import {HttpIngestAdapter} from './ingest/HttpIngestAdapter';
 import {WebSocketIngestAdapter} from './ingest/WebSocketIngestAdapter';
 
@@ -25,6 +28,116 @@ export interface SavedRun {
     label: string;
     savedAt: string;
     result: RunResult;
+}
+
+//------------------------------------------------------------------------------------------------
+// Distilled envelope-stats schema (D-12) - the SINGLE SOURCE of the distilled shape
+//
+// `exportDistilledStats` emits this flat, chart-ready object; phase 03-04 saves that output verbatim
+// to docs/planning/data2/stats/envelope-stats.json. The schema is shaped so a design tool consumes
+// it WITHOUT parsing verbose RunResult objects. Keep these interfaces and the 03-04 schema in lockstep.
+//------------------------------------------------------------------------------------------------
+
+/**
+ * Descriptive coarse memory-pressure tier (D-02). These describe OBSERVED heap behavior across the
+ * ladder - they are NOT adopted pass/fail targets (targets are proposed later, in 03-06).
+ */
+export type MemoryTier = 'comfortable' | 'degraded' | 'hardWall';
+
+/** One memory rung: heap retained (total + by layer) at a given dataset shape, with its tier. */
+export interface MemorySeriesRow {
+    leafRowCount: number;
+    fieldCount: number;
+    totalHeapDeltaBytes: number;
+    cubeStoreRecords: number;
+    gridStoreRecords: number;
+    viewResultRows: number;
+    agGridInternals: number;
+    tier: MemoryTier;
+}
+
+/** One CPU rung: the four stage medians + derived end-to-end and keep-up verdict at a given cadence. */
+export interface CpuSeriesRow {
+    batchSize: number;
+    ratePerSec: number;
+    cadence: UpdateCadence;
+    engineMedianMs: number;
+    engineP95Ms: number;
+    genTxnMedianMs: number;
+    bridgeMedianMs: number;
+    renderMedianMs: number;
+    /** Sum of the four stage medians - the full update-to-render cost (D-03). */
+    endToEndMedianMs: number;
+    /** Time budget between batches at this rate (1000 / ratePerSec). */
+    batchIntervalMs: number;
+    /** Whether the pipeline keeps up: end-to-end median fits within the batch interval (D-03). */
+    keepsUp: boolean;
+}
+
+/** The ~500 x 20 real-time trading-screen anchor batch, broken into its four stages (BASE-03). */
+export interface AnchorBatch {
+    batchSize: number;
+    fieldCount: number;
+    engineMs: number;
+    genTxnMs: number;
+    bridgeMs: number;
+    renderMs: number;
+    endToEndMs: number;
+}
+
+/** An approximate tier boundary read off the coarse ladder, with where it was observed and why. */
+export interface TierBoundary {
+    axis: 'memory' | 'cpu';
+    from: string;
+    to: string;
+    /** Dataset shape at which a memory boundary was observed. */
+    atShape?: string;
+    /** Update cadence at which a CPU boundary was observed. */
+    atCadence?: string;
+    observedValue: number;
+    rationale: string;
+}
+
+/** The complete distilled, flat, chart-ready envelope-stats package (D-12). */
+export interface DistilledStats {
+    generatedAt: string;
+    referenceMachine: string;
+    env: EnvMetadata[];
+    memorySeries: MemorySeriesRow[];
+    cpuSeries: CpuSeriesRow[];
+    anchorBatch: AnchorBatch | null;
+    tierBoundaries: TierBoundary[];
+}
+
+// Descriptive coarse memory tiers (D-02): retained heap well under a normal desktop tab budget is
+// comfortable; approaching a typical per-tab ceiling is degraded; near or beyond the OOM wall
+// (especially on small-heap machines) is hardWall. Provisional boundaries describing observed data.
+const MEM_TIER_COMFORTABLE_MAX_BYTES = 500e6, // < 500 MB retained
+    MEM_TIER_DEGRADED_MAX_BYTES = 1.2e9; // 500 MB - 1.2 GB; beyond is hardWall
+
+// The real-time trading-screen anchor workload (BASE-03): ~500 rows/tick touching ~20 fields.
+const ANCHOR_BATCH_SIZE = 500,
+    ANCHOR_FIELD_COUNT = 20;
+
+/** Classify retained-heap magnitude into a descriptive coarse tier (D-02). */
+function memoryTier(totalHeapDeltaBytes: number): MemoryTier {
+    if (totalHeapDeltaBytes < MEM_TIER_COMFORTABLE_MAX_BYTES) return 'comfortable';
+    if (totalHeapDeltaBytes < MEM_TIER_DEGRADED_MAX_BYTES) return 'degraded';
+    return 'hardWall';
+}
+
+/** Make a label safe for a filename: lowercase with non-alphanumerics collapsed to single hyphens. */
+function sanitizeFilename(label: string): string {
+    const clean = (label ?? '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    return clean || 'run';
+}
+
+/** Compact filesystem-friendly UTC timestamp for export filenames (no colons or dots). */
+function fileTimestamp(): string {
+    return new Date().toISOString().replace(/[:.]/g, '-');
 }
 
 /**
@@ -544,6 +657,198 @@ export class DataLabModel extends HoistModel {
                 pct = valA !== 0 ? round((delta / valA) * 100, 1) : null;
             return {id: idx, metric, runA: valA, runB: valB, delta, pct, unit};
         });
+    }
+
+    //------------------------------------------------------------------------------------------------
+    // Export - runs out as JSON files for the checked-in stats dir + cross-machine comparison (D-11)
+    //------------------------------------------------------------------------------------------------
+
+    /** Download a single saved run as a JSON file (its verbatim RunResult). */
+    exportRun(run: SavedRun) {
+        if (!run) return;
+        this.downloadJson(run.result, `datalab-run-${sanitizeFilename(run.label)}.json`);
+    }
+
+    /** Export the saved run currently selected in a comparison slot (resolved by its label). */
+    exportSelectedRun(label: string) {
+        const run = this.savedRuns.find(r => r.label === label);
+        if (run) this.exportRun(run);
+    }
+
+    /** Download all saved runs as a single JSON file (an array of RunResult, re-importable). */
+    exportAllRuns() {
+        if (!this.savedRuns.length) {
+            XH.warningToast('No saved runs to export.');
+            return;
+        }
+        const payload = this.savedRuns.map(r => r.result);
+        this.downloadJson(payload, `datalab-runs-all-${fileTimestamp()}.json`);
+    }
+
+    /**
+     * Download the distilled, flat, chart-ready envelope-stats package (D-12) built from the saved
+     * runs. This is the SINGLE SOURCE of the distilled schema - 03-04 saves this output verbatim.
+     * The design tool consumes it WITHOUT parsing verbose RunResult objects.
+     */
+    exportDistilledStats() {
+        if (!this.savedRuns.length) {
+            XH.warningToast('No saved runs to distill. Run a scenario first.');
+            return;
+        }
+        this.downloadJson(this.buildDistilledStats(this.savedRuns), 'datalab-envelope-stats.json');
+    }
+
+    /** Build the distilled envelope-stats object (D-12) from a set of saved runs. */
+    private buildDistilledStats(runs: SavedRun[]): DistilledStats {
+        const results = runs.map(r => r.result),
+            memorySeries = this.buildMemorySeries(results),
+            cpuSeries = this.buildCpuSeries(results);
+
+        // Distinct environments across the runs - EnvMetadata is carried through so each origin
+        // machine / flag set is preserved (Pitfall 6), never flattened away.
+        const env = uniqBy(
+            results.map(r => r.env),
+            e => `${e.userAgent}|${e.heapMethod}|${e.crossOriginIsolated}|${e.preciseMemory}`
+        );
+
+        // EnvMetadata carries no explicit machine-name field, so the userAgent is the best available
+        // machine identifier. Use the most recent run's userAgent as the reference machine.
+        const referenceMachine = results[results.length - 1].env.userAgent;
+
+        return {
+            generatedAt: new Date().toISOString(),
+            referenceMachine,
+            env,
+            memorySeries,
+            cpuSeries,
+            anchorBatch: this.buildAnchorBatch(results),
+            tierBoundaries: this.buildTierBoundaries(memorySeries, cpuSeries)
+        };
+    }
+
+    // One row per memory rung (deduped by dataset shape, last run wins), ascending by shape.
+    private buildMemorySeries(results: RunResult[]): MemorySeriesRow[] {
+        const byRung = new Map<string, MemorySeriesRow>();
+        for (const r of results) {
+            const {heap} = r.scorecard;
+            if (!heap) continue; // memory pass skipped for this run
+            const {leafRowCount, fieldCount} = r.scenario.dataset;
+            byRung.set(`${leafRowCount}x${fieldCount}`, {
+                leafRowCount,
+                fieldCount,
+                totalHeapDeltaBytes: heap.totalHeapDelta,
+                cubeStoreRecords: heap.cubeStoreRecords,
+                gridStoreRecords: heap.gridStoreRecords,
+                viewResultRows: heap.viewResultRows,
+                agGridInternals: heap.agGridInternals,
+                tier: memoryTier(heap.totalHeapDelta)
+            });
+        }
+        return sortBy([...byRung.values()], ['leafRowCount', 'fieldCount']);
+    }
+
+    // One row per CPU rung (deduped by cadence, last run wins), ascending by batch size then rate.
+    private buildCpuSeries(results: RunResult[]): CpuSeriesRow[] {
+        const byRung = new Map<string, CpuSeriesRow>();
+        for (const r of results) {
+            const {engine, genTxn, bridgeCall, render} = r.scorecard;
+            if (!engine) continue; // performance pass skipped for this run
+            const {batchSize, ratePerSec, cadence} = r.scenario.update,
+                genTxnMedianMs = genTxn?.medianMs ?? 0,
+                bridgeMedianMs = bridgeCall?.medianMs ?? 0,
+                renderMedianMs = render?.medianMs ?? 0,
+                endToEndMedianMs =
+                    engine.medianMs + genTxnMedianMs + bridgeMedianMs + renderMedianMs,
+                batchIntervalMs = ratePerSec > 0 ? 1000 / ratePerSec : Infinity;
+            byRung.set(`${batchSize}/${ratePerSec}/${cadence}`, {
+                batchSize,
+                ratePerSec,
+                cadence,
+                engineMedianMs: engine.medianMs,
+                engineP95Ms: engine.p95Ms,
+                genTxnMedianMs,
+                bridgeMedianMs,
+                renderMedianMs,
+                endToEndMedianMs,
+                batchIntervalMs,
+                keepsUp: endToEndMedianMs <= batchIntervalMs
+            });
+        }
+        return sortBy([...byRung.values()], ['batchSize', 'ratePerSec']);
+    }
+
+    // The stage breakdown of the run closest to the ~500 x 20 trading-screen anchor (BASE-03).
+    private buildAnchorBatch(results: RunResult[]): AnchorBatch | null {
+        const perfRuns = results.filter(r => r.scorecard.engine);
+        if (!perfRuns.length) return null;
+        const best = minBy(
+            perfRuns,
+            r =>
+                Math.abs(r.scenario.update.batchSize - ANCHOR_BATCH_SIZE) +
+                Math.abs(r.scenario.dataset.fieldCount - ANCHOR_FIELD_COUNT)
+        );
+        const {engine, genTxn, bridgeCall, render} = best.scorecard,
+            engineMs = engine.medianMs,
+            genTxnMs = genTxn?.medianMs ?? 0,
+            bridgeMs = bridgeCall?.medianMs ?? 0,
+            renderMs = render?.medianMs ?? 0;
+        return {
+            batchSize: best.scenario.update.batchSize,
+            fieldCount: best.scenario.dataset.fieldCount,
+            engineMs,
+            genTxnMs,
+            bridgeMs,
+            renderMs,
+            endToEndMs: engineMs + genTxnMs + bridgeMs + renderMs
+        };
+    }
+
+    // Approximate green->yellow / yellow->red boundaries read off the ascending coarse ladders.
+    private buildTierBoundaries(
+        memorySeries: MemorySeriesRow[],
+        cpuSeries: CpuSeriesRow[]
+    ): TierBoundary[] {
+        const boundaries: TierBoundary[] = [],
+            firstDegraded = memorySeries.find(m => m.tier === 'degraded'),
+            firstHardWall = memorySeries.find(m => m.tier === 'hardWall'),
+            firstOverrun = cpuSeries.find(c => !c.keepsUp);
+
+        if (firstDegraded) {
+            boundaries.push({
+                axis: 'memory',
+                from: 'comfortable',
+                to: 'degraded',
+                atShape: `${firstDegraded.leafRowCount} leaves x ${firstDegraded.fieldCount} fields`,
+                observedValue: firstDegraded.totalHeapDeltaBytes,
+                rationale: `Retained heap crosses ~${round(MEM_TIER_COMFORTABLE_MAX_BYTES / 1e6)} MB - a normal desktop tab still copes, but headroom is shrinking.`
+            });
+        }
+        if (firstHardWall) {
+            boundaries.push({
+                axis: 'memory',
+                from: 'degraded',
+                to: 'hardWall',
+                atShape: `${firstHardWall.leafRowCount} leaves x ${firstHardWall.fieldCount} fields`,
+                observedValue: firstHardWall.totalHeapDeltaBytes,
+                rationale: `Retained heap crosses ~${round(MEM_TIER_DEGRADED_MAX_BYTES / 1e9, 1)} GB - near the per-tab OOM ceiling, especially on small-heap machines.`
+            });
+        }
+        if (firstOverrun) {
+            boundaries.push({
+                axis: 'cpu',
+                from: 'keepsUp',
+                to: 'overruns',
+                atCadence: `${firstOverrun.batchSize} rows/tick @ ${firstOverrun.ratePerSec}/s (${firstOverrun.cadence})`,
+                observedValue: firstOverrun.endToEndMedianMs,
+                rationale: `Median update-to-render (${round(firstOverrun.endToEndMedianMs, 1)} ms) exceeds the ${round(firstOverrun.batchIntervalMs, 1)} ms batch interval - the pipeline falls behind the stream.`
+            });
+        }
+        return boundaries;
+    }
+
+    private downloadJson(payload: unknown, filename: string) {
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+        downloadBlob(blob, filename);
     }
 
     //------------------------------------------------------------------------------------------------

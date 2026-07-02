@@ -385,6 +385,13 @@ const comparisonPanel = hoistCmp.factory<DataLabModel>({
                         value: model.compareLabels[0] ?? null,
                         onChange: v => (model.compareLabels = [v as string, model.compareLabels[1]])
                     }),
+                    button({
+                        icon: Icon.download(),
+                        title: 'Export the run selected as Run A',
+                        minimal: true,
+                        disabled: !model.compareLabels[0],
+                        onClick: () => model.exportSelectedRun(model.compareLabels[0])
+                    }),
                     toolbarSep(),
                     span('Run B'),
                     select({
@@ -395,6 +402,21 @@ const comparisonPanel = hoistCmp.factory<DataLabModel>({
                         onChange: v => (model.compareLabels = [model.compareLabels[0], v as string])
                     }),
                     filler(),
+                    button({
+                        text: 'Export All',
+                        icon: Icon.download(),
+                        title: 'Download all saved runs as a single JSON file',
+                        disabled: !options.length,
+                        onClick: () => model.exportAllRuns()
+                    }),
+                    button({
+                        text: 'Export Stats',
+                        icon: Icon.fileArchive(),
+                        title: 'Download the distilled, chart-ready envelope-stats JSON',
+                        disabled: !options.length,
+                        onClick: () => model.exportDistilledStats()
+                    }),
+                    toolbarSep(),
                     button({
                         text: 'Clear History',
                         icon: Icon.delete(),
