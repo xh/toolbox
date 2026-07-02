@@ -19,6 +19,17 @@ import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
 
+// Real values first (seed data + `category === 'US'` validation need them), padded past the
+// windowing threshold so the `category` editor exercises windowed mode.
+const CATEGORY_OPTIONS = [
+    'US',
+    'BRIC',
+    'Emerging Markets',
+    'EU',
+    'Asia/Pac',
+    ...Array.from({length: 120}, (_, i) => `Region ${i + 1} - extended market category label`)
+];
+
 export class InlineEditingPanelModel extends HoistModel {
     @bindable accessor asyncValidation = false;
 
@@ -328,11 +339,13 @@ export class InlineEditingPanelModel extends HoistModel {
                     field: 'category',
                     width: 80,
                     editable: ifNotRestricted,
+                    // Windowed editor in a narrow cell - menu auto-sizes to content, not cell width.
                     editor: props =>
                         selectEditor({
                             ...props,
                             inputProps: {
-                                options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
+                                enableWindowed: true,
+                                options: CATEGORY_OPTIONS
                             }
                         })
                 },

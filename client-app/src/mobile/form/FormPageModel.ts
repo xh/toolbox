@@ -92,7 +92,8 @@ export class FormPageModel extends HoistModel {
                     }
                 ]
             },
-            {name: 'notes', rules: [required, lengthIs({min: 10, max: 300})]}
+            {name: 'notes', rules: [required, lengthIs({min: 10, max: 300})]},
+            {name: 'employeeId', displayName: 'Employee (using ID)', initialValue: 99}
         ]
     });
 
@@ -137,5 +138,28 @@ export class FormPageModel extends HoistModel {
             const errCount = filter(formModel.fields, f => f.isNotValid).length;
             XH.dangerToast(`Cannot submit - ${errCount} field(s) failed validation.`);
         }
+    }
+
+    // All of the records to power the select options and generateOptionFn.
+    get employees(): any[] {
+        return [
+            {id: 1, name: 'Alice Chen', isActive: true},
+            {id: 2, name: 'Bob Park', isActive: true},
+            {id: 3, name: 'Carol Diaz', isActive: true},
+            {id: 4, name: 'Dave Kim', isActive: false},
+            {id: 5, name: 'Eve Singh', isActive: true},
+            {id: 6, name: 'Fred Rogers', isActive: true},
+            {id: 99, name: 'Zara Quinn', isActive: false}
+        ];
+    }
+
+    // Only some of the employee records are selectable.
+    get selectableEmployees() {
+        return this.employees.filter(it => it.isActive);
+    }
+
+    // Lookup returns both selectable and not-selectable records.
+    lookupEmployeeById(id: number) {
+        return this.employees.find(it => it.id === id);
     }
 }

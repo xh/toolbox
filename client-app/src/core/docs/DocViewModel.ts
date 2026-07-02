@@ -2,7 +2,7 @@ import {HoistModel, LoadSpec, XH} from '@xh/hoist/core';
 import {action, computed, observable, runInAction} from '@xh/hoist/mobx';
 import {DocService} from '../svc/DocService';
 import {DocCategory, DocEntry, DocSection} from './types';
-import {extractSections, resolveDocLink} from './DocUtils';
+import {decodeDocId, encodeDocId, extractSections, resolveDocLink} from './DocUtils';
 
 /**
  * Shared, platform-neutral base for the documentation viewer. Owns the active doc, its loaded
@@ -110,6 +110,7 @@ export abstract class DocViewModel extends HoistModel {
         this.activeSection = null;
         this.pendingScrollSection = section ?? null;
         this.content = null;
+        this.docService.noteRecentlyViewed(entry);
         this.onDocActivated(entry);
         this.loadAsync();
         this.updateRouteFromDoc();
@@ -181,18 +182,19 @@ export abstract class DocViewModel extends HoistModel {
         if (!this.isDocsRoute(name)) return;
 
         if (activeDoc) {
-            XH.navigate(
-                docRouteName,
-                {source: activeDoc.source, docId: this.docIdToRoute(activeDoc.id)},
-                {replace: true}
-            );
+            XH.navigate(docRouteName, this.routeParamsForDoc(activeDoc), {replace: true});
         } else {
             XH.navigate(BASE_ROUTE, {replace: true});
         }
     }
 
-    private docIdToRoute(docId: string): string {
-        return docId.replaceAll('/', '~');
+    /**
+     * Build the route params written back when a doc is activated. Base form is `{source, docId}`;
+     * subclasses whose active route needs additional segment params (e.g. the mobile browse reader's
+     * `categoryId`) override this to add them.
+     */
+    protected routeParamsForDoc(entry: DocEntry): Record<string, string> {
+        return {source: entry.source, docId: encodeDocId(entry.id)};
     }
 
     protected docRefFromRoute(params: Record<string, string>): {
@@ -202,7 +204,7 @@ export abstract class DocViewModel extends HoistModel {
     } {
         const {source, docId, section} = params;
         if (!source || !docId) return null;
-        return {source, docId: docId.replaceAll('~', '/'), section: section ?? null};
+        return {source, docId: decodeDocId(docId), section: section ?? null};
     }
 
     /**

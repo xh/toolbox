@@ -4,16 +4,19 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {CompoundFilter, Cube, FieldFilter, View} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {comparer, observable} from '@xh/hoist/mobx';
+import {comparer, computed} from '@xh/hoist/mobx';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
-    @observable accessor filterJson: string = JSON.stringify(null);
-
     @managed cube: Cube;
     @managed view: View;
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;
     @managed groupingChooserModel: GroupingChooserModel;
+
+    @computed
+    get filterJson(): FieldFilter | CompoundFilter {
+        return this.view?.filter as FieldFilter | CompoundFilter;
+    }
 
     private get query() {
         const dimensions = this.groupingChooserModel?.value;
@@ -31,14 +34,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         this.groupingChooserModel = this.createGroupingChooserModel();
 
         this.view.setStores(this.gridModel.store);
-
-        // Update filter JSON
-        this.addReaction({
-            track: () => this.query.filter as FieldFilter | CompoundFilter,
-            run: filter => {
-                this.filterJson = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
-            }
-        });
 
         // Update cube view when query changes
         this.addReaction({

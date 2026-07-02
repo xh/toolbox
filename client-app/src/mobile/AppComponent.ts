@@ -18,9 +18,9 @@ export const AppComponent = hoistCmp({
     model: uses(AppModel),
 
     render({model}) {
-        const renderWithUserProfile = model.renderWithUserProfile
-            ? (user: HoistUser) => profilePic({user})
-            : false;
+        // The mobile top bar already carries a dedicated hamburger (the nav blade button), so the
+        // App Menu button always renders as the user's profile pic - never a second hamburger.
+        const renderWithUserProfile = (user: HoistUser) => profilePic({user});
 
         return panel({
             tbar: appBar({
@@ -30,6 +30,9 @@ export const AppComponent = hoistCmp({
                 hideRefreshButton: false,
                 // The back affordance is for drilldowns only; top-level pages keep the hamburger.
                 hideBackButton: model.navBladeModel.isTopLevelRoute,
+                // On the docs drill-down the chevron carries the parent screen's name (iOS Settings
+                // style); elsewhere `backLabel` is null and the button stays icon-only.
+                backButtonProps: {text: model.navBladeModel.backLabel},
                 // The hamburger glyph and the XH logo together form a single, generously sized button
                 // that opens the navigation blade. Shown on every blade-navigable page (Home and the
                 // top-level examples) so the menu is always one tap away - drilldown pages drop it and

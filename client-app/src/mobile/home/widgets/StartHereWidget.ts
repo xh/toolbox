@@ -27,8 +27,8 @@ const ITEMS: StartHereItem[] = [
     {
         icon: Icon.book(),
         title: 'Read the docs',
-        blurb: 'Core concepts on GitHub',
-        onClick: () => XH.openWindow('https://github.com/xh/hoist-react#readme', 'gitlink')
+        blurb: 'Browse hoist-react + hoist-core',
+        onClick: () => XH.navigate('default.docs')
     },
     {
         icon: Icon.code(),

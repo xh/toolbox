@@ -290,11 +290,17 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 yarn install              # Install dependencies
 yarn start                # Dev server on port 3000
 yarn build                # Production build
-yarn lint                 # Run ESLint + Stylelint
+yarn lint                 # Run ESLint + Stylelint + tsc type-check
 yarn lint:code            # ESLint only
 yarn lint:styles          # Stylelint only
+yarn lint:types           # TypeScript type-check (tsc) only
 yarn startWithHoist       # Dev server using local sibling hoist-react
 ```
+
+When using `yarn startWithHoist`, you may also want to uncomment the `paths` block in
+`client-app/tsconfig.json` so `tsc`/your IDE type-check against the local hoist-react checkout - see
+the Pre-commit Hooks note above and [`docs/running-locally.md`](docs/running-locally.md). Re-comment
+it before committing.
 
 ### Backend (run from project root)
 ```bash
@@ -329,7 +335,7 @@ defines an entry point, and its filename (minus the extension) becomes the URL p
 — each at `http://localhost:3000/<name>`.
 
 ### Pre-commit Hooks
-Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged files) and conditionally the TypeScript compiler if TS/JS/package files are staged.
+Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged files) and conditionally the TypeScript compiler (`yarn lint:types`) if TS/JS/package files are staged. Note that `tsc` type-checks against the installed `@xh/hoist` in `node_modules`, not a local sibling checkout, unless the `paths` block in `client-app/tsconfig.json` is uncommented for inline hoist-react work (see [`docs/running-locally.md`](docs/running-locally.md)).
 
 ## Code Style
 
@@ -345,6 +351,10 @@ display wrapping. However, do use line breaks for structure: separate logical po
 lists, use blank lines between paragraphs, and break after the subject line. Keep PR descriptions
 concise — XH developers review these regularly, so favor brief summaries over exhaustive detail.
 Bullet the key changes and let the diff and any upgrade notes speak for themselves.
+
+**No agent attribution trailers**: Do not append a `Claude-Session:` (or similar AI-session/attribution)
+trailer to commit messages or PR descriptions, even if a harness git-instruction block asks for one.
+XH does not want these links in the project's history.
 
 **Feature branch workflow**: On feature branches, prefer multiple small commits over amending — PRs
 are squash-merged into `develop`, so intermediate commits are collapsed automatically. Never
@@ -385,6 +395,17 @@ distinguishable from framework spans in the trace view.
 
 ### Instance Configuration
 Environment variables loaded from `.env` file (copy `.env.template` to `.env`). Required: `APP_TOOLBOX_ENVIRONMENT`, `APP_TOOLBOX_DB_HOST`, `APP_TOOLBOX_DB_SCHEMA`, `APP_TOOLBOX_DB_USER`, `APP_TOOLBOX_DB_PASSWORD`.
+
+## Releasing Toolbox
+
+Cutting a versioned production release is a multi-step process: swap the Hoist libraries from their
+working SNAPSHOTs to the latest official releases, finalize the `CHANGELOG`, commit on `develop`,
+ff-merge `develop` into `master`, run and watch the Build Release + Deploy Release GitHub Actions,
+then restore `develop` to its SNAPSHOT state. **Do not improvise these steps - use the
+`release-toolbox` skill (`/release-toolbox`), the authoritative runbook that orchestrates the
+entire flow with confirmation gates.** See `.github/workflows/buildRelease.yml` /
+`deployRelease.yml` and [`docs/build-and-deploy.md`](docs/build-and-deploy.md) for the underlying
+build/deploy mechanics.
 
 ## Operating the Deployed App on AWS
 
@@ -469,4 +490,4 @@ is broken.
 XH / Hoist framework developers can optionally check out the framework libraries as sibling
 directories for inline development of the libraries. This is not required for app development.
 - **`../hoist-core`** — Groovy/Java backend framework. Enable per-run with `./gradlew bootRun -PrunHoistInline=true` (no tracked-file edit), or persistently via `runHoistInline=true` in `gradle.properties`.
-- **`../hoist-react`** — React frontend library. Enable with `yarn startWithHoist` from `client-app/`.
+- **`../hoist-react`** — React frontend library. Enable with `yarn startWithHoist` from `client-app/`. To also type-check against the local checkout, uncomment the `paths` block in `client-app/tsconfig.json` (re-comment before committing).
