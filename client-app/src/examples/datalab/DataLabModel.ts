@@ -376,6 +376,12 @@ export class DataLabModel extends HoistModel {
                     rules: [required, numberIs({min: 1})]
                 },
                 {
+                    name: 'ratePerSec',
+                    displayName: 'Rate/sec',
+                    initialValue: d.update.ratePerSec,
+                    rules: [required, numberIs({min: 1})]
+                },
+                {
                     name: 'measureMemory',
                     displayName: 'Measure memory',
                     initialValue: d.measure.memory,
@@ -455,7 +461,7 @@ export class DataLabModel extends HoistModel {
 
     /**
      * The complete {@link ScenarioConfig} for a run, projected from the editable {@link scenarioForm}
-     * over the fixed defaults (field-type mix, aggregators, seed, rate, protocol). `dimensionCount`
+     * over the fixed defaults (field-type mix, aggregators, seed, protocol). `dimensionCount`
      * expands to a `dim0..dimN` array; the active profile's name (if any) labels the scenario.
      */
     @computed
@@ -479,7 +485,8 @@ export class DataLabModel extends HoistModel {
                 updateMode: v.updateMode,
                 transport: v.transport,
                 batchSize: v.batchSize,
-                breadth: v.breadth
+                breadth: v.breadth,
+                ratePerSec: v.ratePerSec
             },
             measure: {memory: v.measureMemory, performance: v.measurePerformance},
             grid: {useVirtualColumns: v.useVirtualColumns}

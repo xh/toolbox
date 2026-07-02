@@ -196,6 +196,14 @@ const controlsPanel = hoistCmp.factory<DataLabModel>({
                                         width: 140,
                                         disabled: perfOff || fullReplace
                                     })
+                                }),
+                                formField({
+                                    field: 'ratePerSec',
+                                    info: 'Update ticks per second.',
+                                    item: numberInput({
+                                        width: 140,
+                                        disabled: perfOff
+                                    })
                                 })
                             ]
                         }),
