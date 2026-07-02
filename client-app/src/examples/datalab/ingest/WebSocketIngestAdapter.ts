@@ -27,6 +27,9 @@ export class WebSocketIngestAdapter {
     /** Pending resolver when the harness has asked for a diff before one has arrived. */
     private waiter: (rows: PlainObject[]) => void = null;
 
+    /** Scenario from the last `loadSnapshotAsync`, kept for stream top-up restarts. */
+    private scenario: ScenarioConfig = null;
+
     /**
      * Fetch the initial full snapshot over HTTP (the snapshot is a one-shot full load, not pushed),
      * then begin the server-side push stream so diffs start arriving on the topic. Returns
@@ -38,6 +41,7 @@ export class WebSocketIngestAdapter {
             params: this.shapeParams(scenario)
         });
 
+        this.scenario = scenario;
         this.subscribe();
         await this.startStreamAsync(scenario);
         return rows as PlainObject[];
@@ -47,13 +51,36 @@ export class WebSocketIngestAdapter {
      * Resolve with the next pushed diff's rows. If a diff is already buffered it returns
      * immediately; otherwise it waits for the next push. Mirrors {@link HttpIngestAdapter.nextDiffAsync}
      * so the harness's injected `nextDiffAsync` callback is transport-agnostic.
+     *
+     * Starvation top-up: the server streams for a fixed `durationSec` window per `streamStart`,
+     * and heavy shapes (large batch x breadth) can under-deliver within it - fewer pushed diffs
+     * than the measurement protocol consumes, which would otherwise leave this promise waiting
+     * forever. If no push lands while waiting, re-issue `streamStart` to open another window,
+     * capped to avoid looping on a genuinely dead feed.
      */
     nextDiffAsync(): Promise<PlainObject[]> {
         if (this.buffer.length) {
             return Promise.resolve(this.buffer.shift());
         }
-        return new Promise<PlainObject[]>(resolve => {
-            this.waiter = resolve;
+        return new Promise<PlainObject[]>((resolve, reject) => {
+            let restarts = 0;
+            const timer = setInterval(() => {
+                if (++restarts > 10) {
+                    clearInterval(timer);
+                    this.waiter = null;
+                    reject(
+                        XH.exception('WebSocket diff feed starved - no push within top-up window')
+                    );
+                    return;
+                }
+                this.startStreamAsync(this.scenario).catch(e =>
+                    console.warn('DataLab WS stream top-up failed', e)
+                );
+            }, 4000);
+            this.waiter = rows => {
+                clearInterval(timer);
+                resolve(rows);
+            };
         });
     }
 
