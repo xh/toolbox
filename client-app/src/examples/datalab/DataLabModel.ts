@@ -118,7 +118,8 @@ const MEM_TIER_COMFORTABLE_MAX_BYTES = 500e6, // < 500 MB retained
 
 // The real-time trading-screen anchor workload (BASE-03): ~500 rows/tick touching ~20 fields.
 const ANCHOR_BATCH_SIZE = 500,
-    ANCHOR_FIELD_COUNT = 20;
+    ANCHOR_FIELD_COUNT = 20,
+    ANCHOR_BREADTH = 20;
 
 /** Classify retained-heap magnitude into a descriptive coarse tier (D-02). */
 function memoryTier(totalHeapDeltaBytes: number): MemoryTier {
@@ -850,11 +851,14 @@ export class DataLabModel extends HoistModel {
     private buildAnchorBatch(results: RunResult[]): AnchorBatch | null {
         const perfRuns = results.filter(r => r.scorecard.engine);
         if (!perfRuns.length) return null;
+        // Breadth is part of the anchor definition (~20 fields TOUCHED per updated record) -
+        // without it a same-batch/field-count rung at default breadth 1 ties and wins on order.
         const best = minBy(
             perfRuns,
             r =>
                 Math.abs(r.scenario.update.batchSize - ANCHOR_BATCH_SIZE) +
-                Math.abs(r.scenario.dataset.fieldCount - ANCHOR_FIELD_COUNT)
+                Math.abs(r.scenario.dataset.fieldCount - ANCHOR_FIELD_COUNT) +
+                Math.abs(r.scenario.update.breadth - ANCHOR_BREADTH)
         );
         const {engine, genTxn, bridgeCall, render} = best.scorecard,
             engineMs = engine.medianMs,
