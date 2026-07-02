@@ -8,6 +8,24 @@ const DOC_SOURCE_TOKENS: Record<string, string> = {
 };
 
 /**
+ * Encode a doc id (a file path, e.g. `cmp/grid/README.md`) for safe use as a single route param,
+ * swapping `/` for `~` so it does not introduce extra path segments. {@link decodeDocId} reverses it.
+ */
+export function encodeDocId(id: string): string {
+    return id.replaceAll('/', '~');
+}
+
+/** Decode a `~`-encoded route docId back to its file-path form. */
+export function decodeDocId(routeId: string): string {
+    return routeId.replaceAll('~', '/');
+}
+
+/** True if two entries reference the same doc (same source + id). */
+export function sameDoc(a: DocEntry, b: DocEntry): boolean {
+    return a.source === b.source && a.id === b.id;
+}
+
+/**
  * Parse a Markdown doc url (e.g. `$HR/cmp/grid/README.md#tree-grids`) into the params needed to
  * route into the document viewer: the `source` repo, the `docId` (file path, with `/` encoded as
  * `~` for the route), and an optional `section` (an H2 slug). Returns null for any url that is not
@@ -23,7 +41,7 @@ export function docRouteParams(
     const [path, section] = rest.join('/').split('#');
     if (!path.endsWith('.md')) return null;
 
-    return {source, docId: path.replaceAll('/', '~'), section: section ?? null};
+    return {source, docId: encodeDocId(path), section: section ?? null};
 }
 
 /**

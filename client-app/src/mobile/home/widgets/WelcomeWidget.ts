@@ -28,8 +28,7 @@ export const welcomeWidget = hoistCmp.factory({
                             icon: Icon.book(),
                             intent: 'primary',
                             minimal: false,
-                            onClick: () =>
-                                XH.openWindow('https://github.com/xh/hoist-react#readme', 'gitlink')
+                            onClick: () => XH.navigate('default.docs')
                         }),
                         button({
                             icon: Icon.code(),

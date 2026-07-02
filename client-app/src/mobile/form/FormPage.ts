@@ -160,6 +160,26 @@ const formDemo = hoistCmp.factory<FormPageModel>(({model}) => {
                         }),
                         formField({field: 'notes', item: textArea()})
                     ]
+                }),
+                formFieldSet({
+                    className: 'xh-margin-top',
+                    title: 'Field Set 3',
+                    modelConfig: {collapsible: true},
+                    items: [
+                        formField({
+                            field: 'employeeId',
+                            item: select({
+                                placeholder: 'Select an employee...',
+                                options: model.selectableEmployees,
+                                generateOptionFn: id => {
+                                    const emp = model.lookupEmployeeById(id);
+                                    return emp ? {label: emp.name, value: emp.id} : null;
+                                },
+                                valueField: 'id',
+                                labelField: 'name'
+                            })
+                        })
+                    ]
                 })
             )
         })

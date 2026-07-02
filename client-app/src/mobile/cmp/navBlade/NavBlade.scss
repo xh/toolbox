@@ -93,6 +93,13 @@
     padding-left: 30px;
   }
 
+  // Hairline separating the top-level destinations (Home, Docs) from the example groups.
+  &__rule {
+    height: 0;
+    margin: var(--xh-pad-half-px) var(--xh-pad-px);
+    border-top: var(--xh-border-solid);
+  }
+
   &__row {
     align-items: center;
     gap: var(--xh-pad-px);

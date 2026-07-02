@@ -1,6 +1,46 @@
 # Changelog
 
-## 10.0.0-SNAPSHOT - unreleased
+## 10.0-SNAPSHOT - unreleased
+
+## 9.2.1 - 2026-06-25
+
+### Bug Fixes
+
+* Fixed broken JSON/code syntax highlighting caused by a duplicate `@codemirror/language` version in the client lockfile; de-duplicated `yarn.lock` so a single CodeMirror language package resolves.
+
+## 9.2.0 - 2026-06-25
+
+### Technical
+
+* Adopted hoist-react's new `JsonInput` `autoFormat` prop in the column-filter test panels, dropping manual `JSON.stringify` pre-indentation now that readonly inputs format their content for display automatically.
+* Demoed hoist-react's windowed `Select` / `SelectEditor` menu auto-sizing: the Forms > Select "Large list (windowed)" example now uses varied-length labels, and the Grids > Inline Editing `category` editor uses a windowed dropdown in a narrow cell so the menu visibly grows to fit its widest option.
+* Wired up the Other > Format Numbers demo to exercise `fmtQuantity`'s new `lossless` option (with `useMillions` / `useBillions` switches) and `fmtNumber`'s `null` full-precision handling, with sample values that show the lossless cutoff collapsing to m/b units only when no precision is lost.
+* Removed Toolbox's bespoke vertical sub-tab switcher styling now that hoist-react provides the rounded-pill treatment by default, retaining only the app-specific fixed rail width.
+
+### Libraries
+
+* @xh/hoist `86.1.0 → 86.2.0`
+
+## 9.1.1 - 2026-06-24
+
+### Bug Fixes
+
+* Fixed the mobile App Menu button to always render as the user's profile pic, so it no longer appears as a second hamburger alongside the nav-blade button when the (desktop-only) "profile pic menu" preference is off.
+
+## 9.1.0 - 2026-06-24
+
+### New Features
+
+* Promoted the mobile documentation viewer to a top-level Docs section: a library-chooser landing (hoist-react and hoist-core as cards plus recently-viewed shortcuts), iOS-style push drill-down through categories and documents, and a search screen with recent searches and library-grouped, highlighted results - all routing into the existing single-doc reader.
+
+### Technical
+
+* Extended Toolbox's use of hoist-core's `TypedConfigMap` typed soft-config pattern, for more accurate typing and validation of map-style JSON soft configs with known keys.
+
+### Libraries
+
+* @xh/hoist `86.1.0`
+* hoist-core `40.1.0`
 
 ## 9.0.0 - 2026-06-22
 
