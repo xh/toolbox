@@ -18,7 +18,10 @@ Runs automatically on pushes and pull requests to `develop`. Includes three inde
 - **Build** — checks out the project, sets up Java and Gradle, and runs `./gradlew build` to
   validate the Grails server compiles successfully.
 - **Lint** — sets up Node.js (version from `client-app/.nvmrc`), installs JS dependencies via
-  `yarn install --frozen-lockfile`, and runs `yarn lint` to validate the client code.
+  `yarn install --frozen-lockfile`, and runs `yarn lint` to validate the client code. `yarn lint`
+  covers ESLint, Stylelint, and a `tsc` type-check (`lint:types`) — so this job (and the client
+  build in Build Snapshot / Build Release, which also run `yarn lint`) type-checks against the
+  installed `@xh/hoist`, catching use of APIs not present in the resolved/released version.
 - **Dependency Submission** — generates and submits a Gradle dependency graph to GitHub, enabling
   Dependabot vulnerability alerts for all server-side dependencies.
 
@@ -73,24 +76,30 @@ cluster / `toolbox-dev` service.
 
 ## Build Release (`buildRelease.yml`)
 
+> **Orchestrating a release:** Don't run these release steps by hand. The `release-toolbox` skill
+> (`/release-toolbox`) is the authoritative runbook - it swaps the Hoist libraries to their
+> released versions, finalizes the `CHANGELOG`, manages the `develop` -> `master` ff-merge, triggers
+> and watches the workflows below, and restores `develop` afterward, with a confirmation gate at
+> every mutating step. The sections here document the underlying mechanics that skill relies on; if
+> you change a workflow's inputs, branch rules, or the auto-deploy behavior, update the skill to
+> match.
+
 Builds a numbered release as Docker images and pushes them to ECR. **Manually triggered** from the
-`master` branch via `workflow_dispatch`. Requires two inputs:
+`master` branch via `workflow_dispatch`. Requires one input:
 
 - **Release Version** — a semver string (e.g. `9.0.0`). Must be exactly one increment (major,
   minor, or patch) from the latest existing release tag.
-- **Is Hotfix** — check when releasing a hotfix to a version other than the latest. Requires the
-  workflow to be run from a branch other than `master` or `develop`.
 
 The workflow proceeds through four jobs:
 
-1. **validate** — guards against accidental release from `develop`. Validates the version strictly:
-   semver format, no duplicate tags, correct increment relative to existing tags. Hotfix versions
-   are validated against existing tags for their major version.
+1. **validate** — runs only from `master`, guarding against an accidental release from `develop` or
+   any other branch. Validates the version strictly: semver format, no duplicate tags, and a correct
+   single increment from the latest release tag.
 2. **build-tomcat** — builds the WAR with the release version (`-PxhAppVersion`), pushes a versioned
    image and a `latest` tag to ECR.
 3. **build-nginx** — builds the client app, pushes a versioned image and a `latest` tag to ECR.
 4. **release** — creates and pushes a `vX.Y.Z` git tag, then creates a GitHub Release with
-   auto-generated notes. Hotfixes are marked as not-latest.
+   auto-generated notes (marked as the latest release).
 
 ## Deploy Release (`deployRelease.yml`)
 

@@ -5,6 +5,7 @@ import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {DocViewModel} from '../../../core/docs/DocViewModel';
+import {getCategoryIcon, getSourceIcon} from '../../../core/docs/DocIcons';
 import {DocEntry, DocExampleLink, getDocExamples} from './docRegistry';
 import {DocSearchResult} from '../../../core/svc/DocService';
 
@@ -346,51 +347,12 @@ export class DocsPanelModel extends DocViewModel {
         this.navigateToDoc(docId, source);
     }
 
+    /** Delegate to the shared doc-icon helpers (kept as instance methods for view call-sites). */
     getCategoryIcon(categoryId: string) {
-        switch (categoryId) {
-            case 'app-development':
-                return Icon.code();
-            case 'components':
-                return Icon.gridPanel();
-            case 'concepts':
-                return Icon.book();
-            case 'core':
-                return Icon.gear();
-            case 'core-features':
-                return Icon.boxFull();
-            case 'core-framework':
-                return Icon.gear();
-            case 'desktop':
-                return Icon.desktop();
-            case 'devops':
-                return Icon.server();
-            case 'grails-platform':
-                return Icon.database();
-            case 'infrastructure':
-                return Icon.server();
-            case 'mobile':
-                return Icon.mobile();
-            case 'overview':
-                return Icon.home();
-            case 'supporting':
-                return Icon.cube();
-            case 'upgrade':
-                return Icon.arrowUp();
-            case 'utilities':
-                return Icon.wrench();
-            default:
-                return Icon.folder();
-        }
+        return getCategoryIcon(categoryId);
     }
 
     getSourceIcon(sourceName: string) {
-        switch (sourceName) {
-            case 'hoist-react':
-                return Icon.icon({iconName: 'react', prefix: 'fab'});
-            case 'hoist-core':
-                return Icon.server();
-            default:
-                return Icon.folder();
-        }
+        return getSourceIcon(sourceName);
     }
 }

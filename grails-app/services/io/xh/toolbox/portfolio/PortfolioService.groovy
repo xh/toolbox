@@ -174,8 +174,8 @@ class PortfolioService extends BaseService {
         }
     }
 
-    private Map getConfig() {
-        configService.getMap('portfolioConfigs')
+    private PortfolioConfig getConfig() {
+        configService.getObject(PortfolioConfig)
     }
 
     void clearCaches() {

@@ -85,9 +85,13 @@ agents must propose each write command and wait for the user to say "go" / "yes"
 invoking.
 
 > [!NOTE]
-> Account-wide `AdministratorAccess` / `PowerUserAccess` permission sets also exist for full admin
-> work (IAM, new infrastructure). Prefer the scoped `ToolboxReadWrite` for routine deploy/scale ops —
-> it's least-privilege and clearly named for support staff.
+> `ToolboxReadWrite` grants exactly one write action: `ecs:UpdateService`. It covers routine
+> deploy/scale ops (`--force-new-deployment`, `--desired-count`) and nothing else. **Resource
+> teardown is out of scope** - deleting EFS file systems/mount targets, deleting RDS instances or
+> snapshots, and editing Route53 records all require an admin profile. Account-wide
+> `AdministratorAccess` / `PowerUserAccess` permission sets exist for that (and for IAM / new
+> infrastructure / `iam:PassRole` task-definition work). Prefer the scoped `ToolboxReadWrite` for
+> the routine ops it's built for; reach for an admin profile only for teardown or infra changes.
 
 ### Safety protocol for AI coding agents
 

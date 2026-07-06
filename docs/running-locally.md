@@ -54,6 +54,16 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
   of `yarn start`. This builds the client using the sibling `../../hoist-react` source inline.
   Only needed when you are changing or testing hoist-react code.
 
+  This builds and *runs* against local hoist-react, but it does **not** change what `tsc`
+  type-checks against. By default `client-app/tsconfig.json` resolves `@xh/hoist` from the installed
+  `node_modules` version, so type-checking matches what CI and the release build see (and what the
+  app ships). If your inline hoist-react work introduces new or changed **type signatures** that
+  Toolbox code needs to reference (e.g. a new component prop), uncomment the `paths` block in
+  `tsconfig.json` so `tsc` and your IDE resolve `@xh/hoist` against the local checkout too.
+  **Re-comment it before committing** - leaving it on makes type-checking false-pass against the
+  published library (code that uses unreleased APIs looks fine locally but breaks the release
+  build), which is exactly the gap the commented-out default closes.
+
 * **Server against local `hoist-core`** - there are two ways to enable inline mode, and which you
   want depends on whether you need IDE integration:
   * **Per run** - pass the property on the command line:

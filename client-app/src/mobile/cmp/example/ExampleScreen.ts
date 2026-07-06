@@ -289,7 +289,7 @@ function defaultLinkText(url: string): string {
 
 /**
  * Doc links deep-link into the in-app reader; code/external links open the system browser. The
- * reader is opened as a `docs` drilldown child of the current example route (via `appendRoute`), so
+ * reader is opened as a `doc` drilldown child of the current example route (via `appendRoute`), so
  * it stacks on top of the example and the standard back button / edge-swipe return to it. The doc
  * params (`~`-encoded `docId` + an optional `section`) ride on that route segment.
  */
@@ -298,7 +298,7 @@ function openResource(url: string) {
     if (ref) {
         const params: Record<string, string> = {source: ref.source, docId: ref.docId};
         if (ref.section) params.section = ref.section;
-        XH.appendRoute('docs', params);
+        XH.appendRoute('doc', params);
         return;
     }
     window.open(toolboxUrl(url), '_blank');

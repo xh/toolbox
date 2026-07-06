@@ -1,12 +1,22 @@
 import {HoistService, InitContext, XH} from '@xh/hoist/core';
-import {makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {isEmpty} from 'lodash';
 import MiniSearch from 'minisearch';
+import {sameDoc} from '../docs/DocUtils';
 import {DocCategory, DocEntry, DocSourceInfo} from '../docs/types';
 
 export interface DocSearchResult {
     entry: DocEntry;
     score: number;
+    /** A short content excerpt around the first matched term (mobile search results). */
+    snippet?: string;
+    /** The query terms used, for client-side highlighting. */
+    matchedTerms?: string[];
 }
+
+/** localStorage key + cap for the mobile "recently viewed" docs list. */
+const RECENT_DOCS_KEY = 'docs.recentDocs',
+    RECENT_DOCS_MAX = 8;
 
 /**
  * Service providing access to hoist-react and hoist-core documentation content.
@@ -22,6 +32,9 @@ export class DocService extends HoistService {
     @observable indexReady: boolean = false;
     @observable.ref registry: DocEntry[] = [];
     @observable.ref sourceInfo: Record<string, DocSourceInfo> = {};
+
+    /** Most-recently-viewed docs (most recent first), persisted locally - drives the mobile landing. */
+    @observable.ref recentDocs: DocEntry[] = [];
 
     private cache: Map<string, string> = new Map();
     private index: MiniSearch;
@@ -68,8 +81,86 @@ export class DocService extends HoistService {
         return this.registry.filter(it => it.source === source && it.category === categoryId);
     }
 
+    /** Total number of docs available for a given source. */
+    getDocCount(source: string): number {
+        return this.registry.filter(it => it.source === source).length;
+    }
+
+    /** Categories for a source that contain at least one doc (in registry order). */
+    getPopulatedCategories(source: string): DocCategory[] {
+        return this.getCategories(source).filter(
+            c => this.getDocsByCategory(source, c.id).length > 0
+        );
+    }
+
+    /** Number of populated categories for a source. */
+    getCategoryCount(source: string): number {
+        return this.getPopulatedCategories(source).length;
+    }
+
+    /**
+     * Record a doc as recently viewed (most recent first, de-duped, capped). Persisted to
+     * localStorage so the mobile landing's "Jump back in" row survives reloads. Called from the
+     * shared `DocViewModel.navigateToDoc`, so any in-app doc view feeds it.
+     */
+    @action
+    noteRecentlyViewed(entry: DocEntry) {
+        const next = [entry, ...this.recentDocs.filter(d => !sameDoc(d, entry))].slice(
+            0,
+            RECENT_DOCS_MAX
+        );
+        this.recentDocs = next;
+        XH.localStorageService.set(
+            RECENT_DOCS_KEY,
+            next.map(d => `${d.source}:${d.id}`)
+        );
+    }
+
+    /**
+     * First content line containing any of the given terms, markdown-stripped and clipped - used as
+     * the matched-line excerpt on mobile search hits. Reads cached content only (populated once the
+     * full-text index has been built); returns null when no content is cached or no line matches.
+     */
+    getContentSnippet(source: string, docId: string, terms: string[]): string | null {
+        const content = this.cache.get(`${source}:${docId}`);
+        if (!content || isEmpty(terms)) return null;
+
+        const lowered = terms.map(t => t.toLowerCase()),
+            lines = this.stripMarkdown(content).split('\n');
+        const hit = lines.find(line => {
+            const lc = line.toLowerCase();
+            return lowered.some(t => lc.includes(t));
+        });
+        if (!hit) return null;
+
+        const trimmed = hit.trim();
+        if (trimmed.length <= 140) return trimmed;
+
+        // Clip a ~140-char window centered on the first match.
+        const idx = lowered.reduce((min, t) => {
+            const i = trimmed.toLowerCase().indexOf(t);
+            return i >= 0 && (min < 0 || i < min) ? i : min;
+        }, -1);
+        const start = Math.max(0, idx - 50),
+            excerpt = trimmed.slice(start, start + 140).trim();
+        return (start > 0 ? '...' : '') + excerpt + '...';
+    }
+
     override async initAsync(ctx: InitContext) {
         await this.loadRegistryAsync();
+        this.hydrateRecentDocs();
+    }
+
+    /** Restore recently-viewed docs from localStorage, mapping stored ids to live registry entries. */
+    @action
+    private hydrateRecentDocs() {
+        const stored: string[] = XH.localStorageService.get(RECENT_DOCS_KEY, []);
+        this.recentDocs = stored
+            .map(key => {
+                const [source, ...idParts] = key.split(':');
+                return this.getDocEntry(idParts.join(':'), source);
+            })
+            .filter(Boolean);
     }
 
     /** Kick off full-text index build. Called lazily on first search request. */

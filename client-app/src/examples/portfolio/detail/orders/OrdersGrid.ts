@@ -15,6 +15,8 @@ export const ordersGrid = hoistCmp.factory({
             item: grid(),
             bbar: [
                 filterChooser({
+                    popover: true,
+                    menuPlacement: 'top',
                     placeholder: 'Filter orders...',
                     enableClear: true,
                     flex: 1
