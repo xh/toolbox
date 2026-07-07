@@ -101,6 +101,7 @@ class ColumnChooserPanelModel extends HoistModel {
                     children: [
                         {
                             ...fullNameCol,
+                            hideable: false,
                             chooserDescription:
                                 'Concatenation of first and last name, rendered as a single cell.'
                         },
