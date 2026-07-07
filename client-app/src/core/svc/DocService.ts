@@ -34,7 +34,7 @@ export class DocService extends HoistService {
     @observable.ref accessor sourceInfo: Record<string, DocSourceInfo> = {};
 
     /** Most-recently-viewed docs (most recent first), persisted locally - drives the mobile landing. */
-    @observable.ref recentDocs: DocEntry[] = [];
+    @observable.ref accessor recentDocs: DocEntry[] = [];
 
     private cache: Map<string, string> = new Map();
     private index: MiniSearch;

@@ -66,7 +66,7 @@ export class GridTestModel extends HoistModel {
 
     @bindable
     @persist
-    includeHiddenColumns = false;
+    accessor includeHiddenColumns = false;
 
     @bindable
     @persist.with({path: 'gridPersistType', debounce: 500}) // test persist.with!

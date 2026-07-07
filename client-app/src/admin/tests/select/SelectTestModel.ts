@@ -31,7 +31,7 @@ export class SelectTestModel extends HoistModel {
 
     // ID value + generateOptionFn example, pre-populated to verify label (not raw id) on mount
     @bindable
-    idNotInOpts: number = 99;
+    accessor idNotInOpts: number = 99;
 
     constructor() {
         super();
