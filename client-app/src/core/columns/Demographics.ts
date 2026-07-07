@@ -43,6 +43,15 @@ export const stateCol: ColumnSpec = {
     width: 120
 };
 
+export const tenureCol: ColumnSpec = {
+    field: {name: 'tenure', type: 'int'},
+    headerName: 'Tenure',
+    chooserName: 'Tenure (Years)',
+    width: 90,
+    align: 'right',
+    renderer: numberRenderer({precision: 0, label: ' yrs'})
+};
+
 export const salaryCol: ColumnSpec = {
     field: {name: 'salary', type: 'number'},
     width: 90,

@@ -390,6 +390,11 @@ export class AppModel extends BaseAppModel {
                             title: 'Tree w/CheckBox',
                             content: treeGridWithCheckboxPanel
                         },
+                        {
+                            id: 'columnChooser',
+                            title: 'Column Chooser',
+                            content: columnChooserPanel
+                        },
                         {id: 'columnFiltering', content: columnFilteringPanel},
                         {id: 'inlineEditing', content: inlineEditingPanel},
                         {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
@@ -401,8 +406,7 @@ export class AppModel extends BaseAppModel {
                         },
                         {id: 'externalSort', content: externalSortGridPanel},
                         {id: 'rest', title: 'REST Editor', content: restGridPanel},
-                        {id: 'agGrid', title: 'AG Grid Wrapper', content: agGridView},
-                        {id: 'columnChooser', title: 'Column Chooser', content: columnChooserPanel}
+                        {id: 'agGrid', title: 'AG Grid Wrapper', content: agGridView}
                     ]
                 }
             },
