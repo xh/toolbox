@@ -36,7 +36,7 @@
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
     "@ibm/plex-mono": "^2.5.0",
     "@ibm/plex-sans": "^1.1.0",
-    "@xh/hoist": "^87.0.0-SNAPSHOT",
+    "@xh/hoist": "86.3.0",
     "@xh/package-template": "~3.0.1",
     "ag-grid-community": "~35.3.0",
     "ag-grid-enterprise": "~35.3.0",
