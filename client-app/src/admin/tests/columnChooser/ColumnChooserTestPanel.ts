@@ -3,7 +3,6 @@ import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp, HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {button, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
-import {columnChooser} from '@xh/hoist/desktop/cmp/grid';
 import {buttonGroupInput, jsonInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -47,26 +46,13 @@ export const columnChooserTestPanel = hoistCmp.factory({
                 }),
                 filler(),
                 storeFilterField({gridModel: model.gridModel}),
-                colChooserButton({gridModel: model.gridModel}),
+                colChooserButton({gridModel: model.gridModel, text: 'Popover'}),
+                colChooserButton({gridModel: model.gridModel, target: 'panel', text: 'Panel'}),
                 exportButton({gridModel: model.gridModel})
             ],
             items: [
                 hframe(
-                    panel({
-                        title: 'Embedded Chooser',
-                        icon: Icon.gridPanel(),
-                        modelConfig: {
-                            side: 'left',
-                            defaultSize: 600,
-                            collapsible: true,
-                            resizable: true
-                        },
-                        item: columnChooser({
-                            gridModel: model.gridModel,
-                            showColumnLibrary: true,
-                            flex: 1
-                        })
-                    }),
+                    // Grid renders its docked `colChooserPanelModel ` chooser to its right.
                     panel({flex: 1, item: grid({model: model.gridModel})}),
                     panel({
                         title: 'Column State',
@@ -161,7 +147,11 @@ class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
         return new GridModel({
             store: {idSpec: 'id'},
             emptyText: 'No records found...',
-            colChooserModel: true,
+            colChooserModel: {columnLibraryEnabled: true},
+            colChooserPanelModel: {
+                columnLibraryEnabled: true,
+                panelConfig: {defaultSize: 600, defaultCollapsed: false}
+            },
             enableExport: true,
             useVirtualColumns: true,
             lockColumnGroups: this.lockColumnGroups,

@@ -110,6 +110,20 @@
     gap: var(--xh-pad-half-px);
   }
 
+  // Subsection header grouping related option rows (see `wrapperOptionGroup`).
+  &__option-group {
+    margin-top: var(--xh-pad-half-px);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--xh-text-color-muted);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
   &__option {
     display: flex;
     flex-direction: column;

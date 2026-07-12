@@ -1,14 +1,13 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {filler, hframe} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp, HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
-import {columnChooser} from '@xh/hoist/desktop/cmp/grid';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
-import {wrapper, wrapperOption} from '../../common';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common';
 import {
     actualGrossCol,
     actualUnitsSoldCol,
@@ -44,8 +43,9 @@ export const columnChooserPanel = hoistCmp.factory({
                 'the Library only; the buckets follow the grid’s real `ColumnGroup` structure.',
                 '',
                 'Columns carry `chooserDescription` tooltips, and `Full Name` is locked via',
-                '`hideable: false`. The chooser also opens from the toolbar’s `colChooserButton` -',
-                'showing it beside the grid is just a demo convenience.'
+                '`hideable: false`. Open the chooser from the toolbar - as a **popover** via the grid’s',
+                '`colChooserModel`, or as a **docked side-panel** via its `colChooserPanelModel `, which',
+                'the grid renders beside itself (shown open here by default).'
             ],
             links: [
                 {
@@ -53,9 +53,9 @@ export const columnChooserPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/desktop/cmp/grid/columnchooser/ColumnChooser.ts',
-                    text: 'ColumnChooser',
-                    notes: 'The standalone column chooser component and its props.'
+                    url: '$HR/cmp/grid/Types.ts',
+                    text: 'ColChooserConfig',
+                    notes: 'Config options shared by the popover, dialog, and docked-panel choosers.'
                 },
                 {
                     url: '$HR/cmp/grid/columns/Column.ts',
@@ -68,45 +68,70 @@ export const columnChooserPanel = hoistCmp.factory({
                     notes: 'Grid-level configuration for the chooser and column-group locking.'
                 }
             ],
+            // Chooser config is applied at GridModel construction, so every option here rebuilds the
+            // model (see ColumnChooserPanelModel). Modal (popover/dialog) and docked-panel choosers
+            // are configured independently, so their options are grouped separately below.
             options: [
-                wrapperOption({
-                    label: 'Show chooser beside grid',
-                    info: 'Demo aid only - a real app opens the chooser from the toolbar button or context menu.',
-                    control: switchInput({model, bind: 'showEmbeddedChooser'})
-                }),
+                wrapperOptionGroup('Grid'),
                 wrapperOption({
                     label: 'Lock column groups',
                     info: 'Keeps each group’s visible members contiguous - a group can’t be split apart.',
                     propName: 'GridModel.lockColumnGroups',
                     control: switchInput({model, bind: 'lockColumnGroups'})
+                }),
+                wrapperOptionGroup('Modal Chooser (Popover / Dialog)'),
+                wrapperOption({
+                    label: 'Column Library',
+                    info: 'Show the docked Column Library of hidden columns to drag in and out.',
+                    propName: 'ColChooserConfig.columnLibraryEnabled',
+                    control: switchInput({model, bind: 'modalColumnLibraryEnabled'})
+                }),
+                wrapperOption({
+                    label: 'Restore Defaults',
+                    info: 'Show the button that reverts all column, grouping, and sort state to defaults.',
+                    propName: 'ColChooserConfig.showRestoreDefaults',
+                    control: switchInput({model, bind: 'modalShowRestoreDefaults'})
+                }),
+                wrapperOption({
+                    label: 'Commit on Change',
+                    info: 'Apply edits to the grid immediately; off adds a Save button to commit on demand.',
+                    propName: 'ColChooserConfig.commitOnChange',
+                    control: switchInput({model, bind: 'modalCommitOnChange'})
+                }),
+                wrapperOptionGroup('Panel Chooser (Docked)'),
+                wrapperOption({
+                    label: 'Column Library',
+                    info: 'Show the docked Column Library of hidden columns to drag in and out.',
+                    propName: 'ColChooserConfig.columnLibraryEnabled',
+                    control: switchInput({model, bind: 'panelColumnLibraryEnabled'})
+                }),
+                wrapperOption({
+                    label: 'Restore Defaults',
+                    info: 'Show the button that reverts all column, grouping, and sort state to defaults.',
+                    propName: 'ColChooserConfig.showRestoreDefaults',
+                    control: switchInput({model, bind: 'panelShowRestoreDefaults'})
                 })
             ],
             item: panel({
                 title: 'Grids › Column Chooser',
                 icon: Icon.gridPanel(),
                 className: 'tb-grid-wrapper-panel',
-                item: hframe(
-                    panel({
-                        flex: 1,
-                        item: grid({model: model.gridModel}),
-                        bbar: [
-                            storeFilterField({gridModel: model.gridModel}),
-                            filler(),
-                            colChooserButton({gridModel: model.gridModel}),
-                            exportButton({gridModel: model.gridModel})
-                        ]
+                // The grid renders its docked `colChooserPanelModel ` beside itself - no manual embed.
+                item: grid({model: model.gridModel}),
+                bbar: [
+                    storeFilterField({gridModel: model.gridModel}),
+                    filler(),
+                    colChooserButton({
+                        gridModel: model.gridModel,
+                        text: 'Choose Columns (Popover)'
                     }),
-                    panel({
-                        omit: !model.showEmbeddedChooser,
-                        className: 'xh-border-left',
-                        width: 780,
-                        item: columnChooser({
-                            gridModel: model.gridModel,
-                            showColumnLibrary: true,
-                            flex: 1
-                        })
-                    })
-                )
+                    colChooserButton({
+                        gridModel: model.gridModel,
+                        target: 'panel',
+                        text: 'Choose Columns (Panel)'
+                    }),
+                    exportButton({gridModel: model.gridModel})
+                ]
             })
         });
     }
@@ -114,24 +139,38 @@ export const columnChooserPanel = hoistCmp.factory({
 
 class ColumnChooserPanelModel extends HoistModel {
     @managed @observable.ref gridModel: GridModel;
+
     @bindable lockColumnGroups: boolean = true;
 
-    // Demo-only affordance: render the standalone chooser beside the grid. A real app would
-    // typically expose the chooser on demand via the toolbar's colChooserButton instead.
-    @bindable showEmbeddedChooser: boolean = true;
+    // Modal (popover / dialog) chooser config -> gridModel.colChooserModel.
+    @bindable modalColumnLibraryEnabled: boolean = true;
+    @bindable modalShowRestoreDefaults: boolean = true;
+    @bindable modalCommitOnChange: boolean = true;
+
+    // Docked side-panel chooser config -> gridModel.colChooserPanelModel . Note the panel forces
+    // commitOnChange true, so no such option is exposed for it.
+    @bindable panelColumnLibraryEnabled: boolean = true;
+    @bindable panelShowRestoreDefaults: boolean = true;
 
     constructor() {
         super();
         makeObservable(this);
-        this.gridModel = this.createGridModel(this.lockColumnGroups);
+        this.gridModel = this.createGridModel();
 
-        // lockColumnGroups is a construction-time GridModel config, so rebuild the model (and the
-        // choosers bound to it) whenever the user toggles it.
+        // All of the above are construction-time GridModel / chooser configs, so rebuild the model
+        // (and the choosers bound to it) whenever any of them change.
         this.addReaction({
-            track: () => this.lockColumnGroups,
-            run: lockColumnGroups => {
+            track: () => [
+                this.lockColumnGroups,
+                this.modalColumnLibraryEnabled,
+                this.modalShowRestoreDefaults,
+                this.modalCommitOnChange,
+                this.panelColumnLibraryEnabled,
+                this.panelShowRestoreDefaults
+            ],
+            run: () => {
                 XH.safeDestroy(this.gridModel);
-                this.gridModel = this.createGridModel(lockColumnGroups);
+                this.gridModel = this.createGridModel();
                 this.loadAsync().catchDefault();
             }
         });
@@ -142,16 +181,26 @@ class ColumnChooserPanelModel extends HoistModel {
         this.gridModel.loadData(sales);
     }
 
-    private createGridModel(lockColumnGroups: boolean): GridModel {
+    private createGridModel(): GridModel {
         return new GridModel({
             store: {
                 idSpec: data => `${data.firstName}~${data.lastName}~${data.city}~${data.state}`
             },
             sortBy: 'lastName',
             emptyText: 'No records found...',
-            colChooserModel: {showColumnLibrary: true, showRestoreDefaults: true, width: 620},
+            colChooserModel: {
+                columnLibraryEnabled: this.modalColumnLibraryEnabled,
+                showRestoreDefaults: this.modalShowRestoreDefaults,
+                commitOnChange: this.modalCommitOnChange,
+                width: 620
+            },
+            colChooserPanelModel: {
+                columnLibraryEnabled: this.panelColumnLibraryEnabled,
+                showRestoreDefaults: this.panelShowRestoreDefaults,
+                panelConfig: {defaultSize: 620, defaultCollapsed: false}
+            },
             enableExport: true,
-            lockColumnGroups,
+            lockColumnGroups: this.lockColumnGroups,
             columns: [
                 {
                     groupId: 'rep',
