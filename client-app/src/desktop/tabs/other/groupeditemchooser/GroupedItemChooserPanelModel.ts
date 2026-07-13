@@ -2,6 +2,7 @@ import {ChartModel} from '@xh/hoist/cmp/chart';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {mean} from 'lodash';
 import {
     ChooserNode,
     EntryInput,
@@ -146,7 +147,7 @@ export class GroupedItemChooserPanelModel extends HoistModel {
                     this.seriesFor(entry.item.label, entry.color, entry.kind === 'benchmark')
                 );
             } else if (entry.transformKey != null && chooserModel.transformsEnabled) {
-                series.push(this.seriesFor(entry.label, entry.color, false));
+                series.push(this.transformedSeriesFor(entry));
             } else {
                 entry.members.forEach(m => {
                     series.push(this.seriesFor(m.item.label, m.color, m.kind === 'benchmark'));
@@ -157,8 +158,48 @@ export class GroupedItemChooserPanelModel extends HoistModel {
         this.chartModel.setSeries(series);
     }
 
-    /** Deterministic schematic random walk, indexed to 100 and seeded by series name. */
+    /**
+     * A transformed group plots as a single series, genuinely computed pointwise over its member
+     * series - the component records only the selected transform key, and the consumer owns the
+     * computation. Series name carries the transform tag so the applied choice reads in the legend.
+     */
+    private transformedSeriesFor(entry) {
+        const {chooserModel} = this,
+            transform = chooserModel.getTransform(entry.transformKey),
+            memberData = entry.members.map(m => this.walkData(m.item.label)),
+            data = [];
+
+        for (let i = 0; i < 14; i++) {
+            const vals = memberData.map(d => d[i][1]).sort((a, b) => a - b),
+                mid = Math.floor(vals.length / 2),
+                v =
+                    entry.transformKey === 'median'
+                        ? vals.length % 2
+                            ? vals[mid]
+                            : (vals[mid - 1] + vals[mid]) / 2
+                        : mean(vals);
+            data.push([i, Math.round(v * 10) / 10]);
+        }
+
+        return {
+            name: `${entry.label} · ${transform?.shortLabel ?? entry.transformKey.toUpperCase()}`,
+            color: entry.color,
+            data,
+            dashStyle: 'Solid'
+        };
+    }
+
     private seriesFor(name: string, color: string, dashed: boolean) {
+        return {
+            name,
+            color,
+            data: this.walkData(name),
+            dashStyle: dashed ? 'Dash' : 'Solid'
+        };
+    }
+
+    /** Deterministic schematic random walk, indexed to 100 and seeded by series name. */
+    private walkData(name: string): number[][] {
         let seed = 0;
         for (let i = 0; i < name.length; i++) seed = (seed * 31 + name.charCodeAt(i)) % 9973;
         const rnd = () => {
@@ -172,13 +213,7 @@ export class GroupedItemChooserPanelModel extends HoistModel {
             v += (rnd() - 0.45) * 2;
             data.push([i, Math.round((100 + v * 2) * 10) / 10]);
         }
-
-        return {
-            name,
-            color,
-            data,
-            dashStyle: dashed ? 'Dash' : 'Solid'
-        };
+        return data;
     }
 
     private createChartModel(): ChartModel {

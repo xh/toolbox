@@ -72,8 +72,7 @@ export const benchmarkKind: ItemKind = {
 
 export const sampleTransforms: Transform[] = [
     {key: 'avg', label: 'Avg', shortLabel: 'AVG', isAggregate: true},
-    {key: 'median', label: 'Med', shortLabel: 'MED', isAggregate: true},
-    {key: 'sum', label: 'Sum', shortLabel: 'SUM', isAggregate: true}
+    {key: 'median', label: 'Med', shortLabel: 'MED', isAggregate: true}
 ];
 
 export const sampleProvidedGroups: ProvidedGroupDef[] = [

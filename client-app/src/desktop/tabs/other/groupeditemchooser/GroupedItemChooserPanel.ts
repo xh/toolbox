@@ -34,7 +34,9 @@ export const groupedItemChooserPanel = hoistCmp.factory({
                 'at the top level: the component never dedupes.',
                 '',
                 'The chart is an *example consumer* of the emitted `value` - it is not part of',
-                'the component, and owns the flatten of grouped items into plotted series.'
+                'the component. It owns the flatten of grouped items into plotted series and the',
+                'actual computation of group transforms (avg / med) over member series - the',
+                'component only records the selected transform key.'
             ],
             links: [
                 {
