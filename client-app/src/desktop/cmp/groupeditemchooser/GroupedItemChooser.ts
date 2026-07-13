@@ -50,6 +50,9 @@ export interface GroupedItemChooserProps
     /** Section header label for provided groups in the add-menu. */
     groupsSectionLabel?: string;
 
+    /** Position of the popover panel relative to its trigger button (popover mode only). */
+    popoverPosition?: 'bottom-left' | 'bottom-right' | 'bottom';
+
     /** Width in pixels of the popover panel (popover mode only). */
     popoverWidth?: number;
 
@@ -79,6 +82,7 @@ export const [GroupedItemChooser, groupedItemChooser] =
                 buttonText = 'Compare',
                 addPlaceholder = 'Add...',
                 groupsSectionLabel = 'Groups',
+                popoverPosition = 'bottom-right',
                 popoverWidth = 320,
                 popoverMaxHeight = 500,
                 testId,
@@ -96,7 +100,7 @@ export const [GroupedItemChooser, groupedItemChooser] =
                     item: popover({
                         isOpen: impl.popoverOpen,
                         popoverRef: impl.popoverRef,
-                        position: 'bottom-right',
+                        position: popoverPosition,
                         minimal: false,
                         popoverClassName: 'xh-grouped-item-chooser-popover',
                         item: button({
