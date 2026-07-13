@@ -35,10 +35,10 @@ const ungroupActionIcon = () => Icon.icon({iconName: 'object-ungroup'});
 
 export interface GroupedItemChooserProps
     extends HoistProps<GroupedItemChooserModel>, LayoutProps, StyleProps, TestSupportProps {
-    /** Header title, shown in inline mode. */
+    /** Header title, shown in inline mode. Pass null to suppress the header entirely. */
     title?: ReactNode;
 
-    /** One-line usage hint below the inline header, or null to suppress. */
+    /** One-line usage hint below the inline header, or null/omitted to suppress. */
     hint?: ReactNode;
 
     /** Text for the trigger button in popover mode. */
@@ -174,7 +174,7 @@ const chooserBody = hoistCmp.factory<GroupedItemChooserLocalModel>({
             width,
             items: [
                 div({
-                    omit: !showHeader,
+                    omit: !showHeader || (title == null && !hint),
                     className: 'xh-grouped-item-chooser__header',
                     items: [
                         div({
