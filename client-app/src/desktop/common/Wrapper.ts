@@ -160,7 +160,8 @@ const statusTagBanner = hoistCmp.factory<StatusTagBannerProps>({
         return div({
             className: 'tbox-wrapper__status-tag',
             items: [
-                icon,
+                // Oversized, muted watermark anchored to the card's bottom-right corner.
+                span({className: 'tbox-wrapper__status-tag-watermark', item: icon}),
                 div({
                     className: 'tbox-wrapper__status-tag-text',
                     items: [
