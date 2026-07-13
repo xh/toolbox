@@ -78,8 +78,8 @@ export const sampleTransforms: Transform[] = [
 
 export const sampleProvidedGroups: ProvidedGroupDef[] = [
     {
-        id: 'analyst-peers',
-        label: 'Analyst Peer Set',
+        id: 'us-refiners',
+        label: 'US Refiners',
         members: ['CVI', 'DK', 'MPC', 'PARR', 'PBF', 'PSX', 'VLO'].map(companyRef),
         transformKey: 'avg'
     },
