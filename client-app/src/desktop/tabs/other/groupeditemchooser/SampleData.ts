@@ -84,8 +84,8 @@ export const sampleProvidedGroups: ProvidedGroupDef[] = [
         transformKey: 'avg'
     },
     {
-        id: 'proxy-peers',
-        label: 'Company Proxy Peers',
+        id: 'energy-peers',
+        label: 'Energy Sector Peers',
         members: ['VLO', 'MPC', 'PSX', 'PBF', 'DK', 'CVI', 'PARR', 'XOM', 'CVX'].map(companyRef),
         transformKey: 'avg'
     }
