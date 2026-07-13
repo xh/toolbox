@@ -35,6 +35,12 @@ const ungroupActionIcon = () => Icon.icon({iconName: 'object-ungroup'});
 
 export interface GroupedItemChooserProps
     extends HoistProps<GroupedItemChooserModel>, LayoutProps, StyleProps, TestSupportProps {
+    /** Header title, shown in inline mode. */
+    title?: ReactNode;
+
+    /** One-line usage hint below the inline header, or null to suppress. */
+    hint?: ReactNode;
+
     /** Text for the trigger button in popover mode. */
     buttonText?: ReactNode;
 
@@ -68,6 +74,8 @@ export const [GroupedItemChooser, groupedItemChooser] =
             {
                 model,
                 className,
+                title = 'Comparison',
+                hint,
                 buttonText = 'Compare',
                 addPlaceholder = 'Add...',
                 groupsSectionLabel = 'Groups',
@@ -105,6 +113,8 @@ export const [GroupedItemChooser, groupedItemChooser] =
                         }),
                         content: chooserBody({
                             model: impl,
+                            title,
+                            hint: null,
                             addPlaceholder,
                             groupsSectionLabel,
                             width: popoverWidth,
@@ -134,8 +144,11 @@ export const [GroupedItemChooser, groupedItemChooser] =
                 ...layoutProps,
                 item: chooserBody({
                     model: impl,
+                    title,
+                    hint,
                     addPlaceholder,
-                    groupsSectionLabel
+                    groupsSectionLabel,
+                    showHeader: true
                 })
             });
         }
@@ -145,11 +158,39 @@ export const [GroupedItemChooser, groupedItemChooser] =
 // Body - identical in both placements.
 //--------------------------------------------------------------------------------------------
 const chooserBody = hoistCmp.factory<GroupedItemChooserLocalModel>({
-    render({model, addPlaceholder, groupsSectionLabel, width = null, listMaxHeight = null}) {
+    render({
+        model,
+        title,
+        hint,
+        addPlaceholder,
+        groupsSectionLabel,
+        showHeader = false,
+        width = null,
+        listMaxHeight = null
+    }) {
+        const {parentModel} = model;
         return vbox({
             className: 'xh-grouped-item-chooser__body',
             width,
             items: [
+                div({
+                    omit: !showHeader,
+                    className: 'xh-grouped-item-chooser__header',
+                    items: [
+                        div({
+                            className: 'xh-grouped-item-chooser__header__title',
+                            items: [
+                                span(title),
+                                badge({item: parentModel.value.length, intent: 'primary'})
+                            ]
+                        }),
+                        div({
+                            omit: !hint,
+                            className: 'xh-grouped-item-chooser__header__hint',
+                            item: hint
+                        })
+                    ]
+                }),
                 dragDropContext({
                     onDragEnd: result => model.onDragEnd(result),
                     item: div({
