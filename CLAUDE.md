@@ -491,3 +491,25 @@ XH / Hoist framework developers can optionally check out the framework libraries
 directories for inline development of the libraries. This is not required for app development.
 - **`../hoist-core`** — Groovy/Java backend framework. Enable per-run with `./gradlew bootRun -PrunHoistInline=true` (no tracked-file edit), or persistently via `runHoistInline=true` in `gradle.properties`.
 - **`../hoist-react`** — React frontend library. Enable with `yarn startWithHoist` from `client-app/`. To also type-check against the local checkout, uncomment the `paths` block in `client-app/tsconfig.json` (re-comment before committing).
+
+## Feature: GroupedItemChooser (in progress; this section + docs/grouped-item-chooser are branch-only, remove before merge)
+
+Building `GroupedItemChooser` + `GroupedItemChooserModel` — a general, domain-neutral
+item/series **picker + grouper** control (leaf items → optional one-level groups → per-group
+transform → ordered, colored output `value`). Finance data in the demo is sample data only.
+
+- **Product spec (behavior + visuals):** @docs/grouped-item-chooser/spec.md
+- **Typed API (model/component/value):** @docs/grouped-item-chooser/api.md
+- **Reviewed reference demo + state PNGs:** docs/grouped-item-chooser/assets/
+  (`reference-demo.html` is the SOLE source of truth for behavior/styling — open it and match it.)
+
+**How to build it:** follow this repo's own conventions and the Hoist reference — the `hoist-*`
+MCP tools (`hoist-search-docs`, `hoist-search-symbols`, `hoist-get-symbol`, `hoist-get-members`)
+and the closest precedent, **`GroupingChooser`** (`@xh/hoist/cmp/grouping` +
+`@xh/hoist/desktop/cmp/grouping`, incl. its impl `GroupingChooserLocalModel`). The spec/api docs
+deliberately do NOT restate framework or styling conventions — those come from Hoist.
+
+**Boundary:** the deliverable is the control + its model + the observable `value`. Any chart/legend
+is an *example consumer* of the value in a demo tab — NOT part of the component. In Toolbox the
+component lives at `client-app/src/desktop/cmp/groupeditemchooser/` (self-contained, `@xh/hoist`
+imports only, structured for easy extraction) with its demo panel under the desktop app's Other tab.
