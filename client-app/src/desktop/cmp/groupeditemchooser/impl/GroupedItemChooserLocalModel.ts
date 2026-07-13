@@ -219,16 +219,14 @@ export class GroupedItemChooserLocalModel extends HoistModel {
         return this.selectedMemberRefs.length >= 1;
     }
 
-    /** Gentle nudge shown when grouping a single item - allowed, but likely not intended. */
+    /**
+     * True to disable the Group button: a single selected item with no existing editable group
+     * to move it into. Creating a group of one is not offered via the action bar - the button's
+     * tooltip nudges the user to select more.
+     */
     @computed
-    get groupHint(): string {
-        const {parentModel, selectedItemRefs, hasGroupSelected} = this;
-        return parentModel.enableGrouping &&
-            selectedItemRefs.length === 1 &&
-            !hasGroupSelected &&
-            isEmpty(parentModel.userGroups)
-            ? 'Select one more to group'
-            : '';
+    get groupButtonDisabled(): boolean {
+        return this.selectedItemRefs.length === 1 && isEmpty(this.parentModel.userGroups);
     }
 
     selectionKey(ref: SelectionRef): string {

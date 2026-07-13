@@ -672,11 +672,6 @@ const selectionBar = hoistCmp.factory<GroupedItemChooserLocalModel>({
             className: 'xh-grouped-item-chooser__selbar',
             items: [
                 span({className: 'c', item: `${selectionCount} selected`}),
-                span({
-                    omit: !model.groupHint,
-                    className: 'hint',
-                    item: model.groupHint
-                }),
                 filler(),
                 popover({
                     omit: !model.showGroupButton,
@@ -688,6 +683,8 @@ const selectionBar = hoistCmp.factory<GroupedItemChooserLocalModel>({
                         icon: groupActionIcon(),
                         rightIcon: Icon.angleDown(),
                         intent: 'primary',
+                        disabled: model.groupButtonDisabled,
+                        title: model.groupButtonDisabled ? 'Select one more to group' : null,
                         onClick: () => model.toggleGroupInto()
                     }),
                     content: menu({
