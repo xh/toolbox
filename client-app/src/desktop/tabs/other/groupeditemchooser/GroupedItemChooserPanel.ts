@@ -94,8 +94,6 @@ const inlineLayout = hoistCmp.factory<GroupedItemChooserPanelModel>({
         return hframe(
             groupedItemChooser({
                 model: model.chooserModel,
-                title: 'Compare against',
-                hint: 'Add below (to top level). Select rows to Group / Add to / Move; or drag a row onto a group to move it in. Provided groups are locked.',
                 addPlaceholder: 'Add company, benchmark, group...',
                 groupsSectionLabel: 'Peer groups',
                 width: 340,

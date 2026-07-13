@@ -5,26 +5,7 @@
     min-height: 0;
   }
 
-  &__header {
-    padding: var(--xh-pad-px) var(--xh-pad-px) var(--xh-pad-half-px);
-
-    &__title {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 600;
-      color: var(--xh-text-color-headings);
-    }
-
-    &__hint {
-      margin-top: 4px;
-      font-size: var(--xh-font-size-small-px);
-      color: var(--xh-text-color-muted);
-    }
-  }
-
   &__list {
-    border-top: 1px solid var(--xh-border-color);
     flex: 1;
     min-height: 0;
     overflow-y: auto;
