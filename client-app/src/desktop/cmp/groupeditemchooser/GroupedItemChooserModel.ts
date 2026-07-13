@@ -33,7 +33,14 @@ export interface GroupedItemChooserConfig {
     /** Initial comparison contents, or a function to produce them. */
     initialValue?: EntryInput[] | (() => EntryInput[]);
 
-    /** Optional single pinned anchor item, rendered first and immutable. */
+    /**
+     * Optional single pinned anchor item, rendered first and immutable. The anchor sits entirely
+     * outside the container system: it is never selectable, removable, draggable, or groupable,
+     * and any occurrence of its id within provided groups or initial group members is stripped
+     * (with a warning). Apps wanting an aggregate that *includes* the anchor (e.g. "avg of peers
+     * + subject") should express that via a dedicated {@link Transform} key - transform
+     * computation is consumer-owned, so no membership is required.
+     */
     anchorItem?: ItemRef;
 
     //--- Features (component-wide, not per-kind) ---
@@ -209,8 +216,14 @@ export class GroupedItemChooserModel extends HoistModel {
         throwIf(isEmpty(kinds), 'GroupedItemChooserModel requires at least one ItemKind.');
 
         this.kinds = kinds;
-        this.providedGroups = providedGroups;
         this.anchorItem = anchorItem;
+        this.providedGroups = providedGroups.map(def => {
+            if (!def.members.some(m => m.id === anchorItem?.id)) return def;
+            this.logWarn(
+                `Stripped anchor item '${anchorItem.id}' from provided group '${def.id}' - the anchor is never groupable.`
+            );
+            return {...def, members: def.members.filter(m => m.id !== anchorItem.id)};
+        });
         this.enableGrouping = enableGrouping;
         this.enableReordering = enableReordering;
         this.transforms = transforms;
@@ -312,7 +325,7 @@ export class GroupedItemChooserModel extends HoistModel {
      */
     @action
     addMemberToGroup(item: ItemRef, groupId: string) {
-        if (this.isProvidedGroup(groupId)) return;
+        if (this.isProvidedGroup(groupId) || item.id === this.anchorItem?.id) return;
         let entries = this.entries.map(e =>
             e.type === 'group' && e.id === groupId && !e.members.some(m => m.id === item.id)
                 ? {...e, members: [...e.members, item]}
@@ -389,6 +402,7 @@ export class GroupedItemChooserModel extends HoistModel {
      */
     @action
     createGroupFromItems(items: ItemRef[]) {
+        items = items.filter(it => it.id !== this.anchorItem?.id);
         if (isEmpty(items)) return;
         const seen = new Set<string>(),
             deduped = items.filter(it => !seen.has(it.id) && seen.add(it.id) !== null),
@@ -614,19 +628,40 @@ export class GroupedItemChooserModel extends HoistModel {
     }
 
     private parseEntryInputs(inputs: EntryInput[]): ChooserEntry[] {
-        return (inputs ?? []).map(input => {
-            if (input.type === 'item') return {type: 'item', item: input.item} as ChooserEntry;
+        const anchorId = this.anchorItem?.id,
+            warnAnchor = (where: string) =>
+                this.logWarn(
+                    `Stripped anchor item '${anchorId}' from initialValue ${where} - the anchor is pinned separately and never groupable.`
+                );
+
+        return (inputs ?? []).flatMap(input => {
+            if (input.type === 'item') {
+                if (input.item.id === anchorId) {
+                    warnAnchor('top-level entries');
+                    return [];
+                }
+                return [{type: 'item', item: input.item} as ChooserEntry];
+            }
+
+            let {members} = input;
+            if (members.some(m => m.id === anchorId)) {
+                warnAnchor(`group '${input.label}' members`);
+                members = members.filter(m => m.id !== anchorId);
+            }
+
             const source = input.source ?? 'user';
-            return {
-                type: 'group',
-                id: input.id ?? XH.genId(),
-                label: input.label,
-                seq: source === 'user' ? ++this.groupSeq : undefined,
-                source,
-                transformKey: input.transformKey ?? null,
-                members: [...input.members],
-                expanded: input.expanded ?? false
-            } as ChooserEntry;
+            return [
+                {
+                    type: 'group',
+                    id: input.id ?? XH.genId(),
+                    label: input.label,
+                    seq: source === 'user' ? ++this.groupSeq : undefined,
+                    source,
+                    transformKey: input.transformKey ?? null,
+                    members: [...members],
+                    expanded: input.expanded ?? false
+                } as ChooserEntry
+            ];
         });
     }
 }

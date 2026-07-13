@@ -418,17 +418,22 @@ export class GroupedItemChooserLocalModel extends HoistModel {
     private async refreshGroupPickerAsync() {
         const {parentModel, groupPickerId, groupQuery} = this;
         if (!groupPickerId) return;
-        const sections = await Promise.all(
-            parentModel.kinds.map(async kind => {
-                const options = await kind.querySource(groupQuery);
-                return {
-                    kind,
-                    options: options
-                        .filter(opt => !parentModel.isItemInGroup(groupPickerId, opt.id))
-                        .map(opt => ({...opt, added: false}))
-                };
-            })
-        );
+        const {anchorItem} = parentModel,
+            sections = await Promise.all(
+                parentModel.kinds.map(async kind => {
+                    const options = await kind.querySource(groupQuery);
+                    return {
+                        kind,
+                        options: options
+                            .filter(
+                                opt =>
+                                    !parentModel.isItemInGroup(groupPickerId, opt.id) &&
+                                    opt.id !== anchorItem?.id
+                            )
+                            .map(opt => ({...opt, added: false}))
+                    };
+                })
+            );
         this.setGroupPickerSections(sections);
     }
 
