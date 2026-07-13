@@ -1,3 +1,5 @@
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faObjectGroup, faObjectUngroup} from '@fortawesome/pro-regular-svg-icons';
 import {badge} from '@xh/hoist/cmp/badge';
 import {div, filler, fragment, hbox, input, span, vbox} from '@xh/hoist/cmp/layout';
 import {
@@ -24,6 +26,12 @@ import './GroupedItemChooser.scss';
 import {GroupedItemChooserModel} from './GroupedItemChooserModel';
 import {GroupedItemChooserLocalModel} from './impl/GroupedItemChooserLocalModel';
 import {ChooserGroupEntry, ChooserItemEntry} from './Types';
+
+// Group/ungroup glyphs are not in Hoist's enumerated icon set - register them here so they
+// travel with the component. Uses the default 'far' (regular) weight.
+library.add(faObjectGroup, faObjectUngroup);
+const groupActionIcon = () => Icon.icon({iconName: 'object-group'});
+const ungroupActionIcon = () => Icon.icon({iconName: 'object-ungroup'});
 
 export interface GroupedItemChooserProps
     extends HoistProps<GroupedItemChooserModel>, LayoutProps, StyleProps, TestSupportProps {
@@ -473,7 +481,7 @@ const groupMenuButton = hoistCmp.factory<GroupedItemChooserLocalModel>({
                           })
                         : menuItem({
                               text: 'Ungroup (to top level)',
-                              icon: Icon.arrowUpFromBracket(),
+                              icon: ungroupActionIcon(),
                               onClick: () => parentModel.ungroup(group.id)
                           })
                 ]
@@ -677,7 +685,7 @@ const selectionBar = hoistCmp.factory<GroupedItemChooserLocalModel>({
                     minimal: true,
                     item: button({
                         text: 'Group...',
-                        icon: Icon.users(),
+                        icon: groupActionIcon(),
                         rightIcon: Icon.angleDown(),
                         intent: 'primary',
                         onClick: () => model.toggleGroupInto()
@@ -687,7 +695,7 @@ const selectionBar = hoistCmp.factory<GroupedItemChooserLocalModel>({
                             menuDivider({title: 'Group into'}),
                             menuItem({
                                 text: 'New group...',
-                                icon: Icon.users(),
+                                icon: groupActionIcon(),
                                 onClick: () => model.groupSelectionIntoNew()
                             }),
                             ...parentModel.userGroups.map(g =>
