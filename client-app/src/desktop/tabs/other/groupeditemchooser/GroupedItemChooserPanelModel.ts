@@ -28,7 +28,6 @@ export class GroupedItemChooserPanelModel extends HoistModel {
     @bindable enableGrouping = true;
     @bindable enableReordering = true;
     @bindable supportTransforms = true;
-    @bindable supportBenchmarks = true;
     @bindable showSavedGroups = true;
     @bindable displayMode: 'inline' | 'popover' = 'inline';
 
@@ -51,7 +50,6 @@ export class GroupedItemChooserPanelModel extends HoistModel {
                     this.enableGrouping,
                     this.enableReordering,
                     this.supportTransforms,
-                    this.supportBenchmarks,
                     this.showSavedGroups,
                     this.displayMode
                 ],
@@ -70,7 +68,7 @@ export class GroupedItemChooserPanelModel extends HoistModel {
     //------------------------------------------------------------------------------------------
     private createChooserModel(initialValue: EntryInput[]): GroupedItemChooserModel {
         return new GroupedItemChooserModel({
-            kinds: this.supportBenchmarks ? [companyKind, benchmarkKind] : [companyKind],
+            kinds: [companyKind, benchmarkKind],
             providedGroups: this.showSavedGroups ? sampleProvidedGroups : [],
             initialValue,
             anchorItem: sampleAnchor,

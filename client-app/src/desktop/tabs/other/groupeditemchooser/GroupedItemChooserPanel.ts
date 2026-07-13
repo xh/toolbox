@@ -52,6 +52,19 @@ export const groupedItemChooserPanel = hoistCmp.factory({
             ],
             options: [
                 wrapperOption({
+                    label: 'Placement',
+                    propName: 'displayMode',
+                    control: select({
+                        bind: 'displayMode',
+                        width: 120,
+                        enableFilter: false,
+                        options: [
+                            {label: 'Inline', value: 'inline'},
+                            {label: 'Popover', value: 'popover'}
+                        ]
+                    })
+                }),
+                wrapperOption({
                     label: 'Grouping',
                     propName: 'enableGrouping',
                     control: switchInput({bind: 'enableGrouping'})
@@ -67,27 +80,9 @@ export const groupedItemChooserPanel = hoistCmp.factory({
                     control: switchInput({bind: 'supportTransforms'})
                 }),
                 wrapperOption({
-                    label: 'Benchmark kind',
-                    propName: 'kinds',
-                    control: switchInput({bind: 'supportBenchmarks'})
-                }),
-                wrapperOption({
                     label: 'Provided groups',
                     propName: 'providedGroups',
                     control: switchInput({bind: 'showSavedGroups'})
-                }),
-                wrapperOption({
-                    label: 'Placement',
-                    propName: 'displayMode',
-                    control: select({
-                        bind: 'displayMode',
-                        width: 120,
-                        enableFilter: false,
-                        options: [
-                            {label: 'Inline', value: 'inline'},
-                            {label: 'Popover', value: 'popover'}
-                        ]
-                    })
                 })
             ],
             item: panel({
