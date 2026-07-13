@@ -57,6 +57,7 @@ import {
     errorMessagePanel,
     exceptionHandlerPanel,
     fileChooserPanel,
+    groupedItemChooserPanel,
     iconsPanel,
     inspectorPanel,
     jsxPanel,
@@ -491,6 +492,11 @@ export class AppModel extends BaseAppModel {
                         {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                         {id: 'formatDates', content: dateFormatsPanel},
                         {id: 'formatNumbers', content: numberFormatsPanel},
+                        {
+                            id: 'groupedItemChooser',
+                            title: 'GroupedItemChooser',
+                            content: groupedItemChooserPanel
+                        },
                         {id: 'icons', content: iconsPanel},
                         {id: 'inspector', content: inspectorPanel},
                         {

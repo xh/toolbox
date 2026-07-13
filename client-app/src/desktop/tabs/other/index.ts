@@ -4,6 +4,7 @@ export * from './ClockPanel';
 export * from './CustomPackagePanel';
 export * from './ErrorMessagePanel';
 export * from './FileChooserPanel';
+export * from './groupeditemchooser/GroupedItemChooserPanel';
 export * from './IconsPanel';
 export * from './InspectorPanel';
 export * from './JsxPanel';
