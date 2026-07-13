@@ -1,5 +1,5 @@
 import {chart} from '@xh/hoist/cmp/chart';
-import {filler, hframe, vframe} from '@xh/hoist/cmp/layout';
+import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -107,29 +107,32 @@ const inlineLayout = hoistCmp.factory<GroupedItemChooserPanelModel>({
 });
 
 const popoverLayout = hoistCmp.factory<GroupedItemChooserPanelModel>({
-    render({model}) {
-        return vframe(
-            toolbar(
-                filler(),
-                groupedItemChooser({
-                    model: model.chooserModel,
-                    buttonText: 'Compare',
-                    addPlaceholder: 'Add company, benchmark, group...',
-                    groupsSectionLabel: 'Peer groups'
-                })
-            ),
-            chartPanel()
-        );
+    render() {
+        return chartPanel();
     }
 });
 
 const chartPanel = hoistCmp.factory<GroupedItemChooserPanelModel>({
     render({model}) {
+        // In popover placement the chooser rides in the consuming view's own toolbar - here a
+        // tbar between the chart title and plot, as it would sit in a real host app.
+        const showChooserInTbar = model.displayMode === 'popover';
         return panel({
             title: 'Total Shareholder Return - indexed to 100 - schematic',
             icon: Icon.chartLine(),
             compactHeader: true,
             flex: 1,
+            tbar: showChooserInTbar
+                ? toolbar(
+                      filler(),
+                      groupedItemChooser({
+                          model: model.chooserModel,
+                          buttonText: 'Compare',
+                          addPlaceholder: 'Add company, benchmark, group...',
+                          groupsSectionLabel: 'Peer groups'
+                      })
+                  )
+                : null,
             item: chart({model: model.chartModel})
         });
     }
