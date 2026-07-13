@@ -52,7 +52,14 @@ export const AppComponent = hoistCmp({
             ],
             item: tabContainer({
                 switcher: false,
-                childContainerProps: {switcher: {orientation: 'left', className: 'tb-switcher'}}
+                // Other tab gets a wider rail to fit its longer entry names (GroupedItemChooser).
+                childContainerProps: ({tabId}) => ({
+                    switcher: {
+                        orientation: 'left',
+                        className:
+                            tabId === 'other' ? 'tb-switcher tb-switcher--wide' : 'tb-switcher'
+                    }
+                })
             }),
             mask: 'onLoad'
         });

@@ -178,4 +178,9 @@ code.tb-code-link {
 // items with a filled active pill) is now provided by the hoist-react framework default.
 .tb-switcher.xh-tab-switcher--left {
   width: 150px;
+
+  // Wider variant for rails with longer entry names (see AppComponent childContainerProps).
+  &.tb-switcher--wide {
+    width: 170px;
+  }
 }
