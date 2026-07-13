@@ -18,6 +18,14 @@ export interface WrapperProps extends HoistProps {
     icon?: ReactElement;
 
     /**
+     * Optional status tag, rendered as a compact tinted banner at the very top of the info rail -
+     * an easily-visible (but deliberately non-alarming) flag for examples with a notable
+     * lifecycle status. Primary use is marking components that are *incubating in Toolbox* -
+     * i.e. built and demo'd here as candidate patterns rather than shipped as part of Hoist.
+     */
+    statusTag?: WrapperStatusTagSpec;
+
+    /**
      * Intro text for the Component/pattern demo'd by this tab, as Markdown. Rendered in the info
      * rail via Hoist's `markdown` component, so backticks for code symbols, `[text](url)` links,
      * and blank-line-separated paragraphs all work. May be provided as a single string or as an
@@ -48,11 +56,22 @@ export interface WrapperProps extends HoistProps {
     links?: ToolboxLinkProps[];
 }
 
+export interface WrapperStatusTagSpec {
+    /** Short label, e.g. "Incubating in Toolbox". */
+    label: ReactNode;
+
+    /** Icon shown beside the label. Defaults to `Icon.experiment()`. */
+    icon?: ReactElement;
+
+    /** Optional muted explanatory line rendered below the label. */
+    info?: ReactNode;
+}
+
 /** A styled container used to wrap component examples within Toolbox. */
 export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
     displayName: 'Wrapper',
     className: 'tbox-wrapper',
-    render({className, title, icon, description, options, links, children}) {
+    render({className, title, icon, statusTag, description, options, links, children}) {
         const railModel = useLocalModel(WrapperRailModel),
             intro = isArray(description) ? description.join('\n') : description,
             // Omit the info rail entirely when there is nothing to show in it, so the demo simply
@@ -64,7 +83,7 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
                 hasRailContent
                     ? railModel.collapsed
                         ? collapsedRail({railModel})
-                        : infoRail({title, icon, intro, options, links, railModel})
+                        : infoRail({title, icon, statusTag, intro, options, links, railModel})
                     : null,
                 vframe({className: 'tbox-wrapper__demo', items: children})
             ]
@@ -89,7 +108,7 @@ interface InfoRailProps extends Omit<WrapperProps, 'description'> {
 }
 
 const infoRail = hoistCmp.factory<InfoRailProps>({
-    render({title, icon, intro, options, links, railModel}) {
+    render({title, icon, statusTag, intro, options, links, railModel}) {
         const hasIntro = !!intro,
             hasOptions = !isEmpty(options),
             hasLinks = !isEmpty(links);
@@ -109,6 +128,7 @@ const infoRail = hoistCmp.factory<InfoRailProps>({
             item: div({
                 className: 'tbox-wrapper__rail-body',
                 items: [
+                    statusTagBanner({statusTag, omit: !statusTag}),
                     div({
                         className: 'tbox-wrapper__intro',
                         item: markdown({content: intro, lineBreaks: false}),
@@ -126,6 +146,33 @@ const infoRail = hoistCmp.factory<InfoRailProps>({
                     resources({links})
                 ]
             })
+        });
+    }
+});
+
+interface StatusTagBannerProps extends HoistProps {
+    statusTag: WrapperStatusTagSpec;
+}
+
+const statusTagBanner = hoistCmp.factory<StatusTagBannerProps>({
+    render({statusTag}) {
+        const {label, icon = Icon.experiment(), info} = statusTag;
+        return div({
+            className: 'tbox-wrapper__status-tag',
+            items: [
+                icon,
+                div({
+                    className: 'tbox-wrapper__status-tag-text',
+                    items: [
+                        div({className: 'tbox-wrapper__status-tag-label', item: label}),
+                        div({
+                            className: 'tbox-wrapper__status-tag-info',
+                            item: info,
+                            omit: !info
+                        })
+                    ]
+                })
+            ]
         });
     }
 });

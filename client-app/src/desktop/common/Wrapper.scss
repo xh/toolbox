@@ -48,6 +48,36 @@
     line-height: 1.5;
   }
 
+  // Status tag banner - a visible-but-calm lifecycle flag pinned to the top of the rail body
+  // (e.g. "Incubating in Toolbox"). Primary-tinted so it reads as information, not a warning.
+  &__status-tag {
+    flex: none;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid color-mix(in srgb, var(--xh-intent-primary) 40%, transparent);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--xh-intent-primary) 12%, var(--xh-bg));
+
+    > svg {
+      flex: none;
+      margin-top: 2px;
+      color: var(--xh-intent-primary);
+    }
+
+    &-label {
+      font-weight: 600;
+      color: var(--xh-text-color-headings);
+    }
+
+    &-info {
+      margin-top: 2px;
+      font-size: var(--xh-font-size-small-px);
+      color: var(--xh-text-color-muted);
+    }
+  }
+
   &__intro {
     p {
       margin: 0 0 var(--xh-pad-half-px);

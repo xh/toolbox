@@ -16,6 +16,10 @@ export const groupedItemChooserPanel = hoistCmp.factory({
         return wrapper({
             title: 'GroupedItemChooser',
             icon: Icon.users(),
+            statusTag: {
+                label: 'Incubating in Toolbox',
+                info: 'Unlike other examples, this component is authored and maintained within Toolbox itself as a candidate pattern - it is not (yet) part of hoist-react.'
+            },
             description: [
                 '`GroupedItemChooser` is a general, domain-neutral item/series picker + grouper.',
                 'Users assemble an ordered comparison set of leaf items, optionally organize them',
