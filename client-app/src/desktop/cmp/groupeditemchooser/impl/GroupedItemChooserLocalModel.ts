@@ -1,6 +1,7 @@
 import {DropResult} from '@hello-pangea/dnd';
 import {HoistModel, lookup} from '@xh/hoist/core';
 import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
+import {createObservableRef} from '@xh/hoist/utils/react';
 import {isEmpty} from 'lodash';
 import {GroupedItemChooserModel} from '../GroupedItemChooserModel';
 import {ItemKind, ItemOption, ItemRef, ProvidedGroupDef} from '../Types';
@@ -45,6 +46,9 @@ export class GroupedItemChooserLocalModel extends HoistModel {
     @observable rowMenuId: string = null;
     @observable groupIntoOpen = false;
     @observable popoverOpen = false;
+
+    /** Used in popover placement for DnD transform correction (popover positions via transform). */
+    popoverRef = createObservableRef<HTMLElement>();
 
     //--- Selection ---
     @observable.ref selection: Record<string, SelectionRef> = {};

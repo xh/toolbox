@@ -310,6 +310,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'formatDates', path: '/formatDates'},
                             {name: 'formatNumbers', path: '/formatNumbers'},
+                            {name: 'groupedItemChooser', path: '/groupedItemChooser'},
                             {name: 'icons', path: '/icons'},
                             {name: 'inspector', path: '/inspector'},
                             {name: 'jsx', path: '/jsx'},

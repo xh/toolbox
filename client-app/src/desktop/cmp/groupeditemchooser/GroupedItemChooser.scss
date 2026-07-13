@@ -1,6 +1,8 @@
 .xh-grouped-item-chooser {
   &__body {
     background: var(--xh-bg);
+    flex: 1;
+    min-height: 0;
   }
 
   &__header {
@@ -23,6 +25,9 @@
 
   &__list {
     border-top: 1px solid var(--xh-border-color);
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
   }
 
   //------------------------------------------------------------------------------------------
@@ -357,8 +362,14 @@
   &__add {
     padding: var(--xh-pad-half-px) var(--xh-pad-half-px);
 
-    .bp5-popover-target {
+    // Blueprint popover target wrapper must fill the row (version-agnostic selector).
+    [class*='popover-target'] {
       display: block;
+      width: 100%;
+    }
+
+    &__target {
+      width: 100%;
     }
   }
 
@@ -366,6 +377,11 @@
   // Popover-placement trigger.
   //------------------------------------------------------------------------------------------
   &__button {
+    [class*='button-text'] {
+      display: flex;
+      align-items: center;
+    }
+
     .xh-badge {
       margin-left: 5px;
     }

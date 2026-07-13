@@ -87,6 +87,7 @@ export const [GroupedItemChooser, groupedItemChooser] =
                     className: classNames(className, 'xh-grouped-item-chooser--popover'),
                     item: popover({
                         isOpen: impl.popoverOpen,
+                        popoverRef: impl.popoverRef,
                         position: 'bottom-right',
                         minimal: false,
                         popoverClassName: 'xh-grouped-item-chooser-popover',
@@ -245,7 +246,14 @@ const anchorRow = hoistCmp.factory<GroupedItemChooserLocalModel>({
 //--------------------------------------------------------------------------------------------
 const entryList = hoistCmp.factory<GroupedItemChooserLocalModel>({
     render({model}) {
-        const {parentModel} = model;
+        const {parentModel} = model,
+            // Dereference in this observer's render - rbd's children callback is not tracked.
+            {entries} = parentModel,
+            rows = entries.map((entry, idx) =>
+                entry.type === 'item'
+                    ? itemEntryRow({entry, idx, key: `i-${entry.item.id}`})
+                    : groupEntryRow({entry, idx, key: `g-${entry.id}`})
+            );
         return droppable({
             droppableId: 'top',
             type: 'gic',
@@ -255,14 +263,7 @@ const entryList = hoistCmp.factory<GroupedItemChooserLocalModel>({
                     ref: dndProps.innerRef,
                     ...dndProps.droppableProps,
                     className: 'xh-grouped-item-chooser__entries',
-                    items: [
-                        ...parentModel.entries.map((entry, idx) =>
-                            entry.type === 'item'
-                                ? itemEntryRow({entry, idx, key: `i-${entry.item.id}`})
-                                : groupEntryRow({entry, idx, key: `g-${entry.id}`})
-                        ),
-                        dndProps.placeholder
-                    ]
+                    items: [...rows, dndProps.placeholder]
                 })
         });
     }
@@ -290,6 +291,7 @@ const itemEntryRow = hoistCmp.factory<GroupedItemChooserLocalModel>({
                 div({
                     ref: dndProps.innerRef,
                     ...dndProps.draggableProps,
+                    style: correctedDragStyle(model, dndProps, dndState),
                     className: classNames(
                         'xh-grouped-item-chooser__row',
                         selected ? 'xh-grouped-item-chooser__row--selected' : null,
@@ -341,6 +343,7 @@ const groupEntryRow = hoistCmp.factory<GroupedItemChooserLocalModel>({
                 div({
                     ref: dndProps.innerRef,
                     ...dndProps.draggableProps,
+                    style: correctedDragStyle(model, dndProps, dndState),
                     className: classNames(
                         'xh-grouped-item-chooser__group',
                         dndState.isDragging ? 'xh-grouped-item-chooser__row--dragging' : null,
@@ -536,6 +539,7 @@ const memberRow = hoistCmp.factory<GroupedItemChooserLocalModel>({
             div({
                 ref: dndProps?.innerRef,
                 ...dndProps?.draggableProps,
+                style: dndProps ? correctedDragStyle(model, dndProps, dndState) : null,
                 className: classNames(
                     'xh-grouped-item-chooser__mrow',
                     selected ? 'xh-grouped-item-chooser__row--selected' : null,
@@ -728,6 +732,10 @@ const addField = hoistCmp.factory<GroupedItemChooserLocalModel>({
                 position: 'top-left',
                 minimal: true,
                 matchTargetWidth: true,
+                // Keep focus in the target input - the menu is driven by typing, not tabbing.
+                enforceFocus: false,
+                autoFocus: false,
+                shouldReturnFocusOnClose: false,
                 popoverClassName: 'xh-grouped-item-chooser-menu-popover',
                 item: div({
                     className: 'xh-grouped-item-chooser__add__target',
@@ -906,4 +914,41 @@ const removeBtn = hoistCmp.factory({
 
 function transformCheck(checked: boolean) {
     return Icon.check({style: checked ? null : {visibility: 'hidden'}});
+}
+
+/**
+ * In popover placement the panel is positioned via a CSS transform, which offsets the fixed
+ * positioning applied to actively-dragged rows. Subtract the popover's translation while a row
+ * is dragging or drop-animating - same workaround as Hoist's own GroupingChooser, per
+ * https://github.com/atlassian/react-beautiful-dnd/issues/128.
+ */
+function correctedDragStyle(model: GroupedItemChooserLocalModel, dndProps, dndState) {
+    const baseStyle = dndProps.draggableProps.style,
+        popoverEl = model.popoverRef.current;
+    if (!popoverEl || (!dndState.isDragging && !dndState.isDropAnimating)) return baseStyle;
+
+    let rowValues = parseTransform(baseStyle.transform);
+    const pPos = popoverEl.getBoundingClientRect();
+
+    if (dndState.isDropAnimating) {
+        const {x, y} = dndState.dropAnimation.moveTo;
+        rowValues = [x, y];
+    }
+
+    if (isEmpty(rowValues)) return baseStyle;
+
+    const x = rowValues[0] - pPos.left,
+        y = rowValues[1] - pPos.top;
+    return {...baseStyle, transform: `translate(${x}px, ${y}px)`};
+}
+
+/**
+ * Extract integer values from a CSS transform string. Works for `translate` and `translate3d`,
+ * e.g. `translate3d(250px, 150px, 0px)` -> `[250, 150, 0]`.
+ */
+function parseTransform(transformStr: string): number[] {
+    return transformStr
+        ?.replace('3d', '')
+        .match(/[-]{0,1}[\d]*[.]{0,1}[\d]+/g)
+        ?.map(it => parseInt(it));
 }
