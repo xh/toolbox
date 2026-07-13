@@ -62,12 +62,12 @@
 
     &-watermark {
       position: absolute;
-      right: -6px;
-      bottom: -10px;
+      right: 8px;
+      bottom: 5px;
       pointer-events: none;
 
       svg {
-        font-size: 52px;
+        font-size: 44px;
         color: var(--xh-intent-primary);
         opacity: 0.18;
       }
