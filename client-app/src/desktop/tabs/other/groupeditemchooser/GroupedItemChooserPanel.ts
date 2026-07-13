@@ -15,7 +15,8 @@ export const groupedItemChooserPanel = hoistCmp.factory({
     render({model}) {
         return wrapper({
             title: 'GroupedItemChooser',
-            icon: Icon.users(),
+            // Registered by the component package on import (not in Hoist's enumerated set).
+            icon: Icon.icon({iconName: 'object-group'}),
             statusTag: {
                 label: 'Incubating in Toolbox',
                 info: 'Unlike other examples, this component is authored and maintained within Toolbox itself as a candidate pattern - it is not (yet) part of hoist-react.'
@@ -90,8 +91,6 @@ export const groupedItemChooserPanel = hoistCmp.factory({
                 })
             ],
             item: panel({
-                title: 'Compare Builder',
-                icon: Icon.users(),
                 width: 1000,
                 height: 620,
                 item: model.displayMode === 'inline' ? inlineLayout() : popoverLayout()
