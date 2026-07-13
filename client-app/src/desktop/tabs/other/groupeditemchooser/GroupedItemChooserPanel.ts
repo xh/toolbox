@@ -78,11 +78,6 @@ export const groupedItemChooserPanel = hoistCmp.factory({
                     label: 'Transforms',
                     propName: 'transforms',
                     control: switchInput({bind: 'supportTransforms'})
-                }),
-                wrapperOption({
-                    label: 'Provided groups',
-                    propName: 'providedGroups',
-                    control: switchInput({bind: 'showSavedGroups'})
                 })
             ],
             item: panel({
