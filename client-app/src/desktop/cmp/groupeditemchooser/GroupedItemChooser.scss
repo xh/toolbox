@@ -288,13 +288,13 @@
   // Members - indented, on the alt surface.
   //------------------------------------------------------------------------------------------
   &__members {
-    background: var(--xh-bg-alt);
+    background: var(--xh-grid-bg-odd);
   }
 
   &__mrow {
     min-height: 30px;
     padding-left: 28px;
-    background: var(--xh-bg-alt);
+    background: var(--xh-grid-bg-odd);
 
     &:hover {
       background: var(--xh-grid-bg-hover);
@@ -323,7 +323,7 @@
   &__gpicker {
     padding: 8px;
     border-bottom: 1px solid var(--xh-grid-border-color);
-    background: var(--xh-bg-alt);
+    background: var(--xh-grid-bg-odd);
 
     &__list {
       max-height: 180px;
