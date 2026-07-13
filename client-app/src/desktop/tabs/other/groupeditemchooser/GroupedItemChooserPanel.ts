@@ -35,8 +35,8 @@ export const groupedItemChooserPanel = hoistCmp.factory({
                 '',
                 'The chart is an *example consumer* of the emitted `value` - it is not part of',
                 'the component. It owns the flatten of grouped items into plotted series and the',
-                'actual computation of group transforms (avg / med) over member series - the',
-                'component only records the selected transform key.'
+                'actual computation of group transforms (avg / peer high) over member series -',
+                'the component only records the selected transform key.'
             ],
             links: [
                 {

@@ -170,14 +170,8 @@ export class GroupedItemChooserPanelModel extends HoistModel {
             data = [];
 
         for (let i = 0; i < 14; i++) {
-            const vals = memberData.map(d => d[i][1]).sort((a, b) => a - b),
-                mid = Math.floor(vals.length / 2),
-                v =
-                    entry.transformKey === 'median'
-                        ? vals.length % 2
-                            ? vals[mid]
-                            : (vals[mid - 1] + vals[mid]) / 2
-                        : mean(vals);
+            const vals = memberData.map(d => d[i][1]),
+                v = entry.transformKey === 'peerHigh' ? Math.max(...vals) : mean(vals);
             data.push([i, Math.round(v * 10) / 10]);
         }
 
