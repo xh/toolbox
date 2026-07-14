@@ -87,6 +87,14 @@ export class GroupedItemChooserPanelModel extends HoistModel {
         runInAction(() => (this.chooserModel = this.createChooserModel(inputs)));
     }
 
+    /** Discard the current comparison and rebuild with the demo's initial contents. */
+    resetChooser() {
+        XH.safeDestroy(this.chooserModel);
+        runInAction(
+            () => (this.chooserModel = this.createChooserModel(this.createInitialInputs()))
+        );
+    }
+
     private entriesToInputs(): EntryInput[] {
         return this.chooserModel.entries.map(e =>
             e.type === 'item'

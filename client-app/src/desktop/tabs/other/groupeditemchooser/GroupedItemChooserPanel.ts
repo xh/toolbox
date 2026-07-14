@@ -5,7 +5,7 @@ import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper, wrapperOption} from '../../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../../common';
 import {groupedItemChooser} from '../../../cmp/groupeditemchooser';
 import {GroupedItemChooserPanelModel} from './GroupedItemChooserPanelModel';
 
@@ -80,6 +80,11 @@ export const groupedItemChooserPanel = hoistCmp.factory({
                     label: 'Transforms',
                     propName: 'transforms',
                     control: switchInput({bind: 'supportTransforms'})
+                }),
+                wrapperAction({
+                    text: 'Reset to Initial Value',
+                    icon: Icon.reset(),
+                    onClick: () => model.resetChooser()
                 })
             ],
             item: panel({
