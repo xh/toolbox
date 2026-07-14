@@ -2,6 +2,10 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added `GroupedItemChooser` - an incubating, domain-neutral item/series picker + grouper control developed within Toolbox as a candidate pattern. Users assemble an ordered comparison set of leaf items, optionally organize them into single-level groups with per-group transforms, and the backing model emits a structured, ordered, colored `value`. Demo'd under the Other tab with a chart consumer, inline and popover placements, and configurable grouping/reordering/transform features.
+
 ## 9.3.0 - 2026-07-10
 
 ### Technical
