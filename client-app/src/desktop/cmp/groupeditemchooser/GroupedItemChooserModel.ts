@@ -37,9 +37,7 @@ export interface GroupedItemChooserConfig {
      * Optional single pinned anchor item, rendered first and immutable. The anchor sits entirely
      * outside the container system: it is never selectable, removable, draggable, or groupable,
      * and any occurrence of its id within provided groups or initial group members is stripped
-     * (with a warning). Apps wanting an aggregate that *includes* the anchor (e.g. "avg of peers
-     * + subject") should express that via a dedicated {@link Transform} key - transform
-     * computation is consumer-owned, so no membership is required.
+     * (with a warning).
      */
     anchorItem?: ItemRef;
 
