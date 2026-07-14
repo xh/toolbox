@@ -53,8 +53,11 @@ of this folder, these notes are branch-only working material - strip before merg
 - **No scroll-nudge for the in-group picker.** The demo scrolled the picker into view when it
   would clip (mainly popover placement). Here the list scrolls but the user may need to scroll
   manually. A `scrollIntoView` on picker open would close this.
-- **`onSaveGroup` has no built-in UI.** The config hook and `model.saveGroup()` exist per
-  `api.md`; the demo/spec showed no affordance, so none was built. App-invoked only.
+- **`onSaveGroup` not implemented.** `api.md` sketched an emit-only hook for persisting a
+  user-defined group as a provided group, but neither the demo nor the spec showed an affordance
+  and no concrete need has appeared - the stubs were removed to keep the surface minimal.
+  Reintroduce (hook + a "Save as provided group" item in the editable group's "..." menu, shown
+  only when configured) if/when an app wants session-to-session group persistence.
 - **Mobile variant not built** - explicitly deferred by the handoff (`api.md` §1).
 
 ## Extraction checklist (when promoting to hoist-react)

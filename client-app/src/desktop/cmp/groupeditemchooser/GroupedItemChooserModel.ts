@@ -76,9 +76,6 @@ export interface GroupedItemChooserConfig {
     //--- Emit-only callbacks (the component never persists anything itself) ---
     /** Called whenever `value` changes. Apps may instead observe `model.value` directly. */
     onChange?: (value: GroupedItemChooserValue) => void;
-
-    /** Hook to persist a user-defined group as a provided group. No built-in UI - app-invoked. */
-    onSaveGroup?: (group: Entry) => void;
 }
 
 /** Default palette for series colors - override via `palette`. */
@@ -128,7 +125,6 @@ export class GroupedItemChooserModel extends HoistModel {
     readonly getIcon: GroupedItemChooserConfig['getIcon'];
     readonly getColor: GroupedItemChooserConfig['getColor'];
     readonly displayMode: 'inline' | 'popover';
-    readonly onSaveGroup: GroupedItemChooserConfig['onSaveGroup'];
 
     /** Pooled allocator backing default series colors. Exposed for custom `getColor` impls. */
     readonly colorAllocator: ColorAllocator;
@@ -207,8 +203,7 @@ export class GroupedItemChooserModel extends HoistModel {
         getColor = null,
         palette = DEFAULT_PALETTE,
         displayMode = 'inline',
-        onChange = null,
-        onSaveGroup = null
+        onChange = null
     }: GroupedItemChooserConfig) {
         super();
         makeObservable(this);
@@ -231,7 +226,6 @@ export class GroupedItemChooserModel extends HoistModel {
         this.getIcon = getIcon;
         this.getColor = getColor;
         this.displayMode = displayMode;
-        this.onSaveGroup = onSaveGroup;
         this.colorAllocator = new ColorAllocator(palette);
 
         this.setEntries(this.parseEntryInputs(executeIfFunction(initialValue)));
@@ -517,12 +511,6 @@ export class GroupedItemChooserModel extends HoistModel {
             members.splice(toIndex, 0, member);
             return {...g, members};
         });
-    }
-
-    /** Invoke the app's `onSaveGroup` hook with the current value entry for the given group. */
-    saveGroup(groupId: string) {
-        const entry = this.value.find(e => e.type === 'group' && e.id === groupId);
-        if (entry) this.onSaveGroup?.(entry);
     }
 
     //------------------------------------------------------------------------------------------
