@@ -2,6 +2,27 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+### Libraries
+* @xh/hoist `86.x → 87.x`
+* React `18.2 → 19.2`
+
+## 9.3.0 - 2026-07-10
+
+### Technical
+
+* Added Select `generateOptionFn` examples to the desktop Select test panel and the mobile Forms page, demonstrating dynamic creation of options from free-typed user input.
+* Adopted hoist-react's new built-in `FilterChooser` `popover` prop in the Portfolio orders grid, replacing the now-deprecated `PopoverFilterChooser` wrapper.
+* Bumped Grails and the Gradle wrapper to their latest patch releases.
+
+### Bug Fixes
+
+* Restored the local-development guard on `SlackAlertService` so a developer's local instance never posts monitor, client-error, or feedback alerts to the live Slack channel.
+
+### Libraries
+
+* @xh/hoist `86.2.0 → 86.3.0`
+* hoist-core `40.1.0 → 40.2.0`
+
 ## 9.2.1 - 2026-06-25
 
 ### Bug Fixes
@@ -63,6 +84,7 @@
 ### Libraries
 
 * @xh/hoist `86.0 → 87.0`
+
 
 ## 8.5.0 - 2026-06-12
 
