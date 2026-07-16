@@ -23,6 +23,7 @@ export const GridTestPanel = hoistCmp({
                     mask: 'onLoad',
                     item: grid({
                         agOptions: {
+                            columnMenu: 'legacy', // support for ag native filtering test
                             rowSelection: {
                                 mode: 'singleRow',
                                 isRowSelectable: ({data: record}) =>
