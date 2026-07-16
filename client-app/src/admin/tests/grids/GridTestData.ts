@@ -5,7 +5,6 @@ import {logDebug} from '@xh/hoist/utils/js';
 export class GridTestData {
     rows: PlainObject[] = [];
     summary: {day: number; id: string; mtd: number; ytd: number; volume: number} = null;
-    data: any;
 
     clear() {
         this.rows = [];
@@ -97,7 +96,8 @@ export class GridTestData {
                 {id: `${idSeed}~summaryRow`, day: 0, mtd: 0, ytd: 0, volume: 0}
             );
             if (tree && loadRootAsSummary) {
-                this.data = [summaryData];
+                // Store expects a single root node whose children are the top-level rows.
+                this.rows = [{...summaryData, children: this.rows}];
                 this.summary = null;
             } else {
                 this.summary = summaryData;
