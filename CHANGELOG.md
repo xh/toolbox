@@ -2,6 +2,10 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+### Libraries
+* @xh/hoist `86.x → 87.x`
+* React `18.2 → 19.2`
+
 ## 9.3.0 - 2026-07-10
 
 ### Technical
@@ -80,6 +84,7 @@
 ### Libraries
 
 * @xh/hoist `86.0 → 87.0`
+
 
 ## 8.5.0 - 2026-06-12
 
