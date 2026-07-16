@@ -136,6 +136,12 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
         }),
         toolbarSep(),
         switchInput({
+            bind: 'pinId',
+            label: 'Pin Id?',
+            labelSide: 'left'
+        }),
+        toolbarSep(),
+        switchInput({
             bind: 'enableXssProtection',
             label: 'Enable XSS',
             labelSide: 'left'
