@@ -23,6 +23,7 @@ export const GridTestPanel = hoistCmp({
                     mask: 'onLoad',
                     item: grid({
                         agOptions: {
+                            columnMenu: 'legacy', // support for ag native filtering test
                             rowSelection: {
                                 mode: 'singleRow',
                                 isRowSelectable: ({data: record}) =>
@@ -131,6 +132,12 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
             bind: 'loadRootAsSummary',
             label: 'Load Root As Summary',
             disabled: !(model.tree && model.showSummary),
+            labelSide: 'left'
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'pinId',
+            label: 'Pin Id?',
             labelSide: 'left'
         }),
         toolbarSep(),

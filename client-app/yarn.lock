@@ -3223,64 +3223,71 @@ acorn@^8.0.4, acorn@^8.11.0, acorn@^8.15.0, acorn@^8.16.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.17.0.tgz#1785adb84faf8d8add10369b93826fc2bd08f1fe"
   integrity sha512-xRQbDb9BnwDafYNn6Vwl839DYVjqXYb1XVGtWAZ1kcDc6iwAL4hg3B1dZlRiuENFeO2H53gFG3in621AdERVAg==
 
-ag-charts-community@13.3.1:
-  version "13.3.1"
-  resolved "https://registry.yarnpkg.com/ag-charts-community/-/ag-charts-community-13.3.1.tgz#3631c5727e9f410331bb9e1f49e5b75b0a53c23f"
-  integrity sha512-xRwyuP4xcMoyzaa27fccUhKqGyiWp/0h6vq0ZBuAtj2k0OC5UbV6IQUW6/0AgmLIQ4/K9QlRWFOe3sL/x5MHow==
+ag-charts-community@14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/ag-charts-community/-/ag-charts-community-14.0.0.tgz#4d738b73d79d26203edb65ad204e84b646091f28"
+  integrity sha512-u/O7T/EGxj8s6cZjbYU1CaRObnjMzdfXZVido9uXbeAwBkT4rxXF6OWSq1SkkSrZD1+pwusHn3cbul4Ly3yzPA==
   dependencies:
-    ag-charts-core "13.3.1"
-    ag-charts-locale "13.3.1"
-    ag-charts-types "13.3.1"
+    ag-charts-core "14.0.0"
+    ag-charts-locale "14.0.0"
+    ag-charts-types "14.0.0"
 
-ag-charts-core@13.3.1:
-  version "13.3.1"
-  resolved "https://registry.yarnpkg.com/ag-charts-core/-/ag-charts-core-13.3.1.tgz#cc98767e1c34111fe1e8534e236c2436927544e5"
-  integrity sha512-oDnK07/S6Z10EwIBxhC4tMDwdf2ck5MMcuSB/h+0/Q2XcL2l3S4jmlq3iKI7Kp9sh0H5JYDDc2sAdkUN87W8RA==
+ag-charts-core@14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/ag-charts-core/-/ag-charts-core-14.0.0.tgz#8b179192000f6e3b4ef59e6eaca18c167623fa39"
+  integrity sha512-xcFSQ0Ces8JvH5RpKoZIjrFzdvju91gIXODj33Byg6ShwkixrHyLaCf17addfSsqerSSdMkw0iiceD9afU83UQ==
   dependencies:
-    ag-charts-types "13.3.1"
+    ag-charts-types "14.0.0"
 
-ag-charts-enterprise@13.3.1:
-  version "13.3.1"
-  resolved "https://registry.yarnpkg.com/ag-charts-enterprise/-/ag-charts-enterprise-13.3.1.tgz#2991b471357b6a239cdc3b886f8aaf56dc15e9d8"
-  integrity sha512-Y/RYwg38rLflcMJpERIRvUW5zL02HUoRXBv3j4UdnOjiEb4mPQTXU7chTfYf3+vqtUsMjFGxyGh4nPM7shwM1g==
+ag-charts-enterprise@14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/ag-charts-enterprise/-/ag-charts-enterprise-14.0.0.tgz#75933eadbd551288c406051a5adc5ec2a1e45734"
+  integrity sha512-C2mAq/GO7giI8iC71K+eIlvZQMaF8ZCSlQGtug2eaxOWvA1iu+A8wHetKhRtXeI96Sf5iR3gnsLQOgDouftL8g==
   dependencies:
-    ag-charts-community "13.3.1"
-    ag-charts-core "13.3.1"
+    ag-charts-community "14.0.0"
+    ag-charts-core "14.0.0"
 
-ag-charts-locale@13.3.1:
-  version "13.3.1"
-  resolved "https://registry.yarnpkg.com/ag-charts-locale/-/ag-charts-locale-13.3.1.tgz#8185e7132a5194cba6058073b32804de4cdaeda7"
-  integrity sha512-jF7iXI3PBFq/LFgBKwt72CykDBWcl3HYgP7B/hSJGsFdK+yuUTPrP67dA/wghgC6sg+Qw2U2GeykhZkG0yH8ww==
+ag-charts-locale@14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/ag-charts-locale/-/ag-charts-locale-14.0.0.tgz#e7650882a651c5ee48c0689412ecb910857ea9c7"
+  integrity sha512-14mGnsQgG7VzdQwt7Jq2MFPGPtO8y6jAECN4nae7t3fJAPq162mmrgDaqpwHdAZxKPkMNte98DUQ8ULrtSbUpQ==
 
-ag-charts-types@13.3.1:
-  version "13.3.1"
-  resolved "https://registry.yarnpkg.com/ag-charts-types/-/ag-charts-types-13.3.1.tgz#c34aaed19847ed633fa468f39caa94bbffc363b3"
-  integrity sha512-m37eUe4g//swvGh8PWMlYQH3gknjSsPeW4sQwBhM3/auGAHmN0wvxEWlrdAn98pBPg4HoKbtOy+yf7gPCYsnvQ==
+ag-charts-types@14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/ag-charts-types/-/ag-charts-types-14.0.0.tgz#996ee481a56988840b8e2cafc334e780ce636742"
+  integrity sha512-89X4J/OeOTzTp505126JayGEn3k6QUKz3UHSR0/ggoVZYzVqtMN13k/B136S1+YBwgnzyJ/NARnnIRTPWsWG9g==
 
-ag-grid-community@35.3.1, ag-grid-community@~35.3.0:
-  version "35.3.1"
-  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-35.3.1.tgz#b7920da3209e2c121e1e34df59dec812e65349f0"
-  integrity sha512-Wmkd/xYTCbAApcZZO74nBggZCnd/oX753NY3MJ4zYARVpfBHRWWhIBJ2sFTFKbDWwHZOWsx3YT9+kkyeuyLKlw==
+ag-grid-community@36.0.0, ag-grid-community@~36.0.0:
+  version "36.0.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-36.0.0.tgz#f5a450d7b3e7e9032f4186699bc4f1747de9544f"
+  integrity sha512-73PeuoG1Pofi6o1o2dYd092m5AdCt0uq/iCaVTCxLw9eRJGLZu0I+HICReolUmUH7A5X+CnYDXiE+P9S8dUqCQ==
   dependencies:
-    ag-charts-types "13.3.1"
+    ag-charts-types "14.0.0"
+    ag-stack "36.0.0"
 
-ag-grid-enterprise@~35.3.0:
-  version "35.3.1"
-  resolved "https://registry.yarnpkg.com/ag-grid-enterprise/-/ag-grid-enterprise-35.3.1.tgz#8872547237df7ee1450e32a6c6eabcdd61328456"
-  integrity sha512-AdxpzZVn4tOg/eAFm+KDfvQE2/KX1wNjVMMHZFzKr528V2OaQYx8LWv3Ly3jlWbF8Pxsfe7ViacH0gnsjrkbyQ==
+ag-grid-enterprise@~36.0.0:
+  version "36.0.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-enterprise/-/ag-grid-enterprise-36.0.0.tgz#8031496a56568c2ddfcbb66935cbed9f7426f947"
+  integrity sha512-3lSX0WIEg4tWGSNXLh/FO08aee5DkBeuf9rRW8aFvglyW4DuT/LwlBndQyPERg3eYGrsctpCeuhY5SFJW5ck0A==
   dependencies:
-    ag-grid-community "35.3.1"
+    ag-grid-community "36.0.0"
+    ag-stack "36.0.0"
   optionalDependencies:
-    ag-charts-community "13.3.1"
-    ag-charts-enterprise "13.3.1"
+    ag-charts-community "14.0.0"
+    ag-charts-enterprise "14.0.0"
 
-ag-grid-react@~35.3.0:
-  version "35.3.1"
-  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-35.3.1.tgz#0360eeb880f1ada988ee1420817609b59a9a06b1"
-  integrity sha512-M3ljCQyGL+qzoyPN0BYrn4eAlgZr6Ailcjd8+a7OcneSiVsMNSJb/gTkIMUwmYivkPLIA8EEJ4hTxxKSaya6mQ==
+ag-grid-react@~36.0.0:
+  version "36.0.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-36.0.0.tgz#9a2bbe00d1120a12ec6e361c73bd9bbe0f1e9e5f"
+  integrity sha512-ShmynyRQDoxuXBso+kPliZJnivQKwBG/EGclCBV3dg98ou2kq7yxdgf8DhrW4uM5SekNDaqor4Gn9OAGtH2o3g==
   dependencies:
-    ag-grid-community "35.3.1"
+    ag-grid-community "36.0.0"
     prop-types "^15.8.1"
+
+ag-stack@36.0.0:
+  version "36.0.0"
+  resolved "https://registry.yarnpkg.com/ag-stack/-/ag-stack-36.0.0.tgz#7176a99417839ceebb588ee664d6659ad6e78670"
+  integrity sha512-ciXqjZygVLk3tnZWOAQyOxP48Ju2ZmaSAtIebekXJwHqA7vB+NJ8ZME/O4XTRpInTSHn2KSu/KTxgWJO8dduiw==
 
 ajv-formats@^2.1.1:
   version "2.1.1"
