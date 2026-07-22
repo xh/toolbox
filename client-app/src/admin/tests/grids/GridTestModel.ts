@@ -1,8 +1,6 @@
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
-// @ts-ignore - not yet present in published @xh/hoist typings; resolves when building against
-// hoist-react >= 87 with xh/hoist-react#4500. Remove this ignore once that version is in place.
 import {RecordDataFactory} from '@xh/hoist/data/impl/RecordDataFactory';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
