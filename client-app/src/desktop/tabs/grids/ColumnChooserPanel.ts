@@ -1,9 +1,10 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {creates, hoistCmp, HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, HSide, LoadSpec, managed, XH} from '@xh/hoist/core';
+import {FilterMatchMode} from '@xh/hoist/data';
 import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
@@ -79,37 +80,102 @@ export const columnChooserPanel = hoistCmp.factory({
                     propName: 'GridModel.lockColumnGroups',
                     control: switchInput({model, bind: 'lockColumnGroups'})
                 }),
+                wrapperOption({
+                    label: 'Enable Pinning',
+                    info: 'Allow users to pin/unpin columns via the grid’s own UI affordances.',
+                    propName: 'GridModel.enableColumnPinning',
+                    control: switchInput({model, bind: 'enableColumnPinning'})
+                }),
+                wrapperOption({
+                    label: 'Enable Chooser Panel',
+                    info: 'Configure the docked panel chooser at all - off disables its toolbar button.',
+                    propName: 'GridConfig.colChooserPanelModel',
+                    control: switchInput({model, bind: 'enableChooserPanel'})
+                }),
                 wrapperOptionGroup('Modal Chooser (Popover / Dialog)'),
-                wrapperOption({
-                    label: 'Column Library',
-                    info: 'Show the docked Column Library of hidden columns to drag in and out.',
-                    propName: 'ColChooserConfig.columnLibraryEnabled',
-                    control: switchInput({model, bind: 'modalColumnLibraryEnabled'})
-                }),
-                wrapperOption({
-                    label: 'Restore Defaults',
-                    info: 'Show the button that reverts all column, grouping, and sort state to defaults.',
-                    propName: 'ColChooserConfig.showRestoreDefaults',
-                    control: switchInput({model, bind: 'modalShowRestoreDefaults'})
-                }),
                 wrapperOption({
                     label: 'Commit on Change',
                     info: 'Apply edits to the grid immediately; off adds a Save button to commit on demand.',
                     propName: 'ColChooserConfig.commitOnChange',
                     control: switchInput({model, bind: 'modalCommitOnChange'})
                 }),
+                wrapperOption({
+                    label: 'Width',
+                    propName: 'ColChooserConfig.width',
+                    control: numberInput({model, bind: 'modalWidth', width: 90, min: 100})
+                }),
+                wrapperOption({
+                    label: 'Height',
+                    propName: 'ColChooserConfig.height',
+                    control: numberInput({model, bind: 'modalHeight', width: 90, min: 100})
+                }),
                 wrapperOptionGroup('Panel Chooser (Docked)'),
                 wrapperOption({
-                    label: 'Column Library',
-                    info: 'Show the docked Column Library of hidden columns to drag in and out.',
-                    propName: 'ColChooserConfig.columnLibraryEnabled',
-                    control: switchInput({model, bind: 'panelColumnLibraryEnabled'})
+                    label: 'Side',
+                    propName: 'ColChooserPanelConfig.panelConfig.side',
+                    control: select({
+                        model,
+                        bind: 'panelSide',
+                        width: 100,
+                        enableFilter: false,
+                        options: [
+                            {label: 'Left', value: 'left'},
+                            {label: 'Right', value: 'right'}
+                        ]
+                    })
                 }),
+                wrapperOption({
+                    label: 'Width',
+                    propName: 'ColChooserPanelConfig.panelConfig.defaultSize',
+                    control: numberInput({model, bind: 'panelWidth', width: 90, min: 100})
+                }),
+                wrapperOptionGroup('Chooser Settings (Shared)'),
                 wrapperOption({
                     label: 'Restore Defaults',
                     info: 'Show the button that reverts all column, grouping, and sort state to defaults.',
                     propName: 'ColChooserConfig.showRestoreDefaults',
-                    control: switchInput({model, bind: 'panelShowRestoreDefaults'})
+                    control: switchInput({model, bind: 'showRestoreDefaults'})
+                }),
+                wrapperOption({
+                    label: 'Autosize on Commit',
+                    info: 'Autosize grid columns whenever chooser changes are committed to the grid.',
+                    propName: 'ColChooserConfig.autosizeOnCommit',
+                    control: switchInput({model, bind: 'autosizeOnCommit'})
+                }),
+                wrapperOption({
+                    label: 'Filter Match Mode',
+                    info: 'How the chooser’s filter field matches column names against typed text.',
+                    propName: 'ColChooserConfig.filterMatchMode',
+                    control: select({
+                        model,
+                        bind: 'filterMatchMode',
+                        width: 150,
+                        enableFilter: false,
+                        options: [
+                            {label: 'Start', value: 'start'},
+                            {label: 'Start of word', value: 'startWord'},
+                            {label: 'Any', value: 'any'}
+                        ]
+                    })
+                }),
+                wrapperOptionGroup('Column Library (Shared)'),
+                wrapperOption({
+                    label: 'Enable for Modal',
+                    info: 'Show the docked Column Library of hidden columns to drag in and out.',
+                    propName: 'ColChooserConfig.columnLibrary',
+                    control: switchInput({model, bind: 'modalColumnLibraryEnabled'})
+                }),
+                wrapperOption({
+                    label: 'Enable for Panel',
+                    info: 'Show the docked Column Library of hidden columns to drag in and out.',
+                    propName: 'ColChooserConfig.columnLibrary',
+                    control: switchInput({model, bind: 'panelColumnLibraryEnabled'})
+                }),
+                wrapperOption({
+                    label: 'Collapse Groups',
+                    info: 'Start the Library’s `chooserGroup` groups collapsed - handy for large column sets.',
+                    propName: 'ColLibraryConfig.collapseGroups',
+                    control: switchInput({model, bind: 'collapseLibraryGroups'})
                 })
             ],
             item: panel({
@@ -141,36 +207,61 @@ class ColumnChooserPanelModel extends HoistModel {
     @managed @observable.ref gridModel: GridModel;
 
     @bindable lockColumnGroups: boolean = true;
+    @bindable enableColumnPinning: boolean = true;
+    @bindable enableChooserPanel: boolean = true;
+
+    // Settings shared by both the modal and docked-panel choosers.
+    @bindable showRestoreDefaults: boolean = true;
+    @bindable autosizeOnCommit: boolean = false;
+    @bindable filterMatchMode: FilterMatchMode = 'startWord';
+
+    // Column Library enable toggles - each chooser keeps its own.
+    @bindable modalColumnLibraryEnabled: boolean = true;
+    @bindable panelColumnLibraryEnabled: boolean = true;
+    @bindable collapseLibraryGroups: boolean = false;
 
     // Modal (popover / dialog) chooser config -> gridModel.colChooserModel.
-    @bindable modalColumnLibraryEnabled: boolean = true;
-    @bindable modalShowRestoreDefaults: boolean = true;
     @bindable modalCommitOnChange: boolean = true;
+    @bindable modalWidth: number = 620;
+    @bindable modalHeight: number = 600;
 
-    // Docked side-panel chooser config -> gridModel.colChooserPanelModel . Note the panel forces
-    // commitOnChange true, so no such option is exposed for it.
-    @bindable panelColumnLibraryEnabled: boolean = true;
-    @bindable panelShowRestoreDefaults: boolean = true;
+    // Docked side-panel chooser config -> gridModel.colChooserPanelModel. Note the panel forces
+    // commitOnChange true, so no such option is exposed for it. No height option either - the
+    // dock is horizontal-only, sized by `panelWidth` via its `panelConfig.defaultSize`. Open/close
+    // is driven externally (the toolbar button, or the initial open below), not a built-in rail.
+    @bindable panelSide: HSide = 'right';
+    @bindable panelWidth: number = 620;
 
     constructor() {
         super();
         makeObservable(this);
         this.gridModel = this.createGridModel();
+        // Open the docked chooser so the demo lands showing it (no built-in rail to do so).
+        this.gridModel.showColChooserPanel();
 
         // All of the above are construction-time GridModel / chooser configs, so rebuild the model
         // (and the choosers bound to it) whenever any of them change.
         this.addReaction({
             track: () => [
                 this.lockColumnGroups,
+                this.enableColumnPinning,
+                this.enableChooserPanel,
+                this.showRestoreDefaults,
+                this.autosizeOnCommit,
+                this.filterMatchMode,
                 this.modalColumnLibraryEnabled,
-                this.modalShowRestoreDefaults,
-                this.modalCommitOnChange,
                 this.panelColumnLibraryEnabled,
-                this.panelShowRestoreDefaults
+                this.collapseLibraryGroups,
+                this.modalCommitOnChange,
+                this.modalWidth,
+                this.modalHeight,
+                this.panelSide,
+                this.panelWidth
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
+                this.gridModel.showColChooserPanel();
                 this.loadAsync().catchDefault();
             }
         });
@@ -189,18 +280,31 @@ class ColumnChooserPanelModel extends HoistModel {
             sortBy: 'lastName',
             emptyText: 'No records found...',
             colChooserModel: {
-                columnLibraryEnabled: this.modalColumnLibraryEnabled,
-                showRestoreDefaults: this.modalShowRestoreDefaults,
+                columnLibrary: this.modalColumnLibraryEnabled && {
+                    collapseGroups: this.collapseLibraryGroups
+                },
+                showRestoreDefaults: this.showRestoreDefaults,
+                autosizeOnCommit: this.autosizeOnCommit,
+                filterMatchMode: this.filterMatchMode,
                 commitOnChange: this.modalCommitOnChange,
-                width: 620
+                width: this.modalWidth,
+                height: this.modalHeight
             },
-            colChooserPanelModel: {
-                columnLibraryEnabled: this.panelColumnLibraryEnabled,
-                showRestoreDefaults: this.panelShowRestoreDefaults,
-                panelConfig: {defaultSize: 620, defaultCollapsed: false}
-            },
+            colChooserPanelModel: this.enableChooserPanel
+                ? {
+                      columnLibrary: this.panelColumnLibraryEnabled && {
+                          collapseGroups: this.collapseLibraryGroups
+                      },
+                      showRestoreDefaults: this.showRestoreDefaults,
+                      autosizeOnCommit: this.autosizeOnCommit,
+                      filterMatchMode: this.filterMatchMode,
+                      panelConfig: {defaultSize: this.panelWidth, side: this.panelSide}
+                  }
+                : false,
             enableExport: true,
+            contextMenu: ['colChooserPanel'],
             lockColumnGroups: this.lockColumnGroups,
+            enableColumnPinning: this.enableColumnPinning,
             columns: [
                 {
                     groupId: 'rep',
