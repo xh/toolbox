@@ -24,9 +24,14 @@
     // Uncomment ONLY while actively developing hoist-react inline (`yarn startWithHoist`) and you
     // need Toolbox to see local type-signature changes. Re-comment before committing - do not
     // commit it enabled.
-    // "paths": {
-    //   "@xh/hoist/*": ["../../hoist-react/*"]
-    // }
+    //
+    // NOTE - deliberately committed ENABLED on this branch: the admin grid tester imports
+    // `RecordDataFactory`, new in hoist-react 87 (xh/hoist-react#4500) and not yet available in a
+    // published @xh/hoist snapshot. Re-comment once this branch builds against a release that
+    // includes it.
+    "paths": {
+      "@xh/hoist/*": ["../../hoist-react/*"]
+    }
 
   },
   // Reference hoist-react as a composite build.

@@ -145,6 +145,24 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
             bind: 'extraFieldCount',
             width: 80
         }),
+        tooltip({
+            content: 'Populate extra fields with generated values (vs. leaving them null)',
+            item: switchInput({
+                bind: 'populateExtraFields',
+                label: 'Populate',
+                labelSide: 'left'
+            })
+        }),
+        toolbarSep(),
+        tooltip({
+            content:
+                'Disable the codegen record data factory (hoist-react#4500) - reverts to legacy sparse-prototype record data objects',
+            item: switchInput({
+                bind: 'disableDataFactory',
+                label: 'Legacy Data Objects',
+                labelSide: 'left'
+            })
+        }),
         toolbarSep(),
         storeFilterField()
     )
