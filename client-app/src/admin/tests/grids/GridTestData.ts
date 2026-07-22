@@ -16,16 +16,33 @@ export class GridTestData {
         return isEmpty(this.rows);
     }
 
-    generate({recordCount, idSeed, tree, numericId, showSummary, loadRootAsSummary}) {
+    generate({
+        recordCount,
+        idSeed,
+        tree,
+        numericId,
+        showSummary,
+        loadRootAsSummary,
+        extraFieldCount,
+        populateExtraFields
+    }) {
         this.rows = [];
         let count = 0;
+
+        const addExtraFields = (obj: PlainObject) => {
+            if (!populateExtraFields || !extraFieldCount) return obj;
+            for (let i = 0; i <= extraFieldCount; i++) {
+                obj['extraField' + i] = random(-1000000, 1000000);
+            }
+            return obj;
+        };
 
         while (count < recordCount) {
             let symbol = 'Symbol ' + count,
                 trader = 'Trader ' + (count % (recordCount / 10));
 
             count++;
-            const pos: PlainObject = {
+            const pos: PlainObject = addExtraFields({
                 id: numericId ? count : `${idSeed}~${symbol}`,
                 trader,
                 symbol,
@@ -33,7 +50,7 @@ export class GridTestData {
                 mtd: random(-500000, 500000),
                 ytd: random(-1000000, 2000000),
                 volume: random(1000, 2000000)
-            };
+            });
 
             if (tree) {
                 const createChildrenFn = (parent, maxCount: number) => {
@@ -47,7 +64,7 @@ export class GridTestData {
                     return times(childCount, t => {
                         trader = 'Trader ' + t;
                         count++;
-                        const child: PlainObject = {
+                        const child: PlainObject = addExtraFields({
                             id: numericId ? count : `${parent.id}~${trader}`,
                             trader,
                             symbol,
@@ -64,7 +81,7 @@ export class GridTestData {
                                     ? random(Math.min(0, ytdRem), Math.max(0, ytdRem))
                                     : ytdRem,
                             volume: t < maxT ? random(0, volRem) : volRem
-                        };
+                        });
                         dayRem -= child.day;
                         mtdRem -= child.mtd;
                         ytdRem -= child.ytd;

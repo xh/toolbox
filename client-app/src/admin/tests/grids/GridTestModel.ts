@@ -1,6 +1,9 @@
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
+// @ts-ignore - not yet present in published @xh/hoist typings; resolves when building against
+// hoist-react >= 87 with xh/hoist-react#4500. Remove this ignore once that version is in place.
+import {RecordDataFactory} from '@xh/hoist/data/impl/RecordDataFactory';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
 import {cloneDeep, times} from 'lodash';
@@ -42,6 +45,13 @@ export class GridTestModel extends HoistModel {
     // Value > 0 will trigger creation of additional (null value) fields on the store to
     // help stress-test stores with a wide array of fields.
     @bindable extraFieldCount = 50;
+    // True to populate extra fields with generated values - stress-tests stores with wide
+    // records (many populated fields), vs. wide-but-sparse field definitions.
+    @bindable populateExtraFields = false;
+    // True to disable the store's codegen'd record data factory (xh/hoist-react#4500) via its
+    // internal kill switch, reverting to the legacy sparse-prototype data objects - for A/B
+    // comparison of memory usage and load/update times.
+    @bindable disableDataFactory = false;
 
     @bindable disableSelect = false;
 
@@ -105,7 +115,9 @@ export class GridTestModel extends HoistModel {
                 this.colChooserHeight,
                 this.lockColumnGroups,
                 this.enableXssProtection,
-                this.extraFieldCount
+                this.extraFieldCount,
+                this.populateExtraFields,
+                this.disableDataFactory
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -192,6 +204,17 @@ export class GridTestModel extends HoistModel {
             }
         }
 
+        // Toggle the (internal, testing-only) factory kill switch around GridModel construction,
+        // which creates the underlying Store and selects its record data strategy.
+        RecordDataFactory.enabled = !this.disableDataFactory;
+        try {
+            return this.createGridModelInternal(storeConf, persistType);
+        } finally {
+            RecordDataFactory.enabled = true;
+        }
+    }
+
+    private createGridModelInternal(storeConf: StoreConfig, persistType: string) {
         return new GridModel({
             persistWith: persistType ? {[persistType]: PERSIST_KEY} : null,
             selModel: {mode: 'multiple'},
