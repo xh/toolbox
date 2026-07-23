@@ -62,7 +62,11 @@ class GridTestController extends BaseController {
     def streamingData(Integer recordCount, Integer idSeed, Boolean numericId) {
         def gen = new Generator(recordCount ?: 100000, idSeed ?: 1, numericId ?: false)
 
-        response.contentType = 'application/x-ndjson'
+        // Deliberately served as text/plain rather than the standard application/x-ndjson -
+        // the NDJSON type is missing from most default gzip/compressible MIME lists (webpack
+        // dev-server, Spring Boot, typical nginx gzip_types), so it would transfer uncompressed
+        // without per-environment config. text/plain is compressed out of the box.
+        response.contentType = 'text/plain'
         response.characterEncoding = 'UTF-8'
 
         def out = new BufferedOutputStream(response.outputStream, 32 * 1024)
