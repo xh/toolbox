@@ -2,7 +2,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {filler, hspacer, label, span, vbox} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {button, colChooserButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -20,7 +20,7 @@ export const GridTestPanel = hoistCmp({
             items: [
                 tbar(),
                 panel({
-                    mask: 'onLoad',
+                    mask: model.loadTask,
                     item: grid({
                         agOptions: {
                             rowSelection: {
@@ -58,7 +58,7 @@ const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
             })
         }),
         tooltip({
-            content: '# records to generate',
+            content: '# records to load',
             item: numberInput({
                 bind: 'recordCount',
                 enableShorthandUnits: true,
@@ -66,33 +66,26 @@ const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
                 width: 75
             })
         }),
-        button({
-            text: 'Generate Data',
-            icon: Icon.gears(),
-            onClick: () => model.data.generate(model)
-        }),
         toolbarSep(),
-        refreshButton({
-            text: 'Load Grid',
-            target: model
-        }),
         tooltip({
-            content: 'Load flat test data from the server.',
+            content: 'Load test data from the server.',
             item: button({
                 text: 'Load Server Data',
                 icon: Icon.download(),
-                disabled: model.tree,
+                intent: 'primary',
                 onClick: () => model.loadServerData()
             })
         }),
         tooltip({
             content:
                 'On to load from the streaming NDJSON endpoint via Store.loadDataAsync() - ' +
-                'off to load from the conventional JSON endpoint via loadData().',
+                'off to load from the conventional JSON endpoint via loadData(). Streaming ' +
+                'supports flat data only - disabled when tree/summary enabled.',
             item: switchInput({
                 bind: 'streamServerLoad',
                 label: 'Stream',
-                labelSide: 'left'
+                labelSide: 'left',
+                disabled: model.tree || model.showSummary
             })
         }),
         button({
@@ -119,13 +112,7 @@ const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
             text: 'Update',
             icon: Icon.diff(),
             intent: 'primary',
-            onClick: () => model.twiddleData('update')
-        }),
-        button({
-            text: 'Reload',
-            icon: Icon.diff(),
-            intent: 'primary',
-            onClick: () => model.twiddleData('load')
+            onClick: () => model.twiddleData()
         }),
         filler(),
         span(formatRunTimes(model))
