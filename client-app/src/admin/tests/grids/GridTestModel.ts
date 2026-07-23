@@ -1,11 +1,10 @@
-import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {HoistModel, managed, persist, TaskObserver, XH} from '@xh/hoist/core';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
-import {cloneDeep, times} from 'lodash';
+import {random, sample, times} from 'lodash';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
-import {GridTestData} from './GridTestData';
 import {GridTestMetrics} from './GridTestMetrics';
 
 const pnlColumn: ColumnSpec = {
@@ -27,9 +26,9 @@ export class GridTestModel extends HoistModel {
     @bindable recordCount = 200000;
     // Number of random records to perturb
     @bindable twiddleCount = Math.round(this.recordCount * 0.5);
-    // Prefix for all IDs - change to ensure no IDs re-used across data gens.
+    // Prefix for all IDs - change to ensure no IDs re-used across loads.
     @bindable idSeed = 1;
-    // True to generate data in tree structure.
+    // True to load data in tree structure.
     @bindable tree = false;
     // True to use an incremental numeric id as grid id.
     @bindable numericId = false;
@@ -42,6 +41,10 @@ export class GridTestModel extends HoistModel {
     // Value > 0 will trigger creation of additional (null value) fields on the store to
     // help stress-test stores with a wide array of fields.
     @bindable extraFieldCount = 50;
+
+    // True to load from the streaming NDJSON endpoint via Store.loadDataAsync(), vs. standard.
+    // For flat loading only.
+    @bindable streamServerLoad = true;
 
     @bindable disableSelect = false;
 
@@ -73,10 +76,10 @@ export class GridTestModel extends HoistModel {
     persistType = null;
 
     @managed
-    data = new GridTestData();
+    metrics = new GridTestMetrics();
 
     @managed
-    metrics = new GridTestMetrics();
+    loadTask = TaskObserver.trackLast();
 
     @managed
     @observable.ref
@@ -110,33 +113,48 @@ export class GridTestModel extends HoistModel {
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
-                this.clearData();
-                this.loadAsync();
+                this.metrics.clear();
             },
             debounce: 100
         });
 
         this.addReaction({
             track: () => this.recordCount,
-            run: () => this.clearData()
+            run: () => this.metrics.clear()
         });
     }
 
-    private clearData() {
-        this.data.clear();
-        this.metrics.clear();
+    loadServerData() {
+        this.doLoadServerDataAsync().linkTo(this.loadTask).catchDefault();
     }
 
-    override async doLoadAsync(loadSpec) {
-        const {data, metrics, gridModel} = this;
-        if (loadSpec.isAutoRefresh) return; // avoid auto-refresh confusing our tests here
+    private async doLoadServerDataAsync() {
+        const {gridModel, metrics, recordCount, idSeed, numericId, tree, showSummary} = this,
+            streaming = this.streamServerLoad && !tree && !showSummary,
+            start = Date.now();
 
-        if (data.isEmpty) {
-            data.generate(this);
+        if (streaming) {
+            await gridModel.store.loadDataAsync(
+                XH.fetchNdjson({
+                    url: 'gridTest/streamingData',
+                    params: {recordCount, idSeed, numericId}
+                })
+            );
+        } else {
+            const {rows, summary} = await XH.fetchJson({
+                url: 'gridTest/data',
+                params: {
+                    recordCount,
+                    idSeed,
+                    numericId,
+                    tree,
+                    showSummary,
+                    loadRootAsSummary: this.loadRootAsSummary
+                }
+            });
+            gridModel.loadData(rows, summary);
         }
-        metrics.runAsLoad(() => {
-            gridModel.loadData(cloneDeep(data.rows), cloneDeep(data.summary));
-        });
+        metrics.noteLoad(Date.now() - start);
     }
 
     clearGrid() {
@@ -146,17 +164,17 @@ export class GridTestModel extends HoistModel {
         });
     }
 
-    twiddleData(mode) {
-        const {gridModel, data, twiddleCount, metrics} = this;
-        metrics.runAsUpdate(() => {
-            if (mode === 'update') {
-                const update = data.generateUpdates(twiddleCount);
-                gridModel.updateData(update);
-            } else {
-                data.applyUpdates(twiddleCount);
-                gridModel.loadData(cloneDeep(data.rows), cloneDeep(data.summary));
-            }
-        });
+    twiddleData() {
+        const {gridModel, twiddleCount, metrics} = this,
+            {records} = gridModel.store;
+        if (!records.length) return;
+
+        const update = times(twiddleCount, () => ({
+            ...sample(records).raw,
+            day: random(-80000, 100000),
+            volume: random(1000, 1200000)
+        }));
+        metrics.runAsUpdate(() => gridModel.updateData(update));
     }
 
     private createGridModel() {
@@ -269,6 +287,5 @@ export class GridTestModel extends HoistModel {
     tearDown() {
         XH.safeDestroy(this.gridModel);
         this.gridModel = this.createGridModel();
-        this.data.clear();
     }
 }
