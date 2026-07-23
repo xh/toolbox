@@ -4,7 +4,7 @@
 
 ### Technical
 
-* Added a "Load NDJSON" option to the admin Grid test panel, loading flat test data from a new server-side NDJSON endpoint. A "Stream" toggle switches between consuming the response incrementally via `Store.loadDataAsync()` (no buffering of the complete raw dataset in memory) and buffering/parsing the complete response up-front - an A/B comparison on identical data.
+* Added a "Load Server Data" option to the admin Grid test panel, backed by two new server endpoints serving identical flat test data. A "Stream" toggle switches between an NDJSON endpoint consumed incrementally via `Store.loadDataAsync()` (no buffering of the complete raw dataset in memory) and a conventional JSON endpoint loaded via standard `loadData()` - an A/B comparison on identical data.
 
 ### Libraries
 * @xh/hoist `86.x → 87.x`

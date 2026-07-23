@@ -43,8 +43,8 @@ export class GridTestModel extends HoistModel {
     // help stress-test stores with a wide array of fields.
     @bindable extraFieldCount = 50;
 
-    // True to consume server NDJSON loads incrementally via Store.loadDataAsync() - false to
-    // buffer and parse the complete response, then load via the standard loadData().
+    // True to load server data from the streaming NDJSON endpoint via Store.loadDataAsync() -
+    // false to load from the conventional JSON endpoint via the standard loadData().
     @bindable streamServerLoad = true;
 
     @bindable disableSelect = false;
@@ -151,26 +151,26 @@ export class GridTestModel extends HoistModel {
     }
 
     /**
-     * Load the grid with flat NDJSON data from the server - one record per line. With
-     * `streamServerLoad` (default), the response is consumed incrementally via
-     * `Store.loadDataAsync()` - records are created as chunks arrive, without ever buffering
-     * the complete raw dataset in memory. Toggle off to buffer and parse the complete response
-     * up-front and load via the standard `loadData()`, for an A/B on identical data.
+     * Load the grid with flat data from the server. With `streamServerLoad` (default), fetches
+     * the NDJSON `streamingData` endpoint, consumed incrementally via `Store.loadDataAsync()` -
+     * records are created as chunks arrive, without ever buffering the complete raw dataset in
+     * memory. Toggle off to fetch the conventional JSON `data` endpoint and load via the
+     * standard `loadData()`, for an A/B on identical data.
      */
-    loadNdjson() {
-        this.doLoadNdjsonAsync().linkTo(this.loadSupport.loadObserver).catchDefault();
+    loadServerData() {
+        this.doLoadServerDataAsync().linkTo(this.loadSupport.loadObserver).catchDefault();
     }
 
-    private async doLoadNdjsonAsync() {
+    private async doLoadServerDataAsync() {
         const {gridModel, metrics, recordCount, idSeed, streamServerLoad} = this,
-            start = Date.now(),
-            response = await XH.fetch({url: 'gridTest/ndjson', params: {recordCount, idSeed}});
+            params = {recordCount, idSeed},
+            start = Date.now();
 
         if (streamServerLoad) {
+            const response = await XH.fetch({url: 'gridTest/streamingData', params});
             await gridModel.store.loadDataAsync(ndjsonChunks(response));
         } else {
-            const text = await response.text(),
-                rows = text.split('\n').filter(Boolean).map(it => JSON.parse(it));
+            const rows = await XH.fetchJson({url: 'gridTest/data', params});
             gridModel.loadData(rows);
         }
         metrics.noteLoad(Date.now() - start);
