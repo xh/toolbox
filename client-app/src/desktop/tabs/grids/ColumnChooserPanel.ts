@@ -1,4 +1,4 @@
-import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {grid, GridContextMenuItemLike, GridModel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp, HoistModel, HSide, LoadSpec, managed, XH} from '@xh/hoist/core';
@@ -46,7 +46,11 @@ export const columnChooserPanel = hoistCmp.factory({
                 'Columns carry `chooserDescription` tooltips, and `Full Name` is locked via',
                 '`hideable: false`. Open the chooser from the toolbar - as a **popover** via the grid’s',
                 '`colChooserModel`, or as a **docked side-panel** via its `colChooserPanelModel `, which',
-                'the grid renders beside itself (shown open here by default).'
+                'the grid renders beside itself (shown open here by default).',
+                '',
+                '`width` sizes the bucket column alone; the Library adds its own `libraryWidth` when',
+                'shown, so the buckets keep a constant width as it toggles - the overlay grows/shrinks,',
+                'and the docked panel resizes by the library width (preserving any manual resize).'
             ],
             links: [
                 {
@@ -101,6 +105,7 @@ export const columnChooserPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Width',
+                    info: 'Bucket column width - excludes the library, which adds its own width when shown.',
                     propName: 'ColChooserConfig.width',
                     control: numberInput({model, bind: 'modalWidth', width: 90, min: 100})
                 }),
@@ -126,7 +131,8 @@ export const columnChooserPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Width',
-                    propName: 'ColChooserPanelConfig.panelConfig.defaultSize',
+                    info: 'Bucket column width - the dock grows by the library width while the library is shown.',
+                    propName: 'ColChooserConfig.width',
                     control: numberInput({model, bind: 'panelWidth', width: 90, min: 100})
                 }),
                 wrapperOptionGroup('Chooser Settings (Shared)'),
@@ -176,6 +182,12 @@ export const columnChooserPanel = hoistCmp.factory({
                     info: 'Start the Library’s `chooserGroup` groups collapsed - handy for large column sets.',
                     propName: 'ColLibraryConfig.collapseGroups',
                     control: switchInput({model, bind: 'collapseLibraryGroups'})
+                }),
+                wrapperOption({
+                    label: 'Library Width',
+                    info: 'Fixed width of the library, added to the bucket width whenever it is shown.',
+                    propName: 'ColLibraryConfig.libraryWidth',
+                    control: numberInput({model, bind: 'libraryWidth', width: 90, min: 100})
                 })
             ],
             item: panel({
@@ -220,17 +232,22 @@ class ColumnChooserPanelModel extends HoistModel {
     @bindable panelColumnLibraryEnabled: boolean = true;
     @bindable collapseLibraryGroups: boolean = false;
 
-    // Modal (popover / dialog) chooser config -> gridModel.colChooserModel.
+    // Width of the library, added to the bucket `width` when the library is shown (ColLibraryConfig).
+    @bindable libraryWidth: number = 260;
+
+    // Modal (popover / dialog) chooser config -> gridModel.colChooserModel. `width` is the bucket
+    // column width (excludes the library, which adds `libraryWidth` when shown).
     @bindable modalCommitOnChange: boolean = true;
-    @bindable modalWidth: number = 620;
+    @bindable modalWidth: number = 400;
     @bindable modalHeight: number = 600;
 
     // Docked side-panel chooser config -> gridModel.colChooserPanelModel. Note the panel forces
-    // commitOnChange true, so no such option is exposed for it. No height option either - the
-    // dock is horizontal-only, sized by `panelWidth` via its `panelConfig.defaultSize`. Open/close
-    // is driven externally (the toolbar button, or the initial open below), not a built-in rail.
+    // commitOnChange true, so no such option is exposed for it. No height option either - the dock is
+    // horizontal-only. `panelWidth` is the bucket width; the dock's initial size is that plus
+    // `libraryWidth` while the library is shown, and grows/shrinks by it as the library toggles.
+    // Open/close is driven externally (the toolbar button, or the initial open below).
     @bindable panelSide: HSide = 'right';
-    @bindable panelWidth: number = 620;
+    @bindable panelWidth: number = 400;
 
     constructor() {
         super();
@@ -252,6 +269,7 @@ class ColumnChooserPanelModel extends HoistModel {
                 this.modalColumnLibraryEnabled,
                 this.panelColumnLibraryEnabled,
                 this.collapseLibraryGroups,
+                this.libraryWidth,
                 this.modalCommitOnChange,
                 this.modalWidth,
                 this.modalHeight,
@@ -281,7 +299,8 @@ class ColumnChooserPanelModel extends HoistModel {
             emptyText: 'No records found...',
             colChooserModel: {
                 columnLibrary: this.modalColumnLibraryEnabled && {
-                    collapseGroups: this.collapseLibraryGroups
+                    collapseGroups: this.collapseLibraryGroups,
+                    libraryWidth: this.libraryWidth
                 },
                 showRestoreDefaults: this.showRestoreDefaults,
                 autosizeOnCommit: this.autosizeOnCommit,
@@ -293,16 +312,22 @@ class ColumnChooserPanelModel extends HoistModel {
             colChooserPanelModel: this.enableChooserPanel
                 ? {
                       columnLibrary: this.panelColumnLibraryEnabled && {
-                          collapseGroups: this.collapseLibraryGroups
+                          collapseGroups: this.collapseLibraryGroups,
+                          libraryWidth: this.libraryWidth
                       },
                       showRestoreDefaults: this.showRestoreDefaults,
                       autosizeOnCommit: this.autosizeOnCommit,
                       filterMatchMode: this.filterMatchMode,
-                      panelConfig: {defaultSize: this.panelWidth, side: this.panelSide}
+                      // Bucket width; the dock grows by `libraryWidth` while the library is shown.
+                      width: this.panelWidth,
+                      panelConfig: {side: this.panelSide}
                   }
                 : false,
             enableExport: true,
-            contextMenu: ['colChooserPanel'],
+            // Default grid context menu, with the docked-panel chooser added after the standard one.
+            contextMenu: (GridModel.defaults.contextMenu as GridContextMenuItemLike[]).flatMap(
+                it => (it === 'colChooser' ? [it, 'colChooserPanel'] : it)
+            ),
             lockColumnGroups: this.lockColumnGroups,
             enableColumnPinning: this.enableColumnPinning,
             columns: [
