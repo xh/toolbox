@@ -51,11 +51,13 @@ class GridTestController extends BaseController {
      * data streaming through any buffering layers (compression filters, reverse proxies) between
      * server and client.
      *
-     * Note the BufferedOutputStream wrapper is a required part of this pattern - it coalesces
-     * the many small per-row writes into ~32KB chunks. Written directly, each tiny write can
-     * travel the response pipeline as its own chunk, degrading downstream gzip ratios (compressors
-     * that sync-flush per chunk lose most of their efficiency on sub-KB blocks) and adding
-     * per-chunk transfer overhead.
+     * Note two required details of this pattern:
+     * - The BufferedOutputStream wrapper coalesces the many small per-row writes into ~32KB
+     *   chunks. Sent individually, each tiny write travels the response pipeline as its own
+     *   chunk, degrading downstream gzip ratios (compressors that sync-flush per chunk lose
+     *   most of their efficiency on sub-KB blocks) and adding per-chunk transfer overhead.
+     * - Rows must be written via write(), NOT the Groovy << operator - Groovy's
+     *   OutputStream.leftShift() flushes after every write, which would defeat the buffer.
      */
     def streamingData(Integer recordCount, Integer idSeed, Boolean numericId) {
         def gen = new Generator(recordCount ?: 100000, idSeed ?: 1, numericId ?: false)
@@ -65,7 +67,7 @@ class GridTestController extends BaseController {
 
         def out = new BufferedOutputStream(response.outputStream, 32 * 1024)
         gen.eachFlatRow { Map row ->
-            out << JsonOutput.toJson(row) << '\n'
+            out.write((JsonOutput.toJson(row) + '\n').getBytes('UTF-8'))
             if (gen.count % 1000 == 1) out.flush()
         }
         out.flush()
