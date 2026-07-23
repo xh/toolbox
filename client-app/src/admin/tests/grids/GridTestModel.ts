@@ -1,4 +1,4 @@
-import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {HoistModel, managed, persist, PlainObject, XH} from '@xh/hoist/core';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
@@ -146,6 +146,24 @@ export class GridTestModel extends HoistModel {
         });
     }
 
+    /**
+     * Load the grid by streaming NDJSON (flat data) from the server, one record per line,
+     * consumed incrementally via `Store.loadDataAsync()` - records are created as chunks
+     * arrive, without ever buffering the complete raw dataset in memory.
+     */
+    loadNdjson() {
+        this.doLoadNdjsonAsync().linkTo(this.loadSupport.loadObserver).catchDefault();
+    }
+
+    private async doLoadNdjsonAsync() {
+        const {gridModel, metrics, recordCount, idSeed} = this,
+            start = Date.now(),
+            response = await XH.fetch({url: 'gridTest/ndjson', params: {recordCount, idSeed}});
+
+        await gridModel.store.loadDataAsync(ndjsonChunks(response));
+        metrics.noteLoad(Date.now() - start);
+    }
+
     twiddleData(mode) {
         const {gridModel, data, twiddleCount, metrics} = this;
         metrics.runAsUpdate(() => {
@@ -271,4 +289,28 @@ export class GridTestModel extends HoistModel {
         this.gridModel = this.createGridModel();
         this.data.clear();
     }
+}
+
+/**
+ * Read an NDJSON response body incrementally, yielding chunks (arrays) of parsed records as
+ * they arrive off the network. Each line is parsed with native `JSON.parse` - no streaming
+ * parser library required - and no more than one network chunk of raw text is buffered.
+ */
+async function* ndjsonChunks(response: Response): AsyncGenerator<PlainObject[]> {
+    const reader = response.body.getReader(),
+        decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+        const {done, value} = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, {stream: true});
+        const lines = buffer.split('\n');
+        buffer = lines.pop(); // retain any partial trailing line for the next chunk
+        if (lines.length) yield lines.filter(Boolean).map(it => JSON.parse(it));
+    }
+
+    buffer += decoder.decode();
+    if (buffer.trim()) yield [JSON.parse(buffer)];
 }

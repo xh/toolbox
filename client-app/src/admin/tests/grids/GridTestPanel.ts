@@ -76,6 +76,17 @@ const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
             text: 'Load Grid',
             target: model
         }),
+        tooltip({
+            content:
+                'Stream flat test data from the server as NDJSON, loading the Store ' +
+                'incrementally via Store.loadDataAsync().',
+            item: button({
+                text: 'Load NDJSON',
+                icon: Icon.download(),
+                disabled: model.tree,
+                onClick: () => model.loadNdjson()
+            })
+        }),
         button({
             text: 'Clear Grid',
             icon: Icon.delete(),

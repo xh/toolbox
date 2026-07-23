@@ -2,6 +2,10 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Added a "Load NDJSON" option to the admin Grid test panel, streaming flat test data from a new server-side NDJSON endpoint into the grid via `Store.loadDataAsync()` - demonstrating incremental record creation without buffering the complete raw dataset in memory.
+
 ### Libraries
 * @xh/hoist `86.x → 87.x`
 * React `18.2 → 19.2`
