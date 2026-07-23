@@ -1,4 +1,5 @@
-import {HoistModel, managed, persist, PlainObject, TaskObserver, XH} from '@xh/hoist/core';
+import {HoistModel, managed, persist, TaskObserver, XH} from '@xh/hoist/core';
+import {ndjsonChunks} from '@xh/hoist/utils/async';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
@@ -42,9 +43,8 @@ export class GridTestModel extends HoistModel {
     // help stress-test stores with a wide array of fields.
     @bindable extraFieldCount = 50;
 
-    // True to load from the streaming NDJSON endpoint via Store.loadDataAsync() - false to load
-    // from the conventional JSON endpoint via the standard loadData(). Streaming supports flat
-    // data only - loads fall back to the conventional endpoint when tree/summary enabled.
+    // True to load from the streaming NDJSON endpoint via Store.loadDataAsync(), vs. standard.
+    // For flat loading only.
     @bindable streamServerLoad = true;
 
     @bindable disableSelect = false;
@@ -125,13 +125,6 @@ export class GridTestModel extends HoistModel {
         });
     }
 
-    /**
-     * Load the grid with data from the server. With `streamServerLoad` (default), fetches the
-     * NDJSON `streamingData` endpoint, consumed incrementally via `Store.loadDataAsync()` -
-     * records are created as chunks arrive, without ever buffering the complete raw dataset in
-     * memory. Toggle off to fetch the conventional JSON `data` endpoint and load via the
-     * standard `loadData()`, for an A/B on identical data. Streaming supports flat data only.
-     */
     loadServerData() {
         this.doLoadServerDataAsync().linkTo(this.loadTask).catchDefault();
     }
@@ -297,26 +290,3 @@ export class GridTestModel extends HoistModel {
     }
 }
 
-/**
- * Read an NDJSON response body incrementally, yielding chunks (arrays) of parsed records as
- * they arrive off the network. Each line is parsed with native `JSON.parse` - no streaming
- * parser library required - and no more than one network chunk of raw text is buffered.
- */
-async function* ndjsonChunks(response: Response): AsyncGenerator<PlainObject[]> {
-    const reader = response.body.getReader(),
-        decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-        const {done, value} = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, {stream: true});
-        const lines = buffer.split('\n');
-        buffer = lines.pop(); // retain any partial trailing line for the next chunk
-        if (lines.length) yield lines.filter(Boolean).map(it => JSON.parse(it));
-    }
-
-    buffer += decoder.decode();
-    if (buffer.trim()) yield [JSON.parse(buffer)];
-}
