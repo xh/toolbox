@@ -29,7 +29,6 @@ export class GridTestMetrics {
         this.updateTimes = [];
         this.loadTimes = [];
     }
-
     @action
     runAsLoad(fn) {
         this.noteLoad(this.runTimed(fn));

@@ -1,5 +1,4 @@
 import {HoistModel, managed, persist, TaskObserver, XH} from '@xh/hoist/core';
-import {ndjsonChunks} from '@xh/hoist/utils/async';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
@@ -135,11 +134,12 @@ export class GridTestModel extends HoistModel {
             start = Date.now();
 
         if (streaming) {
-            const response = await XH.fetch({
-                url: 'gridTest/streamingData',
-                params: {recordCount, idSeed, numericId}
-            });
-            await gridModel.store.loadDataAsync(ndjsonChunks(response));
+            await gridModel.store.loadDataAsync(
+                XH.fetchNdjson({
+                    url: 'gridTest/streamingData',
+                    params: {recordCount, idSeed, numericId}
+                })
+            );
         } else {
             const {rows, summary} = await XH.fetchJson({
                 url: 'gridTest/data',
