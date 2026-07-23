@@ -43,6 +43,10 @@ export class GridTestModel extends HoistModel {
     // help stress-test stores with a wide array of fields.
     @bindable extraFieldCount = 50;
 
+    // True to consume server NDJSON loads incrementally via Store.loadDataAsync() - false to
+    // buffer and parse the complete response, then load via the standard loadData().
+    @bindable streamServerLoad = true;
+
     @bindable disableSelect = false;
 
     @bindable colChooserCommitOnChange = true;
@@ -147,20 +151,28 @@ export class GridTestModel extends HoistModel {
     }
 
     /**
-     * Load the grid by streaming NDJSON (flat data) from the server, one record per line,
-     * consumed incrementally via `Store.loadDataAsync()` - records are created as chunks
-     * arrive, without ever buffering the complete raw dataset in memory.
+     * Load the grid with flat NDJSON data from the server - one record per line. With
+     * `streamServerLoad` (default), the response is consumed incrementally via
+     * `Store.loadDataAsync()` - records are created as chunks arrive, without ever buffering
+     * the complete raw dataset in memory. Toggle off to buffer and parse the complete response
+     * up-front and load via the standard `loadData()`, for an A/B on identical data.
      */
     loadNdjson() {
         this.doLoadNdjsonAsync().linkTo(this.loadSupport.loadObserver).catchDefault();
     }
 
     private async doLoadNdjsonAsync() {
-        const {gridModel, metrics, recordCount, idSeed} = this,
+        const {gridModel, metrics, recordCount, idSeed, streamServerLoad} = this,
             start = Date.now(),
             response = await XH.fetch({url: 'gridTest/ndjson', params: {recordCount, idSeed}});
 
-        await gridModel.store.loadDataAsync(ndjsonChunks(response));
+        if (streamServerLoad) {
+            await gridModel.store.loadDataAsync(ndjsonChunks(response));
+        } else {
+            const text = await response.text(),
+                rows = text.split('\n').filter(Boolean).map(it => JSON.parse(it));
+            gridModel.loadData(rows);
+        }
         metrics.noteLoad(Date.now() - start);
     }
 

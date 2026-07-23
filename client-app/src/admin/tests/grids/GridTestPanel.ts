@@ -77,14 +77,22 @@ const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
             target: model
         }),
         tooltip({
-            content:
-                'Stream flat test data from the server as NDJSON, loading the Store ' +
-                'incrementally via Store.loadDataAsync().',
+            content: 'Load flat test data from the server as NDJSON.',
             item: button({
                 text: 'Load NDJSON',
                 icon: Icon.download(),
                 disabled: model.tree,
                 onClick: () => model.loadNdjson()
+            })
+        }),
+        tooltip({
+            content:
+                'On to consume the response incrementally via Store.loadDataAsync() - ' +
+                'off to buffer and parse the complete response, then loadData() as usual.',
+            item: switchInput({
+                bind: 'streamServerLoad',
+                label: 'Stream',
+                labelSide: 'left'
             })
         }),
         button({
