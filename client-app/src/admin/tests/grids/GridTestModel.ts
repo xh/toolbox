@@ -289,4 +289,3 @@ export class GridTestModel extends HoistModel {
         this.gridModel = this.createGridModel();
     }
 }
-
