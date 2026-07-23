@@ -50,6 +50,12 @@ class GridTestController extends BaseController {
      * thereafter (~128KB at this row shape) - coarse enough to be cheap, frequent enough to keep
      * data streaming through any buffering layers (compression filters, reverse proxies) between
      * server and client.
+     *
+     * Note the BufferedOutputStream wrapper is a required part of this pattern - it coalesces
+     * the many small per-row writes into ~32KB chunks. Written directly, each tiny write can
+     * travel the response pipeline as its own chunk, degrading downstream gzip ratios (compressors
+     * that sync-flush per chunk lose most of their efficiency on sub-KB blocks) and adding
+     * per-chunk transfer overhead.
      */
     def streamingData(Integer recordCount, Integer idSeed, Boolean numericId) {
         def gen = new Generator(recordCount ?: 100000, idSeed ?: 1, numericId ?: false)
@@ -57,7 +63,7 @@ class GridTestController extends BaseController {
         response.contentType = 'application/x-ndjson'
         response.characterEncoding = 'UTF-8'
 
-        def out = response.outputStream
+        def out = new BufferedOutputStream(response.outputStream, 32 * 1024)
         gen.eachFlatRow { Map row ->
             out << JsonOutput.toJson(row) << '\n'
             if (gen.count % 1000 == 1) out.flush()
