@@ -3,7 +3,7 @@ import {boolCheckCol, ExcelFormat, GridModel, localDateCol} from '@xh/hoist/cmp/
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {CompoundFilter, FieldFilter} from '@xh/hoist/data';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {computed, makeObservable} from '@xh/hoist/mobx';
+import {computed} from '@xh/hoist/mobx';
 
 export class StoreColumnFilterPanelModel extends HoistModel {
     @managed gridModel: GridModel;
@@ -16,7 +16,6 @@ export class StoreColumnFilterPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.gridModel = this.createGridModel();
         this.filterChooserModel = this.createFilterChooserModel();

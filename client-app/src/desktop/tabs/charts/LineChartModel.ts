@@ -3,7 +3,7 @@ import {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
 import {div, hr} from '@xh/hoist/cmp/layout';
 import {type ContextMenuSpec, HoistModel, managed, XH} from '@xh/hoist/core';
 import {fmtDate} from '@xh/hoist/format';
-import {observable, makeObservable, runInAction, bindable} from '@xh/hoist/mobx';
+import {observable, runInAction, bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import Highcharts from 'highcharts/highstock';
@@ -11,20 +11,19 @@ import {isEmpty} from 'lodash';
 import {ChartContextMenuMode} from '../../common';
 
 export class LineChartModel extends HoistModel {
-    @bindable currentSymbols: string[] = [];
-    @observable.ref symbols: string[] = [];
+    @bindable accessor currentSymbols: string[] = [];
+    @observable.ref accessor symbols: string[] = [];
 
-    @bindable aspectRatio: number = null;
+    @bindable accessor aspectRatio: number = null;
 
-    @bindable currentContextMenu: ChartContextMenuMode = null;
+    @bindable accessor currentContextMenu: ChartContextMenuMode = null;
 
     @managed
     @observable.ref
-    chartModel: ChartModel;
+    accessor chartModel: ChartModel;
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.addReaction({
             track: () => this.currentSymbols,

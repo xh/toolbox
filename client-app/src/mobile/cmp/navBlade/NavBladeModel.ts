@@ -1,6 +1,6 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {ReactElement} from 'react';
 import {DocService} from '../../../core/svc/DocService';
 
@@ -41,10 +41,10 @@ const BLANK_TITLE = ' ';
  * shared `@xh/hoist/mobile` kit.
  */
 export class NavBladeModel extends HoistModel {
-    @bindable isOpen = false;
+    @bindable accessor isOpen = false;
 
     /** Ids of the groups currently expanded in place. */
-    @observable.ref expandedIds: string[] = [];
+    @observable.ref accessor expandedIds: string[] = [];
 
     get homeRoute(): string {
         return HOME_ROUTE;
@@ -113,7 +113,6 @@ export class NavBladeModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         // Dismiss the blade on any route change - covers browser back/forward and any navigation
         // that originates outside the blade (mirrors how Hoist's built-in dialogs self-dismiss).
