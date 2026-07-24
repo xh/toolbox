@@ -27,7 +27,8 @@ export class CubeModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const LTM = this.parent.loadTimesModel;
+        const LTM = this.parent.loadTimesModel,
+            {recordMultiplier} = this.parent;
         let orders = [];
         await LTM.withLoadTime('Fetch orders', async () => {
             orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
@@ -36,6 +37,16 @@ export class CubeModel extends HoistModel {
                 it.maxConfidence = it.minConfidence = it.confidence;
             });
         });
+
+        // Replicate the fetched orders to stress-test at scale. Copies reuse the same dimension
+        // values (deepening aggregation) with fresh unique ids required by the Cube's idSpec.
+        if (recordMultiplier > 1) {
+            const base = orders;
+            orders = base.slice();
+            for (let k = 1; k < recordMultiplier; k++) {
+                base.forEach(o => orders.push({...o, id: `${o.id}~r${k}`}));
+            }
+        }
 
         const ocTxt = fmtThousands(orders.length) + 'k';
         await LTM.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
