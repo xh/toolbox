@@ -216,6 +216,15 @@ export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOption
 });
 
 /**
+ * A subsection header for a Wrapper `options` section, used to group related option rows under a
+ * labeled heading (e.g. separating a component's modal vs. docked-panel configs). Drop between
+ * `wrapperOption` rows in the `options` array to start a new labeled group.
+ */
+export function wrapperOptionGroup(label: ReactNode): ReactElement {
+    return div({className: 'tbox-wrapper__option-group', item: label});
+}
+
+/**
  * A full-width, non-minimal action button for a Wrapper `options` section - i.e. a demo *trigger*
  * (e.g. "Load Now") or a utility action that acts on the example. Standardizes the action-button
  * look across examples (filled, stretched to the rail width).
