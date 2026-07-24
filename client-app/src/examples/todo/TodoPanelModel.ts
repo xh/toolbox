@@ -1,6 +1,7 @@
-import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, persist, SizingMode, XH} from '@xh/hoist/core';
+import {CellContext, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {HoistModel, LoadSpec, managed, persist, SizingMode, XH} from '@xh/hoist/core';
 import {RecordAction} from '@xh/hoist/data';
+import type {DueDateGroup, Task} from './TaskService';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {span} from '@xh/hoist/cmp/layout';
 import {fmtCompactDate} from '@xh/hoist/format';
@@ -8,7 +9,7 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {every, isEmpty} from 'lodash';
-import {createRef} from 'react';
+import {createRef, ReactNode} from 'react';
 import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
 
@@ -27,7 +28,7 @@ export class TodoPanelModel extends HoistModel {
     showGroups = true;
 
     @managed
-    gridModel: GridModel;
+    gridModel: GridModel<Task>;
 
     panelRef = createRef<HTMLElement>();
 
@@ -55,8 +56,12 @@ export class TodoPanelModel extends HoistModel {
     });
 
     toggleCompleteAction = new RecordAction({
+        // `RecordAction` callbacks receive the generic `ActionFnData`, whose `record` /
+        // `selectedRecords` are non-generic `StoreRecord`s - so unlike `selectedTasks` below
+        // (which flows through our `GridModel<Task>`) we assert `as Task` at this boundary.
+        // A future generic `RecordAction<T>` could carry the record type through and drop these.
         displayFn: ({selectedRecords}) => {
-            const tasks = selectedRecords.map(it => it.data),
+            const tasks = selectedRecords.map(it => it.data as Task),
                 firstTask = tasks[0],
                 complete = firstTask?.complete,
                 text = complete ? 'Mark all Incomplete' : 'Mark all Complete',
@@ -73,12 +78,13 @@ export class TodoPanelModel extends HoistModel {
                 : {hidden: true};
         },
         actionFn: ({selectedRecords}) => {
-            const tasks = selectedRecords.map(it => it.data);
+            const tasks = selectedRecords.map(it => it.data as Task);
             this.toggleCompleteAsync(tasks);
         }
     });
 
-    get selectedTasks() {
+    /** Typed `Task[]` for free: `gridModel` is a `GridModel<Task>`, so its records carry `Task`. */
+    get selectedTasks(): Task[] {
         return this.gridModel.selectedRecords.map(it => it.data);
     }
 
@@ -109,19 +115,19 @@ export class TodoPanelModel extends HoistModel {
         });
     }
 
-    async addTaskAsync(task) {
+    async addTaskAsync(task: Task) {
         await XH.taskService.addAsync(task);
         await this.refreshAsync();
         this.info(`Task added: '${task.description}'`);
     }
 
-    async editTaskAsync(task) {
+    async editTaskAsync(task: Task) {
         await XH.taskService.editAsync([task]);
         await this.refreshAsync();
         this.info(`Task edited: '${task.description}'`);
     }
 
-    async deleteTasksAsync(tasks) {
+    async deleteTasksAsync(tasks: Task[]) {
         if (isEmpty(tasks)) return;
 
         const count = tasks.length,
@@ -143,7 +149,7 @@ export class TodoPanelModel extends HoistModel {
         this.info(label);
     }
 
-    async toggleCompleteAsync(tasks) {
+    async toggleCompleteAsync(tasks: Task[]) {
         if (isEmpty(tasks)) return;
 
         const firstTask = tasks[0],
@@ -170,13 +176,13 @@ export class TodoPanelModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    override async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec: LoadSpec) {
         const tasks = await XH.taskService.getAsync();
         this.gridModel.loadData(tasks);
     }
 
     private createGridModel() {
-        return new GridModel({
+        return new GridModel<Task>({
             emptyText: 'Congratulations.  You did it! All of it!',
             selModel: {mode: 'multiple'},
             sizingMode: SizingMode.LARGE,
@@ -194,10 +200,12 @@ export class TodoPanelModel extends HoistModel {
                 ]
             },
             groupSortFn: (a, b) => {
-                return dueDateGroupSort[a] - dueDateGroupSort[b];
+                // `GridGroupSortFn` hands us raw group values as `string` - assert to our union.
+                return dueDateGroupSort[a as DueDateGroup] - dueDateGroupSort[b as DueDateGroup];
             },
             onRowDoubleClicked: ({data}) => {
-                if (data) this.taskDialogModel.openEditForm(data.data);
+                // ag-Grid's `RowDoubleClickedEvent` is not generic - `data.data` is the untyped row.
+                if (data) this.taskDialogModel.openEditForm(data.data as Task);
             },
             contextMenu: [
                 this.editAction,
@@ -212,7 +220,7 @@ export class TodoPanelModel extends HoistModel {
                     actions: [
                         {
                             displayFn: ({record}) => {
-                                const {complete} = record.data;
+                                const {complete} = record.data as Task;
 
                                 return {
                                     icon: complete
@@ -229,7 +237,7 @@ export class TodoPanelModel extends HoistModel {
                                 };
                             },
                             actionFn: ({record}) => {
-                                this.toggleCompleteAsync([record.data]);
+                                this.toggleCompleteAsync([record.data as Task]);
                             }
                         }
                     ]
@@ -249,7 +257,7 @@ export class TodoPanelModel extends HoistModel {
                     ...localDateCol,
                     width: 140,
                     rendererIsComplex: true,
-                    renderer: (v, {record}) => this.dueDateRenderer(v, {record})
+                    renderer: (v, context) => this.dueDateRenderer(v, context)
                 },
                 {
                     field: 'dueDateGroup',
@@ -259,12 +267,13 @@ export class TodoPanelModel extends HoistModel {
         });
     }
 
-    private info(message) {
+    private info(message: ReactNode) {
         XH.toast({message, containerRef: this.panelRef.current});
     }
 
-    private dueDateRenderer(v, {record}) {
-        const overdue = v && v < LocalDate.today() && !record.data.complete,
+    private dueDateRenderer(v: LocalDate, {record}: CellContext) {
+        // `CellContext.record` is a non-generic `StoreRecord` - assert to read typed `Task` fields.
+        const overdue = v && v < LocalDate.today() && !(record.data as Task).complete,
             dateStr = fmtCompactDate(v?.date, {
                 sameDayFmt: '[Today]',
                 nearFmt: 'MMM DD',
@@ -275,7 +284,7 @@ export class TodoPanelModel extends HoistModel {
     }
 }
 
-const dueDateGroupSort = {
+const dueDateGroupSort: Record<DueDateGroup, number> = {
     Overdue: 1,
     Today: 2,
     Upcoming: 3,

@@ -3,6 +3,27 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
 
+/** A node in a hierarchically-grouped portfolio position tree. */
+export interface Position {
+    id: string;
+    name: string;
+    pnl: number;
+    mktVal: number;
+    children: Position[];
+}
+
+/** A single flat, priced position - a leaf in the portfolio. */
+export interface PricedRawPosition {
+    symbol: string;
+    model: string;
+    fund: string;
+    sector: string;
+    region: string;
+    trader: string;
+    mktVal: number;
+    pnl: number;
+}
+
 export class PortfolioService extends HoistService {
     override telemetryPrefix = 'toolbox.client.portfolio';
 
@@ -175,23 +196,4 @@ export class PortfolioService extends HoistService {
                 };
             });
     }
-}
-
-export interface Position {
-    id: string;
-    name: string;
-    pnl: number;
-    mktVal: number;
-    children: Position[];
-}
-
-export interface PricedRawPosition {
-    symbol: string;
-    model: string;
-    fund: string;
-    sector: string;
-    region: string;
-    trader: string;
-    mktVal: number;
-    pnl: number;
 }
