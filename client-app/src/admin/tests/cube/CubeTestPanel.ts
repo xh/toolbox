@@ -11,13 +11,14 @@ import {dimensionManager} from './dimensions/DimensionManager';
 import {loadTimesPanel} from './LoadTimesPanel';
 import {colChooserButton, button} from '@xh/hoist/desktop/cmp/button';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import {tooltip} from '@xh/hoist/kit/blueprint';
 import './CubeTestPanel.scss';
 
 export const CubeTestPanel = hoistCmp({
     className: 'tb-cube-test-panel',
     model: creates(CubeTestModel),
 
-    render({className}) {
+    render({className, model}) {
         return panel({
             className,
             item: hframe(
@@ -26,7 +27,9 @@ export const CubeTestPanel = hoistCmp({
                     title: 'Grids › Cube Data',
                     icon: Icon.grid(),
                     flex: 1,
-                    item: grid(),
+                    // Pass gridModel explicitly - it is reassigned when adoptRawData toggles, and
+                    // reading the observable ref here rebinds the grid to the rebuilt model.
+                    item: grid({model: model.gridModel}),
                     mask: 'onLoad',
                     tbar: tbar(),
                     bbar: bbar()
@@ -39,6 +42,12 @@ export const CubeTestPanel = hoistCmp({
 
 const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
     toolbar(
+        tooltip({
+            content:
+                'Zero-copy Store mode (hoist-react #4506) - adopts Cube row objects as record data by reference. Toggling rebuilds the grid + connected View.',
+            item: switchInput({bind: 'adoptRawData', label: 'Adopt Raw', labelSide: 'left'})
+        }),
+        toolbarSep(),
         switchInput({bind: 'showSummary', label: 'Summary?', labelSide: 'left'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves?', labelSide: 'left'}),
         switchInput({bind: 'includeGlobalAgg', label: 'Global Agg?', labelSide: 'left'}),
@@ -65,6 +74,16 @@ const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
             width: 80
         }),
         toolbarSep(),
+        'x',
+        tooltip({
+            content: 'Replicate fetched orders NxN to stress-test at scale (applied on Load Cube)',
+            item: select({
+                bind: 'recordMultiplier',
+                options: [1, 2, 5, 10, 20, 50],
+                width: 70
+            })
+        }),
+        toolbarSep(),
         button({
             icon: Icon.reset(),
             text: 'Clear Cube',
@@ -87,6 +106,19 @@ const bbar = hoistCmp.factory<CubeTestModel>(({model}) => {
         'Last Updated:',
         relativeTimestamp({timestamp: view.info?.asOf}),
         filler(),
+        model.heapMB != null
+            ? `Heap: ${model.heapMB} MB${model.heapImprecise ? ' (imprecise)' : ''}`
+            : null,
+        tooltip({
+            content:
+                'GC + sample JS heap. For accurate numbers, launch Chrome with --js-flags=--expose-gc --enable-precise-memory-info (otherwise the reading is coarse).',
+            item: button({
+                icon: Icon.chartLine(),
+                text: 'Measure Mem',
+                onClick: () => model.measureMemory()
+            })
+        }),
+        toolbarSep(),
         storeFilterField(),
         colChooserButton()
     );
