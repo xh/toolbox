@@ -1,4 +1,4 @@
-import {XH, HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {required} from '@xh/hoist/data/validation/constraints';
 import {makeObservable, observable, action} from '@xh/hoist/mobx';
@@ -56,12 +56,10 @@ export class DetailsPanelModel extends HoistModel {
             return;
         }
 
-        try {
-            await directoryPanelModel.updateContactAsync(currentRecord.id, formModel.getData(true));
-            formModel.readonly = true;
-        } catch (e) {
-            XH.handleException(e);
-        }
+        return directoryPanelModel
+            .updateContactAsync(currentRecord.id, formModel.getData(true))
+            .then(() => (formModel.readonly = true))
+            .catchDefault();
     }
 
     @action
