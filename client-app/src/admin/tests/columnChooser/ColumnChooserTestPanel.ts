@@ -147,10 +147,10 @@ class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
         return new GridModel({
             store: {idSpec: 'id'},
             emptyText: 'No records found...',
-            colChooserModel: {columnLibraryEnabled: true},
+            colChooserModel: {columnLibrary: true},
             colChooserPanelModel: {
-                columnLibraryEnabled: true,
-                panelConfig: {defaultSize: 600, defaultCollapsed: false}
+                columnLibrary: true,
+                panelConfig: {defaultSize: 600}
             },
             enableExport: true,
             useVirtualColumns: true,
