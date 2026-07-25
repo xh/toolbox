@@ -65,7 +65,8 @@ import {
     ScrollApiModule,
     TextEditorModule,
     TextFilterModule,
-    TooltipModule
+    TooltipModule,
+    ValidationModule
 } from 'ag-grid-community';
 ModuleRegistry.registerModules([
     CellStyleModule,
@@ -83,7 +84,8 @@ ModuleRegistry.registerModules([
     ScrollApiModule,
     TextEditorModule,
     TextFilterModule,
-    TooltipModule
+    TooltipModule,
+    ValidationModule
 ]);
 
 // 2) Typical enterprise modules - useful for most apps.
