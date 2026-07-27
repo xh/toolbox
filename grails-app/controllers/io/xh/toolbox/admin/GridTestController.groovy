@@ -10,6 +10,12 @@ import java.util.concurrent.ThreadLocalRandom
  * Serves generated test data for the Admin > Tests > Grid panel, as either a conventional JSON
  * response (`data` - flat or tree, with optional summary) or streamed NDJSON (`streamingData` -
  * flat only).
+ *
+ * Both endpoints emit six base fields (symbol, trader, day, mtd, ytd, volume) and accept
+ * `extraFieldCount` / `populateExtraFields` to widen each row with generated `extraFieldN` values.
+ * That pair lets the panel dial in any point on the populated-fields axis independently of the
+ * field count declared by the client's Store - the variable that decides whether the Store's
+ * `optimizeRecordData` config pays off.
  */
 @AccessRequiresRole('HOIST_ADMIN_READER')
 class GridTestController extends BaseController {
@@ -25,9 +31,11 @@ class GridTestController extends BaseController {
         Boolean numericId,
         Boolean tree,
         Boolean showSummary,
-        Boolean loadRootAsSummary
+        Boolean loadRootAsSummary,
+        Integer extraFieldCount,
+        Boolean populateExtraFields
     ) {
-        def gen = new Generator(recordCount ?: 100000, idSeed ?: 1, numericId ?: false),
+        def gen = createGenerator(recordCount, idSeed, numericId, extraFieldCount, populateExtraFields),
             rows = gen.generateRows(tree ?: false),
             summary = showSummary ? gen.summarize(rows) : null
 
@@ -59,8 +67,14 @@ class GridTestController extends BaseController {
      * - Rows must be written via write(), NOT the Groovy << operator - Groovy's
      *   OutputStream.leftShift() flushes after every write, which would defeat the buffer.
      */
-    def streamingData(Integer recordCount, Integer idSeed, Boolean numericId) {
-        def gen = new Generator(recordCount ?: 100000, idSeed ?: 1, numericId ?: false)
+    def streamingData(
+        Integer recordCount,
+        Integer idSeed,
+        Boolean numericId,
+        Integer extraFieldCount,
+        Boolean populateExtraFields
+    ) {
+        def gen = createGenerator(recordCount, idSeed, numericId, extraFieldCount, populateExtraFields)
 
         // Deliberately served as text/plain rather than the standard application/x-ndjson -
         // the NDJSON type is missing from most default gzip/compressible MIME lists (webpack
@@ -80,20 +94,70 @@ class GridTestController extends BaseController {
     //------------------------
     // Implementation
     //------------------------
-    /** Generates test rows matching the retired client-side generator (GridTestData.ts). */
+    private static Generator createGenerator(
+        Integer recordCount,
+        Integer idSeed,
+        Boolean numericId,
+        Integer extraFieldCount,
+        Boolean populateExtraFields
+    ) {
+        return new Generator(
+            recordCount ?: 100000,
+            idSeed ?: 1,
+            numericId ?: false,
+            // Extra fields are declared client-side whether or not populated - a request to leave
+            // them empty simply generates none, yielding the wide-and-sparse record shape.
+            populateExtraFields ? (extraFieldCount ?: 0) : 0
+        )
+    }
+
+    /** Generates test rows - six base fields, plus any requested populated `extraFieldN` values. */
     private static class Generator {
+
+        /**
+         * Small pool of repeated values for categorical extra fields - the most common shape for
+         * a wide grid's string columns (status, region, desk, etc.).
+         */
+        static final List<String> CATEGORIES = [
+            'Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot', 'Golf', 'Hotel'
+        ]
+
+        /**
+         * Value type assigned to each extra field, by `index % TYPE_CYCLE.size()`. Types are fixed
+         * per field (as they would be in a real dataset) and mixed in roughly the proportions seen
+         * in real-world wide grids - value payload materially affects the memory profile of a
+         * record, so a uniform column of integers would not be a representative test.
+         *
+         * Note the single 'null' slot yields a column that is null for every row, so populated
+         * extra fields work out to ~11/12 of the requested `extraFieldCount`.
+         */
+        static final List<String> TYPE_CYCLE = [
+            'cat', 'cat', 'int', 'cat', 'double', 'bool',
+            'cat', 'int', 'cat', 'double', 'uniqueStr', 'null'
+        ]
+
         final int recordCount
         final int idSeed
         final boolean numericId
         final ThreadLocalRandom rand = ThreadLocalRandom.current()
         final int traderCount
+        final List<String> extraFieldNames
         int count = 0
 
-        Generator(int recordCount, int idSeed, boolean numericId) {
+        /**
+         * @param extraFieldCount - number of populated `extraFieldN` values to emit on each row.
+         *      Zero to emit none, leaving any extra fields declared by the client unpopulated.
+         */
+        Generator(int recordCount, int idSeed, boolean numericId, int extraFieldCount) {
             this.recordCount = recordCount
             this.idSeed = idSeed
             this.numericId = numericId
             this.traderCount = Math.max(1, (recordCount / 10) as int)
+            // Pre-computed - these names are re-generated for every row, and string interpolation
+            // at 100k+ rows x 100+ fields would dominate the cost of generating the data itself.
+            this.extraFieldNames = extraFieldCount > 0 ?
+                (0..<extraFieldCount).collect { "extraField$it" as String } :
+                []
         }
 
         List<Map> generateRows(boolean tree) {
@@ -127,7 +191,7 @@ class GridTestController extends BaseController {
             def symbol = "Symbol $count" as String,
                 trader = "Trader ${count % traderCount}" as String
             count++
-            return [
+            return addExtraFields([
                 id    : numericId ? count : "${idSeed}~${symbol}" as String,
                 trader: trader,
                 symbol: symbol,
@@ -135,7 +199,36 @@ class GridTestController extends BaseController {
                 mtd   : randBetween(-500000, 500000),
                 ytd   : randBetween(-1000000, 2000000),
                 volume: randBetween(1000, 2000000)
-            ]
+            ])
+        }
+
+        /**
+         * Add a populated `extraFieldN` entry for each requested extra field - no-op when none
+         * requested, leaving any extra fields declared by the client unpopulated (the wide-and-
+         * sparse case).
+         */
+        private Map addExtraFields(Map row) {
+            extraFieldNames.eachWithIndex { String name, int idx ->
+                row[name] = extraFieldValue(idx)
+            }
+            return row
+        }
+
+        private Object extraFieldValue(int idx) {
+            switch (TYPE_CYCLE[idx % TYPE_CYCLE.size()]) {
+                case 'cat':
+                    return CATEGORIES[rand.nextInt(CATEGORIES.size())]
+                case 'uniqueStr':
+                    return "val-${count}-${idx}" as String
+                case 'int':
+                    return rand.nextInt(-1000000, 1000000)
+                case 'double':
+                    return Math.round(rand.nextDouble() * 10000000) / 1000d
+                case 'bool':
+                    return rand.nextBoolean()
+                default:
+                    return null
+            }
         }
 
         /** Children sum to their parent's values, splitting each remainder across siblings. */
@@ -151,7 +244,7 @@ class GridTestController extends BaseController {
             for (int t = 0; t <= maxT; t++) {
                 def trader = "Trader $t" as String
                 count++
-                def child = [
+                def child = addExtraFields([
                     id    : numericId ? count : "${parent.id}~${trader}" as String,
                     trader: trader,
                     symbol: symbol,
@@ -159,7 +252,7 @@ class GridTestController extends BaseController {
                     mtd   : t < maxT ? randBetween(Math.min(0L, mtdRem), Math.max(0L, mtdRem)) : mtdRem,
                     ytd   : t < maxT ? randBetween(Math.min(0L, ytdRem), Math.max(0L, ytdRem)) : ytdRem,
                     volume: t < maxT ? randBetween(0L, volRem) : volRem
-                ]
+                ])
                 dayRem -= child.day as long
                 mtdRem -= child.mtd as long
                 ytdRem -= child.ytd as long

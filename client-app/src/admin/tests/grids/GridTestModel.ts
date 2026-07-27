@@ -38,11 +38,12 @@ export class GridTestModel extends HoistModel {
     @bindable loadRootAsSummary = false;
     // True to enable XSS protection at store level.
     @bindable enableXssProtection = false;
-    // Value > 0 will trigger creation of additional (null value) fields on the store to
-    // help stress-test stores with a wide array of fields.
+    // Value > 0 will declare that many additional `extraFieldN` fields on the store to help
+    // stress-test stores with a wide array of fields.
     @bindable extraFieldCount = 50;
-    // True to populate extra fields with generated values - stress-tests stores with wide
-    // records (many populated fields), vs. wide-but-sparse field definitions.
+    // True to have the server populate the extra fields with generated values (a mix of
+    // categorical/unique strings, ints, doubles, bools and nulls) - stress-tests stores with
+    // wide *and dense* records, vs. the wide-but-sparse shape produced when off.
     @bindable populateExtraFields = false;
     // True to enable the Store's `optimizeRecordData` config - for A/B comparison of memory usage
     // and load times. Persisted, and toggling it reloads the app - see the reaction below.
@@ -150,7 +151,17 @@ export class GridTestModel extends HoistModel {
     }
 
     private async doLoadServerDataAsync() {
-        const {gridModel, metrics, recordCount, idSeed, numericId, tree, showSummary} = this,
+        const {
+                gridModel,
+                metrics,
+                recordCount,
+                idSeed,
+                numericId,
+                tree,
+                showSummary,
+                extraFieldCount,
+                populateExtraFields
+            } = this,
             streaming = this.streamServerLoad && !tree && !showSummary,
             start = Date.now();
 
@@ -158,7 +169,7 @@ export class GridTestModel extends HoistModel {
             await gridModel.store.loadDataAsync(
                 XH.fetchNdjson({
                     url: 'gridTest/streamingData',
-                    params: {recordCount, idSeed, numericId}
+                    params: {recordCount, idSeed, numericId, extraFieldCount, populateExtraFields}
                 })
             );
         } else {
@@ -170,7 +181,9 @@ export class GridTestModel extends HoistModel {
                     numericId,
                     tree,
                     showSummary,
-                    loadRootAsSummary: this.loadRootAsSummary
+                    loadRootAsSummary: this.loadRootAsSummary,
+                    extraFieldCount,
+                    populateExtraFields
                 }
             });
             gridModel.loadData(rows, summary);
@@ -224,12 +237,11 @@ export class GridTestModel extends HoistModel {
             {name: 'volume', type: FT.NUMBER}
         ];
 
-        if (extraFieldCount > 0) {
-            for (let i = 0; i <= extraFieldCount; i++) {
-                storeConf.fields.push({
-                    name: 'extraField' + i
-                });
-            }
+        // Declare exactly `extraFieldCount` extra fields, matching the `extraField0..N-1` keys the
+        // server emits when `populateExtraFields` is on. Left untyped (AUTO) to accept the mixed
+        // value types the server generates.
+        for (let i = 0; i < extraFieldCount; i++) {
+            storeConf.fields.push({name: 'extraField' + i});
         }
 
         return new GridModel({

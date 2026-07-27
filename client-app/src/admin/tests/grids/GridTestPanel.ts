@@ -147,12 +147,18 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
         }),
         toolbarSep(),
         label('Extra Fields'),
-        numberInput({
-            bind: 'extraFieldCount',
-            width: 80
+        tooltip({
+            content: '# of extra fields to declare on the store, beyond the six base fields.',
+            item: numberInput({
+                bind: 'extraFieldCount',
+                width: 80
+            })
         }),
         tooltip({
-            content: 'Populate extra fields with generated values (vs. leaving them null)',
+            content:
+                'Have the server populate the extra fields with generated values - a mix of ' +
+                'categorical/unique strings, ints, doubles, bools and nulls. Off yields wide ' +
+                'but sparse records, with the extra fields declared but never populated.',
             item: switchInput({
                 bind: 'populateExtraFields',
                 label: 'Populate',
