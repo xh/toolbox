@@ -52,7 +52,7 @@ export const columnChooserTestPanel = hoistCmp.factory({
             ],
             items: [
                 hframe(
-                    // Grid renders its docked `colChooserPanelModel ` chooser to its right.
+                    // Grid renders its docked `colChooserPanelModel` chooser to its right.
                     panel({flex: 1, item: grid({model: model.gridModel})}),
                     panel({
                         title: 'Column State',

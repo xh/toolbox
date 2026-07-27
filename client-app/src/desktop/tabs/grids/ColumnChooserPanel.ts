@@ -45,7 +45,7 @@ export const columnChooserPanel = hoistCmp.factory({
                 '',
                 'Columns carry `chooserDescription` tooltips, and `Full Name` is locked via',
                 '`hideable: false`. Open the chooser from the toolbar - as a **popover** via the grid’s',
-                '`colChooserModel`, or as a **docked side-panel** via its `colChooserPanelModel `, which',
+                '`colChooserModel`, or as a **docked side-panel** via its `colChooserPanelModel`, which',
                 'the grid renders beside itself (shown open here by default).',
                 '',
                 '`width` sizes the bucket column alone; the Library adds its own `libraryWidth` when',
@@ -194,7 +194,7 @@ export const columnChooserPanel = hoistCmp.factory({
                 title: 'Grids › Column Chooser',
                 icon: Icon.gridPanel(),
                 className: 'tb-grid-wrapper-panel',
-                // The grid renders its docked `colChooserPanelModel ` beside itself - no manual embed.
+                // The grid renders its docked `colChooserPanelModel` beside itself - no manual embed.
                 item: grid({model: model.gridModel}),
                 bbar: [
                     storeFilterField({gridModel: model.gridModel}),

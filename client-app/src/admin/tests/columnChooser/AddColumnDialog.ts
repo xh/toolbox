@@ -179,7 +179,7 @@ const bbar = hoistCmp.factory<AddColumnDialogModel>(({model}) =>
             intent: 'success',
             minimal: false,
             disabled: !model.formModel.isValid,
-            onClick: () => model.submitAsync()
+            onClick: () => model.submitAsync().catchDefault()
         })
     )
 );

@@ -23,8 +23,8 @@ export interface CustomColumn {
  *
  * Visual column groups follow the natural blotter layout (Security, Pricing, P&L by type, Risk by
  * measure-family, ...). `chooserGroup`s deliberately slice along a *different* axis - identifiers
- * vs. classification, P&L by period rather than by type - so the chooser's available-columns grid
- * groups differently than the headers, which is the more interesting case to test.
+ * vs. classification, P&L by period rather than by type - so the Column Library groups differently
+ * than the grid headers, which is the more interesting case to test.
  *
  * The long tail of columns starts hidden (see `lf`), leaving a focused ~2 dozen-column default view
  * that the chooser reveals - realistic for a blotter and ensuring the chooser always has content.
@@ -98,7 +98,7 @@ export function collectChooserGroups(columns: ColumnOrGroupSpec[]): string[] {
 //------------------------
 // Catalog model
 //------------------------
-type Tier = 'small' | 'medium' | 'large';
+type Tier = GridSize;
 const TIER_RANK: Record<Tier, number> = {small: 0, medium: 1, large: 2};
 
 /** Value/format family for a leaf - drives field type, renderer, alignment and width. */
@@ -109,6 +109,8 @@ interface LeafDef {
     name: string;
     kind: Kind;
     chooserGroup: string;
+    /** Chooser-only label, where the grid header's `name` is ambiguous out of its group context. */
+    chooserName?: string;
     /** Smallest size at which this leaf appears. */
     tier: Tier;
     /** Hidden in the grid by default (still listed in the chooser). */
@@ -160,7 +162,9 @@ const PNL_TYPES: {key: string; name: string; tier: Tier}[] = [
 const RATE_TENORS = ['3M', '6M', '1Y', '2Y', '5Y', '10Y', '30Y'];
 const CREDIT_TENORS = ['1Y', '3Y', '5Y', '7Y', '10Y'];
 
-// P&L: column-grouped by metric type, but chooser-grouped by period (the cross-cutting axis).
+// P&L: column-grouped by metric type, but chooser-grouped by period (the cross-cutting axis). Under
+// its column group the period alone identifies a leaf, but in the chooser - where the grouping is by
+// period - the type is what distinguishes them, hence the fuller `chooserName`.
 const pnlGroup = grp(
     'grp-pnl',
     'P&L',
@@ -168,15 +172,16 @@ const pnlGroup = grp(
         grp(
             `grp-pnl-${t.key.toLowerCase()}`,
             `${t.name} P&L`,
-            PNL_PERIODS.map(p =>
-                lf(
+            PNL_PERIODS.map(p => ({
+                ...lf(
                     `pnl${t.key}${p.sfx}`,
                     p.name,
                     'amount',
                     `${p.name} P&L`,
                     maxTier(t.tier, p.tier)
-                )
-            )
+                ),
+                chooserName: `${t.name} ${p.name}`
+            }))
         )
     )
 );
@@ -347,7 +352,7 @@ function collectLeaves(nodes: Node[]): LeafDef[] {
 
 function toColumnSpec(node: Node): ColumnOrGroupSpec {
     if (isLeafDef(node)) {
-        const {id, name, kind, chooserGroup} = node,
+        const {id, name, kind, chooserGroup, chooserName} = node,
             fmt = KIND_FORMAT[kind],
             spec: ColumnSpec = {
                 colId: id,
@@ -356,6 +361,7 @@ function toColumnSpec(node: Node): ColumnOrGroupSpec {
                 chooserGroup,
                 width: fmt.width
             };
+        if (chooserName) spec.chooserName = chooserName;
         if (fmt.align) spec.align = fmt.align;
         if (fmt.renderer) spec.renderer = fmt.renderer;
         if (node.hidden) spec.hidden = true;
