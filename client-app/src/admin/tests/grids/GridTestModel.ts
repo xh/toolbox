@@ -1,10 +1,14 @@
-import {HoistModel, managed, persist, TaskObserver, XH} from '@xh/hoist/core';
+import {HoistModel, managed, persist, PersistOptions, TaskObserver, XH} from '@xh/hoist/core';
 import {fragment} from '@xh/hoist/cmp/layout';
+import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
 import {random, sample, times} from 'lodash';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
+import {waitFor} from '@xh/hoist/promise';
+import {SECONDS} from '@xh/hoist/utils/datetime';
+import {AppModel} from '../../AppModel';
 import {GridTestMetrics} from './GridTestMetrics';
 
 const pnlColumn: ColumnSpec = {
@@ -20,26 +24,44 @@ const pnlColumn: ColumnSpec = {
 
 const PERSIST_KEY = 'adminGridTest';
 export class GridTestModel extends HoistModel {
-    override persistWith = {localStorageKey: PERSIST_KEY};
+    /**
+     * All settings below are persisted as named configs via ViewManager, allowing a full set of
+     * A/B testing parameters to be saved, restored, and shared. Note this replaces the prior
+     * localStorage persistence - unsaved tweaks are held as pending changes by the ViewManager
+     * and survive a reload (via sessionStorage), while named configs live on the server.
+     */
+    override persistWith: PersistOptions = {
+        viewManagerModel: AppModel.instance.gridTestViewManager
+    };
 
     // Total count (approx) of all nodes generated (parents + children).
     @persist
     @bindable
     recordCount = 200000;
     // Number of random records to perturb
-    @bindable twiddleCount = Math.round(this.recordCount * 0.5);
+    @persist
+    @bindable
+    twiddleCount = Math.round(this.recordCount * 0.5);
     // Prefix for all IDs - change to ensure no IDs re-used across loads.
-    @bindable idSeed = 1;
+    @persist
+    @bindable
+    idSeed = 1;
     // True to load data in tree structure.
     @bindable tree = false;
     // True to use an incremental numeric id as grid id.
-    @bindable numericId = false;
+    @persist
+    @bindable
+    numericId = false;
     // True to show summary row.
     @bindable showSummary = false;
     // True to use tree root node as summary row.
-    @bindable loadRootAsSummary = false;
+    @persist
+    @bindable
+    loadRootAsSummary = false;
     // True to enable XSS protection at store level.
-    @bindable enableXssProtection = false;
+    @persist
+    @bindable
+    enableXssProtection = false;
     // Value > 0 will declare that many additional `extraFieldN` fields on the store to help
     // stress-test stores with a wide array of fields.
     @persist
@@ -63,14 +85,29 @@ export class GridTestModel extends HoistModel {
     @bindable
     streamServerLoad = true;
 
-    @bindable disableSelect = false;
+    @persist
+    @bindable
+    disableSelect = false;
 
-    @bindable colChooserCommitOnChange = true;
-    @bindable colChooserShowRestoreDefaults = true;
-    @bindable colChooserWidth = null;
-    @bindable colChooserHeight = null;
+    @persist
+    @bindable
+    colChooserCommitOnChange = true;
 
-    @bindable lockColumnGroups = true;
+    @persist
+    @bindable
+    colChooserShowRestoreDefaults = true;
+
+    @persist
+    @bindable
+    colChooserWidth = null;
+
+    @persist
+    @bindable
+    colChooserHeight = null;
+
+    @persist
+    @bindable
+    lockColumnGroups = true;
 
     @bindable
     @persist
@@ -101,6 +138,11 @@ export class GridTestModel extends HoistModel {
     @managed
     @observable.ref
     gridModel: GridModel;
+
+    /** Saves/restores the settings above as named configs - created by AppModel.initAsync(). */
+    get viewManagerModel(): ViewManagerModel {
+        return AppModel.instance.gridTestViewManager;
+    }
 
     constructor() {
         super();
@@ -147,16 +189,52 @@ export class GridTestModel extends HoistModel {
         // that decision. Measuring both record-data representations in a single session
         // therefore contaminates whichever runs second, in either direction. Each side of an A/B
         // must be measured in a fresh page. This setting and the data-shape settings above are
-        // all persisted, so a configured A/B survives the reload intact.
+        // all persisted, so a configured A/B survives the reload intact - see below for the care
+        // required when the change arrives via a ViewManager config switch.
         this.addReaction({
             track: () => this.optimizeRecordData,
-            run: () => XH.reloadApp(),
+            run: () => this.reloadForRecordDataChangeAsync(),
             debounce: 500
         });
     }
 
     loadServerData() {
         this.doLoadServerDataAsync().linkTo(this.loadTask).catchDefault();
+    }
+
+    /**
+     * Reload the app to pick up a change to `optimizeRecordData` - see the reaction above for why
+     * a fresh page is required.
+     *
+     * The change can arrive either from the toolbar switch or from restoring a saved config, and
+     * the latter needs care - the reload must not land mid-restore, and the app must come back on
+     * the config it was switching to:
+     *
+     *  - ViewManagerModel pushes a newly selected config to *all* bound settings within a single
+     *    MobX action, so they are applied atomically. Waiting on `isLoading` additionally covers
+     *    any in-flight fetch/save, ensuring we reload with a complete config in place.
+     *  - The ViewManager records the selected config on the server via a fire-and-forget reaction.
+     *    The reload could otherwise cut that write short, leaving the app to come back on the
+     *    *previously* selected config while the reload was made for the new one. Repeating and
+     *    awaiting the write here makes the selection durable first.
+     *  - Unsaved edits need no special handling - ViewManagerModel mirrors its pending value to
+     *    sessionStorage synchronously as it changes, so they are always already durable.
+     */
+    private async reloadForRecordDataChangeAsync() {
+        const vm = this.viewManagerModel;
+        try {
+            await waitFor(() => !vm.isLoading, {timeout: 10 * SECONDS});
+            await XH.postJson({
+                url: 'xhView/updateState',
+                params: {type: vm.type, viewInstance: vm.instance},
+                body: {currentView: vm.view.token}
+            });
+        } catch (e) {
+            // Reload regardless - a stale selection is recoverable, a skipped reload is not (it
+            // would silently invalidate the measurement this setting exists to produce).
+            this.logError('Failed to settle ViewManager state ahead of reload', e);
+        }
+        XH.reloadApp();
     }
 
     private async doLoadServerDataAsync() {

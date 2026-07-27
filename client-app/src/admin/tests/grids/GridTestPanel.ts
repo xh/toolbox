@@ -6,6 +6,7 @@ import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {tooltip} from '@xh/hoist/kit/blueprint';
@@ -41,6 +42,13 @@ export const GridTestPanel = hoistCmp({
 
 const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
     toolbar(
+        // Save/restore all of the testing parameters below as named configs - see GridTestModel.
+        viewManager({
+            model: model.viewManagerModel,
+            showSaveButton: 'always',
+            showRevertButton: 'always'
+        }),
+        toolbarSep(),
         tooltip({
             content: 'Use an incremental numeric id as grid id.',
             item: switchInput({
