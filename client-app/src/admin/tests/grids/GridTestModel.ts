@@ -1,15 +1,25 @@
-import {HoistModel, managed, persist, PersistOptions, TaskObserver, XH} from '@xh/hoist/core';
+import {
+    HoistModel,
+    managed,
+    persist,
+    PersistOptions,
+    PlainObject,
+    TaskObserver,
+    XH
+} from '@xh/hoist/core';
 import {fragment, p} from '@xh/hoist/cmp/layout';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
-import {random, sample, times} from 'lodash';
+import {StringInternSpec} from '@xh/hoist/svc';
+import {isEmpty, random, round, sample, times} from 'lodash';
 import {action, bindable, observable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import {waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {AppModel} from '../../AppModel';
+import {GridTestBenchmarkModel} from './GridTestBenchmarkModel';
 import {GridTestMetrics} from './GridTestMetrics';
 
 const pnlColumn: ColumnSpec = {
@@ -24,6 +34,28 @@ const pnlColumn: ColumnSpec = {
 };
 
 const PERSIST_KEY = 'adminGridTest';
+
+/**
+ * Stable key for the fetch-level string interning cache - see `GridTestModel.internStrings`.
+ * Shared by both load paths so successive fetches can share interned values.
+ */
+const INTERN_KEY = 'gridTest';
+
+/**
+ * Store configs that change how record `data` objects are *built or stored*, and so require a
+ * freshly loaded page when toggled - see `confirmAndReloadForRecordDataChangeAsync()`.
+ *
+ * Deliberately does *not* include the flags that only change what gets loaded or retained
+ * (`retainRaw`, `reuseRecords`, `internStrings`) - those can be flipped and re-measured in place.
+ */
+const RECORD_DATA_FLAGS: Array<{prop: string; label: string}> = [
+    {prop: 'optimizeRecordData', label: 'Optimize Record Data'},
+    {prop: 'freezeData', label: 'Freeze Data'}
+];
+
+/** Records sampled when counting the fields actually populated by the loaded data. */
+const POPULATED_FIELDS_SAMPLE_SIZE = 100;
+
 export class GridTestModel extends HoistModel {
     /**
      * All settings below are persisted as named configs via ViewManager, allowing a full set of
@@ -79,8 +111,36 @@ export class GridTestModel extends HoistModel {
     @persist
     @bindable
     optimizeRecordData = false;
-    // Set while programmatically reverting the above, to swallow the resulting reaction.
-    private revertingRecordDataChange = false;
+    // The Store's `freezeData` config - defaulted to Hoist's own default so measurements reflect
+    // what apps actually run. Like `optimizeRecordData` this changes how record data objects are
+    // built and stored, so toggling it reloads the app - see the reaction below.
+    @persist
+    @bindable
+    freezeData = true;
+    // The Store's `retainRaw` config - false drops each record's reference to its raw data object,
+    // making the raw eligible for GC once parsed. Hoist default true.
+    @persist
+    @bindable
+    retainRaw = true;
+    // The Store's `reuseRecords` config - reuses records whose raw data object is *reference*
+    // identical to the previously loaded one, skipping the default fieldwise comparison. Hoist
+    // default false. Does nothing on a first load, and requires `retainRaw` (Store throws
+    // otherwise - see the reaction and the guard in createGridModel() below).
+    @persist
+    @bindable
+    reuseRecords = false;
+    // True to intern string values in the fetched response via the `internStrings` FetchOption -
+    // note this is a *fetch* config, not a StoreConfig. Distinct string values are stored once and
+    // shared across rows (and across successive fetches with the same key).
+    @persist
+    @bindable
+    internStrings = false;
+
+    // Snapshot of RECORD_DATA_FLAGS as of page load - i.e. the values this page's Stores were
+    // built with. Compared against on change to decide whether a reload is required.
+    private recordDataFlagsAtLoad: boolean[];
+    // Set while a reload confirmation is already in flight, to avoid stacking dialogs.
+    private confirmingReload = false;
 
     // True to load from the streaming NDJSON endpoint via Store.loadDataAsync(), vs. standard.
     // For flat loading only.
@@ -135,6 +195,10 @@ export class GridTestModel extends HoistModel {
     @managed
     metrics = new GridTestMetrics();
 
+    /** Repeatable heap/timing harness for the currently-configured flags. */
+    @managed
+    benchmarkModel: GridTestBenchmarkModel;
+
     @managed
     loadTask = TaskObserver.trackLast();
 
@@ -152,7 +216,9 @@ export class GridTestModel extends HoistModel {
         makeObservable(this);
         this.markPersist('tree');
         this.markPersist('showSummary');
+        this.recordDataFlagsAtLoad = this.recordDataFlagState;
         this.gridModel = this.createGridModel();
+        this.benchmarkModel = new GridTestBenchmarkModel(this);
         this.addReaction({
             track: () => [
                 this.tree,
@@ -171,7 +237,9 @@ export class GridTestModel extends HoistModel {
                 this.lockColumnGroups,
                 this.enableXssProtection,
                 this.extraFieldCount,
-                this.populateExtraFields
+                this.populateExtraFields,
+                this.retainRaw,
+                this.reuseRecords
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -191,13 +259,33 @@ export class GridTestModel extends HoistModel {
         // a given set of keys has been built one way, later objects with those keys can inherit
         // that decision. Measuring both record-data representations in a single session
         // therefore contaminates whichever runs second, in either direction. Each side of an A/B
-        // must be measured in a fresh page. This setting and the data-shape settings above are
+        // must be measured in a fresh page. These settings and the data-shape settings above are
         // all persisted, so a configured A/B survives the reload intact - see below for the care
         // required when the change arrives via a ViewManager config switch.
         this.addReaction({
-            track: () => this.optimizeRecordData,
+            track: () => this.recordDataFlagState,
             run: () => this.confirmAndReloadForRecordDataChangeAsync(),
             debounce: 500
+        });
+
+        // `reuseRecords` cannot be combined with `retainRaw: false` - Store throws, as reuse is
+        // keyed off the raw reference. Clear it rather than letting a restored config blow up.
+        this.addReaction({
+            track: () => this.retainRaw,
+            run: retainRaw => {
+                if (!retainRaw && this.reuseRecords) {
+                    runInAction(() => (this.reuseRecords = false));
+                }
+            }
+        });
+
+        // Interned values are retained for reuse by the next fetch with the same key - drop them
+        // when interning is switched off, so a later run does not inherit a warm cache.
+        this.addReaction({
+            track: () => this.internStrings,
+            run: internStrings => {
+                if (!internStrings) this.clearInternCache();
+            }
         });
     }
 
@@ -205,10 +293,15 @@ export class GridTestModel extends HoistModel {
         this.doLoadServerDataAsync().linkTo(this.loadTask).catchDefault();
     }
 
+    /** Current values of the flags that require a fresh page when changed. */
+    private get recordDataFlagState(): boolean[] {
+        return RECORD_DATA_FLAGS.map(it => this[it.prop]);
+    }
+
     /**
-     * Confirm, then reload the app to pick up a change to `optimizeRecordData` - see the reaction
-     * above for why a fresh page is required. Reverts the setting if the user declines, so the
-     * switch never disagrees with the Store actually under test.
+     * Confirm, then reload the app to pick up a change to any RECORD_DATA_FLAGS setting - see the
+     * reaction above for why a fresh page is required. Reverts the setting(s) if the user
+     * declines, so the switches never disagree with the Store actually under test.
      *
      * The change can arrive either from the toolbar switch or from restoring a saved config, and
      * the latter needs care - the reload must not land mid-restore, and the app must come back on
@@ -227,35 +320,42 @@ export class GridTestModel extends HoistModel {
      *    sessionStorage synchronously as it changes, so they are always already durable.
      */
     private async confirmAndReloadForRecordDataChangeAsync() {
-        // Swallow the echo from our own revert below.
-        if (this.revertingRecordDataChange) {
-            this.revertingRecordDataChange = false;
-            return;
-        }
+        if (this.confirmingReload) return;
 
-        const enabling = this.optimizeRecordData,
-            confirmed = await XH.confirm({
-                title: 'Reload required',
-                icon: Icon.refresh(),
-                message: fragment(
-                    p(
-                        `Turning ${enabling ? 'on' : 'off'} Optimize Record Data requires reloading the app.`
-                    ),
-                    p(
-                        'This setting changes how record data objects are built, which only takes ' +
-                            'effect on a freshly loaded page. Reloading also keeps benchmark runs ' +
-                            'independent - results measured before and after the change within a ' +
-                            'single session are not comparable.'
-                    ),
-                    p('Your current settings are preserved across the reload.')
+        // Compare against the values this page's Stores were built with, so reverting below (or
+        // toggling back by hand) settles without a second prompt.
+        const {recordDataFlagsAtLoad} = this,
+            changed = RECORD_DATA_FLAGS.map((it, idx) => ({
+                ...it,
+                priorValue: recordDataFlagsAtLoad[idx]
+            })).filter(it => this[it.prop] !== it.priorValue);
+        if (isEmpty(changed)) return;
+
+        const summary = changed
+            .map(it => `${it.label} ${this[it.prop] ? 'on' : 'off'}`)
+            .join(' and ');
+
+        this.confirmingReload = true;
+        const confirmed = await XH.confirm({
+            title: 'Reload required',
+            icon: Icon.refresh(),
+            message: fragment(
+                p(`Turning ${summary} requires reloading the app.`),
+                p(
+                    'These settings change how record data objects are built and stored, which ' +
+                        'only takes effect on a freshly loaded page. Reloading also keeps ' +
+                        'benchmark runs independent - results measured before and after the ' +
+                        'change within a single session are not comparable.'
                 ),
-                confirmProps: {text: 'Reload Now', intent: 'primary'},
-                cancelProps: {text: 'Cancel'}
-            });
+                p('Your current settings are preserved across the reload.')
+            ),
+            confirmProps: {text: 'Reload Now', intent: 'primary'},
+            cancelProps: {text: 'Cancel'}
+        });
+        this.confirmingReload = false;
 
         if (!confirmed) {
-            this.revertingRecordDataChange = true;
-            runInAction(() => (this.optimizeRecordData = !this.optimizeRecordData));
+            runInAction(() => changed.forEach(it => (this[it.prop] = it.priorValue)));
             return;
         }
 
@@ -276,44 +376,135 @@ export class GridTestModel extends HoistModel {
     }
 
     private async doLoadServerDataAsync() {
-        const {
-                gridModel,
-                metrics,
+        this.metrics.noteLoad(await this.loadTestDataAsync());
+    }
+
+    /**
+     * Load test data from the server per the current config, returning elapsed ms - the shared
+     * load path for the toolbar's "Load Server Data" button and the benchmark harness.
+     *
+     * Note the returned time covers fetch + record creation. The two are interleaved by design on
+     * the streaming path, and are not separable there.
+     */
+    async loadTestDataAsync(): Promise<number> {
+        const {gridModel, useStreaming} = this,
+            start = performance.now();
+
+        if (useStreaming) {
+            await gridModel.store.loadDataAsync(
+                XH.fetchNdjson({
+                    url: 'gridTest/streamingData',
+                    params: this.streamingParams,
+                    internStrings: this.internSpecFor('stream')
+                })
+            );
+        } else {
+            const {rows, summary} = await this.fetchJsonRowsAsync();
+            gridModel.loadData(rows, summary);
+        }
+
+        return performance.now() - start;
+    }
+
+    /**
+     * Fetch raw rows into an array *without* loading them into the Store, for the benchmark's
+     * "same raw refs" reload scenario. That scenario is the only shape in which `reuseRecords` can
+     * actually hit, as it matches on raw-object reference identity - a second fetch of the same
+     * dataset yields fresh objects and can never reuse.
+     */
+    async fetchRawRowsAsync(): Promise<{rows: PlainObject[]; summary: PlainObject}> {
+        if (!this.useStreaming) return this.fetchJsonRowsAsync();
+
+        const rows: PlainObject[] = [],
+            chunks = XH.fetchNdjson({
+                url: 'gridTest/streamingData',
+                params: this.streamingParams,
+                internStrings: this.internSpecFor('stream')
+            });
+        for await (const chunk of chunks) {
+            chunk.forEach(row => rows.push(row));
+        }
+        return {rows, summary: null};
+    }
+
+    /** Load already-fetched raw rows into the Store, returning elapsed ms. */
+    loadRawRows(rows: PlainObject[], summary: PlainObject): number {
+        const start = performance.now();
+        this.gridModel.loadData(rows, summary);
+        return performance.now() - start;
+    }
+
+    /** Drop any retained string-interning cache, so the next fetch starts cold. */
+    clearInternCache() {
+        XH.fetchService.clearInternCaches(INTERN_KEY);
+    }
+
+    /** True when the (flat-only) streaming endpoint will be used for the next load. */
+    get useStreaming(): boolean {
+        return this.streamServerLoad && !this.tree && !this.showSummary;
+    }
+
+    /** Count of fields declared on the Store under test. */
+    get declaredFieldCount(): number {
+        return this.gridModel.store.fields.length;
+    }
+
+    /**
+     * Mean count of fields actually populated (i.e. holding a non-default value) across a sample
+     * of loaded records - the variable that decides whether `optimizeRecordData` pays off. Read
+     * from parsed record data, so it holds regardless of `retainRaw`.
+     */
+    get populatedFieldCount(): number {
+        const {store} = this.gridModel,
+            sample = store.allRecords.slice(0, POPULATED_FIELDS_SAMPLE_SIZE),
+            {fields} = store;
+        if (isEmpty(sample) || isEmpty(fields)) return null;
+
+        let populated = 0;
+        sample.forEach(rec => {
+            fields.forEach(f => {
+                if (rec.data[f.name] !== f.defaultValue) populated++;
+            });
+        });
+        return round(populated / sample.length);
+    }
+
+    private async fetchJsonRowsAsync(): Promise<{rows: PlainObject[]; summary: PlainObject}> {
+        const {recordCount, idSeed, numericId, tree, showSummary} = this;
+        return XH.fetchJson({
+            url: 'gridTest/data',
+            params: {
                 recordCount,
                 idSeed,
                 numericId,
                 tree,
                 showSummary,
-                extraFieldCount,
-                populateExtraFields
-            } = this,
-            streaming = this.streamServerLoad && !tree && !showSummary,
-            start = Date.now();
+                loadRootAsSummary: this.loadRootAsSummary,
+                extraFieldCount: this.extraFieldCount,
+                populateExtraFields: this.populateExtraFields
+            },
+            internStrings: this.internSpecFor('json')
+        });
+    }
 
-        if (streaming) {
-            await gridModel.store.loadDataAsync(
-                XH.fetchNdjson({
-                    url: 'gridTest/streamingData',
-                    params: {recordCount, idSeed, numericId, extraFieldCount, populateExtraFields}
-                })
-            );
-        } else {
-            const {rows, summary} = await XH.fetchJson({
-                url: 'gridTest/data',
-                params: {
-                    recordCount,
-                    idSeed,
-                    numericId,
-                    tree,
-                    showSummary,
-                    loadRootAsSummary: this.loadRootAsSummary,
-                    extraFieldCount,
-                    populateExtraFields
-                }
-            });
-            gridModel.loadData(rows, summary);
-        }
-        metrics.noteLoad(Date.now() - start);
+    private get streamingParams(): PlainObject {
+        const {recordCount, idSeed, numericId, extraFieldCount, populateExtraFields} = this;
+        return {recordCount, idSeed, numericId, extraFieldCount, populateExtraFields};
+    }
+
+    /**
+     * Interning spec for a load, or null when interning is off.
+     *
+     * The streaming endpoint emits a bare stream of row objects, so every row is interned. The
+     * JSON endpoint wraps its rows in a `{rows, summary}` envelope, and interning must be pointed
+     * at that key via `childrenKey` to reach them at all. FetchService supports a single
+     * `childrenKey`, so a *tree* JSON load interns the top-level rows only - nested children are
+     * not reached. Use the streaming path for a complete picture.
+     */
+    private internSpecFor(shape: 'stream' | 'json'): StringInternSpec {
+        return this.internStrings
+            ? {key: INTERN_KEY, childrenKey: shape === 'json' ? 'rows' : null}
+            : null;
     }
 
     clearGrid() {
@@ -337,11 +528,16 @@ export class GridTestModel extends HoistModel {
     }
 
     private createGridModel() {
-        const {persistType, enableXssProtection, extraFieldCount} = this,
+        const {persistType, enableXssProtection, extraFieldCount, retainRaw} = this,
             storeConf: StoreConfig = {
-                freezeData: false,
+                freezeData: this.freezeData,
                 idEncodesTreePath: true,
-                optimizeRecordData: this.optimizeRecordData
+                optimizeRecordData: this.optimizeRecordData,
+                retainRaw,
+                // Belt-and-braces - Store throws if `reuseRecords` is paired with `retainRaw:
+                // false`. The UI disables the switch and a reaction clears it, but a config
+                // restored from the ViewManager could still arrive holding both.
+                reuseRecords: this.reuseRecords && retainRaw
             };
 
         if (enableXssProtection) {

@@ -10,6 +10,7 @@ import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {tooltip} from '@xh/hoist/kit/blueprint';
+import {gridTestBenchmarkDialog} from './GridTestBenchmarkDialog';
 import {GridTestModel} from './GridTestModel';
 
 export const GridTestPanel = hoistCmp({
@@ -33,8 +34,10 @@ export const GridTestPanel = hoistCmp({
                     })
                 }),
                 bbar1(),
+                storeFlagsBar(),
                 bbar2(),
-                bbar3()
+                bbar3(),
+                gridTestBenchmarkDialog({model: model.benchmarkModel})
             ]
         });
     }
@@ -174,6 +177,17 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
             })
         }),
         toolbarSep(),
+        storeFilterField()
+    )
+);
+
+/**
+ * Store/fetch flags that drive the memory + load-time profile of the data under test. Note the
+ * first two require a fresh page when toggled - see GridTestModel for why.
+ */
+const storeFlagsBar = hoistCmp.factory<GridTestModel>(({model}) =>
+    toolbar(
+        label('Store:'),
         tooltip({
             content:
                 'Enable Store.optimizeRecordData - builds record data from a shared template. Toggling reloads the app: V8 decides property storage per isolate, so each side of an A/B must be measured in a fresh page.',
@@ -184,7 +198,59 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
             })
         }),
         toolbarSep(),
-        storeFilterField()
+        tooltip({
+            content:
+                'Store.freezeData - freezes each record data object (Hoist default on). Like Optimize Record Data this changes how record data is built and stored, so toggling reloads the app.',
+            item: switchInput({
+                bind: 'freezeData',
+                label: 'Freeze Data',
+                labelSide: 'left'
+            })
+        }),
+        toolbarSep(),
+        tooltip({
+            content:
+                'Store.retainRaw - off drops the reference each record holds to its raw data object (Hoist default on), letting that raw data be collected. Required by Reuse Records.',
+            item: switchInput({
+                bind: 'retainRaw',
+                label: 'Retain Raw',
+                labelSide: 'left'
+            })
+        }),
+        toolbarSep(),
+        tooltip({
+            content: model.retainRaw
+                ? 'Store.reuseRecords - reuses records whose raw data object is reference-identical to the previously loaded one (Hoist default off). Does nothing on a first load: use the "Reload (same raw refs)" benchmark scenario to see it hit.'
+                : 'Requires Retain Raw - record reuse matches on the retained raw reference.',
+            item: switchInput({
+                bind: 'reuseRecords',
+                label: 'Reuse Records',
+                labelSide: 'left',
+                disabled: !model.retainRaw
+            })
+        }),
+        toolbarSep(),
+        tooltip({
+            content:
+                'FetchOptions.internStrings (a fetch config, not a StoreConfig) - dedupes string values in the response so each distinct value is stored once, sharing values across successive fetches of the same key. Use the reload benchmark scenarios to see the cross-fetch effect.',
+            item: switchInput({
+                bind: 'internStrings',
+                label: 'Intern Strings',
+                labelSide: 'left'
+            })
+        }),
+        filler(),
+        tooltip({
+            content:
+                'Run repeatable heap + load-time measurements against the flags as currently configured.',
+            item: button({
+                text: 'Benchmark',
+                icon: Icon.stopwatch(),
+                intent: 'success',
+                outlined: true,
+                onClick: () => model.benchmarkModel.open()
+            })
+        })
     )
 );
 
