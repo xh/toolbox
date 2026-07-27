@@ -1,11 +1,12 @@
 import {HoistModel, managed, persist, PersistOptions, TaskObserver, XH} from '@xh/hoist/core';
-import {fragment} from '@xh/hoist/cmp/layout';
+import {fragment, p} from '@xh/hoist/cmp/layout';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
+import {Icon} from '@xh/hoist/icon';
 import {random, sample, times} from 'lodash';
-import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
+import {action, bindable, observable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import {waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {AppModel} from '../../AppModel';
@@ -78,6 +79,8 @@ export class GridTestModel extends HoistModel {
     @persist
     @bindable
     optimizeRecordData = false;
+    // Set while programmatically reverting the above, to swallow the resulting reaction.
+    private revertingRecordDataChange = false;
 
     // True to load from the streaming NDJSON endpoint via Store.loadDataAsync(), vs. standard.
     // For flat loading only.
@@ -193,7 +196,7 @@ export class GridTestModel extends HoistModel {
         // required when the change arrives via a ViewManager config switch.
         this.addReaction({
             track: () => this.optimizeRecordData,
-            run: () => this.reloadForRecordDataChangeAsync(),
+            run: () => this.confirmAndReloadForRecordDataChangeAsync(),
             debounce: 500
         });
     }
@@ -203,8 +206,9 @@ export class GridTestModel extends HoistModel {
     }
 
     /**
-     * Reload the app to pick up a change to `optimizeRecordData` - see the reaction above for why
-     * a fresh page is required.
+     * Confirm, then reload the app to pick up a change to `optimizeRecordData` - see the reaction
+     * above for why a fresh page is required. Reverts the setting if the user declines, so the
+     * switch never disagrees with the Store actually under test.
      *
      * The change can arrive either from the toolbar switch or from restoring a saved config, and
      * the latter needs care - the reload must not land mid-restore, and the app must come back on
@@ -216,11 +220,45 @@ export class GridTestModel extends HoistModel {
      *  - The ViewManager records the selected config on the server via a fire-and-forget reaction.
      *    The reload could otherwise cut that write short, leaving the app to come back on the
      *    *previously* selected config while the reload was made for the new one. Repeating and
-     *    awaiting the write here makes the selection durable first.
+     *    awaiting the write here makes the selection durable first. Note the confirmation dialog
+     *    usually gives that write time to land on its own, but it is not a guarantee - a slow or
+     *    failed request would fail silently and look exactly like a good run - so we still wait.
      *  - Unsaved edits need no special handling - ViewManagerModel mirrors its pending value to
      *    sessionStorage synchronously as it changes, so they are always already durable.
      */
-    private async reloadForRecordDataChangeAsync() {
+    private async confirmAndReloadForRecordDataChangeAsync() {
+        // Swallow the echo from our own revert below.
+        if (this.revertingRecordDataChange) {
+            this.revertingRecordDataChange = false;
+            return;
+        }
+
+        const enabling = this.optimizeRecordData,
+            confirmed = await XH.confirm({
+                title: 'Reload required',
+                icon: Icon.refresh(),
+                message: fragment(
+                    p(
+                        `Turning ${enabling ? 'on' : 'off'} Optimize Record Data requires reloading the app.`
+                    ),
+                    p(
+                        'This setting changes how record data objects are built, which only takes ' +
+                            'effect on a freshly loaded page. Reloading also keeps benchmark runs ' +
+                            'independent - results measured before and after the change within a ' +
+                            'single session are not comparable.'
+                    ),
+                    p('Your current settings are preserved across the reload.')
+                ),
+                confirmProps: {text: 'Reload Now', intent: 'primary'},
+                cancelProps: {text: 'Cancel'}
+            });
+
+        if (!confirmed) {
+            this.revertingRecordDataChange = true;
+            runInAction(() => (this.optimizeRecordData = !this.optimizeRecordData));
+            return;
+        }
+
         const vm = this.viewManagerModel;
         try {
             await waitFor(() => !vm.isLoading, {timeout: 10 * SECONDS});
