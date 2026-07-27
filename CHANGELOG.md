@@ -2,6 +2,10 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Reworked the admin Grid test panel to always load its test data from the server, replacing the previous client-side data generation (and its "Generate Data" step) with two new server endpoints. A "Stream" toggle switches between an NDJSON endpoint consumed incrementally via `Store.loadDataAsync()` (no buffering of the complete raw dataset in memory) and a conventional JSON endpoint loaded via standard `loadData()` - an A/B comparison on identical data. The panel no longer auto-loads on open - data loads only on demand.
+
 ### Libraries
 * @xh/hoist `86.x → 87.x`
 * React `18.2 → 19.2`
