@@ -156,10 +156,10 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
         toolbarSep(),
         tooltip({
             content:
-                'Disable the codegen record data factory (hoist-react#4500) - reverts to legacy sparse-prototype record data objects',
+                'Enable Store.optimizeRecordData - builds record data from a shared template. Toggling reloads the app: V8 decides property storage per isolate, so each side of an A/B must be measured in a fresh page.',
             item: switchInput({
-                bind: 'disableDataFactory',
-                label: 'Legacy Data Objects',
+                bind: 'optimizeRecordData',
+                label: 'Optimize Record Data',
                 labelSide: 'left'
             })
         }),
