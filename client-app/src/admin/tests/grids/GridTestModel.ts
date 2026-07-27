@@ -23,7 +23,9 @@ export class GridTestModel extends HoistModel {
     override persistWith = {localStorageKey: PERSIST_KEY};
 
     // Total count (approx) of all nodes generated (parents + children).
-    @bindable recordCount = 200000;
+    @persist
+    @bindable
+    recordCount = 200000;
     // Number of random records to perturb
     @bindable twiddleCount = Math.round(this.recordCount * 0.5);
     // Prefix for all IDs - change to ensure no IDs re-used across loads.
@@ -40,11 +42,15 @@ export class GridTestModel extends HoistModel {
     @bindable enableXssProtection = false;
     // Value > 0 will declare that many additional `extraFieldN` fields on the store to help
     // stress-test stores with a wide array of fields.
-    @bindable extraFieldCount = 50;
+    @persist
+    @bindable
+    extraFieldCount = 50;
     // True to have the server populate the extra fields with generated values (a mix of
     // categorical/unique strings, ints, doubles, bools and nulls) - stress-tests stores with
     // wide *and dense* records, vs. the wide-but-sparse shape produced when off.
-    @bindable populateExtraFields = false;
+    @persist
+    @bindable
+    populateExtraFields = false;
     // True to enable the Store's `optimizeRecordData` config - for A/B comparison of memory usage
     // and load times. Persisted, and toggling it reloads the app - see the reaction below.
     @persist
@@ -53,7 +59,9 @@ export class GridTestModel extends HoistModel {
 
     // True to load from the streaming NDJSON endpoint via Store.loadDataAsync(), vs. standard.
     // For flat loading only.
-    @bindable streamServerLoad = true;
+    @persist
+    @bindable
+    streamServerLoad = true;
 
     @bindable disableSelect = false;
 
@@ -138,7 +146,8 @@ export class GridTestModel extends HoistModel {
         // a given set of keys has been built one way, later objects with those keys can inherit
         // that decision. Measuring both record-data representations in a single session
         // therefore contaminates whichever runs second, in either direction. Each side of an A/B
-        // must be measured in a fresh page. The setting is persisted, so it survives the reload.
+        // must be measured in a fresh page. This setting and the data-shape settings above are
+        // all persisted, so a configured A/B survives the reload intact.
         this.addReaction({
             track: () => this.optimizeRecordData,
             run: () => XH.reloadApp(),
