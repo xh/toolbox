@@ -50,6 +50,7 @@ const INTERN_KEY = 'gridTest';
  */
 const RECORD_DATA_FLAGS: Array<{prop: string; label: string}> = [
     {prop: 'useFixedDataShape', label: 'Fixed Data Shape'},
+    {prop: 'useRawAsData', label: 'Use Raw As Data'},
     {prop: 'freezeData', label: 'Freeze Data'}
 ];
 
@@ -142,6 +143,15 @@ export class GridTestModel extends HoistModel {
     @persist
     @bindable
     useFixedDataShape = false;
+    // The Store's `useRawAsData` config - each raw object becomes its record's `data` by reference,
+    // so a row costs one object instead of two. Mutually exclusive with `useFixedDataShape` and
+    // `reuseRecords` (Store throws), and the third of the three record-data representations, so
+    // toggling it reloads the app. Valid here only because the test data arrives already in final
+    // form - the extra fields are untyped and the base fields are already numbers/strings, so no
+    // `Field.parseVal` is needed. Note XSS protection is inert under it, as nothing is parsed.
+    @persist
+    @bindable
+    useRawAsData = false;
     // The Store's `freezeData` config - defaulted to Hoist's own default so measurements reflect
     // what apps actually run. Like `useFixedDataShape` this changes how record data objects are
     // built and stored, so toggling it reloads the app - see the reaction below.
@@ -310,6 +320,19 @@ export class GridTestModel extends HoistModel {
                 if (!retainRaw && this.reuseRecords) {
                     runInAction(() => (this.reuseRecords = false));
                 }
+            }
+        });
+
+        // `useRawAsData` is one of three mutually exclusive record-data representations and Store
+        // throws if paired with `useFixedDataShape` or `reuseRecords`. Clear both on the way in.
+        this.addReaction({
+            track: () => this.useRawAsData,
+            run: useRawAsData => {
+                if (!useRawAsData) return;
+                runInAction(() => {
+                    this.useFixedDataShape = false;
+                    this.reuseRecords = false;
+                });
             }
         });
 
@@ -588,12 +611,13 @@ export class GridTestModel extends HoistModel {
             storeConf: StoreConfig = {
                 freezeData: this.freezeData,
                 idEncodesTreePath: true,
-                useFixedDataShape: this.useFixedDataShape,
+                // Belt-and-braces throughout - Store throws on each illegal pairing below. The UI
+                // disables the switches and reactions clear them, but a config restored from the
+                // ViewManager could still arrive holding an incompatible combination.
+                useRawAsData: this.useRawAsData,
+                useFixedDataShape: this.useFixedDataShape && !this.useRawAsData,
                 retainRaw,
-                // Belt-and-braces - Store throws if `reuseRecords` is paired with `retainRaw:
-                // false`. The UI disables the switch and a reaction clears it, but a config
-                // restored from the ViewManager could still arrive holding both.
-                reuseRecords: this.reuseRecords && retainRaw
+                reuseRecords: this.reuseRecords && retainRaw && !this.useRawAsData
             };
 
         if (enableXssProtection) {

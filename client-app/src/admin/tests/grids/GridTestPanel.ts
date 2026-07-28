@@ -219,11 +219,23 @@ const storeFlagsBar = hoistCmp.factory<GridTestModel>(({model}) =>
     toolbar(
         label('Store:'),
         tooltip({
-            content:
-                'Enable Store.useFixedDataShape - builds record data from a shared template. Toggling reloads the app: V8 decides property storage per isolate, so each side of an A/B must be measured in a fresh page.',
+            content: model.useRawAsData
+                ? 'Mutually exclusive with Use Raw As Data - both decide how record data objects are produced, and Store throws if given each other.'
+                : 'Enable Store.useFixedDataShape - builds record data from a shared template. Toggling reloads the app: V8 decides property storage per isolate, so each side of an A/B must be measured in a fresh page.',
             item: switchInput({
                 bind: 'useFixedDataShape',
                 label: 'Fixed Data Shape',
+                labelSide: 'left',
+                disabled: model.useRawAsData
+            })
+        }),
+        toolbarSep(),
+        tooltip({
+            content:
+                'Store.useRawAsData - each raw object becomes its record data by reference, so a row costs one object rather than two. No parsing, so Field types and XSS protection do not apply. Mutually exclusive with Fixed Data Shape and Reuse Records. Toggling reloads the app.',
+            item: switchInput({
+                bind: 'useRawAsData',
+                label: 'Use Raw As Data',
                 labelSide: 'left'
             })
         }),
@@ -239,8 +251,9 @@ const storeFlagsBar = hoistCmp.factory<GridTestModel>(({model}) =>
         }),
         toolbarSep(),
         tooltip({
-            content:
-                'Store.retainRaw - off drops the reference each record holds to its raw data object (Hoist default on), letting that raw data be collected. Required by Reuse Records.',
+            content: model.useRawAsData
+                ? 'Inert under Use Raw As Data - record data *is* the raw object, so it stays reachable whatever this is set to, and no memory can be released by dropping the reference.'
+                : 'Store.retainRaw - off drops the reference each record holds to its raw data object (Hoist default on), letting that raw data be collected. Required by Reuse Records.',
             item: switchInput({
                 bind: 'retainRaw',
                 label: 'Retain Raw',
@@ -249,14 +262,16 @@ const storeFlagsBar = hoistCmp.factory<GridTestModel>(({model}) =>
         }),
         toolbarSep(),
         tooltip({
-            content: model.retainRaw
-                ? 'Store.reuseRecords - reuses records whose raw data object is reference-identical to the previously loaded one (Hoist default off). Does nothing on a first load: use the "Reload (same raw refs)" benchmark scenario to see it hit.'
-                : 'Requires Retain Raw - record reuse matches on the retained raw reference.',
+            content: model.useRawAsData
+                ? 'Mutually exclusive with Use Raw As Data - Store throws if given both.'
+                : model.retainRaw
+                  ? 'Store.reuseRecords - reuses records whose raw data object is reference-identical to the previously loaded one (Hoist default off). Does nothing on a first load: use the "Reload (same raw refs)" benchmark scenario to see it hit.'
+                  : 'Requires Retain Raw - record reuse matches on the retained raw reference.',
             item: switchInput({
                 bind: 'reuseRecords',
                 label: 'Reuse Records',
                 labelSide: 'left',
-                disabled: !model.retainRaw
+                disabled: !model.retainRaw || model.useRawAsData
             })
         }),
         toolbarSep(),
