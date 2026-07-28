@@ -49,7 +49,7 @@ const INTERN_KEY = 'gridTest';
  * (`retainRaw`, `reuseRecords`, `internStrings`) - those can be flipped and re-measured in place.
  */
 const RECORD_DATA_FLAGS: Array<{prop: string; label: string}> = [
-    {prop: 'optimizeRecordData', label: 'Optimize Record Data'},
+    {prop: 'useFixedDataShape', label: 'Fixed Data Shape'},
     {prop: 'freezeData', label: 'Freeze Data'}
 ];
 
@@ -137,13 +137,13 @@ export class GridTestModel extends HoistModel {
     @persist
     @bindable
     categoryCount = 8;
-    // True to enable the Store's `optimizeRecordData` config - for A/B comparison of memory usage
+    // True to enable the Store's `useFixedDataShape` config - for A/B comparison of memory usage
     // and load times. Persisted, and toggling it reloads the app - see the reaction below.
     @persist
     @bindable
-    optimizeRecordData = false;
+    useFixedDataShape = false;
     // The Store's `freezeData` config - defaulted to Hoist's own default so measurements reflect
-    // what apps actually run. Like `optimizeRecordData` this changes how record data objects are
+    // what apps actually run. Like `useFixedDataShape` this changes how record data objects are
     // built and stored, so toggling it reloads the app - see the reaction below.
     @persist
     @bindable
@@ -490,7 +490,7 @@ export class GridTestModel extends HoistModel {
 
     /**
      * Mean count of fields actually populated (i.e. holding a non-default value) across a sample
-     * of loaded records - the variable that decides whether `optimizeRecordData` pays off. Read
+     * of loaded records - the variable that decides whether `useFixedDataShape` pays off. Read
      * from parsed record data, so it holds regardless of `retainRaw`.
      */
     get populatedFieldCount(): number {
@@ -588,7 +588,7 @@ export class GridTestModel extends HoistModel {
             storeConf: StoreConfig = {
                 freezeData: this.freezeData,
                 idEncodesTreePath: true,
-                optimizeRecordData: this.optimizeRecordData,
+                useFixedDataShape: this.useFixedDataShape,
                 retainRaw,
                 // Belt-and-braces - Store throws if `reuseRecords` is paired with `retainRaw:
                 // false`. The UI disables the switch and a reaction clears it, but a config

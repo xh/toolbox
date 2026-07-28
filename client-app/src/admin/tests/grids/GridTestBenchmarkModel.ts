@@ -75,7 +75,7 @@ export const SCENARIO_LABELS: Record<BenchmarkScenario, string> = {
  * domain are not trustworthy and are deliberately never presented on their own.
  *
  * Results accumulate (and persist to local storage) so several configs can be compared side by
- * side. Persistence matters here because toggling `optimizeRecordData` or `freezeData` reloads the
+ * side. Persistence matters here because toggling `useFixedDataShape` or `freezeData` reloads the
  * app - without it, each side of that A/B would land in a different session's results.
  *
  * Each row captures the full config that produced it, and reports only what was measured - no
@@ -140,7 +140,7 @@ export class GridTestBenchmarkModel extends HoistModel {
     get configSummary(): string {
         const {parent} = this,
             flags = [
-                ['optimizeRecordData', parent.optimizeRecordData],
+                ['useFixedDataShape', parent.useFixedDataShape],
                 ['freezeData', parent.freezeData],
                 ['retainRaw', parent.retainRaw],
                 ['reuseRecords', parent.reuseRecords],
@@ -213,7 +213,7 @@ export class GridTestBenchmarkModel extends HoistModel {
                 ['Records', r => fmtInt(r.records)],
                 ['Fields (decl)', r => r.declaredFields],
                 ['Fields (pop)', r => r.populatedFields],
-                ['optimizeRecordData', r => yn(r.optimizeRecordData)],
+                ['useFixedDataShape', r => yn(r.useFixedDataShape)],
                 ['freezeData', r => yn(r.freezeData)],
                 ['retainRaw', r => yn(r.retainRaw)],
                 ['reuseRecords', r => yn(r.reuseRecords)],
@@ -509,7 +509,7 @@ export class GridTestBenchmarkModel extends HoistModel {
                 records,
                 declaredFields: parent.declaredFieldCount,
                 populatedFields: parent.populatedFieldCount,
-                optimizeRecordData: parent.optimizeRecordData,
+                useFixedDataShape: parent.useFixedDataShape,
                 freezeData: parent.freezeData,
                 retainRaw: parent.retainRaw,
                 reuseRecords: parent.reuseRecords,
@@ -579,7 +579,7 @@ export class GridTestBenchmarkModel extends HoistModel {
                     {name: 'records', type: FT.INT},
                     {name: 'declaredFields', type: FT.INT},
                     {name: 'populatedFields', type: FT.INT},
-                    {name: 'optimizeRecordData', type: FT.BOOL},
+                    {name: 'useFixedDataShape', type: FT.BOOL},
                     {name: 'freezeData', type: FT.BOOL},
                     {name: 'retainRaw', type: FT.BOOL},
                     {name: 'reuseRecords', type: FT.BOOL},
@@ -678,7 +678,7 @@ export class GridTestBenchmarkModel extends HoistModel {
                 },
                 {field: 'declaredFields', headerName: 'Fields Decl', width: 100},
                 {field: 'populatedFields', headerName: 'Fields Pop', width: 100},
-                {field: 'optimizeRecordData', headerName: 'Optimize', ...boolCol},
+                {field: 'useFixedDataShape', headerName: 'FixedShape', ...boolCol},
                 {field: 'freezeData', headerName: 'Freeze', ...boolCol},
                 {field: 'retainRaw', headerName: 'RetainRaw', ...boolCol},
                 {field: 'reuseRecords', headerName: 'Reuse', ...boolCol},

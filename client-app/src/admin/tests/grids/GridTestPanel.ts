@@ -220,17 +220,17 @@ const storeFlagsBar = hoistCmp.factory<GridTestModel>(({model}) =>
         label('Store:'),
         tooltip({
             content:
-                'Enable Store.optimizeRecordData - builds record data from a shared template. Toggling reloads the app: V8 decides property storage per isolate, so each side of an A/B must be measured in a fresh page.',
+                'Enable Store.useFixedDataShape - builds record data from a shared template. Toggling reloads the app: V8 decides property storage per isolate, so each side of an A/B must be measured in a fresh page.',
             item: switchInput({
-                bind: 'optimizeRecordData',
-                label: 'Optimize Record Data',
+                bind: 'useFixedDataShape',
+                label: 'Fixed Data Shape',
                 labelSide: 'left'
             })
         }),
         toolbarSep(),
         tooltip({
             content:
-                'Store.freezeData - freezes each record data object (Hoist default on). Like Optimize Record Data this changes how record data is built and stored, so toggling reloads the app.',
+                'Store.freezeData - freezes each record data object (Hoist default on). Like Fixed Data Shape this changes how record data is built and stored, so toggling reloads the app.',
             item: switchInput({
                 bind: 'freezeData',
                 label: 'Freeze Data',
