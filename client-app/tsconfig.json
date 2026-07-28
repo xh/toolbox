@@ -26,9 +26,8 @@
     // commit it enabled.
     //
     // NOTE - deliberately committed ENABLED on this branch: the admin grid tester sets the Store
-    // `optimizeRecordData` config, new in hoist-react 87 (xh/hoist-react#4501) and not yet
-    // available in a published @xh/hoist snapshot. Re-comment once this branch builds against a
-    // release that includes it.
+    // `useFixedDataShape` config, new in hoist-react 87 and not yet available in a published
+    // @xh/hoist snapshot. Re-comment once this branch builds against a release that includes it.
     "paths": {
       "@xh/hoist/*": ["../../hoist-react/*"]
     }
