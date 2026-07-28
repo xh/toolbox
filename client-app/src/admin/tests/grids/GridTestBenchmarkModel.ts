@@ -150,7 +150,10 @@ export class GridTestBenchmarkModel extends HoistModel {
         return [
             `${parent.recordCount.toLocaleString()} records`,
             `${parent.declaredFieldCount} fields declared`,
-            parent.populateExtraFields ? 'extra fields populated' : 'extra fields sparse',
+            parent.populateExtraFields
+                ? `extra fields populated (${parent.valueMix}` +
+                  `${parent.categoryCountApplies ? `, ${parent.categoryCount} categories` : ''})`
+                : 'extra fields sparse',
             parent.useStreaming ? 'streaming load' : 'JSON load',
             ...flags.map(([name, on]) => `${name}: ${on ? 'on' : 'off'}`)
         ].join('  •  ');
@@ -210,6 +213,17 @@ export class GridTestBenchmarkModel extends HoistModel {
                 ['tree', r => yn(r.tree)],
                 ['summary', r => yn(r.summary)],
                 ['populateExtraFields', r => yn(r.populateExtraFields)],
+                // '?' where the row pre-dates these settings - see valueCharTooltip().
+                ['Mix', r => r.valueMix ?? (r.populateExtraFields ? '?' : '')],
+                [
+                    'Categories',
+                    r =>
+                        r.categoryCount != null
+                            ? fmtInt(r.categoryCount)
+                            : r.populateExtraFields && r.valueMix == null
+                              ? '?'
+                              : ''
+                ],
                 ['xss', r => yn(r.xss)],
                 ['Heap Δ #1 (MB)', r => fmtMb(r.heapFirst)],
                 ['Heap Δ med (MB)', r => fmtMb(r.heapMed)],
@@ -495,6 +509,14 @@ export class GridTestBenchmarkModel extends HoistModel {
                 tree: parent.tree,
                 summary: parent.showSummary,
                 populateExtraFields: parent.populateExtraFields,
+                // Recorded only where they actually shaped the data, so a row can never suggest a
+                // distribution that was not in play. A null against populateExtraFields: true
+                // therefore means the row pre-dates these settings - see the results grid.
+                valueMix: parent.populateExtraFields ? parent.valueMix : null,
+                categoryCount:
+                    parent.populateExtraFields && parent.categoryCountApplies
+                        ? parent.categoryCount
+                        : null,
                 xss: parent.enableXssProtection,
                 // The first iteration always starts from the pristine baseline, so it stands even
                 // when later ones are flagged - see resetGridAsync().
@@ -557,6 +579,8 @@ export class GridTestBenchmarkModel extends HoistModel {
                     {name: 'tree', type: FT.BOOL},
                     {name: 'summary', type: FT.BOOL},
                     {name: 'populateExtraFields', type: FT.BOOL},
+                    {name: 'valueMix', type: FT.STRING},
+                    {name: 'categoryCount', type: FT.INT},
                     {name: 'xss', type: FT.BOOL},
                     {name: 'heapFirst', type: FT.NUMBER},
                     {name: 'heapMin', type: FT.NUMBER},
@@ -654,6 +678,26 @@ export class GridTestBenchmarkModel extends HoistModel {
                 {field: 'tree', headerName: 'Tree', ...boolCol},
                 {field: 'summary', headerName: 'Summary', ...boolCol},
                 {field: 'populateExtraFields', headerName: 'PopFields', ...boolCol},
+                {
+                    field: 'valueMix',
+                    headerName: 'Mix',
+                    width: 110,
+                    tooltip: (v, {record}) => valueCharTooltip(v, record.data),
+                    renderer: (v, {record}) => v ?? (record.data.populateExtraFields ? '?' : '·')
+                },
+                {
+                    field: 'categoryCount',
+                    headerName: 'Cats',
+                    width: 90,
+                    align: 'right',
+                    tooltip: (v, {record}) => valueCharTooltip(v, record.data),
+                    renderer: (v, {record}) =>
+                        v != null
+                            ? fmtInt(v)
+                            : record.data.populateExtraFields && record.data.valueMix == null
+                              ? '?'
+                              : '·'
+                },
                 {field: 'xss', headerName: 'XSS', ...boolCol}
             ]
         });
@@ -680,4 +724,22 @@ function fmtInt(v: number): string {
 
 function fmtMb(v: number): string {
     return v == null ? '' : (v / 1000000).toFixed(1);
+}
+
+/**
+ * Tooltip for the value-character columns, which is mostly about telling three states apart:
+ * recorded and applicable, applicable but recorded before the setting existed, or not applicable.
+ * The middle case matters - those rows were measured against the old fixed value cycle, whose
+ * categorical and unique strings were variable-width, so their byte figures do not compare with
+ * anything measured since.
+ */
+function valueCharTooltip(v: any, row: PlainObject): string {
+    if (v != null) return null;
+    if (!row.populateExtraFields) {
+        return 'Not applicable - extra fields were declared but left unpopulated.';
+    }
+    if (row.valueMix == null) {
+        return 'Recorded before the value mix was configurable, against the old fixed cycle of variable-width values. Byte figures from this row do not compare with later runs - re-measure before using it.';
+    }
+    return 'Not applicable - this value mix generates no categorical values.';
 }

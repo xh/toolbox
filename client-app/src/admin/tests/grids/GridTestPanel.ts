@@ -11,7 +11,7 @@ import {fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {tooltip} from '@xh/hoist/kit/blueprint';
 import {gridTestBenchmarkDialog} from './GridTestBenchmarkDialog';
-import {GridTestModel} from './GridTestModel';
+import {GridTestModel, VALUE_MIX_OPTIONS} from './GridTestModel';
 
 export const GridTestPanel = hoistCmp({
     model: creates(GridTestModel),
@@ -167,13 +167,43 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
         }),
         tooltip({
             content:
-                'Have the server populate the extra fields with generated values - a mix of ' +
-                'categorical/unique strings, ints, doubles, bools and nulls. Off yields wide ' +
-                'but sparse records, with the extra fields declared but never populated.',
+                'Have the server populate the extra fields with generated values, per the Value ' +
+                'Mix below. Off yields wide but sparse records, with the extra fields declared ' +
+                'but never populated.',
             item: switchInput({
                 bind: 'populateExtraFields',
                 label: 'Populate',
                 labelSide: 'left'
+            })
+        }),
+        toolbarSep(),
+        label('Value Mix'),
+        tooltip({
+            content:
+                'Value distribution the server generates for the populated extra fields. Every mix ' +
+                'populates the same ~11/12 of them, so switching mixes varies value character ' +
+                'without moving the populated-field count. Takes effect on the next load - no page ' +
+                'reload needed, as the record shape is identical across mixes.',
+            item: select({
+                bind: 'valueMix',
+                options: [...VALUE_MIX_OPTIONS],
+                enableFilter: false,
+                enableClear: false,
+                width: 140,
+                disabled: !model.populateExtraFields
+            })
+        }),
+        tooltip({
+            content: model.categoryCountApplies
+                ? 'Cardinality of the categorical string pool - how many distinct values the ' +
+                  'categorical columns draw from. Names are fixed-width, so this varies pool size ' +
+                  'without also varying value byte size. Drives how much sharing is available to ' +
+                  'Intern Strings.'
+                : 'Inert for this Value Mix - it generates no categorical values.',
+            item: numberInput({
+                bind: 'categoryCount',
+                width: 90,
+                disabled: !model.populateExtraFields || !model.categoryCountApplies
             })
         }),
         toolbarSep(),

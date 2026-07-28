@@ -56,6 +56,23 @@ const RECORD_DATA_FLAGS: Array<{prop: string; label: string}> = [
 /** Records sampled when counting the fields actually populated by the loaded data. */
 const POPULATED_FIELDS_SAMPLE_SIZE = 100;
 
+/**
+ * Value distributions the server can generate for the extra fields - see `valueMix` below and
+ * `GridTestController.Generator.VALUE_MIXES` for the per-slot definitions. Keys must match the
+ * server's, which rejects anything it does not recognize.
+ */
+export const VALUE_MIX_OPTIONS = [
+    {value: 'mixed', label: 'Mixed'},
+    {value: 'categorical', label: 'Categorical'},
+    {value: 'unique', label: 'Unique strings'},
+    {value: 'numeric', label: 'Numeric'}
+] as const;
+
+export type GridTestValueMix = (typeof VALUE_MIX_OPTIONS)[number]['value'];
+
+/** Mixes that carry categorical values, and so are affected by `categoryCount`. */
+const CATEGORICAL_MIXES: GridTestValueMix[] = ['mixed', 'categorical'];
+
 export class GridTestModel extends HoistModel {
     /**
      * All settings below are persisted as named configs via ViewManager, allowing a full set of
@@ -106,6 +123,20 @@ export class GridTestModel extends HoistModel {
     @persist
     @bindable
     populateExtraFields = false;
+    // Which value distribution the server uses for the populated extra fields. Memory results are
+    // sensitive to value character, so an interaction measured under one mix does not carry to
+    // another - vary this deliberately rather than leaving it at the default. Needs no page reload:
+    // every mix emits the same keys (its null slot still emits its key, with a null value), so the
+    // record *shape* - and hence V8's property-storage decision - is identical across mixes.
+    @persist
+    @bindable
+    valueMix: GridTestValueMix = 'mixed';
+    // Cardinality of the server's categorical string pool, for mixes that use one. Drives how much
+    // value sharing is available - to `internStrings` most directly, but also to the VM. Names are
+    // fixed-width server-side, so this varies pool size without also varying value byte size.
+    @persist
+    @bindable
+    categoryCount = 8;
     // True to enable the Store's `optimizeRecordData` config - for A/B comparison of memory usage
     // and load times. Persisted, and toggling it reloads the app - see the reaction below.
     @persist
@@ -249,8 +280,11 @@ export class GridTestModel extends HoistModel {
             debounce: 100
         });
 
+        // Dataset-shaping settings that take effect on the next load. No grid rebuild needed -
+        // they change the values the server sends, not the fields the Store declares - but any
+        // metrics on screen describe the previous dataset and would be misread as current.
         this.addReaction({
-            track: () => this.recordCount,
+            track: () => [this.recordCount, this.valueMix, this.categoryCount],
             run: () => this.metrics.clear()
         });
 
@@ -449,6 +483,11 @@ export class GridTestModel extends HoistModel {
         return this.gridModel.store.fields.length;
     }
 
+    /** True when the selected `valueMix` carries categorical values, making `categoryCount` live. */
+    get categoryCountApplies(): boolean {
+        return CATEGORICAL_MIXES.includes(this.valueMix);
+    }
+
     /**
      * Mean count of fields actually populated (i.e. holding a non-default value) across a sample
      * of loaded records - the variable that decides whether `optimizeRecordData` pays off. Read
@@ -470,26 +509,43 @@ export class GridTestModel extends HoistModel {
     }
 
     private async fetchJsonRowsAsync(): Promise<{rows: PlainObject[]; summary: PlainObject}> {
-        const {recordCount, idSeed, numericId, tree, showSummary} = this;
+        const {tree, showSummary} = this;
         return XH.fetchJson({
             url: 'gridTest/data',
             params: {
-                recordCount,
-                idSeed,
-                numericId,
+                ...this.dataShapeParams,
                 tree,
                 showSummary,
-                loadRootAsSummary: this.loadRootAsSummary,
-                extraFieldCount: this.extraFieldCount,
-                populateExtraFields: this.populateExtraFields
+                loadRootAsSummary: this.loadRootAsSummary
             },
             internStrings: this.internSpecFor('json')
         });
     }
 
     private get streamingParams(): PlainObject {
-        const {recordCount, idSeed, numericId, extraFieldCount, populateExtraFields} = this;
-        return {recordCount, idSeed, numericId, extraFieldCount, populateExtraFields};
+        return this.dataShapeParams;
+    }
+
+    /** Params describing the dataset itself - shared by both load paths. */
+    private get dataShapeParams(): PlainObject {
+        const {
+            recordCount,
+            idSeed,
+            numericId,
+            extraFieldCount,
+            populateExtraFields,
+            valueMix,
+            categoryCount
+        } = this;
+        return {
+            recordCount,
+            idSeed,
+            numericId,
+            extraFieldCount,
+            populateExtraFields,
+            valueMix,
+            categoryCount
+        };
     }
 
     /**
