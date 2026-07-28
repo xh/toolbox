@@ -32,7 +32,7 @@ export const gridTestBenchmarkDialog = hoistCmp.factory({
             onClose: () => model.close(),
             item: panel({
                 tbar: tbar(),
-                item: grid({model: model.resultsGridModel, flex: 1}),
+                items: [suspectBanner(), grid({model: model.resultsGridModel, flex: 1})],
                 bbar: bbar(),
                 mask: model.runTask
             })
@@ -99,6 +99,20 @@ const bbar = hoistCmp.factory<GridTestBenchmarkModel>(({model}) =>
             span({item: model.configSummary, className: 'xh-text-color-muted'})
         ],
         compact: true
+    })
+);
+
+/**
+ * Sits between the toolbar and the grid when the last run could not verify that every iteration
+ * started from an uncontaminated baseline - see GridTestBenchmarkModel.runBenchmarkAsync.
+ */
+const suspectBanner = hoistCmp.factory<GridTestBenchmarkModel>(({model}) =>
+    hbox({
+        omit: !model.warning,
+        alignItems: 'center',
+        padding: 5,
+        style: {background: 'var(--xh-intent-warning-trans1)'},
+        items: [Icon.warning({intent: 'warning'}), hspacer(5), span(model.warning)]
     })
 );
 
