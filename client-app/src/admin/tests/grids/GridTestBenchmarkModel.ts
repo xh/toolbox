@@ -182,6 +182,15 @@ export class GridTestBenchmarkModel extends HoistModel {
     }
 
     runBenchmark() {
+        // Hard guard, not just a disabled button. Two overlapping runs silently corrupt *both*:
+        // each clears and rebuilds the grid under the other, so one measures a baseline the other
+        // has already dirtied and one records zero records against a multi-hundred-MB delta. Both
+        // land as ordinary-looking rows - the suspect check cannot see this, as it only compares a
+        // run against its own pristine baseline. Cheaper to refuse than to detect after the fact.
+        if (this.isRunning) {
+            this.logWarn('Benchmark already running - ignoring request to start another');
+            return;
+        }
         this.runBenchmarkAsync().linkTo(this.runTask).catchDefault();
     }
 
