@@ -26,7 +26,7 @@ export class CubeTestModel extends HoistModel {
     @bindable updateCount = 5;
 
     /** Zero-copy Store mode under test (hoist-react #4506). Rebuilds grid + view when toggled. */
-    @bindable adoptRawData = false;
+    @bindable useRawAsData = false;
 
     /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
     @bindable recordMultiplier = 1;
@@ -57,10 +57,10 @@ export class CubeTestModel extends HoistModel {
             equals: comparer.structural
         });
 
-        // Rebuild grid + connected view when toggling adoptRawData, reconstructing the underlying
+        // Rebuild grid + connected view when toggling useRawAsData, reconstructing the underlying
         // Store in the new mode for A/B comparison of memory and update performance.
         this.addReaction({
-            track: () => this.adoptRawData,
+            track: () => this.useRawAsData,
             run: () => this.buildGridAndView()
         });
     }
@@ -109,7 +109,7 @@ export class CubeTestModel extends HoistModel {
         }
 
         this.heapMB = mem ? Math.round(mem.usedJSHeapSize / 1048576) : null;
-        const mode = this.adoptRawData ? 'adopt' : 'legacy';
+        const mode = this.useRawAsData ? 'rawAsData' : 'legacy';
         console.log(
             `[CubeTest] heap: ${this.heapMB ?? 'n/a'} MB | mode=${mode} | x${this.recordMultiplier}` +
                 (hasGC
@@ -176,7 +176,7 @@ export class CubeTestModel extends HoistModel {
             showSummary: this.showSummary,
             store: {
                 loadRootAsSummary: this.showSummary,
-                adoptRawData: this.adoptRawData,
+                useRawAsData: this.useRawAsData,
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
             sortBy: 'time|desc',
@@ -191,18 +191,16 @@ export class CubeTestModel extends HoistModel {
                     groupings = dimManagerModel.value;
                 return groupings.map((it: string) => groupingChooserModel.getDimDisplayName(it));
             },
-            // Editing routes through Cube.modifyRecordsAsync (source of record). Disabled in
-            // adoptRawData mode, which is a read-only projection.
-            colDefaults: this.adoptRawData
-                ? {editable: false}
-                : {
-                      editable: ({record}) => !record.data.cubeDimension, // Only editable if leaf node
-                      setValueFn: ({value, record, field}) => {
-                          const data = {id: record.data.cubeLabel};
-                          data[field] = value;
-                          this.cubeModel.cube.modifyRecordsAsync(data);
-                      }
-                  },
+            // Editing routes through Cube.modifyRecordsAsync (source of record), and is exercised in
+            // both modes - useRawAsData no longer implies a read-only Store.
+            colDefaults: {
+                editable: ({record}) => !record.data.cubeDimension, // Only editable if leaf node
+                setValueFn: ({value, record, field}) => {
+                    const data = {id: record.data.cubeLabel};
+                    data[field] = value;
+                    this.cubeModel.cube.modifyRecordsAsync(data);
+                }
+            },
             columns: [
                 {
                     field: 'id',
