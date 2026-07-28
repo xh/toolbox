@@ -1,6 +1,5 @@
 package io.xh.toolbox.admin
 
-import groovy.json.JsonOutput
 import io.xh.hoist.security.AccessRequiresRole
 import io.xh.toolbox.BaseController
 
@@ -65,19 +64,6 @@ class GridTestController extends BaseController {
      * "Stream" mode, where the client consumes the response incrementally via
      * `Store.loadDataAsync()`, creating records as chunks arrive without ever buffering the
      * complete raw dataset in memory.
-     *
-     * Flushed on the first row (prompt time-to-first-record for the client) and every 1000 rows
-     * thereafter (~128KB at this row shape) - coarse enough to be cheap, frequent enough to keep
-     * data streaming through any buffering layers (compression filters, reverse proxies) between
-     * server and client.
-     *
-     * Note two required details of this pattern:
-     * - The BufferedOutputStream wrapper coalesces the many small per-row writes into ~32KB
-     *   chunks. Sent individually, each tiny write travels the response pipeline as its own
-     *   chunk, degrading downstream gzip ratios (compressors that sync-flush per chunk lose
-     *   most of their efficiency on sub-KB blocks) and adding per-chunk transfer overhead.
-     * - Rows must be written via write(), NOT the Groovy << operator - Groovy's
-     *   OutputStream.leftShift() flushes after every write, which would defeat the buffer.
      */
     def streamingData(
         Integer recordCount,
@@ -90,20 +76,7 @@ class GridTestController extends BaseController {
     ) {
         def gen = createGenerator(recordCount, idSeed, numericId, extraFieldCount,
                 populateExtraFields, valueMix, categoryCount)
-
-        // Deliberately served as text/plain rather than the standard application/x-ndjson -
-        // the NDJSON type is missing from most default gzip/compressible MIME lists (webpack
-        // dev-server, Spring Boot, typical nginx gzip_types), so it would transfer uncompressed
-        // without per-environment config. text/plain is compressed out of the box.
-        response.contentType = 'text/plain'
-        response.characterEncoding = 'UTF-8'
-
-        def out = new BufferedOutputStream(response.outputStream, 32 * 1024)
-        gen.eachFlatRow { Map row ->
-            out.write((JsonOutput.toJson(row) + '\n').getBytes('UTF-8'))
-            if (gen.count % 1000 == 1) out.flush()
-        }
-        out.flush()
+        renderNdjson(gen.flatRows())
     }
 
     //------------------------
@@ -236,10 +209,8 @@ class GridTestController extends BaseController {
             return rows
         }
 
-        void eachFlatRow(Closure fn) {
-            while (count < recordCount) {
-                fn(nextParent())
-            }
+        Iterator<Map> flatRows() {
+            [hasNext: { count < recordCount }, next: { nextParent() }] as Iterator<Map>
         }
 
         Map summarize(List<Map> rows) {
