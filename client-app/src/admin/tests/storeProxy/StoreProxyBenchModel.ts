@@ -26,7 +26,7 @@ export const MODE_LABELS: Record<BenchMode, string> = {
 };
 
 export const MODE_DESCRIPTIONS: Record<BenchMode, string> = {
-    proxy: 'new Store({primaryStore: cube.store}) - records shared by reference, no copy.',
+    proxy: 'cube.store.createProxy() - records shared by reference, no copy.',
     copy:
         'new Store({fields: all 160}) + loadData(cube.store.records.map(it => it.data)). An ' +
         'id-for-id clone, so updates are applied to both Cube and Store from the same payload.',
@@ -194,7 +194,7 @@ export class StoreProxyBenchModel extends HoistModel {
         switch (mode) {
             case 'proxy':
                 // Zero-copy: adopts the primary's fields and shares its records by reference.
-                this.targetStore = new Store({primaryStore: cube.store});
+                this.targetStore = cube.store.createProxy();
                 break;
             case 'copy': {
                 const store = new Store({fields: allStoreFieldSpecs()});
