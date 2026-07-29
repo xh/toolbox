@@ -4,6 +4,7 @@
 
 ### Technical
 
+* Added a "Store Proxy" admin test panel benchmarking hoist-react's new Store `primaryStore` (proxy) mode against the alternatives for fanning a single flat dataset out to multiple independently-filtered components: copying `record.data` into a cloned Store, and a leaf-only Cube `View` (with and without `useRawAsData`). Builds each mode in isolation against a synthetic 30k x 160-field Cube and reports build time, retained heap delta, update propagation, and filter cost - verifying on every run that the target actually reflects a Cube update and filters to the expected count.
 * Reworked the admin Grid test panel to always load its test data from the server, replacing the previous client-side data generation (and its "Generate Data" step) with two new server endpoints. A "Stream" toggle switches between an NDJSON endpoint consumed incrementally via `Store.loadDataAsync()` (no buffering of the complete raw dataset in memory) and a conventional JSON endpoint loaded via standard `loadData()` - an A/B comparison on identical data. The panel no longer auto-loads on open - data loads only on demand.
 
 ### Libraries

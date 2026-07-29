@@ -1,0 +1,31 @@
+.tb-store-proxy-bench {
+  &__status {
+    font-style: italic;
+    opacity: 0.8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__notes {
+    font-size: var(--xh-font-size-small);
+
+    p {
+      margin: 0 0 var(--xh-pad-px);
+    }
+
+    ul {
+      margin: 0 0 var(--xh-pad-px);
+      padding-left: var(--xh-pad-double-px);
+    }
+
+    li {
+      margin-bottom: var(--xh-pad-half-px);
+    }
+
+    .xh-panel__content {
+      overflow-y: auto;
+      padding: var(--xh-pad-px);
+    }
+  }
+}

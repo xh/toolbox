@@ -11,6 +11,7 @@ import {
     dataViewTestPanel,
     FetchApiTestPanel,
     GridTestPanel,
+    StoreProxyBenchPanel,
     gridScrolling,
     LocalDateTestPanel,
     PanelResizingTestPanel,
@@ -47,6 +48,7 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'select', path: '/select'},
                     {name: 'storeColumnFilters', path: '/storeColumnFilters'},
+                    {name: 'storeProxy', path: '/storeProxy'},
                     {name: 'viewColumnFilters', path: '/viewColumnFilters'},
                     {name: 'viewManager', path: '/viewManager'},
                     {name: 'webSockets', path: '/webSockets'}
@@ -75,6 +77,7 @@ export class AppModel extends HoistAdminAppModel {
                         {id: 'panelResizing', content: PanelResizingTestPanel},
                         {id: 'select', content: SelectTestPanel},
                         {id: 'storeColumnFilters', content: storeColumnFilterPanel},
+                        {id: 'storeProxy', title: 'Store Proxy', content: StoreProxyBenchPanel},
                         {id: 'viewColumnFilters', content: viewColumnFilterPanel},
                         {id: 'viewManager', content: viewManagerTestPanel},
                         {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel}
