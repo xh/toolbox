@@ -134,12 +134,11 @@ export class GridTestModel extends HoistModel {
             start = Date.now();
 
         if (streaming) {
-            await gridModel.store.loadDataAsync(
-                XH.fetchNdjson({
-                    url: 'gridTest/streamingData',
-                    params: {recordCount, idSeed, numericId}
-                })
-            );
+            const stream = XH.fetchNdjson({
+                url: 'gridTest/streamingData',
+                params: {recordCount, idSeed, numericId}
+            });
+            await gridModel.store.loadDataAsync(stream.lines);
         } else {
             const {rows, summary} = await XH.fetchJson({
                 url: 'gridTest/data',
