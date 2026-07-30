@@ -47,7 +47,7 @@ class GridTestController extends BaseController {
      */
     def streamingData(Integer recordCount, Integer idSeed, Boolean numericId) {
         def gen = new Generator(recordCount ?: 100000, idSeed ?: 1, numericId ?: false)
-        renderNdjson(gen.flatRows())
+        renderNDJSON(gen.flatRows())
     }
 
     //------------------------
