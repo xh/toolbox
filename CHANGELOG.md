@@ -5,6 +5,7 @@
 ### Technical
 
 * Reworked the admin Grid test panel to always load its test data from the server, replacing the previous client-side data generation (and its "Generate Data" step) with two new server endpoints. A "Stream" toggle switches between an NDJSON endpoint consumed incrementally via `Store.loadDataAsync()` (no buffering of the complete raw dataset in memory) and a conventional JSON endpoint loaded via standard `loadData()` - an A/B comparison on identical data. The panel no longer auto-loads on open - data loads only on demand.
+* Extended the admin Grid test panel into a fuller Store performance harness: the server can now populate the extra fields with generated values (configurable value mix and categorical cardinality), a new toolbar exposes the Store's `useRawAsData`, `freezeData`, `retainRaw` and `reuseRecords` configs plus fetch-level string interning, a repeatable benchmark dialog measures heap and load-time deltas across iterations with persisted results, and full test-parameter sets can be saved and shared as named `ViewManager` configs.
 
 ### Libraries
 * @xh/hoist `86.x → 87.x`

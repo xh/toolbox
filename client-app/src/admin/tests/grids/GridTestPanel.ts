@@ -6,10 +6,12 @@ import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {tooltip} from '@xh/hoist/kit/blueprint';
-import {GridTestModel} from './GridTestModel';
+import {gridTestBenchmarkDialog} from './GridTestBenchmarkDialog';
+import {GridTestModel, VALUE_MIX_OPTIONS} from './GridTestModel';
 
 export const GridTestPanel = hoistCmp({
     model: creates(GridTestModel),
@@ -32,8 +34,10 @@ export const GridTestPanel = hoistCmp({
                     })
                 }),
                 bbar1(),
+                storeFlagsBar(),
                 bbar2(),
-                bbar3()
+                bbar3(),
+                gridTestBenchmarkDialog({model: model.benchmarkModel})
             ]
         });
     }
@@ -41,6 +45,13 @@ export const GridTestPanel = hoistCmp({
 
 const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
     toolbar(
+        // Save/restore all of the testing parameters below as named configs - see GridTestModel.
+        viewManager({
+            model: model.viewManagerModel,
+            showSaveButton: 'always',
+            showRevertButton: 'always'
+        }),
+        toolbarSep(),
         tooltip({
             content: 'Use an incremental numeric id as grid id.',
             item: switchInput({
@@ -147,12 +158,132 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
         }),
         toolbarSep(),
         label('Extra Fields'),
-        numberInput({
-            bind: 'extraFieldCount',
-            width: 80
+        tooltip({
+            content: '# of extra fields to declare on the store, beyond the six base fields.',
+            item: numberInput({
+                bind: 'extraFieldCount',
+                width: 80
+            })
+        }),
+        tooltip({
+            content:
+                'Have the server populate the extra fields with generated values, per the Value ' +
+                'Mix below. Off yields wide but sparse records, with the extra fields declared ' +
+                'but never populated.',
+            item: switchInput({
+                bind: 'populateExtraFields',
+                label: 'Populate',
+                labelSide: 'left'
+            })
+        }),
+        toolbarSep(),
+        label('Value Mix'),
+        tooltip({
+            content:
+                'Value distribution the server generates for the populated extra fields. Every mix ' +
+                'populates the same ~11/12 of them, so switching mixes varies value character ' +
+                'without moving the populated-field count. Takes effect on the next load - no page ' +
+                'reload needed, as the record shape is identical across mixes.',
+            item: select({
+                bind: 'valueMix',
+                options: [...VALUE_MIX_OPTIONS],
+                enableFilter: false,
+                enableClear: false,
+                width: 140,
+                disabled: !model.populateExtraFields
+            })
+        }),
+        tooltip({
+            content: model.categoryCountApplies
+                ? 'Cardinality of the categorical string pool - how many distinct values the ' +
+                  'categorical columns draw from. Names are fixed-width, so this varies pool size ' +
+                  'without also varying value byte size. Drives how much sharing is available to ' +
+                  'Intern Strings.'
+                : 'Inert for this Value Mix - it generates no categorical values.',
+            item: numberInput({
+                bind: 'categoryCount',
+                width: 90,
+                disabled: !model.populateExtraFields || !model.categoryCountApplies
+            })
         }),
         toolbarSep(),
         storeFilterField()
+    )
+);
+
+/**
+ * Store/fetch flags that drive the memory + load-time profile of the data under test. Note the
+ * first two require a fresh page when toggled - see GridTestModel for why.
+ */
+const storeFlagsBar = hoistCmp.factory<GridTestModel>(({model}) =>
+    toolbar(
+        label('Store:'),
+        tooltip({
+            content:
+                'Store.useRawAsData - each raw object becomes its record data by reference, so a row costs one object rather than two. No parsing, so Field types and XSS protection do not apply. Mutually exclusive with Reuse Records. Toggling reloads the app.',
+            item: switchInput({
+                bind: 'useRawAsData',
+                label: 'Use Raw As Data',
+                labelSide: 'left'
+            })
+        }),
+        toolbarSep(),
+        tooltip({
+            content:
+                'Store.freezeData - freezes each record data object (Hoist default on). Changes how record data is built and stored, so toggling reloads the app.',
+            item: switchInput({
+                bind: 'freezeData',
+                label: 'Freeze Data',
+                labelSide: 'left'
+            })
+        }),
+        toolbarSep(),
+        tooltip({
+            content: model.useRawAsData
+                ? 'Inert under Use Raw As Data - record data *is* the raw object, so it stays reachable whatever this is set to, and no memory can be released by dropping the reference.'
+                : 'Store.retainRaw - off drops the reference each record holds to its raw data object (Hoist default on), letting that raw data be collected. Required by Reuse Records.',
+            item: switchInput({
+                bind: 'retainRaw',
+                label: 'Retain Raw',
+                labelSide: 'left'
+            })
+        }),
+        toolbarSep(),
+        tooltip({
+            content: model.useRawAsData
+                ? 'Mutually exclusive with Use Raw As Data - Store throws if given both.'
+                : model.retainRaw
+                  ? 'Store.reuseRecords - reuses records whose raw data object is reference-identical to the previously loaded one (Hoist default off). Does nothing on a first load: use the "Reload (same raw refs)" benchmark scenario to see it hit.'
+                  : 'Requires Retain Raw - record reuse matches on the retained raw reference.',
+            item: switchInput({
+                bind: 'reuseRecords',
+                label: 'Reuse Records',
+                labelSide: 'left',
+                disabled: !model.retainRaw || model.useRawAsData
+            })
+        }),
+        toolbarSep(),
+        tooltip({
+            content:
+                'FetchOptions.internStrings (a fetch config, not a StoreConfig) - dedupes string values in the response so each distinct value is stored once, sharing values across successive fetches of the same key. Use the reload benchmark scenarios to see the cross-fetch effect.',
+            item: switchInput({
+                bind: 'internStrings',
+                label: 'Intern Strings',
+                labelSide: 'left'
+            })
+        }),
+        filler(),
+        tooltip({
+            content:
+                'Run repeatable heap + load-time measurements against the flags as currently configured.',
+            item: button({
+                text: 'Benchmark',
+                icon: Icon.stopwatch(),
+                intent: 'success',
+                outlined: true,
+                onClick: () => model.benchmarkModel.open()
+            })
+        })
     )
 );
 
