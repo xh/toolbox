@@ -62,10 +62,26 @@ const POPULATED_FIELDS_SAMPLE_SIZE = 100;
  * server's, which rejects anything it does not recognize.
  */
 export const VALUE_MIX_OPTIONS = [
-    {value: 'mixed', label: 'Mixed'},
-    {value: 'categorical', label: 'Categorical'},
-    {value: 'unique', label: 'Unique strings'},
-    {value: 'numeric', label: 'Numeric'}
+    {
+        value: 'mixed',
+        label: 'Mixed',
+        desc: 'Strings, numbers, bools and nulls, in real-world wide-grid proportions.'
+    },
+    {
+        value: 'categorical',
+        label: 'Categorical',
+        desc: 'Low-cardinality repeated strings, as in status/region/desk columns.'
+    },
+    {
+        value: 'unique',
+        label: 'Unique strings',
+        desc: 'A distinct string in every cell - nothing to share or intern.'
+    },
+    {
+        value: 'numeric',
+        label: 'Numeric',
+        desc: 'Ints, doubles and bools only - minimal string payload.'
+    }
 ] as const;
 
 export type GridTestValueMix = (typeof VALUE_MIX_OPTIONS)[number]['value'];
@@ -171,6 +187,12 @@ export class GridTestModel extends HoistModel {
     @bindable
     internStrings = false;
 
+    // True once any load has run this page - drives the pre-first-load placeholder in the panel.
+    // Deliberately one-way: keyed off "never loaded" rather than "store empty" so the grid is
+    // never unmounted/remounted by benchmark iterations or Clear Grid, which would contaminate
+    // measurements with grid re-init cost.
+    @observable hasLoadedOnce = false;
+
     // Snapshot of RECORD_DATA_FLAGS as of page load - i.e. the values this page's Stores were
     // built with. Compared against on change to decide whether a reload is required.
     private recordDataFlagsAtLoad: boolean[];
@@ -186,26 +208,6 @@ export class GridTestModel extends HoistModel {
     @persist
     @bindable
     disableSelect = false;
-
-    @persist
-    @bindable
-    colChooserCommitOnChange = true;
-
-    @persist
-    @bindable
-    colChooserShowRestoreDefaults = true;
-
-    @persist
-    @bindable
-    colChooserWidth = null;
-
-    @persist
-    @bindable
-    colChooserHeight = null;
-
-    @persist
-    @bindable
-    lockColumnGroups = true;
 
     @bindable
     @persist
@@ -265,11 +267,6 @@ export class GridTestModel extends HoistModel {
                 this.includeCollapsedChildren,
                 this.includeHiddenColumns,
                 this.persistType,
-                this.colChooserCommitOnChange,
-                this.colChooserShowRestoreDefaults,
-                this.colChooserWidth,
-                this.colChooserHeight,
-                this.lockColumnGroups,
                 this.enableXssProtection,
                 this.extraFieldCount,
                 this.populateExtraFields,
@@ -434,6 +431,10 @@ export class GridTestModel extends HoistModel {
      * the streaming path, and are not separable there.
      */
     async loadTestDataAsync(): Promise<number> {
+        // Set before loading so the grid mounts in place of the placeholder immediately - it
+        // then fills as data arrives, exactly as it did when mounted from page load.
+        runInAction(() => (this.hasLoadedOnce = true));
+
         const {gridModel, useStreaming} = this,
             start = performance.now();
 
@@ -639,17 +640,11 @@ export class GridTestModel extends HoistModel {
             sortBy: 'id',
             emptyText: 'No records found...',
             enableExport: true,
-            lockColumnGroups: this.lockColumnGroups,
             store: storeConf,
             treeMode: this.tree,
             levelLabels: times(5, n => `Level ${n}`),
             showSummary: this.showSummary,
-            colChooserModel: {
-                commitOnChange: this.colChooserCommitOnChange,
-                showRestoreDefaults: this.colChooserShowRestoreDefaults,
-                width: this.colChooserWidth ?? undefined,
-                height: this.colChooserHeight ?? undefined
-            },
+            colChooserModel: true,
             autosizeOptions: {
                 mode: this.autosizeMode,
                 renderedRowsOnly: this.renderedRowsOnly,
