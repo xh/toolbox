@@ -3102,9 +3102,9 @@
     webpackbar "~7.0.0"
 
 "@xh/hoist@^87.0.0-SNAPSHOT":
-  version "87.0.0-dataPerformance-SNAPSHOT.1785253469271"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-87.0.0-dataPerformance-SNAPSHOT.1785253469271.tgz#468350d99498151c43d6aea01dc70eadcef98dcd"
-  integrity sha512-9A5UdZ5fHYY95WrD+b+1IMLhwCaT92YFg67i3xNwbt0UzFnnxl8yh4Y/5NkqIsepfjcwsRpULkF6LZf5443PaA==
+  version "87.0.0-SNAPSHOT.1785442247927"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-87.0.0-SNAPSHOT.1785442247927.tgz#3b93283236fdc6acaf7abcc307aada6761355dc8"
+  integrity sha512-lAQM4Qjlizi0+VZfdTqEGep32oG9PUM/ajyaI+qBzC+KY1E4l4e+Bvz+BCgfAlaob52BlSWfoT0FE8x9V9Fd9A==
   dependencies:
     "@auth0/auth0-spa-js" "~2.24.0"
     "@azure/msal-browser" "~5.17.0"
