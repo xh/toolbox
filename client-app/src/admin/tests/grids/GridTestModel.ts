@@ -453,7 +453,7 @@ export class GridTestModel extends HoistModel {
                     url: 'gridTest/streamingData',
                     params: this.streamingParams,
                     internStrings: this.internSpecFor('stream')
-                })
+                }).lines
             );
         } else {
             const {rows, summary} = await this.fetchJsonRowsAsync();
