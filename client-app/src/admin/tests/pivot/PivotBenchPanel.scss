@@ -1,0 +1,33 @@
+.tb-pivot-bench {
+  &__status {
+    font-family: var(--xh-font-family-mono);
+    font-size: var(--xh-font-size-small-px);
+  }
+
+  &__warn {
+    color: var(--xh-intent-warning);
+    font-size: var(--xh-font-size-small-px);
+  }
+
+  &__empty {
+    padding: var(--xh-pad-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__notes {
+    p,
+    ul {
+      margin: 0 0 var(--xh-pad-px);
+    }
+
+    li {
+      margin-bottom: var(--xh-pad-half-px);
+    }
+
+    .xh-panel-body {
+      padding: var(--xh-pad-px);
+      overflow-y: auto;
+      font-size: var(--xh-font-size-small-px);
+    }
+  }
+}
