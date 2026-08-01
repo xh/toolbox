@@ -75,7 +75,7 @@ class GridTestController extends BaseController {
     ) {
         def gen = createGenerator(recordCount, idSeed, numericId, extraFieldCount,
                 populateExtraFields, valueMix, categoryCount)
-        renderNdJSON(gen.flatRows())
+        renderNDJSON(gen.flatRows())
     }
 
     //------------------------
