@@ -136,29 +136,6 @@ export class GridTestBenchmarkModel extends HoistModel {
         return Object.entries(SCENARIO_LABELS).map(([value, label]) => ({value, label}));
     }
 
-    /** One-line summary of the config the next run will measure. */
-    get configSummary(): string {
-        const {parent} = this,
-            flags = [
-                ['useRawAsData', parent.useRawAsData],
-                ['freezeData', parent.freezeData],
-                ['retainRaw', parent.retainRaw],
-                ['reuseRecords', parent.reuseRecords],
-                ['internStrings', parent.internStrings]
-            ] as Array<[string, boolean]>;
-
-        return [
-            `${parent.recordCount.toLocaleString()} records`,
-            `${parent.declaredFieldCount} fields declared`,
-            parent.populateExtraFields
-                ? `extra fields populated (${parent.valueMix}` +
-                  `${parent.categoryCountApplies ? `, ${parent.categoryCount} categories` : ''})`
-                : 'extra fields sparse',
-            parent.useStreaming ? 'streaming load' : 'JSON load',
-            ...flags.map(([name, on]) => `${name}: ${on ? 'on' : 'off'}`)
-        ].join('  •  ');
-    }
-
     constructor(parent: GridTestModel) {
         super();
         makeObservable(this);
@@ -197,57 +174,6 @@ export class GridTestBenchmarkModel extends HoistModel {
     @action
     clearResults() {
         this.results = [];
-    }
-
-    /** All results as a markdown table, for pasting into notes/tickets. */
-    get resultsAsMarkdown(): string {
-        const cols = [
-                ['Run At', (r: PlainObject) => fmtDateTime(r.timestamp, {asHtml: true})],
-                ['Scenario', r => SCENARIO_LABELS[r.scenario] ?? r.scenario],
-                ['GC', r => (r.gcMode === 'gc' ? 'window.gc' : 'pressure')],
-                ['N', r => r.iterations],
-                [
-                    'Suspect',
-                    r => (r.suspectCount ? `${r.suspectCount} (${fmtMb(r.residueMax)}MB)` : 'ok')
-                ],
-                ['Records', r => fmtInt(r.records)],
-                ['Fields (decl)', r => r.declaredFields],
-                ['Fields (pop)', r => r.populatedFields],
-                ['useRawAsData', r => yn(r.useRawAsData)],
-                ['freezeData', r => yn(r.freezeData)],
-                ['retainRaw', r => yn(r.retainRaw)],
-                ['reuseRecords', r => yn(r.reuseRecords)],
-                ['internStrings', r => yn(r.internStrings)],
-                ['stream', r => yn(r.stream)],
-                ['tree', r => yn(r.tree)],
-                ['summary', r => yn(r.summary)],
-                ['populateExtraFields', r => yn(r.populateExtraFields)],
-                // '?' where the row pre-dates these settings - see valueCharTooltip().
-                ['Mix', r => r.valueMix ?? (r.populateExtraFields ? '?' : '')],
-                [
-                    'Categories',
-                    r =>
-                        r.categoryCount != null
-                            ? fmtInt(r.categoryCount)
-                            : r.populateExtraFields && r.valueMix == null
-                              ? '?'
-                              : ''
-                ],
-                ['xss', r => yn(r.xss)],
-                ['Heap Δ #1 (MB)', r => fmtMb(r.heapFirst)],
-                ['Heap Δ med (MB)', r => fmtMb(r.heapMed)],
-                ['min', r => fmtMb(r.heapMin)],
-                ['max', r => fmtMb(r.heapMax)],
-                ['Bytes/rec', r => fmtInt(r.bytesPerRecord)],
-                ['Load med (ms)', r => fmtInt(r.loadMed)],
-                ['min', r => fmtInt(r.loadMin)],
-                ['max', r => fmtInt(r.loadMax)]
-            ] as Array<[string, (r: PlainObject) => any]>,
-            header = `| ${cols.map(it => it[0]).join(' | ')} |`,
-            divider = `| ${cols.map(() => '---').join(' | ')} |`,
-            rows = this.results.map(r => `| ${cols.map(it => it[1](r) ?? '').join(' | ')} |`);
-
-        return [header, divider, ...rows].join('\n');
     }
 
     //------------------------
@@ -503,6 +429,11 @@ export class GridTestBenchmarkModel extends HoistModel {
             {
                 id: `${now}-${this.results.length}`,
                 timestamp: now,
+                // Named config active when the run was recorded - the most descriptive label for
+                // a row. Dirty marks unsaved deviations from that config at run time, so the name
+                // alone never overstates what it describes.
+                configName: parent.viewManagerModel.view.name,
+                configDirty: parent.viewManagerModel.isValueDirty,
                 scenario: this.scenario,
                 gcMode: this.gcMode,
                 iterations: samples.length,
@@ -573,6 +504,8 @@ export class GridTestBenchmarkModel extends HoistModel {
                 idSpec: 'id',
                 fields: [
                     {name: 'timestamp', type: FT.NUMBER},
+                    {name: 'configName', type: FT.STRING},
+                    {name: 'configDirty', type: FT.BOOL},
                     {name: 'scenario', type: FT.STRING},
                     {name: 'gcMode', type: FT.STRING},
                     {name: 'iterations', type: FT.INT},
@@ -609,105 +542,147 @@ export class GridTestBenchmarkModel extends HoistModel {
             enableExport: true,
             columns: [
                 {
-                    field: 'timestamp',
-                    headerName: 'Run At',
-                    width: 90,
-                    renderer: v => fmtDateTime(v, {fmt: 'HH:mm:ss', asHtml: true})
+                    groupId: 'run',
+                    headerName: 'Run',
+                    children: [
+                        {
+                            field: 'timestamp',
+                            headerName: 'At',
+                            width: 90,
+                            renderer: v => fmtDateTime(v, {fmt: 'HH:mm:ss', asHtml: true})
+                        },
+                        {
+                            field: 'configName',
+                            headerName: 'Config',
+                            width: 170,
+                            tooltip: (v, {record}) => {
+                                if (v == null)
+                                    return 'Recorded before the active config was captured.';
+                                return record.data.configDirty
+                                    ? `Run with unsaved changes on top of "${v}" - the * marks deviation from the saved config.`
+                                    : `Run with saved config "${v}" as loaded.`;
+                            },
+                            renderer: (v, {record}) =>
+                                v == null ? '·' : record.data.configDirty ? `${v} *` : v
+                        },
+                        {
+                            field: 'scenario',
+                            width: 150,
+                            renderer: v => SCENARIO_LABELS[v] ?? v
+                        },
+                        {
+                            field: 'gcMode',
+                            headerName: 'GC',
+                            width: 90,
+                            tooltip: v =>
+                                v === 'gc'
+                                    ? 'Settled with real GC via window.gc'
+                                    : 'Settled with allocation pressure only - treat heap numbers with caution',
+                            renderer: v => (v === 'gc' ? 'window.gc' : 'pressure')
+                        },
+                        {field: 'iterations', headerName: 'N', width: 50},
+                        {
+                            field: 'suspectCount',
+                            headerName: 'Suspect',
+                            width: 90,
+                            align: 'center',
+                            tooltip: (v, {record}) => {
+                                if (v == null)
+                                    return 'Recorded before baselines were verified - unknown.';
+                                return v
+                                    ? `${v} iteration(s) started from a baseline still holding up to ${fmtMb(record.data.residueMax)}MB of the previous iteration - their heap deltas are understated by that much.`
+                                    : 'All iterations started from a verified-pristine baseline.';
+                            },
+                            renderer: (v, {record}) => {
+                                if (v == null) return '?';
+                                return v ? `⚠ ${v} (${fmtMb(record.data.residueMax)}MB)` : 'ok';
+                            }
+                        }
+                    ]
                 },
                 {
-                    field: 'scenario',
-                    width: 150,
-                    renderer: v => SCENARIO_LABELS[v] ?? v
+                    groupId: 'heap',
+                    headerName: 'Heap (MB)',
+                    children: [
+                        {
+                            field: 'heapFirst',
+                            headerName: 'Δ #1',
+                            ...mbCol,
+                            width: 100,
+                            tooltip: () =>
+                                'First iteration only - the one always measured from the pristine baseline. Trust this when the Suspect column is not "ok".'
+                        },
+                        {field: 'heapMed', headerName: 'Δ Med', ...mbCol, width: 100},
+                        {field: 'heapMin', headerName: 'Min', ...mbCol, width: 90},
+                        {field: 'heapMax', headerName: 'Max', ...mbCol, width: 90},
+                        {
+                            field: 'bytesPerRecord',
+                            headerName: 'Bytes/Rec',
+                            width: 100,
+                            renderer: numberRenderer({precision: 0})
+                        }
+                    ]
                 },
                 {
-                    field: 'gcMode',
-                    headerName: 'GC',
-                    width: 90,
-                    tooltip: v =>
-                        v === 'gc'
-                            ? 'Settled with real GC via window.gc'
-                            : 'Settled with allocation pressure only - treat heap numbers with caution',
-                    renderer: v => (v === 'gc' ? 'window.gc' : 'pressure')
-                },
-                {field: 'iterations', headerName: 'N', width: 50},
-                {
-                    field: 'suspectCount',
-                    headerName: 'Suspect',
-                    width: 90,
-                    align: 'center',
-                    tooltip: (v, {record}) => {
-                        if (v == null) return 'Recorded before baselines were verified - unknown.';
-                        return v
-                            ? `${v} iteration(s) started from a baseline still holding up to ${fmtMb(record.data.residueMax)}MB of the previous iteration - their heap deltas are understated by that much.`
-                            : 'All iterations started from a verified-pristine baseline.';
-                    },
-                    renderer: (v, {record}) => {
-                        if (v == null) return '?';
-                        return v ? `⚠ ${v} (${fmtMb(record.data.residueMax)}MB)` : 'ok';
-                    }
+                    groupId: 'load',
+                    headerName: 'Load (ms)',
+                    children: [
+                        {field: 'loadMed', headerName: 'Med', ...msCol, width: 90},
+                        {field: 'loadMin', headerName: 'Min', ...msCol, width: 90},
+                        {field: 'loadMax', headerName: 'Max', ...msCol, width: 90}
+                    ]
                 },
                 {
-                    field: 'heapFirst',
-                    headerName: 'Heap Δ #1',
-                    ...mbCol,
-                    width: 110,
-                    tooltip: () =>
-                        'First iteration only - the one always measured from the pristine baseline. Trust this when the Suspect column is not "ok".'
+                    groupId: 'dataset',
+                    headerName: 'Dataset',
+                    children: [
+                        {
+                            field: 'records',
+                            width: 100,
+                            renderer: numberRenderer({precision: 0})
+                        },
+                        {field: 'declaredFields', headerName: 'Fields Decl', width: 100},
+                        {field: 'populatedFields', headerName: 'Fields Pop', width: 100},
+                        {field: 'populateExtraFields', headerName: 'PopFields', ...boolCol},
+                        {
+                            field: 'valueMix',
+                            headerName: 'Mix',
+                            width: 110,
+                            tooltip: (v, {record}) => valueCharTooltip(v, record.data),
+                            renderer: (v, {record}) =>
+                                v ?? (record.data.populateExtraFields ? '?' : '·')
+                        },
+                        {
+                            field: 'categoryCount',
+                            headerName: 'Cats',
+                            width: 90,
+                            align: 'right',
+                            tooltip: (v, {record}) => valueCharTooltip(v, record.data),
+                            renderer: (v, {record}) =>
+                                v != null
+                                    ? fmtInt(v)
+                                    : record.data.populateExtraFields &&
+                                        record.data.valueMix == null
+                                      ? '?'
+                                      : '·'
+                        },
+                        {field: 'tree', headerName: 'Tree', ...boolCol},
+                        {field: 'summary', headerName: 'Summary', ...boolCol}
+                    ]
                 },
                 {
-                    field: 'heapMed',
-                    headerName: 'Heap Δ (MB)',
-                    ...mbCol,
-                    width: 120
-                },
-                {field: 'heapMin', headerName: 'Heap Min', ...mbCol},
-                {field: 'heapMax', headerName: 'Heap Max', ...mbCol},
-                {
-                    field: 'bytesPerRecord',
-                    headerName: 'Bytes/Rec',
-                    width: 110,
-                    renderer: numberRenderer({precision: 0})
-                },
-                {field: 'loadMed', headerName: 'Load', ...msCol},
-                {field: 'loadMin', headerName: 'Load Min', ...msCol},
-                {field: 'loadMax', headerName: 'Load Max', ...msCol},
-                {
-                    field: 'records',
-                    width: 100,
-                    renderer: numberRenderer({precision: 0})
-                },
-                {field: 'declaredFields', headerName: 'Fields Decl', width: 100},
-                {field: 'populatedFields', headerName: 'Fields Pop', width: 100},
-                {field: 'useRawAsData', headerName: 'RawAsData', ...boolCol},
-                {field: 'freezeData', headerName: 'Freeze', ...boolCol},
-                {field: 'retainRaw', headerName: 'RetainRaw', ...boolCol},
-                {field: 'reuseRecords', headerName: 'Reuse', ...boolCol},
-                {field: 'internStrings', headerName: 'Intern', ...boolCol},
-                {field: 'stream', headerName: 'Stream', ...boolCol},
-                {field: 'tree', headerName: 'Tree', ...boolCol},
-                {field: 'summary', headerName: 'Summary', ...boolCol},
-                {field: 'populateExtraFields', headerName: 'PopFields', ...boolCol},
-                {
-                    field: 'valueMix',
-                    headerName: 'Mix',
-                    width: 110,
-                    tooltip: (v, {record}) => valueCharTooltip(v, record.data),
-                    renderer: (v, {record}) => v ?? (record.data.populateExtraFields ? '?' : '·')
-                },
-                {
-                    field: 'categoryCount',
-                    headerName: 'Cats',
-                    width: 90,
-                    align: 'right',
-                    tooltip: (v, {record}) => valueCharTooltip(v, record.data),
-                    renderer: (v, {record}) =>
-                        v != null
-                            ? fmtInt(v)
-                            : record.data.populateExtraFields && record.data.valueMix == null
-                              ? '?'
-                              : '·'
-                },
-                {field: 'xss', headerName: 'XSS', ...boolCol}
+                    groupId: 'flags',
+                    headerName: 'Store + Fetch Flags',
+                    children: [
+                        {field: 'useRawAsData', headerName: 'RawAsData', ...boolCol},
+                        {field: 'freezeData', headerName: 'Freeze', ...boolCol},
+                        {field: 'retainRaw', headerName: 'RetainRaw', ...boolCol},
+                        {field: 'reuseRecords', headerName: 'Reuse', ...boolCol},
+                        {field: 'internStrings', headerName: 'Intern', ...boolCol},
+                        {field: 'stream', headerName: 'Stream', ...boolCol},
+                        {field: 'xss', headerName: 'XSS', ...boolCol}
+                    ]
+                }
             ]
         });
     }
@@ -721,10 +696,6 @@ function median(vals: number[]): number {
     const sorted = [...vals].sort((a, b) => a - b),
         mid = Math.floor(sorted.length / 2);
     return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
-}
-
-function yn(v: boolean): string {
-    return v ? 'Y' : 'N';
 }
 
 function fmtInt(v: number): string {

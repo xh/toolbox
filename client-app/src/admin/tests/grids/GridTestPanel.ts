@@ -5,7 +5,7 @@ import {creates, hoistCmp, SelectOption} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -92,6 +92,7 @@ export const GridTestPanel = hoistCmp({
                                   icon: Icon.download(),
                                   intent: 'primary',
                                   minimal: false,
+                                  marginTop: 20,
                                   onClick: () => model.loadServerData()
                               })
                           ),
@@ -103,17 +104,16 @@ export const GridTestPanel = hoistCmp({
                             outlined: true,
                             onClick: () => model.loadServerData()
                         }),
+                        '-',
                         button({
                             text: 'Update Records',
                             icon: Icon.diff(),
                             onClick: () => model.twiddleData()
                         }),
-                        toolbarSep(),
+                        '-',
                         button({
                             text: 'Benchmark',
                             icon: Icon.stopwatch(),
-                            intent: 'success',
-                            outlined: true,
                             onClick: () => model.benchmarkModel.open()
                         })
                     ),
