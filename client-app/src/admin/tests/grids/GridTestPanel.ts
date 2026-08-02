@@ -137,7 +137,7 @@ export const GridTestPanel = hoistCmp({
  * disabled control retain their customized value (inert, guarded at point of use in
  * GridTestModel / the server) and take effect again when their precondition is restored - they
  * are deliberately not cleared. The exception is combinations Store itself throws on
- * (`useRawAsData` / `reuseRecords` / `retainRaw`): those are actively cleared by model reactions
+ * (`projectionOnly` / `reuseRecords` / `retainRaw`): those are actively cleared by model reactions
  * and re-guarded in `createGridModel()`, covering values restored from saved configs that never
  * passed through these controls.
  *
@@ -266,12 +266,12 @@ const loadingOptions = (model: GridTestModel) =>
             wrapperOption({
                 label: 'XSS protection',
                 propName: 'FieldSpec.enableXssProtection',
-                info: 'Sanitize string values on parse. Inert under Use Raw As Data, where nothing is parsed.',
+                info: 'Sanitize string values on parse. Inert under Projection Only, where nothing is parsed.',
                 control: switchInput({
                     model,
-                    value: model.enableXssProtection && !model.useRawAsData,
+                    value: model.enableXssProtection && !model.projectionOnly,
                     onChange: v => runInAction(() => (model.enableXssProtection = v)),
-                    disabled: model.useRawAsData
+                    disabled: model.projectionOnly
                 })
             })
         ]
@@ -282,10 +282,20 @@ const recordDataOptions = (model: GridTestModel) =>
         label: 'Record Data',
         items: [
             wrapperOption({
-                label: 'Use raw as data',
-                propName: 'StoreConfig.useRawAsData',
-                info: 'Each raw object becomes its record data by reference - one object per row instead of two. Toggling reloads the app.',
-                control: switchInput({model, bind: 'useRawAsData'})
+                label: 'Projection only',
+                propName: 'StoreConfig.projectionOnly',
+                info: 'Read-only projection - each raw object becomes its record data by reference, one object per row instead of two. Toggling reloads the app.',
+                control: switchInput({model, bind: 'projectionOnly'})
+            }),
+            wrapperOption({
+                label: 'Sparse record data',
+                propName: 'experimental.sparseRecordData',
+                info: 'Temporary - restores the pre-v87 sparse record data representation for A/B comparison against the fixed-shape default. Inert under Projection Only, where no data objects are built. Toggling reloads the app.',
+                control: switchInput({
+                    model,
+                    bind: 'sparseRecordData',
+                    disabled: model.projectionOnly
+                })
             }),
             wrapperOption({
                 label: 'Freeze data',
@@ -296,15 +306,15 @@ const recordDataOptions = (model: GridTestModel) =>
             wrapperOption({
                 label: 'Retain raw',
                 propName: 'StoreConfig.retainRaw',
-                info: model.useRawAsData
-                    ? 'Inert under Use Raw As Data - record data is the raw object, so it stays reachable regardless.'
+                info: model.projectionOnly
+                    ? 'Inert under Projection Only - record data is the raw object, so it stays reachable regardless.'
                     : "Off drops each record's reference to its raw data object (Hoist default on), letting it be GC'd after parsing. Required by Reuse Records.",
-                // Displays locked-on under Use Raw As Data - genuinely true, not just a UI
+                // Displays locked-on under Projection Only - genuinely true, not just a UI
                 // convention: Store attaches `raw` unconditionally in that mode.
                 control: switchInput({
-                    value: model.useRawAsData || model.retainRaw,
+                    value: model.projectionOnly || model.retainRaw,
                     onChange: v => runInAction(() => (model.retainRaw = v)),
-                    disabled: model.useRawAsData
+                    disabled: model.projectionOnly
                 })
             }),
             wrapperOption({
@@ -314,7 +324,7 @@ const recordDataOptions = (model: GridTestModel) =>
                 control: switchInput({
                     model,
                     bind: 'reuseRecords',
-                    disabled: !model.retainRaw || model.useRawAsData
+                    disabled: !model.retainRaw || model.projectionOnly
                 })
             })
         ]

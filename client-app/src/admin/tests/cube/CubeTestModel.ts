@@ -25,8 +25,8 @@ export class CubeTestModel extends HoistModel {
     @bindable updateFreq = -1;
     @bindable updateCount = 5;
 
-    /** Zero-copy Store mode under test (hoist-react #4506). Rebuilds grid + view when toggled. */
-    @bindable useRawAsData = false;
+    /** Read-only projection Store mode under test (hoist-react #4521). Rebuilds grid + view when toggled. */
+    @bindable projectionOnly = false;
 
     /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
     @bindable recordMultiplier = 1;
@@ -57,10 +57,10 @@ export class CubeTestModel extends HoistModel {
             equals: comparer.structural
         });
 
-        // Rebuild grid + connected view when toggling useRawAsData, reconstructing the underlying
+        // Rebuild grid + connected view when toggling projectionOnly, reconstructing the underlying
         // Store in the new mode for A/B comparison of memory and update performance.
         this.addReaction({
-            track: () => this.useRawAsData,
+            track: () => this.projectionOnly,
             run: () => this.buildGridAndView()
         });
     }
@@ -109,7 +109,7 @@ export class CubeTestModel extends HoistModel {
         }
 
         this.heapMB = mem ? Math.round(mem.usedJSHeapSize / 1048576) : null;
-        const mode = this.useRawAsData ? 'rawAsData' : 'legacy';
+        const mode = this.projectionOnly ? 'projection' : 'default';
         console.log(
             `[CubeTest] heap: ${this.heapMB ?? 'n/a'} MB | mode=${mode} | x${this.recordMultiplier}` +
                 (hasGC
@@ -176,7 +176,7 @@ export class CubeTestModel extends HoistModel {
             showSummary: this.showSummary,
             store: {
                 loadRootAsSummary: this.showSummary,
-                useRawAsData: this.useRawAsData,
+                projectionOnly: this.projectionOnly,
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
             sortBy: 'time|desc',
@@ -191,8 +191,9 @@ export class CubeTestModel extends HoistModel {
                     groupings = dimManagerModel.value;
                 return groupings.map((it: string) => groupingChooserModel.getDimDisplayName(it));
             },
-            // Editing routes through Cube.modifyRecordsAsync (source of record), and is exercised in
-            // both modes - useRawAsData no longer implies a read-only Store.
+            // Editing routes through Cube.modifyRecordsAsync (source of record), not
+            // Store.modifyRecords - so it works in both modes, including projectionOnly, where
+            // direct local Store modification would throw.
             colDefaults: {
                 editable: ({record}) => !record.data.cubeDimension, // Only editable if leaf node
                 setValueFn: ({value, record, field}) => {

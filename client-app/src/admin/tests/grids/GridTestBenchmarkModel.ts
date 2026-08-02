@@ -75,7 +75,7 @@ export const SCENARIO_LABELS: Record<BenchmarkScenario, string> = {
  * domain are not trustworthy and are deliberately never presented on their own.
  *
  * Results accumulate (and persist to local storage) so several configs can be compared side by
- * side. Persistence matters here because toggling `useRawAsData` or `freezeData` reloads the
+ * side. Persistence matters here because toggling `projectionOnly` or `freezeData` reloads the
  * app - without it, each side of that A/B would land in a different session's results.
  *
  * Each row captures the full config that produced it, and reports only what was measured - no
@@ -440,7 +440,8 @@ export class GridTestBenchmarkModel extends HoistModel {
                 records,
                 declaredFields: parent.declaredFieldCount,
                 populatedFields: parent.populatedFieldCount,
-                useRawAsData: parent.useRawAsData,
+                projectionOnly: parent.projectionOnly,
+                sparseRecordData: parent.sparseRecordData,
                 freezeData: parent.freezeData,
                 retainRaw: parent.retainRaw,
                 reuseRecords: parent.reuseRecords,
@@ -512,7 +513,8 @@ export class GridTestBenchmarkModel extends HoistModel {
                     {name: 'records', type: FT.INT},
                     {name: 'declaredFields', type: FT.INT},
                     {name: 'populatedFields', type: FT.INT},
-                    {name: 'useRawAsData', type: FT.BOOL},
+                    {name: 'projectionOnly', type: FT.BOOL},
+                    {name: 'sparseRecordData', type: FT.BOOL},
                     {name: 'freezeData', type: FT.BOOL},
                     {name: 'retainRaw', type: FT.BOOL},
                     {name: 'reuseRecords', type: FT.BOOL},
@@ -674,7 +676,8 @@ export class GridTestBenchmarkModel extends HoistModel {
                     groupId: 'flags',
                     headerName: 'Store + Fetch Flags',
                     children: [
-                        {field: 'useRawAsData', headerName: 'RawAsData', ...boolCol},
+                        {field: 'projectionOnly', headerName: 'Projection', ...boolCol},
+                        {field: 'sparseRecordData', headerName: 'Sparse', ...boolCol},
                         {field: 'freezeData', headerName: 'Freeze', ...boolCol},
                         {field: 'retainRaw', headerName: 'RetainRaw', ...boolCol},
                         {field: 'reuseRecords', headerName: 'Reuse', ...boolCol},

@@ -27,7 +27,7 @@ export const CubeTestPanel = hoistCmp({
                     title: 'Grids › Cube Data',
                     icon: Icon.grid(),
                     flex: 1,
-                    // Pass gridModel explicitly - it is reassigned when useRawAsData toggles, and
+                    // Pass gridModel explicitly - it is reassigned when projectionOnly toggles, and
                     // reading the observable ref here rebinds the grid to the rebuilt model.
                     item: grid({model: model.gridModel}),
                     mask: 'onLoad',
@@ -44,8 +44,8 @@ const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
     toolbar(
         tooltip({
             content:
-                'Zero-copy Store mode (hoist-react #4506) - uses Cube row objects as record data by reference. Toggling rebuilds the grid + connected View.',
-            item: switchInput({bind: 'useRawAsData', label: 'Raw as Data', labelSide: 'left'})
+                'Read-only projection Store mode (hoist-react #4521) - uses Cube row objects as record data by reference. Toggling rebuilds the grid + connected View.',
+            item: switchInput({bind: 'projectionOnly', label: 'Projection Only', labelSide: 'left'})
         }),
         toolbarSep(),
         switchInput({bind: 'showSummary', label: 'Summary?', labelSide: 'left'}),
