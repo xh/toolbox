@@ -288,12 +288,14 @@ const recordDataOptions = (model: GridTestModel) =>
                 control: switchInput({model, bind: 'projectionOnly'})
             }),
             wrapperOption({
-                label: 'Sparse record data',
-                propName: 'experimental.sparseRecordData',
-                info: 'Temporary - restores the pre-v87 sparse record data representation for A/B comparison against the fixed-shape default. Inert under Projection Only, where no data objects are built. Toggling reloads the app.',
-                control: switchInput({
+                label: 'Sparse max fields',
+                propName: 'experimental.sparseMaxFields',
+                info: 'Populated (non-default) field count at/below which a record data object takes the sparse representation, vs. a fixed-shape clone of the shared template. Blank = Hoist default. 0 = fixed shape for all records; large = sparse for all (pre-v87). Inert under Projection Only. Changing reloads the app.',
+                control: numberInput({
                     model,
-                    bind: 'sparseRecordData',
+                    bind: 'sparseMaxFields',
+                    width: 60,
+                    placeholder: 'default',
                     disabled: model.projectionOnly
                 })
             }),

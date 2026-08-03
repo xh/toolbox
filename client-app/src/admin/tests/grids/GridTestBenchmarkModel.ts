@@ -441,7 +441,7 @@ export class GridTestBenchmarkModel extends HoistModel {
                 declaredFields: parent.declaredFieldCount,
                 populatedFields: parent.populatedFieldCount,
                 projectionOnly: parent.projectionOnly,
-                sparseRecordData: parent.sparseRecordData,
+                sparseMaxFields: parent.sparseMaxFields,
                 freezeData: parent.freezeData,
                 retainRaw: parent.retainRaw,
                 reuseRecords: parent.reuseRecords,
@@ -514,7 +514,7 @@ export class GridTestBenchmarkModel extends HoistModel {
                     {name: 'declaredFields', type: FT.INT},
                     {name: 'populatedFields', type: FT.INT},
                     {name: 'projectionOnly', type: FT.BOOL},
-                    {name: 'sparseRecordData', type: FT.BOOL},
+                    {name: 'sparseMaxFields', type: FT.INT},
                     {name: 'freezeData', type: FT.BOOL},
                     {name: 'retainRaw', type: FT.BOOL},
                     {name: 'reuseRecords', type: FT.BOOL},
@@ -677,7 +677,12 @@ export class GridTestBenchmarkModel extends HoistModel {
                     headerName: 'Store + Fetch Flags',
                     children: [
                         {field: 'projectionOnly', headerName: 'Projection', ...boolCol},
-                        {field: 'sparseRecordData', headerName: 'Sparse', ...boolCol},
+                        {
+                            field: 'sparseMaxFields',
+                            headerName: 'SparseMax',
+                            align: 'right',
+                            width: 95
+                        },
                         {field: 'freezeData', headerName: 'Freeze', ...boolCol},
                         {field: 'retainRaw', headerName: 'RetainRaw', ...boolCol},
                         {field: 'reuseRecords', headerName: 'Reuse', ...boolCol},

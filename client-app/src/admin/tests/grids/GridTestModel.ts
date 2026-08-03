@@ -50,7 +50,7 @@ const INTERN_KEY = 'gridTest';
  */
 const RECORD_DATA_FLAGS: Array<{prop: string; label: string}> = [
     {prop: 'projectionOnly', label: 'Projection Only'},
-    {prop: 'sparseRecordData', label: 'Sparse Record Data'},
+    {prop: 'sparseMaxFields', label: 'Sparse Max Fields'},
     {prop: 'freezeData', label: 'Freeze Data'}
 ];
 
@@ -164,13 +164,15 @@ export class GridTestModel extends HoistModel {
     @persist
     @bindable
     projectionOnly = false;
-    // The Store's temporary `experimental.sparseRecordData` flag - restores the pre-v87 sparse
-    // record data representation (own properties for non-default values only, defaults via a
-    // shared prototype) for A/B comparison against the fixed-shape default. Inert under
-    // Projection Only, which skips record data construction entirely. Toggling reloads the app.
+    // Override of Store's experimental `sparseMaxFields` - the populated (non-default) field
+    // count at/below which a record's data takes the sparse representation, vs. a fixed-shape
+    // clone of the shared per-Store template. Null applies the Hoist default; 0 forces the fixed
+    // shape for all records; a large value forces sparse for all (the pre-v87 behavior). Inert
+    // under Projection Only, which skips record data construction entirely. Changing reloads
+    // the app.
     @persist
     @bindable
-    sparseRecordData = false;
+    sparseMaxFields: number = null;
     // The Store's `freezeData` config - defaulted to Hoist's own default so measurements reflect
     // what apps actually run. Changes how record data objects are built and stored, so toggling
     // it reloads the app - see the reaction below.
@@ -204,7 +206,7 @@ export class GridTestModel extends HoistModel {
 
     // Snapshot of RECORD_DATA_FLAGS as of page load - i.e. the values this page's Stores were
     // built with. Compared against on change to decide whether a reload is required.
-    private recordDataFlagsAtLoad: boolean[];
+    private recordDataFlagsAtLoad: Array<boolean | number>;
     // Set while a reload confirmation is already in flight, to avoid stacking dialogs.
     private confirmingReload = false;
 
@@ -347,7 +349,7 @@ export class GridTestModel extends HoistModel {
     }
 
     /** Current values of the flags that require a fresh page when changed. */
-    private get recordDataFlagState(): boolean[] {
+    private get recordDataFlagState(): Array<boolean | number> {
         return RECORD_DATA_FLAGS.map(it => this[it.prop]);
     }
 
@@ -385,7 +387,10 @@ export class GridTestModel extends HoistModel {
         if (isEmpty(changed)) return;
 
         const summary = changed
-            .map(it => `${it.label} ${this[it.prop] ? 'on' : 'off'}`)
+            .map(it => {
+                const v = this[it.prop];
+                return `${it.label} ${typeof v === 'boolean' ? (v ? 'on' : 'off') : (v ?? 'default')}`;
+            })
             .join(' and ');
 
         this.confirmingReload = true;
@@ -616,7 +621,7 @@ export class GridTestModel extends HoistModel {
                 projectionOnly: this.projectionOnly,
                 retainRaw,
                 reuseRecords: this.reuseRecords && retainRaw && !this.projectionOnly,
-                experimental: {sparseRecordData: this.sparseRecordData}
+                experimental: {sparseMaxFields: this.sparseMaxFields}
             };
 
         if (enableXssProtection) {
