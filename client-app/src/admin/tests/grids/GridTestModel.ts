@@ -50,7 +50,7 @@ const INTERN_KEY = 'gridTest';
  */
 const RECORD_DATA_FLAGS: Array<{prop: string; label: string}> = [
     {prop: 'projectionOnly', label: 'Projection Only'},
-    {prop: 'sparseMaxFields', label: 'Sparse Max Fields'},
+    {prop: 'denseRecordThreshold', label: 'Dense Record Threshold'},
     {prop: 'freezeData', label: 'Freeze Data'}
 ];
 
@@ -164,15 +164,14 @@ export class GridTestModel extends HoistModel {
     @persist
     @bindable
     projectionOnly = false;
-    // Override of Store's experimental `sparseMaxFields` - the populated (non-default) field
-    // count at/below which a record's data takes the sparse representation, vs. a fixed-shape
-    // clone of the shared per-Store template. Null applies the Hoist default; 0 forces the fixed
-    // shape for all records; a large value forces sparse for all (the pre-v87 behavior). Inert
-    // under Projection Only, which skips record data construction entirely. Changing reloads
-    // the app.
+    // Override of Store's experimental `denseRecordThreshold` - the populated (non-default)
+    // field count at/above which a record's data takes its fixed dense shape, vs. the sparse
+    // form. Null applies the Hoist default; 1 forces the dense shape for all records; 999 forces
+    // sparse for all (the pre-v87 behavior). Inert under Projection Only, which skips record
+    // data construction entirely. Changing reloads the app.
     @persist
     @bindable
-    sparseMaxFields: number = null;
+    denseRecordThreshold: number = null;
     // The Store's `freezeData` config - defaulted to Hoist's own default so measurements reflect
     // what apps actually run. Changes how record data objects are built and stored, so toggling
     // it reloads the app - see the reaction below.
@@ -621,7 +620,7 @@ export class GridTestModel extends HoistModel {
                 projectionOnly: this.projectionOnly,
                 retainRaw,
                 reuseRecords: this.reuseRecords && retainRaw && !this.projectionOnly,
-                experimental: {sparseMaxFields: this.sparseMaxFields}
+                experimental: {denseRecordThreshold: this.denseRecordThreshold}
             };
 
         if (enableXssProtection) {

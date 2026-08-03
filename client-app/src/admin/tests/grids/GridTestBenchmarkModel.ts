@@ -441,7 +441,7 @@ export class GridTestBenchmarkModel extends HoistModel {
                 declaredFields: parent.declaredFieldCount,
                 populatedFields: parent.populatedFieldCount,
                 projectionOnly: parent.projectionOnly,
-                sparseMaxFields: parent.sparseMaxFields,
+                denseRecordThreshold: parent.denseRecordThreshold,
                 freezeData: parent.freezeData,
                 retainRaw: parent.retainRaw,
                 reuseRecords: parent.reuseRecords,
@@ -514,7 +514,7 @@ export class GridTestBenchmarkModel extends HoistModel {
                     {name: 'declaredFields', type: FT.INT},
                     {name: 'populatedFields', type: FT.INT},
                     {name: 'projectionOnly', type: FT.BOOL},
-                    {name: 'sparseMaxFields', type: FT.INT},
+                    {name: 'denseRecordThreshold', type: FT.INT},
                     {name: 'freezeData', type: FT.BOOL},
                     {name: 'retainRaw', type: FT.BOOL},
                     {name: 'reuseRecords', type: FT.BOOL},
@@ -678,10 +678,10 @@ export class GridTestBenchmarkModel extends HoistModel {
                     children: [
                         {field: 'projectionOnly', headerName: 'Projection', ...boolCol},
                         {
-                            field: 'sparseMaxFields',
-                            headerName: 'SparseMax',
+                            field: 'denseRecordThreshold',
+                            headerName: 'DenseThresh',
                             align: 'right',
-                            width: 95
+                            width: 100
                         },
                         {field: 'freezeData', headerName: 'Freeze', ...boolCol},
                         {field: 'retainRaw', headerName: 'RetainRaw', ...boolCol},
