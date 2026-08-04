@@ -16,6 +16,7 @@ import {
     LocalDateTestPanel,
     PanelResizingTestPanel,
     PivotBenchPanel,
+    PivotViewTestPanel,
     SelectTestPanel,
     viewManagerTestPanel,
     WebSocketTestPanel
@@ -66,6 +67,7 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'localDate', path: '/localDate'},
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'pivotBench', path: '/pivotBench'},
+                    {name: 'pivotView', path: '/pivotView'},
                     {name: 'select', path: '/select'},
                     {name: 'storeColumnFilters', path: '/storeColumnFilters'},
                     {name: 'viewColumnFilters', path: '/viewColumnFilters'},
@@ -95,6 +97,7 @@ export class AppModel extends HoistAdminAppModel {
                         {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
                         {id: 'panelResizing', content: PanelResizingTestPanel},
                         {id: 'pivotBench', title: 'Pivot Bench', content: PivotBenchPanel},
+                        {id: 'pivotView', title: 'Pivot View', content: PivotViewTestPanel},
                         {id: 'select', content: SelectTestPanel},
                         {id: 'storeColumnFilters', content: storeColumnFilterPanel},
                         {id: 'viewColumnFilters', content: viewColumnFilterPanel},

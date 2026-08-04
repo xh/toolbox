@@ -8,6 +8,7 @@ export * from './gridScrolling/GridScrolling';
 export * from './localDate/LocalDateTestPanel';
 export * from './panels/PanelResizingTestPanel';
 export * from './pivot/PivotBenchPanel';
+export * from './pivot/PivotViewTestPanel';
 export * from './select/SelectTestPanel';
 export * from './viewmanager/ViewManagerTestPanel';
 export * from './websocket/WebSocketTestPanel';
