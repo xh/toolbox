@@ -2,6 +2,10 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Overhauled the admin Grid test panel into a fuller Store performance harness. Test data is now generated on the server and loaded via streaming NDJSON or conventional JSON, options cover the Store's memory-related configs (`useRawAsData`, `freezeData`, `retainRaw`, `reuseRecords`) along with string interning and server-generated field values, parameter sets can be saved as named `ViewManager` configs, and a repeatable benchmark dialog measures heap and load-time costs across runs. The panel itself was redesigned around the same documented options sidebar used by the desktop example apps.
+
 ### Libraries
 * @xh/hoist `86.x → 87.x`
 * React `18.2 → 19.2`
