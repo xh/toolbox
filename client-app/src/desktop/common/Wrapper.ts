@@ -215,14 +215,30 @@ export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOption
     }
 });
 
-/**
- * A subsection header for a Wrapper `options` section, used to group related option rows under a
- * labeled heading (e.g. separating a component's modal vs. docked-panel configs). Drop between
- * `wrapperOption` rows in the `options` array to start a new labeled group.
- */
-export function wrapperOptionGroup(label: ReactNode): ReactElement {
-    return div({className: 'tbox-wrapper__option-group', item: label});
+interface WrapperOptionGroupProps extends HoistProps {
+    /** Short sub-heading rendered above this group's option rows. */
+    label: ReactNode;
 }
+
+/**
+ * A labeled sub-group of rows within a Wrapper `options` section, for examples with enough
+ * options that a flat list would be hard to scan. Groups render a small sub-heading above their
+ * rows and pick up consistent spacing between one another. Pass the option rows (typically
+ * `wrapperOption` elements) via `item`/`items`, which render as the group's children.
+ */
+export const [WrapperOptionGroup, wrapperOptionGroup] =
+    hoistCmp.withFactory<WrapperOptionGroupProps>({
+        displayName: 'WrapperOptionGroup',
+        render({label, children}) {
+            return div({
+                className: 'tbox-wrapper__option-group',
+                items: [
+                    div({className: 'tbox-wrapper__option-group-label', item: label}),
+                    div({className: 'tbox-wrapper__option-group-body', item: children})
+                ]
+            });
+        }
+    });
 
 /**
  * A full-width, non-minimal action button for a Wrapper `options` section - i.e. a demo *trigger*

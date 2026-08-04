@@ -1,6 +1,7 @@
 import {AppModel as HoistAdminAppModel} from '@xh/hoist/admin/AppModel';
 import {TabConfig} from '@xh/hoist/cmp/tab';
-import {InitContext, XH} from '@xh/hoist/core';
+import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import {InitContext, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {
@@ -23,9 +24,27 @@ import {
 export class AppModel extends HoistAdminAppModel {
     static instance: AppModel;
 
+    /** Named parameter sets for the Grid test panel - see GridTestModel. */
+    @managed gridTestViewManager: ViewManagerModel;
+
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
         await XH.installServicesAsync([PortfolioService], ctx);
+
+        // Constructed here, in initAsync, so we can await the async factory and ensure that all
+        // saved configs are loaded and the desired one preselected before GridTestModel binds its
+        // settings to this model within its constructor.
+        this.gridTestViewManager = await ViewManagerModel.createAsync(
+            {
+                type: 'gridTestConfig',
+                typeDisplayName: 'config',
+                // Benchmark configs should only change when explicitly saved - a silent auto-save
+                // would quietly re-baseline a config mid-comparison.
+                enableAutoSave: false,
+                manageGlobal: XH.getUser().isHoistAdmin
+            },
+            ctx
+        );
     }
 
     //------------------------

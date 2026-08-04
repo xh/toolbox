@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports":  true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "jsx": "react",
     "lib": ["dom", "es2022"],
@@ -8,7 +8,7 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "noImplicitOverride": true,
-    "resolveJsonModule":  true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "target": "ES2022",
     "useDefineForClassFields": true,
@@ -24,15 +24,12 @@
     // Uncomment ONLY while actively developing hoist-react inline (`yarn startWithHoist`) and you
     // need Toolbox to see local type-signature changes. Re-comment before committing - do not
     // commit it enabled.
-    // "paths": {
-    //   "@xh/hoist/*": ["../../hoist-react/*"]
-    // }
-
+    "paths": {
+      "@xh/hoist/*": ["../../hoist-react/*"]
+    }
   },
   // Reference hoist-react as a composite build.
   // Allows for distinct tsconfig options in hoist-react vs. this application.
-  "references": [
-    {"path":  "./node_modules/@xh/hoist"}
-  ],
+  "references": [{"path": "./node_modules/@xh/hoist"}],
   "include": ["src"]
 }
