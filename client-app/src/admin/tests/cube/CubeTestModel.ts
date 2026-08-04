@@ -9,7 +9,7 @@ import {isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 import {LoadTimesModel} from './LoadTimesModel';
 import {CubeModel} from './CubeModel';
-import {QueryConfig, View} from '@xh/hoist/data';
+import {QueryConfig, StoreRecord, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
     @managed cubeModel: CubeModel;
@@ -27,6 +27,12 @@ export class CubeTestModel extends HoistModel {
 
     /** Read-only projection Store mode under test (hoist-react #4521). Rebuilds grid + view when toggled. */
     @bindable projectionOnly = false;
+
+    /** Version-based record reuse on the connected Store - `reuseRecords: 'cubeRowVersion'`. */
+    @bindable reuseRecords = false;
+
+    /** StoreRecord instance survival across the last Store data change. */
+    @observable.ref reuseStats: {reused: number; total: number} = null;
 
     /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
     @bindable recordMultiplier = 1;
@@ -57,12 +63,34 @@ export class CubeTestModel extends HoistModel {
             equals: comparer.structural
         });
 
-        // Rebuild grid + connected view when toggling projectionOnly, reconstructing the underlying
+        // Rebuild grid + connected view when toggling store modes, reconstructing the underlying
         // Store in the new mode for A/B comparison of memory and update performance.
         this.addReaction({
-            track: () => this.projectionOnly,
+            track: () => [this.projectionOnly, this.reuseRecords],
             run: () => this.buildGridAndView()
         });
+
+        // Direct readout of record reuse - count instances surviving each Store data change by
+        // identity against the prior recordset. Resets to 0% across mode-toggle rebuilds.
+        this.addReaction({
+            track: () => this.gridModel.store.records,
+            run: (recs, prevRecs) => this.updateReuseStats(recs, prevRecs)
+        });
+    }
+
+    @action
+    private updateReuseStats(recs: StoreRecord[], prevRecs: StoreRecord[]) {
+        if (isEmpty(prevRecs) || isEmpty(recs)) {
+            this.reuseStats = null;
+            return;
+        }
+        const prevById = new Map(prevRecs.map(r => [r.id, r])),
+            reused = recs.filter(r => prevById.get(r.id) === r).length,
+            total = recs.length;
+        this.reuseStats = {reused, total};
+        console.log(
+            `[CubeTest] records reused: ${reused}/${total} | projection=${this.projectionOnly} | reuse=${this.reuseRecords}`
+        );
     }
 
     // (Re)create the grid and its connected View. The View's connect-time fullUpdate repopulates
@@ -177,6 +205,7 @@ export class CubeTestModel extends HoistModel {
             store: {
                 loadRootAsSummary: this.showSummary,
                 projectionOnly: this.projectionOnly,
+                reuseRecords: this.reuseRecords ? 'cubeRowVersion' : false,
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
             sortBy: 'time|desc',

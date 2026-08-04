@@ -47,6 +47,11 @@ const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
                 'Read-only projection Store mode (hoist-react #4521) - uses Cube row objects as record data by reference. Toggling rebuilds the grid + connected View.',
             item: switchInput({bind: 'projectionOnly', label: 'Projection Only', labelSide: 'left'})
         }),
+        tooltip({
+            content:
+                "Version-based record reuse on the connected Store - `reuseRecords: 'cubeRowVersion'`. Toggling rebuilds the grid + connected View.",
+            item: switchInput({bind: 'reuseRecords', label: 'Reuse Records', labelSide: 'left'})
+        }),
         toolbarSep(),
         switchInput({bind: 'showSummary', label: 'Summary?', labelSide: 'left'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves?', labelSide: 'left'}),
@@ -99,13 +104,21 @@ const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
 );
 
 const bbar = hoistCmp.factory<CubeTestModel>(({model}) => {
-    const {view} = model;
+    const {view, reuseStats} = model;
     return toolbar(
         storeCountLabel({store: view.cube.store, unit: 'cube facts'}),
         hspacer(2),
         'Last Updated:',
         relativeTimestamp({timestamp: view.info?.asOf}),
         filler(),
+        reuseStats
+            ? tooltip({
+                  content:
+                      'StoreRecord instances preserved across the last grid Store data change, by identity.',
+                  item: `Reused: ${reuseStats.reused.toLocaleString()}/${reuseStats.total.toLocaleString()}`
+              })
+            : null,
+        reuseStats ? toolbarSep() : null,
         model.heapMB != null
             ? `Heap: ${model.heapMB} MB${model.heapImprecise ? ' (imprecise)' : ''}`
             : null,
