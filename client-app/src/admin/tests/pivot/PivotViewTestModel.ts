@@ -1,9 +1,9 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
-import {Cube, CubeFieldSpec} from '@xh/hoist/data';
+import {Cube, CubeFieldSpec, PivotQueryConfig} from '@xh/hoist/data';
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {isEmpty} from 'lodash';
+import {isEmpty, uniq} from 'lodash';
 import {generateLeaves, getProfile, tickLeaves} from './PivotBenchData';
 import {checkPivotView, comparePivotViews, PivotCheck} from './PivotViewCheck';
 
@@ -93,7 +93,25 @@ const SCENARIOS: Scenario[] = [
     }
 ];
 
+/**
+ * `updateQuery` with a filter-only change and simple aggregators is the one path where `View`
+ * deliberately retains `_rowCache`, so cached rows survive into a rebuild that mints new owner rows
+ * and a new pivot path tree. Run separately from `SCENARIOS` - the assertions are transitions.
+ */
+const FILTER_SCENARIO: Scenario = {
+    id: 'filterTransitions',
+    label: 'Filter transitions - the row cache survives these',
+    groupBy: ['fund', 'strategy'],
+    pivotBy: ['region'],
+    valueFields: ['pnl'],
+    leaves: 3000
+};
+
 const AGG_FIELDS = ['pnl', 'mktVal', 'quantity'];
+
+function boolCheck(name: string, ok: boolean, detail?: string): PivotCheck {
+    return {name, errors: ok ? [] : [detail ?? 'failed'], checked: 1, maxDrift: 0};
+}
 
 export class PivotViewTestModel extends HoistModel {
     @bindable tickPct = 2;
@@ -150,6 +168,8 @@ export class PivotViewTestModel extends HoistModel {
             for (const scenario of SCENARIOS) {
                 await this.runScenarioAsync(scenario);
             }
+            await this.runFilterScenarioAsync();
+
             const {failureCount, checkCount} = this;
             if (failureCount) {
                 XH.toast({
@@ -169,26 +189,13 @@ export class PivotViewTestModel extends HoistModel {
     // Implementation
     //------------------------
     private async runScenarioAsync(scenario: Scenario) {
-        const {groupBy, pivotBy, valueFields, includeRoot = true, includeLeaves = false} = scenario,
+        const {groupBy, pivotBy, valueFields} = scenario,
             leaves = this.buildLeaves(scenario),
-            fields = this.buildFields(scenario);
+            fields = this.buildFields(scenario),
+            queryConf = this.buildQueryConf(scenario);
 
         const cube = new Cube({fields, idSpec: 'id'});
         await cube.loadDataAsync(leaves);
-
-        // `omitRedundantNodes` off so the visible tree maps 1:1 to group dimension prefixes, which
-        // is what the reference walk assumes.
-        const queryConf = {
-            dimensions: groupBy,
-            pivotDimensions: pivotBy,
-            valueFields,
-            fields: [...groupBy, ...pivotBy, ...AGG_FIELDS].filter((v, i, a) => a.indexOf(v) === i),
-            includeRoot,
-            includeLeaves,
-            omitRedundantNodes: false,
-            excludeEmptyPivotValues: scenario.excludeEmptyPivotValues,
-            maxPivotPaths: null
-        };
 
         try {
             const view = cube.createPivotView({query: queryConf, connect: true});
@@ -219,16 +226,12 @@ export class PivotViewTestModel extends HoistModel {
             await cube.updateDataAsync(leaves);
 
             this.record(scenario, [
-                {
-                    name: 'tick: paths and cellFields keep object identity',
-                    errors:
-                        view.result.paths === pathsBefore &&
-                        view.result.cellFields === cellFieldsBefore
-                            ? []
-                            : ['identity changed on a values-only update'],
-                    checked: 2,
-                    maxDrift: 0
-                }
+                boolCheck(
+                    'tick: paths and cellFields keep object identity',
+                    view.result.paths === pathsBefore &&
+                        view.result.cellFields === cellFieldsBefore,
+                    'identity changed on a values-only update'
+                )
             ]);
 
             this.record(
@@ -257,17 +260,98 @@ export class PivotViewTestModel extends HoistModel {
 
             XH.safeDestroy(view, rebuilt);
         } catch (e) {
-            this.record(scenario, [
-                {
-                    name: 'threw',
-                    errors: [(e as Error).message ?? String(e)],
-                    checked: 0,
-                    maxDrift: 0
-                }
-            ]);
+            this.recordThrow(scenario, e);
         } finally {
             XH.safeDestroy(cube);
         }
+    }
+
+    /**
+     * Narrow the filter, widen it back, empty it and restore - the transitions a cached cell row can
+     * outlive. Toggling the *lexically first* pivot value is what shifts every other value's position
+     * in the sorted path order, so a cell reused with a stale path lands a column off.
+     */
+    private async runFilterScenarioAsync() {
+        const scenario = FILTER_SCENARIO,
+            {groupBy, pivotBy, valueFields} = scenario,
+            leaves = this.buildLeaves(scenario),
+            fields = this.buildFields(scenario),
+            queryConf = this.buildQueryConf(scenario);
+
+        const cube = new Cube({fields, idSpec: 'id'});
+        await cube.loadDataAsync(leaves);
+
+        try {
+            const view = cube.createPivotView({query: queryConf, connect: true}),
+                check = (label: string, refLeaves: PlainObject[]) =>
+                    this.record(
+                        scenario,
+                        checkPivotView({
+                            view,
+                            leaves: refLeaves,
+                            groupBy,
+                            pivotBy,
+                            valueFields,
+                            label
+                        })
+                    );
+
+            check('filter: unfiltered', leaves);
+
+            const first = uniq(leaves.map(l => l.region)).sort()[0];
+
+            view.setFilter({field: 'region', op: '!=', value: [first]});
+            check(
+                'filter: after narrow',
+                leaves.filter(l => l.region !== first)
+            );
+
+            view.setFilter(null);
+            check('filter: after widen', leaves);
+
+            const rebuilt = cube.createPivotView({query: queryConf});
+            this.record(scenario, [
+                comparePivotViews(view, rebuilt, valueFields, 'filter: matches a full rebuild')
+            ]);
+            XH.safeDestroy(rebuilt);
+
+            view.setFilter({field: 'fund', op: '=', value: ['no such fund']});
+            this.record(scenario, [
+                boolCheck(
+                    'filter: narrowing to an empty result clears the cells',
+                    isEmpty(view.result.cellFields),
+                    `published ${view.result.cellFields.length} cell fields for an empty result`
+                )
+            ]);
+
+            view.setFilter(null);
+            check('filter: after empty and back', leaves);
+
+            XH.safeDestroy(view);
+        } catch (e) {
+            this.recordThrow(scenario, e);
+        } finally {
+            XH.safeDestroy(cube);
+        }
+    }
+
+    /**
+     * `omitRedundantNodes` off so the visible tree maps 1:1 to group dimension prefixes, which is
+     * what the reference walk assumes.
+     */
+    private buildQueryConf(scenario: Scenario): PivotQueryConfig {
+        const {groupBy, pivotBy, valueFields, includeRoot = true, includeLeaves = false} = scenario;
+        return {
+            dimensions: groupBy,
+            pivotDimensions: pivotBy,
+            valueFields,
+            fields: uniq([...groupBy, ...pivotBy, ...AGG_FIELDS]),
+            includeRoot,
+            includeLeaves,
+            omitRedundantNodes: false,
+            excludeEmptyPivotValues: scenario.excludeEmptyPivotValues,
+            maxPivotPaths: null
+        };
     }
 
     private buildLeaves(scenario: Scenario): PlainObject[] {
@@ -297,6 +381,12 @@ export class PivotViewTestModel extends HoistModel {
                 aggregator: 'SUM' as const
             }))
         ];
+    }
+
+    private recordThrow(scenario: Scenario, e: unknown) {
+        this.record(scenario, [
+            {name: 'threw', errors: [(e as Error).message ?? String(e)], checked: 0, maxDrift: 0}
+        ]);
     }
 
     private record(scenario: Scenario, checks: PivotCheck[]) {
