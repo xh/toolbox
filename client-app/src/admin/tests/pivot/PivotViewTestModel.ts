@@ -1,8 +1,9 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
-import {Cube, CubeFieldSpec, PivotQueryConfig} from '@xh/hoist/data';
+import {Cube, CubeFieldSpec, flattenFilter, PivotQueryConfig} from '@xh/hoist/data';
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
+import {wait} from '@xh/hoist/promise';
 import {isEmpty, uniq} from 'lodash';
 import {generateLeaves, getProfile, tickLeaves} from './PivotBenchData';
 import {checkPivotView, comparePivotViews, PivotCheck} from './PivotViewCheck';
@@ -107,6 +108,18 @@ const FILTER_SCENARIO: Scenario = {
     leaves: 3000
 };
 
+/** `excludeEmptyPivotValues` folds an implicit filter into the query - the whole bug class needs it. */
+const QUERY_SCENARIO: Scenario = {
+    id: 'queryIdentity',
+    label: 'Query identity and filter augmentation',
+    groupBy: ['fund', 'strategy'],
+    pivotBy: ['region'],
+    valueFields: ['pnl'],
+    leaves: 2000,
+    blankDim: 'region',
+    excludeEmptyPivotValues: true
+};
+
 const AGG_FIELDS = ['pnl', 'mktVal', 'quantity'];
 
 function boolCheck(name: string, ok: boolean, detail?: string): PivotCheck {
@@ -169,6 +182,7 @@ export class PivotViewTestModel extends HoistModel {
                 await this.runScenarioAsync(scenario);
             }
             await this.runFilterScenarioAsync();
+            await this.runQueryScenarioAsync();
 
             const {failureCount, checkCount} = this;
             if (failureCount) {
@@ -328,6 +342,88 @@ export class PivotViewTestModel extends HoistModel {
             check('filter: after empty and back', leaves);
 
             XH.safeDestroy(view);
+        } catch (e) {
+            this.recordThrow(scenario, e);
+        } finally {
+            XH.safeDestroy(cube);
+        }
+    }
+
+    /**
+     * The implicit `excludeEmptyPivotValues` filter must stay comparable and must not compound, or
+     * `updateQuery` can never short-circuit and every clone grows the filter tree by a node.
+     */
+    private async runQueryScenarioAsync() {
+        const scenario = QUERY_SCENARIO,
+            {groupBy, pivotBy, valueFields} = scenario,
+            leaves = this.buildLeaves(scenario),
+            fields = this.buildFields(scenario);
+
+        const cube = new Cube({fields, idSpec: 'id'});
+        await cube.loadDataAsync(leaves);
+
+        try {
+            const fund = uniq(leaves.map(l => l.fund)).sort()[0],
+                queryConf: PivotQueryConfig = {
+                    ...this.buildQueryConf(scenario),
+                    filter: {field: 'fund', op: '!=', value: [fund]}
+                },
+                view = cube.createPivotView({query: queryConf, connect: true}),
+                {query} = view;
+
+            this.record(scenario, [
+                boolCheck(
+                    'query: a clone with no overrides equals the original',
+                    query.equals(query.clone({})),
+                    'clone re-augmented the already-augmented filter'
+                )
+            ]);
+
+            const resultBefore = view.result,
+                updatedBefore = view.lastUpdated,
+                nodesBefore = flattenFilter(view.query.filter).length;
+
+            // Real elapsed time, so a rebuild could not land on the same `lastUpdated` ms.
+            await wait(5);
+            view.updateQuery({});
+            view.updateQuery({});
+            view.updateQuery({});
+
+            const nodesAfter = flattenFilter(view.query.filter).length;
+            this.record(scenario, [
+                boolCheck(
+                    'query: a no-op updateQuery does not rebuild',
+                    view.result === resultBefore && view.lastUpdated === updatedBefore,
+                    `result identity ${view.result === resultBefore ? 'held' : 'changed'}, ` +
+                        `lastUpdated ${updatedBefore} -> ${view.lastUpdated}`
+                ),
+                boolCheck(
+                    'query: the exclusion filter does not compound',
+                    nodesAfter === nodesBefore,
+                    `filter nodes ${nodesBefore} -> ${nodesAfter}`
+                )
+            ]);
+
+            // A bare FilterTestFn is not an array or object, so a naive isEmpty() check drops it.
+            const fnView = cube.createPivotView({
+                query: {...this.buildQueryConf(scenario), filter: rec => rec.data.pnl > 0}
+            });
+
+            this.record(
+                scenario,
+                checkPivotView({
+                    view: fnView,
+                    leaves: leaves.filter(
+                        l => l.pnl > 0 && pivotBy.every(d => l[d] != null && l[d] !== '')
+                    ),
+                    groupBy,
+                    pivotBy,
+                    valueFields,
+                    label: 'query: a bare function filter survives augmentation'
+                })
+            );
+
+            XH.safeDestroy(view, fnView);
         } catch (e) {
             this.recordThrow(scenario, e);
         } finally {
