@@ -28,8 +28,8 @@ export class CubeTestModel extends HoistModel {
     /** Read-only projection Store mode under test (hoist-react #4521). Rebuilds grid + view when toggled. */
     @bindable projectionOnly = false;
 
-    /** Version-based record reuse on the connected Store - `reuseRecords: 'cubeRowVersion'`. */
-    @bindable reuseRecords = false;
+    /** Record reuse on the connected Store - a digest installed automatically by the View. */
+    @bindable reuseRecords = true;
 
     /** StoreRecord instance survival across the last Store data change. */
     @observable.ref reuseStats: {reused: number; total: number} = null;
@@ -104,6 +104,9 @@ export class CubeTestModel extends HoistModel {
             stores: this.gridModel.store,
             connect: true
         });
+        // The View installs a reuse digest on its connected store automatically - null it back
+        // out via the same internal hook to restore the no-reuse baseline for A/B comparison.
+        if (!this.reuseRecords) this.gridModel.store.setDigestFn(() => null);
     }
 
     /** GC (if exposed) and sample the JS heap for a memory read. */
@@ -205,7 +208,6 @@ export class CubeTestModel extends HoistModel {
             store: {
                 loadRootAsSummary: this.showSummary,
                 projectionOnly: this.projectionOnly,
-                reuseRecords: this.reuseRecords ? 'cubeRowVersion' : false,
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
             sortBy: 'time|desc',

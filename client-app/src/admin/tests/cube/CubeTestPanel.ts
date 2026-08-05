@@ -49,7 +49,7 @@ const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
         }),
         tooltip({
             content:
-                "Version-based record reuse on the connected Store - `reuseRecords: 'cubeRowVersion'`. Toggling rebuilds the grid + connected View.",
+                'Record reuse on the connected Store - a digest installed automatically by the connected View. Toggle off for a no-reuse baseline. Toggling rebuilds the grid + connected View.',
             item: switchInput({bind: 'reuseRecords', label: 'Reuse Records', labelSide: 'left'})
         }),
         toolbarSep(),

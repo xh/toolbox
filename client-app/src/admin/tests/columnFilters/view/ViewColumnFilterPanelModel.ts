@@ -132,7 +132,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
             treeMode: true,
             store: {
                 projectionOnly: true,
-                reuseRecords: 'cubeRowVersion',
                 idEncodesTreePath: true
             },
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
