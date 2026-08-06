@@ -1,4 +1,5 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {
     AggregatorToken,
@@ -17,7 +18,7 @@ import {
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
-import {castArray, isEmpty, isEqual, uniq} from 'lodash';
+import {castArray, difference, isEmpty, isEqual, uniq} from 'lodash';
 import {generateLeaves, getProfile, tickLeaves} from './PivotBenchData';
 import {
     checkCellStore,
@@ -226,6 +227,34 @@ const STORE_FACTORY_SCENARIO: Scenario = {
 };
 
 /**
+ * `updateQuery` transitions that move no pivot *path*. `syncPaths` guarded its early-out on path keys
+ * alone, so neither of these republished: `valueFields` moves no key at all, and an empty segment's
+ * key is a fixed sentinel independent of `emptyPathLabel`.
+ */
+const QUERY_TRANSITION_SCENARIO: Scenario = {
+    id: 'queryTransitions',
+    label: 'Query transitions that leave every path key unchanged',
+    groupBy: ['fund', 'strategy'],
+    pivotBy: ['region'],
+    valueFields: ['pnl', 'mktVal'],
+    leaves: 2000,
+    blankDim: 'region'
+};
+
+/**
+ * Two pivot dims so pivot totals materialize, two value fields so a leaf path carries a group rather
+ * than a bare column. Asserts the built column tree, not a rendered grid - the model needs no DOM.
+ */
+const PIVOT_GRID_SCENARIO: Scenario = {
+    id: 'pivotGrid',
+    label: 'PivotGridModel - columns, totals, and rebuild gating',
+    groupBy: ['fund', 'strategy'],
+    pivotBy: ['region', 'sector'],
+    valueFields: ['pnl', 'mktVal'],
+    leaves: 2000
+};
+
+/**
  * Plain `View` regression coverage. The phase 2 `data/cube` edits widened members and renamed the
  * incremental update collector without changing non-pivot behavior - which nothing exercised. The
  * reference accumulator is independent of hoist-react, so passing it proves correctness outright,
@@ -383,6 +412,8 @@ export class PivotViewTestModel extends HoistModel {
             await this.runFilterScenarioAsync();
             await this.runQueryScenarioAsync();
             await this.runStoreFactoryScenarioAsync();
+            await this.runQueryTransitionScenarioAsync();
+            await this.runPivotGridScenarioAsync();
             for (const scenario of PLAIN_SCENARIOS) {
                 await this.runPlainScenarioAsync(scenario);
             }
@@ -390,8 +421,17 @@ export class PivotViewTestModel extends HoistModel {
 
             const {failureCount, checkCount} = this;
             if (failureCount) {
+                // Name the first few - a bare count leaves you scrolling ~300 grouped rows to find
+                // which check went red.
+                const named = this.gridModel.store.allRecords
+                    .filter(r => !r.data.ok)
+                    .slice(0, 3)
+                    .map(r => r.data.name)
+                    .join('; ');
                 XH.toast({
-                    message: `${failureCount} of ${checkCount} checks FAILED`,
+                    message:
+                        `${failureCount} of ${checkCount} checks FAILED: ${named}` +
+                        (failureCount > 3 ? ' ...' : ''),
                     intent: 'danger',
                     timeout: 6000
                 });
@@ -895,6 +935,232 @@ export class PivotViewTestModel extends HoistModel {
         } finally {
             XH.safeDestroy(cube);
         }
+    }
+
+    /**
+     * Neither of these transitions moves a path key, so both slipped past `syncPaths`' early-out and
+     * left the view publishing cell fields and labels for a query it no longer had.
+     */
+    private async runQueryTransitionScenarioAsync() {
+        const scenario = QUERY_TRANSITION_SCENARIO,
+            {groupBy, pivotBy, valueFields} = scenario,
+            leaves = this.buildLeaves(scenario),
+            fields = this.buildFields(scenario),
+            queryConf = this.buildQueryConf(scenario);
+
+        const cube = new Cube({fields, idSpec: 'id'});
+        await cube.loadDataAsync(leaves);
+
+        try {
+            const view = cube.createPivotView({query: queryConf, connect: true}),
+                keysOf = () => view.result.cellFields.map(cf => cf.name),
+                pathKeys = () => view.result.paths.map(p => p.key);
+
+            const keysBefore = keysOf(),
+                pathKeysBefore = pathKeys();
+
+            // Drop a value field. Every path key holds, so only the cell fields should move.
+            view.updateQuery({valueFields: [valueFields[0]]});
+
+            this.record(scenario, [
+                boolCheck(
+                    'valueFields change: cell fields drop the removed measure',
+                    isEqual(pathKeys(), pathKeysBefore) &&
+                        keysOf().length === keysBefore.length / 2 &&
+                        !keysOf().some(name => name.endsWith(valueFields[1])),
+                    `cellFields ${keysBefore.length} -> ${keysOf().length}, ` +
+                        `still naming ${valueFields[1]}: ${keysOf().some(n => n.endsWith(valueFields[1]))}`
+                )
+            ]);
+            this.record(
+                scenario,
+                checkPivotView({
+                    view,
+                    leaves,
+                    groupBy,
+                    pivotBy,
+                    valueFields: [valueFields[0]],
+                    label: 'after valueFields change'
+                })
+            );
+
+            // Relabel the empty segment. Its key is a fixed sentinel, so no key moves here either.
+            const emptyBefore = view.result.paths.filter(p => p.isEmpty).map(p => p.label);
+            view.updateQuery({emptyPathLabel: '(none)'});
+            const emptyAfter = view.result.paths.filter(p => p.isEmpty).map(p => p.label);
+
+            this.record(scenario, [
+                boolCheck(
+                    'emptyPathLabel change: relabels the empty path segment',
+                    !isEmpty(emptyAfter) &&
+                        emptyAfter.every(l => l === '(none)') &&
+                        !isEqual(emptyAfter, emptyBefore),
+                    `empty labels ${JSON.stringify(emptyBefore)} -> ${JSON.stringify(emptyAfter)}` +
+                        (isEmpty(emptyAfter) ? ' - no empty segment, scenario proves nothing' : '')
+                )
+            ]);
+
+            XH.safeDestroy(view);
+        } catch (e) {
+            this.recordThrow(scenario, e);
+        } finally {
+            XH.safeDestroy(cube);
+        }
+    }
+
+    /**
+     * The rewired `PivotGridModel` against the column tree it builds. No grid is mounted - the model
+     * needs no DOM, and the structure is the thing under test.
+     */
+    private async runPivotGridScenarioAsync() {
+        const scenario = PIVOT_GRID_SCENARIO,
+            leaves = this.buildLeaves(scenario),
+            fields = this.buildFields(scenario),
+            queryConf = this.buildQueryConf(scenario);
+
+        // A pivot value carrying the path delimiter and the escape char. The published cell field
+        // name escapes both, so a grid that *reconstructed* names from `path.key` instead of reading
+        // `cellFields` would bind columns nothing writes to.
+        leaves.forEach((rec, i) => {
+            if (i % 11 === 0) rec.sector = 'A>>B';
+            if (i % 17 === 0) rec.sector = 'C\\D';
+        });
+
+        const cube = new Cube({fields, idSpec: 'id'});
+        await cube.loadDataAsync(leaves);
+
+        try {
+            const view = cube.createPivotView({query: queryConf, connect: true}),
+                model = new PivotGridModel({
+                    view,
+                    showRowTotals: true,
+                    showPivotTotals: true,
+                    showValueTotals: true
+                }),
+                {gridModel} = model;
+
+            const valueColIds = () =>
+                    gridModel
+                        .getLeafColumns()
+                        .map(it => it.colId)
+                        .filter(id => id !== 'cubeLabel'),
+                cellNames = () => view.result.cellFields.map(cf => cf.name);
+
+            // With both totals on, the value columns are exactly the published cell fields - every
+            // path at every depth, including the root. That pins naming, coverage and placement in
+            // one assertion, and it can only hold if colIds come from `cellFields` themselves.
+            const ids = valueColIds(),
+                names = cellNames();
+            this.record(scenario, [
+                boolCheck(
+                    'columns: one value column per published cell field',
+                    isEqual([...ids].sort(), [...names].sort()),
+                    `${ids.length} value columns for ${names.length} cell fields; extra ` +
+                        `[${difference(ids, names).slice(0, 3)}], missing [${difference(names, ids).slice(0, 3)}]`
+                ),
+                boolCheck(
+                    "columns: row totals bind the value fields' own names",
+                    view.query.valueFields.every(f => ids.includes(f.name)),
+                    `missing [${difference(view.query.valueFields.map(f => f.name), ids)}]`
+                ),
+                boolCheck(
+                    'columns: showValueTotals wires includeRoot through to showSummary',
+                    gridModel.showSummary === 'top',
+                    `showSummary is ${gridModel.showSummary}`
+                )
+            ]);
+
+            // Turning pivot totals off must drop exactly the partial-path cells, and nothing else.
+            model.showPivotTotals = false;
+            const partials = view.result.cellFields
+                .filter(cf => !cf.path.isRoot && !isEmpty(cf.path.children))
+                .map(cf => cf.name);
+            this.record(scenario, [
+                boolCheck(
+                    'columns: showPivotTotals gates exactly the partial-path cells',
+                    !isEmpty(partials) &&
+                        isEqual([...valueColIds()].sort(), [...difference(names, partials)].sort()),
+                    isEmpty(partials)
+                        ? 'no partial paths - scenario cannot prove the gate'
+                        : `${valueColIds().length} columns, expected ${names.length - partials.length}`
+                )
+            ]);
+            model.showPivotTotals = true;
+
+            // Display sort must build its own order and never touch the immutable published tree.
+            const pathsBefore = view.result.paths,
+                treeBefore = JSON.stringify(pathsBefore.map(p => p.children.map(c => c.key))),
+                ascOrder = this.topGroupIds(model);
+            model.pivotSortBy = ['desc'];
+            const descOrder = this.topGroupIds(model);
+
+            this.record(scenario, [
+                boolCheck(
+                    'pivotSortBy: reorders the top-level column groups',
+                    ascOrder.length > 1 && isEqual(descOrder, [...ascOrder].reverse()),
+                    `asc ${JSON.stringify(ascOrder)} vs desc ${JSON.stringify(descOrder)}`
+                ),
+                boolCheck(
+                    'pivotSortBy: leaves result.paths untouched',
+                    view.result.paths === pathsBefore &&
+                        JSON.stringify(pathsBefore.map(p => p.children.map(c => c.key))) ===
+                            treeBefore,
+                    "display sorting mutated the view's own path tree"
+                )
+            ]);
+            model.pivotSortBy = [];
+
+            // A values-only tick must not touch columns - `setColumns` resets column state, so a
+            // rebuild per tick would discard the user's widths and pinning on every update.
+            const colsBefore = gridModel.columns;
+            await this.tickAsync(scenario, leaves, cube);
+            this.record(scenario, [
+                boolCheck(
+                    'rebuild: a values-only tick does not rebuild columns',
+                    gridModel.columns === colsBefore,
+                    'columns were rebuilt on a tick'
+                )
+            ]);
+
+            // A new pivot value is structural - the column for its cells must appear.
+            leaves.forEach((rec, i) => {
+                if (i % 13 === 0) rec.sector = 'ZZ-New';
+            });
+            await cube.updateDataAsync(leaves);
+
+            this.record(scenario, [
+                boolCheck(
+                    'rebuild: a new pivot value adds its columns',
+                    gridModel.columns !== colsBefore &&
+                        isEqual([...valueColIds()].sort(), [...cellNames()].sort()) &&
+                        valueColIds().some(id => id.includes('ZZ-New')),
+                    `${valueColIds().length} columns for ${cellNames().length} cell fields`
+                )
+            ]);
+
+            const {store} = model;
+            XH.safeDestroy(model);
+            this.record(scenario, [
+                boolCheck(
+                    'destroy: disconnects its store from the view',
+                    !view.stores.includes(store),
+                    "the view still holds the destroyed grid's store"
+                )
+            ]);
+
+            XH.safeDestroy(view);
+        } catch (e) {
+            this.recordThrow(scenario, e);
+        } finally {
+            XH.safeDestroy(cube);
+        }
+    }
+
+    /** Header names of the top-level pivot column groups, in display order. */
+    private topGroupIds(model: PivotGridModel): string[] {
+        return model.gridModel.columns
+            .filter(it => 'children' in it && it.groupId !== 'rowTotals')
+            .map((it: any) => it.groupId);
     }
 
     /**
