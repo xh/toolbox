@@ -9,7 +9,7 @@ import {isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 import {LoadTimesModel} from './LoadTimesModel';
 import {CubeModel} from './CubeModel';
-import {QueryConfig, View} from '@xh/hoist/data';
+import {QueryConfig, StoreRecord, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
     @managed cubeModel: CubeModel;
@@ -25,8 +25,14 @@ export class CubeTestModel extends HoistModel {
     @bindable updateFreq = -1;
     @bindable updateCount = 5;
 
-    /** Zero-copy Store mode under test (hoist-react #4506). Rebuilds grid + view when toggled. */
-    @bindable useRawAsData = false;
+    /** Read-only projection Store mode under test (hoist-react #4521). Rebuilds grid + view when toggled. */
+    @bindable projectionOnly = false;
+
+    /** Record reuse on the connected Store - a digest installed automatically by the View. */
+    @bindable reuseRecords = true;
+
+    /** StoreRecord instance survival across the last Store data change. */
+    @observable.ref reuseStats: {reused: number; total: number} = null;
 
     /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
     @bindable recordMultiplier = 1;
@@ -57,12 +63,34 @@ export class CubeTestModel extends HoistModel {
             equals: comparer.structural
         });
 
-        // Rebuild grid + connected view when toggling useRawAsData, reconstructing the underlying
+        // Rebuild grid + connected view when toggling store modes, reconstructing the underlying
         // Store in the new mode for A/B comparison of memory and update performance.
         this.addReaction({
-            track: () => this.useRawAsData,
+            track: () => [this.projectionOnly, this.reuseRecords],
             run: () => this.buildGridAndView()
         });
+
+        // Direct readout of record reuse - count instances surviving each Store data change by
+        // identity against the prior recordset. Resets to 0% across mode-toggle rebuilds.
+        this.addReaction({
+            track: () => this.gridModel.store.records,
+            run: (recs, prevRecs) => this.updateReuseStats(recs, prevRecs)
+        });
+    }
+
+    @action
+    private updateReuseStats(recs: StoreRecord[], prevRecs: StoreRecord[]) {
+        if (isEmpty(prevRecs) || isEmpty(recs)) {
+            this.reuseStats = null;
+            return;
+        }
+        const prevById = new Map(prevRecs.map(r => [r.id, r])),
+            reused = recs.filter(r => prevById.get(r.id) === r).length,
+            total = recs.length;
+        this.reuseStats = {reused, total};
+        console.log(
+            `[CubeTest] records reused: ${reused}/${total} | projection=${this.projectionOnly} | reuse=${this.reuseRecords}`
+        );
     }
 
     // (Re)create the grid and its connected View. The View's connect-time fullUpdate repopulates
@@ -76,6 +104,9 @@ export class CubeTestModel extends HoistModel {
             stores: this.gridModel.store,
             connect: true
         });
+        // The View installs a reuse digest on its connected store automatically - null it back
+        // out via the same internal hook to restore the no-reuse baseline for A/B comparison.
+        if (!this.reuseRecords) this.gridModel.store.setDigestFn(() => null);
     }
 
     /** GC (if exposed) and sample the JS heap for a memory read. */
@@ -109,7 +140,7 @@ export class CubeTestModel extends HoistModel {
         }
 
         this.heapMB = mem ? Math.round(mem.usedJSHeapSize / 1048576) : null;
-        const mode = this.useRawAsData ? 'rawAsData' : 'legacy';
+        const mode = this.projectionOnly ? 'projection' : 'default';
         console.log(
             `[CubeTest] heap: ${this.heapMB ?? 'n/a'} MB | mode=${mode} | x${this.recordMultiplier}` +
                 (hasGC
@@ -176,7 +207,7 @@ export class CubeTestModel extends HoistModel {
             showSummary: this.showSummary,
             store: {
                 loadRootAsSummary: this.showSummary,
-                useRawAsData: this.useRawAsData,
+                projectionOnly: this.projectionOnly,
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
             sortBy: 'time|desc',
@@ -191,8 +222,9 @@ export class CubeTestModel extends HoistModel {
                     groupings = dimManagerModel.value;
                 return groupings.map((it: string) => groupingChooserModel.getDimDisplayName(it));
             },
-            // Editing routes through Cube.modifyRecordsAsync (source of record), and is exercised in
-            // both modes - useRawAsData no longer implies a read-only Store.
+            // Editing routes through Cube.modifyRecordsAsync (source of record), not
+            // Store.modifyRecords - so it works in both modes, including projectionOnly, where
+            // direct local Store modification would throw.
             colDefaults: {
                 editable: ({record}) => !record.data.cubeDimension, // Only editable if leaf node
                 setValueFn: ({value, record, field}) => {
