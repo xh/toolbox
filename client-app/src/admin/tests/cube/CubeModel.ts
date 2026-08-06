@@ -35,6 +35,8 @@ export class CubeModel extends HoistModel {
             orders.forEach(it => {
                 it.pctCommission = it.commission;
                 it.maxConfidence = it.minConfidence = it.confidence;
+                // Reuse digest - order times are stable within a server-side portfolio
+                it.rev = it.time;
             });
         });
 
@@ -63,6 +65,7 @@ export class CubeModel extends HoistModel {
 
         return new Cube({
             idSpec: 'id',
+            reuseRecords: 'rev',
             fields: [
                 {name: 'symbol', isDimension: true},
                 {name: 'sector', isDimension: true},
@@ -97,6 +100,7 @@ export class CubeModel extends HoistModel {
 
             order.commission = newCom;
             order.pctCommission = newCom;
+            order.rev++;
 
             return order;
         });
