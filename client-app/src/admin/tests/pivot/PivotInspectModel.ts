@@ -1,5 +1,5 @@
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
-import {Cube, PivotPath, PivotView, Store} from '@xh/hoist/data';
+import {Cube, PivotPath, PivotQuery, PivotView, Store} from '@xh/hoist/data';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 
@@ -27,6 +27,7 @@ export class PivotInspectModel extends HoistModel {
     /** Expose leaf records as tree children under their innermost group. */
     @bindable includeLeaves = false;
 
+    @observable queryJson = '';
     @observable rawJson = '';
     @observable rowsJson = '';
     @observable pathsJson = '';
@@ -124,6 +125,7 @@ export class PivotInspectModel extends HoistModel {
             {paths, cellFields, rows} = view.result;
 
         this.status = status;
+        this.queryJson = json(querySummary(view.query));
         this.rawJson = json(this.leaves);
         this.rowsJson = json(rows, rowReplacer);
         this.pathsJson = json(paths.map(pathSummary));
@@ -194,6 +196,40 @@ export class PivotInspectModel extends HoistModel {
 
 function json(value: any, replacer?: (key: string, value: any) => any): string {
     return JSON.stringify(value, replacer, 2);
+}
+
+/**
+ * The resolved query as `PivotView` holds it - names rather than `CubeField`s, since each of those
+ * references the whole Cube. `dimensions` is the row hierarchy and stays unconcatenated with
+ * `pivotDimensions`; `fields` is the full aggregated set, of which `valueFields` are the measures
+ * sliced across the pivot axis.
+ */
+function querySummary(query: PivotQuery): PlainObject {
+    return {
+        dimensions: query.dimensions.map(f => f.name),
+        pivotDimensions: query.pivotDimensions.map(f => f.name),
+        valueFields: query.valueFields.map(f => f.name),
+        fields: query.fields.map(
+            f => `${f.name}${f.aggregator ? ` (${f.aggregator.constructor.name})` : ''}`
+        ),
+        isPivoted: query.isPivoted,
+        includeRoot: query.includeRoot,
+        includeLeaves: query.includeLeaves,
+        provideLeaves: query.provideLeaves,
+        omitRedundantNodes: query.omitRedundantNodes,
+        emptyPathLabel: query.emptyPathLabel,
+        excludeEmptyPivotValues: query.excludeEmptyPivotValues,
+        maxPivotPaths: query.maxPivotPaths,
+        hasFilter: query.hasFilter,
+        filter: query.filter?.toJSON?.() ?? null,
+        lockFn: fnLabel(query.lockFn),
+        bucketSpecFn: fnLabel(query.bucketSpecFn),
+        omitFn: fnLabel(query.omitFn)
+    };
+}
+
+function fnLabel(fn: any): string {
+    return fn ? '(set)' : null;
 }
 
 /** CubeField carries its whole cube - summarize rather than dump it. */

@@ -32,20 +32,26 @@ export const PivotInspectPanel = hoistCmp({
             item: vframe(
                 hframe(
                     panel({
-                        title: '1. Raw records loaded into the Cube',
-                        icon: Icon.database(),
-                        width: 400,
-                        item: jsonInput({value: model.rawJson, ...JSON_PROPS})
+                        title: '1. PivotQuery, as the view resolved it',
+                        icon: Icon.filter(),
+                        width: 360,
+                        item: jsonInput({value: model.queryJson, ...SIDE_BY_SIDE_JSON_PROPS})
                     }),
                     panel({
-                        title: '2. result.rows - published row data, verbatim',
+                        title: '2. Raw records loaded into the Cube',
+                        icon: Icon.database(),
+                        width: 360,
+                        item: jsonInput({value: model.rawJson, ...SIDE_BY_SIDE_JSON_PROPS})
+                    }),
+                    panel({
+                        title: '3. result.rows - published row data, verbatim',
                         icon: Icon.json(),
                         flex: 1,
-                        item: jsonInput({value: model.rowsJson, ...JSON_PROPS})
+                        item: jsonInput({value: model.rowsJson, ...SIDE_BY_SIDE_JSON_PROPS})
                     })
                 ),
                 panel({
-                    title: '3. result.paths  /  result.cellFields - one Store field per entry',
+                    title: '4. result.paths  /  result.cellFields - one Store field per entry',
                     icon: Icon.treeList(),
                     modelConfig: {
                         side: 'bottom',
@@ -59,7 +65,7 @@ export const PivotInspectPanel = hoistCmp({
                     )
                 }),
                 panel({
-                    title: '4. Store records - the pivoted output as a Grid receives it',
+                    title: '5. Store records - the pivoted output as a Grid receives it',
                     icon: Icon.grid(),
                     modelConfig: {
                         side: 'bottom',
