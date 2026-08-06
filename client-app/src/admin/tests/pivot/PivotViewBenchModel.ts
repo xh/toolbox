@@ -7,32 +7,18 @@ import {wait} from '@xh/hoist/promise';
 import {PivotProfile, PROFILES, generateLeaves, tickLeaves} from './PivotBenchData';
 
 /**
- * Benchmark for the {@link PivotView} data layer, against the phase 0 baseline captured from the
- * `PivotDataModel` prototype. Deliberately separate from `PivotBenchModel` so that baseline stays
- * untouched and comparable.
+ * Benchmark for the {@link PivotView} data layer against the acceptance gates.
  *
- * `build` is measured from raw data - Cube load plus view creation - to match what the prototype's
- * `PivotDataModel.update()` did. Both tick metrics perturb a slice of leaves and push them through a
- * *connected* view - the metric the prototype failed by 4-7x - `tick` by resubmitting the full leaf
- * array as the baseline did, `deltaTick` by submitting only the changed records.
+ * `build` is measured from raw data - Cube load plus view creation. Both tick metrics perturb a slice
+ * of leaves and push them through a *connected* view: `deltaTick` submits only the changed records,
+ * `tick` resubmits the whole leaf array.
  *
- * See `docs/planning/pivot-grid.md` in hoist-react for the acceptance criteria.
+ * See `docs/planning/pivot-grid.md` in hoist-react for the acceptance criteria and the recorded
+ * figures. The retired `PivotDataModel` prototype's baseline lives there and nowhere else now.
  */
 
-/** Baseline ms from the plan doc, so the comparison is visible in-page rather than looked up. */
-const BASELINE: Record<string, {build: number; tick: number}> = {
-    typical: {build: 138, tick: 128},
-    typicalDrill: {build: 279, tick: 335},
-    heavy: {build: 743, tick: 836},
-    heavyDrill: {build: 2485, tick: 3601},
-    wide: {build: 1370, tick: 1734},
-    wideDrill: {build: 2150, tick: 3146},
-    pathological: {build: 27011, tick: 27327}
-};
-
 /**
- * Pass/fail gates, the only place to change them. Builds are phase 0's revised targets, tightened
- * because the prototype already met the originals. Ticks gate on the *delta* tick - a full-array
+ * Pass/fail gates, the only place to change them. Ticks gate on the *delta* tick - a full-array
  * submit is dominated by Store-wide record diffing that no pivot implementation can influence.
  */
 const GATES: Record<string, {buildMs: number; deltaTickMs: number}> = {
@@ -66,7 +52,6 @@ export class PivotViewBenchModel extends HoistModel {
                 align: 'right',
                 renderer: numberRenderer({precision: 0})
             },
-            {field: 'baseBuild', headerName: 'Base', width: 75, align: 'right'},
             {
                 field: 'deltaTickMs',
                 headerName: 'Delta tick ms',
@@ -83,17 +68,9 @@ export class PivotViewBenchModel extends HoistModel {
                 width: 90,
                 align: 'right',
                 headerTooltip:
-                    'Tick resubmitting the full leaf array, as the phase 0 baseline did. Reported ' +
-                    'for that comparison only - not gated.',
+                    'Tick resubmitting the full leaf array. Dominated by the Cube-wide record ' +
+                    'diff, so reported rather than gated.',
                 renderer: numberRenderer({precision: 1})
-            },
-            {field: 'baseTick', headerName: 'Base', width: 75, align: 'right'},
-            {
-                field: 'tickSpeedup',
-                headerName: 'Tick vs base',
-                width: 110,
-                align: 'right',
-                renderer: v => (v ? `${v.toFixed(1)}x faster` : '-')
             },
             {
                 field: 'gate',
@@ -187,8 +164,7 @@ export class PivotViewBenchModel extends HoistModel {
         XH.safeDestroy(view, cube);
         await wait(50);
 
-        const base = BASELINE[id],
-            gate = GATES[id],
+        const gate = GATES[id],
             gateLabel = gate
                 ? `build <= ${gate.buildMs} / delta tick <= ${gate.deltaTickMs}`
                 : null;
@@ -202,11 +178,8 @@ export class PivotViewBenchModel extends HoistModel {
                     cells,
                     paths,
                     buildMs,
-                    baseBuild: base?.build ?? null,
                     tickMs,
                     deltaTickMs,
-                    baseTick: base?.tick ?? null,
-                    tickSpeedup: base ? base.tick / tickMs : null,
                     gate: gateLabel,
                     passed: gate ? buildMs <= gate.buildMs && deltaTickMs <= gate.deltaTickMs : null
                 }

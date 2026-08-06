@@ -1,6 +1,4 @@
 import {PlainObject} from '@xh/hoist/core';
-import {PivotFieldSpec} from '@xh/hoist/cmp/pivotgrid';
-import {numberRenderer} from '@xh/hoist/format';
 
 /**
  * Profiles and synthetic data for the PivotGrid benchmark.
@@ -183,29 +181,6 @@ export function pivotPathCount(profile: PivotProfile): number {
 function cardinality(profile: PivotProfile, name: string): number {
     const size = profile.dims[name];
     return size === 0 ? profile.leaves : size;
-}
-
-/** Field specs for a profile - only the fields it actually uses, so nothing untouched is parsed. */
-export function fieldSpecs(profile: PivotProfile): PivotFieldSpec[] {
-    const dims: PivotFieldSpec[] = Object.keys(profile.dims).map(name => ({
-            name,
-            type: 'string',
-            isDimension: true,
-            enablePivot: true
-        })),
-        values: PivotFieldSpec[] = profile.valueFields.map(name => ({
-            name,
-            type: 'number',
-            aggregator: 'SUM',
-            enableValue: true,
-            columnTemplate: {
-                width: 110,
-                align: 'right',
-                renderer: numberRenderer({precision: 0})
-            }
-        }));
-
-    return [...dims, ...values];
 }
 
 /** Seeded PRNG (mulberry32), so every run generates an identical dataset. */

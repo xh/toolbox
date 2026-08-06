@@ -7,7 +7,6 @@ export * from './grids/GridTestPanel';
 export * from './gridScrolling/GridScrolling';
 export * from './localDate/LocalDateTestPanel';
 export * from './panels/PanelResizingTestPanel';
-export * from './pivot/PivotBenchPanel';
 export * from './pivot/PivotInspectPanel';
 export * from './pivot/PivotViewTestPanel';
 export * from './select/SelectTestPanel';

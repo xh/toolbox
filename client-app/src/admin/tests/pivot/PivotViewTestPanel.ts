@@ -59,7 +59,7 @@ const benchPanel = hoistCmp.factory({
 
     render({model}) {
         return panel({
-            title: 'PivotView › Benchmark vs. phase 0 baseline',
+            title: 'PivotView › Benchmark',
             icon: Icon.chartLine(),
             modelConfig: {side: 'bottom', defaultSize: 320, collapsible: true, resizable: true},
             tbar: benchTbar(),
