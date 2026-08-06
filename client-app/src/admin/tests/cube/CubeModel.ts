@@ -27,15 +27,28 @@ export class CubeModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const LTM = this.parent.loadTimesModel;
+        const LTM = this.parent.loadTimesModel,
+            {recordMultiplier} = this.parent;
         let orders = [];
         await LTM.withLoadTime('Fetch orders', async () => {
             orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
             orders.forEach(it => {
                 it.pctCommission = it.commission;
                 it.maxConfidence = it.minConfidence = it.confidence;
+                // Reuse digest - order times are stable within a server-side portfolio
+                it.rev = it.time;
             });
         });
+
+        // Replicate the fetched orders to stress-test at scale. Copies reuse the same dimension
+        // values (deepening aggregation) with fresh unique ids required by the Cube's idSpec.
+        if (recordMultiplier > 1) {
+            const base = orders;
+            orders = base.slice();
+            for (let k = 1; k < recordMultiplier; k++) {
+                base.forEach(o => orders.push({...o, id: `${o.id}~r${k}`}));
+            }
+        }
 
         const ocTxt = fmtThousands(orders.length) + 'k';
         await LTM.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
@@ -52,6 +65,7 @@ export class CubeModel extends HoistModel {
 
         return new Cube({
             idSpec: 'id',
+            reuseRecords: 'rev',
             fields: [
                 {name: 'symbol', isDimension: true},
                 {name: 'sector', isDimension: true},
@@ -86,6 +100,7 @@ export class CubeModel extends HoistModel {
 
             order.commission = newCom;
             order.pctCommission = newCom;
+            order.rev++;
 
             return order;
         });

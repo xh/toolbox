@@ -1,19 +1,20 @@
 import {GridModel, timeCol, TreeStyle} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, PlainObject} from '@xh/hoist/core';
+import {fragment, p, pre} from '@xh/hoist/cmp/layout';
+import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {numberEditor, textEditor} from '@xh/hoist/desktop/cmp/grid';
-import {numberRenderer} from '@xh/hoist/format';
-import {bindable, comparer, makeObservable} from '@xh/hoist/mobx';
+import {fmtNumber, numberRenderer} from '@xh/hoist/format';
+import {action, bindable, comparer, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 import {LoadTimesModel} from './LoadTimesModel';
 import {CubeModel} from './CubeModel';
-import {QueryConfig, View} from '@xh/hoist/data';
+import {QueryConfig, StoreRecord, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
     @managed cubeModel: CubeModel;
-    @managed gridModel: GridModel;
-    @managed view: View;
+    @managed @observable.ref gridModel: GridModel;
+    @managed @observable.ref view: View;
     @managed dimManagerModel: DimensionManagerModel;
     @managed loadTimesModel: LoadTimesModel;
 
@@ -24,32 +25,128 @@ export class CubeTestModel extends HoistModel {
     @bindable updateFreq = -1;
     @bindable updateCount = 5;
 
+    /** Read-only projection Store mode under test (hoist-react #4521). Rebuilds grid + view when toggled. */
+    @bindable projectionOnly = false;
+
+    /** Record reuse on the connected Store - a digest installed automatically by the View. */
+    @bindable reuseRecords = true;
+
+    /** StoreRecord instance survival across the last Store data change. */
+    @observable.ref reuseStats: {reused: number; total: number} = null;
+
+    /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
+    @bindable recordMultiplier = 1;
+
+    /** Last sampled JS heap in MB (via measureMemory). */
+    @observable heapMB: number = null;
+
+    /** True if the last heap sample was taken without --expose-gc (coarse, directional only). */
+    @observable heapImprecise = false;
+
     constructor() {
         super();
         makeObservable(this);
         this.loadTimesModel = new LoadTimesModel();
-        this.gridModel = this.createGridModel();
         this.cubeModel = new CubeModel(this);
 
-        const {cube} = this.cubeModel;
-
         this.dimManagerModel = new DimensionManagerModel({
-            dimensions: cube.dimensions,
+            dimensions: this.cubeModel.cube.dimensions,
             defaultDimConfig: 'cubeTestDefaultDims',
             userDimPref: 'cubeTestUserDims'
         });
 
-        this.view = cube.createView({
-            query: this.getQuery(),
-            stores: this.gridModel.store,
-            connect: true
-        });
+        this.buildGridAndView();
 
         this.addReaction({
             track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
             equals: comparer.structural
         });
+
+        // Rebuild grid + connected view when toggling store modes, reconstructing the underlying
+        // Store in the new mode for A/B comparison of memory and update performance.
+        this.addReaction({
+            track: () => [this.projectionOnly, this.reuseRecords],
+            run: () => this.buildGridAndView()
+        });
+
+        // Direct readout of record reuse - count instances surviving each Store data change by
+        // identity against the prior recordset. Resets to 0% across mode-toggle rebuilds.
+        this.addReaction({
+            track: () => this.gridModel.store.records,
+            run: (recs, prevRecs) => this.updateReuseStats(recs, prevRecs)
+        });
+    }
+
+    @action
+    private updateReuseStats(recs: StoreRecord[], prevRecs: StoreRecord[]) {
+        if (isEmpty(prevRecs) || isEmpty(recs)) {
+            this.reuseStats = null;
+            return;
+        }
+        const prevById = new Map(prevRecs.map(r => [r.id, r])),
+            reused = recs.filter(r => prevById.get(r.id) === r).length,
+            total = recs.length;
+        this.reuseStats = {reused, total};
+        console.log(
+            `[CubeTest] records reused: ${reused}/${total} | projection=${this.projectionOnly} | reuse=${this.reuseRecords}`
+        );
+    }
+
+    // (Re)create the grid and its connected View. The View's connect-time fullUpdate repopulates
+    // the fresh Store from current Cube data, so a rebuild after load needs no explicit reload.
+    private buildGridAndView() {
+        XH.safeDestroy(this.view);
+        XH.safeDestroy(this.gridModel);
+        this.gridModel = this.createGridModel();
+        this.view = this.cubeModel.cube.createView({
+            query: this.getQuery(),
+            stores: this.gridModel.store,
+            connect: true
+        });
+        // The View installs a reuse digest on its connected store automatically - null it back
+        // out via the same internal hook to restore the no-reuse baseline for A/B comparison.
+        if (!this.reuseRecords) this.gridModel.store.setDigestFn(() => null);
+    }
+
+    /** GC (if exposed) and sample the JS heap for a memory read. */
+    @action
+    measureMemory() {
+        const w = window as any,
+            hasGC = typeof w.gc === 'function',
+            mem = (performance as any).memory;
+
+        // window.gc is only present with --js-flags=--expose-gc, and is the detectable proxy for
+        // having launched with the memory flags. Without it we can't force GC before sampling, so
+        // the reading includes uncollected garbage and is only directional - warn the developer.
+        this.heapImprecise = !hasGC;
+        if (hasGC) {
+            w.gc();
+            w.gc();
+        } else {
+            XH.alert({
+                title: 'Imprecise memory reading',
+                message: fragment(
+                    p('For accurate heap capture, relaunch Chrome/Chromium with:'),
+                    pre('--js-flags=--expose-gc --enable-precise-memory-info'),
+                    p(
+                        '--expose-gc lets this tester force garbage collection before sampling; ' +
+                            '--enable-precise-memory-info removes heap-size quantization. Without ' +
+                            'them the reading below includes uncollected garbage and is only a rough ' +
+                            'directional figure - use Chrome DevTools heap snapshots for exact numbers.'
+                    )
+                )
+            });
+        }
+
+        this.heapMB = mem ? Math.round(mem.usedJSHeapSize / 1048576) : null;
+        const mode = this.projectionOnly ? 'projection' : 'default';
+        console.log(
+            `[CubeTest] heap: ${this.heapMB ?? 'n/a'} MB | mode=${mode} | x${this.recordMultiplier}` +
+                (hasGC
+                    ? ''
+                    : ' (imprecise - relaunch with --js-flags=--expose-gc --enable-precise-memory-info)')
+        );
     }
 
     private get fields() {
@@ -110,6 +207,7 @@ export class CubeTestModel extends HoistModel {
             showSummary: this.showSummary,
             store: {
                 loadRootAsSummary: this.showSummary,
+                projectionOnly: this.projectionOnly,
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
             sortBy: 'time|desc',
@@ -124,6 +222,9 @@ export class CubeTestModel extends HoistModel {
                     groupings = dimManagerModel.value;
                 return groupings.map((it: string) => groupingChooserModel.getDimDisplayName(it));
             },
+            // Editing routes through Cube.modifyRecordsAsync (source of record), not
+            // Store.modifyRecords - so it works in both modes, including projectionOnly, where
+            // direct local Store modification would throw.
             colDefaults: {
                 editable: ({record}) => !record.data.cubeDimension, // Only editable if leaf node
                 setValueFn: ({value, record, field}) => {
@@ -218,6 +319,23 @@ export class CubeTestModel extends HoistModel {
                         precision: 0
                     }),
                     hidden: true
+                },
+                {
+                    // Complex-renderer contrast column (Hoist force-refreshes these each update,
+                    // vs. simple columns which ride ag-Grid's own change detection). Verifies the
+                    // zero-copy path repaints both. Reuses `commission`; needs a distinct colId.
+                    field: 'commission',
+                    colId: 'commissionComplex',
+                    headerName: 'Comm (complex)',
+                    align: 'right',
+                    width: 150,
+                    editable: false,
+                    rendererIsComplex: true,
+                    renderer: v =>
+                        fragment(
+                            fmtNumber(v, {precision: 0, ledger: true, colorSpec: true}),
+                            v >= 0 ? ' ▲' : ' ▼'
+                        )
                 },
                 {
                     field: 'time',

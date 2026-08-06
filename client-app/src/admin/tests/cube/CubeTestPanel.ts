@@ -11,13 +11,14 @@ import {dimensionManager} from './dimensions/DimensionManager';
 import {loadTimesPanel} from './LoadTimesPanel';
 import {colChooserButton, button} from '@xh/hoist/desktop/cmp/button';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import {tooltip} from '@xh/hoist/kit/blueprint';
 import './CubeTestPanel.scss';
 
 export const CubeTestPanel = hoistCmp({
     className: 'tb-cube-test-panel',
     model: creates(CubeTestModel),
 
-    render({className}) {
+    render({className, model}) {
         return panel({
             className,
             item: hframe(
@@ -26,7 +27,9 @@ export const CubeTestPanel = hoistCmp({
                     title: 'Grids › Cube Data',
                     icon: Icon.grid(),
                     flex: 1,
-                    item: grid(),
+                    // Pass gridModel explicitly - it is reassigned when projectionOnly toggles, and
+                    // reading the observable ref here rebinds the grid to the rebuilt model.
+                    item: grid({model: model.gridModel}),
                     mask: 'onLoad',
                     tbar: tbar(),
                     bbar: bbar()
@@ -39,6 +42,17 @@ export const CubeTestPanel = hoistCmp({
 
 const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
     toolbar(
+        tooltip({
+            content:
+                'Read-only projection Store mode (hoist-react #4521) - uses Cube row objects as record data by reference. Toggling rebuilds the grid + connected View.',
+            item: switchInput({bind: 'projectionOnly', label: 'Projection Only', labelSide: 'left'})
+        }),
+        tooltip({
+            content:
+                'Record reuse on the connected Store - a digest installed automatically by the connected View. Toggle off for a no-reuse baseline. Toggling rebuilds the grid + connected View.',
+            item: switchInput({bind: 'reuseRecords', label: 'Reuse Records', labelSide: 'left'})
+        }),
+        toolbarSep(),
         switchInput({bind: 'showSummary', label: 'Summary?', labelSide: 'left'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves?', labelSide: 'left'}),
         switchInput({bind: 'includeGlobalAgg', label: 'Global Agg?', labelSide: 'left'}),
@@ -65,6 +79,16 @@ const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
             width: 80
         }),
         toolbarSep(),
+        'x',
+        tooltip({
+            content: 'Replicate fetched orders NxN to stress-test at scale (applied on Load Cube)',
+            item: select({
+                bind: 'recordMultiplier',
+                options: [1, 2, 5, 10, 20, 50],
+                width: 70
+            })
+        }),
+        toolbarSep(),
         button({
             icon: Icon.reset(),
             text: 'Clear Cube',
@@ -80,13 +104,34 @@ const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
 );
 
 const bbar = hoistCmp.factory<CubeTestModel>(({model}) => {
-    const {view} = model;
+    const {view, reuseStats} = model;
     return toolbar(
         storeCountLabel({store: view.cube.store, unit: 'cube facts'}),
         hspacer(2),
         'Last Updated:',
         relativeTimestamp({timestamp: view.info?.asOf}),
         filler(),
+        reuseStats
+            ? tooltip({
+                  content:
+                      'StoreRecord instances preserved across the last grid Store data change, by identity.',
+                  item: `Reused: ${reuseStats.reused.toLocaleString()}/${reuseStats.total.toLocaleString()}`
+              })
+            : null,
+        reuseStats ? toolbarSep() : null,
+        model.heapMB != null
+            ? `Heap: ${model.heapMB} MB${model.heapImprecise ? ' (imprecise)' : ''}`
+            : null,
+        tooltip({
+            content:
+                'GC + sample JS heap. For accurate numbers, launch Chrome with --js-flags=--expose-gc --enable-precise-memory-info (otherwise the reading is coarse).',
+            item: button({
+                icon: Icon.chartLine(),
+                text: 'Measure Mem',
+                onClick: () => model.measureMemory()
+            })
+        }),
+        toolbarSep(),
         storeFilterField(),
         colChooserButton()
     );
