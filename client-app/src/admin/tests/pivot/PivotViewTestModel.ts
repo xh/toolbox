@@ -6,6 +6,7 @@ import {
     Cube,
     CubeFieldSpec,
     flattenFilter,
+    getCubeLeaves,
     PivotQueryConfig,
     PivotView,
     QueryConfig,
@@ -935,13 +936,13 @@ export class PivotViewTestModel extends HoistModel {
         if (provideLeaves && !includeLeaves) {
             let innermost = 0,
                 withChildren = 0,
-                viaGetter = 0;
+                viaHelper = 0;
 
             const visit = (row: ViewRowData, depth: number) => {
                 if (depth === groupBy.length) {
                     innermost++;
                     if (row.children) withChildren++;
-                    viaGetter += castArray(row.cubeLeaves).length;
+                    viaHelper += castArray(getCubeLeaves(row)).length;
                 }
                 row.children?.forEach(child => visit(child, depth + 1));
             };
@@ -950,9 +951,9 @@ export class PivotViewTestModel extends HoistModel {
             ret.push(
                 boolCheck(
                     'provideLeaves reaches leaves without exposing them as children',
-                    innermost > 0 && !withChildren && viaGetter === leaves.length,
+                    innermost > 0 && !withChildren && viaHelper === leaves.length,
                     `${innermost} innermost rows, ${withChildren} with children, ` +
-                        `${viaGetter} leaves via cubeLeaves for ${leaves.length} records`
+                        `${viaHelper} leaves via getCubeLeaves for ${leaves.length} records`
                 )
             );
         }
