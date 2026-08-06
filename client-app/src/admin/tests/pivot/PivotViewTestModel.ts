@@ -995,6 +995,11 @@ export class PivotViewTestModel extends HoistModel {
         };
     }
 
+    /**
+     * Deliberately not `projectionOnly`, despite View recommending it for connected stores: that has
+     * records adopt the view's row data objects, so `checkStore` would compare each row against
+     * itself and pass vacuously.
+     */
     private buildStore(valueFields: string[]): Store {
         return new Store({
             idSpec: 'id',
