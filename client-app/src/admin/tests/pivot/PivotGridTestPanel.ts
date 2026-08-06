@@ -40,7 +40,7 @@ const queryBar = hoistCmp.factory<PivotGridTestModel>(() =>
             options: PivotGridTestModel.GROUP_DIMS,
             enableMulti: true,
             enableClear: false,
-            width: 240
+            width: 280
         }),
         'Pivot by',
         select({
@@ -48,7 +48,7 @@ const queryBar = hoistCmp.factory<PivotGridTestModel>(() =>
             options: PivotGridTestModel.PIVOT_DIMS,
             enableMulti: true,
             enableClear: false,
-            width: 220
+            width: 280
         }),
         'Values',
         select({
@@ -56,7 +56,7 @@ const queryBar = hoistCmp.factory<PivotGridTestModel>(() =>
             options: PivotGridTestModel.VALUE_FIELDS,
             enableMulti: true,
             enableClear: false,
-            width: 220
+            width: 300
         }),
         toolbarSep(),
         switchInput({bind: 'includeRoot', label: 'Root'}),

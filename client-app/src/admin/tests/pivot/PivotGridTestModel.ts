@@ -20,7 +20,7 @@ export class PivotGridTestModel extends HoistModel {
     static VALUE_FIELDS = ['pnl', 'mktVal', 'quantity'];
 
     @bindable.ref groupBy: string[] = ['fund', 'strategy'];
-    @bindable.ref pivotBy: string[] = ['regionCore'];
+    @bindable.ref pivotBy: string[] = ['regionCore', 'assetClass'];
     @bindable.ref valueFields: string[] = ['pnl'];
     @bindable includeRoot = true;
     @bindable includeLeaves = false;
