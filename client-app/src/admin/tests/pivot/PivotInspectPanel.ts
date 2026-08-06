@@ -1,16 +1,26 @@
-import {grid} from '@xh/hoist/cmp/grid';
-import {code, filler, hframe, span, vframe} from '@xh/hoist/cmp/layout';
+import {filler, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {jsonInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {PivotInspectModel} from './PivotInspectModel';
 
+const JSON_PROPS = {
+    readonly: true,
+    enableSearch: true,
+    lineNumbers: false,
+    flex: 1,
+    width: '100%'
+};
+
+/** Side by side in an hframe, flex grows the input horizontally only - height has to be explicit. */
+const SIDE_BY_SIDE_JSON_PROPS = {...JSON_PROPS, height: '100%'};
+
 /**
- * A small enough PivotView to check by hand - raw records in, pivoted rows out, with the pivot paths
- * and the synthetic Store fields that connect the two shown alongside.
+ * A small enough PivotView to check by hand, shown as JSON at every stage - raw records in, published
+ * rows out, the pivot paths and synthetic Store fields between, and the records a Grid would bind to.
  */
 export const PivotInspectPanel = hoistCmp({
     displayName: 'PivotInspectPanel',
@@ -22,47 +32,42 @@ export const PivotInspectPanel = hoistCmp({
             item: vframe(
                 hframe(
                     panel({
-                        title: 'Raw records loaded into the Cube',
+                        title: '1. Raw records loaded into the Cube',
                         icon: Icon.database(),
-                        width: 470,
-                        item: grid({model: model.rawGridModel})
+                        width: 400,
+                        item: jsonInput({value: model.rawJson, ...JSON_PROPS})
                     }),
                     panel({
-                        title: 'PivotView result - as loaded into a connected Store',
-                        icon: Icon.grid(),
+                        title: '2. result.rows - published row data, verbatim',
+                        icon: Icon.json(),
                         flex: 1,
-                        item: grid({model: model.pivotGridModel})
+                        item: jsonInput({value: model.rowsJson, ...JSON_PROPS})
                     })
                 ),
                 panel({
-                    title: 'result.paths  /  result.cellFields - one Store field per entry',
+                    title: '3. result.paths  /  result.cellFields - one Store field per entry',
                     icon: Icon.treeList(),
-                    modelConfig: {
-                        side: 'bottom',
-                        defaultSize: 210,
-                        collapsible: true,
-                        resizable: true
-                    },
-                    item: hframe(
-                        grid({model: model.pathGridModel, flex: 1}),
-                        grid({model: model.fieldGridModel, flex: 1})
-                    )
-                }),
-                panel({
-                    title: 'result.rows - the published row data, verbatim',
-                    icon: Icon.json(),
                     modelConfig: {
                         side: 'bottom',
                         defaultSize: 260,
                         collapsible: true,
                         resizable: true
                     },
-                    className: 'xh-pad',
-                    scrollable: true,
-                    item: code({
-                        style: {whiteSpace: 'pre', fontSize: 11},
-                        item: model.rowJson
-                    })
+                    item: hframe(
+                        jsonInput({value: model.pathsJson, ...SIDE_BY_SIDE_JSON_PROPS}),
+                        jsonInput({value: model.cellFieldsJson, ...SIDE_BY_SIDE_JSON_PROPS})
+                    )
+                }),
+                panel({
+                    title: '4. Store records - the pivoted output as a Grid receives it',
+                    icon: Icon.grid(),
+                    modelConfig: {
+                        side: 'bottom',
+                        defaultSize: 280,
+                        collapsible: true,
+                        resizable: true
+                    },
+                    item: jsonInput({value: model.storeJson, ...JSON_PROPS})
                 })
             ),
             bbar: bbar()
@@ -77,11 +82,6 @@ const tbar = hoistCmp.factory<PivotInspectModel>(({model}) =>
             icon: Icon.play(),
             text: 'Build',
             onClick: () => model.buildAsync()
-        }),
-        button({
-            icon: Icon.expand(),
-            text: 'Expand all',
-            onClick: () => model.pivotGridModel.expandAll()
         }),
         button({
             icon: Icon.bolt(),
