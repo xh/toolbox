@@ -211,6 +211,21 @@ const QUERY_SCENARIO: Scenario = {
 };
 
 /**
+ * `PivotView.createStore` declares and maintains cell fields itself, so nothing here re-declares
+ * them - which is the whole point. Three groupings over 10 funds so a structural change confined to
+ * one fund leaves most of the tree untouched, making record retention observable.
+ */
+const STORE_FACTORY_SCENARIO: Scenario = {
+    id: 'storeFactory',
+    label: 'PivotView.createStore - field sync, connection, record retention',
+    groupBy: ['fund', 'strategy', 'sector'],
+    pivotBy: ['region'],
+    valueFields: ['pnl', 'tag'],
+    aggregators: {tag: 'UNIQUE'},
+    leaves: 3000
+};
+
+/**
  * Plain `View` regression coverage. The phase 2 `data/cube` edits widened members and renamed the
  * incremental update collector without changing non-pivot behavior - which nothing exercised. The
  * reference accumulator is independent of hoist-react, so passing it proves correctness outright,
@@ -367,6 +382,7 @@ export class PivotViewTestModel extends HoistModel {
             }
             await this.runFilterScenarioAsync();
             await this.runQueryScenarioAsync();
+            await this.runStoreFactoryScenarioAsync();
             for (const scenario of PLAIN_SCENARIOS) {
                 await this.runPlainScenarioAsync(scenario);
             }
@@ -734,6 +750,154 @@ export class PivotViewTestModel extends HoistModel {
     }
 
     /**
+     * `PivotView.createStore` declares a Field per cell field and re-declares them itself on every
+     * structural change - nothing here does that, which is the whole point. Two connected stores on
+     * one view also stand in for the two-`PivotGridModel`s-on-one-view case.
+     *
+     * Values are asserted through a *non*-projection store: under `projectionOnly` a record's data is
+     * the view's own row data object, so any store-vs-view comparison is a row against itself. The
+     * projection store carries the record-retention assertion, where identity is the claim.
+     */
+    private async runStoreFactoryScenarioAsync() {
+        const scenario = STORE_FACTORY_SCENARIO,
+            {groupBy, pivotBy, valueFields, aggregators} = scenario,
+            leaves = this.buildLeaves(scenario),
+            fields = this.buildFields(scenario),
+            queryConf = this.buildQueryConf(scenario);
+
+        const cube = new Cube({fields, idSpec: 'id'});
+        await cube.loadDataAsync(leaves);
+
+        try {
+            const view = cube.createPivotView({query: queryConf, connect: true}),
+                live = view.createStore({connect: true, projectionOnly: false}),
+                proj = view.createStore({connect: true}),
+                snap = view.createStore({projectionOnly: false});
+
+            const rowCount = () => {
+                let n = 0;
+                const visit = (row: ViewRowData) => {
+                    n++;
+                    row.children?.forEach(visit);
+                };
+                view.result.rows.forEach(visit);
+                return n;
+            };
+
+            this.record(
+                scenario,
+                checkPivotView({
+                    view,
+                    leaves,
+                    groupBy,
+                    pivotBy,
+                    valueFields,
+                    aggregators,
+                    label: 'initial'
+                })
+            );
+            this.record(scenario, [
+                this.checkDeclaredFields(view, live, 'createStore: declares every cell field'),
+                boolCheck(
+                    'createStore: loads immediately from the current result',
+                    live.allCount > 0 && live.allCount + 1 === rowCount(),
+                    `${live.allCount} records + root for ${rowCount()} view rows`
+                ),
+                // loadStores publishes exactly the one root node carrying `children` that this flag
+                // wants, so the app's remaining value-totals wiring is just GridModel.showSummary.
+                boolCheck(
+                    'createStore: loadRootAsSummary mirrors includeRoot',
+                    live.loadRootAsSummary && live.summaryRecords?.length === 1,
+                    `loadRootAsSummary ${live.loadRootAsSummary}, ` +
+                        `${live.summaryRecords?.length ?? 0} summary records`
+                )
+            ]);
+            this.record(
+                scenario,
+                checkCellStore({view, store: live, aggregators, label: 'createStore'})
+            );
+
+            // Real elapsed time, so an untouched store could not hold `lastUpdated` by coincidence.
+            await wait(5);
+            const liveUpdated = live.lastUpdated,
+                snapUpdated = snap.lastUpdated;
+            await this.tickAsync(scenario, leaves, cube);
+
+            this.record(scenario, [
+                boolCheck(
+                    'createStore: connect false loads once and never again',
+                    snap.lastUpdated === snapUpdated && live.lastUpdated !== liveUpdated,
+                    live.lastUpdated === liveUpdated
+                        ? 'the connected store did not update either - the tick was a no-op'
+                        : `unconnected store updated at ${snap.lastUpdated}`
+                )
+            ]);
+            this.record(
+                scenario,
+                checkCellStore({view, store: live, aggregators, label: 'after tick'})
+            );
+
+            // Confine a new pivot value to one fund of ten, so most of the tree is untouched and its
+            // rows keep their digests - which is what makes record retention observable at all.
+            const fund = uniq(leaves.map(l => l.fund)).sort()[0],
+                cellFieldsBefore = view.result.cellFields,
+                projBefore = new Set(proj.allRecords);
+            leaves.forEach(rec => {
+                if (rec.fund === fund) rec.region = 'ZZ-New';
+            });
+            await cube.updateDataAsync(leaves);
+
+            const retained = proj.allRecords.filter(rec => projBefore.has(rec)).length;
+            this.record(scenario, [
+                boolCheck(
+                    'structural change: mints new cell fields',
+                    view.result.cellFields !== cellFieldsBefore &&
+                        view.result.cellFields.length > cellFieldsBefore.length,
+                    `cellFields went ${cellFieldsBefore.length} -> ${view.result.cellFields.length}`
+                ),
+                this.checkDeclaredFields(
+                    view,
+                    live,
+                    'structural change: the view re-declares fields unaided'
+                ),
+                // Without retention `setFields` empties `_committed`, so the load on the very next
+                // line has nothing to reuse and rebuilds every record.
+                boolCheck(
+                    'structural change: a projectionOnly store retains its records',
+                    retained > projBefore.size / 2,
+                    `${retained} of ${projBefore.size} records reused`
+                )
+            ]);
+            this.record(
+                scenario,
+                checkCellStore({view, store: live, aggregators, label: 'after new pivot value'})
+            );
+
+            view.disconnectStore(live);
+            await wait(5);
+            const disconnectedAt = live.lastUpdated,
+                projUpdated = proj.lastUpdated;
+            await this.tickAsync(scenario, leaves, cube, 2);
+
+            this.record(scenario, [
+                boolCheck(
+                    'disconnectStore: stops further loads',
+                    live.lastUpdated === disconnectedAt && proj.lastUpdated !== projUpdated,
+                    proj.lastUpdated === projUpdated
+                        ? 'the still-connected store did not update either - the tick was a no-op'
+                        : `disconnected store updated at ${live.lastUpdated}`
+                )
+            ]);
+
+            XH.safeDestroy(view, live, proj, snap);
+        } catch (e) {
+            this.recordThrow(scenario, e);
+        } finally {
+            XH.safeDestroy(cube);
+        }
+    }
+
+    /**
      * Plain `View` against the same reference: the initial build, an incremental values tick, a
      * structural dimension change, and a full rebuild for comparison.
      */
@@ -930,10 +1094,14 @@ export class PivotViewTestModel extends HoistModel {
         }
     }
 
-    /** Perturb measures in place and push them through the Cube. */
-    private async tickAsync(scenario: Scenario, leaves: PlainObject[], cube: Cube) {
+    /**
+     * Perturb measures in place and push them through the Cube. `gen` must advance on a second tick
+     * within one scenario - the mixed measures are a pure function of it, so re-running the same
+     * generation moves nothing and any "did the store update" assertion becomes a no-op.
+     */
+    private async tickAsync(scenario: Scenario, leaves: PlainObject[], cube: Cube, gen = 1) {
         if (scenario.aggregators) {
-            this.applyMixedMeasures(leaves, 1);
+            this.applyMixedMeasures(leaves, gen);
         } else {
             tickLeaves(leaves, Math.max(1, Math.round((leaves.length * this.tickPct) / 100)));
         }
@@ -972,6 +1140,26 @@ export class PivotViewTestModel extends HoistModel {
         else if (!differs) {
             check.errors.push('every populated cell count equalled its group row count');
         }
+        return check;
+    }
+
+    /** Every cell field the view published, plus its row-meta and query fields, declared on `store`. */
+    private checkDeclaredFields(view: PivotView, store: Store, name: string): PivotCheck {
+        const check: PivotCheck = {name, errors: [], checked: 0, maxDrift: 0},
+            want = [
+                'cubeLabel',
+                'cubeDimension',
+                ...view.fieldNames,
+                ...view.result.cellFields.map(cf => cf.name)
+            ];
+
+        want.forEach(fieldName => {
+            check.checked++;
+            if (!store.getField(fieldName) && check.errors.length < 5) {
+                check.errors.push(`field '${fieldName}' not declared on the store`);
+            }
+        });
+        if (!check.checked) check.errors.push('nothing was compared');
         return check;
     }
 
