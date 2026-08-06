@@ -77,7 +77,7 @@ const SCENARIOS: Scenario[] = [
     },
     {
         id: 'multi',
-        label: 'Two pivot dims, 3 measures (pivot totals)',
+        label: 'Two pivot dims, 3 measures (pivot summaries)',
         groupBy: ['fund', 'strategy'],
         pivotBy: ['region', 'sector'],
         valueFields: ['pnl', 'mktVal', 'quantity'],
@@ -121,7 +121,7 @@ const SCENARIOS: Scenario[] = [
     },
     {
         id: 'noGroups',
-        label: 'No group dims - a single value-totals row',
+        label: 'No group dims - a single value-summary row',
         groupBy: [],
         pivotBy: ['region', 'sector'],
         valueFields: ['pnl'],
@@ -242,12 +242,12 @@ const QUERY_TRANSITION_SCENARIO: Scenario = {
 };
 
 /**
- * Two pivot dims so pivot totals materialize, two value fields so a leaf path carries a group rather
+ * Two pivot dims so pivot summaries materialize, two value fields so a leaf path carries a group rather
  * than a bare column. Asserts the built column tree, not a rendered grid - the model needs no DOM.
  */
 const PIVOT_GRID_SCENARIO: Scenario = {
     id: 'pivotGrid',
-    label: 'PivotGridModel - columns, totals, and rebuild gating',
+    label: 'PivotGridModel - columns, summaries, and rebuild gating',
     groupBy: ['fund', 'strategy'],
     pivotBy: ['region', 'sector'],
     valueFields: ['pnl', 'mktVal'],
@@ -844,7 +844,7 @@ export class PivotViewTestModel extends HoistModel {
                     `${live.allCount} records + root for ${rowCount()} view rows`
                 ),
                 // loadStores publishes exactly the one root node carrying `children` that this flag
-                // wants, so the app's remaining value-totals wiring is just GridModel.showSummary.
+                // wants, so the app's remaining value-summary wiring is just GridModel.showSummary.
                 boolCheck(
                     'createStore: loadRootAsSummary mirrors includeRoot',
                     live.loadRootAsSummary && live.summaryRecords?.length === 1,
@@ -1033,9 +1033,9 @@ export class PivotViewTestModel extends HoistModel {
             const view = cube.createPivotView({query: queryConf, connect: true}),
                 model = new PivotGridModel({
                     view,
-                    showRowTotals: true,
-                    showPivotTotals: true,
-                    showValueTotals: true
+                    rowSummary: true,
+                    pivotSummary: true,
+                    valueSummary: true
                 }),
                 {gridModel} = model;
 
@@ -1046,7 +1046,7 @@ export class PivotViewTestModel extends HoistModel {
                         .filter(id => id !== 'cubeLabel'),
                 cellNames = () => view.result.cellFields.map(cf => cf.name);
 
-            // With both totals on, the value columns are exactly the published cell fields - every
+            // With both summaries on, the value columns are exactly the published cell fields - every
             // path at every depth, including the root. That pins naming, coverage and placement in
             // one assertion, and it can only hold if colIds come from `cellFields` themselves.
             const ids = valueColIds(),
@@ -1059,25 +1059,25 @@ export class PivotViewTestModel extends HoistModel {
                         `[${difference(ids, names).slice(0, 3)}], missing [${difference(names, ids).slice(0, 3)}]`
                 ),
                 boolCheck(
-                    "columns: row totals bind the value fields' own names",
+                    "columns: row summaries bind the value fields' own names",
                     view.query.valueFields.every(f => ids.includes(f.name)),
                     `missing [${difference(view.query.valueFields.map(f => f.name), ids)}]`
                 ),
                 boolCheck(
-                    'columns: showValueTotals wires includeRoot through to showSummary',
+                    'columns: valueSummary wires includeRoot through to showSummary',
                     gridModel.showSummary === 'top',
                     `showSummary is ${gridModel.showSummary}`
                 )
             ]);
 
-            // Turning pivot totals off must drop exactly the partial-path cells, and nothing else.
-            model.showPivotTotals = false;
+            // Turning pivot summaries off must drop exactly the partial-path cells, and nothing else.
+            model.pivotSummary = false;
             const partials = view.result.cellFields
                 .filter(cf => !cf.path.isRoot && !isEmpty(cf.path.children))
                 .map(cf => cf.name);
             this.record(scenario, [
                 boolCheck(
-                    'columns: showPivotTotals gates exactly the partial-path cells',
+                    'columns: pivotSummary gates exactly the partial-path cells',
                     !isEmpty(partials) &&
                         isEqual([...valueColIds()].sort(), [...difference(names, partials)].sort()),
                     isEmpty(partials)
@@ -1085,7 +1085,23 @@ export class PivotViewTestModel extends HoistModel {
                         : `${valueColIds().length} columns, expected ${names.length - partials.length}`
                 )
             ]);
-            model.showPivotTotals = true;
+            model.pivotSummary = true;
+
+            // Side placement, and the `true` -> default-side resolution behind it. Column 0 is
+            // always the tree label column.
+            const groupIdAt = (i: number) => (model.gridModel.columns.at(i) as any)?.groupId;
+            model.rowSummary = 'left';
+            const leftPlaced = groupIdAt(1);
+            model.rowSummary = true;
+            const rightPlaced = groupIdAt(-1);
+
+            this.record(scenario, [
+                boolCheck(
+                    'rowSummary: a side places the column, and true resolves to right',
+                    leftPlaced === 'rowSummary' && rightPlaced === 'rowSummary',
+                    `left put ${leftPlaced} first, true put ${rightPlaced} last`
+                )
+            ]);
 
             // Display sort must build its own order and never touch the immutable published tree.
             const pathsBefore = view.result.paths,
@@ -1159,7 +1175,7 @@ export class PivotViewTestModel extends HoistModel {
     /** Header names of the top-level pivot column groups, in display order. */
     private topGroupIds(model: PivotGridModel): string[] {
         return model.gridModel.columns
-            .filter(it => 'children' in it && it.groupId !== 'rowTotals')
+            .filter(it => 'children' in it && it.groupId !== 'rowSummary')
             .map((it: any) => it.groupId);
     }
 
