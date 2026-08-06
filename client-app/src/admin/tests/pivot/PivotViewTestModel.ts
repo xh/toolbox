@@ -19,7 +19,13 @@ import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 import {castArray, isEmpty, isEqual, uniq} from 'lodash';
 import {generateLeaves, getProfile, tickLeaves} from './PivotBenchData';
-import {checkPivotView, comparePivotViews, PivotCheck, RefAggKind} from './PivotViewCheck';
+import {
+    checkCellStore,
+    checkPivotView,
+    comparePivotViews,
+    PivotCheck,
+    RefAggKind
+} from './PivotViewCheck';
 
 interface Scenario {
     id: string;
@@ -41,6 +47,13 @@ interface Scenario {
     bucket?: boolean;
     /** Connect a Store and assert what the view loads and pushes into it. */
     withStore?: boolean;
+    /**
+     * Declare a Store field per `result.cellFields` and assert every cell loads through it. Set
+     * `denseRecords` to force `Store`'s dense record representation rather than its sparse one - the
+     * two resolve an unpopulated cell to its default by different mechanisms.
+     */
+    withCellStore?: boolean;
+    denseRecords?: boolean;
 }
 
 /** Value fields for the mixed-aggregator scenarios - one per aggregator under test, plus a SUM. */
@@ -143,6 +156,31 @@ const SCENARIOS: Scenario[] = [
         valueFields: MIXED_FIELDS,
         aggregators: MIXED_AGGS,
         leaves: 3000
+    },
+    // The loadability claim behind `Cells on row data`: cells must arrive in a Store as ordinary
+    // fields. Sparse and dense record forms are covered separately - `Store` reaches an unpopulated
+    // cell's default through a shared prototype below `denseRecordThreshold` and a cloned template
+    // at or above it, so both need asserting.
+    {
+        id: 'cellStoreSparse',
+        label: 'Cells load into a Store - sparse records',
+        groupBy: ['fund', 'strategy'],
+        pivotBy: ['region'],
+        valueFields: ['pnl', 'tag'],
+        aggregators: {tag: 'UNIQUE'},
+        leaves: 2000,
+        withCellStore: true
+    },
+    {
+        id: 'cellStoreDense',
+        label: 'Cells load into a Store - dense records',
+        groupBy: ['fund', 'strategy'],
+        pivotBy: ['region', 'sector'],
+        valueFields: MIXED_FIELDS,
+        aggregators: MIXED_AGGS,
+        leaves: 2000,
+        withCellStore: true,
+        denseRecords: true
     }
 ];
 
@@ -292,9 +330,7 @@ export class PivotViewTestModel extends HoistModel {
                 width: 40,
                 align: 'center',
                 renderer: v =>
-                    v
-                        ? Icon.checkCircle({intent: 'success', asHtml: true})
-                        : Icon.xCircle({intent: 'danger', asHtml: true})
+                    v ? Icon.checkCircle({intent: 'success'}) : Icon.xCircle({intent: 'danger'})
             },
             {field: 'name', headerName: 'Check', flex: 2, autosizeMaxWidth: 600},
             {field: 'checked', headerName: 'Values', width: 90, align: 'right'},
@@ -364,8 +400,18 @@ export class PivotViewTestModel extends HoistModel {
         await cube.loadDataAsync(leaves);
 
         try {
-            const store = scenario.withStore ? this.buildStore(valueFields) : null,
-                view = cube.createPivotView({query: queryConf, stores: store, connect: true});
+            // Cell field names only exist once a view has run, so a cell store has to be declared
+            // from a probe result - the same ordering PivotGridModel faces observing `cellFields`.
+            let store: Store = null;
+            if (scenario.withCellStore) {
+                const probe = cube.createPivotView({query: queryConf});
+                store = this.buildCellStore(probe, scenario);
+                XH.safeDestroy(probe);
+            } else if (scenario.withStore) {
+                store = this.buildStore(valueFields);
+            }
+
+            const view = cube.createPivotView({query: queryConf, stores: store, connect: true});
 
             const refLeaves = scenario.excludeEmptyPivotValues
                 ? leaves.filter(l => pivotBy.every(d => l[d] != null && l[d] !== ''))
@@ -386,8 +432,14 @@ export class PivotViewTestModel extends HoistModel {
                 );
 
             check('initial');
-            if (aggregators) this.record(scenario, [this.checkCellChildCount(view)]);
-            if (store) {
+            // Gated on a CHILD_COUNT field existing, not merely on `aggregators` - the check counts
+            // childCount cells and is vacuous, by its own guard, without one.
+            if (Object.values(aggregators ?? {}).includes('CHILD_COUNT')) {
+                this.record(scenario, [this.checkCellChildCount(view)]);
+            }
+            if (scenario.withCellStore) {
+                this.record(scenario, checkCellStore({view, store, aggregators, label: 'initial'}));
+            } else if (store) {
                 this.record(scenario, [
                     this.checkStore(
                         view,
@@ -427,7 +479,14 @@ export class PivotViewTestModel extends HoistModel {
             ]);
 
             check('after tick');
-            if (store) {
+            if (scenario.withCellStore) {
+                // Cells are mutated onto owner row data after the base class stamps digests, so this
+                // is what proves the restamp in loadUpdatedRows actually reaches connected records.
+                this.record(
+                    scenario,
+                    checkCellStore({view, store, aggregators, label: 'after tick'})
+                );
+            } else if (store) {
                 this.record(scenario, [
                     this.checkStore(view, store, valueFields, 'store: tick pushed the changed rows')
                 ]);
@@ -478,6 +537,41 @@ export class PivotViewTestModel extends HoistModel {
                     )
                 ]);
                 check('after pivot dim change');
+            }
+
+            // A brand-new pivot value mints cell fields that did not exist when the store above was
+            // declared. Re-declaring from the new `cellFields` and reloading is what PivotGridModel
+            // must do on a structural change, and it has to load as cleanly as the first build.
+            if (scenario.withCellStore) {
+                const dim = pivotBy[pivotBy.length - 1],
+                    fieldsBefore = view.result.cellFields;
+                leaves.forEach((rec, i) => {
+                    if (i % 13 === 0) rec[dim] = 'ZZ-New';
+                });
+                await cube.updateDataAsync(leaves);
+
+                this.record(scenario, [
+                    boolCheck(
+                        'new pivot value mints new cell fields',
+                        view.result.cellFields !== fieldsBefore &&
+                            view.result.cellFields.length > fieldsBefore.length,
+                        `cellFields went ${fieldsBefore.length} -> ${view.result.cellFields.length}`
+                    )
+                ]);
+
+                const widened = this.buildCellStore(view, scenario);
+                view.setStores(widened);
+                check('after new pivot value');
+                this.record(
+                    scenario,
+                    checkCellStore({
+                        view,
+                        store: widened,
+                        aggregators,
+                        label: 'after new pivot value'
+                    })
+                );
+                XH.safeDestroy(widened);
             }
 
             XH.safeDestroy(view, store);
@@ -993,6 +1087,26 @@ export class PivotViewTestModel extends HoistModel {
             omitRedundantNodes: false,
             bucketSpecFn: scenario.bucket ? BUCKET_SPEC_FN : null
         };
+    }
+
+    /**
+     * A Store declaring one Field per published cell field, taking `type` from each entry's source
+     * measure exactly as {@link PivotCellField} intends. `defaultValue` is left at null, which is what
+     * an unpopulated cell must resolve to.
+     *
+     * `denseRecordThreshold` forces the record representation: 1 makes every record dense (defaults
+     * via a cloned template), a value above the field count makes every record sparse (defaults via a
+     * shared prototype). Both must resolve an absent cell to null.
+     */
+    private buildCellStore(view: PivotView, scenario: Scenario): Store {
+        const {cellFields} = view.result;
+        return new Store({
+            idSpec: 'id',
+            fields: cellFields.map(cf => ({name: cf.name, type: cf.valueField.type})),
+            experimental: {
+                denseRecordThreshold: scenario.denseRecords ? 1 : cellFields.length + 100
+            }
+        });
     }
 
     /**

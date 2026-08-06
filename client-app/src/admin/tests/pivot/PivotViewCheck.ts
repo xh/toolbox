@@ -1,5 +1,5 @@
 import {PlainObject} from '@xh/hoist/core';
-import {PivotCellField, PivotPath, PivotViewResult, View, ViewRowData} from '@xh/hoist/data';
+import {PivotCellField, PivotPath, PivotViewResult, Store, View, ViewRowData} from '@xh/hoist/data';
 import {isEmpty, isEqual, isNumber} from 'lodash';
 
 /**
@@ -442,4 +442,78 @@ export function comparePivotViews(
         ret.errors.push('rebuilt view published no cell fields');
     }
     return ret;
+}
+
+export interface CellStoreCheckConfig {
+    view: View;
+    /** Store declaring one Field per `result.cellFields` entry, loaded from the view. */
+    store: Store;
+    /** Aggregator per value field, so counts and UNIQUE values compare exactly. */
+    aggregators?: Record<string, RefAggKind>;
+    label: string;
+}
+
+/**
+ * Every cell read back out of a connected `Store`, through fields declared from `result.cellFields`.
+ *
+ * This is the claim the whole `Cells on row data` decision rests on - cell values are ordinary Store
+ * fields, so value columns work with column filters, Excel export and inline editing. The rest of the
+ * suite proves cells are correct *on the view*; only this proves they survive into records.
+ *
+ * Returns two checks, each with its own comparison count so neither can pass vacuously: populated
+ * cells must match the view, and cells the view left *absent* from row data must read the declared
+ * field's `defaultValue` - null, not undefined - via `Store`'s sparse prototype or dense template.
+ */
+export function checkCellStore({
+    view,
+    store,
+    aggregators = {},
+    label
+}: CellStoreCheckConfig): PivotCheck[] {
+    const values = mkCheck(`${label}: cell values via Store`),
+        nulls = mkCheck(`${label}: absent cells read null via Store`),
+        {cellFields} = pivotResult(view);
+
+    const visit = (row: ViewRowData) => {
+        const rec = store.getById(row.id);
+        if (!rec) {
+            if (values.errors.length < 5) {
+                values.errors.push(`row ${row.id} absent from the connected store`);
+            }
+        } else {
+            cellFields.forEach(cf => {
+                const {name} = cf,
+                    kind = aggregators[cf.valueField.name] ?? 'SUM',
+                    got = rec.data[name];
+
+                // Own property iff the view projected a value here - cell names are not query
+                // fields, so an unpopulated cell is absent rather than null on the row data.
+                if (Object.prototype.hasOwnProperty.call(row, name)) {
+                    compareKind(
+                        values,
+                        kind,
+                        row[name] ?? null,
+                        got ?? null,
+                        () => `${row.id} ${name}`
+                    );
+                } else {
+                    nulls.checked++;
+                    if (got !== null && nulls.errors.length < 5) {
+                        nulls.errors.push(
+                            `${row.id} ${name}: unpopulated cell read ${got === undefined ? 'undefined - field not declared?' : got}, expected null`
+                        );
+                    }
+                }
+            });
+        }
+        row.children?.forEach(visit);
+    };
+
+    view.result.rows.forEach(visit);
+
+    if (!values.checked) values.errors.push('nothing was compared - check is vacuous');
+    if (!nulls.checked) {
+        nulls.errors.push('no unpopulated cell was seen - scenario cannot prove the null default');
+    }
+    return [values, nulls];
 }
