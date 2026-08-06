@@ -49,7 +49,8 @@ const INTERN_KEY = 'gridTest';
  * (`retainRaw`, `reuseRecords`, `internStrings`) - those can be flipped and re-measured in place.
  */
 const RECORD_DATA_FLAGS: Array<{prop: string; label: string}> = [
-    {prop: 'useRawAsData', label: 'Use Raw As Data'},
+    {prop: 'projectionOnly', label: 'Projection Only'},
+    {prop: 'denseRecordThreshold', label: 'Dense Record Threshold'},
     {prop: 'freezeData', label: 'Freeze Data'}
 ];
 
@@ -153,15 +154,24 @@ export class GridTestModel extends HoistModel {
     @persist
     @bindable
     categoryCount = 8;
-    // The Store's `useRawAsData` config - each raw object becomes its record's `data` by reference,
-    // so a row costs one object instead of two. Mutually exclusive with `reuseRecords` (Store
-    // throws), and a different record-data representation, so toggling it reloads the app. Valid
-    // here only because the test data arrives already in final form - the extra fields are untyped
-    // and the base fields are already numbers/strings, so no `Field.parseVal` is needed. Note XSS
-    // protection is inert under it, as nothing is parsed.
+    // The Store's `projectionOnly` config - a read-only projection where each raw object becomes
+    // its record's `data` by reference, so a row costs one object instead of two. Mutually
+    // exclusive with `reuseRecords` (Store throws), and a different record-data representation, so
+    // toggling it reloads the app. Valid here only because the test data arrives already in final
+    // form and is never locally modified - the extra fields are untyped and the base fields are
+    // already numbers/strings, so no `Field.parseVal` is needed. Note XSS protection is inert
+    // under it, as nothing is parsed.
     @persist
     @bindable
-    useRawAsData = false;
+    projectionOnly = false;
+    // Override of Store's experimental `denseRecordThreshold` - the populated (non-default)
+    // field count at/above which a record's data takes its fixed dense shape, vs. the sparse
+    // form. Null applies the Hoist default; 1 forces the dense shape for all records; 999 forces
+    // sparse for all (the pre-v87 behavior). Inert under Projection Only, which skips record
+    // data construction entirely. Changing reloads the app.
+    @persist
+    @bindable
+    denseRecordThreshold: number = null;
     // The Store's `freezeData` config - defaulted to Hoist's own default so measurements reflect
     // what apps actually run. Changes how record data objects are built and stored, so toggling
     // it reloads the app - see the reaction below.
@@ -195,7 +205,7 @@ export class GridTestModel extends HoistModel {
 
     // Snapshot of RECORD_DATA_FLAGS as of page load - i.e. the values this page's Stores were
     // built with. Compared against on change to decide whether a reload is required.
-    private recordDataFlagsAtLoad: boolean[];
+    private recordDataFlagsAtLoad: Array<boolean | number>;
     // Set while a reload confirmation is already in flight, to avoid stacking dialogs.
     private confirmingReload = false;
 
@@ -314,11 +324,11 @@ export class GridTestModel extends HoistModel {
             }
         });
 
-        // Store throws if `useRawAsData` is paired with `reuseRecords`. Clear it on the way in.
+        // Store throws if `projectionOnly` is paired with `reuseRecords`. Clear it on the way in.
         this.addReaction({
-            track: () => this.useRawAsData,
-            run: useRawAsData => {
-                if (!useRawAsData) return;
+            track: () => this.projectionOnly,
+            run: projectionOnly => {
+                if (!projectionOnly) return;
                 runInAction(() => (this.reuseRecords = false));
             }
         });
@@ -338,7 +348,7 @@ export class GridTestModel extends HoistModel {
     }
 
     /** Current values of the flags that require a fresh page when changed. */
-    private get recordDataFlagState(): boolean[] {
+    private get recordDataFlagState(): Array<boolean | number> {
         return RECORD_DATA_FLAGS.map(it => this[it.prop]);
     }
 
@@ -376,7 +386,10 @@ export class GridTestModel extends HoistModel {
         if (isEmpty(changed)) return;
 
         const summary = changed
-            .map(it => `${it.label} ${this[it.prop] ? 'on' : 'off'}`)
+            .map(it => {
+                const v = this[it.prop];
+                return `${it.label} ${typeof v === 'boolean' ? (v ? 'on' : 'off') : (v ?? 'default')}`;
+            })
             .join(' and ');
 
         this.confirmingReload = true;
@@ -604,9 +617,10 @@ export class GridTestModel extends HoistModel {
                 // Belt-and-braces throughout - Store throws on each illegal pairing below. The UI
                 // disables the switches and reactions clear them, but a config restored from the
                 // ViewManager could still arrive holding an incompatible combination.
-                useRawAsData: this.useRawAsData,
+                projectionOnly: this.projectionOnly,
                 retainRaw,
-                reuseRecords: this.reuseRecords && retainRaw && !this.useRawAsData
+                reuseRecords: this.reuseRecords && retainRaw && !this.projectionOnly,
+                experimental: {denseRecordThreshold: this.denseRecordThreshold}
             };
 
         if (enableXssProtection) {
