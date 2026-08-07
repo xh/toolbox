@@ -4,7 +4,8 @@ import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {Cube, CubeFieldSpec, PivotView, Store, View} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
-import {wait} from '@xh/hoist/promise';
+import {wait, waitFor} from '@xh/hoist/promise';
+import {SECONDS} from '@xh/hoist/utils/datetime';
 import {generateLeaves, PivotProfile} from './PivotBenchData';
 
 /**
@@ -102,6 +103,9 @@ export class PivotPerfModel extends HoistModel {
     @observable running = false;
     @observable status: string = null;
 
+    /** Grid under test, rendered by the panel - ag-Grid does not exist until it mounts. */
+    @observable.ref activeGrid: GridModel = null;
+
     private seq = 0;
 
     get heapAvailable(): boolean {
@@ -128,7 +132,8 @@ export class PivotPerfModel extends HoistModel {
                 children: [
                     {field: 'cubeMs', headerName: 'Cube', width: 75, align: 'right', renderer: ms0},
                     {field: 'viewMs', headerName: 'View', width: 75, align: 'right', renderer: ms0},
-                    {field: 'gridMs', headerName: 'Grid', width: 75, align: 'right', renderer: ms0}
+                    {field: 'gridMs', headerName: 'Model', width: 75, align: 'right', renderer: ms0},
+                    {field: 'mountMs', headerName: 'Mount', width: 80, align: 'right', renderer: ms0}
                 ]
             },
             {
@@ -323,6 +328,18 @@ export class PivotPerfModel extends HoistModel {
             void cols;
             setColumnsMs = time(() => gm.setColumns(gm.columns.map(toSpec)));
         }
+        // Mount it. Everything above only built models - ag-Grid does not exist until a `grid()`
+        // component renders, so without this there are no column defs, row nodes, cells or paint.
+        let mountMs: number = null;
+        if (withGrid) {
+            const gm = pivotGrid?.gridModel ?? controlGrid;
+            mountMs = await timeAsync(async () => {
+                runInAction(() => (this.activeGrid = gm));
+                await waitFor(() => gm.agGridModel?.agApi != null, {timeout: 30 * SECONDS});
+                await paint();
+            });
+        }
+
         const heapGrid = withGrid ? await this.sampleHeapAsync() : null;
 
         // Captured here - the structural probes below deliberately add paths and would inflate them.
@@ -397,6 +414,7 @@ export class PivotPerfModel extends HoistModel {
             cubeMs,
             viewMs,
             gridMs,
+            mountMs,
             tick5,
             tick10,
             tick25,
@@ -414,6 +432,10 @@ export class PivotPerfModel extends HoistModel {
         };
 
         document.removeEventListener('visibilitychange', onHide);
+        if (withGrid) {
+            runInAction(() => (this.activeGrid = null));
+            await paint();
+        }
         XH.safeDestroy(pivotGrid, controlGrid, controlStore, view, cube);
         await this.sampleHeapAsync();
 
@@ -453,6 +475,11 @@ function time(fn: () => void): number {
     const t = performance.now();
     fn();
     return performance.now() - t;
+}
+
+/** Resolve after the browser has had a frame to lay out and paint. */
+function paint(): Promise<void> {
+    return new Promise(r => window.requestAnimationFrame(() => window.requestAnimationFrame(() => r())));
 }
 
 async function timeAsync(fn: () => Promise<any> | any): Promise<number> {
