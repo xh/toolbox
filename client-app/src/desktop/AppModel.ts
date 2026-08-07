@@ -34,6 +34,7 @@ import {
     standardGridPanel,
     treeGridPanel,
     treeGridWithCheckboxPanel,
+    pivotGridPanel,
     zoneGridPanel
 } from './tabs/grids';
 import {homeTab} from './tabs/home/HomeTab';
@@ -266,6 +267,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'columnFiltering', path: '/columnFiltering'},
                             {name: 'externalSort', path: '/externalSort'},
                             {name: 'zoneGrid', path: '/zoneGrid'},
+                            {name: 'pivotGrid', path: '/pivotGrid'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'agGrid', path: '/agGrid'}
                         ]
@@ -391,6 +393,7 @@ export class AppModel extends BaseAppModel {
                         {id: 'columnFiltering', content: columnFilteringPanel},
                         {id: 'inlineEditing', content: inlineEditingPanel},
                         {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
+                        {id: 'pivotGrid', title: 'Pivot Grid', content: pivotGridPanel},
                         {id: 'dataview', title: 'DataView', content: dataViewPanel},
                         {
                             id: 'groupedCols',

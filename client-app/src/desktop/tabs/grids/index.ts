@@ -4,6 +4,7 @@ export * from './ColumnGroupsGridPanel';
 export * from './DataViewPanel';
 export * from './ExternalSortGridPanel';
 export * from './InlineEditingPanel';
+export * from './PivotGridPanel';
 export * from './RestGridPanel';
 export * from './StandardGridPanel';
 export * from './TreeGridPanel';
