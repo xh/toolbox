@@ -54,6 +54,9 @@ export interface PivotProfile {
 
     valueFields: string[];
 
+    /** Extra numeric measures (`m0`..`mN-1`) beyond pnl/mktVal/quantity, to widen the record. */
+    extraMeasures?: number;
+
     /** Gate targets, in ms. Profiles without these are tracked but not pass/fail. */
     gate?: {buildMs: number; tickMs: number};
 
@@ -214,6 +217,7 @@ export function generateLeaves(profile: PivotProfile): PlainObject[] {
         {leaves, dims} = profile,
         dimNames = Object.keys(dims),
         pools = dimNames.map(name => (dims[name] === 0 ? null : valuePool(name, dims[name]))),
+        extra = profile.extraMeasures ?? 0,
         ret = new Array(leaves);
 
     for (let r = 0; r < leaves; r++) {
@@ -228,6 +232,9 @@ export function generateLeaves(profile: PivotProfile): PlainObject[] {
         rec.pnl = (rnd() - 0.45) * 250000;
         rec.mktVal = rnd() * 5000000;
         rec.quantity = Math.round(rnd() * 25000);
+        for (let m = 0; m < extra; m++) {
+            rec['m' + m] = rnd() * 100000;
+        }
 
         ret[r] = rec;
     }

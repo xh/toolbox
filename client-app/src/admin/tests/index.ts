@@ -9,6 +9,7 @@ export * from './localDate/LocalDateTestPanel';
 export * from './panels/PanelResizingTestPanel';
 export * from './pivot/PivotGridTestPanel';
 export * from './pivot/PivotInspectPanel';
+export * from './pivot/PivotPerfPanel';
 export * from './pivot/PivotViewTestPanel';
 export * from './select/SelectTestPanel';
 export * from './viewmanager/ViewManagerTestPanel';
