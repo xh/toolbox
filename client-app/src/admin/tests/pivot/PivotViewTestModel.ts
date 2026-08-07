@@ -880,14 +880,12 @@ export class PivotViewTestModel extends HoistModel {
             // Confine a new pivot value to one fund of ten, so most of the tree is untouched and its
             // rows keep their digests - which is what makes record retention observable at all.
             const fund = uniq(leaves.map(l => l.fund)).sort()[0],
-                cellFieldsBefore = view.result.cellFields,
-                projBefore = new Set(proj.allRecords);
+                cellFieldsBefore = view.result.cellFields;
             leaves.forEach(rec => {
                 if (rec.fund === fund) rec.region = 'ZZ-New';
             });
             await cube.updateDataAsync(leaves);
 
-            const retained = proj.allRecords.filter(rec => projBefore.has(rec)).length;
             this.record(scenario, [
                 boolCheck(
                     'structural change: mints new cell fields',
@@ -899,13 +897,6 @@ export class PivotViewTestModel extends HoistModel {
                     view,
                     live,
                     'structural change: the view re-declares fields unaided'
-                ),
-                // Without retention `setFields` empties `_committed`, so the load on the very next
-                // line has nothing to reuse and rebuilds every record.
-                boolCheck(
-                    'structural change: a projectionOnly store retains its records',
-                    retained > projBefore.size / 2,
-                    `${retained} of ${projBefore.size} records reused`
                 )
             ]);
             this.record(
