@@ -1,10 +1,11 @@
 import {HoistModel} from '@xh/hoist/core';
 import {makeObservable, bindable} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
+import type {Recall} from '../RecallsPanelModel';
 
 export class DetailsPanelModel extends HoistModel {
     @bindable.ref
-    currentRecord: StoreRecord;
+    currentRecord: StoreRecord<Recall>;
 
     constructor() {
         super();

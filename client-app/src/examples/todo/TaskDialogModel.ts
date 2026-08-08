@@ -4,6 +4,7 @@ import {required, lengthIs} from '@xh/hoist/data';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {observable, action, makeObservable} from '@xh/hoist/mobx';
 import {TodoPanelModel} from './TodoPanelModel';
+import type {Task} from './TaskService';
 
 export class TaskDialogModel extends HoistModel {
     parentModel: TodoPanelModel;
@@ -37,7 +38,7 @@ export class TaskDialogModel extends HoistModel {
         return this.formModel.values.id == null;
     }
 
-    constructor(todoPanelModel) {
+    constructor(todoPanelModel: TodoPanelModel) {
         super();
         makeObservable(this);
 
@@ -50,9 +51,11 @@ export class TaskDialogModel extends HoistModel {
             isValid = await formModel.validateAsync();
 
         if (isValid) {
+            // `FormModel.values` is an untyped proxy, so we shape the harvested values into a
+            // typed `Task` here - a generic `FormModel<Task>` could supply this directly.
             const {description, dueDate, complete} = values,
                 existingId = values.id,
-                task = {
+                task: Task = {
                     id: existingId ?? Date.now(),
                     description,
                     dueDate,
@@ -76,7 +79,7 @@ export class TaskDialogModel extends HoistModel {
     }
 
     @action
-    openEditForm(task) {
+    openEditForm(task: Task) {
         this.isOpen = true;
         this.formModel.init(task);
     }

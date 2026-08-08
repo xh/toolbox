@@ -24,9 +24,9 @@
     // Uncomment ONLY while actively developing hoist-react inline (`yarn startWithHoist`) and you
     // need Toolbox to see local type-signature changes. Re-comment before committing - do not
     // commit it enabled.
-    // "paths": {
-    //   "@xh/hoist/*": ["../../hoist-react/*"]
-    // }
+    "paths": {
+      "@xh/hoist/*": ["../../hoist-react/*"]
+    }
 
   },
   // Reference hoist-react as a composite build.
