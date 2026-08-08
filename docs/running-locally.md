@@ -26,11 +26,16 @@ backend during development). Run each in its own terminal.
 
 * **Client** - from the `client-app/` directory:
   ```
-  yarn start
+  pnpm start
   ```
   Starts the Webpack dev server on `http://localhost:3000`. It compiles the client app, watches for
   changes with hot-reload, and proxies any request under `/api/` through to the Grails server at
   `localhost:8080`.
+
+  > **First time with pnpm?** The client app is managed with [pnpm](https://pnpm.io) (not yarn or
+  > npm). The required version is pinned via the `packageManager` field in `package.json` and can
+  > be provisioned automatically by Node's bundled corepack - run `corepack enable pnpm` once to
+  > put the `pnpm` command on your PATH. (A standalone pnpm install of v10+ also works.)
 
 Once both are up, open the app in your browser:
 
@@ -50,8 +55,8 @@ Toolbox is XH's primary development and testing vehicle for the Hoist framework 
 often run against local sibling checkouts of the framework libraries rather than the published
 versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbox` directory, then:
 
-* **Client against local `hoist-react`** - start the dev server with `yarn startWithHoist` instead
-  of `yarn start`. This builds the client using the sibling `../../hoist-react` source inline.
+* **Client against local `hoist-react`** - start the dev server with `pnpm startWithHoist` instead
+  of `pnpm start`. This builds the client using the sibling `../../hoist-react` source inline.
   Only needed when you are changing or testing hoist-react code.
 
   This builds and *runs* against local hoist-react, but it does **not** change what `tsc`
@@ -94,7 +99,7 @@ clustering behavior):
   ```
 * Start a second client pointed at that server:
   ```
-  yarn start --env devGrailsPort=8081 devWebpackPort=3001
+  pnpm start --env devGrailsPort=8081 devWebpackPort=3001
   ```
 
 ## On-device mobile testing over a LAN IP
@@ -109,7 +114,7 @@ the app or fail to log in.
 > **Other options that keep you on `localhost`.** If you have the tooling, you can skip the
 > network-IP setup below entirely — and keep using Auth0, since `localhost:3000` is already a
 > registered callback (no need to switch to form-based login) — by reaching the standard
-> `yarn start` dev server through `localhost`:
+> `pnpm start` dev server through `localhost`:
 >
 > * **iOS Simulator** (requires Xcode) — Mobile Safari in the simulator shares the host's network
 >   stack, so it loads `http://localhost:3000/mobile` directly.
@@ -135,11 +140,11 @@ the app or fail to log in.
    automatically — `startWithIp` for the published hoist-react, or `startWithHoistAndIp` when
    developing against a local sibling checkout:
    ```
-   yarn startWithIp          # published @xh/hoist
-   yarn startWithHoistAndIp  # local sibling hoist-react
+   pnpm startWithIp          # published @xh/hoist
+   pnpm startWithHoistAndIp  # local sibling hoist-react
    ```
    To target a specific address (or a non-Wi-Fi interface), pass it explicitly to the base script
-   instead: `yarn start --env devHost=<devHost>` (or `yarn startWithHoist --env devHost=<devHost>`).
+   instead: `pnpm start --env devHost=<devHost>` (or `pnpm startWithHoist --env devHost=<devHost>`).
    Either way the dev server binds **only to the LAN IP, not to `localhost`** — so on the
    workstation itself you must also browse to `http://<devHost>:3000`, not `http://localhost:3000`.
 
@@ -186,7 +191,7 @@ especially when testing OAuth, CORS, or cookie-dependent features. To run with H
    ```
 3. Visit `https://toolbox-local.xh.io:8080/ping` in your browser to proceed past the SSL warning
    for API calls.
-4. Start the GUI with the `startWithHoistSecure` yarn script. Go to
+4. Start the GUI with the `startWithHoistSecure` pnpm script. Go to
    `https://toolbox-local.xh.io:3000/app/` in your browser and proceed past the SSL warning.
 
 ## Troubleshooting

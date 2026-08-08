@@ -128,7 +128,7 @@ break against the latest release. Before pinning, assess this:
   the snap (the hoist-react reference tools or the sibling `../hoist-react` checkout if present).
 
 This review is an early read; the **authoritative** confirmation is the type-check Phase 3 runs
-against the actually-installed release (`yarn lint`). If this review shows any sign Toolbox has
+against the actually-installed release (`pnpm lint`). If this review shows any sign Toolbox has
 adapted to not-yet-released breaking changes, flag it now and expect Phase 3 to confirm it. Either
 way, two possibilities when it's incompatible:
 - This should wait for the matching Hoist release, or
@@ -158,7 +158,7 @@ Once the developer confirms the targets, edit the two files:
 Then refresh the client lockfile so the build is reproducible:
 
 ```bash
-cd client-app && yarn install
+cd client-app && pnpm install
 ```
 
 (Do not run `startWithHoist` / `runHoistInline` - the release must build against the published
@@ -169,10 +169,10 @@ libraries, not local sibling checkouts.)
 This is the authoritative confirmation of the Phase 2.4 assessment - run it, don't skip it:
 
 ```bash
-cd client-app && yarn lint
+cd client-app && pnpm lint
 ```
 
-`yarn lint` now includes `tsc` (`lint:types`), so it **type-checks Toolbox against the `@xh/hoist`
+`pnpm lint` now includes `tsc` (`lint:types`), so it **type-checks Toolbox against the `@xh/hoist`
 you just installed** - the same check CI and the release build run. A type error here almost
 certainly means Toolbox uses an API that exists on the SNAPSHOT line but **not** in this release.
 If so, **stop**: this should wait for the matching Hoist release, or be shipped directly from
@@ -243,7 +243,7 @@ proposed version is a valid single increment (e.g. latest `9.0.0` -> valid: `10.
 Stage the library swaps, the lockfile, and the finalized CHANGELOG, and commit on `develop`:
 
 ```bash
-git add gradle.properties client-app/package.json client-app/yarn.lock CHANGELOG.md
+git add gradle.properties client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md
 git commit -m "Toolbox <version> - release against Hoist <core-ver> / hoist-react <hr-ver>"
 ```
 
@@ -383,7 +383,7 @@ the Phase 2 case for each library:
   `41.0-SNAPSHOT` for hoist-core). You're still developing that major.
 
 Restore the original version-string form (hoist-react typically a caret range like
-`^87.0.0-SNAPSHOT`; hoist-core the `x.y-SNAPSHOT` form), then `cd client-app && yarn install` to
+`^87.0.0-SNAPSHOT`; hoist-core the `x.y-SNAPSHOT` form), then `cd client-app && pnpm install` to
 update the lockfile.
 
 ### 2. Advance the app SNAPSHOT version (all three places, in sync)
@@ -406,7 +406,7 @@ lands.
 ### 3. Commit and push (ask first)
 
 ```bash
-git add gradle.properties client-app/package.json client-app/yarn.lock CHANGELOG.md
+git add gradle.properties client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md
 git commit -m "Restore Hoist SNAPSHOTs and open <next-major>.0-SNAPSHOT for development"
 ```
 
