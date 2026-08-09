@@ -289,8 +289,8 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 
 Package manager: **pnpm** (version pinned via `packageManager` in `package.json`; `pnpm-lock.yaml`
 is the source of truth). Do not run `npm install` or `yarn install` here. If `pnpm` is not on the
-PATH, enable it once via `corepack enable pnpm`. Note: `../../hoist-react` is still yarn-managed -
-the `startWithHoist` script intentionally runs `yarn install` there.
+PATH, enable it once via `corepack enable pnpm`. The sibling `../../hoist-react` checkout is also
+pnpm-managed, and `startWithHoist` installs it with pnpm as well.
 
 ```bash
 pnpm install              # Install dependencies

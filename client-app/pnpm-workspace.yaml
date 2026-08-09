@@ -13,6 +13,18 @@ allowBuilds:
     core-js: false
     esbuild: true
 
+# The webpack toolchain is owned by @xh/hoist-dev-utils, which depends on webpack, webpack-cli
+# and webpack-dev-server and drives them from its `configureWebpack` export. Our `build` / `start`
+# scripts invoke those CLIs by name, but pnpm only links bins for direct dependencies - so hoist
+# them into the app's node_modules to put `webpack` and `webpack-dev-server` on the script PATH.
+# Preferred over re-declaring them as direct devDependencies of the app: that would fork the
+# version from whatever dev-utils resolves, silently yielding two webpack copies (the CLI's and
+# the one dev-utils loads its plugins against) on any future dev-utils bump.
+publicHoistPattern:
+    - webpack
+    - webpack-cli
+    - webpack-dev-server
+
 # pnpm's minimum-release-age gate refuses freshly published versions as supply-chain protection.
 # Exempt XH's own packages - hoist-react and hoist-dev-utils SNAPSHOTs are routinely consumed
 # minutes after publish.

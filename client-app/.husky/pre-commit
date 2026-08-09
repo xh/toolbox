@@ -2,6 +2,6 @@ cd client-app
 pnpm exec lint-staged
 
 # Only run TypeScript compiler if TS/JS/TSX/JSX files or package files are staged
-if git diff --cached --name-only --diff-filter=ACMRD | grep -qE '\.(ts|tsx|js|jsx)$|package\.json$|pnpm-lock\.yaml$|tsconfig.*\.json$'; then
+if git diff --cached --name-only --diff-filter=ACMRD | grep -qE '\.(ts|tsx|js|jsx)$|package\.json$|pnpm-(lock|workspace)\.yaml$|tsconfig.*\.json$'; then
   pnpm lint:types
 fi

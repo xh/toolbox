@@ -4,20 +4,7 @@
 
 ### Technical
 
-* Migrated client-app package management from yarn classic to pnpm. `pnpm-lock.yaml` replaces
-  `yarn.lock`, the pnpm version is pinned via the `packageManager` field for corepack, and all
-  scripts, CI workflows, and docs now use pnpm. Requires `@xh/hoist-dev-utils` 14, whose
-  layout-agnostic module resolution supports pnpm's isolated `node_modules`. Developers should run
-  `corepack enable pnpm` once (or install pnpm 10+ standalone) before their next `pnpm install`.
-  Note `startWithHoist` still runs `yarn install` within the sibling hoist-react checkout, which
-  remains yarn-managed until its own migration.
-* Declared several previously-phantom dependencies that the app imports directly but had only
-  resolved via yarn's flat hoisting: `@fortawesome/fontawesome-svg-core`,
-  `@fortawesome/pro-regular-svg-icons`, `ag-charts-community`, `classnames`, `filesize`,
-  `@types/lodash`, and `stylelint-config-recommended-scss` (the config actually extended by
-  `.stylelintrc` - replaces the previously-declared but unused `stylelint-config-standard-scss`).
-  pnpm's isolated layout surfaces these as build/type errors rather than resolving them silently.
-
+* Migrated client-app package management from yarn classic to pnpm, with the version pinned via `packageManager`. Run `corepack enable pnpm` once before your next install.
 * Overhauled the admin Grid test panel into a fuller Store performance harness. Test data is now generated on the server and loaded via streaming NDJSON or conventional JSON, options cover the Store's memory-related configs (`useRawAsData`, `freezeData`, `retainRaw`, `reuseRecords`) along with string interning and server-generated field values, parameter sets can be saved as named `ViewManager` configs, and a repeatable benchmark dialog measures heap and load-time costs across runs. The panel itself was redesigned around the same documented options sidebar used by the desktop example apps.
 
 ### Libraries

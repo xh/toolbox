@@ -17,7 +17,7 @@
     "start": "pnpm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
     "startAndAnalyze": "pnpm start --env analyzeBundles",
     "startWithIp": "pnpm start --env devHost=$(ipconfig getifaddr en0)",
-    "startWithHoist": "(cd ../../hoist-react && yarn install) && pnpm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
+    "startWithHoist": "(cd ../../hoist-react && pnpm install) && pnpm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
     "startWithHoistAndAnalyze": "pnpm startWithHoist --env analyzeBundles",
     "startWithHoistAndIp": "pnpm startWithHoist --env devHost=$(ipconfig getifaddr en0)",
     "startWithHoistSecure": "pnpm startWithHoist --env devHttps=true --env devHost=toolbox-local.xh.io"

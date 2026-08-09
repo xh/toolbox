@@ -35,7 +35,8 @@ backend during development). Run each in its own terminal.
   > **First time with pnpm?** The client app is managed with [pnpm](https://pnpm.io) (not yarn or
   > npm). The required version is pinned via the `packageManager` field in `package.json` and can
   > be provisioned automatically by Node's bundled corepack - run `corepack enable pnpm` once to
-  > put the `pnpm` command on your PATH. (A standalone pnpm install of v10+ also works.)
+  > put the `pnpm` command on your PATH. (A standalone pnpm install of v11+ also works - the
+  > settings in `pnpm-workspace.yaml` require it.)
 
 Once both are up, open the app in your browser:
 
@@ -57,7 +58,9 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
 
 * **Client against local `hoist-react`** - start the dev server with `pnpm startWithHoist` instead
   of `pnpm start`. This builds the client using the sibling `../../hoist-react` source inline.
-  Only needed when you are changing or testing hoist-react code.
+  Only needed when you are changing or testing hoist-react code. The script installs the sibling
+  checkout's own dependencies first; hoist-react is pnpm-managed on the same pinned version, so
+  corepack handles it with no extra setup.
 
   This builds and *runs* against local hoist-react, but it does **not** change what `tsc`
   type-checks against. By default `client-app/tsconfig.json` resolves `@xh/hoist` from the installed
