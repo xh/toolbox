@@ -29,13 +29,13 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       '@xh/hoist':
-        specifier: ^87.0.0-SNAPSHOT
-        version: 87.0.0-SNAPSHOT.1786219588710(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
+        specifier: 87.0.0-SNAPSHOT.1786248333699
+        version: 87.0.0-SNAPSHOT.1786248333699(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
       '@xh/package-template':
         specifier: ~3.0.4
-        version: 3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786219588710(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786248333699(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ag-charts-community:
-        specifier: ~13.3.0
+        specifier: ~13.3.1
         version: 13.3.1
       ag-grid-community:
         specifier: ~35.3.1
@@ -50,10 +50,10 @@ importers:
         specifier: ~2.5.1
         version: 2.5.1
       core-js:
-        specifier: 3.x
+        specifier: ~3.50.0
         version: 3.50.0
       filesize:
-        specifier: ~11.0.2
+        specifier: ~11.0.22
         version: 11.0.22
       highcharts:
         specifier: ~12.6.0
@@ -78,10 +78,10 @@ importers:
         specifier: ~4.17.25
         version: 4.17.25
       '@types/react':
-        specifier: 19.x
+        specifier: ~19.2.18
         version: 19.2.18
       '@types/react-dom':
-        specifier: 19.x
+        specifier: ~19.2.4
         version: 19.2.4(@types/react@19.2.18)
       '@xh/hoist-dev-utils':
         specifier: ^14.0.0
@@ -1856,8 +1856,8 @@ packages:
     resolution: {integrity: sha512-oCFlL2LnSvXfYYC8rIhBrGpoaCoUel+24SFYRSmCoB5bHH17KKXuSkBtf1qJ4xxOohYg9I0ni2NarF+qIp1GQQ==}
     engines: {node: '>=22.15.0'}
 
-  '@xh/hoist@87.0.0-SNAPSHOT.1786219588710':
-    resolution: {integrity: sha512-5e69ENrOqCBCLeoVZbzlIHHkE+Jdcsc4K4yPPW/HLxTdwOSfeUGjZsC3H+HRNfW3JPM6uvdZEb5oP5D7W9YGOQ==}
+  '@xh/hoist@87.0.0-SNAPSHOT.1786248333699':
+    resolution: {integrity: sha512-wpjGdDVROAJvFFdseJ7C4QUm+flqQhsjNZUVtSOKMcLHGTbT3vUJQohiXwDNOgyiGY8pVczul+b+LxYMtq0bVQ==}
     hasBin: true
     peerDependencies:
       react: ^19.2.0
@@ -4488,8 +4488,8 @@ packages:
   sentence-case@3.0.4:
     resolution: {integrity: sha512-8LS0JInaQMCRoQ7YUytAo/xUu5W2XnQxV2HI/6uM6U7CITS1RqPElr30V6uIqyMKM9lJGRVFy5/4CuzcixNYSg==}
 
-  serialize-javascript@7.0.7:
-    resolution: {integrity: sha512-YAy8Od6KV+uuwUuU50np8fGB/Aues6Y0nAhA9y/hId74PlKUcme4pXcBD46NWKr1Q4osN/iseZ17YqO1XfmI8g==}
+  serialize-javascript@7.1.0:
+    resolution: {integrity: sha512-RNEqWOyhhUQYN9V1GfHwu9AR/g+NTciH6Z5u3/no6X3/w+04J2lVDL+svFQVXgXrEGBMG2puMVN3gq2SNGuTGw==}
     engines: {node: '>=20.0.0'}
 
   serve-index@1.9.2:
@@ -7464,10 +7464,11 @@ snapshots:
       - uglify-js
       - utf-8-validate
 
-  '@xh/hoist@87.0.0-SNAPSHOT.1786219588710(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)':
+  '@xh/hoist@87.0.0-SNAPSHOT.1786248333699(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)':
     dependencies:
       '@auth0/auth0-spa-js': 2.24.1
       '@azure/msal-browser': 5.17.3
+      '@azure/msal-common': 16.11.3
       '@blueprintjs/core': 6.18.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@blueprintjs/datetime': 6.2.4(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@codemirror/commands': 6.10.4
@@ -7517,6 +7518,7 @@ snapshots:
       remark-gfm: 4.0.1(supports-color@10.2.2)
       router5: 7.0.2
       router5-plugin-browser: 7.0.2(router5@7.0.2)
+      sass-material-colors: 0.0.5
       semver: 7.8.5
       short-unique-id: 5.3.2
       store2: 2.14.4
@@ -7524,6 +7526,7 @@ snapshots:
       ts-morph: 27.0.2
       tsx: 4.23.11
       ua-parser-js: 2.0.10
+      unified: 11.0.5
       zod: 4.4.3
     transitivePeerDependencies:
       - '@cfworker/json-schema'
@@ -7531,9 +7534,9 @@ snapshots:
       - react-native
       - supports-color
 
-  '@xh/package-template@3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786219588710(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@xh/package-template@3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786248333699(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@xh/hoist': 87.0.0-SNAPSHOT.1786219588710(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
+      '@xh/hoist': 87.0.0-SNAPSHOT.1786248333699(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
@@ -7998,7 +8001,7 @@ snapshots:
       glob-parent: 6.0.2
       normalize-path: 3.0.0
       schema-utils: 4.3.3
-      serialize-javascript: 7.0.7
+      serialize-javascript: 7.1.0
       tinyglobby: 0.2.17
       webpack: 5.109.2(clean-css@5.3.3)(esbuild@0.28.1)(html-minifier-terser@6.1.0)(postcss@8.5.26)(webpack-cli@7.2.2)
 
@@ -10548,7 +10551,7 @@ snapshots:
       tslib: 2.8.1
       upper-case-first: 2.0.2
 
-  serialize-javascript@7.0.7: {}
+  serialize-javascript@7.1.0: {}
 
   serve-index@1.9.2(supports-color@10.2.2):
     dependencies:
