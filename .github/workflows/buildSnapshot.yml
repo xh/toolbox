@@ -110,9 +110,12 @@ jobs:
 
         # Installs the pnpm version pinned via the packageManager field in package.json.
         - name: Setup pnpm
-          uses: pnpm/action-setup@v6
+          uses: pnpm/setup@v2
           with:
-              package_json_file: 'client-app/package.json'
+              package-json-file: 'client-app/package.json'
+              # `install: false` - this workflow runs its own install step below, after
+              # registry auth and store-cache restore, and with the lockfile flags it wants.
+              install: false
 
         # Cache the pnpm store directly (rather than via setup-node's
         # `cache: pnpm`, which keys strictly on the lockfile hash with no fallback).
