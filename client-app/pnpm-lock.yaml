@@ -50,7 +50,7 @@ importers:
         specifier: ~2.5.1
         version: 2.5.1
       core-js:
-        specifier: ~3.50.0
+        specifier: 3.x
         version: 3.50.0
       filesize:
         specifier: ~11.0.22
@@ -78,10 +78,10 @@ importers:
         specifier: ~4.17.25
         version: 4.17.25
       '@types/react':
-        specifier: ~19.2.18
+        specifier: 19.x
         version: 19.2.18
       '@types/react-dom':
-        specifier: ~19.2.4
+        specifier: 19.x
         version: 19.2.4(@types/react@19.2.18)
       '@xh/hoist-dev-utils':
         specifier: ^14.0.0
