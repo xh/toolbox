@@ -31,11 +31,21 @@ publicHoistPattern:
 minimumReleaseAgeExclude:
     - '@xh/*'
 
-# Force single versions of these packages across the whole tree (previously yarn `resolutions`).
+# Force a single copy of core-js: hoist-react depends on it at a broad `3.x`, so without an
+# override the next minor resolves separately there and the bundle ships two sets of polyfills.
+#
+# When overriding a package that is also a direct dep, always source both from the catalog:
+#   - An override restating a broader range than the dep (`core-js: 3.x`) is a no-op - to dedupe
+#     it must name the dep's own range.
+#   - pnpm validates a lockfile against the override but `pnpm update` writes the raw package.json
+#     specifier, so any divergence makes `pnpm update` emit a lockfile that
+#     `pnpm install --frozen-lockfile` rejects (ERR_PNPM_OUTDATED_LOCKFILE). It only shows up in
+#     CI - a local install with node_modules present skips the check and says "Already up to date".
+catalog:
+    core-js: ~3.50.0
+
 overrides:
-    '@types/react': 19.x
-    '@types/react-dom': 19.x
-    core-js: 3.x
+    core-js: 'catalog:'
 
 # Several transitive deps (react-popper, react-onsenui, react-windowed-select, package-template)
 # still declare react/react-dom peer ranges capped at 18. The app runs React 19 per hoist-react
