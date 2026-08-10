@@ -296,12 +296,16 @@ pnpm-managed, and `startWithHoist` installs it with pnpm as well.
 pnpm install              # Install dependencies
 pnpm start                # Dev server on port 3000
 pnpm build                # Production build
-pnpm lint                 # Run ESLint + Stylelint + tsc type-check
+pnpm lint                 # Run ESLint + Stylelint
 pnpm lint:code            # ESLint only
 pnpm lint:styles          # Stylelint only
-pnpm lint:types           # TypeScript type-check (tsc) only
+pnpm typecheck            # Type check (tsc --noEmit)
 pnpm startWithHoist       # Dev server using local sibling hoist-react
 ```
+
+Linting and type-checking are separate concerns, and neither subsumes the other - run both. ESLint
+is configured type-aware, but that only powers its own rules; it never reports TypeScript compiler
+errors, so a genuine type error passes `pnpm lint`. CI runs the two as distinct steps.
 
 When using `pnpm startWithHoist`, you may also want to uncomment the `paths` block in
 `client-app/tsconfig.json` so `tsc`/your IDE type-check against the local hoist-react checkout - see
@@ -341,7 +345,7 @@ defines an entry point, and its filename (minus the extension) becomes the URL p
 — each at `http://localhost:3000/<name>`.
 
 ### Pre-commit Hooks
-Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged files) and conditionally the TypeScript compiler (`pnpm lint:types`) if TS/JS/package files are staged. Note that `tsc` type-checks against the installed `@xh/hoist` in `node_modules`, not a local sibling checkout, unless the `paths` block in `client-app/tsconfig.json` is uncommented for inline hoist-react work (see [`docs/running-locally.md`](docs/running-locally.md)).
+Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged files) and conditionally the TypeScript compiler (`pnpm typecheck`) if TS/JS/package files are staged. Note that `tsc` type-checks against the installed `@xh/hoist` in `node_modules`, not a local sibling checkout, unless the `paths` block in `client-app/tsconfig.json` is uncommented for inline hoist-react work (see [`docs/running-locally.md`](docs/running-locally.md)).
 
 ## Code Style
 

@@ -145,8 +145,11 @@ jobs:
               FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
           run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
 
-        - name: Install and upgrade dependencies, lint, and build client app
-          run: cd client-app && pnpm install && pnpm update --no-save && pnpm lint && pnpm build --env appBuild="${{ needs.prepare.outputs.app-build }}"
+        # `pnpm typecheck` is a distinct gate from `pnpm lint` - linting never reports TypeScript
+        # compiler errors. Both run here, so a snapshot build type-checks the app against the
+        # freshly-updated `@xh/hoist` SNAPSHOT it is about to ship.
+        - name: Install and upgrade dependencies, lint, type check, and build client app
+          run: cd client-app && pnpm install && pnpm update --no-save && pnpm lint && pnpm typecheck && pnpm build --env appBuild="${{ needs.prepare.outputs.app-build }}"
 
         # `pnpm update` rewrites pnpm-lock.yaml when any semver-compatible transitive
         # has moved. That's expected and usually too noisy to act on - but a

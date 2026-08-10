@@ -157,10 +157,13 @@ jobs:
               FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
           run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
 
+        # `pnpm typecheck` is a distinct gate from `pnpm lint` - linting never reports TypeScript
+        # compiler errors. Both run here, so the release build type-checks the app against the
+        # exact `@xh/hoist` version it ships with.
         - name: Install dependencies and build client app
           env:
               VERSION: ${{ inputs.version }}
-          run: cd client-app && pnpm install --frozen-lockfile && pnpm lint && pnpm build --env appVersion="$VERSION" --env appBuild="${{ needs.prepare.outputs.build-tag }}"
+          run: cd client-app && pnpm install --frozen-lockfile && pnpm lint && pnpm typecheck && pnpm build --env appVersion="$VERSION" --env appBuild="${{ needs.prepare.outputs.build-tag }}"
 
         - name: Copy client build into Docker context
           run: cp -r client-app/build/ docker/nginx/build/

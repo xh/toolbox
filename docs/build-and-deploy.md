@@ -18,10 +18,11 @@ Runs automatically on pushes and pull requests to `develop`. Includes three inde
 - **Build** — checks out the project, sets up Java and Gradle, and runs `./gradlew build` to
   validate the Grails server compiles successfully.
 - **Lint** — sets up Node.js (version from `client-app/.nvmrc`), installs JS dependencies via
-  `pnpm install --frozen-lockfile`, and runs `pnpm lint` to validate the client code. `pnpm lint`
-  covers ESLint, Stylelint, and a `tsc` type-check (`lint:types`) — so this job (and the client
-  build in Build Snapshot / Build Release, which also run `pnpm lint`) type-checks against the
-  installed `@xh/hoist`, catching use of APIs not present in the resolved/released version.
+  `pnpm install --frozen-lockfile`, then runs `pnpm lint` (ESLint + Stylelint) and `pnpm typecheck`
+  (`tsc --noEmit`) as distinct steps. The two are disjoint gates — linting never reports TypeScript
+  compiler errors. The type-check runs against the installed `@xh/hoist`, catching use of APIs not
+  present in the resolved/released version; the client builds in Build Snapshot / Build Release run
+  the same pair.
 - **Dependency Submission** — generates and submits a Gradle dependency graph to GitHub, enabling
   Dependabot vulnerability alerts for all server-side dependencies.
 
@@ -51,7 +52,8 @@ The workflow runs in three stages:
   jobs, so client and server always report the same build (what the version-skew check compares). The
   action (and its unit test) live in hoist-dev-utils, shared across XH app repos.
 - **build-tomcat** / **build-nginx** (parallel) — build the Grails WAR (via `./gradlew war`, default
-  SNAPSHOT version from `gradle.properties`) and the client assets (`pnpm lint` + `pnpm build`)
+  SNAPSHOT version from `gradle.properties`) and the client assets (`pnpm lint` + `pnpm typecheck`
+  + `pnpm build`)
   respectively, and push each to the run's *immutable* `image-tag` in ECR — **not** `:snapshot`.
 - **promote** — runs only after both build jobs succeed, and retags both images to `:snapshot` via a
   registry-side manifest copy. This is the only step that advances the mutable `:snapshot` pointer,

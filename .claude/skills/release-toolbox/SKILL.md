@@ -128,7 +128,7 @@ break against the latest release. Before pinning, assess this:
   the snap (the hoist-react reference tools or the sibling `../hoist-react` checkout if present).
 
 This review is an early read; the **authoritative** confirmation is the type-check Phase 3 runs
-against the actually-installed release (`pnpm lint`). If this review shows any sign Toolbox has
+against the actually-installed release (`pnpm typecheck`). If this review shows any sign Toolbox has
 adapted to not-yet-released breaking changes, flag it now and expect Phase 3 to confirm it. Either
 way, two possibilities when it's incompatible:
 - This should wait for the matching Hoist release, or
@@ -169,11 +169,12 @@ libraries, not local sibling checkouts.)
 This is the authoritative confirmation of the Phase 2.4 assessment - run it, don't skip it:
 
 ```bash
-cd client-app && pnpm lint
+cd client-app && pnpm lint && pnpm typecheck
 ```
 
-`pnpm lint` now includes `tsc` (`lint:types`), so it **type-checks Toolbox against the `@xh/hoist`
-you just installed** - the same check CI and the release build run. A type error here almost
+`pnpm typecheck` (`tsc --noEmit`) **type-checks Toolbox against the `@xh/hoist` you just
+installed** - the same check CI and the release build run, and a gate distinct from `pnpm lint`
+(linting never reports compiler errors). A type error here almost
 certainly means Toolbox uses an API that exists on the SNAPSHOT line but **not** in this release.
 If so, **stop**: this should wait for the matching Hoist release, or be shipped directly from
 `master` instead (see the note below). Do not proceed to commit a release that fails this check.

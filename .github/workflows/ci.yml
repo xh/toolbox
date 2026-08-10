@@ -88,6 +88,13 @@ jobs:
         - name: Lint
           run: cd client-app && pnpm lint
 
+        # A separate concern from linting, not a lint rule: ESLint is configured type-aware, but
+        # that only powers its own rules and never reports compiler diagnostics, so a genuine type
+        # error passes `pnpm lint`. Type-checks Toolbox against the installed `@xh/hoist`, catching
+        # use of APIs not present in the resolved version.
+        - name: Type check
+          run: cd client-app && pnpm typecheck
+
     dependency-submission:
 
         runs-on: ubuntu-latest
