@@ -21,7 +21,7 @@
     // FALSE-PASS: code using APIs that exist only on the unreleased SNAPSHOT line (e.g. a new prop)
     // type-checks locally but breaks against the released library.
     //
-    // Uncomment ONLY while actively developing hoist-react inline (`yarn startWithHoist`) and you
+    // Uncomment ONLY while actively developing hoist-react inline (`pnpm startWithHoist`) and you
     // need Toolbox to see local type-signature changes. Re-comment before committing - do not
     // commit it enabled.
     "paths": {
