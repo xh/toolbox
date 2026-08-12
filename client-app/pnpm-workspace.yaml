@@ -1,0 +1,56 @@
+# pnpm settings (pnpm 11+ reads these from this file, not from a `pnpm` field in package.json).
+# This is a single-package project - the file exists for settings only, not to define a workspace.
+
+# Dependency build scripts do not run unless reviewed here; unreviewed scripts are a hard error
+# in CI. esbuild is allowed so its platform binary install is guaranteed for build tooling. The
+# rest are declined: the @ibm/plex packages ship static font files, browser-tabs-lock (via
+# auth0-spa-js) ships prebuilt dist, and core-js's postinstall only prints a funding message.
+allowBuilds:
+    '@ibm/plex-mono': false
+    '@ibm/plex-sans': false
+    '@parcel/watcher': false
+    browser-tabs-lock: false
+    core-js: false
+    esbuild: true
+
+# The webpack toolchain is owned by @xh/hoist-dev-utils, which depends on webpack, webpack-cli
+# and webpack-dev-server and drives them from its `configureWebpack` export. Our `build` / `start`
+# scripts invoke those CLIs by name, but pnpm only links bins for direct dependencies - so hoist
+# them into the app's node_modules to put `webpack` and `webpack-dev-server` on the script PATH.
+# Preferred over re-declaring them as direct devDependencies of the app: that would fork the
+# version from whatever dev-utils resolves, silently yielding two webpack copies (the CLI's and
+# the one dev-utils loads its plugins against) on any future dev-utils bump.
+publicHoistPattern:
+    - webpack
+    - webpack-cli
+    - webpack-dev-server
+
+# pnpm's minimum-release-age gate refuses freshly published versions as supply-chain protection.
+# Exempt XH's own packages - hoist-react and hoist-dev-utils SNAPSHOTs are routinely consumed
+# minutes after publish.
+minimumReleaseAgeExclude:
+    - '@xh/*'
+
+# Force a single copy of core-js: hoist-react depends on it at a broad `3.x`, so without an
+# override the next minor resolves separately there and the bundle ships two sets of polyfills.
+#
+# When overriding a package that is also a direct dep, always source both from the catalog:
+#   - An override restating a broader range than the dep (`core-js: 3.x`) is a no-op - to dedupe
+#     it must name the dep's own range.
+#   - pnpm validates a lockfile against the override but `pnpm update` writes the raw package.json
+#     specifier, so any divergence makes `pnpm update` emit a lockfile that
+#     `pnpm install --frozen-lockfile` rejects (ERR_PNPM_OUTDATED_LOCKFILE). It only shows up in
+#     CI - a local install with node_modules present skips the check and says "Already up to date".
+catalog:
+    core-js: ~3.50.0
+
+overrides:
+    core-js: 'catalog:'
+
+# Several transitive deps (react-popper, react-onsenui, react-windowed-select, package-template)
+# still declare react/react-dom peer ranges capped at 18. The app runs React 19 per hoist-react
+# v87 - acknowledge that here rather than surfacing unmet-peer warnings on every install.
+peerDependencyRules:
+    allowedVersions:
+        react: '19'
+        react-dom: '19'

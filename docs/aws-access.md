@@ -2,7 +2,7 @@
 
 Runbook for accessing the deployed Toolbox environment on XH's AWS for troubleshooting, log
 inspection, and database queries. Designed for both human developers and AI coding agents (e.g.
-Claude Code) — the access patterns are identical.
+Claude Code) - the access patterns are identical.
 
 > [!WARNING]
 > **This repository is public.** This doc deliberately does **not** check in the AWS account ID,
@@ -18,7 +18,7 @@ Claude Code) — the access patterns are identical.
 ## Who this is for
 
 Any XH developer or support engineer who needs to inspect or operate the **deployed** Toolbox
-environment — separate from local-dev work, which needs none of this (see the root `README.md` and
+environment - separate from local-dev work, which needs none of this (see the root `README.md` and
 `CLAUDE.md` for local setup).
 
 If you're joining and need access, start at [First-time setup](#first-time-setup). If you're the AWS
@@ -34,17 +34,17 @@ into checked-in files.
 | AWS account ID | `account_id` | `~/.aws/config` under `sso_account_id` |
 | Identity Center "AWS access portal URL" | `sso_start_url` | `~/.aws/config` under `sso_start_url` |
 | Identity Center region | `sso_region` (almost always `us-east-1`) | `~/.aws/config` under `sso_region` |
-| RDS DNS alias (used for tunnels; resolves task-side) | `db_dns` | — |
-| RDS endpoint (single instance, serves dev + prod) | `rds_dev_endpoint` | — (or re-derive via `aws rds describe-db-instances`) |
-| RDS instance ID (single instance, serves dev + prod) | `rds_dev_instance_id` | — |
-| Toolbox DB schema (dev / prod) | `db_schema_dev` / `db_schema_prod` | — |
-| Toolbox DB user / password (shared dev+prod for now) | `db_user` / `db_password` | — |
-| Identity Center instance ARN (admin only) | `identity_center_instance_arn` | — |
+| RDS DNS alias (used for tunnels; resolves task-side) | `db_dns` | - |
+| RDS endpoint (single instance, serves dev + prod) | `rds_dev_endpoint` | - (or re-derive via `aws rds describe-db-instances`) |
+| RDS instance ID (single instance, serves dev + prod) | `rds_dev_instance_id` | - |
+| Toolbox DB schema (dev / prod) | `db_schema_dev` / `db_schema_prod` | - |
+| Toolbox DB user / password (shared dev+prod for now) | `db_user` / `db_password` | - |
+| Identity Center instance ARN (admin only) | `identity_center_instance_arn` | - |
 
 ### Fetching values with the 1Password CLI (optional flair)
 
 If you have the [1Password CLI](https://developer.1password.com/docs/cli/) (`op`) installed and
-signed in (`op signin`), you can read any field directly instead of copy-pasting from the app — and
+signed in (`op signin`), you can read any field directly instead of copy-pasting from the app - and
 an AI agent assisting you can do the same:
 
 ```bash
@@ -64,7 +64,7 @@ Both permission sets below are granted to the `aws-power-users` Identity Center 
 of that group gets both. Two named SSO profiles per developer machine, both reusing one SSO session
 named `xh`:
 
-### `xh-toolbox-ro` (default — read-only)
+### `xh-toolbox-ro` (default - read-only)
 
 Backed by the **`ToolboxReadOnly`** permission set:
 - AWS managed policy: `ReadOnlyAccess`
@@ -74,7 +74,7 @@ Backed by the **`ToolboxReadOnly`** permission set:
 
 Use this for all describe / get / list / log-tail / DB-query work.
 
-### `xh-toolbox-rw` (write ops — explicit confirmation)
+### `xh-toolbox-rw` (write ops - explicit confirmation)
 
 Backed by the **`ToolboxReadWrite`** permission set: everything `ToolboxReadOnly` grants, plus
 `ecs:UpdateService` scoped to the `toolbox` cluster (for `--force-new-deployment` and
@@ -97,7 +97,7 @@ invoking.
 
 | Action type | Profile | Confirmation |
 |---|---|---|
-| Reads against dev (describe / list / log filter / DB SELECT) | `xh-toolbox-ro` | None — proceed |
+| Reads against dev (describe / list / log filter / DB SELECT) | `xh-toolbox-ro` | None - proceed |
 | Writes against dev (update-service / scale / DB write) | `xh-toolbox-rw` | Explicit per-command |
 | Reads against prod | `xh-toolbox-ro` | Explicit per-command (different blast radius) |
 | Writes against prod | `xh-toolbox-rw` | User runs the command; AI proposes |
@@ -112,7 +112,7 @@ Confirmation does not extend to subsequent commands.
 
 Prerequisite: your Identity Center user is a member of the `aws-power-users` group, which is granted
 both the `ToolboxReadOnly` and `ToolboxReadWrite` permission sets on the XH AWS account. If you're
-unsure, ask — or run the steps below and see whether the role-selection step lists those names.
+unsure, ask - or run the steps below and see whether the role-selection step lists those names.
 
 ### 1. Install the AWS tooling
 
@@ -129,7 +129,7 @@ session-manager-plugin --version
 
 ### 2. Configure SSO profiles
 
-Run the interactive wizard — it opens a browser for SSO login:
+Run the interactive wizard - it opens a browser for SSO login:
 
 ```bash
 aws configure sso
@@ -140,7 +140,7 @@ Answer the prompts:
 | Prompt | Answer |
 |---|---|
 | `SSO session name` | `xh` |
-| `SSO start URL` | your `sso_start_url` (from 1Password — see [Values you'll need](#values-youll-need)) |
+| `SSO start URL` | your `sso_start_url` (from 1Password - see [Values you'll need](#values-youll-need)) |
 | `SSO region` | `us-east-1` |
 | `SSO registration scopes` | press Enter (default: `sso:account:access`) |
 
@@ -155,7 +155,7 @@ A browser tab opens to the AWS access portal, which redirects to XH's **Google**
 | `Default output format` | `json` |
 | `Profile name` | `xh-toolbox-ro` |
 
-If you have `ToolboxReadWrite`, create the write profile too — re-run
+If you have `ToolboxReadWrite`, create the write profile too - re-run
 `aws configure sso --profile xh-toolbox-rw` and pick `ToolboxReadWrite` at the permission-set step,
 or append this block to `~/.aws/config` (the `[sso-session xh]` block already exists from above; do
 not duplicate it):
@@ -187,14 +187,14 @@ Install the dedicated 8.4 client formula (it matches the RDS server, which runs 
 brew install mysql-client@8.4
 ```
 
-The 8.4 client is keg-only — invoke by full path:
+The 8.4 client is keg-only - invoke by full path:
 `/opt/homebrew/opt/mysql-client@8.4/bin/mysql`. Add it to `PATH` in your shell rc if you'd rather not
 type the path each time.
 
 > [!NOTE]
 > **Auth:** the `toolbox` DB user uses `caching_sha2_password` (MySQL 8.4 disables
 > `mysql_native_password` by default). Over a plain-TCP SSM tunnel that handshake needs TLS or the
-> server's RSA public key — pass `--get-server-public-key` to the `mysql` client (used in the
+> server's RSA public key - pass `--get-server-public-key` to the `mysql` client (used in the
 > examples below). GUI clients (Querious, etc.): use a Standard/TCP connection to `127.0.0.1:3307`
 > and enable SSL/TLS.
 
@@ -213,7 +213,7 @@ without errors, you're set up.
 
 ### SSM port-forward to RDS
 
-We do NOT use a long-running EC2 bastion. Instead, use a running Toolbox ECS task as the SSM target —
+We do NOT use a long-running EC2 bastion. Instead, use a running Toolbox ECS task as the SSM target -
 the task already has VPC network access to RDS, and access lifecycle is tied to the deployed service.
 
 Prerequisites (one-time, already in place):
@@ -307,7 +307,7 @@ aws logs describe-log-streams \
   --profile xh-toolbox-ro
 ```
 
-CloudWatch filter patterns do not accept `@` — escape or omit when grepping for usernames.
+CloudWatch filter patterns do not accept `@` - escape or omit when grepping for usernames.
 Multi-token filters use `?term1 ?term2` syntax (OR), not Boolean AND.
 
 ### ECS service operations (read)
@@ -341,7 +341,7 @@ aws ecs update-service --cluster toolbox --service toolbox-dev \
 ```
 
 > [!NOTE]
-> Routine deploys normally happen via GitHub Actions (see [Build and Deploy](build-and-deploy.md)) —
+> Routine deploys normally happen via GitHub Actions (see [Build and Deploy](build-and-deploy.md)) -
 > the `Deploy Snapshot` / `Deploy Release` workflows run the same `update-service` call. Use the
 > manual commands above for ad-hoc redeploys or recovery.
 
@@ -361,7 +361,7 @@ aws ecs update-service --cluster toolbox --service toolbox-dev \
 | Log groups | `/ecs/toolbox-dev`, `/ecs/toolbox-prod` |
 
 The AWS account ID, Identity Center ARN/URL, RDS instance IDs/endpoints, internal DNS, and DB
-credentials are deliberately not listed here — get them from the `Toolbox AWS Ops` 1Password item.
+credentials are deliberately not listed here - get them from the `Toolbox AWS Ops` 1Password item.
 
 ---
 
@@ -369,21 +369,21 @@ credentials are deliberately not listed here — get them from the `Toolbox AWS 
 
 ### Onboarding a new operator
 
-Authentication is **federated through XH's Google identity provider** — IAM Identity Center does not
+Authentication is **federated through XH's Google identity provider** - IAM Identity Center does not
 manage AWS passwords or MFA, so there's no activation email and nothing for the operator to set up;
 they sign in with their existing `@xh.io` Google account. We do **not** have SCIM auto-provisioning
 enabled (it carries extra cost on the Google side), so the admin still creates the Identity Center
 user record manually. The current AWS admin does the following (the operator's local
 [First-time setup](#first-time-setup) only works after these steps):
 
-1. **Create the user in IAM Identity Center** — AWS Console → IAM Identity Center → Users → Add user.
+1. **Create the user in IAM Identity Center** - AWS Console → IAM Identity Center → Users → Add user.
    Use the operator's `@xh.io` email as the username so it maps to their Google identity. No password
-   or MFA is configured here — Google handles authentication.
-2. **Add the user to the `aws-power-users` group** — IAM Identity Center → Groups → `aws-power-users`
+   or MFA is configured here - Google handles authentication.
+2. **Add the user to the `aws-power-users` group** - IAM Identity Center → Groups → `aws-power-users`
    → Add members. That group is already granted both the `ToolboxReadOnly` and `ToolboxReadWrite`
    permission sets on the XH account, so no per-user permission-set assignment is needed. (To grant
    only read access to someone outside that group, assign `ToolboxReadOnly` to their user directly.)
-3. **Hand off the per-environment values** — point them at the `Toolbox AWS Ops` item in the
+3. **Hand off the per-environment values** - point them at the `Toolbox AWS Ops` item in the
    `XH Team` 1Password vault (account ID, portal URL). Don't share via a checked-in file.
 
 For departing operators: remove them from the `aws-power-users` group (and, on full offboarding,
@@ -402,11 +402,11 @@ The deployed services read their Hoist instance config from the **ECS task defin
   the task definition's `secrets:` array. To rotate one, update the secret value and force a new
   deployment so tasks pick it up. `ecsTaskExecutionRole` is granted `secretsmanager:GetSecretValue`
   on `toolbox/dev/app-*` and `toolbox/prod/app-*` (inline policies `xhToolboxDevSecretsAccess` /
-  `xhToolboxProdSecretsAccess`) — adding a key to an existing secret needs no policy change, but a new
+  `xhToolboxProdSecretsAccess`) - adding a key to an existing secret needs no policy change, but a new
   secret *name* does.
 
 Registering a task definition or pointing a service at a new revision needs `iam:PassRole` on the
-task/execution roles, which `ToolboxReadWrite` does **not** grant — use an admin profile for those.
+task/execution roles, which `ToolboxReadWrite` does **not** grant - use an admin profile for those.
 (Plain `--force-new-deployment` and `--desired-count` scaling work with `ToolboxReadWrite`.)
 
 ### Permission-set definitions
@@ -472,7 +472,7 @@ The CLI commands are point-in-time recipes. If they stop working, check first wh
 - A Secrets Manager secret was renamed, or a new one needs the `ecsTaskExecutionRole` `GetSecretValue` grant
 
 Then update this file. The runbook is checked in deliberately so it travels with the codebase, not
-anyone's individual notes — but keep the public/private split intact: identifiers stay here, secrets
+anyone's individual notes - but keep the public/private split intact: identifiers stay here, secrets
 stay in 1Password.
 
 ------------------------------------------

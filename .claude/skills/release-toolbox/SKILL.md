@@ -13,8 +13,10 @@ confirmation gate - **never push, merge, or trigger a build without the develope
 ## Mental model - read this first
 
 Toolbox is XH's canary app: `develop` is kept on **working SNAPSHOT** versions of the Hoist
-libraries so we dogfood unreleased framework changes. But we **ship** Toolbox against the latest
-**official, versioned** Hoist releases. A release is therefore a brief, deliberate excursion from
+libraries so we dogfood unreleased framework changes. For hoist-react that is expressed as the bare
+npm dist-tag `"@xh/hoist": "next"` rather than a pinned version or range (see Phase 9 for why); for
+hoist-core, as an explicit `x.y-SNAPSHOT` in `gradle.properties`. But we **ship** Toolbox against
+the latest **official, versioned** Hoist releases. A release is therefore a brief, deliberate excursion from
 SNAPSHOTs to releases and back:
 
 ```
@@ -43,8 +45,8 @@ Three invariants that drive the whole process - keep them in mind:
    All three use the 2-part Maven form `x.y-SNAPSHOT` (e.g. `10.0-SNAPSHOT`). By the Java
    convention, the snap is always `(latest_released_major + 1).0-SNAPSHOT`.
 
-3. **hoist-dev-utils stays on its release version** (`@xh/hoist-dev-utils`, currently a `13.x`
-   range). Only `@xh/hoist` (hoist-react) and `hoistCoreVersion` (hoist-core) swap between SNAPSHOT
+3. **hoist-dev-utils stays on its release version** (`@xh/hoist-dev-utils`, a caret range on a
+   numbered release). Only `@xh/hoist` (hoist-react) and `hoistCoreVersion` (hoist-core) swap between SNAPSHOT
    and release. Leave hoist-dev-utils alone unless the developer specifically asks otherwise.
 
 ## gh is a core tool
@@ -91,20 +93,30 @@ classify the situation, and confirm with the developer before changing anything.
 
 ### 1. Read current SNAPSHOT versions
 
-- `@xh/hoist`: `client-app/package.json` dependencies (e.g. `^87.0.0-SNAPSHOT` -> snap major 87).
+- `@xh/hoist`: **not readable from `client-app/package.json`** - between releases the spec there is
+  the bare dist-tag `next`, which carries no version. Read the resolved snapshot from
+  `client-app/pnpm-lock.yaml` instead: under `importers` -> `.` -> `dependencies` -> `'@xh/hoist'`,
+  the `version:` field (e.g. `87.0.0-SNAPSHOT.1786485357526` -> snap major 87). Equivalently,
+  `npm view @xh/hoist dist-tags --json` and read the `next` tag. See "Why `next`, not a caret
+  range" in Phase 9 for the background.
 - `hoistCoreVersion`: `gradle.properties` (e.g. `41.0-SNAPSHOT` -> snap major 41).
 
 ### 2. Discover the latest published releases
 
 - **hoist-react** (npm): `npm view @xh/hoist dist-tags --json`. Use the `latest` tag - that is the
-  newest stable release (the `next` tag points at the current SNAPSHOT and must be ignored).
+  newest stable release. **The `next` tag must be ignored here** - it points at the current
+  SNAPSHOT. (Note `next` is also the dependency spec `develop` sits on between releases, per
+  Phase 9; the two uses are unrelated - here you want `latest`.)
 - **hoist-core** (Maven Central): `curl -s https://repo1.maven.org/maven2/io/xh/hoist-core/maven-metadata.xml`
   and read the `<release>` element - the newest non-SNAPSHOT version. (SNAPSHOTs live in a separate
   repo and won't appear here.)
 
 ### 3. Classify each library against its snap major
 
-For each library, compare the latest release to the current snap major (snap = next-major):
+Classify the two libraries **independently**: hoist-react and hoist-core version separately, on
+their own release schedules, and can land in different cases in the same release. For each,
+compare that library's latest release to that library's current snap major (snap = next-major).
+The examples below are hoist-react's; substitute hoist-core's own numbers when classifying it.
 
 - **"Major just released" case** - a release exists matching the snap major (e.g. snap `87-SNAP`
   and `87.0.0` is published). This means the Hoist major was just released (and Hoist itself has
@@ -128,7 +140,7 @@ break against the latest release. Before pinning, assess this:
   the snap (the hoist-react reference tools or the sibling `../hoist-react` checkout if present).
 
 This review is an early read; the **authoritative** confirmation is the type-check Phase 3 runs
-against the actually-installed release (`yarn lint`). If this review shows any sign Toolbox has
+against the actually-installed release (`pnpm typecheck`). If this review shows any sign Toolbox has
 adapted to not-yet-released breaking changes, flag it now and expect Phase 3 to confirm it. Either
 way, two possibilities when it's incompatible:
 - This should wait for the matching Hoist release, or
@@ -148,9 +160,10 @@ next major' - latest releases of the current lines; Toolbox looks compatible). O
 
 Once the developer confirms the targets, edit the two files:
 
-- **`client-app/package.json`**: set `@xh/hoist` to the **exact** release version, no caret or
-  range (e.g. `"@xh/hoist": "86.1.0"`). We pin exact because we revert to SNAPSHOT immediately
-  after the release, so a range buys nothing.
+- **`client-app/package.json`**: replace the `next` dist-tag spec with the **exact** release
+  version, no caret or range (e.g. `"@xh/hoist": "86.1.0"`). We pin exact because we revert to the
+  SNAPSHOT tag immediately after the release, so a range buys nothing. (pnpm leaves an exact stable
+  version alone - the spec-rewriting described in Phase 9 only affects prerelease versions.)
 - **`gradle.properties`**: set `hoistCoreVersion` to the **full semver** release (e.g.
   `hoistCoreVersion=40.1.0`).
 - **Leave `@xh/hoist-dev-utils` unchanged.**
@@ -158,7 +171,7 @@ Once the developer confirms the targets, edit the two files:
 Then refresh the client lockfile so the build is reproducible:
 
 ```bash
-cd client-app && yarn install
+cd client-app && pnpm install
 ```
 
 (Do not run `startWithHoist` / `runHoistInline` - the release must build against the published
@@ -169,11 +182,12 @@ libraries, not local sibling checkouts.)
 This is the authoritative confirmation of the Phase 2.4 assessment - run it, don't skip it:
 
 ```bash
-cd client-app && yarn lint
+cd client-app && pnpm lint && pnpm typecheck
 ```
 
-`yarn lint` now includes `tsc` (`lint:types`), so it **type-checks Toolbox against the `@xh/hoist`
-you just installed** - the same check CI and the release build run. A type error here almost
+`pnpm typecheck` (`tsc --noEmit`) **type-checks Toolbox against the `@xh/hoist` you just
+installed** - the same check CI and the release build run, and a gate distinct from `pnpm lint`
+(linting never reports compiler errors). A type error here almost
 certainly means Toolbox uses an API that exists on the SNAPSHOT line but **not** in this release.
 If so, **stop**: this should wait for the matching Hoist release, or be shipped directly from
 `master` instead (see the note below). Do not proceed to commit a release that fails this check.
@@ -243,7 +257,7 @@ proposed version is a valid single increment (e.g. latest `9.0.0` -> valid: `10.
 Stage the library swaps, the lockfile, and the finalized CHANGELOG, and commit on `develop`:
 
 ```bash
-git add gradle.properties client-app/package.json client-app/yarn.lock CHANGELOG.md
+git add gradle.properties client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md
 git commit -m "Toolbox <version> - release against Hoist <core-ver> / hoist-react <hr-ver>"
 ```
 
@@ -370,21 +384,65 @@ git checkout develop
 
 ### 1. Restore the Hoist libraries to SNAPSHOTs
 
-Reset the two libraries (leave hoist-dev-utils on its release version). The target snap depends on
-the Phase 2 case for each library:
+Reset the two libraries (leave hoist-dev-utils on its release version). They restore differently -
+hoist-react by dist-tag, hoist-core by explicit version:
 
-- **"Major just released" case** (you shipped the matching major, e.g. `87.0.0`): advance to the
-  **next** major snap - `88.0.0-SNAPSHOT` for hoist-react, the matching next-major
-  `x.y-SNAPSHOT` for hoist-core. Hoist itself has already moved there, so **verify it exists**
-  before pinning (`npm view @xh/hoist@<ver> version`, or the snapshot Maven repo for core). If the
-  expected next snap is missing, stop and ask.
-- **"Still developing the major" case** (you shipped a prior-line release, e.g. `86.1.0` while on
-  `87-SNAP`): restore to the **same snap you started from** (`^87.0.0-SNAPSHOT` for hoist-react,
-  `41.0-SNAPSHOT` for hoist-core). You're still developing that major.
+**hoist-react** - always restore `client-app/package.json` to the bare dist-tag, in every case:
 
-Restore the original version-string form (hoist-react typically a caret range like
-`^87.0.0-SNAPSHOT`; hoist-core the `x.y-SNAPSHOT` form), then `cd client-app && yarn install` to
-update the lockfile.
+```json
+{
+  "dependencies": {
+    "@xh/hoist": "next"
+  }
+}
+```
+
+No version number, no caret. `next` always points at hoist-react's current SNAPSHOT, so this is
+correct whether the major was just released (the tag has already advanced to the next major's
+SNAPSHOT line) or is still in development (the tag still points at the line you started from). The
+Phase 2 case distinction does not apply here - the tag self-corrects, which is the point.
+
+**hoist-core** - Maven has no dist-tag equivalent, so `gradle.properties` still takes an explicit
+snap, and the Phase 2 case does apply. Classify on **hoist-core's own** version line, which
+advances independently of hoist-react's; the examples below are all hoist-core versions:
+
+- **"Major just released"** (the release you shipped matched the snap major - e.g. you were on
+  `41.0-SNAPSHOT` and shipped `41.0.0`): advance `hoistCoreVersion` to the next major snap,
+  `42.0-SNAPSHOT`. hoist-core's own `develop` has already opened that snap, so **verify it exists**
+  in the snapshot Maven repo before pinning. If it is missing, stop and ask.
+- **"Still developing the major"** (you shipped a prior-line release - e.g. you were on
+  `41.0-SNAPSHOT` and shipped `40.1.0`): restore the **same snap you started from**,
+  `41.0-SNAPSHOT`.
+
+Then `cd client-app && pnpm install` to update the lockfile. Confirm the restore resolved as
+expected before committing - `pnpm install` prints nothing useful about which snapshot it landed
+on, so read it back:
+
+```bash
+cd client-app && pnpm hoistVer
+```
+
+#### Why `next`, not a caret range
+
+`develop` previously carried a caret range (`^87.0.0-SNAPSHOT`). That form is actively broken under
+pnpm and must not be reintroduced:
+
+- **`pnpm update` destroys it.** On any prerelease, pnpm drops the range prefix and writes the
+  resolved version as an exact pin (`87.0.0-SNAPSHOT.1786248333699`). This is an acknowledged pnpm
+  bug, open since 2023 - see [pnpm#7002](https://github.com/pnpm/pnpm/issues/7002). There is no
+  setting to prevent it; `--save-prefix` is not consulted on the prerelease code path.
+- **The resulting pin is a dead end.** A subsequent `pnpm update` cannot move an exact pin, and
+  `pnpm update --latest` won't either (it refuses to "downgrade" a prerelease to the lower `latest`
+  tag). The snapshot silently freezes while Toolbox code keeps advancing - which is exactly how CI
+  broke during the pnpm migration, type-checking against a snapshot days behind the APIs in use.
+- **A caret range never floated anyway.** `pnpm install` honors the lockfile over the range, so the
+  range only ever mattered at `pnpm update` time - the one moment pnpm was rewriting it.
+
+`next` survives `pnpm update` untouched (there is no version in it to rewrite) *and* gets
+re-resolved by it, which is the behavior the caret range was reaching for. Reproducibility is
+unaffected: `pnpm-lock.yaml` still records one exact build, and CI installs `--frozen-lockfile`. If
+the tag ever stops existing, pnpm fails loudly with `ERR_PNPM_NO_MATCHING_VERSION` rather than
+silently reusing a stale lockfile entry.
 
 ### 2. Advance the app SNAPSHOT version (all three places, in sync)
 
@@ -406,7 +464,7 @@ lands.
 ### 3. Commit and push (ask first)
 
 ```bash
-git add gradle.properties client-app/package.json client-app/yarn.lock CHANGELOG.md
+git add gradle.properties client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md
 git commit -m "Restore Hoist SNAPSHOTs and open <next-major>.0-SNAPSHOT for development"
 ```
 

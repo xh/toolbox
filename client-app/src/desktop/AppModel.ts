@@ -25,6 +25,7 @@ import {examplesTab} from './tabs/examples/ExamplesTab';
 import {formPanel, inputsPanel, pickerPanel, selectPanel, toolbarFormPanel} from './tabs/forms';
 import {
     agGridView,
+    columnChooserPanel,
     columnFilteringPanel,
     columnGroupsGridPanel,
     dataViewPanel,
@@ -269,7 +270,8 @@ export class AppModel extends BaseAppModel {
                             {name: 'zoneGrid', path: '/zoneGrid'},
                             {name: 'pivotGrid', path: '/pivotGrid'},
                             {name: 'dataview', path: '/dataview'},
-                            {name: 'agGrid', path: '/agGrid'}
+                            {name: 'agGrid', path: '/agGrid'},
+                            {name: 'columnChooser', path: '/columnChooser'}
                         ]
                     },
                     {
@@ -389,6 +391,11 @@ export class AppModel extends BaseAppModel {
                             id: 'treeWithCheckBox',
                             title: 'Tree w/CheckBox',
                             content: treeGridWithCheckboxPanel
+                        },
+                        {
+                            id: 'columnChooser',
+                            title: 'Column Chooser',
+                            content: columnChooserPanel
                         },
                         {id: 'columnFiltering', content: columnFilteringPanel},
                         {id: 'inlineEditing', content: inlineEditingPanel},
