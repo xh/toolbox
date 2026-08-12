@@ -18,7 +18,9 @@ export const PivotPerfPanel = hoistCmp({
             bbar: bbar(),
             mask: model.running ? 'onLoad' : null,
             item: vframe(
-                grid({testId: 'pivot-perf', flex: 1}),
+                // Bind explicitly: a context lookup takes the model's first own GridModel, which is
+                // `activeGrid` once a run sets it - mounting the grid under test in both slots.
+                grid({model: model.gridModel, testId: 'pivot-perf', flex: 1}),
                 panel({
                     title: 'Grid under test',
                     modelConfig: {side: 'bottom', defaultSize: 260, collapsible: false},

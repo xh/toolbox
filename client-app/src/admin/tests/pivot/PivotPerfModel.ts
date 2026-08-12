@@ -6,6 +6,7 @@ import {numberRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {wait, waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
+import {throwIf} from '@xh/hoist/utils/js';
 import {generateLeaves, PivotProfile} from './PivotBenchData';
 
 /**
@@ -78,10 +79,15 @@ export const PERF_CONFIGS: PerfConfig[] = [
 
     cfg('values3', '3 value fields', 'Value fields', {valueFields: 3}),
 
-    cfg('control', `Plain View control (${CONTROL_EXTRA_MEASURES + 3} fields, no pivots)`, 'Control', {
-        pivotDims: 0,
-        extraMeasures: CONTROL_EXTRA_MEASURES
-    }),
+    cfg(
+        'control',
+        `Plain View control (${CONTROL_EXTRA_MEASURES + 3} fields, no pivots)`,
+        'Control',
+        {
+            pivotDims: 0,
+            extraMeasures: CONTROL_EXTRA_MEASURES
+        }
+    ),
     cfg('controlSmall', 'Plain View control - 25k leaves', 'Control', {
         leaves: 25000,
         pivotDims: 0,
@@ -132,8 +138,20 @@ export class PivotPerfModel extends HoistModel {
                 children: [
                     {field: 'cubeMs', headerName: 'Cube', width: 75, align: 'right', renderer: ms0},
                     {field: 'viewMs', headerName: 'View', width: 75, align: 'right', renderer: ms0},
-                    {field: 'gridMs', headerName: 'Model', width: 75, align: 'right', renderer: ms0},
-                    {field: 'mountMs', headerName: 'Mount', width: 80, align: 'right', renderer: ms0}
+                    {
+                        field: 'gridMs',
+                        headerName: 'Model',
+                        width: 75,
+                        align: 'right',
+                        renderer: ms0
+                    },
+                    {
+                        field: 'mountMs',
+                        headerName: 'Mount',
+                        width: 80,
+                        align: 'right',
+                        renderer: ms0
+                    }
                 ]
             },
             {
@@ -152,12 +170,48 @@ export class PivotPerfModel extends HoistModel {
                 headerName: 'Structural ms',
                 headerAlign: 'center',
                 children: [
-                    {field: 'groupChangeMs', headerName: 'Group dim', width: 95, align: 'right', renderer: ms0},
-                    {field: 'pivotChangeMs', headerName: 'Pivot dim', width: 95, align: 'right', renderer: ms0},
-                    {field: 'valueChangeMs', headerName: 'Value fld', width: 90, align: 'right', renderer: ms0},
-                    {field: 'filterMs', headerName: 'Filter', width: 80, align: 'right', renderer: ms0},
-                    {field: 'newValueMs', headerName: 'New pivot val', width: 110, align: 'right', renderer: ms0},
-                    {field: 'setColumnsMs', headerName: 'setColumns', width: 100, align: 'right', renderer: ms1}
+                    {
+                        field: 'groupChangeMs',
+                        headerName: 'Group dim',
+                        width: 95,
+                        align: 'right',
+                        renderer: ms0
+                    },
+                    {
+                        field: 'pivotChangeMs',
+                        headerName: 'Pivot dim',
+                        width: 95,
+                        align: 'right',
+                        renderer: ms0
+                    },
+                    {
+                        field: 'valueChangeMs',
+                        headerName: 'Value fld',
+                        width: 90,
+                        align: 'right',
+                        renderer: ms0
+                    },
+                    {
+                        field: 'filterMs',
+                        headerName: 'Filter',
+                        width: 80,
+                        align: 'right',
+                        renderer: ms0
+                    },
+                    {
+                        field: 'newValueMs',
+                        headerName: 'New pivot val',
+                        width: 110,
+                        align: 'right',
+                        renderer: ms0
+                    },
+                    {
+                        field: 'setColumnsMs',
+                        headerName: 'setColumns',
+                        width: 100,
+                        align: 'right',
+                        renderer: ms1
+                    }
                 ]
             },
             {
@@ -165,9 +219,27 @@ export class PivotPerfModel extends HoistModel {
                 headerName: 'Heap MB',
                 headerAlign: 'center',
                 children: [
-                    {field: 'heapCubeMB', headerName: 'Cube', width: 80, align: 'right', renderer: ms1},
-                    {field: 'heapViewMB', headerName: '+View', width: 80, align: 'right', renderer: ms1},
-                    {field: 'heapGridMB', headerName: '+Grid', width: 80, align: 'right', renderer: ms1}
+                    {
+                        field: 'heapCubeMB',
+                        headerName: 'Cube',
+                        width: 80,
+                        align: 'right',
+                        renderer: ms1
+                    },
+                    {
+                        field: 'heapViewMB',
+                        headerName: '+View',
+                        width: 80,
+                        align: 'right',
+                        renderer: ms1
+                    },
+                    {
+                        field: 'heapGridMB',
+                        headerName: '+Grid',
+                        width: 80,
+                        align: 'right',
+                        renderer: ms1
+                    }
                 ]
             },
             {
@@ -200,6 +272,14 @@ export class PivotPerfModel extends HoistModel {
     private async runConfigsAsync(configs: PerfConfig[]) {
         runInAction(() => (this.running = true));
         try {
+            // Refuse rather than mislead. A hidden tab does not just inflate these numbers -
+            // `paint()` awaits requestAnimationFrame, which never fires while hidden, so a
+            // `withGrid` run stalls at the mount step with its Cube and grid still live.
+            throwIf(
+                document.hidden,
+                'This tab must be visible and unoccluded to run the matrix - bring it to the foreground and retry.'
+            );
+
             // The first pass of a session is measurably slower - burn one before recording.
             this.note('Warming up...');
             await this.measureAsync(
@@ -266,180 +346,200 @@ export class PivotPerfModel extends HoistModel {
                 omitRedundantNodes: false
             };
 
-        const heapBase = await this.sampleHeapAsync();
+        // Hoisted so the `finally` below tears down whatever got built. A config that throws - the
+        // 30s mount `waitFor`, most plausibly - must not leak its Cube, or every heap figure
+        // measured after it in the session is wrong.
+        let cube: Cube,
+            view: View | PivotView,
+            pivotGrid: PivotGridModel,
+            controlGrid: GridModel,
+            controlStore: Store;
 
-        // 1. Cube load.
-        const cube = new Cube({fields, idSpec: 'id'});
-        const cubeMs = await timeAsync(() => cube.loadDataAsync(leaves));
-        const heapCube = await this.sampleHeapAsync();
+        try {
+            const heapBase = await this.sampleHeapAsync();
 
-        // 2. View creation.
-        let view: View | PivotView;
-        const viewMs = time(() => {
-            view = pivotDims
-                ? cube.createPivotView({
-                      query: {...queryBase, pivotDimensions: pivotBy, valueFields: values, maxPivotPaths: null},
-                      connect: true
-                  })
-                : cube.createView({query: queryBase, connect: true});
-        });
-        const heapView = await this.sampleHeapAsync();
+            // 1. Cube load.
+            cube = new Cube({fields, idSpec: 'id'});
+            const cubeMs = await timeAsync(() => cube.loadDataAsync(leaves));
+            const heapCube = await this.sampleHeapAsync();
 
-        // 3. Grid layer - PivotGridModel mints and loads its own store; the control builds the
-        //    equivalent by hand so the comparison includes the same Store work.
-        let pivotGrid: PivotGridModel, controlGrid: GridModel, controlStore: Store;
-        let gridMs: number = null,
-            setColumnsMs: number = null;
-
-        if (withGrid) {
-            gridMs = time(() => {
-                if (pivotDims) {
-                    pivotGrid = new PivotGridModel({
-                        view: view as PivotView,
-                        rowSummary: 'right',
-                        gridConfig: {autosizeOptions: {mode: 'disabled'}}
-                    });
-                } else {
-                    controlStore = new Store({
-                        idSpec: 'id',
-                        loadTreeData: true,
-                        projectionOnly: true,
-                        fields: [
-                            {name: 'cubeLabel', type: 'string'},
-                            {name: 'cubeDimension', type: 'string'},
-                            ...measures.map(name => ({name, type: 'number' as const}))
-                        ]
-                    });
-                    view.setStores(controlStore);
-                    controlGrid = new GridModel({
-                        store: controlStore,
-                        treeMode: true,
-                        autosizeOptions: {mode: 'disabled'},
-                        columns: [
-                            {field: 'cubeLabel', isTreeColumn: true, width: 200},
-                            ...measures.map(name => ({field: name, width: 100}))
-                        ]
-                    });
-                }
+            // 2. View creation.
+            const viewMs = time(() => {
+                view = pivotDims
+                    ? cube.createPivotView({
+                          query: {
+                              ...queryBase,
+                              pivotDimensions: pivotBy,
+                              valueFields: values,
+                              maxPivotPaths: null
+                          },
+                          connect: true
+                      })
+                    : cube.createView({query: queryBase, connect: true});
             });
+            const heapView = await this.sampleHeapAsync();
 
-            const gm = pivotGrid?.gridModel ?? controlGrid,
-                cols = pivotGrid ? null : (controlGrid as any);
-            void cols;
-            setColumnsMs = time(() => gm.setColumns(gm.columns.map(toSpec)));
-        }
-        // Mount it. Everything above only built models - ag-Grid does not exist until a `grid()`
-        // component renders, so without this there are no column defs, row nodes, cells or paint.
-        let mountMs: number = null;
-        if (withGrid) {
-            const gm = pivotGrid?.gridModel ?? controlGrid;
-            mountMs = await timeAsync(async () => {
-                runInAction(() => (this.activeGrid = gm));
-                await waitFor(() => gm.agGridModel?.agApi != null, {timeout: 30 * SECONDS});
-                await paint();
-            });
-        }
+            // 3. Grid layer - PivotGridModel mints and loads its own store; the control builds the
+            //    equivalent by hand so the comparison includes the same Store work.
+            let gridMs: number = null;
 
-        const heapGrid = withGrid ? await this.sampleHeapAsync() : null;
-
-        // Captured here - the structural probes below deliberately add paths and would inflate them.
-        const shape = {
-            rows: countRows(view),
-            cells: pivotDims ? (view as PivotView).result.cellFields.length : null,
-            cols: withGrid ? (pivotGrid?.gridModel ?? controlGrid).getLeafColumns().length : null
-        };
-
-        // 4. Delta ticks at four magnitudes, median of `reps`.
-        const tick = async (pct: number) => {
-            const n = Math.max(1, Math.round((leafCount * pct) / 100)),
-                times: number[] = [];
-            for (let r = 0; r < this.reps; r++) {
-                const changed = perturb(leaves, n, r);
-                times.push(await timeAsync(() => cube.updateDataAsync({update: changed})));
-                await wait(1);
+            if (withGrid) {
+                gridMs = time(() => {
+                    if (pivotDims) {
+                        pivotGrid = new PivotGridModel({
+                            view: view as PivotView,
+                            rowSummary: 'right',
+                            gridConfig: {autosizeOptions: {mode: 'disabled'}}
+                        });
+                    } else {
+                        controlStore = new Store({
+                            idSpec: 'id',
+                            loadTreeData: true,
+                            projectionOnly: true,
+                            fields: [
+                                {name: 'cubeLabel', type: 'string'},
+                                {name: 'cubeDimension', type: 'string'},
+                                ...measures.map(name => ({name, type: 'number' as const}))
+                            ]
+                        });
+                        view.setStores(controlStore);
+                        controlGrid = new GridModel({
+                            store: controlStore,
+                            treeMode: true,
+                            autosizeOptions: {mode: 'disabled'},
+                            columns: [
+                                {field: 'cubeLabel', isTreeColumn: true, width: 200},
+                                ...measures.map(name => ({field: name, width: 100}))
+                            ]
+                        });
+                    }
+                });
             }
-            return median(times);
-        };
-        const tick5 = await tick(5),
-            tick10 = await tick(10),
-            tick25 = await tick(25),
-            tick50 = await tick(50);
 
-        // 5. Structural transitions - each single-shot, since each changes the state it measures.
-        const filterMs = await timeAsync(async () =>
-            view.setFilter({field: 'pnl', op: '>', value: -1e9})
-        );
+            // Mount it. Everything above only built models - ag-Grid does not exist until a `grid()`
+            // component renders, so without this there are no column defs, row nodes, cells or paint.
+            let mountMs: number = null;
+            if (withGrid) {
+                const gm = pivotGrid?.gridModel ?? controlGrid;
+                mountMs = await timeAsync(async () => {
+                    runInAction(() => (this.activeGrid = gm));
+                    await waitFor(() => gm.agGridModel?.agApi != null, {timeout: 30 * SECONDS});
+                    await paint();
+                });
+            }
 
-        const groupChangeMs = await timeAsync(async () =>
-            view.updateQuery({dimensions: groupBy.slice(0, Math.max(1, groupDims - 1))})
-        );
-        view.updateQuery({dimensions: groupBy});
+            const heapGrid = withGrid ? await this.sampleHeapAsync() : null;
 
-        let pivotChangeMs: number = null,
-            valueChangeMs: number = null,
-            newValueMs: number = null;
+            // Captured here - the structural probes below deliberately add paths and would inflate them.
+            const shape = {
+                rows: countRows(view),
+                cells: pivotDims ? (view as PivotView).result.cellFields.length : null,
+                cols: withGrid
+                    ? (pivotGrid?.gridModel ?? controlGrid).getLeafColumns().length
+                    : null
+            };
 
-        if (pivotDims) {
-            const pv = view as PivotView;
-            pivotChangeMs = await timeAsync(async () =>
-                pv.updateQuery({pivotDimensions: pivotBy.slice(0, Math.max(1, pivotDims - 1))})
+            // 4. Delta ticks at four magnitudes, median of `reps`. Every pass takes a fresh
+            //    generation: repeating one rewrites the same values to the same records, which the
+            //    Store diffs away, timing an emptier transaction than the label claims.
+            let gen = 0;
+            const tick = async (pct: number) => {
+                const n = Math.max(1, Math.round((leafCount * pct) / 100)),
+                    times: number[] = [];
+                for (let r = 0; r < this.reps; r++) {
+                    const changed = perturb(leaves, n, gen++);
+                    times.push(await timeAsync(() => cube.updateDataAsync({update: changed})));
+                    await wait(1);
+                }
+                return median(times);
+            };
+            const tick5 = await tick(5),
+                tick10 = await tick(10),
+                tick25 = await tick(25),
+                tick50 = await tick(50);
+
+            // 5. Structural transitions - each single-shot, since each changes the state it measures.
+            const filterMs = await timeAsync(async () =>
+                view.setFilter({field: 'pnl', op: '>', value: -1e9})
             );
-            pv.updateQuery({pivotDimensions: pivotBy});
 
-            if (valueFields > 1) {
-                valueChangeMs = await timeAsync(async () =>
-                    pv.updateQuery({valueFields: values.slice(0, valueFields - 1)})
+            const groupChangeMs = await timeAsync(async () =>
+                view.updateQuery({dimensions: groupBy.slice(0, Math.max(1, groupDims - 1))})
+            );
+            view.updateQuery({dimensions: groupBy});
+
+            let pivotChangeMs: number = null,
+                valueChangeMs: number = null,
+                newValueMs: number = null;
+
+            if (pivotDims) {
+                const pv = view as PivotView;
+                pivotChangeMs = await timeAsync(async () =>
+                    pv.updateQuery({pivotDimensions: pivotBy.slice(0, Math.max(1, pivotDims - 1))})
                 );
-                pv.updateQuery({valueFields: values});
+                pv.updateQuery({pivotDimensions: pivotBy});
+
+                if (valueFields > 1) {
+                    valueChangeMs = await timeAsync(async () =>
+                        pv.updateQuery({valueFields: values.slice(0, valueFields - 1)})
+                    );
+                    pv.updateQuery({valueFields: values});
+                }
+
+                // A brand-new pivot value: re-declares Store fields and rebuilds columns.
+                const dim = pivotBy[pivotBy.length - 1],
+                    touched: PlainObject[] = [];
+                leaves.forEach((rec, i) => {
+                    if (i % 17 === 0) {
+                        rec[dim] = 'ZZ-New';
+                        touched.push(rec);
+                    }
+                });
+                newValueMs = await timeAsync(() => cube.updateDataAsync({update: touched}));
             }
 
-            // A brand-new pivot value: re-declares Store fields and rebuilds columns.
-            const dim = pivotBy[pivotBy.length - 1],
-                touched: PlainObject[] = [];
-            leaves.forEach((rec, i) => {
-                if (i % 17 === 0) {
-                    rec[dim] = 'ZZ-New';
-                    touched.push(rec);
-                }
-            });
-            newValueMs = await timeAsync(() => cube.updateDataAsync({update: touched}));
+            // Last, deliberately: `toSpec` round-trips columns lossily, so anything measured after
+            // this would be measuring a degraded grid.
+            let setColumnsMs: number = null;
+            if (withGrid) {
+                const gm = pivotGrid?.gridModel ?? controlGrid;
+                setColumnsMs = time(() => gm.setColumns(gm.columns.map(toSpec)));
+            }
+
+            return {
+                id: `p${++this.seq}`,
+                axis: config.axis,
+                label: config.label,
+                mode: withGrid ? 'grid' : 'data',
+                ...shape,
+                cubeMs,
+                viewMs,
+                gridMs,
+                mountMs,
+                tick5,
+                tick10,
+                tick25,
+                tick50,
+                groupChangeMs,
+                pivotChangeMs,
+                valueChangeMs,
+                filterMs,
+                newValueMs,
+                setColumnsMs,
+                heapCubeMB: mb(heapCube, heapBase),
+                heapViewMB: mb(heapView, heapCube),
+                heapGridMB: withGrid ? mb(heapGrid, heapView) : null,
+                visibleThroughout: !hidden && !document.hidden
+            };
+        } finally {
+            document.removeEventListener('visibilitychange', onHide);
+            if (withGrid) {
+                runInAction(() => (this.activeGrid = null));
+                await paint();
+            }
+            XH.safeDestroy(pivotGrid, controlGrid, controlStore, view, cube);
+            await this.sampleHeapAsync();
         }
-
-        const result: PerfResult = {
-            id: `p${++this.seq}`,
-            axis: config.axis,
-            label: config.label,
-            mode: withGrid ? 'grid' : 'data',
-            ...shape,
-            cubeMs,
-            viewMs,
-            gridMs,
-            mountMs,
-            tick5,
-            tick10,
-            tick25,
-            tick50,
-            groupChangeMs,
-            pivotChangeMs,
-            valueChangeMs,
-            filterMs,
-            newValueMs,
-            setColumnsMs,
-            heapCubeMB: mb(heapCube, heapBase),
-            heapViewMB: mb(heapView, heapCube),
-            heapGridMB: withGrid ? mb(heapGrid, heapView) : null,
-            visibleThroughout: !hidden && !document.hidden
-        };
-
-        document.removeEventListener('visibilitychange', onHide);
-        if (withGrid) {
-            runInAction(() => (this.activeGrid = null));
-            await paint();
-        }
-        XH.safeDestroy(pivotGrid, controlGrid, controlStore, view, cube);
-        await this.sampleHeapAsync();
-
-        return result;
     }
 
     /** Settle the heap: several GC passes, since one pass leaves recently-dead objects behind. */
@@ -477,9 +577,17 @@ function time(fn: () => void): number {
     return performance.now() - t;
 }
 
-/** Resolve after the browser has had a frame to lay out and paint. */
+/**
+ * Resolve after the browser has had a frame to lay out and paint - or after a timeout, since rAF
+ * never fires once a tab goes hidden mid-run. Degrading to a voided row (`visibleThroughout`) beats
+ * hanging forever with the measured Cube and grid still live.
+ */
 function paint(): Promise<void> {
-    return new Promise(r => window.requestAnimationFrame(() => window.requestAnimationFrame(() => r())));
+    return new Promise(r => {
+        const done = () => r();
+        window.requestAnimationFrame(() => window.requestAnimationFrame(done));
+        window.setTimeout(done, 2 * SECONDS);
+    });
 }
 
 async function timeAsync(fn: () => Promise<any> | any): Promise<number> {
@@ -518,9 +626,13 @@ function countRows(view: View): number {
     return n;
 }
 
-/** Round-trip a built Column back to a spec, so `setColumns` can be timed in isolation. */
+/**
+ * Round-trip a built Column back to a spec, so `setColumns` can be timed in isolation. Lossy by
+ * design - `isTreeColumn` is carried only because dropping it leaves a treeMode grid invalid, which
+ * `GridModel` merely warns about.
+ */
 function toSpec(col: any): any {
     return col.children
         ? {groupId: col.groupId, headerName: col.headerName, children: col.children.map(toSpec)}
-        : {colId: col.colId, field: col.field, width: col.width};
+        : {colId: col.colId, field: col.field, width: col.width, isTreeColumn: col.isTreeColumn};
 }

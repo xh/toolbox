@@ -2,7 +2,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {Cube, CubeFieldSpec, PivotView} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {PivotProfile, PROFILES, generateLeaves, tickLeaves} from './PivotBenchData';
 
@@ -29,8 +29,10 @@ const GATES: Record<string, {buildMs: number; deltaTickMs: number}> = {
 export class PivotViewBenchModel extends HoistModel {
     @bindable tickPct = 1;
     @bindable tickReps = 5;
-    @observable running = false;
-    @observable status: string = null;
+    // Bindable rather than observable: both are observed, and Hoist's bindable setter is itself an
+    // action - a plain observable assigned outside one trips MobX's `enforceActions: 'observed'`.
+    @bindable running = false;
+    @bindable status: string = null;
 
     private seq = 0;
 
@@ -122,9 +124,15 @@ export class PivotViewBenchModel extends HoistModel {
         const leaves = generateLeaves(profile);
 
         // Warm up and discard - otherwise the first timed build absorbs JIT for the whole path.
+        // Destroy it: `instanceManager` retains every Store and HoistModel until destroyed, so a
+        // kept warm-up Cube inflates the heap the measured build then runs against.
         this.status = `${label}: warming up...`;
         await wait(50);
-        await this.buildAsync(profile, leaves.slice(0, Math.min(2000, leaves.length)));
+        const warmup = await this.buildAsync(
+            profile,
+            leaves.slice(0, Math.min(2000, leaves.length))
+        );
+        XH.safeDestroy(warmup.view, warmup.cube);
 
         this.status = `${label}: build...`;
         await wait(50);

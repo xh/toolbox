@@ -119,7 +119,9 @@ class PivotGridPanelModel extends HoistModel {
             {
                 track: () => this.showSummaries,
                 run: show => {
+                    // Null until the first load succeeds - the mask clears on a failed load too.
                     const m = this.pivotGridModel;
+                    if (!m) return;
                     m.rowSummary = show ? 'right' : false;
                     m.valueSummary = show ? 'top' : false;
                 }
@@ -144,7 +146,10 @@ class PivotGridPanelModel extends HoistModel {
                 rowSummary: 'right',
                 valueSummary: 'top',
                 valueColumnSpecs: {
-                    mktVal: {width: 120, renderer: v => fmtMillions(v, {precision: 2, label: true})},
+                    mktVal: {
+                        width: 120,
+                        renderer: v => fmtMillions(v, {precision: 2, label: true})
+                    },
                     pnl: {width: 110, renderer: v => fmtNumber(v, {precision: 0, colorSpec: true})}
                 },
                 // Managed autosize fits the tree column to its fund names, and re-fits whenever a

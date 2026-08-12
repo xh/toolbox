@@ -1,4 +1,5 @@
 import {PlainObject} from '@xh/hoist/core';
+import {throwIf} from '@xh/hoist/utils/js';
 
 /**
  * Profiles and synthetic data for the PivotGrid benchmark.
@@ -14,9 +15,6 @@ import {PlainObject} from '@xh/hoist/core';
  *
  * See `docs/planning/pivot-grid.md` in hoist-react for the acceptance criteria these feed.
  */
-
-/** Value fields, in the order profiles draw from them. */
-const VALUE_FIELDS = ['pnl', 'mktVal', 'quantity'];
 
 /** Real-ish pools for the low-cardinality dimensions that make good pivots. */
 const NAMED_POOLS: Record<string, string[]> = {
@@ -57,9 +55,6 @@ export interface PivotProfile {
     /** Extra numeric measures (`m0`..`mN-1`) beyond pnl/mktVal/quantity, to widen the record. */
     extraMeasures?: number;
 
-    /** Gate targets, in ms. Profiles without these are tracked but not pass/fail. */
-    gate?: {buildMs: number; tickMs: number};
-
     /** True to require an explicit confirm before running - expected to be brutal. */
     optIn?: boolean;
 
@@ -89,7 +84,6 @@ export const PROFILES: PivotProfile[] = [
         groupBy: ['fund', 'strategy', 'sector'],
         pivotBy: ['region'],
         valueFields: ['pnl'],
-        gate: {buildMs: 250, tickMs: 30},
         description:
             'The shape real usage takes: 3 groupings, one low-cardinality pivot, one measure. ' +
             'This is the gate.'
@@ -102,7 +96,6 @@ export const PROFILES: PivotProfile[] = [
         groupBy: ['fund', 'strategy', 'sector', 'tradeId'],
         pivotBy: ['region'],
         valueFields: ['pnl'],
-        gate: {buildMs: 750, tickMs: 50},
         description:
             'Typical, plus a unique-per-leaf final grouping for leaf drill-down. A normal ask, so ' +
             'this is a secondary gate.'
@@ -168,22 +161,11 @@ export const PROFILES: PivotProfile[] = [
 ];
 
 export function getProfile(id: string): PivotProfile {
-    return PROFILES.find(it => it.id === id);
-}
-
-/** Dense cell count: group rows x pivot paths x value fields - the work the prototype does. */
-export function denseCellCount(profile: PivotProfile, groupRows: number): number {
-    return groupRows * pivotPathCount(profile) * profile.valueFields.length;
-}
-
-/** Total distinct pivot paths - the product of the pivot dimension cardinalities. */
-export function pivotPathCount(profile: PivotProfile): number {
-    return profile.pivotBy.reduce((acc, name) => acc * cardinality(profile, name), 1);
-}
-
-function cardinality(profile: PivotProfile, name: string): number {
-    const size = profile.dims[name];
-    return size === 0 ? profile.leaves : size;
+    const ret = PROFILES.find(it => it.id === id);
+    // Callers spread the result, so an undefined return surfaces as `Object.keys(undefined)` deep
+    // inside `generateLeaves` rather than here.
+    throwIf(!ret, `Unknown pivot profile '${id}'`);
+    return ret;
 }
 
 /** Seeded PRNG (mulberry32), so every run generates an identical dataset. */
@@ -260,5 +242,3 @@ export function tickLeaves(leaves: PlainObject[], count: number): PlainObject[] 
 
     return leaves;
 }
-
-export {VALUE_FIELDS};

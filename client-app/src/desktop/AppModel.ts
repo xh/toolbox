@@ -31,11 +31,11 @@ import {
     dataViewPanel,
     externalSortGridPanel,
     inlineEditingPanel,
+    pivotGridPanel,
     restGridPanel,
     standardGridPanel,
     treeGridPanel,
     treeGridWithCheckboxPanel,
-    pivotGridPanel,
     zoneGridPanel
 } from './tabs/grids';
 import {homeTab} from './tabs/home/HomeTab';

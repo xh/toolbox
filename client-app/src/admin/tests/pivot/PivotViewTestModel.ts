@@ -15,7 +15,7 @@ import {
     View,
     ViewRowData
 } from '@xh/hoist/data';
-import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 import {castArray, difference, isEmpty, isEqual, uniq} from 'lodash';
@@ -358,7 +358,9 @@ function boolCheck(name: string, ok: boolean, detail?: string): PivotCheck {
 
 export class PivotViewTestModel extends HoistModel {
     @bindable tickPct = 2;
-    @observable running = false;
+    // Bindable, not observable: `running` is observed and is set outside an action below - Hoist's
+    // bindable setter wraps in one, which `enforceActions: 'observed'` requires.
+    @bindable running = false;
 
     @managed
     gridModel: GridModel = new GridModel({
@@ -1052,7 +1054,10 @@ export class PivotViewTestModel extends HoistModel {
                 boolCheck(
                     "columns: row summaries bind the value fields' own names",
                     view.query.valueFields.every(f => ids.includes(f.name)),
-                    `missing [${difference(view.query.valueFields.map(f => f.name), ids)}]`
+                    `missing [${difference(
+                        view.query.valueFields.map(f => f.name),
+                        ids
+                    )}]`
                 ),
                 boolCheck(
                     'columns: valueSummary wires includeRoot through to showSummary',
