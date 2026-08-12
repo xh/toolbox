@@ -24,6 +24,10 @@ export const columnGroupsGridPanel = hoistCmp.factory({
                 "Hoist React are also 'sealed', meaning that columns may be reordered *within* the",
                 'group in which they are defined but not broken out from them.',
                 '',
+                'The `Demographics` group here is collapsible - click its header to expand it. Its',
+                'columns each set `columnGroupShow` to appear only when the group is `open` or',
+                '`closed`, and the group itself sets `expandedByDefault: false` to start collapsed.',
+                '',
                 'This grid also persists its state (column order, sizing, and visibility) to the',
                 "browser's local storage."
             ],

@@ -83,38 +83,13 @@ export class SampleColumnGroupsGridModel extends HoistModel {
             columns: [
                 {
                     groupId: 'demographics',
+                    expandedByDefault: false,
                     children: [
-                        {
-                            ...fullNameCol,
-                            agOptions: {
-                                columnGroupShow: 'closed'
-                            }
-                        },
-                        {
-                            ...firstNameCol,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        },
-                        {
-                            ...lastNameCol,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        },
-                        {
-                            ...cityCol,
-                            hidden: true,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        },
-                        {
-                            ...stateCol,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        }
+                        {...fullNameCol, columnGroupShow: 'closed'},
+                        {...firstNameCol, columnGroupShow: 'open'},
+                        {...lastNameCol, columnGroupShow: 'open'},
+                        {...cityCol, hidden: true, columnGroupShow: 'open'},
+                        {...stateCol, columnGroupShow: 'open'}
                     ]
                 },
                 {...salaryCol},
