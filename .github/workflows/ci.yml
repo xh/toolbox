@@ -88,10 +88,9 @@ jobs:
         - name: Lint
           run: cd client-app && pnpm lint
 
-        # A separate concern from linting, not a lint rule: ESLint is configured type-aware, but
-        # that only powers its own rules and never reports compiler diagnostics, so a genuine type
-        # error passes `pnpm lint`. Type-checks Toolbox against the installed `@xh/hoist`, catching
-        # use of APIs not present in the resolved version.
+        # Not a lint rule: ESLint is type-aware, but that only powers its own rules and never
+        # reports compiler diagnostics, so a genuine type error passes `pnpm lint`. Runs against the
+        # `@xh/hoist` pinned by the frozen lockfile. See docs/build-and-deploy.md.
         - name: Type check
           run: cd client-app && pnpm typecheck
 

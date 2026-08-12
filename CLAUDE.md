@@ -307,6 +307,14 @@ Linting and type-checking are separate concerns, and neither subsumes the other 
 is configured type-aware, but that only powers its own rules; it never reports TypeScript compiler
 errors, so a genuine type error passes `pnpm lint`. CI runs the two as distinct steps.
 
+Between releases, `@xh/hoist` is specified as the bare npm dist-tag `"next"`, which tracks
+hoist-react's current SNAPSHOT line. Refresh it with `pnpm update` (plain `pnpm install` honors the
+lockfile and will not move it). **Never rewrite that spec to a version or caret range** - on
+prerelease versions `pnpm update` converts a range into an exact pin it can then never move again,
+silently freezing the snapshot ([pnpm#7002](https://github.com/pnpm/pnpm/issues/7002)). This also
+keeps the `hoist-react-snapshot` trigger in `buildSnapshot.yml` working. See
+[`docs/running-locally.md`](docs/running-locally.md).
+
 When using `pnpm startWithHoist`, you may also want to uncomment the `paths` block in
 `client-app/tsconfig.json` so `tsc`/your IDE type-check against the local hoist-react checkout - see
 the Pre-commit Hooks note above and [`docs/running-locally.md`](docs/running-locally.md). Re-comment

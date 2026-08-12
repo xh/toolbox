@@ -27,11 +27,11 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       '@xh/hoist':
-        specifier: 87.0.0-SNAPSHOT.1786248333699
-        version: 87.0.0-SNAPSHOT.1786248333699(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
+        specifier: next
+        version: 87.0.0-SNAPSHOT.1786485357526(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
       '@xh/package-template':
         specifier: ~3.0.4
-        version: 3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786248333699(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786485357526(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ag-charts-community:
         specifier: ~13.3.1
         version: 13.3.1
@@ -123,12 +123,12 @@ packages:
   '@auth0/auth0-spa-js@2.24.1':
     resolution: {integrity: sha512-iS18fBlWWxQ/FPtWgWzYYEImsNRumJG2cZ08xV0HsEmWtTBv+54A+fnyFx9eiNBP7cLp0emwDDjgeG+hQEbVBA==}
 
-  '@azure/msal-browser@5.17.3':
-    resolution: {integrity: sha512-qMabD7Xrm/UgRhs+/IVyCTZRjUl8Qb+uGsRrCkaKNWsiTwRaeyStJbChE7/ySNTNYtiWo7khfF7vUDd0wGMnLw==}
+  '@azure/msal-browser@5.18.0':
+    resolution: {integrity: sha512-SPTeHYZghdEdRddJzNjhH+CI5MSQtquNYwGJnYXfOHIBRXCmrWimBS85OhwXpXFIlrCtNTbBPm5mPAWRNEoktA==}
     engines: {node: '>=0.8.0'}
 
-  '@azure/msal-common@16.11.3':
-    resolution: {integrity: sha512-VeXOW+t3Rdd9XGX6lVyIg3DhtjMR1JD8ARKcsnGbJFUWwAmF3sHL7GwZc/ZjEUfHESResAonETRYCuG06OBT7A==}
+  '@azure/msal-common@16.12.0':
+    resolution: {integrity: sha512-hgLgfRdbG2AmhXPygebf1KYJEvse86+ZZLWufdiTKaGRYEUqOzHdlf6AS1IiuUCHWbynkgbHc451jSNkbfhWlg==}
     engines: {node: '>=0.8.0'}
 
   '@babel/code-frame@7.29.7':
@@ -1854,8 +1854,8 @@ packages:
     resolution: {integrity: sha512-oCFlL2LnSvXfYYC8rIhBrGpoaCoUel+24SFYRSmCoB5bHH17KKXuSkBtf1qJ4xxOohYg9I0ni2NarF+qIp1GQQ==}
     engines: {node: '>=22.15.0'}
 
-  '@xh/hoist@87.0.0-SNAPSHOT.1786248333699':
-    resolution: {integrity: sha512-wpjGdDVROAJvFFdseJ7C4QUm+flqQhsjNZUVtSOKMcLHGTbT3vUJQohiXwDNOgyiGY8pVczul+b+LxYMtq0bVQ==}
+  '@xh/hoist@87.0.0-SNAPSHOT.1786485357526':
+    resolution: {integrity: sha512-nwAzwmhB2EJhHAAo8Cc91fiSDTc/ybPfmb91BqYukR0pYEVI+6pVCNvpFx4vGYj44EF0u/Pd4pa2gHJLd/IkMA==}
     hasBin: true
     peerDependencies:
       react: ^19.2.0
@@ -4718,8 +4718,8 @@ packages:
   svg-tags@1.0.0:
     resolution: {integrity: sha512-ovssysQTa+luh7A5Weu3Rta6FJlFBBbInjOh722LIt6klpU2/HtdUbszju/G4devcvk8PGt7FCLv5wftu3THUA==}
 
-  swiper@14.1.0:
-    resolution: {integrity: sha512-ppit/AqmGvThKlXy4I1/9N/gEyb9s/BDHWciWNeIxbfteFKUhPQXrYuOMKszomXKd9WiLd+/0vKdPHW+0N0mhA==}
+  swiper@12.2.0:
+    resolution: {integrity: sha512-K8uXsBZU6ME97Ia3xbBge8IRCnR1lOmIILzvY/jGVic7dSTQ530s3uO8RvXbPUtkkXLWIwmZLRPbtDxRWVAFdg==}
     engines: {node: '>= 4.7.0'}
 
   symbol-observable@1.2.0:
@@ -5198,11 +5198,11 @@ snapshots:
       dpop: 2.1.1
       es-cookie: 1.3.2
 
-  '@azure/msal-browser@5.17.3':
+  '@azure/msal-browser@5.18.0':
     dependencies:
-      '@azure/msal-common': 16.11.3
+      '@azure/msal-common': 16.12.0
 
-  '@azure/msal-common@16.11.3': {}
+  '@azure/msal-common@16.12.0': {}
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -7462,11 +7462,11 @@ snapshots:
       - uglify-js
       - utf-8-validate
 
-  '@xh/hoist@87.0.0-SNAPSHOT.1786248333699(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)':
+  '@xh/hoist@87.0.0-SNAPSHOT.1786485357526(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)':
     dependencies:
       '@auth0/auth0-spa-js': 2.24.1
-      '@azure/msal-browser': 5.17.3
-      '@azure/msal-common': 16.11.3
+      '@azure/msal-browser': 5.18.0
+      '@azure/msal-common': 16.12.0
       '@blueprintjs/core': 6.18.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@blueprintjs/datetime': 6.2.4(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@codemirror/commands': 6.10.4
@@ -7520,7 +7520,7 @@ snapshots:
       semver: 7.8.5
       short-unique-id: 5.3.2
       store2: 2.14.4
-      swiper: 14.1.0
+      swiper: 12.2.0
       ts-morph: 27.0.2
       tsx: 4.23.12
       ua-parser-js: 2.0.10
@@ -7532,9 +7532,9 @@ snapshots:
       - react-native
       - supports-color
 
-  '@xh/package-template@3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786248333699(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@xh/package-template@3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786485357526(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@xh/hoist': 87.0.0-SNAPSHOT.1786248333699(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
+      '@xh/hoist': 87.0.0-SNAPSHOT.1786485357526(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
@@ -10862,7 +10862,7 @@ snapshots:
 
   svg-tags@1.0.0: {}
 
-  swiper@14.1.0: {}
+  swiper@12.2.0: {}
 
   symbol-observable@1.2.0: {}
 

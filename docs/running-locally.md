@@ -50,6 +50,36 @@ Each file in `client-app/src/apps/` defines an entry point whose filename (minus
 the URL path. The standalone example apps are reachable the same way: `/contact`, `/todo`,
 `/portfolio`, `/news`, `/recalls`, `/fileManager`, `/weather`.
 
+### Updating to the latest hoist-react snapshot
+
+Between releases, `develop` tracks hoist-react's current SNAPSHOT line via the npm `next` dist-tag:
+
+```json
+"@xh/hoist": "next"
+```
+
+To pull the newest published snapshot, run from `client-app/`:
+
+```
+pnpm update @xh/hoist     # or plain `pnpm update` to refresh everything
+pnpm hoistVer             # confirm which snapshot you landed on
+```
+
+`pnpm install` on its own will **not** move it - it honors the committed `pnpm-lock.yaml`, which is
+what keeps builds reproducible. `pnpm update` is the deliberate refresh, and it advances the
+lockfile while leaving the `next` spec in `package.json` untouched. Commit the updated lockfile.
+
+Two things to know:
+
+* **Don't replace `next` with a version or a caret range.** On any prerelease version, `pnpm update`
+  strips the range prefix and writes an exact pin, which `pnpm update` can then never move again
+  (an acknowledged pnpm bug, [pnpm#7002](https://github.com/pnpm/pnpm/issues/7002)). The snapshot
+  silently freezes while the app keeps moving. The `next` tag has no version in it to rewrite, so
+  it survives.
+* **`pnpm outdated` won't flag a stale hoist.** It doesn't account for dist-tags
+  ([pnpm#7339](https://github.com/pnpm/pnpm/issues/7339)). Use `pnpm hoistVer` against
+  `npm view @xh/hoist dist-tags` if you want to check by hand.
+
 ### Running against a local Hoist framework checkout
 
 Toolbox is XH's primary development and testing vehicle for the Hoist framework itself, so it is

@@ -145,19 +145,16 @@ jobs:
               FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
           run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
 
-        # `pnpm typecheck` is a distinct gate from `pnpm lint` - linting never reports TypeScript
-        # compiler errors. Both run here, so a snapshot build type-checks the app against the
-        # freshly-updated `@xh/hoist` SNAPSHOT it is about to ship.
+        # `pnpm update --no-save` refreshes the framework libraries past the committed lockfile, so
+        # this build ships the newly published `@xh/hoist`. Requires the `next` dist-tag spec - a
+        # pinned version silently defeats it. `pnpm typecheck` is a gate distinct from `pnpm lint`,
+        # which never reports compiler errors. See docs/build-and-deploy.md.
         - name: Install and upgrade dependencies, lint, type check, and build client app
           run: cd client-app && pnpm install && pnpm update --no-save && pnpm lint && pnpm typecheck && pnpm build --env appBuild="${{ needs.prepare.outputs.app-build }}"
 
-        # `pnpm update` rewrites pnpm-lock.yaml when any semver-compatible transitive
-        # has moved. That's expected and usually too noisy to act on - but a
-        # FontAwesome bump matters, because every run until we commit the updated
-        # lockfile will re-download the new FA tarballs against our bandwidth cap.
-        # This step filters lockfile drift specifically to @fortawesome changes
-        # and surfaces a workflow warning + summary pointing at the standard
-        # remediation: run `pnpm update` locally, verify, and commit.
+        # Lockfile drift from `pnpm update` is expected and mostly too noisy to act on, so this
+        # filters to @fortawesome specifically - those bumps cost bandwidth against the FA Pro cap
+        # on every subsequent build. See docs/build-and-deploy.md.
         - name: Detect FontAwesome lockfile drift
           working-directory: client-app
           run: |
