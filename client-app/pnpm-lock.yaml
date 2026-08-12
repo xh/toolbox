@@ -28,10 +28,10 @@ importers:
         version: 1.1.0
       '@xh/hoist':
         specifier: next
-        version: 87.0.0-SNAPSHOT.1786485357526(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
+        version: 87.0.0-SNAPSHOT.1786536310897(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
       '@xh/package-template':
         specifier: ~3.0.4
-        version: 3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786485357526(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786536310897(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ag-charts-community:
         specifier: ~13.3.1
         version: 13.3.1
@@ -1854,8 +1854,8 @@ packages:
     resolution: {integrity: sha512-oCFlL2LnSvXfYYC8rIhBrGpoaCoUel+24SFYRSmCoB5bHH17KKXuSkBtf1qJ4xxOohYg9I0ni2NarF+qIp1GQQ==}
     engines: {node: '>=22.15.0'}
 
-  '@xh/hoist@87.0.0-SNAPSHOT.1786485357526':
-    resolution: {integrity: sha512-nwAzwmhB2EJhHAAo8Cc91fiSDTc/ybPfmb91BqYukR0pYEVI+6pVCNvpFx4vGYj44EF0u/Pd4pa2gHJLd/IkMA==}
+  '@xh/hoist@87.0.0-SNAPSHOT.1786536310897':
+    resolution: {integrity: sha512-L+B6OyA9j92/8W47XUfirVLR24tNyx0e8gDh37C5xPVm14hSOn+5apBCJh9dCq4U1agwne5XEDDyAJqXABEhfQ==}
     hasBin: true
     peerDependencies:
       react: ^19.2.0
@@ -7462,7 +7462,7 @@ snapshots:
       - uglify-js
       - utf-8-validate
 
-  '@xh/hoist@87.0.0-SNAPSHOT.1786485357526(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)':
+  '@xh/hoist@87.0.0-SNAPSHOT.1786536310897(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)':
     dependencies:
       '@auth0/auth0-spa-js': 2.24.1
       '@azure/msal-browser': 5.18.0
@@ -7532,9 +7532,9 @@ snapshots:
       - react-native
       - supports-color
 
-  '@xh/package-template@3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786485357526(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@xh/package-template@3.0.4(@xh/hoist@87.0.0-SNAPSHOT.1786536310897(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@xh/hoist': 87.0.0-SNAPSHOT.1786485357526(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
+      '@xh/hoist': 87.0.0-SNAPSHOT.1786536310897(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
