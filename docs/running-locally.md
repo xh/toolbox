@@ -1,8 +1,8 @@
 # Running Toolbox Locally
 
-This guide covers running Toolbox on a development workstation. It describes the standard setup —
+This guide covers running Toolbox on a development workstation. It describes the standard setup -
 the desktop browser talking to a local server over `localhost`, which is what you will use the
-majority of the time — and then the special case of binding the dev server to your machine's network
+majority of the time - and then the special case of binding the dev server to your machine's network
 IP so you can load the app on a physical phone or tablet for on-device testing.
 
 This document assumes you have already completed first-run setup. For the database, instance
@@ -110,23 +110,23 @@ clustering behavior):
 To load Toolbox on a physical device (e.g. to verify mobile-specific behavior, native inputs, or
 touch interactions that a desktop browser's device emulation cannot fully reproduce), the dev server
 must be reachable from that device. This means binding it to your workstation's network IP instead
-of `localhost`. There are several caveats — work through all of them or the device will fail to load
+of `localhost`. There are several caveats - work through all of them or the device will fail to load
 the app or fail to log in.
 
 > [!TIP]
 > **Other options that keep you on `localhost`.** If you have the tooling, you can skip the
-> network-IP setup below entirely — and keep using Auth0, since `localhost:3000` is already a
-> registered callback (no need to switch to form-based login) — by reaching the standard
+> network-IP setup below entirely - and keep using Auth0, since `localhost:3000` is already a
+> registered callback (no need to switch to form-based login) - by reaching the standard
 > `pnpm start` dev server through `localhost`:
 >
-> * **iOS Simulator** (requires Xcode) — Mobile Safari in the simulator shares the host's network
+> * **iOS Simulator** (requires Xcode) - Mobile Safari in the simulator shares the host's network
 >   stack, so it loads `http://localhost:3000/mobile` directly.
-> * **Android via `adb reverse`** (requires Android platform-tools) — run
+> * **Android via `adb reverse`** (requires Android platform-tools) - run
 >   `adb reverse tcp:3000 tcp:3000` to map the device's `localhost:3000` onto the host, then open
 >   `http://localhost:3000/mobile` in Chrome on the device. Works with a physical device over USB or
 >   an emulator; only port 3000 needs forwarding, as the dev server proxies API calls host-side.
 >
-> Reach for the network-IP method below when these don't fit — most notably physical iOS hardware,
+> Reach for the network-IP method below when these don't fit - most notably physical iOS hardware,
 > or any device you want to test over Wi-Fi without a USB/Xcode toolchain.
 
 1. **Put both devices on the same network.** The phone and your workstation must be on the same
@@ -140,7 +140,7 @@ the app or fail to log in.
    different interface. The result (e.g. `10.0.1.42`) is referred to as `<devHost>` below.
 
 3. **Start the client bound to that IP.** Use the convenience script that resolves your Wi-Fi IP
-   automatically — `startWithIp` for the published hoist-react, or `startWithHoistAndIp` when
+   automatically - `startWithIp` for the published hoist-react, or `startWithHoistAndIp` when
    developing against a local sibling checkout:
    ```
    pnpm startWithIp          # published @xh/hoist
@@ -148,14 +148,14 @@ the app or fail to log in.
    ```
    To target a specific address (or a non-Wi-Fi interface), pass it explicitly to the base script
    instead: `pnpm start --env devHost=<devHost>` (or `pnpm startWithHoist --env devHost=<devHost>`).
-   Either way the dev server binds **only to the LAN IP, not to `localhost`** — so on the
+   Either way the dev server binds **only to the LAN IP, not to `localhost`** - so on the
    workstation itself you must also browse to `http://<devHost>:3000`, not `http://localhost:3000`.
 
 4. **Make sure the backend is reachable at that IP.** The dev server proxies `/api/` to
    `<devHost>:8080`, so the Grails server must be answering there. `bootRun` binds all interfaces
-   (`*:8080`) by default, so no extra flag is needed — just start it normally. If the client loads
+   (`*:8080`) by default, so no extra flag is needed - just start it normally. If the client loads
    but data/login calls hang or return a gateway timeout, the backend is not running or not
-   reachable — see [Troubleshooting](#troubleshooting).
+   reachable - see [Troubleshooting](#troubleshooting).
 
 5. **Switch to form-based login.** Toolbox defaults to Auth0 (OAuth), which redirects to a callback
    URL that must be pre-registered. A raw LAN IP is not a registered callback, so OAuth login cannot
@@ -174,7 +174,7 @@ the app or fail to log in.
 
 **Prefer plain HTTP for device checks.** Loading over `http://<devHost>:3000` is the simplest path
 and is fine for functional testing. The HTTPS setup described below requires a hostname, a
-certificate, and a `hosts`-file entry, none of which are practical to configure on a phone — only
+certificate, and a `hosts`-file entry, none of which are practical to configure on a phone - only
 reach for it if you are specifically testing HTTPS/OAuth/cookie behavior.
 
 ## Developing with HTTPS on the `xh.io` domain

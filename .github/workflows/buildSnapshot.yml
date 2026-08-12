@@ -1,4 +1,4 @@
-# Build Snapshot — Builds snapshot Docker images on every push to develop.
+# Build Snapshot - Builds snapshot Docker images on every push to develop.
 #
 # Builds both nginx (React frontend) and tomcat (Grails backend) images and pushes them
 # to ECR with snapshot tags. Also triggered when hoist-core or hoist-react publish new
@@ -32,7 +32,7 @@ jobs:
             app-build: ${{ steps.tag.outputs.app-build }}
             image-tag: ${{ steps.tag.outputs.image-tag }}
         steps:
-        # Build identifiers come from the shared dev-utils composite action — one
+        # Build identifiers come from the shared dev-utils composite action - one
         # unit-tested implementation, consumed by every app repo. It snaps a single
         # timestamp and emits both `app-build` (readable, baked into appBuild on client
         # + server, shown in-app) and `image-tag` (sanitized, snap_-prefixed, immutable
@@ -83,7 +83,7 @@ jobs:
 
         # Push to the immutable per-build tag, NOT :snapshot. The :snapshot deploy
         # pointer is advanced later by the `promote` job, and only once both images
-        # for this run exist — so the deployed pair can never straddle two runs.
+        # for this run exist - so the deployed pair can never straddle two runs.
         - name: Build and push tomcat image
           env:
               ECR_ROOT: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
@@ -223,7 +223,7 @@ jobs:
               role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/xh-github-actions-deploy
               aws-region: ${{ secrets.AWS_REGION }}
 
-        # Registry-side manifest copy — retags the existing build images to
+        # Registry-side manifest copy - retags the existing build images to
         # :snapshot without pulling or moving any layers. After this, each deployed
         # image carries both its immutable snap_ tag and :snapshot.
         - name: Retag build images as :snapshot

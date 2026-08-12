@@ -1,4 +1,4 @@
-# CI — Validates builds on PRs and pushes to develop, and submits the dependency
+# CI - Validates builds on PRs and pushes to develop, and submits the dependency
 # graph to GitHub for Dependabot vulnerability alerts.
 #
 # This workflow does not publish artifacts. For snapshot and release Docker builds,

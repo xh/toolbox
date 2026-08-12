@@ -4,9 +4,9 @@ Toolbox uses [GitHub Actions](https://docs.github.com/en/actions) for continuous
 Docker image builds, and deployment to AWS ECS. All workflow definitions live in
 `.github/workflows/`.
 
-For general background on building and deploying full-stack Hoist applications — including the
+For general background on building and deploying full-stack Hoist applications - including the
 Gradle WAR build, Webpack client build, Docker image structure, nginx configuration, and deployment
-patterns — see the
+patterns - see the
 [Build & Deploy Apps](https://github.com/xh/hoist-react/blob/develop/docs/build-and-deploy-app.md)
 guide in the hoist-react documentation. This document covers the Toolbox-specific GitHub Actions
 that automate that process.
@@ -15,15 +15,15 @@ that automate that process.
 
 Runs automatically on pushes and pull requests to `develop`. Includes three independent jobs:
 
-- **Build** — checks out the project, sets up Java and Gradle, and runs `./gradlew build` to
+- **Build** - checks out the project, sets up Java and Gradle, and runs `./gradlew build` to
   validate the Grails server compiles successfully.
-- **Lint** — sets up Node.js (version from `client-app/.nvmrc`), installs JS dependencies via
+- **Lint** - sets up Node.js (version from `client-app/.nvmrc`), installs JS dependencies via
   `pnpm install --frozen-lockfile`, then runs `pnpm lint` (ESLint + Stylelint) and `pnpm typecheck`
-  (`tsc --noEmit`) as distinct steps. The two are disjoint gates — linting never reports TypeScript
+  (`tsc --noEmit`) as distinct steps. The two are disjoint gates - linting never reports TypeScript
   compiler errors. The type-check runs against the installed `@xh/hoist`, catching use of APIs not
   present in the resolved/released version; the client builds in Build Snapshot / Build Release run
   the same pair.
-- **Dependency Submission** — generates and submits a Gradle dependency graph to GitHub, enabling
+- **Dependency Submission** - generates and submits a Gradle dependency graph to GitHub, enabling
   Dependabot vulnerability alerts for all server-side dependencies.
 
 This workflow does not publish any artifacts. For Docker image builds, see Build Snapshot and
@@ -41,21 +41,21 @@ land in quick succession.
 
 The workflow runs in three stages:
 
-- **prepare** — uses the shared `xh/hoist-dev-utils` `build-snapshot-tag` composite action to derive
+- **prepare** - uses the shared `xh/hoist-dev-utils` `build-snapshot-tag` composite action to derive
   two identifiers from a single snapped timestamp, exposed as job outputs. `app-build` is the
   readable value (`<ref>_<sha>_<timestamp>`, e.g. `develop_9fab876_2026-06-06T17:17Z`) baked into
   `appBuild` on both client and server and shown in-app. `image-tag` is the immutable ECR image tag
   (`snap_<ref>_<sha>_<ts>`). Both come from the one timestamp, so a run's two values correspond. The
-  action makes `image-tag` a total function — a valid Docker/ECR tag for any ref (allowlist charset,
-  bounded length, colon-free), so the build always proceeds — and those container-tag constraints
+  action makes `image-tag` a total function - a valid Docker/ECR tag for any ref (allowlist charset,
+  bounded length, colon-free), so the build always proceeds - and those container-tag constraints
   apply only to `image-tag`, never to the displayed `appBuild`. `app-build` is consumed by both build
   jobs, so client and server always report the same build (what the version-skew check compares). The
   action (and its unit test) live in hoist-dev-utils, shared across XH app repos.
-- **build-tomcat** / **build-nginx** (parallel) — build the Grails WAR (via `./gradlew war`, default
+- **build-tomcat** / **build-nginx** (parallel) - build the Grails WAR (via `./gradlew war`, default
   SNAPSHOT version from `gradle.properties`) and the client assets (`pnpm lint` + `pnpm typecheck`
   + `pnpm build`)
-  respectively, and push each to the run's *immutable* `image-tag` in ECR — **not** `:snapshot`.
-- **promote** — runs only after both build jobs succeed, and retags both images to `:snapshot` via a
+  respectively, and push each to the run's *immutable* `image-tag` in ECR - **not** `:snapshot`.
+- **promote** - runs only after both build jobs succeed, and retags both images to `:snapshot` via a
   registry-side manifest copy. This is the only step that advances the mutable `:snapshot` pointer,
   so the deployed pair always comes from a single run. Re-running one build job in isolation can no
   longer leave the server and client on mismatched builds (the failure that previously flapped
@@ -89,18 +89,18 @@ cluster / `toolbox-dev` service.
 Builds a numbered release as Docker images and pushes them to ECR. **Manually triggered** from the
 `master` branch via `workflow_dispatch`. Requires one input:
 
-- **Release Version** — a semver string (e.g. `9.0.0`). Must be exactly one increment (major,
+- **Release Version** - a semver string (e.g. `9.0.0`). Must be exactly one increment (major,
   minor, or patch) from the latest existing release tag.
 
 The workflow proceeds through four jobs:
 
-1. **validate** — runs only from `master`, guarding against an accidental release from `develop` or
+1. **validate** - runs only from `master`, guarding against an accidental release from `develop` or
    any other branch. Validates the version strictly: semver format, no duplicate tags, and a correct
    single increment from the latest release tag.
-2. **build-tomcat** — builds the WAR with the release version (`-PxhAppVersion`), pushes a versioned
+2. **build-tomcat** - builds the WAR with the release version (`-PxhAppVersion`), pushes a versioned
    image and a `latest` tag to ECR.
-3. **build-nginx** — builds the client app, pushes a versioned image and a `latest` tag to ECR.
-4. **release** — creates and pushes a `vX.Y.Z` git tag, then creates a GitHub Release with
+3. **build-nginx** - builds the client app, pushes a versioned image and a `latest` tag to ECR.
+4. **release** - creates and pushes a `vX.Y.Z` git tag, then creates a GitHub Release with
    auto-generated notes (marked as the latest release).
 
 ## Deploy Release (`deployRelease.yml`)

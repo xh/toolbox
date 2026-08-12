@@ -1,4 +1,4 @@
-# Build Release — Builds a numbered release as Docker images and pushes to ECR.
+# Build Release - Builds a numbered release as Docker images and pushes to ECR.
 #
 # Manually triggered from the master branch. Validates the version input, builds both
 # nginx and tomcat images in parallel, pushes them to ECR, tags the commit, and creates
@@ -204,7 +204,7 @@ jobs:
         # Note: The tag intentionally points to a commit where gradle.properties still has
         # the SNAPSHOT version. We chose not to commit the version change back to the repo to
         # avoid paired set/reset commits on every release. The built WAR artifact has the
-        # correct release version — the tag is just a pointer to the source commit.
+        # correct release version - the tag is just a pointer to the source commit.
         # Checkout is required to be called with `fetch-depth: 0` and `fetch-tags: true`.
         - name: Create tag and GitHub release
           uses: xh/hoist-dev-utils/.github/actions/create-tag-and-github-release@master

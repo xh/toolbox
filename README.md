@@ -101,8 +101,8 @@ To run Toolbox locally, start the Grails server and the Webpack dev server in se
 
 Then open `http://localhost:3000/app` (desktop app), `/admin` (admin console), or `/mobile`.
 
-For the complete guide — running against local Hoist framework checkouts, running multiple
-instances, on-device mobile testing over a network IP, HTTPS setup, and troubleshooting — see
+For the complete guide - running against local Hoist framework checkouts, running multiple
+instances, on-device mobile testing over a network IP, HTTPS setup, and troubleshooting - see
 [**Running Toolbox Locally**](docs/running-locally.md).
 
 ------------------------------------------
