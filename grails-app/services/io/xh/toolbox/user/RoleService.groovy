@@ -19,6 +19,13 @@ class RoleService extends DefaultRoleService {
      * This mock code also supports use of the special group name `sim_error` to mock a lookup failure.
      */
     protected Map<String, Object> doLoadUsersForDirectoryGroups(Set<String> groups, boolean strictMode) {
+        // Delegate to a real directory service when one is enabled - in particular EntraIdService
+        // against the XH Entra ID tenant, for which Toolbox is the framework testbed. Falls back
+        // to the mock support below when no real directory connection is configured.
+        if (ldapService.enabled || entraIdService.enabled) {
+            return super.doLoadUsersForDirectoryGroups(groups, strictMode)
+        }
+
         def config = configService.getMap('mockDirectoryGroups', [:])
 
         return groups.collectEntries { group ->
