@@ -335,8 +335,9 @@ class BootStrap implements LogSupport {
             new PreferenceSpec(
                 name: 'cubeTestUserDims',
                 type: 'json',
-                defaultValue: [],
-                groupName: 'Toolbox'
+                defaultValue: [:],
+                groupName: 'Toolbox',
+                notes: 'Persisted GroupingChooser state (value + favorites) for the Cube test panel.'
             ),
             new PreferenceSpec(
                 name: 'mobileHomeWidgets',

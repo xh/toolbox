@@ -6,16 +6,16 @@ import {fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {action, bindable, comparer, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {isEmpty} from 'lodash';
-import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
+import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {LoadTimesModel} from './LoadTimesModel';
 import {CubeModel} from './CubeModel';
-import {QueryConfig, StoreRecord, View} from '@xh/hoist/data';
+import {PatchStats, QueryConfig, StoreRecord, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
     @managed cubeModel: CubeModel;
     @managed @observable.ref gridModel: GridModel;
     @managed @observable.ref view: View;
-    @managed dimManagerModel: DimensionManagerModel;
+    @managed groupingChooserModel: GroupingChooserModel;
     @managed loadTimesModel: LoadTimesModel;
 
     @bindable includeGlobalAgg = false;
@@ -42,6 +42,14 @@ export class CubeTestModel extends HoistModel {
     /** StoreRecord instance survival across the last Store data change. */
     @observable.ref reuseStats: {reused: number; total: number} = null;
 
+    /**
+     * Cumulative PatchableRecordSet counters, kept separate per Store - the Cube's fact Store also
+     * accrues the filtering done by its connected View, while the grid's Store reflects only the
+     * transactions the View loads into it.
+     */
+    @observable.ref cubePatchStats: PatchStats = null;
+    @observable.ref gridPatchStats: PatchStats = null;
+
     /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
     @bindable recordMultiplier = 1;
 
@@ -57,10 +65,14 @@ export class CubeTestModel extends HoistModel {
         this.loadTimesModel = new LoadTimesModel();
         this.cubeModel = new CubeModel(this);
 
-        this.dimManagerModel = new DimensionManagerModel({
+        // Config-driven preset groupings seed the chooser's favorites, with user selections and
+        // any favorites they add persisted to a pref.
+        const presetDims: string[][] = XH.getConf('cubeTestDefaultDims');
+        this.groupingChooserModel = new GroupingChooserModel({
             dimensions: this.cubeModel.cube.dimensions,
-            defaultDimConfig: 'cubeTestDefaultDims',
-            userDimPref: 'cubeTestUserDims'
+            initialValue: presetDims[0],
+            initialFavorites: presetDims,
+            persistWith: {prefKey: 'cubeTestUserDims'}
         });
 
         this.buildGridAndView();
@@ -94,8 +106,19 @@ export class CubeTestModel extends HoistModel {
         });
     }
 
+    // Sample the (non-observable) patch counters on each Store data change - the same cadence at
+    // which they move, and the same reaction that reads out record reuse.
+    @action
+    private updatePatchStats() {
+        // Snapshot, as the counters themselves are plain mutable numbers.
+        const snap = (stats: PatchStats) => (stats ? {...stats} : null);
+        this.cubePatchStats = snap(this.cubeModel.cube.store.patchStats);
+        this.gridPatchStats = snap(this.gridModel.store.patchStats);
+    }
+
     @action
     private updateReuseStats(recs: StoreRecord[], prevRecs: StoreRecord[]) {
+        this.updatePatchStats();
         if (isEmpty(prevRecs) || isEmpty(recs)) {
             this.reuseStats = null;
             return;
@@ -181,8 +204,8 @@ export class CubeTestModel extends HoistModel {
     }
 
     private getQuery(): QueryConfig {
-        const {fields, dimManagerModel, fundFilter, includeLeaves} = this,
-            dimensions = dimManagerModel.value,
+        const {fields, groupingChooserModel, fundFilter, includeLeaves} = this,
+            dimensions = groupingChooserModel.value,
             filter = !isEmpty(fundFilter)
                 ? ({field: 'fund', op: '=', value: fundFilter} as const)
                 : null,
@@ -243,10 +266,10 @@ export class CubeTestModel extends HoistModel {
             rowBorders: true,
             showHover: true,
             levelLabels: () => {
-                const {dimManagerModel} = this,
-                    {groupingChooserModel} = dimManagerModel,
-                    groupings = dimManagerModel.value;
-                return groupings.map((it: string) => groupingChooserModel.getDimDisplayName(it));
+                const {groupingChooserModel} = this;
+                return groupingChooserModel.value.map(it =>
+                    groupingChooserModel.getDimDisplayName(it)
+                );
             },
             // Editing routes through Cube.modifyRecordsAsync (source of record), not
             // Store.modifyRecords - so it works in both modes, including projectionOnly, where
