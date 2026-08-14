@@ -1,14 +1,15 @@
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {Cube} from '@xh/hoist/data';
 import {fmtThousands} from '@xh/hoist/format';
-import {times} from 'lodash';
+import {action, makeObservable, observable} from '@xh/hoist/mobx';
+import {isEmpty, times} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Timer} from '@xh/hoist/utils/async';
 import {PctTotalAggregator} from './PctTotalAggregator';
 import {CubeTestModel} from './CubeTestModel';
 
 export class CubeModel extends HoistModel {
-    @managed cube: Cube;
+    @managed @observable.ref cube: Cube;
     @managed orders: PlainObject[] = [];
     @managed timer: Timer;
 
@@ -16,8 +17,9 @@ export class CubeModel extends HoistModel {
 
     constructor(parent) {
         super();
-        this.cube = this.createCube();
+        makeObservable(this);
         this.parent = parent;
+        this.cube = this.createCube();
 
         this.timer = Timer.create({
             runFn: () => this.streamChangesAsync(),
@@ -58,6 +60,29 @@ export class CubeModel extends HoistModel {
         this.orders = orders;
     }
 
+    /**
+     * Rebuild the Cube to pick up a change to the experimental `patchableRecordSet` flag, which is
+     * baked into a Store's recordsets at construction. Reloads any orders already fetched, so the
+     * new Cube comes back with the same data under the new mode.
+     */
+    async rebuildCubeAsync() {
+        const {orders, parent} = this;
+        this.installCube(this.createCube());
+        if (isEmpty(orders)) return;
+        await parent.loadTimesModel.withLoadTime(
+            `Rebuilt Cube | patchable=${parent.patchableRecordSet}`,
+            async () => {
+                await this.cube.loadDataAsync(orders, {asOf: Date.now()});
+            }
+        );
+    }
+
+    @action
+    private installCube(cube: Cube) {
+        XH.safeDestroy(this.cube);
+        this.cube = cube;
+    }
+
     private createCube() {
         const isInstrument = (dim, val, appliedDims) => {
             return !!appliedDims['symbol'];
@@ -65,7 +90,10 @@ export class CubeModel extends HoistModel {
 
         return new Cube({
             idSpec: 'id',
-            reuseRecords: 'rev',
+            store: {
+                reuseRecords: 'rev',
+                experimental: {patchableRecordSet: this.parent.patchableRecordSet}
+            },
             fields: [
                 {name: 'symbol', isDimension: true},
                 {name: 'sector', isDimension: true},

@@ -1,5 +1,5 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {filler, hframe, hspacer} from '@xh/hoist/cmp/layout';
+import {filler, fragment, hframe, hspacer} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -11,7 +11,6 @@ import {dimensionManager} from './dimensions/DimensionManager';
 import {loadTimesPanel} from './LoadTimesPanel';
 import {colChooserButton, button} from '@xh/hoist/desktop/cmp/button';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {tooltip} from '@xh/hoist/kit/blueprint';
 import './CubeTestPanel.scss';
 
 export const CubeTestPanel = hoistCmp({
@@ -40,19 +39,11 @@ export const CubeTestPanel = hoistCmp({
     }
 });
 
-const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
+// Two rows - query/data controls above, Store mode + live-update controls below.
+const tbar = hoistCmp.factory<CubeTestModel>(() => fragment(queryBar(), storeBar()));
+
+const queryBar = hoistCmp.factory<CubeTestModel>(({model}) =>
     toolbar(
-        tooltip({
-            content:
-                'Read-only projection Store mode (hoist-react #4521) - uses Cube row objects as record data by reference. Toggling rebuilds the grid + connected View.',
-            item: switchInput({bind: 'projectionOnly', label: 'Projection Only', labelSide: 'left'})
-        }),
-        tooltip({
-            content:
-                'Record reuse on the connected Store - a digest installed automatically by the connected View. Toggle off for a no-reuse baseline. Toggling rebuilds the grid + connected View.',
-            item: switchInput({bind: 'reuseRecords', label: 'Reuse Records', labelSide: 'left'})
-        }),
-        toolbarSep(),
         switchInput({bind: 'showSummary', label: 'Summary?', labelSide: 'left'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves?', labelSide: 'left'}),
         switchInput({bind: 'includeGlobalAgg', label: 'Global Agg?', labelSide: 'left'}),
@@ -65,28 +56,11 @@ const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
             width: 300
         }),
         filler(),
-        'Update Secs: ',
-        select({
-            bind: 'updateFreq',
-            options: [-1, 1, 2, 5, 10, 20],
-            width: 80
-        }),
-        hspacer(5),
-        'Update Rows: ',
-        select({
-            bind: 'updateCount',
-            options: [0, 5, 10, 100, 200, 500, 1000, 2000, 5000, 10000, 20000],
-            width: 80
-        }),
-        toolbarSep(),
         'x',
-        tooltip({
-            content: 'Replicate fetched orders NxN to stress-test at scale (applied on Load Cube)',
-            item: select({
-                bind: 'recordMultiplier',
-                options: [1, 2, 5, 10, 20, 50],
-                width: 70
-            })
+        select({
+            bind: 'recordMultiplier',
+            options: [1, 2, 5, 10, 20, 50],
+            width: 70
         }),
         toolbarSep(),
         button({
@@ -103,6 +77,28 @@ const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
     )
 );
 
+const storeBar = hoistCmp.factory<CubeTestModel>(() =>
+    toolbar(
+        switchInput({bind: 'projectionOnly', label: 'Projection Only', labelSide: 'left'}),
+        switchInput({bind: 'reuseRecords', label: 'Reuse Records', labelSide: 'left'}),
+        switchInput({bind: 'patchableRecordSet', label: 'Patchable Records', labelSide: 'left'}),
+        filler(),
+        'Update Secs: ',
+        select({
+            bind: 'updateFreq',
+            options: [-1, 1, 2, 5, 10, 20],
+            width: 80
+        }),
+        hspacer(5),
+        'Update Rows: ',
+        select({
+            bind: 'updateCount',
+            options: [0, 5, 10, 100, 200, 500, 1000, 2000, 5000, 10000, 20000],
+            width: 80
+        })
+    )
+);
+
 const bbar = hoistCmp.factory<CubeTestModel>(({model}) => {
     const {view, reuseStats} = model;
     return toolbar(
@@ -112,24 +108,16 @@ const bbar = hoistCmp.factory<CubeTestModel>(({model}) => {
         relativeTimestamp({timestamp: view.info?.asOf}),
         filler(),
         reuseStats
-            ? tooltip({
-                  content:
-                      'StoreRecord instances preserved across the last grid Store data change, by identity.',
-                  item: `Reused: ${reuseStats.reused.toLocaleString()}/${reuseStats.total.toLocaleString()}`
-              })
+            ? `Reused: ${reuseStats.reused.toLocaleString()}/${reuseStats.total.toLocaleString()}`
             : null,
         reuseStats ? toolbarSep() : null,
         model.heapMB != null
             ? `Heap: ${model.heapMB} MB${model.heapImprecise ? ' (imprecise)' : ''}`
             : null,
-        tooltip({
-            content:
-                'GC + sample JS heap. For accurate numbers, launch Chrome with --js-flags=--expose-gc --enable-precise-memory-info (otherwise the reading is coarse).',
-            item: button({
-                icon: Icon.chartLine(),
-                text: 'Measure Mem',
-                onClick: () => model.measureMemory()
-            })
+        button({
+            icon: Icon.chartLine(),
+            text: 'Measure Mem',
+            onClick: () => model.measureMemory()
         }),
         toolbarSep(),
         storeFilterField(),
