@@ -58,7 +58,7 @@ export const diagnosticsPanel = hoistCmp.factory({
                         diagSection(
                             'Grid',
                             gridModel.diagnostics,
-                            ['transaction'],
+                            ['genTransaction', 'applyTransaction'],
                             asOf,
                             count(gridRows, 'visible rows')
                         ),
