@@ -101,9 +101,9 @@ export class CubeTestModel extends HoistModel {
 
     private syncDiagnosticsLogging() {
         const {logStages} = this;
-        forEach(this.diagnosticsByStage, (it, stage) =>
-            logStages.includes(stage) ? it.startLogging() : it.stopLogging()
-        );
+        forEach(this.diagnosticsByStage, (it, stage) => {
+            it.logLevel = logStages.includes(stage) ? 'info' : 'debug';
+        });
     }
 
     private async rebuildCubeAndViewAsync() {
