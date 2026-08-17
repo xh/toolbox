@@ -242,6 +242,39 @@ const QUERY_TRANSITION_SCENARIO: Scenario = {
 };
 
 /**
+ * Dimension transitions re-key rows outright - a grouping change moves every row id, a pivot dimension
+ * change moves every path key - yet the row cache is retained across them. Ticks in between are what
+ * make a survivor dangerous: a row that sits out a generation misses those updates, so reusing it later
+ * publishes values from before the tick. Path keys carry dimension *values* alone, so a cell can even
+ * land on a live id under a different pivot dimension.
+ *
+ * `groupBy` covers every dimension the transitions group by and `fields` names them all up front -
+ * gaining a query field invalidates the cache wholesale, which would leave nothing under test.
+ */
+const DIM_TRANSITION_SCENARIO: Scenario = {
+    id: 'dimTransitions',
+    label: 'Grouping and pivot dimension transitions',
+    groupBy: ['fund', 'strategy', 'sector'],
+    pivotBy: ['region'],
+    valueFields: ['pnl', 'mktVal'],
+    leaves: 2000
+};
+
+/** `(dimensions, pivotDimensions)` states walked by {@link DIM_TRANSITION_SCENARIO}, in order. */
+const DIM_TRANSITIONS: Array<{label: string; groupBy: string[]; pivotBy: string[]}> = [
+    {label: 'initial', groupBy: ['fund', 'strategy', 'sector'], pivotBy: ['region']},
+    {label: 'pivot deepened', groupBy: ['fund', 'strategy'], pivotBy: ['region', 'sector']},
+    {label: 'pivot swapped', groupBy: ['fund', 'strategy'], pivotBy: ['sector']},
+    // Back to the first generation's path keys, with values moved by every tick since.
+    {label: 'pivot restored', groupBy: ['fund', 'strategy'], pivotBy: ['region']},
+    {label: 'grouping reordered', groupBy: ['sector', 'fund'], pivotBy: ['region']},
+    {label: 'grouping restored', groupBy: ['fund', 'strategy', 'sector'], pivotBy: ['region']},
+    // Every cell vacated, then every cell back - the path only reachable by emptying the pivot.
+    {label: 'pivot emptied', groupBy: ['fund', 'strategy', 'sector'], pivotBy: []},
+    {label: 'pivot refilled', groupBy: ['fund', 'strategy', 'sector'], pivotBy: ['region']}
+];
+
+/**
  * Two pivot dims so pivot summaries materialize, two value fields so a leaf path carries a group rather
  * than a bare column. Asserts the built column tree, not a rendered grid - the model needs no DOM.
  */
@@ -358,6 +391,13 @@ function boolCheck(name: string, ok: boolean, detail?: string): PivotCheck {
 
 export class PivotViewTestModel extends HoistModel {
     @bindable tickPct = 2;
+
+    /**
+     * Run every Cube and connected Store on {@link PatchableRecordSet}. The whole suite is expected to
+     * pass either way - the flag changes how record sets are derived, not what they hold - so a check
+     * that only fails with it on is a bug in the incremental path.
+     */
+    @bindable patchableRecordSet = false;
     // Bindable, not observable: `running` is observed and is set outside an action below - Hoist's
     // bindable setter wraps in one, which `enforceActions: 'observed'` requires.
     @bindable running = false;
@@ -415,6 +455,7 @@ export class PivotViewTestModel extends HoistModel {
             await this.runQueryScenarioAsync();
             await this.runStoreFactoryScenarioAsync();
             await this.runQueryTransitionScenarioAsync();
+            await this.runDimTransitionScenarioAsync();
             await this.runPivotGridScenarioAsync();
             for (const scenario of PLAIN_SCENARIOS) {
                 await this.runPlainScenarioAsync(scenario);
@@ -454,7 +495,7 @@ export class PivotViewTestModel extends HoistModel {
             fields = this.buildFields(scenario),
             queryConf = this.buildQueryConf(scenario);
 
-        const cube = new Cube({fields, idSpec: 'id'});
+        const cube = this.newCube(fields);
         await cube.loadDataAsync(leaves);
 
         try {
@@ -652,7 +693,7 @@ export class PivotViewTestModel extends HoistModel {
             fields = this.buildFields(scenario),
             queryConf = this.buildQueryConf(scenario);
 
-        const cube = new Cube({fields, idSpec: 'id'});
+        const cube = this.newCube(fields);
         await cube.loadDataAsync(leaves);
 
         try {
@@ -719,7 +760,7 @@ export class PivotViewTestModel extends HoistModel {
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario);
 
-        const cube = new Cube({fields, idSpec: 'id'});
+        const cube = this.newCube(fields);
         await cube.loadDataAsync(leaves);
 
         try {
@@ -807,14 +848,15 @@ export class PivotViewTestModel extends HoistModel {
             fields = this.buildFields(scenario),
             queryConf = this.buildQueryConf(scenario);
 
-        const cube = new Cube({fields, idSpec: 'id'});
+        const cube = this.newCube(fields);
         await cube.loadDataAsync(leaves);
 
         try {
             const view = cube.createPivotView({query: queryConf, connect: true}),
-                live = view.createStore({connect: true, projectionOnly: false}),
-                proj = view.createStore({connect: true}),
-                snap = view.createStore({projectionOnly: false});
+                {experimental} = this,
+                live = view.createStore({connect: true, projectionOnly: false, experimental}),
+                proj = view.createStore({connect: true, experimental}),
+                snap = view.createStore({projectionOnly: false, experimental});
 
             const rowCount = () => {
                 let n = 0;
@@ -941,7 +983,7 @@ export class PivotViewTestModel extends HoistModel {
             fields = this.buildFields(scenario),
             queryConf = this.buildQueryConf(scenario);
 
-        const cube = new Cube({fields, idSpec: 'id'});
+        const cube = this.newCube(fields);
         await cube.loadDataAsync(leaves);
 
         try {
@@ -977,6 +1019,24 @@ export class PivotViewTestModel extends HoistModel {
                 })
             );
 
+            // Restore it. Cells aggregate `valueFields` alone, so a measure the *query* fields already
+            // carried is one no field-gain check can see - a retained cell has simply never computed
+            // it, and reports null for every cell of the restored column.
+            this.tickMeasures(leaves, 1);
+            await cube.updateDataAsync(leaves);
+            view.updateQuery({valueFields});
+            this.record(
+                scenario,
+                checkPivotView({
+                    view,
+                    leaves,
+                    groupBy,
+                    pivotBy,
+                    valueFields,
+                    label: 'after valueFields restored'
+                })
+            );
+
             // Relabel the empty segment. Its key is a fixed sentinel, so no key moves here either.
             const emptyBefore = view.result.paths.filter(p => p.isEmpty).map(p => p.label);
             view.updateQuery({emptyPathLabel: '(none)'});
@@ -990,6 +1050,94 @@ export class PivotViewTestModel extends HoistModel {
                         !isEqual(emptyAfter, emptyBefore),
                     `empty labels ${JSON.stringify(emptyBefore)} -> ${JSON.stringify(emptyAfter)}` +
                         (isEmpty(emptyAfter) ? ' - no empty segment, scenario proves nothing' : '')
+                )
+            ]);
+
+            XH.safeDestroy(view);
+        } catch (e) {
+            this.recordThrow(scenario, e);
+        } finally {
+            XH.safeDestroy(cube);
+        }
+    }
+
+    /**
+     * Walk one connected view through {@link DIM_TRANSITIONS}, ticking values between every state and
+     * asserting each against the reference and against a view built from nothing. A cached row that
+     * survives a transition it should not shows up as a value from before the last tick.
+     */
+    private async runDimTransitionScenarioAsync() {
+        const scenario = DIM_TRANSITION_SCENARIO,
+            {valueFields} = scenario,
+            leaves = this.buildLeaves(scenario),
+            fields = this.buildFields(scenario),
+            // Every dimension any transition uses, so no transition gains a query field.
+            allDims = uniq(DIM_TRANSITIONS.flatMap(t => [...t.groupBy, ...t.pivotBy])),
+            queryConf: PivotQueryConfig = {
+                ...this.buildQueryConf(scenario),
+                fields: uniq([...allDims, ...AGG_FIELDS, ...valueFields])
+            };
+
+        const cube = this.newCube(fields);
+        await cube.loadDataAsync(leaves);
+
+        try {
+            const view = cube.createPivotView({query: queryConf, connect: true});
+
+            for (let i = 0; i < DIM_TRANSITIONS.length; i++) {
+                const {label, groupBy, pivotBy} = DIM_TRANSITIONS[i],
+                    conf: PivotQueryConfig = {
+                        ...queryConf,
+                        dimensions: groupBy,
+                        pivotDimensions: pivotBy
+                    };
+
+                if (i) {
+                    this.tickMeasures(leaves, i);
+                    // Alternate the two routes into a connected view. A reload diffs the incoming
+                    // records itself, which is the one path a patchable record set can express as a
+                    // patch without a digest - so this is where that flag earns anything at all.
+                    if (i % 2) {
+                        await cube.loadDataAsync(leaves);
+                    } else {
+                        await cube.updateDataAsync(leaves);
+                    }
+                    view.updateQuery({dimensions: groupBy, pivotDimensions: pivotBy});
+                }
+
+                this.record(
+                    scenario,
+                    checkPivotView({
+                        view,
+                        leaves,
+                        groupBy,
+                        pivotBy,
+                        valueFields,
+                        label: `dims: ${label}`
+                    })
+                );
+
+                const rebuilt = cube.createPivotView({query: conf});
+                this.record(scenario, [
+                    comparePivotViews(
+                        view,
+                        rebuilt,
+                        valueFields,
+                        `dims: ${label} matches a full rebuild`,
+                        !isEmpty(pivotBy)
+                    )
+                ]);
+                XH.safeDestroy(rebuilt);
+            }
+
+            // A patchable record set that never patches is only bookkeeping - the reloads above must
+            // reach the incremental path, or nothing here has actually exercised the flag.
+            const {patchStats} = cube.store;
+            this.record(scenario, [
+                boolCheck(
+                    'dims: reloads stayed on the incremental patch path',
+                    !this.patchableRecordSet || patchStats.patched > 0,
+                    `patched ${patchStats?.patched} of ${patchStats?.count} derivations`
                 )
             ]);
 
@@ -1019,7 +1167,7 @@ export class PivotViewTestModel extends HoistModel {
             if (i % 17 === 0) rec.sector = 'C\\D';
         });
 
-        const cube = new Cube({fields, idSpec: 'id'});
+        const cube = this.newCube(fields);
         await cube.loadDataAsync(leaves);
 
         try {
@@ -1185,7 +1333,7 @@ export class PivotViewTestModel extends HoistModel {
             fields = this.buildFields(scenario),
             queryConf = this.buildPlainQueryConf(scenario);
 
-        const cube = new Cube({fields, idSpec: 'id'});
+        const cube = this.newCube(fields);
         await cube.loadDataAsync(leaves);
 
         try {
@@ -1284,7 +1432,7 @@ export class PivotViewTestModel extends HoistModel {
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario);
 
-        const cube = new Cube({fields, idSpec: 'id'});
+        const cube = this.newCube(fields);
         await cube.loadDataAsync(leaves);
 
         try {
@@ -1374,14 +1522,14 @@ export class PivotViewTestModel extends HoistModel {
 
     /**
      * Perturb measures in place and push them through the Cube. `gen` must advance on a second tick
-     * within one scenario - the mixed measures are a pure function of it, so re-running the same
+     * within one scenario - both perturbations are a pure function of it, so re-running the same
      * generation moves nothing and any "did the store update" assertion becomes a no-op.
      */
     private async tickAsync(scenario: Scenario, leaves: PlainObject[], cube: Cube, gen = 1) {
         if (scenario.aggregators) {
             this.applyMixedMeasures(leaves, gen);
         } else {
-            tickLeaves(leaves, Math.max(1, Math.round((leaves.length * this.tickPct) / 100)));
+            tickLeaves(leaves, Math.max(1, Math.round((leaves.length * this.tickPct) / 100)), gen);
         }
         await cube.updateDataAsync(leaves);
     }
@@ -1555,6 +1703,14 @@ export class PivotViewTestModel extends HoistModel {
         };
     }
 
+    private newCube(fields: CubeFieldSpec[]): Cube {
+        return new Cube({fields, idSpec: 'id', store: {experimental: this.experimental}});
+    }
+
+    private get experimental(): PlainObject {
+        return {patchableRecordSet: this.patchableRecordSet};
+    }
+
     /**
      * A Store declaring one Field per published cell field, taking `type` from each entry's source
      * measure exactly as {@link PivotCellField} intends. `defaultValue` is left at null, which is what
@@ -1570,6 +1726,7 @@ export class PivotViewTestModel extends HoistModel {
             idSpec: 'id',
             fields: cellFields.map(cf => ({name: cf.name, type: cf.valueField.type})),
             experimental: {
+                ...this.experimental,
                 denseRecordThreshold: scenario.denseRecords ? 1 : cellFields.length + 100
             }
         });
@@ -1583,7 +1740,8 @@ export class PivotViewTestModel extends HoistModel {
     private buildStore(valueFields: string[]): Store {
         return new Store({
             idSpec: 'id',
-            fields: valueFields.map(name => ({name, type: 'auto' as const}))
+            fields: valueFields.map(name => ({name, type: 'auto' as const})),
+            experimental: this.experimental
         });
     }
 
@@ -1602,6 +1760,19 @@ export class PivotViewTestModel extends HoistModel {
             });
         }
         return ret;
+    }
+
+    /**
+     * Move a slice of the measures, as a function of `gen` so successive ticks never repeat. Kept
+     * under `experimental.patchRecordsMaxRatio` (10%) so a patchable record set can express the
+     * change as a patch rather than flattening into a fresh base.
+     */
+    private tickMeasures(leaves: PlainObject[], gen: number) {
+        leaves.forEach((rec, i) => {
+            if (i % 25 !== gen % 25) return;
+            rec.pnl = ((i * 37) % 5000) - 2500 + gen * 13;
+            rec.mktVal = ((i * 53) % 90000) + gen * 7;
+        });
     }
 
     /**

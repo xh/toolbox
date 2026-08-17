@@ -228,9 +228,12 @@ export function generateLeaves(profile: PivotProfile): PlainObject[] {
  * Perturb `count` leaves in place, returning the mutated array. Models a tick: measures move,
  * dimensions do not - so no new pivot path appears and the column structure is unchanged. That
  * values-only case is the one a connected implementation should be able to make cheap.
+ *
+ * `gen` seeds the values, so successive ticks must pass a distinct one - repeating it re-assigns the
+ * values the last tick already wrote, and nothing moves.
  */
-export function tickLeaves(leaves: PlainObject[], count: number): PlainObject[] {
-    const rnd = makeRandom(0x71c1);
+export function tickLeaves(leaves: PlainObject[], count: number, gen = 0): PlainObject[] {
+    const rnd = makeRandom(0x71c1 + gen * 0x9e37);
 
     for (let i = 0; i < count; i++) {
         // Stride by a prime so the touched records are spread across the dataset, not clustered.

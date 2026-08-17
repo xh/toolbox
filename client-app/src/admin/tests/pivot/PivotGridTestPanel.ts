@@ -6,11 +6,7 @@ import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {
-    PivotGridTestModel,
-    SUMMARY_H_OPTIONS,
-    SUMMARY_V_OPTIONS
-} from './PivotGridTestModel';
+import {PivotGridTestModel, SUMMARY_H_OPTIONS, SUMMARY_V_OPTIONS} from './PivotGridTestModel';
 
 /**
  * A live PivotGrid with its config surface on two toolbars: the query above, the presentation below.
@@ -61,7 +57,9 @@ const queryBar = hoistCmp.factory<PivotGridTestModel>(() =>
         toolbarSep(),
         switchInput({bind: 'includeRoot', label: 'Root'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves'}),
-        switchInput({bind: 'excludeEmptyPivotValues', label: 'Drop empties'})
+        switchInput({bind: 'excludeEmptyPivotValues', label: 'Drop empties'}),
+        // Fixed at Store construction, so toggling rebuilds the Cube and everything below it.
+        switchInput({bind: 'patchableRecordSet', label: 'Patchable'})
     )
 );
 

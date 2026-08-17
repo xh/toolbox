@@ -147,7 +147,7 @@ export class PivotViewBenchModel extends HoistModel {
         this.status = `${label}: ticking ${tickCount} leaves x ${this.tickReps}...`;
         const times: number[] = [];
         for (let i = 0; i < this.tickReps; i++) {
-            tickLeaves(leaves, tickCount);
+            tickLeaves(leaves, tickCount, i);
             await wait(50);
             const t1 = performance.now();
             await cube.updateDataAsync(leaves);

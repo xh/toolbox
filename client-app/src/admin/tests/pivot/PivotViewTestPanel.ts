@@ -2,7 +2,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {filler, span, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {numberInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
@@ -40,6 +40,13 @@ const checkTbar = hoistCmp.factory<PivotViewTestModel>(({model}) =>
         toolbarSep(),
         'Tick %:',
         numberInput({bind: 'tickPct', width: 60, min: 0.1, max: 100, stepSize: 0.5}),
+        toolbarSep(),
+        switchInput({
+            bind: 'patchableRecordSet',
+            label: 'Patchable Records',
+            labelSide: 'left',
+            disabled: model.running
+        }),
         filler(),
         span({
             omit: !model.checkCount,

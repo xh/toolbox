@@ -27,6 +27,9 @@ export class PivotGridTestModel extends HoistModel {
     @bindable excludeEmptyPivotValues = false;
     @bindable leafCount = 5000;
 
+    /** Fixed at Store construction, so flipping it rebuilds the Cube and everything downstream. */
+    @bindable patchableRecordSet = false;
+
     /** Applied to the outermost pivot dimension only - enough to see it work. */
     @bindable pivotSort: PivotSort = null;
 
@@ -39,6 +42,7 @@ export class PivotGridTestModel extends HoistModel {
     @managed @observable.ref pivotGridModel: PivotGridModel;
 
     private leaves: PlainObject[] = [];
+    private tickGen = 0;
 
     constructor() {
         super();
@@ -46,7 +50,8 @@ export class PivotGridTestModel extends HoistModel {
 
         this.addReaction(
             {
-                track: () => this.leafCount,
+                track: () => [this.leafCount, this.patchableRecordSet],
+                equals: 'shallow',
                 run: () => this.rebuildAsync(),
                 fireImmediately: true
             },
@@ -95,7 +100,11 @@ export class PivotGridTestModel extends HoistModel {
         });
         try {
             this.leaves = generateLeaves({...getProfile('heavy'), leaves: this.leafCount} as any);
-            this.cube = new Cube({fields: this.cubeFields(), idSpec: 'id'});
+            this.cube = new Cube({
+                fields: this.cubeFields(),
+                idSpec: 'id',
+                store: {experimental: {patchableRecordSet: this.patchableRecordSet}}
+            });
             await this.cube.loadDataAsync(this.leaves);
 
             const view = this.cube.createPivotView({query: this.queryConfig(), connect: true}),
@@ -129,7 +138,7 @@ export class PivotGridTestModel extends HoistModel {
 
     /** Values-only: no dimension moves, so the column structure must hold. */
     async tickAsync() {
-        tickLeaves(this.leaves, Math.max(1, Math.round(this.leaves.length * 0.02)));
+        tickLeaves(this.leaves, Math.max(1, Math.round(this.leaves.length * 0.02)), ++this.tickGen);
         await this.cube.updateDataAsync(this.leaves);
     }
 
