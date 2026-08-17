@@ -26,6 +26,7 @@ export const diagnosticsPanel = hoistCmp.factory({
             modelConfig: {
                 side: 'right',
                 defaultSize: 440,
+                minSize: 360,
                 defaultCollapsed: false
             },
             items: [
