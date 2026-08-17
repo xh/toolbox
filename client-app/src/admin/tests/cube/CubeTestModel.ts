@@ -1,15 +1,15 @@
 import {GridModel, timeCol, TreeStyle} from '@xh/hoist/cmp/grid';
 import {fragment, p, pre} from '@xh/hoist/cmp/layout';
-import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberEditor, textEditor} from '@xh/hoist/desktop/cmp/grid';
 import {fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {action, bindable, comparer, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import {isEmpty} from 'lodash';
+import {forEach, isEmpty} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {LoadTimesModel} from './LoadTimesModel';
 import {CubeModel} from './CubeModel';
-import {PatchStats, QueryConfig, StoreRecord, View} from '@xh/hoist/data';
+import {QueryConfig, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
     @managed cubeModel: CubeModel;
@@ -25,35 +25,18 @@ export class CubeTestModel extends HoistModel {
     @bindable updateFreq = -1;
     @bindable updateCount = 5;
 
-    /** Read-only projection Store mode under test (hoist-react #4521). Rebuilds grid + view when toggled. */
     @bindable projectionOnly = true;
-
-    /** Record reuse on the connected Store - a digest installed automatically by the View. */
     @bindable reuseRecords = true;
+    @bindable deltaSort = false;
 
-    /**
-     * Experimental `PatchableRecordSet` (hoist-react #4560) on both the Cube's fact Store and the
-     * connected Store - transaction, filter, and grid-sync costs scale with the size of the change
-     * vs. the size of the store. Rebuilds the Cube, grid, and View when toggled. Note this is set
-     * explicitly in both directions, so it overrides any app-wide `xhStoreExperimental` default.
-     */
+    /** Set explicitly in both directions, overriding any app-wide `xhStoreExperimental` default. */
     @bindable patchableRecordSet = true;
-
-    /** StoreRecord instance survival across the last Store data change. */
-    @observable.ref reuseStats: {reused: number; total: number} = null;
-
-    /**
-     * Cumulative PatchableRecordSet counters, kept separate per Store - the Cube's fact Store also
-     * accrues the filtering done by its connected View, while the grid's Store reflects only the
-     * transactions the View loads into it.
-     */
-    @observable.ref cubePatchStats: PatchStats = null;
-    @observable.ref gridPatchStats: PatchStats = null;
 
     /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
     @bindable recordMultiplier = 1;
 
-    /** Last sampled JS heap in MB (via measureMemory). */
+    @bindable.ref logStages: string[] = [];
+
     @observable heapMB: number = null;
 
     /** True if the last heap sample was taken without --expose-gc (coarse, directional only). */
@@ -65,8 +48,6 @@ export class CubeTestModel extends HoistModel {
         this.loadTimesModel = new LoadTimesModel();
         this.cubeModel = new CubeModel(this);
 
-        // Config-driven preset groupings seed the chooser's favorites, with user selections and
-        // any favorites they add persisted to a pref.
         const presetDims: string[][] = XH.getConf('cubeTestDefaultDims');
         this.groupingChooserModel = new GroupingChooserModel({
             dimensions: this.cubeModel.cube.dimensions,
@@ -83,57 +64,48 @@ export class CubeTestModel extends HoistModel {
             equals: comparer.structural
         });
 
-        // Rebuild grid + connected view when toggling store modes, reconstructing the underlying
-        // Store in the new mode for A/B comparison of memory and update performance.
+        // Reconstruct the Store in the new mode, for A/B comparison.
         this.addReaction({
-            track: () => [this.projectionOnly, this.reuseRecords],
+            track: () => [this.projectionOnly, this.reuseRecords, this.deltaSort],
             run: () => this.buildGridAndView()
         });
 
-        // The experimental flag is fixed at Store construction, so it applies to both ends of the
-        // pipeline only if the Cube's fact Store is rebuilt (and its data reloaded) alongside the
-        // grid Store - hence the Cube rebuild here, ahead of the grid + View.
+        // Fixed at Store construction, so the Cube must be rebuilt ahead of the grid + View.
         this.addReaction({
             track: () => this.patchableRecordSet,
             run: () => this.rebuildCubeAndViewAsync()
         });
 
-        // Direct readout of record reuse - count instances surviving each Store data change by
-        // identity against the prior recordset. Resets to 0% across mode-toggle rebuilds.
+        // Re-apply on selection change, and when a rebuild installs fresh diagnostics objects.
         this.addReaction({
-            track: () => this.gridModel.store.records,
-            run: (recs, prevRecs) => this.updateReuseStats(recs, prevRecs)
+            track: () => [this.logStages, this.cubeModel.cube, this.view, this.gridModel],
+            run: () => this.syncDiagnosticsLogging()
         });
     }
 
-    // Sample the (non-observable) patch counters on each Store data change - the same cadence at
-    // which they move, and the same reaction that reads out record reuse.
-    @action
-    private updatePatchStats() {
-        // Snapshot, as the counters themselves are plain mutable numbers.
-        const snap = (stats: PatchStats) => (stats ? {...stats} : null);
-        this.cubePatchStats = snap(this.cubeModel.cube.store.patchStats);
-        this.gridPatchStats = snap(this.gridModel.store.patchStats);
+    /** Keyed by the values offered in the logging picker. */
+    private get diagnosticsByStage() {
+        const {cubeModel, view, gridModel} = this;
+        return {
+            cubeStore: cubeModel.cube.store.diagnostics,
+            view: view.diagnostics,
+            gridStore: gridModel.store.diagnostics,
+            grid: gridModel.diagnostics
+        };
     }
 
-    @action
-    private updateReuseStats(recs: StoreRecord[], prevRecs: StoreRecord[]) {
-        this.updatePatchStats();
-        if (isEmpty(prevRecs) || isEmpty(recs)) {
-            this.reuseStats = null;
-            return;
-        }
-        const prevById = new Map(prevRecs.map(r => [r.id, r])),
-            reused = recs.filter(r => prevById.get(r.id) === r).length,
-            total = recs.length;
-        this.reuseStats = {reused, total};
-        console.log(
-            `[CubeTest] records reused: ${reused}/${total} | projection=${this.projectionOnly} | reuse=${this.reuseRecords} | patchable=${this.patchableRecordSet}`
+    resetDiagnostics() {
+        forEach(this.diagnosticsByStage, it => it.reset());
+        this.loadTimesModel.clearLoadTimes();
+    }
+
+    private syncDiagnosticsLogging() {
+        const {logStages} = this;
+        forEach(this.diagnosticsByStage, (it, stage) =>
+            logStages.includes(stage) ? it.startLogging() : it.stopLogging()
         );
     }
 
-    // Rebuild the Cube in the new mode, then rebuild the grid + View against it. Masked via
-    // loadObserver, as the Cube reload can run long at high record multipliers.
     private async rebuildCubeAndViewAsync() {
         await this.cubeModel
             .rebuildCubeAsync()
@@ -141,8 +113,7 @@ export class CubeTestModel extends HoistModel {
             .linkTo(this.loadObserver);
     }
 
-    // (Re)create the grid and its connected View. The View's connect-time fullUpdate repopulates
-    // the fresh Store from current Cube data, so a rebuild after load needs no explicit reload.
+    // The View's connect-time fullUpdate repopulates the fresh Store, so needs no explicit reload.
     private buildGridAndView() {
         XH.safeDestroy(this.view);
         XH.safeDestroy(this.gridModel);
@@ -152,21 +123,17 @@ export class CubeTestModel extends HoistModel {
             stores: this.gridModel.store,
             connect: true
         });
-        // The View installs a reuse digest on its connected store automatically - null it back
-        // out via the same internal hook to restore the no-reuse baseline for A/B comparison.
+        // The View installs a reuse digest automatically - null it out for the no-reuse baseline.
         if (!this.reuseRecords) this.gridModel.store.setDigestFn(() => null);
     }
 
-    /** GC (if exposed) and sample the JS heap for a memory read. */
     @action
     measureMemory() {
         const w = window as any,
             hasGC = typeof w.gc === 'function',
             mem = (performance as any).memory;
 
-        // window.gc is only present with --js-flags=--expose-gc, and is the detectable proxy for
-        // having launched with the memory flags. Without it we can't force GC before sampling, so
-        // the reading includes uncollected garbage and is only directional - warn the developer.
+        // window.gc is the detectable proxy for having launched with the memory flags.
         this.heapImprecise = !hasGC;
         if (hasGC) {
             w.gc();
@@ -224,13 +191,10 @@ export class CubeTestModel extends HoistModel {
 
     private async executeQueryAsync() {
         const LTM = this.loadTimesModel,
-            {gridModel, loadObserver, showSummary} = this,
-            query = this.getQuery(),
-            dimCount = query.dimensions.length,
-            filterCount = (query.filter as PlainObject)?.value?.length ?? 0; // Any filter is a FieldFilter with [] of Funds
+            {gridModel, loadObserver, showSummary} = this;
 
         // Query is initialized with empty dims and is triggering an initial run we don't need.
-        if (!dimCount) return;
+        if (!this.getQuery().dimensions.length) return;
 
         return wait()
             .then(async () => {
@@ -238,12 +202,9 @@ export class CubeTestModel extends HoistModel {
                 gridModel.showSummary = showSummary;
                 store.setLoadRootAsSummary(showSummary);
 
-                await LTM.withLoadTime(
-                    `Query | ${dimCount} dims | ${filterCount} fund filters`,
-                    async () => {
-                        this.view.updateQuery(this.getQuery());
-                    }
-                );
+                await LTM.withLoadTime('Query changed', async () => {
+                    this.view.updateQuery(this.getQuery());
+                });
             })
             .linkTo(loadObserver);
     }
@@ -259,6 +220,7 @@ export class CubeTestModel extends HoistModel {
                 experimental: {patchableRecordSet: this.patchableRecordSet},
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
+            experimental: {deltaSort: this.deltaSort},
             sortBy: 'time|desc',
             emptyText: 'No records found...',
             colChooserModel: true,
@@ -271,9 +233,7 @@ export class CubeTestModel extends HoistModel {
                     groupingChooserModel.getDimDisplayName(it)
                 );
             },
-            // Editing routes through Cube.modifyRecordsAsync (source of record), not
-            // Store.modifyRecords - so it works in both modes, including projectionOnly, where
-            // direct local Store modification would throw.
+            // Edits route through the Cube - Store.modifyRecords throws under projectionOnly.
             colDefaults: {
                 editable: ({record}) => !record.data.cubeDimension, // Only editable if leaf node
                 setValueFn: ({value, record, field}) => {
@@ -370,9 +330,6 @@ export class CubeTestModel extends HoistModel {
                     hidden: true
                 },
                 {
-                    // Complex-renderer contrast column (Hoist force-refreshes these each update,
-                    // vs. simple columns which ride ag-Grid's own change detection). Verifies the
-                    // zero-copy path repaints both. Reuses `commission`; needs a distinct colId.
                     field: 'commission',
                     colId: 'commissionComplex',
                     headerName: 'Comm (complex)',
