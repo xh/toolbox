@@ -1,7 +1,8 @@
-import {div, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
+import {chart} from '@xh/hoist/cmp/chart';
+import {box, div, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, PlainObject, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {picker} from '@xh/hoist/desktop/cmp/input';
+import {picker, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {compact, isEmpty, maxBy} from 'lodash';
@@ -27,43 +28,57 @@ export const diagnosticsPanel = hoistCmp.factory({
                 defaultSize: 440,
                 defaultCollapsed: false
             },
-            scrollable: true,
-            item: div({
-                className: 'tb-cube-diagnostics',
-                items: [
-                    timeSection('Total', loadTimesModel.total, asOf, 'tb-diag-section--total'),
-                    timeSection('Fetch', loadTimesModel.fetch, asOf),
-                    diagSection(
-                        'Cube Store',
-                        cubeStore.diagnostics,
-                        ['load', 'update', 'filter'],
-                        asOf,
-                        count(cubeStore.count, 'recs')
-                    ),
-                    diagSection(
-                        'View',
-                        view.diagnostics,
-                        ['query', 'load', 'update'],
-                        asOf,
-                        count(viewRows(view.diagnostics), 'rows')
-                    ),
-                    diagSection(
-                        'Grid Store',
-                        gridStore.diagnostics,
-                        ['load', 'update', 'filter'],
-                        asOf,
-                        count(gridStore.count, 'recs')
-                    ),
-                    diagSection(
-                        'Grid',
-                        gridModel.diagnostics,
-                        ['transaction'],
-                        asOf,
-                        count(gridRows, 'visible rows')
-                    ),
-                    asyncSection(gridModel.diagnostics.autosize, asOf)
-                ]
-            }),
+            items: [
+                div({
+                    className: 'tb-cube-diagnostics',
+                    items: [
+                        timeSection('Total', loadTimesModel.total, asOf, 'tb-diag-section--total'),
+                        timeSection('Fetch', loadTimesModel.fetch, asOf),
+                        diagSection(
+                            'Cube Store',
+                            cubeStore.diagnostics,
+                            ['load', 'update', 'filter'],
+                            asOf,
+                            count(cubeStore.count, 'recs')
+                        ),
+                        diagSection(
+                            'View',
+                            view.diagnostics,
+                            ['query', 'load', 'update'],
+                            asOf,
+                            count(viewRows(view.diagnostics), 'rows')
+                        ),
+                        diagSection(
+                            'Grid Store',
+                            gridStore.diagnostics,
+                            ['load', 'update', 'filter'],
+                            asOf,
+                            count(gridStore.count, 'recs')
+                        ),
+                        diagSection(
+                            'Grid',
+                            gridModel.diagnostics,
+                            ['transaction'],
+                            asOf,
+                            count(gridRows, 'visible rows')
+                        ),
+                        asyncSection(gridModel.diagnostics.autosize, asOf)
+                    ]
+                }),
+                box({
+                    className: 'tb-cube-diagnostics__memory',
+                    height: 110,
+                    omit: model.memoryChartModel.empty,
+                    items: [
+                        chart({model: model.memoryChartModel, flex: 1}),
+                        span({
+                            className: 'tb-cube-diagnostics__heap',
+                            omit: model.heapMB == null,
+                            item: `${model.heapMB} MB`
+                        })
+                    ]
+                })
+            ],
             bbar: [
                 'Log:',
                 picker({
@@ -85,11 +100,15 @@ export const diagnosticsPanel = hoistCmp.factory({
                     multiSelectShowCount: true
                 }),
                 filler(),
-                model.heapMB != null ? `${model.heapMB} MB${model.heapImprecise ? '*' : ''}` : null,
-                button({
-                    title: 'GC and sample the JS heap',
-                    icon: Icon.chartLine(),
-                    onClick: () => model.measureMemory()
+                span({
+                    title: model.gcAvailable
+                        ? "Chart the GC'd JS heap after each load, at most once per 10s"
+                        : 'Relaunch Chrome with --js-flags=--expose-gc --enable-precise-memory-info to enable',
+                    item: switchInput({
+                        bind: 'monitorMemory',
+                        label: 'Memory',
+                        disabled: !model.gcAvailable
+                    })
                 }),
                 button({
                     title: 'Reset all counts and run times',

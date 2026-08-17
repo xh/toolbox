@@ -1,10 +1,12 @@
+import {ChartModel} from '@xh/hoist/cmp/chart';
 import {GridModel, timeCol, TreeStyle} from '@xh/hoist/cmp/grid';
-import {fragment, p, pre} from '@xh/hoist/cmp/layout';
+import {fragment} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberEditor, textEditor} from '@xh/hoist/desktop/cmp/grid';
 import {fmtNumber, numberRenderer} from '@xh/hoist/format';
-import {action, bindable, comparer, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, comparer, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
+import {SECONDS} from '@xh/hoist/utils/datetime';
 import {forEach, isEmpty} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {LoadTimesModel} from './LoadTimesModel';
@@ -37,16 +39,26 @@ export class CubeTestModel extends HoistModel {
 
     @bindable.ref logStages: string[] = [];
 
+    /** True if launched with the memory flags - window.gc is the detectable proxy for both. */
+    readonly gcAvailable = typeof (window as any).gc === 'function';
+
+    /** Chart the GC'd JS heap on a 10s timer. Requires `gcAvailable` - disabled otherwise. */
+    @bindable monitorMemory = false;
+
+    /** Last sampled heap size, shown as a label alongside the chart. */
     @observable heapMB: number = null;
 
-    /** True if the last heap sample was taken without --expose-gc (coarse, directional only). */
-    @observable heapImprecise = false;
+    @managed memoryChartModel: ChartModel;
+    private memorySamples: [number, number][] = [];
+    private lastMemorySample = 0;
+    private memoryBaseline = 0;
 
     constructor() {
         super();
         makeObservable(this);
         this.loadTimesModel = new LoadTimesModel();
         this.cubeModel = new CubeModel(this);
+        this.memoryChartModel = this.createMemoryChartModel();
 
         const presetDims: string[][] = XH.getConf('cubeTestDefaultDims');
         this.groupingChooserModel = new GroupingChooserModel({
@@ -81,6 +93,18 @@ export class CubeTestModel extends HoistModel {
             track: () => [this.logStages, this.cubeModel.cube, this.view, this.gridModel],
             run: () => this.syncDiagnosticsLogging()
         });
+
+        // Sample the heap in the wake of each tracked load, and immediately on toggle-on.
+        this.addReaction(
+            {
+                track: () => this.loadTimesModel.total,
+                run: () => this.sampleMemoryAsync()
+            },
+            {
+                track: () => this.monitorMemory,
+                run: on => on && this.sampleMemoryAsync(false)
+            }
+        );
     }
 
     /** Keyed by the values offered in the logging picker. */
@@ -94,9 +118,13 @@ export class CubeTestModel extends HoistModel {
         };
     }
 
+    @action
     resetDiagnostics() {
         forEach(this.diagnosticsByStage, it => it.reset());
         this.loadTimesModel.clearLoadTimes();
+        this.memorySamples = [];
+        this.memoryChartModel.clear();
+        this.heapMB = null;
     }
 
     private syncDiagnosticsLogging() {
@@ -127,41 +155,41 @@ export class CubeTestModel extends HoistModel {
         if (!this.reuseRecords) this.gridModel.store.setDigestFn(() => null);
     }
 
-    @action
-    measureMemory() {
-        const w = window as any,
-            hasGC = typeof w.gc === 'function',
-            mem = (performance as any).memory;
+    // Each sample runs a full synchronous GC so the chart tracks live heap rather than
+    // uncollected garbage. Deferred a tick to let the load that triggered it paint first,
+    // and throttled so a fast update stream collects at most once per 10s.
+    private async sampleMemoryAsync(throttled: boolean = true) {
+        if (!this.monitorMemory || !this.gcAvailable) return;
+        if (throttled && Date.now() - this.lastMemorySample < 10 * SECONDS) return;
 
-        // window.gc is the detectable proxy for having launched with the memory flags.
-        this.heapImprecise = !hasGC;
-        if (hasGC) {
-            w.gc();
-            w.gc();
-        } else {
-            XH.alert({
-                title: 'Imprecise memory reading',
-                message: fragment(
-                    p('For accurate heap capture, relaunch Chrome/Chromium with:'),
-                    pre('--js-flags=--expose-gc --enable-precise-memory-info'),
-                    p(
-                        '--expose-gc lets this tester force garbage collection before sampling; ' +
-                            '--enable-precise-memory-info removes heap-size quantization. Without ' +
-                            'them the reading below includes uncollected garbage and is only a rough ' +
-                            'directional figure - use Chrome DevTools heap snapshots for exact numbers.'
-                    )
-                )
-            });
-        }
+        await wait();
+        if (this.loadObserver.isPending) return;
 
-        this.heapMB = mem ? Math.round(mem.usedJSHeapSize / 1048576) : null;
-        const mode = this.projectionOnly ? 'projection' : 'default';
-        console.log(
-            `[CubeTest] heap: ${this.heapMB ?? 'n/a'} MB | mode=${mode} | patchable=${this.patchableRecordSet} | x${this.recordMultiplier}` +
-                (hasGC
-                    ? ''
-                    : ' (imprecise - relaunch with --js-flags=--expose-gc --enable-precise-memory-info)')
-        );
+        const now = Date.now();
+        this.lastMemorySample = now;
+        if (isEmpty(this.memorySamples)) this.memoryBaseline = now;
+
+        (window as any).gc();
+        const mb = Math.round((performance as any).memory.usedJSHeapSize / 1048576),
+            secs = Math.round((now - this.memoryBaseline) / 1000);
+        this.memorySamples = [...this.memorySamples.slice(-719), [secs, mb]];
+        this.memoryChartModel.setSeries([{data: this.memorySamples}]);
+        runInAction(() => (this.heapMB = mb));
+    }
+
+    private createMemoryChartModel() {
+        return new ChartModel({
+            highchartsConfig: {
+                chart: {type: 'line', animation: false},
+                title: {text: null},
+                legend: {enabled: false},
+                // X is seconds elapsed since the series (re)started, not wall-clock time.
+                xAxis: {min: 0, labels: {format: '{value}s'}},
+                yAxis: {min: 0, title: {text: null}, labels: {format: '{value} MB'}},
+                tooltip: {headerFormat: '', pointFormat: '{point.x}s · <b>{point.y} MB</b>'},
+                plotOptions: {series: {marker: {enabled: false}, animation: false}}
+            }
+        });
     }
 
     private get fields() {
