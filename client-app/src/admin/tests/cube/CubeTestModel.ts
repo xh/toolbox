@@ -29,7 +29,6 @@ export class CubeTestModel extends HoistModel {
 
     @bindable projectionOnly = true;
     @bindable reuseRecords = true;
-    @bindable deltaSort = false;
 
     /** Set explicitly in both directions, overriding any app-wide `xhStoreExperimental` default. */
     @bindable patchRecords = true;
@@ -78,7 +77,7 @@ export class CubeTestModel extends HoistModel {
 
         // Reconstruct the Store in the new mode, for A/B comparison.
         this.addReaction({
-            track: () => [this.projectionOnly, this.reuseRecords, this.deltaSort],
+            track: () => [this.projectionOnly, this.reuseRecords],
             run: () => this.buildGridAndView()
         });
 
@@ -250,7 +249,6 @@ export class CubeTestModel extends HoistModel {
                 experimental: {maxPatchRatio: this.maxPatchRatio},
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
-            experimental: {deltaSort: this.deltaSort},
             sortBy: 'time|desc',
             emptyText: 'No records found...',
             colChooserModel: true,
