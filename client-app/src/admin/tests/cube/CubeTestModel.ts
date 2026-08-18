@@ -32,7 +32,7 @@ export class CubeTestModel extends HoistModel {
     @bindable deltaSort = false;
 
     /** Set explicitly in both directions, overriding any app-wide `xhStoreExperimental` default. */
-    @bindable patchableRecordSet = true;
+    @bindable patchRecords = true;
 
     /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
     @bindable recordMultiplier = 1;
@@ -82,10 +82,10 @@ export class CubeTestModel extends HoistModel {
             run: () => this.buildGridAndView()
         });
 
-        // Fixed at Store construction, so the Cube must be rebuilt ahead of the grid + View.
+        // Applied live to the existing Stores - the ratio is read on each operation.
         this.addReaction({
-            track: () => this.patchableRecordSet,
-            run: () => this.rebuildCubeAndViewAsync()
+            track: () => this.maxPatchRatio,
+            run: ratio => this.applyMaxPatchRatio(ratio)
         });
 
         // Re-apply on selection change, and when a rebuild installs fresh diagnostics objects.
@@ -134,11 +134,13 @@ export class CubeTestModel extends HoistModel {
         });
     }
 
-    private async rebuildCubeAndViewAsync() {
-        await this.cubeModel
-            .rebuildCubeAsync()
-            .then(() => this.buildGridAndView())
-            .linkTo(this.loadObserver);
+    get maxPatchRatio(): number {
+        return this.patchRecords ? 0.1 : 0;
+    }
+
+    private applyMaxPatchRatio(ratio: number) {
+        this.cubeModel.cube.store.experimental.maxPatchRatio = ratio;
+        this.gridModel.store.experimental.maxPatchRatio = ratio;
     }
 
     // The View's connect-time fullUpdate repopulates the fresh Store, so needs no explicit reload.
@@ -245,7 +247,7 @@ export class CubeTestModel extends HoistModel {
             store: {
                 loadRootAsSummary: this.showSummary,
                 projectionOnly: this.projectionOnly,
-                experimental: {patchableRecordSet: this.patchableRecordSet},
+                experimental: {maxPatchRatio: this.maxPatchRatio},
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
             experimental: {deltaSort: this.deltaSort},

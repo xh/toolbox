@@ -78,7 +78,7 @@ const storeBar = hoistCmp.factory<CubeTestModel>(() =>
     toolbar(
         switchInput({bind: 'projectionOnly', label: 'Projection Only', labelSide: 'left'}),
         switchInput({bind: 'reuseRecords', label: 'Reuse Records', labelSide: 'left'}),
-        switchInput({bind: 'patchableRecordSet', label: 'Patchable Records', labelSide: 'left'}),
+        switchInput({bind: 'patchRecords', label: 'Patch Records', labelSide: 'left'}),
         switchInput({bind: 'deltaSort', label: 'Delta Sort', labelSide: 'left'}),
         filler(),
         'Update Secs: ',

@@ -1,8 +1,8 @@
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {Cube} from '@xh/hoist/data';
 import {fmtThousands} from '@xh/hoist/format';
-import {action, makeObservable, observable} from '@xh/hoist/mobx';
-import {isEmpty, times} from 'lodash';
+import {makeObservable, observable} from '@xh/hoist/mobx';
+import {times} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Timer} from '@xh/hoist/utils/async';
 import {PctTotalAggregator} from './PctTotalAggregator';
@@ -63,25 +63,6 @@ export class CubeModel extends HoistModel {
         this.orders = orders;
     }
 
-    /** Rebuild to pick up `patchableRecordSet`, baked into a Store's recordsets at construction. */
-    async rebuildCubeAsync() {
-        const {orders, parent} = this;
-        this.installCube(this.createCube());
-        if (isEmpty(orders)) return;
-        await parent.loadTimesModel.withLoadTime(
-            `Rebuilt Cube | patchable=${parent.patchableRecordSet}`,
-            async () => {
-                await this.cube.loadDataAsync(orders, {asOf: Date.now()});
-            }
-        );
-    }
-
-    @action
-    private installCube(cube: Cube) {
-        XH.safeDestroy(this.cube);
-        this.cube = cube;
-    }
-
     private createCube() {
         const isInstrument = (dim, val, appliedDims) => {
             return !!appliedDims['symbol'];
@@ -91,7 +72,7 @@ export class CubeModel extends HoistModel {
             idSpec: 'id',
             store: {
                 reuseRecords: 'rev',
-                experimental: {patchableRecordSet: this.parent.patchableRecordSet}
+                experimental: {maxPatchRatio: this.parent.maxPatchRatio}
             },
             fields: [
                 {name: 'symbol', isDimension: true},
