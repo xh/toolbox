@@ -32,39 +32,38 @@ export class CubeModel extends HoistModel {
         const LTM = this.parent.loadTimesModel,
             {recordMultiplier} = this.parent;
         let orders = [];
-        await LTM.withLoadTime('Fetch orders', async () => {
-            orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
-            orders.forEach(it => {
-                it.pctCommission = it.commission;
-                it.maxConfidence = it.minConfidence = it.confidence;
-                // Reuse digest - order times are stable within a server-side portfolio
-                it.rev = it.time;
-            });
-        });
 
-        // Replicate the fetched orders to stress-test at scale. Copies reuse the same dimension
-        // values (deepening aggregation) with fresh unique ids required by the Cube's idSpec.
-        if (recordMultiplier > 1) {
-            const base = orders;
-            orders = base.slice();
-            for (let k = 1; k < recordMultiplier; k++) {
-                base.forEach(o => orders.push({...o, id: `${o.id}~r${k}`}));
+        // Timed as one action, with the fetch as its own leg. Tag resolved once the count is known.
+        await LTM.withLoadTime(
+            () => `Loaded ${fmtThousands(orders.length)}k orders in Cube`,
+            async () => {
+                await LTM.withFetchTime('Fetch orders', async () => {
+                    orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
+                    orders.forEach(it => {
+                        it.pctCommission = it.commission;
+                        it.maxConfidence = it.minConfidence = it.confidence;
+                        // Reuse digest - order times are stable within a server-side portfolio
+                        it.rev = it.time;
+                    });
+                });
+
+                // Replicate to stress-test at scale - same dimension values, fresh unique ids.
+                if (recordMultiplier > 1) {
+                    const base = orders;
+                    orders = [...base];
+                    for (let k = 1; k < recordMultiplier; k++) {
+                        base.forEach(o => orders.push({...o, id: `${o.id}~r${k}`}));
+                    }
+                }
+
+                await this.cube.loadDataAsync(orders, {asOf: Date.now()});
             }
-        }
-
-        const ocTxt = fmtThousands(orders.length) + 'k';
-        await LTM.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
-            await this.cube.loadDataAsync(orders, {asOf: Date.now()});
-        });
+        );
 
         this.orders = orders;
     }
 
-    /**
-     * Rebuild the Cube to pick up a change to the experimental `patchableRecordSet` flag, which is
-     * baked into a Store's recordsets at construction. Reloads any orders already fetched, so the
-     * new Cube comes back with the same data under the new mode.
-     */
+    /** Rebuild to pick up `patchableRecordSet`, baked into a Store's recordsets at construction. */
     async rebuildCubeAsync() {
         const {orders, parent} = this;
         this.installCube(this.createCube());

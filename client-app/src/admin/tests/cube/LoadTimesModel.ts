@@ -1,44 +1,42 @@
-import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, PlainObject, managed} from '@xh/hoist/core';
-import {numberRenderer} from '@xh/hoist/format';
+import {HoistModel, Thunkable} from '@xh/hoist/core';
+import {action, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {executeIfFunction} from '@xh/hoist/utils/js';
 
+export interface LoadTime {
+    tag: string;
+    took: number;
+    start: number;
+}
+
+/** Wall-clock timings for the actions this tester drives, kept as the last of each. */
 export class LoadTimesModel extends HoistModel {
-    @managed gridModel = new GridModel({
-        store: {idSpec: 'timestamp'},
-        sortBy: 'timestamp|desc',
-        emptyText: 'No actions recorded...',
-        hideHeaders: true,
-        columns: [
-            {field: 'timestamp', hidden: true},
-            {field: 'tag', flex: 1},
-            {
-                field: 'took',
-                width: 80,
-                align: 'right',
-                renderer: numberRenderer({precision: 0, label: 'ms'})
-            }
-        ]
-    });
+    @observable.ref fetch: LoadTime = null;
+    @observable.ref total: LoadTime = null;
 
-    clearLoadTimes() {
-        this.gridModel.loadData([]);
+    constructor() {
+        super();
+        makeObservable(this);
     }
 
-    async withLoadTime(tag: string, fn) {
+    @action
+    clearLoadTimes() {
+        this.fetch = this.total = null;
+    }
+
+    async withFetchTime(tag: Thunkable<string>, fn) {
+        const ret = await this.timeAsync(tag, fn);
+        runInAction(() => (this.fetch = ret));
+    }
+
+    async withLoadTime(tag: Thunkable<string>, fn) {
+        const ret = await this.timeAsync(tag, fn);
+        runInAction(() => (this.total = ret));
+    }
+
+    // Tags can be deferred, for actions that only know what they did once done.
+    private async timeAsync(tag: Thunkable<string>, fn): Promise<LoadTime> {
         const start = Date.now();
         await fn();
-        const end = Date.now();
-
-        this.addLoadTimes([
-            {
-                timestamp: end,
-                took: end - start,
-                tag
-            }
-        ]);
-    }
-
-    private addLoadTimes(times: PlainObject[]) {
-        this.gridModel.updateData({add: times});
+        return {tag: executeIfFunction(tag), took: Date.now() - start, start};
     }
 }
