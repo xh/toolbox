@@ -1,8 +1,8 @@
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {Cube} from '@xh/hoist/data';
 import {fmtThousands} from '@xh/hoist/format';
-import {action, makeObservable, observable} from '@xh/hoist/mobx';
-import {isEmpty, times} from 'lodash';
+import {makeObservable, observable} from '@xh/hoist/mobx';
+import {times} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Timer} from '@xh/hoist/utils/async';
 import {PctTotalAggregator} from './PctTotalAggregator';
@@ -32,55 +32,35 @@ export class CubeModel extends HoistModel {
         const LTM = this.parent.loadTimesModel,
             {recordMultiplier} = this.parent;
         let orders = [];
-        await LTM.withLoadTime('Fetch orders', async () => {
-            orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
-            orders.forEach(it => {
-                it.pctCommission = it.commission;
-                it.maxConfidence = it.minConfidence = it.confidence;
-                // Reuse digest - order times are stable within a server-side portfolio
-                it.rev = it.time;
-            });
-        });
 
-        // Replicate the fetched orders to stress-test at scale. Copies reuse the same dimension
-        // values (deepening aggregation) with fresh unique ids required by the Cube's idSpec.
-        if (recordMultiplier > 1) {
-            const base = orders;
-            orders = base.slice();
-            for (let k = 1; k < recordMultiplier; k++) {
-                base.forEach(o => orders.push({...o, id: `${o.id}~r${k}`}));
-            }
-        }
-
-        const ocTxt = fmtThousands(orders.length) + 'k';
-        await LTM.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
-            await this.cube.loadDataAsync(orders, {asOf: Date.now()});
-        });
-
-        this.orders = orders;
-    }
-
-    /**
-     * Rebuild the Cube to pick up a change to the experimental `patchableRecordSet` flag, which is
-     * baked into a Store's recordsets at construction. Reloads any orders already fetched, so the
-     * new Cube comes back with the same data under the new mode.
-     */
-    async rebuildCubeAsync() {
-        const {orders, parent} = this;
-        this.installCube(this.createCube());
-        if (isEmpty(orders)) return;
-        await parent.loadTimesModel.withLoadTime(
-            `Rebuilt Cube | patchable=${parent.patchableRecordSet}`,
+        // Timed as one action, with the fetch as its own leg. Tag resolved once the count is known.
+        await LTM.withLoadTime(
+            () => `Loaded ${fmtThousands(orders.length)}k orders in Cube`,
             async () => {
+                await LTM.withFetchTime('Fetch orders', async () => {
+                    orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
+                    orders.forEach(it => {
+                        it.pctCommission = it.commission;
+                        it.maxConfidence = it.minConfidence = it.confidence;
+                        // Reuse digest - order times are stable within a server-side portfolio
+                        it.rev = it.time;
+                    });
+                });
+
+                // Replicate to stress-test at scale - same dimension values, fresh unique ids.
+                if (recordMultiplier > 1) {
+                    const base = orders;
+                    orders = [...base];
+                    for (let k = 1; k < recordMultiplier; k++) {
+                        base.forEach(o => orders.push({...o, id: `${o.id}~r${k}`}));
+                    }
+                }
+
                 await this.cube.loadDataAsync(orders, {asOf: Date.now()});
             }
         );
-    }
 
-    @action
-    private installCube(cube: Cube) {
-        XH.safeDestroy(this.cube);
-        this.cube = cube;
+        this.orders = orders;
     }
 
     private createCube() {
@@ -92,7 +72,7 @@ export class CubeModel extends HoistModel {
             idSpec: 'id',
             store: {
                 reuseRecords: 'rev',
-                experimental: {patchableRecordSet: this.parent.patchableRecordSet}
+                experimental: {maxPatchRatio: this.parent.maxPatchRatio}
             },
             fields: [
                 {name: 'symbol', isDimension: true},
