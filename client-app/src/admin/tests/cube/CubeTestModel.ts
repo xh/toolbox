@@ -29,7 +29,10 @@ export class CubeTestModel extends HoistModel {
 
     @bindable projectionOnly = true;
     @bindable reuseRecords = true;
-    @bindable throttleSort = false;
+
+    /** Grid experimental sort flags, applied live for A/B tuning. */
+    @bindable deferredSortFactor = 4;
+    @bindable deltaSortRatio = 50;
 
     /** Set explicitly in both directions, overriding any app-wide `xhStoreExperimental` default. */
     @bindable patchRecords = true;
@@ -88,10 +91,10 @@ export class CubeTestModel extends HoistModel {
             run: ratio => this.applyMaxPatchRatio(ratio)
         });
 
-        // Applied live to the existing GridModel - read on each transaction and by its sort timer.
+        // Applied live to the existing GridModel - the flags are read on each sort decision.
         this.addReaction({
-            track: () => this.streamingSortInterval,
-            run: interval => (this.gridModel.streamingSortInterval = interval)
+            track: () => [this.deferredSortFactor, this.deltaSortRatio],
+            run: () => this.applySortFlags()
         });
 
         // Re-apply on selection change, and when a rebuild installs fresh diagnostics objects.
@@ -144,8 +147,10 @@ export class CubeTestModel extends HoistModel {
         return this.patchRecords ? 0.1 : 0;
     }
 
-    get streamingSortInterval(): number {
-        return this.throttleSort ? 5 * SECONDS : null;
+    private applySortFlags() {
+        const {experimental} = this.gridModel;
+        experimental.deferredSortFactor = this.deferredSortFactor;
+        experimental.deltaSortRatio = this.deltaSortRatio;
     }
 
     private applyMaxPatchRatio(ratio: number) {
@@ -260,7 +265,10 @@ export class CubeTestModel extends HoistModel {
                 experimental: {maxPatchRatio: this.maxPatchRatio},
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
-            streamingSortInterval: this.streamingSortInterval,
+            experimental: {
+                deferredSortFactor: this.deferredSortFactor,
+                deltaSortRatio: this.deltaSortRatio
+            },
             sortBy: 'time|desc',
             emptyText: 'No records found...',
             colChooserModel: true,
