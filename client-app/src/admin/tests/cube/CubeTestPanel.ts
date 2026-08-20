@@ -79,11 +79,12 @@ const storeBar = hoistCmp.factory<CubeTestModel>(() =>
         switchInput({bind: 'projectionOnly', label: 'Projection Only', labelSide: 'left'}),
         switchInput({bind: 'reuseRecords', label: 'Reuse Records', labelSide: 'left'}),
         switchInput({bind: 'patchRecords', label: 'Patch Records', labelSide: 'left'}),
+        switchInput({bind: 'throttleSort', label: 'Throttle Sort', labelSide: 'left'}),
         filler(),
         'Update Secs: ',
         select({
             bind: 'updateFreq',
-            options: [-1, 1, 2, 5, 10, 20],
+            options: [-1, 0.1, 0.5, 1, 2, 5, 10, 20],
             width: 80
         }),
         hspacer(5),

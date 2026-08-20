@@ -29,6 +29,7 @@ export class CubeTestModel extends HoistModel {
 
     @bindable projectionOnly = true;
     @bindable reuseRecords = true;
+    @bindable throttleSort = false;
 
     /** Set explicitly in both directions, overriding any app-wide `xhStoreExperimental` default. */
     @bindable patchRecords = true;
@@ -87,6 +88,12 @@ export class CubeTestModel extends HoistModel {
             run: ratio => this.applyMaxPatchRatio(ratio)
         });
 
+        // Applied live to the existing GridModel - read on each transaction and by its sort timer.
+        this.addReaction({
+            track: () => this.streamingSortInterval,
+            run: interval => (this.gridModel.streamingSortInterval = interval)
+        });
+
         // Re-apply on selection change, and when a rebuild installs fresh diagnostics objects.
         this.addReaction({
             track: () => [this.logStages, this.cubeModel.cube, this.view, this.gridModel],
@@ -135,6 +142,10 @@ export class CubeTestModel extends HoistModel {
 
     get maxPatchRatio(): number {
         return this.patchRecords ? 0.1 : 0;
+    }
+
+    get streamingSortInterval(): number {
+        return this.throttleSort ? 5 * SECONDS : null;
     }
 
     private applyMaxPatchRatio(ratio: number) {
@@ -249,6 +260,7 @@ export class CubeTestModel extends HoistModel {
                 experimental: {maxPatchRatio: this.maxPatchRatio},
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
+            streamingSortInterval: this.streamingSortInterval,
             sortBy: 'time|desc',
             emptyText: 'No records found...',
             colChooserModel: true,
