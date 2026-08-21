@@ -5,6 +5,8 @@
 ### Technical
 
 * Migrated client-app package management from yarn classic to pnpm, with the version pinned via `packageManager`. Run `corepack enable pnpm` once before your next install.
+* Added a Tests section to the mobile app, gated on `HOIST_ADMIN_READER`, so test harnesses no longer live in the demo pages.
+* Added async `Select` performance tester, reproducing the O(n²) option merge fixed in hoist-react #4589. Options are served by a new `SelectTestController`; each tester reports the main-thread block per query.
 * Overhauled the admin Grid test panel into a fuller Store performance harness. Test data is now generated on the server and loaded via streaming NDJSON or conventional JSON, options cover the Store's memory-related configs (`useRawAsData`, `freezeData`, `retainRaw`, `reuseRecords`) along with string interning and server-generated field values, parameter sets can be saved as named `ViewManager` configs, and a repeatable benchmark dialog measures heap and load-time costs across runs. The panel itself was redesigned around the same documented options sidebar used by the desktop example apps.
 
 ### Libraries
