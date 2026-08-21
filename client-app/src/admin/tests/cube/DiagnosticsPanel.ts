@@ -59,7 +59,7 @@ export const diagnosticsPanel = hoistCmp.factory({
                         diagSection(
                             'Grid',
                             gridModel.diagnostics,
-                            ['genTransaction', 'applyTransaction'],
+                            ['genTransaction', 'applyTransaction', 'sortFlush'],
                             asOf,
                             count(gridRows, 'visible rows')
                         ),
@@ -227,7 +227,9 @@ function opDetail(op: PlainObject): string {
             ? [`reused ${n(op.reused)}`, `rebuilt ${n(op.rebuilt)}`, `created ${n(op.created)}`]
             : op.columns != null
               ? [`cols ${n(op.columns)}`, `recs ${n(op.records)}`]
-              : [`upd ${n(op.update)}`, `add ${n(op.add)}`, `rem ${n(op.remove)}`];
+              : op.pending != null
+                ? [`pending ${n(op.pending)}`, `of ${n(op.total)}`]
+                : [`upd ${n(op.update)}`, `add ${n(op.add)}`, `rem ${n(op.remove)}`];
 
     return parts.join(' · ');
 }
