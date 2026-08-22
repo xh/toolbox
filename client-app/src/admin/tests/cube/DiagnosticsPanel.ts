@@ -59,11 +59,18 @@ export const diagnosticsPanel = hoistCmp.factory({
                         diagSection(
                             'Grid',
                             gridModel.diagnostics,
-                            ['genTransaction', 'applyTransaction', 'sortFlush'],
+                            ['genTransaction', 'applyTransaction'],
                             asOf,
                             count(gridRows, 'visible rows')
                         ),
-                        asyncSection(gridModel.diagnostics.autosize, asOf)
+                        // Deferred ops - sort flushes land at idle, autosize after the syncing
+                        // frame - both outside Total.
+                        diagSection(
+                            'Grid (Async)',
+                            gridModel.diagnostics,
+                            ['sortFlush', 'autosize'],
+                            asOf
+                        )
                     ]
                 }),
                 box({
@@ -157,15 +164,6 @@ function timeSection(title: string, loadTime: LoadTime, asOf: number, className:
         loadTime ? [tagRow(loadTime.tag, loadTime.took, isCurrent(loadTime.start, asOf))] : [],
         className
     );
-}
-
-// Autosize runs after the frame that synced the grid, and so outside the Total above.
-function asyncSection(autosize: PlainObject, asOf: number) {
-    return section('Async', [
-        autosize?.last
-            ? opRow('autosize', autosize, isCurrent(autosize.last.timestamp, asOf))
-            : null
-    ]);
 }
 
 function section(title: string, rows: any[], className: string = null) {

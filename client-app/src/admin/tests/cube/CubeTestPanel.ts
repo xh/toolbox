@@ -78,8 +78,14 @@ const storeBar = hoistCmp.factory<CubeTestModel>(() =>
     toolbar(
         switchInput({bind: 'projectionOnly', label: 'Projection Only', labelSide: 'left'}),
         switchInput({bind: 'reuseRecords', label: 'Reuse Records', labelSide: 'left'}),
-        switchInput({bind: 'patchRecords', label: 'Patch Records', labelSide: 'left'}),
         toolbarSep(),
+        'Patch Ratio: ',
+        select({
+            bind: 'maxPatchRatio',
+            options: [0, 0.1, 0.25, 0.5],
+            width: 70
+        }),
+        hspacer(5),
         'Defer Factor: ',
         select({
             bind: 'deferredSortFactor',

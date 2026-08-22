@@ -35,7 +35,7 @@ export class CubeTestModel extends HoistModel {
     @bindable deltaSortRatio = 50;
 
     /** Set explicitly in both directions, overriding any app-wide `xhStoreExperimental` default. */
-    @bindable patchRecords = true;
+    @bindable maxPatchRatio = 0.1;
 
     /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
     @bindable recordMultiplier = 1;
@@ -141,10 +141,6 @@ export class CubeTestModel extends HoistModel {
         forEach(this.diagnosticsByStage, (it, stage) => {
             it.logLevel = logStages.includes(stage) ? 'info' : 'debug';
         });
-    }
-
-    get maxPatchRatio(): number {
-        return this.patchRecords ? 0.1 : 0;
     }
 
     private applySortFlags() {
