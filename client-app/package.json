@@ -38,7 +38,7 @@
     "@fortawesome/pro-regular-svg-icons": "^7.3.1",
     "@ibm/plex-mono": "^2.5.0",
     "@ibm/plex-sans": "^1.1.0",
-    "@xh/hoist": "87.0.0",
+    "@xh/hoist": "next",
     "@xh/package-template": "~3.0.4",
     "ag-charts-community": "~13.3.1",
     "ag-grid-community": "~35.3.1",
