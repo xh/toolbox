@@ -267,7 +267,7 @@ class ColumnChooserPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
-        const sales = await XH.fetchJson({url: 'sales', loadSpec});
+        const sales = await XH.fetchJson({url: 'sales'}, {loadSpec});
         this.gridModel.loadData(sales);
     }
 
