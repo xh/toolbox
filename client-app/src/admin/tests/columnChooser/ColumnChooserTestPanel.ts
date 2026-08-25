@@ -1,4 +1,4 @@
-import {ColumnOrGroupSpec, ColumnSpec, grid, GridModel} from '@xh/hoist/cmp/grid';
+import {ColChooserMode, ColumnOrGroupSpec, ColumnSpec, grid, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp, HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
@@ -36,6 +36,15 @@ export const columnChooserTestPanel = hoistCmp.factory({
                     ]
                 }),
                 toolbarSep(),
+                span('Chooser'),
+                buttonGroupInput({
+                    bind: 'chooserMode',
+                    items: [
+                        button({text: 'Modal', value: 'modal'}),
+                        button({text: 'Docked', value: 'docked'})
+                    ]
+                }),
+                toolbarSep(),
                 switchInput({bind: 'lockColumnGroups', label: 'Lock Groups', labelSide: 'left'}),
                 switchInput({bind: 'enableColumnPinning', label: 'Pinning', labelSide: 'left'}),
                 toolbarSep(),
@@ -46,13 +55,12 @@ export const columnChooserTestPanel = hoistCmp.factory({
                 }),
                 filler(),
                 storeFilterField({gridModel: model.gridModel}),
-                colChooserButton({gridModel: model.gridModel, text: 'Popover'}),
-                colChooserButton({gridModel: model.gridModel, target: 'panel', text: 'Panel'}),
+                colChooserButton({gridModel: model.gridModel, text: 'Choose Columns'}),
                 exportButton({gridModel: model.gridModel})
             ],
             items: [
                 hframe(
-                    // Grid renders its docked `colChooserPanelModel` chooser to its right.
+                    // With `mode: 'docked'`, Grid renders the chooser to the right of the grid.
                     panel({flex: 1, item: grid({model: model.gridModel})}),
                     panel({
                         title: 'Column State',
@@ -80,6 +88,7 @@ export const columnChooserTestPanel = hoistCmp.factory({
 
 class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
     @bindable size: GridSize = 'medium';
+    @bindable chooserMode: ColChooserMode = 'docked';
     @bindable lockColumnGroups = true;
     @bindable enableColumnPinning = true;
 
@@ -120,6 +129,7 @@ class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
         this.addReaction({
             track: () => [
                 this.size,
+                this.chooserMode,
                 this.lockColumnGroups,
                 this.enableColumnPinning,
                 this.customColumns
@@ -147,8 +157,8 @@ class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
         return new GridModel({
             store: {idSpec: 'id'},
             emptyText: 'No records found...',
-            colChooserModel: {columnLibrary: true},
-            colChooserPanelModel: {
+            colChooserModel: {
+                mode: this.chooserMode,
                 columnLibrary: true,
                 panelConfig: {defaultSize: 600}
             },
