@@ -34,7 +34,7 @@ export class PositionsGridModel extends HoistModel {
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'pnl|desc|abs',
             emptyText: 'No records found...',
-            colChooserModel: true,
+            popupColChooserModel: true,
             enableExport: true,
             rowBorders: true,
             showHover: true,

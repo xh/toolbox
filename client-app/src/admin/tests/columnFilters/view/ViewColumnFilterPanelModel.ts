@@ -137,7 +137,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'cubeLabel',
             emptyText: 'No records found...',
-            colChooserModel: true,
+            popupColChooserModel: true,
             enableExport: true,
             colDefaults: {filterable: true},
             filterModel: {bind: view},

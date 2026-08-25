@@ -264,7 +264,7 @@ export class CubeTestModel extends HoistModel {
             },
             sortBy: 'time|desc',
             emptyText: 'No records found...',
-            colChooserModel: true,
+            popupColChooserModel: true,
             enableExport: true,
             rowBorders: true,
             showHover: true,

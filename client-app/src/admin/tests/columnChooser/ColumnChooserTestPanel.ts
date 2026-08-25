@@ -47,12 +47,12 @@ export const columnChooserTestPanel = hoistCmp.factory({
                 filler(),
                 storeFilterField({gridModel: model.gridModel}),
                 colChooserButton({gridModel: model.gridModel, text: 'Popover'}),
-                colChooserButton({gridModel: model.gridModel, target: 'panel', text: 'Panel'}),
+                colChooserButton({gridModel: model.gridModel, target: 'docked', text: 'Docked'}),
                 exportButton({gridModel: model.gridModel})
             ],
             items: [
                 hframe(
-                    // Grid renders its docked `colChooserPanelModel` chooser to its right.
+                    // Grid renders its docked `dockedColChooserModel` chooser to its right.
                     panel({flex: 1, item: grid({model: model.gridModel})}),
                     panel({
                         title: 'Column State',
@@ -147,8 +147,8 @@ class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
         return new GridModel({
             store: {idSpec: 'id'},
             emptyText: 'No records found...',
-            colChooserModel: {columnLibrary: true},
-            colChooserPanelModel: {
+            popupColChooserModel: {columnLibrary: true},
+            dockedColChooserModel: {
                 columnLibrary: true,
                 panelConfig: {defaultSize: 600}
             },

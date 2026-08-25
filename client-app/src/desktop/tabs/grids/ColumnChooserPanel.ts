@@ -44,9 +44,10 @@ export const columnChooserPanel = hoistCmp.factory({
                 'the Library only; the buckets follow the grid’s real `ColumnGroup` structure.',
                 '',
                 'Columns carry `chooserDescription` tooltips, and `Full Name` is locked via',
-                '`hideable: false`. Open the chooser from the toolbar - as a **popover** via the grid’s',
-                '`colChooserModel`, or as a **docked side-panel** via its `colChooserPanelModel`, which',
-                'the grid renders beside itself (shown open here by default).',
+                '`hideable: false`. Open the chooser from the toolbar - as a **popover** via the',
+                'grid’s `popupColChooserModel`, or as a **docked side-panel** via its',
+                '`dockedColChooserModel`, which the grid renders beside itself (shown open here by',
+                'default).',
                 '',
                 '`width` sizes the bucket column alone; the Library adds its own `libraryWidth` when',
                 'shown, so the buckets keep a constant width as it toggles - the overlay grows/shrinks,',
@@ -74,7 +75,7 @@ export const columnChooserPanel = hoistCmp.factory({
                 }
             ],
             // Chooser config is applied at GridModel construction, so every option here rebuilds the
-            // model (see ColumnChooserPanelModel). Modal (popover/dialog) and docked-panel choosers
+            // model (see ColumnChooserPanelModel). The popup (popover/dialog) and docked choosers
             // are configured independently, so their options are grouped separately below.
             options: [
                 wrapperOptionGroup('Grid'),
@@ -91,36 +92,36 @@ export const columnChooserPanel = hoistCmp.factory({
                     control: switchInput({model, bind: 'enableColumnPinning'})
                 }),
                 wrapperOption({
-                    label: 'Enable Chooser Panel',
+                    label: 'Enable Docked Chooser',
                     info: 'Configure the docked panel chooser at all - off disables its toolbar button.',
-                    propName: 'GridConfig.colChooserPanelModel',
-                    control: switchInput({model, bind: 'enableChooserPanel'})
+                    propName: 'GridConfig.dockedColChooserModel',
+                    control: switchInput({model, bind: 'enableDockedChooser'})
                 }),
-                wrapperOptionGroup('Modal Chooser (Popover / Dialog)'),
+                wrapperOptionGroup('Popup Chooser (Popover / Dialog)'),
                 wrapperOption({
                     label: 'Commit on Change',
                     info: 'Apply edits to the grid immediately; off adds a Save button to commit on demand.',
-                    propName: 'ColChooserConfig.commitOnChange',
-                    control: switchInput({model, bind: 'modalCommitOnChange'})
+                    propName: 'PopupColChooserConfig.commitOnChange',
+                    control: switchInput({model, bind: 'popupCommitOnChange'})
                 }),
                 wrapperOption({
                     label: 'Width',
                     info: 'Bucket column width - excludes the library, which adds its own width when shown.',
                     propName: 'ColChooserConfig.width',
-                    control: numberInput({model, bind: 'modalWidth', width: 90, min: 100})
+                    control: numberInput({model, bind: 'popupWidth', width: 90, min: 100})
                 }),
                 wrapperOption({
                     label: 'Height',
-                    propName: 'ColChooserConfig.height',
-                    control: numberInput({model, bind: 'modalHeight', width: 90, min: 100})
+                    propName: 'PopupColChooserConfig.height',
+                    control: numberInput({model, bind: 'popupHeight', width: 90, min: 100})
                 }),
-                wrapperOptionGroup('Panel Chooser (Docked)'),
+                wrapperOptionGroup('Docked Chooser'),
                 wrapperOption({
                     label: 'Side',
-                    propName: 'ColChooserPanelConfig.panelConfig.side',
+                    propName: 'DockedColChooserConfig.panelConfig.side',
                     control: select({
                         model,
-                        bind: 'panelSide',
+                        bind: 'dockedSide',
                         width: 100,
                         enableFilter: false,
                         options: [
@@ -133,7 +134,7 @@ export const columnChooserPanel = hoistCmp.factory({
                     label: 'Width',
                     info: 'Bucket column width - the dock grows by the library width while the library is shown.',
                     propName: 'ColChooserConfig.width',
-                    control: numberInput({model, bind: 'panelWidth', width: 90, min: 100})
+                    control: numberInput({model, bind: 'dockedWidth', width: 90, min: 100})
                 }),
                 wrapperOptionGroup('Chooser Settings (Shared)'),
                 wrapperOption({
@@ -166,16 +167,16 @@ export const columnChooserPanel = hoistCmp.factory({
                 }),
                 wrapperOptionGroup('Column Library (Shared)'),
                 wrapperOption({
-                    label: 'Enable for Modal',
+                    label: 'Enable for Popup',
                     info: 'Show the docked Column Library of hidden columns to drag in and out.',
                     propName: 'ColChooserConfig.columnLibrary',
-                    control: switchInput({model, bind: 'modalColumnLibraryEnabled'})
+                    control: switchInput({model, bind: 'popupColumnLibraryEnabled'})
                 }),
                 wrapperOption({
-                    label: 'Enable for Panel',
+                    label: 'Enable for Docked',
                     info: 'Show the docked Column Library of hidden columns to drag in and out.',
                     propName: 'ColChooserConfig.columnLibrary',
-                    control: switchInput({model, bind: 'panelColumnLibraryEnabled'})
+                    control: switchInput({model, bind: 'dockedColumnLibraryEnabled'})
                 }),
                 wrapperOption({
                     label: 'Collapse Groups',
@@ -194,7 +195,7 @@ export const columnChooserPanel = hoistCmp.factory({
                 title: 'Grids › Column Chooser',
                 icon: Icon.gridPanel(),
                 className: 'tb-grid-wrapper-panel',
-                // The grid renders its docked `colChooserPanelModel` beside itself - no manual embed.
+                // The grid renders its docked `dockedColChooserModel` beside itself - no manual embed.
                 item: grid({model: model.gridModel}),
                 bbar: [
                     storeFilterField({gridModel: model.gridModel}),
@@ -205,8 +206,8 @@ export const columnChooserPanel = hoistCmp.factory({
                     }),
                     colChooserButton({
                         gridModel: model.gridModel,
-                        target: 'panel',
-                        text: 'Choose Columns (Panel)'
+                        target: 'docked',
+                        text: 'Choose Columns (Docked)'
                     }),
                     exportButton({gridModel: model.gridModel})
                 ]
@@ -220,41 +221,41 @@ class ColumnChooserPanelModel extends HoistModel {
 
     @bindable lockColumnGroups: boolean = true;
     @bindable enableColumnPinning: boolean = true;
-    @bindable enableChooserPanel: boolean = true;
+    @bindable enableDockedChooser: boolean = true;
 
-    // Settings shared by both the modal and docked-panel choosers.
+    // Settings shared by both the popup and docked choosers.
     @bindable showRestoreDefaults: boolean = true;
     @bindable autosizeOnCommit: boolean = false;
     @bindable filterMatchMode: FilterMatchMode = 'startWord';
 
     // Column Library enable toggles - each chooser keeps its own.
-    @bindable modalColumnLibraryEnabled: boolean = true;
-    @bindable panelColumnLibraryEnabled: boolean = true;
+    @bindable popupColumnLibraryEnabled: boolean = true;
+    @bindable dockedColumnLibraryEnabled: boolean = true;
     @bindable collapseLibraryGroups: boolean = false;
 
     // Width of the library, added to the bucket `width` when the library is shown (ColLibraryConfig).
     @bindable libraryWidth: number = 260;
 
-    // Modal (popover / dialog) chooser config -> gridModel.colChooserModel. `width` is the bucket
+    // Popup (popover / dialog) chooser config -> gridModel.popupColChooserModel. `width` is the bucket
     // column width (excludes the library, which adds `libraryWidth` when shown).
-    @bindable modalCommitOnChange: boolean = true;
-    @bindable modalWidth: number = 400;
-    @bindable modalHeight: number = 600;
+    @bindable popupCommitOnChange: boolean = true;
+    @bindable popupWidth: number = 400;
+    @bindable popupHeight: number = 600;
 
-    // Docked side-panel chooser config -> gridModel.colChooserPanelModel. Note the panel forces
+    // Docked side-panel chooser config -> gridModel.dockedColChooserModel. Note the dock forces
     // commitOnChange true, so no such option is exposed for it. No height option either - the dock is
-    // horizontal-only. `panelWidth` is the bucket width; the dock's initial size is that plus
+    // horizontal-only. `dockedWidth` is the bucket width; the dock's initial size is that plus
     // `libraryWidth` while the library is shown, and grows/shrinks by it as the library toggles.
     // Open/close is driven externally (the toolbar button, or the initial open below).
-    @bindable panelSide: HSide = 'right';
-    @bindable panelWidth: number = 400;
+    @bindable dockedSide: HSide = 'right';
+    @bindable dockedWidth: number = 400;
 
     constructor() {
         super();
         makeObservable(this);
         this.gridModel = this.createGridModel();
         // Open the docked chooser so the demo lands showing it (no built-in rail to do so).
-        this.gridModel.showColChooserPanel();
+        this.gridModel.showDockedColChooser();
 
         // All of the above are construction-time GridModel / chooser configs, so rebuild the model
         // (and the choosers bound to it) whenever any of them change.
@@ -262,24 +263,24 @@ class ColumnChooserPanelModel extends HoistModel {
             track: () => [
                 this.lockColumnGroups,
                 this.enableColumnPinning,
-                this.enableChooserPanel,
+                this.enableDockedChooser,
                 this.showRestoreDefaults,
                 this.autosizeOnCommit,
                 this.filterMatchMode,
-                this.modalColumnLibraryEnabled,
-                this.panelColumnLibraryEnabled,
+                this.popupColumnLibraryEnabled,
+                this.dockedColumnLibraryEnabled,
                 this.collapseLibraryGroups,
                 this.libraryWidth,
-                this.modalCommitOnChange,
-                this.modalWidth,
-                this.modalHeight,
-                this.panelSide,
-                this.panelWidth
+                this.popupCommitOnChange,
+                this.popupWidth,
+                this.popupHeight,
+                this.dockedSide,
+                this.dockedWidth
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
-                this.gridModel.showColChooserPanel();
+                this.gridModel.showDockedColChooser();
                 this.loadAsync().catchDefault();
             }
         });
@@ -297,21 +298,21 @@ class ColumnChooserPanelModel extends HoistModel {
             },
             sortBy: 'lastName',
             emptyText: 'No records found...',
-            colChooserModel: {
-                columnLibrary: this.modalColumnLibraryEnabled && {
+            popupColChooserModel: {
+                columnLibrary: this.popupColumnLibraryEnabled && {
                     collapseGroups: this.collapseLibraryGroups,
                     libraryWidth: this.libraryWidth
                 },
                 showRestoreDefaults: this.showRestoreDefaults,
                 autosizeOnCommit: this.autosizeOnCommit,
                 filterMatchMode: this.filterMatchMode,
-                commitOnChange: this.modalCommitOnChange,
-                width: this.modalWidth,
-                height: this.modalHeight
+                commitOnChange: this.popupCommitOnChange,
+                width: this.popupWidth,
+                height: this.popupHeight
             },
-            colChooserPanelModel: this.enableChooserPanel
+            dockedColChooserModel: this.enableDockedChooser
                 ? {
-                      columnLibrary: this.panelColumnLibraryEnabled && {
+                      columnLibrary: this.dockedColumnLibraryEnabled && {
                           collapseGroups: this.collapseLibraryGroups,
                           libraryWidth: this.libraryWidth
                       },
@@ -319,14 +320,14 @@ class ColumnChooserPanelModel extends HoistModel {
                       autosizeOnCommit: this.autosizeOnCommit,
                       filterMatchMode: this.filterMatchMode,
                       // Bucket width; the dock grows by `libraryWidth` while the library is shown.
-                      width: this.panelWidth,
-                      panelConfig: {side: this.panelSide}
+                      width: this.dockedWidth,
+                      panelConfig: {side: this.dockedSide}
                   }
                 : false,
             enableExport: true,
             // Default grid context menu, with the docked-panel chooser added after the standard one.
             contextMenu: (GridModel.defaults.contextMenu as GridContextMenuItemLike[]).flatMap(
-                it => (it === 'colChooser' ? [it, 'colChooserPanel'] : it)
+                it => (it === 'popupColChooser' ? [it, 'dockedColChooser'] : it)
             ),
             lockColumnGroups: this.lockColumnGroups,
             enableColumnPinning: this.enableColumnPinning,

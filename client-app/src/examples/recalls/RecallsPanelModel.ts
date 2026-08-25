@@ -39,7 +39,7 @@ export class RecallsPanelModel extends HoistModel {
             ]
         },
         emptyText: 'No records found...',
-        colChooserModel: true,
+        popupColChooserModel: true,
         enableExport: true,
         rowBorders: true,
         showHover: true,

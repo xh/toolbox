@@ -122,7 +122,7 @@ export class SampleTreeGridModel extends HoistModel {
             selModel: {mode: 'multiple'},
             sortBy: 'pnl|desc|abs',
             emptyText: 'No records found...',
-            colChooserModel: true,
+            popupColChooserModel: true,
             enableExport: true,
             levelLabels: () => this.groupingChooserModel.valueDisplayNames,
             columns: [

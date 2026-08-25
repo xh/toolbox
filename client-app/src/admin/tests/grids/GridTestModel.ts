@@ -627,7 +627,7 @@ export class GridTestModel extends HoistModel {
             treeMode: this.tree,
             levelLabels: times(5, n => `Level ${n}`),
             showSummary: this.showSummary,
-            colChooserModel: true,
+            popupColChooserModel: true,
             autosizeOptions: {
                 mode: this.autosizeMode,
                 renderedRowsOnly: this.renderedRowsOnly,

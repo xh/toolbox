@@ -36,7 +36,7 @@ export class ColumnFilteringPanelModel extends HoistModel {
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',
             filterModel: true,
-            colChooserModel: true,
+            popupColChooserModel: true,
             enableExport: true,
             exportOptions: {
                 columns: ['id', 'company', 'VISIBLE'],
