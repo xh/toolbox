@@ -63,7 +63,7 @@ export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
                 p('No commits found...'),
                 p('Have you properly configured the gitHubAccessToken config?')
             ]),
-            popupColChooserModel: true,
+            colChooserModel: true,
             filterModel: true,
             expandLevel: 1,
             sortBy: 'committedDate|desc',

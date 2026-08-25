@@ -95,7 +95,7 @@ export class SampleGridModel extends HoistModel {
             selModel: {mode: 'multiple'},
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',
-            popupColChooserModel: true,
+            colChooserModel: true,
             enableExport: true,
             exportOptions: {
                 columns: ['id', 'company', 'VISIBLE'],

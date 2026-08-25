@@ -44,7 +44,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',
             filterModel: true,
-            popupColChooserModel: true,
+            colChooserModel: true,
             enableExport: true,
             exportOptions: {
                 columns: ['id', 'company', 'VISIBLE'],

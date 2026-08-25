@@ -135,7 +135,7 @@ export class DirectoryPanelModel extends HoistModel {
                 ]
             },
             emptyText: 'No matching contacts found.',
-            popupColChooserModel: true,
+            colChooserModel: true,
             enableExport: true,
             rowBorders: true,
             showHover: true,

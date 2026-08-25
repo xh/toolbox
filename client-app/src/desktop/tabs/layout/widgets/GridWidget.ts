@@ -47,7 +47,7 @@ class GridWidgetModel extends HoistModel {
     override onLinked() {
         this.gridModel = new GridModel({
             sortBy: 'profit_loss|desc|abs',
-            popupColChooserModel: true,
+            colChooserModel: true,
             persistWith: {dashViewModel: this.viewModel},
             columns: [
                 {

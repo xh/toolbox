@@ -33,7 +33,7 @@ export class ExternalSortGridPanelModel extends HoistModel {
             externalSort: true,
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',
-            popupColChooserModel: true,
+            colChooserModel: true,
             enableExport: true,
             exportOptions: {
                 columns: ['id', 'company', 'VISIBLE'],

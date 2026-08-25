@@ -19,7 +19,7 @@ export class TreeGridPageModel extends HoistModel {
         store: {
             loadRootAsSummary: true
         },
-        popupColChooserModel: true,
+        colChooserModel: true,
         sortBy: 'pnl|desc|abs',
         levelLabels: () => this.groupingChooserModel.valueDisplayNames,
         onRowClicked: ({data: record}) => {

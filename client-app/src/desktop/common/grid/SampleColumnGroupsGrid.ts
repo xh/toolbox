@@ -66,7 +66,7 @@ export class SampleColumnGroupsGridModel extends HoistModel {
             },
             sortBy: 'lastName',
             emptyText: 'No records found...',
-            popupColChooserModel: true,
+            colChooserModel: true,
             enableExport: true,
             contextMenu: () => {
                 return [

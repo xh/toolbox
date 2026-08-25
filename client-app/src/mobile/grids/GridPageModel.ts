@@ -12,7 +12,7 @@ export class GridPageModel extends HoistModel {
     gridModel: GridModel = new GridModel({
         persistWith: {localStorageKey: 'toolboxSampleGrid'},
         sortBy: ['profit_loss|desc|abs'],
-        popupColChooserModel: true,
+        colChooserModel: true,
         onRowClicked: ({data: record}) => {
             const {id} = record;
             XH.appendRoute('gridDetail', {id});

@@ -50,7 +50,7 @@ export class OrdersModel extends HoistModel {
             groupBy: 'dir',
             sortBy: 'time|desc',
             emptyText: 'No orders found...',
-            popupColChooserModel: true,
+            colChooserModel: true,
             enableExport: true,
             rowBorders: true,
             showHover: true,
