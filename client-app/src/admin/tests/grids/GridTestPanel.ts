@@ -136,10 +136,7 @@ export const GridTestPanel = hoistCmp({
  * Disabled states below are navigational hints only - never load-bearing. Options gated by a
  * disabled control retain their customized value (inert, guarded at point of use in
  * GridTestModel / the server) and take effect again when their precondition is restored - they
- * are deliberately not cleared. The exception is combinations Store itself throws on
- * (`projectionOnly` / `reuseRecords` / `retainRaw`): those are actively cleared by model reactions
- * and re-guarded in `createGridModel()`, covering values restored from saved configs that never
- * passed through these controls.
+ * are deliberately not cleared.
  *
  * Where a disabled *switch* would otherwise show a stored value that contradicts the effective
  * behavior (e.g. Stream on-but-disabled reading as "locked on" when streaming is in fact not
@@ -317,16 +314,6 @@ const recordDataOptions = (model: GridTestModel) =>
                     value: model.projectionOnly || model.retainRaw,
                     onChange: v => runInAction(() => (model.retainRaw = v)),
                     disabled: model.projectionOnly
-                })
-            }),
-            wrapperOption({
-                label: 'Reuse records',
-                propName: 'StoreConfig.reuseRecords',
-                info: 'Reuse records whose raw data object is reference-identical to the previously loaded one (Hoist default off). Only hits on the "Reload (same raw refs)" benchmark scenario.',
-                control: switchInput({
-                    model,
-                    bind: 'reuseRecords',
-                    disabled: !model.retainRaw || model.projectionOnly
                 })
             })
         ]

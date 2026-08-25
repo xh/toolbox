@@ -28,7 +28,6 @@ export class CubeTestModel extends HoistModel {
     @bindable updateCount = 5;
 
     @bindable projectionOnly = true;
-    @bindable reuseRecords = true;
 
     /** Grid experimental sort flags, applied live for A/B tuning. */
     @bindable deferredSortFactor = 4;
@@ -81,7 +80,7 @@ export class CubeTestModel extends HoistModel {
 
         // Reconstruct the Store in the new mode, for A/B comparison.
         this.addReaction({
-            track: () => [this.projectionOnly, this.reuseRecords],
+            track: () => this.projectionOnly,
             run: () => this.buildGridAndView()
         });
 
@@ -164,8 +163,6 @@ export class CubeTestModel extends HoistModel {
             stores: this.gridModel.store,
             connect: true
         });
-        // The View installs a reuse digest automatically - null it out for the no-reuse baseline.
-        if (!this.reuseRecords) this.gridModel.store.setDigestFn(() => null);
     }
 
     // Each sample runs a full synchronous GC so the chart tracks live heap rather than

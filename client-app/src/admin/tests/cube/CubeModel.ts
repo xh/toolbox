@@ -83,7 +83,7 @@ export class CubeModel extends HoistModel {
         return new Cube({
             idSpec: 'id',
             store: {
-                reuseRecords: 'rev',
+                digestSpec: 'rev',
                 experimental: {maxPatchRatio: this.parent.maxPatchRatio}
             },
             fields: [

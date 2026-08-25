@@ -77,7 +77,6 @@ const queryBar = hoistCmp.factory<CubeTestModel>(({model}) =>
 const storeBar = hoistCmp.factory<CubeTestModel>(() =>
     toolbar(
         switchInput({bind: 'projectionOnly', label: 'Projection Only', labelSide: 'left'}),
-        switchInput({bind: 'reuseRecords', label: 'Reuse Records', labelSide: 'left'}),
         toolbarSep(),
         'Patch Ratio: ',
         select({

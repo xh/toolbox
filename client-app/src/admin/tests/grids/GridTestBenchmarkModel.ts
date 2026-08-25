@@ -312,8 +312,8 @@ export class GridTestBenchmarkModel extends HoistModel {
 
     /**
      * Return to an empty-grid state between iterations - clear the Store, then destroy and rebuild
-     * the GridModel, so the next iteration loads into a Store with no history (which also matters
-     * for `reuseRecords`, whose record cache would otherwise carry over).
+     * the GridModel, so the next iteration loads into a Store with no history - whose record
+     * cache would otherwise carry over.
      *
      * **This does not reliably reclaim the memory, and no sequence tried here does.** Measured on
      * a freshly loaded page at 50k records x 157 populated fields, settling with repeated full
@@ -444,7 +444,6 @@ export class GridTestBenchmarkModel extends HoistModel {
                 denseRecordThreshold: parent.denseRecordThreshold,
                 freezeData: parent.freezeData,
                 retainRaw: parent.retainRaw,
-                reuseRecords: parent.reuseRecords,
                 internStrings: parent.internStrings,
                 stream: parent.useStreaming,
                 tree: parent.tree,
@@ -517,7 +516,6 @@ export class GridTestBenchmarkModel extends HoistModel {
                     {name: 'denseRecordThreshold', type: FT.INT},
                     {name: 'freezeData', type: FT.BOOL},
                     {name: 'retainRaw', type: FT.BOOL},
-                    {name: 'reuseRecords', type: FT.BOOL},
                     {name: 'internStrings', type: FT.BOOL},
                     {name: 'stream', type: FT.BOOL},
                     {name: 'tree', type: FT.BOOL},
@@ -685,7 +683,6 @@ export class GridTestBenchmarkModel extends HoistModel {
                         },
                         {field: 'freezeData', headerName: 'Freeze', ...boolCol},
                         {field: 'retainRaw', headerName: 'RetainRaw', ...boolCol},
-                        {field: 'reuseRecords', headerName: 'Reuse', ...boolCol},
                         {field: 'internStrings', headerName: 'Intern', ...boolCol},
                         {field: 'stream', headerName: 'Stream', ...boolCol},
                         {field: 'xss', headerName: 'XSS', ...boolCol}
