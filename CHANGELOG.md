@@ -2,6 +2,17 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Upgraded ag-Grid to `36.x`, tracking hoist-react's AG Grid 36 upgrade - the two must move together, as hoist-react requires a v36 runtime and apps supply ag-Grid as a peer.
+* Added a `Pin ID column` option to the admin Grid performance harness, pinning the id column to the left to exercise AG Grid 36's native full-width horizontal scrollbar, which spans pinned columns.
+
+### Libraries
+
+* ag-grid-community `35.3 → 36.0`
+* ag-grid-enterprise `35.3 → 36.0`
+* ag-grid-react `35.3 → 36.0`
+
 ## 9.4.0 - 2026-08-25
 
 ### Technical
