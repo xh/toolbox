@@ -29,11 +29,15 @@ export class GridTestMetrics {
         this.updateTimes = [];
         this.loadTimes = [];
     }
-
     @action
     runAsLoad(fn) {
-        this.loadTimes.unshift(this.runTimed(fn));
-        this.loadTimes = take(this.loadTimes, 10);
+        this.noteLoad(this.runTimed(fn));
+    }
+
+    /** Record an externally-timed load - e.g. an async/streaming load. */
+    @action
+    noteLoad(ms: number) {
+        this.loadTimes = take([ms, ...this.loadTimes], 10);
         this.updateTimes = [];
     }
 

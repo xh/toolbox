@@ -19,7 +19,7 @@ const customPkgPath = path.resolve('node_modules/@xh/package-template');
  * Also uncomment Lines 43-44 below where these values are passed into the webpack config.
  * The package source should be checked out as a sibling of the top-level `toolbox` directory.
  *
- * NOTE that running inline here requires running via `yarn startWithHoist`.
+ * NOTE that running inline here requires running via `pnpm startWithHoist`.
  * (Not entirely clear why that is, exactly. Could use more investigation... - ATM)
  */
 // const customPkgPath = path.resolve('../../package-template'),

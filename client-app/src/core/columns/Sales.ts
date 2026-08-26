@@ -1,5 +1,5 @@
 import {boolCheckCol} from '@xh/hoist/cmp/grid';
-import {numberRenderer} from '@xh/hoist/format';
+import {numberRenderer, percentRenderer} from '@xh/hoist/format';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
 const unitColOpts: ColumnSpec = {
@@ -42,6 +42,23 @@ export const actualGrossCol: ColumnSpec = {
     field: {name: 'actualGross', type: 'number'},
     chooserName: 'Actual Gross',
     exportName: 'Actual Gross'
+};
+
+export const commissionRateCol: ColumnSpec = {
+    field: {name: 'commissionRate', type: 'number'},
+    headerName: 'Rate',
+    chooserName: 'Commission Rate',
+    align: 'right',
+    width: 80,
+    renderer: percentRenderer({precision: 0})
+};
+
+export const commissionCol: ColumnSpec = {
+    field: {name: 'commission', type: 'number'},
+    headerName: 'Commission',
+    align: 'right',
+    width: 110,
+    renderer: numberRenderer({precision: 0, prefix: '$'})
 };
 
 export const retainCol: ColumnSpec = {
