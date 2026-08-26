@@ -21,7 +21,7 @@ class User implements HoistUser {
 
     static constraints = {
         email blank: false, unique: true, email: true, validator: {
-            return validateUsername(it) ?: 'toolbox.user.custom.validation.fail.message'
+            return HoistUser.validateUsername(it) ?: 'toolbox.user.custom.validation.fail.message'
         }
         name blank: false
         password nullable: true
