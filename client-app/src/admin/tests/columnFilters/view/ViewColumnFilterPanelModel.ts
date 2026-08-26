@@ -130,7 +130,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         return new GridModel({
             treeMode: true,
             store: {
-                freezeData: true,
+                projectionOnly: true,
                 idEncodesTreePath: true
             },
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,

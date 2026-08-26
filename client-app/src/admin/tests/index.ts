@@ -1,4 +1,5 @@
 export * from './asyncLoops/AsyncLoopPanel';
+export * from './columnChooser/ColumnChooserTestPanel';
 export * from './columnFilters';
 export * from './cube/CubeTestPanel';
 export * from './dataview/DataViewTestPanel';

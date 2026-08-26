@@ -240,7 +240,10 @@ class SlackAlertService extends BaseService {
     }
 
     private boolean getEnabled() {
-        return config.enabled && config.oauthToken
+        // Never post from a local dev instance - it reads real Slack config from the shared dev DB
+        // and is its own cluster primary, so without this gate a developer force-running monitors
+        // (or triggering a client error / feedback) would post to the live channel.
+        return !Utils.isLocalDevelopment && config.enabled && config.oauthToken
     }
 
     private SlackAlertConfig getConfig() {
