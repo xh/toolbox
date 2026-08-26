@@ -1,54 +1,204 @@
+import {ChartModel} from '@xh/hoist/cmp/chart';
 import {GridModel, timeCol, TreeStyle} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, PlainObject} from '@xh/hoist/core';
+import {fragment} from '@xh/hoist/cmp/layout';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberEditor, textEditor} from '@xh/hoist/desktop/cmp/grid';
-import {numberRenderer} from '@xh/hoist/format';
-import {bindable, comparer, makeObservable} from '@xh/hoist/mobx';
+import {fmtNumber, numberRenderer} from '@xh/hoist/format';
+import {action, bindable, comparer, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import {isEmpty} from 'lodash';
-import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
+import {SECONDS} from '@xh/hoist/utils/datetime';
+import {forEach, isEmpty} from 'lodash';
+import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {LoadTimesModel} from './LoadTimesModel';
 import {CubeModel} from './CubeModel';
 import {QueryConfig, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
     @managed cubeModel: CubeModel;
-    @managed gridModel: GridModel;
-    @managed view: View;
-    @managed dimManagerModel: DimensionManagerModel;
+    @managed @observable.ref gridModel: GridModel;
+    @managed @observable.ref view: View;
+    @managed groupingChooserModel: GroupingChooserModel;
     @managed loadTimesModel: LoadTimesModel;
 
-    @bindable includeGlobalAgg = true;
+    @bindable includeGlobalAgg = false;
     @bindable includeLeaves = false;
     @bindable.ref fundFilter: string[] = null;
     @bindable showSummary = false;
     @bindable updateFreq = -1;
     @bindable updateCount = 5;
 
+    @bindable projectionOnly = true;
+
+    /** Grid experimental sort flags, applied live for A/B tuning. */
+    @bindable deferredSortFactor = 4;
+    @bindable deltaSortRatio = 50;
+
+    /** Set explicitly in both directions, overriding any app-wide `xhStoreExperimental` default. */
+    @bindable maxPatchRatio = 0.1;
+
+    /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
+    @bindable recordMultiplier = 1;
+
+    @bindable.ref logStages: string[] = [];
+
+    /** True if launched with the memory flags - window.gc is the detectable proxy for both. */
+    readonly gcAvailable = typeof (window as any).gc === 'function';
+
+    /** Chart the GC'd JS heap on a 10s timer. Requires `gcAvailable` - disabled otherwise. */
+    @bindable monitorMemory = false;
+
+    /** Last sampled heap size, shown as a label alongside the chart. */
+    @observable heapMB: number = null;
+
+    @managed memoryChartModel: ChartModel;
+    private memorySamples: [number, number][] = [];
+    private lastMemorySample = 0;
+    private memoryBaseline = 0;
+
     constructor() {
         super();
         makeObservable(this);
         this.loadTimesModel = new LoadTimesModel();
-        this.gridModel = this.createGridModel();
         this.cubeModel = new CubeModel(this);
+        this.memoryChartModel = this.createMemoryChartModel();
 
-        const {cube} = this.cubeModel;
-
-        this.dimManagerModel = new DimensionManagerModel({
-            dimensions: cube.dimensions,
-            defaultDimConfig: 'cubeTestDefaultDims',
-            userDimPref: 'cubeTestUserDims'
+        const presetDims: string[][] = XH.getConf('cubeTestDefaultDims');
+        this.groupingChooserModel = new GroupingChooserModel({
+            dimensions: this.cubeModel.cube.dimensions,
+            initialValue: presetDims[0],
+            initialFavorites: presetDims,
+            persistWith: {prefKey: 'cubeTestUserDims'}
         });
 
-        this.view = cube.createView({
-            query: this.getQuery(),
-            stores: this.gridModel.store,
-            connect: true
-        });
+        this.buildGridAndView();
 
         this.addReaction({
             track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
             equals: comparer.structural
+        });
+
+        // Reconstruct the Store in the new mode, for A/B comparison.
+        this.addReaction({
+            track: () => this.projectionOnly,
+            run: () => this.buildGridAndView()
+        });
+
+        // Applied live to the existing Stores - the ratio is read on each operation.
+        this.addReaction({
+            track: () => this.maxPatchRatio,
+            run: ratio => this.applyMaxPatchRatio(ratio)
+        });
+
+        // Applied live to the existing GridModel - the flags are read on each sort decision.
+        this.addReaction({
+            track: () => [this.deferredSortFactor, this.deltaSortRatio],
+            run: () => this.applySortFlags()
+        });
+
+        // Re-apply on selection change, and when a rebuild installs fresh diagnostics objects.
+        this.addReaction({
+            track: () => [this.logStages, this.cubeModel.cube, this.view, this.gridModel],
+            run: () => this.syncDiagnosticsLogging()
+        });
+
+        // Sample the heap in the wake of each tracked load, and immediately on toggle-on.
+        this.addReaction(
+            {
+                track: () => this.loadTimesModel.total,
+                run: () => this.sampleMemoryAsync()
+            },
+            {
+                track: () => this.monitorMemory,
+                run: on => on && this.sampleMemoryAsync(false)
+            }
+        );
+    }
+
+    /** Keyed by the values offered in the logging picker. */
+    private get diagnosticsByStage() {
+        const {cubeModel, view, gridModel} = this;
+        return {
+            cubeStore: cubeModel.cube.store.diagnostics,
+            view: view.diagnostics,
+            gridStore: gridModel.store.diagnostics,
+            grid: gridModel.diagnostics
+        };
+    }
+
+    @action
+    resetDiagnostics() {
+        forEach(this.diagnosticsByStage, it => it.reset());
+        this.loadTimesModel.clearLoadTimes();
+        this.memorySamples = [];
+        this.memoryChartModel.clear();
+        this.heapMB = null;
+    }
+
+    private syncDiagnosticsLogging() {
+        const {logStages} = this;
+        forEach(this.diagnosticsByStage, (it, stage) => {
+            it.logLevel = logStages.includes(stage) ? 'info' : 'debug';
+        });
+    }
+
+    private applySortFlags() {
+        const {experimental} = this.gridModel;
+        experimental.deferredSortFactor = this.deferredSortFactor;
+        experimental.deltaSortRatio = this.deltaSortRatio;
+    }
+
+    private applyMaxPatchRatio(ratio: number) {
+        this.cubeModel.cube.store.experimental.maxPatchRatio = ratio;
+        this.gridModel.store.experimental.maxPatchRatio = ratio;
+    }
+
+    // The View's connect-time fullUpdate repopulates the fresh Store, so needs no explicit reload.
+    private buildGridAndView() {
+        XH.safeDestroy(this.view);
+        XH.safeDestroy(this.gridModel);
+        this.gridModel = this.createGridModel();
+        this.view = this.cubeModel.cube.createView({
+            query: this.getQuery(),
+            stores: this.gridModel.store,
+            connect: true
+        });
+    }
+
+    // Each sample runs a full synchronous GC so the chart tracks live heap rather than
+    // uncollected garbage. Deferred a tick to let the load that triggered it paint first,
+    // and throttled so a fast update stream collects at most once per 10s.
+    private async sampleMemoryAsync(throttled: boolean = true) {
+        if (!this.monitorMemory || !this.gcAvailable) return;
+        if (throttled && Date.now() - this.lastMemorySample < 10 * SECONDS) return;
+
+        await wait();
+        if (this.loadObserver.isPending) return;
+
+        const now = Date.now();
+        this.lastMemorySample = now;
+        if (isEmpty(this.memorySamples)) this.memoryBaseline = now;
+
+        (window as any).gc();
+        const mb = Math.round((performance as any).memory.usedJSHeapSize / 1048576),
+            secs = Math.round((now - this.memoryBaseline) / 1000);
+        this.memorySamples = [...this.memorySamples.slice(-719), [secs, mb]];
+        this.memoryChartModel.setSeries([{data: this.memorySamples}]);
+        runInAction(() => (this.heapMB = mb));
+    }
+
+    private createMemoryChartModel() {
+        return new ChartModel({
+            highchartsConfig: {
+                chart: {type: 'line', animation: false},
+                title: {text: null},
+                legend: {enabled: false},
+                // X is seconds elapsed since the series (re)started, not wall-clock time.
+                xAxis: {min: 0, labels: {format: '{value}s'}},
+                yAxis: {min: 0, title: {text: null}, labels: {format: '{value} MB'}},
+                tooltip: {headerFormat: '', pointFormat: '{point.x}s · <b>{point.y} MB</b>'},
+                plotOptions: {series: {marker: {enabled: false}, animation: false}}
+            }
         });
     }
 
@@ -59,8 +209,8 @@ export class CubeTestModel extends HoistModel {
     }
 
     private getQuery(): QueryConfig {
-        const {fields, dimManagerModel, fundFilter, includeLeaves} = this,
-            dimensions = dimManagerModel.value,
+        const {fields, groupingChooserModel, fundFilter, includeLeaves} = this,
+            dimensions = groupingChooserModel.value,
             filter = !isEmpty(fundFilter)
                 ? ({field: 'fund', op: '=', value: fundFilter} as const)
                 : null,
@@ -79,13 +229,10 @@ export class CubeTestModel extends HoistModel {
 
     private async executeQueryAsync() {
         const LTM = this.loadTimesModel,
-            {gridModel, loadObserver, showSummary} = this,
-            query = this.getQuery(),
-            dimCount = query.dimensions.length,
-            filterCount = (query.filter as PlainObject)?.value?.length ?? 0; // Any filter is a FieldFilter with [] of Funds
+            {gridModel, loadObserver, showSummary} = this;
 
         // Query is initialized with empty dims and is triggering an initial run we don't need.
-        if (!dimCount) return;
+        if (!this.getQuery().dimensions.length) return;
 
         return wait()
             .then(async () => {
@@ -93,12 +240,9 @@ export class CubeTestModel extends HoistModel {
                 gridModel.showSummary = showSummary;
                 store.setLoadRootAsSummary(showSummary);
 
-                await LTM.withLoadTime(
-                    `Query | ${dimCount} dims | ${filterCount} fund filters`,
-                    async () => {
-                        this.view.updateQuery(this.getQuery());
-                    }
-                );
+                await LTM.withLoadTime('Query changed', async () => {
+                    this.view.updateQuery(this.getQuery());
+                });
             })
             .linkTo(loadObserver);
     }
@@ -110,7 +254,13 @@ export class CubeTestModel extends HoistModel {
             showSummary: this.showSummary,
             store: {
                 loadRootAsSummary: this.showSummary,
+                projectionOnly: this.projectionOnly,
+                experimental: {maxPatchRatio: this.maxPatchRatio},
                 fields: [{name: 'cubeDimension', type: 'string'}]
+            },
+            experimental: {
+                deferredSortFactor: this.deferredSortFactor,
+                deltaSortRatio: this.deltaSortRatio
             },
             sortBy: 'time|desc',
             emptyText: 'No records found...',
@@ -119,11 +269,12 @@ export class CubeTestModel extends HoistModel {
             rowBorders: true,
             showHover: true,
             levelLabels: () => {
-                const {dimManagerModel} = this,
-                    {groupingChooserModel} = dimManagerModel,
-                    groupings = dimManagerModel.value;
-                return groupings.map((it: string) => groupingChooserModel.getDimDisplayName(it));
+                const {groupingChooserModel} = this;
+                return groupingChooserModel.value.map(it =>
+                    groupingChooserModel.getDimDisplayName(it)
+                );
             },
+            // Edits route through the Cube - Store.modifyRecords throws under projectionOnly.
             colDefaults: {
                 editable: ({record}) => !record.data.cubeDimension, // Only editable if leaf node
                 setValueFn: ({value, record, field}) => {
@@ -218,6 +369,20 @@ export class CubeTestModel extends HoistModel {
                         precision: 0
                     }),
                     hidden: true
+                },
+                {
+                    field: 'commission',
+                    colId: 'commissionComplex',
+                    headerName: 'Comm (complex)',
+                    align: 'right',
+                    width: 150,
+                    editable: false,
+                    rendererIsComplex: true,
+                    renderer: v =>
+                        fragment(
+                            fmtNumber(v, {precision: 0, ledger: true, colorSpec: true}),
+                            v >= 0 ? ' ▲' : ' ▼'
+                        )
                 },
                 {
                     field: 'time',

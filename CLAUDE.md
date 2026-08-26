@@ -11,25 +11,25 @@ portfolio, news, recalls, filemanager).
 
 Toolbox is also the primary development and testing vehicle for the Hoist framework itself. XH
 developers commonly work with local sibling checkouts of the framework libraries (`../hoist-react`
-and `../hoist-core`), using `yarn startWithHoist` and `runHoistInline=true` to develop framework
+and `../hoist-core`), using `pnpm startWithHoist` and `runHoistInline=true` to develop framework
 features inline and test them in Toolbox. Two framework plugins are central to work in this repo:
 
-- **`@xh/hoist`** (hoist-react) — the client-side React/MobX framework
-- **`hoist-core`** — the server-side Grails/Spring Boot framework
+- **`@xh/hoist`** (hoist-react) - the client-side React/MobX framework
+- **`hoist-core`** - the server-side Grails/Spring Boot framework
 
 Understanding these frameworks is essential to writing correct, idiomatic code in this application.
 
-## Hoist Framework Documentation — READ THIS FIRST
+## Hoist Framework Documentation - READ THIS FIRST
 
 This project depends on two framework plugins. Always consult the framework reference tools
-before authoring code that imports from `@xh/hoist` or `io.xh.hoist` — prop names, decorators,
+before authoring code that imports from `@xh/hoist` or `io.xh.hoist` - prop names, decorators,
 and conventions evolve, and stale guesses produce real bugs.
 
-- **`@xh/hoist` (hoist-react)** — when authoring under `client-app/`, the
+- **`@xh/hoist` (hoist-react)** - when authoring under `client-app/`, the
   `xh:using-hoist-react-reference` skill is your routing table for the docs and symbol-search
   tools (MCP + CLI). Read the Architecture Primer below for the foundational mental model; the
   skill covers everything beyond.
-- **`hoist-core`** — when authoring Groovy/Java under `grails-app/` or `src/`, the
+- **`hoist-core`** - when authoring Groovy/Java under `grails-app/` or `src/`, the
   `xh:using-hoist-core-reference` skill is your routing table. It also owns the install /
   upgrade procedure for the project-local CLI launchers and MCP server.
 
@@ -39,9 +39,9 @@ Hoist applications are built around three artifact types:
 
 | Artifact | Base Class | Purpose | Lifecycle |
 |----------|------------|---------|-----------|
-| **Component** | `hoistCmp.factory` | UI rendering (React) | Transient — mount/unmount with views |
-| **Model** | `HoistModel` | Observable state + business logic | Varies — linked to component or standalone |
-| **Service** | `HoistService` | App-wide data access + shared state | Singleton — lives for app lifetime |
+| **Component** | `hoistCmp.factory` | UI rendering (React) | Transient - mount/unmount with views |
+| **Model** | `HoistModel` | Observable state + business logic | Varies - linked to component or standalone |
+| **Service** | `HoistService` | App-wide data access + shared state | Singleton - lives for app lifetime |
 
 **Element factories over JSX.** Hoist uses element factory functions, not JSX:
 ```typescript
@@ -62,21 +62,21 @@ export const userList = hoistCmp.factory({
 });
 ```
 
-**Model wiring — `creates()` vs `uses()`:**
-- `creates(ModelClass)` — component instantiates, owns, and destroys the model on unmount.
-- `uses(ModelClass)` — component receives model from a parent via context or explicit prop.
+**Model wiring - `creates()` vs `uses()`:**
+- `creates(ModelClass)` - component instantiates, owns, and destroys the model on unmount.
+- `uses(ModelClass)` - component receives model from a parent via context or explicit prop.
 
 **Context-based model lookup** eliminates prop drilling. When a component `creates()` a model, that
 model is published to React context. Child components using `uses(ModelClass)` automatically find
 the nearest matching model in the ancestor tree. All public properties of ancestor models are
-searched — so if `PanelModel` has a `gridModel: GridModel` property, a child `grid()` call
-resolves it automatically. (Note: `@managed` is unrelated to lookup — it controls cleanup on
+searched - so if `PanelModel` has a `gridModel: GridModel` property, a child `grid()` call
+resolves it automatically. (Note: `@managed` is unrelated to lookup - it controls cleanup on
 destroy. A property does not need `@managed` to be found via context lookup.)
 
 When multiple models of the same type exist in context (e.g. two `GridModel` instances), pass the
 model explicitly: `grid({model: model.leftGridModel})`.
 
-**HoistModel** — the core state holder:
+**HoistModel** - the core state holder:
 ```typescript
 class UserListModel extends HoistModel {
     @observable.ref users: User[] = [];
@@ -111,11 +111,11 @@ class UserListModel extends HoistModel {
 `@observable`, `@bindable`, or `@computed` properties. The base class call does not cover subclass
 decorators. Forgetting this is the most common Hoist bug.
 
-**`doLoadAsync(loadSpec)`** — implement this template method to opt into managed data loading.
-Call `model.loadAsync()` or `model.refreshAsync()` to trigger — never call `doLoadAsync` directly.
+**`doLoadAsync(loadSpec)`** - implement this template method to opt into managed data loading.
+Call `model.loadAsync()` or `model.refreshAsync()` to trigger - never call `doLoadAsync` directly.
 Linked models with `doLoadAsync` are loaded automatically on mount.
 
-**HoistService** — singleton services installed during app init and accessed via `XH`:
+**HoistService** - singleton services installed during app init and accessed via `XH`:
 ```typescript
 XH.tradeService.submitTradeAsync(trade);  // Custom service
 XH.fetchJson({url: 'api/data'});          // FetchService alias
@@ -123,19 +123,19 @@ XH.getConf('featureFlag', false);         // ConfigService alias
 XH.getPref('pageSize', 50);              // PrefService alias
 ```
 
-**XH singleton** — the top-level API entry point. Provides service access, data fetching
+**XH singleton** - the top-level API entry point. Provides service access, data fetching
 (`fetchJson`, `postJson`), user interaction (`toast`, `confirm`, `prompt`, `handleException`),
 navigation (`navigate`, `appendRoute`), and app state (`appState`, `darkTheme`).
 
 **Critical pitfalls:**
-1. **Forgetting `makeObservable(this)`** — observables silently won't react.
-2. **Managing objects you don't own** — only `@managed` objects your class creates. Objects passed
+1. **Forgetting `makeObservable(this)`** - observables silently won't react.
+2. **Managing objects you don't own** - only `@managed` objects your class creates. Objects passed
    in from outside are owned by the provider.
-3. **Mutating observables outside actions** — use `runInAction()`, `@action`, or `@bindable`.
-4. **Calling `lookupModel()` too early** — only works during or after `onLinked()`.
-5. **Calling `doLoadAsync()` directly** — use `loadAsync()` / `refreshAsync()` entry points.
+3. **Mutating observables outside actions** - use `runInAction()`, `@action`, or `@bindable`.
+4. **Calling `lookupModel()` too early** - only works during or after `onLinked()`.
+5. **Calling `doLoadAsync()` directly** - use `loadAsync()` / `refreshAsync()` entry points.
 
-#### Quick Reference — MCP Doc IDs by Task
+#### Quick Reference - MCP Doc IDs by Task
 
 Use `hoist-search-docs` with the doc ID for full documentation on any topic.
 
@@ -172,7 +172,7 @@ Use `hoist-search-docs` with the doc ID for full documentation on any topic.
 ### hoist-core
 
 The hoist-core repository has comprehensive documentation covering server-side architecture,
-services, and conventions across 20+ feature docs and upgrade notes — all surfaced via the
+services, and conventions across 20+ feature docs and upgrade notes - all surfaced via the
 reference tools described in the `xh:using-hoist-core-reference` skill. For topics not yet
 covered by docs, refer to the existing source code in `grails-app/`, or browse the public docs
 at https://github.com/xh/hoist-core/tree/develop/docs.
@@ -186,7 +186,7 @@ tools to AI coding agents. Servers must also be listed in `.claude/settings.json
 ### hoist-react (enabled by default)
 
 A local Node.js process that exposes hoist-react framework documentation and symbol search. No
-additional setup required — it runs directly from installed `node_modules`. See the
+additional setup required - it runs directly from installed `node_modules`. See the
 `xh:using-hoist-react-reference` skill for the routing table of MCP and CLI surfaces.
 
 ### hoist-core (enabled by default)
@@ -202,7 +202,7 @@ procedure.
 ### GitHub MCP Server (opt-in)
 
 A Docker-based server providing GitHub API tools (issues, PRs, code search, etc.) via the
-official `github-mcp-server` image. Configured in `.mcp.json` but **not enabled by default** —
+official `github-mcp-server` image. Configured in `.mcp.json` but **not enabled by default** -
 it requires Docker and an authenticated GitHub CLI, which not every developer keeps running.
 
 **To enable:**
@@ -213,7 +213,7 @@ it requires Docker and an authenticated GitHub CLI, which not every developer ke
    `gh`'s credential store on other platforms), so no plaintext token needs to live in your
    shell environment.
 3. Add `"github"` to `enabledMcpjsonServers` in `.claude/settings.local.json` (local settings
-   merge with the shared `settings.json` — enabling locally does not affect other developers):
+   merge with the shared `settings.json` - enabling locally does not affect other developers):
    ```json
    {
      "enabledMcpjsonServers": ["hoist-react", "hoist-core", "github"]
@@ -221,7 +221,7 @@ it requires Docker and an authenticated GitHub CLI, which not every developer ke
    ```
 
 If Docker is not running or `gh` is not authenticated when the server is enabled, Claude Code
-may show errors on startup — remove `"github"` from your local settings to resolve.
+may show errors on startup - remove `"github"` from your local settings to resolve.
 
 **Fallback when not enabled:** The `gh` CLI provides functionally equivalent access to the same
 operations (`gh pr view`, `gh issue list`, `gh api`, `gh pr create`, etc.). Prefer `gh` over
@@ -266,7 +266,7 @@ If the binary is not installed, LSP tool calls will fail silently. Verify your i
 `jdtls --version`.
 
 In this mixed Java/Groovy project, jdtls works well for Java-specific operations within `.java`
-files — hover, document symbols, find references, and call hierarchy all return useful results.
+files - hover, document symbols, find references, and call hierarchy all return useful results.
 However, **go-to-definition does not resolve Groovy classes** (e.g. services and domain objects
 defined in `.groovy` files), and **workspace symbol search may return empty results** since the
 server only indexes Java source. For navigating into Groovy code, use Grep/Glob tools instead.
@@ -277,27 +277,45 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 - **Backend**: Grails 7 (Groovy/Spring Boot), `hoist-core` framework
 - **JDK**: the JVM version used for local development and CI is set by `majorJavaVersion` in
   `gradle.properties`; the Gradle toolchain in `build.gradle` reads that value. JDK 25+ is not
-  currently usable — Gradle 8.x caps its compatible JVM at version 24. (Note that `hoist-core`
+  currently usable - Gradle 8.x caps its compatible JVM at version 24. (Note that `hoist-core`
   itself is separately pinned to a lower bytecode level so its published JAR remains runnable
-  by older client apps — see `hoist-core` docs for the current minimum.)
+  by older client apps - see `hoist-core` docs for the current minimum.)
 - **Database**: MySQL (or H2 in-memory for quick local dev via `APP_TOOLBOX_USE_H2=true`)
 - **Package Manager**: Yarn 1.22 (frontend), Gradle via wrapper (backend)
 
 ## Common Commands
 
 ### Frontend (run from `client-app/`)
+
+Package manager: **pnpm** (version pinned via `packageManager` in `package.json`; `pnpm-lock.yaml`
+is the source of truth). Do not run `npm install` or `yarn install` here. If `pnpm` is not on the
+PATH, enable it once via `corepack enable pnpm`. The sibling `../../hoist-react` checkout is also
+pnpm-managed, and `startWithHoist` installs it with pnpm as well.
+
 ```bash
-yarn install              # Install dependencies
-yarn start                # Dev server on port 3000
-yarn build                # Production build
-yarn lint                 # Run ESLint + Stylelint + tsc type-check
-yarn lint:code            # ESLint only
-yarn lint:styles          # Stylelint only
-yarn lint:types           # TypeScript type-check (tsc) only
-yarn startWithHoist       # Dev server using local sibling hoist-react
+pnpm install              # Install dependencies
+pnpm start                # Dev server on port 3000
+pnpm build                # Production build
+pnpm lint                 # Run ESLint + Stylelint
+pnpm lint:code            # ESLint only
+pnpm lint:styles          # Stylelint only
+pnpm typecheck            # Type check (tsc --noEmit)
+pnpm startWithHoist       # Dev server using local sibling hoist-react
 ```
 
-When using `yarn startWithHoist`, you may also want to uncomment the `paths` block in
+Linting and type-checking are separate concerns, and neither subsumes the other - run both. ESLint
+is configured type-aware, but that only powers its own rules; it never reports TypeScript compiler
+errors, so a genuine type error passes `pnpm lint`. CI runs the two as distinct steps.
+
+Between releases, `@xh/hoist` is specified as the bare npm dist-tag `"next"`, which tracks
+hoist-react's current SNAPSHOT line. Refresh it with `pnpm update` (plain `pnpm install` honors the
+lockfile and will not move it). **Never rewrite that spec to a version or caret range** - on
+prerelease versions `pnpm update` converts a range into an exact pin it can then never move again,
+silently freezing the snapshot ([pnpm#7002](https://github.com/pnpm/pnpm/issues/7002)). This also
+keeps the `hoist-react-snapshot` trigger in `buildSnapshot.yml` working. See
+[`docs/running-locally.md`](docs/running-locally.md).
+
+When using `pnpm startWithHoist`, you may also want to uncomment the `paths` block in
 `client-app/tsconfig.json` so `tsc`/your IDE type-check against the local hoist-react checkout - see
 the Pre-commit Hooks note above and [`docs/running-locally.md`](docs/running-locally.md). Re-comment
 it before committing.
@@ -311,10 +329,10 @@ it before committing.
 ### Local Development
 Run both simultaneously:
 - Terminal 1: `./gradlew bootRun`
-- Terminal 2: `cd client-app && yarn start`
+- Terminal 2: `cd client-app && pnpm start`
 
-For the full local-run guide — local Hoist checkouts, multiple instances, on-device mobile testing
-over a network IP, HTTPS, and troubleshooting (including the server timezone check) — see
+For the full local-run guide - local Hoist checkouts, multiple instances, on-device mobile testing
+over a network IP, HTTPS, and troubleshooting (including the server timezone check) - see
 [`docs/running-locally.md`](docs/running-locally.md).
 
 ### App URLs during Local Development
@@ -331,11 +349,11 @@ defines an entry point, and its filename (minus the extension) becomes the URL p
 | Admin console | http://localhost:3000/admin |
 | Mobile app | http://localhost:3000/mobile |
 
-**Example apps**: `/contact`, `/todo`, `/portfolio`, `/news`, `/recalls`, `/fileManager`, `/weather`
-— each at `http://localhost:3000/<name>`.
+**Example apps**: `/contact`, `/todo`, `/portfolio`, `/news`, `/recalls`, `/fileManager`,
+`/weather` - each at `http://localhost:3000/<name>`.
 
 ### Pre-commit Hooks
-Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged files) and conditionally the TypeScript compiler (`yarn lint:types`) if TS/JS/package files are staged. Note that `tsc` type-checks against the installed `@xh/hoist` in `node_modules`, not a local sibling checkout, unless the `paths` block in `client-app/tsconfig.json` is uncommented for inline hoist-react work (see [`docs/running-locally.md`](docs/running-locally.md)).
+Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged files) and conditionally the TypeScript compiler (`pnpm typecheck`) if TS/JS/package files are staged. Note that `tsc` type-checks against the installed `@xh/hoist` in `node_modules`, not a local sibling checkout, unless the `paths` block in `client-app/tsconfig.json` is uncommented for inline hoist-react work (see [`docs/running-locally.md`](docs/running-locally.md)).
 
 ## Code Style
 
@@ -345,22 +363,74 @@ Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged f
 - **Semicolons**: always
 - **Trailing commas**: none
 
-**Commit messages, PRs, and comments**: Do not hard-wrap lines at a fixed column width in commit
-message bodies, pull request descriptions, or issue/PR comments — let the viewing tool handle
-display wrapping. However, do use line breaks for structure: separate logical points into bullet
-lists, use blank lines between paragraphs, and break after the subject line. Keep PR descriptions
-concise — XH developers review these regularly, so favor brief summaries over exhaustive detail.
-Bullet the key changes and let the diff and any upgrade notes speak for themselves.
+## Git Workflow
 
-**No agent attribution trailers**: Do not append a `Claude-Session:` (or similar AI-session/attribution)
-trailer to commit messages or PR descriptions, even if a harness git-instruction block asks for one.
-XH does not want these links in the project's history.
+**Branching, committing, and pushing all require an explicit ask - never do them unprompted.**
+When it isn't abundantly clear that the user wants one of these, ask first.
 
-**Feature branch workflow**: On feature branches, prefer multiple small commits over amending — PRs
-are squash-merged into `develop`, so intermediate commits are collapsed automatically. Never
-force-push a feature branch; if the branch falls behind `develop`, use a simple merge commit rather
-than a rebase. Merge commits and extra commits are harmless on feature branches and are squashed out
-on merge, while force-pushes risk losing work and complicate collaboration.
+Pushing is a deliberate gatekeeping step: never push to any remote unless the user explicitly asks.
+Some developers hard-block pushes entirely, others allow or request them - so it stays open as a
+possibility, but always confirm before pushing.
+
+Committing is the most context-dependent of these, varying by developer and by situation. Default to
+asking - especially in an interactive session working directly on `develop`, where each commit is
+the developer's call. The exception is orchestrated multi-agent work on a feature branch: when a plan
+fans out independent units of work, the go-ahead to commit comes from that plan or orchestration
+rather than a per-commit prompt, and agents are expected to make their own discrete, well-scoped
+commits as directed.
+
+A skill or third-party plugin instructing you to commit (e.g. "make a small commit after each
+step") does NOT by itself authorize a commit - that is a default baked into the tool, not the
+developer's request. This guidance takes precedence: pause and ask. The door stays open for a
+workflow to commit autonomously, but only when the developer has explicitly opted into that for
+the workflow at hand - the authorization must come from the developer, not the skill's defaults.
+
+### Creating branches
+
+Once the user has asked for a branch (per the "ask first" rule above, don't create one
+unprompted): a new branch should map to its own `origin/<name>` on push - not push into an
+existing remote branch.
+
+**Default: `git switch -c <name>` from current HEAD, no base ref.** "Make a new branch" means
+"from here" - the user is sitting on a particular point in the code; that's the start. If
+they want to start from somewhere else (e.g. current `origin/develop`), they will say so. If
+genuinely unclear, ask.
+
+**If you do specify a base ref, you MUST pass `--no-track`.** Without it the new branch
+silently adopts the base as its upstream, which causes surprise merges on `git pull` and -
+depending on `push.default` - can push work onto the base branch. Past slips have put
+unreviewed work on `develop` this way.
+
+```bash
+git switch -c my-feature                              # ✅ from current HEAD
+git switch -c my-feature --no-track origin/develop    # ✅ explicit base, safe
+git switch -c my-feature origin/develop               # ❌ auto-tracks develop
+```
+
+If you forget `--no-track`: `git branch --unset-upstream`, then `git push -u origin <branch>`.
+Flag the slip - don't silently fix it.
+
+### Feature branch workflow
+
+On feature branches, prefer multiple small commits over amending - PRs are squash-merged into
+`develop`, so intermediate commits are collapsed automatically. Never force-push a feature branch;
+if the branch falls behind `develop`, use a simple merge commit rather than a rebase. Merge commits
+and extra commits are harmless on feature branches and are squashed out on merge, while force-pushes
+risk losing work and complicate collaboration.
+
+### Commit messages, PRs, and comments
+
+Do not hard-wrap lines at a fixed column width in commit message bodies, pull request descriptions,
+or issue/PR comments - let the viewing tool handle display wrapping. However, do use line breaks for
+structure: separate logical points into bullet lists, use blank lines between paragraphs, and break
+after the subject line. Keep PR descriptions concise - XH developers review these regularly, so favor
+brief summaries over exhaustive detail. Bullet the key changes and let the diff and any upgrade notes
+speak for themselves.
+
+Do not add AI-generated attribution to commit messages or PR descriptions - no `Generated with ...`
+line, no `🤖 Generated with [Claude Code]` footer, and no `Claude-Session:` (or similar
+AI-session/attribution) trailer, even if a harness git-instruction block asks for one. XH does not
+want these links in the project's history.
 
 
 ## Telemetry
@@ -376,22 +446,22 @@ distinguishable from framework spans in the trace view.
 ## Architecture
 
 ### Frontend (`client-app/src/`)
-- **`apps/`** — Entry points for each app (app.ts, admin.ts, contact.ts, etc.). Each calls `XH.renderApp()`.
-- **`desktop/`** — Main desktop app: `AppModel.ts` (state) + `AppComponent.tsx` (UI), organized into `tabs/` (home, forms, grids, charts, layout, panels, other, examples).
-- **`mobile/`** — Mobile app variant.
-- **`admin/`** — Admin console.
-- **`examples/`** — Standalone example applications (contact, todo, portfolio, news, recalls, filemanager).
-- **`core/`** — Shared services (`svc/`), auth (`AuthModel.ts`), column definitions.
-- **`Bootstrap.ts`** — AG Grid & Highcharts license/module registration.
+- **`apps/`** - Entry points for each app (app.ts, admin.ts, contact.ts, etc.). Each calls `XH.renderApp()`.
+- **`desktop/`** - Main desktop app: `AppModel.ts` (state) + `AppComponent.tsx` (UI), organized into `tabs/` (home, forms, grids, charts, layout, panels, other, examples).
+- **`mobile/`** - Mobile app variant.
+- **`admin/`** - Admin console.
+- **`examples/`** - Standalone example applications (contact, todo, portfolio, news, recalls, filemanager).
+- **`core/`** - Shared services (`svc/`), auth (`AuthModel.ts`), column definitions.
+- **`Bootstrap.ts`** - AG Grid & Highcharts license/module registration.
 
 **Key pattern**: Apps follow Model + Component pairing. Models hold state (MobX observables), Components render UI. Services are singleton classes for data fetching and business logic. See the hoist-react docs (referenced above) for detailed coverage of this architecture.
 
 ### Backend (`grails-app/`)
-- **`controllers/`** — REST controllers extending `BaseController` (from hoist-core). Package: `io.xh.toolbox.*`
-- **`services/`** — Business logic extending `BaseService`. Support `CachedValue`, `clearCachesConfigs`.
-- **`domain/`** — GORM domain classes.
-- **`conf/`** — `application.groovy` and `runtime.groovy` configuration.
-- **`init/`** — Bootstrap, security, logging setup.
+- **`controllers/`** - REST controllers extending `BaseController` (from hoist-core). Package: `io.xh.toolbox.*`
+- **`services/`** - Business logic extending `BaseService`. Support `CachedValue`, `clearCachesConfigs`.
+- **`domain/`** - GORM domain classes.
+- **`conf/`** - `application.groovy` and `runtime.groovy` configuration.
+- **`init/`** - Bootstrap, security, logging setup.
 
 ### Instance Configuration
 Environment variables loaded from `.env` file (copy `.env.template` to `.env`). Required: `APP_TOOLBOX_ENVIRONMENT`, `APP_TOOLBOX_DB_HOST`, `APP_TOOLBOX_DB_SCHEMA`, `APP_TOOLBOX_DB_USER`, `APP_TOOLBOX_DB_PASSWORD`.
@@ -417,13 +487,13 @@ ECS Exec, CloudWatch log access, and the per-command confirmation protocol for w
 
 This repo is **public**: the runbook deliberately omits the AWS account ID, Identity Center URL/ARN,
 RDS endpoints, internal DNS, and DB credentials. Those operational values live in the `Toolbox AWS
-Ops` item in the `XH Team` 1Password vault — fetch them with the `op` CLI
+Ops` item in the `XH Team` 1Password vault - fetch them with the `op` CLI
 (`op read "op://XH Team/Toolbox AWS Ops/<field>"`) when running commands from the runbook. Never
 write those values into checked-in files.
 
 **Safety protocol for AI agents** (full table in the runbook): reads against dev proceed without
 confirmation; writes against dev, and anything (read or write) against prod, require explicit
-per-command user confirmation — propose the exact command and wait for "go".
+per-command user confirmation - propose the exact command and wait for "go".
 
 ## Changelog
 
@@ -449,7 +519,7 @@ The file follows the [Keep a Changelog](https://keepachangelog.com/) structure:
 * @xh/hoist 80.0.1
 ```
 
-- **Version headings**: `## <version> - <date>` — no `v` prefix. Use `SNAPSHOT - unreleased` for
+- **Version headings**: `## <version> - <date>` - no `v` prefix. Use `SNAPSHOT - unreleased` for
   the in-development version.
 - **Adding a new SNAPSHOT version**: Before adding a changelog entry, check whether the topmost
   version in `CHANGELOG.md` has already been released. A version is released if it has a date
@@ -466,22 +536,22 @@ The changelog parser works **line-by-line**. Bullet points are only recognized w
 with `*` or `-`. Continuation lines, wrapped text, and nested sub-bullets are **silently dropped**
 from the parsed output.
 
-**Every bullet MUST be a single line — no matter how long.** Do not wrap, indent continuation text,
+**Every bullet MUST be a single line - no matter how long.** Do not wrap, indent continuation text,
 or use nested sub-bullets. A 300-character single line is correct; a neatly wrapped two-line bullet
 is broken.
 
 ```
-// GOOD — single line, renders completely in-app
-* Added Weather Dashboard example app — a full-stack weather dashboard backed by the OpenWeatherMap API, featuring a `DashCanvas` layout with multiple chart types.
+// GOOD - single line, renders completely in-app
+* Added Weather Dashboard example app - a full-stack weather dashboard backed by the OpenWeatherMap API, featuring a `DashCanvas` layout with multiple chart types.
 
-// BAD — continuation line will be silently dropped
-* Added Weather Dashboard example app — a full-stack weather dashboard backed by the OpenWeatherMap
+// BAD - continuation line will be silently dropped
+* Added Weather Dashboard example app - a full-stack weather dashboard backed by the OpenWeatherMap
   API, featuring a `DashCanvas` layout with multiple chart types.
 ```
 
 ### Style
 
-- Use past tense ("Added", "Fixed", "Removed" — not "Add", "Fix", "Remove").
+- Use past tense ("Added", "Fixed", "Removed" - not "Add", "Fix", "Remove").
 - Be concise but specific about what changed and why.
 - Use backticks for API names, component names, and config keys (e.g. `ViewManager`, `useOAuth`).
 
@@ -489,5 +559,5 @@ is broken.
 
 XH / Hoist framework developers can optionally check out the framework libraries as sibling
 directories for inline development of the libraries. This is not required for app development.
-- **`../hoist-core`** — Groovy/Java backend framework. Enable per-run with `./gradlew bootRun -PrunHoistInline=true` (no tracked-file edit), or persistently via `runHoistInline=true` in `gradle.properties`.
-- **`../hoist-react`** — React frontend library. Enable with `yarn startWithHoist` from `client-app/`. To also type-check against the local checkout, uncomment the `paths` block in `client-app/tsconfig.json` (re-comment before committing).
+- **`../hoist-core`** - Groovy/Java backend framework. Enable per-run with `./gradlew bootRun -PrunHoistInline=true` (no tracked-file edit), or persistently via `runHoistInline=true` in `gradle.properties`.
+- **`../hoist-react`** - React frontend library. Enable with `pnpm startWithHoist` from `client-app/`. To also type-check against the local checkout, uncomment the `paths` block in `client-app/tsconfig.json` (re-comment before committing).
