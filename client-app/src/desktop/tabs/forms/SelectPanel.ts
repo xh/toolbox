@@ -38,6 +38,8 @@ const STATUS_OPTIONS = [
     }
 ];
 
+type StatusOption = (typeof STATUS_OPTIONS)[number];
+
 const DESSERTS = [
     {label: 'Cookies', options: ['Oatmeal', 'Chocolate Chip', 'Peanut Butter']},
     {label: 'Cakes', options: ['Red Velvet', 'Tres Leches', "German's Chocolate", 'Cheesecake']},
@@ -287,19 +289,19 @@ const column2 = hoistCmp.factory<SelectPanelModel>(() =>
                     options: STATUS_OPTIONS,
                     enableClear: true,
                     placeholder: 'Status...',
-                    optionRenderer: opt =>
+                    optionRenderer: (opt: StatusOption) =>
                         hbox({
                             alignItems: 'center',
                             flex: 1,
                             items: [
-                                statusDot((opt as any).color),
+                                statusDot(opt.color),
                                 vbox({
                                     flex: 1,
                                     items: [
                                         span(opt.label),
                                         span({
                                             className: 'xh-text-color-muted xh-font-size-small',
-                                            item: (opt as any).description
+                                            item: opt.description
                                         })
                                     ]
                                 })
