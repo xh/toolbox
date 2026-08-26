@@ -2,6 +2,10 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Migrated toolbox to TC39 Stage 3 modern decorators in step with `hoist-react` v85 and `hoist-dev-utils` v14. Removed `experimentalDecorators` from `client-app/tsconfig.json`, added the `accessor` keyword to all `@observable` / `@bindable` fields, and deleted the ~90 `makeObservable(this)` calls that existed across the example apps.
+
 ## 9.4.0 - 2026-08-25
 
 ### Technical
@@ -137,8 +141,6 @@
 
 * Upgraded build toolchain to JDK 25. Toolbox now uses JDK 25 for local development and CI.
 * Fixed bug in buildRelease workflow - client appVersion was not being set to release version.
-
-* Migrated toolbox to TC39 Stage 3 modern decorators in step with `hoist-react` v85 and `hoist-dev-utils` v14. Removed `experimentalDecorators` from `client-app/tsconfig.json`, added the `accessor` keyword to all `@observable` / `@bindable` fields, and deleted the ~90 `makeObservable(this)` calls that existed across the example apps.
 
 
 ### Libraries
