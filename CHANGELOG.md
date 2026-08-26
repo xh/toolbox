@@ -2,8 +2,20 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+## 9.4.0 - 2026-08-25
+
+### Technical
+
+* Migrated client-app package management from yarn classic to pnpm, with the version pinned via `packageManager`. Run `corepack enable pnpm` once before your next install.
+* Added a Tests section to the mobile app, gated on `HOIST_ADMIN_READER`, so test harnesses no longer live in the demo pages.
+* Added async `Select` performance tester, reproducing the O(n²) option merge fixed in hoist-react #4589. Options are served by a new `SelectTestController`; each tester reports the main-thread block per query.
+* Overhauled the admin Grid test panel into a fuller Store performance harness. Test data is now generated on the server and loaded via streaming NDJSON or conventional JSON, options cover the Store's memory-related configs (`useRawAsData`, `freezeData`, `retainRaw`, `reuseRecords`) along with string interning and server-generated field values, parameter sets can be saved as named `ViewManager` configs, and a repeatable benchmark dialog measures heap and load-time costs across runs. The panel itself was redesigned around the same documented options sidebar used by the desktop example apps.
+
 ### Libraries
-* @xh/hoist `86.x → 87.x`
+
+* @xh/hoist `86.3.0 → 87.0.0`
+* @xh/hoist-dev-utils `13.x → 14.x`
+* hoist-core `40.2.0 → 41.0.0`
 * React `18.2 → 19.2`
 
 ## 9.3.0 - 2026-07-10
@@ -177,11 +189,11 @@
 
 ### New Features
 
-* Added a built-in Docs tab — an integrated viewer for all hoist-react documentation, rendered directly within the Toolbox app. Features a navigable tree sidebar, full-text search across all docs with ranked results, inter-document link navigation, and deep-linking via route parameters (e.g. `/app/docs/core`).
-* Added Forms > Picker example sub-tab — demos the new `Picker` component with single/multi-select modes, custom renderers, badge counts, intent variants, and compact toolbar usage.
-* Added Forms > Select example sub-tab — a dedicated 3-column showcase of the `Select` component covering single/multi-select, async queries, creatable entries, grouped options, custom renderers, windowed rendering, and appearance/behavior options.
+* Added a built-in Docs tab - an integrated viewer for all hoist-react documentation, rendered directly within the Toolbox app. Features a navigable tree sidebar, full-text search across all docs with ranked results, inter-document link navigation, and deep-linking via route parameters (e.g. `/app/docs/core`).
+* Added Forms > Picker example sub-tab - demos the new `Picker` component with single/multi-select modes, custom renderers, badge counts, intent variants, and compact toolbar usage.
+* Added Forms > Select example sub-tab - a dedicated 3-column showcase of the `Select` component covering single/multi-select, async queries, creatable entries, grouped options, custom renderers, windowed rendering, and appearance/behavior options.
 * Updated `DashCanvas` example to demo the new `DashCanvasWidgetChooser` component.
-* Added Other > Markdown example tab — demos the `markdown` component with a live editor, GFM support, and a toggleable custom CSS class showcasing opt-in styling for rendered markdown content.
+* Added Other > Markdown example tab - demos the `markdown` component with a live editor, GFM support, and a toggleable custom CSS class showcasing opt-in styling for rendered markdown content.
 
 ### Technical
 
@@ -196,7 +208,7 @@
 
 ### New Features
 
-* Added Weather Dashboard example app — a full-stack weather dashboard backed by the OpenWeatherMap API, featuring a `DashCanvas` layout with multiple chart types and a grid summary view. Server-side caching via Hoist `Cache`, city persistence via `@persist`, and `ViewManager` support for saved layouts. This example was coded entirely by AI (Claude) without any human-written application code.
+* Added Weather Dashboard example app - a full-stack weather dashboard backed by the OpenWeatherMap API, featuring a `DashCanvas` layout with multiple chart types and a grid summary view. Server-side caching via Hoist `Cache`, city persistence via `@persist`, and `ViewManager` support for saved layouts. This example was coded entirely by AI (Claude) without any human-written application code.
 * Added Layout > Card example page showcasing the new `Card` component with titles, icons, intent-based styling, and collapsibility.
 * Updated Forms example to demonstrate `formFieldSet` for visually grouping related form fields.
 * Updated `LeftRightChooser` example to demo new `matchMode` filter options (`start`, `startWord`, `any`).
@@ -439,7 +451,7 @@
 
 ### New Features
 
-* Added support for running Toolbox with an in-memory H2 DB, with all needed configs and preferences pre-loaded — useful for quickly checking out the project without creating a database. See the "instance config file" section in README.md for setup.
+* Added support for running Toolbox with an in-memory H2 DB, with all needed configs and preferences pre-loaded - useful for quickly checking out the project without creating a database. See the "instance config file" section in README.md for setup.
 
 ### Libraries
 

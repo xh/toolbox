@@ -97,12 +97,12 @@ See the comments in `.env.template` for the exact variable names and recommended
 To run Toolbox locally, start the Grails server and the Webpack dev server in separate terminals:
 
 * **Server** - from the project root: `./gradlew bootRun` (serves the API on port `8080`).
-* **Client** - from the `client-app/` directory: `yarn start` (serves `http://localhost:3000`).
+* **Client** - from the `client-app/` directory: `pnpm start` (serves `http://localhost:3000`).
 
 Then open `http://localhost:3000/app` (desktop app), `/admin` (admin console), or `/mobile`.
 
-For the complete guide — running against local Hoist framework checkouts, running multiple
-instances, on-device mobile testing over a network IP, HTTPS setup, and troubleshooting — see
+For the complete guide - running against local Hoist framework checkouts, running multiple
+instances, on-device mobile testing over a network IP, HTTPS setup, and troubleshooting - see
 [**Running Toolbox Locally**](docs/running-locally.md).
 
 ------------------------------------------

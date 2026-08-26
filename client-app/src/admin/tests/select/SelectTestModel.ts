@@ -1,6 +1,6 @@
-import {HoistModel, PlainObject} from '@xh/hoist/core';
-import {bindable, observable, makeObservable} from '@xh/hoist/mobx';
-import {times} from 'lodash';
+import {HoistModel, PlainObject, XH} from '@xh/hoist/core';
+import {action, bindable, observable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {take, times} from 'lodash';
 
 export class SelectTestModel extends HoistModel {
     @bindable
@@ -46,9 +46,36 @@ export class SelectTestModel extends HoistModel {
     @bindable
     idNotInOpts: number = 99;
 
+    // Shape follows perfEnableMulti - a single value, or an array of them.
+    @bindable.ref
+    perfValue: string | string[];
+
+    @bindable
+    perfEnableMulti = false;
+
+    @bindable
+    perfEnableCreate = false;
+
+    @bindable
+    numPerfOptions = 16000;
+
+    @bindable
+    perfLatency = 300;
+
+    // Ms the main thread was blocked following each of the last few async queries - see noteBlock().
+    @observable.ref
+    blockTimes: number[] = [];
+
     constructor() {
         super();
         makeObservable(this);
+
+        // Single- and multi-mode values have different shapes - clear on toggle so a value left
+        // over from one mode is never handed to the other.
+        this.addReaction({
+            track: () => this.perfEnableMulti,
+            run: () => runInAction(() => (this.perfValue = null))
+        });
         this.addReaction({
             track: () => this.numOptions,
             run: () => (this.bigOptions = times(this.numOptions, i => `option: ${i}`)),
@@ -77,5 +104,37 @@ export class SelectTestModel extends HoistModel {
     // Lookup returns both selectable and not-selectable records.
     lookupEmployeeById(id: number) {
         return this.employees.find(it => it.id === id);
+    }
+
+    //------------------------
+    // Async merge perf - repro for hoist-react #4589
+    //------------------------
+    // Type one character (broad match, `numPerfOptions` results), then a second (narrow match, 2
+    // results). Both keystrokes blocked the main thread for seconds prior to that fix, the second
+    // one on options accumulated by the first rather than on its own 2-row payload.
+    async queryPerfOptionsAsync(query: string) {
+        const ret = await XH.fetchJson({
+            url: 'selectTest/symbols',
+            params: {query, count: this.numPerfOptions, latency: this.perfLatency}
+        });
+        this.noteBlock();
+        return ret;
+    }
+
+    @action
+    clearBlockTimes() {
+        this.blockTimes = [];
+    }
+
+    // Time the gap between this query resolving and the next macrotask. Select merges the result
+    // into its options in the microtask continuation of `await queryFn`, so a timer queued here
+    // cannot fire until that merge has run - making the delta the block the merge caused. React's
+    // own render is not necessarily inside the window, but the trace put it at <1% of the total.
+    private noteBlock() {
+        const start = performance.now();
+        setTimeout(() => {
+            const ms = Math.round(performance.now() - start);
+            runInAction(() => (this.blockTimes = take([ms, ...this.blockTimes], 5)));
+        });
     }
 }
