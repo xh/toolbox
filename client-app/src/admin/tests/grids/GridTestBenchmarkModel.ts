@@ -9,7 +9,7 @@ import {
 } from '@xh/hoist/core';
 import {FieldType} from '@xh/hoist/data';
 import {fmtDateTime, numberRenderer} from '@xh/hoist/format';
-import { action, bindable, observable } from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {isEmpty, isFunction, max, min, times} from 'lodash';
@@ -88,15 +88,18 @@ export class GridTestBenchmarkModel extends HoistModel {
 
     @bindable accessor isOpen = false;
 
+    @bindable
     @persist
-    @bindable accessor scenario: BenchmarkScenario = 'cold';
+    accessor scenario: BenchmarkScenario = 'cold';
 
+    @bindable
     @persist
-    @bindable accessor iterations = 3;
+    accessor iterations = 3;
 
     /** Accumulated results, newest first. */
+    @observable.ref
     @persist
-    @observable.ref accessor results: PlainObject[] = [];
+    accessor results: PlainObject[] = [];
 
     /** Progress detail while a run is in flight. */
     @observable accessor status: string = null;
