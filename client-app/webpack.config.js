@@ -33,7 +33,6 @@ module.exports = (env = {}) => {
         appVersion: '10.0-SNAPSHOT',
         favicon: './public/favicon.svg',
         devServerOpenPage: 'app/',
-        sourceMaps: 'devOnly',
         preloadBackgroundColor: '#f7931c',
         // Use React prod mode, primarily to avoid console warnings for react 18
         reactProdMode: false,
