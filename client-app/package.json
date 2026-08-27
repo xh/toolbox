@@ -59,7 +59,7 @@
     "@types/react": "~19.2.18",
     "@types/react-dom": "~19.2.5",
     "@xh/eslint-config": "^8.0.1",
-    "@xh/hoist-dev-utils": "^14.0.1",
+    "@xh/hoist-dev-utils": "next",
     "cross-env": "~10.1.0",
     "eslint": "~10.9.1",
     "eslint-config-prettier": "~10.1.8",
