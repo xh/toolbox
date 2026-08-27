@@ -258,6 +258,7 @@ export class GridTestBenchmarkModel extends HoistModel {
             });
 
             // Drop the harness' own reference to the raw rows ahead of the next iteration.
+            // eslint-disable-next-line no-useless-assignment -- deliberate GC aid, not a dead store
             prepared = null;
         }
 
