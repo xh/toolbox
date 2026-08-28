@@ -81,7 +81,9 @@ export class CubeModel extends HoistModel {
         };
 
         return new Cube({
+            xhName: 'cubeTest.cube',
             idSpec: 'id',
+            // Store is named 'cubeTest.cube.store' by the Cube.
             store: {
                 digestSpec: 'rev',
                 experimental: {maxPatchRatio: this.parent.maxPatchRatio}
