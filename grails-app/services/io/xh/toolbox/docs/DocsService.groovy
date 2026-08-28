@@ -21,9 +21,10 @@ import static io.xh.hoist.util.Utils.isLocalDevelopment
  *      committing or pushing.
  *
  *   2. Otherwise, fall back to a {@link GitHubContentSource} that downloads the library's
- *      tarball from GitHub. For SNAPSHOT versions, the `develop` branch is used; for released
- *      versions, the corresponding `v{version}` tag is fetched. The full archive is extracted
- *      into memory at init for fast subsequent reads.
+ *      tarball from GitHub. For a concrete released version, the corresponding `v{version}` tag
+ *      is fetched; for anything else (a SNAPSHOT, a dist-tag such as `next`, or a range) the
+ *      `develop` branch is used. The full archive is extracted into memory at init for fast
+ *      subsequent reads.
  *
  * Sources that fail to resolve (e.g. missing local checkout and GitHub unreachable) are
  * silently excluded — the viewer will display whichever sources loaded successfully.
@@ -78,7 +79,11 @@ class DocsService extends BaseService {
                 }
             }
 
-            def ref = version.contains('SNAPSHOT') ? 'develop' : "v${version}"
+            // `version` is the raw dependency spec from package.json, so it is not guaranteed
+            // to be a released semver - it may be a dist-tag (e.g. `next`) or a range. Anything
+            // that is not a concrete release maps to `develop`, which is what those specs track.
+            def isRelease = version ==~ /^\d+\.\d+\.\d+$/
+            def ref = isRelease ? "v${version}" : 'develop'
             return new GitHubContentSource("xh/${name}", ref)
         } catch (Exception e) {
             logError("Failed to resolve ${name} content source", e)
