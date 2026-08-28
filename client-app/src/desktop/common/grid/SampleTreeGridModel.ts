@@ -5,7 +5,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GroupingChooserModel} from '@xh/hoist/desktop/cmp/grouping';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
-import {action, makeObservable} from '@xh/hoist/mobx';
+import {action} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 import {PortfolioService} from '../../../core/svc/PortfolioService';
@@ -42,7 +42,6 @@ export class SampleTreeGridModel extends HoistModel {
 
     constructor({includeCheckboxes}) {
         super();
-        makeObservable(this);
         this.gridModel = this.createGridModel(includeCheckboxes);
 
         // Load data when dimensions change

@@ -3,7 +3,7 @@ import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {numberInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon, xhLogo} from '@xh/hoist/icon';
-import {action, bindable, makeObservable} from '@xh/hoist/mobx';
+import {action, bindable} from '@xh/hoist/mobx';
 import {wrapper, wrapperAction, wrapperOption} from '../../common';
 import './TileFrameContainerPanel.scss';
 
@@ -130,18 +130,13 @@ export const tileFrameContainerPanel = hoistCmp.factory({
 });
 
 class TileFrameContainerPanelModel extends HoistModel {
-    @bindable tileCount = 5;
-    @bindable desiredRatio = 1;
-    @bindable spacing = 10;
-    @bindable minTileWidth: number = null;
-    @bindable maxTileWidth: number = null;
-    @bindable minTileHeight: number = null;
-    @bindable maxTileHeight: number = null;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor tileCount = 5;
+    @bindable accessor desiredRatio = 1;
+    @bindable accessor spacing = 10;
+    @bindable accessor minTileWidth: number = null;
+    @bindable accessor maxTileWidth: number = null;
+    @bindable accessor minTileHeight: number = null;
+    @bindable accessor maxTileHeight: number = null;
 
     @action
     reset() {

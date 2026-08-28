@@ -6,7 +6,7 @@ import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head, uniq} from 'lodash';
 import {Commit} from '../../../../../core/svc/GitHubService';
@@ -17,7 +17,7 @@ export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
     private dashViewModel: DashViewModel;
 
     /** Repos to filter to - empty means show all. */
-    @bindable.ref selectedRepos: string[] = [];
+    @bindable.ref accessor selectedRepos: string[] = [];
 
     @managed
     gridModel: GridModel;
@@ -48,7 +48,6 @@ export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         const openUrlAction = {
             text: 'Open on Github',

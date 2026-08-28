@@ -1,7 +1,7 @@
 import {box, filler, img, span, vframe} from '@xh/hoist/cmp/layout';
 import {card} from '@xh/hoist/cmp/card';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses, XH} from '@xh/hoist/core';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {picker, segmentedControl, select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -305,12 +305,7 @@ class ImagePreviewModel extends HoistModel {
     chooserModel: FileChooserModel;
 
     @observable
-    objectUrl: string = null;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    accessor objectUrl: string = null;
 
     override onLinked() {
         super.onLinked();
@@ -335,23 +330,20 @@ class ImagePreviewModel extends HoistModel {
 
 class FileChooserPanelModel extends HoistModel {
     @bindable
-    disabled = false;
+    accessor disabled = false;
 
     @bindable.ref
-    acceptedTypes: string[] = ['.png', '.txt'];
+    accessor acceptedTypes: string[] = ['.png', '.txt'];
 
-    @bindable
-    maxFiles: number = null;
+    @bindable accessor maxFiles: number = null;
 
-    @bindable
-    maxFileSize: number = null;
+    @bindable accessor maxFileSize: number = null;
 
-    @bindable
-    placement: 'left' | 'top' | 'hidden' = 'left';
+    @bindable accessor placement: 'left' | 'top' | 'hidden' = 'left';
 
     @managed
     @observable.ref
-    chooserModel: FileChooserModel;
+    accessor chooserModel: FileChooserModel;
 
     @managed
     basicChooserModel = new FileChooserModel({maxFiles: 1});
@@ -361,7 +353,6 @@ class FileChooserPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.createChooserModel();
 
         // Re-create the chooser whenever a configured limit changes - accept / maxFiles /

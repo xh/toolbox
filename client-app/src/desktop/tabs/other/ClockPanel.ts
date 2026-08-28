@@ -5,7 +5,7 @@ import {numberInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {TIME_FMT} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {wrapper, wrapperOption} from '../../common';
 import './ClockPanel.scss';
@@ -91,13 +91,8 @@ const clockCard = hoistCmp.factory<ClockPanelModel>({
 });
 
 class ClockPanelModel extends HoistModel {
-    @bindable format: string;
-    @bindable updateInterval: number;
-    @bindable prefix: string;
-    @bindable suffix: string;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor format: string;
+    @bindable accessor updateInterval: number;
+    @bindable accessor prefix: string;
+    @bindable accessor suffix: string;
 }

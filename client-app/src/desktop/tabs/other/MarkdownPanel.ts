@@ -5,7 +5,7 @@ import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {codeInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {wrapper, wrapperOption} from '../../common';
 import './MarkdownPanel.scss';
 import initialContent from './MarkdownPanelContent.md';
@@ -100,11 +100,6 @@ export const markdownPanel = hoistCmp.factory({
 class MarkdownModel extends HoistModel {
     // `.md` imports resolve to the file's raw text content (hoist-dev-utils v13+), so the
     // imported value is the Markdown string directly — used here as the editable seed text.
-    @bindable content: string = initialContent;
-    @bindable useCustomStyles: boolean = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor content: string = initialContent;
+    @bindable accessor useCustomStyles: boolean = false;
 }

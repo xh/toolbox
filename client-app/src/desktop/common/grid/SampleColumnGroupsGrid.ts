@@ -7,7 +7,7 @@ import {colAutosizeButton, colChooserButton, exportButton} from '@xh/hoist/deskt
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 import {
     actualGrossCol,
@@ -25,13 +25,12 @@ import {
 
 export class SampleColumnGroupsGridModel extends HoistModel {
     @managed gridModel: GridModel;
-    @bindable inMillions: boolean = false;
+    @bindable accessor inMillions: boolean = false;
 
     panelRef = createRef<HTMLElement>();
 
     constructor() {
         super();
-        makeObservable(this);
         this.gridModel = this.createGridModel();
 
         this.addReaction({

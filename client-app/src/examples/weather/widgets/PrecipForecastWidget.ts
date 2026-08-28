@@ -4,7 +4,7 @@ import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {ForecastResponse} from '../Types';
 import {AppModel} from '../AppModel';
 
@@ -24,12 +24,7 @@ export const precipForecastWidget = hoistCmp.factory({
 
 class PrecipForecastModel extends HoistModel {
     @managed chartModel: ChartModel;
-    @bindable hasData: boolean = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor hasData: boolean = false;
 
     override onLinked() {
         this.chartModel = this.createChartModel();

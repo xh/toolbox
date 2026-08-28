@@ -4,7 +4,7 @@ import {fragment} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberEditor, textEditor} from '@xh/hoist/desktop/cmp/grid';
 import {fmtNumber, numberRenderer} from '@xh/hoist/format';
-import {action, bindable, comparer, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import { action, bindable, comparer, observable, runInAction } from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {forEach, isEmpty} from 'lodash';
@@ -15,40 +15,40 @@ import {QueryConfig, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
     @managed cubeModel: CubeModel;
-    @managed @observable.ref gridModel: GridModel;
-    @managed @observable.ref view: View;
+    @managed @observable.ref accessor gridModel: GridModel;
+    @managed @observable.ref accessor view: View;
     @managed groupingChooserModel: GroupingChooserModel;
     @managed loadTimesModel: LoadTimesModel;
 
-    @bindable includeGlobalAgg = false;
-    @bindable includeLeaves = false;
-    @bindable.ref fundFilter: string[] = null;
-    @bindable showSummary = false;
-    @bindable updateFreq = -1;
-    @bindable updateCount = 5;
+    @bindable accessor includeGlobalAgg = false;
+    @bindable accessor includeLeaves = false;
+    @bindable.ref accessor fundFilter: string[] = null;
+    @bindable accessor showSummary = false;
+    @bindable accessor updateFreq = -1;
+    @bindable accessor updateCount = 5;
 
-    @bindable projectionOnly = true;
+    @bindable accessor projectionOnly = true;
 
     /** Grid experimental sort flags, applied live for A/B tuning. */
-    @bindable deferredSortFactor = 4;
-    @bindable deltaSortRatio = 50;
+    @bindable accessor deferredSortFactor = 4;
+    @bindable accessor deltaSortRatio = 50;
 
     /** Set explicitly in both directions, overriding any app-wide `xhStoreExperimental` default. */
-    @bindable maxPatchRatio = 0.1;
+    @bindable accessor maxPatchRatio = 0.1;
 
     /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
-    @bindable recordMultiplier = 1;
+    @bindable accessor recordMultiplier = 1;
 
-    @bindable.ref logStages: string[] = [];
+    @bindable.ref accessor logStages: string[] = [];
 
     /** True if launched with the memory flags - window.gc is the detectable proxy for both. */
     readonly gcAvailable = typeof (window as any).gc === 'function';
 
     /** Chart the GC'd JS heap on a 10s timer. Requires `gcAvailable` - disabled otherwise. */
-    @bindable monitorMemory = false;
+    @bindable accessor monitorMemory = false;
 
     /** Last sampled heap size, shown as a label alongside the chart. */
-    @observable heapMB: number = null;
+    @observable accessor heapMB: number = null;
 
     @managed memoryChartModel: ChartModel;
     private memorySamples: [number, number][] = [];
@@ -57,7 +57,6 @@ export class CubeTestModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.loadTimesModel = new LoadTimesModel();
         this.cubeModel = new CubeModel(this);
         this.memoryChartModel = this.createMemoryChartModel();

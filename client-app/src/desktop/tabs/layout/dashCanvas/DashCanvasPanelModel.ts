@@ -1,5 +1,5 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {
@@ -12,16 +12,11 @@ import {
 } from '../widgets';
 
 export class DashCanvasPanelModel extends HoistModel {
-    @bindable renderDashboard = true;
-    @bindable showWidgetChooser = true;
+    @bindable accessor renderDashboard = true;
+    @bindable accessor showWidgetChooser = true;
 
     @managed
     dashCanvasModel = this.createDashCanvasModel();
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     clearCanvas() {
         this.dashCanvasModel.viewModels.forEach(it => this.dashCanvasModel.removeView(it.id));

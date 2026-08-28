@@ -1,7 +1,7 @@
 import {code} from '@xh/hoist/cmp/layout';
 import {HoistModel} from '@xh/hoist/core';
 import * as formatFunctions from '@xh/hoist/format/FormatNumber';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {isBoolean} from 'lodash';
 
 export class NumberFormatsPanelModel extends HoistModel {
@@ -35,31 +35,31 @@ export class NumberFormatsPanelModel extends HoistModel {
         undefined
     ];
 
-    @bindable fnName = 'fmtNumber';
-    @bindable colorSpec: boolean | 'custom' = true;
-    @bindable forceLedgerAlign = true;
-    @bindable label: string = null;
-    @bindable ledger = false;
-    @bindable nullDisplay: string = null;
-    @bindable omitFourDigitComma = false;
-    @bindable precision = -1; // -2 => null (full), -1 => 'auto'
-    @bindable prefix: string = null;
-    @bindable strictZero = true;
-    @bindable withCommas = true;
-    @bindable withPlusSign = false;
-    @bindable withSignGlyph = false;
-    @bindable zeroDisplay: string = null;
-    @bindable zeroPad = -2; // -2 => undefined, -1 => false, 0 => true, # => pad length
+    @bindable accessor fnName = 'fmtNumber';
+    @bindable accessor colorSpec: boolean | 'custom' = true;
+    @bindable accessor forceLedgerAlign = true;
+    @bindable accessor label: string = null;
+    @bindable accessor ledger = false;
+    @bindable accessor nullDisplay: string = null;
+    @bindable accessor omitFourDigitComma = false;
+    @bindable accessor precision = -1; // -2 => null (full), -1 => 'auto'
+    @bindable accessor prefix: string = null;
+    @bindable accessor strictZero = true;
+    @bindable accessor withCommas = true;
+    @bindable accessor withPlusSign = false;
+    @bindable accessor withSignGlyph = false;
+    @bindable accessor zeroDisplay: string = null;
+    @bindable accessor zeroPad = -2; // -2 => undefined, -1 => false, 0 => true, # => pad length
 
     // fmtQuantity-only options.
-    @bindable useMillions = true;
-    @bindable useBillions = true;
-    @bindable lossless = false;
-    @bindable positiveColor = '#00aa00';
-    @bindable negativeColor = '#cc0000';
-    @bindable neutralColor = '#999999';
+    @bindable accessor useMillions = true;
+    @bindable accessor useBillions = true;
+    @bindable accessor lossless = false;
+    @bindable accessor positiveColor = '#00aa00';
+    @bindable accessor negativeColor = '#cc0000';
+    @bindable accessor neutralColor = '#999999';
 
-    @bindable tryItData: number = 1234567.89;
+    @bindable accessor tryItData: number = 1234567.89;
 
     get testResults() {
         return this.testData.map(data => ({
@@ -71,11 +71,6 @@ export class NumberFormatsPanelModel extends HoistModel {
 
     get tryItResult() {
         return this.getResult(this.tryItData);
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     //------------------

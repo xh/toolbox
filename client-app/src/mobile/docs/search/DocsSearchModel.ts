@@ -1,5 +1,5 @@
 import {HoistModel, XH} from '@xh/hoist/core';
-import {action, bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {encodeDocId} from '../../../core/docs/DocUtils';
 import {DocEntry} from '../../../core/docs/types';
 import {DocService, DocSearchResult} from '../../../core/svc/DocService';
@@ -21,9 +21,9 @@ const RECENT_SEARCHES_KEY = 'docs.recentSearches',
  * recent searches for the empty state. Results are grouped by library for display.
  */
 export class DocsSearchModel extends HoistModel {
-    @bindable query: string = '';
-    @observable.ref results: DocSearchResult[] = [];
-    @observable.ref recentSearches: string[] = [];
+    @bindable accessor query: string = '';
+    @observable.ref accessor results: DocSearchResult[] = [];
+    @observable.ref accessor recentSearches: string[] = [];
 
     private get docService(): DocService {
         return DocService.instance;
@@ -31,7 +31,6 @@ export class DocsSearchModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.recentSearches = XH.localStorageService.get(RECENT_SEARCHES_KEY, []);
     }
 

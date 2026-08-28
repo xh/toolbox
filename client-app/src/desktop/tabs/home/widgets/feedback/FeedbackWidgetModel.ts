@@ -1,5 +1,5 @@
 import {HoistModel, PlainObject, XH} from '@xh/hoist/core';
-import {action, bindable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, runInAction} from '@xh/hoist/mobx';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {debounce} from 'lodash';
 
@@ -12,9 +12,9 @@ export type HoistRating = 'negative' | 'neutral' | 'positive';
 const INACTIVITY_TIMEOUT = 30 * SECONDS;
 
 export class FeedbackWidgetModel extends HoistModel {
-    @bindable rating: HoistRating = null;
-    @bindable commentSent: boolean = false;
-    @bindable comment: string = '';
+    @bindable accessor rating: HoistRating = null;
+    @bindable accessor commentSent: boolean = false;
+    @bindable accessor comment: string = '';
 
     // True once this interaction's single track entry has been emitted - guards every capture path.
     private sent = false;
@@ -24,7 +24,6 @@ export class FeedbackWidgetModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         // Reset the inactivity timer whenever the user types, so composing never trips it.
         this.addReaction({
             track: () => this.comment,

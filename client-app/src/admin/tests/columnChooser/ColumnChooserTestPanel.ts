@@ -7,7 +7,7 @@ import {buttonGroupInput, jsonInput, switchInput} from '@xh/hoist/desktop/cmp/in
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
+import { bindable, computed, observable } from '@xh/hoist/mobx';
 import {addColumnDialog, AddColumnDialogModel, AddColumnHost} from './AddColumnDialog';
 import {
     collectChooserGroups,
@@ -87,13 +87,13 @@ export const columnChooserTestPanel = hoistCmp.factory({
 });
 
 class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
-    @bindable size: GridSize = 'medium';
-    @bindable chooserMode: ColChooserMode = 'docked';
-    @bindable lockColumnGroups = true;
-    @bindable enableColumnPinning = true;
+    @bindable accessor size: GridSize = 'medium';
+    @bindable accessor chooserMode: ColChooserMode = 'docked';
+    @bindable accessor lockColumnGroups = true;
+    @bindable accessor enableColumnPinning = true;
 
-    @observable.ref customColumns: CustomColumn[] = [];
-    @managed @observable.ref gridModel: GridModel;
+    @observable.ref accessor customColumns: CustomColumn[] = [];
+    @managed @observable.ref accessor gridModel: GridModel;
     @managed addColumnModel = new AddColumnDialogModel(this);
 
     private baseColumns: ColumnOrGroupSpec[] = [];
@@ -123,7 +123,6 @@ class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
 
     constructor() {
         super();
-        makeObservable(this);
         this.gridModel = this.createGridModel();
 
         this.addReaction({

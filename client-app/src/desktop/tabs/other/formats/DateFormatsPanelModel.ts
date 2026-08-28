@@ -1,6 +1,6 @@
 import {HoistModel} from '@xh/hoist/core';
 import * as formatFunctions from '@xh/hoist/format/FormatDate';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import moment from 'moment';
 
 export class DateFormatsPanelModel extends HoistModel {
@@ -22,12 +22,12 @@ export class DateFormatsPanelModel extends HoistModel {
         {date: undefined, label: 'Undefined value'}
     ];
 
-    @bindable fnName = 'fmtDate';
-    @bindable fmt: string = null;
-    @bindable nullDisplay: string = null;
-    @bindable tooltip = false;
+    @bindable accessor fnName = 'fmtDate';
+    @bindable accessor fmt: string = null;
+    @bindable accessor nullDisplay: string = null;
+    @bindable accessor tooltip = false;
 
-    @bindable.ref tryItData = new Date();
+    @bindable.ref accessor tryItData = new Date();
 
     get testResults() {
         return this.testData.map(({date, label}) => ({
@@ -43,11 +43,6 @@ export class DateFormatsPanelModel extends HoistModel {
 
     get enableFmt() {
         return this.fnName === 'fmtDate';
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     //------------------

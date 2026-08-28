@@ -1,5 +1,5 @@
 import {HoistModel, persist} from '@xh/hoist/core';
-import {action, bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {DEFAULT_WIDGET_IDS, WIDGETS, WidgetSpec, widgetSpec} from './widgets/WidgetCatalog';
 
 /** Drag result shape from react-beautiful-dnd (kept local to avoid a kit type import). */
@@ -25,27 +25,26 @@ export class HomeModel extends HoistModel {
     override persistWith = {prefKey: 'mobileHomeWidgets'};
 
     /** Ordered ids of widgets shown on the home stack. */
-    @observable.ref @persist homeIds: string[] = DEFAULT_WIDGET_IDS;
+    @observable.ref @persist accessor homeIds: string[] = DEFAULT_WIDGET_IDS;
 
     /** Ordered ids of widgets parked under "Available" (off the home stack). */
-    @observable.ref @persist availableIds: string[] = [];
+    @observable.ref @persist accessor availableIds: string[] = [];
 
     /** Ids of widgets collapsed to just their title bar on the home stack. */
-    @observable.ref @persist collapsedIds: string[] = [];
+    @observable.ref @persist accessor collapsedIds: string[] = [];
 
     /** Transient: whether the Manage-widgets pull-up sheet is expanded. */
-    @bindable isManaging = false;
+    @bindable accessor isManaging = false;
 
     /**
      * Snapshot of the home ids the dashboard is *displaying*, frozen while the Manage sheet is open.
      * Null when not managing - the dashboard then tracks the live committed state. See
      * {@link dashboardWidgets}.
      */
-    @observable.ref private frozenDashboardIds: string[] = null;
+    @observable.ref private accessor frozenDashboardIds: string[] = null;
 
     constructor() {
         super();
-        makeObservable(this);
 
         // Defer the dashboard's reflow of widget order/membership until the Manage sheet closes, so
         // dnd reordering inside the sheet stays smooth (the dashboard's widgets are comparatively

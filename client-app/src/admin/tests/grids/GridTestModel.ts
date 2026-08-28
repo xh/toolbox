@@ -15,7 +15,7 @@ import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
 import {StringInternSpec} from '@xh/hoist/svc';
 import {isEmpty, random, round, sample, times} from 'lodash';
-import {action, bindable, observable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {AppModel} from '../../AppModel';
@@ -102,58 +102,58 @@ export class GridTestModel extends HoistModel {
     };
 
     // Total count (approx) of all nodes generated (parents + children).
-    @persist
     @bindable
-    recordCount = 200000;
+    @persist
+    accessor recordCount = 200000;
     // Number of random records to perturb
-    @persist
     @bindable
-    twiddleCount = Math.round(this.recordCount * 0.5);
+    @persist
+    accessor twiddleCount = Math.round(this.recordCount * 0.5);
     // Prefix for all IDs - change to ensure no IDs re-used across loads.
-    @persist
     @bindable
-    idSeed = 1;
+    @persist
+    accessor idSeed = 1;
     // True to load data in tree structure.
-    @bindable tree = false;
+    @bindable accessor tree = false;
     // True to use an incremental numeric id as grid id.
-    @persist
     @bindable
-    numericId = false;
+    @persist
+    accessor numericId = false;
     // True to show summary row.
-    @bindable showSummary = false;
+    @bindable accessor showSummary = false;
     // True to use tree root node as summary row.
-    @persist
     @bindable
-    loadRootAsSummary = false;
+    @persist
+    accessor loadRootAsSummary = false;
     // True to enable XSS protection at store level.
-    @persist
     @bindable
-    enableXssProtection = false;
+    @persist
+    accessor enableXssProtection = false;
     // Value > 0 will declare that many additional `extraFieldN` fields on the store to help
     // stress-test stores with a wide array of fields.
-    @persist
     @bindable
-    extraFieldCount = 50;
+    @persist
+    accessor extraFieldCount = 50;
     // True to have the server populate the extra fields with generated values (a mix of
     // categorical/unique strings, ints, doubles, bools and nulls) - stress-tests stores with
     // wide *and dense* records, vs. the wide-but-sparse shape produced when off.
-    @persist
     @bindable
-    populateExtraFields = false;
+    @persist
+    accessor populateExtraFields = false;
     // Which value distribution the server uses for the populated extra fields. Memory results are
     // sensitive to value character, so an interaction measured under one mix does not carry to
     // another - vary this deliberately rather than leaving it at the default. Needs no page reload:
     // every mix emits the same keys (its null slot still emits its key, with a null value), so the
     // record *shape* - and hence V8's property-storage decision - is identical across mixes.
-    @persist
     @bindable
-    valueMix: GridTestValueMix = 'mixed';
+    @persist
+    accessor valueMix: GridTestValueMix = 'mixed';
     // Cardinality of the server's categorical string pool, for mixes that use one. Drives how much
     // value sharing is available - to `internStrings` most directly, but also to the VM. Names are
     // fixed-width server-side, so this varies pool size without also varying value byte size.
-    @persist
     @bindable
-    categoryCount = 8;
+    @persist
+    accessor categoryCount = 8;
     // The Store's `projectionOnly` config - a read-only projection where each raw object becomes
     // its record's `data` by reference, so a row costs one object instead of two. A different
     // record-data representation, so toggling it reloads the app. Valid here only because the test
@@ -161,40 +161,40 @@ export class GridTestModel extends HoistModel {
     // form and is never locally modified - the extra fields are untyped and the base fields are
     // already numbers/strings, so no `Field.parseVal` is needed. Note XSS protection is inert
     // under it, as nothing is parsed.
-    @persist
     @bindable
-    projectionOnly = false;
+    @persist
+    accessor projectionOnly = false;
     // Override of Store's experimental `denseRecordThreshold` - the populated (non-default)
     // field count at/above which a record's data takes its fixed dense shape, vs. the sparse
     // form. Null applies the Hoist default; 1 forces the dense shape for all records; 999 forces
     // sparse for all (the pre-v87 behavior). Inert under Projection Only, which skips record
     // data construction entirely. Changing reloads the app.
-    @persist
     @bindable
-    denseRecordThreshold: number = null;
+    @persist
+    accessor denseRecordThreshold: number = null;
     // The Store's `freezeData` config - defaulted to Hoist's own default so measurements reflect
     // what apps actually run. Changes how record data objects are built and stored, so toggling
     // it reloads the app - see the reaction below.
-    @persist
     @bindable
-    freezeData = true;
+    @persist
+    accessor freezeData = true;
     // The Store's `retainRaw` config - false drops each record's reference to its raw data object,
     // making the raw eligible for GC once parsed. Hoist default true.
-    @persist
     @bindable
-    retainRaw = true;
+    @persist
+    accessor retainRaw = true;
     // True to intern string values in the fetched response via the `internStrings` FetchOption -
     // note this is a *fetch* config, not a StoreConfig. Distinct string values are stored once and
     // shared across rows (and across successive fetches with the same key).
-    @persist
     @bindable
-    internStrings = false;
+    @persist
+    accessor internStrings = false;
 
     // True once any load has run this page - drives the pre-first-load placeholder in the panel.
     // Deliberately one-way: keyed off "never loaded" rather than "store empty" so the grid is
     // never unmounted/remounted by benchmark iterations or Clear Grid, which would contaminate
     // measurements with grid re-init cost.
-    @observable hasLoadedOnce = false;
+    @observable accessor hasLoadedOnce = false;
 
     // Snapshot of RECORD_DATA_FLAGS as of page load - i.e. the values this page's Stores were
     // built with. Compared against on change to decide whether a reload is required.
@@ -204,33 +204,33 @@ export class GridTestModel extends HoistModel {
 
     // True to load from the streaming NDJSON endpoint via Store.loadDataAsync(), vs. standard.
     // For flat loading only.
-    @persist
     @bindable
-    streamServerLoad = true;
-
     @persist
-    @bindable
-    disableSelect = false;
+    accessor streamServerLoad = true;
 
     @bindable
     @persist
-    autosizeMode: GridAutosizeMode = 'onDemand';
+    accessor disableSelect = false;
 
     @bindable
     @persist
-    renderedRowsOnly = true;
+    accessor autosizeMode: GridAutosizeMode = 'onDemand';
 
     @bindable
     @persist
-    includeCollapsedChildren = true;
+    accessor renderedRowsOnly = true;
 
     @bindable
     @persist
-    includeHiddenColumns = false;
+    accessor includeCollapsedChildren = true;
+
+    @bindable
+    @persist
+    accessor includeHiddenColumns = false;
 
     @bindable
     @persist.with({path: 'gridPersistType', debounce: 500}) // test persist.with!
-    persistType = null;
+    accessor persistType = null;
 
     @managed
     metrics = new GridTestMetrics();
@@ -244,7 +244,7 @@ export class GridTestModel extends HoistModel {
 
     @managed
     @observable.ref
-    gridModel: GridModel;
+    accessor gridModel: GridModel;
 
     /** Saves/restores the settings above as named configs - created by AppModel.initAsync(). */
     get viewManagerModel(): ViewManagerModel {
@@ -253,7 +253,6 @@ export class GridTestModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.markPersist('tree');
         this.markPersist('showSummary');
         this.recordDataFlagsAtLoad = this.recordDataFlagState;
