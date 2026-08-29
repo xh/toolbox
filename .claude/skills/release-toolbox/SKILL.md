@@ -45,9 +45,11 @@ Three invariants that drive the whole process - keep them in mind:
    All three use the 2-part Maven form `x.y-SNAPSHOT` (e.g. `10.0-SNAPSHOT`). By the Java
    convention, the snap is always `(latest_released_major + 1).0-SNAPSHOT`.
 
-3. **hoist-dev-utils stays on its release version** (`@xh/hoist-dev-utils`, a caret range on a
-   numbered release). Only `@xh/hoist` (hoist-react) and `hoistCoreVersion` (hoist-core) swap between SNAPSHOT
-   and release. Leave hoist-dev-utils alone unless the developer specifically asks otherwise.
+3. **Three libraries swap, not two.** `@xh/hoist` (hoist-react) and `@xh/hoist-dev-utils` both sit
+   on the npm dist-tag `next` between releases; `hoistCoreVersion` (hoist-core) sits on an explicit
+   `x.y-SNAPSHOT` in `gradle.properties`. All three pin to a release for the release commit and are
+   restored afterward. (dev-utils moved onto `next` alongside hoist-react - earlier revisions of this
+   runbook said it stays on a caret range and never swaps, which is no longer true.)
 
 ## gh is a core tool
 
@@ -99,6 +101,8 @@ classify the situation, and confirm with the developer before changing anything.
   the `version:` field (e.g. `87.0.0-SNAPSHOT.1786485357526` -> snap major 87). Equivalently,
   `npm view @xh/hoist dist-tags --json` and read the `next` tag. See "Why `next`, not a caret
   range" in Phase 9 for the background.
+- `@xh/hoist-dev-utils`: same story - the spec is the `next` dist-tag, so read the resolved version
+  from `pnpm-lock.yaml` or `npm view @xh/hoist-dev-utils dist-tags --json`.
 - `hoistCoreVersion`: `gradle.properties` (e.g. `41.0-SNAPSHOT` -> snap major 41).
 
 ### 2. Discover the latest published releases
@@ -107,6 +111,8 @@ classify the situation, and confirm with the developer before changing anything.
   newest stable release. **The `next` tag must be ignored here** - it points at the current
   SNAPSHOT. (Note `next` is also the dependency spec `develop` sits on between releases, per
   Phase 9; the two uses are unrelated - here you want `latest`.)
+- **hoist-dev-utils** (npm): `npm view @xh/hoist-dev-utils dist-tags --json`, again reading
+  `latest`. It versions on its own line, independent of hoist-react.
 - **hoist-core** (Maven Central): `curl -s https://repo1.maven.org/maven2/io/xh/hoist-core/maven-metadata.xml`
   and read the `<release>` element - the newest non-SNAPSHOT version. (SNAPSHOTs live in a separate
   repo and won't appear here.)
@@ -166,13 +172,18 @@ Once the developer confirms the targets, edit the two files:
   version alone - the spec-rewriting described in Phase 9 only affects prerelease versions.)
 - **`gradle.properties`**: set `hoistCoreVersion` to the **full semver** release (e.g.
   `hoistCoreVersion=40.1.0`).
-- **Leave `@xh/hoist-dev-utils` unchanged.**
+- **`client-app/package.json`**: pin `@xh/hoist-dev-utils` the same way - it is also on the `next`
+  dist-tag, so replace it with its **exact** latest release (e.g. `"@xh/hoist-dev-utils": "15.0.0"`).
 
 Then refresh the client lockfile so the build is reproducible:
 
 ```bash
 cd client-app && pnpm install
 ```
+
+Both CI and the release build install with `pnpm install --frozen-lockfile`, so **`pnpm-lock.yaml`
+must be committed alongside the `package.json` change**. A lockfile out of sync with the manifest
+fails the release build at the install step, before lint, typecheck, or the build itself run.
 
 (Do not run `startWithHoist` / `runHoistInline` - the release must build against the published
 libraries, not local sibling checkouts.)
@@ -244,11 +255,19 @@ proposed version is a valid single increment (e.g. latest `9.0.0` -> valid: `10.
   (`git log <last-tag>..HEAD --oneline`) for material features, bug fixes, or technical changes not
   yet captured. Add what's missing under the right category (`New Features`, `Bug Fixes`,
   `Technical`, `Breaking Changes`).
-- Add/confirm a **`Libraries`** entry recording the Hoist bump, e.g. `* @xh/hoist \`86.0 -> 86.1\``
-  (and hoist-core if it moved). Follow the form already used in the file.
-- **Formatting is critical**: every bullet must be a **single line** (the parser drops wrapped
-  continuation lines and nested sub-bullets silently). No matter how long, one bullet = one line.
-- **No em dashes** anywhere in the copy (per user/global style) - use a plain hyphen.
+- Add/confirm a **`Libraries`** entry for each library whose **released version** actually moved,
+  e.g. `* @xh/hoist \`87.0 → 87.1\``. Use the two-part `major.minor` form with the `→` separator -
+  **not** the 3-part `87.0.0 → 87.1.0` and **not** the retired `ZZ.x` shorthand (`14.x → 15.x`).
+  Older sections of the file predate this convention and are inconsistent, so **do not pattern-match
+  on the file** - `CLAUDE.md` ("Changelog" section) is authoritative. Omit a library whose released
+  version is unchanged even though its spec moved off a SNAPSHOT (e.g. `41.0-SNAPSHOT` pinned back
+  to `41.0.0`).
+- **Formatting is critical and fails silently** - a malformed entry is dropped from the parsed
+  output while the build still succeeds. Every bullet must be a **single line** however long, and
+  every bullet and `###` header must start at **column 0** - one leading space drops it. See the
+  header comment at the top of `CHANGELOG.md`.
+- **No em dashes** anywhere in the copy (per user/global style) - use a plain hyphen. The `→` in
+  Libraries entries is the one exception.
 
 ---
 
@@ -384,20 +403,20 @@ git checkout develop
 
 ### 1. Restore the Hoist libraries to SNAPSHOTs
 
-Reset the two libraries (leave hoist-dev-utils on its release version). They restore differently -
-hoist-react by dist-tag, hoist-core by explicit version:
+Reset all three libraries. They restore differently - hoist-react and hoist-dev-utils by dist-tag,
+hoist-core by explicit version:
 
-**hoist-react** - always restore `client-app/package.json` to the bare dist-tag, in every case:
+**hoist-react + hoist-dev-utils** - always restore both `client-app/package.json` specs to the bare
+dist-tag, in every case:
 
 ```json
 {
-  "dependencies": {
-    "@xh/hoist": "next"
-  }
+  "dependencies": {"@xh/hoist": "next"},
+  "devDependencies": {"@xh/hoist-dev-utils": "next"}
 }
 ```
 
-No version number, no caret. `next` always points at hoist-react's current SNAPSHOT, so this is
+No version number, no caret. `next` always points at the library's current SNAPSHOT, so this is
 correct whether the major was just released (the tag has already advanced to the next major's
 SNAPSHOT line) or is still in development (the tag still points at the line you started from). The
 Phase 2 case distinction does not apply here - the tag self-corrects, which is the point.
@@ -414,12 +433,12 @@ advances independently of hoist-react's; the examples below are all hoist-core v
   `41.0-SNAPSHOT` and shipped `40.1.0`): restore the **same snap you started from**,
   `41.0-SNAPSHOT`.
 
-Then `cd client-app && pnpm install` to update the lockfile. Confirm the restore resolved as
-expected before committing - `pnpm install` prints nothing useful about which snapshot it landed
-on, so read it back:
+Then `cd client-app && pnpm install` to update the lockfile. It prints a version delta for each
+package that moved, but read the resolved versions back before committing - `pnpm hoistVer` covers
+`@xh/hoist` only, so check dev-utils explicitly:
 
 ```bash
-cd client-app && pnpm hoistVer
+cd client-app && pnpm hoistVer && node -p "require('@xh/hoist-dev-utils/package.json').version"
 ```
 
 #### Why `next`, not a caret range
