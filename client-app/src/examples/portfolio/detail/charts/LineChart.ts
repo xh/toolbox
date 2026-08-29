@@ -64,23 +64,15 @@ class LineChartModel extends HoistModel {
 
     override async doLoadAsync(loadSpec: LoadSpec) {
         const {symbol, chartModel} = this;
-
         if (!symbol) {
             chartModel.clear();
             return;
         }
+        chartModel.setSeries(await XH.portfolioService.getLineChartSeriesAsync({symbol}, loadSpec));
+    }
 
-        try {
-            const series = await XH.portfolioService.getLineChartSeriesAsync({symbol}, loadSpec);
-            if (loadSpec.isStale) return;
-
-            chartModel.setSeries(series);
-        } catch (e) {
-            if (loadSpec.isAutoRefresh || loadSpec.isStale) return;
-
-            chartModel.clear();
-            XH.handleException(e, {showAlert: false});
-            throw e;
-        }
+    override handleLoadException(e: unknown) {
+        this.chartModel.clear();
+        XH.handleException(e, {showAlert: false});
     }
 }

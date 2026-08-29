@@ -109,30 +109,25 @@ export class OrdersModel extends HoistModel {
 
     override async doLoadAsync(loadSpec: LoadSpec) {
         const {gridModel, positionId, dashViewModel} = this;
-
         if (isNil(positionId)) {
             gridModel.clear();
             return;
         }
 
-        try {
-            const orders = await XH.portfolioService.getOrdersAsync(positionId, loadSpec),
-                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync(
-                    uniq(map(orders, 'symbol')),
-                    loadSpec
-                );
-            if (loadSpec.isStale) return;
+        const orders = await XH.portfolioService.getOrdersAsync(positionId, loadSpec),
+            sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync(
+                uniq(map(orders, 'symbol')),
+                loadSpec
+            );
 
-            dashViewModel.titleDetails = `(${orders.length})`;
-            orders.forEach(order => (order.closingPrices = sparklineSeries[order.symbol]));
-            gridModel.loadData(orders);
+        dashViewModel.titleDetails = `(${orders.length})`;
+        orders.forEach(order => (order.closingPrices = sparklineSeries[order.symbol]));
+        gridModel.loadData(orders);
+        await gridModel.preSelectFirstAsync();
+    }
 
-            await gridModel.preSelectFirstAsync();
-        } catch (e) {
-            if (loadSpec.isAutoRefresh || !loadSpec.isStale) return;
-
-            gridModel.clear();
-            XH.handleException(e);
-        }
+    override handleLoadException(e: unknown) {
+        this.gridModel.clear();
+        XH.handleException(e);
     }
 }
