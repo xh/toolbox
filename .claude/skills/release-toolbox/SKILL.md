@@ -463,19 +463,37 @@ unaffected: `pnpm-lock.yaml` still records one exact build, and CI installs `--f
 the tag ever stops existing, pnpm fails loudly with `ERR_PNPM_NO_MATCHING_VERSION` rather than
 silently reusing a stale lockfile entry.
 
-### 2. Advance the app SNAPSHOT version (all three places, in sync)
+### 2. Set the app SNAPSHOT version (all three places, in sync)
 
-By the Java convention the working snap is always `(just_released_major + 1).0-SNAPSHOT`. Write that
-2-part value to **all three** locations so they stay in sync:
+**First compute the value, then write it.** Take the major of the version you **just released** and
+add one:
 
-- `gradle.properties` -> `xhAppVersion=<next-major>.0-SNAPSHOT`
-- `client-app/package.json` -> `"version": "<next-major>.0-SNAPSHOT"`
-- `CHANGELOG.md` -> a fresh top header `## <next-major>.0-SNAPSHOT - unreleased`
+```
+SNAP = (major of the released version) + 1, as `<SNAP>.0-SNAPSHOT`
+```
 
-Examples: shipped `10.0.0` -> `11.0-SNAPSHOT`; shipped `10.1.1` -> `11.0-SNAPSHOT`; shipped a
-minor/patch of the prior line such as `9.1.0` while snap was already `10.0-SNAPSHOT` -> stays
-`10.0-SNAPSHOT` (the formula `(9+1)` reproduces the existing snap - a no-op). Writing all three
-unconditionally also self-heals any prior drift found in Phase 1.5.
+The input is the **released** major, never the major of the snap currently in the files. Deriving it
+from the current snap gives an answer one too high - the most common mistake in this phase.
+
+Write that 2-part value to **all three** locations so they stay in sync:
+
+- `gradle.properties` -> `xhAppVersion=<SNAP>.0-SNAPSHOT`
+- `client-app/package.json` -> `"version": "<SNAP>.0-SNAPSHOT"`
+- `CHANGELOG.md` -> a fresh top header `## <SNAP>.0-SNAPSHOT - unreleased`
+
+**A major release advances the snap; a minor or patch release does not.** Releasing off the prior
+line reproduces the snap already in the files, so the version files should come out unchanged:
+
+| Just released | Snap before | SNAP | Result |
+|---|---|---|---|
+| `10.0.0` | `10.0-SNAPSHOT` | `(10+1)` = 11 | advances to `11.0-SNAPSHOT` |
+| `10.1.1` | `11.0-SNAPSHOT` | `(10+1)` = 11 | stays `11.0-SNAPSHOT` |
+| `9.5.0` | `10.0-SNAPSHOT` | `(9+1)` = 10 | stays `10.0-SNAPSHOT` |
+
+**Self-check before committing:** on a minor or patch release, `git diff` should show **no change**
+to `gradle.properties` `xhAppVersion` or to `package.json` `version` - only the CHANGELOG header and
+the library specs move. If either version file changed, you derived SNAP from the snap instead of
+the release. Writing all three unconditionally also self-heals any prior drift found in Phase 1.5.
 
 Leave the new CHANGELOG section empty (no category sub-headers) - entries accumulate as new work
 lands.
