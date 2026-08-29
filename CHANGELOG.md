@@ -1,6 +1,32 @@
 # Changelog
 
-## 10.0-SNAPSHOT - unreleased
+<!--
+  Entry conventions: CLAUDE.md ("Changelog" section) - read it before adding entries here.
+
+  Entries are parsed at build time and shown in-app to users. Three rules:
+
+  1. Every bullet is a single line, however long. The parser is line-based - a wrapped bullet keeps
+     its first line and silently drops the rest.
+  2. Open with a past-tense verb (Added / Fixed / Removed), name what changed in backticks, and keep
+     each bullet to one change. Use highly concise language suitable for relaying to app users.
+  3. Plain ASCII punctuation only. Use " - " for in-sentence breaks, never an em dash.
+-->
+
+## 9.5.0 - 2026-08-28
+
+### Bug Fixes
+
+* Fixed the docs viewer silently dropping the hoist-react source on SNAPSHOT builds, where the `@xh/hoist` dependency spec is an npm dist-tag rather than a released version.
+
+### Technical
+
+* Switched the nginx image to the `xh-nginx:next-brotli` variant.
+* Enabled source maps on deployed builds.
+
+### Libraries
+
+* @xh/hoist `87.0 → 87.1`
+* @xh/hoist-dev-utils `14.0 → 15.0`
 
 ## 9.4.0 - 2026-08-25
 
