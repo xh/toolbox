@@ -14,7 +14,6 @@ import {CubeModel} from './CubeModel';
 import {QueryConfig, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
-    // Names the Cube/View/Grid pipeline as a dotted path for log output and the Inspector.
     override xhName = 'cubeTest';
 
     @managed cubeModel: CubeModel;
@@ -253,7 +252,7 @@ export class CubeTestModel extends HoistModel {
 
     private createGridModel() {
         return new GridModel({
-            xhName: 'cubeTest.grid', // Store is named 'cubeTest.grid.store' by the GridModel.
+            xhName: 'cubeTest.grid',
             treeMode: true,
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             showSummary: this.showSummary,
