@@ -6,6 +6,7 @@ import {fmtMillions} from '@xh/hoist/format';
 import {PortfolioModel} from '../PortfolioModel';
 
 export class PositionsMapModel extends HoistModel {
+    override xhName = 'positionsMap';
     readonly parentModel: PortfolioModel;
 
     @managed splitTreeMapModel: SplitTreeMapModel;
@@ -15,6 +16,7 @@ export class PositionsMapModel extends HoistModel {
         this.parentModel = parentModel;
 
         this.splitTreeMapModel = new SplitTreeMapModel({
+            xhName: 'positionsMap.treeMap',
             gridModel,
             mapTitleFn: (model, isPrimary) => {
                 return [

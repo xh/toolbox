@@ -9,6 +9,7 @@ import {PositionsGridModel} from './grid/PositionsGridModel';
 import {PositionsMapModel} from './map/PositionsMapModel';
 
 export class PortfolioModel extends HoistModel {
+    override xhName = 'portfolio';
     override persistWith = {
         viewManagerModel: AppModel.instance.portfolioViewManager
     };
@@ -79,6 +80,7 @@ export class PortfolioModel extends HoistModel {
     //------------------------
     private createStore() {
         return new Store({
+            xhName: 'portfolio.store',
             loadRootAsSummary: true,
             fields: [
                 {name: 'name', type: 'string'},
@@ -97,6 +99,7 @@ export class PortfolioModel extends HoistModel {
 
     private createGroupingChooserModel() {
         return new GroupingChooserModel({
+            xhName: 'portfolio.groupingChooser',
             dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
             initialValue: ['region', 'sector', 'symbol'],
             persistWith: {...this.persistWith, persistFavorites: false}

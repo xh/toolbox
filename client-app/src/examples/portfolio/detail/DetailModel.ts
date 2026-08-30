@@ -9,6 +9,7 @@ import {ordersGrid} from './orders/OrdersGrid';
 import {OrdersModel} from './orders/OrdersModel';
 
 export class DetailModel extends HoistModel {
+    override xhName = 'detail';
     @lookup(PortfolioModel) parentModel: PortfolioModel;
 
     @managed dashModel: DashContainerModel;
@@ -36,6 +37,7 @@ export class DetailModel extends HoistModel {
         const {persistWith} = this.parentModel;
 
         this.dashModel = new DashContainerModel({
+            xhName: 'detail.dash',
             showMenuButton: true,
             persistWith: persistOptions(persistWith, {path: 'detailDash', settleTime: 1500}),
             viewSpecs: [
@@ -62,6 +64,7 @@ export class DetailModel extends HoistModel {
         });
 
         this.panelModel = new PanelModel({
+            xhName: 'detail.panel',
             persistWith: persistOptions(persistWith, {path: 'detailPanel'}),
             defaultSize: 400,
             side: 'bottom',

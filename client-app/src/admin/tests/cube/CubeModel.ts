@@ -81,7 +81,6 @@ export class CubeModel extends HoistModel {
         };
 
         return new Cube({
-            xhName: 'cubeTest.cube',
             idSpec: 'id',
             store: {
                 digestSpec: 'rev',
