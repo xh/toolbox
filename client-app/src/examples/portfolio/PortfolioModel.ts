@@ -80,7 +80,7 @@ export class PortfolioModel extends HoistModel {
     //------------------------
     private createStore() {
         return new Store({
-            xhName: 'portfolio.store',
+            xhName: this.childXhName('store'),
             loadRootAsSummary: true,
             fields: [
                 {name: 'name', type: 'string'},
@@ -99,7 +99,7 @@ export class PortfolioModel extends HoistModel {
 
     private createGroupingChooserModel() {
         return new GroupingChooserModel({
-            xhName: 'portfolio.groupingChooser',
+            xhName: this.childXhName('groupingChooser'),
             dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
             initialValue: ['region', 'sector', 'symbol'],
             persistWith: {...this.persistWith, persistFavorites: false}

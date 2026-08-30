@@ -16,7 +16,7 @@ export class PositionsMapModel extends HoistModel {
         this.parentModel = parentModel;
 
         this.splitTreeMapModel = new SplitTreeMapModel({
-            xhName: 'positionsMap.treeMap',
+            xhName: this.childXhName('treeMap'),
             gridModel,
             mapTitleFn: (model, isPrimary) => {
                 return [

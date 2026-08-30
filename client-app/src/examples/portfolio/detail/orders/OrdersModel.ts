@@ -47,7 +47,7 @@ export class OrdersModel extends HoistModel {
 
         const hidden = true;
         this.gridModel = new GridModel({
-            xhName: 'orders.grid',
+            xhName: this.childXhName('grid'),
             persistWith: {dashViewModel},
             groupBy: 'dir',
             sortBy: 'time|desc',
@@ -73,7 +73,7 @@ export class OrdersModel extends HoistModel {
         });
 
         this.filterChooserModel = new FilterChooserModel({
-            xhName: 'orders.filterChooser',
+            xhName: this.childXhName('filterChooser'),
             persistWith: {
                 dashViewModel,
                 persistFavorites: false
