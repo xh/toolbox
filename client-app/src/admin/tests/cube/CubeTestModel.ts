@@ -27,8 +27,6 @@ export class CubeTestModel extends HoistModel {
     @bindable updateFreq = -1;
     @bindable updateCount = 5;
 
-    @bindable projectionOnly = true;
-
     /** Grid experimental sort flags, applied live for A/B tuning. */
     @bindable deferredSortFactor = 4;
     @bindable deltaSortRatio = 50;
@@ -76,12 +74,6 @@ export class CubeTestModel extends HoistModel {
             track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
             equals: comparer.structural
-        });
-
-        // Reconstruct the Store in the new mode, for A/B comparison.
-        this.addReaction({
-            track: () => this.projectionOnly,
-            run: () => this.buildGridAndView()
         });
 
         // Applied live to the existing Stores - the ratio is read on each operation.
@@ -204,12 +196,8 @@ export class CubeTestModel extends HoistModel {
 
     private get fields() {
         let {fields} = this.cubeModel.cube;
-        // pctCommission is a calculated field (#4620). Views with calculated fields require
-        // projectionOnly connected stores - drop it from the query in the A/B non-projection
-        // mode rather than throwing at view construction.
-        if (!this.includeGlobalAgg || !this.projectionOnly) {
-            fields = fields.filter(f => f.name !== 'pctCommission');
-        }
+        // pctCommission is a calculated field (#4620), included only on demand.
+        if (!this.includeGlobalAgg) fields = fields.filter(f => f.name !== 'pctCommission');
         return fields.map(f => f.name);
     }
 
@@ -259,7 +247,6 @@ export class CubeTestModel extends HoistModel {
             showSummary: this.showSummary,
             store: {
                 loadRootAsSummary: this.showSummary,
-                projectionOnly: this.projectionOnly,
                 experimental: {maxPatchRatio: this.maxPatchRatio},
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
