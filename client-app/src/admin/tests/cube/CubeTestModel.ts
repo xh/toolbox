@@ -350,8 +350,6 @@ export class CubeTestModel extends HoistModel {
                     field: 'pctCommission',
                     align: 'right',
                     width: 130,
-                    // Calculated fields are read-only - values are computed at read time.
-                    editable: false,
                     renderer: numberRenderer({
                         precision: 6
                     })
