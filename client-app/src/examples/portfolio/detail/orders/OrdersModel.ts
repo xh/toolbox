@@ -20,6 +20,7 @@ import {
 import {DetailModel} from '../DetailModel';
 
 export class OrdersModel extends HoistModel {
+    override xhName = 'orders';
     parentModel: DetailModel;
     @lookup(DashViewModel) dashViewModel: DashViewModel;
 
@@ -46,6 +47,7 @@ export class OrdersModel extends HoistModel {
 
         const hidden = true;
         this.gridModel = new GridModel({
+            xhName: this.childXhName('grid'),
             persistWith: {dashViewModel},
             groupBy: 'dir',
             sortBy: 'time|desc',
@@ -71,6 +73,7 @@ export class OrdersModel extends HoistModel {
         });
 
         this.filterChooserModel = new FilterChooserModel({
+            xhName: this.childXhName('filterChooser'),
             persistWith: {
                 dashViewModel,
                 persistFavorites: false
