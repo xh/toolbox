@@ -145,16 +145,12 @@ export class CubeTestModel extends HoistModel {
         this.gridModel.store.experimental.maxPatchRatio = ratio;
     }
 
-    // The View's connect-time fullUpdate repopulates the fresh Store, so needs no explicit reload.
+    // The Store connects at construction via StoreConfig.view, which registers and loads it.
     private buildGridAndView() {
         XH.safeDestroy(this.view);
         XH.safeDestroy(this.gridModel);
+        this.view = this.cubeModel.cube.createView({query: this.getQuery(), connect: true});
         this.gridModel = this.createGridModel();
-        this.view = this.cubeModel.cube.createView({
-            query: this.getQuery(),
-            stores: this.gridModel.store,
-            connect: true
-        });
     }
 
     // Each sample runs a full synchronous GC so the chart tracks live heap rather than
@@ -246,6 +242,7 @@ export class CubeTestModel extends HoistModel {
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             showSummary: this.showSummary,
             store: {
+                view: this.view,
                 loadRootAsSummary: this.showSummary,
                 experimental: {maxPatchRatio: this.maxPatchRatio},
                 fields: [{name: 'cubeDimension', type: 'string'}]
