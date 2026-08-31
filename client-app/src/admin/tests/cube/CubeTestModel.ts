@@ -204,7 +204,12 @@ export class CubeTestModel extends HoistModel {
 
     private get fields() {
         let {fields} = this.cubeModel.cube;
-        if (!this.includeGlobalAgg) fields = fields.filter(f => f.name !== 'pctCommission');
+        // pctCommission is a calculated field (#4620). Views with calculated fields require
+        // projectionOnly connected stores - drop it from the query in the A/B non-projection
+        // mode rather than throwing at view construction.
+        if (!this.includeGlobalAgg || !this.projectionOnly) {
+            fields = fields.filter(f => f.name !== 'pctCommission');
+        }
         return fields.map(f => f.name);
     }
 
@@ -345,7 +350,8 @@ export class CubeTestModel extends HoistModel {
                     field: 'pctCommission',
                     align: 'right',
                     width: 130,
-                    editor: numberEditor,
+                    // Calculated fields are read-only - values are computed at read time.
+                    editable: false,
                     renderer: numberRenderer({
                         precision: 6
                     })
