@@ -1,6 +1,7 @@
 import {card} from '@xh/hoist/cmp/card';
 import {div, span, vbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
+import {SegmentedControlOption} from '@xh/hoist/cmp/input';
+import {creates, hoistCmp, HoistModel, Intent} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     buttonGroupInput,
@@ -277,7 +278,7 @@ const sliderCard = hoistCmp.factory(() =>
     })
 );
 
-const segmentedControlCard = hoistCmp.factory(() =>
+const segmentedControlCard = hoistCmp.factory<InputsPanelModel>(({model}) =>
     card({
         title: 'SegmentedControl',
         items: [
@@ -289,32 +290,43 @@ const segmentedControlCard = hoistCmp.factory(() =>
                 })
             }),
             demoRow({
-                label: 'Intent: primary',
+                label: 'Empty state - no value set, so no option is selected',
+                info: 'Dividers appear automatically while unset, then drop away once a choice is made.',
                 item: segmentedControl({
-                    bind: 'segmentedControl',
-                    intent: 'primary',
+                    bind: 'segmentedControlEmpty',
                     options: scOptions
                 })
             }),
             demoRow({
-                label: 'Outlined, intent: primary',
+                label: 'showTrayBackground: false - border only, no tray fill',
                 item: segmentedControl({
                     bind: 'segmentedControl',
-                    outlined: true,
-                    intent: 'primary',
+                    showTrayBackground: false,
+                    options: scOptions
+                })
+            }),
+            demoRow({
+                label: 'fill: false - control sizes to its options instead of the available width',
+                item: segmentedControl({
+                    bind: 'segmentedControl',
+                    fill: false,
                     options: scOptions
                 })
             }),
             demoRow({
                 label: 'Per-option intents - selected fills, unselected hints',
+                info: 'Also drives the control-level intent for the example below.',
                 item: segmentedControl({
                     bind: 'optionIntent',
-                    options: [
-                        {label: 'Primary', value: 'primary', intent: 'primary'},
-                        {label: 'Success', value: 'success', intent: 'success'},
-                        {label: 'Warning', value: 'warning', intent: 'warning'},
-                        {label: 'Danger', value: 'danger', intent: 'danger'}
-                    ]
+                    options: intentOptions
+                })
+            }),
+            demoRow({
+                label: `Intent: ${model.optionIntent} - selected fill and tray border both follow it`,
+                item: segmentedControl({
+                    bind: 'segmentedControl',
+                    intent: model.optionIntent,
+                    options: scOptions
                 })
             })
         ]
@@ -416,6 +428,15 @@ const scOptions = [
     {label: 'Fund', value: 'fund', icon: Icon.fund()}
 ];
 
+// Options are themselves intents - selecting one applies it as the control-level intent on the
+// SegmentedControl examples below, so the picker demos exactly what it is setting.
+const intentOptions: SegmentedControlOption[] = [
+    {label: 'Primary', value: 'primary', intent: 'primary'},
+    {label: 'Success', value: 'success', intent: 'success'},
+    {label: 'Warning', value: 'warning', intent: 'warning'},
+    {label: 'Danger', value: 'danger', intent: 'danger'}
+];
+
 //------------------------------------------------------------------
 // Toolbar with inputs - rendered twice at top (standard + compact) to show how
 // these controls render in a dense toolbar.
@@ -504,7 +525,8 @@ class InputsPanelModel extends HoistModel {
     @bindable checkboxButton: boolean = null;
     @bindable buttonGroupInput: string = 'area';
     @bindable segmentedControl: string = 'strategy';
-    @bindable optionIntent: string = 'danger';
+    @bindable segmentedControlEmpty: string = null;
+    @bindable optionIntent: Intent = 'primary';
     @bindable radioInput: string = null;
 
     // Compact toolbar inputs
