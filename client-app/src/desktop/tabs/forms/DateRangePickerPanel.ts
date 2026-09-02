@@ -362,7 +362,8 @@ class DateRangePickerPanelModel extends HoistModel {
         makeObservable(this);
 
         this.pickerModel = new DateRangePickerModel({
-            anchorDate: () => this.anchorDate,
+            // The anchor input can be cleared - the model requires a date, so fall back to today.
+            anchorDate: () => this.anchorDate ?? LocalDate.today(),
             filterField: 'date',
             // Weekdays less a few fixed-date holidays - drives the `lastBusinessDay` preset.
             isBusinessDay: d => d.isWeekday && !FIXED_HOLIDAYS.includes(d.format('MM-DD')),
