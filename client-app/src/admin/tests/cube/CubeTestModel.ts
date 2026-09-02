@@ -192,7 +192,6 @@ export class CubeTestModel extends HoistModel {
 
     private get fields() {
         let {fields} = this.cubeModel.cube;
-        // pctCommission is a calculated field (#4620), included only on demand.
         if (!this.includeGlobalAgg) fields = fields.filter(f => f.name !== 'pctCommission');
         return fields.map(f => f.name);
     }

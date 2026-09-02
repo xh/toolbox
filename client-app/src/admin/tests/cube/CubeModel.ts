@@ -52,8 +52,6 @@ export class CubeModel extends HoistModel {
                 await LTM.withFetchTime('Fetch orders', async () => {
                     orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
                     orders.forEach(it => {
-                        // Note no pctCommission stamped here - it is a calculated field,
-                        // computed at read time with no source data required.
                         it.maxConfidence = it.minConfidence = it.confidence;
                         // Reuse digest - order times are stable within a server-side portfolio
                         it.rev = it.time;
@@ -101,11 +99,8 @@ export class CubeModel extends HoistModel {
 
                 {name: 'commission', aggregator: 'SUM'},
 
-                // Percent-of-total as a calculated field (#4620) - computed lazily at read time
-                // on every view row, from the row's SUM-aggregated commission and a per-update
-                // total memoized on the AggregationContext. Replaces the former eager
-                // PctTotalAggregator, whose non-children-only dependency disqualified the whole
-                // View from incremental data-only updates.
+                // Percent-of-total as a calculated field (#4620), with the total memoized
+                // per-update on the AggregationContext.
                 {
                     name: 'pctCommission',
                     calculatedFn: (row, ctx) => {
