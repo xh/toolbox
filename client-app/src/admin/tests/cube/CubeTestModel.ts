@@ -27,8 +27,6 @@ export class CubeTestModel extends HoistModel {
     @bindable updateFreq = -1;
     @bindable updateCount = 5;
 
-    @bindable projectionOnly = true;
-
     /** Grid experimental sort flags, applied live for A/B tuning. */
     @bindable deferredSortFactor = 4;
     @bindable deltaSortRatio = 50;
@@ -76,12 +74,6 @@ export class CubeTestModel extends HoistModel {
             track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
             equals: comparer.structural
-        });
-
-        // Reconstruct the Store in the new mode, for A/B comparison.
-        this.addReaction({
-            track: () => this.projectionOnly,
-            run: () => this.buildGridAndView()
         });
 
         // Applied live to the existing Stores - the ratio is read on each operation.
@@ -153,16 +145,12 @@ export class CubeTestModel extends HoistModel {
         this.gridModel.store.experimental.maxPatchRatio = ratio;
     }
 
-    // The View's connect-time fullUpdate repopulates the fresh Store, so needs no explicit reload.
+    // The Store connects at construction via StoreConfig.view, which registers and loads it.
     private buildGridAndView() {
         XH.safeDestroy(this.view);
         XH.safeDestroy(this.gridModel);
+        this.view = this.cubeModel.cube.createView({query: this.getQuery(), connect: true});
         this.gridModel = this.createGridModel();
-        this.view = this.cubeModel.cube.createView({
-            query: this.getQuery(),
-            stores: this.gridModel.store,
-            connect: true
-        });
     }
 
     // Each sample runs a full synchronous GC so the chart tracks live heap rather than
@@ -253,8 +241,8 @@ export class CubeTestModel extends HoistModel {
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             showSummary: this.showSummary,
             store: {
+                view: this.view,
                 loadRootAsSummary: this.showSummary,
-                projectionOnly: this.projectionOnly,
                 experimental: {maxPatchRatio: this.maxPatchRatio},
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
@@ -345,7 +333,6 @@ export class CubeTestModel extends HoistModel {
                     field: 'pctCommission',
                     align: 'right',
                     width: 130,
-                    editor: numberEditor,
                     renderer: numberRenderer({
                         precision: 6
                     })
