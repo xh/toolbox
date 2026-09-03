@@ -34,12 +34,14 @@ export const dateRangePickerPanel = hoistCmp.factory({
             icon: Icon.calendarRange(),
             description: [
                 '`DateRangePicker` is a dropdown control for selecting a period of time - one compact',
-                'trigger that can express presets (MTD, Last 30 Days, ...), relative lookbacks, calendar',
+                'trigger that can express presets (MTD, Prev 30 Days, ...), relative lookbacks, calendar',
                 'months and years, and custom ranges of dates. Its popover offers a tab for each of those',
                 'selection shapes, and the backing model controls which tabs and presets appear.',
                 '',
                 'The applied value is a single `DateRangeSelection` - plain JSON that persists as-is and',
-                're-resolves as the anchor date moves, so a saved `mtd` stays month-to-date. The',
+                're-resolves as the anchor day moves, so a saved `mtd` stays month-to-date. The step',
+                'buttons (and arrow keys on the trigger) walk a preset or lookback back and forth',
+                'without changing what it is - stepped ranges keep rolling with the day. The',
                 '`DateRangePickerModel` resolves it to current and prior `LocalDateRange`s and to',
                 '`FieldFilterSpec`s ready to apply to a Store or query. The grid here is filtered by',
                 "the picker's `currentRangeFilter`, with the prior range summarized for comparison.",
@@ -141,13 +143,22 @@ export const dateRangePickerPanel = hoistCmp.factory({
                             control: switchInput({model: model.pickerModel, bind: 'commitOnChange'})
                         }),
                         wrapperOption({
-                            label: 'Anchor date',
-                            propName: 'DateRangePickerConfig.anchorDate',
-                            info: 'Relative and to-date selections resolve against this date.',
+                            label: 'Anchor day',
+                            propName: 'DateRangePickerConfig.anchorDay',
+                            info: 'Relative and to-date selections resolve against this day. Here a function returning this input, so it can be pinned to any date; apps typically leave the default - the live local day.',
                             control: dateInput({
                                 bind: 'anchorDate',
                                 valueType: 'localDate',
                                 width: 130
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Business day mode',
+                            propName: 'DateRangePickerConfig.businessDayMode',
+                            info: 'Single days step by business day (weekdays less a few fixed holidays here). Multi-day ranges are unaffected.',
+                            control: switchInput({
+                                model: model.pickerModel,
+                                bind: 'businessDayMode'
                             })
                         }),
                         wrapperOption({
@@ -249,6 +260,7 @@ const readout = hoistCmp.factory<DateRangePickerPanelModel>(({model}) => {
             readoutRow({label: 'currentRange', value: fmtRange(m.currentRange)}),
             readoutRow({label: 'priorRange', value: fmtRange(m.priorRange)}),
             readoutRow({label: 'anchorDate', value: m.anchorDate.isoString}),
+            readoutRow({label: 'today', value: m.today.isoString}),
             readoutRow({
                 label: 'currentRangeFilter',
                 value: JSON.stringify(m.currentRangeFilter)
@@ -363,9 +375,9 @@ class DateRangePickerPanelModel extends HoistModel {
 
         this.pickerModel = new DateRangePickerModel({
             // The anchor input can be cleared - the model requires a date, so fall back to today.
-            anchorDate: () => this.anchorDate ?? LocalDate.today(),
+            anchorDay: () => this.anchorDate ?? LocalDate.today(),
             filterField: 'date',
-            // Weekdays less a few fixed-date holidays - drives the `lastBusinessDay` preset.
+            // Weekdays less a few fixed-date holidays - the calendar behind `businessDayMode`.
             isBusinessDay: d => d.isWeekday && !FIXED_HOLIDAYS.includes(d.format('MM-DD')),
             persistWith: {localStorageKey: 'toolboxDateRangePicker'}
         });
@@ -377,7 +389,7 @@ class DateRangePickerPanelModel extends HoistModel {
 
         this.fiscalPickerModel = new DateRangePickerModel({
             tabs: ['presets', 'custom'],
-            presets: [FISCAL_YTD, LAST_FISCAL_YEAR, 'qtd', 'ytd', 'last90Days'],
+            presets: [FISCAL_YTD, LAST_FISCAL_YEAR, 'qtd', 'ytd', 'prev90Days'],
             initialValue: 'fytd'
         });
 
