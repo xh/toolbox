@@ -192,7 +192,7 @@ export const dateRangePickerPanel = hoistCmp.factory({
                                 bind: 'dateFormat',
                                 enableFilter: false,
                                 width: 140,
-                                options: ['YYYY-MM-DD', 'MM/DD/YYYY', 'DD MMM YYYY']
+                                options: ['YYYY-MM-DD', 'MM/DD/YYYY', 'DD MMM YYYY', 'ddd, MMM D']
                             })
                         })
                     ]
@@ -364,7 +364,7 @@ class DateRangePickerPanelModel extends HoistModel {
     // Model options
     @bindable.ref tabs: DateRangePickerTab[] = [...DATE_RANGE_PICKER_TABS];
     @bindable.ref presets: DateRangePresetToken[] = [...DEFAULT_DATE_RANGE_PRESETS];
-    @bindable anchorMode: 'localDay' | 'appDay' | 'pinned' = 'localDay';
+    @bindable anchorMode: 'localDay' | 'appDay' | 'pinned' = 'appDay';
     @bindable.ref anchorDate: LocalDate = LocalDate.today();
     @bindable allowFutureDates = false;
     @bindable dateFormat = 'YYYY-MM-DD';
