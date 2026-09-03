@@ -145,11 +145,27 @@ export const dateRangePickerPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Anchor day',
                             propName: 'DateRangePickerConfig.anchorDay',
-                            info: 'Relative and to-date selections resolve against this day. Here a function returning this input, so it can be pinned to any date; apps typically leave the default - the live local day.',
-                            control: dateInput({
-                                bind: 'anchorDate',
-                                valueType: 'localDate',
-                                width: 130
+                            info: 'Relative and to-date selections resolve against this day. The live modes follow the clock; a pinned date never moves.',
+                            control: hbox({
+                                gap: 6,
+                                items: [
+                                    select({
+                                        bind: 'anchorMode',
+                                        enableFilter: false,
+                                        width: 110,
+                                        options: [
+                                            {value: 'localDay', label: "'localDay'"},
+                                            {value: 'appDay', label: "'appDay'"},
+                                            {value: 'pinned', label: 'LocalDate'}
+                                        ]
+                                    }),
+                                    dateInput({
+                                        omit: model.anchorMode !== 'pinned',
+                                        bind: 'anchorDate',
+                                        valueType: 'localDate',
+                                        width: 130
+                                    })
+                                ]
                             })
                         }),
                         wrapperOption({
@@ -259,6 +275,7 @@ const readout = hoistCmp.factory<DateRangePickerPanelModel>(({model}) => {
             readoutRow({label: 'displayName', value: m.displayName}),
             readoutRow({label: 'currentRange', value: fmtRange(m.currentRange)}),
             readoutRow({label: 'priorRange', value: fmtRange(m.priorRange)}),
+            readoutRow({label: 'anchorDay', value: JSON.stringify(m.anchorDay)}),
             readoutRow({label: 'anchorDate', value: m.anchorDate.isoString}),
             readoutRow({label: 'today', value: m.today.isoString}),
             readoutRow({
@@ -347,6 +364,7 @@ class DateRangePickerPanelModel extends HoistModel {
     // Model options
     @bindable.ref tabs: DateRangePickerTab[] = [...DATE_RANGE_PICKER_TABS];
     @bindable.ref presets: DateRangePresetToken[] = [...DEFAULT_DATE_RANGE_PRESETS];
+    @bindable anchorMode: 'localDay' | 'appDay' | 'pinned' = 'localDay';
     @bindable.ref anchorDate: LocalDate = LocalDate.today();
     @bindable allowFutureDates = false;
     @bindable dateFormat = 'YYYY-MM-DD';
@@ -374,8 +392,6 @@ class DateRangePickerPanelModel extends HoistModel {
         makeObservable(this);
 
         this.pickerModel = new DateRangePickerModel({
-            // The anchor input can be cleared - the model requires a date, so fall back to today.
-            anchorDay: () => this.anchorDate ?? LocalDate.today(),
             filterField: 'date',
             // Weekdays less a few fixed-date holidays - the calendar behind `businessDayMode`.
             isBusinessDay: d => d.isWeekday && !FIXED_HOLIDAYS.includes(d.format('MM-DD')),
@@ -435,11 +451,22 @@ class DateRangePickerPanelModel extends HoistModel {
             {track: () => this.presets, run: presets => this.pickerModel.setPresets(presets)},
             {track: () => this.dateFormat, run: fmt => (this.pickerModel.dateFormat = fmt)},
             {
-                track: () => [this.allowFutureDates, this.anchorDate],
+                // The pinned date input can be cleared - the model requires a date, so fall back
+                // to today until one is entered.
+                track: () => [this.anchorMode, this.anchorDate],
                 run: () => {
-                    const {allowFutureDates, anchorDate} = this;
-                    this.pickerModel.setMaxDate(
-                        allowFutureDates ? anchorDate.add(1, 'years') : null
+                    const {anchorMode, anchorDate} = this;
+                    this.pickerModel.setAnchorDay(
+                        anchorMode === 'pinned' ? (anchorDate ?? LocalDate.today()) : anchorMode
+                    );
+                }
+            },
+            {
+                track: () => [this.allowFutureDates, this.pickerModel.anchorDate],
+                run: () => {
+                    const {allowFutureDates, pickerModel} = this;
+                    pickerModel.setMaxDate(
+                        allowFutureDates ? pickerModel.anchorDate.add(1, 'years') : null
                     );
                 }
             }
