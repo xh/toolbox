@@ -228,8 +228,6 @@ const mainToolbar = hoistCmp.factory<DateRangePickerPanelModel>(({model}) => {
             footerNote: model.showFooterNote ? undefined : null,
             testId: 'drp'
         }),
-        toolbarSep(),
-        span({className: 'tb-drp-panel__title', item: pickerModel.displayName}),
         filler(),
         statBlock({label: 'Current', stat: stats.current}),
         toolbarSep(),
