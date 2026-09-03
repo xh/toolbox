@@ -146,21 +146,23 @@ export const dateRangePickerPanel = hoistCmp.factory({
                             label: 'Anchor day',
                             propName: 'DateRangePickerConfig.anchorDay',
                             info: 'Relative and to-date selections resolve against this day. The live modes follow the clock; a pinned date never moves.',
-                            control: hbox({
+                            control: vbox({
                                 gap: 6,
+                                alignItems: 'flex-start',
                                 items: [
                                     select({
                                         bind: 'anchorMode',
                                         enableFilter: false,
-                                        width: 110,
+                                        width: 130,
                                         options: [
                                             {value: 'localDay', label: "'localDay'"},
                                             {value: 'appDay', label: "'appDay'"},
                                             {value: 'pinned', label: 'LocalDate'}
                                         ]
                                     }),
+                                    // Always present so the option's height is stable.
                                     dateInput({
-                                        omit: model.anchorMode !== 'pinned',
+                                        disabled: model.anchorMode !== 'pinned',
                                         bind: 'anchorDate',
                                         valueType: 'localDate',
                                         width: 130
