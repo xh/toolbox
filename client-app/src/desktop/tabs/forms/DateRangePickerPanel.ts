@@ -145,6 +145,7 @@ export const dateRangePickerPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Anchor day',
                             propName: 'DateRangePickerConfig.anchorDay',
+                            alignTop: true,
                             info: 'Relative and to-date selections resolve against this day. The live modes follow the clock; a pinned date never moves.',
                             control: vbox({
                                 gap: 6,
