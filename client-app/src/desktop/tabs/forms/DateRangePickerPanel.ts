@@ -447,7 +447,11 @@ class DateRangePickerPanelModel extends HoistModel {
                 // selected again, as the model requires at least one.
                 track: () => this.tabs,
                 run: tabs => {
-                    if (!isEmpty(tabs)) this.pickerModel.setTabs(tabs);
+                    if (isEmpty(tabs)) return;
+                    // As with presets below - catalog order, not pick order.
+                    this.pickerModel.setTabs(
+                        sortBy(tabs, it => DATE_RANGE_PICKER_TABS.indexOf(it))
+                    );
                 }
             },
             {
