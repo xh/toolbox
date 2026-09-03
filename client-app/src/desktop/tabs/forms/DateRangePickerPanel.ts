@@ -20,7 +20,7 @@ import {fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {isEmpty} from 'lodash';
+import {isEmpty, sortBy} from 'lodash';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common';
 import './DateRangePickerPanel.scss';
 
@@ -450,7 +450,14 @@ class DateRangePickerPanelModel extends HoistModel {
                     if (!isEmpty(tabs)) this.pickerModel.setTabs(tabs);
                 }
             },
-            {track: () => this.presets, run: presets => this.pickerModel.setPresets(presets)},
+            {
+                // The picker appends in pick order - present presets in their catalog order instead.
+                track: () => this.presets,
+                run: presets =>
+                    this.pickerModel.setPresets(
+                        sortBy(presets, it => DATE_RANGE_PRESET_TOKENS.indexOf(it))
+                    )
+            },
             {track: () => this.dateFormat, run: fmt => (this.pickerModel.dateFormat = fmt)},
             {
                 // The pinned date input can be cleared - the model requires a date, so fall back
