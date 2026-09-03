@@ -160,9 +160,8 @@ export const dateRangePickerPanel = hoistCmp.factory({
                                             {value: 'pinned', label: 'LocalDate'}
                                         ]
                                     }),
-                                    // Always present so the option's height is stable.
                                     dateInput({
-                                        disabled: model.anchorMode !== 'pinned',
+                                        omit: model.anchorMode !== 'pinned',
                                         bind: 'anchorDate',
                                         valueType: 'localDate',
                                         width: 130
