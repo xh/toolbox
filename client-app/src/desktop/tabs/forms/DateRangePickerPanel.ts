@@ -6,6 +6,7 @@ import {
     DATE_RANGE_PICKER_TABS,
     DATE_RANGE_PRESET_TOKENS,
     dateRangePicker,
+    type DateRangeFormat,
     DateRangePickerModel,
     type DateRangePickerTab,
     type DateRangePreset,
@@ -20,7 +21,7 @@ import {fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {isEmpty} from 'lodash';
+import {isEmpty, sortBy} from 'lodash';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common';
 import './DateRangePickerPanel.scss';
 
@@ -34,12 +35,14 @@ export const dateRangePickerPanel = hoistCmp.factory({
             icon: Icon.calendarRange(),
             description: [
                 '`DateRangePicker` is a dropdown control for selecting a period of time - one compact',
-                'trigger that can express presets (MTD, Last 30 Days, ...), relative lookbacks, calendar',
+                'trigger that can express presets (MTD, Prev 30 Days, ...), relative lookbacks, calendar',
                 'months and years, and custom ranges of dates. Its popover offers a tab for each of those',
                 'selection shapes, and the backing model controls which tabs and presets appear.',
                 '',
                 'The applied value is a single `DateRangeSelection` - plain JSON that persists as-is and',
-                're-resolves as the anchor date moves, so a saved `mtd` stays month-to-date. The',
+                're-resolves as the anchor day moves, so a saved `mtd` stays month-to-date. The step',
+                'buttons (and arrow keys on the trigger) walk a preset or lookback back and forth',
+                'without changing what it is - stepped ranges keep rolling with the day. The',
                 '`DateRangePickerModel` resolves it to current and prior `LocalDateRange`s and to',
                 '`FieldFilterSpec`s ready to apply to a Store or query. The grid here is filtered by',
                 "the picker's `currentRangeFilter`, with the prior range summarized for comparison.",
@@ -141,29 +144,73 @@ export const dateRangePickerPanel = hoistCmp.factory({
                             control: switchInput({model: model.pickerModel, bind: 'commitOnChange'})
                         }),
                         wrapperOption({
-                            label: 'Anchor date',
-                            propName: 'DateRangePickerConfig.anchorDate',
-                            info: 'Relative and to-date selections resolve against this date.',
+                            label: 'Anchor day',
+                            propName: 'DateRangePickerConfig.anchorDay',
+                            alignTop: true,
+                            info: 'Relative and to-date selections resolve against this day. The live modes follow the clock; a pinned date never moves.',
+                            control: vbox({
+                                gap: 6,
+                                alignItems: 'flex-start',
+                                items: [
+                                    select({
+                                        bind: 'anchorMode',
+                                        enableFilter: false,
+                                        width: 130,
+                                        options: [
+                                            {value: 'localDay', label: "'localDay'"},
+                                            {value: 'appDay', label: "'appDay'"},
+                                            {value: 'pinned', label: 'LocalDate'}
+                                        ]
+                                    }),
+                                    dateInput({
+                                        omit: model.anchorMode !== 'pinned',
+                                        bind: 'anchorDate',
+                                        valueType: 'localDate',
+                                        width: 130
+                                    })
+                                ]
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Business day mode',
+                            propName: 'DateRangePickerConfig.businessDayMode',
+                            info: 'Single days step by business day (weekdays less a few fixed holidays here). Multi-day ranges are unaffected.',
+                            control: switchInput({
+                                model: model.pickerModel,
+                                bind: 'businessDayMode'
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Max date',
+                            propName: 'DateRangePickerConfig.maxDate',
+                            info: 'Latest selectable date. Empty, it is the anchor date, so nothing in the future is selectable.',
                             control: dateInput({
-                                bind: 'anchorDate',
+                                bind: 'maxDate',
                                 valueType: 'localDate',
+                                enableClear: true,
                                 width: 130
                             })
                         }),
                         wrapperOption({
-                            label: 'Allow future dates',
-                            propName: 'DateRangePickerConfig.maxDate',
-                            info: 'Sets maxDate one year past the anchor. Off, nothing beyond the anchor is selectable.',
-                            control: switchInput({bind: 'allowFutureDates'})
-                        }),
-                        wrapperOption({
                             label: 'Date format',
                             propName: 'DateRangePickerConfig.dateFormat',
+                            info: 'For the two ends of a range.',
                             control: select({
                                 bind: 'dateFormat',
                                 enableFilter: false,
-                                width: 140,
+                                width: 150,
                                 options: ['YYYY-MM-DD', 'MM/DD/YYYY', 'DD MMM YYYY']
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Single day format',
+                            propName: 'DateRangePickerConfig.singleDayFormat',
+                            info: 'For a single day, and the anchor date in the footer. The last option is a function that adds the year only outside the current one.',
+                            control: select({
+                                bind: 'singleDayFormat',
+                                enableFilter: false,
+                                width: 150,
+                                options: Object.keys(DAY_FORMATS)
                             })
                         })
                     ]
@@ -199,8 +246,6 @@ const mainToolbar = hoistCmp.factory<DateRangePickerPanelModel>(({model}) => {
             footerNote: model.showFooterNote ? undefined : null,
             testId: 'drp'
         }),
-        toolbarSep(),
-        span({className: 'tb-drp-panel__title', item: pickerModel.displayName}),
         filler(),
         statBlock({label: 'Current', stat: stats.current}),
         toolbarSep(),
@@ -248,7 +293,9 @@ const readout = hoistCmp.factory<DateRangePickerPanelModel>(({model}) => {
             readoutRow({label: 'displayName', value: m.displayName}),
             readoutRow({label: 'currentRange', value: fmtRange(m.currentRange)}),
             readoutRow({label: 'priorRange', value: fmtRange(m.priorRange)}),
+            readoutRow({label: 'anchorDay', value: JSON.stringify(m.anchorDay)}),
             readoutRow({label: 'anchorDate', value: m.anchorDate.isoString}),
+            readoutRow({label: 'today', value: m.today.isoString}),
             readoutRow({
                 label: 'currentRangeFilter',
                 value: JSON.stringify(m.currentRangeFilter)
@@ -288,7 +335,7 @@ const variants = hoistCmp.factory<DateRangePickerPanelModel>(({model}) =>
             }),
             variantRow({
                 label: 'Single tab - months and years only',
-                info: "tabs: ['monthYear'] - no rail, and the popover shrinks to fit.",
+                info: "tabs: ['period'] - no rail, and the popover shrinks to fit.",
                 item: dateRangePicker({model: model.monthPickerModel, testId: 'drp-month'})
             }),
             variantRow({
@@ -334,10 +381,16 @@ class DateRangePickerPanelModel extends HoistModel {
 
     // Model options
     @bindable.ref tabs: DateRangePickerTab[] = [...DATE_RANGE_PICKER_TABS];
-    @bindable.ref presets: DateRangePresetToken[] = [...DEFAULT_DATE_RANGE_PRESETS];
+    // The defaults plus Prev Day, so the demo shows a single-day walk from both presets.
+    @bindable.ref presets: DateRangePresetToken[] = sortBy(
+        [...DEFAULT_DATE_RANGE_PRESETS, 'prevDay'],
+        it => DATE_RANGE_PRESET_TOKENS.indexOf(it)
+    );
+    @bindable anchorMode: 'localDay' | 'appDay' | 'pinned' = 'localDay';
     @bindable.ref anchorDate: LocalDate = LocalDate.today();
-    @bindable allowFutureDates = false;
+    @bindable.ref maxDate: LocalDate = null;
     @bindable dateFormat = 'YYYY-MM-DD';
+    @bindable singleDayFormat: keyof typeof DAY_FORMATS = 'ddd MMM D';
 
     /** Record counts and totals within the current and prior ranges, across all loaded data. */
     @computed
@@ -362,22 +415,20 @@ class DateRangePickerPanelModel extends HoistModel {
         makeObservable(this);
 
         this.pickerModel = new DateRangePickerModel({
-            // The anchor input can be cleared - the model requires a date, so fall back to today.
-            anchorDate: () => this.anchorDate ?? LocalDate.today(),
             filterField: 'date',
-            // Weekdays less a few fixed-date holidays - drives the `lastBusinessDay` preset.
+            // Weekdays less a few fixed-date holidays - the calendar behind `businessDayMode`.
             isBusinessDay: d => d.isWeekday && !FIXED_HOLIDAYS.includes(d.format('MM-DD')),
             persistWith: {localStorageKey: 'toolboxDateRangePicker'}
         });
 
         this.monthPickerModel = new DateRangePickerModel({
-            tabs: ['monthYear'],
+            tabs: ['period'],
             initialValue: {kind: 'month', year: LocalDate.today().moment.year(), month: 1}
         });
 
         this.fiscalPickerModel = new DateRangePickerModel({
             tabs: ['presets', 'custom'],
-            presets: [FISCAL_YTD, LAST_FISCAL_YEAR, 'qtd', 'ytd', 'last90Days'],
+            presets: [FISCAL_YTD, PREV_FISCAL_YEAR, 'qtd', 'ytd', 'prev90Days'],
             initialValue: 'fytd'
         });
 
@@ -417,23 +468,60 @@ class DateRangePickerPanelModel extends HoistModel {
                 // selected again, as the model requires at least one.
                 track: () => this.tabs,
                 run: tabs => {
-                    if (!isEmpty(tabs)) this.pickerModel.setTabs(tabs);
-                }
-            },
-            {track: () => this.presets, run: presets => this.pickerModel.setPresets(presets)},
-            {track: () => this.dateFormat, run: fmt => (this.pickerModel.dateFormat = fmt)},
-            {
-                track: () => [this.allowFutureDates, this.anchorDate],
-                run: () => {
-                    const {allowFutureDates, anchorDate} = this;
-                    this.pickerModel.setMaxDate(
-                        allowFutureDates ? anchorDate.add(1, 'years') : null
+                    if (isEmpty(tabs)) return;
+                    // As with presets below - catalog order, not pick order.
+                    this.pickerModel.setTabs(
+                        sortBy(tabs, it => DATE_RANGE_PICKER_TABS.indexOf(it))
                     );
                 }
-            }
+            },
+            {
+                // The picker appends in pick order - present presets in their catalog order instead.
+                track: () => this.presets,
+                run: presets =>
+                    this.pickerModel.setPresets(
+                        sortBy(presets, it => DATE_RANGE_PRESET_TOKENS.indexOf(it))
+                    )
+            },
+            // These options have their own defaults on this model - apply them at once, so the
+            // picker starts where the options say rather than at its own defaults.
+            {
+                track: () => this.dateFormat,
+                run: fmt => (this.pickerModel.dateFormat = fmt),
+                fireImmediately: true
+            },
+            {
+                track: () => this.singleDayFormat,
+                run: key => (this.pickerModel.singleDayFormat = DAY_FORMATS[key]),
+                fireImmediately: true
+            },
+            {
+                // The pinned date input can be cleared - the model requires a date, so fall back
+                // to today until one is entered.
+                track: () => [this.anchorMode, this.anchorDate],
+                run: () => {
+                    const {anchorMode, anchorDate} = this;
+                    this.pickerModel.setAnchorDay(
+                        anchorMode === 'pinned' ? (anchorDate ?? LocalDate.today()) : anchorMode
+                    );
+                },
+                fireImmediately: true
+            },
+            {track: () => this.maxDate, run: maxDate => this.pickerModel.setMaxDate(maxDate)}
         );
     }
 }
+
+/** Day formats offered by the demo - strings, plus a function that adds the year only when needed. */
+const DAY_FORMATS: Record<string, DateRangeFormat> = {
+    'ddd MMM D': 'ddd MMM D',
+    'ddd MMM D, YYYY': 'ddd MMM D, YYYY',
+    'YYYY-MM-DD': 'YYYY-MM-DD',
+    'Year if not current': d =>
+        d.format(
+            d.moment.year() === LocalDate.today().moment.year() ? 'ddd MMM D' : 'ddd MMM D, YYYY'
+        )
+};
 
 /** New Year's Day, Independence Day, and Christmas - enough to show `isBusinessDay` in action. */
 const FIXED_HOLIDAYS = ['01-01', '07-04', '12-25'];
@@ -457,10 +545,10 @@ const FISCAL_YTD: DateRangePreset = {
     })
 };
 
-const LAST_FISCAL_YEAR: DateRangePreset = {
-    token: 'lastFy',
+const PREV_FISCAL_YEAR: DateRangePreset = {
+    token: 'prevFy',
     label: ({anchorDate}) => `FY${fiscalYearStart(anchorDate).format('YY')}`,
-    name: ({anchorDate}) => `Last Fiscal Year (FY${fiscalYearStart(anchorDate).format('YY')})`,
+    name: ({anchorDate}) => `Prev Fiscal Year (FY${fiscalYearStart(anchorDate).format('YY')})`,
     resolve: ({anchorDate}) => {
         const end = fiscalYearStart(anchorDate).previousDay();
         return {start: end.add(1, 'days').subtract(1, 'years'), end};
