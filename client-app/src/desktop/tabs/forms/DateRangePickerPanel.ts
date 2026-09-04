@@ -381,7 +381,11 @@ class DateRangePickerPanelModel extends HoistModel {
 
     // Model options
     @bindable.ref tabs: DateRangePickerTab[] = [...DATE_RANGE_PICKER_TABS];
-    @bindable.ref presets: DateRangePresetToken[] = [...DEFAULT_DATE_RANGE_PRESETS];
+    // The defaults plus Prev Day, so the demo shows a single-day walk from both presets.
+    @bindable.ref presets: DateRangePresetToken[] = sortBy(
+        [...DEFAULT_DATE_RANGE_PRESETS, 'prevDay'],
+        it => DATE_RANGE_PRESET_TOKENS.indexOf(it)
+    );
     @bindable anchorMode: 'localDay' | 'appDay' | 'pinned' = 'localDay';
     @bindable.ref anchorDate: LocalDate = LocalDate.today();
     @bindable.ref maxDate: LocalDate = null;
