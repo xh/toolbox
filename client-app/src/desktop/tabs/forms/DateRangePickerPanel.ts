@@ -377,7 +377,7 @@ class DateRangePickerPanelModel extends HoistModel {
     // Model options
     @bindable.ref tabs: DateRangePickerTab[] = [...DATE_RANGE_PICKER_TABS];
     @bindable.ref presets: DateRangePresetToken[] = [...DEFAULT_DATE_RANGE_PRESETS];
-    @bindable anchorMode: 'localDay' | 'appDay' | 'pinned' = 'appDay';
+    @bindable anchorMode: 'localDay' | 'appDay' | 'pinned' = 'localDay';
     @bindable.ref anchorDate: LocalDate = LocalDate.today();
     @bindable allowFutureDates = false;
     @bindable dateFormat = 'YYYY-MM-DD';
@@ -474,10 +474,17 @@ class DateRangePickerPanelModel extends HoistModel {
                         sortBy(presets, it => DATE_RANGE_PRESET_TOKENS.indexOf(it))
                     )
             },
-            {track: () => this.dateFormat, run: fmt => (this.pickerModel.dateFormat = fmt)},
+            // These options have their own defaults on this model - apply them at once, so the
+            // picker starts where the options say rather than at its own defaults.
+            {
+                track: () => this.dateFormat,
+                run: fmt => (this.pickerModel.dateFormat = fmt),
+                fireImmediately: true
+            },
             {
                 track: () => this.dayFormat,
-                run: key => (this.pickerModel.dayFormat = DAY_FORMATS[key])
+                run: key => (this.pickerModel.dayFormat = DAY_FORMATS[key]),
+                fireImmediately: true
             },
             {
                 // The pinned date input can be cleared - the model requires a date, so fall back
@@ -488,7 +495,8 @@ class DateRangePickerPanelModel extends HoistModel {
                     this.pickerModel.setAnchorDay(
                         anchorMode === 'pinned' ? (anchorDate ?? LocalDate.today()) : anchorMode
                     );
-                }
+                },
+                fireImmediately: true
             },
             {
                 track: () => [this.allowFutureDates, this.pickerModel.anchorDate],
