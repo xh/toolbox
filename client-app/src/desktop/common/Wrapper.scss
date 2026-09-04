@@ -148,6 +148,17 @@
     min-height: 26px;
   }
 
+  // Label centered against the first of a stack of inputs, rather than the whole stack.
+  &__option-row--top {
+    align-items: flex-start;
+
+    .tbox-wrapper__option-label {
+      display: grid;
+      align-items: center;
+      min-height: 30px;
+    }
+  }
+
   &__option-label {
     flex: 1;
     min-width: 0;

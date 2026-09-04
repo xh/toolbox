@@ -22,7 +22,14 @@ import {
 } from './tabs/charts';
 import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
-import {formPanel, inputsPanel, pickerPanel, selectPanel, toolbarFormPanel} from './tabs/forms';
+import {
+    dateRangePickerPanel,
+    formPanel,
+    inputsPanel,
+    pickerPanel,
+    selectPanel,
+    toolbarFormPanel
+} from './tabs/forms';
 import {
     agGridView,
     columnChooserPanel,
@@ -280,6 +287,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'inputs', path: '/inputs'},
                             {name: 'select', path: '/select'},
                             {name: 'picker', path: '/picker'},
+                            {name: 'dateRangePicker', path: '/dateRangePicker'},
                             {name: 'toolbarForms', path: '/toolbarForms'}
                         ]
                     },
@@ -459,6 +467,11 @@ export class AppModel extends BaseAppModel {
                         {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
                         {id: 'select', title: 'Select', content: selectPanel},
                         {id: 'picker', title: 'Picker', content: pickerPanel},
+                        {
+                            id: 'dateRangePicker',
+                            title: 'DateRangePicker',
+                            content: dateRangePickerPanel
+                        },
                         {id: 'toolbarForms', title: 'Toolbar Forms', content: toolbarFormPanel}
                     ]
                 }
