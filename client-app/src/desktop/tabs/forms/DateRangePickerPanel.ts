@@ -181,10 +181,15 @@ export const dateRangePickerPanel = hoistCmp.factory({
                             })
                         }),
                         wrapperOption({
-                            label: 'Allow future dates',
+                            label: 'Max date',
                             propName: 'DateRangePickerConfig.maxDate',
-                            info: 'Sets maxDate one year past the anchor. Off, nothing beyond the anchor is selectable.',
-                            control: switchInput({bind: 'allowFutureDates'})
+                            info: 'Latest selectable date. Empty, it is the anchor date, so nothing in the future is selectable.',
+                            control: dateInput({
+                                bind: 'maxDate',
+                                valueType: 'localDate',
+                                enableClear: true,
+                                width: 130
+                            })
                         }),
                         wrapperOption({
                             label: 'Date format',
@@ -330,7 +335,7 @@ const variants = hoistCmp.factory<DateRangePickerPanelModel>(({model}) =>
             }),
             variantRow({
                 label: 'Single tab - months and years only',
-                info: "tabs: ['monthYear'] - no rail, and the popover shrinks to fit.",
+                info: "tabs: ['period'] - no rail, and the popover shrinks to fit.",
                 item: dateRangePicker({model: model.monthPickerModel, testId: 'drp-month'})
             }),
             variantRow({
@@ -379,7 +384,7 @@ class DateRangePickerPanelModel extends HoistModel {
     @bindable.ref presets: DateRangePresetToken[] = [...DEFAULT_DATE_RANGE_PRESETS];
     @bindable anchorMode: 'localDay' | 'appDay' | 'pinned' = 'localDay';
     @bindable.ref anchorDate: LocalDate = LocalDate.today();
-    @bindable allowFutureDates = false;
+    @bindable.ref maxDate: LocalDate = null;
     @bindable dateFormat = 'YYYY-MM-DD';
     @bindable dayFormat: keyof typeof DAY_FORMATS = 'ddd MMM D';
 
@@ -413,7 +418,7 @@ class DateRangePickerPanelModel extends HoistModel {
         });
 
         this.monthPickerModel = new DateRangePickerModel({
-            tabs: ['monthYear'],
+            tabs: ['period'],
             initialValue: {kind: 'month', year: LocalDate.today().moment.year(), month: 1}
         });
 
@@ -498,15 +503,7 @@ class DateRangePickerPanelModel extends HoistModel {
                 },
                 fireImmediately: true
             },
-            {
-                track: () => [this.allowFutureDates, this.pickerModel.anchorDate],
-                run: () => {
-                    const {allowFutureDates, pickerModel} = this;
-                    pickerModel.setMaxDate(
-                        allowFutureDates ? pickerModel.anchorDate.add(1, 'years') : null
-                    );
-                }
-            }
+            {track: () => this.maxDate, run: maxDate => this.pickerModel.setMaxDate(maxDate)}
         );
     }
 }
