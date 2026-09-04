@@ -6,6 +6,7 @@ import {
     DATE_RANGE_PICKER_TABS,
     DATE_RANGE_PRESET_TOKENS,
     dateRangePicker,
+    type DateRangeFormat,
     DateRangePickerModel,
     type DateRangePickerTab,
     type DateRangePreset,
@@ -188,11 +189,23 @@ export const dateRangePickerPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Date format',
                             propName: 'DateRangePickerConfig.dateFormat',
+                            info: 'For the two ends of a range.',
                             control: select({
                                 bind: 'dateFormat',
                                 enableFilter: false,
-                                width: 140,
-                                options: ['YYYY-MM-DD', 'MM/DD/YYYY', 'DD MMM YYYY', 'ddd, MMM D']
+                                width: 150,
+                                options: ['YYYY-MM-DD', 'MM/DD/YYYY', 'DD MMM YYYY']
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Day format',
+                            propName: 'DateRangePickerConfig.dayFormat',
+                            info: 'For a single day, and the anchor date in the footer. The last option is a function that adds the year only outside the current one.',
+                            control: select({
+                                bind: 'dayFormat',
+                                enableFilter: false,
+                                width: 150,
+                                options: Object.keys(DAY_FORMATS)
                             })
                         })
                     ]
@@ -368,6 +381,7 @@ class DateRangePickerPanelModel extends HoistModel {
     @bindable.ref anchorDate: LocalDate = LocalDate.today();
     @bindable allowFutureDates = false;
     @bindable dateFormat = 'YYYY-MM-DD';
+    @bindable dayFormat: keyof typeof DAY_FORMATS = 'ddd MMM D';
 
     /** Record counts and totals within the current and prior ranges, across all loaded data. */
     @computed
@@ -462,6 +476,10 @@ class DateRangePickerPanelModel extends HoistModel {
             },
             {track: () => this.dateFormat, run: fmt => (this.pickerModel.dateFormat = fmt)},
             {
+                track: () => this.dayFormat,
+                run: key => (this.pickerModel.dayFormat = DAY_FORMATS[key])
+            },
+            {
                 // The pinned date input can be cleared - the model requires a date, so fall back
                 // to today until one is entered.
                 track: () => [this.anchorMode, this.anchorDate],
@@ -484,6 +502,17 @@ class DateRangePickerPanelModel extends HoistModel {
         );
     }
 }
+
+/** Day formats offered by the demo - strings, plus a function that adds the year only when needed. */
+const DAY_FORMATS: Record<string, DateRangeFormat> = {
+    'ddd MMM D': 'ddd MMM D',
+    'ddd MMM D, YYYY': 'ddd MMM D, YYYY',
+    'YYYY-MM-DD': 'YYYY-MM-DD',
+    'Year if not current': d =>
+        d.format(
+            d.moment.year() === LocalDate.today().moment.year() ? 'ddd MMM D' : 'ddd MMM D, YYYY'
+        )
+};
 
 /** New Year's Day, Independence Day, and Christmas - enough to show `isBusinessDay` in action. */
 const FIXED_HOLIDAYS = ['01-01', '07-04', '12-25'];
