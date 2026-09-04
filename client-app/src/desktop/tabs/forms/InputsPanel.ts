@@ -232,11 +232,12 @@ const dateCard = hoistCmp.factory(() =>
                 })
             }),
             demoRow({
-                label: 'valueType: localDate',
+                label: 'valueType: localDate, leftIcon',
                 item: dateInput({
                     bind: 'dateInput3',
                     valueType: 'localDate',
-                    width: 130
+                    leftIcon: Icon.flag(),
+                    width: 160
                 })
             })
         ]
