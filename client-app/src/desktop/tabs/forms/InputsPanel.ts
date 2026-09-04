@@ -8,6 +8,7 @@ import {
     checkbox,
     checkboxButton,
     dateInput,
+    intentInput,
     jsonInput,
     numberInput,
     radioInput,
@@ -93,7 +94,8 @@ export const inputsPanel = hoistCmp.factory({
                         buttonGroupCard(),
                         radioCard(),
                         toggleCard(),
-                        sliderCard()
+                        sliderCard(),
+                        intentInputCard()
                     ]
                 })
             })
@@ -414,6 +416,28 @@ const toggleCard = hoistCmp.factory(() =>
     })
 );
 
+const intentInputCard = hoistCmp.factory<InputsPanelModel>(({model}) =>
+    card({
+        title: 'IntentInput',
+        items: [
+            demoRow({
+                label: 'Swatches only - the default',
+                info: 'Each swatch carries its intent name as a tooltip and accessible label.',
+                item: intentInput({bind: 'intent'})
+            }),
+            demoRow({
+                label: 'showNames: true',
+                item: intentInput({bind: 'intent', showNames: true})
+            }),
+            demoRow({
+                label: 'enableClear: true - adds an outlined swatch for the null value',
+                info: `Value: ${model.intentClearable ?? 'null'}`,
+                item: intentInput({bind: 'intentClearable', enableClear: true})
+            })
+        ]
+    })
+);
+
 //------------------------------------------------------------------
 // Shared option sets
 //------------------------------------------------------------------
@@ -463,6 +487,8 @@ const inputsTbar = hoistCmp.factory<InputsPanelModel>(({compact}) =>
                 bind: 'buttonGroupInput',
                 items: bgButtons()
             }),
+            '-',
+            intentInput({bind: 'intent', compact}),
             '-',
             checkboxButton({bind: 'checkboxButton', text: 'Enabled'}),
             '-',
@@ -528,6 +554,8 @@ class InputsPanelModel extends HoistModel {
     @bindable segmentedControl: string = 'strategy';
     @bindable segmentedControlEmpty: string = null;
     @bindable optionIntent: Intent = 'primary';
+    @bindable intent: Intent = 'primary';
+    @bindable intentClearable: Intent = 'success';
     @bindable radioInput: string = null;
 
     // Compact toolbar inputs
