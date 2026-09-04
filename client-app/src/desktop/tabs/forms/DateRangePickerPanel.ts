@@ -428,7 +428,7 @@ class DateRangePickerPanelModel extends HoistModel {
 
         this.fiscalPickerModel = new DateRangePickerModel({
             tabs: ['presets', 'custom'],
-            presets: [FISCAL_YTD, LAST_FISCAL_YEAR, 'qtd', 'ytd', 'prev90Days'],
+            presets: [FISCAL_YTD, PREV_FISCAL_YEAR, 'qtd', 'ytd', 'prev90Days'],
             initialValue: 'fytd'
         });
 
@@ -545,10 +545,10 @@ const FISCAL_YTD: DateRangePreset = {
     })
 };
 
-const LAST_FISCAL_YEAR: DateRangePreset = {
-    token: 'lastFy',
+const PREV_FISCAL_YEAR: DateRangePreset = {
+    token: 'prevFy',
     label: ({anchorDate}) => `FY${fiscalYearStart(anchorDate).format('YY')}`,
-    name: ({anchorDate}) => `Last Fiscal Year (FY${fiscalYearStart(anchorDate).format('YY')})`,
+    name: ({anchorDate}) => `Prev Fiscal Year (FY${fiscalYearStart(anchorDate).format('YY')})`,
     resolve: ({anchorDate}) => {
         const end = fiscalYearStart(anchorDate).previousDay();
         return {start: end.add(1, 'days').subtract(1, 'years'), end};
