@@ -203,11 +203,11 @@ export const dateRangePickerPanel = hoistCmp.factory({
                             })
                         }),
                         wrapperOption({
-                            label: 'Day format',
-                            propName: 'DateRangePickerConfig.dayFormat',
+                            label: 'Single day format',
+                            propName: 'DateRangePickerConfig.singleDayFormat',
                             info: 'For a single day, and the anchor date in the footer. The last option is a function that adds the year only outside the current one.',
                             control: select({
-                                bind: 'dayFormat',
+                                bind: 'singleDayFormat',
                                 enableFilter: false,
                                 width: 150,
                                 options: Object.keys(DAY_FORMATS)
@@ -390,7 +390,7 @@ class DateRangePickerPanelModel extends HoistModel {
     @bindable.ref anchorDate: LocalDate = LocalDate.today();
     @bindable.ref maxDate: LocalDate = null;
     @bindable dateFormat = 'YYYY-MM-DD';
-    @bindable dayFormat: keyof typeof DAY_FORMATS = 'ddd MMM D';
+    @bindable singleDayFormat: keyof typeof DAY_FORMATS = 'ddd MMM D';
 
     /** Record counts and totals within the current and prior ranges, across all loaded data. */
     @computed
@@ -491,8 +491,8 @@ class DateRangePickerPanelModel extends HoistModel {
                 fireImmediately: true
             },
             {
-                track: () => this.dayFormat,
-                run: key => (this.pickerModel.dayFormat = DAY_FORMATS[key]),
+                track: () => this.singleDayFormat,
+                run: key => (this.pickerModel.singleDayFormat = DAY_FORMATS[key]),
                 fireImmediately: true
             },
             {
