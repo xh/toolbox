@@ -14,6 +14,11 @@
 
 ## 10.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added a demo page for Hoist's new `DateRangeInput` component.
+* Expanded Hoist Inputs page to include Hoist's new `IntentInput` component and expanded the range of `SegmentedControl` demos.
+
 ## 9.5.0 - 2026-08-28
 
 ### Bug Fixes
