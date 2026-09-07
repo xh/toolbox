@@ -24,11 +24,11 @@ applications, which typically use whatever enterprise database is already in pla
 infrastructure, but it provides a common and easy-to-run DB for local development and our AWS-based
 deployments.
 
-* For initial/test usage, Toolbox is can run with a transient in-memory database (H2) that will be
+* For initial/test usage, Toolbox can run with a transient in-memory database (H2) that will be
   rebuilt at startup of the app. This is enabled via the `useH2` instance configuration (see below).
-* For persistent deployments, Toolbox is designed to work with MySQL. If you don't already have it
-  installed and are on a Mac, we recommend installing via [Homebrew](https://brew.sh/) with
-  `brew install mysql`.
+* For persistent deployments, Toolbox is designed to work with MySQL. Install a Long-Term Support
+  (LTS) release - see [MySQL versions](#mysql-versions) below for the recommended command on each
+  platform. Do not install the plain `mysql` Homebrew formula.
 * Create a new empty database named `toolbox`, being sure to use a UTF8 charset (fortunately this is
   the default for newer versions of MySQL). Alternatively, use an export of the deployed toolbox DB
   with `CREATE DATABASE` included (Anselm can provide).
@@ -40,6 +40,44 @@ deployments.
   on first run as long as a suitable value is provided for the `dbCreate` data source parameter. See
   the `DBConfig` class for where this is set - we leave toolbox on `update` to allow for automatic
   schema changes as needed.
+
+### MySQL versions
+
+MySQL publishes two release tracks, and picking the wrong one causes real pain later:
+
+* **LTS** releases hold a stable feature set for years. This is what you want. The current LTS is
+  the 9.7 series.
+* **Innovation** releases ship roughly quarterly, and each one is superseded by the next. Starting
+  with 26.7, they use calendar versioning (`YY.M.P`), so a high version number signals a recent
+  Innovation release, not a more mature one.
+
+Toolbox has no special database requirements beyond what Grails and Hibernate expect, so **always
+install the LTS**.
+
+**macOS** - install the versioned Homebrew formula, not the plain `mysql` one:
+
+```bash
+brew install mysql@9.7
+brew link --force mysql@9.7    # keg-only, so link it or add its bin/ to your PATH
+brew services start mysql@9.7
+```
+
+The plain `mysql` formula tracks whichever release is newest on *either* track, so `brew upgrade`
+will silently walk you onto the Innovation train. Versioned formulae exist only for LTS releases
+(`mysql@8.0`, `mysql@8.4`, `mysql@9.7`), which makes them a reliable way to stay put while still
+receiving patch updates within the series.
+
+**Windows** - use the MySQL Installer and select an LTS series when prompted for the server version.
+
+**Linux** - use the MySQL APT or Yum repository and select the LTS series during repo configuration,
+or install your distribution's MySQL package, which generally tracks an LTS.
+
+> **Why this matters.** A MySQL data directory is upgraded when the *server starts*, not when the
+> package is upgraded. MySQL only accepts an upgrade within the same lineage, or from the
+> immediately preceding LTS. Upgrade the binary across two lineages without starting the server in
+> between and the data directory is stranded - the new server refuses to open it. See
+> [Troubleshooting](docs/running-locally.md#database-connection-fails-at-startup) for the recovery
+> steps.
 
 ## Instance Configuration
 
