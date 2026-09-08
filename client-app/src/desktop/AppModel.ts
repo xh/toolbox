@@ -24,6 +24,7 @@ import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
 import {
     buttonGroupInputPanel,
+    codeInputsPanel,
     dateInputPanel,
     dateRangePickerPanel,
     formPanel,
@@ -302,7 +303,8 @@ export class AppModel extends BaseAppModel {
                             {name: 'picker', path: '/picker'},
                             {name: 'segmentedControl', path: '/segmentedControl'},
                             {name: 'buttonGroupInput', path: '/buttonGroupInput'},
-                            {name: 'radioInput', path: '/radioInput'}
+                            {name: 'radioInput', path: '/radioInput'},
+                            {name: 'codeInputs', path: '/codeInputs'}
                         ]
                     },
                     {
@@ -507,7 +509,8 @@ export class AppModel extends BaseAppModel {
                             title: 'ButtonGroupInput',
                             content: buttonGroupInputPanel
                         },
-                        {id: 'radioInput', title: 'RadioInput', content: radioInputPanel}
+                        {id: 'radioInput', title: 'RadioInput', content: radioInputPanel},
+                        {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel}
                     ]
                 }
             },
