@@ -22,7 +22,7 @@ const ENTRY = inputEntry('RadioInput');
 const ASSET_CLASSES = [
     'Equity',
     'Fixed Income',
-    {label: 'Crypto', value: 'Crypto', disabled: true}
+    {label: 'Commodities', value: 'Commodities', disabled: true}
 ];
 
 const SIDES = ['Buy', 'Sell', {label: 'Short', value: 'Short', disabled: true}];
