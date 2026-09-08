@@ -67,9 +67,10 @@ export class PortfolioService extends HoistService {
     async getLivePositionsAsync(
         dims: string[],
         topic: string,
+        ctx?: CallContextLike,
         maxPositions: number = this.MAX_POSITIONS
     ) {
-        return this.runner()
+        return this.runner(ctx)
             .span('getLivePositions')
             .run(async ctx => {
                 const session = await XH.fetchJson(
