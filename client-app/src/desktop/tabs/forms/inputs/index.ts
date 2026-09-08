@@ -12,3 +12,4 @@ export * from './SegmentedControlPanel';
 export * from './CodeInputsPanel';
 export * from './TogglesPanel';
 export * from './IntentInputPanel';
+export * from './SliderPanel';

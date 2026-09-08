@@ -35,6 +35,7 @@ import {
     radioInputPanel,
     segmentedControlPanel,
     selectPanel,
+    sliderPanel,
     textAreaPanel,
     textInputPanel,
     togglesPanel,
@@ -307,6 +308,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'buttonGroupInput', path: '/buttonGroupInput'},
                             {name: 'radioInput', path: '/radioInput'},
                             {name: 'toggles', path: '/toggles'},
+                            {name: 'slider', path: '/slider'},
                             {name: 'intentInput', path: '/intentInput'},
                             {name: 'codeInputs', path: '/codeInputs'}
                         ]
@@ -515,6 +517,7 @@ export class AppModel extends BaseAppModel {
                         },
                         {id: 'radioInput', title: 'RadioInput', content: radioInputPanel},
                         {id: 'toggles', title: 'Checkbox & Switch', content: togglesPanel},
+                        {id: 'slider', title: 'Slider', content: sliderPanel},
                         {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},
                         {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel}
                     ]
