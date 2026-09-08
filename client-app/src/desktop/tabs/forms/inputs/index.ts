@@ -5,3 +5,4 @@ export * from './TextInputPanel';
 export * from './InputsIndexPanel';
 export * from './DateInputPanel';
 export * from './TextAreaPanel';
+export * from './NumberInputPanel';

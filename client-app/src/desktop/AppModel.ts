@@ -27,6 +27,7 @@ import {
     dateRangePickerPanel,
     formPanel,
     inputsIndexPanel,
+    numberInputPanel,
     pickerPanel,
     selectPanel,
     textAreaPanel,
@@ -291,6 +292,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'inputs', path: '/inputs'},
                             {name: 'textInput', path: '/textInput'},
                             {name: 'textArea', path: '/textArea'},
+                            {name: 'numberInput', path: '/numberInput'},
                             {name: 'dateInput', path: '/dateInput'},
                             {name: 'dateRangePicker', path: '/dateRangePicker'},
                             {name: 'select', path: '/select'},
@@ -480,6 +482,7 @@ export class AppModel extends BaseAppModel {
                         },
                         {id: 'textInput', title: 'TextInput', content: textInputPanel},
                         {id: 'textArea', title: 'TextArea', content: textAreaPanel},
+                        {id: 'numberInput', title: 'NumberInput', content: numberInputPanel},
                         {id: 'dateInput', title: 'DateInput', content: dateInputPanel},
                         {
                             id: 'dateRangePicker',
