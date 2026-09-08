@@ -1,0 +1,216 @@
+// Shared demo-body primitives (see Demo.ts). Tokens only - light and dark theme safe.
+
+.tbox-demo-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--xh-pad-px);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: var(--xh-pad-px);
+  }
+
+  &__title {
+    flex: none;
+    text-transform: uppercase;
+    font-size: var(--xh-font-size-small-px);
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__rule {
+    flex: 1;
+    height: 1px;
+    background: var(--xh-border-color);
+  }
+
+  &__note {
+    flex: none;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &--primary &__title {
+    color: var(--xh-intent-primary-text-color);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-pad-px);
+  }
+}
+
+.tbox-demo-row {
+  flex-shrink: 0;
+  min-width: 0;
+
+  &__label {
+    font-weight: 500;
+  }
+
+  &__info {
+    margin-top: 2px;
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+    line-height: 1.35;
+  }
+
+  &__control {
+    margin-top: 6px;
+    display: flex;
+    min-width: 0;
+  }
+}
+
+.tbox-demo-playground {
+  gap: var(--xh-pad-double-px);
+  padding: var(--xh-pad-double-px);
+  border: 1px solid var(--xh-intent-primary-text-color);
+  border-radius: var(--xh-border-radius-px);
+  background: color-mix(in srgb, var(--xh-intent-primary) 5%, transparent);
+
+  &__instance {
+    flex: none;
+    gap: var(--xh-pad-half-px);
+  }
+
+  &__instance-body {
+    display: flex;
+    min-width: 0;
+  }
+
+  &__caption {
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+  }
+
+  &__config {
+    flex: 1;
+    min-width: 0;
+    padding-left: var(--xh-pad-double-px);
+    border-left: 1px solid var(--xh-border-color);
+    gap: var(--xh-pad-half-px);
+  }
+
+  &__config-label {
+    text-transform: uppercase;
+    font-size: var(--xh-font-size-small-px);
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__code {
+    margin: 0;
+    font-family: var(--xh-font-family-mono);
+    font-size: var(--xh-font-size-small-px);
+    line-height: 1.6;
+    white-space: pre;
+    overflow-x: auto;
+  }
+}
+
+.tbox-demo-frame {
+  border: 1px solid var(--xh-border-color);
+  border-radius: var(--xh-border-radius-px);
+  overflow: hidden;
+
+  &__caption {
+    display: flex;
+    align-items: baseline;
+    gap: var(--xh-pad-px);
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+  }
+
+  &__label {
+    font-weight: 500;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+  }
+
+  &__chip {
+    flex: none;
+    padding: 1px 6px;
+    border-radius: var(--xh-border-radius-px);
+    background: var(--xh-bg-alt);
+    color: var(--xh-text-color-muted);
+    font-family: var(--xh-font-family-mono);
+    font-size: var(--xh-font-size-small-px);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+}
+
+// Form cards carry their own padding; toolbars butt against the frame edge.
+.tbox-demo-frame:not(.tbox-demo-toolbar) .tbox-demo-frame__body {
+  padding: var(--xh-pad-px);
+}
+
+.tbox-demo-grid {
+  display: grid;
+  gap: var(--xh-pad-double-px);
+}
+
+.tbox-demo-gallery {
+  display: grid;
+  gap: var(--xh-pad-px);
+}
+
+.tbox-demo-gallery-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  padding: var(--xh-pad-px);
+  border: 1px solid var(--xh-border-color);
+  border-radius: var(--xh-border-radius-px);
+  background: var(--xh-bg);
+
+  &--clickable {
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+
+    &:hover {
+      border-color: var(--xh-intent-primary-text-color);
+    }
+  }
+
+  &__name {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--xh-pad-half-px);
+    font-weight: 600;
+    color: var(--xh-text-color-headings);
+
+    .xh-icon {
+      font-size: 10px;
+      color: var(--xh-text-color-muted);
+    }
+  }
+
+  &__description {
+    min-height: 30px;
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+    line-height: 1.35;
+  }
+
+  &__specimen {
+    display: flex;
+    min-width: 0;
+    cursor: default;
+  }
+}
