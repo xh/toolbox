@@ -6,3 +6,4 @@ export * from './InputsIndexPanel';
 export * from './DateInputPanel';
 export * from './TextAreaPanel';
 export * from './NumberInputPanel';
+export * from './ButtonGroupInputPanel';
