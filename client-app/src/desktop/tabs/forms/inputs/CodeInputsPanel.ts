@@ -38,8 +38,8 @@ export const codeInputsPanel = hoistCmp.factory({
             supportsCompact: false,
             description: [
                 '`CodeInput` wraps CodeMirror with line numbers, search, a fullscreen mode and',
-                'optional formatter and linter hooks. `JsonInput` is the preconfigured JSON variant',
-                'with linting and auto-format built in.',
+                'optional formatter and linter hooks. `JsonInput` is the preconfigured JSON',
+                'variant with linting and auto-format built in.',
                 '',
                 'Both bind a string. Size with `height` and `width`.'
             ],
@@ -102,7 +102,7 @@ export const codeInputsPanel = hoistCmp.factory({
                     autoFormat: pgAutoFormat || undefined,
                     enableSearch: pgSearch || undefined,
                     showToolbar: pgToolbar || undefined,
-                    showFullscreenButton: pgFullscreen || undefined,
+                    showFullscreenButton: pgFullscreen === false ? false : undefined,
                     lineWrapping: pgWrap || undefined,
                     disabled: ambientProps.disabled || undefined,
                     commitOnChange: commitOnChange || undefined
