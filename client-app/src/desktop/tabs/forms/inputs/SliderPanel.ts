@@ -1,6 +1,5 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
-import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {numberInput, slider, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtThousands} from '@xh/hoist/format';
@@ -169,7 +168,7 @@ export const sliderPanel = hoistCmp.factory({
                 columns: 2,
                 items: [
                     demoFrame({
-                        info: 'FormField, label above, required rule satisfied',
+                        info: 'FormField, label above',
                         item: form({
                             model: model.formModel,
                             item: formField({
@@ -233,8 +232,7 @@ class SliderPanelModel extends InputDemoModel {
             {
                 name: 'confidence',
                 displayName: 'Confidence',
-                initialValue: 80,
-                rules: [required]
+                initialValue: 80
             },
             {
                 name: 'allocation',

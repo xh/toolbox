@@ -170,7 +170,7 @@ export const togglesPanel = hoistCmp.factory({
                     })
                 }),
                 demoRow({
-                    label: 'Custom icons',
+                    label: 'CheckboxButton icons',
                     info: "checkedIcon, uncheckedIcon, iconSide: 'right'",
                     item: checkboxButton({
                         bind: 'customIcons',
@@ -224,8 +224,6 @@ export const togglesPanel = hoistCmp.factory({
                 })
             ],
             toolbarItems: () => [
-                checkboxButton({bind: 'tbarEnabled', ...ambientProps, text: 'Enabled'}),
-                toolbarSep(),
                 checkbox({bind: 'tbarEnabled', ...ambientProps, label: 'enabled'}),
                 toolbarSep(),
                 switchInput({
@@ -234,6 +232,8 @@ export const togglesPanel = hoistCmp.factory({
                     label: 'Enabled:',
                     labelSide: 'left'
                 }),
+                toolbarSep(),
+                checkboxButton({bind: 'tbarEnabled', ...ambientProps, text: 'Enabled'}),
                 toolbarSep(),
                 button({text: 'Apply', icon: Icon.filter()})
             ],
