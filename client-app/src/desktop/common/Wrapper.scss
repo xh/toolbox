@@ -121,12 +121,33 @@
   }
 
   &__option-group-label {
+    display: flex;
+    align-items: center;
+    gap: var(--xh-pad-half-px);
     margin-bottom: var(--xh-pad-half-px);
     padding-bottom: 2px;
     border-bottom: 1px solid var(--xh-border-color);
     font-size: 0.8em;
     font-weight: 600;
     color: var(--xh-text-color-muted);
+
+    .xh-icon {
+      font-size: 0.9em;
+    }
+  }
+
+  // Scope note under the group label - which of the two option scopes this group is.
+  &__option-group-info {
+    margin: -3px 0 var(--xh-pad-half-px);
+    color: var(--xh-text-color-muted);
+    font-size: 0.85em;
+    line-height: 1.35;
+  }
+
+  // Intent-colored group (the Playground group) - label and underline follow the intent.
+  &__option-group--primary &__option-group-label {
+    color: var(--xh-intent-primary-text-color);
+    border-bottom-color: var(--xh-intent-primary-text-color);
   }
 
   &__option-group-body {

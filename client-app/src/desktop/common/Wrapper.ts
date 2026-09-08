@@ -1,6 +1,6 @@
 import {code, div, hframe, span, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
-import {hoistCmp, HoistModel, HoistProps, useLocalModel} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, HoistProps, Intent, useLocalModel} from '@xh/hoist/core';
 import {button, ButtonProps} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -227,22 +227,55 @@ export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOption
 interface WrapperOptionGroupProps extends HoistProps {
     /** Short sub-heading rendered above this group's option rows. */
     label: ReactNode;
+    /**
+     * One-line note on the group's scope, rendered muted below the label. State which of the two
+     * option scopes the group is (see the `WrapperOptionGroup` docs), e.g. "Applies to every
+     * specimen on the page." or "Drives the Playground instance above."
+     */
+    info?: ReactNode;
+    /** Optional glyph shown before the label. */
+    icon?: ReactElement;
+    /**
+     * Intent to color the label and its underline - use `'primary'` for a group tied to a specific
+     * region of the demo (the Playground), leaving ambient groups in the default muted treatment.
+     */
+    intent?: Intent;
 }
 
 /**
  * A labeled sub-group of rows within a Wrapper `options` section, for examples with enough
- * options that a flat list would be hard to scan. Groups render a small sub-heading above their
- * rows and pick up consistent spacing between one another. Pass the option rows (typically
- * `wrapperOption` elements) via `item`/`items`, which render as the group's children.
+ * options that a flat list would be hard to scan. Pass the option rows (typically `wrapperOption`
+ * elements) via `item`/`items`, which render as the group's children.
+ *
+ * Every rail option declares a scope, and a group states which one it is via `info`:
+ * - *Ambient* options are orthogonal to what any single specimen demonstrates (compact, disabled,
+ *   commit-on-change, theme). They apply to everything on the page, so a QA sweep is one click.
+ * - *Playground* options are the curated props of the component itself and drive one dedicated
+ *   instance only. Mark that group with `intent: 'primary'` and `Icon.experiment()`.
+ *
+ * A prop appears in the rail or as a static variant card, never both. Rail switches are a curated
+ * subset, not a prop table - a prop earns a switch only if flipping it produces a visible change
+ * or an easily appreciated behavior; the rest belongs in the docs link.
  */
 export const [WrapperOptionGroup, wrapperOptionGroup] =
     hoistCmp.withFactory<WrapperOptionGroupProps>({
         displayName: 'WrapperOptionGroup',
-        render({label, children}) {
+        render({label, info, icon, intent, children}) {
             return div({
-                className: 'tbox-wrapper__option-group',
+                className: classNames(
+                    'tbox-wrapper__option-group',
+                    intent && `tbox-wrapper__option-group--${intent}`
+                ),
                 items: [
-                    div({className: 'tbox-wrapper__option-group-label', item: label}),
+                    div({
+                        className: 'tbox-wrapper__option-group-label',
+                        items: [icon, span(label)]
+                    }),
+                    div({
+                        className: 'tbox-wrapper__option-group-info',
+                        item: info,
+                        omit: !info
+                    }),
                     div({className: 'tbox-wrapper__option-group-body', item: children})
                 ]
             });
