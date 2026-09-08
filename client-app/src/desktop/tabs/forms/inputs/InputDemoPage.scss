@@ -1,0 +1,7 @@
+// Per-input demo page body: sections stack with a double-pad gap inside the scrollable panel.
+.tb-input-demo {
+  &__body {
+    gap: var(--xh-pad-double-px);
+    padding: var(--xh-pad-double-px);
+  }
+}
