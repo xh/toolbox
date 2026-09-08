@@ -22,7 +22,7 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, sortBy} from 'lodash';
-import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common';
+import {demoRow, wrapper, wrapperOption, wrapperOptionGroup} from '../../common';
 import './DateRangePickerPanel.scss';
 
 export const dateRangePickerPanel = hoistCmp.factory({
@@ -324,41 +324,43 @@ const variants = hoistCmp.factory<DateRangePickerPanelModel>(({model}) =>
         compactHeader: true,
         className: 'tb-drp-panel__variants',
         items: [
-            variantRow({
-                label: 'Stretched into a narrow host',
-                info: 'flex: 1 - the trigger measures its width and drops the dates when they no longer fit.',
-                item: box({
-                    className: 'tb-drp-panel__narrow-host',
-                    width: 200,
-                    item: dateRangePicker({model: model.pickerModel, flex: 1, testId: 'drp-narrow'})
+            div({
+                className: 'tb-drp-panel__variant',
+                item: demoRow({
+                    label: 'Stretched into a narrow host',
+                    info: 'flex: 1 - the trigger measures its width and drops the dates when they no longer fit.',
+                    item: box({
+                        className: 'tb-drp-panel__narrow-host',
+                        width: 200,
+                        item: dateRangePicker({
+                            model: model.pickerModel,
+                            flex: 1,
+                            testId: 'drp-narrow'
+                        })
+                    })
                 })
             }),
-            variantRow({
-                label: 'Single tab - months and years only',
-                info: "tabs: ['period'] - no rail, and the popover shrinks to fit.",
-                item: dateRangePicker({model: model.monthPickerModel, testId: 'drp-month'})
+            div({
+                className: 'tb-drp-panel__variant',
+                item: demoRow({
+                    label: 'Single tab - months and years only',
+                    info: "tabs: ['period'] - no rail, and the popover shrinks to fit.",
+                    item: dateRangePicker({model: model.monthPickerModel, testId: 'drp-month'})
+                })
             }),
-            variantRow({
-                label: 'App-defined presets, outlined trigger',
-                info: 'A fiscal-year preset alongside built-ins, presets + custom tabs, styleButtonAsInput: false.',
-                item: dateRangePicker({
-                    model: model.fiscalPickerModel,
-                    styleButtonAsInput: false,
-                    buttonProps: {icon: Icon.chartLine()},
-                    testId: 'drp-fiscal'
+            div({
+                className: 'tb-drp-panel__variant',
+                item: demoRow({
+                    label: 'App-defined presets, outlined trigger',
+                    info: 'A fiscal-year preset alongside built-ins, presets + custom tabs, styleButtonAsInput: false.',
+                    item: dateRangePicker({
+                        model: model.fiscalPickerModel,
+                        styleButtonAsInput: false,
+                        buttonProps: {icon: Icon.chartLine()},
+                        testId: 'drp-fiscal'
+                    })
                 })
             })
-        ]
-    })
-);
-
-const variantRow = hoistCmp.factory(({label, info, children}) =>
-    vbox({
-        className: 'tb-drp-panel__variant',
-        items: [
-            span({className: 'tb-drp-panel__variant-label', item: label}),
-            span({className: 'xh-text-color-muted xh-font-size-small', item: info}),
-            div({className: 'tb-drp-panel__variant-body', item: children})
         ]
     })
 );
