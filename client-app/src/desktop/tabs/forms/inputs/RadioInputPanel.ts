@@ -19,12 +19,18 @@ import {inputDemoPage} from './InputDemoPage';
 
 const ENTRY = inputEntry('RadioInput');
 
-const MEALS = ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}];
+const ASSET_CLASSES = [
+    'Equity',
+    'Fixed Income',
+    {label: 'Crypto', value: 'Crypto', disabled: true}
+];
 
-const SIZES = [
-    {label: 'Small (S)', value: 's'},
-    {label: 'Medium (M)', value: 'm'},
-    {label: 'Large (L)', value: 'l'}
+const SIDES = ['Buy', 'Sell', {label: 'Short', value: 'Short', disabled: true}];
+
+const ORDER_TYPES = [
+    {label: 'Market (MKT)', value: 'mkt'},
+    {label: 'Limit (LMT)', value: 'lmt'},
+    {label: 'Stop (STP)', value: 'stp'}
 ];
 
 export const radioInputPanel = hoistCmp.factory({
@@ -80,7 +86,7 @@ export const radioInputPanel = hoistCmp.factory({
                     bind: 'value',
                     inline: model.pgInline || undefined,
                     labelSide: model.pgLabelSide === 'right' ? undefined : model.pgLabelSide,
-                    options: raw('MEALS'),
+                    options: raw('ASSET_CLASSES'),
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
@@ -89,28 +95,28 @@ export const radioInputPanel = hoistCmp.factory({
                     ...ambientProps,
                     inline: model.pgInline,
                     labelSide: model.pgLabelSide,
-                    options: MEALS
+                    options: ASSET_CLASSES
                 })
             }),
             variants: [
                 demoRow({
                     label: 'Stacked with a disabled option',
                     info: 'options include {disabled: true}',
-                    item: radioInput({bind: 'stacked', ...ambientProps, options: MEALS})
+                    item: radioInput({bind: 'stacked', ...ambientProps, options: ASSET_CLASSES})
                 }),
                 demoRow({
                     label: 'Object options',
                     info: '{label, value} objects',
-                    item: radioInput({bind: 'size', ...ambientProps, options: SIZES})
+                    item: radioInput({bind: 'orderType', ...ambientProps, options: ORDER_TYPES})
                 }),
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
                     item: radioInput({
-                        bind: 'disabledMeal',
+                        bind: 'disabledClass',
                         ...ambientProps,
                         disabled: true,
-                        options: MEALS
+                        options: ASSET_CLASSES
                     })
                 }),
                 demoRow({
@@ -119,16 +125,21 @@ export const radioInputPanel = hoistCmp.factory({
                     item: form({
                         model: model.formModel,
                         item: formField({
-                            field: 'invalidMeal',
+                            field: 'invalidSide',
                             label: null,
                             minimal: true,
-                            item: radioInput({inline: true, options: MEALS})
+                            item: radioInput({inline: true, options: SIDES})
                         })
                     })
                 })
             ],
             toolbarItems: () => [
-                radioInput({bind: 'tbarMeal', ...ambientProps, inline: true, options: MEALS})
+                radioInput({
+                    bind: 'tbarClass',
+                    ...ambientProps,
+                    inline: true,
+                    options: ASSET_CLASSES
+                })
             ],
             form: demoGrid({
                 columns: 2,
@@ -138,8 +149,8 @@ export const radioInputPanel = hoistCmp.factory({
                         item: form({
                             model: model.formModel,
                             item: formField({
-                                field: 'meal',
-                                item: radioInput({options: MEALS})
+                                field: 'assetClass',
+                                item: radioInput({options: ASSET_CLASSES})
                             })
                         })
                     }),
@@ -150,7 +161,7 @@ export const radioInputPanel = hoistCmp.factory({
                             item: formField({
                                 field: 'side',
                                 inline: true,
-                                item: radioInput({inline: true, options: MEALS})
+                                item: radioInput({inline: true, options: SIDES})
                             })
                         })
                     })
@@ -161,11 +172,11 @@ export const radioInputPanel = hoistCmp.factory({
 });
 
 const SEEDS = {
-    playground: 'Steak',
+    playground: 'Equity',
     stacked: null,
-    size: 'm',
-    disabledMeal: 'Chicken',
-    tbarMeal: null
+    orderType: 'lmt',
+    disabledClass: 'Fixed Income',
+    tbarClass: null
 };
 
 class RadioInputPanelModel extends InputDemoModel {
@@ -176,16 +187,21 @@ class RadioInputPanelModel extends InputDemoModel {
     // Inputs
     @bindable playground: string = SEEDS.playground;
     @bindable stacked: string = SEEDS.stacked;
-    @bindable size: string = SEEDS.size;
-    @bindable disabledMeal: string = SEEDS.disabledMeal;
-    @bindable tbarMeal: string = SEEDS.tbarMeal;
+    @bindable orderType: string = SEEDS.orderType;
+    @bindable disabledClass: string = SEEDS.disabledClass;
+    @bindable tbarClass: string = SEEDS.tbarClass;
 
     @managed
     override formModel = new FormModel({
         fields: [
-            {name: 'meal', displayName: 'Entree', initialValue: 'Steak', rules: [required]},
+            {
+                name: 'assetClass',
+                displayName: 'Asset class',
+                initialValue: 'Equity',
+                rules: [required]
+            },
             {name: 'side', displayName: 'Side', initialValue: null, rules: [required]},
-            {name: 'invalidMeal', initialValue: null, rules: [required]}
+            {name: 'invalidSide', initialValue: null, rules: [required]}
         ]
     });
 

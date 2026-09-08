@@ -251,10 +251,10 @@ const TILE_INPUTS: Record<string, (m: InputsIndexModel) => ReactElement> = {
         }),
     RadioInput: m =>
         radioInput({
-            bind: 'meal',
+            bind: 'side',
             disabled: m.disabled,
             inline: true,
-            options: ['Steak', 'Chicken']
+            options: ['Buy', 'Sell']
         }),
     IntentInput: m => intentInput({bind: 'intent', disabled: m.disabled, compact: m.compact}),
     Checkbox: m => checkbox({bind: 'checked', disabled: m.disabled, label: 'enabled'}),
@@ -275,7 +275,7 @@ const SEEDS = {
     states: [],
     segment: 'strategy',
     chartType: 'area',
-    meal: 'Steak',
+    side: 'Buy',
     intent: 'primary' as Intent,
     checked: true
 };
@@ -298,7 +298,7 @@ class InputsIndexModel extends InputDemoModel {
     @bindable.ref states: string[] = SEEDS.states;
     @bindable segment: string = SEEDS.segment;
     @bindable chartType: string = SEEDS.chartType;
-    @bindable meal: string = SEEDS.meal;
+    @bindable side: string = SEEDS.side;
     @bindable intent: Intent = SEEDS.intent;
     @bindable checked: boolean = SEEDS.checked;
 

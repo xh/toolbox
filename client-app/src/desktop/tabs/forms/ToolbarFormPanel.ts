@@ -202,16 +202,16 @@ export const toolbarFormPanel = hoistCmp.factory({
                         item: toolbar({
                             compact: model.compact,
                             items: [
-                                groupLabel('Dinner Choice'),
+                                groupLabel('Side'),
                                 '-',
                                 formField({
                                     field: 'option3',
                                     item: radioInput({
                                         inline: true,
                                         options: [
-                                            'Steak',
-                                            'Chicken',
-                                            {label: 'Fish', value: 'Fish', disabled: true}
+                                            'Buy',
+                                            'Sell',
+                                            {label: 'Short', value: 'Short', disabled: true}
                                         ]
                                     })
                                 })
