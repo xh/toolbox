@@ -280,7 +280,7 @@ class TogglesPanelModel extends InputDemoModel {
     @bindable pgLabelSide: HSide = 'right';
     @bindable pgUnsetState = false;
 
-    // Specimens
+    // Inputs
     @bindable playground: boolean = SEEDS.playground;
     @bindable indeterminate: boolean = SEEDS.indeterminate;
     @bindable a: boolean = SEEDS.a;
@@ -309,7 +309,7 @@ class TogglesPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 

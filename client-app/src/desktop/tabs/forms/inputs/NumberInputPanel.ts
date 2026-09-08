@@ -237,7 +237,7 @@ class NumberInputPanelModel extends InputDemoModel {
     @bindable pgPrecision = 0;
     @bindable pgValueLabel = '';
 
-    // Specimens
+    // Inputs
     @bindable playground: number = SEEDS.playground;
     @bindable stepSizes: number = SEEDS.stepSizes;
     @bindable percent: number = SEEDS.percent;
@@ -266,7 +266,7 @@ class NumberInputPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 

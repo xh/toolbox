@@ -182,7 +182,7 @@ class IntentInputPanelModel extends InputDemoModel {
     @bindable pgShowNames = false;
     @bindable pgEnableClear = false;
 
-    // Specimens
+    // Inputs
     @bindable playground: Intent = SEEDS.playground;
     @bindable plain: Intent = SEEDS.plain;
     @bindable named: Intent = SEEDS.named;
@@ -204,7 +204,7 @@ class IntentInputPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 

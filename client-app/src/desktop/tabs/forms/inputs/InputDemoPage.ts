@@ -70,7 +70,7 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
             options: [
                 wrapperOptionGroup({
                     label: 'All examples',
-                    info: 'Applies to every specimen on the page.',
+                    info: 'Applies to every input on the page.',
                     items: [
                         wrapperOption({
                             omit: !supportsCompact,
@@ -102,7 +102,7 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
                 wrapperAction({
                     icon: Icon.reset(),
                     text: 'Reset all inputs',
-                    onClick: () => model.resetSpecimens()
+                    onClick: () => model.resetInputs()
                 })
             ],
             item: panel({

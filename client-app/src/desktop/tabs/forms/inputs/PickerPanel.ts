@@ -464,7 +464,7 @@ class PickerPanelModel extends InputDemoModel {
     @bindable pgButtonStyle: 'summary' | 'values' = 'summary';
     @bindable pgShowCount = false;
 
-    // Specimens
+    // Inputs
     @bindable.ref playground: string | string[] = SEEDS.playground;
     @bindable simpleOption: string = SEEDS.simpleOption;
     @bindable singleState: string = SEEDS.singleState;
@@ -490,7 +490,7 @@ class PickerPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 
@@ -506,8 +506,8 @@ class PickerPanelModel extends InputDemoModel {
         this.formModel.validateAsync();
     }
 
-    override resetSpecimens() {
-        super.resetSpecimens();
+    override resetInputs() {
+        super.resetInputs();
         this.playground = this.pgMulti ? [] : null;
     }
 }

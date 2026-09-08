@@ -81,7 +81,7 @@ export const inputsIndexPanel = hoistCmp.factory({
             ],
             options: wrapperOptionGroup({
                 label: 'All examples',
-                info: 'Applies to every specimen on the page.',
+                info: 'Applies to every input on the page.',
                 items: [
                     wrapperOption({
                         label: 'Compact',
@@ -94,9 +94,9 @@ export const inputsIndexPanel = hoistCmp.factory({
                         control: switchInput({bind: 'disabled'})
                     }),
                     wrapperOption({
-                        label: 'Show specimens',
+                        label: 'Show inputs',
                         info: 'Off collapses the tiles to names, for fast scanning.',
-                        control: switchInput({bind: 'showSpecimens'})
+                        control: switchInput({bind: 'showInputs'})
                     })
                 ]
             }),
@@ -155,15 +155,15 @@ interface GalleryProps extends HoistProps<InputsIndexModel> {
 
 const gallery = hoistCmp.factory<GalleryProps>(({model, entries}) =>
     demoGallery({
-        minTileWidth: model.showSpecimens ? 240 : 180,
+        minTileWidth: model.showInputs ? 240 : 180,
         items: entries.map(entry =>
             demoGalleryTile({
                 key: entry.name,
                 title: entry.name,
                 description: entry.description,
-                showSpecimen: model.showSpecimens,
+                showInstance: model.showInputs,
                 onClick: () => XH.navigate(entry.route),
-                item: SPECIMENS[entry.name](model)
+                item: TILE_INPUTS[entry.name](model)
             })
         )
     })
@@ -175,8 +175,8 @@ const SC_OPTIONS = [
     {label: 'Fund', value: 'fund'}
 ];
 
-/** One live specimen per catalog entry, bound to the index model. */
-const SPECIMENS: Record<string, (m: InputsIndexModel) => ReactElement> = {
+/** One live input per catalog entry, bound to the index model. */
+const TILE_INPUTS: Record<string, (m: InputsIndexModel) => ReactElement> = {
     TextInput: m =>
         textInput({
             bind: 'text',
@@ -284,7 +284,7 @@ const SEEDS = {
 class InputsIndexModel extends InputDemoModel {
     @bindable filter = '';
     @bindable groupByCategory = true;
-    @bindable showSpecimens = true;
+    @bindable showInputs = true;
 
     @managed dateRangeModel = new DateRangePickerModel({});
 
@@ -303,7 +303,7 @@ class InputsIndexModel extends InputDemoModel {
     @bindable intent: Intent = SEEDS.intent;
     @bindable checked: boolean = SEEDS.checked;
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 

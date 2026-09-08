@@ -470,7 +470,7 @@ class SelectPanelModel extends InputDemoModel {
     @bindable pgEnableFilter = true;
     @bindable pgLeftIcon = false;
 
-    // Specimens
+    // Inputs
     @bindable.ref playground: string | string[] = SEEDS.playground;
     @bindable simpleOption: string = SEEDS.simpleOption;
     @bindable restaurant: string = SEEDS.restaurant;
@@ -496,7 +496,7 @@ class SelectPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 
@@ -514,8 +514,8 @@ class SelectPanelModel extends InputDemoModel {
         this.formModel.validateAsync();
     }
 
-    override resetSpecimens() {
-        super.resetSpecimens();
+    override resetInputs() {
+        super.resetInputs();
         this.playground = this.pgMulti ? [] : null;
     }
 }

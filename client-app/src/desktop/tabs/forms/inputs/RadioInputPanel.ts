@@ -178,7 +178,7 @@ class RadioInputPanelModel extends InputDemoModel {
     @bindable pgInline = false;
     @bindable pgLabelSide: HSide = 'right';
 
-    // Specimens
+    // Inputs
     @bindable playground: string = SEEDS.playground;
     @bindable stacked: string = SEEDS.stacked;
     @bindable size: string = SEEDS.size;
@@ -194,7 +194,7 @@ class RadioInputPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 

@@ -230,7 +230,7 @@ interface WrapperOptionGroupProps extends HoistProps {
     /**
      * One-line note on the group's scope, rendered muted below the label. State which of the two
      * option scopes the group is (see the `WrapperOptionGroup` docs), e.g. "Applies to every
-     * specimen on the page." or "Drives the Playground instance."
+     * input on the page." or "Drives the Playground instance."
      */
     info?: ReactNode;
     /** Optional glyph shown before the label. */
@@ -248,7 +248,7 @@ interface WrapperOptionGroupProps extends HoistProps {
  * elements) via `item`/`items`, which render as the group's children.
  *
  * Every rail option declares a scope, and a group states which one it is via `info`:
- * - *Ambient* options are orthogonal to what any single specimen demonstrates (compact, disabled,
+ * - *Ambient* options are orthogonal to what any single instance demonstrates (compact, disabled,
  *   commit-on-change, theme). They apply to everything on the page, so a QA sweep is one click.
  * - *Playground* options are the curated props of the component itself and drive one dedicated
  *   instance only. Mark that group with `intent: 'primary'` and `Icon.experiment()`.

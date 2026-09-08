@@ -220,7 +220,7 @@ class SliderPanelModel extends InputDemoModel {
     @bindable pgTrackFill = true;
     @bindable pgVertical = false;
 
-    // Specimens
+    // Inputs
     @bindable playground: number = SEEDS.playground;
     @bindable.ref range: number[] = SEEDS.range;
     @bindable noLabels: number = SEEDS.noLabels;
@@ -245,7 +245,7 @@ class SliderPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 

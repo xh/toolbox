@@ -232,7 +232,7 @@ class TextInputPanelModel extends InputDemoModel {
     @bindable pgRound = false;
     @bindable pgPlaceholder = 'Enter text...';
 
-    // Specimens
+    // Inputs
     @bindable playground: string = SEEDS.playground;
     @bindable plain: string = SEEDS.plain;
     @bindable password: string = SEEDS.password;
@@ -261,7 +261,7 @@ class TextInputPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 

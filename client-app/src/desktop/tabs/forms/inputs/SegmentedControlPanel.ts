@@ -260,7 +260,7 @@ class SegmentedControlPanelModel extends InputDemoModel {
     @bindable pgDividers: 'auto' | 'true' | 'false' = 'auto';
     @bindable pgIntent: 'none' | Intent = 'none';
 
-    // Specimens
+    // Inputs
     @bindable playground: string = SEEDS.playground;
     @bindable iconText: string = SEEDS.iconText;
     @bindable emptyState: string = SEEDS.emptyState;
@@ -279,7 +279,7 @@ class SegmentedControlPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 

@@ -56,13 +56,13 @@ export const [DemoSection, demoSection] = hoistCmp.withFactory<DemoSectionProps>
 // Row
 //------------------------------------------------------------------
 export interface DemoRowProps extends HoistProps {
-    /** Short label for the specimen. */
+    /** Short label for the instance. */
     label: ReactNode;
-    /** Optional one-line muted description - typically the props the specimen sets. */
+    /** Optional one-line muted description - typically the props the instance sets. */
     info?: ReactNode;
 }
 
-/** A labeled specimen: label / info / the control itself, stacked. Pass the control as `item`. */
+/** A labeled instance: label / info / the control itself, stacked. Pass the control as `item`. */
 export const [DemoRow, demoRow] = hoistCmp.withFactory<DemoRowProps>({
     displayName: 'DemoRow',
     className: 'tbox-demo-row',
@@ -163,7 +163,7 @@ export interface DemoFrameProps extends HoistProps {
     chip?: ReactNode;
 }
 
-/** A bordered card with an optional caption row, for hosting a specimen in context. */
+/** A bordered card with an optional caption row, for hosting an instance in context. */
 export const [DemoFrame, demoFrame] = hoistCmp.withFactory<DemoFrameProps>({
     displayName: 'DemoFrame',
     className: 'tbox-demo-frame',
@@ -260,25 +260,25 @@ export interface DemoGalleryTileProps extends HoistProps {
     title: ReactNode;
     /** One-line description. */
     description?: ReactNode;
-    /** Navigation handler for the tile. Clicks within the specimen do not trigger it. */
+    /** Navigation handler for the tile. Clicks within the instance do not trigger it. */
     onClick?: () => void;
     /** False to collapse the tile to its name row, for fast scanning. Default true. */
-    showSpecimen?: boolean;
+    showInstance?: boolean;
 }
 
 /**
- * A gallery tile: name row with a navigation affordance, description, and a live specimen. The
- * tile navigates on click, except within the specimen, which stays interactive.
+ * A gallery tile: name row with a navigation affordance, description, and a live instance. The
+ * tile navigates on click, except within the instance, which stays interactive.
  */
 export const [DemoGalleryTile, demoGalleryTile] = hoistCmp.withFactory<DemoGalleryTileProps>({
     displayName: 'DemoGalleryTile',
     className: 'tbox-demo-gallery-tile',
-    render({className, title, description, onClick, showSpecimen = true, children}) {
+    render({className, title, description, onClick, showInstance = true, children}) {
         return div({
             className: classNames(
                 className,
                 onClick && 'tbox-demo-gallery-tile--clickable',
-                !showSpecimen && 'tbox-demo-gallery-tile--compact'
+                !showInstance && 'tbox-demo-gallery-tile--compact'
             ),
             onClick,
             items: [
@@ -289,12 +289,12 @@ export const [DemoGalleryTile, demoGalleryTile] = hoistCmp.withFactory<DemoGalle
                 div({
                     className: 'tbox-demo-gallery-tile__description',
                     item: description,
-                    omit: !showSpecimen || !description
+                    omit: !showInstance || !description
                 }),
                 div({
-                    className: 'tbox-demo-gallery-tile__specimen',
-                    omit: !showSpecimen,
-                    // Keep the live specimen usable: swallow clicks (including those bubbling from
+                    className: 'tbox-demo-gallery-tile__instance',
+                    omit: !showInstance,
+                    // Keep the live instance usable: swallow clicks (including those bubbling from
                     // popover portals via the React tree) so they do not navigate.
                     onClick: e => e.stopPropagation(),
                     items: children

@@ -242,7 +242,7 @@ class CodeInputsPanelModel extends InputDemoModel {
     @bindable pgFullscreen = true;
     @bindable pgWrap = false;
 
-    // Specimens
+    // Inputs
     @bindable playground: string = SEEDS.playground;
     @bindable json: string = SEEDS.json;
     @bindable code: string = SEEDS.code;
@@ -269,7 +269,7 @@ class CodeInputsPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 

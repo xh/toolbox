@@ -214,7 +214,7 @@ class TextAreaPanelModel extends InputDemoModel {
     @bindable pgSpellCheck = false;
     @bindable pgHeight = 100;
 
-    // Specimens
+    // Inputs
     @bindable playground: string = SEEDS.playground;
     @bindable plain: string = SEEDS.plain;
     @bindable notes: string = SEEDS.notes;
@@ -242,7 +242,7 @@ class TextAreaPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 

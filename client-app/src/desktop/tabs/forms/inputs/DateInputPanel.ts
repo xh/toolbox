@@ -245,7 +245,7 @@ class DateInputPanelModel extends InputDemoModel {
     @bindable pgTimePrecision: 'none' | 'minute' | 'second' = 'none';
     @bindable pgActionsBar = false;
 
-    // Specimens
+    // Inputs
     @bindable.ref playground: Date = SEEDS.playground;
     @bindable.ref minMax: Date = SEEDS.minMax;
     @bindable.ref localDate: LocalDate = SEEDS.localDate;
@@ -269,7 +269,7 @@ class DateInputPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 

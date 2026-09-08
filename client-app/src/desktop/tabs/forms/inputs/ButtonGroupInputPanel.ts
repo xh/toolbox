@@ -22,7 +22,7 @@ import {inputDemoPage} from './InputDemoPage';
 
 const ENTRY = inputEntry('ButtonGroupInput');
 
-/** Child buttons shared by the Playground and several variants - built fresh per specimen. */
+/** Child buttons shared by the Playground and several variants - built fresh per instance. */
 const chartButtons = () => [
     button({icon: Icon.chartLine(), text: 'Linear', value: 'linear'}),
     button({icon: Icon.chartArea(), text: 'Area', value: 'area'}),
@@ -251,7 +251,7 @@ class ButtonGroupInputPanelModel extends InputDemoModel {
     @bindable pgEnableClear = false;
     @bindable pgIntent: Intent = null;
 
-    // Specimens
+    // Inputs
     @bindable.ref playground: string | string[] = SEEDS.playground;
     @bindable plain: string = SEEDS.plain;
     @bindable iconsOnly: string = SEEDS.iconsOnly;
@@ -275,7 +275,7 @@ class ButtonGroupInputPanelModel extends InputDemoModel {
         ]
     });
 
-    get specimenSeeds() {
+    get inputSeeds() {
         return SEEDS;
     }
 
@@ -293,8 +293,8 @@ class ButtonGroupInputPanelModel extends InputDemoModel {
         this.formModel.validateAsync();
     }
 
-    override resetSpecimens() {
-        super.resetSpecimens();
+    override resetInputs() {
+        super.resetInputs();
         this.playground = this.pgMulti ? [] : null;
     }
 }

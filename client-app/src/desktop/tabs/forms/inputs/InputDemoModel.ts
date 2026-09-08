@@ -15,18 +15,18 @@ export interface InputDemoConfig {
 }
 
 /**
- * Base model for a per-input demo page. Holds the ambient options that apply to every specimen on
- * the page and the reset of all specimen values to their seeds. Subclasses add one `@bindable` per
- * live specimen (seeded from `specimenSeeds`) and one per curated Playground prop.
+ * Base model for a per-input demo page. Holds the ambient options that apply to every input on
+ * the page and the reset of all input values to their seeds. Subclasses add one `@bindable` per
+ * live input (seeded from `inputSeeds`) and one per curated Playground prop.
  *
  * Rail option state is per-tab and in-memory, matching the Wrapper rail - not persisted.
  */
 export abstract class InputDemoModel extends HoistModel {
     /** Ambient - `compact` on inputs that support it (SegmentedControl, IntentInput, Picker). */
     @bindable compact = false;
-    /** Ambient - `disabled` on every specimen. */
+    /** Ambient - `disabled` on every input. */
     @bindable disabled = false;
-    /** Ambient - `commitOnChange` on every specimen that supports it. */
+    /** Ambient - `commitOnChange` on every input that supports it. */
     @bindable commitOnChange = false;
 
     /** True for inputs with a `compact` prop - shows the ambient Compact switch. */
@@ -38,11 +38,11 @@ export abstract class InputDemoModel extends HoistModel {
      */
     readonly commitOnChangeDefault: boolean | null;
 
-    /** Optional FormModel behind the In a Form section - reset along with the specimens. */
+    /** Optional FormModel behind the In a Form section - reset along with the inputs. */
     formModel?: FormModel;
 
-    /** Seed values for every specimen field, keyed by property name. Also applied on reset. */
-    abstract get specimenSeeds(): PlainObject;
+    /** Seed values for every input field, keyed by property name. Also applied on reset. */
+    abstract get inputSeeds(): PlainObject;
 
     constructor({supportsCompact = false, commitOnChangeDefault = false}: InputDemoConfig = {}) {
         super();
@@ -62,7 +62,7 @@ export abstract class InputDemoModel extends HoistModel {
         });
     }
 
-    /** Props every specimen spreads so the ambient options reach it. */
+    /** Props every input spreads so the ambient options reach it. */
     get ambientProps(): PlainObject {
         const {disabled, compact, commitOnChange, supportsCompact, commitOnChangeDefault} = this;
         return {
@@ -85,15 +85,15 @@ export abstract class InputDemoModel extends HoistModel {
         };
     }
 
-    /** Props for a `formField` wrapping a specimen - FormField owns its input's commit mode. */
+    /** Props for a `formField` wrapping an input - FormField owns its input's commit mode. */
     get formFieldProps(): PlainObject {
         return this.commitOnChangeDefault != null ? {commitOnChange: this.commitOnChange} : {};
     }
 
-    /** Restore every specimen (and the form, if any) to its seeded value. Rail options are kept. */
+    /** Restore every input (and the form, if any) to its seeded value. Rail options are kept. */
     @action
-    resetSpecimens() {
-        Object.assign(this, this.specimenSeeds);
+    resetInputs() {
+        Object.assign(this, this.inputSeeds);
         this.formModel?.reset();
         // Reset clears `validationDisplayed`, so re-run validation to bring the messages back.
         this.formModel?.validateAsync();
