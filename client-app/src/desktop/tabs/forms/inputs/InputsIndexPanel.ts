@@ -1,6 +1,6 @@
 import {DateRangePickerModel} from '@xh/hoist/cmp/daterange';
 import {filler, span, vbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, Intent, managed, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistProps, Intent, managed, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dateRangePicker} from '@xh/hoist/desktop/cmp/daterange';
 import {
@@ -26,6 +26,7 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
+import {pluralize} from '@xh/hoist/utils/js';
 import {sortBy} from 'lodash';
 import {ReactElement} from 'react';
 import {usStates} from '../../../../core/data';
@@ -52,11 +53,11 @@ export const inputsIndexPanel = hoistCmp.factory({
             title: 'All Inputs',
             icon: Icon.grip(),
             description: [
-                'Every desktop `HoistInput`, live and side by side. Use it to find the right control,',
-                'or to sweep the whole set after a framework change.',
+                'Every desktop `HoistInput`, live and side by side. Use it to find the right',
+                'control, or to sweep the whole set after a framework change.',
                 '',
-                'Each tile opens a dedicated page with a playground, full variants, toolbar rendering,',
-                'and `FormField` pairing.'
+                'Each tile opens a dedicated page with a playground, full variants, toolbar',
+                'rendering, and `FormField` pairing.'
             ],
             links: [
                 {
@@ -126,11 +127,11 @@ export const inputsIndexPanel = hoistCmp.factory({
                     filler(),
                     span({
                         className: 'tb-inputs-index__count',
-                        item: `${count} ${count === 1 ? 'input' : 'inputs'}`
+                        item: pluralize('input', count, true)
                     })
                 ),
                 item: vbox({
-                    className: 'tb-inputs-index__body',
+                    className: 'tbox-demo-body',
                     items: groupByCategory
                         ? INPUT_CATEGORIES.map(category => {
                               const entries = visibleEntries.filter(it => it.category === category);
@@ -148,10 +149,14 @@ export const inputsIndexPanel = hoistCmp.factory({
     }
 });
 
-const gallery = hoistCmp.factory<InputsIndexModel>(({model, entries}) =>
+interface GalleryProps extends HoistProps<InputsIndexModel> {
+    entries: InputCatalogEntry[];
+}
+
+const gallery = hoistCmp.factory<GalleryProps>(({model, entries}) =>
     demoGallery({
         minTileWidth: model.showSpecimens ? 240 : 180,
-        items: (entries as InputCatalogEntry[]).map(entry =>
+        items: entries.map(entry =>
             demoGalleryTile({
                 key: entry.name,
                 title: entry.name,
@@ -202,7 +207,12 @@ const SPECIMENS: Record<string, (m: InputsIndexModel) => ReactElement> = {
         }),
     DateInput: m =>
         dateInput({bind: 'date', disabled: m.disabled, valueType: 'localDate', width: '100%'}),
-    DateRangePicker: m => dateRangePicker({model: m.dateRangeModel, flex: 1}),
+    DateRangePicker: m =>
+        dateRangePicker({
+            model: m.dateRangeModel,
+            buttonProps: {disabled: m.disabled},
+            flex: 1
+        }),
     Select: m =>
         select({
             bind: 'state',

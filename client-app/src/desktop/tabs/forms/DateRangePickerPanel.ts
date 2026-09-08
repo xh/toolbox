@@ -324,41 +324,31 @@ const variants = hoistCmp.factory<DateRangePickerPanelModel>(({model}) =>
         compactHeader: true,
         className: 'tb-drp-panel__variants',
         items: [
-            div({
+            demoRow({
                 className: 'tb-drp-panel__variant',
-                item: demoRow({
-                    label: 'Stretched into a narrow host',
-                    info: 'flex: 1 - the trigger measures its width and drops the dates when they no longer fit.',
-                    item: box({
-                        className: 'tb-drp-panel__narrow-host',
-                        width: 200,
-                        item: dateRangePicker({
-                            model: model.pickerModel,
-                            flex: 1,
-                            testId: 'drp-narrow'
-                        })
-                    })
+                label: 'Stretched into a narrow host',
+                info: 'flex: 1 - the trigger measures its width and drops the dates when they no longer fit.',
+                item: box({
+                    className: 'tb-drp-panel__narrow-host',
+                    width: 200,
+                    item: dateRangePicker({model: model.pickerModel, flex: 1, testId: 'drp-narrow'})
                 })
             }),
-            div({
+            demoRow({
                 className: 'tb-drp-panel__variant',
-                item: demoRow({
-                    label: 'Single tab - months and years only',
-                    info: "tabs: ['period'] - no rail, and the popover shrinks to fit.",
-                    item: dateRangePicker({model: model.monthPickerModel, testId: 'drp-month'})
-                })
+                label: 'Single tab - months and years only',
+                info: "tabs: ['period'] - no rail, and the popover shrinks to fit.",
+                item: dateRangePicker({model: model.monthPickerModel, testId: 'drp-month'})
             }),
-            div({
+            demoRow({
                 className: 'tb-drp-panel__variant',
-                item: demoRow({
-                    label: 'App-defined presets, outlined trigger',
-                    info: 'A fiscal-year preset alongside built-ins, presets + custom tabs, styleButtonAsInput: false.',
-                    item: dateRangePicker({
-                        model: model.fiscalPickerModel,
-                        styleButtonAsInput: false,
-                        buttonProps: {icon: Icon.chartLine()},
-                        testId: 'drp-fiscal'
-                    })
+                label: 'App-defined presets, outlined trigger',
+                info: 'A fiscal-year preset alongside built-ins, presets + custom tabs, styleButtonAsInput: false.',
+                item: dateRangePicker({
+                    model: model.fiscalPickerModel,
+                    styleButtonAsInput: false,
+                    buttonProps: {icon: Icon.chartLine()},
+                    testId: 'drp-fiscal'
                 })
             })
         ]

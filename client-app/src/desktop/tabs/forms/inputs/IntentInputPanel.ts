@@ -26,13 +26,13 @@ export const intentInputPanel = hoistCmp.factory({
     model: creates(() => IntentInputPanelModel),
 
     render({model}) {
+        const {ambientProps, ambientSnippetProps} = model;
         return inputDemoPage({
             entry: ENTRY,
-            supportsCompact: true,
-            supportsCommitOnChange: false,
             description: [
-                'A swatch picker for Hoist intents - the value is an `Intent` string. Swatches carry',
-                'their intent name as a tooltip and accessible label; `showNames` prints them too.',
+                'A swatch picker for Hoist intents - the value is an `Intent` string. Swatches',
+                'carry their intent name as a tooltip and accessible label; `showNames` prints',
+                'them too.',
                 '',
                 'Use `intents` to offer a subset and `enableClear` to allow a null value.'
             ],
@@ -71,13 +71,12 @@ export const intentInputPanel = hoistCmp.factory({
                     bind: 'value',
                     showNames: model.pgShowNames || undefined,
                     enableClear: model.pgEnableClear || undefined,
-                    compact: model.compact || undefined,
-                    disabled: model.disabled || undefined
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: intentInput({
                     bind: 'playground',
-                    disabled: model.disabled,
-                    compact: model.compact,
+                    ...ambientProps,
                     showNames: model.pgShowNames,
                     enableClear: model.pgEnableClear
                 })
@@ -86,19 +85,14 @@ export const intentInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Swatches only',
                     info: 'The default',
-                    item: intentInput({
-                        bind: 'plain',
-                        disabled: model.disabled,
-                        compact: model.compact
-                    })
+                    item: intentInput({bind: 'plain', ...ambientProps})
                 }),
                 demoRow({
                     label: 'Named',
                     info: 'showNames: true',
                     item: intentInput({
                         bind: 'named',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         showNames: true
                     })
                 }),
@@ -107,8 +101,7 @@ export const intentInputPanel = hoistCmp.factory({
                     info: "intents: ['primary', 'danger']",
                     item: intentInput({
                         bind: 'subset',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         intents: ['primary', 'danger']
                     })
                 }),
@@ -117,8 +110,8 @@ export const intentInputPanel = hoistCmp.factory({
                     info: 'disabled: true, showNames: true',
                     item: intentInput({
                         bind: 'disabledIntent',
+                        ...ambientProps,
                         disabled: true,
-                        compact: model.compact,
                         showNames: true
                     })
                 }),
@@ -137,11 +130,11 @@ export const intentInputPanel = hoistCmp.factory({
                 })
             ],
             toolbarItems: compact => [
-                intentInput({bind: 'tbarIntent', disabled: model.disabled, compact}),
+                intentInput({bind: 'tbarIntent', ...ambientProps, compact}),
                 toolbarSep(),
                 intentInput({
                     bind: 'tbarIntent',
-                    disabled: model.disabled,
+                    ...ambientProps,
                     compact,
                     showNames: true
                 }),
@@ -216,7 +209,7 @@ class IntentInputPanelModel extends InputDemoModel {
     }
 
     constructor() {
-        super();
+        super({supportsCompact: true, commitOnChangeDefault: null});
         makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();

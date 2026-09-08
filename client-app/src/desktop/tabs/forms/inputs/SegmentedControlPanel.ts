@@ -14,6 +14,7 @@ import {
     demoPlayground,
     demoRow,
     fmtDemoConfig,
+    raw,
     wrapperOption
 } from '../../../common';
 import {inputEntry} from './InputCatalog';
@@ -40,10 +41,9 @@ export const segmentedControlPanel = hoistCmp.factory({
     model: creates(() => SegmentedControlPanelModel),
 
     render({model}) {
+        const {ambientProps, ambientSnippetProps} = model;
         return inputDemoPage({
             entry: ENTRY,
-            supportsCompact: true,
-            supportsCommitOnChange: false,
             description: [
                 'A single choice from a small, mutually exclusive set, rendered as toggle segments',
                 'in a tray. Fills its container by default or hugs its options with `fill: false`.',
@@ -108,19 +108,19 @@ export const segmentedControlPanel = hoistCmp.factory({
             playground: demoPlayground({
                 config: fmtDemoConfig('segmentedControl', {
                     bind: 'value',
-                    disabled: model.disabled || undefined,
-                    compact: model.compact || undefined,
+                    options: raw('SC_OPTIONS'),
                     fill: model.pgFill ? undefined : false,
                     showTrayBackground: model.pgTrayBackground ? undefined : false,
                     outlined: model.pgOutlined ? undefined : false,
                     showOptionDividers:
                         model.pgDividers === 'auto' ? undefined : model.pgDividers === 'true',
-                    intent: model.pgIntent === 'none' ? undefined : model.pgIntent
+                    intent: model.pgIntent === 'none' ? undefined : model.pgIntent,
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: segmentedControl({
                     bind: 'playground',
-                    disabled: model.disabled,
-                    compact: model.compact,
+                    ...ambientProps,
                     fill: model.pgFill,
                     showTrayBackground: model.pgTrayBackground,
                     outlined: model.pgOutlined,
@@ -136,8 +136,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                     info: 'Default options with icons',
                     item: segmentedControl({
                         bind: 'iconText',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: SC_OPTIONS
                     })
                 }),
@@ -146,8 +145,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                     info: 'No value set - dividers appear until a choice is made',
                     item: segmentedControl({
                         bind: 'emptyState',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: SC_OPTIONS
                     })
                 }),
@@ -156,8 +154,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                     info: 'Each option carries its own intent',
                     item: segmentedControl({
                         bind: 'perOptionIntent',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: INTENT_OPTIONS
                     })
                 }),
@@ -166,8 +163,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                     info: 'equalSegmentWidths: false',
                     item: segmentedControl({
                         bind: 'contentSized',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         equalSegmentWidths: false,
                         options: ['Short', 'A much longer label', 'Mid']
                     })
@@ -177,8 +173,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                     info: "options: ['Low', 'Medium', 'High']",
                     item: segmentedControl({
                         bind: 'primitiveOptions',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: ['Low', 'Medium', 'High']
                     })
                 }),
@@ -187,8 +182,8 @@ export const segmentedControlPanel = hoistCmp.factory({
                     info: 'disabled: true',
                     item: segmentedControl({
                         bind: 'disabledExample',
+                        ...ambientProps,
                         disabled: true,
-                        compact: model.compact,
                         options: SC_OPTIONS
                     })
                 })
@@ -196,7 +191,7 @@ export const segmentedControlPanel = hoistCmp.factory({
             toolbarItems: compact => [
                 segmentedControl({
                     bind: 'tbarSegment',
-                    disabled: model.disabled,
+                    ...ambientProps,
                     compact,
                     fill: false,
                     options: SC_OPTIONS
@@ -204,7 +199,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                 toolbarSep(),
                 segmentedControl({
                     bind: 'tbarLevel',
-                    disabled: model.disabled,
+                    ...ambientProps,
                     compact,
                     fill: false,
                     options: ['Low', 'Medium', 'High']
@@ -289,7 +284,7 @@ class SegmentedControlPanelModel extends InputDemoModel {
     }
 
     constructor() {
-        super();
+        super({supportsCompact: true, commitOnChangeDefault: null});
         makeObservable(this);
         // Show the failing 'level' rule on load - FormField displays messages only after
         // validation runs.

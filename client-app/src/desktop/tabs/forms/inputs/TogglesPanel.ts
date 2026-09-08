@@ -1,5 +1,5 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {hbox} from '@xh/hoist/cmp/layout';
+import {hbox, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HSide, managed} from '@xh/hoist/core';
 import {Constraint} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -33,12 +33,10 @@ export const togglesPanel = hoistCmp.factory({
     model: creates(() => TogglesPanelModel),
 
     render({model}) {
-        const {disabled} = model;
+        const {ambientProps, ambientSnippetProps} = model;
         return inputDemoPage({
             entry: ENTRY,
             title: 'Checkbox & Switch',
-            supportsCompact: false,
-            supportsCommitOnChange: false,
             description: [
                 'Three boolean inputs. `Checkbox` is the standard box with an optional',
                 'indeterminate display for null; `SwitchInput` is the same value as a switch;',
@@ -100,40 +98,41 @@ export const togglesPanel = hoistCmp.factory({
                         label: model.pgLabel || undefined,
                         labelSide: model.pgLabelSide === 'right' ? undefined : model.pgLabelSide,
                         displayUnsetState: model.pgUnsetState || undefined,
-                        disabled: disabled || undefined
+                        ...ambientSnippetProps
                     }),
                     fmtDemoConfig('switchInput', {
                         bind: 'value',
                         label: model.pgLabel || undefined,
                         labelSide: model.pgLabelSide === 'right' ? undefined : model.pgLabelSide,
-                        disabled: disabled || undefined
+                        ...ambientSnippetProps
                     }),
                     fmtDemoConfig('checkboxButton', {
                         bind: 'value',
                         text: model.pgLabel || undefined,
-                        disabled: disabled || undefined
+                        ...ambientSnippetProps
                     })
                 ].join('\n\n'),
+                value: model.playground,
                 item: hbox({
                     gap: 20,
                     alignItems: 'center',
                     items: [
                         checkbox({
                             bind: 'playground',
-                            disabled,
+                            ...ambientProps,
                             label: model.pgLabel,
                             labelSide: model.pgLabelSide,
                             displayUnsetState: model.pgUnsetState
                         }),
                         switchInput({
                             bind: 'playground',
-                            disabled,
+                            ...ambientProps,
                             label: model.pgLabel,
                             labelSide: model.pgLabelSide
                         }),
                         checkboxButton({
                             bind: 'playground',
-                            disabled,
+                            ...ambientProps,
                             text: model.pgLabel
                         })
                     ]
@@ -145,18 +144,18 @@ export const togglesPanel = hoistCmp.factory({
                     info: 'Checkbox with displayUnsetState and a null value',
                     item: checkbox({
                         bind: 'indeterminate',
-                        disabled,
+                        ...ambientProps,
                         displayUnsetState: true
                     })
                 }),
                 demoRow({
-                    label: 'Inline pair',
-                    info: 'inline: true',
-                    item: hbox({
+                    label: 'Stacked pair',
+                    info: 'inline: false',
+                    item: vbox({
                         gap: 12,
                         items: [
-                            checkbox({bind: 'a', disabled, inline: true, label: 'A'}),
-                            checkbox({bind: 'b', disabled, inline: true, label: 'B'})
+                            checkbox({bind: 'a', ...ambientProps, inline: false, label: 'A'}),
+                            checkbox({bind: 'b', ...ambientProps, inline: false, label: 'B'})
                         ]
                     })
                 }),
@@ -165,7 +164,7 @@ export const togglesPanel = hoistCmp.factory({
                     info: "labelSide: 'left'",
                     item: switchInput({
                         bind: 'switchLeft',
-                        disabled,
+                        ...ambientProps,
                         labelSide: 'left',
                         label: 'Enabled'
                     })
@@ -175,7 +174,7 @@ export const togglesPanel = hoistCmp.factory({
                     info: "checkedIcon, uncheckedIcon, iconSide: 'right'",
                     item: checkboxButton({
                         bind: 'customIcons',
-                        disabled,
+                        ...ambientProps,
                         checkedIcon: Icon.eye(),
                         uncheckedIcon: Icon.eyeSlash(),
                         iconSide: 'right',
@@ -189,9 +188,24 @@ export const togglesPanel = hoistCmp.factory({
                         gap: 20,
                         alignItems: 'center',
                         items: [
-                            checkbox({bind: 'disabledDemo', disabled: true, label: 'Enabled'}),
-                            switchInput({bind: 'disabledDemo', disabled: true, label: 'Enabled'}),
-                            checkboxButton({bind: 'disabledDemo', disabled: true, text: 'Enabled'})
+                            checkbox({
+                                bind: 'disabledDemo',
+                                ...ambientProps,
+                                disabled: true,
+                                label: 'Enabled'
+                            }),
+                            switchInput({
+                                bind: 'disabledDemo',
+                                ...ambientProps,
+                                disabled: true,
+                                label: 'Enabled'
+                            }),
+                            checkboxButton({
+                                bind: 'disabledDemo',
+                                ...ambientProps,
+                                disabled: true,
+                                text: 'Enabled'
+                            })
                         ]
                     })
                 }),
@@ -210,13 +224,13 @@ export const togglesPanel = hoistCmp.factory({
                 })
             ],
             toolbarItems: () => [
-                checkboxButton({bind: 'tbarEnabled', disabled, text: 'Enabled'}),
+                checkboxButton({bind: 'tbarEnabled', ...ambientProps, text: 'Enabled'}),
                 toolbarSep(),
-                checkbox({bind: 'tbarEnabled', disabled, label: 'enabled'}),
+                checkbox({bind: 'tbarEnabled', ...ambientProps, label: 'enabled'}),
                 toolbarSep(),
                 switchInput({
                     bind: 'tbarEnabled',
-                    disabled,
+                    ...ambientProps,
                     label: 'Enabled:',
                     labelSide: 'left'
                 }),
@@ -300,7 +314,7 @@ class TogglesPanelModel extends InputDemoModel {
     }
 
     constructor() {
-        super();
+        super({commitOnChangeDefault: null});
         makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();

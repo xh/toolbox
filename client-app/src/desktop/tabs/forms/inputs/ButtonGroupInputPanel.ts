@@ -29,20 +29,24 @@ const chartButtons = () => [
     button({icon: Icon.chartBar(), text: 'Bar', value: 'bar'})
 ];
 
+/** Child buttons for the icon-only view toggles in the toolbar and form sections. */
+const viewButtons = () => [
+    button({icon: Icon.grid(), value: 'grid'}),
+    button({icon: Icon.list(), value: 'list'})
+];
+
 export const buttonGroupInputPanel = hoistCmp.factory({
     displayName: 'ButtonGroupInputPanel',
     model: creates(() => ButtonGroupInputPanelModel),
 
     render({model}) {
-        const {disabled} = model;
+        const {ambientProps, ambientSnippetProps} = model;
         return inputDemoPage({
             entry: ENTRY,
-            supportsCompact: false,
-            supportsCommitOnChange: false,
             description: [
                 'A row of `button`s acting as a value - each child button carries a `value`, and',
-                'the group selects one (or several with `enableMulti`). Intent and outlined styling',
-                'flow to the buttons.',
+                'the group selects one (or several with `enableMulti`). Intent and outlined',
+                'styling flow to the buttons.',
                 '',
                 'Compare with `SegmentedControl` for a tray-style single choice driven by an',
                 '`options` array.'
@@ -102,12 +106,13 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                     enableMulti: model.pgMulti || undefined,
                     enableClear: model.pgEnableClear || undefined,
                     intent: model.pgIntent || undefined,
-                    disabled: disabled || undefined,
-                    items: raw('chartButtons()')
+                    items: raw('chartButtons()'),
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: buttonGroupInput({
                     bind: 'playground',
-                    disabled,
+                    ...ambientProps,
                     outlined: model.pgOutlined,
                     enableMulti: model.pgMulti,
                     enableClear: model.pgEnableClear,
@@ -119,14 +124,18 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Icon and text',
                     info: 'No props beyond bind',
-                    item: buttonGroupInput({bind: 'plain', disabled, items: chartButtons()})
+                    item: buttonGroupInput({
+                        bind: 'plain',
+                        ...ambientProps,
+                        items: chartButtons()
+                    })
                 }),
                 demoRow({
                     label: 'Icons only',
                     info: 'Buttons with icon and title, no text',
                     item: buttonGroupInput({
                         bind: 'iconsOnly',
-                        disabled,
+                        ...ambientProps,
                         items: [
                             button({icon: Icon.chartLine(), title: 'Linear', value: 'linear'}),
                             button({icon: Icon.chartArea(), title: 'Area', value: 'area'}),
@@ -139,7 +148,7 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                     info: 'Buttons with text, no icons',
                     item: buttonGroupInput({
                         bind: 'textOnly',
-                        disabled,
+                        ...ambientProps,
                         items: [
                             button({text: 'Linear', value: 'linear'}),
                             button({text: 'Area', value: 'area'}),
@@ -152,7 +161,7 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                     info: "outlined: true, intent: 'primary'",
                     item: buttonGroupInput({
                         bind: 'outlinedPrimary',
-                        disabled,
+                        ...ambientProps,
                         outlined: true,
                         intent: 'primary',
                         items: chartButtons()
@@ -163,6 +172,7 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                     info: 'disabled: true',
                     item: buttonGroupInput({
                         bind: 'disabledChart',
+                        ...ambientProps,
                         disabled: true,
                         items: chartButtons()
                     })
@@ -182,16 +192,13 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                 })
             ],
             toolbarItems: () => [
-                buttonGroupInput({bind: 'tbarChart', disabled, items: chartButtons()}),
+                buttonGroupInput({bind: 'tbarChart', ...ambientProps, items: chartButtons()}),
                 toolbarSep(),
                 buttonGroupInput({
                     bind: 'tbarView',
-                    disabled,
+                    ...ambientProps,
                     outlined: true,
-                    items: [
-                        button({icon: Icon.grid(), value: 'grid'}),
-                        button({icon: Icon.list(), value: 'list'})
-                    ]
+                    items: viewButtons()
                 }),
                 toolbarSep(),
                 button({text: 'Apply', icon: Icon.filter()})
@@ -216,12 +223,7 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                             item: formField({
                                 field: 'view',
                                 inline: true,
-                                item: buttonGroupInput({
-                                    items: [
-                                        button({icon: Icon.grid(), value: 'grid'}),
-                                        button({icon: Icon.list(), value: 'list'})
-                                    ]
-                                })
+                                item: buttonGroupInput({items: viewButtons()})
                             })
                         })
                     })
@@ -278,15 +280,21 @@ class ButtonGroupInputPanelModel extends InputDemoModel {
     }
 
     constructor() {
-        super();
+        super({commitOnChangeDefault: null});
         makeObservable(this);
         // Playground value type flips between string and string[] with multi-select - reset it
-        // whenever that toggle changes, since a stale value would no longer match the input's mode.
+        // whenever that toggle changes, since a stale value would no longer match the input's
+        // mode.
         this.addReaction({
             track: () => this.pgMulti,
             run: multi => (this.playground = multi ? [] : null)
         });
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
+    }
+
+    override resetSpecimens() {
+        super.resetSpecimens();
+        this.playground = this.pgMulti ? [] : null;
     }
 }

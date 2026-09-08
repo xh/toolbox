@@ -2,6 +2,7 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {box, div, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, managed, XH} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -65,12 +66,10 @@ export const selectPanel = hoistCmp.factory({
     model: creates(() => SelectPanelModel),
 
     render({model}) {
-        const {disabled, pgMulti} = model,
+        const {ambientProps, ambientSnippetProps, pgMulti} = model,
             pgPlaceholder = pgMulti ? 'Select states...' : 'Select a state...';
         return inputDemoPage({
             entry: ENTRY,
-            supportsCompact: false,
-            supportsCommitOnChange: false,
             description: [
                 '`Select` is a managed combobox/dropdown input supporting single and',
                 'multi-value selection, async server-side queries, creatable entries, grouped',
@@ -131,11 +130,12 @@ export const selectPanel = hoistCmp.factory({
                     enableFilter: model.pgEnableFilter ? undefined : false,
                     leftIcon: model.pgLeftIcon ? raw('Icon.globe()') : undefined,
                     placeholder: pgPlaceholder,
-                    disabled: disabled || undefined
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: select({
                     bind: 'playground',
-                    disabled,
+                    ...ambientProps,
                     options: usStates,
                     enableMulti: pgMulti,
                     enableClear: model.pgEnableClear,
@@ -151,7 +151,7 @@ export const selectPanel = hoistCmp.factory({
                     info: 'Primitive string options, enableClear',
                     item: select({
                         bind: 'simpleOption',
-                        disabled,
+                        ...ambientProps,
                         options: ['Small', 'Medium', 'Large', 'X-Large'],
                         enableClear: true,
                         placeholder: 'Size...',
@@ -163,7 +163,7 @@ export const selectPanel = hoistCmp.factory({
                     info: 'labelField + valueField on plain objects',
                     item: select({
                         bind: 'restaurant',
-                        disabled,
+                        ...ambientProps,
                         options: [
                             {name: 'Osteria Francescana', city: 'Italy'},
                             {name: 'El Celler de Can Roca', city: 'Spain'},
@@ -184,7 +184,7 @@ export const selectPanel = hoistCmp.factory({
                     info: 'queryFn with server-side customer search',
                     item: select({
                         bind: 'asyncValue',
-                        disabled,
+                        ...ambientProps,
                         valueField: 'id',
                         labelField: 'company',
                         enableClear: true,
@@ -200,7 +200,7 @@ export const selectPanel = hoistCmp.factory({
                     info: 'enableCreate - type a new entry',
                     item: select({
                         bind: 'creatableValue',
-                        disabled,
+                        ...ambientProps,
                         options: restaurants,
                         enableCreate: true,
                         enableClear: true,
@@ -213,7 +213,7 @@ export const selectPanel = hoistCmp.factory({
                     info: 'Nested option groups',
                     item: select({
                         bind: 'groupedValue',
-                        disabled,
+                        ...ambientProps,
                         options: DESSERTS,
                         enableClear: true,
                         placeholder: 'Pick a dessert...',
@@ -225,7 +225,7 @@ export const selectPanel = hoistCmp.factory({
                     info: 'optionRenderer with status dots',
                     item: select({
                         bind: 'statusOption',
-                        disabled,
+                        ...ambientProps,
                         options: STATUS_OPTIONS,
                         enableClear: true,
                         placeholder: 'Status...',
@@ -255,7 +255,7 @@ export const selectPanel = hoistCmp.factory({
                     info: 'enableWindowed - 2,000 items virtualized, menu auto-sizes to content',
                     item: select({
                         bind: 'bigValue',
-                        disabled,
+                        ...ambientProps,
                         options: LARGE_OPTIONS,
                         enableWindowed: true,
                         enableClear: true,
@@ -268,7 +268,7 @@ export const selectPanel = hoistCmp.factory({
                     info: 'hideDropdownIndicator, leftIcon',
                     item: select({
                         bind: 'searchStyle',
-                        disabled,
+                        ...ambientProps,
                         options: restaurants,
                         hideDropdownIndicator: true,
                         leftIcon: Icon.search(),
@@ -279,10 +279,10 @@ export const selectPanel = hoistCmp.factory({
                 }),
                 demoRow({
                     label: 'Tooltips (multi)',
-                    info: 'enableTooltips on narrow multi-select',
+                    info: 'enableTooltips on multi-select',
                     item: select({
                         bind: 'tooltipMulti',
-                        disabled,
+                        ...ambientProps,
                         options: usStates,
                         enableMulti: true,
                         enableTooltips: true,
@@ -296,7 +296,7 @@ export const selectPanel = hoistCmp.factory({
                     info: "menuPlacement: 'top'",
                     item: select({
                         bind: 'menuTop',
-                        disabled,
+                        ...ambientProps,
                         options: usStates,
                         menuPlacement: 'top',
                         enableClear: true,
@@ -309,7 +309,7 @@ export const selectPanel = hoistCmp.factory({
                     info: 'menuWidth: 350 - dropdown wider than input',
                     item: select({
                         bind: 'wideMenu',
-                        disabled,
+                        ...ambientProps,
                         options: restaurants,
                         menuWidth: 350,
                         enableClear: true,
@@ -322,7 +322,7 @@ export const selectPanel = hoistCmp.factory({
                     info: 'openMenuOnFocus: true',
                     item: select({
                         bind: 'openOnFocus',
-                        disabled,
+                        ...ambientProps,
                         options: ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo'],
                         openMenuOnFocus: true,
                         enableClear: true,
@@ -335,6 +335,7 @@ export const selectPanel = hoistCmp.factory({
                     info: 'disabled: true with pre-set value',
                     item: select({
                         bind: 'disabledState',
+                        ...ambientProps,
                         options: usStates,
                         disabled: true,
                         width: '100%'
@@ -344,7 +345,7 @@ export const selectPanel = hoistCmp.factory({
             toolbarItems: () => [
                 select({
                     bind: 'toolbarState',
-                    disabled,
+                    ...ambientProps,
                     options: usStates,
                     enableClear: true,
                     placeholder: 'State...',
@@ -353,14 +354,16 @@ export const selectPanel = hoistCmp.factory({
                 toolbarSep(),
                 select({
                     bind: 'toolbarMulti',
-                    disabled,
+                    ...ambientProps,
                     options: usStates,
                     enableMulti: true,
                     enableClear: true,
                     leftIcon: Icon.globe(),
                     placeholder: 'States...',
                     width: 300
-                })
+                }),
+                toolbarSep(),
+                button({text: 'Apply', icon: Icon.filter()})
             ],
             form: demoGrid({
                 columns: 2,
@@ -455,7 +458,7 @@ const SEEDS = {
     menuTop: null,
     wideMenu: null,
     openOnFocus: null,
-    disabledState: 'California',
+    disabledState: 'CA',
     toolbarState: null,
     toolbarMulti: []
 };
@@ -498,15 +501,21 @@ class SelectPanelModel extends InputDemoModel {
     }
 
     constructor() {
-        super();
+        super({commitOnChangeDefault: null});
         makeObservable(this);
         // Playground value type flips between string and string[] with multi-select - reset it
-        // whenever that toggle changes, since a stale value would no longer match the input's mode.
+        // whenever that toggle changes, since a stale value would no longer match the input's
+        // mode.
         this.addReaction({
             track: () => this.pgMulti,
             run: multi => (this.playground = multi ? [] : null)
         });
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
+    }
+
+    override resetSpecimens() {
+        super.resetSpecimens();
+        this.playground = this.pgMulti ? [] : null;
     }
 }

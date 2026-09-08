@@ -28,15 +28,15 @@ export const textInputPanel = hoistCmp.factory({
     model: creates(() => TextInputPanelModel),
 
     render({model}) {
-        const {ambientProps, commitOnChange} = model;
+        const {ambientProps, ambientSnippetProps, formFieldProps} = model;
         return inputDemoPage({
             entry: ENTRY,
             description: [
                 'Single-line text entry. Supports left icons, an inline clear button, password',
                 'masking, and select-on-focus.',
                 '',
-                'Sizes to its container by default - set `width` for a fixed measure, or leave it',
-                'unset inside a flex or grid parent.'
+                "Renders 200px wide by default - set `width`, or `flex: 1` / `width: '100%'` to",
+                'fill a flex or grid parent.'
             ],
             links: [
                 {
@@ -83,9 +83,9 @@ export const textInputPanel = hoistCmp.factory({
                     enableClear: model.pgEnableClear || undefined,
                     round: model.pgRound || undefined,
                     placeholder: model.pgPlaceholder || undefined,
-                    disabled: ambientProps.disabled || undefined,
-                    commitOnChange: commitOnChange || undefined
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: textInput({
                     bind: 'playground',
                     ...ambientProps,
@@ -124,7 +124,7 @@ export const textInputPanel = hoistCmp.factory({
                     item: textInput({
                         bind: 'url',
                         ...ambientProps,
-                        leftElement: span({className: 'xh-text-color-muted', item: 'https://'}),
+                        leftElement: span({className: 'tbox-demo-affix', item: 'https://'}),
                         width: '100%'
                     })
                 }),
@@ -142,7 +142,12 @@ export const textInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: textInput({bind: 'email', disabled: true, width: '100%'})
+                    item: textInput({
+                        bind: 'email',
+                        ...ambientProps,
+                        disabled: true,
+                        width: '100%'
+                    })
                 }),
                 demoRow({
                     label: 'Invalid',
@@ -153,7 +158,7 @@ export const textInputPanel = hoistCmp.factory({
                             field: 'invalidEmail',
                             label: null,
                             minimal: true,
-                            commitOnChange,
+                            ...formFieldProps,
                             item: textInput()
                         })
                     })
@@ -186,7 +191,7 @@ export const textInputPanel = hoistCmp.factory({
                             model: model.formModel,
                             item: formField({
                                 field: 'email',
-                                commitOnChange,
+                                ...formFieldProps,
                                 item: textInput({leftIcon: Icon.mail(), enableClear: true})
                             })
                         })
@@ -198,7 +203,7 @@ export const textInputPanel = hoistCmp.factory({
                             item: formField({
                                 field: 'inlineEmail',
                                 inline: true,
-                                commitOnChange,
+                                ...formFieldProps,
                                 item: textInput()
                             })
                         })

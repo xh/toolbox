@@ -63,6 +63,11 @@
     display: flex;
     min-width: 0;
   }
+
+  &__control > .xh-form-field {
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 .tbox-demo-playground {
@@ -95,6 +100,14 @@
     gap: var(--xh-pad-half-px);
   }
 
+  &__value {
+    flex: none;
+    width: 220px;
+    padding-left: var(--xh-pad-double-px);
+    border-left: 1px solid var(--xh-border-color);
+    gap: var(--xh-pad-half-px);
+  }
+
   &__config-label {
     text-transform: uppercase;
     font-size: var(--xh-font-size-small-px);
@@ -108,8 +121,10 @@
     font-family: var(--xh-font-family-mono);
     font-size: var(--xh-font-size-small-px);
     line-height: 1.6;
-    white-space: pre;
-    overflow-x: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-height: 200px;
+    overflow: auto;
   }
 }
 
@@ -213,4 +228,21 @@
     min-width: 0;
     cursor: default;
   }
+}
+
+// Stacked sections inside a scrollable demo panel.
+.tbox-demo-body {
+  gap: var(--xh-pad-double-px);
+  padding: var(--xh-pad-double-px);
+}
+
+// Text affix inside a Blueprint input group - 30px is Blueprint's standard input height, for which
+// Hoist exposes no token.
+.tbox-demo-affix {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding-left: var(--xh-pad-px);
+  color: var(--xh-text-color-muted);
+  font-size: var(--xh-font-size-small-px);
 }

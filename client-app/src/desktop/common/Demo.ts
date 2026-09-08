@@ -2,8 +2,9 @@ import {div, hbox, pre, span, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistProps, Intent} from '@xh/hoist/core';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
+import {isLocalDate} from '@xh/hoist/utils/datetime';
 import classNames from 'classnames';
-import {isBoolean, isNil, isNumber, isString} from 'lodash';
+import {isArray, isBoolean, isDate, isNil, isNumber, isString} from 'lodash';
 import {ReactNode} from 'react';
 import './Demo.scss';
 
@@ -83,6 +84,10 @@ export const [DemoRow, demoRow] = hoistCmp.withFactory<DemoRowProps>({
 export interface DemoPlaygroundProps extends HoistProps {
     /** The generated factory call for the current rail settings - see `fmtDemoConfig`. */
     config: string;
+    /** The playground instance's current bound value, shown beside the config. */
+    value?: unknown;
+    /** False to omit the current-value readout. Default true. */
+    showValue?: boolean;
     /** Caption under the instance. */
     caption?: ReactNode;
     /** Fixed width of the instance column. Default 340. */
@@ -91,7 +96,8 @@ export interface DemoPlaygroundProps extends HoistProps {
 
 /**
  * The Playground band: a primary-accented frame holding the live instance driven by the rail's
- * Playground options (left) and the literal config a developer would write to get it (right).
+ * Playground options (left), the literal config a developer would write to get it (center), and
+ * the instance's current bound value (right).
  */
 export const [DemoPlayground, demoPlayground] = hoistCmp.withFactory<DemoPlaygroundProps>({
     displayName: 'DemoPlayground',
@@ -99,6 +105,8 @@ export const [DemoPlayground, demoPlayground] = hoistCmp.withFactory<DemoPlaygro
     render({
         className,
         config,
+        value,
+        showValue = true,
         caption = 'Combine the curated props in any permutation.',
         instanceWidth = 340,
         children
@@ -122,6 +130,20 @@ export const [DemoPlayground, demoPlayground] = hoistCmp.withFactory<DemoPlaygro
                             item: 'Current config'
                         }),
                         pre({className: 'tbox-demo-playground__code', item: config})
+                    ]
+                }),
+                vbox({
+                    className: 'tbox-demo-playground__value',
+                    omit: !showValue,
+                    items: [
+                        span({
+                            className: 'tbox-demo-playground__config-label',
+                            item: 'Current value'
+                        }),
+                        pre({
+                            className: 'tbox-demo-playground__code',
+                            item: fmtDemoValue(value)
+                        })
                     ]
                 })
             ]
@@ -303,6 +325,21 @@ export function fmtDemoConfig(factory: string, props: Record<string, DemoConfigV
         .filter(([, v]) => v !== undefined)
         .map(([k, v]) => `    ${k}: ${fmtValue(v)}`);
     return lines.length ? `${factory}({\n${lines.join(',\n')}\n})` : `${factory}()`;
+}
+
+/**
+ * Format a live bound value for the Playground readout - primitives inline, Dates and LocalDates
+ * tagged with their type, and other objects as pretty-printed JSON.
+ */
+export function fmtDemoValue(v: unknown): string {
+    if (v === undefined) return 'undefined';
+    if (v === null) return 'null';
+    if (isString(v)) return JSON.stringify(v);
+    if (isNumber(v) || isBoolean(v)) return String(v);
+    if (isDate(v)) return `Date ${v.toISOString()}`;
+    if (isLocalDate(v)) return `LocalDate ${v.isoString}`;
+    if (isArray(v)) return `[${v.map(fmtDemoValue).join(', ')}]`;
+    return JSON.stringify(v, null, 2);
 }
 
 function fmtValue(v: DemoConfigValue): string {

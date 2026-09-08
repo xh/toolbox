@@ -1,7 +1,8 @@
+// Picker demo page: count badge inside a picker's button text renderer.
 .tb-picker-panel {
   &__badge {
     margin-left: 6px;
-    font-size: 11px;
+    font-size: var(--xh-font-size-small-px);
     min-width: 18px;
     min-height: 18px;
     line-height: 18px;

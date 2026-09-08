@@ -3,6 +3,7 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {div, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {picker, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -66,10 +67,9 @@ export const pickerPanel = hoistCmp.factory({
     model: creates(() => PickerPanelModel),
 
     render({model}) {
+        const {ambientProps, ambientSnippetProps} = model;
         return inputDemoPage({
             entry: ENTRY,
-            supportsCompact: true,
-            supportsCommitOnChange: false,
             description: [
                 '`Picker` presents its options in a popover dropdown triggered by a compact',
                 'button showing the current value or a summary. Supports single and',
@@ -143,13 +143,12 @@ export const pickerPanel = hoistCmp.factory({
                     displayNoun: 'state',
                     buttonProps: raw('{icon: Icon.globe()}'),
                     width: 240,
-                    compact: model.compact || undefined,
-                    disabled: model.disabled || undefined
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: picker({
                     bind: 'playground',
-                    disabled: model.disabled,
-                    compact: model.compact,
+                    ...ambientProps,
                     options: usStates,
                     enableMulti: model.pgMulti,
                     enableClear: model.pgEnableClear,
@@ -167,8 +166,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'Primitive string options, enableClear',
                     item: picker({
                         bind: 'simpleOption',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: ['Small', 'Medium', 'Large', 'X-Large'],
                         enableClear: true,
                         placeholder: 'Size...',
@@ -180,8 +178,8 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'disabled: true',
                     item: picker({
                         bind: 'singleState',
+                        ...ambientProps,
                         disabled: true,
-                        compact: model.compact,
                         options: usStates,
                         placeholder: 'Disabled...',
                         width: 200
@@ -192,8 +190,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'popoverMinimal: true - no arrow or border',
                     item: picker({
                         bind: 'minimalPopoverState',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: usStates,
                         popoverMinimal: true,
                         placeholder: 'Minimal...',
@@ -205,8 +202,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'labelField + valueField on plain objects',
                     item: picker({
                         bind: 'restaurant',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: [
                             {name: 'Osteria Francescana', city: 'Italy'},
                             {name: 'El Celler de Can Roca', city: 'Spain'},
@@ -226,8 +222,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'buttonTextRenderer with Hoist Badge',
                     item: picker({
                         bind: 'badgeStates',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: usStates,
                         enableMulti: true,
                         enableClear: true,
@@ -256,8 +251,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'optionRenderer with two-line rows',
                     item: picker({
                         bind: 'statusOption',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: STATUS_OPTIONS,
                         placeholder: 'Status...',
                         enableFilter: false,
@@ -296,8 +290,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'popoverWidth, stripeRows, rowBorders',
                     item: picker({
                         bind: 'wideState',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: usStates,
                         enableMulti: true,
                         enableClear: true,
@@ -314,8 +307,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'buttonProps: {outlined: false}',
                     item: picker({
                         bind: 'nonMinimalState',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: usStates,
                         buttonProps: {outlined: false},
                         placeholder: 'Select...',
@@ -327,8 +319,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: '500 options - virtualized via react-window',
                     item: picker({
                         bind: 'largeListValues',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: LARGE_OPTIONS,
                         enableMulti: true,
                         enableClear: true,
@@ -343,8 +334,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'intent: primary',
                     item: picker({
                         bind: 'intentPrimary',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: usStates,
                         buttonProps: {icon: Icon.globe(), intent: 'primary'},
                         placeholder: 'Region...',
@@ -356,8 +346,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'intent: success',
                     item: picker({
                         bind: 'intentSuccess',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: usStates,
                         buttonProps: {icon: Icon.checkCircle(), intent: 'success'},
                         placeholder: 'Approved...',
@@ -369,8 +358,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'intent: warning',
                     item: picker({
                         bind: 'intentWarning',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: usStates,
                         buttonProps: {icon: Icon.warning(), intent: 'warning'},
                         placeholder: 'Review...',
@@ -382,8 +370,7 @@ export const pickerPanel = hoistCmp.factory({
                     info: 'intent: danger',
                     item: picker({
                         bind: 'intentDanger',
-                        disabled: model.disabled,
-                        compact: model.compact,
+                        ...ambientProps,
                         options: usStates,
                         buttonProps: {icon: Icon.skull(), intent: 'danger'},
                         placeholder: 'Critical...',
@@ -394,7 +381,7 @@ export const pickerPanel = hoistCmp.factory({
             toolbarItems: compact => [
                 picker({
                     bind: 'toolbarStates',
-                    disabled: model.disabled,
+                    ...ambientProps,
                     compact,
                     options: usStates,
                     enableMulti: true,
@@ -407,12 +394,14 @@ export const pickerPanel = hoistCmp.factory({
                 toolbarSep(),
                 picker({
                     bind: 'toolbarPriority',
-                    disabled: model.disabled,
+                    ...ambientProps,
                     compact,
                     options: ['Critical', 'High', 'Medium', 'Low'],
                     placeholder: 'Priority...',
                     buttonProps: {icon: Icon.flag()}
-                })
+                }),
+                toolbarSep(),
+                button({text: 'Apply', icon: Icon.filter()})
             ],
             form: demoGrid({
                 columns: 2,
@@ -506,7 +495,7 @@ class PickerPanelModel extends InputDemoModel {
     }
 
     constructor() {
-        super();
+        super({supportsCompact: true, commitOnChangeDefault: null});
         makeObservable(this);
         // Multi and single modes hold different value shapes - reset the value when it flips.
         this.addReaction({
@@ -515,5 +504,10 @@ class PickerPanelModel extends InputDemoModel {
         });
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
+    }
+
+    override resetSpecimens() {
+        super.resetSpecimens();
+        this.playground = this.pgMulti ? [] : null;
     }
 }

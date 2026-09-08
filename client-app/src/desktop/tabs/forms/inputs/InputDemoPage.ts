@@ -1,5 +1,5 @@
 import {vbox} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistProps} from '@xh/hoist/core';
+import {hoistCmp, HoistProps, uses} from '@xh/hoist/core';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -17,7 +17,6 @@ import {
 } from '../../../common';
 import {InputCatalogEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
-import './InputDemoPage.scss';
 
 export interface InputDemoPageProps extends HoistProps<InputDemoModel> {
     /** Catalog entry - supplies the rail title and icon. */
@@ -27,10 +26,6 @@ export interface InputDemoPageProps extends HoistProps<InputDemoModel> {
     /** Rail description as Markdown lines (see `WrapperProps.description`). */
     description: string[];
     links: ToolboxLinkProps[];
-    /** True to offer the ambient Compact switch - only for inputs with a `compact` prop. */
-    supportsCompact?: boolean;
-    /** False to hide the ambient Commit-on-change switch where no specimen supports it. */
-    supportsCommitOnChange?: boolean;
     /** `wrapperOption` rows for the Playground-only group. Leave empty to omit the group. */
     playgroundOptions?: ReactElement[];
     /** Playground section body - a `demoPlayground` element. */
@@ -53,20 +48,20 @@ export interface InputDemoPageProps extends HoistProps<InputDemoModel> {
  */
 export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
     displayName: 'InputDemoPage',
+    model: uses(InputDemoModel),
     render({
         model,
         entry,
         title = entry.name,
         description,
         links,
-        supportsCompact = false,
-        supportsCommitOnChange = true,
         playgroundOptions,
         playground,
         variants,
         toolbarItems,
         form
     }) {
+        const {supportsCompact, commitOnChangeDefault} = model;
         return wrapper({
             title,
             icon: entry.icon(),
@@ -89,7 +84,7 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
                             control: switchInput({bind: 'disabled'})
                         }),
                         wrapperOption({
-                            omit: !supportsCommitOnChange,
+                            omit: commitOnChangeDefault == null,
                             label: 'Commit on change',
                             propName: `${entry.name}Props.commitOnChange`,
                             control: switchInput({bind: 'commitOnChange'})
@@ -116,25 +111,25 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
                 height: '100%',
                 scrollable: true,
                 item: vbox({
-                    className: 'tb-input-demo__body',
+                    className: 'tbox-demo-body',
                     items: [
                         demoSection({
                             omit: !playground,
                             title: 'Playground',
                             intent: 'primary',
-                            note: 'Driven by the Playground options in the rail',
+                            note: 'Driven by the Playground options in the rail.',
                             item: playground
                         }),
                         demoSection({
                             omit: isEmpty(variants),
                             title: 'Variants',
-                            note: 'Preconfigured combinations worth surfacing - each card sets its own props',
+                            note: 'Preconfigured combinations worth surfacing - each card sets its own props.',
                             item: demoGrid({columns: 3, items: variants})
                         }),
                         demoSection({
                             omit: !toolbarItems,
                             title: 'In a Toolbar',
-                            note: 'Alongside the controls it usually sits with',
+                            note: 'Alongside the controls it usually sits with.',
                             items: toolbarItems
                                 ? [
                                       demoToolbar({items: toolbarItems(false)}),

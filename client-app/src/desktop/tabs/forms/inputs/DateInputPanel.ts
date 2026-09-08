@@ -29,16 +29,18 @@ export const dateInputPanel = hoistCmp.factory({
     model: creates(() => DateInputPanelModel),
 
     render({model}) {
-        const {ambientProps, commitOnChange} = model;
+        const {ambientProps, ambientSnippetProps, formFieldProps} = model;
         return inputDemoPage({
             entry: ENTRY,
-            supportsCompact: false,
             description: [
                 'Date and optional time entry with a calendar popover. Binds a JS `Date` by',
                 "default, or a `LocalDate` with `valueType: 'localDate'` for day-level values that",
                 'survive timezones.',
                 '',
-                'Typed entry parses several formats; `minDate` and `maxDate` bound the picker.'
+                'Typed entry parses several formats; `minDate` and `maxDate` bound the picker.',
+                '',
+                'Commits on every change by default - turn the ambient switch off to commit on',
+                'blur instead.'
             ],
             links: [
                 {
@@ -96,9 +98,9 @@ export const dateInputPanel = hoistCmp.factory({
                     timePrecision:
                         model.pgTimePrecision === 'none' ? undefined : model.pgTimePrecision,
                     showActionsBar: model.pgActionsBar || undefined,
-                    disabled: ambientProps.disabled || undefined,
-                    commitOnChange: commitOnChange || undefined
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: dateInput({
                     bind: 'playground',
                     ...ambientProps,
@@ -157,7 +159,12 @@ export const dateInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: dateInput({bind: 'disabledDate', disabled: true, width: '100%'})
+                    item: dateInput({
+                        bind: 'disabledDate',
+                        ...ambientProps,
+                        disabled: true,
+                        width: '100%'
+                    })
                 }),
                 demoRow({
                     label: 'Invalid',
@@ -168,7 +175,7 @@ export const dateInputPanel = hoistCmp.factory({
                             field: 'invalidDate',
                             label: null,
                             minimal: true,
-                            commitOnChange,
+                            ...formFieldProps,
                             item: dateInput()
                         })
                     })
@@ -197,7 +204,7 @@ export const dateInputPanel = hoistCmp.factory({
                             model: model.formModel,
                             item: formField({
                                 field: 'startDate',
-                                commitOnChange,
+                                ...formFieldProps,
                                 item: dateInput({valueType: 'localDate'})
                             })
                         })
@@ -209,7 +216,7 @@ export const dateInputPanel = hoistCmp.factory({
                             item: formField({
                                 field: 'endDate',
                                 inline: true,
-                                commitOnChange,
+                                ...formFieldProps,
                                 item: dateInput()
                             })
                         })
@@ -227,7 +234,6 @@ const SEEDS = {
     timeAmPm: moment().startOf('hour').toDate(),
     customFormat: new Date(),
     disabledDate: new Date(),
-    invalidDate: null,
     tbarDate: null,
     tbarLocalDate: null
 };
@@ -268,7 +274,7 @@ class DateInputPanelModel extends InputDemoModel {
     }
 
     constructor() {
-        super();
+        super({commitOnChangeDefault: true});
         makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();

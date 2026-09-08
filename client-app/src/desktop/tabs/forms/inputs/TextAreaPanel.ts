@@ -26,7 +26,8 @@ export const textAreaPanel = hoistCmp.factory({
     render({model}) {
         const {
             ambientProps,
-            commitOnChange,
+            ambientSnippetProps,
+            formFieldProps,
             pgPlaceholder,
             pgSelectOnFocus,
             pgSpellCheck,
@@ -34,12 +35,12 @@ export const textAreaPanel = hoistCmp.factory({
         } = model;
         return inputDemoPage({
             entry: ENTRY,
-            supportsCompact: false,
             description: [
-                'Multi-line text entry. Holds a fixed `height` (default 100) with internal scrolling,',
-                'or flexes to fill a sized parent when given `flex`.',
+                'Multi-line text entry. Holds a fixed `height` (default 100) with internal',
+                'scrolling, or flexes to fill a sized parent when given `flex`.',
                 '',
-                'Supports placeholder, select-on-focus, spell check and commit-on-change like TextInput.'
+                'Supports placeholder, select-on-focus, spell check and commit-on-change like',
+                'TextInput.'
             ],
             links: [
                 {
@@ -92,9 +93,9 @@ export const textAreaPanel = hoistCmp.factory({
                     selectOnFocus: pgSelectOnFocus || undefined,
                     spellCheck: pgSpellCheck || undefined,
                     height: pgHeight !== 100 ? pgHeight : undefined,
-                    disabled: ambientProps.disabled || undefined,
-                    commitOnChange: commitOnChange || undefined
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: textArea({
                     bind: 'playground',
                     ...ambientProps,
@@ -121,7 +122,13 @@ export const textAreaPanel = hoistCmp.factory({
                     info: 'flex: 1 inside a 160px-tall vbox',
                     item: vbox({
                         height: 160,
-                        item: textArea({bind: 'flexed', ...ambientProps, flex: 1, width: '100%'})
+                        width: '100%',
+                        item: textArea({
+                            bind: 'flexed',
+                            ...ambientProps,
+                            flex: 1,
+                            width: '100%'
+                        })
                     })
                 }),
                 demoRow({
@@ -137,7 +144,12 @@ export const textAreaPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: textArea({bind: 'locked', disabled: true, width: '100%'})
+                    item: textArea({
+                        bind: 'locked',
+                        ...ambientProps,
+                        disabled: true,
+                        width: '100%'
+                    })
                 }),
                 demoRow({
                     label: 'Invalid',
@@ -148,7 +160,7 @@ export const textAreaPanel = hoistCmp.factory({
                             field: 'invalidNotes',
                             label: null,
                             minimal: true,
-                            commitOnChange,
+                            ...formFieldProps,
                             item: textArea({width: '100%'})
                         })
                     })
@@ -163,7 +175,7 @@ export const textAreaPanel = hoistCmp.factory({
                             model: model.formModel,
                             item: formField({
                                 field: 'notes',
-                                commitOnChange,
+                                ...formFieldProps,
                                 item: textArea({width: '100%'})
                             })
                         })
@@ -175,7 +187,7 @@ export const textAreaPanel = hoistCmp.factory({
                             item: formField({
                                 field: 'inlineNotes',
                                 inline: true,
-                                commitOnChange,
+                                ...formFieldProps,
                                 item: textArea({width: '100%'})
                             })
                         })

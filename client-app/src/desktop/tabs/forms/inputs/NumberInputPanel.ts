@@ -27,10 +27,9 @@ export const numberInputPanel = hoistCmp.factory({
     model: creates(() => NumberInputPanelModel),
 
     render({model}) {
-        const {ambientProps, commitOnChange} = model;
+        const {ambientProps, ambientSnippetProps, formFieldProps} = model;
         return inputDemoPage({
             entry: ENTRY,
-            supportsCompact: false,
             description: [
                 'Numeric entry that binds a number, never a string. Formats with thousands',
                 'separators, accepts shorthand units (1k, 2.5m), applies a scale factor for',
@@ -84,14 +83,14 @@ export const numberInputPanel = hoistCmp.factory({
             ],
             playground: demoPlayground({
                 config: fmtDemoConfig('numberInput', {
-                    bind: 'playground',
+                    bind: 'value',
                     displayWithCommas: model.pgCommas || undefined,
                     enableShorthandUnits: model.pgShorthand || undefined,
                     precision: model.pgPrecision !== 4 ? model.pgPrecision : undefined,
                     valueLabel: model.pgValueLabel || undefined,
-                    disabled: ambientProps.disabled || undefined,
-                    commitOnChange: commitOnChange || undefined
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: numberInput({
                     bind: 'playground',
                     ...ambientProps,
@@ -153,6 +152,7 @@ export const numberInputPanel = hoistCmp.factory({
                     info: 'disabled: true, displayWithCommas',
                     item: numberInput({
                         bind: 'disabledAmount',
+                        ...ambientProps,
                         disabled: true,
                         displayWithCommas: true,
                         width: '100%'
@@ -167,7 +167,7 @@ export const numberInputPanel = hoistCmp.factory({
                             field: 'invalidAmount',
                             label: null,
                             minimal: true,
-                            commitOnChange,
+                            ...formFieldProps,
                             item: numberInput()
                         })
                     })
@@ -196,7 +196,7 @@ export const numberInputPanel = hoistCmp.factory({
                             model: model.formModel,
                             item: formField({
                                 field: 'quantity',
-                                commitOnChange,
+                                ...formFieldProps,
                                 item: numberInput({displayWithCommas: true})
                             })
                         })
@@ -208,7 +208,7 @@ export const numberInputPanel = hoistCmp.factory({
                             item: formField({
                                 field: 'amount',
                                 inline: true,
-                                commitOnChange,
+                                ...formFieldProps,
                                 item: numberInput()
                             })
                         })
@@ -220,10 +220,6 @@ export const numberInputPanel = hoistCmp.factory({
 });
 
 const SEEDS = {
-    pgCommas: true,
-    pgShorthand: true,
-    pgPrecision: 0,
-    pgValueLabel: '',
     playground: 2_000_000,
     stepSizes: 5000,
     percent: 0.33,
@@ -236,10 +232,10 @@ const SEEDS = {
 
 class NumberInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgCommas = SEEDS.pgCommas;
-    @bindable pgShorthand = SEEDS.pgShorthand;
-    @bindable pgPrecision = SEEDS.pgPrecision;
-    @bindable pgValueLabel = SEEDS.pgValueLabel;
+    @bindable pgCommas = true;
+    @bindable pgShorthand = true;
+    @bindable pgPrecision = 0;
+    @bindable pgValueLabel = '';
 
     // Specimens
     @bindable playground: number = SEEDS.playground;

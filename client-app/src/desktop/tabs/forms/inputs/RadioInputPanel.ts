@@ -35,15 +35,13 @@ export const radioInputPanel = hoistCmp.factory({
     model: creates(() => RadioInputPanelModel),
 
     render({model}) {
-        const {disabled} = model;
+        const {ambientProps, ambientSnippetProps} = model;
         return inputDemoPage({
             entry: ENTRY,
-            supportsCompact: false,
-            supportsCommitOnChange: false,
             description: [
                 'A set of radio buttons for one choice among a few options, stacked by default or',
-                '`inline`. Options are primitives or `{label, value, disabled}` objects, so a single',
-                'option can be disabled.',
+                '`inline`. Options are primitives or `{label, value, disabled}` objects, so a',
+                'single option can be disabled.',
                 '',
                 'Reach for `Select` when the option count grows beyond a handful.'
             ],
@@ -83,14 +81,15 @@ export const radioInputPanel = hoistCmp.factory({
             playground: demoPlayground({
                 config: fmtDemoConfig('radioInput', {
                     bind: 'value',
-                    disabled: disabled || undefined,
                     inline: model.pgInline || undefined,
                     labelSide: model.pgLabelSide === 'right' ? undefined : model.pgLabelSide,
-                    options: raw('MEALS')
+                    options: raw('MEALS'),
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: radioInput({
                     bind: 'playground',
-                    disabled,
+                    ...ambientProps,
                     inline: model.pgInline,
                     labelSide: model.pgLabelSide,
                     options: MEALS
@@ -100,17 +99,22 @@ export const radioInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Stacked with a disabled option',
                     info: 'options include {disabled: true}',
-                    item: radioInput({bind: 'stacked', disabled, options: MEALS})
+                    item: radioInput({bind: 'stacked', ...ambientProps, options: MEALS})
                 }),
                 demoRow({
                     label: 'Object options',
                     info: '{label, value} objects',
-                    item: radioInput({bind: 'size', disabled, options: SIZES})
+                    item: radioInput({bind: 'size', ...ambientProps, options: SIZES})
                 }),
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: radioInput({bind: 'disabledMeal', disabled: true, options: MEALS})
+                    item: radioInput({
+                        bind: 'disabledMeal',
+                        ...ambientProps,
+                        disabled: true,
+                        options: MEALS
+                    })
                 }),
                 demoRow({
                     label: 'Invalid',
@@ -127,7 +131,7 @@ export const radioInputPanel = hoistCmp.factory({
                 })
             ],
             toolbarItems: () => [
-                radioInput({bind: 'tbarMeal', disabled, inline: true, options: MEALS}),
+                radioInput({bind: 'tbarMeal', ...ambientProps, inline: true, options: MEALS}),
                 toolbarSep(),
                 button({text: 'Apply', icon: Icon.filter()})
             ],
@@ -195,7 +199,7 @@ class RadioInputPanelModel extends InputDemoModel {
     }
 
     constructor() {
-        super();
+        super({commitOnChangeDefault: null});
         makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();

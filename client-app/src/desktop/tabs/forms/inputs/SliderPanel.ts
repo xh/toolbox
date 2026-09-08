@@ -24,11 +24,9 @@ export const sliderPanel = hoistCmp.factory({
     model: creates(() => SliderPanelModel),
 
     render({model}) {
-        const {disabled} = model;
+        const {ambientProps, ambientSnippetProps} = model;
         return inputDemoPage({
             entry: ENTRY,
-            supportsCompact: false,
-            supportsCommitOnChange: false,
             description: [
                 'A slider for one number, or for a `[min, max]` range when bound to a two-element',
                 'array. Tick labels come from `labelStepSize` and can be formatted with',
@@ -89,13 +87,13 @@ export const sliderPanel = hoistCmp.factory({
                     stepSize: model.pgStep,
                     showTrackFill: model.pgTrackFill ? undefined : false,
                     vertical: model.pgVertical || undefined,
-                    disabled: disabled || undefined,
-                    width: model.pgVertical ? undefined : '100%',
-                    height: model.pgVertical ? 160 : undefined
+                    height: model.pgVertical ? 160 : undefined,
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: slider({
                     bind: 'playground',
-                    disabled,
+                    ...ambientProps,
                     min: 0,
                     max: 100,
                     labelStepSize: model.pgLabelStep,
@@ -112,7 +110,7 @@ export const sliderPanel = hoistCmp.factory({
                     info: 'Two-element value, labelRenderer with $ and thousands',
                     item: slider({
                         bind: 'range',
-                        disabled,
+                        ...ambientProps,
                         min: 50000,
                         max: 150000,
                         labelStepSize: 50000,
@@ -133,7 +131,7 @@ export const sliderPanel = hoistCmp.factory({
                     info: 'labelRenderer: false',
                     item: slider({
                         bind: 'noLabels',
-                        disabled,
+                        ...ambientProps,
                         min: 0,
                         max: 100,
                         labelRenderer: false,
@@ -145,7 +143,7 @@ export const sliderPanel = hoistCmp.factory({
                     info: 'stepSize: 0.1, labelStepSize: 1, min 0 max 5',
                     item: slider({
                         bind: 'fineSteps',
-                        disabled,
+                        ...ambientProps,
                         min: 0,
                         max: 5,
                         stepSize: 0.1,
@@ -158,9 +156,11 @@ export const sliderPanel = hoistCmp.factory({
                     info: 'disabled: true',
                     item: slider({
                         bind: 'disabledSlider',
+                        ...ambientProps,
                         disabled: true,
                         min: 0,
                         max: 100,
+                        labelStepSize: 25,
                         width: '100%'
                     })
                 })
@@ -174,7 +174,12 @@ export const sliderPanel = hoistCmp.factory({
                             model: model.formModel,
                             item: formField({
                                 field: 'confidence',
-                                item: slider({min: 0, max: 100, width: '100%'})
+                                item: slider({
+                                    min: 0,
+                                    max: 100,
+                                    labelStepSize: 25,
+                                    width: '100%'
+                                })
                             })
                         })
                     }),
@@ -185,7 +190,12 @@ export const sliderPanel = hoistCmp.factory({
                             item: formField({
                                 field: 'allocation',
                                 inline: true,
-                                item: slider({min: 0, max: 100, width: '100%'})
+                                item: slider({
+                                    min: 0,
+                                    max: 100,
+                                    labelStepSize: 25,
+                                    width: '100%'
+                                })
                             })
                         })
                     })
@@ -240,7 +250,7 @@ class SliderPanelModel extends InputDemoModel {
     }
 
     constructor() {
-        super();
+        super({commitOnChangeDefault: null});
         makeObservable(this);
         // Show the failing rule on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();

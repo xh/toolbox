@@ -25,7 +25,8 @@ export const codeInputsPanel = hoistCmp.factory({
     render({model}) {
         const {
             ambientProps,
-            commitOnChange,
+            ambientSnippetProps,
+            formFieldProps,
             pgAutoFormat,
             pgSearch,
             pgToolbar,
@@ -35,13 +36,15 @@ export const codeInputsPanel = hoistCmp.factory({
         return inputDemoPage({
             entry: ENTRY,
             title: 'JsonInput & Code',
-            supportsCompact: false,
             description: [
                 '`CodeInput` wraps CodeMirror with line numbers, search, a fullscreen mode and',
                 'optional formatter and linter hooks. `JsonInput` is the preconfigured JSON',
                 'variant with linting and auto-format built in.',
                 '',
-                'Both bind a string. Size with `height` and `width`.'
+                'Both bind a string. Size with `height` and `width`.',
+                '',
+                'Commits on every change by default - turn the ambient switch off to commit on',
+                'blur instead.'
             ],
             links: [
                 {
@@ -104,9 +107,9 @@ export const codeInputsPanel = hoistCmp.factory({
                     showToolbar: pgToolbar || undefined,
                     showFullscreenButton: pgFullscreen === false ? false : undefined,
                     lineWrapping: pgWrap || undefined,
-                    disabled: ambientProps.disabled || undefined,
-                    commitOnChange: commitOnChange || undefined
+                    ...ambientSnippetProps
                 }),
+                value: model.playground,
                 item: jsonInput({
                     bind: 'playground',
                     ...ambientProps,
@@ -131,13 +134,12 @@ export const codeInputsPanel = hoistCmp.factory({
                     item: codeInput({bind: 'code', ...ambientProps, height: 140, width: '100%'})
                 }),
                 demoRow({
-                    label: 'Read-only with copy',
-                    info: 'readonly: true, showCopyButton: true',
+                    label: 'Read-only',
+                    info: 'readonly: true',
                     item: codeInput({
                         bind: 'readonlyCode',
                         ...ambientProps,
                         readonly: true,
-                        showCopyButton: true,
                         height: 140,
                         width: '100%'
                     })
@@ -158,6 +160,7 @@ export const codeInputsPanel = hoistCmp.factory({
                     info: 'disabled: true',
                     item: jsonInput({
                         bind: 'disabledJson',
+                        ...ambientProps,
                         disabled: true,
                         height: 140,
                         width: '100%'
@@ -172,7 +175,7 @@ export const codeInputsPanel = hoistCmp.factory({
                             field: 'invalidJson',
                             label: null,
                             minimal: true,
-                            commitOnChange,
+                            ...formFieldProps,
                             item: jsonInput({height: 140, width: '100%'})
                         })
                     })
@@ -187,7 +190,7 @@ export const codeInputsPanel = hoistCmp.factory({
                             model: model.formModel,
                             item: formField({
                                 field: 'config',
-                                commitOnChange,
+                                ...formFieldProps,
                                 item: jsonInput({height: 120, width: '100%'})
                             })
                         })
@@ -199,7 +202,7 @@ export const codeInputsPanel = hoistCmp.factory({
                             item: formField({
                                 field: 'overrides',
                                 inline: true,
-                                commitOnChange,
+                                ...formFieldProps,
                                 item: jsonInput({height: 120, width: '100%'})
                             })
                         })
@@ -271,7 +274,7 @@ class CodeInputsPanelModel extends InputDemoModel {
     }
 
     constructor() {
-        super();
+        super({commitOnChangeDefault: true});
         makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
