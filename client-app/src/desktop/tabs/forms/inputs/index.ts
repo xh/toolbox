@@ -14,3 +14,4 @@ export * from './TogglesPanel';
 export * from './IntentInputPanel';
 export * from './SliderPanel';
 export * from './SelectPanel';
+export * from './PickerPanel';
