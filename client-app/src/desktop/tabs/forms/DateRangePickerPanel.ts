@@ -14,7 +14,7 @@ import {
     DEFAULT_DATE_RANGE_PRESETS,
     type LocalDateRange
 } from '@xh/hoist/desktop/cmp/daterange';
-import {dateInput, picker, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {dateInput, intentInput, picker, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtNumber} from '@xh/hoist/format';
@@ -97,14 +97,7 @@ export const dateRangePickerPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Intent',
                             propName: 'DateRangePickerProps.intent',
-                            control: select({
-                                bind: 'intent',
-                                enableClear: true,
-                                enableFilter: false,
-                                placeholder: 'None',
-                                width: 120,
-                                options: ['primary', 'success', 'warning', 'danger']
-                            })
+                            control: intentInput({bind: 'intent', enableClear: true})
                         })
                     ]
                 }),

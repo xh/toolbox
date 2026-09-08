@@ -3,7 +3,7 @@ import {creates, hoistCmp, Intent, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {buttonGroupInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, intentInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -89,14 +89,7 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Intent',
                     propName: 'ButtonGroupInputProps.intent',
-                    control: select({
-                        bind: 'pgIntent',
-                        enableClear: true,
-                        enableFilter: false,
-                        placeholder: 'None',
-                        width: 110,
-                        options: ['primary', 'success', 'warning', 'danger']
-                    })
+                    control: intentInput({bind: 'pgIntent', enableClear: true})
                 })
             ],
             playground: demoPlayground({
@@ -116,7 +109,7 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                     outlined: model.pgOutlined,
                     enableMulti: model.pgMulti,
                     enableClear: model.pgEnableClear,
-                    intent: model.pgIntent,
+                    intent: model.pgIntent ?? undefined,
                     items: chartButtons()
                 })
             }),

@@ -4,7 +4,7 @@ import {creates, hoistCmp, Intent, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {segmentedControl, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {intentInput, segmentedControl, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -97,12 +97,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Intent',
                     propName: 'SegmentedControlProps.intent',
-                    control: select({
-                        bind: 'pgIntent',
-                        enableFilter: false,
-                        width: 110,
-                        options: ['none', 'primary', 'success', 'warning', 'danger']
-                    })
+                    control: intentInput({bind: 'pgIntent', enableClear: true})
                 })
             ],
             playground: demoPlayground({
@@ -114,7 +109,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                     outlined: model.pgOutlined ? undefined : false,
                     showOptionDividers:
                         model.pgDividers === 'auto' ? undefined : model.pgDividers === 'true',
-                    intent: model.pgIntent === 'none' ? undefined : model.pgIntent,
+                    intent: model.pgIntent || undefined,
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
@@ -126,7 +121,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                     outlined: model.pgOutlined,
                     showOptionDividers:
                         model.pgDividers === 'auto' ? 'auto' : model.pgDividers === 'true',
-                    intent: model.pgIntent,
+                    intent: model.pgIntent ?? 'none',
                     options: SC_OPTIONS
                 })
             }),
@@ -258,7 +253,7 @@ class SegmentedControlPanelModel extends InputDemoModel {
     @bindable pgTrayBackground = true;
     @bindable pgOutlined = true;
     @bindable pgDividers: 'auto' | 'true' | 'false' = 'auto';
-    @bindable pgIntent: 'none' | Intent = 'none';
+    @bindable pgIntent: Intent = null;
 
     // Inputs
     @bindable playground: string = SEEDS.playground;
