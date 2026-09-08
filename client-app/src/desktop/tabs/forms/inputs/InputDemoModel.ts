@@ -26,6 +26,13 @@ export abstract class InputDemoModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
+        // FormField reads `disabled` from its FieldModel, so route the ambient flag through the form.
+        this.addReaction({
+            track: () => this.disabled,
+            run: disabled => {
+                if (this.formModel) this.formModel.disabled = disabled;
+            }
+        });
     }
 
     /** Props every specimen spreads so the ambient options reach it. */

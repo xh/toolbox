@@ -28,6 +28,7 @@ import {
     inputsPanel,
     pickerPanel,
     selectPanel,
+    textInputPanel,
     toolbarFormPanel
 } from './tabs/forms';
 import {
@@ -285,6 +286,7 @@ export class AppModel extends BaseAppModel {
                         children: [
                             {name: 'form', path: '/form'},
                             {name: 'inputs', path: '/inputs'},
+                            {name: 'textInput', path: '/textInput'},
                             {name: 'select', path: '/select'},
                             {name: 'picker', path: '/picker'},
                             {name: 'dateRangePicker', path: '/dateRangePicker'},
@@ -465,6 +467,7 @@ export class AppModel extends BaseAppModel {
                     tabs: [
                         {id: 'form', title: 'FormModel', content: formPanel},
                         {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                        {id: 'textInput', title: 'TextInput', content: textInputPanel},
                         {id: 'select', title: 'Select', content: selectPanel},
                         {id: 'picker', title: 'Picker', content: pickerPanel},
                         {
