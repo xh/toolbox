@@ -69,8 +69,15 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
             links,
             options: [
                 wrapperOptionGroup({
-                    label: 'All examples',
-                    info: 'Applies to every input on the page.',
+                    omit: isEmpty(playgroundOptions),
+                    label: 'Playground only',
+                    icon: Icon.experiment(),
+                    intent: 'primary',
+                    info: 'Drives the Playground instance.',
+                    items: playgroundOptions
+                }),
+                wrapperOptionGroup({
+                    label: 'All inputs on the page',
                     items: [
                         wrapperOption({
                             omit: !supportsCompact,
@@ -90,14 +97,6 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
                             control: switchInput({bind: 'commitOnChange'})
                         })
                     ]
-                }),
-                wrapperOptionGroup({
-                    omit: isEmpty(playgroundOptions),
-                    label: 'Playground only',
-                    icon: Icon.experiment(),
-                    intent: 'primary',
-                    info: 'Drives the Playground instance.',
-                    items: playgroundOptions
                 }),
                 wrapperAction({
                     icon: Icon.reset(),

@@ -162,18 +162,6 @@ export const pickerPanel = hoistCmp.factory({
             }),
             variants: [
                 demoRow({
-                    label: 'Simple options',
-                    info: 'Primitive string options, enableClear',
-                    item: picker({
-                        bind: 'simpleOption',
-                        ...ambientProps,
-                        options: ['Small', 'Medium', 'Large', 'X-Large'],
-                        enableClear: true,
-                        placeholder: 'Size...',
-                        width: 140
-                    })
-                }),
-                demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
                     item: picker({
@@ -303,13 +291,13 @@ export const pickerPanel = hoistCmp.factory({
                     })
                 }),
                 demoRow({
-                    label: 'Not outlined',
-                    info: 'buttonProps: {outlined: false}',
+                    label: 'Button trigger',
+                    info: 'styleButtonAsInput: false - an outlined button instead of input styling',
                     item: picker({
-                        bind: 'nonMinimalState',
+                        bind: 'buttonTrigger',
                         ...ambientProps,
                         options: usStates,
-                        buttonProps: {outlined: false},
+                        styleButtonAsInput: false,
                         placeholder: 'Select...',
                         width: 200
                     })
@@ -439,14 +427,13 @@ export const pickerPanel = hoistCmp.factory({
 
 const SEEDS = {
     playground: [],
-    simpleOption: null,
     singleState: null,
     minimalPopoverState: null,
     restaurant: null,
     badgeStates: [],
     statusOption: null,
     wideState: [],
-    nonMinimalState: null,
+    buttonTrigger: null,
     largeListValues: [],
     intentPrimary: null,
     intentSuccess: null,
@@ -466,14 +453,13 @@ class PickerPanelModel extends InputDemoModel {
 
     // Inputs
     @bindable.ref playground: string | string[] = SEEDS.playground;
-    @bindable simpleOption: string = SEEDS.simpleOption;
     @bindable singleState: string = SEEDS.singleState;
     @bindable minimalPopoverState: string = SEEDS.minimalPopoverState;
     @bindable restaurant: string = SEEDS.restaurant;
     @bindable.ref badgeStates: string[] = SEEDS.badgeStates;
     @bindable statusOption: string = SEEDS.statusOption;
     @bindable.ref wideState: string[] = SEEDS.wideState;
-    @bindable nonMinimalState: string = SEEDS.nonMinimalState;
+    @bindable buttonTrigger: string = SEEDS.buttonTrigger;
     @bindable.ref largeListValues: string[] = SEEDS.largeListValues;
     @bindable intentPrimary: string = SEEDS.intentPrimary;
     @bindable intentSuccess: string = SEEDS.intentSuccess;

@@ -80,8 +80,7 @@ export const inputsIndexPanel = hoistCmp.factory({
                 }
             ],
             options: wrapperOptionGroup({
-                label: 'All examples',
-                info: 'Applies to every input on the page.',
+                label: 'All inputs on the page',
                 items: [
                     wrapperOption({
                         label: 'Compact',
