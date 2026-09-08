@@ -4,3 +4,4 @@ export * from './InputDemoPage';
 export * from './TextInputPanel';
 export * from './InputsIndexPanel';
 export * from './DateInputPanel';
+export * from './TextAreaPanel';

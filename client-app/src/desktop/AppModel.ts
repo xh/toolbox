@@ -29,6 +29,7 @@ import {
     inputsIndexPanel,
     pickerPanel,
     selectPanel,
+    textAreaPanel,
     textInputPanel,
     toolbarFormPanel
 } from './tabs/forms';
@@ -289,6 +290,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'toolbarForms', path: '/toolbarForms'},
                             {name: 'inputs', path: '/inputs'},
                             {name: 'textInput', path: '/textInput'},
+                            {name: 'textArea', path: '/textArea'},
                             {name: 'dateInput', path: '/dateInput'},
                             {name: 'dateRangePicker', path: '/dateRangePicker'},
                             {name: 'select', path: '/select'},
@@ -477,6 +479,7 @@ export class AppModel extends BaseAppModel {
                             content: inputsIndexPanel
                         },
                         {id: 'textInput', title: 'TextInput', content: textInputPanel},
+                        {id: 'textArea', title: 'TextArea', content: textAreaPanel},
                         {id: 'dateInput', title: 'DateInput', content: dateInputPanel},
                         {
                             id: 'dateRangePicker',
