@@ -329,12 +329,13 @@ export function fmtDemoConfig(factory: string, props: Record<string, DemoConfigV
 
 /**
  * Format a live bound value for the Playground readout - primitives inline, Dates and LocalDates
- * tagged with their type, and other objects as pretty-printed JSON.
+ * tagged with their type, and other objects as pretty-printed JSON. Strings keep their newlines,
+ * which the readout renders as-is.
  */
 export function fmtDemoValue(v: unknown): string {
     if (v === undefined) return 'undefined';
     if (v === null) return 'null';
-    if (isString(v)) return JSON.stringify(v);
+    if (isString(v)) return `'${v.replace(/'/g, "\\'")}'`;
     if (isNumber(v) || isBoolean(v)) return String(v);
     if (isDate(v)) return `Date ${v.toISOString()}`;
     if (isLocalDate(v)) return `LocalDate ${v.isoString}`;

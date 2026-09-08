@@ -123,6 +123,11 @@
     line-height: 1.6;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+  }
+
+  // Only the value readout is capped - the config pre grows to fit its (possibly multi-snippet)
+  // content.
+  &__value &__code {
     max-height: 200px;
     overflow: auto;
   }
