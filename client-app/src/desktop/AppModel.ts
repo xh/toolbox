@@ -23,6 +23,7 @@ import {
 import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
 import {
+    dateInputPanel,
     dateRangePickerPanel,
     formPanel,
     inputsIndexPanel,
@@ -288,6 +289,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'toolbarForms', path: '/toolbarForms'},
                             {name: 'inputs', path: '/inputs'},
                             {name: 'textInput', path: '/textInput'},
+                            {name: 'dateInput', path: '/dateInput'},
                             {name: 'dateRangePicker', path: '/dateRangePicker'},
                             {name: 'select', path: '/select'},
                             {name: 'picker', path: '/picker'}
@@ -475,6 +477,7 @@ export class AppModel extends BaseAppModel {
                             content: inputsIndexPanel
                         },
                         {id: 'textInput', title: 'TextInput', content: textInputPanel},
+                        {id: 'dateInput', title: 'DateInput', content: dateInputPanel},
                         {
                             id: 'dateRangePicker',
                             title: 'DateRangePicker',
