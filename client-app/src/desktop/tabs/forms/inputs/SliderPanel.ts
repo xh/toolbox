@@ -87,7 +87,7 @@ export const sliderPanel = hoistCmp.factory({
                     max: 100,
                     labelStepSize: model.pgLabelStep,
                     stepSize: model.pgStep,
-                    showTrackFill: model.pgTrackFill || undefined,
+                    showTrackFill: model.pgTrackFill ? undefined : false,
                     vertical: model.pgVertical || undefined,
                     disabled: disabled || undefined,
                     width: model.pgVertical ? undefined : '100%',
@@ -172,7 +172,10 @@ export const sliderPanel = hoistCmp.factory({
                         info: 'FormField, label above, required rule satisfied',
                         item: form({
                             model: model.formModel,
-                            item: formField({field: 'confidence', item: slider({width: '100%'})})
+                            item: formField({
+                                field: 'confidence',
+                                item: slider({min: 0, max: 100, width: '100%'})
+                            })
                         })
                     }),
                     demoFrame({
@@ -182,7 +185,7 @@ export const sliderPanel = hoistCmp.factory({
                             item: formField({
                                 field: 'allocation',
                                 inline: true,
-                                item: slider({width: '100%'})
+                                item: slider({min: 0, max: 100, width: '100%'})
                             })
                         })
                     })
