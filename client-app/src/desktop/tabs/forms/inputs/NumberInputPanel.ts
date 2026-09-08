@@ -30,6 +30,7 @@ export const numberInputPanel = hoistCmp.factory({
         const {ambientProps, commitOnChange} = model;
         return inputDemoPage({
             entry: ENTRY,
+            supportsCompact: false,
             description: [
                 'Numeric entry that binds a number, never a string. Formats with thousands',
                 'separators, accepts shorthand units (1k, 2.5m), applies a scale factor for',
@@ -86,7 +87,7 @@ export const numberInputPanel = hoistCmp.factory({
                     bind: 'playground',
                     displayWithCommas: model.pgCommas || undefined,
                     enableShorthandUnits: model.pgShorthand || undefined,
-                    precision: model.pgPrecision || undefined,
+                    precision: model.pgPrecision !== 4 ? model.pgPrecision : undefined,
                     valueLabel: model.pgValueLabel || undefined,
                     disabled: ambientProps.disabled || undefined,
                     commitOnChange: commitOnChange || undefined
