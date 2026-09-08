@@ -132,6 +132,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                                 formField({
                                     field: 'buttonGroup1',
                                     item: segmentedControl({
+                                        compact: model.compact,
                                         options: [
                                             {
                                                 value: 'button1',
@@ -183,6 +184,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                                 formField({
                                     field: 'option2',
                                     item: picker({
+                                        compact: model.compact,
                                         options: usStates,
                                         enableMulti: true,
                                         enableClear: true,
