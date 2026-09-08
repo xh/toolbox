@@ -40,12 +40,12 @@ export const togglesPanel = hoistCmp.factory({
             supportsCompact: false,
             supportsCommitOnChange: false,
             description: [
-                'Three boolean inputs. `Checkbox` is the standard box with an optional indeterminate',
-                'display for null; `SwitchInput` is the same value as a switch; `CheckboxButton` is a',
-                'button-shaped toggle sized for toolbars.',
+                'Three boolean inputs. `Checkbox` is the standard box with an optional',
+                'indeterminate display for null; `SwitchInput` is the same value as a switch;',
+                '`CheckboxButton` is a button-shaped toggle sized for toolbars.',
                 '',
-                'All three bind a boolean and accept a label - on either side for Checkbox and',
-                'SwitchInput.'
+                'All three bind a boolean and accept a label - on either side for Checkbox',
+                'and SwitchInput.'
             ],
             links: [
                 {
@@ -257,7 +257,6 @@ const SEEDS = {
     switchLeft: true,
     customIcons: true,
     disabledDemo: true,
-    invalidTerms: false,
     tbarEnabled: true
 };
 
