@@ -29,6 +29,7 @@ import {
     dateRangePickerPanel,
     formPanel,
     inputsIndexPanel,
+    intentInputPanel,
     numberInputPanel,
     pickerPanel,
     radioInputPanel,
@@ -306,6 +307,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'buttonGroupInput', path: '/buttonGroupInput'},
                             {name: 'radioInput', path: '/radioInput'},
                             {name: 'toggles', path: '/toggles'},
+                            {name: 'intentInput', path: '/intentInput'},
                             {name: 'codeInputs', path: '/codeInputs'}
                         ]
                     },
@@ -513,6 +515,7 @@ export class AppModel extends BaseAppModel {
                         },
                         {id: 'radioInput', title: 'RadioInput', content: radioInputPanel},
                         {id: 'toggles', title: 'Checkbox & Switch', content: togglesPanel},
+                        {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},
                         {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel}
                     ]
                 }
