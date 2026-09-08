@@ -31,6 +31,7 @@ import {
     numberInputPanel,
     pickerPanel,
     radioInputPanel,
+    segmentedControlPanel,
     selectPanel,
     textAreaPanel,
     textInputPanel,
@@ -299,6 +300,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'dateRangePicker', path: '/dateRangePicker'},
                             {name: 'select', path: '/select'},
                             {name: 'picker', path: '/picker'},
+                            {name: 'segmentedControl', path: '/segmentedControl'},
                             {name: 'buttonGroupInput', path: '/buttonGroupInput'},
                             {name: 'radioInput', path: '/radioInput'}
                         ]
@@ -495,6 +497,11 @@ export class AppModel extends BaseAppModel {
                         },
                         {id: 'select', title: 'Select', content: selectPanel},
                         {id: 'picker', title: 'Picker', content: pickerPanel},
+                        {
+                            id: 'segmentedControl',
+                            title: 'SegmentedControl',
+                            content: segmentedControlPanel
+                        },
                         {
                             id: 'buttonGroupInput',
                             title: 'ButtonGroupInput',
