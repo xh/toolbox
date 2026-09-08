@@ -10,3 +10,4 @@ export * from './ButtonGroupInputPanel';
 export * from './RadioInputPanel';
 export * from './SegmentedControlPanel';
 export * from './CodeInputsPanel';
+export * from './TogglesPanel';
