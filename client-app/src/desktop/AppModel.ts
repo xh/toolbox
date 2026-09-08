@@ -25,7 +25,7 @@ import {examplesTab} from './tabs/examples/ExamplesTab';
 import {
     dateRangePickerPanel,
     formPanel,
-    inputsPanel,
+    inputsIndexPanel,
     pickerPanel,
     selectPanel,
     textInputPanel,
@@ -285,12 +285,12 @@ export class AppModel extends BaseAppModel {
                         path: '/forms',
                         children: [
                             {name: 'form', path: '/form'},
+                            {name: 'toolbarForms', path: '/toolbarForms'},
                             {name: 'inputs', path: '/inputs'},
                             {name: 'textInput', path: '/textInput'},
-                            {name: 'select', path: '/select'},
-                            {name: 'picker', path: '/picker'},
                             {name: 'dateRangePicker', path: '/dateRangePicker'},
-                            {name: 'toolbarForms', path: '/toolbarForms'}
+                            {name: 'select', path: '/select'},
+                            {name: 'picker', path: '/picker'}
                         ]
                     },
                     {
@@ -464,18 +464,24 @@ export class AppModel extends BaseAppModel {
                 icon: Icon.edit(),
                 content: {
                     switcher,
+                    // Concepts first, then the All Inputs index and one page per input.
                     tabs: [
                         {id: 'form', title: 'FormModel', content: formPanel},
-                        {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                        {id: 'toolbarForms', title: 'Forms in Toolbars', content: toolbarFormPanel},
+                        {
+                            id: 'inputs',
+                            title: 'All Inputs',
+                            icon: Icon.grip(),
+                            content: inputsIndexPanel
+                        },
                         {id: 'textInput', title: 'TextInput', content: textInputPanel},
-                        {id: 'select', title: 'Select', content: selectPanel},
-                        {id: 'picker', title: 'Picker', content: pickerPanel},
                         {
                             id: 'dateRangePicker',
                             title: 'DateRangePicker',
                             content: dateRangePickerPanel
                         },
-                        {id: 'toolbarForms', title: 'Toolbar Forms', content: toolbarFormPanel}
+                        {id: 'select', title: 'Select', content: selectPanel},
+                        {id: 'picker', title: 'Picker', content: pickerPanel}
                     ]
                 }
             },

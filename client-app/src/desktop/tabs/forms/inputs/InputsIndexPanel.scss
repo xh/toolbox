@@ -1,0 +1,12 @@
+// All Inputs index: category sections stack inside the scrollable panel body.
+.tb-inputs-index {
+  &__body {
+    gap: var(--xh-pad-double-px);
+    padding: var(--xh-pad-double-px);
+  }
+
+  &__count {
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+  }
+}
