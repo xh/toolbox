@@ -7,3 +7,6 @@ export * from './DateInputPanel';
 export * from './TextAreaPanel';
 export * from './NumberInputPanel';
 export * from './ButtonGroupInputPanel';
+export * from './RadioInputPanel';
+export * from './SegmentedControlPanel';
+export * from './CodeInputsPanel';

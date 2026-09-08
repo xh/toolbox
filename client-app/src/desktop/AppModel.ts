@@ -30,6 +30,7 @@ import {
     inputsIndexPanel,
     numberInputPanel,
     pickerPanel,
+    radioInputPanel,
     selectPanel,
     textAreaPanel,
     textInputPanel,
@@ -298,7 +299,8 @@ export class AppModel extends BaseAppModel {
                             {name: 'dateRangePicker', path: '/dateRangePicker'},
                             {name: 'select', path: '/select'},
                             {name: 'picker', path: '/picker'},
-                            {name: 'buttonGroupInput', path: '/buttonGroupInput'}
+                            {name: 'buttonGroupInput', path: '/buttonGroupInput'},
+                            {name: 'radioInput', path: '/radioInput'}
                         ]
                     },
                     {
@@ -497,7 +499,8 @@ export class AppModel extends BaseAppModel {
                             id: 'buttonGroupInput',
                             title: 'ButtonGroupInput',
                             content: buttonGroupInputPanel
-                        }
+                        },
+                        {id: 'radioInput', title: 'RadioInput', content: radioInputPanel}
                     ]
                 }
             },
