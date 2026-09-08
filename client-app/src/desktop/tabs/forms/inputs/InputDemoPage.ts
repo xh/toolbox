@@ -96,7 +96,7 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
                     label: 'Playground only',
                     icon: Icon.experiment(),
                     intent: 'primary',
-                    info: 'Drives the Playground instance above. The Variants cards keep their own props.',
+                    info: 'Drives the Playground instance.',
                     items: playgroundOptions
                 }),
                 wrapperAction({

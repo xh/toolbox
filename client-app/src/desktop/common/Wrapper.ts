@@ -230,7 +230,7 @@ interface WrapperOptionGroupProps extends HoistProps {
     /**
      * One-line note on the group's scope, rendered muted below the label. State which of the two
      * option scopes the group is (see the `WrapperOptionGroup` docs), e.g. "Applies to every
-     * specimen on the page." or "Drives the Playground instance above."
+     * specimen on the page." or "Drives the Playground instance."
      */
     info?: ReactNode;
     /** Optional glyph shown before the label. */
