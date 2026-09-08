@@ -1,11 +1,9 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, Intent, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {intentInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {
     demoFrame,
@@ -137,9 +135,7 @@ export const intentInputPanel = hoistCmp.factory({
                     ...ambientProps,
                     compact,
                     showNames: true
-                }),
-                toolbarSep(),
-                button({text: 'Apply', icon: Icon.filter()})
+                })
             ],
             form: demoGrid({
                 columns: 2,

@@ -2,7 +2,6 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {box, div, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, managed, XH} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -361,9 +360,7 @@ export const selectPanel = hoistCmp.factory({
                     leftIcon: Icon.globe(),
                     placeholder: 'States...',
                     width: 300
-                }),
-                toolbarSep(),
-                button({text: 'Apply', icon: Icon.filter()})
+                })
             ],
             form: demoGrid({
                 columns: 2,

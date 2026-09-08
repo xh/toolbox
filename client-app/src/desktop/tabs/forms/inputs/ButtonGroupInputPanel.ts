@@ -192,9 +192,7 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                     ...ambientProps,
                     outlined: true,
                     items: viewButtons()
-                }),
-                toolbarSep(),
-                button({text: 'Apply', icon: Icon.filter()})
+                })
             ],
             form: demoGrid({
                 columns: 2,

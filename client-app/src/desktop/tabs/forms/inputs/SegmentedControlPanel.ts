@@ -2,7 +2,6 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {SegmentedControlOption} from '@xh/hoist/cmp/input';
 import {creates, hoistCmp, Intent, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {intentInput, segmentedControl, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -198,9 +197,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                     compact,
                     fill: false,
                     options: ['Low', 'Medium', 'High']
-                }),
-                toolbarSep(),
-                button({text: 'Apply', icon: Icon.filter()})
+                })
             ],
             form: demoGrid({
                 columns: 2,

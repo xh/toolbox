@@ -1,7 +1,6 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {numberIs, required} from '@xh/hoist/data';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -183,9 +182,7 @@ export const numberInputPanel = hoistCmp.factory({
                     enableShorthandUnits: true,
                     placeholder: 'Amount',
                     width: 140
-                }),
-                toolbarSep(),
-                button({text: 'Apply', icon: Icon.filter()})
+                })
             ],
             form: demoGrid({
                 columns: 2,

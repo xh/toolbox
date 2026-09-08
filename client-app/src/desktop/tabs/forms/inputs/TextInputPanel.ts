@@ -178,9 +178,7 @@ export const textInputPanel = hoistCmp.factory({
                     ...ambientProps,
                     placeholder: 'Flexes to fill remaining space...',
                     flex: 1
-                }),
-                toolbarSep(),
-                button({text: 'Apply', icon: Icon.filter()})
+                })
             ],
             form: demoGrid({
                 columns: 2,

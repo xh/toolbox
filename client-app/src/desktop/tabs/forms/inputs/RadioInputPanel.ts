@@ -1,11 +1,8 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, HSide, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {radioInput, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {
     demoFrame,
@@ -131,9 +128,7 @@ export const radioInputPanel = hoistCmp.factory({
                 })
             ],
             toolbarItems: () => [
-                radioInput({bind: 'tbarMeal', ...ambientProps, inline: true, options: MEALS}),
-                toolbarSep(),
-                button({text: 'Apply', icon: Icon.filter()})
+                radioInput({bind: 'tbarMeal', ...ambientProps, inline: true, options: MEALS})
             ],
             form: demoGrid({
                 columns: 2,

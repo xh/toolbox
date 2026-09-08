@@ -2,7 +2,6 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {hbox, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HSide, managed} from '@xh/hoist/core';
 import {Constraint} from '@xh/hoist/data';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
     checkbox,
@@ -233,9 +232,7 @@ export const togglesPanel = hoistCmp.factory({
                     labelSide: 'left'
                 }),
                 toolbarSep(),
-                checkboxButton({bind: 'tbarEnabled', ...ambientProps, text: 'Enabled'}),
-                toolbarSep(),
-                button({text: 'Apply', icon: Icon.filter()})
+                checkboxButton({bind: 'tbarEnabled', ...ambientProps, text: 'Enabled'})
             ],
             form: demoGrid({
                 columns: 2,

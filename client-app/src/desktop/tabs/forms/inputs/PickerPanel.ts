@@ -3,7 +3,6 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {div, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {picker, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -387,9 +386,7 @@ export const pickerPanel = hoistCmp.factory({
                     options: ['Critical', 'High', 'Medium', 'Low'],
                     placeholder: 'Priority...',
                     buttonProps: {icon: Icon.flag()}
-                }),
-                toolbarSep(),
-                button({text: 'Apply', icon: Icon.filter()})
+                })
             ],
             form: demoGrid({
                 columns: 2,
