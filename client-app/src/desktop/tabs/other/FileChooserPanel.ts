@@ -136,6 +136,7 @@ export const fileChooserPanel = hoistCmp.factory({
                     control: segmentedControl({
                         model,
                         bind: 'placement',
+                        compact: true,
                         options: [
                             {value: 'left', label: 'Left'},
                             {value: 'top', label: 'Top'},
