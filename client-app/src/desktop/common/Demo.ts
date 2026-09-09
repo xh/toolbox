@@ -316,14 +316,28 @@ export function raw(code: string): {raw: string} {
 }
 
 /**
+ * A curated subset of a component's props, valued for display. Keys are checked against `P`, so
+ * pass the component's own props interface and a mistyped or nonexistent prop fails to compile.
+ */
+export type DemoConfigProps<P> = {[K in keyof P]?: DemoConfigValue};
+
+/**
  * Format a factory call for display in a Playground, e.g. `textInput({bind: 'value', ...})`.
  * Props with `undefined` values are omitted, so callers can pass `enableClear: flag || undefined`
  * to show only the props that differ from the default.
+ *
+ * Always pass the component's props interface as the type argument -
+ * `fmtDemoConfig<TextInputProps>('textInput', {...})`. That is what makes the snippet's keys
+ * compile-checked against the real component, keeping it from drifting from the live instance
+ * beside it. Omitting it infers the keys from the literal and checks nothing.
  */
-export function fmtDemoConfig(factory: string, props: Record<string, DemoConfigValue>): string {
-    const lines = Object.entries(props)
-        .filter(([, v]) => v !== undefined)
-        .map(([k, v]) => `    ${k}: ${fmtValue(v)}`);
+export function fmtDemoConfig<P>(factory: string, props: DemoConfigProps<P>): string {
+    // Object.entries widens a generic mapped type's values to unknown; DemoConfigProps declares
+    // every value as a DemoConfigValue, so narrowing back is safe.
+    const entries = Object.entries(props) as Array<[string, DemoConfigValue]>,
+        lines = entries
+            .filter(([, v]) => v !== undefined)
+            .map(([k, v]) => `    ${k}: ${fmtValue(v)}`);
     return lines.length ? `${factory}({\n${lines.join(',\n')}\n})` : `${factory}()`;
 }
 
