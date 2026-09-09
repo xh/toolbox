@@ -41,9 +41,30 @@ Three invariants that drive the whole process - keep them in mind:
    stays SNAPSHOT by design.
 
 2. **The app SNAPSHOT version lives in three places that must stay in sync** - `gradle.properties`
-   `xhAppVersion`, `client-app/package.json` `version`, and the `CHANGELOG.md` unreleased header.
-   All three use the 2-part Maven form `x.y-SNAPSHOT` (e.g. `10.0-SNAPSHOT`). By the Java
-   convention, the snap is always `(latest_released_major + 1).0-SNAPSHOT`.
+   `xhAppVersion` (the **server**), `client-app/package.json` `version` (the **client**), and the
+   `CHANGELOG.md` unreleased header. All three use the 2-part Maven form `x.y-SNAPSHOT` (e.g.
+   `10.0-SNAPSHOT`). By the Java convention, the snap is always
+   `(latest_released_major + 1).0-SNAPSHOT`.
+
+   **Client and server versions are not cosmetic - a mismatch breaks the app.** Hoist's
+   `EnvironmentService.ensureVersionRunnable()` compares the version baked into the client bundle
+   against the one the server reports and **throws at startup** if they differ ("The version of
+   this client (X) is out of sync with the available server (Y)"). So this invariant is a
+   correctness requirement, not tidiness.
+
+   `client-app/package.json` `version` earns its place here because `webpack.config.js` reads it
+   (`appVersion: pkg.version`) and bakes it into the bundle as `XH.appVersion`. **Confirm that
+   derivation still holds** rather than assuming it - a literal there silently decouples the client
+   from this invariant:
+
+   ```bash
+   grep -n 'appVersion:' client-app/webpack.config.js   # want `pkg.version`, NOT a hardcoded string
+   ```
+
+   The failure mode is **major-release-only**: minor and patch releases reproduce the same snap (see
+   the Phase 9.2 table), so a decoupled client stays accidentally in sync and the drift stays hidden
+   until a major moves the number. Release builds are unaffected either way - `buildRelease.yml`
+   passes `--env appVersion`, which overrides whatever the config resolves.
 
 3. **Three libraries swap, not two.** `@xh/hoist` (hoist-react) and `@xh/hoist-dev-utils` both sit
    on the npm dist-tag `next` between releases; `hoistCoreVersion` (hoist-core) sits on an explicit
@@ -94,8 +115,13 @@ Run these checks:
    strongly if the latest CI run is failing or in progress.
 6. **App-version 3-way sync?** Quickly confirm the snap version agrees across `gradle.properties`
    (`xhAppVersion`), `client-app/package.json` (`version`), and the `CHANGELOG.md` unreleased
-   header. They should normally match; if they don't, just note it in passing - the restore step
-   (Phase 9) rewrites all three in sync and self-heals it. No special handling needed.
+   header - the commands are in Phase 9.2. They should normally match; if they don't, just note it
+   in passing - the restore step (Phase 9) rewrites all three in sync and self-heals it. No special
+   handling needed.
+   **One thing here is not self-healing:** if `client-app/webpack.config.js` hardcodes an
+   `appVersion` literal instead of reading `pkg.version`, the client is decoupled from that sync and
+   Phase 9 will not fix it. Check it now (`grep -n 'appVersion:' client-app/webpack.config.js`) and
+   restore the derivation if needed - see invariant #2.
 
 Summarize findings. If anything is off, ask: "Proceed anyway?" Wait for confirmation.
 
@@ -278,8 +304,7 @@ proposed version is a valid single increment (e.g. latest `9.0.0` -> valid: `10.
 - **A patch-only bump gets no entry either.** Because the form is two-part, a move like
   `15.0.0 → 15.0.1` renders as `15.0 → 15.0` - a line that says nothing. Omit it; do **not** reach
   for the 3-part form to make it legible. The two-part convention is deliberate, and patch-level
-  library churn is not release-note material. (Settled for `@xh/hoist-dev-utils` `15.0.0 → 15.0.1`
-  in the 10.0.0 release - don't re-litigate it each time.)
+  library churn is not release-note material.
 - **Formatting is critical and fails silently** - a malformed entry is dropped from the parsed
   output while the build still succeeds. Every bullet must be a **single line** however long, and
   every bullet and `###` header must start at **column 0** - one leading space drops it. See the
@@ -543,6 +568,24 @@ to `gradle.properties` `xhAppVersion` or to `package.json` `version` - only the 
 the library specs move. If either version file changed, you derived SNAP from the snap instead of
 the release. Writing all three unconditionally also self-heals any prior drift found in Phase 1.6.
 
+**Then verify the three actually agree - do not trust the edits.** Per invariant #2 a client/server
+mismatch throws at app startup. Run all four; the first three must print the same `x.y-SNAPSHOT`,
+and the fourth must show a derivation rather than a literal:
+
+```bash
+grep '^xhAppVersion=' gradle.properties                 # server
+node -p "require('./client-app/package.json').version"  # client
+grep -m1 '^## ' CHANGELOG.md                            # changelog header
+grep -n 'appVersion:' client-app/webpack.config.js      # want `pkg.version`, NOT a hardcoded string
+```
+
+If the fourth shows a hardcoded version string, someone has reintroduced the decoupling - fix it to
+read from `package.json` rather than hand-editing a fifth copy of the number.
+
+**Run this every time, even though it only bites on a major.** On a minor or patch release the snap
+doesn't move, so a decoupled client stays accidentally correct and the check passes for the wrong
+reason.
+
 Leave the new CHANGELOG section empty (no category sub-headers) - entries accumulate as new work
 lands.
 
@@ -558,6 +601,21 @@ Then, **same as Phase 7, ask before pushing** - do not assume:
 ```bash
 git push origin develop
 ```
+
+### 4. Confirm `toolbox-dev` comes back up
+
+Pushing `develop` triggers Build Snapshot, which on success auto-deploys `toolbox-dev`. The restore
+just moved the app version, so this is the first time the new snap runs anywhere - and a
+client/server mismatch (invariant #2) surfaces only here, as a startup exception rather than a build
+failure. Neither the release build nor CI will have caught it.
+
+```bash
+gh run list --workflow buildSnapshot.yml --limit 1
+```
+
+Watch it to success, then confirm the dev app actually loads and reports the new snap for **both**
+client and server. If the developer pushed themselves and you're wrapping up, call this out as an
+explicit follow-up rather than declaring the release done.
 
 ---
 
