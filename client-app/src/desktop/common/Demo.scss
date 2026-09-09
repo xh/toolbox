@@ -94,7 +94,9 @@
 
   &__config {
     flex: 1;
-    min-width: 0;
+    // Never collapse: `overflow-wrap: anywhere` on the code block below would otherwise let this
+    // shrink to a one-character-per-line column in a narrow window.
+    min-width: 240px;
     padding-left: var(--xh-pad-double-px);
     border-left: 1px solid var(--xh-border-color);
     gap: var(--xh-pad-half-px);
@@ -235,10 +237,20 @@
   }
 }
 
-// Stacked sections inside a scrollable demo panel.
+// Stacked sections inside a scrollable demo panel. The min-width holds the body at the widest
+// section's intrinsic minimum, so a narrow window scrolls rather than crushing content - see the
+// content-box rule below, which is what actually grants the horizontal scroll.
 .tbox-demo-body {
+  min-width: min-content;
   gap: var(--xh-pad-double-px);
   padding: var(--xh-pad-double-px);
+}
+
+// Panel sets `overflow: hidden auto` inline on its content box when `scrollable`, which would clip
+// the min-width the body defends above. Scroll that axis instead. Scoped with :has() so it reaches
+// only content boxes hosting a demo body, and !important because the value it beats is inline.
+.xh-panel__content:has(> .tbox-demo-body) {
+  overflow-x: auto !important;
 }
 
 // Text affix inside a Blueprint input group - 30px is Blueprint's standard input height, for which

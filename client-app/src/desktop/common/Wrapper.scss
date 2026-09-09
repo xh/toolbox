@@ -263,7 +263,9 @@
   // intrinsically-sized demos. No extra padding of its own; spacing comes from .tbox-wrapper.
   &__demo {
     flex: 1;
-    min-width: 0;
+    // The rail is `flex: none`, so this region absorbs every bit of narrowing and would
+    // otherwise collapse to a sliver. Hold a floor and let .tbox-wrapper scroll instead.
+    min-width: 420px;
     justify-content: center;
     align-items: center;
 

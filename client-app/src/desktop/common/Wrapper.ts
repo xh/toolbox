@@ -61,6 +61,9 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
             hasRailContent = !!title || !!intro || !isEmpty(options) || !isEmpty(links);
         return hframe({
             className,
+            // Scroll rather than clip when the rail plus the demo region's floor exceed the
+            // viewport - hframe clips by default, which would hide the demo entirely.
+            overflowX: 'auto',
             items: [
                 hasRailContent
                     ? railModel.collapsed
