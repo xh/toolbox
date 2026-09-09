@@ -115,6 +115,7 @@ export const dateRangePickerPanel = hoistCmp.factory({
                                 enableFilter: false,
                                 displayNoun: 'tab',
                                 multiSelectButtonStyle: 'values',
+                                multiSelectShowCount: true,
                                 width: 180,
                                 options: DATE_RANGE_PICKER_TABS
                             })
@@ -128,6 +129,8 @@ export const dateRangePickerPanel = hoistCmp.factory({
                                 enableSelectAll: true,
                                 enableClear: true,
                                 displayNoun: 'preset',
+                                multiSelectButtonStyle: 'values',
+                                multiSelectShowCount: true,
                                 width: 180,
                                 options: DATE_RANGE_PRESET_TOKENS
                             })
@@ -219,8 +222,11 @@ export const dateRangePickerPanel = hoistCmp.factory({
                         intent: 'primary',
                         item: demoPlayground({
                             instanceWidth: 400,
-                            value: model.pickerModel.value,
-                            caption: 'The applied selection, exactly as it persists.',
+                            // The applied selection is the first row of Model Values below, so a
+                            // value readout here would duplicate it - and its fixed column was
+                            // what pushed this page wider than its container.
+                            showValue: false,
+                            caption: 'Arrow keys on the trigger step the range too.',
                             config: fmtDemoConfig<DateRangePickerProps>('dateRangePicker', {
                                 model: raw('pickerModel'),
                                 styleButtonAsInput: model.styleButtonAsInput ? undefined : false,
@@ -248,10 +254,7 @@ export const dateRangePickerPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Variants',
                         note: 'Each card sets its own props.',
-                        item: demoGrid({
-                            columns: 3,
-                            items: [variantNarrow(), variantMonth(), variantFiscal()]
-                        })
+                        items: [variantNarrow(), variantMonth(), variantFiscal()]
                     })
                 ]
             })
