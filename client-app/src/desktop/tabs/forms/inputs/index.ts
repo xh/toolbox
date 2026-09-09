@@ -3,6 +3,7 @@ export * from './InputDemoModel';
 export * from './InputDemoPage';
 export * from './TextInputPanel';
 export * from './InputsIndexPanel';
+export * from './OtherControlsPanel';
 export * from './DateInputPanel';
 export * from './TextAreaPanel';
 export * from './NumberInputPanel';

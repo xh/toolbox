@@ -33,6 +33,7 @@ import {
     inputsIndexPanel,
     intentInputPanel,
     numberInputPanel,
+    otherControlsPanel,
     pickerPanel,
     radioInputPanel,
     segmentedControlPanel,
@@ -310,6 +311,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'slider', path: '/slider'},
                             {name: 'intentInput', path: '/intentInput'},
                             {name: 'codeInputs', path: '/codeInputs'},
+                            {name: 'otherControls', path: '/otherControls'},
                             {name: 'dateRangePicker', path: '/dateRangePicker'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'}
@@ -517,7 +519,14 @@ export class AppModel extends BaseAppModel {
                         {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},
                         {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel},
                         // Controls that take their own model rather than a `bind`, so they are
-                        // not `HoistInput`s and cannot sit inside a FormField.
+                        // not `HoistInput`s and cannot sit inside a FormField. Their own gallery
+                        // leads them, keeping All Inputs an exact list of the HoistInput set.
+                        {
+                            id: 'otherControls',
+                            title: 'Other Controls',
+                            icon: Icon.grip(),
+                            content: otherControlsPanel
+                        },
                         {
                             id: 'dateRangePicker',
                             title: 'DateRangePicker',

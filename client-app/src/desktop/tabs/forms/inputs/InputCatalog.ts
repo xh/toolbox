@@ -1,27 +1,22 @@
 import {Icon} from '@xh/hoist/icon';
 import {ReactElement} from 'react';
 
-export type InputCategory =
-    'Text & Code' | 'Numeric' | 'Date & Time' | 'Choice' | 'Boolean' | 'Other';
+export type InputCategory = 'Text & Code' | 'Numeric' | 'Date & Time' | 'Choice' | 'Boolean';
 
-/**
- * Index section order. Every category but the last holds `HoistInput`s, grouped by the type of
- * value they bind. 'Other' closes the list with the related controls that take their own model
- * instead of a `bind`, and so cannot sit inside a `FormField`.
- */
+/** Index section order - the types of value a `HoistInput` binds. */
 export const INPUT_CATEGORIES: InputCategory[] = [
     'Text & Code',
     'Numeric',
     'Date & Time',
     'Choice',
-    'Boolean',
-    'Other'
+    'Boolean'
 ];
 
 export interface InputCatalogEntry {
     /** Component name - also the index tile title. */
     name: string;
-    category: InputCategory;
+    /** Set for `HoistInput`s, which the All Inputs index groups by value type. */
+    category?: InputCategory;
     /** One-line description shown on the index tile. */
     description: string;
     /** Route of the Toolbox page that demos this input. Related inputs can share a page. */
@@ -33,9 +28,9 @@ export interface InputCatalogEntry {
 const R = 'default.forms';
 
 /**
- * Every control on this tab, in index order within its category - the single source of truth for
- * the All Inputs index and the per-input page headers. All but the 'Other' entries are
- * `HoistInput`s.
+ * Every desktop `HoistInput`, in index order within its category - the single source of truth for
+ * the All Inputs index and the per-input page headers. Membership is the contract itself: the
+ * component takes a `bind` and can sit inside a `FormField`.
  */
 export const INPUT_CATALOG: InputCatalogEntry[] = [
     {
@@ -150,24 +145,28 @@ export const INPUT_CATALOG: InputCatalogEntry[] = [
         description: 'Switch with label on either side.',
         route: `${R}.toggles`,
         icon: () => Icon.checkSquare()
-    },
+    }
+];
+
+/**
+ * Related controls that take their own model rather than a `bind`. Not `HoistInput`s, so they stay
+ * out of the All Inputs index and are listed by their own gallery instead.
+ */
+export const OTHER_CONTROLS: InputCatalogEntry[] = [
     {
         name: 'DateRangePicker',
-        category: 'Other',
         description: 'Range selection with presets, lookbacks and custom dates.',
         route: `${R}.dateRangePicker`,
         icon: () => Icon.calendarRange()
     },
     {
         name: 'LeftRightChooser',
-        category: 'Other',
         description: 'Move items between two grouped lists.',
         route: `${R}.leftRightChooser`,
         icon: () => Icon.arrowsLeftRight()
     },
     {
         name: 'FileChooser',
-        category: 'Other',
         description: 'Drag-and-drop or browse for local files.',
         route: `${R}.fileChooser`,
         icon: () => Icon.copy()
@@ -176,7 +175,7 @@ export const INPUT_CATALOG: InputCatalogEntry[] = [
 
 /** Lookup by component name - throws on a typo so a page cannot silently detach from the index. */
 export function inputEntry(name: string): InputCatalogEntry {
-    const ret = INPUT_CATALOG.find(it => it.name === name);
-    if (!ret) throw new Error(`Unknown input '${name}' - add it to INPUT_CATALOG.`);
+    const ret = [...INPUT_CATALOG, ...OTHER_CONTROLS].find(it => it.name === name);
+    if (!ret) throw new Error(`Unknown control '${name}' - add it to a catalog in this file.`);
     return ret;
 }
