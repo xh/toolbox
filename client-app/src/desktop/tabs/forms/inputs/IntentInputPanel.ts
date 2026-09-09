@@ -131,7 +131,7 @@ export const intentInputPanel = hoistCmp.factory({
                 intentInput({bind: 'tbarIntent', ...ambientProps, compact}),
                 toolbarSep(),
                 intentInput({
-                    bind: 'tbarIntent',
+                    bind: 'tbarNamedIntent',
                     ...ambientProps,
                     compact,
                     showNames: true
@@ -170,7 +170,8 @@ const SEEDS: Record<string, Intent> = {
     named: 'warning',
     subset: 'danger',
     disabledIntent: 'primary',
-    tbarIntent: null
+    tbarIntent: null,
+    tbarNamedIntent: null
 };
 
 class IntentInputPanelModel extends InputDemoModel {
@@ -185,6 +186,7 @@ class IntentInputPanelModel extends InputDemoModel {
     @bindable subset: Intent = SEEDS.subset;
     @bindable disabledIntent: Intent = SEEDS.disabledIntent;
     @bindable tbarIntent: Intent = SEEDS.tbarIntent;
+    @bindable tbarNamedIntent: Intent = SEEDS.tbarNamedIntent;
 
     @managed
     override formModel = new FormModel({
