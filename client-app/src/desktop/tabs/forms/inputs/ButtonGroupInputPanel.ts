@@ -3,7 +3,12 @@ import {creates, hoistCmp, Intent, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {buttonGroupInput, intentInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {
+    buttonGroupInput,
+    ButtonGroupInputProps,
+    intentInput,
+    switchInput
+} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -93,7 +98,7 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                 })
             ],
             playground: demoPlayground({
-                config: fmtDemoConfig('buttonGroupInput', {
+                config: fmtDemoConfig<ButtonGroupInputProps>('buttonGroupInput', {
                     bind: 'value',
                     outlined: model.pgOutlined || undefined,
                     enableMulti: model.pgMulti || undefined,

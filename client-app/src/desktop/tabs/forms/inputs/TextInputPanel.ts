@@ -4,7 +4,7 @@ import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required, validEmail} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {switchInput, textInput, TextInputProps} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -77,7 +77,7 @@ export const textInputPanel = hoistCmp.factory({
                 })
             ],
             playground: demoPlayground({
-                config: fmtDemoConfig('textInput', {
+                config: fmtDemoConfig<TextInputProps>('textInput', {
                     bind: 'value',
                     leftIcon: model.pgLeftIcon ? raw('Icon.mail()') : undefined,
                     enableClear: model.pgEnableClear || undefined,

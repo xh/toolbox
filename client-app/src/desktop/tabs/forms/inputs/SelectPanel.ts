@@ -3,7 +3,7 @@ import {box, div, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, managed, XH} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {select, SelectProps, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -120,7 +120,7 @@ export const selectPanel = hoistCmp.factory({
                 })
             ],
             playground: demoPlayground({
-                config: fmtDemoConfig('select', {
+                config: fmtDemoConfig<SelectProps>('select', {
                     bind: 'value',
                     options: raw('usStates'),
                     enableMulti: pgMulti || undefined,

@@ -3,7 +3,13 @@ import {SegmentedControlOption} from '@xh/hoist/cmp/input';
 import {creates, hoistCmp, Intent, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {intentInput, segmentedControl, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {
+    intentInput,
+    segmentedControl,
+    SegmentedControlProps,
+    select,
+    switchInput
+} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -100,7 +106,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                 })
             ],
             playground: demoPlayground({
-                config: fmtDemoConfig('segmentedControl', {
+                config: fmtDemoConfig<SegmentedControlProps>('segmentedControl', {
                     bind: 'value',
                     options: raw('SC_OPTIONS'),
                     fill: model.pgFill ? undefined : false,

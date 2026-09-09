@@ -3,7 +3,13 @@ import {vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {lengthIs, required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {numberInput, switchInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
+import {
+    numberInput,
+    switchInput,
+    textArea,
+    TextAreaProps,
+    textInput
+} from '@xh/hoist/desktop/cmp/input';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {
     demoFrame,
@@ -87,7 +93,7 @@ export const textAreaPanel = hoistCmp.factory({
                 })
             ],
             playground: demoPlayground({
-                config: fmtDemoConfig('textArea', {
+                config: fmtDemoConfig<TextAreaProps>('textArea', {
                     bind: 'value',
                     placeholder: pgPlaceholder || undefined,
                     selectOnFocus: pgSelectOnFocus || undefined,

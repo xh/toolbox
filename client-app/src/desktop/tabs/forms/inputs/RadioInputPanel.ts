@@ -2,7 +2,12 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, HSide, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {radioInput, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {
+    radioInput,
+    RadioInputProps,
+    segmentedControl,
+    switchInput
+} from '@xh/hoist/desktop/cmp/input';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {
     demoFrame,
@@ -82,7 +87,7 @@ export const radioInputPanel = hoistCmp.factory({
                 })
             ],
             playground: demoPlayground({
-                config: fmtDemoConfig('radioInput', {
+                config: fmtDemoConfig<RadioInputProps>('radioInput', {
                     bind: 'value',
                     inline: model.pgInline || undefined,
                     labelSide: model.pgLabelSide === 'right' ? undefined : model.pgLabelSide,

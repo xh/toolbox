@@ -1,6 +1,6 @@
 import {filler, hbox, vbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, Intent, PlainObject, XH} from '@xh/hoist/core';
-import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
+import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
+import {button, buttonGroup, ButtonProps} from '@xh/hoist/desktop/cmp/button';
 import {intentInput, segmentedControl, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -13,7 +13,7 @@ import {
     demoRow,
     demoSection,
     demoToolbar,
-    DemoConfigValue,
+    DemoConfigProps,
     fmtDemoConfig,
     raw,
     wrapper,
@@ -24,7 +24,7 @@ import {
 /** The three Button looks. `minimal` is the Hoist default; the others are opt-in. */
 type ButtonStyle = 'minimal' | 'standard' | 'outlined';
 
-const STYLE_PROPS: Record<ButtonStyle, PlainObject> = {
+const STYLE_PROPS: Record<ButtonStyle, Pick<ButtonProps, 'minimal' | 'outlined'>> = {
     minimal: {},
     standard: {minimal: false},
     outlined: {outlined: true}
@@ -127,7 +127,7 @@ export const buttonsPanel = hoistCmp.factory({
                             item: demoPlayground({
                                 instanceWidth: 260,
                                 showValue: false,
-                                config: fmtDemoConfig('button', {
+                                config: fmtDemoConfig<ButtonProps>('button', {
                                     text: model.pgText || undefined,
                                     icon: model.pgIcon ? raw('Icon.check()') : undefined,
                                     intent: model.pgIntent || undefined,
@@ -279,7 +279,7 @@ function buttonRow(...items: ReactNode[]) {
 }
 
 /** Snippet entries for the chosen style - only the props that differ from the defaults. */
-function styleSnippetProps(style: ButtonStyle): Record<string, DemoConfigValue> {
+function styleSnippetProps(style: ButtonStyle): DemoConfigProps<ButtonProps> {
     return {
         minimal: style === 'standard' ? false : undefined,
         outlined: style === 'outlined' ? true : undefined
@@ -328,13 +328,13 @@ class ButtonsModel extends HoistModel {
     @bindable active = false;
 
     /** Props every button spreads so the ambient options reach it. */
-    get ambientProps(): PlainObject {
+    get ambientProps(): Pick<ButtonProps, 'disabled' | 'active'> {
         const {disabled, active} = this;
         return {disabled, active};
     }
 
     /** Ambient entries for a Playground snippet - shown only where they differ from the default. */
-    get ambientSnippetProps(): Record<string, DemoConfigValue> {
+    get ambientSnippetProps(): DemoConfigProps<ButtonProps> {
         const {disabled, active} = this;
         return {disabled: disabled || undefined, active: active || undefined};
     }

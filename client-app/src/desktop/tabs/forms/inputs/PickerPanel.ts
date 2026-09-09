@@ -4,7 +4,7 @@ import {div, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {picker, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {picker, PickerProps, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -130,7 +130,7 @@ export const pickerPanel = hoistCmp.factory({
                 })
             ],
             playground: demoPlayground({
-                config: fmtDemoConfig('picker', {
+                config: fmtDemoConfig<PickerProps>('picker', {
                     bind: 'value',
                     options: raw('usStates'),
                     enableMulti: model.pgMulti || undefined,

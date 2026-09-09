@@ -1,7 +1,20 @@
 import {FormModel} from '@xh/hoist/cmp/form';
 import {HoistModel, PlainObject} from '@xh/hoist/core';
+import {FormFieldProps} from '@xh/hoist/desktop/cmp/form';
 import {action, bindable, makeObservable} from '@xh/hoist/mobx';
-import {DemoConfigValue} from '../../../common';
+import {DemoConfigProps} from '../../../common';
+
+/**
+ * The ambient props spread onto every input on a page. Deliberately not tied to one component's
+ * interface, since these pages cover fifteen of them: `disabled` is universal via
+ * `HoistInputProps`, while `compact` and `commitOnChange` are spread only where the page declares
+ * the input supports them.
+ */
+export interface AmbientInputProps {
+    disabled: boolean;
+    compact?: boolean;
+    commitOnChange?: boolean;
+}
 
 /** Per-page declaration of which ambient options apply, and how the input behaves by default. */
 export interface InputDemoConfig {
@@ -63,7 +76,7 @@ export abstract class InputDemoModel extends HoistModel {
     }
 
     /** Props every input spreads so the ambient options reach it. */
-    get ambientProps(): PlainObject {
+    get ambientProps(): AmbientInputProps {
         const {disabled, compact, commitOnChange, supportsCompact, commitOnChangeDefault} = this;
         return {
             disabled,
@@ -73,7 +86,7 @@ export abstract class InputDemoModel extends HoistModel {
     }
 
     /** Ambient entries for a Playground snippet - shown only where they differ from the default. */
-    get ambientSnippetProps(): Record<string, DemoConfigValue> {
+    get ambientSnippetProps(): DemoConfigProps<AmbientInputProps> {
         const {disabled, compact, commitOnChange, supportsCompact, commitOnChangeDefault} = this;
         return {
             disabled: disabled || undefined,
@@ -86,7 +99,7 @@ export abstract class InputDemoModel extends HoistModel {
     }
 
     /** Props for a `formField` wrapping an input - FormField owns its input's commit mode. */
-    get formFieldProps(): PlainObject {
+    get formFieldProps(): Pick<FormFieldProps, 'commitOnChange'> {
         return this.commitOnChangeDefault != null ? {commitOnChange: this.commitOnChange} : {};
     }
 

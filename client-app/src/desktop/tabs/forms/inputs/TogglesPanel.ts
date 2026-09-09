@@ -6,8 +6,11 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
     checkbox,
     checkboxButton,
+    CheckboxButtonProps,
+    CheckboxProps,
     segmentedControl,
     switchInput,
+    SwitchInputProps,
     textInput
 } from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -92,20 +95,20 @@ export const togglesPanel = hoistCmp.factory({
             playground: demoPlayground({
                 instanceWidth: 420,
                 config: [
-                    fmtDemoConfig('checkbox', {
+                    fmtDemoConfig<CheckboxProps>('checkbox', {
                         bind: 'value',
                         label: model.pgLabel || undefined,
                         labelSide: model.pgLabelSide === 'right' ? undefined : model.pgLabelSide,
                         displayUnsetState: model.pgUnsetState || undefined,
                         ...ambientSnippetProps
                     }),
-                    fmtDemoConfig('switchInput', {
+                    fmtDemoConfig<SwitchInputProps>('switchInput', {
                         bind: 'value',
                         label: model.pgLabel || undefined,
                         labelSide: model.pgLabelSide === 'right' ? undefined : model.pgLabelSide,
                         ...ambientSnippetProps
                     }),
-                    fmtDemoConfig('checkboxButton', {
+                    fmtDemoConfig<CheckboxButtonProps>('checkboxButton', {
                         bind: 'value',
                         text: model.pgLabel || undefined,
                         ...ambientSnippetProps

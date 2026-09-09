@@ -2,7 +2,7 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {dateInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {dateInput, DateInputProps, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -90,7 +90,7 @@ export const dateInputPanel = hoistCmp.factory({
                 })
             ],
             playground: demoPlayground({
-                config: fmtDemoConfig('dateInput', {
+                config: fmtDemoConfig<DateInputProps>('dateInput', {
                     bind: 'value',
                     enableClear: model.pgEnableClear || undefined,
                     leftIcon: model.pgLeftIcon ? raw('Icon.calendar()') : undefined,

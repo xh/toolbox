@@ -2,7 +2,7 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, Intent, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {intentInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {intentInput, IntentInputProps, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {
@@ -65,7 +65,7 @@ export const intentInputPanel = hoistCmp.factory({
                 })
             ],
             playground: demoPlayground({
-                config: fmtDemoConfig('intentInput', {
+                config: fmtDemoConfig<IntentInputProps>('intentInput', {
                     bind: 'value',
                     showNames: model.pgShowNames || undefined,
                     enableClear: model.pgEnableClear || undefined,

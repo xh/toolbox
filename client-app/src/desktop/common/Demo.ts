@@ -319,7 +319,14 @@ export function raw(code: string): {raw: string} {
  * A curated subset of a component's props, valued for display. Keys are checked against `P`, so
  * pass the component's own props interface and a mistyped or nonexistent prop fails to compile.
  */
-export type DemoConfigProps<P> = {[K in keyof P]?: DemoConfigValue};
+export type DemoConfigProps<P> = {[K in keyof P]?: DemoConfigValue} & {
+    /**
+     * Children. Every Hoist element factory accepts these alongside the component's own props
+     * (see `core/elem.ts`), so they are valid in a snippet without appearing on any `*Props`.
+     */
+    item?: DemoConfigValue;
+    items?: DemoConfigValue;
+};
 
 /**
  * Format a factory call for display in a Playground, e.g. `textInput({bind: 'value', ...})`.
