@@ -262,17 +262,17 @@ export const dateRangePickerPanel = hoistCmp.factory({
                         item: modelValues()
                     }),
                     demoSection({
+                        title: 'Variants',
+                        note: 'Each uses its own model and configuration.',
+                        items: [variantNarrow(), variantMonth(), variantFiscal()]
+                    }),
+                    demoSection({
                         title: 'In a Toolbar',
                         note: 'Alongside the controls it usually sits with.',
                         items: [
                             demoToolbar({items: toolbarItems(model)}),
                             demoToolbar({compact: true, items: toolbarItems(model)})
                         ]
-                    }),
-                    demoSection({
-                        title: 'Variants',
-                        note: 'Each uses its own model and configuration.',
-                        items: [variantNarrow(), variantMonth(), variantFiscal()]
                     })
                 ]
             })

@@ -57,7 +57,7 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
     'desktop/README.md': [
         {title: 'All Inputs', route: `${R}.forms.inputs`},
         {title: 'Select', route: `${R}.forms.select`},
-        {title: 'LeftRightChooser', route: `${R}.other.leftRightChooser`}
+        {title: 'LeftRightChooser', route: `${R}.forms.leftRightChooser`}
     ],
     'format/README.md': [
         {title: 'Date Formats', route: `${R}.other.formatDates`},

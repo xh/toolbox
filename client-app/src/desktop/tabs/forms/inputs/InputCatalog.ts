@@ -121,7 +121,7 @@ export const INPUT_CATALOG: InputCatalogEntry[] = [
     {
         name: 'IntentInput',
         category: 'Choice',
-        description: 'Swatch picker for the five Hoist intents.',
+        description: 'Swatch picker for the four Hoist intents.',
         route: `${R}.intentInput`,
         icon: () => Icon.tags()
     },

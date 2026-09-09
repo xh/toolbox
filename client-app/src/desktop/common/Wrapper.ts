@@ -250,11 +250,13 @@ interface WrapperOptionGroupProps extends HoistProps {
  * options that a flat list would be hard to scan. Pass the option rows (typically `wrapperOption`
  * elements) via `item`/`items`, which render as the group's children.
  *
- * Every rail option declares a scope, and a group states which one it is via `info`:
+ * Every rail option belongs to one of two scopes, which the group's `label` names:
  * - *Ambient* options are orthogonal to what any single instance demonstrates (compact, disabled,
  *   commit-on-change, theme). They apply to everything on the page, so a QA sweep is one click.
+ *   The label alone carries them, e.g. "All inputs on the page".
  * - *Playground* options are the curated props of the component itself and drive one dedicated
- *   instance only. Mark that group with `intent: 'primary'` and `Icon.experiment()`.
+ *   instance only. Mark that group with `intent: 'primary'`, `Icon.experiment()` and an `info`
+ *   line naming the instance it drives.
  *
  * A prop appears in the rail or as a static variant card, never both. Rail switches are a curated
  * subset, not a prop table - a prop earns a switch only if flipping it produces a visible change

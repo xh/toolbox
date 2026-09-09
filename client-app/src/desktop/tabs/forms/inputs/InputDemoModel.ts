@@ -6,7 +6,7 @@ import {DemoConfigProps} from '../../../common';
 
 /**
  * The ambient props spread onto every input on a page. Deliberately not tied to one component's
- * interface, since these pages cover fifteen of them: `disabled` is universal via
+ * interface, since these pages cover sixteen of them: `disabled` is universal via
  * `HoistInputProps`, while `compact` and `commitOnChange` are spread only where the page declares
  * the input supports them.
  */

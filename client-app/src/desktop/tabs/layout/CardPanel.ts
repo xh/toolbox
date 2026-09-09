@@ -79,13 +79,13 @@ export const cardPanel = hoistCmp.factory({
                     }),
                     wrapperOption({
                         label: 'Collapsible',
-                        propName: 'CardConfig.collapsible',
+                        propName: 'CardModelConfig.collapsible',
                         info: 'Click the header to toggle.',
                         control: switchInput({bind: 'pgCollapsible'})
                     }),
                     wrapperOption({
                         label: 'Start collapsed',
-                        propName: 'CardConfig.defaultCollapsed',
+                        propName: 'CardModelConfig.defaultCollapsed',
                         control: switchInput({
                             bind: 'pgDefaultCollapsed',
                             disabled: !pgCollapsible
