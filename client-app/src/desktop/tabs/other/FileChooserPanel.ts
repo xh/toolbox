@@ -1,9 +1,13 @@
-import {box, filler, img, span, vframe} from '@xh/hoist/cmp/layout';
-import {card} from '@xh/hoist/cmp/card';
+import {box, filler, img, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses, XH} from '@xh/hoist/core';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
+import {
+    fileChooser,
+    FileChooserConfig,
+    FileChooserModel,
+    FileChooserProps
+} from '@xh/hoist/desktop/cmp/filechooser';
 import {picker, segmentedControl, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -11,15 +15,21 @@ import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import {isEmpty} from 'lodash';
 import {MouseEvent} from 'react';
-import {wrapper, wrapperOption} from '../../common';
-import './FileChooserPanel.scss';
+import {
+    demoGrid,
+    demoPanel,
+    demoPlayground,
+    demoRow,
+    demoSection,
+    fmtDemoConfig,
+    raw,
+    wrapper,
+    wrapperOption,
+    wrapperOptionGroup
+} from '../../common';
 
 // Use decimal MB so the size hint (formatted via `filesize`, decimal by default) reads cleanly.
 const MB = 1_000_000;
-
-// Cap the (equal-sized) cards so they stay balanced rather than stretching edge-to-edge on a wide
-// screen; below this they flex to fill the centered demo region.
-const CARD_MAX_WIDTH = 880;
 
 const ACCEPT_OPTIONS = [
     '.csv',
@@ -37,6 +47,11 @@ const ACCEPT_OPTIONS = [
     '.zip'
 ];
 
+/** Render a string array as the literal a developer would write. */
+function fmtList(vals: string[]): string {
+    return `[${vals.map(v => `'${v}'`).join(', ')}]`;
+}
+
 export const fileChooserPanel = hoistCmp.factory({
     model: creates(() => FileChooserPanelModel),
 
@@ -53,12 +68,12 @@ export const fileChooserPanel = hoistCmp.factory({
                 'API to manipulate it. Your app processes the files (e.g. uploads them) and clears',
                 'the selection when done.',
                 '',
-                'Use the Options below to vary the accepted types and size/count limits on the',
-                'configurable chooser above; changing a limit re-creates the chooser.',
+                'The rail options vary the accepted types and the size and count limits on the',
+                'Playground chooser. Those three are read once at construction, so changing one',
+                're-creates its model.',
                 '',
-                'The lower card pairs two compact single-file choosers - a default minimal one and',
-                'one with a custom `fileDisplay` image preview - showing use in space-constrained',
-                'layouts.'
+                'Below, two compact single-file choosers show use in space-constrained layouts - a',
+                'default one, and one with a custom `fileDisplay` image preview.'
             ],
             links: [
                 {
@@ -79,109 +94,163 @@ export const fileChooserPanel = hoistCmp.factory({
                     notes: 'The underlying drag-and-drop file selection library.'
                 }
             ],
-            options: [
-                wrapperOption({
-                    label: 'Accept',
-                    propName: 'FileChooserConfig.accept',
-                    control: picker({
-                        model,
-                        bind: 'acceptedTypes',
-                        enableMulti: true,
-                        enableClear: true,
-                        enableSelectAll: true,
-                        displayNoun: 'type',
-                        placeholder: 'Any type',
-                        width: 180,
-                        multiSelectShowCount: true,
-                        multiSelectButtonStyle: 'values',
-                        options: ACCEPT_OPTIONS
+            options: wrapperOptionGroup({
+                label: 'Playground only',
+                icon: Icon.experiment(),
+                intent: 'primary',
+                info: 'Drives the Playground chooser. The single-file choosers below use their own models.',
+                items: [
+                    wrapperOption({
+                        label: 'Accept',
+                        propName: 'FileChooserConfig.accept',
+                        control: picker({
+                            model,
+                            bind: 'acceptedTypes',
+                            enableMulti: true,
+                            enableClear: true,
+                            enableSelectAll: true,
+                            displayNoun: 'type',
+                            placeholder: 'Any type',
+                            width: 180,
+                            multiSelectShowCount: true,
+                            multiSelectButtonStyle: 'values',
+                            options: ACCEPT_OPTIONS
+                        }),
+                        info: 'Allowed extensions or MIME types.'
                     }),
-                    info: 'Allowed extensions or MIME types.'
-                }),
-                wrapperOption({
-                    label: 'Max files',
-                    propName: 'FileChooserConfig.maxFiles',
-                    control: select({
-                        model,
-                        bind: 'maxFiles',
-                        width: 110,
-                        hideDropdownIndicator: true,
-                        options: [
-                            {value: null, label: 'No limit'},
-                            {value: 1, label: '1'},
-                            {value: 3, label: '3'},
-                            {value: 10, label: '10'}
-                        ]
+                    wrapperOption({
+                        label: 'Max files',
+                        propName: 'FileChooserConfig.maxFiles',
+                        control: select({
+                            model,
+                            bind: 'maxFiles',
+                            width: 110,
+                            hideDropdownIndicator: true,
+                            options: [
+                                {value: null, label: 'No limit'},
+                                {value: 1, label: '1'},
+                                {value: 3, label: '3'},
+                                {value: 10, label: '10'}
+                            ]
+                        })
+                    }),
+                    wrapperOption({
+                        label: 'Max size',
+                        propName: 'FileChooserConfig.maxFileSize',
+                        control: select({
+                            model,
+                            bind: 'maxFileSize',
+                            width: 110,
+                            hideDropdownIndicator: true,
+                            options: [
+                                {value: null, label: 'No limit'},
+                                {value: MB, label: '1 MB'},
+                                {value: 5 * MB, label: '5 MB'},
+                                {value: 25 * MB, label: '25 MB'}
+                            ]
+                        })
+                    }),
+                    wrapperOption({
+                        label: 'Target',
+                        propName: 'FileChooserProps.dropTargetPlacement',
+                        control: segmentedControl({
+                            model,
+                            bind: 'placement',
+                            compact: true,
+                            options: [
+                                {value: 'left', label: 'Left'},
+                                {value: 'top', label: 'Top'},
+                                {value: 'hidden', label: 'Hidden'}
+                            ]
+                        })
+                    }),
+                    wrapperOption({
+                        label: 'Disable',
+                        propName: 'FileChooserModel.disabled',
+                        control: switchInput({model, bind: 'disabled'})
                     })
-                }),
-                wrapperOption({
-                    label: 'Max size',
-                    propName: 'FileChooserConfig.maxFileSize',
-                    control: select({
-                        model,
-                        bind: 'maxFileSize',
-                        width: 110,
-                        hideDropdownIndicator: true,
-                        options: [
-                            {value: null, label: 'No limit'},
-                            {value: MB, label: '1 MB'},
-                            {value: 5 * MB, label: '5 MB'},
-                            {value: 25 * MB, label: '25 MB'}
-                        ]
+                ]
+            }),
+            item: demoPanel({
+                items: [
+                    demoSection({
+                        title: 'Playground',
+                        intent: 'primary',
+                        note: 'Driven by the Playground options in the rail.',
+                        item: demoPlayground({
+                            instanceWidth: 440,
+                            // The chooser lists its own files and the footer shows the count, so
+                            // the standard value readout would be redundant here - and dropping it
+                            // keeps the band inside a normal window width.
+                            showValue: false,
+                            caption: 'Drag files in, or click to browse.',
+                            config: [
+                                fmtDemoConfig<FileChooserConfig>('new FileChooserModel', {
+                                    accept: isEmpty(model.acceptedTypes)
+                                        ? undefined
+                                        : raw(fmtList(model.acceptedTypes)),
+                                    maxFiles: model.maxFiles ?? undefined,
+                                    maxFileSize: model.maxFileSize ?? undefined
+                                }),
+                                fmtDemoConfig<FileChooserProps>('fileChooser', {
+                                    model: raw('chooserModel'),
+                                    dropTargetPlacement:
+                                        model.placement === 'left' ? undefined : model.placement
+                                })
+                            ].join('\n\n'),
+                            item: configChooser()
+                        })
+                    }),
+                    demoSection({
+                        title: 'Single-File Choosers',
+                        note: 'The compact single-file mode, for space-constrained layouts.',
+                        item: demoGrid({
+                            columns: 2,
+                            items: [
+                                demoRow({
+                                    label: 'Default',
+                                    info: 'maxFiles: 1, no other configuration',
+                                    item: fileChooser({
+                                        model: model.basicChooserModel,
+                                        height: 220,
+                                        width: '100%'
+                                    })
+                                }),
+                                demoRow({
+                                    label: 'Custom image preview',
+                                    info: 'fileDisplay renders the selected image in place',
+                                    item: fileChooser({
+                                        model: model.imageChooserModel,
+                                        fileDisplay: imagePreview,
+                                        height: 220,
+                                        width: '100%'
+                                    })
+                                })
+                            ]
+                        })
                     })
-                }),
-                wrapperOption({
-                    label: 'Target',
-                    propName: 'FileChooserProps.dropTargetPlacement',
-                    control: segmentedControl({
-                        model,
-                        bind: 'placement',
-                        compact: true,
-                        options: [
-                            {value: 'left', label: 'Left'},
-                            {value: 'top', label: 'Top'},
-                            {value: 'hidden', label: 'Hidden'}
-                        ]
-                    })
-                }),
-                wrapperOption({
-                    label: 'Disable',
-                    propName: 'FileChooserModel.disabled',
-                    control: switchInput({model, bind: 'disabled'})
-                })
-            ],
-            item: vframe({
-                flex: 1,
-                width: '100%',
-                alignItems: 'center',
-                gap: 12,
-                items: [configChooserCard(), singleFileCard()]
+                ]
             })
         });
     }
 });
 
 /**
- * Top card: the multi-purpose chooser with live controls over accept / limits / target placement,
- * filling the card with its Browse / selected-count / Clear-all actions as a footer toolbar row.
+ * The Playground chooser: the multi-purpose chooser driven by the rail, with its Browse /
+ * selected-count / Clear-all actions as a footer toolbar row.
  */
-const configChooserCard = hoistCmp.factory<FileChooserPanelModel>({
+const configChooser = hoistCmp.factory<FileChooserPanelModel>({
     model: uses(() => FileChooserPanelModel),
     render({model}) {
         const {chooserModel, disabled, placement} = model;
-        return card({
-            title: 'Configurable Chooser',
-            icon: Icon.copy(),
-            className: 'tb-filechooser-card',
-            flex: 1,
+        return vbox({
             width: '100%',
-            maxWidth: CARD_MAX_WIDTH,
-            contentBoxProps: {flexDirection: 'column', flex: 1},
             items: [
                 fileChooser({
-                    flex: 1,
                     model: chooserModel,
-                    dropTargetPlacement: placement
+                    dropTargetPlacement: placement,
+                    height: 260,
+                    width: '100%'
                 }),
                 toolbar({
                     items: [
@@ -203,60 +272,6 @@ const configChooserCard = hoistCmp.factory<FileChooserPanelModel>({
                     ]
                 })
             ]
-        });
-    }
-});
-
-/**
- * Bottom card (same footprint as the top): pairs two deliberately compact single-file choosers
- * side by side - a default chooser in its minimal single-file mode, and one with a custom in-place
- * image preview. Each is captioned with a lightweight nested-card legend rather than a panel header.
- */
-const singleFileCard = hoistCmp.factory({
-    render() {
-        return card({
-            title: 'Single-File Choosers',
-            icon: Icon.file(),
-            className: 'tb-filechooser-card',
-            flex: 1,
-            width: '100%',
-            maxWidth: CARD_MAX_WIDTH,
-            contentBoxProps: {flexDirection: 'row', flex: 1, gap: 16},
-            items: [basicChooserCard(), imageChooserCard()]
-        });
-    }
-});
-
-/**
- * Default single-file chooser - no extra configuration, shown as-is in single-file mode. Captioned
- * with a light legend title rather than a panel header.
- */
-const basicChooserCard = hoistCmp.factory<FileChooserPanelModel>({
-    model: uses(() => FileChooserPanelModel),
-    render({model}) {
-        return card({
-            title: 'Default',
-            className: 'tb-filechooser-card',
-            flex: 1,
-            contentBoxProps: {flex: 1},
-            item: fileChooser({flex: 1, model: model.basicChooserModel})
-        });
-    }
-});
-
-/**
- * Single-image chooser demonstrating a custom `fileDisplay` (in-place image preview). Captioned
- * with a light legend title rather than a panel header.
- */
-const imageChooserCard = hoistCmp.factory<FileChooserPanelModel>({
-    model: uses(() => FileChooserPanelModel),
-    render({model}) {
-        return card({
-            title: 'Custom image preview',
-            className: 'tb-filechooser-card',
-            flex: 1,
-            contentBoxProps: {flex: 1},
-            item: fileChooser({flex: 1, model: model.imageChooserModel, fileDisplay: imagePreview})
         });
     }
 });
