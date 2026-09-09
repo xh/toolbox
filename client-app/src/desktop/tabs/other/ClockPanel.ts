@@ -1,14 +1,13 @@
 import {clock, ClockProps} from '@xh/hoist/cmp/clock';
-import {vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {numberInput, textInput} from '@xh/hoist/desktop/cmp/input';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {TIME_FMT} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {
     demoGrid,
+    demoPanel,
     demoPlayground,
     demoRow,
     demoSection,
@@ -93,42 +92,36 @@ export const clockPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: panel({
-                width: '100%',
-                height: '100%',
-                scrollable: true,
-                item: vbox({
-                    className: 'tbox-demo-body',
-                    items: [
-                        demoSection({
-                            title: 'Playground',
-                            intent: 'primary',
-                            note: 'Driven by the rail options, which apply to every clock below.',
-                            item: demoPlayground({
-                                instanceWidth: 200,
-                                showValue: false,
-                                caption: 'No timezone set, so browser local time.',
-                                config: fmtDemoConfig<ClockProps>('clock', clockProps),
-                                item: clock(clockProps)
-                            })
-                        }),
-                        demoSection({
-                            title: 'World Clocks',
-                            note: 'One clock per timezone, each fetching its offset from the server.',
-                            item: demoGrid({
-                                columns: 5,
-                                items: ZONES.map(({label, timezone, info}) =>
-                                    demoRow({
-                                        key: label,
-                                        label,
-                                        info,
-                                        item: clock({...clockProps, timezone})
-                                    })
-                                )
-                            })
+            item: demoPanel({
+                items: [
+                    demoSection({
+                        title: 'Playground',
+                        intent: 'primary',
+                        note: 'Driven by the rail options, which apply to every clock below.',
+                        item: demoPlayground({
+                            instanceWidth: 200,
+                            showValue: false,
+                            caption: 'No timezone set, so browser local time.',
+                            config: fmtDemoConfig<ClockProps>('clock', clockProps),
+                            item: clock(clockProps)
                         })
-                    ]
-                })
+                    }),
+                    demoSection({
+                        title: 'World Clocks',
+                        note: 'One clock per timezone, each fetching its offset from the server.',
+                        item: demoGrid({
+                            columns: 5,
+                            items: ZONES.map(({label, timezone, info}) =>
+                                demoRow({
+                                    key: label,
+                                    label,
+                                    info,
+                                    item: clock({...clockProps, timezone})
+                                })
+                            )
+                        })
+                    })
+                ]
             })
         });
     }

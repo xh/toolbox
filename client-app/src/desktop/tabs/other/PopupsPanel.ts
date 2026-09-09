@@ -47,6 +47,8 @@ export const popupsPanel = hoistCmp.factory(() => {
             }
         ],
         item: panel({
+            // Built here rather than with `demoPanel` because the containerRef Toast demo needs a
+            // ref to this element, which the shared factory does not forward.
             className: 'tbox-popups',
             ref: divRef,
             width: '100%',

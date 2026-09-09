@@ -1,13 +1,13 @@
-import {box, vbox} from '@xh/hoist/cmp/layout';
+import {box} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp, RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {dateInput, numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {DAYS, HOURS, MINUTES, SECONDS} from '@xh/hoist/utils/datetime';
 import {
     demoGrid,
+    demoPanel,
     demoPlayground,
     demoRow,
     demoSection,
@@ -195,62 +195,56 @@ export const relativeTimestampPanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: panel({
-                width: '100%',
-                height: '100%',
-                scrollable: true,
-                item: vbox({
-                    className: 'tbox-demo-body',
-                    items: [
-                        demoSection({
-                            title: 'Playground',
-                            intent: 'primary',
-                            note: 'Driven by the rail options, which apply to every instance below.',
-                            item: demoPlayground({
-                                instanceWidth: 300,
-                                value: model.timestamp,
-                                caption: 'Bound to the target set in the rail.',
-                                config: fmtDemoConfig<RelTimestampProps>('relativeTimestamp', {
-                                    bind: 'timestamp',
-                                    ...options,
-                                    // A Date is not a literal, so show the expression a developer
-                                    // would actually write. Derived from `options` so it cannot
-                                    // disagree with the instance.
-                                    relativeTo: relativeToSnippet(options.relativeTo)
-                                }),
-                                item: box({
-                                    className: 'tb-rel-ts__value',
-                                    item: relativeTimestamp({bind: 'timestamp', ...options})
-                                })
-                            })
-                        }),
-                        demoSection({
-                            title: 'Across Targets',
-                            note: 'Fixed offsets from now, rendered with the same rail options.',
-                            item: demoGrid({
-                                columns: 3,
-                                items: [
-                                    ...TARGETS.map(({label, info, offset}) =>
-                                        demoRow({
-                                            key: label,
-                                            label,
-                                            info,
-                                            item: relativeTimestamp({
-                                                timestamp: new Date(Date.now() + offset),
-                                                ...options
-                                            })
-                                        })
-                                    ),
-                                    demoRow({
-                                        label: 'Empty',
-                                        info: 'A null timestamp falls back to emptyResult',
-                                        item: relativeTimestamp({timestamp: null, ...options})
-                                    })
-                                ]
+            item: demoPanel({
+                items: [
+                    demoSection({
+                        title: 'Playground',
+                        intent: 'primary',
+                        note: 'Driven by the rail options, which apply to every instance below.',
+                        item: demoPlayground({
+                            instanceWidth: 300,
+                            value: model.timestamp,
+                            caption: 'Bound to the target set in the rail.',
+                            config: fmtDemoConfig<RelTimestampProps>('relativeTimestamp', {
+                                bind: 'timestamp',
+                                ...options,
+                                // A Date is not a literal, so show the expression a developer
+                                // would actually write. Derived from `options` so it cannot
+                                // disagree with the instance.
+                                relativeTo: relativeToSnippet(options.relativeTo)
+                            }),
+                            item: box({
+                                className: 'tb-rel-ts__value',
+                                item: relativeTimestamp({bind: 'timestamp', ...options})
                             })
                         })
-                    ]
-                })
+                    }),
+                    demoSection({
+                        title: 'Across Targets',
+                        note: 'Fixed offsets from now, rendered with the same rail options.',
+                        item: demoGrid({
+                            columns: 3,
+                            items: [
+                                ...TARGETS.map(({label, info, offset}) =>
+                                    demoRow({
+                                        key: label,
+                                        label,
+                                        info,
+                                        item: relativeTimestamp({
+                                            timestamp: new Date(Date.now() + offset),
+                                            ...options
+                                        })
+                                    })
+                                ),
+                                demoRow({
+                                    label: 'Empty',
+                                    info: 'A null timestamp falls back to emptyResult',
+                                    item: relativeTimestamp({timestamp: null, ...options})
+                                })
+                            ]
+                        })
+                    })
+                ]
             })
         });
     }

@@ -1,13 +1,12 @@
-import {vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistProps, uses} from '@xh/hoist/core';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {isEmpty} from 'lodash';
 import {ReactElement, ReactNode} from 'react';
 import {ToolboxLinkProps} from '../../../../core/cmp/ToolboxLink';
 import {
     demoGrid,
+    demoPanel,
     demoSection,
     demoToolbar,
     wrapper,
@@ -104,41 +103,35 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
                     onClick: () => model.resetInputs()
                 })
             ],
-            item: panel({
+            item: demoPanel({
                 className: 'tb-input-demo',
-                width: '100%',
-                height: '100%',
-                scrollable: true,
-                item: vbox({
-                    className: 'tbox-demo-body',
-                    items: [
-                        demoSection({
-                            omit: !playground,
-                            title: 'Playground',
-                            intent: 'primary',
-                            note: 'Driven by the Playground options in the rail.',
-                            item: playground
-                        }),
-                        demoSection({
-                            omit: isEmpty(variants),
-                            title: 'Variants',
-                            note: 'Preconfigured combinations worth surfacing - each card sets its own props.',
-                            item: demoGrid({columns: 3, items: variants})
-                        }),
-                        demoSection({
-                            omit: !toolbarItems,
-                            title: 'In a Toolbar',
-                            note: 'Alongside the controls it usually sits with.',
-                            items: toolbarItems
-                                ? [
-                                      demoToolbar({items: toolbarItems(false)}),
-                                      demoToolbar({compact: true, items: toolbarItems(true)})
-                                  ]
-                                : null
-                        }),
-                        demoSection({omit: !form, title: 'In a Form', item: form})
-                    ]
-                })
+                items: [
+                    demoSection({
+                        omit: !playground,
+                        title: 'Playground',
+                        intent: 'primary',
+                        note: 'Driven by the Playground options in the rail.',
+                        item: playground
+                    }),
+                    demoSection({
+                        omit: isEmpty(variants),
+                        title: 'Variants',
+                        note: 'Preconfigured combinations worth surfacing - each card sets its own props.',
+                        item: demoGrid({columns: 3, items: variants})
+                    }),
+                    demoSection({
+                        omit: !toolbarItems,
+                        title: 'In a Toolbar',
+                        note: 'Alongside the controls it usually sits with.',
+                        items: toolbarItems
+                            ? [
+                                  demoToolbar({items: toolbarItems(false)}),
+                                  demoToolbar({compact: true, items: toolbarItems(true)})
+                              ]
+                            : null
+                    }),
+                    demoSection({omit: !form, title: 'In a Form', item: form})
+                ]
             })
         });
     }

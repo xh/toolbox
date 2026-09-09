@@ -1,5 +1,5 @@
 import {DateRangePickerModel} from '@xh/hoist/cmp/daterange';
-import {filler, span, vbox} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistProps, Intent, managed, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dateRangePicker} from '@xh/hoist/desktop/cmp/daterange';
@@ -21,7 +21,6 @@ import {
     textArea,
     textInput
 } from '@xh/hoist/desktop/cmp/input';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
@@ -32,6 +31,7 @@ import {ReactElement} from 'react';
 import {usStates} from '../../../../core/data';
 import {
     demoGallery,
+    demoPanel,
     demoGalleryTile,
     demoSection,
     wrapper,
@@ -99,11 +99,8 @@ export const inputsIndexPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: panel({
+            item: demoPanel({
                 className: 'tb-inputs-index',
-                width: '100%',
-                height: '100%',
-                scrollable: true,
                 tbar: toolbar(
                     textInput({
                         bind: 'filter',
@@ -129,20 +126,17 @@ export const inputsIndexPanel = hoistCmp.factory({
                         item: pluralize('input', count, true)
                     })
                 ),
-                item: vbox({
-                    className: 'tbox-demo-body',
-                    items: groupByCategory
-                        ? INPUT_CATEGORIES.map(category => {
-                              const entries = visibleEntries.filter(it => it.category === category);
-                              return demoSection({
-                                  key: category,
-                                  omit: !entries.length,
-                                  title: category,
-                                  item: gallery({entries})
-                              });
-                          })
-                        : gallery({entries: sortBy(visibleEntries, 'name')})
-                })
+                items: groupByCategory
+                    ? INPUT_CATEGORIES.map(category => {
+                          const entries = visibleEntries.filter(it => it.category === category);
+                          return demoSection({
+                              key: category,
+                              omit: !entries.length,
+                              title: category,
+                              item: gallery({entries})
+                          });
+                      })
+                    : gallery({entries: sortBy(visibleEntries, 'name')})
             })
         });
     }

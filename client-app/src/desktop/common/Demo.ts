@@ -1,5 +1,6 @@
 import {div, hbox, pre, span, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistProps, Intent} from '@xh/hoist/core';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {isLocalDate} from '@xh/hoist/utils/datetime';
@@ -17,6 +18,35 @@ import './Demo.scss';
  * a component page is Playground -> Variants -> In a Toolbar -> In a Form. Not every section is
  * mandatory - omit a section rather than pad it.
  */
+
+//------------------------------------------------------------------
+// Page body
+//------------------------------------------------------------------
+export interface DemoPanelProps extends HoistProps {
+    /** Toolbar above the body, for page-level controls such as a filter. */
+    tbar?: ReactNode;
+}
+
+/**
+ * The body of a demo page: a scrollable panel filling the demo region, holding stacked sections.
+ * Pass `demoSection` elements as `item`/`items`.
+ *
+ * Every demo page needs the same panel here, so this keeps the sizing and scroll behavior in one
+ * place - notably the horizontal scroll the sections rely on when the window is too narrow.
+ */
+export const [DemoPanel, demoPanel] = hoistCmp.withFactory<DemoPanelProps>({
+    displayName: 'DemoPanel',
+    render({className, tbar, children}) {
+        return panel({
+            className,
+            width: '100%',
+            height: '100%',
+            scrollable: true,
+            tbar,
+            item: vbox({className: 'tbox-demo-body', items: children})
+        });
+    }
+});
 
 //------------------------------------------------------------------
 // Section

@@ -1,14 +1,14 @@
-import {filler, hbox, vbox} from '@xh/hoist/cmp/layout';
+import {filler, hbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
 import {button, buttonGroup, ButtonProps} from '@xh/hoist/desktop/cmp/button';
 import {intentInput, segmentedControl, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {ReactNode} from 'react';
 import {
     demoGrid,
+    demoPanel,
     demoPlayground,
     demoRow,
     demoSection,
@@ -113,136 +113,130 @@ export const buttonsPanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: panel({
-                width: '100%',
-                height: '100%',
-                scrollable: true,
-                item: vbox({
-                    className: 'tbox-demo-body',
-                    items: [
-                        demoSection({
-                            title: 'Playground',
-                            intent: 'primary',
-                            note: 'Driven by the Playground options in the rail.',
-                            item: demoPlayground({
-                                instanceWidth: 260,
-                                showValue: false,
-                                config: fmtDemoConfig<ButtonProps>('button', {
-                                    text: model.pgText || undefined,
-                                    icon: model.pgIcon ? raw('Icon.check()') : undefined,
-                                    intent: model.pgIntent || undefined,
-                                    ...styleSnippetProps(pgStyle),
-                                    ...ambientSnippetProps
-                                }),
-                                item: button({
-                                    ...ambientProps,
-                                    ...STYLE_PROPS[pgStyle],
-                                    text: model.pgText,
-                                    icon: model.pgIcon ? Icon.check() : null,
-                                    intent: model.pgIntent,
-                                    onClick: () => XH.toast({message: 'Clicked!'})
-                                })
+            item: demoPanel({
+                items: [
+                    demoSection({
+                        title: 'Playground',
+                        intent: 'primary',
+                        note: 'Driven by the Playground options in the rail.',
+                        item: demoPlayground({
+                            instanceWidth: 260,
+                            showValue: false,
+                            config: fmtDemoConfig<ButtonProps>('button', {
+                                text: model.pgText || undefined,
+                                icon: model.pgIcon ? raw('Icon.check()') : undefined,
+                                intent: model.pgIntent || undefined,
+                                ...styleSnippetProps(pgStyle),
+                                ...ambientSnippetProps
+                            }),
+                            item: button({
+                                ...ambientProps,
+                                ...STYLE_PROPS[pgStyle],
+                                text: model.pgText,
+                                icon: model.pgIcon ? Icon.check() : null,
+                                intent: model.pgIntent,
+                                onClick: () => XH.toast({message: 'Clicked!'})
                             })
-                        }),
-                        demoSection({
-                            title: 'Variants',
-                            note: 'Preconfigured combinations worth surfacing - each card sets its own props.',
-                            items: [
-                                // The three looks lead the section at full width: each spans every
-                                // intent, so they read as rows to compare top to bottom.
-                                demoGrid({
-                                    columns: 1,
-                                    items: [
-                                        intentRow(model, 'minimal', 'The Hoist default'),
-                                        intentRow(model, 'standard', 'minimal: false'),
-                                        intentRow(model, 'outlined', 'outlined: true')
-                                    ]
-                                }),
-                                demoGrid({
-                                    columns: 3,
-                                    items: [
-                                        demoRow({
-                                            label: 'Content shapes',
-                                            info: 'text, icon, both, and rightIcon',
-                                            item: buttonRow(
-                                                button({...ambientProps, text: 'Text'}),
-                                                button({
-                                                    ...ambientProps,
-                                                    icon: Icon.checkCircle(),
-                                                    tooltip: 'Icon only'
-                                                }),
-                                                button({
-                                                    ...ambientProps,
-                                                    icon: Icon.checkCircle(),
-                                                    text: 'Both'
-                                                }),
-                                                button({
-                                                    ...ambientProps,
-                                                    text: 'Menu',
-                                                    rightIcon: Icon.chevronDown()
-                                                })
-                                            )
-                                        }),
-                                        demoRow({
-                                            label: 'Active',
-                                            info: 'active: true - a pressed-in toggle, in each style',
-                                            item: buttonRow(
-                                                button({
-                                                    ...ambientProps,
-                                                    active: true,
-                                                    text: 'Minimal'
-                                                }),
-                                                button({
-                                                    ...ambientProps,
-                                                    ...STYLE_PROPS.standard,
-                                                    active: true,
-                                                    text: 'Standard'
-                                                }),
-                                                button({
-                                                    ...ambientProps,
-                                                    ...STYLE_PROPS.outlined,
-                                                    active: true,
-                                                    text: 'Outlined'
-                                                })
-                                            )
-                                        }),
-                                        demoRow({
-                                            label: 'In a ButtonGroup',
-                                            info: 'buttonGroup joins adjacent buttons - see ButtonGroupInput to bind one as a value',
-                                            item: buttonGroup({
-                                                items: [
-                                                    button({
-                                                        ...ambientProps,
-                                                        icon: Icon.chartLine(),
-                                                        text: 'Linear'
-                                                    }),
-                                                    button({
-                                                        ...ambientProps,
-                                                        icon: Icon.chartArea(),
-                                                        text: 'Area'
-                                                    }),
-                                                    button({
-                                                        ...ambientProps,
-                                                        icon: Icon.chartBar(),
-                                                        text: 'Bar'
-                                                    })
-                                                ]
-                                            })
-                                        })
-                                    ]
-                                })
-                            ]
-                        }),
-                        demoSection({
-                            title: 'In a Toolbar',
-                            note: 'Alongside the controls they usually sit with.',
-                            items: [
-                                demoToolbar({items: toolbarItems(model)}),
-                                demoToolbar({compact: true, items: toolbarItems(model)})
-                            ]
                         })
-                    ]
-                })
+                    }),
+                    demoSection({
+                        title: 'Variants',
+                        note: 'Preconfigured combinations worth surfacing - each card sets its own props.',
+                        items: [
+                            // The three looks lead the section at full width: each spans every
+                            // intent, so they read as rows to compare top to bottom.
+                            demoGrid({
+                                columns: 1,
+                                items: [
+                                    intentRow(model, 'minimal', 'The Hoist default'),
+                                    intentRow(model, 'standard', 'minimal: false'),
+                                    intentRow(model, 'outlined', 'outlined: true')
+                                ]
+                            }),
+                            demoGrid({
+                                columns: 3,
+                                items: [
+                                    demoRow({
+                                        label: 'Content shapes',
+                                        info: 'text, icon, both, and rightIcon',
+                                        item: buttonRow(
+                                            button({...ambientProps, text: 'Text'}),
+                                            button({
+                                                ...ambientProps,
+                                                icon: Icon.checkCircle(),
+                                                tooltip: 'Icon only'
+                                            }),
+                                            button({
+                                                ...ambientProps,
+                                                icon: Icon.checkCircle(),
+                                                text: 'Both'
+                                            }),
+                                            button({
+                                                ...ambientProps,
+                                                text: 'Menu',
+                                                rightIcon: Icon.chevronDown()
+                                            })
+                                        )
+                                    }),
+                                    demoRow({
+                                        label: 'Active',
+                                        info: 'active: true - a pressed-in toggle, in each style',
+                                        item: buttonRow(
+                                            button({
+                                                ...ambientProps,
+                                                active: true,
+                                                text: 'Minimal'
+                                            }),
+                                            button({
+                                                ...ambientProps,
+                                                ...STYLE_PROPS.standard,
+                                                active: true,
+                                                text: 'Standard'
+                                            }),
+                                            button({
+                                                ...ambientProps,
+                                                ...STYLE_PROPS.outlined,
+                                                active: true,
+                                                text: 'Outlined'
+                                            })
+                                        )
+                                    }),
+                                    demoRow({
+                                        label: 'In a ButtonGroup',
+                                        info: 'buttonGroup joins adjacent buttons - see ButtonGroupInput to bind one as a value',
+                                        item: buttonGroup({
+                                            items: [
+                                                button({
+                                                    ...ambientProps,
+                                                    icon: Icon.chartLine(),
+                                                    text: 'Linear'
+                                                }),
+                                                button({
+                                                    ...ambientProps,
+                                                    icon: Icon.chartArea(),
+                                                    text: 'Area'
+                                                }),
+                                                button({
+                                                    ...ambientProps,
+                                                    icon: Icon.chartBar(),
+                                                    text: 'Bar'
+                                                })
+                                            ]
+                                        })
+                                    })
+                                ]
+                            })
+                        ]
+                    }),
+                    demoSection({
+                        title: 'In a Toolbar',
+                        note: 'Alongside the controls they usually sit with.',
+                        items: [
+                            demoToolbar({items: toolbarItems(model)}),
+                            demoToolbar({compact: true, items: toolbarItems(model)})
+                        ]
+                    })
+                ]
             })
         });
     }
