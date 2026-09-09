@@ -98,7 +98,6 @@ export const cardPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        note: 'Driven by the Playground options in the rail.',
                         item: demoPlayground({
                             instanceWidth: 360,
                             showValue: false,
@@ -131,7 +130,7 @@ export const cardPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Variants',
-                        note: 'Preconfigured combinations worth surfacing - each card sets its own props.',
+                        note: 'Each card sets its own props.',
                         items: [
                             demoGrid({
                                 columns: 2,

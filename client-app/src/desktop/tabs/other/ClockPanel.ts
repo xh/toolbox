@@ -101,7 +101,6 @@ export const clockPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        note: 'Driven by the rail options, which apply to every clock below.',
                         item: demoPlayground({
                             instanceWidth: 200,
                             showValue: false,

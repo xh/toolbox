@@ -203,11 +203,10 @@ export const relativeTimestampPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        note: 'Driven by the rail options, which apply to every instance below.',
                         item: demoPlayground({
                             instanceWidth: 300,
                             value: model.timestamp,
-                            caption: 'Bound to the target set in the rail.',
+                            caption: 'Your chosen target, relative to now.',
                             config: fmtDemoConfig<RelTimestampProps>('relativeTimestamp', {
                                 bind: 'timestamp',
                                 ...options,
@@ -224,7 +223,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Across Targets',
-                        note: 'Fixed offsets from now, rendered with the same rail options.',
+                        note: 'Fixed offsets from now, from seconds to days.',
                         item: demoGrid({
                             columns: 3,
                             items: [

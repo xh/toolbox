@@ -176,7 +176,6 @@ export const fileChooserPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        note: 'Driven by the Playground options in the rail.',
                         item: demoPlayground({
                             instanceWidth: 440,
                             // The chooser lists its own files and the footer shows the count, so

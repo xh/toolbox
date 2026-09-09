@@ -110,13 +110,12 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
                         omit: !playground,
                         title: 'Playground',
                         intent: 'primary',
-                        note: 'Driven by the Playground options in the rail.',
                         item: playground
                     }),
                     demoSection({
                         omit: isEmpty(variants),
                         title: 'Variants',
-                        note: 'Preconfigured combinations worth surfacing - each card sets its own props.',
+                        note: 'Each card sets its own props.',
                         item: demoGrid({columns: 3, items: variants})
                     }),
                     demoSection({

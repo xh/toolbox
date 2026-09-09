@@ -118,7 +118,6 @@ export const buttonsPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        note: 'Driven by the Playground options in the rail.',
                         item: demoPlayground({
                             instanceWidth: 260,
                             showValue: false,
@@ -141,7 +140,7 @@ export const buttonsPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Variants',
-                        note: 'Preconfigured combinations worth surfacing - each card sets its own props.',
+                        note: 'Each card sets its own props.',
                         items: [
                             // The three looks lead the section at full width: each spans every
                             // intent, so they read as rows to compare top to bottom.
