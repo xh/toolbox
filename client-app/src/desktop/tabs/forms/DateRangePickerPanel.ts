@@ -1,11 +1,10 @@
-import {grid, GridModel, localDateCol, numberCol} from '@xh/hoist/cmp/grid';
-import {box, code, div, filler, hbox, hframe, span, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {box, code, filler, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, type Intent, managed} from '@xh/hoist/core';
-import {parseFilter} from '@xh/hoist/data';
 import {
     DATE_RANGE_PICKER_TABS,
     DATE_RANGE_PRESET_TOKENS,
     dateRangePicker,
+    type DateRangePickerProps,
     type DateRangeFormat,
     DateRangePickerModel,
     type DateRangePickerTab,
@@ -14,15 +13,27 @@ import {
     DEFAULT_DATE_RANGE_PRESETS,
     type LocalDateRange
 } from '@xh/hoist/desktop/cmp/daterange';
-import {dateInput, picker, select, switchInput} from '@xh/hoist/desktop/cmp/input';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {fmtNumber} from '@xh/hoist/format';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {dateInput, intentInput, picker, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, sortBy} from 'lodash';
-import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common';
+import {ReactNode} from 'react';
+import {
+    demoGrid,
+    demoPanel,
+    demoPlayground,
+    demoRow,
+    demoSection,
+    demoToolbar,
+    fmtDemoConfig,
+    raw,
+    wrapper,
+    wrapperOption,
+    wrapperOptionGroup
+} from '../../common';
 import './DateRangePickerPanel.scss';
 
 export const dateRangePickerPanel = hoistCmp.factory({
@@ -34,22 +45,17 @@ export const dateRangePickerPanel = hoistCmp.factory({
             title: 'DateRangePicker',
             icon: Icon.calendarRange(),
             description: [
-                '`DateRangePicker` is a dropdown control for selecting a period of time - one compact',
-                'trigger that can express presets (MTD, Prev 30 Days, ...), relative lookbacks, calendar',
-                'months and years, and custom ranges of dates. Its popover offers a tab for each of those',
-                'selection shapes, and the backing model controls which tabs and presets appear.',
+                '`DateRangePicker` is a dropdown for selecting a period of time - one compact',
+                'trigger that expresses presets (MTD, Prev 30 Days), relative lookbacks, calendar',
+                'months and years, or a custom range. The backing model controls which tabs and',
+                'presets appear.',
                 '',
-                'The applied value is a single `DateRangeSelection` - plain JSON that persists as-is and',
+                'The applied value is a plain-JSON `DateRangeSelection` that persists as-is and',
                 're-resolves as the anchor day moves, so a saved `mtd` stays month-to-date. The step',
-                'buttons (and arrow keys on the trigger) walk a preset or lookback back and forth',
-                'without changing what it is - stepped ranges keep rolling with the day. The',
-                '`DateRangePickerModel` resolves it to current and prior `LocalDateRange`s and to',
-                '`FieldFilterSpec`s ready to apply to a Store or query. The grid here is filtered by',
-                "the picker's `currentRangeFilter`, with the prior range summarized for comparison.",
+                'buttons walk a preset or lookback back and forth without changing what it is.',
                 '',
-                'Use the options to reconfigure the main picker in the toolbar. The smaller examples',
-                'below the readout show a stretched trigger adapting to a narrow host, a single-tab',
-                'month picker, and a picker with app-defined presets.'
+                '`DateRangePickerModel` resolves that selection into current and prior',
+                '`LocalDateRange`s and into `FieldFilterSpec`s ready to apply to a Store or query.'
             ],
             links: [
                 {
@@ -71,7 +77,10 @@ export const dateRangePickerPanel = hoistCmp.factory({
             ],
             options: [
                 wrapperOptionGroup({
-                    label: 'Component',
+                    label: 'Playground only - props',
+                    icon: Icon.experiment(),
+                    intent: 'primary',
+                    info: 'Drives the Playground instance. The variants use their own models.',
                     items: [
                         wrapperOption({
                             label: 'Style as input',
@@ -97,19 +106,15 @@ export const dateRangePickerPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Intent',
                             propName: 'DateRangePickerProps.intent',
-                            control: select({
-                                bind: 'intent',
-                                enableClear: true,
-                                enableFilter: false,
-                                placeholder: 'None',
-                                width: 120,
-                                options: ['primary', 'success', 'warning', 'danger']
-                            })
+                            control: intentInput({bind: 'intent', enableClear: true})
                         })
                     ]
                 }),
                 wrapperOptionGroup({
-                    label: 'Model',
+                    label: 'Playground only - model',
+                    icon: Icon.experiment(),
+                    intent: 'primary',
+                    info: 'Set on the DateRangePickerModel rather than the element.',
                     items: [
                         wrapperOption({
                             label: 'Tabs',
@@ -120,6 +125,7 @@ export const dateRangePickerPanel = hoistCmp.factory({
                                 enableFilter: false,
                                 displayNoun: 'tab',
                                 multiSelectButtonStyle: 'values',
+                                multiSelectShowCount: true,
                                 width: 180,
                                 options: DATE_RANGE_PICKER_TABS
                             })
@@ -133,6 +139,8 @@ export const dateRangePickerPanel = hoistCmp.factory({
                                 enableSelectAll: true,
                                 enableClear: true,
                                 displayNoun: 'preset',
+                                multiSelectButtonStyle: 'values',
+                                multiSelectShowCount: true,
                                 width: 180,
                                 options: DATE_RANGE_PRESET_TOKENS
                             })
@@ -216,150 +224,145 @@ export const dateRangePickerPanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: panel({
+            item: demoPanel({
                 className: 'tb-drp-panel',
-                width: '100%',
-                height: '100%',
-                maxWidth: 1400,
-                tbar: mainToolbar(),
-                item: hframe(
-                    vframe({className: 'tb-drp-panel__side', items: [readout(), variants()]}),
-                    grid({model: model.gridModel})
-                )
+                items: [
+                    demoSection({
+                        title: 'Playground',
+                        intent: 'primary',
+                        item: demoPlayground({
+                            instanceWidth: 400,
+                            // The applied selection is the first row of Model Values below, so a
+                            // value readout here would duplicate it - and its fixed column was
+                            // what pushed this page wider than its container.
+                            showValue: false,
+                            caption: 'Arrow keys on the trigger step the range too.',
+                            config: fmtDemoConfig<DateRangePickerProps>('dateRangePicker', {
+                                model: raw('pickerModel'),
+                                styleButtonAsInput: model.styleButtonAsInput ? undefined : false,
+                                showRange: model.showRange ? undefined : false,
+                                showStepButtons: model.showStepButtons || undefined,
+                                footerNote: model.showFooterNote ? undefined : null,
+                                intent: model.intent || undefined
+                            }),
+                            item: dateRangePicker({
+                                model: model.pickerModel,
+                                styleButtonAsInput: model.styleButtonAsInput,
+                                showRange: model.showRange,
+                                showStepButtons: model.showStepButtons,
+                                intent: model.intent,
+                                footerNote: model.showFooterNote ? undefined : null,
+                                testId: 'drp'
+                            })
+                        })
+                    }),
+                    demoSection({
+                        title: 'Model Values',
+                        note: 'Everything the model derives from the applied selection.',
+                        item: modelValues()
+                    }),
+                    demoSection({
+                        title: 'Variants',
+                        note: 'Each uses its own model and configuration.',
+                        items: [variantNarrow(), variantMonth(), variantFiscal()]
+                    }),
+                    demoSection({
+                        title: 'In a Toolbar',
+                        note: 'Alongside the controls it usually sits with.',
+                        items: [
+                            demoToolbar({items: toolbarItems(model)}),
+                            demoToolbar({compact: true, items: toolbarItems(model)})
+                        ]
+                    })
+                ]
             })
         });
     }
 });
 
 //------------------------------------------------------------------
-// Main picker + filtered grid stats
+// Model values
 //------------------------------------------------------------------
-const mainToolbar = hoistCmp.factory<DateRangePickerPanelModel>(({model}) => {
-    const {pickerModel, stats} = model;
-    return toolbar(
-        dateRangePicker({
-            model: pickerModel,
-            styleButtonAsInput: model.styleButtonAsInput,
-            showRange: model.showRange,
-            showStepButtons: model.showStepButtons,
-            intent: model.intent,
-            footerNote: model.showFooterNote ? undefined : null,
-            testId: 'drp'
-        }),
-        filler(),
-        statBlock({label: 'Current', stat: stats.current}),
-        toolbarSep(),
-        statBlock({label: 'Prior', stat: stats.prior})
-    );
-});
-
-interface RangeStat {
-    count: number;
-    total: number;
-}
-
-const statBlock = hoistCmp.factory<DateRangePickerPanelModel>(({label, stat}) =>
-    hbox({
-        className: 'tb-drp-panel__stat',
-        items: [
-            span({className: 'tb-drp-panel__stat-label', item: label}),
-            stat
-                ? span(
-                      `${fmtNumber(stat.count, {precision: 0})} days · ${fmtNumber(stat.total, {
-                          precision: 0,
-                          prefix: '$'
-                      })}`
-                  )
-                : span({className: 'xh-text-color-muted', item: 'n/a'})
-        ]
-    })
-);
-
-//------------------------------------------------------------------
-// Readout of the model's derived values
-//------------------------------------------------------------------
-const readout = hoistCmp.factory<DateRangePickerPanelModel>(({model}) => {
+const modelValues = hoistCmp.factory<DateRangePickerPanelModel>(({model}) => {
     const {pickerModel: m} = model,
-        fmtRange = (r: LocalDateRange) => (r ? m.fmtRange(r) : 'null');
-    return panel({
-        title: 'DateRangePickerModel',
-        icon: Icon.code(),
-        compactHeader: true,
-        className: 'tb-drp-panel__readout',
-        items: [
-            readoutRow({label: 'value', value: JSON.stringify(m.value)}),
-            readoutRow({label: 'label', value: m.label}),
-            readoutRow({label: 'rangeLabel', value: m.rangeLabel}),
-            readoutRow({label: 'displayName', value: m.displayName}),
-            readoutRow({label: 'currentRange', value: fmtRange(m.currentRange)}),
-            readoutRow({label: 'priorRange', value: fmtRange(m.priorRange)}),
-            readoutRow({label: 'anchorDay', value: JSON.stringify(m.anchorDay)}),
-            readoutRow({label: 'anchorDate', value: m.anchorDate.isoString}),
-            readoutRow({label: 'today', value: m.today.isoString}),
-            readoutRow({
-                label: 'currentRangeFilter',
-                value: JSON.stringify(m.currentRangeFilter)
+        fmtRange = (r: LocalDateRange) => (r ? m.fmtRange(r) : 'null'),
+        rows: Array<[string, string]> = [
+            ['value', JSON.stringify(m.value)],
+            ['label', m.label],
+            ['rangeLabel', m.rangeLabel],
+            ['displayName', m.displayName],
+            ['currentRange', fmtRange(m.currentRange)],
+            ['priorRange', fmtRange(m.priorRange)],
+            ['anchorDay', JSON.stringify(m.anchorDay)],
+            ['anchorDate', m.anchorDate.isoString]
+        ];
+    return demoGrid({
+        columns: 2,
+        items: rows.map(([label, value]) =>
+            demoRow({
+                key: label,
+                label,
+                item: code({className: 'tb-drp-panel__value', item: value})
             })
-        ]
+        )
     });
 });
 
-const readoutRow = hoistCmp.factory(({label, value}) =>
-    div({
-        className: 'tb-drp-panel__readout-row',
-        items: [
-            span({className: 'tb-drp-panel__readout-label', item: label}),
-            code({className: 'tb-drp-panel__readout-value', item: value})
-        ]
-    })
-);
+/**
+ * A realistic app toolbar around the picker. Bound to the same model as the Playground, so the
+ * options reach it - `styleButtonAsInput` in particular is what decides whether the trigger reads
+ * as an input or as a toolbar button. The picker derives its own compact treatment from measured
+ * width rather than from the toolbar, so only its neighbours change with the density.
+ */
+function toolbarItems(model: DateRangePickerPanelModel): ReactNode[] {
+    return [
+        dateRangePicker({
+            model: model.pickerModel,
+            styleButtonAsInput: model.styleButtonAsInput,
+            showRange: model.showRange,
+            showStepButtons: model.showStepButtons,
+            intent: model.intent
+        }),
+        toolbarSep(),
+        button({icon: Icon.refresh(), text: 'Refresh'}),
+        filler(),
+        button({icon: Icon.download(), text: 'Export', outlined: true})
+    ];
+}
 
 //------------------------------------------------------------------
 // Other configurations
 //------------------------------------------------------------------
-const variants = hoistCmp.factory<DateRangePickerPanelModel>(({model}) =>
-    panel({
-        title: 'Other Configurations',
-        icon: Icon.gears(),
-        compactHeader: true,
-        className: 'tb-drp-panel__variants',
-        items: [
-            variantRow({
-                label: 'Stretched into a narrow host',
-                info: 'flex: 1 - the trigger measures its width and drops the dates when they no longer fit.',
-                item: box({
-                    className: 'tb-drp-panel__narrow-host',
-                    width: 200,
-                    item: dateRangePicker({model: model.pickerModel, flex: 1, testId: 'drp-narrow'})
-                })
-            }),
-            variantRow({
-                label: 'Single tab - months and years only',
-                info: "tabs: ['period'] - no rail, and the popover shrinks to fit.",
-                item: dateRangePicker({model: model.monthPickerModel, testId: 'drp-month'})
-            }),
-            variantRow({
-                label: 'App-defined presets, outlined trigger',
-                info: 'A fiscal-year preset alongside built-ins, presets + custom tabs, styleButtonAsInput: false.',
-                item: dateRangePicker({
-                    model: model.fiscalPickerModel,
-                    styleButtonAsInput: false,
-                    buttonProps: {icon: Icon.chartLine()},
-                    testId: 'drp-fiscal'
-                })
-            })
-        ]
+const variantNarrow = hoistCmp.factory<DateRangePickerPanelModel>(({model}) =>
+    demoRow({
+        label: 'Stretched into a narrow host',
+        info: 'flex: 1 - the trigger measures its width and drops the dates when they no longer fit.',
+        item: box({
+            className: 'tb-drp-panel__narrow-host',
+            width: 200,
+            item: dateRangePicker({model: model.pickerModel, flex: 1, testId: 'drp-narrow'})
+        })
     })
 );
 
-const variantRow = hoistCmp.factory(({label, info, children}) =>
-    vbox({
-        className: 'tb-drp-panel__variant',
-        items: [
-            span({className: 'tb-drp-panel__variant-label', item: label}),
-            span({className: 'xh-text-color-muted xh-font-size-small', item: info}),
-            div({className: 'tb-drp-panel__variant-body', item: children})
-        ]
+const variantMonth = hoistCmp.factory<DateRangePickerPanelModel>(({model}) =>
+    demoRow({
+        label: 'Single tab - months and years only',
+        info: "tabs: ['period'] - no rail, and the popover shrinks to fit.",
+        item: dateRangePicker({model: model.monthPickerModel, testId: 'drp-month'})
+    })
+);
+
+const variantFiscal = hoistCmp.factory<DateRangePickerPanelModel>(({model}) =>
+    demoRow({
+        label: 'App-defined presets, outlined trigger',
+        info: 'A fiscal-year preset alongside built-ins, presets + custom tabs, styleButtonAsInput: false.',
+        item: dateRangePicker({
+            model: model.fiscalPickerModel,
+            styleButtonAsInput: false,
+            buttonProps: {icon: Icon.chartLine()},
+            testId: 'drp-fiscal'
+        })
     })
 );
 
@@ -370,7 +373,6 @@ class DateRangePickerPanelModel extends HoistModel {
     @managed pickerModel: DateRangePickerModel;
     @managed monthPickerModel: DateRangePickerModel;
     @managed fiscalPickerModel: DateRangePickerModel;
-    @managed gridModel: GridModel;
 
     // Component options
     @bindable styleButtonAsInput = true;
@@ -391,24 +393,6 @@ class DateRangePickerPanelModel extends HoistModel {
     @bindable.ref maxDate: LocalDate = null;
     @bindable dateFormat = 'YYYY-MM-DD';
     @bindable singleDayFormat: keyof typeof DAY_FORMATS = 'ddd MMM D';
-
-    /** Record counts and totals within the current and prior ranges, across all loaded data. */
-    @computed
-    get stats(): {current: RangeStat; prior: RangeStat} {
-        const {pickerModel, gridModel} = this,
-            records = gridModel.store.allRecords,
-            statFor = (range: LocalDateRange): RangeStat => {
-                if (!range) return null;
-                const specs = pickerModel.getRangeFilter(range),
-                    testFn = isEmpty(specs) ? null : parseFilter(specs).getTestFn(gridModel.store),
-                    matches = testFn ? records.filter(testFn) : records;
-                return {
-                    count: matches.length,
-                    total: matches.reduce((sum, r) => sum + r.data.amount, 0)
-                };
-            };
-        return {current: statFor(pickerModel.currentRange), prior: statFor(pickerModel.priorRange)};
-    }
 
     constructor() {
         super();
@@ -432,37 +416,7 @@ class DateRangePickerPanelModel extends HoistModel {
             initialValue: 'fytd'
         });
 
-        this.gridModel = new GridModel({
-            xhName: 'dateRangePickerDemo',
-            store: {
-                fields: [
-                    {name: 'date', type: 'localDate'},
-                    {name: 'category', type: 'string'},
-                    {name: 'amount', type: 'number'}
-                ]
-            },
-            sortBy: 'date|desc',
-            emptyText: 'No records within the selected range.',
-            columns: [
-                {field: 'date', ...localDateCol},
-                {field: 'category', width: 120},
-                {
-                    field: 'amount',
-                    ...numberCol,
-                    width: 110,
-                    renderer: v => fmtNumber(v, {precision: 0, prefix: '$'})
-                },
-                {colId: 'spacer', flex: 1, headerName: '', sortable: false, resizable: false}
-            ]
-        });
-        this.gridModel.loadData(generateRecords());
-
         this.addReaction(
-            {
-                track: () => this.pickerModel.currentRangeFilter,
-                run: filter => this.gridModel.store.setFilter(filter),
-                fireImmediately: true
-            },
             {
                 // The picker allows clearing every tab - hold the last configuration until one is
                 // selected again, as the model requires at least one.
@@ -554,23 +508,3 @@ const PREV_FISCAL_YEAR: DateRangePreset = {
         return {start: end.add(1, 'days').subtract(1, 'years'), end};
     }
 };
-
-//------------------------------------------------------------------
-// Sample data - one record per day, deterministic
-//------------------------------------------------------------------
-const CATEGORIES = ['Sales', 'Service', 'Support', 'Licensing'];
-
-function generateRecords() {
-    const start = LocalDate.today().subtract(3, 'years').startOfYear(),
-        end = LocalDate.today().add(1, 'years'),
-        ret = [];
-    for (let day = start, i = 0; day <= end; day = day.nextDay(), i++) {
-        ret.push({
-            id: day.isoString,
-            date: day,
-            category: CATEGORIES[(i * 7) % CATEGORIES.length],
-            amount: 250 + ((i * 7919) % 1750)
-        });
-    }
-    return ret;
-}

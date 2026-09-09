@@ -16,8 +16,13 @@
 
 ### New Features
 
-* Added a demo page for Hoist's new `DateRangeInput` component.
-* Expanded Hoist Inputs page to include Hoist's new `IntentInput` component and expanded the range of `SegmentedControl` demos.
+* Reorganized the Hoist Inputs demos into an index page plus one page per input, each with a playground and preconfigured variants.
+* Rebuilt many other component demos on the same shared harness, each gaining a playground with a live code snippet.
+* Added a demo page for Hoist's new `DateRangePicker` component.
+
+### Bug Fixes
+
+* Fixed demo pages crushing their content in a narrow window - the demo region now holds a minimum width and scrolls horizontally instead.
 
 ## 9.5.0 - 2026-08-28
 
