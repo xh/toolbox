@@ -25,12 +25,15 @@ export const otherControlsPanel = hoistCmp.factory({
             title: 'Other Controls',
             icon: Icon.grip(),
             description: [
-                'Controls on this tab that are *not* `HoistInput`s. Each takes its own model rather',
+                'Controls on this tab are *not* `HoistInput`s. Each takes its own model rather',
                 'than a `bind`, so none can sit inside a `FormField` or take part in a',
                 "`FormModel`'s validation and commit handling.",
                 '',
-                'They are collected here as they commonly participate in data collection forms',
-                'alongside the core inputs. Each tile opens a dedicated page.'
+                'That said, they are collected here as they commonly participate in forms',
+                'alongside the core inputs and can be used to collect a rich variety of data',
+                'from users.',
+                '',
+                'Each tile opens a dedicated page.'
             ],
             links: [
                 {
