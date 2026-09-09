@@ -4,4 +4,15 @@
   .tbox-popups__button {
     min-width: 150px;
   }
+
+  // A bounded target for the containerRef Toast demo, so the anchoring is actually visible.
+  // Toasts position against this element rather than the document edge.
+  &__anchor {
+    position: relative;
+    min-height: 90px;
+    width: 320px;
+    padding: var(--xh-pad-px);
+    border: 1px dashed var(--xh-border-color);
+    border-radius: var(--xh-border-radius-px);
+  }
 }

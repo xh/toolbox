@@ -108,6 +108,7 @@ export const codeInputsPanel = hoistCmp.factory({
                     showFullscreenButton: pgFullscreen === false ? false : undefined,
                     lineWrapping: pgWrap || undefined,
                     ...ambientSnippetProps,
+                    height: 180,
                     width: '100%'
                 }),
                 value: model.playground,

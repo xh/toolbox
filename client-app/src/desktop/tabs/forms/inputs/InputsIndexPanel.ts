@@ -31,8 +31,8 @@ import {ReactElement} from 'react';
 import {usStates} from '../../../../core/data';
 import {
     demoGallery,
-    demoPanel,
     demoGalleryTile,
+    demoPanel,
     demoSection,
     wrapper,
     wrapperOption,

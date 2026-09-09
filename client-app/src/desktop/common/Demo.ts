@@ -36,9 +36,10 @@ export interface DemoPanelProps extends HoistProps {
  */
 export const [DemoPanel, demoPanel] = hoistCmp.withFactory<DemoPanelProps>({
     displayName: 'DemoPanel',
-    render({className, tbar, children}) {
+    render({className, tbar, children}, ref) {
         return panel({
             className,
+            ref,
             width: '100%',
             height: '100%',
             scrollable: true,

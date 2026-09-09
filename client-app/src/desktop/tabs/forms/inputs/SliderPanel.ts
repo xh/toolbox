@@ -111,7 +111,7 @@ export const sliderPanel = hoistCmp.factory({
                     stepSize,
                     showTrackFill: model.pgTrackFill,
                     vertical: model.pgVertical,
-                    width: model.pgVertical ? null : '100%',
+                    width: model.pgVertical ? undefined : '100%',
                     height: model.pgVertical ? 160 : null
                 })
             }),
