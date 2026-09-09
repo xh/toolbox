@@ -153,6 +153,8 @@ export const relativeTimestampPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Epsilon (secs)',
                             propName: 'RelativeTimestampOptions.epsilon',
+                            // Commits on blur, unlike the text fields: a half-typed threshold
+                            // would flip every instance in and out of its equal state.
                             control: numberInput({
                                 bind: 'epsilon',
                                 displayWithCommas: true,
@@ -238,6 +240,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                     })
                                 ),
                                 demoRow({
+                                    key: 'Empty',
                                     label: 'Empty',
                                     info: 'A null timestamp falls back to emptyResult',
                                     item: relativeTimestamp({timestamp: null, ...options})

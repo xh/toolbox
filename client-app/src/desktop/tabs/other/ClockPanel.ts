@@ -75,6 +75,8 @@ export const clockPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Interval (ms)',
                             propName: 'ClockProps.updateInterval',
+                            // Commits on blur, unlike the text fields: a half-typed interval
+                            // would restart every clock's timer on each keystroke.
                             control: numberInput({
                                 bind: 'updateInterval',
                                 width: 90,
