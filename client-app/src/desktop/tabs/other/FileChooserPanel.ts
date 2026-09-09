@@ -194,7 +194,8 @@ export const fileChooserPanel = hoistCmp.factory({
                                 fmtDemoConfig<FileChooserProps>('fileChooser', {
                                     model: raw('chooserModel'),
                                     dropTargetPlacement:
-                                        model.placement === 'left' ? undefined : model.placement
+                                        model.placement === 'left' ? undefined : model.placement,
+                                    className: 'xh-border xh-bg'
                                 })
                             ].join('\n\n'),
                             item: configChooser()
@@ -248,6 +249,10 @@ const configChooser = hoistCmp.factory<FileChooserPanelModel>({
                 fileChooser({
                     model: chooserModel,
                     dropTargetPlacement: placement,
+                    // The chooser draws no chrome of its own, which leaves it adrift on the
+                    // Playground's tinted ground. The two standard utility classes give it an
+                    // edge and an opaque surface, and the snippet discloses them.
+                    className: 'xh-border xh-bg',
                     height: 260,
                     width: '100%'
                 }),
