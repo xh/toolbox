@@ -29,8 +29,8 @@ export const otherControlsPanel = hoistCmp.factory({
                 'than a `bind`, so none can sit inside a `FormField` or take part in a',
                 "`FormModel`'s validation and commit handling.",
                 '',
-                'They are collected here so the All Inputs index can stay an exact list of the',
-                '`HoistInput` set. Each tile opens a dedicated page.'
+                'They are collected here as they commonly participate in data collection forms',
+                'alongside the core inputs. Each tile opens a dedicated page.'
             ],
             links: [
                 {
@@ -57,16 +57,27 @@ export const otherControlsPanel = hoistCmp.factory({
     }
 });
 
-/** One live instance per catalog entry, bound to this page's models. */
+/**
+ * One live instance per catalog entry, bound to this page's models. The gallery does not size its
+ * tiles, so each instance's own height decides how tall its tile is - hence the explicit heights
+ * on the two that would otherwise render cramped. DateRangePicker is a single trigger and takes
+ * its natural height.
+ */
 const TILE_CONTROLS: Record<string, (m: OtherControlsModel) => ReactElement> = {
     DateRangePicker: m => dateRangePicker({model: m.dateRangeModel, flex: 1}),
-    LeftRightChooser: m => leftRightChooser({model: m.chooserModel, height: 130, width: '100%'}),
+    LeftRightChooser: m =>
+        leftRightChooser({
+            model: m.chooserModel,
+            className: 'xh-border',
+            height: 200,
+            width: '100%'
+        }),
     FileChooser: m =>
         fileChooser({
             model: m.fileChooserModel,
             dropTargetPlacement: 'hidden',
             className: 'xh-border xh-bg',
-            height: 130,
+            height: 175,
             width: '100%'
         })
 };
