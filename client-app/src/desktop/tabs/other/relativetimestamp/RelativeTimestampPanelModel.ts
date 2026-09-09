@@ -2,6 +2,9 @@ import {RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
 import {HoistModel} from '@xh/hoist/core';
 import {action, bindable, makeObservable} from '@xh/hoist/mobx';
 
+/** Mirrors the component's own default, so the snippet can omit a matching value. */
+const DEFAULT_EPSILON = 10;
+
 export class RelativeTimestampPanelModel extends HoistModel {
     // RelativeTimestampOptions
     @bindable allowFuture: RelativeTimestampOptions['allowFuture'] = true;
@@ -9,7 +12,7 @@ export class RelativeTimestampPanelModel extends HoistModel {
     @bindable futureSuffix: RelativeTimestampOptions['futureSuffix'];
     @bindable pastSuffix: RelativeTimestampOptions['pastSuffix'];
     @bindable equalString: RelativeTimestampOptions['equalString'];
-    @bindable epsilon: RelativeTimestampOptions['epsilon'] = 10;
+    @bindable epsilon: RelativeTimestampOptions['epsilon'] = DEFAULT_EPSILON;
     @bindable emptyResult: RelativeTimestampOptions['emptyResult'] = '';
     @bindable prefix: RelativeTimestampOptions['prefix'] = '';
     @bindable relativeTo: RelativeTimestampOptions['relativeTo'];
@@ -17,6 +20,40 @@ export class RelativeTimestampPanelModel extends HoistModel {
 
     /** The target timestamp rendered relative to "now". */
     @bindable.ref timestamp: Date = new Date();
+
+    /**
+     * The display options every instance on the page spreads, and the single source for the
+     * Playground snippet - so the code shown cannot drift from the output rendered beside it.
+     *
+     * Values matching the component's own defaults resolve to undefined. The instances behave
+     * identically either way, and the snippet then shows only what the rail has actually changed.
+     */
+    get options(): RelativeTimestampOptions {
+        const {
+            allowFuture,
+            short,
+            prefix,
+            futureSuffix,
+            pastSuffix,
+            equalString,
+            epsilon,
+            emptyResult,
+            relativeTo,
+            localDateMode
+        } = this;
+        return {
+            allowFuture: allowFuture || undefined,
+            short: short || undefined,
+            prefix: prefix || undefined,
+            futureSuffix: futureSuffix || undefined,
+            pastSuffix: pastSuffix || undefined,
+            equalString: equalString || undefined,
+            epsilon: epsilon !== DEFAULT_EPSILON ? epsilon : undefined,
+            emptyResult: emptyResult || undefined,
+            relativeTo: relativeTo ?? undefined,
+            localDateMode: localDateMode ?? undefined
+        };
+    }
 
     constructor() {
         super();

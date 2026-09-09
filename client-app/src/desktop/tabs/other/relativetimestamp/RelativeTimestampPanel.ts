@@ -1,48 +1,66 @@
-import {box, hbox, vframe} from '@xh/hoist/cmp/layout';
-import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import {box, vbox} from '@xh/hoist/cmp/layout';
+import {relativeTimestamp, RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {dateInput, numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {fmtDateTime} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {HOURS, DAYS} from '@xh/hoist/utils/datetime';
-import {isNil, omitBy} from 'lodash';
-import {wrapper, wrapperOption} from '../../../common';
+import {DAYS, HOURS, MINUTES, SECONDS} from '@xh/hoist/utils/datetime';
+import {
+    demoGrid,
+    demoPlayground,
+    demoRow,
+    demoSection,
+    fmtDemoConfig,
+    raw,
+    wrapper,
+    wrapperOption,
+    wrapperOptionGroup
+} from '../../../common';
 import {RelativeTimestampPanelModel} from './RelativeTimestampPanelModel';
 import './RelativeTimestampPanel.scss';
 
+/**
+ * The props a snippet shows. `RelativeTimestampProps` is not exported by hoist-react, so compose
+ * the public options with the two timestamp props the component declares alongside them.
+ */
+type RelTimestampProps = RelativeTimestampOptions & {bind?: string; timestamp?: Date | number};
+
+/**
+ * Fixed offsets for the Variants section. Labels name the bucket rather than an exact elapsed
+ * time, since each instance keeps ticking after render and would outgrow a precise label.
+ */
+const TARGETS: Array<{label: string; info: string; offset: number}> = [
+    {label: 'Seconds ago', info: 'now - 30 seconds', offset: -30 * SECONDS},
+    {label: 'Minutes ago', info: 'now - 5 minutes', offset: -5 * MINUTES},
+    {label: 'Hours ago', info: 'now - 3 hours', offset: -3 * HOURS},
+    {label: 'Days ago', info: 'now - 2 days', offset: -2 * DAYS},
+    {label: 'In the future', info: 'now + 1 hour - needs allowFuture', offset: HOURS}
+];
+
+/** Render a `relativeTo` Date as the constructor call a developer would write. */
+function relativeToSnippet(relativeTo: Date | number) {
+    if (!relativeTo) return undefined;
+    const iso = new Date(relativeTo).toISOString();
+    return raw(`new Date('${iso}')`);
+}
+
 export const relativeTimestampPanel = hoistCmp.factory({
+    displayName: 'RelativeTimestampPanel',
     model: creates(() => RelativeTimestampPanelModel),
 
     render({model}) {
-        const rtProps = omitBy(
-            {
-                allowFuture: model.allowFuture,
-                short: model.short,
-                futureSuffix: model.futureSuffix,
-                pastSuffix: model.pastSuffix,
-                equalString: model.equalString,
-                epsilon: model.epsilon,
-                emptyResult: model.emptyResult,
-                prefix: model.prefix,
-                relativeTo: model.relativeTo,
-                localDateMode: model.localDateMode
-            },
-            it => isNil(it)
-        );
-
+        const {options} = model;
         return wrapper({
             title: 'Relative Timestamp',
             icon: Icon.clock(),
             description: [
-                '`RelativeTimestamp` displays a timestamp in terms of how long ago, or how far',
-                'in the future, it falls relative to the present moment (for example, "5',
-                'minutes ago"). It updates itself on a regular interval to stay current and',
-                'renders the difference in a friendly, readable form.',
+                '`RelativeTimestamp` displays a timestamp in terms of how long ago, or how far in',
+                'the future, it falls relative to the present moment (for example, "5 minutes',
+                'ago"). It updates itself on a regular interval to stay current.',
                 '',
-                'Pick a target moment below, then tune the display options to see how the output',
-                'changes.'
+                'Pick a target moment in the rail, then tune the display options to see how the',
+                'output changes. The options apply to every instance on the page.'
             ],
             links: [
                 {
@@ -52,117 +70,184 @@ export const relativeTimestampPanel = hoistCmp.factory({
                 {url: '$HR/cmp/relativetimestamp/RelativeTimestamp.ts', notes: 'Hoist component.'}
             ],
             options: [
-                wrapperOption({
-                    label: 'Target',
-                    propName: 'RelativeTimestampProps.timestamp',
-                    control: dateInput({
-                        model,
-                        bind: 'timestamp',
-                        width: 170,
-                        timePrecision: 'second',
-                        showActionsBar: true
-                    }),
-                    info: 'The moment rendered relative to now.'
-                }),
-                buttonGroup({
-                    className: 'tb-rel-ts__presets',
+                wrapperOptionGroup({
+                    label: 'Playground only',
+                    icon: Icon.experiment(),
+                    intent: 'primary',
+                    info: 'Sets the Playground target.',
                     items: [
-                        button({text: '-90 days', onClick: () => model.setOffset(-90 * DAYS)}),
-                        button({text: '-1 hr', onClick: () => model.setOffset(-HOURS)}),
-                        button({text: 'Now', onClick: () => model.setToNow()}),
-                        button({text: '+1 hr', onClick: () => model.setOffset(HOURS)}),
-                        button({text: '+7 days', onClick: () => model.setOffset(7 * DAYS)})
+                        wrapperOption({
+                            label: 'Target',
+                            propName: 'RelativeTimestampProps.timestamp',
+                            control: dateInput({
+                                bind: 'timestamp',
+                                width: 170,
+                                timePrecision: 'second',
+                                showActionsBar: true
+                            }),
+                            info: 'The moment rendered relative to now.'
+                        }),
+                        buttonGroup({
+                            className: 'tb-rel-ts__presets',
+                            items: [
+                                button({
+                                    text: '-90 days',
+                                    onClick: () => model.setOffset(-90 * DAYS)
+                                }),
+                                button({text: '-1 hr', onClick: () => model.setOffset(-HOURS)}),
+                                button({text: 'Now', onClick: () => model.setToNow()}),
+                                button({text: '+1 hr', onClick: () => model.setOffset(HOURS)}),
+                                button({text: '+7 days', onClick: () => model.setOffset(7 * DAYS)})
+                            ]
+                        })
                     ]
                 }),
-                wrapperOption({
-                    label: 'Allow Future',
-                    propName: 'RelativeTimestampOptions.allowFuture',
-                    control: switchInput({model, bind: 'allowFuture'}),
-                    info: 'Render future timestamps.'
-                }),
-                wrapperOption({
-                    label: 'Short',
-                    propName: 'RelativeTimestampOptions.short',
-                    control: switchInput({model, bind: 'short'}),
-                    info: `Abbreviate units, e.g. '1m'.`
-                }),
-                wrapperOption({
-                    label: 'Prefix',
-                    propName: 'RelativeTimestampOptions.prefix',
-                    control: textInput({model, bind: 'prefix', width: 140})
-                }),
-                wrapperOption({
-                    label: 'Future Suffix',
-                    propName: 'RelativeTimestampOptions.futureSuffix',
-                    control: textInput({model, bind: 'futureSuffix', width: 140})
-                }),
-                wrapperOption({
-                    label: 'Past Suffix',
-                    propName: 'RelativeTimestampOptions.pastSuffix',
-                    control: textInput({model, bind: 'pastSuffix', width: 140})
-                }),
-                wrapperOption({
-                    label: 'Equal String',
-                    propName: 'RelativeTimestampOptions.equalString',
-                    control: textInput({model, bind: 'equalString', width: 140})
-                }),
-                wrapperOption({
-                    label: 'Epsilon (secs)',
-                    propName: 'RelativeTimestampOptions.epsilon',
-                    control: numberInput({
-                        model,
-                        bind: 'epsilon',
-                        displayWithCommas: true,
-                        min: 0,
-                        width: 90
-                    }),
-                    info: 'Treat diffs within this as equal.'
-                }),
-                wrapperOption({
-                    label: 'Empty Result',
-                    propName: 'RelativeTimestampOptions.emptyResult',
-                    control: textInput({model, bind: 'emptyResult', width: 140})
-                }),
-                wrapperOption({
-                    label: 'LocalDate Mode',
-                    propName: 'RelativeTimestampOptions.localDateMode',
-                    control: select({
-                        model,
-                        bind: 'localDateMode',
-                        width: 150,
-                        options: ['always', 'useTimeForSameDay', 'useTimeFor24Hr'],
-                        placeholder: '',
-                        enableClear: true
-                    }),
-                    info: 'Compare by calendar day.'
-                }),
-                wrapperOption({
-                    label: 'Relative To',
-                    propName: 'RelativeTimestampOptions.relativeTo',
-                    control: dateInput({
-                        model,
-                        bind: 'relativeTo',
-                        width: 170,
-                        timePrecision: 'second',
-                        showActionsBar: true
-                    }),
-                    info: 'Compare against this, not now.'
+                wrapperOptionGroup({
+                    label: 'All timestamps on the page',
+                    items: [
+                        wrapperOption({
+                            label: 'Allow Future',
+                            propName: 'RelativeTimestampOptions.allowFuture',
+                            control: switchInput({bind: 'allowFuture'}),
+                            info: 'Render future timestamps.'
+                        }),
+                        wrapperOption({
+                            label: 'Short',
+                            propName: 'RelativeTimestampOptions.short',
+                            control: switchInput({bind: 'short'}),
+                            info: `Abbreviate units, e.g. '1m'.`
+                        }),
+                        wrapperOption({
+                            label: 'Prefix',
+                            propName: 'RelativeTimestampOptions.prefix',
+                            control: textInput({bind: 'prefix', width: 140, commitOnChange: true})
+                        }),
+                        wrapperOption({
+                            label: 'Future Suffix',
+                            propName: 'RelativeTimestampOptions.futureSuffix',
+                            control: textInput({
+                                bind: 'futureSuffix',
+                                width: 140,
+                                commitOnChange: true
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Past Suffix',
+                            propName: 'RelativeTimestampOptions.pastSuffix',
+                            control: textInput({
+                                bind: 'pastSuffix',
+                                width: 140,
+                                commitOnChange: true
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Equal String',
+                            propName: 'RelativeTimestampOptions.equalString',
+                            control: textInput({
+                                bind: 'equalString',
+                                width: 140,
+                                commitOnChange: true
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Epsilon (secs)',
+                            propName: 'RelativeTimestampOptions.epsilon',
+                            control: numberInput({
+                                bind: 'epsilon',
+                                displayWithCommas: true,
+                                min: 0,
+                                width: 90
+                            }),
+                            info: 'Treat diffs within this as equal.'
+                        }),
+                        wrapperOption({
+                            label: 'Empty Result',
+                            propName: 'RelativeTimestampOptions.emptyResult',
+                            control: textInput({
+                                bind: 'emptyResult',
+                                width: 140,
+                                commitOnChange: true
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'LocalDate Mode',
+                            propName: 'RelativeTimestampOptions.localDateMode',
+                            control: select({
+                                bind: 'localDateMode',
+                                width: 150,
+                                options: ['always', 'useTimeForSameDay', 'useTimeFor24Hr'],
+                                placeholder: '',
+                                enableClear: true
+                            }),
+                            info: 'Compare by calendar day.'
+                        }),
+                        wrapperOption({
+                            label: 'Relative To',
+                            propName: 'RelativeTimestampOptions.relativeTo',
+                            control: dateInput({
+                                bind: 'relativeTo',
+                                width: 170,
+                                timePrecision: 'second',
+                                showActionsBar: true
+                            }),
+                            info: 'Compare against this, not now.'
+                        })
+                    ]
                 })
             ],
             item: panel({
-                width: 600,
-                item: vframe({
-                    className: 'tb-rel-ts',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                width: '100%',
+                height: '100%',
+                scrollable: true,
+                item: vbox({
+                    className: 'tbox-demo-body',
                     items: [
-                        box({
-                            className: 'tb-rel-ts__value',
-                            item: relativeTimestamp({bind: 'timestamp', ...rtProps})
+                        demoSection({
+                            title: 'Playground',
+                            intent: 'primary',
+                            note: 'Driven by the rail options, which apply to every instance below.',
+                            item: demoPlayground({
+                                instanceWidth: 300,
+                                value: model.timestamp,
+                                caption: 'Bound to the target set in the rail.',
+                                config: fmtDemoConfig<RelTimestampProps>('relativeTimestamp', {
+                                    bind: 'timestamp',
+                                    ...options,
+                                    // A Date is not a literal, so show the expression a developer
+                                    // would actually write. Derived from `options` so it cannot
+                                    // disagree with the instance.
+                                    relativeTo: relativeToSnippet(options.relativeTo)
+                                }),
+                                item: box({
+                                    className: 'tb-rel-ts__value',
+                                    item: relativeTimestamp({bind: 'timestamp', ...options})
+                                })
+                            })
                         }),
-                        hbox({
-                            className: 'tb-rel-ts__abs',
-                            items: ['as of ', fmtDateTime(model.timestamp)]
+                        demoSection({
+                            title: 'Across Targets',
+                            note: 'Fixed offsets from now, rendered with the same rail options.',
+                            item: demoGrid({
+                                columns: 3,
+                                items: [
+                                    ...TARGETS.map(({label, info, offset}) =>
+                                        demoRow({
+                                            key: label,
+                                            label,
+                                            info,
+                                            item: relativeTimestamp({
+                                                timestamp: new Date(Date.now() + offset),
+                                                ...options
+                                            })
+                                        })
+                                    ),
+                                    demoRow({
+                                        label: 'Empty',
+                                        info: 'A null timestamp falls back to emptyResult',
+                                        item: relativeTimestamp({timestamp: null, ...options})
+                                    })
+                                ]
+                            })
                         })
                     ]
                 })
