@@ -115,7 +115,7 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
                     demoSection({
                         omit: isEmpty(variants),
                         title: 'Variants',
-                        note: 'Each card sets its own props.',
+                        note: 'Each sets its own props.',
                         item: demoGrid({columns: 3, items: variants})
                     }),
                     demoSection({

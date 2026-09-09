@@ -140,7 +140,7 @@ export const buttonsPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Variants',
-                        note: 'Each card sets its own props.',
+                        note: 'Each sets its own props.',
                         items: [
                             // The three looks lead the section at full width: each spans every
                             // intent, so they read as rows to compare top to bottom.

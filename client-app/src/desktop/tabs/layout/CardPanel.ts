@@ -130,7 +130,7 @@ export const cardPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Variants',
-                        note: 'Each card sets its own props.',
+                        note: 'Each sets its own props.',
                         items: [
                             demoGrid({
                                 columns: 2,

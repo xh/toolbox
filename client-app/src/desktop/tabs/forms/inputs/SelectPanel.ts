@@ -252,7 +252,7 @@ export const selectPanel = hoistCmp.factory({
                 }),
                 demoRow({
                     label: 'Large list (windowed)',
-                    info: 'enableWindowed - 2,000 items virtualized, menu auto-sizes to content',
+                    info: 'enableWindowed - 2,000 items virtualized',
                     item: select({
                         bind: 'bigValue',
                         ...ambientProps,

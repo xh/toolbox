@@ -1,4 +1,4 @@
-import {box, code, vbox} from '@xh/hoist/cmp/layout';
+import {box, code, filler, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, type Intent, managed} from '@xh/hoist/core';
 import {
     DATE_RANGE_PICKER_TABS,
@@ -13,17 +13,21 @@ import {
     DEFAULT_DATE_RANGE_PRESETS,
     type LocalDateRange
 } from '@xh/hoist/desktop/cmp/daterange';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {dateInput, intentInput, picker, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, sortBy} from 'lodash';
+import {ReactNode} from 'react';
 import {
     demoGrid,
     demoPanel,
     demoPlayground,
     demoRow,
     demoSection,
+    demoToolbar,
     fmtDemoConfig,
     raw,
     wrapper,
@@ -73,7 +77,10 @@ export const dateRangePickerPanel = hoistCmp.factory({
             ],
             options: [
                 wrapperOptionGroup({
-                    label: 'Component',
+                    label: 'Playground only - props',
+                    icon: Icon.experiment(),
+                    intent: 'primary',
+                    info: 'Configure the primary instance. Variants use their own models.',
                     items: [
                         wrapperOption({
                             label: 'Style as input',
@@ -104,7 +111,10 @@ export const dateRangePickerPanel = hoistCmp.factory({
                     ]
                 }),
                 wrapperOptionGroup({
-                    label: 'Model',
+                    label: 'Playground only - model',
+                    icon: Icon.experiment(),
+                    intent: 'primary',
+                    info: 'Set on the DateRangePickerModel rather than the element.',
                     items: [
                         wrapperOption({
                             label: 'Tabs',
@@ -252,8 +262,16 @@ export const dateRangePickerPanel = hoistCmp.factory({
                         item: modelValues()
                     }),
                     demoSection({
+                        title: 'In a Toolbar',
+                        note: 'Alongside the controls it usually sits with.',
+                        items: [
+                            demoToolbar({items: toolbarItems(model)}),
+                            demoToolbar({compact: true, items: toolbarItems(model)})
+                        ]
+                    }),
+                    demoSection({
                         title: 'Variants',
-                        note: 'Each card sets its own props.',
+                        note: 'Each uses its own model and configuration.',
                         items: [variantNarrow(), variantMonth(), variantFiscal()]
                     })
                 ]
@@ -291,6 +309,28 @@ const modelValues = hoistCmp.factory<DateRangePickerPanelModel>(({model}) => {
         )
     });
 });
+
+/**
+ * A realistic app toolbar around the picker. Bound to the same model as the Playground, so the
+ * options reach it - `styleButtonAsInput` in particular is what decides whether the trigger reads
+ * as an input or as a toolbar button. The picker derives its own compact treatment from measured
+ * width rather than from the toolbar, so only its neighbours change with the density.
+ */
+function toolbarItems(model: DateRangePickerPanelModel): ReactNode[] {
+    return [
+        dateRangePicker({
+            model: model.pickerModel,
+            styleButtonAsInput: model.styleButtonAsInput,
+            showRange: model.showRange,
+            showStepButtons: model.showStepButtons,
+            intent: model.intent
+        }),
+        toolbarSep(),
+        button({icon: Icon.refresh(), text: 'Refresh'}),
+        filler(),
+        button({icon: Icon.download(), text: 'Export', outlined: true})
+    ];
+}
 
 //------------------------------------------------------------------
 // Other configurations
