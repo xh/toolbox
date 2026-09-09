@@ -335,7 +335,7 @@ export function fmtDemoConfig(factory: string, props: Record<string, DemoConfigV
 export function fmtDemoValue(v: unknown): string {
     if (v === undefined) return 'undefined';
     if (v === null) return 'null';
-    if (isString(v)) return `'${v.replace(/'/g, "\\'")}'`;
+    if (isString(v)) return quoteLiteral(v, true);
     if (isNumber(v) || isBoolean(v)) return String(v);
     if (isDate(v)) return `Date ${v.toISOString()}`;
     if (isLocalDate(v)) return `LocalDate ${v.isoString}`;
@@ -345,9 +345,21 @@ export function fmtDemoValue(v: unknown): string {
 
 function fmtValue(v: DemoConfigValue): string {
     if (v === null) return 'null';
-    if (isString(v)) return `'${v.replace(/'/g, "\\'")}'`;
+    if (isString(v)) return quoteLiteral(v);
     if (isNumber(v) || isBoolean(v)) return String(v);
     return v.raw;
+}
+
+/**
+ * Render a string as a single-quoted JS literal, escaping backslashes before quotes so a value a
+ * user typed into a demo input round-trips instead of producing a broken escape.
+ *
+ * Newlines are escaped by default, keeping a config snippet valid, copyable code. The value
+ * readout passes `multiline` to keep them, so a TextArea's line breaks show as they are.
+ */
+function quoteLiteral(v: string, multiline = false): string {
+    const escaped = v.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    return `'${multiline ? escaped : escaped.replace(/\n/g, '\\n')}'`;
 }
 
 function readCssVar(name: string): string {
