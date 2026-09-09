@@ -17,7 +17,12 @@
 ### New Features
 
 * Reorganized the Hoist Inputs demos into a new index page plus one page per input, with expanded options and preconfigured variants for each component.
+* Rebuilt the Buttons, Clock, Relative Timestamp and Popups demos on the same shared harness, each gaining a playground with a live code snippet alongside preconfigured variants.
 * Added a demo page for Hoist's new `DateRangeInput` component.
+
+### Bug Fixes
+
+* Fixed demo pages crushing their content in a narrow window - the demo region now holds a minimum width and scrolls horizontally instead.
 
 ## 9.5.0 - 2026-08-28
 
