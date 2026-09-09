@@ -129,7 +129,8 @@ export const selectPanel = hoistCmp.factory({
                     enableFilter: model.pgEnableFilter ? undefined : false,
                     leftIcon: model.pgLeftIcon ? raw('Icon.globe()') : undefined,
                     placeholder: pgPlaceholder,
-                    ...ambientSnippetProps
+                    ...ambientSnippetProps,
+                    width: '100%'
                 }),
                 value: model.playground,
                 item: select({

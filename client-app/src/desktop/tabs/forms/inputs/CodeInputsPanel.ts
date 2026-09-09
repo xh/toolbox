@@ -107,7 +107,8 @@ export const codeInputsPanel = hoistCmp.factory({
                     showToolbar: pgToolbar || undefined,
                     showFullscreenButton: pgFullscreen === false ? false : undefined,
                     lineWrapping: pgWrap || undefined,
-                    ...ambientSnippetProps
+                    ...ambientSnippetProps,
+                    width: '100%'
                 }),
                 value: model.playground,
                 item: jsonInput({

@@ -27,8 +27,9 @@ import './RelativeTimestampPanel.scss';
 type RelTimestampProps = RelativeTimestampOptions & {bind?: string; timestamp?: Date | number};
 
 /**
- * Fixed offsets for the Variants section. Labels name the bucket rather than an exact elapsed
- * time, since each instance keeps ticking after render and would outgrow a precise label.
+ * Offsets for the Across Targets section, re-anchored to the current moment on each render.
+ * Labels name the bucket rather than an exact elapsed time, so they stay accurate as the
+ * component's own timer advances the text between renders.
  */
 const TARGETS: Array<{label: string; info: string; offset: number}> = [
     {label: 'Seconds ago', info: 'now - 30 seconds', offset: -30 * SECONDS},

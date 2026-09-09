@@ -87,7 +87,8 @@ export const numberInputPanel = hoistCmp.factory({
                     enableShorthandUnits: model.pgShorthand || undefined,
                     precision: model.pgPrecision !== 4 ? model.pgPrecision : undefined,
                     valueLabel: model.pgValueLabel || undefined,
-                    ...ambientSnippetProps
+                    ...ambientSnippetProps,
+                    width: '100%'
                 }),
                 value: model.playground,
                 item: numberInput({

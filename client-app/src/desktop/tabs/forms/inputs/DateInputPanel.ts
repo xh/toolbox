@@ -97,7 +97,8 @@ export const dateInputPanel = hoistCmp.factory({
                     timePrecision:
                         model.pgTimePrecision === 'none' ? undefined : model.pgTimePrecision,
                     showActionsBar: model.pgActionsBar || undefined,
-                    ...ambientSnippetProps
+                    ...ambientSnippetProps,
+                    width: '100%'
                 }),
                 value: model.playground,
                 item: dateInput({

@@ -18,12 +18,23 @@ import {inputDemoPage} from './InputDemoPage';
 
 const ENTRY = inputEntry('Slider');
 
+/**
+ * Seeds for the two step rail fields, and the fallback when one is cleared. A NumberInput commits
+ * null on an emptied field, and Slider throws if `labelStepSize` or `stepSize` is not above zero,
+ * which would tear down the whole section.
+ */
+const DEFAULT_LABEL_STEP = 25,
+    DEFAULT_STEP = 1;
+
 export const sliderPanel = hoistCmp.factory({
     displayName: 'SliderPanel',
     model: creates(() => SliderPanelModel),
 
     render({model}) {
-        const {ambientProps, ambientSnippetProps} = model;
+        const {ambientProps, ambientSnippetProps} = model,
+            // Resolved once, so the snippet cannot show a step the instance is not using.
+            labelStepSize = model.pgLabelStep ?? DEFAULT_LABEL_STEP,
+            stepSize = model.pgStep ?? DEFAULT_STEP;
         return inputDemoPage({
             entry: ENTRY,
             description: [
@@ -82,10 +93,11 @@ export const sliderPanel = hoistCmp.factory({
                     bind: 'value',
                     min: 0,
                     max: 100,
-                    labelStepSize: model.pgLabelStep,
-                    stepSize: model.pgStep,
+                    labelStepSize,
+                    stepSize,
                     showTrackFill: model.pgTrackFill ? undefined : false,
                     vertical: model.pgVertical || undefined,
+                    width: model.pgVertical ? undefined : '100%',
                     height: model.pgVertical ? 160 : undefined,
                     ...ambientSnippetProps
                 }),
@@ -95,8 +107,8 @@ export const sliderPanel = hoistCmp.factory({
                     ...ambientProps,
                     min: 0,
                     max: 100,
-                    labelStepSize: model.pgLabelStep,
-                    stepSize: model.pgStep,
+                    labelStepSize,
+                    stepSize,
                     showTrackFill: model.pgTrackFill,
                     vertical: model.pgVertical,
                     width: model.pgVertical ? null : '100%',
@@ -214,8 +226,8 @@ const SEEDS = {
 
 class SliderPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgLabelStep = 25;
-    @bindable pgStep = 1;
+    @bindable pgLabelStep = DEFAULT_LABEL_STEP;
+    @bindable pgStep = DEFAULT_STEP;
     @bindable pgTrackFill = true;
     @bindable pgVertical = false;
 

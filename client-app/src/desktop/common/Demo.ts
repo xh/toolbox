@@ -347,7 +347,11 @@ export function raw(code: string): {raw: string} {
 
 /**
  * A curated subset of a component's props, valued for display. Keys are checked against `P`, so
- * pass the component's own props interface and a mistyped or nonexistent prop fails to compile.
+ * pass the component's own props interface and a misspelled prop fails to compile, with a
+ * suggested correction.
+ *
+ * It catches typos, which is the point. It is not an allowlist: these `*Props` interfaces reach
+ * `HTMLAttributes` through `BoxProps`, so `keyof P` includes every DOM attribute and handler.
  */
 export type DemoConfigProps<P> = {[K in keyof P]?: DemoConfigValue} & {
     /**

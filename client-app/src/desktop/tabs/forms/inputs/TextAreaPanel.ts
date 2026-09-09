@@ -99,7 +99,8 @@ export const textAreaPanel = hoistCmp.factory({
                     selectOnFocus: pgSelectOnFocus || undefined,
                     spellCheck: pgSpellCheck || undefined,
                     height: pgHeight !== 100 ? pgHeight : undefined,
-                    ...ambientSnippetProps
+                    ...ambientSnippetProps,
+                    width: '100%'
                 }),
                 value: model.playground,
                 item: textArea({

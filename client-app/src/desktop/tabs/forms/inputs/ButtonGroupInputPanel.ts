@@ -113,7 +113,7 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                     ...ambientProps,
                     outlined: model.pgOutlined,
                     enableMulti: model.pgMulti,
-                    enableClear: model.pgEnableClear,
+                    enableClear: model.pgEnableClear || undefined,
                     intent: model.pgIntent ?? undefined,
                     items: chartButtons()
                 })

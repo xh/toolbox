@@ -83,7 +83,8 @@ export const textInputPanel = hoistCmp.factory({
                     enableClear: model.pgEnableClear || undefined,
                     round: model.pgRound || undefined,
                     placeholder: model.pgPlaceholder || undefined,
-                    ...ambientSnippetProps
+                    ...ambientSnippetProps,
+                    width: '100%'
                 }),
                 value: model.playground,
                 item: textInput({

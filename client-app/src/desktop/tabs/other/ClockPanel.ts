@@ -30,7 +30,7 @@ const ZONES: Array<{label: string; timezone: string; info?: string}> = [
     {label: 'Stockholm', timezone: 'Europe/Stockholm'},
     {label: 'Hong Kong', timezone: 'Asia/Hong_Kong'},
     {label: 'Tokyo', timezone: 'Asia/Tokyo'},
-    {label: 'Unknown zone', timezone: 'NoSuchZone', info: 'Falls back to errorString'}
+    {label: 'Unknown zone', timezone: 'NoSuchZone', info: "errorString default, '???'"}
 ];
 
 export const clockPanel = hoistCmp.factory({
@@ -57,41 +57,43 @@ export const clockPanel = hoistCmp.factory({
                 },
                 {url: '$HR/cmp/clock/Clock.ts', notes: 'Hoist component.'}
             ],
-            options: wrapperOptionGroup({
-                label: 'All clocks on the page',
-                items: [
-                    wrapperOption({
-                        label: 'Format',
-                        propName: 'ClockProps.format',
-                        control: textInput({
-                            bind: 'format',
-                            width: 120,
-                            placeholder: TIME_FMT,
-                            commitOnChange: true
+            options: [
+                wrapperOptionGroup({
+                    label: 'All clocks on the page',
+                    items: [
+                        wrapperOption({
+                            label: 'Format',
+                            propName: 'ClockProps.format',
+                            control: textInput({
+                                bind: 'format',
+                                width: 120,
+                                placeholder: TIME_FMT,
+                                commitOnChange: true
+                            }),
+                            info: 'A moment.js format string.'
                         }),
-                        info: 'A moment.js format string.'
-                    }),
-                    wrapperOption({
-                        label: 'Interval (ms)',
-                        propName: 'ClockProps.updateInterval',
-                        control: numberInput({
-                            bind: 'updateInterval',
-                            width: 90,
-                            placeholder: `${ONE_SECOND}`
+                        wrapperOption({
+                            label: 'Interval (ms)',
+                            propName: 'ClockProps.updateInterval',
+                            control: numberInput({
+                                bind: 'updateInterval',
+                                width: 90,
+                                placeholder: `${ONE_SECOND}`
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Prefix',
+                            propName: 'ClockProps.prefix',
+                            control: textInput({bind: 'prefix', width: 120, commitOnChange: true})
+                        }),
+                        wrapperOption({
+                            label: 'Suffix',
+                            propName: 'ClockProps.suffix',
+                            control: textInput({bind: 'suffix', width: 120, commitOnChange: true})
                         })
-                    }),
-                    wrapperOption({
-                        label: 'Prefix',
-                        propName: 'ClockProps.prefix',
-                        control: textInput({bind: 'prefix', width: 120, commitOnChange: true})
-                    }),
-                    wrapperOption({
-                        label: 'Suffix',
-                        propName: 'ClockProps.suffix',
-                        control: textInput({bind: 'suffix', width: 120, commitOnChange: true})
-                    })
-                ]
-            }),
+                    ]
+                })
+            ],
             item: demoPanel({
                 items: [
                     demoSection({
