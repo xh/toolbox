@@ -66,14 +66,7 @@ export const fileChooserPanel = hoistCmp.factory({
                 '',
                 'Provide it a `FileChooserModel`, which holds the observable file collection and the',
                 'API to manipulate it. Your app processes the files (e.g. uploads them) and clears',
-                'the selection when done.',
-                '',
-                'The rail options vary the accepted types and the size and count limits on the',
-                'Playground chooser. Those three are read once at construction, so changing one',
-                're-creates its model.',
-                '',
-                'Below, two compact single-file choosers show use in space-constrained layouts - a',
-                'default one, and one with a custom `fileDisplay` image preview.'
+                'the selection when done.'
             ],
             links: [
                 {
