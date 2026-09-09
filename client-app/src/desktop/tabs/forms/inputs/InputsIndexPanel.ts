@@ -3,6 +3,8 @@ import {filler, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistProps, Intent, managed, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dateRangePicker} from '@xh/hoist/desktop/cmp/daterange';
+import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
+import {leftRightChooser, LeftRightChooserModel} from '@xh/hoist/desktop/cmp/leftrightchooser';
 import {
     buttonGroupInput,
     checkbox,
@@ -57,7 +59,10 @@ export const inputsIndexPanel = hoistCmp.factory({
                 'control, or to sweep the whole set after a framework change.',
                 '',
                 'Each tile opens a dedicated page with a playground, full variants, toolbar',
-                'rendering, and `FormField` pairing.'
+                'rendering, and `FormField` pairing.',
+                '',
+                'The closing Other section holds related controls that take their own model rather',
+                'than a `bind`. They are not `HoistInput`s and cannot sit inside a `FormField`.'
             ],
             links: [
                 {
@@ -123,7 +128,7 @@ export const inputsIndexPanel = hoistCmp.factory({
                     filler(),
                     span({
                         className: 'tb-inputs-index__count',
-                        item: pluralize('input', count, true)
+                        item: pluralize('control', count, true)
                     })
                 ),
                 items: groupByCategory
@@ -161,6 +166,14 @@ const gallery = hoistCmp.factory<GalleryProps>(({model, entries}) =>
         )
     })
 );
+
+/** A handful of items for the LeftRightChooser tile - enough to show both sides populated. */
+const CHOOSER_DATA = [
+    {text: 'Apple', group: 'Tree', value: 'apple'},
+    {text: 'Cherry', group: 'Tree', value: 'cherry'},
+    {text: 'Banana', group: 'Tropical', value: 'banana', side: 'right' as const},
+    {text: 'Mango', group: 'Tropical', value: 'mango', side: 'right' as const}
+];
 
 const SC_OPTIONS = [
     {label: 'Trader', value: 'trader'},
@@ -254,7 +267,16 @@ const TILE_INPUTS: Record<string, (m: InputsIndexModel) => ReactElement> = {
     Checkbox: m => checkbox({bind: 'checked', disabled: m.disabled, label: 'enabled'}),
     CheckboxButton: m => checkboxButton({bind: 'checked', disabled: m.disabled, text: 'Enabled'}),
     SwitchInput: m =>
-        switchInput({bind: 'checked', disabled: m.disabled, label: 'Enabled:', labelSide: 'left'})
+        switchInput({bind: 'checked', disabled: m.disabled, label: 'Enabled:', labelSide: 'left'}),
+    LeftRightChooser: m => leftRightChooser({model: m.chooserModel, height: 130, width: '100%'}),
+    FileChooser: m =>
+        fileChooser({
+            model: m.fileChooserModel,
+            dropTargetPlacement: 'hidden',
+            className: 'xh-border xh-bg',
+            height: 130,
+            width: '100%'
+        })
 };
 
 const SEEDS = {
@@ -280,6 +302,8 @@ class InputsIndexModel extends InputDemoModel {
     @bindable showInputs = true;
 
     @managed dateRangeModel = new DateRangePickerModel({});
+    @managed chooserModel = new LeftRightChooserModel({data: CHOOSER_DATA});
+    @managed fileChooserModel = new FileChooserModel({maxFiles: 3});
 
     @bindable text: string = SEEDS.text;
     @bindable textArea: string = SEEDS.textArea;

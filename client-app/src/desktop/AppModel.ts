@@ -27,7 +27,9 @@ import {
     codeInputsPanel,
     dateInputPanel,
     dateRangePickerPanel,
+    fileChooserPanel,
     formPanel,
+    leftRightChooserPanel,
     inputsIndexPanel,
     intentInputPanel,
     numberInputPanel,
@@ -75,11 +77,9 @@ import {
     dateFormatsPanel,
     errorMessagePanel,
     exceptionHandlerPanel,
-    fileChooserPanel,
     iconsPanel,
     inspectorPanel,
     jsxPanel,
-    leftRightChooserPanel,
     markdownPanel,
     numberFormatsPanel,
     pinPadPanel,
@@ -301,7 +301,6 @@ export class AppModel extends BaseAppModel {
                             {name: 'textArea', path: '/textArea'},
                             {name: 'numberInput', path: '/numberInput'},
                             {name: 'dateInput', path: '/dateInput'},
-                            {name: 'dateRangePicker', path: '/dateRangePicker'},
                             {name: 'select', path: '/select'},
                             {name: 'picker', path: '/picker'},
                             {name: 'segmentedControl', path: '/segmentedControl'},
@@ -310,7 +309,10 @@ export class AppModel extends BaseAppModel {
                             {name: 'toggles', path: '/toggles'},
                             {name: 'slider', path: '/slider'},
                             {name: 'intentInput', path: '/intentInput'},
-                            {name: 'codeInputs', path: '/codeInputs'}
+                            {name: 'codeInputs', path: '/codeInputs'},
+                            {name: 'dateRangePicker', path: '/dateRangePicker'},
+                            {name: 'leftRightChooser', path: '/leftRightChooser'},
+                            {name: 'fileChooser', path: '/fileChooser'}
                         ]
                     },
                     {
@@ -338,13 +340,11 @@ export class AppModel extends BaseAppModel {
                             {name: 'customPackage', path: '/customPackage'},
                             {name: 'errorMessage', path: '/errorMessage'},
                             {name: 'exceptionHandler', path: '/exceptionHandler'},
-                            {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'formatDates', path: '/formatDates'},
                             {name: 'formatNumbers', path: '/formatNumbers'},
                             {name: 'icons', path: '/icons'},
                             {name: 'inspector', path: '/inspector'},
                             {name: 'jsx', path: '/jsx'},
-                            {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'markdown', path: '/markdown'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'placeholder', path: '/placeholder'},
@@ -481,6 +481,7 @@ export class AppModel extends BaseAppModel {
             },
             {
                 id: 'forms',
+                title: 'Forms + Inputs',
                 icon: Icon.edit(),
                 content: {
                     switcher,
@@ -498,11 +499,6 @@ export class AppModel extends BaseAppModel {
                         {id: 'textArea', title: 'TextArea', content: textAreaPanel},
                         {id: 'numberInput', title: 'NumberInput', content: numberInputPanel},
                         {id: 'dateInput', title: 'DateInput', content: dateInputPanel},
-                        {
-                            id: 'dateRangePicker',
-                            title: 'DateRangePicker',
-                            content: dateRangePickerPanel
-                        },
                         {id: 'select', title: 'Select', content: selectPanel},
                         {id: 'picker', title: 'Picker', content: pickerPanel},
                         {
@@ -519,7 +515,20 @@ export class AppModel extends BaseAppModel {
                         {id: 'toggles', title: 'Checkbox & Switch', content: togglesPanel},
                         {id: 'slider', title: 'Slider', content: sliderPanel},
                         {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},
-                        {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel}
+                        {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel},
+                        // Controls that take their own model rather than a `bind`, so they are
+                        // not `HoistInput`s and cannot sit inside a FormField.
+                        {
+                            id: 'dateRangePicker',
+                            title: 'DateRangePicker',
+                            content: dateRangePickerPanel
+                        },
+                        {
+                            id: 'leftRightChooser',
+                            title: 'LeftRightChooser',
+                            content: leftRightChooserPanel
+                        },
+                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel}
                     ]
                 }
             },
@@ -555,16 +564,10 @@ export class AppModel extends BaseAppModel {
                             content: exceptionHandlerPanel
                         },
                         {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
-                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                         {id: 'formatDates', content: dateFormatsPanel},
                         {id: 'formatNumbers', content: numberFormatsPanel},
                         {id: 'icons', content: iconsPanel},
                         {id: 'inspector', content: inspectorPanel},
-                        {
-                            id: 'leftRightChooser',
-                            title: 'LeftRightChooser',
-                            content: leftRightChooserPanel
-                        },
                         {id: 'markdown', content: markdownPanel},
                         {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                         {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},

@@ -1,15 +1,21 @@
 import {Icon} from '@xh/hoist/icon';
 import {ReactElement} from 'react';
 
-export type InputCategory = 'Text & Code' | 'Numeric' | 'Date & Time' | 'Choice' | 'Boolean';
+export type InputCategory =
+    'Text & Code' | 'Numeric' | 'Date & Time' | 'Choice' | 'Boolean' | 'Other';
 
-/** Index section order. */
+/**
+ * Index section order. Every category but the last holds `HoistInput`s, grouped by the type of
+ * value they bind. 'Other' closes the list with the related controls that take their own model
+ * instead of a `bind`, and so cannot sit inside a `FormField`.
+ */
 export const INPUT_CATEGORIES: InputCategory[] = [
     'Text & Code',
     'Numeric',
     'Date & Time',
     'Choice',
-    'Boolean'
+    'Boolean',
+    'Other'
 ];
 
 export interface InputCatalogEntry {
@@ -27,8 +33,9 @@ export interface InputCatalogEntry {
 const R = 'default.forms';
 
 /**
- * Every desktop input, in index order within its category - the single source of truth for the
- * All Inputs index and the per-input page headers.
+ * Every control on this tab, in index order within its category - the single source of truth for
+ * the All Inputs index and the per-input page headers. All but the 'Other' entries are
+ * `HoistInput`s.
  */
 export const INPUT_CATALOG: InputCatalogEntry[] = [
     {
@@ -80,13 +87,7 @@ export const INPUT_CATALOG: InputCatalogEntry[] = [
         route: `${R}.dateInput`,
         icon: () => Icon.calendar()
     },
-    {
-        name: 'DateRangePicker',
-        category: 'Date & Time',
-        description: 'Range selection with presets and shortcut rail.',
-        route: `${R}.dateRangePicker`,
-        icon: () => Icon.calendarRange()
-    },
+
     {
         name: 'Select',
         category: 'Choice',
@@ -149,6 +150,27 @@ export const INPUT_CATALOG: InputCatalogEntry[] = [
         description: 'Switch with label on either side.',
         route: `${R}.toggles`,
         icon: () => Icon.checkSquare()
+    },
+    {
+        name: 'DateRangePicker',
+        category: 'Other',
+        description: 'Range selection with presets, lookbacks and custom dates.',
+        route: `${R}.dateRangePicker`,
+        icon: () => Icon.calendarRange()
+    },
+    {
+        name: 'LeftRightChooser',
+        category: 'Other',
+        description: 'Move items between two grouped lists.',
+        route: `${R}.leftRightChooser`,
+        icon: () => Icon.arrowsLeftRight()
+    },
+    {
+        name: 'FileChooser',
+        category: 'Other',
+        description: 'Drag-and-drop or browse for local files.',
+        route: `${R}.fileChooser`,
+        icon: () => Icon.copy()
     }
 ];
 

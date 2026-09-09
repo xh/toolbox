@@ -294,9 +294,7 @@ const modelValues = hoistCmp.factory<DateRangePickerPanelModel>(({model}) => {
             ['currentRange', fmtRange(m.currentRange)],
             ['priorRange', fmtRange(m.priorRange)],
             ['anchorDay', JSON.stringify(m.anchorDay)],
-            ['anchorDate', m.anchorDate.isoString],
-            ['today', m.today.isoString],
-            ['currentRangeFilter', JSON.stringify(m.currentRangeFilter)]
+            ['anchorDate', m.anchorDate.isoString]
         ];
     return demoGrid({
         columns: 2,

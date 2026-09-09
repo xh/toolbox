@@ -77,7 +77,7 @@ export const fileChooserPanel = hoistCmp.factory({
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/other/FileChooserPanel.ts',
+                    url: '$TB/client-app/src/desktop/tabs/forms/FileChooserPanel.ts',
                     notes: 'This example.'
                 },
                 {

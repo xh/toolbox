@@ -30,7 +30,7 @@ export const leftRightChooserPanel = hoistCmp.factory({
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/other/LeftRightChooserPanel.ts',
+                    url: '$TB/client-app/src/desktop/tabs/forms/LeftRightChooserPanel.ts',
                     notes: 'This example.'
                 },
                 {
