@@ -1,6 +1,6 @@
-import {clock} from '@xh/hoist/cmp/clock';
+import {clock, ClockProps} from '@xh/hoist/cmp/clock';
 import {vbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, PlainObject} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {numberInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {TIME_FMT} from '@xh/hoist/format';
@@ -8,7 +8,6 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {
-    DemoConfigValue,
     demoGrid,
     demoPlayground,
     demoRow,
@@ -18,6 +17,9 @@ import {
     wrapperOption,
     wrapperOptionGroup
 } from '../../common';
+
+/** The Clock props the rail drives. Named so both the instances and the snippet share one type. */
+type ClockDisplayProps = Pick<ClockProps, 'format' | 'prefix' | 'suffix' | 'updateInterval'>;
 
 /** The zones shown in the World Clocks section, plus one deliberate error case. */
 const ZONES: Array<{label: string; timezone: string; info?: string}> = [
@@ -37,7 +39,7 @@ export const clockPanel = hoistCmp.factory({
     model: creates(() => ClockPanelModel),
 
     render({model}) {
-        const {clockProps, snippetProps} = model;
+        const {clockProps} = model;
         return wrapper({
             title: 'Clock',
             icon: Icon.clock(),
@@ -106,7 +108,7 @@ export const clockPanel = hoistCmp.factory({
                                 instanceWidth: 200,
                                 showValue: false,
                                 caption: 'No timezone set, so browser local time.',
-                                config: fmtDemoConfig('clock', snippetProps),
+                                config: fmtDemoConfig<ClockProps>('clock', clockProps),
                                 item: clock(clockProps)
                             })
                         }),
@@ -138,14 +140,15 @@ class ClockPanelModel extends HoistModel {
     @bindable prefix: string;
     @bindable suffix: string;
 
-    /** Props every clock on the page spreads, so the rail options reach it. */
-    get clockProps(): PlainObject {
-        const {format, prefix, suffix, updateInterval} = this;
-        return {format, prefix, suffix, updateInterval};
-    }
-
-    /** Snippet entries for the Playground - only the props set away from their defaults. */
-    get snippetProps(): Record<string, DemoConfigValue> {
+    /**
+     * Props every clock on the page spreads, so the rail options reach it. An emptied rail field
+     * resolves to undefined rather than an empty string, letting Clock fall back to its own
+     * default - passing `format: ''` would render differently from the `clock()` the snippet shows.
+     *
+     * The Playground snippet reads this same getter, so the code shown cannot drift from the
+     * instances rendered beside it.
+     */
+    get clockProps(): ClockDisplayProps {
         const {format, prefix, suffix, updateInterval} = this;
         return {
             format: format || undefined,
