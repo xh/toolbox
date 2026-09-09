@@ -77,9 +77,22 @@ Run these checks:
    commits and a clean tree gives a clean rollback point.
 3. **Synced with origin?** `git fetch origin` then compare `develop` to `origin/develop`
    (`git rev-list --left-right --count develop...origin/develop`). Warn strongly if behind/ahead.
-4. **CI green on `develop`?** `gh run list --branch develop --workflow ci.yml --limit 1`. Warn
+4. **Local `master` current with `origin/master`?**
+   `git rev-list --left-right --count master...origin/master` (the `git fetch origin` from check 3
+   already ran). Local `master` is only ever touched during a release, so between releases it drifts
+   far behind - dozens of commits is normal and not alarming. Unlike the other checks, **do not just
+   warn: fix it now**, so Phase 6 starts from a known-good `master`:
+   - **Behind only** (left count `0`, right count non-zero) - fast-forward the local ref without
+     checking it out:
+     `git branch -f master origin/master`. Safe precisely because the left count is `0`, proving no
+     local-only commits, and because `master` is not the current branch. (On the master-direct path
+     from check 1 `master` *is* checked out, so `git branch -f` refuses - use
+     `git merge --ff-only origin/master` there instead.)
+   - **Ahead at all** (left count non-zero) - **stop and ask.** Unpushed local commits on `master`
+     are unexpected and may be unreviewed work that an ff-merge would sweep into a release.
+5. **CI green on `develop`?** `gh run list --branch develop --workflow ci.yml --limit 1`. Warn
    strongly if the latest CI run is failing or in progress.
-5. **App-version 3-way sync?** Quickly confirm the snap version agrees across `gradle.properties`
+6. **App-version 3-way sync?** Quickly confirm the snap version agrees across `gradle.properties`
    (`xhAppVersion`), `client-app/package.json` (`version`), and the `CHANGELOG.md` unreleased
    header. They should normally match; if they don't, just note it in passing - the restore step
    (Phase 9) rewrites all three in sync and self-heals it. No special handling needed.
@@ -262,6 +275,11 @@ proposed version is a valid single increment (e.g. latest `9.0.0` -> valid: `10.
   on the file** - `CLAUDE.md` ("Changelog" section) is authoritative. Omit a library whose released
   version is unchanged even though its spec moved off a SNAPSHOT (e.g. `41.0-SNAPSHOT` pinned back
   to `41.0.0`).
+- **A patch-only bump gets no entry either.** Because the form is two-part, a move like
+  `15.0.0 → 15.0.1` renders as `15.0 → 15.0` - a line that says nothing. Omit it; do **not** reach
+  for the 3-part form to make it legible. The two-part convention is deliberate, and patch-level
+  library churn is not release-note material. (Settled for `@xh/hoist-dev-utils` `15.0.0 → 15.0.1`
+  in the 10.0.0 release - don't re-litigate it each time.)
 - **Formatting is critical and fails silently** - a malformed entry is dropped from the parsed
   output while the build still succeeds. Every bullet must be a **single line** however long, and
   every bullet and `###` header must start at **column 0** - one leading space drops it. See the
@@ -288,7 +306,25 @@ trailer). Show the developer the staged diff before committing if there's any am
 ## Phase 6: Merge develop into master
 
 Toolbox does versioned releases from `master`. Move the just-finalized commit onto `master` with a
-**fast-forward-only** merge so master lands exactly on the release commit:
+**fast-forward-only** merge so master lands exactly on the release commit.
+
+### Re-confirm local `master` before merging
+
+Phase 1.4 should have brought it current, but re-check - a stale local `master` is the most common
+way this phase goes subtly wrong:
+
+```bash
+git rev-list --left-right --count master...origin/master   # want "0	0"
+```
+
+Why this deserves a second look: a stale `master` **still fast-forwards correctly**. `git checkout
+master` prints a reassuring "Your branch is behind 'origin/master' by N commits, and can be
+fast-forwarded", the merge then advances past all of it, and the result is right. That benign
+message is the hazard - it trains you to wave off the *one* case that matters, local-only commits on
+`master`, which either fail the ff-merge or sweep unreviewed work into a release. Do not read "behind
+by N" as "handled"; read the count and resolve anything non-zero first.
+
+### Merge
 
 Propose and confirm, then run:
 
@@ -299,6 +335,18 @@ git merge --ff-only develop
 
 If the ff-merge fails (master has diverged), **stop and ask** - do not force or create a non-ff
 merge without the developer's direction.
+
+### Verify the result
+
+Do not proceed on the merge's exit code alone - confirm master actually landed where you intend:
+
+```bash
+git rev-list --left-right --count master...develop   # must be "0	0" - master is identical to develop
+git log origin/master..master --oneline              # the release commit, plus everything since the last release
+```
+
+The second command is the useful sanity read: it should list the release commit on top and the work
+this release ships beneath it. If it lists commits you don't recognize, stop.
 
 ---
 
@@ -493,7 +541,7 @@ line reproduces the snap already in the files, so the version files should come 
 **Self-check before committing:** on a minor or patch release, `git diff` should show **no change**
 to `gradle.properties` `xhAppVersion` or to `package.json` `version` - only the CHANGELOG header and
 the library specs move. If either version file changed, you derived SNAP from the snap instead of
-the release. Writing all three unconditionally also self-heals any prior drift found in Phase 1.5.
+the release. Writing all three unconditionally also self-heals any prior drift found in Phase 1.6.
 
 Leave the new CHANGELOG section empty (no category sub-headers) - entries accumulate as new work
 lands.
