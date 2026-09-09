@@ -36,14 +36,12 @@ export const otherControlsPanel = hoistCmp.factory({
                 {
                     url: '$TB/client-app/src/desktop/tabs/forms/inputs/OtherControlsPanel.ts',
                     notes: 'This example.'
-                },
-                {
-                    url: '$HR/cmp/input/HoistInputModel.ts',
-                    notes: 'The contract these controls do not implement.'
                 }
             ],
             item: demoPanel({
                 item: demoGallery({
+                    // Each instance is too wide to read side by side, so a row apiece.
+                    columns: 1,
                     items: OTHER_CONTROLS.map(entry =>
                         demoGalleryTile({
                             key: entry.name,

@@ -269,18 +269,27 @@ export const [DemoGrid, demoGrid] = hoistCmp.withFactory<DemoGridProps>({
 // Gallery
 //------------------------------------------------------------------
 export interface DemoGalleryProps extends HoistProps {
+    /**
+     * Fixed count of equal columns, for tiles holding instances too wide to sit side by side -
+     * `columns: 1` gives each a row of its own. Takes precedence over `minTileWidth`.
+     */
+    columns?: number;
     /** Minimum tile width in px - tiles auto-fill the row. Default 240. */
     minTileWidth?: number;
 }
 
-/** A responsive tile grid for index pages. */
+/** A tile grid for index pages - responsive by default, or a fixed column count. */
 export const [DemoGallery, demoGallery] = hoistCmp.withFactory<DemoGalleryProps>({
     displayName: 'DemoGallery',
     className: 'tbox-demo-gallery',
-    render({className, minTileWidth = 240, children}) {
+    render({className, columns, minTileWidth = 240, children}) {
         return div({
             className,
-            style: {gridTemplateColumns: `repeat(auto-fill, minmax(${minTileWidth}px, 1fr))`},
+            style: {
+                gridTemplateColumns: columns
+                    ? `repeat(${columns}, minmax(0, 1fr))`
+                    : `repeat(auto-fill, minmax(${minTileWidth}px, 1fr))`
+            },
             items: children
         });
     }
