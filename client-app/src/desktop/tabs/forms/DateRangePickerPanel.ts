@@ -80,7 +80,7 @@ export const dateRangePickerPanel = hoistCmp.factory({
                     label: 'Playground only - props',
                     icon: Icon.experiment(),
                     intent: 'primary',
-                    info: 'Configure the primary instance. Variants use their own models.',
+                    info: 'Drives the Playground instance. The variants use their own models.',
                     items: [
                         wrapperOption({
                             label: 'Style as input',

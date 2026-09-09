@@ -98,7 +98,7 @@ export const fileChooserPanel = hoistCmp.factory({
                 label: 'Playground only',
                 icon: Icon.experiment(),
                 intent: 'primary',
-                info: 'Configure the primary instance. The single-file choosers use their own models.',
+                info: 'Drives the Playground instance. The single-file choosers use their own models.',
                 items: [
                     wrapperOption({
                         label: 'Accept',
