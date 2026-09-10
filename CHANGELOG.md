@@ -14,6 +14,10 @@
 
 ## 11.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Migrated app-level CSS variable overrides from Hoist's unprefixed hook names (e.g. `--font-family`) to the `--xh-` prefixed variables they configure (e.g. `--xh-font-family`), ahead of hoist-react v88 removing the unprefixed hooks.
+
 ## 10.0.1 - 2026-09-10
 
 ### Libraries

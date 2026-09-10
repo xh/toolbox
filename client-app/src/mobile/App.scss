@@ -41,9 +41,9 @@
 }
 
 body.xh-app {
-  --font-family: 'IBM Plex Sans', system-ui, sans-serif;
-  --font-family-mono: 'IBM Plex Mono', Monaco, Consolas, monospace;
-  --font-feature-settings: 'tnum', 'zero', 'ss01';
+  --xh-font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  --xh-font-family-mono: 'IBM Plex Mono', Monaco, Consolas, monospace;
+  --xh-font-feature-settings: 'tnum', 'zero', 'ss01';
 }
 
 // App bar: the hamburger glyph and the XH logo live together in a single button that opens the nav
