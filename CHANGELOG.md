@@ -57,7 +57,7 @@
 
 ### Technical
 
-* Migrated toolbox to TC39 Stage 3 modern decorators in step with `hoist-react` v85 and `hoist-dev-utils` v14. Removed `experimentalDecorators` from `client-app/tsconfig.json`, added the `accessor` keyword to all `@observable` / `@bindable` fields, and deleted the ~90 `makeObservable(this)` calls that existed across the example apps.
+* Migrated toolbox to TC39 Stage 3 modern decorators in step with `hoist-react` v88 and `hoist-dev-utils` v16. Removed `experimentalDecorators` from `client-app/tsconfig.json`, added the `accessor` keyword to all `@observable` / `@bindable` fields, and deleted the ~90 `makeObservable(this)` calls that existed across the example apps.
 
 ## 9.4.0 - 2026-08-25
 
