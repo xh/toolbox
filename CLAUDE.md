@@ -315,6 +315,13 @@ silently freezing the snapshot ([pnpm#7002](https://github.com/pnpm/pnpm/issues/
 keeps the `hoist-react-snapshot` trigger in `buildSnapshot.yml` working. See
 [`docs/running-locally.md`](docs/running-locally.md).
 
+**Claude Code on the web:** `pnpm install` needs the FontAwesome Pro registry token, which a
+`SessionStart` hook in the hoist-react repo (`.claude/hooks/session-start.sh`) writes to `~/.npmrc`
+before installing both hoist-react and a sibling Toolbox `client-app`. In a multi-repository
+session (toolbox plus hoist-react) that hook does not fire, so if `pnpm install` returns a 401 from
+`npm.fontawesome.com`, run `../hoist-react/.claude/hooks/session-start.sh` directly. Environment
+requirements (token, allowlisted domains) are documented in hoist-react's `.claude/hooks/README.md`.
+
 When using `pnpm startWithHoist`, you may also want to uncomment the `paths` block in
 `client-app/tsconfig.json` so `tsc`/your IDE type-check against the local hoist-react checkout - see
 the Pre-commit Hooks note above and [`docs/running-locally.md`](docs/running-locally.md). Re-comment
