@@ -10,7 +10,7 @@ import {
     TextAreaProps,
     textInput
 } from '@xh/hoist/desktop/cmp/input';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
@@ -216,18 +216,18 @@ const SEEDS = {
 
 class TextAreaPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgPlaceholder = 'Tell us your thoughts...';
-    @bindable pgSelectOnFocus = false;
-    @bindable pgSpellCheck = false;
-    @bindable pgHeight = 100;
+    @bindable accessor pgPlaceholder = 'Tell us your thoughts...';
+    @bindable accessor pgSelectOnFocus = false;
+    @bindable accessor pgSpellCheck = false;
+    @bindable accessor pgHeight = 100;
 
     // Inputs
-    @bindable playground: string = SEEDS.playground;
-    @bindable plain: string = SEEDS.plain;
-    @bindable notes: string = SEEDS.notes;
-    @bindable flexed: string = SEEDS.flexed;
-    @bindable spelling: string = SEEDS.spelling;
-    @bindable locked: string = SEEDS.locked;
+    @bindable accessor playground: string = SEEDS.playground;
+    @bindable accessor plain: string = SEEDS.plain;
+    @bindable accessor notes: string = SEEDS.notes;
+    @bindable accessor flexed: string = SEEDS.flexed;
+    @bindable accessor spelling: string = SEEDS.spelling;
+    @bindable accessor locked: string = SEEDS.locked;
 
     @managed
     override formModel = new FormModel({
@@ -255,7 +255,6 @@ class TextAreaPanelModel extends InputDemoModel {
 
     constructor() {
         super();
-        makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

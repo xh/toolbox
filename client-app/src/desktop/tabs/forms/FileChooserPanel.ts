@@ -1,6 +1,6 @@
 import {box, filler, img, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses, XH} from '@xh/hoist/core';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     fileChooser,
@@ -317,13 +317,7 @@ class ImagePreviewModel extends HoistModel {
     @lookup(() => FileChooserModel)
     chooserModel: FileChooserModel;
 
-    @observable
-    objectUrl: string = null;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @observable accessor objectUrl: string = null;
 
     override onLinked() {
         super.onLinked();
@@ -347,24 +341,19 @@ class ImagePreviewModel extends HoistModel {
 }
 
 class FileChooserPanelModel extends HoistModel {
-    @bindable
-    disabled = false;
+    @bindable accessor disabled = false;
 
-    @bindable.ref
-    acceptedTypes: string[] = ['.png', '.txt'];
+    @bindable.ref accessor acceptedTypes: string[] = ['.png', '.txt'];
 
-    @bindable
-    maxFiles: number = null;
+    @bindable accessor maxFiles: number = null;
 
-    @bindable
-    maxFileSize: number = null;
+    @bindable accessor maxFileSize: number = null;
 
-    @bindable
-    placement: 'left' | 'top' | 'hidden' = 'left';
+    @bindable accessor placement: 'left' | 'top' | 'hidden' = 'left';
 
     @managed
     @observable.ref
-    chooserModel: FileChooserModel;
+    accessor chooserModel: FileChooserModel;
 
     @managed
     basicChooserModel = new FileChooserModel({maxFiles: 1});
@@ -374,7 +363,6 @@ class FileChooserPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.createChooserModel();
 
         // Re-create the chooser whenever a configured limit changes - accept / maxFiles /

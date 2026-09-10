@@ -1,15 +1,9 @@
 import {HoistModel} from '@xh/hoist/core';
-import {makeObservable, bindable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
 
 export class DetailsPanelModel extends HoistModel {
-    @bindable.ref
-    currentRecord: StoreRecord;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable.ref accessor currentRecord: StoreRecord;
 
     get classificationDetails() {
         const {classification} = this.currentRecord.data;

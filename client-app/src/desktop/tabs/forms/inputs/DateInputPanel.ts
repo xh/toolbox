@@ -5,7 +5,7 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {dateInput, DateInputProps, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import moment from 'moment';
 import {
@@ -238,20 +238,20 @@ const SEEDS = {
 
 class DateInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgEnableClear = true;
-    @bindable pgLeftIcon = false;
-    @bindable pgTimePrecision: 'none' | 'minute' | 'second' = 'none';
-    @bindable pgActionsBar = false;
+    @bindable accessor pgEnableClear = true;
+    @bindable accessor pgLeftIcon = false;
+    @bindable accessor pgTimePrecision: 'none' | 'minute' | 'second' = 'none';
+    @bindable accessor pgActionsBar = false;
 
     // Inputs
-    @bindable.ref playground: Date = SEEDS.playground;
-    @bindable.ref minMax: Date = SEEDS.minMax;
-    @bindable.ref localDate: LocalDate = SEEDS.localDate;
-    @bindable.ref timeAmPm: Date = SEEDS.timeAmPm;
-    @bindable.ref customFormat: Date = SEEDS.customFormat;
-    @bindable.ref disabledDate: Date = SEEDS.disabledDate;
-    @bindable.ref tbarDate: Date = SEEDS.tbarDate;
-    @bindable.ref tbarLocalDate: LocalDate = SEEDS.tbarLocalDate;
+    @bindable.ref accessor playground: Date = SEEDS.playground;
+    @bindable.ref accessor minMax: Date = SEEDS.minMax;
+    @bindable.ref accessor localDate: LocalDate = SEEDS.localDate;
+    @bindable.ref accessor timeAmPm: Date = SEEDS.timeAmPm;
+    @bindable.ref accessor customFormat: Date = SEEDS.customFormat;
+    @bindable.ref accessor disabledDate: Date = SEEDS.disabledDate;
+    @bindable.ref accessor tbarDate: Date = SEEDS.tbarDate;
+    @bindable.ref accessor tbarLocalDate: LocalDate = SEEDS.tbarLocalDate;
 
     @managed
     override formModel = new FormModel({
@@ -273,7 +273,6 @@ class DateInputPanelModel extends InputDemoModel {
 
     constructor() {
         super({commitOnChangeDefault: true});
-        makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

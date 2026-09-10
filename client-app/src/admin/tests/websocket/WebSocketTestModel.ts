@@ -1,18 +1,17 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateRenderer} from '@xh/hoist/format';
-import {makeObservable, bindable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {WebSocketSubscription} from '@xh/hoist/svc';
 
 export class WebSocketTestModel extends HoistModel {
     @managed gridModel: GridModel;
     @managed updateSub: WebSocketSubscription;
-    @bindable subscribedLocal = false;
-    @bindable subscribedCluster = false;
+    @bindable accessor subscribedLocal = false;
+    @bindable accessor subscribedCluster = false;
 
     constructor() {
         super();
-        makeObservable(this);
         this.gridModel = new GridModel({
             sortBy: [{colId: 'timestamp', sort: 'desc'}],
             emptyText: 'No updates received',

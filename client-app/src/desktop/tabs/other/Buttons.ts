@@ -4,7 +4,7 @@ import {button, buttonGroup, ButtonProps} from '@xh/hoist/desktop/cmp/button';
 import {intentInput, segmentedControl, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {ReactNode} from 'react';
 import {
     demoGrid,
@@ -311,14 +311,14 @@ function toolbarItems(model: ButtonsModel): ReactNode[] {
 //------------------------------------------------------------------
 class ButtonsModel extends HoistModel {
     // Playground props
-    @bindable pgText = 'Submit';
-    @bindable pgIcon = true;
-    @bindable pgIntent: Intent = 'primary';
-    @bindable pgStyle: ButtonStyle = 'minimal';
+    @bindable accessor pgText = 'Submit';
+    @bindable accessor pgIcon = true;
+    @bindable accessor pgIntent: Intent = 'primary';
+    @bindable accessor pgStyle: ButtonStyle = 'minimal';
 
     /** Ambient - applied to every button on the page. */
-    @bindable disabled = false;
-    @bindable active = false;
+    @bindable accessor disabled = false;
+    @bindable accessor active = false;
 
     /** Props every button spreads so the ambient options reach it. */
     get ambientProps(): Pick<ButtonProps, 'disabled' | 'active'> {
@@ -330,10 +330,5 @@ class ButtonsModel extends HoistModel {
     get ambientSnippetProps(): DemoConfigProps<ButtonProps> {
         const {disabled, active} = this;
         return {disabled: disabled || undefined, active: active || undefined};
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 }

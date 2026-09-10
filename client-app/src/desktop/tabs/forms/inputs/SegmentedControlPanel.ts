@@ -12,7 +12,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
@@ -252,22 +252,22 @@ const SEEDS = {
 
 class SegmentedControlPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgFill = true;
-    @bindable pgTrayBackground = true;
-    @bindable pgOutlined = true;
-    @bindable pgDividers: 'auto' | 'true' | 'false' = 'auto';
-    @bindable pgIntent: Intent = null;
+    @bindable accessor pgFill = true;
+    @bindable accessor pgTrayBackground = true;
+    @bindable accessor pgOutlined = true;
+    @bindable accessor pgDividers: 'auto' | 'true' | 'false' = 'auto';
+    @bindable accessor pgIntent: Intent = null;
 
     // Inputs
-    @bindable playground: string = SEEDS.playground;
-    @bindable iconText: string = SEEDS.iconText;
-    @bindable emptyState: string = SEEDS.emptyState;
-    @bindable perOptionIntent: string = SEEDS.perOptionIntent;
-    @bindable contentSized: string = SEEDS.contentSized;
-    @bindable primitiveOptions: string = SEEDS.primitiveOptions;
-    @bindable disabledExample: string = SEEDS.disabledExample;
-    @bindable tbarSegment: string = SEEDS.tbarSegment;
-    @bindable tbarLevel: string = SEEDS.tbarLevel;
+    @bindable accessor playground: string = SEEDS.playground;
+    @bindable accessor iconText: string = SEEDS.iconText;
+    @bindable accessor emptyState: string = SEEDS.emptyState;
+    @bindable accessor perOptionIntent: string = SEEDS.perOptionIntent;
+    @bindable accessor contentSized: string = SEEDS.contentSized;
+    @bindable accessor primitiveOptions: string = SEEDS.primitiveOptions;
+    @bindable accessor disabledExample: string = SEEDS.disabledExample;
+    @bindable accessor tbarSegment: string = SEEDS.tbarSegment;
+    @bindable accessor tbarLevel: string = SEEDS.tbarLevel;
 
     @managed
     override formModel = new FormModel({
@@ -283,7 +283,6 @@ class SegmentedControlPanelModel extends InputDemoModel {
 
     constructor() {
         super({supportsCompact: true, commitOnChangeDefault: null});
-        makeObservable(this);
         // Show the failing 'level' rule on load - FormField displays messages only after
         // validation runs.
         this.formModel.validateAsync();

@@ -1,12 +1,12 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {TreeMapModel} from '@xh/hoist/cmp/treemap';
 import {Store} from '@xh/hoist/data';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 
 export class SimpleTreeMapModel extends HoistModel {
-    @bindable cluster = false;
-    @bindable clusterWidthThreshold = 10;
-    @bindable clusterHeightThreshold = 10;
+    @bindable accessor cluster = false;
+    @bindable accessor clusterWidthThreshold = 10;
+    @bindable accessor clusterHeightThreshold = 10;
 
     @managed
     store = new Store({
@@ -35,7 +35,6 @@ export class SimpleTreeMapModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.addReaction({
             track: () => [this.cluster, this.clusterWidthThreshold, this.clusterHeightThreshold],
             run: ([enableCluster, clusterWidthThreshold, clusterHeightThreshold]) => {

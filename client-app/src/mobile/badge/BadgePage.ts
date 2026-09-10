@@ -4,7 +4,7 @@ import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import './BadgePage.scss';
 
@@ -83,10 +83,5 @@ const contextCard = hoistCmp.factory<BadgePageModel>(({model}) => {
 });
 
 class BadgePageModel extends HoistModel {
-    @bindable compact: boolean = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor compact: boolean = false;
 }

@@ -2,7 +2,7 @@ import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {p} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
-import {action, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, observable} from '@xh/hoist/mobx';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {wait} from '@xh/hoist/promise';
 import {exampleAction, exampleScreen} from '../cmp/example/ExampleScreen';
@@ -79,11 +79,10 @@ class PinPadPageModel extends HoistModel {
     attempts: number = 0;
     maxAttempts: number = 5;
 
-    @observable loggedIn: boolean = false;
+    @observable accessor loggedIn: boolean = false;
 
     constructor() {
         super();
-        makeObservable(this);
         const {pinPadModel: pad} = this;
         this.addReaction({
             track: () => pad.completedPin,

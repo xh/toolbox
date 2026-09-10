@@ -15,7 +15,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
@@ -276,19 +276,19 @@ const SEEDS = {
 
 class TogglesPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgLabel = 'Enabled';
-    @bindable pgLabelSide: HSide = 'right';
-    @bindable pgUnsetState = false;
+    @bindable accessor pgLabel = 'Enabled';
+    @bindable accessor pgLabelSide: HSide = 'right';
+    @bindable accessor pgUnsetState = false;
 
     // Inputs
-    @bindable playground: boolean = SEEDS.playground;
-    @bindable indeterminate: boolean = SEEDS.indeterminate;
-    @bindable a: boolean = SEEDS.a;
-    @bindable b: boolean = SEEDS.b;
-    @bindable switchLeft: boolean = SEEDS.switchLeft;
-    @bindable customIcons: boolean = SEEDS.customIcons;
-    @bindable disabledDemo: boolean = SEEDS.disabledDemo;
-    @bindable tbarEnabled: boolean = SEEDS.tbarEnabled;
+    @bindable accessor playground: boolean = SEEDS.playground;
+    @bindable accessor indeterminate: boolean = SEEDS.indeterminate;
+    @bindable accessor a: boolean = SEEDS.a;
+    @bindable accessor b: boolean = SEEDS.b;
+    @bindable accessor switchLeft: boolean = SEEDS.switchLeft;
+    @bindable accessor customIcons: boolean = SEEDS.customIcons;
+    @bindable accessor disabledDemo: boolean = SEEDS.disabledDemo;
+    @bindable accessor tbarEnabled: boolean = SEEDS.tbarEnabled;
 
     @managed
     override formModel = new FormModel({
@@ -315,7 +315,6 @@ class TogglesPanelModel extends InputDemoModel {
 
     constructor() {
         super({commitOnChangeDefault: null});
-        makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

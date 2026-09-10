@@ -1,6 +1,6 @@
 import {lookup, HoistModel, XH} from '@xh/hoist/core';
 import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {uniq} from 'lodash';
 import {Release} from '../../../../../core/svc/GitHubService';
 import {RepoFilterModel} from '../RepoFilterPicker';
@@ -10,12 +10,7 @@ export class ReleasesWidgetModel extends HoistModel implements RepoFilterModel {
     private dashViewModel: DashViewModel;
 
     /** Repos to filter to - empty means show all. */
-    @bindable.ref selectedRepos: string[] = [];
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable.ref accessor selectedRepos: string[] = [];
 
     get allReleases(): Release[] {
         return XH.gitHubService.allReleases;

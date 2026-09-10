@@ -2,14 +2,13 @@ import {HoistModel, managed} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {required, lengthIs} from '@xh/hoist/data';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {observable, action, makeObservable} from '@xh/hoist/mobx';
+import {observable, action} from '@xh/hoist/mobx';
 import {TodoPanelModel} from './TodoPanelModel';
 
 export class TaskDialogModel extends HoistModel {
     parentModel: TodoPanelModel;
 
-    @observable
-    isOpen = false;
+    @observable accessor isOpen = false;
 
     @managed
     formModel = new FormModel({
@@ -39,7 +38,6 @@ export class TaskDialogModel extends HoistModel {
 
     constructor(todoPanelModel) {
         super();
-        makeObservable(this);
 
         this.parentModel = todoPanelModel;
     }

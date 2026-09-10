@@ -3,7 +3,7 @@ import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {numberInput, slider, SliderProps, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtThousands} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
@@ -226,17 +226,17 @@ const SEEDS = {
 
 class SliderPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgLabelStep = DEFAULT_LABEL_STEP;
-    @bindable pgStep = DEFAULT_STEP;
-    @bindable pgTrackFill = true;
-    @bindable pgVertical = false;
+    @bindable accessor pgLabelStep = DEFAULT_LABEL_STEP;
+    @bindable accessor pgStep = DEFAULT_STEP;
+    @bindable accessor pgTrackFill = true;
+    @bindable accessor pgVertical = false;
 
     // Inputs
-    @bindable playground: number = SEEDS.playground;
-    @bindable.ref range: number[] = SEEDS.range;
-    @bindable noLabels: number = SEEDS.noLabels;
-    @bindable fineSteps: number = SEEDS.fineSteps;
-    @bindable disabledSlider: number = SEEDS.disabledSlider;
+    @bindable accessor playground: number = SEEDS.playground;
+    @bindable.ref accessor range: number[] = SEEDS.range;
+    @bindable accessor noLabels: number = SEEDS.noLabels;
+    @bindable accessor fineSteps: number = SEEDS.fineSteps;
+    @bindable accessor disabledSlider: number = SEEDS.disabledSlider;
 
     @managed
     override formModel = new FormModel({
@@ -261,7 +261,6 @@ class SliderPanelModel extends InputDemoModel {
 
     constructor() {
         super({commitOnChangeDefault: null});
-        makeObservable(this);
         // Show the failing rule on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

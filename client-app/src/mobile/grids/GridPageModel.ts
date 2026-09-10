@@ -1,12 +1,11 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {bindable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {bindable, runInAction} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {cityCol, companyCol, profitLossCol, tradeVolumeCol} from '../../core/columns';
 
 export class GridPageModel extends HoistModel {
-    @bindable.ref
-    dateLoaded: Date = null;
+    @bindable.ref accessor dateLoaded: Date = null;
 
     @managed
     gridModel: GridModel = new GridModel({
@@ -31,11 +30,6 @@ export class GridPageModel extends HoistModel {
             {...tradeVolumeCol}
         ]
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     override async doLoadAsync(loadSpec) {
         await wait(500);

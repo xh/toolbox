@@ -17,7 +17,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {dateInput, intentInput, picker, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, sortBy} from 'lodash';
 import {ReactNode} from 'react';
@@ -375,28 +375,27 @@ class DateRangePickerPanelModel extends HoistModel {
     @managed fiscalPickerModel: DateRangePickerModel;
 
     // Component options
-    @bindable styleButtonAsInput = true;
-    @bindable showRange = true;
-    @bindable showStepButtons = true;
-    @bindable showFooterNote = true;
-    @bindable intent: Intent = null;
+    @bindable accessor styleButtonAsInput = true;
+    @bindable accessor showRange = true;
+    @bindable accessor showStepButtons = true;
+    @bindable accessor showFooterNote = true;
+    @bindable accessor intent: Intent = null;
 
     // Model options
-    @bindable.ref tabs: DateRangePickerTab[] = [...DATE_RANGE_PICKER_TABS];
+    @bindable.ref accessor tabs: DateRangePickerTab[] = [...DATE_RANGE_PICKER_TABS];
     // The defaults plus Prev Day, so the demo shows a single-day walk from both presets.
-    @bindable.ref presets: DateRangePresetToken[] = sortBy(
+    @bindable.ref accessor presets: DateRangePresetToken[] = sortBy(
         [...DEFAULT_DATE_RANGE_PRESETS, 'prevDay'],
         it => DATE_RANGE_PRESET_TOKENS.indexOf(it)
     );
-    @bindable anchorMode: 'localDay' | 'appDay' | 'pinned' = 'localDay';
-    @bindable.ref anchorDate: LocalDate = LocalDate.today();
-    @bindable.ref maxDate: LocalDate = null;
-    @bindable dateFormat = 'YYYY-MM-DD';
-    @bindable singleDayFormat: keyof typeof DAY_FORMATS = 'ddd MMM D';
+    @bindable accessor anchorMode: 'localDay' | 'appDay' | 'pinned' = 'localDay';
+    @bindable.ref accessor anchorDate: LocalDate = LocalDate.today();
+    @bindable.ref accessor maxDate: LocalDate = null;
+    @bindable accessor dateFormat = 'YYYY-MM-DD';
+    @bindable accessor singleDayFormat: keyof typeof DAY_FORMATS = 'ddd MMM D';
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.pickerModel = new DateRangePickerModel({
             filterField: 'date',

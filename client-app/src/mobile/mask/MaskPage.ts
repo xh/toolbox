@@ -5,7 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import './MaskPage.scss';
@@ -67,14 +67,9 @@ export const maskPage = hoistCmp.factory({
 });
 
 class MaskPageModel extends HoistModel {
-    @bindable masked: boolean = false;
-    @bindable spinner: boolean = true;
-    @bindable showMessage: boolean = true;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor masked: boolean = false;
+    @bindable accessor spinner: boolean = true;
+    @bindable accessor showMessage: boolean = true;
 
     maskForAWhile() {
         this.masked = true;
