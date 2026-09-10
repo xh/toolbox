@@ -130,10 +130,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         const {view} = this;
         return new GridModel({
             treeMode: true,
-            store: {
-                projectionOnly: true,
-                idEncodesTreePath: true
-            },
+            store: {projectionOnly: true},
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'cubeLabel',
             emptyText: 'No records found...',
