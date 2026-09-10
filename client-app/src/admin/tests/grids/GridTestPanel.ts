@@ -77,6 +77,7 @@ export const GridTestPanel = hoistCmp({
                     item: model.hasLoadedOnce
                         ? grid({
                               agOptions: {
+                                  columnMenu: 'legacy', // support for ag native filtering test
                                   rowSelection: {
                                       mode: 'singleRow',
                                       isRowSelectable: ({data: record}) =>
@@ -327,6 +328,11 @@ const gridOptions = (model: GridTestModel) =>
                 label: 'Restrict selection',
                 info: 'Disallow selecting rows with Day P&L < 0, via agOptions isRowSelectable.',
                 control: switchInput({model, bind: 'disableSelect'})
+            }),
+            wrapperOption({
+                label: 'Pin ID column',
+                info: 'Pin the id column to the left - exercises the full-width horizontal scrollbar, which spans pinned columns in AG Grid 36.',
+                control: switchInput({model, bind: 'pinId'})
             }),
             wrapperOption({
                 label: 'Persist state',
