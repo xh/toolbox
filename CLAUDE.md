@@ -281,7 +281,7 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
   itself is separately pinned to a lower bytecode level so its published JAR remains runnable
   by older client apps - see `hoist-core` docs for the current minimum.)
 - **Database**: MySQL (or H2 in-memory for quick local dev via `APP_TOOLBOX_USE_H2=true`)
-- **Package Manager**: Yarn 1.22 (frontend), Gradle via wrapper (backend)
+- **Package Manager**: pnpm (frontend, version pinned via `packageManager`), Gradle via wrapper (backend)
 
 ## Common Commands
 
@@ -501,6 +501,8 @@ Toolbox maintains a `CHANGELOG.md` that is parsed at build time by `changelog-pa
 hoist-dev-utils) and displayed in-app to users via Hoist's `ChangelogService`. Write entries for an
 audience of developers and potential clients evaluating Hoist.
 
+The file opens with an HTML comment restating the essentials below. Keep the two in sync.
+
 ### Format
 
 The file follows the [Keep a Changelog](https://keepachangelog.com/) structure:
@@ -516,29 +518,32 @@ The file follows the [Keep a Changelog](https://keepachangelog.com/) structure:
 
 ### Libraries
 
-* @xh/hoist 80.0.1
+* @xh/hoist `80.0 → 80.1`
 ```
 
-- **Version headings**: `## <version> - <date>` - no `v` prefix. Use `SNAPSHOT - unreleased` for
-  the in-development version.
+- **Version headings**: `## <version> - <date>` - no `v` prefix, date as `YYYY-MM-DD`. Use
+  `## <x.y>-SNAPSHOT - unreleased`, with no date, for the in-development version.
 - **Adding a new SNAPSHOT version**: Before adding a changelog entry, check whether the topmost
   version in `CHANGELOG.md` has already been released. A version is released if it has a date
   (e.g. `## 8.1.0 - 2026-02-12`) or a matching `v<version>` git tag exists. If it has been
   released, create a new `## <next-major>.0-SNAPSHOT` heading above it (with no date) before
   adding your entry. Bump the major version number from the last release (e.g. after `8.1.0`,
   create `9.0-SNAPSHOT`).
-- **Recognized categories** (used for styling in the in-app dialog): `Breaking Changes`,
-  `New Features`, `Bug Fixes`, `Technical`, `Libraries`.
+- **Recognized categories**: `Breaking Changes`, `New Features`, `Bug Fixes`, `Technical`,
+  `Libraries` - the titles Hoist's `ChangelogDialog` maps to CSS classnames. Use them in that
+  order. Any other `###` title still renders, just without the accent styling.
 
-### Critical: single-line bullets only
+### Critical: whitespace is load-bearing
 
-The changelog parser works **line-by-line**. Bullet points are only recognized when a line starts
-with `*` or `-`. Continuation lines, wrapped text, and nested sub-bullets are **silently dropped**
-from the parsed output.
+The parser is line-based and fails **silently** - a malformed entry is dropped from the parsed
+output while the build still succeeds, so nothing flags the mistake. Two rules follow:
 
-**Every bullet MUST be a single line - no matter how long.** Do not wrap, indent continuation text,
-or use nested sub-bullets. A 300-character single line is correct; a neatly wrapped two-line bullet
-is broken.
+1. **Bullets and `###` headers must start at column 0.** The patterns are `/^[*-]/` and `/^###/`
+   matched against the raw line, so a single leading space drops it. Nested sub-bullets and
+   indented continuation lines are therefore impossible, not merely discouraged.
+2. **Every bullet is exactly one line, however long.** A wrapped bullet keeps its first line and
+   loses the rest. A 300-character single line is correct; a neatly wrapped two-line bullet is
+   broken.
 
 ```
 // GOOD - single line, renders completely in-app
@@ -549,11 +554,33 @@ is broken.
   API, featuring a `DashCanvas` layout with multiple chart types.
 ```
 
+### Libraries entries
+
+One bullet per library whose released version changed since the last Toolbox release, versions
+backticked and separated by ` → `:
+
+```
+* @xh/hoist `87.0 → 87.1`
+* @xh/hoist-dev-utils `14.0 → 15.0`
+* hoist-core `40.2 → 41.0`
+```
+
+- **Two-part `major.minor` only.** Drop the patch component - write `87.0 → 87.1`, never
+  `87.0.0 → 87.1.0`.
+- **Never the `ZZ.x` form.** `14.x → 15.x` is retired - write `14.0 → 15.0`.
+- **Only libraries that actually moved.** A release swap that changes the dependency spec without
+  changing the released version (e.g. `41.0-SNAPSHOT` pinned back to `41.0.0`) is not an entry.
+- Name libraries by package or artifact id (`@xh/hoist`, `hoist-core`); others by common name
+  (`React`, `ag-Grid`).
+- Append a caveat after ` - ` when the bump needs one, e.g. ``@xh/hoist-dev-utils `12.2 → 13.0` - breaking: `.md` imports now resolve to raw text.``
+
 ### Style
 
 - Use past tense ("Added", "Fixed", "Removed" - not "Add", "Fix", "Remove").
 - Be concise but specific about what changed and why.
 - Use backticks for API names, component names, and config keys (e.g. `ViewManager`, `useOAuth`).
+- Prose punctuation is plain ASCII - use " - " for in-sentence breaks, never an em dash. The
+  `→` in Libraries entries is the one deliberate exception.
 
 ## Related Repositories
 

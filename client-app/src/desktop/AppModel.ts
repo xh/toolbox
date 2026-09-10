@@ -22,7 +22,28 @@ import {
 } from './tabs/charts';
 import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
-import {formPanel, inputsPanel, pickerPanel, selectPanel, toolbarFormPanel} from './tabs/forms';
+import {
+    buttonGroupInputPanel,
+    codeInputsPanel,
+    dateInputPanel,
+    dateRangePickerPanel,
+    fileChooserPanel,
+    formPanel,
+    leftRightChooserPanel,
+    inputsIndexPanel,
+    intentInputPanel,
+    numberInputPanel,
+    otherControlsPanel,
+    pickerPanel,
+    radioInputPanel,
+    segmentedControlPanel,
+    selectPanel,
+    sliderPanel,
+    textAreaPanel,
+    textInputPanel,
+    togglesPanel,
+    toolbarFormPanel
+} from './tabs/forms';
 import {
     agGridView,
     columnChooserPanel,
@@ -57,11 +78,9 @@ import {
     dateFormatsPanel,
     errorMessagePanel,
     exceptionHandlerPanel,
-    fileChooserPanel,
     iconsPanel,
     inspectorPanel,
     jsxPanel,
-    leftRightChooserPanel,
     markdownPanel,
     numberFormatsPanel,
     pinPadPanel,
@@ -272,10 +291,25 @@ export class AppModel extends BaseAppModel {
                         path: '/forms',
                         children: [
                             {name: 'form', path: '/form'},
+                            {name: 'toolbarForms', path: '/toolbarForms'},
                             {name: 'inputs', path: '/inputs'},
+                            {name: 'textInput', path: '/textInput'},
+                            {name: 'textArea', path: '/textArea'},
+                            {name: 'numberInput', path: '/numberInput'},
+                            {name: 'dateInput', path: '/dateInput'},
                             {name: 'select', path: '/select'},
                             {name: 'picker', path: '/picker'},
-                            {name: 'toolbarForms', path: '/toolbarForms'}
+                            {name: 'segmentedControl', path: '/segmentedControl'},
+                            {name: 'buttonGroupInput', path: '/buttonGroupInput'},
+                            {name: 'radioInput', path: '/radioInput'},
+                            {name: 'toggles', path: '/toggles'},
+                            {name: 'slider', path: '/slider'},
+                            {name: 'intentInput', path: '/intentInput'},
+                            {name: 'codeInputs', path: '/codeInputs'},
+                            {name: 'otherControls', path: '/otherControls'},
+                            {name: 'dateRangePicker', path: '/dateRangePicker'},
+                            {name: 'leftRightChooser', path: '/leftRightChooser'},
+                            {name: 'fileChooser', path: '/fileChooser'}
                         ]
                     },
                     {
@@ -303,13 +337,11 @@ export class AppModel extends BaseAppModel {
                             {name: 'customPackage', path: '/customPackage'},
                             {name: 'errorMessage', path: '/errorMessage'},
                             {name: 'exceptionHandler', path: '/exceptionHandler'},
-                            {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'formatDates', path: '/formatDates'},
                             {name: 'formatNumbers', path: '/formatNumbers'},
                             {name: 'icons', path: '/icons'},
                             {name: 'inspector', path: '/inspector'},
                             {name: 'jsx', path: '/jsx'},
-                            {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'markdown', path: '/markdown'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'placeholder', path: '/placeholder'},
@@ -446,15 +478,61 @@ export class AppModel extends BaseAppModel {
             },
             {
                 id: 'forms',
+                title: 'Forms + Inputs',
                 icon: Icon.edit(),
                 content: {
                     switcher,
+                    // Concepts first, then the All Inputs index and one page per input.
                     tabs: [
                         {id: 'form', title: 'FormModel', content: formPanel},
-                        {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                        {id: 'toolbarForms', title: 'Forms in Toolbars', content: toolbarFormPanel},
+                        {
+                            id: 'inputs',
+                            title: 'All Inputs',
+                            icon: Icon.grip(),
+                            content: inputsIndexPanel
+                        },
+                        {id: 'textInput', title: 'TextInput', content: textInputPanel},
+                        {id: 'textArea', title: 'TextArea', content: textAreaPanel},
+                        {id: 'numberInput', title: 'NumberInput', content: numberInputPanel},
+                        {id: 'dateInput', title: 'DateInput', content: dateInputPanel},
                         {id: 'select', title: 'Select', content: selectPanel},
                         {id: 'picker', title: 'Picker', content: pickerPanel},
-                        {id: 'toolbarForms', title: 'Toolbar Forms', content: toolbarFormPanel}
+                        {
+                            id: 'segmentedControl',
+                            title: 'SegmentedControl',
+                            content: segmentedControlPanel
+                        },
+                        {
+                            id: 'buttonGroupInput',
+                            title: 'ButtonGroupInput',
+                            content: buttonGroupInputPanel
+                        },
+                        {id: 'radioInput', title: 'RadioInput', content: radioInputPanel},
+                        {id: 'toggles', title: 'Checkbox & Switch', content: togglesPanel},
+                        {id: 'slider', title: 'Slider', content: sliderPanel},
+                        {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},
+                        {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel},
+                        // Controls that take their own model rather than a `bind`, so they are
+                        // not `HoistInput`s and cannot sit inside a FormField. Their own gallery
+                        // leads them, keeping All Inputs an exact list of the HoistInput set.
+                        {
+                            id: 'otherControls',
+                            title: 'Other Controls',
+                            icon: Icon.grip(),
+                            content: otherControlsPanel
+                        },
+                        {
+                            id: 'dateRangePicker',
+                            title: 'DateRangePicker',
+                            content: dateRangePickerPanel
+                        },
+                        {
+                            id: 'leftRightChooser',
+                            title: 'LeftRightChooser',
+                            content: leftRightChooserPanel
+                        },
+                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel}
                     ]
                 }
             },
@@ -490,16 +568,10 @@ export class AppModel extends BaseAppModel {
                             content: exceptionHandlerPanel
                         },
                         {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
-                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                         {id: 'formatDates', content: dateFormatsPanel},
                         {id: 'formatNumbers', content: numberFormatsPanel},
                         {id: 'icons', content: iconsPanel},
                         {id: 'inspector', content: inspectorPanel},
-                        {
-                            id: 'leftRightChooser',
-                            title: 'LeftRightChooser',
-                            content: leftRightChooserPanel
-                        },
                         {id: 'markdown', content: markdownPanel},
                         {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                         {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
