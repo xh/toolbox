@@ -14,6 +14,12 @@
 
 ## 11.0-SNAPSHOT - unreleased
 
+## 10.0.1 - 2026-09-10
+
+### Libraries
+
+* @xh/hoist `87.2 → 87.3`
+
 ## 10.0.0 - 2026-09-09
 
 ### New Features
