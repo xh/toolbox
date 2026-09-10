@@ -14,6 +14,10 @@
 
 ## 11.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Added an `rsbuild.config.mjs` and `build:rsbuild` / `start:rsbuild` / `startWithHoist:rsbuild` scripts, building Toolbox with hoist-dev-utils' new Rspack-based `configureRsbuild()` alongside the existing webpack config, as the reference app for that bundler migration spike (hoist-dev-utils #73). The webpack scripts remain the default.
+
 ## 10.0.1 - 2026-09-10
 
 ### Libraries

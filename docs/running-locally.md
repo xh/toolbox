@@ -102,6 +102,13 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
   published library (code that uses unreleased APIs looks fine locally but breaks the release
   build), which is exactly the gap the commented-out default closes.
 
+  **Rsbuild variant** - `pnpm startWithHoist:rsbuild` (and `pnpm start:rsbuild` / `pnpm
+  build:rsbuild`) run the same app through hoist-dev-utils' Rspack-based `configureRsbuild()`
+  instead of webpack, configured by `rsbuild.config.mjs`. These are the evaluation path for the
+  bundler migration ([hoist-dev-utils #73](https://github.com/xh/hoist-dev-utils/issues/73)) - much
+  faster startup and rebuilds, with React Fast Refresh - and require a hoist-react checkout at v88+.
+  The webpack scripts remain the default, and CI builds with them.
+
 * **Server against local `hoist-core`** - there are two ways to enable inline mode, and which you
   want depends on whether you need IDE integration:
   * **Per run** - pass the property on the command line:

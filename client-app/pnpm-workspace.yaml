@@ -24,6 +24,9 @@ publicHoistPattern:
   - webpack
   - webpack-cli
   - webpack-dev-server
+  # Likewise for the `rsbuild` CLI behind the `*:rsbuild` scripts (Rspack-based build path under
+  # evaluation - see rsbuild.config.mjs).
+  - '@rsbuild/core'
 
 # pnpm's minimum-release-age gate refuses freshly published versions as supply-chain protection.
 # Exempt XH's own packages - hoist-react and hoist-dev-utils SNAPSHOTs are routinely consumed

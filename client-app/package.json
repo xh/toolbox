@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "webpack --env prodBuild",
+    "build:rsbuild": "rsbuild build --env-mode prod",
     "buildAndAnalyze": "webpack --env prodBuild --env analyzeBundles",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "pnpm lint:all",
@@ -15,9 +16,11 @@
     "typecheck": "tsc --noEmit",
     "prepare": "cd .. && husky client-app/.husky",
     "start": "pnpm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
+    "start:rsbuild": "pnpm install && rsbuild dev",
     "startAndAnalyze": "pnpm start --env analyzeBundles",
     "startWithIp": "pnpm start --env devHost=$(ipconfig getifaddr en0)",
     "startWithHoist": "(cd ../../hoist-react && pnpm install) && pnpm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
+    "startWithHoist:rsbuild": "(cd ../../hoist-react && pnpm install) && pnpm install && rsbuild dev --env-mode inlineHoist",
     "startWithHoistAndAnalyze": "pnpm startWithHoist --env analyzeBundles",
     "startWithHoistAndIp": "pnpm startWithHoist --env devHost=$(ipconfig getifaddr en0)",
     "startWithHoistSecure": "pnpm startWithHoist --env devHttps=true --env devHost=toolbox-local.xh.io"
