@@ -2,9 +2,9 @@ import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {Cube} from '@xh/hoist/data';
 import {fmtThousands} from '@xh/hoist/format';
 import {makeObservable, observable} from '@xh/hoist/mobx';
+import {getOrCreate} from '@xh/hoist/utils/js';
 import {times} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
-import {PctTotalAggregator} from './PctTotalAggregator';
 import {CubeTestModel} from './CubeTestModel';
 
 export class CubeModel extends HoistModel {
@@ -52,7 +52,6 @@ export class CubeModel extends HoistModel {
                 await LTM.withFetchTime('Fetch orders', async () => {
                     orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
                     orders.forEach(it => {
-                        it.pctCommission = it.commission;
                         it.maxConfidence = it.minConfidence = it.confidence;
                         // Reuse digest - order times are stable within a server-side portfolio
                         it.rev = it.time;
@@ -99,7 +98,21 @@ export class CubeModel extends HoistModel {
                 {name: 'price', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
 
                 {name: 'commission', aggregator: 'SUM'},
-                {name: 'pctCommission', aggregator: new PctTotalAggregator()},
+
+                // Percent-of-total as a calculated field (#4620), with the total memoized
+                // per-update on the AggregationContext.
+                {
+                    name: 'pctCommission',
+                    calculatedFn: (row, ctx) => {
+                        const tot = getOrCreate(ctx.appData, 'pctTotalCommission', () =>
+                            ctx.filteredRecords.reduce(
+                                (sum, rec) => sum + (rec.data.commission ?? 0),
+                                0
+                            )
+                        );
+                        return tot ? (row.commission / tot) * 100 : null;
+                    }
+                },
 
                 {name: 'maxConfidence', aggregator: 'MAX'},
                 {name: 'minConfidence', aggregator: 'MIN'},
@@ -120,7 +133,6 @@ export class CubeModel extends HoistModel {
             const newCom = order.commission * (1 + (0.5 - Math.random()) * 0.5);
 
             order.commission = newCom;
-            order.pctCommission = newCom;
             order.rev++;
 
             return order;
