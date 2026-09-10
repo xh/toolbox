@@ -11,6 +11,8 @@
      each bullet to one change. Use highly concise language suitable for relaying to app users.
   3. Plain ASCII punctuation only. Use " - " for in-sentence breaks, never an em dash.
 -->
+## 11.0.0-SNAPSHOT - unreleased
+
 
 ## 10.0.1 - 2026-09-10
 
