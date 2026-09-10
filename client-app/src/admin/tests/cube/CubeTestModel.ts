@@ -1,5 +1,5 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {GridModel, timeCol, TreeStyle} from '@xh/hoist/cmp/grid';
+import {GridModel, time, TreeStyle} from '@xh/hoist/cmp/grid';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberEditor, textEditor} from '@xh/hoist/desktop/cmp/grid';
@@ -387,7 +387,7 @@ export class CubeTestModel extends HoistModel {
                 {
                     field: 'time',
                     editable: false,
-                    ...timeCol
+                    ...time
                 }
             ]
         });

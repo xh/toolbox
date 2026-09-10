@@ -1,5 +1,5 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {fileExtCol, GridModel} from '@xh/hoist/cmp/grid';
+import {fileExt, GridModel} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {computed, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
@@ -47,7 +47,7 @@ export class FileManagerModel extends HoistModel {
             {
                 colId: 'icon',
                 field: 'name',
-                ...fileExtCol
+                ...fileExt
             },
             {field: 'name', flex: 1},
             {
@@ -178,11 +178,10 @@ export class FileManagerModel extends HoistModel {
             .run(async ctx => {
                 const sel = this.gridModel.selectedRecord,
                     {name} = sel.data,
-                    response = await XH.fetch({
-                        url: 'fileManager/download',
-                        params: {filename: name},
-                        span: ctx.span
-                    });
+                    response = await XH.fetch(
+                        {url: 'fileManager/download', params: {filename: name}},
+                        {span: ctx.span}
+                    );
                 const blob = await response.blob();
                 downloadBlob(blob, name);
                 XH.toast({
