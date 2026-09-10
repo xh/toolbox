@@ -3,6 +3,7 @@ import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {DetailModel} from '../DetailModel';
 
 export class ChartsModel extends HoistModel {
+    override xhName = 'charts';
     parentModel: DetailModel;
     @lookup(DashViewModel) dashViewModel: DashViewModel;
 

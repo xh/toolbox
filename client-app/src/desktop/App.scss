@@ -174,8 +174,9 @@ code.tb-code-link {
   }
 }
 
-// Fixed width for the left sub-tab navigation rail. The modern rail treatment (rounded, hoverable
-// items with a filled active pill) is now provided by the hoist-react framework default.
+// Fixed width for the left sub-tab navigation rail, sized to fit the longest entry (the Forms tab
+// lists one sub-tab per input, e.g. "ButtonGroupInput"). The modern rail treatment (rounded,
+// hoverable items with a filled active pill) is provided by the hoist-react framework default.
 .tb-switcher.xh-tab-switcher--left {
-  width: 150px;
+  width: 190px;
 }

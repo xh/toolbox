@@ -95,13 +95,12 @@ class ZoneGridPanelModel extends HoistModel {
                 ? ['City', 'Win/Lose', 'Company']
                 : ['Win/Lose', 'City', 'Company'];
         },
-        groupSortFn: (a, b, groupField) => {
-            if (a === b) return 0;
+        groupSortFn: (a, b, groupField, {gridModel}) => {
             if (groupField === 'winLose') {
+                if (a === b) return 0;
                 return a === 'Winner' ? -1 : 1;
-            } else {
-                return a < b ? -1 : 1;
             }
+            return gridModel.defaultGroupSortFn(a, b);
         },
         restoreDefaultsFn: () => this.restoreDefaultsFn(),
         columns: [
