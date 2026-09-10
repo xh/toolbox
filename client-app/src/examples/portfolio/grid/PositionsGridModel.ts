@@ -6,6 +6,7 @@ import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 import {PortfolioModel} from '../PortfolioModel';
 
 export class PositionsGridModel extends HoistModel {
+    override xhName = 'positionsGrid';
     readonly parentModel: PortfolioModel;
     @managed gridModel: GridModel;
 
@@ -26,6 +27,7 @@ export class PositionsGridModel extends HoistModel {
         this.persistWith = this.parentModel.persistWith;
 
         this.gridModel = new GridModel({
+            xhName: this.childXhName('grid'),
             persistWith: {...this.persistWith, path: 'portfolioGrid'},
             expandLevel: 1,
             levelLabels: () => this.parentModel.groupingChooserModel.valueDisplayNames,

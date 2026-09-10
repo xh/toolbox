@@ -1,6 +1,18 @@
 # Changelog
 
-## 10.0-SNAPSHOT - unreleased
+<!--
+  Entry conventions: CLAUDE.md ("Changelog" section) - read it before adding entries here.
+
+  Entries are parsed at build time and shown in-app to users. Three rules:
+
+  1. Every bullet is a single line, however long. The parser is line-based - a wrapped bullet keeps
+     its first line and silently drops the rest.
+  2. Open with a past-tense verb (Added / Fixed / Removed), name what changed in backticks, and keep
+     each bullet to one change. Use highly concise language suitable for relaying to app users.
+  3. Plain ASCII punctuation only. Use " - " for in-sentence breaks, never an em dash.
+-->
+
+## 11.0-SNAPSHOT - unreleased
 
 ### Technical
 
@@ -9,8 +21,49 @@
 
 ### Libraries
 
-* Grails `7.2.2 → 8.0.0-M6`
-* Gradle `8.14.5 → 9.6.1`
+* Grails `7.2.2 -> 8.0.0-M6`
+* Gradle `8.14.5 -> 9.6.1`
+
+## 10.0.0 - 2026-09-09
+
+### New Features
+
+* Reorganized the Hoist Inputs demos into an index page plus one page per input, each with a playground and preconfigured variants.
+* Rebuilt many other component demos on the same shared harness, each gaining a playground with a live code snippet.
+* Added a demo page for Hoist's new `DateRangePicker` component.
+* Added a demo for Hoist's new `IntentInput` component within the Hoist Inputs section.
+
+### Bug Fixes
+
+* Fixed demo pages crushing their content in a narrow window - the demo region now holds a minimum width and scrolls horizontally instead.
+
+### Technical
+
+* Updated the `SegmentedControl` examples to track the hoist-react component tune-up.
+* Improved the custom `groupSortFn` examples on the `SampleGrid` and `ZoneGrid` demos.
+* Named the Portfolio example's models via hoist-react's new `HoistBase.xhName`.
+* Updated client-app package management to pnpm v12 - run `corepack enable pnpm` if your pinned version is out of date.
+* Documented the MySQL LTS requirement for local development.
+
+### Libraries
+
+* @xh/hoist `87.1 → 87.2`
+
+## 9.5.0 - 2026-08-28
+
+### Bug Fixes
+
+* Fixed the docs viewer silently dropping the hoist-react source on SNAPSHOT builds, where the `@xh/hoist` dependency spec is an npm dist-tag rather than a released version.
+
+### Technical
+
+* Switched the nginx image to the `xh-nginx:next-brotli` variant.
+* Enabled source maps on deployed builds.
+
+### Libraries
+
+* @xh/hoist `87.0 → 87.1`
+* @xh/hoist-dev-utils `14.0 → 15.0`
 
 ## 9.4.0 - 2026-08-25
 
@@ -22,8 +75,10 @@
 * Overhauled the admin Grid test panel into a fuller Store performance harness. Test data is now generated on the server and loaded via streaming NDJSON or conventional JSON, options cover the Store's memory-related configs (`useRawAsData`, `freezeData`, `retainRaw`, `reuseRecords`) along with string interning and server-generated field values, parameter sets can be saved as named `ViewManager` configs, and a repeatable benchmark dialog measures heap and load-time costs across runs. The panel itself was redesigned around the same documented options sidebar used by the desktop example apps.
 
 ### Libraries
-* @xh/hoist `86.x → 87.x`
+
+* @xh/hoist `86.3.0 → 87.0.0`
 * @xh/hoist-dev-utils `13.x → 14.x`
+* hoist-core `40.2.0 → 41.0.0`
 * React `18.2 → 19.2`
 
 ## 9.3.0 - 2026-07-10

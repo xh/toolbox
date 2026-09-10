@@ -82,6 +82,7 @@ export const inlineEditingPanel = hoistCmp.factory({
                     control: segmentedControl({
                         model,
                         bind: 'clicksToEdit',
+                        compact: true,
                         options: [
                             {value: 2, label: '2 clicks'},
                             {value: 1, label: '1 click'},

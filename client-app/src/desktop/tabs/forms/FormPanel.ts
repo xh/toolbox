@@ -96,7 +96,12 @@ export const formPanel = hoistCmp.factory({
             ],
             item: panel({
                 className,
-                width: 950,
+                // Flex within a range rather than pinning to 950, which clipped once the demo
+                // region was narrower than that. The floor keeps the fields legible; below it the
+                // wrapper scrolls.
+                width: '100%',
+                maxWidth: 950,
+                minWidth: 360,
                 height: 575,
                 item: formContent()
             })
@@ -120,11 +125,11 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                 formFieldSet({
                     icon: Icon.user(),
                     title: 'Candidate',
-                    contentBoxProps: {flexDirection: 'row', gap: true},
+                    contentBoxProps: {flexDirection: 'row', flexWrap: 'wrap', gap: true},
                     items: [
                         formFieldSet({
                             items: [firstAndLastNames(), fullName(), email(), region(), tags()],
-                            flex: 1
+                            flex: '1 1 300px'
                         }),
                         formFieldSet({
                             items: [
@@ -133,7 +138,7 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                                 managerAndYearsExperience(),
                                 notes()
                             ],
-                            flex: 1
+                            flex: '1 1 300px'
                         })
                     ]
                 }),

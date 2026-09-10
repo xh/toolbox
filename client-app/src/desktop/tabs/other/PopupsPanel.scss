@@ -1,29 +1,18 @@
+// Popups demo: the API buttons read as a set, so give them a common minimum width rather than
+// letting each size to its own label.
 .tbox-popups {
-  border: var(--xh-border-solid);
-  background-color: var(--xh-panel-bg);
+  .tbox-popups__button {
+    min-width: 150px;
+  }
 
-  table {
-    width: 700px;
-    height: 270px;
-    text-align: left;
-
-    th {
-      width: 20%;
-      padding: var(--xh-pad-px);
-
-      .tbox-popups__button {
-        width: 100%;
-      }
-    }
-
-    td {
-      width: 40%;
-      padding: var(--xh-pad-px);
-      text-align: center;
-
-      .tbox-popups__button {
-        width: 100%;
-      }
-    }
+  // A bounded target for the containerRef Toast demo, so the anchoring is actually visible.
+  // Toasts position against this element rather than the document edge.
+  &__anchor {
+    position: relative;
+    min-height: 90px;
+    width: 320px;
+    padding: var(--xh-pad-px);
+    border: 1px dashed var(--xh-border-color);
+    border-radius: var(--xh-border-radius-px);
   }
 }
