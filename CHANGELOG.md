@@ -13,6 +13,10 @@
 -->
 ## 11.0.0-SNAPSHOT - unreleased
 
+### Bug Fixes
+
+* Fixed the Admin Console Roles tab reporting "No enabled directory service in this application" for every assigned directory group, and returning no results from its group search. Toolbox's mock directory now backs those lookups via a new `MockDirectoryService`, alongside the group membership resolution it already provided.
+
 
 ## 10.0.1 - 2026-09-10
 
