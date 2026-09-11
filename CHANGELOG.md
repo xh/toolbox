@@ -13,6 +13,10 @@
 -->
 ## 11.0.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Updated the `SampleGrid` Volume column to demo hoist-react's new `Column.cellFlag` and a custom tooltip that explains the flag, replacing a hand-rolled cell class and the custom SCSS that styled it.
+
 
 ## 10.0.1 - 2026-09-10
 
