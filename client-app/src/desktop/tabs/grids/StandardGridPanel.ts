@@ -48,6 +48,11 @@ export const standardGridPanel = hoistCmp.factory({
                     notes: 'Hoist-managed data classes, including Store and StoreRecord.'
                 },
                 {
+                    url: '$HR/cmp/grid/README.md#cell-corner-flags',
+                    text: 'Cell flag docs',
+                    notes: 'Config, precedence vs. validation, and the flag size CSS custom property.'
+                },
+                {
                     url: 'https://www.ag-grid.com/javascript-data-grid/',
                     text: 'AG Grid Docs',
                     notes: 'API documentation and guides for the underlying AG Grid library.'
