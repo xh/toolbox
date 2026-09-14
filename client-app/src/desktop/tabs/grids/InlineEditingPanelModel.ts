@@ -1,4 +1,4 @@
-import {checkboxRenderer, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {checkboxRenderer, GridModel, localDate} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateIs, lengthIs, numberIs, required, Store, StoreRecord} from '@xh/hoist/data';
 import {
@@ -355,7 +355,7 @@ export class InlineEditingPanelModel extends HoistModel {
                 },
                 {
                     field: 'date',
-                    ...localDateCol,
+                    ...localDate,
                     editable: ifNotRestricted,
                     editor: props =>
                         dateEditor({

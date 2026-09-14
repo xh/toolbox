@@ -1,4 +1,4 @@
-import {boolCheckCol} from '@xh/hoist/cmp/grid';
+import {boolCheck} from '@xh/hoist/cmp/grid';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
 export const nameCol: ColumnSpec = {
@@ -9,7 +9,7 @@ export const nameCol: ColumnSpec = {
 };
 
 export const activeCol: ColumnSpec = {
-    ...boolCheckCol,
+    ...boolCheck,
     field: {name: 'active', type: 'bool'},
     headerName: '',
     chooserName: 'Active Status'
