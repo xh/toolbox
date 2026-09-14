@@ -495,6 +495,30 @@ write those values into checked-in files.
 confirmation; writes against dev, and anything (read or write) against prod, require explicit
 per-command user confirmation - propose the exact command and wait for "go".
 
+## Operating XH's Azure / Entra Tenant
+
+Some of Toolbox's identity config lives in XH's Microsoft Entra tenant - the `Toolbox` OAuth client
+registration used when `oauthProvider` is `ENTRA_ID`, and the shared `xh-hoist-directory-reader`
+registration backing Hoist's `EntraIdService` group lookups. For connecting to that tenant to
+troubleshoot, monitor, or administer it, see [`docs/azure-access.md`](docs/azure-access.md).
+
+That runbook covers two shared operator service principals - `xh-toolbox-ops-ro` (read-only) and
+`xh-toolbox-ops-rw` (writes) - whose credentials live in the `Toolbox Azure Ops` item in the
+`XH Team` 1Password vault. Note two Azure-specific wrinkles the runbook explains in full: the Azure
+CLI has **no per-command `--profile`**, so tiers are separated via the `AZURE_CONFIG_DIR`
+environment variable and `az account show` is a required identity check; and operator logins **must**
+pass `--allow-no-subscriptions`, since these principals deliberately hold no Azure RBAC.
+
+**Scope**: the Entra *directory plane* only. Nothing of Toolbox is deployed on Azure compute, and
+the operator principals hold no subscription role assignments.
+
+**Safety protocol for AI agents** (full table in the runbook): reads proceed without confirmation,
+as do writes to sandbox objects the agent itself created (prefix these `toolbox-test-*`). Modifying
+a pre-existing shared object - notably any credential on `xh-hoist-directory-reader`, which other
+apps authenticate with - and any deletion require explicit per-command confirmation. Granting admin
+consent, assigning directory roles, and creating service principals are Global Administrator tasks
+that the operator tiers **cannot** perform, by design.
+
 ## Changelog
 
 Toolbox maintains a `CHANGELOG.md` that is parsed at build time by `changelog-parser` (via

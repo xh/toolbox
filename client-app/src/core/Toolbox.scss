@@ -18,3 +18,10 @@ html {
     color-scheme: dark;
   }
 }
+
+// Spacing for the note line in the Volume column's custom tooltip. The tooltip's frame comes from
+// Hoist's own `xh-grid-tooltip-frame` - only this content layout is app-specific.
+.tb-flag-tooltip__note {
+  gap: var(--xh-pad-half-px);
+  margin-top: var(--xh-pad-half-px);
+}
