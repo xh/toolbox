@@ -1,11 +1,12 @@
 import {code, div, hframe, span, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
-import {hoistCmp, HoistModel, HoistProps, useLocalModel} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, HoistProps, Intent, useLocalModel} from '@xh/hoist/core';
 import {button, ButtonProps} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {isArray, isEmpty} from 'lodash';
+import classNames from 'classnames';
 import {ReactElement, ReactNode} from 'react';
 import {toolboxLink, ToolboxLinkProps} from '../../core/cmp/ToolboxLink';
 import './Wrapper.scss';
@@ -60,6 +61,9 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
             hasRailContent = !!title || !!intro || !isEmpty(options) || !isEmpty(links);
         return hframe({
             className,
+            // Scroll rather than clip when the rail plus the demo region's floor exceed the
+            // viewport - hframe clips by default, which would hide the demo entirely.
+            overflowX: 'auto',
             items: [
                 hasRailContent
                     ? railModel.collapsed
@@ -172,6 +176,11 @@ interface WrapperOptionProps extends HoistProps {
      * Use to describe what the option does or why a developer might reach for it.
      */
     info?: ReactNode;
+    /**
+     * True to align the label with the top of the control rather than its vertical center - for a
+     * control that stacks several inputs, so the label sits beside the first of them.
+     */
+    alignTop?: boolean;
 }
 
 /**
@@ -182,14 +191,17 @@ interface WrapperOptionProps extends HoistProps {
  */
 export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOptionProps>({
     displayName: 'WrapperOption',
-    render({label, control, propName, info}) {
+    render({label, control, propName, info, alignTop}) {
         return div({
             className: 'tbox-wrapper__option',
             // Native tooltip with the full property name - useful when the revealed pill ellipsizes.
             title: propName,
             items: [
                 div({
-                    className: 'tbox-wrapper__option-row',
+                    className: classNames(
+                        'tbox-wrapper__option-row',
+                        alignTop && 'tbox-wrapper__option-row--top'
+                    ),
                     items: [
                         div({
                             className: 'tbox-wrapper__option-label',
@@ -218,22 +230,57 @@ export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOption
 interface WrapperOptionGroupProps extends HoistProps {
     /** Short sub-heading rendered above this group's option rows. */
     label: ReactNode;
+    /**
+     * One-line note on the group's scope, rendered muted below the label. State which of the two
+     * option scopes the group is (see the `WrapperOptionGroup` docs), e.g. "Applies to every
+     * input on the page." or "Drives the Playground instance."
+     */
+    info?: ReactNode;
+    /** Optional glyph shown before the label. */
+    icon?: ReactElement;
+    /**
+     * Intent to color the label and its underline - use `'primary'` for a group tied to a specific
+     * region of the demo (the Playground), leaving ambient groups in the default muted treatment.
+     */
+    intent?: Intent;
 }
 
 /**
  * A labeled sub-group of rows within a Wrapper `options` section, for examples with enough
- * options that a flat list would be hard to scan. Groups render a small sub-heading above their
- * rows and pick up consistent spacing between one another. Pass the option rows (typically
- * `wrapperOption` elements) via `item`/`items`, which render as the group's children.
+ * options that a flat list would be hard to scan. Pass the option rows (typically `wrapperOption`
+ * elements) via `item`/`items`, which render as the group's children.
+ *
+ * Every rail option belongs to one of two scopes, which the group's `label` names:
+ * - *Ambient* options are orthogonal to what any single instance demonstrates (compact, disabled,
+ *   commit-on-change, theme). They apply to everything on the page, so a QA sweep is one click.
+ *   The label alone carries them, e.g. "All inputs on the page".
+ * - *Playground* options are the curated props of the component itself and drive one dedicated
+ *   instance only. Mark that group with `intent: 'primary'`, `Icon.experiment()` and an `info`
+ *   line naming the instance it drives.
+ *
+ * A prop appears in the rail or as a static variant card, never both. Rail switches are a curated
+ * subset, not a prop table - a prop earns a switch only if flipping it produces a visible change
+ * or an easily appreciated behavior; the rest belongs in the docs link.
  */
 export const [WrapperOptionGroup, wrapperOptionGroup] =
     hoistCmp.withFactory<WrapperOptionGroupProps>({
         displayName: 'WrapperOptionGroup',
-        render({label, children}) {
+        render({label, info, icon, intent, children}) {
             return div({
-                className: 'tbox-wrapper__option-group',
+                className: classNames(
+                    'tbox-wrapper__option-group',
+                    intent && `tbox-wrapper__option-group--${intent}`
+                ),
                 items: [
-                    div({className: 'tbox-wrapper__option-group-label', item: label}),
+                    div({
+                        className: 'tbox-wrapper__option-group-label',
+                        items: [icon, span(label)]
+                    }),
+                    div({
+                        className: 'tbox-wrapper__option-group-info',
+                        item: info,
+                        omit: !info
+                    }),
                     div({className: 'tbox-wrapper__option-group-body', item: children})
                 ]
             });

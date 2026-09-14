@@ -38,6 +38,7 @@ import {popoverPage} from './popover/PopoverPage';
 import {popupsPage} from './popups/PopupsPage';
 import {selectPage} from './select/SelectPage';
 import {tabsPage} from './tabs/TabsPage';
+import {mobileTests} from './tests/TestsCatalog';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
@@ -74,6 +75,7 @@ export class AppModel extends BaseAppModel {
             {id: 'icons', content: iconPage},
             {id: 'mask', content: maskPage},
             {id: 'pinPad', content: pinPadPage},
+            ...mobileTests().map(it => ({id: it.id, content: it.content})),
             // Standalone Docs section: landing (corpus chooser) -> corpus -> category -> reader,
             // plus a dedicated search screen. The reader (`doc`) is reused at every mount point.
             {id: 'docs', content: docsLandingPage},
@@ -92,6 +94,8 @@ export class AppModel extends BaseAppModel {
         // (3) a child of the search screen (back returns to the results). The standalone Docs section
         // (`docs`) is the corpus-chooser landing - a top-level destination reached from the nav blade.
         const docReaderRoute = () => ({name: 'doc', path: '/doc/:source/:docId?section'});
+
+        const testRoutes = mobileTests().map(it => ({name: it.id, path: `/tests/${it.path}`}));
 
         const examples = [
             {name: 'grid', path: '/grid', children: [{name: 'gridDetail', path: '/:id<\\d+>'}]},
@@ -129,6 +133,7 @@ export class AppModel extends BaseAppModel {
                 path: '/mobile',
                 children: [
                     ...examples.map(r => ({...r, children: [...r.children, docReaderRoute()]})),
+                    ...testRoutes,
                     {
                         name: 'docs',
                         path: '/docs',

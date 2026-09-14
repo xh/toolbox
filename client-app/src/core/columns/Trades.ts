@@ -1,5 +1,7 @@
 import {ExcelFormat, localDateCol, tags} from '@xh/hoist/cmp/grid';
+import {hbox, vbox} from '@xh/hoist/cmp/layout';
 import {dateRenderer, millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
 export const profitLossCol: ColumnSpec = {
@@ -26,6 +28,11 @@ export const winLoseCol: ColumnSpec = {
     excludeFromChooser: true
 };
 
+// Demos Column.cellFlag - flags unusually high volume without disturbing the cell's contents.
+// A single predicate drives both the flag and its tooltip, so the two cannot drift apart.
+const HIGH_VOLUME = 9000000000,
+    isHighVolume = (volume: number) => volume >= HIGH_VOLUME;
+
 export const tradeVolumeCol: ColumnSpec = {
     field: {
         name: 'trade_volume',
@@ -35,14 +42,30 @@ export const tradeVolumeCol: ColumnSpec = {
     },
     width: 110,
     align: 'right',
-    tooltip: val => fmtNumberTooltip(val),
+    // Explains the flag. Hoist frames only string tooltips, so this custom element tooltip opts
+    // into the standard frame with `xh-grid-tooltip-frame`.
+    tooltip: volume =>
+        isHighVolume(volume)
+            ? vbox({
+                  className: 'xh-grid-tooltip-frame',
+                  items: [
+                      fmtNumberTooltip(volume),
+                      hbox({
+                          className: 'tb-flag-tooltip__note',
+                          alignItems: 'center',
+                          items: [
+                              Icon.warning({intent: 'warning'}),
+                              'Unusually high volume - review before trading.'
+                          ]
+                      })
+                  ]
+              })
+            : fmtNumberTooltip(volume),
     renderer: millionsRenderer({
         precision: 1,
         label: true
     }),
-    cellClassRules: {
-        'tb-sample-grid__high-volume-cell': ({value}) => value >= 9000000000
-    },
+    cellFlag: volume => (isHighVolume(volume) ? 'warning' : null),
     excelFormat: ExcelFormat.NUM_DELIMITED
 };
 

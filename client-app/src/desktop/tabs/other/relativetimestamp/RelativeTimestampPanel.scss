@@ -1,18 +1,7 @@
-.tb-rel-ts {
-  gap: var(--xh-pad-px);
-  padding: 40px 0;
-
-  &__value {
-    font-size: 2.4em;
-    font-weight: 600;
-    text-align: center;
-  }
-
-  &__abs {
-    color: var(--xh-text-color-muted);
-    font-size: 1.1em;
-    font-family: var(--xh-font-family-mono);
-  }
+// Relative Timestamp demo: the Playground instance is the page's hero, so it reads large.
+.tb-rel-ts__value {
+  font-size: 2.4em;
+  font-weight: 600;
 }
 
 // Full-width row of quick-set timestamp presets in the info rail.

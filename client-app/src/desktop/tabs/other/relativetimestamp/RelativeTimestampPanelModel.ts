@@ -1,6 +1,10 @@
 import {RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
 import {HoistModel} from '@xh/hoist/core';
 import {action, bindable, makeObservable} from '@xh/hoist/mobx';
+import {isUndefined, omitBy} from 'lodash';
+
+/** Mirrors the component's own default, so the snippet can omit a matching value. */
+const DEFAULT_EPSILON = 10;
 
 export class RelativeTimestampPanelModel extends HoistModel {
     // RelativeTimestampOptions
@@ -9,7 +13,7 @@ export class RelativeTimestampPanelModel extends HoistModel {
     @bindable futureSuffix: RelativeTimestampOptions['futureSuffix'];
     @bindable pastSuffix: RelativeTimestampOptions['pastSuffix'];
     @bindable equalString: RelativeTimestampOptions['equalString'];
-    @bindable epsilon: RelativeTimestampOptions['epsilon'] = 10;
+    @bindable epsilon: RelativeTimestampOptions['epsilon'] = DEFAULT_EPSILON;
     @bindable emptyResult: RelativeTimestampOptions['emptyResult'] = '';
     @bindable prefix: RelativeTimestampOptions['prefix'] = '';
     @bindable relativeTo: RelativeTimestampOptions['relativeTo'];
@@ -17,6 +21,46 @@ export class RelativeTimestampPanelModel extends HoistModel {
 
     /** The target timestamp rendered relative to "now". */
     @bindable.ref timestamp: Date = new Date();
+
+    /**
+     * The display options every instance on the page spreads, and the single source for the
+     * Playground snippet - so the code shown cannot drift from the output rendered beside it.
+     *
+     * Undefined entries are stripped rather than passed. `getRelativeTimestamp` resolves its
+     * defaults by spreading the caller's options OVER them, so an own key valued `undefined`
+     * overwrites the default instead of falling back to it - which silently drops the suffixes,
+     * `equalString`, and the `epsilon` equality window. Components that destructure their
+     * defaults, such as Clock, do not have this hazard.
+     */
+    get options(): RelativeTimestampOptions {
+        const {
+            allowFuture,
+            short,
+            prefix,
+            futureSuffix,
+            pastSuffix,
+            equalString,
+            epsilon,
+            emptyResult,
+            relativeTo,
+            localDateMode
+        } = this;
+        return omitBy(
+            {
+                allowFuture: allowFuture || undefined,
+                short: short || undefined,
+                prefix: prefix || undefined,
+                futureSuffix: futureSuffix || undefined,
+                pastSuffix: pastSuffix || undefined,
+                equalString: equalString || undefined,
+                epsilon: epsilon !== DEFAULT_EPSILON ? epsilon : undefined,
+                emptyResult: emptyResult || undefined,
+                relativeTo: relativeTo ?? undefined,
+                localDateMode: localDateMode ?? undefined
+            },
+            isUndefined
+        );
+    }
 
     constructor() {
         super();

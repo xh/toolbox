@@ -120,13 +120,12 @@ export class SampleGridModel extends HoistModel {
             levelLabels: () => {
                 return [...this.groupingChooserModel.valueDisplayNames, 'Company'];
             },
-            groupSortFn: (a, b, groupField) => {
-                if (a === b) return 0;
+            groupSortFn: (a, b, groupField, {gridModel}) => {
                 if (groupField === 'winLose') {
+                    if (a === b) return 0;
                     return a === 'Winner' ? -1 : 1;
-                } else {
-                    return a < b ? -1 : 1;
                 }
+                return gridModel.defaultGroupSortFn(a, b);
             },
             restoreDefaultsFn: () => this.restoreDefaultsFn(),
             colDefaults: {
@@ -210,8 +209,9 @@ export class SampleGridModel extends HoistModel {
             allowEmpty: true,
             commitOnChange: true,
             dimensions: [
-                {name: 'city', displayName: 'City'},
-                {name: 'winLose', displayName: 'Win/Lose'}
+                {name: 'city'},
+                {name: 'winLose', displayName: 'Win/Lose'},
+                {name: 'trade_date'}
             ],
             initialValue: []
         });

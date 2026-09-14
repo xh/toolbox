@@ -63,7 +63,14 @@ export const diagnosticsPanel = hoistCmp.factory({
                             asOf,
                             count(gridRows, 'visible rows')
                         ),
-                        asyncSection(gridModel.diagnostics.autosize, asOf)
+                        // Deferred ops - sort flushes land at idle, autosize after the syncing
+                        // frame - both outside Total.
+                        diagSection(
+                            'Grid (Async)',
+                            gridModel.diagnostics,
+                            ['sortFlush', 'autosize'],
+                            asOf
+                        )
                     ]
                 }),
                 box({
@@ -159,15 +166,6 @@ function timeSection(title: string, loadTime: LoadTime, asOf: number, className:
     );
 }
 
-// Autosize runs after the frame that synced the grid, and so outside the Total above.
-function asyncSection(autosize: PlainObject, asOf: number) {
-    return section('Async', [
-        autosize?.last
-            ? opRow('autosize', autosize, isCurrent(autosize.last.timestamp, asOf))
-            : null
-    ]);
-}
-
 function section(title: string, rows: any[], className: string = null) {
     const items = compact(rows);
     return vbox({
@@ -227,7 +225,9 @@ function opDetail(op: PlainObject): string {
             ? [`reused ${n(op.reused)}`, `rebuilt ${n(op.rebuilt)}`, `created ${n(op.created)}`]
             : op.columns != null
               ? [`cols ${n(op.columns)}`, `recs ${n(op.records)}`]
-              : [`upd ${n(op.update)}`, `add ${n(op.add)}`, `rem ${n(op.remove)}`];
+              : op.pending != null
+                ? [`pending ${n(op.pending)}`, `of ${n(op.total)}`]
+                : [`upd ${n(op.update)}`, `add ${n(op.add)}`, `rem ${n(op.remove)}`];
 
     return parts.join(' · ');
 }
