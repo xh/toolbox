@@ -302,7 +302,7 @@ class BaseWidgetModel extends HoistModel {
 }
 
 class GroupingChooserWidgetModel extends BaseWidgetModel {
-    groupingChooserModel: GroupingChooserModel;
+    @managed groupingChooserModel: GroupingChooserModel;
 
     override onLinked() {
         super.onLinked();
@@ -326,7 +326,7 @@ const createGroupingChooserModel = (persistWith: PersistOptions) => {
 };
 
 class FilterChooserWidgetModel extends BaseWidgetModel {
-    filterChooserModel: FilterChooserModel;
+    @managed filterChooserModel: FilterChooserModel;
 
     override onLinked() {
         super.onLinked();
@@ -357,7 +357,7 @@ const createFilterChooserModel = (persistWith: PersistOptions) => {
 };
 
 class gridWidgetModel extends BaseWidgetModel {
-    gridModel: SampleGridModel;
+    @managed gridModel: SampleGridModel;
 
     override onLinked() {
         super.onLinked();
