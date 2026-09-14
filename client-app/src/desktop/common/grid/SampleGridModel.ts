@@ -91,7 +91,6 @@ export class SampleGridModel extends HoistModel {
         super();
 
         this.gridModel = new GridModel({
-            enableFullWidthScroll: true,
             selModel: {mode: 'multiple'},
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',
