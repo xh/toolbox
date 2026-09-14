@@ -34,8 +34,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         this.filterChooserModel = this.createFilterChooserModel();
         this.groupingChooserModel = this.createGroupingChooserModel();
 
-        this.view.setStores(this.gridModel.store);
-
         // Update cube view when query changes
         this.addReaction({
             track: () => this.query,
@@ -130,10 +128,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         const {view} = this;
         return new GridModel({
             treeMode: true,
-            store: {
-                projectionOnly: true,
-                idEncodesTreePath: true
-            },
+            store: {view},
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'cubeLabel',
             emptyText: 'No records found...',

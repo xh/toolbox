@@ -43,7 +43,7 @@ const queryBar = hoistCmp.factory<CubeTestModel>(({model}) =>
         toolbarSep(),
         switchInput({bind: 'showSummary', label: 'Summary?', labelSide: 'left'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves?', labelSide: 'left'}),
-        switchInput({bind: 'includeGlobalAgg', label: 'Global Agg?', labelSide: 'left'}),
+        switchInput({bind: 'includeGlobalAgg', label: 'Pct Total (calc)?', labelSide: 'left'}),
         select({
             bind: 'fundFilter',
             options: XH.portfolioService.lookups.funds,
@@ -76,8 +76,6 @@ const queryBar = hoistCmp.factory<CubeTestModel>(({model}) =>
 
 const storeBar = hoistCmp.factory<CubeTestModel>(() =>
     toolbar(
-        switchInput({bind: 'projectionOnly', label: 'Projection Only', labelSide: 'left'}),
-        toolbarSep(),
         'Patch Ratio: ',
         select({
             bind: 'maxPatchRatio',
