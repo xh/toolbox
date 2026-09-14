@@ -21,6 +21,7 @@
 
 ### Libraries
 
+* ag-charts-community `13.3 → 14.1` - kept in step with ag-Grid 36, which depends on AG Charts 14 for its integrated/sparkline charts.
 * ag-grid-community `35.3 → 36.1`
 * ag-grid-enterprise `35.3 → 36.1`
 * ag-grid-react `35.3 → 36.1`
