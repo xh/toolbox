@@ -46,8 +46,6 @@ export class GridScrollingModel extends HoistModel {
 
     scrollGrid(grid: 'hoist' | 'ag'): void {
         const ref = grid === 'hoist' ? this.hoistGridRef : this.agGridRef,
-            // Note AG Grid 36 renamed this element - was `.ag-body-viewport`, which now identifies
-            // the vertical scrollbar's viewport instead.
             div = ref.current?.querySelector('.ag-grid-viewport');
         if (!div) return;
 
