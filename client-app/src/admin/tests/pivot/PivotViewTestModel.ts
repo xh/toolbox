@@ -569,6 +569,9 @@ export class PivotViewTestModel extends HoistModel {
             if (Object.values(aggregators ?? {}).includes('CHILD_COUNT')) {
                 this.record(scenario, [this.checkCellChildCount(view)]);
             }
+            if (scenario.includeLeaves && !isEmpty(pivotBy)) {
+                this.record(scenario, [this.checkLeafShape(view)]);
+            }
             if (scenario.withCellStore) {
                 this.record(scenario, checkCellStore({view, store, aggregators, label: 'initial'}));
             } else if (store) {
@@ -1648,6 +1651,48 @@ export class PivotViewTestModel extends HoistModel {
             tickLeaves(leaves, Math.max(1, Math.round((leaves.length * this.tickPct) / 100)), gen);
         }
         await cube.updateDataAsync(leaves);
+    }
+
+    /**
+     * Exposed leaf data must keep a single own-key shape across every leaf.
+     *
+     * Cell values on a leaf are prototype getters over one own `_pivotPathIdx` slot, not per-leaf
+     * properties. Writing them instead gives each leaf a different subset of own keys - one hidden
+     * class per full-depth pivot path - and `Column.buildFastValueGetter` compiles one closure per
+     * column that group rows and leaf rows both flow through, so a drill-down would push that call
+     * site megamorphic for the whole grid. Own keys are the only observable proof either way.
+     */
+    private checkLeafShape(view: PivotView): PivotCheck {
+        const check: PivotCheck = {
+                name: 'exposed leaves all share one own-key shape',
+                errors: [],
+                checked: 0,
+                maxDrift: 0
+            },
+            cellNames = new Set(
+                view.result.cellFields.filter(cf => !cf.path.isRoot).map(cf => cf.name)
+            );
+
+        let sig: string = null;
+        view.result.leafMap?.forEach(leaf => {
+            const keys = Object.keys(leaf.data).sort(),
+                mine = keys.join('|');
+            check.checked++;
+
+            if (sig == null) {
+                sig = mine;
+            } else if (mine !== sig && check.errors.length < 3) {
+                check.errors.push(`leaf ${leaf.id} own keys [${mine}] differ from [${sig}]`);
+            }
+
+            const leaked = keys.filter(k => cellNames.has(k));
+            if (!isEmpty(leaked) && check.errors.length < 5) {
+                check.errors.push(`leaf ${leaf.id} carries cell fields as own keys: ${leaked}`);
+            }
+        });
+
+        if (!check.checked) check.errors.push('no exposed leaves - check is vacuous');
+        return check;
     }
 
     /**
