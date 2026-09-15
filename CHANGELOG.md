@@ -18,10 +18,19 @@
 * Updated the `SampleGrid` Volume column to demo hoist-react's new `Column.cellFlag` and a custom tooltip that explains the flag, replacing a hand-rolled cell class and the custom SCSS that styled it.
 * Updated the Column Groups grid example to demo hoist-react's new `showWhenGroup` and `expandedByDefault` configs for collapsible column groups, replacing raw `agOptions.columnGroupShow` passthroughs.
 * Added the Column Groups grid as a widget in the ViewManager test dashboards, exercising column group expand/collapse state through `DashCanvas` and `DashContainer` persistence.
+* Upgraded ag-Grid to `36.x`, tracking hoist-react's AG Grid 36 upgrade - the two must move together, as hoist-react requires a v36 runtime and apps supply ag-Grid as a peer.
+* Added a `Pin ID column` option to the admin Grid performance harness, pinning the id column to the left to exercise AG Grid 36's native full-width horizontal scrollbar, which spans pinned columns.
 
 ### Bug Fixes
 
 * Fixed the Admin Console Roles tab reporting "No enabled directory service in this application" for every assigned directory group, and returning no results from its group search. Toolbox's mock directory now backs those lookups via a new `MockDirectoryService`, alongside the group membership resolution it already provided.
+
+### Libraries
+
+* ag-charts-community `13.3 → 14.1`
+* ag-grid-community `35.3 → 36.1`
+* ag-grid-enterprise `35.3 → 36.1`
+* ag-grid-react `35.3 → 36.1`
 
 
 ## 10.0.1 - 2026-09-10

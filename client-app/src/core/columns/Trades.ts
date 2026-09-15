@@ -1,4 +1,4 @@
-import {ExcelFormat, localDateCol, tags} from '@xh/hoist/cmp/grid';
+import {ExcelFormat, localDate, tags} from '@xh/hoist/cmp/grid';
 import {hbox, vbox} from '@xh/hoist/cmp/layout';
 import {dateRenderer, millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -70,7 +70,7 @@ export const tradeVolumeCol: ColumnSpec = {
 };
 
 export const tradeDateCol: ColumnSpec = {
-    ...localDateCol,
+    ...localDate,
     field: {
         name: 'trade_date',
         type: 'localDate',
