@@ -25,7 +25,7 @@ export const columnGroupsGridPanel = hoistCmp.factory({
                 'group in which they are defined but not broken out from them.',
                 '',
                 'The `Demographics` group here is collapsible - click its header to expand it. Its',
-                'columns each set `showWhenGroup` to appear only when the group is `expanded` or',
+                'columns each set `groupShowMode` to appear only when the group is `expanded` or',
                 '`collapsed`, and the group itself sets `expandedByDefault: false` to start',
                 'collapsed.',
                 '',
