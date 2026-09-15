@@ -486,10 +486,11 @@ profile setup (`xh-toolbox-ro` read-only, `xh-toolbox-rw` for writes), SSM port-
 ECS Exec, CloudWatch log access, and the per-command confirmation protocol for write operations.
 
 This repo is **public**: the runbook deliberately omits the AWS account ID, Identity Center URL/ARN,
-RDS endpoints, internal DNS, and DB credentials. Those operational values live in the `Toolbox AWS
-Ops` item in the `XH Team` 1Password vault - fetch them with the `op` CLI
-(`op read "op://XH Team/Toolbox AWS Ops/<field>"`) when running commands from the runbook. Never
-write those values into checked-in files.
+RDS endpoints, internal DNS, and DB credentials. Those operational values live in two items in the
+`XH Team` 1Password vault - `Toolbox AWS Ops` for account / SSO values and `Toolbox DB` for
+everything database-related. Fetch them with the `op` CLI
+(`op read "op://XH Team/<item>/<field>"`) when running commands from the runbook. Never write those
+values into checked-in files.
 
 **Safety protocol for AI agents** (full table in the runbook): reads against dev proceed without
 confirmation; writes against dev, and anything (read or write) against prod, require explicit
