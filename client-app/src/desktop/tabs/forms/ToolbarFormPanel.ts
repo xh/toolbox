@@ -19,7 +19,7 @@ import {
     textInput
 } from '@xh/hoist/desktop/cmp/input';
 import {usStates} from '../../../core/data';
-import {wrapper} from '../../common';
+import {wrapper, wrapperOption} from '../../common';
 import {ToolbarFormPanelModel} from './ToolbarFormPanelModel';
 import './ToolbarFormPanel.scss';
 
@@ -30,7 +30,7 @@ export const toolbarFormPanel = hoistCmp.factory({
         const {topFormModel, bottomFormModel} = model;
 
         return wrapper({
-            title: 'Toolbar Forms',
+            title: 'Forms in Toolbars',
             icon: Icon.edit(),
             description: [
                 'Forms and `FormField`s can also be used inside Toolbars.',
@@ -62,147 +62,186 @@ export const toolbarFormPanel = hoistCmp.factory({
                 },
                 {url: '$HR/desktop/cmp/toolbar/Toolbar.ts', notes: 'Hoist component.'}
             ],
+            options: wrapperOption({
+                label: 'Compact toolbars',
+                propName: 'ToolbarProps.compact',
+                info: 'Toolbars and the FormFields inside them shrink together.',
+                control: switchInput({model, bind: 'compact'})
+            }),
             item: vbox({
                 className: 'tb-toolbar-form',
                 items: [
                     form({
                         model: topFormModel,
                         fieldDefaults: {minimal: true, label: null},
-                        item: toolbar(
-                            groupLabel('Text, Number & Date'),
-                            '-',
-                            formField({
-                                field: 'text1',
-                                flex: 1,
-                                commitOnChange: true,
-                                item: textInput({placeholder: 'Enter text...'})
-                            }),
-                            formField({
-                                field: 'number1',
-                                width: 120,
-                                item: numberInput({
-                                    enableShorthandUnits: true,
-                                    displayWithCommas: true,
-                                    selectOnFocus: true
+                        item: toolbar({
+                            compact: model.compact,
+                            items: [
+                                groupLabel('Text, Number & Date'),
+                                '-',
+                                formField({
+                                    field: 'text1',
+                                    flex: 1,
+                                    commitOnChange: true,
+                                    item: textInput({placeholder: 'Enter text...'})
+                                }),
+                                formField({
+                                    field: 'number1',
+                                    width: 120,
+                                    item: numberInput({
+                                        enableShorthandUnits: true,
+                                        displayWithCommas: true,
+                                        selectOnFocus: true
+                                    })
+                                }),
+                                formField({
+                                    field: 'date1',
+                                    width: 140,
+                                    item: dateInput({
+                                        valueType: 'localDate',
+                                        placeholder: 'YYYY-MM-DD',
+                                        enableClear: true
+                                    })
                                 })
-                            }),
-                            formField({
-                                field: 'date1',
-                                width: 140,
-                                item: dateInput({
-                                    valueType: 'localDate',
-                                    placeholder: 'YYYY-MM-DD',
-                                    enableClear: true
-                                })
-                            })
-                        )
+                            ]
+                        })
                     }),
                     form({
                         model: topFormModel,
                         fieldDefaults: {minimal: true, label: null},
-                        item: toolbar(
-                            groupLabel('Buttons & Toggles'),
-                            '-',
-                            formField({
-                                field: 'buttonGroup1',
-                                item: buttonGroupInput(
-                                    button({icon: Icon.gear(), text: 'Option 1', value: 'button1'}),
-                                    button({icon: Icon.skull(), text: 'Option 2', value: 'button2'})
-                                )
-                            }),
-                            formField({
-                                field: 'buttonGroup1',
-                                item: segmentedControl({
-                                    options: [
-                                        {value: 'button1', label: 'Option 1', icon: Icon.gear()},
-                                        {value: 'button2', label: 'Option 2', icon: Icon.skull()}
-                                    ]
-                                })
-                            }),
-                            '-',
-                            formField({field: 'bool1', item: checkbox({label: 'enabled'})}),
-                            formField({field: 'bool1', item: switchInput({label: 'enabled'})}),
-                            formField({field: 'bool1', item: checkboxButton({text: 'Active'})})
-                        )
-                    }),
-                    form({
-                        model: bottomFormModel,
-                        fieldDefaults: {minimal: true, label: null},
-                        item: toolbar(
-                            groupLabel('Selection'),
-                            '-',
-                            formField({
-                                field: 'option1',
-                                width: 150,
-                                item: select({
-                                    options: usStates,
-                                    enableFilter: false,
-                                    placeholder: 'Select a state...'
-                                })
-                            }),
-                            formField({
-                                field: 'option2',
-                                flex: 1,
-                                item: select({
-                                    options: usStates,
-                                    enableClear: false,
-                                    enableMulti: true,
-                                    placeholder: 'Select state(s)...'
-                                })
-                            }),
-                            formField({
-                                field: 'option2',
-                                item: picker({
-                                    options: usStates,
-                                    enableMulti: true,
-                                    enableClear: true,
-                                    displayNoun: 'state',
-                                    buttonProps: {icon: Icon.globe()},
-                                    width: 180
-                                })
-                            })
-                        )
-                    }),
-                    form({
-                        model: bottomFormModel,
-                        fieldDefaults: {minimal: true, label: null},
-                        item: toolbar(
-                            groupLabel('Dinner Choice'),
-                            '-',
-                            formField({
-                                field: 'option3',
-                                item: radioInput({
-                                    inline: true,
-                                    options: [
-                                        'Steak',
-                                        'Chicken',
-                                        {label: 'Fish', value: 'Fish', disabled: true}
-                                    ]
-                                })
-                            })
-                        )
-                    }),
-                    toolbar(
-                        filler(),
-                        button({
-                            text: 'Reset',
-                            icon: Icon.undo(),
-                            onClick: () => {
-                                topFormModel.reset();
-                                bottomFormModel.reset();
-                            },
-                            disabled: !topFormModel.isDirty && !bottomFormModel.isDirty
-                        }),
-                        button({
-                            text: 'Validate',
-                            icon: Icon.check(),
-                            intent: 'success',
-                            onClick: () => {
-                                topFormModel.validateAsync();
-                                bottomFormModel.validateAsync();
-                            }
+                        item: toolbar({
+                            compact: model.compact,
+                            items: [
+                                groupLabel('Buttons & Toggles'),
+                                '-',
+                                formField({
+                                    field: 'buttonGroup1',
+                                    item: buttonGroupInput(
+                                        button({
+                                            icon: Icon.gear(),
+                                            text: 'Option 1',
+                                            value: 'button1'
+                                        }),
+                                        button({
+                                            icon: Icon.skull(),
+                                            text: 'Option 2',
+                                            value: 'button2'
+                                        })
+                                    )
+                                }),
+                                formField({
+                                    field: 'buttonGroup1',
+                                    item: segmentedControl({
+                                        compact: model.compact,
+                                        options: [
+                                            {
+                                                value: 'button1',
+                                                label: 'Option 1',
+                                                icon: Icon.gear()
+                                            },
+                                            {
+                                                value: 'button2',
+                                                label: 'Option 2',
+                                                icon: Icon.skull()
+                                            }
+                                        ]
+                                    })
+                                }),
+                                '-',
+                                formField({field: 'bool1', item: checkbox({label: 'enabled'})}),
+                                formField({field: 'bool1', item: switchInput({label: 'enabled'})}),
+                                formField({field: 'bool1', item: checkboxButton({text: 'Active'})})
+                            ]
                         })
-                    )
+                    }),
+                    form({
+                        model: bottomFormModel,
+                        fieldDefaults: {minimal: true, label: null},
+                        item: toolbar({
+                            compact: model.compact,
+                            items: [
+                                groupLabel('Selection'),
+                                '-',
+                                formField({
+                                    field: 'option1',
+                                    width: 150,
+                                    item: select({
+                                        options: usStates,
+                                        enableFilter: false,
+                                        placeholder: 'Select a state...'
+                                    })
+                                }),
+                                formField({
+                                    field: 'option2',
+                                    flex: 1,
+                                    item: select({
+                                        options: usStates,
+                                        enableClear: false,
+                                        enableMulti: true,
+                                        placeholder: 'Select state(s)...'
+                                    })
+                                }),
+                                formField({
+                                    field: 'option2',
+                                    item: picker({
+                                        compact: model.compact,
+                                        options: usStates,
+                                        enableMulti: true,
+                                        enableClear: true,
+                                        displayNoun: 'state',
+                                        buttonProps: {icon: Icon.globe()},
+                                        width: 180
+                                    })
+                                })
+                            ]
+                        })
+                    }),
+                    form({
+                        model: bottomFormModel,
+                        fieldDefaults: {minimal: true, label: null},
+                        item: toolbar({
+                            compact: model.compact,
+                            items: [
+                                groupLabel('Side'),
+                                '-',
+                                formField({
+                                    field: 'option3',
+                                    item: radioInput({
+                                        inline: true,
+                                        options: [
+                                            'Buy',
+                                            'Sell',
+                                            {label: 'Short', value: 'Short', disabled: true}
+                                        ]
+                                    })
+                                })
+                            ]
+                        })
+                    }),
+                    toolbar({
+                        compact: model.compact,
+                        items: [
+                            filler(),
+                            button({
+                                text: 'Reset',
+                                icon: Icon.undo(),
+                                onClick: () => {
+                                    topFormModel.reset();
+                                    bottomFormModel.reset();
+                                },
+                                disabled: !topFormModel.isDirty && !bottomFormModel.isDirty
+                            }),
+                            button({
+                                text: 'Validate',
+                                icon: Icon.check(),
+                                intent: 'success',
+                                onClick: () => {
+                                    topFormModel.validateAsync();
+                                    bottomFormModel.validateAsync();
+                                }
+                            })
+                        ]
+                    })
                 ]
             })
         });

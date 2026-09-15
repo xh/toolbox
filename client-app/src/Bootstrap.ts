@@ -122,13 +122,12 @@ ModuleRegistry.registerModules([
     TextFilterModule
 ]);
 
-// 4) Development only - turns AG Grid's terse numeric error codes into full messages, notably when
-// a required module is missing. AG Grid recommends omitting it from production builds, so this is
-// gated on the build-time `xhIsDevelopmentMode` constant (not `XH.isDevelopmentMode`, a runtime
-// read) - the block is dropped at build time, leaving the module out of the prod bundle.
-import {ValidationModule} from 'ag-grid-community';
+// 4) Development only - turns AG Grid's terse numeric error codes into full console messages, with
+// its on-grid overlay left off. Gated on the build-time `xhIsDevelopmentMode` constant (not
+// `XH.isDevelopmentMode`, a runtime read), so the call drops out of prod builds.
+import {enableDevValidations} from 'ag-grid-community';
 if (xhIsDevelopmentMode) {
-    ModuleRegistry.registerModules([ValidationModule]);
+    enableDevValidations({showOverlayOn: [], throwOn: [], suppress: []});
 }
 
 provideGlobalGridOptions({theme: 'legacy'});

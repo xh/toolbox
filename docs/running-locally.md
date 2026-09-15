@@ -196,9 +196,9 @@ the app or fail to log in.
    APP_TOOLBOX_BOOTSTRAP_ADMIN_USER=you@xh.io
    APP_TOOLBOX_BOOTSTRAP_ADMIN_PASSWORD=<a-local-dev-password>
    ```
-   With these set, Toolbox presents a form-based login and creates the bootstrap user (granted admin
-   rights) in its user database. These properties are also documented in `.env.template`. Remember
-   to revert this change when you return to normal desktop development.
+   See [Running Locally Without OAuth](../README.md#running-locally-without-oauth-form-based-login)
+   for what each property does and how they combine. Remember to revert this change when you return
+   to normal desktop development.
 
 6. **Open the app on the device** at `http://<devHost>:3000/mobile` (or `/app`, etc.).
 
@@ -228,6 +228,24 @@ especially when testing OAuth, CORS, or cookie-dependent features. To run with H
    `https://toolbox-local.xh.io:3000/app/` in your browser and proceed past the SSL warning.
 
 ## Troubleshooting
+
+### Database connection fails at startup
+
+`bootRun` aborts with `CommunicationsException: Communications link failure`. This says only that
+the server is unreachable, so confirm MySQL is actually running and listening on the expected port
+before looking further.
+
+If MySQL is not running, its error log holds the real reason. On a Homebrew install that is
+`/opt/homebrew/var/mysql/<hostname>.err`, named for your full hostname including any `.local`
+suffix (`hostname`, not `hostname -s`) - reading a stale log from a previous machine name is an easy
+way to see nothing wrong.
+
+One cause worth naming, since MySQL will not resolve it on its own: after a version upgrade the
+server can refuse to open its data directory, logging `[MY-014060] Invalid MySQL server upgrade`.
+Recovery means installing the LTS release between your data directory's version and the current
+binary, starting it once against the directory to upgrade it, then moving on. Back up the data
+directory first, with the server stopped. See [MySQL versions](../README.md#mysql-versions) for the
+background and for how to avoid it.
 
 ### Gateway timeout or `ECONNREFUSED` on `/api/` requests
 

@@ -9,3 +9,4 @@ export * from './grid/SampleColumnGroupsGrid';
 export * from './CardChoiceInput';
 export * from './ExplodingPanel';
 export * from './Wrapper';
+export * from './Demo';

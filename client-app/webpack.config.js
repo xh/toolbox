@@ -9,7 +9,10 @@
  * babelIncludePaths, babelExcludePaths, or resolveAliases keys used below.
  */
 const configureWebpack = require('@xh/hoist-dev-utils/configureWebpack'),
-    path = require('path');
+    path = require('path'),
+    // Single source of truth for the app version - keep in sync with `xhAppVersion` in
+    // gradle.properties. Release builds override this via `--env appVersion`.
+    pkg = require('./package.json');
 
 /** Uncomment below when sourcing @xh/package-template from npm distro (typical usage). */
 const customPkgPath = path.resolve('node_modules/@xh/package-template');
@@ -30,10 +33,9 @@ module.exports = (env = {}) => {
     return configureWebpack({
         appCode: 'toolbox',
         appName: 'Toolbox',
-        appVersion: '10.0-SNAPSHOT',
+        appVersion: pkg.version,
         favicon: './public/favicon.svg',
         devServerOpenPage: 'app/',
-        sourceMaps: 'devOnly',
         preloadBackgroundColor: '#f7931c',
         // Use React prod mode, primarily to avoid console warnings for react 18
         reactProdMode: false,

@@ -31,10 +31,10 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
     ],
     'cmp/form/README.md': [
         {title: 'FormModel', route: `${R}.forms.form`},
-        {title: 'Hoist Inputs', route: `${R}.forms.inputs`}
+        {title: 'All Inputs', route: `${R}.forms.inputs`}
     ],
     'cmp/input/README.md': [
-        {title: 'Hoist Inputs', route: `${R}.forms.inputs`},
+        {title: 'All Inputs', route: `${R}.forms.inputs`},
         {title: 'Select', route: `${R}.forms.select`},
         {title: 'Picker', route: `${R}.forms.picker`}
     ],
@@ -55,9 +55,9 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
         {title: 'DashCanvas', route: `${R}.layout.dashCanvas`}
     ],
     'desktop/README.md': [
-        {title: 'Hoist Inputs', route: `${R}.forms.inputs`},
+        {title: 'All Inputs', route: `${R}.forms.inputs`},
         {title: 'Select', route: `${R}.forms.select`},
-        {title: 'LeftRightChooser', route: `${R}.other.leftRightChooser`}
+        {title: 'LeftRightChooser', route: `${R}.forms.leftRightChooser`}
     ],
     'format/README.md': [
         {title: 'Date Formats', route: `${R}.other.formatDates`},

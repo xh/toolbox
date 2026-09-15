@@ -46,7 +46,7 @@ const INTERN_KEY = 'gridTest';
  * freshly loaded page when toggled - see `confirmAndReloadForRecordDataChangeAsync()`.
  *
  * Deliberately does *not* include the flags that only change what gets loaded or retained
- * (`retainRaw`, `reuseRecords`, `internStrings`) - those can be flipped and re-measured in place.
+ * (`retainRaw`, `internStrings`) - those can be flipped and re-measured in place.
  */
 const RECORD_DATA_FLAGS: Array<{prop: string; label: string}> = [
     {prop: 'projectionOnly', label: 'Projection Only'},
@@ -125,6 +125,8 @@ export class GridTestModel extends HoistModel {
     @persist
     @bindable
     loadRootAsSummary = false;
+    // True to pin the id column to the left.
+    @bindable pinId = false;
     // True to enable XSS protection at store level.
     @persist
     @bindable
@@ -155,9 +157,9 @@ export class GridTestModel extends HoistModel {
     @bindable
     categoryCount = 8;
     // The Store's `projectionOnly` config - a read-only projection where each raw object becomes
-    // its record's `data` by reference, so a row costs one object instead of two. Mutually
-    // exclusive with `reuseRecords` (Store throws), and a different record-data representation, so
-    // toggling it reloads the app. Valid here only because the test data arrives already in final
+    // its record's `data` by reference, so a row costs one object instead of two. A different
+    // record-data representation, so toggling it reloads the app. Valid here only because the test
+    // data arrives already in final
     // form and is never locally modified - the extra fields are untyped and the base fields are
     // already numbers/strings, so no `Field.parseVal` is needed. Note XSS protection is inert
     // under it, as nothing is parsed.
@@ -183,13 +185,6 @@ export class GridTestModel extends HoistModel {
     @persist
     @bindable
     retainRaw = true;
-    // The Store's `reuseRecords` config - reuses records whose raw data object is *reference*
-    // identical to the previously loaded one, skipping the default fieldwise comparison. Hoist
-    // default false. Does nothing on a first load, and requires `retainRaw` (Store throws
-    // otherwise - see the reaction and the guard in createGridModel() below).
-    @persist
-    @bindable
-    reuseRecords = false;
     // True to intern string values in the fetched response via the `internStrings` FetchOption -
     // note this is a *fetch* config, not a StoreConfig. Distinct string values are stored once and
     // shared across rows (and across successive fetches with the same key).
@@ -271,6 +266,7 @@ export class GridTestModel extends HoistModel {
                 this.tree,
                 this.showSummary,
                 this.loadRootAsSummary,
+                this.pinId,
                 this.disableSelect,
                 this.autosizeMode,
                 this.renderedRowsOnly,
@@ -280,8 +276,7 @@ export class GridTestModel extends HoistModel {
                 this.enableXssProtection,
                 this.extraFieldCount,
                 this.populateExtraFields,
-                this.retainRaw,
-                this.reuseRecords
+                this.retainRaw
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -311,26 +306,6 @@ export class GridTestModel extends HoistModel {
             track: () => this.recordDataFlagState,
             run: () => this.confirmAndReloadForRecordDataChangeAsync(),
             debounce: 500
-        });
-
-        // `reuseRecords` cannot be combined with `retainRaw: false` - Store throws, as reuse is
-        // keyed off the raw reference. Clear it rather than letting a restored config blow up.
-        this.addReaction({
-            track: () => this.retainRaw,
-            run: retainRaw => {
-                if (!retainRaw && this.reuseRecords) {
-                    runInAction(() => (this.reuseRecords = false));
-                }
-            }
-        });
-
-        // Store throws if `projectionOnly` is paired with `reuseRecords`. Clear it on the way in.
-        this.addReaction({
-            track: () => this.projectionOnly,
-            run: projectionOnly => {
-                if (!projectionOnly) return;
-                runInAction(() => (this.reuseRecords = false));
-            }
         });
 
         // Interned values are retained for reuse by the next fetch with the same key - drop them
@@ -468,9 +443,7 @@ export class GridTestModel extends HoistModel {
 
     /**
      * Fetch raw rows into an array *without* loading them into the Store, for the benchmark's
-     * "same raw refs" reload scenario. That scenario is the only shape in which `reuseRecords` can
-     * actually hit, as it matches on raw-object reference identity - a second fetch of the same
-     * dataset yields fresh objects and can never reuse.
+     * "same raw refs" reload scenario - a reload measured without the cost of a second fetch.
      */
     async fetchRawRowsAsync(): Promise<{rows: PlainObject[]; summary: PlainObject}> {
         if (!this.useStreaming) return this.fetchJsonRowsAsync();
@@ -619,7 +592,6 @@ export class GridTestModel extends HoistModel {
                 // ViewManager could still arrive holding an incompatible combination.
                 projectionOnly: this.projectionOnly,
                 retainRaw,
-                reuseRecords: this.reuseRecords && retainRaw && !this.projectionOnly,
                 experimental: {denseRecordThreshold: this.denseRecordThreshold}
             };
 
@@ -651,6 +623,7 @@ export class GridTestModel extends HoistModel {
         return new GridModel({
             persistWith: persistType ? {[persistType]: PERSIST_KEY} : null,
             selModel: {mode: 'multiple'},
+            filterModel: true,
             sortBy: 'id',
             emptyText: 'No records found...',
             enableExport: true,
@@ -668,23 +641,32 @@ export class GridTestModel extends HoistModel {
             columns: [
                 {
                     field: 'id',
-                    isTreeColumn: this.tree
+                    isTreeColumn: this.tree,
+                    pinned: this.pinId ? 'left' : null
                 },
                 {
                     field: 'symbol',
+                    filterable: true // Hoist native column filtering.
+                },
+                {
+                    field: 'trader',
                     agOptions: {
+                        // Native ag-Grid filter via the header menu button.
                         filter: 'agTextColumnFilter',
                         suppressHeaderMenuButton: false
                     }
                 },
                 {
-                    field: 'trader'
-                },
-                {
                     groupId: 'pnl',
                     headerName: 'P&L',
                     children: [
-                        {field: 'day', highlightOnChange: true, ...pnlColumn},
+                        {
+                            field: 'day',
+                            highlightOnChange: true,
+                            ...pnlColumn,
+                            // Native ag-Grid inline (floating) filter
+                            agOptions: {filter: 'agNumberColumnFilter', floatingFilter: true}
+                        },
                         {field: 'mtd', ...pnlColumn},
                         {field: 'ytd', ...pnlColumn}
                     ]

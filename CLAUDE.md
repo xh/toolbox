@@ -281,7 +281,7 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
   itself is separately pinned to a lower bytecode level so its published JAR remains runnable
   by older client apps - see `hoist-core` docs for the current minimum.)
 - **Database**: MySQL (or H2 in-memory for quick local dev via `APP_TOOLBOX_USE_H2=true`)
-- **Package Manager**: Yarn 1.22 (frontend), Gradle via wrapper (backend)
+- **Package Manager**: pnpm (frontend, version pinned via `packageManager`), Gradle via wrapper (backend)
 
 ## Common Commands
 
@@ -486,20 +486,47 @@ profile setup (`xh-toolbox-ro` read-only, `xh-toolbox-rw` for writes), SSM port-
 ECS Exec, CloudWatch log access, and the per-command confirmation protocol for write operations.
 
 This repo is **public**: the runbook deliberately omits the AWS account ID, Identity Center URL/ARN,
-RDS endpoints, internal DNS, and DB credentials. Those operational values live in the `Toolbox AWS
-Ops` item in the `XH Team` 1Password vault - fetch them with the `op` CLI
-(`op read "op://XH Team/Toolbox AWS Ops/<field>"`) when running commands from the runbook. Never
-write those values into checked-in files.
+RDS endpoints, internal DNS, and DB credentials. Those operational values live in two items in the
+`XH Team` 1Password vault - `Toolbox AWS Ops` for account / SSO values and `Toolbox DB` for
+everything database-related. Fetch them with the `op` CLI
+(`op read "op://XH Team/<item>/<field>"`) when running commands from the runbook. Never write those
+values into checked-in files.
 
 **Safety protocol for AI agents** (full table in the runbook): reads against dev proceed without
 confirmation; writes against dev, and anything (read or write) against prod, require explicit
 per-command user confirmation - propose the exact command and wait for "go".
+
+## Operating XH's Azure / Entra Tenant
+
+Some of Toolbox's identity config lives in XH's Microsoft Entra tenant - the `Toolbox` OAuth client
+registration used when `oauthProvider` is `ENTRA_ID`, and the shared `xh-hoist-directory-reader`
+registration backing Hoist's `EntraIdService` group lookups. For connecting to that tenant to
+troubleshoot, monitor, or administer it, see [`docs/azure-access.md`](docs/azure-access.md).
+
+That runbook covers two shared operator service principals - `xh-toolbox-ops-ro` (read-only) and
+`xh-toolbox-ops-rw` (writes) - whose credentials live in the `Toolbox Azure Ops` item in the
+`XH Team` 1Password vault. Note two Azure-specific wrinkles the runbook explains in full: the Azure
+CLI has **no per-command `--profile`**, so tiers are separated via the `AZURE_CONFIG_DIR`
+environment variable and `az account show` is a required identity check; and operator logins **must**
+pass `--allow-no-subscriptions`, since these principals deliberately hold no Azure RBAC.
+
+**Scope**: the Entra *directory plane* only. Nothing of Toolbox is deployed on Azure compute, and
+the operator principals hold no subscription role assignments.
+
+**Safety protocol for AI agents** (full table in the runbook): reads proceed without confirmation,
+as do writes to sandbox objects the agent itself created (prefix these `toolbox-test-*`). Modifying
+a pre-existing shared object - notably any credential on `xh-hoist-directory-reader`, which other
+apps authenticate with - and any deletion require explicit per-command confirmation. Granting admin
+consent, assigning directory roles, and creating service principals are Global Administrator tasks
+that the operator tiers **cannot** perform, by design.
 
 ## Changelog
 
 Toolbox maintains a `CHANGELOG.md` that is parsed at build time by `changelog-parser` (via
 hoist-dev-utils) and displayed in-app to users via Hoist's `ChangelogService`. Write entries for an
 audience of developers and potential clients evaluating Hoist.
+
+The file opens with an HTML comment restating the essentials below. Keep the two in sync.
 
 ### Format
 
@@ -516,29 +543,32 @@ The file follows the [Keep a Changelog](https://keepachangelog.com/) structure:
 
 ### Libraries
 
-* @xh/hoist 80.0.1
+* @xh/hoist `80.0 → 80.1`
 ```
 
-- **Version headings**: `## <version> - <date>` - no `v` prefix. Use `SNAPSHOT - unreleased` for
-  the in-development version.
+- **Version headings**: `## <version> - <date>` - no `v` prefix, date as `YYYY-MM-DD`. Use
+  `## <x.y>-SNAPSHOT - unreleased`, with no date, for the in-development version.
 - **Adding a new SNAPSHOT version**: Before adding a changelog entry, check whether the topmost
   version in `CHANGELOG.md` has already been released. A version is released if it has a date
   (e.g. `## 8.1.0 - 2026-02-12`) or a matching `v<version>` git tag exists. If it has been
   released, create a new `## <next-major>.0-SNAPSHOT` heading above it (with no date) before
   adding your entry. Bump the major version number from the last release (e.g. after `8.1.0`,
   create `9.0-SNAPSHOT`).
-- **Recognized categories** (used for styling in the in-app dialog): `Breaking Changes`,
-  `New Features`, `Bug Fixes`, `Technical`, `Libraries`.
+- **Recognized categories**: `Breaking Changes`, `New Features`, `Bug Fixes`, `Technical`,
+  `Libraries` - the titles Hoist's `ChangelogDialog` maps to CSS classnames. Use them in that
+  order. Any other `###` title still renders, just without the accent styling.
 
-### Critical: single-line bullets only
+### Critical: whitespace is load-bearing
 
-The changelog parser works **line-by-line**. Bullet points are only recognized when a line starts
-with `*` or `-`. Continuation lines, wrapped text, and nested sub-bullets are **silently dropped**
-from the parsed output.
+The parser is line-based and fails **silently** - a malformed entry is dropped from the parsed
+output while the build still succeeds, so nothing flags the mistake. Two rules follow:
 
-**Every bullet MUST be a single line - no matter how long.** Do not wrap, indent continuation text,
-or use nested sub-bullets. A 300-character single line is correct; a neatly wrapped two-line bullet
-is broken.
+1. **Bullets and `###` headers must start at column 0.** The patterns are `/^[*-]/` and `/^###/`
+   matched against the raw line, so a single leading space drops it. Nested sub-bullets and
+   indented continuation lines are therefore impossible, not merely discouraged.
+2. **Every bullet is exactly one line, however long.** A wrapped bullet keeps its first line and
+   loses the rest. A 300-character single line is correct; a neatly wrapped two-line bullet is
+   broken.
 
 ```
 // GOOD - single line, renders completely in-app
@@ -549,11 +579,33 @@ is broken.
   API, featuring a `DashCanvas` layout with multiple chart types.
 ```
 
+### Libraries entries
+
+One bullet per library whose released version changed since the last Toolbox release, versions
+backticked and separated by ` → `:
+
+```
+* @xh/hoist `87.0 → 87.1`
+* @xh/hoist-dev-utils `14.0 → 15.0`
+* hoist-core `40.2 → 41.0`
+```
+
+- **Two-part `major.minor` only.** Drop the patch component - write `87.0 → 87.1`, never
+  `87.0.0 → 87.1.0`.
+- **Never the `ZZ.x` form.** `14.x → 15.x` is retired - write `14.0 → 15.0`.
+- **Only libraries that actually moved.** A release swap that changes the dependency spec without
+  changing the released version (e.g. `41.0-SNAPSHOT` pinned back to `41.0.0`) is not an entry.
+- Name libraries by package or artifact id (`@xh/hoist`, `hoist-core`); others by common name
+  (`React`, `ag-Grid`).
+- Append a caveat after ` - ` when the bump needs one, e.g. ``@xh/hoist-dev-utils `12.2 → 13.0` - breaking: `.md` imports now resolve to raw text.``
+
 ### Style
 
 - Use past tense ("Added", "Fixed", "Removed" - not "Add", "Fix", "Remove").
 - Be concise but specific about what changed and why.
 - Use backticks for API names, component names, and config keys (e.g. `ViewManager`, `useOAuth`).
+- Prose punctuation is plain ASCII - use " - " for in-sentence breaks, never an em dash. The
+  `→` in Libraries entries is the one deliberate exception.
 
 ## Related Repositories
 

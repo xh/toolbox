@@ -1,9 +1,13 @@
 import {HoistModel} from '@xh/hoist/core';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {required} from '@xh/hoist/data';
 import {random} from 'lodash';
 
 export class ToolbarFormPanelModel extends HoistModel {
+    /** Render every toolbar on the page in its compact variant. */
+    @bindable compact = false;
+
     topFormModel = new FormModel({
         fields: [
             {name: 'text1', rules: [required]},
@@ -22,4 +26,9 @@ export class ToolbarFormPanelModel extends HoistModel {
             {name: 'option4'}
         ]
     });
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 }

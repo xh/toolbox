@@ -7,10 +7,11 @@ Claude Code) - the access patterns are identical.
 > [!WARNING]
 > **This repository is public.** This doc deliberately does **not** check in the AWS account ID,
 > Identity Center portal URL, Identity Center instance ARN, RDS instance IDs / endpoints, internal
-> DNS, or database credentials. Those per-environment specifics live in the **`Toolbox AWS Ops`**
-> item in the **`XH Team`** 1Password vault (and, for some, your local `~/.aws/config` after
-> first-time setup). See [Values you'll need](#values-youll-need) for the list and where to find
-> each. Stable, low-sensitivity identifiers that *are* safe to check in (ECS cluster/service names,
+> DNS, or database credentials. Those per-environment specifics live in two items in the
+> **`XH Team`** 1Password vault - **`Toolbox AWS Ops`** for account / SSO values and
+> **`Toolbox DB`** for everything database-related - (and, for some, your local `~/.aws/config`
+> after first-time setup). See [Values you'll need](#values-youll-need) for the list and where to
+> find each. Stable, low-sensitivity identifiers that *are* safe to check in (ECS cluster/service names,
 > permission-set names, IAM role names, log-group names) appear throughout.
 
 ---
@@ -26,20 +27,28 @@ admin onboarding someone, see [Admin tasks](#admin-tasks).
 
 ## Values you'll need
 
-Get these from the **`Toolbox AWS Ops`** item in the **`XH Team`** 1Password vault. Don't paste them
-into checked-in files.
+Get these from the **`XH Team`** 1Password vault. Don't paste them into checked-in files.
+Account and SSO values live in **`Toolbox AWS Ops`**; everything database-related lives in
+**`Toolbox DB`**.
 
-| Value | 1Password field | Where it lives after setup |
+| Value | 1Password item -> field | Where it lives after setup |
 |---|---|---|
-| AWS account ID | `account_id` | `~/.aws/config` under `sso_account_id` |
-| Identity Center "AWS access portal URL" | `sso_start_url` | `~/.aws/config` under `sso_start_url` |
-| Identity Center region | `sso_region` (almost always `us-east-1`) | `~/.aws/config` under `sso_region` |
-| RDS DNS alias (used for tunnels; resolves task-side) | `db_dns` | - |
-| RDS endpoint (single instance, serves dev + prod) | `rds_dev_endpoint` | - (or re-derive via `aws rds describe-db-instances`) |
-| RDS instance ID (single instance, serves dev + prod) | `rds_dev_instance_id` | - |
-| Toolbox DB schema (dev / prod) | `db_schema_dev` / `db_schema_prod` | - |
-| Toolbox DB user / password (shared dev+prod for now) | `db_user` / `db_password` | - |
-| Identity Center instance ARN (admin only) | `identity_center_instance_arn` | - |
+| AWS account ID | `Toolbox AWS Ops` -> `account_id` | `~/.aws/config` under `sso_account_id` |
+| Identity Center "AWS access portal URL" | `Toolbox AWS Ops` -> `sso_start_url` | `~/.aws/config` under `sso_start_url` |
+| Identity Center region | `Toolbox AWS Ops` -> `sso_region` (almost always `us-east-1`) | `~/.aws/config` under `sso_region` |
+| Identity Center instance ARN (admin only) | `Toolbox AWS Ops` -> `identity_center_instance_arn` | - |
+| RDS DNS alias (used for tunnels; resolves task-side) | `Toolbox DB` -> `db_dns` | - |
+| RDS endpoint | `Toolbox DB` -> `rds_endpoint` | - (or re-derive via `aws rds describe-db-instances`) |
+| RDS instance ID | `Toolbox DB` -> `instance_id` | - |
+| Toolbox DB schema (dev / prod) | `Toolbox DB` -> `db_schema_dev` / `db_schema_prod` | - |
+| Toolbox DB app user / password | `Toolbox DB` -> `app_user` / `app_password` | - |
+
+> [!NOTE]
+> The RDS instance is **shared**: it serves Toolbox dev and prod in separate schemas, and hosts
+> other XH applications besides Toolbox. `Toolbox DB` therefore holds only Toolbox's own
+> least-privilege app credential - the instance's master credential lives in a separate
+> shared-instance item in the same vault, and is for instance-level administration only. That item
+> is not named here because its title contains internal DNS.
 
 ### Fetching values with the 1Password CLI (optional flair)
 
@@ -49,12 +58,13 @@ an AI agent assisting you can do the same:
 
 ```bash
 op read "op://XH Team/Toolbox AWS Ops/account_id"
-op read "op://XH Team/Toolbox AWS Ops/rds_dev_endpoint"
+op read "op://XH Team/Toolbox DB/rds_endpoint"
 ```
 
-Throughout this doc, `$(op read "op://XH Team/Toolbox AWS Ops/<field>")` can be substituted inline
-wherever a `<placeholder>` appears. If `op` isn't available, just open the `Toolbox AWS Ops` item in
-the `XH Team` vault and copy the value.
+Throughout this doc, `$(op read "op://XH Team/<item>/<field>")` can be substituted inline wherever a
+`<placeholder>` appears - `Toolbox AWS Ops` for account / SSO values, `Toolbox DB` for anything
+database-related. If `op` isn't available, just open the item in the `XH Team` vault and copy the
+value.
 
 ---
 
@@ -233,7 +243,7 @@ RUNTIME=$(aws ecs describe-tasks --cluster toolbox --tasks "$TASK" \
 # RDS host = the db_dns alias from 1Password. It resolves task-side via the private Route53 zone,
 # follows any future instance swap, and is the same host for both dev and prod (one shared instance).
 # Start the port forward (blocks; Ctrl-C to close):
-RDS_HOST=$(op read "op://XH Team/Toolbox AWS Ops/db_dns")
+RDS_HOST=$(op read "op://XH Team/Toolbox DB/db_dns")
 aws ssm start-session \
   --target "ecs:toolbox_${TASK}_${RUNTIME}" \
   --document-name AWS-StartPortForwardingSessionToRemoteHost \
@@ -247,24 +257,27 @@ with `mysql` from another:
 ```bash
 /opt/homebrew/opt/mysql-client@8.4/bin/mysql \
   -h 127.0.0.1 -P 3307 --get-server-public-key \
-  -u "$(op read 'op://XH Team/Toolbox AWS Ops/db_user')" \
-  -p"$(op read 'op://XH Team/Toolbox AWS Ops/db_password')" \
-  "$(op read 'op://XH Team/Toolbox AWS Ops/db_schema_dev')"
+  -u "$(op read 'op://XH Team/Toolbox DB/app_user')" \
+  -p"$(op read 'op://XH Team/Toolbox DB/app_password')" \
+  "$(op read 'op://XH Team/Toolbox DB/db_schema_dev')"
 ```
 
 Dev and prod share the **same RDS instance** in separate schemas (`db_schema_dev` /
-`db_schema_prod`), with a **shared** DB user/password (`db_user` / `db_password`). One tunnel reaches
-both schemas; for prod work, relay through a `toolbox-prod` task and select `db_schema_prod`. If the
-user/password split per-env later, add per-env fields to the 1Password item and update this doc.
+`db_schema_prod`), with a **shared** app user/password (`app_user` / `app_password`). One tunnel
+reaches both schemas; for prod work, relay through a `toolbox-prod` task and select
+`db_schema_prod`. If the user/password split per-env later, add `app_user_dev` / `app_password_dev`
+/ `app_user_prod` / `app_password_prod` to the `Toolbox DB` item and update this doc.
 
 > [!NOTE]
 > **Credentials:** The deployed Toolbox tasks source their instance config from
 > `APP_TOOLBOX_*` **environment variables** on the ECS task definition, with the secret values
 > (`dbUser`, `dbPassword`, `smtpUser`, `smtpPassword`) injected from **AWS Secrets Manager**
 > (`toolbox/dev/app`, `toolbox/prod/app`). For operational DB access, the same `toolbox`
-> user/password is mirrored in the `db_user` /
-> `db_password` / `db_schema_dev` / `db_schema_prod` values of the `Toolbox AWS Ops` 1Password item
-> (the read-only SSO profile cannot read the Secrets Manager value directly).
+> user/password is mirrored in the `app_user` / `app_password` / `db_schema_dev` /
+> `db_schema_prod` values of the `Toolbox DB` 1Password item (the read-only SSO profile cannot read
+> the Secrets Manager value directly). Note the DB host reaches the tasks as a plaintext
+> `APP_TOOLBOX_*` environment variable, not as a secret - only the user and password come from
+> Secrets Manager.
 
 ### ECS Exec (interactive shell into a task)
 

@@ -1,4 +1,4 @@
-import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {GridModel, localDate} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, SizingMode, XH} from '@xh/hoist/core';
 import {RecordAction} from '@xh/hoist/data';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
@@ -246,7 +246,7 @@ export class TodoPanelModel extends HoistModel {
                 },
                 {
                     field: 'dueDate',
-                    ...localDateCol,
+                    ...localDate,
                     width: 140,
                     rendererIsComplex: true,
                     renderer: (v, {record}) => this.dueDateRenderer(v, {record})

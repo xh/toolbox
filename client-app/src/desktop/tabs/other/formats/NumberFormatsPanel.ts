@@ -102,6 +102,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                     control: segmentedControl({
                         model,
                         bind: 'colorSpec',
+                        compact: true,
                         options: [
                             {value: true, label: 'true'},
                             {value: false, label: 'false'},

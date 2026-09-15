@@ -97,6 +97,7 @@ export const exceptionHandlerPanel = hoistCmp.factory({
                     control: segmentedControl({
                         model,
                         bind: 'alertType',
+                        compact: true,
                         disabled: !model.showAlert,
                         options: [
                             {value: 'dialog', label: 'Dialog'},

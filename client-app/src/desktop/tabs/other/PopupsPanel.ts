@@ -1,16 +1,16 @@
-import {div, li, p, span, table, tbody, td, th, tr, ul} from '@xh/hoist/cmp/layout';
+import {box, div, hbox, li, p, span, ul} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {lengthIs, required} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {useRef} from 'react';
-import {wrapper} from '../../common';
+import {ReactNode, useRef} from 'react';
+import {demoPanel, demoRow, demoSection, wrapper} from '../../common';
 import './PopupsPanel.scss';
 
 export const popupsPanel = hoistCmp.factory(() => {
     const divRef = useRef(null),
+        anchorRef = useRef(null),
         acceptRichTextReminder = getRichTextReminder(),
         responseToast = ret =>
             XH.toast({
@@ -46,323 +46,357 @@ export const popupsPanel = hoistCmp.factory(() => {
                 notes: 'Top-level APIs: .alert(), .confirm(), .prompt(), .message(), .toast(), .showBanner().'
             }
         ],
-        item: panel({
+        item: demoPanel({
             className: 'tbox-popups',
             ref: divRef,
-            flex: 'none',
-            item: table(
-                tbody(
-                    row(
-                        button({
-                            ...popBtn(Icon.warning({intent: 'danger'})),
-                            text: 'Alert',
-                            onClick: () =>
-                                XH.alert({
-                                    title: 'Alert',
-                                    message: div(
-                                        p('This is an Alert. Alerts come with one button: "OK"'),
-                                        acceptRichTextReminder
-                                    )
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.warning({intent: 'danger'})),
-                            text: 'with custom button',
-                            onClick: () =>
-                                XH.alert({
-                                    title: 'Alert with custom button',
-                                    message: p(
-                                        'This is also an Alert. Here, we customized the appearance of the button via confirmProps.'
-                                    ),
-                                    confirmProps: {
-                                        intent: 'success',
-                                        minimal: false,
-                                        icon: Icon.checkCircle()
-                                    }
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.warning({intent: 'danger'})),
-                            text: 'as promise',
-                            onClick: () =>
-                                XH.alert({
-                                    title: 'Alert with callback',
-                                    message: p(
-                                        'Alert returns a promise that resolves to true when acknowledged.'
-                                    )
-                                }).then(responseToast)
-                        })
-                    ),
-                    row(
-                        button({
-                            ...popBtn(Icon.questionCircle({intent: 'primary'})),
-                            text: 'Confirm',
-                            onClick: () =>
-                                XH.confirm({
-                                    title: 'Confirm',
-                                    message: div(
-                                        p(
-                                            'This is a confirm. Confirms come with two buttons: "OK" and "Cancel".'
-                                        ),
-                                        acceptRichTextReminder
-                                    )
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.questionCircle({intent: 'primary'})),
-                            text: 'with custom button',
-                            onClick: () =>
-                                XH.confirm({
-                                    title: 'Confirm with custom buttons',
-                                    message: p(
-                                        'This is also an Alert. Here, we customized the appearance of the buttons and set the cancel button to autoFocus via confirmProps, cancelProps, and cancelAlign.'
-                                    ),
-                                    confirmProps: {
-                                        text: 'Go ahead...',
-                                        intent: 'primary'
-                                    },
-                                    cancelProps: {
-                                        text: 'Get me outta here!',
-                                        intent: 'danger',
-                                        autoFocus: true
-                                    },
-                                    cancelAlign: 'left'
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.questionCircle({intent: 'primary'})),
-                            text: 'as promise',
-                            onClick: () =>
-                                XH.confirm({
-                                    title: 'Confirm with promise',
-                                    message: p(
-                                        'Confirm returns a promise that resolves to true if the user confirms or false if the user cancels.'
-                                    )
-                                }).then(responseToast)
-                        })
-                    ),
-                    row(
-                        button({
-                            ...popBtn(Icon.edit({intent: 'primary'})),
-                            text: 'Prompt',
-                            onClick: () =>
-                                XH.prompt<string>({
-                                    title: 'Prompt',
-                                    message: div(
-                                        p(
-                                            'This is a prompt. Prompt comes with two buttons: "OK" and "Cancel" and supports an input field to collect a response from the user.'
-                                        ),
-                                        acceptRichTextReminder
-                                    )
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.edit({intent: 'primary'})),
-                            text: 'with customizations',
-                            onClick: () =>
-                                XH.prompt<string>({
-                                    title: 'Prompt with customizations',
-                                    message: div(
-                                        p(
-                                            'This is also a Prompt. Here, we set the input to a custom textArea with validation via input and customized the buttons via confirmProps, cancelProps, and cancelAlign.'
-                                        ),
-                                        p(
-                                            'This Prompt cannot be dismissed by hitting the escape key or clicking on the background. The cancel or send buttons must be clicked to close it. This behavior is controlled via dismissable and cancelOnDismiss.'
+            items: [
+                demoSection({
+                    title: 'Modal',
+                    note: 'Each returns a Promise resolving with the user response.',
+                    items: [
+                        apiRow(
+                            'Alert',
+                            'One button. Resolves when acknowledged.',
+                            button({
+                                ...popBtn(Icon.warning({intent: 'danger'})),
+                                text: 'Alert',
+                                onClick: () =>
+                                    XH.alert({
+                                        title: 'Alert',
+                                        message: div(
+                                            p(
+                                                'This is an Alert. Alerts come with one button: "OK"'
+                                            ),
+                                            acceptRichTextReminder
                                         )
-                                    ),
-                                    input: {
-                                        initialValue: 'I must be at least 20 characters to send...',
-                                        item: textArea({autoFocus: true, selectOnFocus: true}),
-                                        rules: [required, lengthIs({min: 20})]
-                                    },
-                                    confirmProps: {
-                                        text: 'Send a Message',
-                                        icon: Icon.mail(),
-                                        intent: 'primary'
-                                    },
-                                    cancelProps: {intent: 'danger'},
-                                    cancelAlign: 'left',
-                                    dismissable: false
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.edit({intent: 'primary'})),
-                            text: 'as promise',
-                            onClick: () =>
-                                XH.prompt<string>({
-                                    title: 'Prompt with promise',
-                                    message: p(
-                                        "Prompt return a promise that resolves to the input's value if user confirms, or false if user cancels."
-                                    )
-                                }).then(responseToast)
-                        })
-                    ),
-                    row(
-                        button({
-                            ...popBtn(Icon.comment({intent: 'success'})),
-                            text: 'Message',
-                            onClick: () =>
-                                XH.message({
-                                    title: 'Message',
-                                    message: div(
-                                        p(
-                                            'Messages are highly configurable - Alerts and Confirms are simply preconfigured Messages.'
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.warning({intent: 'danger'})),
+                                text: 'with custom button',
+                                onClick: () =>
+                                    XH.alert({
+                                        title: 'Alert with custom button',
+                                        message: p(
+                                            'This is also an Alert. Here, we customized the appearance of the button via confirmProps.'
                                         ),
-                                        p(
-                                            'Note, without valid confirmProps or cancelProps, the displayed Message will have no buttons!'
+                                        confirmProps: {
+                                            intent: 'success',
+                                            minimal: false,
+                                            icon: Icon.checkCircle()
+                                        }
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.warning({intent: 'danger'})),
+                                text: 'as promise',
+                                onClick: () =>
+                                    XH.alert({
+                                        title: 'Alert with callback',
+                                        message: p(
+                                            'Alert returns a promise that resolves to true when acknowledged.'
+                                        )
+                                    }).then(responseToast)
+                            })
+                        ),
+                        apiRow(
+                            'Confirm',
+                            'OK and Cancel. Resolves true or false.',
+                            button({
+                                ...popBtn(Icon.questionCircle({intent: 'primary'})),
+                                text: 'Confirm',
+                                onClick: () =>
+                                    XH.confirm({
+                                        title: 'Confirm',
+                                        message: div(
+                                            p(
+                                                'This is a confirm. Confirms come with two buttons: "OK" and "Cancel".'
+                                            ),
+                                            acceptRichTextReminder
+                                        )
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.questionCircle({intent: 'primary'})),
+                                text: 'with custom button',
+                                onClick: () =>
+                                    XH.confirm({
+                                        title: 'Confirm with custom buttons',
+                                        message: p(
+                                            'This is also an Alert. Here, we customized the appearance of the buttons and set the cancel button to autoFocus via confirmProps, cancelProps, and cancelAlign.'
                                         ),
-                                        p('This message has the primary button set to autoFocus.'),
-                                        acceptRichTextReminder
-                                    ),
-                                    confirmProps: {text: 'Oh I see!'},
-                                    cancelProps: {icon: Icon.xCircle()}
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.comment({intent: 'success'})),
-                            text: 'with callbacks',
-                            onClick: () =>
-                                XH.message({
-                                    title: 'Message with callbacks',
-                                    message: p(
-                                        'You can also pass a function to Message, Alert, and Confirm via the onCancel and onConfirm callback configs.'
-                                    ),
-                                    confirmProps: {text: 'Trigger onConfirm()'},
-                                    onConfirm: () =>
-                                        XH.toast({
-                                            message: 'Called onConfirm',
-                                            containerRef: divRef.current
-                                        }),
-                                    cancelProps: {text: 'Trigger onCancel()'},
-                                    onCancel: () =>
-                                        XH.toast({
-                                            message: 'Called onCancel',
-                                            icon: Icon.x(),
+                                        confirmProps: {
+                                            text: 'Go ahead...',
+                                            intent: 'primary'
+                                        },
+                                        cancelProps: {
+                                            text: 'Get me outta here!',
                                             intent: 'danger',
-                                            containerRef: divRef.current
+                                            autoFocus: true
+                                        },
+                                        cancelAlign: 'left'
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.questionCircle({intent: 'primary'})),
+                                text: 'as promise',
+                                onClick: () =>
+                                    XH.confirm({
+                                        title: 'Confirm with promise',
+                                        message: p(
+                                            'Confirm returns a promise that resolves to true if the user confirms or false if the user cancels.'
+                                        )
+                                    }).then(responseToast)
+                            })
+                        ),
+                        apiRow(
+                            'Prompt',
+                            'Collects a value. Resolves to it, or false on cancel.',
+                            button({
+                                ...popBtn(Icon.edit({intent: 'primary'})),
+                                text: 'Prompt',
+                                onClick: () =>
+                                    XH.prompt<string>({
+                                        title: 'Prompt',
+                                        message: div(
+                                            p(
+                                                'This is a prompt. Prompt comes with two buttons: "OK" and "Cancel" and supports an input field to collect a response from the user.'
+                                            ),
+                                            acceptRichTextReminder
+                                        )
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.edit({intent: 'primary'})),
+                                text: 'with customizations',
+                                onClick: () =>
+                                    XH.prompt<string>({
+                                        title: 'Prompt with customizations',
+                                        message: div(
+                                            p(
+                                                'This is also a Prompt. Here, we set the input to a custom textArea with validation via input and customized the buttons via confirmProps, cancelProps, and cancelAlign.'
+                                            ),
+                                            p(
+                                                'This Prompt cannot be dismissed by hitting the escape key or clicking on the background. The cancel or send buttons must be clicked to close it. This behavior is controlled via dismissable and cancelOnDismiss.'
+                                            )
+                                        ),
+                                        input: {
+                                            initialValue:
+                                                'I must be at least 20 characters to send...',
+                                            item: textArea({
+                                                autoFocus: true,
+                                                selectOnFocus: true
+                                            }),
+                                            rules: [required, lengthIs({min: 20})]
+                                        },
+                                        confirmProps: {
+                                            text: 'Send a Message',
+                                            icon: Icon.mail(),
+                                            intent: 'primary'
+                                        },
+                                        cancelProps: {intent: 'danger'},
+                                        cancelAlign: 'left',
+                                        dismissable: false
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.edit({intent: 'primary'})),
+                                text: 'as promise',
+                                onClick: () =>
+                                    XH.prompt<string>({
+                                        title: 'Prompt with promise',
+                                        message: p(
+                                            "Prompt return a promise that resolves to the input's value if user confirms, or false if user cancels."
+                                        )
+                                    }).then(responseToast)
+                            })
+                        ),
+                        apiRow(
+                            'Message',
+                            'The general form behind the three above.',
+                            button({
+                                ...popBtn(Icon.comment({intent: 'success'})),
+                                text: 'Message',
+                                onClick: () =>
+                                    XH.message({
+                                        title: 'Message',
+                                        message: div(
+                                            p(
+                                                'Messages are highly configurable - Alerts and Confirms are simply preconfigured Messages.'
+                                            ),
+                                            p(
+                                                'Note, without valid confirmProps or cancelProps, the displayed Message will have no buttons!'
+                                            ),
+                                            p(
+                                                'This message has the primary button set to autoFocus.'
+                                            ),
+                                            acceptRichTextReminder
+                                        ),
+                                        confirmProps: {text: 'Oh I see!'},
+                                        cancelProps: {icon: Icon.xCircle()}
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.comment({intent: 'success'})),
+                                text: 'with callbacks',
+                                onClick: () =>
+                                    XH.message({
+                                        title: 'Message with callbacks',
+                                        message: p(
+                                            'You can also pass a function to Message, Alert, and Confirm via the onCancel and onConfirm callback configs.'
+                                        ),
+                                        confirmProps: {text: 'Trigger onConfirm()'},
+                                        onConfirm: () =>
+                                            XH.toast({
+                                                message: 'Called onConfirm',
+                                                containerRef: divRef.current
+                                            }),
+                                        cancelProps: {text: 'Trigger onCancel()'},
+                                        onCancel: () =>
+                                            XH.toast({
+                                                message: 'Called onCancel',
+                                                icon: Icon.x(),
+                                                intent: 'danger',
+                                                containerRef: divRef.current
+                                            })
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.comment({intent: 'success'})),
+                                text: 'as promise',
+                                onClick: () =>
+                                    XH.message({
+                                        title: 'Message with promise',
+                                        message: div(
+                                            p(
+                                                'Messages, Prompts, Alerts, and Confirms all return a promise...'
+                                            ),
+                                            ul(
+                                                li(
+                                                    'Alert promises resolve to true when user acknowledges alert. '
+                                                ),
+                                                li(
+                                                    'Confirm and Message promises resolve to true if user confirms, or false if user cancels.'
+                                                ),
+                                                li(
+                                                    'Prompt promises resolve to the entered value if user confirms, or false if user cancels.'
+                                                )
+                                            )
+                                        ),
+                                        confirmProps: {text: 'Resolve to true'},
+                                        cancelProps: {text: 'Resolve to false'}
+                                    }).then(responseToast)
+                            })
+                        )
+                    ]
+                }),
+                demoSection({
+                    title: 'Non-Modal',
+                    note: 'Shown alongside the app rather than blocking it.',
+                    items: [
+                        apiRow(
+                            'Banner',
+                            'Persistent and app-wide. Dismiss with XH.hideBanner().',
+                            button({
+                                ...popBtn(Icon.flag({intent: 'primary'})),
+                                text: 'Banner',
+                                onClick: () =>
+                                    XH.showBanner({
+                                        message:
+                                            'This is a Banner. Banners are highly configurable, and can display rich text by accepting strings, JSX, and React elements.'
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.flag({intent: 'primary'})),
+                                text: 'with intent + icon',
+                                onClick: () =>
+                                    XH.showBanner({
+                                        message: "This is a Banner with intent: 'danger'",
+                                        icon: Icon.skull(),
+                                        intent: 'danger'
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.flag({intent: 'primary'})),
+                                text: 'with action',
+                                onClick: () =>
+                                    XH.showBanner({
+                                        message:
+                                            'This is a Banner with an action button. The action button can be configured to execute custom functionality.',
+                                        icon: Icon.flag(),
+                                        actionButtonProps: {
+                                            text: 'Click me!',
+                                            intent: 'success',
+                                            onClick: () => {
+                                                XH.toast({message: 'Action button clicked!'});
+                                                XH.hideBanner();
+                                            }
+                                        }
+                                    })
+                            })
+                        ),
+                        demoRow({
+                            label: 'Anchored Toast',
+                            info: 'containerRef positions the toast against a given element rather than the document edge',
+                            item: box({
+                                ref: anchorRef,
+                                className: 'tbox-popups__anchor',
+                                item: button({
+                                    ...popBtn(Icon.toast({intent: 'warning'})),
+                                    text: 'Toast in this box',
+                                    onClick: () =>
+                                        XH.toast({
+                                            message: span('Anchored with containerRef'),
+                                            containerRef: anchorRef.current
                                         })
                                 })
+                            })
                         }),
-                        button({
-                            ...popBtn(Icon.comment({intent: 'success'})),
-                            text: 'as promise',
-                            onClick: () =>
-                                XH.message({
-                                    title: 'Message with promise',
-                                    message: div(
-                                        p(
-                                            'Messages, Prompts, Alerts, and Confirms all return a promise...'
+                        apiRow(
+                            'Toast',
+                            'Transient and non-modal. Bottom right by default.',
+                            button({
+                                ...popBtn(Icon.toast({intent: 'warning'})),
+                                text: 'Toast',
+                                onClick: () =>
+                                    XH.toast({
+                                        message: 'This is a Toast. Bottom right of app by default.'
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.toast({intent: 'warning'})),
+                                text: 'with custom timeout',
+                                onClick: () =>
+                                    XH.toast({
+                                        message: span(
+                                            'This is a Toast has a timeout: 10000. Ten seconds can seem like forever, right?'
                                         ),
-                                        ul(
-                                            li(
-                                                'Alert promises resolve to true when user acknowledges alert. '
-                                            ),
-                                            li(
-                                                'Confirm and Message promises resolve to true if user confirms, or false if user cancels.'
-                                            ),
-                                            li(
-                                                'Prompt promises resolve to the entered value if user confirms, or false if user cancels.'
-                                            )
+                                        timeout: 10000
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.toast({intent: 'warning'})),
+                                text: 'with position',
+                                onClick: () =>
+                                    XH.toast({
+                                        position: 'top-center',
+                                        message: span('This is a Toast with position: top-center')
+                                    })
+                            }),
+                            button({
+                                ...popBtn(Icon.toast({intent: 'warning'})),
+                                text: 'with intent + icon',
+                                onClick: () =>
+                                    XH.dangerToast({
+                                        message: div(
+                                            'This calls XH.dangerToast() to set an intent and icon suitable for an alert when something goes wrong.'
                                         )
-                                    ),
-                                    confirmProps: {text: 'Resolve to true'},
-                                    cancelProps: {text: 'Resolve to false'}
-                                }).then(responseToast)
-                        })
-                    ),
-                    row(
-                        button({
-                            ...popBtn(Icon.flag({intent: 'primary'})),
-                            text: 'Banner',
-                            onClick: () =>
-                                XH.showBanner({
-                                    message:
-                                        'This is a Banner. Banners are highly configurable, and can display rich text by accepting strings, JSX, and React elements.'
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.flag({intent: 'primary'})),
-                            text: 'with intent + icon',
-                            onClick: () =>
-                                XH.showBanner({
-                                    message: "This is a Banner with intent: 'danger'",
-                                    icon: Icon.skull(),
-                                    intent: 'danger'
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.flag({intent: 'primary'})),
-                            text: 'with action',
-                            onClick: () =>
-                                XH.showBanner({
-                                    message:
-                                        'This is a Banner with an action button. The action button can be configured to execute custom functionality.',
-                                    icon: Icon.flag(),
-                                    actionButtonProps: {
-                                        text: 'Click me!',
-                                        intent: 'success',
-                                        onClick: () => {
-                                            XH.toast({message: 'Action button clicked!'});
-                                            XH.hideBanner();
-                                        }
-                                    }
-                                })
-                        })
-                    ),
-                    row(
-                        button({
-                            ...popBtn(Icon.toast({intent: 'warning'})),
-                            text: 'Toast',
-                            onClick: () =>
-                                XH.toast({
-                                    message: 'This is a Toast. Bottom right of app by default.'
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.toast({intent: 'warning'})),
-                            text: 'with custom timeout',
-                            onClick: () =>
-                                XH.toast({
-                                    message: span(
-                                        'This is a Toast has a timeout: 10000. Ten seconds can seem like forever, right?'
-                                    ),
-                                    timeout: 10000
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.toast({intent: 'warning'})),
-                            text: 'with containerRef',
-                            onClick: () =>
-                                XH.toast({
-                                    message: span('This is a Toast anchored using containerRef'),
-                                    containerRef: divRef.current
-                                })
-                        })
-                    ),
-                    row(
-                        '',
-                        button({
-                            ...popBtn(Icon.toast({intent: 'warning'})),
-                            text: 'with position',
-                            onClick: () =>
-                                XH.toast({
-                                    position: 'top-center',
-                                    message: span('This is a Toast with position: top-center')
-                                })
-                        }),
-                        button({
-                            ...popBtn(Icon.toast({intent: 'warning'})),
-                            text: 'with intent + icon',
-                            onClick: () =>
-                                XH.dangerToast({
-                                    message: div(
-                                        'This calls XH.dangerToast() to set an intent and icon suitable for an alert when something goes wrong.'
-                                    )
-                                })
-                        })
-                    )
-                )
-            )
+                                    })
+                            })
+                        )
+                    ]
+                })
+            ]
         })
     });
 });
@@ -375,8 +409,14 @@ function popBtn(icon) {
     };
 }
 
-function row(col1, col2, col3) {
-    return tr(th(col1), td(col2), td(col3));
+/** One XH popup API and every variation of it we demo, as a labelled row of buttons. */
+function apiRow(label: string, info: string, ...buttons: ReactNode[]) {
+    return demoRow({
+        key: label,
+        label,
+        info,
+        item: hbox({gap: 6, alignItems: 'center', flexWrap: 'wrap', items: buttons})
+    });
 }
 
 function getRichTextReminder() {

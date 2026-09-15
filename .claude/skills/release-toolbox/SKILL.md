@@ -41,13 +41,36 @@ Three invariants that drive the whole process - keep them in mind:
    stays SNAPSHOT by design.
 
 2. **The app SNAPSHOT version lives in three places that must stay in sync** - `gradle.properties`
-   `xhAppVersion`, `client-app/package.json` `version`, and the `CHANGELOG.md` unreleased header.
-   All three use the 2-part Maven form `x.y-SNAPSHOT` (e.g. `10.0-SNAPSHOT`). By the Java
-   convention, the snap is always `(latest_released_major + 1).0-SNAPSHOT`.
+   `xhAppVersion` (the **server**), `client-app/package.json` `version` (the **client**), and the
+   `CHANGELOG.md` unreleased header. All three use the 2-part Maven form `x.y-SNAPSHOT` (e.g.
+   `10.0-SNAPSHOT`). By the Java convention, the snap is always
+   `(latest_released_major + 1).0-SNAPSHOT`.
 
-3. **hoist-dev-utils stays on its release version** (`@xh/hoist-dev-utils`, a caret range on a
-   numbered release). Only `@xh/hoist` (hoist-react) and `hoistCoreVersion` (hoist-core) swap between SNAPSHOT
-   and release. Leave hoist-dev-utils alone unless the developer specifically asks otherwise.
+   **Client and server versions are not cosmetic - a mismatch breaks the app.** Hoist's
+   `EnvironmentService.ensureVersionRunnable()` compares the version baked into the client bundle
+   against the one the server reports and **throws at startup** if they differ ("The version of
+   this client (X) is out of sync with the available server (Y)"). So this invariant is a
+   correctness requirement, not tidiness.
+
+   `client-app/package.json` `version` earns its place here because `webpack.config.js` reads it
+   (`appVersion: pkg.version`) and bakes it into the bundle as `XH.appVersion`. **Confirm that
+   derivation still holds** rather than assuming it - a literal there silently decouples the client
+   from this invariant:
+
+   ```bash
+   grep -n 'appVersion:' client-app/webpack.config.js   # want `pkg.version`, NOT a hardcoded string
+   ```
+
+   The failure mode is **major-release-only**: minor and patch releases reproduce the same snap (see
+   the Phase 9.2 table), so a decoupled client stays accidentally in sync and the drift stays hidden
+   until a major moves the number. Release builds are unaffected either way - `buildRelease.yml`
+   passes `--env appVersion`, which overrides whatever the config resolves.
+
+3. **Three libraries swap, not two.** `@xh/hoist` (hoist-react) and `@xh/hoist-dev-utils` both sit
+   on the npm dist-tag `next` between releases; `hoistCoreVersion` (hoist-core) sits on an explicit
+   `x.y-SNAPSHOT` in `gradle.properties`. All three pin to a release for the release commit and are
+   restored afterward. (dev-utils moved onto `next` alongside hoist-react - earlier revisions of this
+   runbook said it stays on a caret range and never swaps, which is no longer true.)
 
 ## gh is a core tool
 
@@ -75,12 +98,30 @@ Run these checks:
    commits and a clean tree gives a clean rollback point.
 3. **Synced with origin?** `git fetch origin` then compare `develop` to `origin/develop`
    (`git rev-list --left-right --count develop...origin/develop`). Warn strongly if behind/ahead.
-4. **CI green on `develop`?** `gh run list --branch develop --workflow ci.yml --limit 1`. Warn
+4. **Local `master` current with `origin/master`?**
+   `git rev-list --left-right --count master...origin/master` (the `git fetch origin` from check 3
+   already ran). Local `master` is only ever touched during a release, so between releases it drifts
+   far behind - dozens of commits is normal and not alarming. Unlike the other checks, **do not just
+   warn: fix it now**, so Phase 6 starts from a known-good `master`:
+   - **Behind only** (left count `0`, right count non-zero) - fast-forward the local ref without
+     checking it out:
+     `git branch -f master origin/master`. Safe precisely because the left count is `0`, proving no
+     local-only commits, and because `master` is not the current branch. (On the master-direct path
+     from check 1 `master` *is* checked out, so `git branch -f` refuses - use
+     `git merge --ff-only origin/master` there instead.)
+   - **Ahead at all** (left count non-zero) - **stop and ask.** Unpushed local commits on `master`
+     are unexpected and may be unreviewed work that an ff-merge would sweep into a release.
+5. **CI green on `develop`?** `gh run list --branch develop --workflow ci.yml --limit 1`. Warn
    strongly if the latest CI run is failing or in progress.
-5. **App-version 3-way sync?** Quickly confirm the snap version agrees across `gradle.properties`
+6. **App-version 3-way sync?** Quickly confirm the snap version agrees across `gradle.properties`
    (`xhAppVersion`), `client-app/package.json` (`version`), and the `CHANGELOG.md` unreleased
-   header. They should normally match; if they don't, just note it in passing - the restore step
-   (Phase 9) rewrites all three in sync and self-heals it. No special handling needed.
+   header - the commands are in Phase 9.2. They should normally match; if they don't, just note it
+   in passing - the restore step (Phase 9) rewrites all three in sync and self-heals it. No special
+   handling needed.
+   **One thing here is not self-healing:** if `client-app/webpack.config.js` hardcodes an
+   `appVersion` literal instead of reading `pkg.version`, the client is decoupled from that sync and
+   Phase 9 will not fix it. Check it now (`grep -n 'appVersion:' client-app/webpack.config.js`) and
+   restore the derivation if needed - see invariant #2.
 
 Summarize findings. If anything is off, ask: "Proceed anyway?" Wait for confirmation.
 
@@ -99,6 +140,8 @@ classify the situation, and confirm with the developer before changing anything.
   the `version:` field (e.g. `87.0.0-SNAPSHOT.1786485357526` -> snap major 87). Equivalently,
   `npm view @xh/hoist dist-tags --json` and read the `next` tag. See "Why `next`, not a caret
   range" in Phase 9 for the background.
+- `@xh/hoist-dev-utils`: same story - the spec is the `next` dist-tag, so read the resolved version
+  from `pnpm-lock.yaml` or `npm view @xh/hoist-dev-utils dist-tags --json`.
 - `hoistCoreVersion`: `gradle.properties` (e.g. `41.0-SNAPSHOT` -> snap major 41).
 
 ### 2. Discover the latest published releases
@@ -107,6 +150,8 @@ classify the situation, and confirm with the developer before changing anything.
   newest stable release. **The `next` tag must be ignored here** - it points at the current
   SNAPSHOT. (Note `next` is also the dependency spec `develop` sits on between releases, per
   Phase 9; the two uses are unrelated - here you want `latest`.)
+- **hoist-dev-utils** (npm): `npm view @xh/hoist-dev-utils dist-tags --json`, again reading
+  `latest`. It versions on its own line, independent of hoist-react.
 - **hoist-core** (Maven Central): `curl -s https://repo1.maven.org/maven2/io/xh/hoist-core/maven-metadata.xml`
   and read the `<release>` element - the newest non-SNAPSHOT version. (SNAPSHOTs live in a separate
   repo and won't appear here.)
@@ -166,13 +211,18 @@ Once the developer confirms the targets, edit the two files:
   version alone - the spec-rewriting described in Phase 9 only affects prerelease versions.)
 - **`gradle.properties`**: set `hoistCoreVersion` to the **full semver** release (e.g.
   `hoistCoreVersion=40.1.0`).
-- **Leave `@xh/hoist-dev-utils` unchanged.**
+- **`client-app/package.json`**: pin `@xh/hoist-dev-utils` the same way - it is also on the `next`
+  dist-tag, so replace it with its **exact** latest release (e.g. `"@xh/hoist-dev-utils": "15.0.0"`).
 
 Then refresh the client lockfile so the build is reproducible:
 
 ```bash
 cd client-app && pnpm install
 ```
+
+Both CI and the release build install with `pnpm install --frozen-lockfile`, so **`pnpm-lock.yaml`
+must be committed alongside the `package.json` change**. A lockfile out of sync with the manifest
+fails the release build at the install step, before lint, typecheck, or the build itself run.
 
 (Do not run `startWithHoist` / `runHoistInline` - the release must build against the published
 libraries, not local sibling checkouts.)
@@ -244,11 +294,23 @@ proposed version is a valid single increment (e.g. latest `9.0.0` -> valid: `10.
   (`git log <last-tag>..HEAD --oneline`) for material features, bug fixes, or technical changes not
   yet captured. Add what's missing under the right category (`New Features`, `Bug Fixes`,
   `Technical`, `Breaking Changes`).
-- Add/confirm a **`Libraries`** entry recording the Hoist bump, e.g. `* @xh/hoist \`86.0 -> 86.1\``
-  (and hoist-core if it moved). Follow the form already used in the file.
-- **Formatting is critical**: every bullet must be a **single line** (the parser drops wrapped
-  continuation lines and nested sub-bullets silently). No matter how long, one bullet = one line.
-- **No em dashes** anywhere in the copy (per user/global style) - use a plain hyphen.
+- Add/confirm a **`Libraries`** entry for each library whose **released version** actually moved,
+  e.g. `* @xh/hoist \`87.0 → 87.1\``. Use the two-part `major.minor` form with the `→` separator -
+  **not** the 3-part `87.0.0 → 87.1.0` and **not** the retired `ZZ.x` shorthand (`14.x → 15.x`).
+  Older sections of the file predate this convention and are inconsistent, so **do not pattern-match
+  on the file** - `CLAUDE.md` ("Changelog" section) is authoritative. Omit a library whose released
+  version is unchanged even though its spec moved off a SNAPSHOT (e.g. `41.0-SNAPSHOT` pinned back
+  to `41.0.0`).
+- **A patch-only bump gets no entry either.** Because the form is two-part, a move like
+  `15.0.0 → 15.0.1` renders as `15.0 → 15.0` - a line that says nothing. Omit it; do **not** reach
+  for the 3-part form to make it legible. The two-part convention is deliberate, and patch-level
+  library churn is not release-note material.
+- **Formatting is critical and fails silently** - a malformed entry is dropped from the parsed
+  output while the build still succeeds. Every bullet must be a **single line** however long, and
+  every bullet and `###` header must start at **column 0** - one leading space drops it. See the
+  header comment at the top of `CHANGELOG.md`.
+- **No em dashes** anywhere in the copy (per user/global style) - use a plain hyphen. The `→` in
+  Libraries entries is the one exception.
 
 ---
 
@@ -269,7 +331,25 @@ trailer). Show the developer the staged diff before committing if there's any am
 ## Phase 6: Merge develop into master
 
 Toolbox does versioned releases from `master`. Move the just-finalized commit onto `master` with a
-**fast-forward-only** merge so master lands exactly on the release commit:
+**fast-forward-only** merge so master lands exactly on the release commit.
+
+### Re-confirm local `master` before merging
+
+Phase 1.4 should have brought it current, but re-check - a stale local `master` is the most common
+way this phase goes subtly wrong:
+
+```bash
+git rev-list --left-right --count master...origin/master   # want "0	0"
+```
+
+Why this deserves a second look: a stale `master` **still fast-forwards correctly**. `git checkout
+master` prints a reassuring "Your branch is behind 'origin/master' by N commits, and can be
+fast-forwarded", the merge then advances past all of it, and the result is right. That benign
+message is the hazard - it trains you to wave off the *one* case that matters, local-only commits on
+`master`, which either fail the ff-merge or sweep unreviewed work into a release. Do not read "behind
+by N" as "handled"; read the count and resolve anything non-zero first.
+
+### Merge
 
 Propose and confirm, then run:
 
@@ -280,6 +360,18 @@ git merge --ff-only develop
 
 If the ff-merge fails (master has diverged), **stop and ask** - do not force or create a non-ff
 merge without the developer's direction.
+
+### Verify the result
+
+Do not proceed on the merge's exit code alone - confirm master actually landed where you intend:
+
+```bash
+git rev-list --left-right --count master...develop   # must be "0	0" - master is identical to develop
+git log origin/master..master --oneline              # the release commit, plus everything since the last release
+```
+
+The second command is the useful sanity read: it should list the release commit on top and the work
+this release ships beneath it. If it lists commits you don't recognize, stop.
 
 ---
 
@@ -384,20 +476,20 @@ git checkout develop
 
 ### 1. Restore the Hoist libraries to SNAPSHOTs
 
-Reset the two libraries (leave hoist-dev-utils on its release version). They restore differently -
-hoist-react by dist-tag, hoist-core by explicit version:
+Reset all three libraries. They restore differently - hoist-react and hoist-dev-utils by dist-tag,
+hoist-core by explicit version:
 
-**hoist-react** - always restore `client-app/package.json` to the bare dist-tag, in every case:
+**hoist-react + hoist-dev-utils** - always restore both `client-app/package.json` specs to the bare
+dist-tag, in every case:
 
 ```json
 {
-  "dependencies": {
-    "@xh/hoist": "next"
-  }
+  "dependencies": {"@xh/hoist": "next"},
+  "devDependencies": {"@xh/hoist-dev-utils": "next"}
 }
 ```
 
-No version number, no caret. `next` always points at hoist-react's current SNAPSHOT, so this is
+No version number, no caret. `next` always points at the library's current SNAPSHOT, so this is
 correct whether the major was just released (the tag has already advanced to the next major's
 SNAPSHOT line) or is still in development (the tag still points at the line you started from). The
 Phase 2 case distinction does not apply here - the tag self-corrects, which is the point.
@@ -414,12 +506,12 @@ advances independently of hoist-react's; the examples below are all hoist-core v
   `41.0-SNAPSHOT` and shipped `40.1.0`): restore the **same snap you started from**,
   `41.0-SNAPSHOT`.
 
-Then `cd client-app && pnpm install` to update the lockfile. Confirm the restore resolved as
-expected before committing - `pnpm install` prints nothing useful about which snapshot it landed
-on, so read it back:
+Then `cd client-app && pnpm install` to update the lockfile. It prints a version delta for each
+package that moved, but read the resolved versions back before committing - `pnpm hoistVer` covers
+`@xh/hoist` only, so check dev-utils explicitly:
 
 ```bash
-cd client-app && pnpm hoistVer
+cd client-app && pnpm hoistVer && node -p "require('@xh/hoist-dev-utils/package.json').version"
 ```
 
 #### Why `next`, not a caret range
@@ -444,19 +536,55 @@ unaffected: `pnpm-lock.yaml` still records one exact build, and CI installs `--f
 the tag ever stops existing, pnpm fails loudly with `ERR_PNPM_NO_MATCHING_VERSION` rather than
 silently reusing a stale lockfile entry.
 
-### 2. Advance the app SNAPSHOT version (all three places, in sync)
+### 2. Set the app SNAPSHOT version (all three places, in sync)
 
-By the Java convention the working snap is always `(just_released_major + 1).0-SNAPSHOT`. Write that
-2-part value to **all three** locations so they stay in sync:
+**First compute the value, then write it.** Take the major of the version you **just released** and
+add one:
 
-- `gradle.properties` -> `xhAppVersion=<next-major>.0-SNAPSHOT`
-- `client-app/package.json` -> `"version": "<next-major>.0-SNAPSHOT"`
-- `CHANGELOG.md` -> a fresh top header `## <next-major>.0-SNAPSHOT - unreleased`
+```
+SNAP = (major of the released version) + 1, as `<SNAP>.0-SNAPSHOT`
+```
 
-Examples: shipped `10.0.0` -> `11.0-SNAPSHOT`; shipped `10.1.1` -> `11.0-SNAPSHOT`; shipped a
-minor/patch of the prior line such as `9.1.0` while snap was already `10.0-SNAPSHOT` -> stays
-`10.0-SNAPSHOT` (the formula `(9+1)` reproduces the existing snap - a no-op). Writing all three
-unconditionally also self-heals any prior drift found in Phase 1.5.
+The input is the **released** major, never the major of the snap currently in the files. Deriving it
+from the current snap gives an answer one too high - the most common mistake in this phase.
+
+Write that 2-part value to **all three** locations so they stay in sync:
+
+- `gradle.properties` -> `xhAppVersion=<SNAP>.0-SNAPSHOT`
+- `client-app/package.json` -> `"version": "<SNAP>.0-SNAPSHOT"`
+- `CHANGELOG.md` -> a fresh top header `## <SNAP>.0-SNAPSHOT - unreleased`
+
+**A major release advances the snap; a minor or patch release does not.** Releasing off the prior
+line reproduces the snap already in the files, so the version files should come out unchanged:
+
+| Just released | Snap before | SNAP | Result |
+|---|---|---|---|
+| `10.0.0` | `10.0-SNAPSHOT` | `(10+1)` = 11 | advances to `11.0-SNAPSHOT` |
+| `10.1.1` | `11.0-SNAPSHOT` | `(10+1)` = 11 | stays `11.0-SNAPSHOT` |
+| `9.5.0` | `10.0-SNAPSHOT` | `(9+1)` = 10 | stays `10.0-SNAPSHOT` |
+
+**Self-check before committing:** on a minor or patch release, `git diff` should show **no change**
+to `gradle.properties` `xhAppVersion` or to `package.json` `version` - only the CHANGELOG header and
+the library specs move. If either version file changed, you derived SNAP from the snap instead of
+the release. Writing all three unconditionally also self-heals any prior drift found in Phase 1.6.
+
+**Then verify the three actually agree - do not trust the edits.** Per invariant #2 a client/server
+mismatch throws at app startup. Run all four; the first three must print the same `x.y-SNAPSHOT`,
+and the fourth must show a derivation rather than a literal:
+
+```bash
+grep '^xhAppVersion=' gradle.properties                 # server
+node -p "require('./client-app/package.json').version"  # client
+grep -m1 '^## ' CHANGELOG.md                            # changelog header
+grep -n 'appVersion:' client-app/webpack.config.js      # want `pkg.version`, NOT a hardcoded string
+```
+
+If the fourth shows a hardcoded version string, someone has reintroduced the decoupling - fix it to
+read from `package.json` rather than hand-editing a fifth copy of the number.
+
+**Run this every time, even though it only bites on a major.** On a minor or patch release the snap
+doesn't move, so a decoupled client stays accidentally correct and the check passes for the wrong
+reason.
 
 Leave the new CHANGELOG section empty (no category sub-headers) - entries accumulate as new work
 lands.
@@ -473,6 +601,21 @@ Then, **same as Phase 7, ask before pushing** - do not assume:
 ```bash
 git push origin develop
 ```
+
+### 4. Confirm `toolbox-dev` comes back up
+
+Pushing `develop` triggers Build Snapshot, which on success auto-deploys `toolbox-dev`. The restore
+just moved the app version, so this is the first time the new snap runs anywhere - and a
+client/server mismatch (invariant #2) surfaces only here, as a startup exception rather than a build
+failure. Neither the release build nor CI will have caught it.
+
+```bash
+gh run list --workflow buildSnapshot.yml --limit 1
+```
+
+Watch it to success, then confirm the dev app actually loads and reports the new snap for **both**
+client and server. If the developer pushed themselves and you're wrapping up, call this out as an
+explicit follow-up rather than declaring the release done.
 
 ---
 

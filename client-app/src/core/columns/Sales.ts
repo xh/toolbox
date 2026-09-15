@@ -1,4 +1,4 @@
-import {boolCheckCol} from '@xh/hoist/cmp/grid';
+import {boolCheck} from '@xh/hoist/cmp/grid';
 import {numberRenderer, percentRenderer} from '@xh/hoist/format';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
@@ -62,7 +62,7 @@ export const commissionCol: ColumnSpec = {
 };
 
 export const retainCol: ColumnSpec = {
-    ...boolCheckCol,
+    ...boolCheck,
     field: {name: 'retain', type: 'bool'},
     width: 70
 };
