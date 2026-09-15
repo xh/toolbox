@@ -25,7 +25,7 @@ import {isEmpty, isEqual, isNumber} from 'lodash';
 const TOLERANCE = 1e-6;
 
 /** Aggregators the reference reproduces. Scenarios declare one per value field. */
-export type RefAggKind = 'SUM' | 'SUM_STRICT' | 'AVG_STRICT' | 'UNIQUE' | 'CHILD_COUNT';
+export type RefAggKind = 'SUM' | 'SUM_STRICT' | 'AVG' | 'AVG_STRICT' | 'UNIQUE' | 'CHILD_COUNT';
 
 export interface PivotCheck {
     name: string;
@@ -163,6 +163,8 @@ function expected(
             return stat.count ? stat.sum : null;
         case 'SUM_STRICT':
             return stat.anyNull ? null : stat.sum;
+        case 'AVG':
+            return stat.count ? stat.sum / stat.count : null;
         case 'AVG_STRICT':
             return stat.anyNull ? null : stat.sum / stat.count;
         case 'UNIQUE':

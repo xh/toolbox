@@ -60,10 +60,19 @@ interface Scenario {
 /** `experimental.maxPatchRatio` applied when record patching is toggled on. */
 const PATCH_RATIO = 0.1;
 
-/** Value fields for the mixed-aggregator scenarios - one per aggregator under test, plus a SUM. */
-const MIXED_FIELDS = ['pnl', 'sumStrict', 'avgStrict', 'tag', 'childCount'],
+/**
+ * Value fields for the mixed-aggregator scenarios - one per aggregator under test, plus a SUM.
+ *
+ * `avg` and `avgStrict` are the two that compose from a running `{total, count}` held as aggregator
+ * state rather than from their children's published values, so they are the only measures whose
+ * correctness depends on an update carrying its *originating leaf's* values all the way up. Plain
+ * `AVG` is the sharper of the two: `AVG_STRICT.replace` bails to a full re-aggregate whenever either
+ * side of the delta is null, while `AVG.replace` always takes the incremental arm.
+ */
+const MIXED_FIELDS = ['pnl', 'sumStrict', 'avg', 'avgStrict', 'tag', 'childCount'],
     MIXED_AGGS: Record<string, RefAggKind> = {
         sumStrict: 'SUM_STRICT',
+        avg: 'AVG',
         avgStrict: 'AVG_STRICT',
         tag: 'UNIQUE',
         childCount: 'CHILD_COUNT'
@@ -278,6 +287,25 @@ const DIM_TRANSITIONS: Array<{label: string; groupBy: string[]; pivotBy: string[
 ];
 
 /**
+ * `generateCells` bails to `clearCells()` whenever the final network holds no group node, and that can
+ * follow from a query change `RowCache` prunes nothing for - `includeRoot` is in neither
+ * `orphansParents` nor `invalidatesParents`. With no grouping dimensions the root *is* the only group,
+ * so dropping it empties the group set while every leaf stays live, cached, and connected.
+ *
+ * A leaf left pointing at a discarded cell routes its next tick into a dead row. Exposed leaves, so the
+ * cell-less state still publishes rows worth comparing.
+ */
+const CELL_BAIL_SCENARIO: Scenario = {
+    id: 'cellBail',
+    label: 'Cells discarded while leaves stay live',
+    groupBy: [],
+    pivotBy: ['region'],
+    valueFields: ['pnl'],
+    leaves: 1000,
+    includeLeaves: true
+};
+
+/**
  * Two pivot dims so pivot summaries materialize, two value fields so a leaf path carries a group rather
  * than a bare column. Asserts the built column tree, not a rendered grid - the model needs no DOM.
  */
@@ -369,6 +397,7 @@ const FIELD_SPECS: Record<string, {type: 'number' | 'string'; aggregator: Aggreg
     mktVal: {type: 'number', aggregator: 'SUM'},
     quantity: {type: 'number', aggregator: 'SUM'},
     sumStrict: {type: 'number', aggregator: 'SUM_STRICT'},
+    avg: {type: 'number', aggregator: 'AVG'},
     avgStrict: {type: 'number', aggregator: 'AVG_STRICT'},
     tag: {type: 'string', aggregator: 'UNIQUE'},
     childCount: {type: 'number', aggregator: 'CHILD_COUNT'}
@@ -459,6 +488,7 @@ export class PivotViewTestModel extends HoistModel {
             await this.runStoreFactoryScenarioAsync();
             await this.runQueryTransitionScenarioAsync();
             await this.runDimTransitionScenarioAsync();
+            await this.runCellBailScenarioAsync();
             await this.runPivotGridScenarioAsync();
             for (const scenario of PLAIN_SCENARIOS) {
                 await this.runPlainScenarioAsync(scenario);
@@ -1156,6 +1186,86 @@ export class PivotViewTestModel extends HoistModel {
     }
 
     /**
+     * Walk a pivoted view into and back out of a generation that builds no cells at all, ticking in
+     * both states. See {@link CELL_BAIL_SCENARIO} for why `includeRoot` is the lever.
+     *
+     * The failure is a throw out of `projectCell`, not a wrong value - the discarded cell resolves no
+     * field names - so the assertions either side of the tick exist to prove the scenario actually
+     * reached the bail rather than passing because nothing happened.
+     */
+    private async runCellBailScenarioAsync() {
+        const scenario = CELL_BAIL_SCENARIO,
+            {groupBy, pivotBy, valueFields} = scenario,
+            leaves = this.buildLeaves(scenario),
+            fields = this.buildFields(scenario),
+            queryConf = this.buildQueryConf(scenario);
+
+        const cube = this.newCube(fields);
+        await cube.loadDataAsync(leaves);
+
+        try {
+            const view = cube.createPivotView({query: queryConf, connect: true});
+
+            this.record(scenario, [
+                boolCheck(
+                    'cell bail: the root group builds cells to begin with',
+                    !isEmpty(view.result.cellFields),
+                    'no cells were built - nothing below proves anything'
+                )
+            ]);
+
+            view.updateQuery({includeRoot: false});
+
+            this.record(scenario, [
+                boolCheck(
+                    'cell bail: dropping the only group discards every cell',
+                    isEmpty(view.result.cellFields) && isEmpty(view.result.paths),
+                    `cellFields ${view.result.cellFields.length}, ` +
+                        `paths ${view.result.paths.length} - the bail was not reached`
+                )
+            ]);
+
+            // The tick that follows a leaf's stale `pivotParent` into a discarded cell.
+            await this.tickAsync(scenario, leaves, cube, 1);
+
+            const flat = cube.createPivotView({query: {...queryConf, includeRoot: false}});
+            this.record(scenario, [
+                comparePivotViews(
+                    view,
+                    flat,
+                    valueFields,
+                    'cell bail: ticking with no cells matches a full rebuild',
+                    false
+                )
+            ]);
+            XH.safeDestroy(flat);
+
+            // Back to a group node. The pivot route has to re-establish - a cell-less generation must
+            // not sever it permanently, which is the other way a fix here could go wrong.
+            view.updateQuery({includeRoot: true});
+            await this.tickAsync(scenario, leaves, cube, 2);
+
+            this.record(
+                scenario,
+                checkPivotView({
+                    view,
+                    leaves,
+                    groupBy,
+                    pivotBy,
+                    valueFields,
+                    label: 'cell bail: cells restored'
+                })
+            );
+
+            XH.safeDestroy(view);
+        } catch (e) {
+            this.recordThrow(scenario, e);
+        } finally {
+            XH.safeDestroy(cube);
+        }
+    }
+
+    /**
      * The rewired `PivotGridModel` against the column tree it builds. No grid is mounted - the model
      * needs no DOM, and the structure is the thing under test.
      */
@@ -1770,8 +1880,8 @@ export class PivotViewTestModel extends HoistModel {
 
     /**
      * Move a slice of the measures, as a function of `gen` so successive ticks never repeat. Kept
-     * under `experimental.patchRecordsMaxRatio` (10%) so a patchable record set can express the
-     * change as a patch rather than flattening into a fresh base.
+     * under {@link PATCH_RATIO} so a patched record set can express the change as a patch rather
+     * than flattening into a fresh base.
      */
     private tickMeasures(leaves: PlainObject[], gen: number) {
         leaves.forEach((rec, i) => {
@@ -1800,6 +1910,10 @@ export class PivotViewTestModel extends HoistModel {
 
             rec.sumStrict = nulled ? null : (i % 97) - 40 + bump;
             rec.avgStrict = nulled ? null : ((i * 13) % 53) + 1 + bump;
+            // Plain AVG skips nulls rather than nulling the aggregate, so unlike the strict measures
+            // its nulls are sprinkled - and they *move* with `gen`, so leaves cross the boundary both
+            // ways and the running count has to follow the delta rather than just the total.
+            rec.avg = i % 11 === gen % 11 ? null : ((i * 29) % 71) + 1 + bump;
             rec.tag = rec.fund === movedFund && i % 13 === 0 ? 'MOVED' : rec.fund;
         });
     }
