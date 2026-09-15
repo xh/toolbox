@@ -42,11 +42,9 @@ declare module '@xh/hoist/core' {
 // you must provide your own license
 //-----------------------------------------------------------------
 import {installAgGrid} from '@xh/hoist/kit/ag-grid';
-import {ModuleRegistry, provideGlobalGridOptions} from 'ag-grid-community';
+import {ModuleRegistry} from 'ag-grid-community';
 import {LicenseManager} from 'ag-grid-enterprise';
 import {AgGridReact} from 'ag-grid-react';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-balham.css';
 
 // 1) Standard community modules - required for all Hoist Apps.
 import {
@@ -130,7 +128,6 @@ if (xhIsDevelopmentMode) {
     enableDevValidations({showOverlayOn: [], throwOn: [], suppress: []});
 }
 
-provideGlobalGridOptions({theme: 'legacy'});
 installAgGrid(AgGridReact as any, ClientSideRowModelModule.version);
 
 when(
