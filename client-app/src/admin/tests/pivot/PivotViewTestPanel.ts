@@ -42,8 +42,8 @@ const checkTbar = hoistCmp.factory<PivotViewTestModel>(({model}) =>
         numberInput({bind: 'tickPct', width: 60, min: 0.1, max: 100, stepSize: 0.5}),
         toolbarSep(),
         switchInput({
-            bind: 'patchableRecordSet',
-            label: 'Patchable Records',
+            bind: 'patchRecordSets',
+            label: 'Patch Records',
             labelSide: 'left',
             disabled: model.running
         }),

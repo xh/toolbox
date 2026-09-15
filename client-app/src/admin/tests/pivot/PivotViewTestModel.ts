@@ -57,6 +57,9 @@ interface Scenario {
     denseRecords?: boolean;
 }
 
+/** `experimental.maxPatchRatio` applied when record patching is toggled on. */
+const PATCH_RATIO = 0.1;
+
 /** Value fields for the mixed-aggregator scenarios - one per aggregator under test, plus a SUM. */
 const MIXED_FIELDS = ['pnl', 'sumStrict', 'avgStrict', 'tag', 'childCount'],
     MIXED_AGGS: Record<string, RefAggKind> = {
@@ -397,7 +400,7 @@ export class PivotViewTestModel extends HoistModel {
      * pass either way - the flag changes how record sets are derived, not what they hold - so a check
      * that only fails with it on is a bug in the incremental path.
      */
-    @bindable patchableRecordSet = false;
+    @bindable patchRecordSets = false;
     // Bindable, not observable: `running` is observed and is set outside an action below - Hoist's
     // bindable setter wraps in one, which `enforceActions: 'observed'` requires.
     @bindable running = false;
@@ -1083,6 +1086,8 @@ export class PivotViewTestModel extends HoistModel {
 
         try {
             const view = cube.createPivotView({query: queryConf, connect: true});
+            let loads = 0,
+                patched = 0;
 
             for (let i = 0; i < DIM_TRANSITIONS.length; i++) {
                 const {label, groupBy, pivotBy} = DIM_TRANSITIONS[i],
@@ -1095,10 +1100,12 @@ export class PivotViewTestModel extends HoistModel {
                 if (i) {
                     this.tickMeasures(leaves, i);
                     // Alternate the two routes into a connected view. A reload diffs the incoming
-                    // records itself, which is the one path a patchable record set can express as a
+                    // records itself, which is the one path a patched record set can express as a
                     // patch without a digest - so this is where that flag earns anything at all.
                     if (i % 2) {
                         await cube.loadDataAsync(leaves);
+                        loads++;
+                        if (cube.store.diagnostics.load.last?.type === 'patched') patched++;
                     } else {
                         await cube.updateDataAsync(leaves);
                     }
@@ -1130,14 +1137,13 @@ export class PivotViewTestModel extends HoistModel {
                 XH.safeDestroy(rebuilt);
             }
 
-            // A patchable record set that never patches is only bookkeeping - the reloads above must
-            // reach the incremental path, or nothing here has actually exercised the flag.
-            const {patchStats} = cube.store;
+            // A patch ratio that never patches is only bookkeeping - the reloads above must reach
+            // the incremental path, or nothing here has actually exercised the flag.
             this.record(scenario, [
                 boolCheck(
                     'dims: reloads stayed on the incremental patch path',
-                    !this.patchableRecordSet || patchStats.patched > 0,
-                    `patched ${patchStats?.patched} of ${patchStats?.count} derivations`
+                    !this.patchRecordSets || patched > 0,
+                    `patched ${patched} of ${loads} reloads`
                 )
             ]);
 
@@ -1708,7 +1714,7 @@ export class PivotViewTestModel extends HoistModel {
     }
 
     private get experimental(): PlainObject {
-        return {patchableRecordSet: this.patchableRecordSet};
+        return {maxPatchRatio: this.patchRecordSets ? PATCH_RATIO : 0};
     }
 
     /**

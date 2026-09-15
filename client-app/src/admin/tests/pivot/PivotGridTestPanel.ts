@@ -59,7 +59,7 @@ const queryBar = hoistCmp.factory<PivotGridTestModel>(() =>
         switchInput({bind: 'includeLeaves', label: 'Leaves'}),
         switchInput({bind: 'excludeEmptyPivotValues', label: 'Drop empties'}),
         // Fixed at Store construction, so toggling rebuilds the Cube and everything below it.
-        switchInput({bind: 'patchableRecordSet', label: 'Patchable'})
+        switchInput({bind: 'patchRecordSets', label: 'Patch'})
     )
 );
 

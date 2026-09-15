@@ -6,6 +6,9 @@ import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx'
 import {isEmpty, uniq} from 'lodash';
 import {generateLeaves, getProfile, tickLeaves} from './PivotBenchData';
 
+/** `experimental.maxPatchRatio` applied when record patching is toggled on. */
+const PATCH_RATIO = 0.1;
+
 /**
  * A live `PivotGrid` with its whole config surface driven from a toolbar - the panel to reach for when
  * a question is "what does this look like", rather than "is this correct".
@@ -28,7 +31,7 @@ export class PivotGridTestModel extends HoistModel {
     @bindable leafCount = 5000;
 
     /** Fixed at Store construction, so flipping it rebuilds the Cube and everything downstream. */
-    @bindable patchableRecordSet = false;
+    @bindable patchRecordSets = false;
 
     /** Applied to the outermost pivot dimension only - enough to see it work. */
     @bindable pivotSort: PivotSort = null;
@@ -50,7 +53,7 @@ export class PivotGridTestModel extends HoistModel {
 
         this.addReaction(
             {
-                track: () => [this.leafCount, this.patchableRecordSet],
+                track: () => [this.leafCount, this.patchRecordSets],
                 equals: 'shallow',
                 run: () => this.rebuildAsync(),
                 fireImmediately: true
@@ -103,7 +106,7 @@ export class PivotGridTestModel extends HoistModel {
             this.cube = new Cube({
                 fields: this.cubeFields(),
                 idSpec: 'id',
-                store: {experimental: {patchableRecordSet: this.patchableRecordSet}}
+                store: {experimental: {maxPatchRatio: this.patchRecordSets ? PATCH_RATIO : 0}}
             });
             await this.cube.loadDataAsync(this.leaves);
 
