@@ -121,32 +121,26 @@ export class RecallsPanelModel extends HoistModel {
     override async doLoadAsync(loadSpec: LoadSpec) {
         const {gridModel} = this;
 
-        try {
-            await this.runner({loadSpec})
-                .span('load')
-                .run(async ctx => {
-                    let entries = await XH.fetchJson(
-                        {
-                            url: 'recalls',
-                            params: {searchQuery: this.searchQuery}
-                        },
-                        ctx
-                    );
+        await this.runner({loadSpec})
+            .span('load')
+            .run(async ctx => {
+                let entries = await XH.fetchJson(
+                    {
+                        url: 'recalls',
+                        params: {searchQuery: this.searchQuery}
+                    },
+                    ctx
+                );
 
-                    if (loadSpec.isStale) return;
-
-                    // Approximate (and enforce) a unique id for this rather opaque API
-                    entries.forEach(it => {
-                        it.id = it.openfda.brand_name[0] + it.recall_number;
-                    });
-                    entries = uniqBy(entries, 'id');
-
-                    gridModel.loadData(entries);
-                    await gridModel.preSelectFirstAsync();
+                // Approximate (and enforce) a unique id for this rather opaque API
+                entries.forEach(it => {
+                    it.id = it.openfda.brand_name[0] + it.recall_number;
                 });
-        } catch (e) {
-            XH.handleException(e);
-        }
+                entries = uniqBy(entries, 'id');
+
+                gridModel.loadData(entries);
+                await gridModel.preSelectFirstAsync();
+            });
     }
 
     private processRecord(rawRec) {

@@ -148,16 +148,10 @@ export class WeatherDashModel extends HoistModel {
                         XH.fetchJson({url: 'weather/current', params}, ctx),
                         XH.fetchJson({url: 'weather/forecast', params}, ctx)
                     ]);
-                if (loadSpec.isStale) return;
-
                 runInAction(() => {
                     this.currentWeather = currentWeather;
                     this.forecast = forecast;
                 });
-            })
-            .catch(e => {
-                if (loadSpec.isAutoRefresh || loadSpec.isStale) return;
-                XH.handleException(e);
             });
     }
 }

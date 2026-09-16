@@ -134,6 +134,6 @@ export class GitHubService extends HoistService {
                     });
                 }
             })
-            .catch(e => XH.handleException(e, {showAlert: false, showAsError: false}));
+            .catchDefault({showAlert: false, showAsError: false});
     }
 }
