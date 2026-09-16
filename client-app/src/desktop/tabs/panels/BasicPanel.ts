@@ -2,11 +2,11 @@ import {filler, p} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
-import {parseMenuItems} from '@xh/hoist/desktop/cmp/menu/impl/MenuItems';
+import {menu} from '@xh/hoist/desktop/cmp/menu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {menu, popover} from '@xh/hoist/kit/blueprint';
+import {popover} from '@xh/hoist/kit/blueprint';
 import {wait} from '@xh/hoist/promise';
 import {usStates} from '../../../core/data';
 import {wrapper, wrapperOption} from '../../common';
@@ -90,8 +90,8 @@ export const basicPanel = hoistCmp.factory({
                             icon: Icon.chevronDown(),
                             text: 'Menu Button'
                         }),
-                        content: menu(
-                            parseMenuItems([
+                        content: menu({
+                            menuItems: [
                                 {text: 'Menu Item 1', icon: Icon.rocket(), intent: 'success'},
                                 {text: 'Menu Item 2', icon: Icon.skull(), intent: 'danger'},
                                 {
@@ -107,8 +107,8 @@ export const basicPanel = hoistCmp.factory({
                                         text: it
                                     }))
                                 }
-                            ])
-                        )
+                            ]
+                        })
                     })
                 ],
                 // Panel scrolls and pads its own content - no wrapper div required.
