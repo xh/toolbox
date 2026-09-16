@@ -83,7 +83,7 @@ export class SampleColumnGroupsGridModel extends HoistModel {
             columns: [
                 {
                     groupId: 'demographics',
-                    expandedByDefault: false,
+                    collapsed: true,
                     children: [
                         {...fullNameCol, groupShowMode: 'collapsed'},
                         {...firstNameCol, groupShowMode: 'expanded'},
