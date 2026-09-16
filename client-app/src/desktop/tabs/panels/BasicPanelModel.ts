@@ -114,6 +114,16 @@ export class BasicPanelModel extends HoistModel {
             prepareFn: item => (item.disabled = this.textScale <= TEXT_SCALE_MIN),
             actionFn: () => this.changeTextSize(false)
         },
+        {
+            text: 'Text Size Presets',
+            icon: Icon.plusCircle(),
+            items: [
+                {text: 'Small', actionFn: () => (this.textScale = TEXT_SCALE_MIN)},
+                {text: 'Normal', actionFn: () => (this.textScale = 1)},
+                {text: 'Large', actionFn: () => (this.textScale = TEXT_SCALE_MAX)}
+            ]
+        },
+
         // 'Lookup' hides itself unless the click landed on a word - right-click the empty space
         // below the text and this heading drops along with it, rather than stranding a label over
         // an empty section.
