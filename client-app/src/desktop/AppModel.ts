@@ -7,7 +7,7 @@ import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {makeObservable, runInAction} from '@xh/hoist/mobx';
 import {ReactElement} from 'react';
-import {isEmpty} from 'lodash';
+import {isEmpty, isEqual} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
 import {cardChoiceInput} from './common';
 import {DocService} from '../core/svc/DocService';
@@ -589,6 +589,10 @@ export class AppModel extends BaseAppModel {
             {id: 'docs', icon: Icon.book(), content: docsTab},
             {id: 'examples', title: 'Example Apps', icon: Icon.boxFull(), content: examplesTab}
         ];
+        // Sourced once and shared by `initialFavorites` and the "Restore Defaults" menu item below,
+        // so that a reset always lands on the same state the app ships with.
+        const defaultFavoriteTabIds = tabs.map(it => it.id);
+
         return new TabContainerModel({
             persistWith: {localStorageKey: 'tabState'},
             route: 'default',
@@ -596,7 +600,7 @@ export class AppModel extends BaseAppModel {
             tabs,
             switcher: {
                 mode: 'dynamic',
-                initialFavorites: tabs.map(it => it.id),
+                initialFavorites: defaultFavoriteTabIds,
                 extraMenuItems: [
                     ...switcher.extraMenuItems,
                     '-',
@@ -620,6 +624,22 @@ export class AppModel extends BaseAppModel {
                                 }));
                             }
                         }
+                    },
+                    {
+                        text: 'Restore Default Tabs',
+                        icon: Icon.reset(),
+                        // Disabled (rather than hidden) when already at defaults - the item stays
+                        // discoverable, and its state tells you there is nothing to restore.
+                        prepareFn: me => {
+                            me.disabled = isEqual(
+                                this.tabModel.dynamicTabSwitcherModel.favoriteTabIds,
+                                defaultFavoriteTabIds
+                            );
+                        },
+                        actionFn: () =>
+                            this.tabModel.dynamicTabSwitcherModel.setFavoriteTabIds(
+                                defaultFavoriteTabIds
+                            )
                     }
                 ]
             }

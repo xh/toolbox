@@ -1,6 +1,6 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {span, div, vbox, p} from '@xh/hoist/cmp/layout';
-import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
+import {dateTime, localDate} from '@xh/hoist/cmp/grid/columns/DatesTimes';
 import {lookup, managed, HoistModel, XH} from '@xh/hoist/core';
 import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
@@ -154,13 +154,13 @@ export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
                     width: 60
                 },
                 {
-                    ...localDateCol,
+                    ...localDate,
                     field: 'committedDay',
                     filterable: true,
                     hidden: true
                 },
                 {
-                    ...dateTimeCol,
+                    ...dateTime,
                     field: 'committedDate',
                     filterable: true
                 },
