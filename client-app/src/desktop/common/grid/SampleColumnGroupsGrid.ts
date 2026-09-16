@@ -1,4 +1,4 @@
-import {grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
+import {grid, gridCountLabel, GridConfig, GridModel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {hoistCmp, HoistModel, managed, uses, XH} from '@xh/hoist/core';
@@ -29,10 +29,10 @@ export class SampleColumnGroupsGridModel extends HoistModel {
 
     panelRef = createRef<HTMLElement>();
 
-    constructor() {
+    constructor({gridConfig}: {gridConfig?: Partial<GridConfig>} = {}) {
         super();
         makeObservable(this);
-        this.gridModel = this.createGridModel();
+        this.gridModel = this.createGridModel(gridConfig);
 
         this.addReaction({
             track: () => this.inMillions,
@@ -48,7 +48,7 @@ export class SampleColumnGroupsGridModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    private createGridModel() {
+    private createGridModel(gridConfig: Partial<GridConfig>) {
         const millionsAwareCol = {
             headerName: () => 'Gross' + (this.inMillions ? ' (m)' : ''),
             rendererIsComplex: true,
@@ -83,38 +83,13 @@ export class SampleColumnGroupsGridModel extends HoistModel {
             columns: [
                 {
                     groupId: 'demographics',
+                    collapsed: true,
                     children: [
-                        {
-                            ...fullNameCol,
-                            agOptions: {
-                                columnGroupShow: 'closed'
-                            }
-                        },
-                        {
-                            ...firstNameCol,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        },
-                        {
-                            ...lastNameCol,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        },
-                        {
-                            ...cityCol,
-                            hidden: true,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        },
-                        {
-                            ...stateCol,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        }
+                        {...fullNameCol, groupShowMode: 'collapsed'},
+                        {...firstNameCol, groupShowMode: 'expanded'},
+                        {...lastNameCol, groupShowMode: 'expanded'},
+                        {...cityCol, hidden: true, groupShowMode: 'expanded'},
+                        {...stateCol, groupShowMode: 'expanded'}
                     ]
                 },
                 {...salaryCol},
@@ -146,7 +121,8 @@ export class SampleColumnGroupsGridModel extends HoistModel {
                     ]
                 },
                 {...retainCol}
-            ]
+            ],
+            ...gridConfig
         });
     }
 
