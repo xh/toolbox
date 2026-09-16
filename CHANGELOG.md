@@ -39,6 +39,16 @@
 
 * @xh/hoist `87.2 → 87.3`
 
+### Technical
+
+* Upgraded to Grails 8 and the Gradle 9 wrapper.
+* Reworked the `hoistCoreCli` configuration to resolve the active hoist-core version via `withDependencies`, deferring it to task execution. Resolving `runtimeClasspath` at configuration time under the Grails/Spring Boot plugin locks `developmentOnly` before its `afterEvaluate` hook can populate it.
+
+### Libraries
+
+* Grails `7.2.2 -> 8.0.0-M6`
+* Gradle `8.14.5 -> 9.6.1`
+
 ## 10.0.0 - 2026-09-09
 
 ### New Features

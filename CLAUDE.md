@@ -274,12 +274,12 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 ## Tech Stack
 
 - **Frontend**: TypeScript, React 18, MobX, AG Grid, Highcharts, `@xh/hoist` framework
-- **Backend**: Grails 7 (Groovy/Spring Boot), `hoist-core` framework
+- **Backend**: Grails 8 (Groovy/Spring Boot), `hoist-core` framework
 - **JDK**: the JVM version used for local development and CI is set by `majorJavaVersion` in
-  `gradle.properties`; the Gradle toolchain in `build.gradle` reads that value. JDK 25+ is not
-  currently usable - Gradle 8.x caps its compatible JVM at version 24. (Note that `hoist-core`
-  itself is separately pinned to a lower bytecode level so its published JAR remains runnable
-  by older client apps - see `hoist-core` docs for the current minimum.)
+  `gradle.properties`; the Gradle toolchain in `build.gradle` reads that value. Grails 8 requires
+  JDK 21 or later, and the Gradle 9 wrapper it brings runs on JDK 25 directly. (Note that
+  `hoist-core` itself is separately pinned to a lower bytecode level so its published JAR remains
+  runnable by older client apps - see `hoist-core` docs for the current minimum.)
 - **Database**: MySQL (or H2 in-memory for quick local dev via `APP_TOOLBOX_USE_H2=true`)
 - **Package Manager**: pnpm (frontend, version pinned via `packageManager`), Gradle via wrapper (backend)
 
