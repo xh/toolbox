@@ -95,6 +95,9 @@ export class BasicPanelModel extends HoistModel {
     }
 
     private panelContextMenu: ContextMenuSpec = [
+        // `{heading}` entries label and group the items below them. They draw their own rule, so
+        // no '-' separator is needed alongside.
+        {heading: 'This Panel'},
         clipboardMenuItem({
             text: 'Copy Text',
             getCopyText: () => this.demoText.join('\n')
@@ -111,6 +114,10 @@ export class BasicPanelModel extends HoistModel {
             prepareFn: item => (item.disabled = this.textScale <= TEXT_SCALE_MIN),
             actionFn: () => this.changeTextSize(false)
         },
+        // 'Lookup' hides itself unless the click landed on a word - right-click the empty space
+        // below the text and this heading drops along with it, rather than stranding a label over
+        // an empty section.
+        {heading: 'Word Under Cursor'},
         {
             text: 'Lookup',
             icon: Icon.book(),

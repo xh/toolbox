@@ -116,10 +116,14 @@ const titleBar = hoistCmp.factory<DocsPageModel>({
  */
 const onThisPageButton = hoistCmp.factory<DocsPageModel>({
     render({model}) {
-        const menuItems = model.sections.map(sec => ({
-            text: sec.title,
-            actionFn: () => model.scrollToSection(sec.id)
-        }));
+        // MenuHeading is supported by mobile menus too.
+        const menuItems = [
+            {heading: 'Jump to Section'},
+            ...model.sections.map(sec => ({
+                text: sec.title,
+                actionFn: () => model.scrollToSection(sec.id)
+            }))
+        ];
 
         return menuButton({
             icon: Icon.list(),

@@ -6,7 +6,7 @@ import {parseMenuItems} from '@xh/hoist/desktop/cmp/menu/impl/MenuItems';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {menu, menuDivider, popover} from '@xh/hoist/kit/blueprint';
+import {menu, popover} from '@xh/hoist/kit/blueprint';
 import {wait} from '@xh/hoist/promise';
 import {usStates} from '../../../core/data';
 import {wrapper, wrapperOption} from '../../common';
@@ -99,7 +99,7 @@ export const basicPanel = hoistCmp.factory({
                                     icon: Icon.placeholder(),
                                     disabled: true
                                 },
-                                menuDivider({title: 'Another Section'}),
+                                {heading: 'Another Section'},
                                 {text: 'Menu Item 4'},
                                 {
                                     text: 'Menu Item 5',

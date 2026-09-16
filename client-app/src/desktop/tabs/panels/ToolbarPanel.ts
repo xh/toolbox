@@ -5,7 +5,7 @@ import {segmentedControl, select, switchInput} from '@xh/hoist/desktop/cmp/input
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon, xhLogo} from '@xh/hoist/icon';
-import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
+import {menu, menuDivider, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {usStates} from '../../../core/data';
 import {wrapper, wrapperOption} from '../../common';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
@@ -77,10 +77,18 @@ const topBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
                     icon: Icon.chevronDown(),
                     text: 'Menu Button'
                 }),
+                // Headings break a longer menu into labelled sections. This menu is assembled
+                // from Blueprint elements directly, so it uses a titled `menuDivider`. Menus
+                // built from Hoist `MenuItem` configs - e.g. `AppMenuButton.extraItems` or a
+                // grid `contextMenu` - take a `{heading: '...'}` entry instead and render the
+                // same way.
                 content: menu(
-                    menuItem({text: 'Menu Item'}),
-                    menuItem({text: 'Menu Item 2'}),
-                    menuItem({text: 'Menu Item 3'})
+                    menuDivider({title: 'Current View'}),
+                    menuItem({icon: Icon.edit(), text: 'Rename'}),
+                    menuItem({icon: Icon.copy(), text: 'Duplicate'}),
+                    menuDivider({title: 'All Views'}),
+                    menuItem({icon: Icon.gridPanel(), text: 'Manage'}),
+                    menuItem({icon: Icon.reset(), text: 'Reset to Default'})
                 )
             }),
             filler(),
