@@ -1,14 +1,14 @@
 import {Icon} from '@xh/hoist/icon';
 import {MouseEvent} from 'react';
 import {clamp, round} from 'lodash';
+import {type ContextMenuSpec, HoistModel} from '@xh/hoist/core';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {clipboardMenuItem} from '@xh/hoist/desktop/cmp/clipboard';
 
 // Deliberately few steps, so the actions reach their limits (and disable) within a click or two.
 const TEXT_SCALE_MIN = 0.8,
     TEXT_SCALE_MAX = 1.4,
     TEXT_SCALE_STEP = 0.2;
-import {type ContextMenuSpec, HoistModel} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {clipboardMenuItem} from '@xh/hoist/desktop/cmp/clipboard';
 
 export class BasicPanelModel extends HoistModel {
     @bindable state: string = null;
