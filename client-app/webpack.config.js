@@ -19,31 +19,15 @@ const customPkgPath = path.resolve('node_modules/@xh/package-template');
 
 /**
  * Uncomment below when developing @xh/package-template (our custom package example) inline.
- * Also uncomment the `@xh/package-template` entry in `resolveAliases` below, and the
- * `babelExcludePaths` entry where that value is passed into the webpack config.
+ * Also uncomment Lines 43-44 below where these values are passed into the webpack config.
  * The package source should be checked out as a sibling of the top-level `toolbox` directory.
  *
  * NOTE that running inline here requires running via `pnpm startWithHoist`.
  * (Not entirely clear why that is, exactly. Could use more investigation... - ATM)
  */
 // const customPkgPath = path.resolve('../../package-template'),
-//     customPkgNodeModules = path.resolve(customPkgPath, 'node_modules');
-
-/**
- * Dedupe ag-Grid when running hoist-react inline via `pnpm startWithHoist` - the sibling checkout
- * installs its own copy (ag-Grid is a hoist-react devDependency), and any value crossing between
- * the two copies fails `instanceof` checks. Most visibly the Theming API rejects a theme built by
- * the other copy (AG Grid error #240), leaving the grid unstyled. Both packages export such
- * values, hence both aliases.
- *
- * Inherent to inline dev, not to any one feature. A no-op when packaged, so leave it in place.
- */
-const resolveAliases = {
-    'ag-grid-community': path.resolve('node_modules/ag-grid-community'),
-    'ag-grid-react': path.resolve('node_modules/ag-grid-react')
-    // Uncomment when developing @xh/package-template inline - see note above.
-    // ,'@xh/package-template': customPkgPath
-};
+//     customPkgNodeModules = path.resolve(customPkgPath, 'node_modules'),
+//     resolveAliases = {'@xh/package-template': customPkgPath};
 
 module.exports = (env = {}) => {
     return configureWebpack({
@@ -57,9 +41,8 @@ module.exports = (env = {}) => {
         reactProdMode: false,
         // Include custom package for babel transpiling for both packaged and inline use cases.
         babelIncludePaths: [customPkgPath],
-        // Dedupe ag-Grid - see note above.
-        resolveAliases,
-        // Exclude nested node_modules for inline local dev of the custom package only.
+        // Resolve custom package aliases and exclude nested node_modules for inline local dev only.
+        // resolveAliases,
         // babelExcludePaths: [customPkgNodeModules],
         ...env
     });
