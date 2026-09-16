@@ -1,4 +1,4 @@
-import {div, filler, p} from '@xh/hoist/cmp/layout';
+import {filler, p} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -111,13 +111,13 @@ export const basicPanel = hoistCmp.factory({
                         )
                     })
                 ],
-                items: [
-                    div({
-                        className: 'tb-panel-text-reader',
-                        items: model.demoText.map(it => p(it))
-                    }),
-                    aComponentThatCanThrowInRender()
-                ],
+                // Panel scrolls and pads its own content - no wrapper div required.
+                scrollable: true,
+                contentBoxProps: {
+                    padding: 'var(--xh-pad-px)',
+                    style: {fontSize: `${model.textScale}em`}
+                },
+                items: [...model.demoText.map(it => p(it)), aComponentThatCanThrowInRender()],
                 bbar: [
                     button({
                         text: 'Simulate an Exception',

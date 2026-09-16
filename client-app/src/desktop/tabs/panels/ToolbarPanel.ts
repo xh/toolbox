@@ -1,7 +1,7 @@
 import {filler, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {segmentedControl, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon, xhLogo} from '@xh/hoist/icon';
@@ -142,11 +142,15 @@ const bottomBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
     toolbar({
         compact: model.compact,
         items: [
-            buttonGroupInput({
+            // SegmentedControl is preferred over ButtonGroupInput for a small set of mutually
+            // exclusive options - it draws a clearer distinction between selected and unselected.
+            segmentedControl({
                 bind: 'visible',
-                items: [
-                    button({icon: Icon.eye(), text: 'Show', value: true}),
-                    button({icon: Icon.eyeSlash(), text: 'Hide', value: false})
+                fill: false,
+                compact: model.compact,
+                options: [
+                    {value: true, label: 'Show', icon: Icon.eye()},
+                    {value: false, label: 'Hide', icon: Icon.eyeSlash()}
                 ]
             }),
             span({
