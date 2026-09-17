@@ -116,13 +116,15 @@ const titleBar = hoistCmp.factory<DocsPageModel>({
  */
 const onThisPageButton = hoistCmp.factory<DocsPageModel>({
     render({model}) {
-        const menuItems = [
-            {heading: 'Jump to Section'},
-            ...model.sections.map(sec => ({
-                text: sec.title,
-                actionFn: () => model.scrollToSection(sec.id)
-            }))
-        ];
+        const {sections, activeSection} = model,
+            menuItems = [
+                {heading: 'Jump to Section'},
+                ...sections.map(sec => ({
+                    text: sec.title,
+                    active: sec.id === activeSection,
+                    actionFn: () => model.scrollToSection(sec.id)
+                }))
+            ];
 
         return menuButton({
             icon: Icon.list(),
