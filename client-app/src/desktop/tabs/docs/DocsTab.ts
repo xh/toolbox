@@ -1,4 +1,5 @@
 import {badge} from '@xh/hoist/cmp/badge';
+import {clipboardMenuItem} from '@xh/hoist/cmp/clipboard';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hbox, hframe, hspacer, placeholder, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses, XH} from '@xh/hoist/core';
@@ -273,17 +274,25 @@ const breadcrumb = hoistCmp.factory<DocsPanelModel>({
                           icon: Icon.list(),
                           text: activeSectionTitle,
                           minimal: true,
-                          menuItems: sections.map(sec => ({
-                              text: sec.title,
-                              active: sec.id === activeSection,
-                              actionFn: () => {
-                                  const el = document.getElementById(sec.id);
-                                  if (el) {
-                                      el.scrollIntoView({behavior: 'smooth', block: 'start'});
-                                      model.setActiveSection(sec.id);
+                          menuItems: [
+                              ...sections.map(sec => ({
+                                  text: sec.title,
+                                  active: sec.id === activeSection,
+                                  actionFn: () => {
+                                      const el = document.getElementById(sec.id);
+                                      if (el) {
+                                          el.scrollIntoView({behavior: 'smooth', block: 'start'});
+                                          model.setActiveSection(sec.id);
+                                      }
                                   }
-                              }
-                          }))
+                              })),
+                              '-',
+                              clipboardMenuItem({
+                                  text: 'Copy Link',
+                                  getCopyText: () => window.location.href,
+                                  successMessage: true
+                              })
+                          ]
                       })
                     : null
             ]
