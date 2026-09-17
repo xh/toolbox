@@ -107,7 +107,11 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
   instead of webpack, configured by `rsbuild.config.mjs`. These are the evaluation path for the
   bundler migration ([hoist-dev-utils #73](https://github.com/xh/hoist-dev-utils/issues/73)) - much
   faster startup and sub-second rebuilds, with the same hoist-react requirements as the webpack
-  scripts. The webpack scripts remain the default, and CI builds with them.
+  scripts. The webpack scripts remain the default, and CI builds with them. Rsbuild has no
+  `--env key=value` flag: build options arrive as `XH_*` environment variables (see
+  `readCliEnv()` in hoist-dev-utils), which you can also put in a gitignored
+  `client-app/.env.local` that Rsbuild loads on every run - e.g. `XH_DEV_HOST=<your-ip>` or
+  `XH_DEV_LIVE_RELOAD=false` - instead of the `startWithIp`-style script variants.
 
 * **Server against local `hoist-core`** - there are two ways to enable inline mode, and which you
   want depends on whether you need IDE integration:
