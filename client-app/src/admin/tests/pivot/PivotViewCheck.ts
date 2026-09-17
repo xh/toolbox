@@ -5,7 +5,7 @@ import {isEmpty, isEqual, isNumber} from 'lodash';
 /**
  * Correctness assertions for {@link View} and {@link PivotView}, checked against values accumulated
  * directly from the raw leaf records. The unit suite in hoist-react
- * (`data/cube/impl/PivotLattice.spec.ts`) proves the lattice combinatorics; this proves the parts
+ * (`data/cube/impl/PivotStructure.spec.ts`) proves the structure combinatorics; this proves the parts
  * that need the live framework - real aggregators over real rows, cell projection onto row data, and
  * the incremental tick path.
  *
@@ -71,7 +71,7 @@ interface RefStat {
     unique: boolean;
 }
 
-/** One lattice node `C(G, P)`, keyed `groupKey + '/' + pivotKey`. */
+/** One structure node `C(G, P)`, keyed `groupKey + '/' + pivotKey`. */
 interface RefNode {
     leaves: number;
     /** Distinct values of the *next* group dimension - this node's group-axis child count. */
