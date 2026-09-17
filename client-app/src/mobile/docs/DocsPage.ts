@@ -125,8 +125,6 @@ const onThisPageButton = hoistCmp.factory<DocsPageModel>({
                     active: sec.id === activeSection,
                     actionFn: () => model.scrollToSection(sec.id)
                 })),
-                // A '-' separator draws a slim divider. `clipboardMenuItem()` returns a plain
-                // MenuItem config, so it drops into a mobile menu as readily as a desktop one.
                 '-',
                 clipboardMenuItem({
                     text: 'Copy Link',
