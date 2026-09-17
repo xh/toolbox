@@ -116,7 +116,6 @@ const titleBar = hoistCmp.factory<DocsPageModel>({
  */
 const onThisPageButton = hoistCmp.factory<DocsPageModel>({
     render({model}) {
-        // MenuHeading is supported by mobile menus too.
         const menuItems = [
             {heading: 'Jump to Section'},
             ...model.sections.map(sec => ({

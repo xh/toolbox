@@ -142,8 +142,6 @@ const bottomBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
     toolbar({
         compact: model.compact,
         items: [
-            // SegmentedControl is preferred over ButtonGroupInput for a small set of mutually
-            // exclusive options - it draws a clearer distinction between selected and unselected.
             segmentedControl({
                 bind: 'visible',
                 fill: false,

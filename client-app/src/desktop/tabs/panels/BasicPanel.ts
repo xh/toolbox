@@ -104,7 +104,6 @@ export const basicPanel = hoistCmp.factory({
                         ]
                     })
                 ],
-                // Panel scrolls and pads its own content - no wrapper div required.
                 scrollable: true,
                 contentBoxProps: {
                     padding: 'var(--xh-pad-px)',
