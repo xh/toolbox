@@ -65,8 +65,8 @@ export class DocsPageModel extends DocViewModel {
         if (nextDoc) this.navigateToDoc(nextDoc.id, nextDoc.source);
     }
 
-    override onLinked() {
-        super.onLinked();
+    override afterLinked() {
+        super.afterLinked();
         this.loadInitialDocFromRoute();
     }
 }
