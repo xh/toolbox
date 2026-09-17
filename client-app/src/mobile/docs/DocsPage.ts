@@ -1,3 +1,4 @@
+import {clipboardMenuItem} from '@xh/hoist/cmp/clipboard';
 import {filler, hbox, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/mobile/cmp/button';
@@ -123,7 +124,15 @@ const onThisPageButton = hoistCmp.factory<DocsPageModel>({
                     text: sec.title,
                     active: sec.id === activeSection,
                     actionFn: () => model.scrollToSection(sec.id)
-                }))
+                })),
+                // A '-' separator draws a slim divider. `clipboardMenuItem()` returns a plain
+                // MenuItem config, so it drops into a mobile menu as readily as a desktop one.
+                '-',
+                clipboardMenuItem({
+                    text: 'Copy Link',
+                    getCopyText: () => window.location.href,
+                    successMessage: true
+                })
             ];
 
         return menuButton({
