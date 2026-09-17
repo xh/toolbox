@@ -5,11 +5,6 @@ import {type ContextMenuSpec, HoistModel} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {clipboardMenuItem} from '@xh/hoist/desktop/cmp/clipboard';
 
-// Deliberately few steps, so the actions reach their limits (and disable) within a click or two.
-const TEXT_SCALE_MIN = 0.8,
-    TEXT_SCALE_MAX = 1.4,
-    TEXT_SCALE_STEP = 0.2;
-
 export class BasicPanelModel extends HoistModel {
     @bindable state: string = null;
     @bindable compactHeader: boolean = false;
@@ -34,8 +29,6 @@ export class BasicPanelModel extends HoistModel {
         });
     }
 
-    // English prose rather than lorem ipsum, so the "Lookup" context menu item below resolves to
-    // words a dictionary will actually have.
     demoText = [
         'Reading on a screen asks more of the eye than reading on paper. Light comes from behind the text rather than falling across it, glare shifts with the room, and the page can be any width the window happens to be. Good screen typography works around all of that. It starts with type large enough to read without effort, then gives each line enough room to breathe. None of this is decoration. A reader who has to squint or backtrack loses the thread, and the writing fails no matter how carefully it was composed.',
 
@@ -95,6 +88,7 @@ export class BasicPanelModel extends HoistModel {
     }
 
     private panelContextMenu: ContextMenuSpec = [
+        {heading: 'This Panel'},
         clipboardMenuItem({
             text: 'Copy Text',
             getCopyText: () => this.demoText.join('\n')
@@ -112,12 +106,24 @@ export class BasicPanelModel extends HoistModel {
             actionFn: () => this.changeTextSize(false)
         },
         {
+            text: 'Text Size Presets',
+            icon: Icon.plusCircle(),
+            items: [
+                {text: 'Small', actionFn: () => (this.textScale = TEXT_SCALE_MIN)},
+                {text: 'Normal', actionFn: () => (this.textScale = 1)},
+                {text: 'Large', actionFn: () => (this.textScale = TEXT_SCALE_MAX)}
+            ]
+        },
+
+        // 'Lookup' hides itself unless the click landed on a word - right-click the empty space
+        // below the text and this heading drops along with it, rather than stranding a label
+        {heading: 'Word Under Cursor'},
+        {
             text: 'Lookup',
             icon: Icon.book(),
             prepareFn: (item, {contextMenuEvent}) => {
-                // Resolve and stash the word here, while the menu has yet to render. `actionFn`
-                // runs with the menu open over the click point, where a fresh hit-test would
-                // land on the menu's own text instead of the panel's.
+                // Resolve the word before the menu renders - by `actionFn` time, a hit-test at
+                // the click point would land on the menu itself.
                 const word = (this.wordAtCursor = this.getWordAtEvent(contextMenuEvent));
 
                 if (word) {
@@ -139,3 +145,8 @@ export class BasicPanelModel extends HoistModel {
         }
     ];
 }
+
+// Deliberately few steps, so the actions reach their limits (and disable) within a click or two.
+const TEXT_SCALE_MIN = 0.8,
+    TEXT_SCALE_MAX = 1.4,
+    TEXT_SCALE_STEP = 0.2;
