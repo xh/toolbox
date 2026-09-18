@@ -5,14 +5,8 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import type {JsonInputProps} from '@xh/hoist/desktop/cmp/input';
 import {codeInput, jsonInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {bindable} from '@xh/hoist/mobx';
-import {
-    demoFrame,
-    demoGrid,
-    demoPlayground,
-    demoRow,
-    fmtDemoConfig,
-    wrapperOption
-} from '../../../common';
+import {demoFrame, demoGrid, demoPlayground, demoRow, fmtDemoConfig} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';

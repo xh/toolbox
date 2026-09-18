@@ -13,16 +13,18 @@ import {createRef} from 'react';
 import {
     actualGrossCol,
     actualUnitsSoldCol,
+    projectedGrossCol,
+    projectedUnitsSoldCol,
+    retainCol
+} from '../../../core/columns/Sales';
+import {
     cityCol,
     firstNameCol,
     fullNameCol,
     lastNameCol,
-    projectedGrossCol,
-    projectedUnitsSoldCol,
-    retainCol,
     salaryCol,
     stateCol
-} from '../../../core/columns';
+} from '../../../core/columns/Demographics';
 
 export class SampleColumnGroupsGridModel extends HoistModel {
     @managed gridModel: GridModel;

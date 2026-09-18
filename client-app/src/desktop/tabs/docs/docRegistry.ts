@@ -2,13 +2,12 @@
  * Desktop-only doc -> Toolbox example tab mappings.
  *
  * Shared doc types and link/section utilities now live in `core/docs`; this file retains the
- * desktop-route example map and re-exports the shared types + `resolveDocLink` so existing desktop
- * importers keep resolving.
+ * desktop-route example map and re-exports the shared types so existing desktop importers keep
+ * resolving. Type re-exports are erased at build time and create no runtime module edge.
  */
 import type {DocExampleLink} from '../../../core/docs/types';
 
 export type {DocEntry, DocCategory, DocSourceInfo, DocExampleLink} from '../../../core/docs/types';
-export {resolveDocLink} from '../../../core/docs/DocUtils';
 
 // ---------------------------------------------------------------------------
 // Doc -> Toolbox example tab mappings (hoist-react only)

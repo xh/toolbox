@@ -5,22 +5,20 @@ import type {InitContext} from '@xh/hoist/core';
 import {managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {
-    asyncLoopPanel,
-    columnChooserTestPanel,
-    storeColumnFilterPanel,
-    viewColumnFilterPanel,
-    CubeTestPanel,
-    dataViewTestPanel,
-    FetchApiTestPanel,
-    GridTestPanel,
-    gridScrolling,
-    LocalDateTestPanel,
-    PanelResizingTestPanel,
-    SelectTestPanel,
-    viewManagerTestPanel,
-    WebSocketTestPanel
-} from './tests';
+import {CubeTestPanel} from './tests/cube/CubeTestPanel';
+import {FetchApiTestPanel} from './tests/fetch/FetchApiTestPanel';
+import {GridTestPanel} from './tests/grids/GridTestPanel';
+import {LocalDateTestPanel} from './tests/localDate/LocalDateTestPanel';
+import {PanelResizingTestPanel} from './tests/panels/PanelResizingTestPanel';
+import {SelectTestPanel} from './tests/select/SelectTestPanel';
+import {WebSocketTestPanel} from './tests/websocket/WebSocketTestPanel';
+import {asyncLoopPanel} from './tests/asyncLoops/AsyncLoopPanel';
+import {columnChooserTestPanel} from './tests/columnChooser/ColumnChooserTestPanel';
+import {dataViewTestPanel} from './tests/dataview/DataViewTestPanel';
+import {gridScrolling} from './tests/gridScrolling/GridScrolling';
+import {storeColumnFilterPanel} from './tests/columnFilters/store/StoreColumnFilterPanel';
+import {viewColumnFilterPanel} from './tests/columnFilters/view/ViewColumnFilterPanel';
+import {viewManagerTestPanel} from './tests/viewmanager/ViewManagerTestPanel';
 
 export class AppModel extends HoistAdminAppModel {
     static instance: AppModel;

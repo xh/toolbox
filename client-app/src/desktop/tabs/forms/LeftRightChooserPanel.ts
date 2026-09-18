@@ -1,5 +1,5 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {wrapper, wrapperOption} from '../../common';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';

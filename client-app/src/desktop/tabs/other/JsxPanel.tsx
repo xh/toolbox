@@ -2,7 +2,7 @@ import {hoistCmp} from '@xh/hoist/core';
 import {codeInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
 import './JsxPanel.scss';
 
 export const jsxPanel = hoistCmp.factory(() =>

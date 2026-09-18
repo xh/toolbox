@@ -6,7 +6,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {wrapper, wrapperAction, wrapperOption} from '../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../common/Wrapper';
 
 export const panelSizingPanel = hoistCmp.factory({
     model: creates(() => PanelSizingModel),

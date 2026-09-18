@@ -11,7 +11,12 @@ import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {runInAction} from '@xh/hoist/mobx';
-import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../desktop/common';
+import {
+    wrapper,
+    wrapperAction,
+    wrapperOption,
+    wrapperOptionGroup
+} from '../../../desktop/common/Wrapper';
 import {gridTestBenchmarkDialog} from './GridTestBenchmarkDialog';
 import {GridTestModel, VALUE_MIX_OPTIONS} from './GridTestModel';
 

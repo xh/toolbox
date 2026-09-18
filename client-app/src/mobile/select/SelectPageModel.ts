@@ -1,6 +1,6 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
-import {usStates} from '../../core/data';
+import {usStates} from '../../core/data/USStates';
 
 export class SelectPageModel extends HoistModel {
     // Global toggle applied to every select on the page.

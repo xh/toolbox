@@ -12,11 +12,9 @@ import {
     demoPlayground,
     demoRow,
     demoSection,
-    fmtDemoConfig,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    fmtDemoConfig
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 
 /** The Clock props the rail drives. Named so both the instances and the snippet share one type. */
 type ClockDisplayProps = Pick<ClockProps, 'format' | 'prefix' | 'suffix' | 'updateInterval'>;

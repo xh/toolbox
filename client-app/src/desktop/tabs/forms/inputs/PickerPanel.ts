@@ -9,16 +9,16 @@ import {picker, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
-import {usStates} from '../../../../core/data';
+import {usStates} from '../../../../core/data/USStates';
 import {
     demoFrame,
     demoGrid,
     demoPlayground,
     demoRow,
     fmtDemoConfig,
-    raw,
-    wrapperOption
-} from '../../../common';
+    raw
+} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';

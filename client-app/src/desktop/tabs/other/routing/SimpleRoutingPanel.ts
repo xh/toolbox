@@ -3,7 +3,7 @@ import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../../common';
+import {wrapper} from '../../../common/Wrapper';
 
 export const simpleRoutingPanel = hoistCmp.factory({
     displayName: 'SimpleRoutingPanel',

@@ -9,16 +9,15 @@ import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import type {StoreRecord} from '@xh/hoist/data';
 import './SampleGrid.scss';
+import {activeCol} from '../../../core/columns/General';
+import {cityCol, companyCol} from '../../../core/columns/Demographics';
 import {
-    activeCol,
-    companyCol,
-    winLoseCol,
-    cityCol,
-    tradeVolumeCol,
-    profitLossCol,
     dayOfWeekCol,
-    tradeDateCol
-} from '../../../core/columns';
+    profitLossCol,
+    tradeDateCol,
+    tradeVolumeCol,
+    winLoseCol
+} from '../../../core/columns/Trades';
 
 export class SampleGridModel extends HoistModel {
     panelRef = createRef<HTMLDivElement>();

@@ -10,7 +10,8 @@ import {isEmpty, uniq, without} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {favoriteButton} from './cmp/FavoriteButton';
 import {DetailsPanelModel} from './details/DetailsPanelModel';
-import {cellPhoneCol, emailCol, locationCol, nameCol, workPhoneCol} from '../../core/columns';
+import {cellPhoneCol, emailCol, locationCol, workPhoneCol} from '../../core/columns/Demographics';
+import {nameCol} from '../../core/columns/General';
 
 /**
  * Primary model to load a list of contacts from the server and manage filter and selection state.

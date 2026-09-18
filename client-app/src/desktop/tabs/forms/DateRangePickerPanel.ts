@@ -29,11 +29,9 @@ import {
     demoSection,
     demoToolbar,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    raw
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 import './DateRangePickerPanel.scss';
 
 export const dateRangePickerPanel = hoistCmp.factory({

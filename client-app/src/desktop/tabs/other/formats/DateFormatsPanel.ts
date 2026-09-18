@@ -1,7 +1,7 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {dateInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper, wrapperOption} from '../../../common';
+import {wrapper, wrapperOption} from '../../../common/Wrapper';
 import {DateFormatsPanelModel} from './DateFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
 import './Formats.scss';

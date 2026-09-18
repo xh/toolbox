@@ -5,15 +5,13 @@ import {Icon} from '@xh/hoist/icon';
 import {frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
-import {
-    optionsWidget,
-    chartWidget,
-    gridWidget,
-    panelWidget,
-    treeGridWidget,
-    errorWidget
-} from '../widgets';
-import {wrapper, wrapperAction, wrapperOption} from '../../../common';
+import {chartWidget} from '../widgets/ChartWidget';
+import {errorWidget} from '../widgets/ErrorWidget';
+import {gridWidget} from '../widgets/GridWidget';
+import {optionsWidget} from '../widgets/OptionsWidget';
+import {panelWidget} from '../widgets/PanelWidget';
+import {treeGridWidget} from '../widgets/TreeGridWidget';
+import {wrapper, wrapperAction, wrapperOption} from '../../../common/Wrapper';
 
 export const dashContainerPanel = hoistCmp.factory({
     model: creates(() => DashContainerPanelModel),

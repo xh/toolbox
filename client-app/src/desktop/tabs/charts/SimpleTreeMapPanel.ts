@@ -3,7 +3,8 @@ import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {treeMap} from '@xh/hoist/cmp/treemap';
 import {Icon} from '@xh/hoist/icon';
-import {treeMapDisplayOptions, wrapper, wrapperOption} from '../../common';
+import {treeMapDisplayOptions} from '../../common/charts/TreeMapOptions';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 import {SimpleTreeMapModel} from './SimpleTreeMapModel';
 
 export const simpleTreeMapPanel = hoistCmp.factory({

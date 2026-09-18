@@ -1,7 +1,10 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {expandCollapseButton, sampleTreeGrid, SampleTreeGridModel, wrapper} from '../../common';
+import {SampleTreeGridModel} from '../../common/grid/SampleTreeGridModel';
+import {expandCollapseButton} from '../../common/grid/options/GridDisplayOptions';
+import {sampleTreeGrid} from '../../common/grid/SampleTreeGrid';
+import {wrapper} from '../../common/Wrapper';
 
 export const treeGridWithCheckboxPanel = hoistCmp.factory({
     model: creates(() => new SampleTreeGridModel({includeCheckboxes: true})),

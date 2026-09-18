@@ -10,7 +10,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {range} from 'lodash';
-import {wrapper, wrapperOption} from '../../../common';
+import {wrapper, wrapperOption} from '../../../common/Wrapper';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
 import './Formats.scss';

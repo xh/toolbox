@@ -2,14 +2,12 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
-import {
-    optionsWidget,
-    chartWidget,
-    errorWidget,
-    gridWidget,
-    panelWidget,
-    treeGridWidget
-} from '../widgets';
+import {chartWidget} from '../widgets/ChartWidget';
+import {errorWidget} from '../widgets/ErrorWidget';
+import {gridWidget} from '../widgets/GridWidget';
+import {optionsWidget} from '../widgets/OptionsWidget';
+import {panelWidget} from '../widgets/PanelWidget';
+import {treeGridWidget} from '../widgets/TreeGridWidget';
 
 export class DashCanvasPanelModel extends HoistModel {
     @bindable accessor renderDashboard = true;

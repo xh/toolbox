@@ -17,7 +17,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import type {SubformsFieldModel} from '@xh/hoist/cmp/form';
 import {Icon} from '@xh/hoist/icon';
 import {isNil} from 'lodash';
-import {wrapper, wrapperOption} from '../../common';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 import './FormPanel.scss';
 import {FormPanelModel} from './FormPanelModel';
 import {badge} from '@xh/hoist/cmp/badge';

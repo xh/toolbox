@@ -10,25 +10,27 @@ import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, observable} from '@xh/hoist/mobx';
-import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 import {
     actualGrossCol,
     actualUnitsSoldCol,
-    cityCol,
     commissionCol,
     commissionRateCol,
+    projectedGrossCol,
+    projectedUnitsSoldCol,
+    retainCol
+} from '../../../core/columns/Sales';
+import {
+    cityCol,
     emailCol,
     firstNameCol,
     fullNameCol,
     lastNameCol,
-    projectedGrossCol,
-    projectedUnitsSoldCol,
-    regionCol,
-    retainCol,
     salaryCol,
     stateCol,
     tenureCol
-} from '../../../core/columns';
+} from '../../../core/columns/Demographics';
+import {regionCol} from '../../../core/columns/Orders';
 
 export const columnChooserPanel = hoistCmp.factory({
     model: creates(() => ColumnChooserPanelModel),

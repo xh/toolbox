@@ -26,5 +26,40 @@ module.exports = defineConfig([
             '@typescript-eslint/no-import-type-side-effects': 'error'
         }
     },
+    {
+        files: ['src/**/*.ts', 'src/**/*.tsx'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: 'ExportAllDeclaration',
+                    message:
+                        'Barrel re-exports are not used in app source - import from the defining module.'
+                },
+                {
+                    selector: 'ExportNamedDeclaration[source][exportKind!="type"]',
+                    message:
+                        'Value re-exports are not used in app source - import from the defining module.'
+                }
+            ]
+        }
+    },
+    // Separate block, deliberately. `no-restricted-syntax` does NOT merge across flat-config
+    // entries - a later entry replaces an earlier one for overlapping files. This block exists
+    // because `import ...; export {a, b}` with no `source` is a barrel the selectors above
+    // cannot see, and banning the filename outright is the reliable catch.
+    {
+        files: ['src/**/index.ts', 'src/**/index.tsx'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: 'Program',
+                    message:
+                        'No index.ts barrel files in app source - import from the defining module.'
+                }
+            ]
+        }
+    },
     globalIgnores(['build/**/*', 'node_modules/**/*', 'scripts/**/*'])
 ]);

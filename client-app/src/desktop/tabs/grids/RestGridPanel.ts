@@ -13,7 +13,7 @@ import {
 } from '@xh/hoist/desktop/cmp/rest';
 import * as Col from '@xh/hoist/cmp/grid/columns';
 import {ExcelFormat} from '@xh/hoist/cmp/grid';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
 import {numberInput, switchInput, textArea} from '@xh/hoist/desktop/cmp/input';
 
 export const restGridPanel = hoistCmp.factory({
