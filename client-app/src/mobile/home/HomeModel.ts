@@ -1,6 +1,7 @@
 import {HoistModel, persist} from '@xh/hoist/core';
 import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
-import {DEFAULT_WIDGET_IDS, WIDGETS, WidgetSpec, widgetSpec} from './widgets/WidgetCatalog';
+import type {WidgetSpec} from './widgets/WidgetCatalog';
+import {DEFAULT_WIDGET_IDS, WIDGETS, widgetSpec} from './widgets/WidgetCatalog';
 
 /** Drag result shape from react-beautiful-dnd (kept local to avoid a kit type import). */
 interface DragResult {

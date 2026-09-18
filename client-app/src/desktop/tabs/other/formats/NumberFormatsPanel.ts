@@ -1,5 +1,6 @@
 import {hbox, input, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistProps} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {
     numberInput,
     segmentedControl,

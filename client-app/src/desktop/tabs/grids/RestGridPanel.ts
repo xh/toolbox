@@ -2,13 +2,13 @@ import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import type {RestGridConfig} from '@xh/hoist/desktop/cmp/rest';
 import {
     addAction,
     cloneAction,
     deleteAction,
     editAction,
     restGrid,
-    RestGridConfig,
     viewAction
 } from '@xh/hoist/desktop/cmp/rest';
 import * as Col from '@xh/hoist/cmp/grid/columns';

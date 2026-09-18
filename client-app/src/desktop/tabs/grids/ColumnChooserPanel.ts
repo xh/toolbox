@@ -1,13 +1,15 @@
-import {ColChooserMode, grid, GridModel} from '@xh/hoist/cmp/grid';
+import type {ColChooserMode} from '@xh/hoist/cmp/grid';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {creates, hoistCmp, HoistModel, HSide, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {FilterMatchMode} from '@xh/hoist/data';
+import type {HSide, LoadSpec} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
+import type {FilterMatchMode} from '@xh/hoist/data';
 import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import { bindable, observable } from '@xh/hoist/mobx';
+import {bindable, observable} from '@xh/hoist/mobx';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common';
 import {
     actualGrossCol,

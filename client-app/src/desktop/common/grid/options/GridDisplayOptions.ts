@@ -1,11 +1,13 @@
-import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
-import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
-import {hoistCmp, HoistModel, HoistProps, useLocalModel} from '@xh/hoist/core';
+import type {AgGridModel} from '@xh/hoist/cmp/ag-grid';
+import type {GridModel} from '@xh/hoist/cmp/grid';
+import {TreeStyle} from '@xh/hoist/cmp/grid';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
 import {select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {sample} from 'lodash';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {wrapperAction, wrapperOption} from '../../Wrapper';
 
 /**

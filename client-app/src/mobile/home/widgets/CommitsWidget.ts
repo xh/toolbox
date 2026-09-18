@@ -1,7 +1,8 @@
 import {div, filler, span, vbox} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
-import {Commit} from '../../../core/svc/GitHubService';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
+import type {Commit} from '../../../core/svc/GitHubService';
 import './GitHubWidget.scss';
 
 // Cap the in-card list so a single widget stays a reasonable height; the full history lives on GitHub.

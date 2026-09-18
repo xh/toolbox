@@ -1,7 +1,7 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {div, hbox, img, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {CurrentWeatherResponse} from '../Types';
+import type {CurrentWeatherResponse} from '../Types';
 import {AppModel} from '../AppModel';
 
 export const currentConditionsWidget = hoistCmp.factory({

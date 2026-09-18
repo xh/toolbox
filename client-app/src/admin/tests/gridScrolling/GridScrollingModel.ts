@@ -1,6 +1,7 @@
 import {FormModel} from '@xh/hoist/cmp/form';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {action, bindable, computed, observable} from '@xh/hoist/mobx';
 import {keyBy, mapValues, range} from 'lodash';

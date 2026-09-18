@@ -1,8 +1,9 @@
-import {grid, gridCountLabel, GridConfig, GridModel} from '@xh/hoist/cmp/grid';
+import type {GridConfig} from '@xh/hoist/cmp/grid';
+import {grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {hoistCmp, HoistModel, managed, uses, XH} from '@xh/hoist/core';
-import {StoreRecord} from '@xh/hoist/data';
+import type {StoreRecord} from '@xh/hoist/data';
 import {colAutosizeButton, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';

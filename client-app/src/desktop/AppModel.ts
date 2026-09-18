@@ -1,12 +1,14 @@
 import {box, div, span, vbox} from '@xh/hoist/cmp/layout';
-import {TabConfig, TabContainerModel, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
-import {InitContext, LoadSpec, managed, XH} from '@xh/hoist/core';
+import type {TabConfig, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import type {InitContext, LoadSpec} from '@xh/hoist/core';
+import {managed, XH} from '@xh/hoist/core';
 import {autoRefreshAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {runInAction} from '@xh/hoist/mobx';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {isEmpty, isEqual} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
 import {cardChoiceInput} from './common';

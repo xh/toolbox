@@ -1,5 +1,5 @@
 import {HoistModel, XH} from '@xh/hoist/core';
-import { action, bindable, observable, runInAction } from '@xh/hoist/mobx';
+import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {take} from 'lodash';
 
 /**
@@ -20,7 +20,7 @@ export class SelectTestPageModel extends HoistModel {
     // Ms the main thread was blocked following each of the last few queries - see noteBlock().
     @observable.ref accessor blockTimes: number[] = [];
 
-async queryOptionsAsync(query: string) {
+    async queryOptionsAsync(query: string) {
         const ret = await XH.fetchJson({
             url: 'selectTest/symbols',
             params: {query, count: this.numOptions, latency: this.latency}

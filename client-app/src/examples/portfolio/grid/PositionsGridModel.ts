@@ -3,7 +3,7 @@ import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
-import {PortfolioModel} from '../PortfolioModel';
+import type {PortfolioModel} from '../PortfolioModel';
 
 export class PositionsGridModel extends HoistModel {
     override xhName = 'positionsGrid';

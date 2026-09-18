@@ -1,4 +1,5 @@
-import {InitContext, XH} from '@xh/hoist/core';
+import type {InitContext} from '@xh/hoist/core';
+import {XH} from '@xh/hoist/core';
 import {ContactService} from './svc/ContactService';
 import {BaseAppModel} from '../../BaseAppModel';
 

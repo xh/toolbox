@@ -14,7 +14,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {SubformsFieldModel} from '@xh/hoist/cmp/form';
+import type {SubformsFieldModel} from '@xh/hoist/cmp/form';
 import {Icon} from '@xh/hoist/icon';
 import {isNil} from 'lodash';
 import {wrapper, wrapperOption} from '../../common';

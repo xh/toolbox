@@ -1,8 +1,9 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {encodeDocId} from '../../../core/docs/DocUtils';
-import {DocEntry} from '../../../core/docs/types';
-import {DocService, DocSearchResult} from '../../../core/svc/DocService';
+import type {DocEntry} from '../../../core/docs/types';
+import type {DocSearchResult} from '../../../core/svc/DocService';
+import {DocService} from '../../../core/svc/DocService';
 
 /** A library-grouped block of search hits. */
 export interface SearchResultGroup {

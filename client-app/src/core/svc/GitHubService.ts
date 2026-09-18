@@ -1,6 +1,7 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faGithub} from '@fortawesome/free-brands-svg-icons';
-import {HoistService, InitContext, LoadSpec, XH} from '@xh/hoist/core';
+import type {InitContext, LoadSpec} from '@xh/hoist/core';
+import {HoistService, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {computed, observable, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';

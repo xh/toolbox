@@ -1,4 +1,5 @@
-import {hoistCmp, HoistModel} from '@xh/hoist/core';
+import type {HoistModel} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {picker} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 

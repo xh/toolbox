@@ -6,7 +6,7 @@ import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {filesize} from 'filesize';
 import {filter, find, pull} from 'lodash';
-import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
+import type {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 import {downloadBlob} from '@xh/hoist/utils/js';
 
 export class FileManagerModel extends HoistModel {

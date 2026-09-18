@@ -9,8 +9,8 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head, uniq} from 'lodash';
-import {Commit} from '../../../../../core/svc/GitHubService';
-import {RepoFilterModel} from '../RepoFilterPicker';
+import type {Commit} from '../../../../../core/svc/GitHubService';
+import type {RepoFilterModel} from '../RepoFilterPicker';
 
 export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
     @lookup(DashViewModel)

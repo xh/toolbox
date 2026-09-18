@@ -1,5 +1,5 @@
 import {HoistModel, XH} from '@xh/hoist/core';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {getCategoryIcon} from '../../../core/docs/DocIcons';
 import {DocService} from '../../../core/svc/DocService';
 

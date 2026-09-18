@@ -1,5 +1,6 @@
 import {GridModel, localDate} from '@xh/hoist/cmp/grid';
-import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable} from '@xh/hoist/mobx';

@@ -2,8 +2,8 @@ import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {required} from '@xh/hoist/data/validation/constraints';
 import {observable, action} from '@xh/hoist/mobx';
-import {StoreRecord} from '@xh/hoist/data';
-import {DirectoryPanelModel} from '../DirectoryPanelModel';
+import type {StoreRecord} from '@xh/hoist/data';
+import type {DirectoryPanelModel} from '../DirectoryPanelModel';
 
 export class DetailsPanelModel extends HoistModel {
     @observable.ref accessor currentRecord: StoreRecord;

@@ -5,7 +5,7 @@
  * desktop-route example map and re-exports the shared types + `resolveDocLink` so existing desktop
  * importers keep resolving.
  */
-import {DocExampleLink} from '../../../core/docs/types';
+import type {DocExampleLink} from '../../../core/docs/types';
 
 export type {DocEntry, DocCategory, DocSourceInfo, DocExampleLink} from '../../../core/docs/types';
 export {resolveDocLink} from '../../../core/docs/DocUtils';

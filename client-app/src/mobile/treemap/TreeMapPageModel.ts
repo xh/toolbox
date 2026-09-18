@@ -1,11 +1,7 @@
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {
-    SplitTreeMapModel,
-    TreeMapAlgorithm,
-    TreeMapColorMode,
-    TreeMapModel
-} from '@xh/hoist/cmp/treemap';
+import type {TreeMapAlgorithm, TreeMapColorMode} from '@xh/hoist/cmp/treemap';
+import {SplitTreeMapModel, TreeMapModel} from '@xh/hoist/cmp/treemap';
 import {Store} from '@xh/hoist/data';
 import {fmtMillions} from '@xh/hoist/format';
 import {bindable} from '@xh/hoist/mobx';

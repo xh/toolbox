@@ -1,14 +1,17 @@
 import {code, div, hframe, span, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
-import {hoistCmp, HoistModel, HoistProps, Intent, useLocalModel} from '@xh/hoist/core';
-import {button, ButtonProps} from '@xh/hoist/desktop/cmp/button';
+import type {HoistProps, Intent} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
+import type {ButtonProps} from '@xh/hoist/desktop/cmp/button';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {isArray, isEmpty} from 'lodash';
 import classNames from 'classnames';
-import {ReactElement, ReactNode} from 'react';
-import {toolboxLink, ToolboxLinkProps} from '../../core/cmp/ToolboxLink';
+import type {ReactElement, ReactNode} from 'react';
+import type {ToolboxLinkProps} from '../../core/cmp/ToolboxLink';
+import {toolboxLink} from '../../core/cmp/ToolboxLink';
 import './Wrapper.scss';
 
 export interface WrapperProps extends HoistProps {

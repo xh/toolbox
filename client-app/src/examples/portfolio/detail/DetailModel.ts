@@ -6,7 +6,7 @@ import {bindable, observable} from '@xh/hoist/mobx';
 import {PortfolioModel} from '../PortfolioModel';
 import {chartsPanel} from './charts/ChartsPanel';
 import {ordersGrid} from './orders/OrdersGrid';
-import {OrdersModel} from './orders/OrdersModel';
+import type {OrdersModel} from './orders/OrdersModel';
 
 export class DetailModel extends HoistModel {
     override xhName = 'detail';

@@ -1,5 +1,5 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
+import type {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
 import {div, hr} from '@xh/hoist/cmp/layout';
 import {type ContextMenuSpec, HoistModel, managed, XH} from '@xh/hoist/core';
 import {fmtDate} from '@xh/hoist/format';
@@ -8,7 +8,7 @@ import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
-import {ChartContextMenuMode} from '../../common';
+import type {ChartContextMenuMode} from '../../common';
 
 export class LineChartModel extends HoistModel {
     @bindable accessor currentSymbols: string[] = [];

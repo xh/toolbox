@@ -1,11 +1,12 @@
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {div, filler, hbox, placeholder, span} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {creates, hoistCmp, HoistProps, XH} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {Release} from '../../../../../core/svc/GitHubService';
+import type {Release} from '../../../../../core/svc/GitHubService';
 import {repoFilterPicker} from '../RepoFilterPicker';
 import './ReleasesWidget.scss';
 import {ReleasesWidgetModel} from './ReleasesWidgetModel';

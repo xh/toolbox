@@ -20,7 +20,7 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, sortBy} from 'lodash';
-import {ReactNode} from 'react';
+import type {ReactNode} from 'react';
 import {
     demoGrid,
     demoPanel,

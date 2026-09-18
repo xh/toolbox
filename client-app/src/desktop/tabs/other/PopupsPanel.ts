@@ -4,7 +4,8 @@ import {lengthIs, required} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
-import {ReactNode, useRef} from 'react';
+import type {ReactNode} from 'react';
+import {useRef} from 'react';
 import {demoPanel, demoRow, demoSection, wrapper} from '../../common';
 import './PopupsPanel.scss';
 

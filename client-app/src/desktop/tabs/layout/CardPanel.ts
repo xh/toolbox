@@ -1,6 +1,8 @@
-import {card, CardProps} from '@xh/hoist/cmp/card';
+import type {CardProps} from '@xh/hoist/cmp/card';
+import {card} from '@xh/hoist/cmp/card';
 import {p, placeholder} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, Intent} from '@xh/hoist/core';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {intentInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon, xhLogo} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';

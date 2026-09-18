@@ -1,7 +1,8 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {numberInput, slider, SliderProps, switchInput} from '@xh/hoist/desktop/cmp/input';
+import type {SliderProps} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, slider, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtThousands} from '@xh/hoist/format';
 import {bindable} from '@xh/hoist/mobx';
 import {

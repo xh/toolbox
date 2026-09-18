@@ -1,8 +1,9 @@
-import {FormModel} from '@xh/hoist/cmp/form';
-import {HoistModel, PlainObject} from '@xh/hoist/core';
-import {FormFieldProps} from '@xh/hoist/desktop/cmp/form';
+import type {FormModel} from '@xh/hoist/cmp/form';
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistModel} from '@xh/hoist/core';
+import type {FormFieldProps} from '@xh/hoist/desktop/cmp/form';
 import {action, bindable} from '@xh/hoist/mobx';
-import {DemoConfigProps} from '../../../common';
+import type {DemoConfigProps} from '../../../common';
 
 /**
  * The ambient props spread onto every input on a page. Deliberately not tied to one component's

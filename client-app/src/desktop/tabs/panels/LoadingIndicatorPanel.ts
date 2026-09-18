@@ -1,4 +1,5 @@
-import {creates, hoistCmp, HoistModel, managed, Corner, LoadSpec} from '@xh/hoist/core';
+import type {Corner, LoadSpec} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';

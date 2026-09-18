@@ -1,7 +1,7 @@
 import {div} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import './StartHereWidget.scss';
 
 interface StartHereItem {

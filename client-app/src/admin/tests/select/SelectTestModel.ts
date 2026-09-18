@@ -1,5 +1,6 @@
-import {HoistModel, PlainObject, XH} from '@xh/hoist/core';
-import { action, bindable, observable, runInAction } from '@xh/hoist/mobx';
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
+import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {take, times} from 'lodash';
 
 export class SelectTestModel extends HoistModel {
