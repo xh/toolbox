@@ -129,10 +129,10 @@ importers:
         version: 1.1.0
       '@xh/hoist':
         specifier: next
-        version: 88.0.0-SNAPSHOT.1789679922695(@types/react@19.2.18)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)
+        version: 88.0.0-SNAPSHOT.1789767827625(@types/react@19.2.18)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)
       '@xh/package-template':
         specifier: ~3.0.4
-        version: 3.0.4(@xh/hoist@88.0.0-SNAPSHOT.1789679922695(@types/react@19.2.18)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        version: 3.0.4(@xh/hoist@88.0.0-SNAPSHOT.1789767827625(@types/react@19.2.18)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       ag-charts-community:
         specifier: ~14.1.0
         version: 14.1.0
@@ -186,8 +186,8 @@ importers:
         specifier: ^8.0.1
         version: 8.0.1(jiti@2.7.0)(supports-color@10.2.2)
       '@xh/hoist-dev-utils':
-        specifier: ~15.0.2
-        version: 15.0.2(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(jiti@2.7.0)(js-yaml@4.3.2)(json5@2.2.3)(sass@1.103.1)(supports-color@10.2.2)(typescript@5.9.3)
+        specifier: next
+        version: 16.0.0-SNAPSHOT.1789767002650(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(jiti@2.7.0)(js-yaml@4.3.2)(json5@2.2.3)(sass@1.103.1)(supports-color@10.2.2)(typescript@5.9.3)
       cross-env:
         specifier: ~10.1.0
         version: 10.1.0
@@ -1935,12 +1935,12 @@ packages:
   '@xh/eslint-config@8.0.1':
     resolution: {integrity: sha512-t+1R6My3ntLLJKqr5vtF6MF6r73ylwiLwI3UKj/mpz4oKfLB5NHws98kxKNDxYgCLWevVEkGStHo/6SXzVtx/A==}
 
-  '@xh/hoist-dev-utils@15.0.2':
-    resolution: {integrity: sha512-rsnMAp0j4oom6SdDND2e153zEJEwkTkpmrm0xfhmKlvncmNSZ8s9xmq0DkyRhwCvgc0H749jn2kYEWA5FODn0A==}
+  '@xh/hoist-dev-utils@16.0.0-SNAPSHOT.1789767002650':
+    resolution: {integrity: sha512-oj4llpKhgnkuO/LinPHdCVbH69TmhGq5wSOpDLus6g1uRiNynmJoUqqJSngCBGh3zwxBo4fplQ+NmxwKnwGJxA==}
     engines: {node: '>=22.15.0'}
 
-  '@xh/hoist@88.0.0-SNAPSHOT.1789679922695':
-    resolution: {integrity: sha512-VAi25lGCFKdtdYa7xhwUcFOUAZRR8OtdEFXqPMTlxgTRqWWg1h/am5NZoypNFvb/2MeVxEY2hOqG0iq1dn+obA==}
+  '@xh/hoist@88.0.0-SNAPSHOT.1789767827625':
+    resolution: {integrity: sha512-19N0BfFWCMt6oFvy8ee2LOtnLZ90xekPndPyDCZDf2dZ08BuvpV0nOj6gT/Fon3uKXTBoiwCsUzuoPqhYO0d6w==}
     hasBin: true
     peerDependencies:
       react: ^19.2.0
@@ -7040,7 +7040,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@xh/hoist-dev-utils@15.0.2(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(jiti@2.7.0)(js-yaml@4.3.2)(json5@2.2.3)(sass@1.103.1)(supports-color@10.2.2)(typescript@5.9.3)':
+  '@xh/hoist-dev-utils@16.0.0-SNAPSHOT.1789767002650(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(jiti@2.7.0)(js-yaml@4.3.2)(json5@2.2.3)(sass@1.103.1)(supports-color@10.2.2)(typescript@5.9.3)':
     dependencies:
       '@babel/core': 7.29.7(supports-color@10.2.2)
       '@babel/plugin-proposal-decorators': 7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)
@@ -7101,7 +7101,7 @@ snapshots:
       - uglify-js
       - utf-8-validate
 
-  '@xh/hoist@88.0.0-SNAPSHOT.1789679922695(@types/react@19.2.18)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)':
+  '@xh/hoist@88.0.0-SNAPSHOT.1789767827625(@types/react@19.2.18)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)':
     dependencies:
       '@auth0/auth0-spa-js': 2.24.1
       '@azure/msal-browser': 5.19.0
@@ -7172,9 +7172,9 @@ snapshots:
       - react-native
       - supports-color
 
-  '@xh/package-template@3.0.4(@xh/hoist@88.0.0-SNAPSHOT.1789679922695(@types/react@19.2.18)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@xh/package-template@3.0.4(@xh/hoist@88.0.0-SNAPSHOT.1789767827625(@types/react@19.2.18)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@xh/hoist': 88.0.0-SNAPSHOT.1789679922695(@types/react@19.2.18)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)
+      '@xh/hoist': 88.0.0-SNAPSHOT.1789767827625(@types/react@19.2.18)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
 
@@ -7433,7 +7433,7 @@ snapshots:
   capital-case@1.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.8.1
       upper-case-first: 2.0.2
 
   case-sensitive-paths-webpack-plugin@2.4.0: {}
@@ -7453,7 +7453,7 @@ snapshots:
       path-case: 3.0.4
       sentence-case: 3.0.4
       snake-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   changelog-parser@4.1.0:
     dependencies:
@@ -7539,7 +7539,7 @@ snapshots:
   constant-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.8.1
       upper-case: 2.0.2
 
   content-disposition@1.1.0: {}
@@ -8152,7 +8152,7 @@ snapshots:
   header-case@2.0.4:
     dependencies:
       capital-case: 1.0.4
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   hermes-estree@0.25.1: {}
 
@@ -8446,7 +8446,7 @@ snapshots:
 
   lower-case@2.0.2:
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   lru-cache@5.1.1:
     dependencies:
@@ -8922,7 +8922,7 @@ snapshots:
   no-case@3.0.4:
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   node-addon-api@7.1.1:
     optional: true
@@ -9044,7 +9044,7 @@ snapshots:
   path-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   path-exists@4.0.0: {}
 
@@ -9638,7 +9638,7 @@ snapshots:
   sentence-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.8.1
       upper-case-first: 2.0.2
 
   serialize-javascript@7.1.1: {}
@@ -9727,7 +9727,7 @@ snapshots:
   snake-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   source-map-js@1.2.1: {}
 
@@ -10069,11 +10069,11 @@ snapshots:
 
   upper-case-first@2.0.2:
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   upper-case@2.0.2:
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   uri-js@4.4.1:
     dependencies:
