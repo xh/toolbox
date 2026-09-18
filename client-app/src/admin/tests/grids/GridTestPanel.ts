@@ -1,7 +1,8 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {creates, hoistCmp, SelectOption} from '@xh/hoist/core';
+import type {SelectOption} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -10,7 +11,12 @@ import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {runInAction} from '@xh/hoist/mobx';
-import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../desktop/common';
+import {
+    wrapper,
+    wrapperAction,
+    wrapperOption,
+    wrapperOptionGroup
+} from '../../../desktop/common/Wrapper';
 import {gridTestBenchmarkDialog} from './GridTestBenchmarkDialog';
 import {GridTestModel, VALUE_MIX_OPTIONS} from './GridTestModel';
 

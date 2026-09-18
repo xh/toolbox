@@ -7,8 +7,8 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
-import {usStates} from '../../../core/data';
-import {wrapper, wrapperOption} from '../../common';
+import {usStates} from '../../../core/data/USStates';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 import {BasicPanelModel} from './BasicPanelModel';
 
 export const basicPanel = hoistCmp.factory({

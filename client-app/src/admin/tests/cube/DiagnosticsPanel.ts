@@ -1,13 +1,14 @@
 import {chart} from '@xh/hoist/cmp/chart';
 import {box, div, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
-import {hoistCmp, PlainObject, uses} from '@xh/hoist/core';
+import type {PlainObject} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {picker, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {compact, isEmpty, maxBy} from 'lodash';
 import {CubeTestModel} from './CubeTestModel';
-import {LoadTime} from './LoadTimesModel';
+import type {LoadTime} from './LoadTimesModel';
 
 /** Live readout of the `diagnostics` published by each stage a Cube data change flows through. */
 export const diagnosticsPanel = hoistCmp.factory({

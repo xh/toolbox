@@ -1,6 +1,7 @@
 import {checkboxRenderer, GridModel, localDate} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {dateIs, lengthIs, numberIs, required, Store, StoreRecord} from '@xh/hoist/data';
+import type {StoreRecord} from '@xh/hoist/data';
+import {dateIs, lengthIs, numberIs, required, Store} from '@xh/hoist/data';
 import {
     actionCol,
     booleanEditor,
@@ -14,7 +15,7 @@ import {
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
@@ -31,21 +32,18 @@ const CATEGORY_OPTIONS = [
 ];
 
 export class InlineEditingPanelModel extends HoistModel {
-    @bindable
-    asyncValidation = false;
+    @bindable accessor asyncValidation = false;
 
-    @bindable
-    fullRowEditing = false;
+    @bindable accessor fullRowEditing = false;
 
     @managed
     @observable.ref
-    gridModel: GridModel;
+    accessor gridModel: GridModel;
 
     @managed
     store: Store;
 
-    @bindable
-    clicksToEdit = 2;
+    @bindable accessor clicksToEdit = 2;
 
     @managed
     panelModel: PanelModel;
@@ -63,7 +61,6 @@ export class InlineEditingPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.panelModel = this.createPanelModel();
         this.store = this.createStore();
         this.gridModel = this.createGridModel();

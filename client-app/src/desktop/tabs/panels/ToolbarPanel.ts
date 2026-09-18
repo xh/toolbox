@@ -6,8 +6,8 @@ import {menuButton} from '@xh/hoist/desktop/cmp/menu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon, xhLogo} from '@xh/hoist/icon';
-import {usStates} from '../../../core/data';
-import {wrapper, wrapperOption} from '../../common';
+import {usStates} from '../../../core/data/USStates';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
 export const toolbarPanel = hoistCmp.factory({

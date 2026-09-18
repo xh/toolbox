@@ -1,8 +1,9 @@
-import {FormModel} from '@xh/hoist/cmp/form';
-import {HoistModel, PlainObject} from '@xh/hoist/core';
-import {FormFieldProps} from '@xh/hoist/desktop/cmp/form';
-import {action, bindable, makeObservable} from '@xh/hoist/mobx';
-import {DemoConfigProps} from '../../../common';
+import type {FormModel} from '@xh/hoist/cmp/form';
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistModel} from '@xh/hoist/core';
+import type {FormFieldProps} from '@xh/hoist/desktop/cmp/form';
+import {action, bindable} from '@xh/hoist/mobx';
+import type {DemoConfigProps} from '../../../common/Demo';
 
 /**
  * The ambient props spread onto every input on a page. Deliberately not tied to one component's
@@ -36,11 +37,11 @@ export interface InputDemoConfig {
  */
 export abstract class InputDemoModel extends HoistModel {
     /** Ambient - `compact` on inputs that support it (SegmentedControl, IntentInput, Picker). */
-    @bindable compact = false;
+    @bindable accessor compact = false;
     /** Ambient - `disabled` on every input. */
-    @bindable disabled = false;
+    @bindable accessor disabled = false;
     /** Ambient - `commitOnChange` on every input that supports it. */
-    @bindable commitOnChange = false;
+    @bindable accessor commitOnChange = false;
 
     /** True for inputs with a `compact` prop - shows the ambient Compact switch. */
     readonly supportsCompact: boolean;
@@ -59,7 +60,6 @@ export abstract class InputDemoModel extends HoistModel {
 
     constructor({supportsCompact = false, commitOnChangeDefault = false}: InputDemoConfig = {}) {
         super();
-        makeObservable(this);
 
         this.supportsCompact = supportsCompact;
         this.commitOnChangeDefault = commitOnChangeDefault;

@@ -1,7 +1,8 @@
-import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
-import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import type {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
-import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 
 import {
@@ -11,7 +12,7 @@ import {
     temperatureIcon,
     windIcon
 } from './Icons';
-import {CurrentWeatherResponse, ForecastResponse} from './Types';
+import type {CurrentWeatherResponse, ForecastResponse} from './Types';
 import {currentConditionsWidget} from './widgets/CurrentConditionsWidget';
 import {tempForecastWidget} from './widgets/TempForecastWidget';
 import {precipForecastWidget} from './widgets/PrecipForecastWidget';
@@ -51,16 +52,15 @@ export class WeatherDashModel extends HoistModel {
     override telemetryPrefix = 'toolbox.client.weather';
     override persistWith = {localStorageKey: 'xhWeatherDash'};
 
-    @bindable @persist selectedCity: string = 'New York';
-    @observable.ref currentWeather: CurrentWeatherResponse = null;
-    @observable.ref forecast: ForecastResponse = null;
+    @bindable @persist accessor selectedCity: string = 'New York';
+    @observable.ref accessor currentWeather: CurrentWeatherResponse = null;
+    @observable.ref accessor forecast: ForecastResponse = null;
 
     viewManagerModel: ViewManagerModel;
     @managed dashCanvasModel: DashCanvasModel;
 
     constructor(viewManagerModel: ViewManagerModel) {
         super();
-        makeObservable(this);
 
         this.viewManagerModel = viewManagerModel;
         this.dashCanvasModel = new DashCanvasModel({

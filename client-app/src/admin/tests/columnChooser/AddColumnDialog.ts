@@ -1,4 +1,4 @@
-import {ColumnSpec} from '@xh/hoist/cmp/grid';
+import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {filler, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistModel, managed, uses} from '@xh/hoist/core';
@@ -11,8 +11,8 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {dialog} from '@xh/hoist/kit/blueprint';
-import {action, makeObservable, observable} from '@xh/hoist/mobx';
-import {GroupOption} from './generateColumns';
+import {action, observable} from '@xh/hoist/mobx';
+import type {GroupOption} from './generateColumns';
 
 /** Host that owns the grid the new column will be added to. */
 export interface AddColumnHost {
@@ -26,7 +26,7 @@ let seq = 0;
 export class AddColumnDialogModel extends HoistModel {
     readonly host: AddColumnHost;
 
-    @observable isOpen = false;
+    @observable accessor isOpen = false;
 
     @managed formModel = new FormModel({
         fields: [
@@ -45,7 +45,6 @@ export class AddColumnDialogModel extends HoistModel {
 
     constructor(host: AddColumnHost) {
         super();
-        makeObservable(this);
         this.host = host;
     }
 

@@ -1,5 +1,6 @@
 import {a} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {docRouteParams} from '../docs/DocUtils';
 
 export interface ToolboxLinkProps extends HoistProps {

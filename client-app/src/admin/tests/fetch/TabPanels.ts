@@ -4,7 +4,7 @@ import {hframe, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 
 import {codes} from './Codes';
-import {FetchApiTestModel} from './FetchApiTestModel';
+import type {FetchApiTestModel} from './FetchApiTestModel';
 
 export const individualBtns = hoistCmp.factory<FetchApiTestModel>(({model}) =>
     vframe({

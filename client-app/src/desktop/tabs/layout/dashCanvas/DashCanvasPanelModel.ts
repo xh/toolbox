@@ -1,27 +1,20 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
-import {
-    optionsWidget,
-    chartWidget,
-    errorWidget,
-    gridWidget,
-    panelWidget,
-    treeGridWidget
-} from '../widgets';
+import {chartWidget} from '../widgets/ChartWidget';
+import {errorWidget} from '../widgets/ErrorWidget';
+import {gridWidget} from '../widgets/GridWidget';
+import {optionsWidget} from '../widgets/OptionsWidget';
+import {panelWidget} from '../widgets/PanelWidget';
+import {treeGridWidget} from '../widgets/TreeGridWidget';
 
 export class DashCanvasPanelModel extends HoistModel {
-    @bindable renderDashboard = true;
-    @bindable showWidgetChooser = true;
+    @bindable accessor renderDashboard = true;
+    @bindable accessor showWidgetChooser = true;
 
     @managed
     dashCanvasModel = this.createDashCanvasModel();
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     clearCanvas() {
         this.dashCanvasModel.viewModels.forEach(it => this.dashCanvasModel.removeView(it.id));

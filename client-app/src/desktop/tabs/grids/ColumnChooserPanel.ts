@@ -1,32 +1,36 @@
-import {ColChooserMode, grid, GridModel} from '@xh/hoist/cmp/grid';
+import type {ColChooserMode} from '@xh/hoist/cmp/grid';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {creates, hoistCmp, HoistModel, HSide, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {FilterMatchMode} from '@xh/hoist/data';
+import type {HSide, LoadSpec} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
+import type {FilterMatchMode} from '@xh/hoist/data';
 import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
-import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common';
+import {bindable, observable} from '@xh/hoist/mobx';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 import {
     actualGrossCol,
     actualUnitsSoldCol,
-    cityCol,
     commissionCol,
     commissionRateCol,
+    projectedGrossCol,
+    projectedUnitsSoldCol,
+    retainCol
+} from '../../../core/columns/Sales';
+import {
+    cityCol,
     emailCol,
     firstNameCol,
     fullNameCol,
     lastNameCol,
-    projectedGrossCol,
-    projectedUnitsSoldCol,
-    regionCol,
-    retainCol,
     salaryCol,
     stateCol,
     tenureCol
-} from '../../../core/columns';
+} from '../../../core/columns/Demographics';
+import {regionCol} from '../../../core/columns/Orders';
 
 export const columnChooserPanel = hoistCmp.factory({
     model: creates(() => ColumnChooserPanelModel),
@@ -210,33 +214,32 @@ export const columnChooserPanel = hoistCmp.factory({
 });
 
 class ColumnChooserPanelModel extends HoistModel {
-    @managed @observable.ref gridModel: GridModel;
+    @managed @observable.ref accessor gridModel: GridModel;
 
-    @bindable lockColumnGroups: boolean = true;
-    @bindable enableColumnPinning: boolean = true;
-    @bindable enableChooser: boolean = true;
+    @bindable accessor lockColumnGroups: boolean = true;
+    @bindable accessor enableColumnPinning: boolean = true;
+    @bindable accessor enableChooser: boolean = true;
 
     // Chooser config -> gridModel.colChooserModel. `width` is the bucket column width, excluding the
     // library, which adds `libraryWidth` when shown. `height` and `commitOnChange` apply to the modal
     // presentation only; `side` to the docked one, whose open/close is driven externally (the toolbar
     // button, the context menu, or the initial open below).
-    @bindable mode: ColChooserMode = 'docked';
-    @bindable width: number = 400;
-    @bindable height: number = 600;
-    @bindable commitOnChange: boolean = true;
-    @bindable side: HSide = 'right';
-    @bindable showRestoreDefaults: boolean = true;
-    @bindable autosizeOnCommit: boolean = false;
-    @bindable filterMatchMode: FilterMatchMode = 'startWord';
+    @bindable accessor mode: ColChooserMode = 'docked';
+    @bindable accessor width: number = 400;
+    @bindable accessor height: number = 600;
+    @bindable accessor commitOnChange: boolean = true;
+    @bindable accessor side: HSide = 'right';
+    @bindable accessor showRestoreDefaults: boolean = true;
+    @bindable accessor autosizeOnCommit: boolean = false;
+    @bindable accessor filterMatchMode: FilterMatchMode = 'startWord';
 
     // Column Library, added to the bucket `width` whenever it is shown (ColLibraryConfig).
-    @bindable columnLibraryEnabled: boolean = true;
-    @bindable collapseLibraryGroups: boolean = false;
-    @bindable libraryWidth: number = 260;
+    @bindable accessor columnLibraryEnabled: boolean = true;
+    @bindable accessor collapseLibraryGroups: boolean = false;
+    @bindable accessor libraryWidth: number = 260;
 
     constructor() {
         super();
-        makeObservable(this);
         this.installGridModel();
 
         // All of the above are construction-time GridModel / chooser configs, so rebuild the model
