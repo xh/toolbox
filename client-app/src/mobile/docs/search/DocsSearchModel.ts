@@ -3,7 +3,6 @@ import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {encodeDocId} from '../../../core/docs/DocUtils';
 import type {DocEntry} from '../../../core/docs/types';
 import type {DocSearchResult} from '../../../core/svc/DocService';
-import type {DocService} from '../../../core/svc/DocService';
 
 /** A library-grouped block of search hits. */
 export interface SearchResultGroup {
@@ -26,17 +25,13 @@ export class DocsSearchModel extends HoistModel {
     @observable.ref accessor results: DocSearchResult[] = [];
     @observable.ref accessor recentSearches: string[] = [];
 
-    private get docService(): DocService {
-        return XH.docService;
-    }
-
     constructor() {
         super();
         this.recentSearches = XH.localStorageService.get(RECENT_SEARCHES_KEY, []);
     }
 
     override onLinked() {
-        this.docService.ensureIndexBuilt();
+        XH.docService.ensureIndexBuilt();
         this.addReaction({
             track: () => this.query,
             run: () => this.runSearch(),
@@ -46,7 +41,8 @@ export class DocsSearchModel extends HoistModel {
 
     /** Results grouped under their library, in the service's source order. */
     get groupedResults(): SearchResultGroup[] {
-        const {results, docService} = this;
+        const {results} = this,
+            {docService} = XH;
         return docService.sourceNames
             .map(source => ({
                 source,
@@ -87,10 +83,10 @@ export class DocsSearchModel extends HoistModel {
             return;
         }
         const terms = this.queryTerms(query),
-            hits = this.docService.searchDocs(query).map(r => ({
+            hits = XH.docService.searchDocs(query).map(r => ({
                 ...r,
                 matchedTerms: terms,
-                snippet: this.docService.getContentSnippet(r.entry.source, r.entry.id, terms)
+                snippet: XH.docService.getContentSnippet(r.entry.source, r.entry.id, terms)
             }));
         runInAction(() => (this.results = hits));
     }
