@@ -1,13 +1,17 @@
 /**
- * Rsbuild (Rspack + SWC) build configuration - the successor to `webpack.config.js`, driven by
- * `configureRsbuild()` from hoist-dev-utils. Both configs are maintained side-by-side while the
- * bundler migration is evaluated (see hoist-dev-utils #73) - the `env` options are the same.
+ * Rsbuild (Rspack + SWC) build configuration, driven by `configureRsbuild()` from hoist-dev-utils.
+ * Run via `pnpm start` / `pnpm build` (see package.json scripts).
  *
  * Rsbuild's CLI has no `--env key=value` flag, so build-time overrides arrive as `XH_*`
- * environment variables (e.g. `XH_APP_VERSION=1.2.3 XH_PROD_BUILD=true rsbuild build`) via the
- * `readCliEnv()` helper, or through Rsbuild's own `--env-mode` flag as mapped below.
+ * environment variables (e.g. `XH_APP_VERSION=1.2.3 rsbuild build --env-mode prod`) via the
+ * `readCliEnv()` helper, or through Rsbuild's own `--env-mode` flag as mapped below. Per-developer
+ * defaults such as `XH_DEV_HOST` belong in a gitignored `.env.local`, which Rsbuild loads on every run.
  *
- * See webpack.config.js for notes on the @xh/package-template custom package example.
+ * Toolbox demonstrates the use of a custom JS package (@xh/package-template) that is transpiled
+ * and processed alongside the app and hoist-react code. Like hoist-react, this sample package is
+ * left unbundled/uncompiled when published to npm so it can be processed in one shot and with the
+ * same tooling as the app - hence the `babelIncludePaths` entry below. Apps that do NOT make use of
+ * such a custom package do NOT need it.
  */
 import configureRsbuild, {readCliEnv} from '@xh/hoist-dev-utils/configureRsbuild';
 import {createRequire} from 'node:module';

@@ -4,9 +4,8 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "build": "webpack --env prodBuild",
-    "build:rsbuild": "rsbuild build --env-mode prod",
-    "buildAndAnalyze": "webpack --env prodBuild --env analyzeBundles",
+    "build": "rsbuild build --env-mode prod",
+    "buildAndAnalyze": "cross-env XH_ANALYZE_BUNDLES=true rsbuild build --env-mode prod",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "pnpm lint:all",
     "validateDocs": "node scripts/validate-doc-registry.mjs",
@@ -15,15 +14,13 @@
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
     "typecheck": "tsc --noEmit",
     "prepare": "cd .. && husky client-app/.husky",
-    "start": "pnpm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
-    "start:rsbuild": "pnpm install && rsbuild dev",
-    "startAndAnalyze": "pnpm start --env analyzeBundles",
-    "startWithIp": "pnpm start --env devHost=$(ipconfig getifaddr en0)",
-    "startWithHoist": "(cd ../../hoist-react && pnpm install) && pnpm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
-    "startWithHoist:rsbuild": "(cd ../../hoist-react && pnpm install) && pnpm install && rsbuild dev --env-mode inlineHoist",
-    "startWithHoistAndAnalyze": "pnpm startWithHoist --env analyzeBundles",
-    "startWithHoistAndIp": "pnpm startWithHoist --env devHost=$(ipconfig getifaddr en0)",
-    "startWithHoistSecure": "pnpm startWithHoist --env devHttps=true --env devHost=toolbox-local.xh.io"
+    "start": "pnpm install && rsbuild dev",
+    "startAndAnalyze": "cross-env XH_ANALYZE_BUNDLES=true pnpm start",
+    "startWithIp": "XH_DEV_HOST=$(ipconfig getifaddr en0) pnpm start",
+    "startWithHoist": "(cd ../../hoist-react && pnpm install) && pnpm install && rsbuild dev --env-mode inlineHoist",
+    "startWithHoistAndAnalyze": "cross-env XH_ANALYZE_BUNDLES=true pnpm startWithHoist",
+    "startWithHoistAndIp": "XH_DEV_HOST=$(ipconfig getifaddr en0) pnpm startWithHoist",
+    "startWithHoistSecure": "cross-env XH_DEV_HTTPS=true XH_DEV_HOST=toolbox-local.xh.io pnpm startWithHoist"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -62,7 +59,7 @@
     "@types/react": "~19.2.18",
     "@types/react-dom": "~19.2.7",
     "@xh/eslint-config": "^8.0.1",
-    "@xh/hoist-dev-utils": "~15.0.2",
+    "@xh/hoist-dev-utils": "16.0.0-SNAPSHOT.1789745757649",
     "cross-env": "~10.1.0",
     "eslint": "~10.9.1",
     "eslint-config-prettier": "~10.1.8",

@@ -40,7 +40,7 @@
 
 ### Technical
 
-* Added an `rsbuild.config.mjs` and `build:rsbuild` / `start:rsbuild` / `startWithHoist:rsbuild` scripts, building Toolbox with hoist-dev-utils' new Rspack-based `configureRsbuild()` alongside the existing webpack config, as the reference app for that bundler migration spike (hoist-dev-utils #73). The webpack scripts remain the default.
+* Switched the client build from webpack to Rsbuild (Rspack + SWC) via hoist-dev-utils 16 - `pnpm start` / `pnpm build` now run `rsbuild`, builds are several times faster on far less memory, and build-time options arrive as `XH_*` environment variables instead of `--env` flags.
 
 ## 10.0.1 - 2026-09-10
 

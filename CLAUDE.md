@@ -337,7 +337,7 @@ over a network IP, HTTPS, and troubleshooting (including the server timezone che
 
 ### App URLs during Local Development
 
-The webpack dev server runs on **`http://localhost:3000`**. Each file in `client-app/src/apps/`
+The Rsbuild dev server runs on **`http://localhost:3000`**. Each file in `client-app/src/apps/`
 defines an entry point, and its filename (minus the extension) becomes the URL path. For example,
 `apps/app.ts` → `http://localhost:3000/app`.
 
