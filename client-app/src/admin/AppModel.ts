@@ -1,7 +1,8 @@
 import {AppModel as HoistAdminAppModel} from '@xh/hoist/admin/AppModel';
-import {TabConfig} from '@xh/hoist/cmp/tab';
+import type {TabConfig} from '@xh/hoist/cmp/tab';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
-import {InitContext, managed, XH} from '@xh/hoist/core';
+import type {InitContext} from '@xh/hoist/core';
+import {managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {

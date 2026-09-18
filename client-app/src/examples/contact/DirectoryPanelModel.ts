@@ -1,8 +1,10 @@
-import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {div, hbox} from '@xh/hoist/cmp/layout';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {StoreRecord, appendFilter, FilterLike} from '@xh/hoist/data';
+import type {StoreRecord, FilterLike} from '@xh/hoist/data';
+import {appendFilter} from '@xh/hoist/data';
 import {isEmpty, uniq, without} from 'lodash';
 
 import {PERSIST_APP} from './AppModel';

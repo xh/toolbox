@@ -1,4 +1,4 @@
-import {ColumnSpec} from '@xh/hoist/cmp/grid';
+import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {filler, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistModel, managed, uses} from '@xh/hoist/core';
@@ -12,7 +12,7 @@ import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {dialog} from '@xh/hoist/kit/blueprint';
 import {action, observable} from '@xh/hoist/mobx';
-import {GroupOption} from './generateColumns';
+import type {GroupOption} from './generateColumns';
 
 /** Host that owns the grid the new column will be added to. */
 export interface AddColumnHost {

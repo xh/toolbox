@@ -2,7 +2,7 @@ import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
-import {ForecastResponse} from '../Types';
+import type {ForecastResponse} from '../Types';
 import {AppModel} from '../AppModel';
 
 export const tempForecastWidget = hoistCmp.factory({

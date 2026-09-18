@@ -1,6 +1,7 @@
-import {Content, XH} from '@xh/hoist/core';
+import type {Content} from '@xh/hoist/core';
+import {XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {selectTestPage} from './select/SelectTestPage';
 
 /**

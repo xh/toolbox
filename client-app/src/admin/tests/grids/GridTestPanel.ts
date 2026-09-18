@@ -1,7 +1,8 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {creates, hoistCmp, SelectOption} from '@xh/hoist/core';
+import type {SelectOption} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';

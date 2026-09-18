@@ -1,4 +1,5 @@
-import {InitContext, managed, XH} from '@xh/hoist/core';
+import type {InitContext} from '@xh/hoist/core';
+import {managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,

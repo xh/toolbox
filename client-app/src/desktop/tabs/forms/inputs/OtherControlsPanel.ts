@@ -4,7 +4,7 @@ import {dateRangePicker} from '@xh/hoist/desktop/cmp/daterange';
 import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {leftRightChooser, LeftRightChooserModel} from '@xh/hoist/desktop/cmp/leftrightchooser';
 import {Icon} from '@xh/hoist/icon';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {demoGallery, demoGalleryTile, demoPanel, wrapper} from '../../../common';
 import {OTHER_CONTROLS} from './InputCatalog';
 

@@ -2,7 +2,8 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {isValidJson} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {codeInput, jsonInput, JsonInputProps, switchInput} from '@xh/hoist/desktop/cmp/input';
+import type {JsonInputProps} from '@xh/hoist/desktop/cmp/input';
+import {codeInput, jsonInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {bindable} from '@xh/hoist/mobx';
 import {
     demoFrame,

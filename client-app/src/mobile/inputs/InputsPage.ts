@@ -15,7 +15,7 @@ import {
 } from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {ReactElement, ReactNode} from 'react';
+import type {ReactElement, ReactNode} from 'react';
 import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import './InputsPage.scss';
 import {InputsPageModel} from './InputsPageModel';

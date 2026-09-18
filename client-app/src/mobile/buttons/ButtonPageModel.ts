@@ -1,4 +1,5 @@
-import {HoistModel, Intent} from '@xh/hoist/core';
+import type {Intent} from '@xh/hoist/core';
+import {HoistModel} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 
 export class ButtonPageModel extends HoistModel {

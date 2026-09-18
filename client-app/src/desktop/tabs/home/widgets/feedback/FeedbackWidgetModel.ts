@@ -1,4 +1,5 @@
-import {HoistModel, PlainObject, XH} from '@xh/hoist/core';
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
 import {action, bindable, runInAction} from '@xh/hoist/mobx';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {debounce} from 'lodash';

@@ -1,7 +1,7 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {boolCheck, ExcelFormat, GridModel, localDate} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {CompoundFilter, FieldFilter} from '@xh/hoist/data';
+import type {CompoundFilter, FieldFilter} from '@xh/hoist/data';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {computed} from '@xh/hoist/mobx';
 

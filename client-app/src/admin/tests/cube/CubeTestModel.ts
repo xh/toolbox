@@ -11,7 +11,7 @@ import {forEach, isEmpty} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {LoadTimesModel} from './LoadTimesModel';
 import {CubeModel} from './CubeModel';
-import {QueryConfig, View} from '@xh/hoist/data';
+import type {QueryConfig, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
     @managed cubeModel: CubeModel;

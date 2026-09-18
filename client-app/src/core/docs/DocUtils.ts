@@ -1,5 +1,5 @@
 import {DocService} from '../svc/DocService';
-import {DocEntry, DocSection} from './types';
+import type {DocEntry, DocSection} from './types';
 
 // --- Source repo tokens (matching `$HR`/`$HC` url prefixes) -> doc viewer source names. ---
 const DOC_SOURCE_TOKENS: Record<string, string> = {

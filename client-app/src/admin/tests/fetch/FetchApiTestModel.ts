@@ -1,11 +1,12 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistModel, managed, PlainObject, TaskObserver, XH} from '@xh/hoist/core';
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {action, bindable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {merge} from 'lodash';
 import {codes} from './Codes';
 import {codeGroupBtns, fetchServiceFeatures, individualBtns} from './TabPanels';
-import {FetchOptions} from '@xh/hoist/svc';
+import type {FetchOptions} from '@xh/hoist/svc';
 
 export class FetchApiTestModel extends HoistModel {
     @bindable accessor testServer;

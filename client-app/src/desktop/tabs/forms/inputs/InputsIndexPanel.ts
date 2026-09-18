@@ -1,5 +1,6 @@
 import {filler, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistProps, Intent, XH} from '@xh/hoist/core';
+import type {HoistProps, Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     buttonGroupInput,
@@ -25,7 +26,7 @@ import {bindable, computed} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {pluralize} from '@xh/hoist/utils/js';
 import {sortBy} from 'lodash';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {usStates} from '../../../../core/data';
 import {
     demoGallery,
@@ -36,7 +37,8 @@ import {
     wrapperOption,
     wrapperOptionGroup
 } from '../../../common';
-import {INPUT_CATALOG, INPUT_CATEGORIES, InputCatalogEntry} from './InputCatalog';
+import type {InputCatalogEntry} from './InputCatalog';
+import {INPUT_CATALOG, INPUT_CATEGORIES} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import './InputsIndexPanel.scss';
 

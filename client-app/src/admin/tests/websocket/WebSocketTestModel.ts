@@ -2,7 +2,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateRenderer} from '@xh/hoist/format';
 import {bindable} from '@xh/hoist/mobx';
-import {WebSocketSubscription} from '@xh/hoist/svc';
+import type {WebSocketSubscription} from '@xh/hoist/svc';
 
 export class WebSocketTestModel extends HoistModel {
     @managed gridModel: GridModel;

@@ -1,5 +1,6 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {creates, hoistCmp, HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
+import type {LoadSpec} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../../common';

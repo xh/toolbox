@@ -1,19 +1,14 @@
-import {
-    HoistModel,
-    managed,
-    persist,
-    PersistOptions,
-    PlainObject,
-    TaskObserver,
-    XH
-} from '@xh/hoist/core';
+import type {PersistOptions, PlainObject} from '@xh/hoist/core';
+import {HoistModel, managed, persist, TaskObserver, XH} from '@xh/hoist/core';
 import {fragment, p} from '@xh/hoist/cmp/layout';
-import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
-import {FieldType, StoreConfig} from '@xh/hoist/data';
+import type {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import type {StoreConfig} from '@xh/hoist/data';
+import {FieldType} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
+import type {ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
-import {StringInternSpec} from '@xh/hoist/svc';
+import type {StringInternSpec} from '@xh/hoist/svc';
 import {isEmpty, random, round, sample, times} from 'lodash';
 import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {waitFor} from '@xh/hoist/promise';

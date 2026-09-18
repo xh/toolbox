@@ -1,6 +1,6 @@
-import {ElementFactory} from '@xh/hoist/core';
+import type {ElementFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {commitsWidget} from './CommitsWidget';
 import {feedbackWidget} from './FeedbackWidget';
 import {meetXhWidget} from './MeetXhWidget';

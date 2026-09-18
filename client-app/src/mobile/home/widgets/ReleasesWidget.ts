@@ -1,7 +1,8 @@
 import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
-import {Release} from '../../../core/svc/GitHubService';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
+import type {Release} from '../../../core/svc/GitHubService';
 import './GitHubWidget.scss';
 
 /**

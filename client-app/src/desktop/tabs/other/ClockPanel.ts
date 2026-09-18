@@ -1,4 +1,5 @@
-import {clock, ClockProps} from '@xh/hoist/cmp/clock';
+import type {ClockProps} from '@xh/hoist/cmp/clock';
+import {clock} from '@xh/hoist/cmp/clock';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {numberInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {TIME_FMT} from '@xh/hoist/format';

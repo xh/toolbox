@@ -1,6 +1,7 @@
-import {hoistCmp, HoistModel, creates, Intent, XH} from '@xh/hoist/core';
+import type {Intent} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, creates, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {div, filler, p, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {popover} from '@xh/hoist/mobile/cmp/popover';

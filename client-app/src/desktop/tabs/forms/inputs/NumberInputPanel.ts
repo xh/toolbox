@@ -2,9 +2,10 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {numberIs, required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {numberInput, NumberInputProps, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import type {NumberInputProps} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {NumericPrecision} from '@xh/hoist/format';
+import type {NumericPrecision} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {

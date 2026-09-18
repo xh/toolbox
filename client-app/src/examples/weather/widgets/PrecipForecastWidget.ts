@@ -5,7 +5,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
-import {ForecastResponse} from '../Types';
+import type {ForecastResponse} from '../Types';
 import {AppModel} from '../AppModel';
 
 export const precipForecastWidget = hoistCmp.factory({

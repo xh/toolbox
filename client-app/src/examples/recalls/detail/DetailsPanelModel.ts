@@ -1,6 +1,6 @@
 import {HoistModel} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
-import {StoreRecord} from '@xh/hoist/data';
+import type {StoreRecord} from '@xh/hoist/data';
 
 export class DetailsPanelModel extends HoistModel {
     @bindable.ref accessor currentRecord: StoreRecord;

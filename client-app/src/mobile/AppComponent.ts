@@ -1,4 +1,5 @@
-import {hoistCmp, XH, uses, HoistUser} from '@xh/hoist/core';
+import type {HoistUser} from '@xh/hoist/core';
+import {hoistCmp, XH, uses} from '@xh/hoist/core';
 import {img} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
