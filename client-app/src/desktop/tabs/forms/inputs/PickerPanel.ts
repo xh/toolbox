@@ -8,7 +8,7 @@ import type {PickerProps} from '@xh/hoist/desktop/cmp/input';
 import {picker, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {usStates} from '../../../../core/data/USStates';
 import {
     demoFrame,

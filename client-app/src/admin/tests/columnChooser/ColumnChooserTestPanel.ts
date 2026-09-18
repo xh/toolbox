@@ -9,7 +9,7 @@ import {buttonGroupInput, jsonInput, switchInput} from '@xh/hoist/desktop/cmp/in
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed, observable} from '@xh/hoist/mobx';
+import {bindable, computed, observableRef} from '@xh/hoist/mobx';
 import type {AddColumnHost} from './AddColumnDialog';
 import {addColumnDialog, AddColumnDialogModel} from './AddColumnDialog';
 import type {CustomColumn, GridSize, GroupOption} from './generateColumns';

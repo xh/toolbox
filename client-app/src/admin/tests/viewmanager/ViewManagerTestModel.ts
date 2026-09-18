@@ -12,7 +12,7 @@ import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
-import {action, bindable, computed, runInAction, observableRef} from '@xh/hoist/mobx';
+import {action, bindable, computed, observableRef, runInAction} from '@xh/hoist/mobx';
 import {get} from 'lodash';
 import {
     SampleColumnGroupsGridModel,

@@ -3,7 +3,7 @@ import {faGithub} from '@fortawesome/free-brands-svg-icons';
 import type {InitContext, LoadSpec} from '@xh/hoist/core';
 import {HoistService, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {computed, runInAction, observableRef} from '@xh/hoist/mobx';
+import {computed, observableRef, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {forOwn, sortBy} from 'lodash';
 

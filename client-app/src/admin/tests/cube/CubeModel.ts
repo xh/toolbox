@@ -2,7 +2,7 @@ import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Cube} from '@xh/hoist/data';
 import {fmtThousands} from '@xh/hoist/format';
-import {observable} from '@xh/hoist/mobx';
+import {observableRef} from '@xh/hoist/mobx';
 import {times} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {PctTotalAggregator} from './PctTotalAggregator';

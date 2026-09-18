@@ -1,7 +1,7 @@
 import {creates, hoistCmp, HoistModel, lookup, managed} from '@xh/hoist/core';
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
-import {bindable, runInAction, observableRef} from '@xh/hoist/mobx';
+import {bindable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {modalToggleButton} from '@xh/hoist/desktop/cmp/button';
 import {fmtPrice} from '@xh/hoist/format';

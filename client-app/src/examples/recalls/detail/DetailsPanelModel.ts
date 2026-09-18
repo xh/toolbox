@@ -1,5 +1,5 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindableRef} from '@xh/hoist/mobx';
 import type {StoreRecord} from '@xh/hoist/data';
 
 export class DetailsPanelModel extends HoistModel {

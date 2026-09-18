@@ -1,6 +1,6 @@
 import type {Thunkable} from '@xh/hoist/core';
 import {HoistModel} from '@xh/hoist/core';
-import {action, observable, runInAction} from '@xh/hoist/mobx';
+import {action, observableRef, runInAction} from '@xh/hoist/mobx';
 import {executeIfFunction} from '@xh/hoist/utils/js';
 
 export interface LoadTime {

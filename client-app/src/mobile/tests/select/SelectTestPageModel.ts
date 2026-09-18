@@ -1,5 +1,5 @@
 import {HoistModel, XH} from '@xh/hoist/core';
-import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {take} from 'lodash';
 
 /**

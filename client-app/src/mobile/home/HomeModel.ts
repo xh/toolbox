@@ -1,5 +1,5 @@
 import {HoistModel, persist} from '@xh/hoist/core';
-import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, observableRef, runInAction} from '@xh/hoist/mobx';
 import type {WidgetSpec} from './widgets/WidgetCatalog';
 import {DEFAULT_WIDGET_IDS, WIDGETS, widgetSpec} from './widgets/WidgetCatalog';
 

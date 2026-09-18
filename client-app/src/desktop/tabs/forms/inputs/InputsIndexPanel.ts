@@ -22,7 +22,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed, bindableRef} from '@xh/hoist/mobx';
+import {bindable, bindableRef, computed} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {pluralize} from '@xh/hoist/utils/js';
 import {sortBy} from 'lodash';

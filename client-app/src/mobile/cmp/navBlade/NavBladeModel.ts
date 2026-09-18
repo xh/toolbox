@@ -1,6 +1,6 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observableRef} from '@xh/hoist/mobx';
 import type {ReactElement} from 'react';
 import {isEmpty} from 'lodash';
 import {DocService} from '../../../core/svc/DocService';

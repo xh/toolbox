@@ -1,5 +1,5 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {runInAction, bindableRef} from '@xh/hoist/mobx';
+import {bindableRef, runInAction} from '@xh/hoist/mobx';
 import {ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {wait} from '@xh/hoist/promise';
 import {activeCol} from '../../../core/columns/General';

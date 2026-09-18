@@ -1,6 +1,6 @@
 import {box, filler, img, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses, XH} from '@xh/hoist/core';
-import {action, bindable, observable, observableRef, bindableRef} from '@xh/hoist/mobx';
+import {action, bindable, bindableRef, observable, observableRef} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import type {FileChooserConfig, FileChooserProps} from '@xh/hoist/desktop/cmp/filechooser';
 import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';

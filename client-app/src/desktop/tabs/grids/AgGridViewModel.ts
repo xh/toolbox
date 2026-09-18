@@ -1,7 +1,7 @@
 import type {LoadSpec} from '@xh/hoist/core';
 import {HoistModel, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
-import {runInAction, observableRef} from '@xh/hoist/mobx';
+import {observableRef, runInAction} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 
 export class AgGridViewModel extends HoistModel {

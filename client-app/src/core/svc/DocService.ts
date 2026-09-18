@@ -1,6 +1,6 @@
 import type {InitContext} from '@xh/hoist/core';
 import {HoistService, XH} from '@xh/hoist/core';
-import {action, observable, runInAction} from '@xh/hoist/mobx';
+import {action, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 import MiniSearch from 'minisearch';
 import {sameDoc} from '../docs/DocUtils';

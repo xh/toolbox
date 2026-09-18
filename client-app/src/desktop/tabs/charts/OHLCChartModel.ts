@@ -3,7 +3,7 @@ import {type ContextMenuSpec, HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import type {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, observableRef, bindableRef} from '@xh/hoist/mobx';
+import {bindable, bindableRef, observableRef} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
 import type {ChartContextMenuMode} from '../../common/charts/ChartOptions';

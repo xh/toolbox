@@ -4,7 +4,7 @@ import {managed, XH} from '@xh/hoist/core';
 import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, computed, observable, runInAction, observableRef} from '@xh/hoist/mobx';
+import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {DocViewModel} from '../../../core/docs/DocViewModel';
 import {getCategoryIcon, getSourceIcon} from '../../../core/docs/DocIcons';
 import type {DocEntry, DocExampleLink} from './docRegistry';

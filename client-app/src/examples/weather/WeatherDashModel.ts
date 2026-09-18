@@ -2,7 +2,7 @@ import type {LoadSpec} from '@xh/hoist/core';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import type {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
-import {bindable, runInAction, observableRef} from '@xh/hoist/mobx';
+import {bindable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 
 import {
