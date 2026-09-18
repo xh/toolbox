@@ -1,5 +1,5 @@
 import {XH, HoistModel, managed, LoadSpec, PlainObject} from '@xh/hoist/core';
-import { bindable } from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {GridModel, localDate, ExcelFormat} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 
