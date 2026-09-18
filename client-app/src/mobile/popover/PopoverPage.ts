@@ -1,5 +1,5 @@
 import {hoistCmp, HoistModel, creates, Intent, XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {ReactElement} from 'react';
 import {div, filler, p, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
@@ -175,15 +175,10 @@ const editDialog = hoistCmp.factory<PopoverPageModel>({
  * modal Dialog.
  */
 class PopoverPageModel extends HoistModel {
-    @bindable position: PopoverPosition = 'bottom';
-    @bindable backdrop: boolean = false;
-    @bindable menuOpen: boolean = false;
-    @bindable dialogOpen: boolean = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor position: PopoverPosition = 'bottom';
+    @bindable accessor backdrop: boolean = false;
+    @bindable accessor menuOpen: boolean = false;
+    @bindable accessor dialogOpen: boolean = false;
 
     chooseAction(label: string) {
         this.menuOpen = false;

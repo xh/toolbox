@@ -4,7 +4,7 @@ import {hoistCmp, HoistModel, HoistProps, Intent, useLocalModel} from '@xh/hoist
 import {button, ButtonProps} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {isArray, isEmpty} from 'lodash';
 import classNames from 'classnames';
 import {ReactElement, ReactNode} from 'react';
@@ -78,12 +78,7 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
 
 /** Per-tab, in-memory collapse state for the info rail (intentionally not persisted or shared). */
 class WrapperRailModel extends HoistModel {
-    @bindable collapsed = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor collapsed = false;
 }
 
 interface InfoRailProps extends Omit<WrapperProps, 'description'> {

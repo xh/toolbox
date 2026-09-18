@@ -1,6 +1,6 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, managed, PlainObject, TaskObserver, XH} from '@xh/hoist/core';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {merge} from 'lodash';
 import {codes} from './Codes';
@@ -8,10 +8,10 @@ import {codeGroupBtns, fetchServiceFeatures, individualBtns} from './TabPanels';
 import {FetchOptions} from '@xh/hoist/svc';
 
 export class FetchApiTestModel extends HoistModel {
-    @bindable testServer;
-    @bindable testMethod: string;
-    @bindable testCorrelationIds = true;
-    @observable outcome = null;
+    @bindable accessor testServer;
+    @bindable accessor testMethod: string;
+    @bindable accessor testCorrelationIds = true;
+    @observable accessor outcome = null;
 
     referenceSite = 'https://httpstatuses.com/';
 
@@ -60,7 +60,6 @@ export class FetchApiTestModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.testServer = this.testServers[0].value;
         this.testMethod = this.testMethods[0].value;
     }

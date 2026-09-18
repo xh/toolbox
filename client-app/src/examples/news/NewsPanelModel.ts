@@ -1,5 +1,5 @@
 import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {appendFilter, FilterLike, StoreRecord} from '@xh/hoist/data';
 import {uniq, map} from 'lodash';
@@ -38,15 +38,13 @@ export class NewsPanelModel extends HoistModel {
         stripeRows: true
     });
 
-    @observable.ref
-    sourceOptions: string[] = [];
-    @bindable.ref
-    private sourceFilterValues: string[] = null;
+    @observable.ref accessor sourceOptions: string[] = [];
+
+    @bindable.ref private accessor sourceFilterValues: string[] = null;
     private lastRefresh: Date;
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.addReaction({
             track: () => [this.sourceFilterValues, this.lastRefresh],

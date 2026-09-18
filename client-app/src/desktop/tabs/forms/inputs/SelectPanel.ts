@@ -6,7 +6,7 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {select, SelectProps, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {isUndefined} from 'lodash';
 import {restaurants, usStates} from '../../../../core/data';
 import {
@@ -463,28 +463,28 @@ const SEEDS = {
 
 class SelectPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgMulti = false;
-    @bindable pgEnableClear = true;
-    @bindable pgEnableFilter = true;
-    @bindable pgLeftIcon = false;
+    @bindable accessor pgMulti = false;
+    @bindable accessor pgEnableClear = true;
+    @bindable accessor pgEnableFilter = true;
+    @bindable accessor pgLeftIcon = false;
 
     // Inputs
-    @bindable.ref playground: string | string[] = SEEDS.playground;
-    @bindable simpleOption: string = SEEDS.simpleOption;
-    @bindable restaurant: string = SEEDS.restaurant;
-    @bindable asyncValue: number = SEEDS.asyncValue;
-    @bindable creatableValue: string = SEEDS.creatableValue;
-    @bindable groupedValue: string = SEEDS.groupedValue;
-    @bindable statusOption: string = SEEDS.statusOption;
-    @bindable bigValue: string = SEEDS.bigValue;
-    @bindable searchStyle: string = SEEDS.searchStyle;
-    @bindable.ref tooltipMulti: string[] = SEEDS.tooltipMulti;
-    @bindable menuTop: string = SEEDS.menuTop;
-    @bindable wideMenu: string = SEEDS.wideMenu;
-    @bindable openOnFocus: string = SEEDS.openOnFocus;
-    @bindable disabledState: string = SEEDS.disabledState;
-    @bindable toolbarState: string = SEEDS.toolbarState;
-    @bindable.ref toolbarMulti: string[] = SEEDS.toolbarMulti;
+    @bindable.ref accessor playground: string | string[] = SEEDS.playground;
+    @bindable accessor simpleOption: string = SEEDS.simpleOption;
+    @bindable accessor restaurant: string = SEEDS.restaurant;
+    @bindable accessor asyncValue: number = SEEDS.asyncValue;
+    @bindable accessor creatableValue: string = SEEDS.creatableValue;
+    @bindable accessor groupedValue: string = SEEDS.groupedValue;
+    @bindable accessor statusOption: string = SEEDS.statusOption;
+    @bindable accessor bigValue: string = SEEDS.bigValue;
+    @bindable accessor searchStyle: string = SEEDS.searchStyle;
+    @bindable.ref accessor tooltipMulti: string[] = SEEDS.tooltipMulti;
+    @bindable accessor menuTop: string = SEEDS.menuTop;
+    @bindable accessor wideMenu: string = SEEDS.wideMenu;
+    @bindable accessor openOnFocus: string = SEEDS.openOnFocus;
+    @bindable accessor disabledState: string = SEEDS.disabledState;
+    @bindable accessor toolbarState: string = SEEDS.toolbarState;
+    @bindable.ref accessor toolbarMulti: string[] = SEEDS.toolbarMulti;
 
     @managed
     override formModel = new FormModel({
@@ -500,7 +500,6 @@ class SelectPanelModel extends InputDemoModel {
 
     constructor() {
         super({commitOnChangeDefault: null});
-        makeObservable(this);
         // Playground value type flips between string and string[] with multi-select - reset it
         // whenever that toggle changes, since a stale value would no longer match the input's
         // mode.

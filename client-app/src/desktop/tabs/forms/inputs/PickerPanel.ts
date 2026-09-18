@@ -7,7 +7,7 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {picker, PickerProps, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {usStates} from '../../../../core/data';
 import {
     demoFrame,
@@ -442,28 +442,28 @@ const SEEDS = {
 
 class PickerPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgMulti = true;
-    @bindable pgEnableClear = true;
-    @bindable pgSelectAll = true;
-    @bindable pgButtonStyle: 'summary' | 'values' = 'summary';
-    @bindable pgShowCount = false;
+    @bindable accessor pgMulti = true;
+    @bindable accessor pgEnableClear = true;
+    @bindable accessor pgSelectAll = true;
+    @bindable accessor pgButtonStyle: 'summary' | 'values' = 'summary';
+    @bindable accessor pgShowCount = false;
 
     // Inputs
-    @bindable.ref playground: string | string[] = SEEDS.playground;
-    @bindable singleState: string = SEEDS.singleState;
-    @bindable minimalPopoverState: string = SEEDS.minimalPopoverState;
-    @bindable restaurant: string = SEEDS.restaurant;
-    @bindable.ref badgeStates: string[] = SEEDS.badgeStates;
-    @bindable statusOption: string = SEEDS.statusOption;
-    @bindable.ref wideState: string[] = SEEDS.wideState;
-    @bindable buttonTrigger: string = SEEDS.buttonTrigger;
-    @bindable.ref largeListValues: string[] = SEEDS.largeListValues;
-    @bindable intentPrimary: string = SEEDS.intentPrimary;
-    @bindable intentSuccess: string = SEEDS.intentSuccess;
-    @bindable intentWarning: string = SEEDS.intentWarning;
-    @bindable intentDanger: string = SEEDS.intentDanger;
-    @bindable.ref toolbarStates: string[] = SEEDS.toolbarStates;
-    @bindable toolbarPriority: string = SEEDS.toolbarPriority;
+    @bindable.ref accessor playground: string | string[] = SEEDS.playground;
+    @bindable accessor singleState: string = SEEDS.singleState;
+    @bindable accessor minimalPopoverState: string = SEEDS.minimalPopoverState;
+    @bindable accessor restaurant: string = SEEDS.restaurant;
+    @bindable.ref accessor badgeStates: string[] = SEEDS.badgeStates;
+    @bindable accessor statusOption: string = SEEDS.statusOption;
+    @bindable.ref accessor wideState: string[] = SEEDS.wideState;
+    @bindable accessor buttonTrigger: string = SEEDS.buttonTrigger;
+    @bindable.ref accessor largeListValues: string[] = SEEDS.largeListValues;
+    @bindable accessor intentPrimary: string = SEEDS.intentPrimary;
+    @bindable accessor intentSuccess: string = SEEDS.intentSuccess;
+    @bindable accessor intentWarning: string = SEEDS.intentWarning;
+    @bindable accessor intentDanger: string = SEEDS.intentDanger;
+    @bindable.ref accessor toolbarStates: string[] = SEEDS.toolbarStates;
+    @bindable accessor toolbarPriority: string = SEEDS.toolbarPriority;
 
     @managed
     override formModel = new FormModel({
@@ -479,7 +479,6 @@ class PickerPanelModel extends InputDemoModel {
 
     constructor() {
         super({supportsCompact: true, commitOnChangeDefault: null});
-        makeObservable(this);
         // Multi and single modes hold different value shapes - reset the value when it flips.
         this.addReaction({
             track: () => this.pgMulti,

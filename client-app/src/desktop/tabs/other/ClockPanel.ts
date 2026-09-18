@@ -3,7 +3,7 @@ import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {numberInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {TIME_FMT} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {
     demoGrid,
@@ -131,10 +131,10 @@ export const clockPanel = hoistCmp.factory({
 });
 
 class ClockPanelModel extends HoistModel {
-    @bindable format: string;
-    @bindable updateInterval: number;
-    @bindable prefix: string;
-    @bindable suffix: string;
+    @bindable accessor format: string;
+    @bindable accessor updateInterval: number;
+    @bindable accessor prefix: string;
+    @bindable accessor suffix: string;
 
     /**
      * Props every clock on the page spreads, so the rail options reach it. An emptied rail field
@@ -152,10 +152,5 @@ class ClockPanelModel extends HoistModel {
             suffix: suffix || undefined,
             updateInterval: updateInterval || undefined
         };
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 }

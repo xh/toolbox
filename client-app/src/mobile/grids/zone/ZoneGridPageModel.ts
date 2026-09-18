@@ -1,5 +1,5 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {bindable, runInAction} from '@xh/hoist/mobx';
 import {ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {wait} from '@xh/hoist/promise';
 import {
@@ -13,8 +13,7 @@ import {
 } from '../../../core/columns';
 
 export class ZoneGridPageModel extends HoistModel {
-    @bindable.ref
-    dateLoaded: Date = null;
+    @bindable.ref accessor dateLoaded: Date = null;
 
     @managed
     zoneGridModel: ZoneGridModel = new ZoneGridModel({
@@ -56,11 +55,6 @@ export class ZoneGridPageModel extends HoistModel {
             br: {max: 1}
         }
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     override async doLoadAsync() {
         await wait(500);

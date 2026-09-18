@@ -11,7 +11,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {dialog} from '@xh/hoist/kit/blueprint';
-import {action, makeObservable, observable} from '@xh/hoist/mobx';
+import { action, observable } from '@xh/hoist/mobx';
 import {GroupOption} from './generateColumns';
 
 /** Host that owns the grid the new column will be added to. */
@@ -26,7 +26,7 @@ let seq = 0;
 export class AddColumnDialogModel extends HoistModel {
     readonly host: AddColumnHost;
 
-    @observable isOpen = false;
+    @observable accessor isOpen = false;
 
     @managed formModel = new FormModel({
         fields: [
@@ -45,7 +45,6 @@ export class AddColumnDialogModel extends HoistModel {
 
     constructor(host: AddColumnHost) {
         super();
-        makeObservable(this);
         this.host = host;
     }
 

@@ -3,7 +3,7 @@ import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {hoistCmp, HoistModel, HoistProps, useLocalModel} from '@xh/hoist/core';
 import {select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {sample} from 'lodash';
 import {ReactElement} from 'react';
 import {wrapperAction, wrapperOption} from '../../Wrapper';
@@ -141,12 +141,7 @@ export function gridDisplayActions(model: GridModel): ReactElement[] {
 
 /** Per-button local state tracking whether the tree is currently fully expanded. */
 class ExpandCollapseModel extends HoistModel {
-    @bindable expanded = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor expanded = false;
 }
 
 /**

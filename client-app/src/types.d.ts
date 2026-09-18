@@ -15,6 +15,15 @@ declare module '*.md' {
 }
 
 /**
+ * Image assets imported by hoist-react components resolved via the `@xh/hoist` paths alias
+ * (e.g. `Spinner`, `IdlePanel`). Webpack's url-loader handles these at build time.
+ */
+declare module '*.png' {
+    const url: string;
+    export default url;
+}
+
+/**
  * Build-time flag injected by hoist-dev-utils via Webpack `DefinePlugin`. Prefer
  * `XH.isDevelopmentMode` in app code - reach for this global only where the check must be resolved
  * at build time so the guarded block is dropped from production bundles entirely.

@@ -8,7 +8,7 @@ import {
     segmentedControl,
     switchInput
 } from '@xh/hoist/desktop/cmp/input';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
@@ -186,15 +186,15 @@ const SEEDS = {
 
 class RadioInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgInline = false;
-    @bindable pgLabelSide: HSide = 'right';
+    @bindable accessor pgInline = false;
+    @bindable accessor pgLabelSide: HSide = 'right';
 
     // Inputs
-    @bindable playground: string = SEEDS.playground;
-    @bindable stacked: string = SEEDS.stacked;
-    @bindable orderType: string = SEEDS.orderType;
-    @bindable disabledClass: string = SEEDS.disabledClass;
-    @bindable tbarClass: string = SEEDS.tbarClass;
+    @bindable accessor playground: string = SEEDS.playground;
+    @bindable accessor stacked: string = SEEDS.stacked;
+    @bindable accessor orderType: string = SEEDS.orderType;
+    @bindable accessor disabledClass: string = SEEDS.disabledClass;
+    @bindable accessor tbarClass: string = SEEDS.tbarClass;
 
     @managed
     override formModel = new FormModel({
@@ -216,7 +216,6 @@ class RadioInputPanelModel extends InputDemoModel {
 
     constructor() {
         super({commitOnChangeDefault: null});
-        makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

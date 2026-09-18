@@ -2,7 +2,7 @@ import {library} from '@fortawesome/fontawesome-svg-core';
 import {faGithub} from '@fortawesome/free-brands-svg-icons';
 import {HoistService, InitContext, LoadSpec, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {computed, observable, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {forOwn, sortBy} from 'lodash';
 
@@ -51,10 +51,10 @@ export class GitHubService extends HoistService {
     static instance: GitHubService;
 
     /** Loaded commits histories, keyed by repoName. */
-    @observable.ref commitHistories: Record<string, RepoCommitHistory> = {};
+    @observable.ref accessor commitHistories: Record<string, RepoCommitHistory> = {};
 
     /** Loaded published releases, keyed by repoName. */
-    @observable.ref releasesByRepo: Record<string, Release[]> = {};
+    @observable.ref accessor releasesByRepo: Record<string, Release[]> = {};
 
     /** Loaded array of commits across all repositories. */
     @computed
@@ -70,11 +70,6 @@ export class GitHubService extends HoistService {
         const ret = [];
         forOwn(this.releasesByRepo, v => ret.push(...v));
         return sortBy(ret, it => -it.publishedAt);
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     override async initAsync(ctx: InitContext) {

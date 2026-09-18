@@ -3,7 +3,7 @@ import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {isValidJson} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {codeInput, jsonInput, JsonInputProps, switchInput} from '@xh/hoist/desktop/cmp/input';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
@@ -238,19 +238,19 @@ const SEEDS = {
 
 class CodeInputsPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgAutoFormat = true;
-    @bindable pgSearch = true;
-    @bindable pgToolbar = false;
-    @bindable pgFullscreen = true;
-    @bindable pgWrap = false;
+    @bindable accessor pgAutoFormat = true;
+    @bindable accessor pgSearch = true;
+    @bindable accessor pgToolbar = false;
+    @bindable accessor pgFullscreen = true;
+    @bindable accessor pgWrap = false;
 
     // Inputs
-    @bindable playground: string = SEEDS.playground;
-    @bindable json: string = SEEDS.json;
-    @bindable code: string = SEEDS.code;
-    @bindable readonlyCode: string = SEEDS.readonlyCode;
-    @bindable styledCode: string = SEEDS.styledCode;
-    @bindable disabledJson: string = SEEDS.disabledJson;
+    @bindable accessor playground: string = SEEDS.playground;
+    @bindable accessor json: string = SEEDS.json;
+    @bindable accessor code: string = SEEDS.code;
+    @bindable accessor readonlyCode: string = SEEDS.readonlyCode;
+    @bindable accessor styledCode: string = SEEDS.styledCode;
+    @bindable accessor disabledJson: string = SEEDS.disabledJson;
 
     @managed
     override formModel = new FormModel({
@@ -277,7 +277,6 @@ class CodeInputsPanelModel extends InputDemoModel {
 
     constructor() {
         super({commitOnChangeDefault: true});
-        makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

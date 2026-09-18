@@ -1,74 +1,54 @@
 import {HoistModel, PlainObject, XH} from '@xh/hoist/core';
-import {action, bindable, observable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import { action, bindable, observable, runInAction } from '@xh/hoist/mobx';
 import {take, times} from 'lodash';
 
 export class SelectTestModel extends HoistModel {
-    @bindable
-    selectValue: string;
+    @bindable accessor selectValue: string;
 
-    @bindable
-    creatableValue: string;
+    @bindable accessor creatableValue: string;
 
-    @bindable
-    asyncValue: number;
+    @bindable accessor asyncValue: number;
 
-    @bindable
-    asyncCreatableValue: number;
+    @bindable accessor asyncCreatableValue: number;
 
-    @bindable
-    groupedValue: string;
+    @bindable accessor groupedValue: string;
 
-    @bindable.ref
-    objectValue: PlainObject;
+    @bindable.ref accessor objectValue: PlainObject;
 
-    @bindable
-    bigValue: number;
+    @bindable accessor bigValue: number;
 
-    @bindable
-    numOptions = 1000;
+    @bindable accessor numOptions = 1000;
 
-    @observable
-    bigOptions;
+    @observable accessor bigOptions;
 
-    @bindable
-    asyncCreatableValue2: number;
+    @bindable accessor asyncCreatableValue2: number;
 
-    @bindable.ref
-    objectValue2: PlainObject;
+    @bindable.ref accessor objectValue2: PlainObject;
 
-    @bindable.ref
-    enableMultiLeftIcon: string[];
+    @bindable.ref accessor enableMultiLeftIcon: string[];
 
-    @bindable.ref
-    enableMultiMenuOpen: string[];
+    @bindable.ref accessor enableMultiMenuOpen: string[];
 
     // ID value + generateOptionFn example, pre-populated to verify label (not raw id) on mount
     @bindable
-    idNotInOpts: number = 99;
+    accessor idNotInOpts: number = 99;
 
     // Shape follows perfEnableMulti - a single value, or an array of them.
-    @bindable.ref
-    perfValue: string | string[];
+    @bindable.ref accessor perfValue: string | string[];
 
-    @bindable
-    perfEnableMulti = false;
+    @bindable accessor perfEnableMulti = false;
 
-    @bindable
-    perfEnableCreate = false;
+    @bindable accessor perfEnableCreate = false;
 
-    @bindable
-    numPerfOptions = 16000;
+    @bindable accessor numPerfOptions = 16000;
 
-    @bindable
-    perfLatency = 300;
+    @bindable accessor perfLatency = 300;
 
     // Ms the main thread was blocked following each of the last few async queries - see noteBlock().
-    @observable.ref
-    blockTimes: number[] = [];
+    @observable.ref accessor blockTimes: number[] = [];
 
     constructor() {
         super();
-        makeObservable(this);
 
         // Single- and multi-mode values have different shapes - clear on toggle so a value left
         // over from one mode is never handed to the other.

@@ -3,7 +3,7 @@ import {p, placeholder} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, Intent} from '@xh/hoist/core';
 import {intentInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon, xhLogo} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {
     demoGrid,
     demoPanel,
@@ -228,14 +228,9 @@ function capitalize(s: string) {
 
 class CardPanelModel extends HoistModel {
     // Playground props
-    @bindable pgTitle = 'Playground Card';
-    @bindable pgIcon = true;
-    @bindable pgIntent: Intent = null;
-    @bindable pgCollapsible = false;
-    @bindable pgDefaultCollapsed = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor pgTitle = 'Playground Card';
+    @bindable accessor pgIcon = true;
+    @bindable accessor pgIntent: Intent = null;
+    @bindable accessor pgCollapsible = false;
+    @bindable accessor pgDefaultCollapsed = false;
 }

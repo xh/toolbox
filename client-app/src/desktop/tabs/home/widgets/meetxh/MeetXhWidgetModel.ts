@@ -1,5 +1,5 @@
 import {HoistModel, LoadSpec, XH} from '@xh/hoist/core';
-import {action, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, observable, runInAction} from '@xh/hoist/mobx';
 import {Timer} from '@xh/hoist/utils/async';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {sample} from 'lodash';
@@ -15,8 +15,8 @@ export interface XhContact {
 }
 
 export class MeetXhWidgetModel extends HoistModel {
-    @observable.ref contacts: XhContact[] = [];
-    @observable spotlightId: string = null;
+    @observable.ref accessor contacts: XhContact[] = [];
+    @observable accessor spotlightId: string = null;
 
     /** Timestamp of the last user-driven spotlight pick - rotation holds off while recent. */
     private lastUserPick = 0;
@@ -30,7 +30,6 @@ export class MeetXhWidgetModel extends HoistModel {
 
     constructor({autoRotate = true}: {autoRotate?: boolean} = {}) {
         super();
-        makeObservable(this);
         this.autoRotate = autoRotate;
     }
 

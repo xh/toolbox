@@ -21,7 +21,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
+import {bindable, computed} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {pluralize} from '@xh/hoist/utils/js';
 import {sortBy} from 'lodash';
@@ -267,24 +267,24 @@ const SEEDS = {
 };
 
 class InputsIndexModel extends InputDemoModel {
-    @bindable filter = '';
-    @bindable groupByCategory = true;
-    @bindable showInputs = true;
+    @bindable accessor filter = '';
+    @bindable accessor groupByCategory = true;
+    @bindable accessor showInputs = true;
 
-    @bindable text: string = SEEDS.text;
-    @bindable textArea: string = SEEDS.textArea;
-    @bindable json: string = SEEDS.json;
-    @bindable code: string = SEEDS.code;
-    @bindable number: number = SEEDS.number;
-    @bindable slider: number = SEEDS.slider;
-    @bindable.ref date: LocalDate = SEEDS.date;
-    @bindable state: string = SEEDS.state;
-    @bindable.ref states: string[] = SEEDS.states;
-    @bindable segment: string = SEEDS.segment;
-    @bindable chartType: string = SEEDS.chartType;
-    @bindable side: string = SEEDS.side;
-    @bindable intent: Intent = SEEDS.intent;
-    @bindable checked: boolean = SEEDS.checked;
+    @bindable accessor text: string = SEEDS.text;
+    @bindable accessor textArea: string = SEEDS.textArea;
+    @bindable accessor json: string = SEEDS.json;
+    @bindable accessor code: string = SEEDS.code;
+    @bindable accessor number: number = SEEDS.number;
+    @bindable accessor slider: number = SEEDS.slider;
+    @bindable.ref accessor date: LocalDate = SEEDS.date;
+    @bindable accessor state: string = SEEDS.state;
+    @bindable.ref accessor states: string[] = SEEDS.states;
+    @bindable accessor segment: string = SEEDS.segment;
+    @bindable accessor chartType: string = SEEDS.chartType;
+    @bindable accessor side: string = SEEDS.side;
+    @bindable accessor intent: Intent = SEEDS.intent;
+    @bindable accessor checked: boolean = SEEDS.checked;
 
     get inputSeeds() {
         return SEEDS;
@@ -299,10 +299,5 @@ class InputsIndexModel extends InputDemoModel {
                       it.name.toLowerCase().includes(q) || it.description.toLowerCase().includes(q)
               )
             : INPUT_CATALOG;
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 }

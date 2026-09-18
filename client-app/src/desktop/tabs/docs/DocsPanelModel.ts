@@ -3,7 +3,7 @@ import {Content, managed, XH} from '@xh/hoist/core';
 import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, computed, observable, runInAction} from '@xh/hoist/mobx';
 import {DocViewModel} from '../../../core/docs/DocViewModel';
 import {getCategoryIcon, getSourceIcon} from '../../../core/docs/DocIcons';
 import {DocEntry, DocExampleLink, getDocExamples} from './docRegistry';
@@ -34,24 +34,18 @@ export class DocsPanelModel extends DocViewModel {
         persistWith: {localStorageKey: 'docsApp.navPanel'}
     });
 
-    @bindable
-    searchQuery: string = '';
+    @bindable accessor searchQuery: string = '';
 
-    @observable
-    searchMode: boolean = false;
+    @observable accessor searchMode: boolean = false;
 
-    @observable.ref
-    searchResults: DocSearchResult[] = [];
+    @observable.ref accessor searchResults: DocSearchResult[] = [];
 
-    @observable
-    selectedSearchIdx: number = -1;
+    @observable accessor selectedSearchIdx: number = -1;
 
-    @bindable
-    feedbackMessage: string = '';
+    @bindable accessor feedbackMessage: string = '';
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.gridModel = this.createGridModel();
 

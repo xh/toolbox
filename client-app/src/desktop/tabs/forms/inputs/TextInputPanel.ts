@@ -7,7 +7,7 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {switchInput, textInput, TextInputProps} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
@@ -226,20 +226,20 @@ const SEEDS = {
 
 class TextInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgLeftIcon = true;
-    @bindable pgEnableClear = true;
-    @bindable pgRound = false;
-    @bindable pgPlaceholder = 'Enter text...';
+    @bindable accessor pgLeftIcon = true;
+    @bindable accessor pgEnableClear = true;
+    @bindable accessor pgRound = false;
+    @bindable accessor pgPlaceholder = 'Enter text...';
 
     // Inputs
-    @bindable playground: string = SEEDS.playground;
-    @bindable plain: string = SEEDS.plain;
-    @bindable password: string = SEEDS.password;
-    @bindable url: string = SEEDS.url;
-    @bindable search: string = SEEDS.search;
-    @bindable email: string = SEEDS.email;
-    @bindable tbarSearch: string = SEEDS.tbarSearch;
-    @bindable tbarFlex: string = SEEDS.tbarFlex;
+    @bindable accessor playground: string = SEEDS.playground;
+    @bindable accessor plain: string = SEEDS.plain;
+    @bindable accessor password: string = SEEDS.password;
+    @bindable accessor url: string = SEEDS.url;
+    @bindable accessor search: string = SEEDS.search;
+    @bindable accessor email: string = SEEDS.email;
+    @bindable accessor tbarSearch: string = SEEDS.tbarSearch;
+    @bindable accessor tbarFlex: string = SEEDS.tbarFlex;
 
     @managed
     override formModel = new FormModel({
@@ -266,7 +266,6 @@ class TextInputPanelModel extends InputDemoModel {
 
     constructor() {
         super();
-        makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

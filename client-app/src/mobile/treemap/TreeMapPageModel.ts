@@ -8,15 +8,14 @@ import {
 } from '@xh/hoist/cmp/treemap';
 import {Store} from '@xh/hoist/data';
 import {fmtMillions} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 
 export class TreeMapPageModel extends HoistModel {
-    @bindable
-    type: 'treeMap' | 'splitTreeMap' = 'treeMap';
+    @bindable accessor type: 'treeMap' | 'splitTreeMap' = 'treeMap';
 
     // Display options applied live to both the simple and split maps.
-    @bindable colorMode: TreeMapColorMode = 'linear';
-    @bindable algorithm: TreeMapAlgorithm = 'squarified';
+    @bindable accessor colorMode: TreeMapColorMode = 'linear';
+    @bindable accessor algorithm: TreeMapAlgorithm = 'squarified';
 
     @managed
     store = new Store({
@@ -66,7 +65,6 @@ export class TreeMapPageModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.addReaction({
             track: () => [this.colorMode, this.algorithm] as const,
             run: ([colorMode, algorithm]) => {
