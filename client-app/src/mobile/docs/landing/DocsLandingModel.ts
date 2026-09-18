@@ -3,7 +3,6 @@ import type {ReactElement} from 'react';
 import {getSourceIcon} from '../../../core/docs/DocIcons';
 import {encodeDocId} from '../../../core/docs/DocUtils';
 import type {DocEntry} from '../../../core/docs/types';
-import {DocService} from '../../../core/svc/DocService';
 
 /** A corpus card on the docs landing. */
 export interface CorpusCard {
@@ -26,12 +25,8 @@ const TAGLINES: Record<string, string> = {
  * data from the shared {@link DocService}; holds no state of its own.
  */
 export class DocsLandingModel extends HoistModel {
-    private get docService(): DocService {
-        return DocService.instance;
-    }
-
     get corpora(): CorpusCard[] {
-        const {docService} = this;
+        const {docService} = XH;
         return docService.sourceNames.map(source => ({
             source,
             label: docService.getSourceLabel(source),
@@ -42,11 +37,11 @@ export class DocsLandingModel extends HoistModel {
     }
 
     get recentDocs(): DocEntry[] {
-        return this.docService.recentDocs;
+        return XH.docService.recentDocs;
     }
 
     getSourceLabel(source: string): string {
-        return this.docService.getSourceLabel(source);
+        return XH.docService.getSourceLabel(source);
     }
 
     /** Push into a corpus's category list. */

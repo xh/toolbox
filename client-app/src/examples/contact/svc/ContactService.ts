@@ -2,7 +2,7 @@ import {HoistService, persist} from '@xh/hoist/core';
 import {action, observable} from '@xh/hoist/mobx';
 import {without} from 'lodash';
 
-import {PERSIST_APP} from '../AppModel';
+import {PERSIST_APP} from '../constants';
 
 /**
  * Service to manage fetching and updating contacts.
