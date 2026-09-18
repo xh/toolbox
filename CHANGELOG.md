@@ -26,6 +26,7 @@
 * Upgraded ag-Grid to `36.x`, tracking hoist-react's AG Grid 36 upgrade - the two must move together, as hoist-react requires a v36 runtime and apps supply ag-Grid as a peer.
 * Added a `Pin ID column` option to the admin Grid performance harness, pinning the id column to the left to exercise AG Grid 36's native full-width horizontal scrollbar, which spans pinned columns.
 * Converted all type-only imports to `import type` and added `@typescript-eslint/consistent-type-imports` to prevent regressions - guarantees type-only imports are erased at build time, eliminating 6 of the app's 10 runtime import cycles.
+* Removed all `index.ts` re-export barrels from app source and added lint guards against their reintroduction - imports now reference their defining modules directly, so loading one module no longer pulls in unrelated siblings.
 
 ### Bug Fixes
 
