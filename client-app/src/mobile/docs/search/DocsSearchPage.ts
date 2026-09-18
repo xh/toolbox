@@ -1,14 +1,13 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
 import type {HoistProps} from '@xh/hoist/core';
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {textInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import type {ReactNode} from 'react';
 import type {DocSearchResult} from '../../../core/svc/DocService';
-import {DocService} from '../../../core/svc/DocService';
 import {DocsSearchModel} from './DocsSearchModel';
 import './DocsSearchPage.scss';
 
@@ -124,7 +123,7 @@ const resultRow = hoistCmp.factory<ResultRowProps>({
     render({model, result}) {
         const {entry, snippet, matchedTerms = []} = result,
             categoryTitle =
-                DocService.instance.getCategories(entry.source).find(c => c.id === entry.category)
+                XH.docService.getCategories(entry.source).find(c => c.id === entry.category)
                     ?.title ?? entry.category;
 
         return div({

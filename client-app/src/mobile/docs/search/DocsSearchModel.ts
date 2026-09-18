@@ -3,7 +3,7 @@ import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {encodeDocId} from '../../../core/docs/DocUtils';
 import type {DocEntry} from '../../../core/docs/types';
 import type {DocSearchResult} from '../../../core/svc/DocService';
-import {DocService} from '../../../core/svc/DocService';
+import type {DocService} from '../../../core/svc/DocService';
 
 /** A library-grouped block of search hits. */
 export interface SearchResultGroup {
@@ -27,7 +27,7 @@ export class DocsSearchModel extends HoistModel {
     @observable.ref accessor recentSearches: string[] = [];
 
     private get docService(): DocService {
-        return DocService.instance;
+        return XH.docService;
     }
 
     constructor() {

@@ -15,7 +15,6 @@ import {pluralize} from '@xh/hoist/utils/js';
 import {useEffect, useRef} from 'react';
 import {docContent} from '../../../core/docs/DocContent';
 import {DocsPanelModel} from './DocsPanelModel';
-import {DocService} from '../../../core/svc/DocService';
 import './DocsTab.scss';
 
 /**
@@ -140,7 +139,7 @@ const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
                 : placeholder(Icon.skull(), 'No results found.');
         }
 
-        const docService = DocService.instance;
+        const docService = XH.docService;
 
         return div({
             className: 'tb-docs__search-results',
@@ -222,7 +221,7 @@ const searchPanel = hoistCmp.factory<DocsPanelModel>({
 const breadcrumb = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
         const {activeCategory, activeDoc, activeSource, sections, activeSection} = model,
-            docService = DocService.instance;
+            docService = XH.docService;
 
         if (!activeCategory || !activeDoc || !activeSource) return null;
 

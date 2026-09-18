@@ -1,7 +1,7 @@
 import type {LoadSpec} from '@xh/hoist/core';
 import {HoistModel, XH} from '@xh/hoist/core';
 import {action, computed, observable, runInAction} from '@xh/hoist/mobx';
-import {DocService} from '../svc/DocService';
+import type {DocService} from '../svc/DocService';
 import type {DocCategory, DocEntry, DocSection} from './types';
 import {decodeDocId, encodeDocId, extractSections, resolveDocLink} from './DocUtils';
 
@@ -42,7 +42,7 @@ export abstract class DocViewModel extends HoistModel {
     @observable accessor pendingScrollSection: string = null;
 
     protected get docService(): DocService {
-        return DocService.instance;
+        return XH.docService;
     }
 
     /**

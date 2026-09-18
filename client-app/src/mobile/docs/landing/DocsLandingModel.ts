@@ -3,7 +3,7 @@ import type {ReactElement} from 'react';
 import {getSourceIcon} from '../../../core/docs/DocIcons';
 import {encodeDocId} from '../../../core/docs/DocUtils';
 import type {DocEntry} from '../../../core/docs/types';
-import {DocService} from '../../../core/svc/DocService';
+import type {DocService} from '../../../core/svc/DocService';
 
 /** A corpus card on the docs landing. */
 export interface CorpusCard {
@@ -27,7 +27,7 @@ const TAGLINES: Record<string, string> = {
  */
 export class DocsLandingModel extends HoistModel {
     private get docService(): DocService {
-        return DocService.instance;
+        return XH.docService;
     }
 
     get corpora(): CorpusCard[] {

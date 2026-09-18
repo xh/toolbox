@@ -1,7 +1,7 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {encodeDocId} from '../../../core/docs/DocUtils';
 import type {DocCategory, DocEntry} from '../../../core/docs/types';
-import {DocService} from '../../../core/svc/DocService';
+import type {DocService} from '../../../core/svc/DocService';
 
 /**
  * Model for the category document-list screen - level 2 of the docs drill-down. Reads `source` and
@@ -9,7 +9,7 @@ import {DocService} from '../../../core/svc/DocService';
  */
 export class DocsCategoryModel extends HoistModel {
     private get docService(): DocService {
-        return DocService.instance;
+        return XH.docService;
     }
 
     get source(): string {

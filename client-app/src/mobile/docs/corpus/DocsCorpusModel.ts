@@ -1,7 +1,7 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import type {ReactElement} from 'react';
 import {getCategoryIcon} from '../../../core/docs/DocIcons';
-import {DocService} from '../../../core/svc/DocService';
+import type {DocService} from '../../../core/svc/DocService';
 
 /** A category row on the corpus screen. */
 export interface CorpusCategory {
@@ -17,7 +17,7 @@ export interface CorpusCategory {
  */
 export class DocsCorpusModel extends HoistModel {
     private get docService(): DocService {
-        return DocService.instance;
+        return XH.docService;
     }
 
     get source(): string {
