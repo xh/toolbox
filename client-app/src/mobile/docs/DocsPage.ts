@@ -1,3 +1,4 @@
+import {clipboardMenuItem} from '@xh/hoist/cmp/clipboard';
 import {filler, hbox, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/mobile/cmp/button';
@@ -116,10 +117,21 @@ const titleBar = hoistCmp.factory<DocsPageModel>({
  */
 const onThisPageButton = hoistCmp.factory<DocsPageModel>({
     render({model}) {
-        const menuItems = model.sections.map(sec => ({
-            text: sec.title,
-            actionFn: () => model.scrollToSection(sec.id)
-        }));
+        const {sections, activeSection} = model,
+            menuItems = [
+                {heading: 'Jump to Section'},
+                ...sections.map(sec => ({
+                    text: sec.title,
+                    active: sec.id === activeSection,
+                    actionFn: () => model.scrollToSection(sec.id)
+                })),
+                '-',
+                clipboardMenuItem({
+                    text: 'Copy Link',
+                    getCopyText: () => window.location.href,
+                    successMessage: true
+                })
+            ];
 
         return menuButton({
             icon: Icon.list(),
