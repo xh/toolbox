@@ -1,6 +1,6 @@
 import {clipboardMenuItem} from '@xh/hoist/cmp/clipboard';
 import {filler, hbox, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp, type MenuItemLike} from '@xh/hoist/core';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {menuButton} from '@xh/hoist/mobile/cmp/menu';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
@@ -118,7 +118,7 @@ const titleBar = hoistCmp.factory<DocsPageModel>({
 const onThisPageButton = hoistCmp.factory<DocsPageModel>({
     render({model}) {
         const {sections, activeSection} = model,
-            menuItems = [
+            menuItems: MenuItemLike[] = [
                 {heading: 'Jump to Section'},
                 ...sections.map(sec => ({
                     text: sec.title,
