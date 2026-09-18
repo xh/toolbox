@@ -11,7 +11,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {dialog} from '@xh/hoist/kit/blueprint';
-import { action, observable } from '@xh/hoist/mobx';
+import {action, observable} from '@xh/hoist/mobx';
 import {GroupOption} from './generateColumns';
 
 /** Host that owns the grid the new column will be added to. */

@@ -1,5 +1,5 @@
 import {HoistModel, Thunkable} from '@xh/hoist/core';
-import { action, observable, runInAction } from '@xh/hoist/mobx';
+import {action, observable, runInAction} from '@xh/hoist/mobx';
 import {executeIfFunction} from '@xh/hoist/utils/js';
 
 export interface LoadTime {
@@ -13,7 +13,7 @@ export class LoadTimesModel extends HoistModel {
     @observable.ref accessor fetch: LoadTime = null;
     @observable.ref accessor total: LoadTime = null;
 
-@action
+    @action
     clearLoadTimes() {
         this.fetch = this.total = null;
     }

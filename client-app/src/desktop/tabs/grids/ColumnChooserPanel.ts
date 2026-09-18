@@ -7,7 +7,7 @@ import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import { bindable, observable } from '@xh/hoist/mobx';
+import {bindable, observable} from '@xh/hoist/mobx';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common';
 import {
     actualGrossCol,

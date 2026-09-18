@@ -7,7 +7,7 @@ import {buttonGroupInput, jsonInput, switchInput} from '@xh/hoist/desktop/cmp/in
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import { bindable, computed, observable } from '@xh/hoist/mobx';
+import {bindable, computed, observable} from '@xh/hoist/mobx';
 import {addColumnDialog, AddColumnDialogModel, AddColumnHost} from './AddColumnDialog';
 import {
     collectChooserGroups,
