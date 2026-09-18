@@ -1,7 +1,7 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {customPanel} from '@xh/package-template/desktop/cmp/custompanel';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
 
 export const customPackagePanel = hoistCmp.factory(() =>
     wrapper({

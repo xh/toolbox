@@ -2,7 +2,8 @@ import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
-import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
+import {mktValCol, pnlCol} from '../../../core/columns/Positions';
+import {nameCol} from '../../../core/columns/General';
 import type {PortfolioModel} from '../PortfolioModel';
 
 export class PositionsGridModel extends HoistModel {

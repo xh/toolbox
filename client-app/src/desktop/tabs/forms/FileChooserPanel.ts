@@ -18,11 +18,9 @@ import {
     demoRow,
     demoSection,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    raw
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 
 // Use decimal MB so the size hint (formatted via `filesize`, decimal by default) reads cleanly.
 const MB = 1_000_000;

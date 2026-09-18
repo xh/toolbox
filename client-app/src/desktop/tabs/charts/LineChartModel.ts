@@ -8,7 +8,7 @@ import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
-import type {ChartContextMenuMode} from '../../common';
+import type {ChartContextMenuMode} from '../../common/charts/ChartOptions';
 
 export class LineChartModel extends HoistModel {
     @bindable accessor currentSymbols: string[] = [];

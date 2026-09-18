@@ -7,7 +7,8 @@ import {splitTreeMap} from '@xh/hoist/cmp/treemap';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
-import {treeMapDisplayOptions, wrapper, wrapperOption} from '../../common';
+import {treeMapDisplayOptions} from '../../common/charts/TreeMapOptions';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 
 import {SplitTreeMapPanelModel} from './SplitTreeMapPanelModel';
 

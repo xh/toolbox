@@ -13,11 +13,9 @@ import {
     demoRow,
     demoSection,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    raw
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 
 /** The four Hoist intents, in their conventional order. */
 const INTENTS: Intent[] = ['primary', 'success', 'warning', 'danger'];

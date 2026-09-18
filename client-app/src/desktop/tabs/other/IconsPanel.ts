@@ -10,7 +10,7 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, computed} from '@xh/hoist/mobx';
 import {copyToClipboard} from '@xh/hoist/utils/js';
 import {isEmpty, without} from 'lodash';
-import {wrapper, wrapperOption} from '../../common';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 import './IconsPanel.scss';
 
 // Register a custom icon - not pre-imported by `Icon` - and use it as this tab's title icon

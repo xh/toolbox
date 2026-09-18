@@ -6,7 +6,8 @@ import {textArea} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import type {ReactNode} from 'react';
 import {useRef} from 'react';
-import {demoPanel, demoRow, demoSection, wrapper} from '../../common';
+import {demoPanel, demoRow, demoSection} from '../../common/Demo';
+import {wrapper} from '../../common/Wrapper';
 import './PopupsPanel.scss';
 
 export const popupsPanel = hoistCmp.factory(() => {

@@ -12,9 +12,9 @@ import {
     demoPlayground,
     demoRow,
     fmtDemoConfig,
-    raw,
-    wrapperOption
-} from '../../../common';
+    raw
+} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';

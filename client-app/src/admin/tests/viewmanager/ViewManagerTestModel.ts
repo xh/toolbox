@@ -15,11 +15,11 @@ import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {action, bindable, computed, observable, runInAction} from '@xh/hoist/mobx';
 import {get} from 'lodash';
 import {
-    sampleColumnGroupsGrid,
     SampleColumnGroupsGridModel,
-    sampleGrid,
-    SampleGridModel
-} from '../../../desktop/common';
+    sampleColumnGroupsGrid
+} from '../../../desktop/common/grid/SampleColumnGroupsGrid';
+import {SampleGridModel} from '../../../desktop/common/grid/SampleGridModel';
+import {sampleGrid} from '../../../desktop/common/grid/SampleGrid';
 
 export class ViewManagerTestModel extends HoistModel {
     override telemetryPrefix = 'toolbox.client.viewManager';

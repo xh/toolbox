@@ -5,7 +5,8 @@ import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {leftRightChooser, LeftRightChooserModel} from '@xh/hoist/desktop/cmp/leftrightchooser';
 import {Icon} from '@xh/hoist/icon';
 import type {ReactElement} from 'react';
-import {demoGallery, demoGalleryTile, demoPanel, wrapper} from '../../../common';
+import {demoGallery, demoGalleryTile, demoPanel} from '../../../common/Demo';
+import {wrapper} from '../../../common/Wrapper';
 import {OTHER_CONTROLS} from './InputCatalog';
 
 /** Enough items to show both sides of the chooser populated in a tile-sized instance. */

@@ -8,7 +8,7 @@ import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 
 import './PinPadPanel.scss';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
 
 export const pinPadPanel = hoistCmp.factory({
     model: creates(() => PinPadPanelModel),

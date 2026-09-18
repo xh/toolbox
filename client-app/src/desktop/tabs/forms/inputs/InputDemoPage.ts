@@ -5,16 +5,8 @@ import {Icon} from '@xh/hoist/icon';
 import {isEmpty} from 'lodash';
 import type {ReactElement, ReactNode} from 'react';
 import type {ToolboxLinkProps} from '../../../../core/cmp/ToolboxLink';
-import {
-    demoGrid,
-    demoPanel,
-    demoSection,
-    demoToolbar,
-    wrapper,
-    wrapperAction,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../../common';
+import {demoGrid, demoPanel, demoSection, demoToolbar} from '../../../common/Demo';
+import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import type {InputCatalogEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 

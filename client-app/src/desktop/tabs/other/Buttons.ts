@@ -8,7 +8,7 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import type {ReactNode} from 'react';
-import type {DemoConfigProps} from '../../common';
+import type {DemoConfigProps} from '../../common/Demo';
 import {
     demoGrid,
     demoPanel,
@@ -17,11 +17,9 @@ import {
     demoSection,
     demoToolbar,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    raw
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 
 /** The three Button looks. `minimal` is the Hoist default; the others are opt-in. */
 type ButtonStyle = 'minimal' | 'standard' | 'outlined';

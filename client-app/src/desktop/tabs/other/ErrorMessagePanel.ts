@@ -5,7 +5,7 @@ import {errorMessage} from '@xh/hoist/cmp/error';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
 
 export const errorMessagePanel = hoistCmp.factory({
     model: creates(() => ErrorMessagePanelModel),

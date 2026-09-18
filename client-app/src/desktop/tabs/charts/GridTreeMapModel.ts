@@ -3,7 +3,8 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {TreeMapModel} from '@xh/hoist/cmp/treemap';
 import {bindable} from '@xh/hoist/mobx';
-import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
+import {mktValCol, pnlCol} from '../../../core/columns/Positions';
+import {nameCol} from '../../../core/columns/General';
 
 export class GridTreeMapModel extends HoistModel {
     @bindable accessor cluster = false;

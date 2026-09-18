@@ -6,7 +6,7 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, observable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
-import type {ChartContextMenuMode} from '../../common';
+import type {ChartContextMenuMode} from '../../common/charts/ChartOptions';
 
 export class OHLCChartModel extends HoistModel {
     @bindable accessor currentSymbol: string = '';

@@ -13,11 +13,9 @@ import {
     demoRow,
     demoSection,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../../common';
+    raw
+} from '../../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import {RelativeTimestampPanelModel} from './RelativeTimestampPanelModel';
 import './RelativeTimestampPanel.scss';
 

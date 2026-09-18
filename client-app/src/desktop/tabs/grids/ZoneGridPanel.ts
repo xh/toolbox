@@ -7,16 +7,15 @@ import {select} from '@xh/hoist/desktop/cmp/input';
 import {zoneMapperButton} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
+import {activeCol} from '../../../core/columns/General';
+import {cityCol, companyCol} from '../../../core/columns/Demographics';
 import {
-    activeCol,
-    cityCol,
-    companyCol,
     profitLossCol,
     tradeDateCol,
     tradeVolumeCol,
     winLoseCol
-} from '../../../core/columns';
+} from '../../../core/columns/Trades';
 
 export const zoneGridPanel = hoistCmp.factory({
     model: creates(() => ZoneGridPanelModel),

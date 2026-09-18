@@ -17,7 +17,7 @@ import {
     sectorCol,
     symbolCol,
     traderCol
-} from '../../../../core/columns';
+} from '../../../../core/columns/Orders';
 import type {DetailModel} from '../DetailModel';
 
 export class OrdersModel extends HoistModel {

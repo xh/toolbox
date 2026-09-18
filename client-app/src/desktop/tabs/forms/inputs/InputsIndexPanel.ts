@@ -27,16 +27,9 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {pluralize} from '@xh/hoist/utils/js';
 import {sortBy} from 'lodash';
 import type {ReactElement} from 'react';
-import {usStates} from '../../../../core/data';
-import {
-    demoGallery,
-    demoGalleryTile,
-    demoPanel,
-    demoSection,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../../common';
+import {usStates} from '../../../../core/data/USStates';
+import {demoGallery, demoGalleryTile, demoPanel, demoSection} from '../../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import type {InputCatalogEntry} from './InputCatalog';
 import {INPUT_CATALOG, INPUT_CATEGORIES} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
