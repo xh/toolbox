@@ -4,7 +4,15 @@ import {fragment} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberEditor, textEditor} from '@xh/hoist/desktop/cmp/grid';
 import {fmtNumber, numberRenderer} from '@xh/hoist/format';
-import {action, bindable, comparer, observable, runInAction} from '@xh/hoist/mobx';
+import {
+    action,
+    bindable,
+    bindableRef,
+    compareStructural,
+    observable,
+    observableRef,
+    runInAction
+} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {forEach, isEmpty} from 'lodash';
@@ -15,14 +23,14 @@ import type {QueryConfig, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
     @managed cubeModel: CubeModel;
-    @managed @observable.ref accessor gridModel: GridModel;
-    @managed @observable.ref accessor view: View;
+    @managed @observableRef accessor gridModel: GridModel;
+    @managed @observableRef accessor view: View;
     @managed groupingChooserModel: GroupingChooserModel;
     @managed loadTimesModel: LoadTimesModel;
 
     @bindable accessor includeGlobalAgg = false;
     @bindable accessor includeLeaves = false;
-    @bindable.ref accessor fundFilter: string[] = null;
+    @bindableRef accessor fundFilter: string[] = null;
     @bindable accessor showSummary = false;
     @bindable accessor updateFreq = -1;
     @bindable accessor updateCount = 5;
@@ -39,7 +47,7 @@ export class CubeTestModel extends HoistModel {
     /** Replication factor applied to fetched orders, to stress-test the Cube path at scale. */
     @bindable accessor recordMultiplier = 1;
 
-    @bindable.ref accessor logStages: string[] = [];
+    @bindableRef accessor logStages: string[] = [];
 
     /** True if launched with the memory flags - window.gc is the detectable proxy for both. */
     readonly gcAvailable = typeof (window as any).gc === 'function';
@@ -74,7 +82,7 @@ export class CubeTestModel extends HoistModel {
         this.addReaction({
             track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
-            equals: comparer.structural
+            equals: compareStructural
         });
 
         // Reconstruct the Store in the new mode, for A/B comparison.

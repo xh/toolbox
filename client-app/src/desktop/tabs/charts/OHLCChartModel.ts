@@ -3,20 +3,20 @@ import {type ContextMenuSpec, HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import type {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, observable} from '@xh/hoist/mobx';
+import {bindable, bindableRef, observableRef} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
 import type {ChartContextMenuMode} from '../../common/charts/ChartOptions';
 
 export class OHLCChartModel extends HoistModel {
     @bindable accessor currentSymbol: string = '';
-    @bindable.ref accessor symbols: string[] = [];
+    @bindableRef accessor symbols: string[] = [];
     @bindable accessor aspectRatio: number = null;
 
     @bindable accessor currentContextMenu: ChartContextMenuMode = null;
 
     @managed
-    @observable.ref
+    @observableRef
     accessor chartModel: ChartModel;
 
     constructor() {

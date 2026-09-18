@@ -3,7 +3,7 @@ import {faGithub} from '@fortawesome/free-brands-svg-icons';
 import type {InitContext, LoadSpec} from '@xh/hoist/core';
 import {HoistService, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {computed, observable, runInAction} from '@xh/hoist/mobx';
+import {computed, observableRef, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {forOwn, sortBy} from 'lodash';
 
@@ -52,10 +52,10 @@ export class GitHubService extends HoistService {
     static instance: GitHubService;
 
     /** Loaded commits histories, keyed by repoName. */
-    @observable.ref accessor commitHistories: Record<string, RepoCommitHistory> = {};
+    @observableRef accessor commitHistories: Record<string, RepoCommitHistory> = {};
 
     /** Loaded published releases, keyed by repoName. */
-    @observable.ref accessor releasesByRepo: Record<string, Release[]> = {};
+    @observableRef accessor releasesByRepo: Record<string, Release[]> = {};
 
     /** Loaded array of commits across all repositories. */
     @computed

@@ -1,5 +1,5 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, runInAction} from '@xh/hoist/mobx';
+import {bindableRef, runInAction} from '@xh/hoist/mobx';
 import {ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {wait} from '@xh/hoist/promise';
 import {activeCol} from '../../../core/columns/General';
@@ -12,7 +12,7 @@ import {
 } from '../../../core/columns/Trades';
 
 export class ZoneGridPageModel extends HoistModel {
-    @bindable.ref accessor dateLoaded: Date = null;
+    @bindableRef accessor dateLoaded: Date = null;
 
     @managed
     zoneGridModel: ZoneGridModel = new ZoneGridModel({

@@ -4,7 +4,7 @@ import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {find, isNil} from 'lodash';
-import {computed, observable} from '@xh/hoist/mobx';
+import {computed, observableRef} from '@xh/hoist/mobx';
 
 export const gridDetailPage = hoistCmp.factory({
     model: creates(() => GridDetailPageModel),
@@ -38,7 +38,7 @@ export const gridDetailPage = hoistCmp.factory({
 });
 
 class GridDetailPageModel extends HoistModel {
-    @observable.ref accessor customers = null;
+    @observableRef accessor customers = null;
 
     @computed
     get record() {

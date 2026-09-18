@@ -1,11 +1,11 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 
 export class ChartPageModel extends HoistModel {
     @bindable accessor currentSymbol: string = '';
-    @bindable.ref accessor symbols: string[] = null;
+    @bindableRef accessor symbols: string[] = null;
 
     numCompanies: number = 3;
 

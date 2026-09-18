@@ -1,6 +1,6 @@
 import type {LoadSpec} from '@xh/hoist/core';
 import {HoistModel, XH} from '@xh/hoist/core';
-import {action, observable, runInAction} from '@xh/hoist/mobx';
+import {action, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {Timer} from '@xh/hoist/utils/async';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {sample} from 'lodash';
@@ -16,7 +16,7 @@ export interface XhContact {
 }
 
 export class MeetXhWidgetModel extends HoistModel {
-    @observable.ref accessor contacts: XhContact[] = [];
+    @observableRef accessor contacts: XhContact[] = [];
     @observable accessor spotlightId: string = null;
 
     /** Timestamp of the last user-driven spotlight pick - rotation holds off while recent. */

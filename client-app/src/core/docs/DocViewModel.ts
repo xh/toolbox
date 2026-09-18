@@ -1,6 +1,6 @@
 import type {LoadSpec} from '@xh/hoist/core';
 import {HoistModel, XH} from '@xh/hoist/core';
-import {action, computed, observable, runInAction} from '@xh/hoist/mobx';
+import {action, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import type {DocCategory, DocEntry, DocSection} from './types';
 import {decodeDocId, encodeDocId, extractSections, resolveDocLink} from './DocUtils';
 
@@ -30,7 +30,7 @@ export abstract class DocViewModel extends HoistModel {
         return this.BASE_ROUTE;
     }
 
-    @observable.ref accessor activeDoc: DocEntry = null;
+    @observableRef accessor activeDoc: DocEntry = null;
     @observable accessor content: string = null;
     @observable accessor activeSection: string = null;
 

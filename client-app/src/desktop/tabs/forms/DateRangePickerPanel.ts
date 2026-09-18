@@ -17,7 +17,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {dateInput, intentInput, picker, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, sortBy} from 'lodash';
 import type {ReactNode} from 'react';
@@ -380,15 +380,15 @@ class DateRangePickerPanelModel extends HoistModel {
     @bindable accessor intent: Intent = null;
 
     // Model options
-    @bindable.ref accessor tabs: DateRangePickerTab[] = [...DATE_RANGE_PICKER_TABS];
+    @bindableRef accessor tabs: DateRangePickerTab[] = [...DATE_RANGE_PICKER_TABS];
     // The defaults plus Prev Day, so the demo shows a single-day walk from both presets.
-    @bindable.ref accessor presets: DateRangePresetToken[] = sortBy(
+    @bindableRef accessor presets: DateRangePresetToken[] = sortBy(
         [...DEFAULT_DATE_RANGE_PRESETS, 'prevDay'],
         it => DATE_RANGE_PRESET_TOKENS.indexOf(it)
     );
     @bindable accessor anchorMode: 'localDay' | 'appDay' | 'pinned' = 'localDay';
-    @bindable.ref accessor anchorDate: LocalDate = LocalDate.today();
-    @bindable.ref accessor maxDate: LocalDate = null;
+    @bindableRef accessor anchorDate: LocalDate = LocalDate.today();
+    @bindableRef accessor maxDate: LocalDate = null;
     @bindable accessor dateFormat = 'YYYY-MM-DD';
     @bindable accessor singleDayFormat: keyof typeof DAY_FORMATS = 'ddd MMM D';
 
