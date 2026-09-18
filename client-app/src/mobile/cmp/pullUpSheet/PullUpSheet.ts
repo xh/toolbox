@@ -1,7 +1,8 @@
 import {div} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistProps} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import classNames from 'classnames';
-import {ReactNode} from 'react';
+import type {ReactNode} from 'react';
 import './PullUpSheet.scss';
 
 export interface PullUpSheetProps extends HoistProps {

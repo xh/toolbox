@@ -3,7 +3,7 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {ReactElement, ReactNode} from 'react';
+import type {ReactElement, ReactNode} from 'react';
 import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import './SelectPage.scss';
 import {SelectPageModel} from './SelectPageModel';

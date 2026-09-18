@@ -1,13 +1,9 @@
-import {
-    CallContextLike,
-    HoistAuthModel,
-    IdentityInfo,
-    managed,
-    PlainObject,
-    XH
-} from '@xh/hoist/core';
-import {AuthZeroClient, AuthZeroClientConfig} from '@xh/hoist/security/authzero';
-import {MsalClient, MsalClientConfig} from '@xh/hoist/security/msal';
+import type {CallContextLike, IdentityInfo, PlainObject} from '@xh/hoist/core';
+import {HoistAuthModel, managed, XH} from '@xh/hoist/core';
+import type {AuthZeroClientConfig} from '@xh/hoist/security/authzero';
+import {AuthZeroClient} from '@xh/hoist/security/authzero';
+import type {MsalClientConfig} from '@xh/hoist/security/msal';
+import {MsalClient} from '@xh/hoist/security/msal';
 
 /**
  * Toolbox's implementation of {@link HoistAuthModel} contract for handling authentication.

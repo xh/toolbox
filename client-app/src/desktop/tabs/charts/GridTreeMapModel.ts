@@ -2,11 +2,12 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {TreeMapModel} from '@xh/hoist/cmp/treemap';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
+import {bindable} from '@xh/hoist/mobx';
+import {mktValCol, pnlCol} from '../../../core/columns/Positions';
+import {nameCol} from '../../../core/columns/General';
 
 export class GridTreeMapModel extends HoistModel {
-    @bindable cluster = false;
+    @bindable accessor cluster = false;
 
     @managed
     groupingChooserModel = new GroupingChooserModel({
@@ -56,7 +57,6 @@ export class GridTreeMapModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.addReaction({
             track: () => this.groupingChooserModel.value,
             run: () => this.loadAsync()

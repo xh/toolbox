@@ -3,16 +3,8 @@ import {FormModel} from '@xh/hoist/cmp/form';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {div, frame} from '@xh/hoist/cmp/layout';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {
-    creates,
-    hoistCmp,
-    HoistModel,
-    lookup,
-    managed,
-    persistOptions,
-    PersistOptions,
-    XH
-} from '@xh/hoist/core';
+import type {PersistOptions} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup, managed, persistOptions, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {required} from '@xh/hoist/data';
 import {DashCanvasModel, DashContainerModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
@@ -20,35 +12,35 @@ import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
-import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, computed, observable, runInAction} from '@xh/hoist/mobx';
 import {get} from 'lodash';
 import {
-    sampleColumnGroupsGrid,
     SampleColumnGroupsGridModel,
-    sampleGrid,
-    SampleGridModel
-} from '../../../desktop/common';
+    sampleColumnGroupsGrid
+} from '../../../desktop/common/grid/SampleColumnGroupsGrid';
+import {SampleGridModel} from '../../../desktop/common/grid/SampleGridModel';
+import {sampleGrid} from '../../../desktop/common/grid/SampleGrid';
 
 export class ViewManagerTestModel extends HoistModel {
     override telemetryPrefix = 'toolbox.client.viewManager';
 
-    @managed @observable.ref viewManagerModel: ViewManagerModel;
+    @managed @observable.ref accessor viewManagerModel: ViewManagerModel;
 
     /** FormModel for model configs and component props. */
     @managed configFormModel: FormModel;
 
     /** Persisted models - all implementing Hoist's {@link Persistable} interface. */
-    @managed @observable.ref groupingChooserModel: GroupingChooserModel;
-    @managed @observable.ref filterChooserModel: FilterChooserModel;
-    @managed @observable.ref tabContainerModel: TabContainerModel;
-    @managed @observable.ref panelModel: PanelModel;
-    @managed @observable.ref panelPctModel: PanelModel;
-    @managed @observable.ref gridModel: SampleGridModel;
-    @managed @observable.ref dashContainerModel: DashContainerModel;
-    @managed @observable.ref dashCanvasModel: DashCanvasModel;
-    @managed @observable.ref persistedPropertyModel: PersistedPropertyModel;
+    @managed @observable.ref accessor groupingChooserModel: GroupingChooserModel;
+    @managed @observable.ref accessor filterChooserModel: FilterChooserModel;
+    @managed @observable.ref accessor tabContainerModel: TabContainerModel;
+    @managed @observable.ref accessor panelModel: PanelModel;
+    @managed @observable.ref accessor panelPctModel: PanelModel;
+    @managed @observable.ref accessor gridModel: SampleGridModel;
+    @managed @observable.ref accessor dashContainerModel: DashContainerModel;
+    @managed @observable.ref accessor dashCanvasModel: DashCanvasModel;
+    @managed @observable.ref accessor persistedPropertyModel: PersistedPropertyModel;
 
-    @bindable focusedPersistable: string = null;
+    @bindable accessor focusedPersistable: string = null;
 
     get managedPersistables() {
         return [
@@ -106,7 +98,6 @@ export class ViewManagerTestModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.configFormModel = new FormModel({
             fields: [
@@ -274,11 +265,10 @@ export class ViewManagerTestModel extends HoistModel {
  * Test case for direct persistence of model properties.
  */
 class PersistedPropertyModel extends HoistModel {
-    @bindable stringValue = 'Some Default Value';
+    @bindable accessor stringValue = 'Some Default Value';
 
     constructor({persistWith}: {persistWith: PersistOptions}) {
         super();
-        makeObservable(this);
         this.persistWith = persistWith;
         this.markPersist('stringValue');
     }

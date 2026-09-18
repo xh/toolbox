@@ -1,19 +1,19 @@
 import {HoistModel} from '@xh/hoist/core';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {h3, li, ol, p} from '@xh/hoist/cmp/layout';
 
 export class PanelResizingTestModel extends HoistModel {
-    @observable resizeWhileDragging = false;
+    @observable accessor resizeWhileDragging = false;
 
-    @observable.ref topPanel1Model: PanelModel;
-    @observable.ref topPanel2Model: PanelModel;
-    @observable.ref leftPanel1Model: PanelModel;
-    @observable.ref leftPanel2Model: PanelModel;
-    @observable.ref rightPanel1Model: PanelModel;
-    @observable.ref rightPanel2Model: PanelModel;
-    @observable.ref bottomPanel1Model: PanelModel;
-    @observable.ref bottomPanel2Model: PanelModel;
+    @observable.ref accessor topPanel1Model: PanelModel;
+    @observable.ref accessor topPanel2Model: PanelModel;
+    @observable.ref accessor leftPanel1Model: PanelModel;
+    @observable.ref accessor leftPanel2Model: PanelModel;
+    @observable.ref accessor rightPanel1Model: PanelModel;
+    @observable.ref accessor rightPanel2Model: PanelModel;
+    @observable.ref accessor bottomPanel1Model: PanelModel;
+    @observable.ref accessor bottomPanel2Model: PanelModel;
 
     resizablePanelNames = [
         'topPanel1Model',
@@ -28,7 +28,6 @@ export class PanelResizingTestModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.setPanelModels();
     }
 

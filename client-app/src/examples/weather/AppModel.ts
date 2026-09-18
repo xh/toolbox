@@ -1,4 +1,5 @@
-import {InitContext, LoadSpec, managed, XH} from '@xh/hoist/core';
+import type {InitContext, LoadSpec} from '@xh/hoist/core';
+import {managed, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {
     autoRefreshAppOption,

@@ -1,11 +1,12 @@
-import {IDynamicTabSwitcherModel, TabModel} from '@xh/hoist/cmp/tab';
-import {hoistCmp, HoistProps} from '@xh/hoist/core';
+import type {IDynamicTabSwitcherModel, TabModel} from '@xh/hoist/cmp/tab';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {menuItem} from '@xh/hoist/kit/blueprint';
 import {stopPropagation} from '@xh/hoist/utils/js';
-import {MouseEvent, ReactElement} from 'react';
-import {type AppModel} from './AppModel';
+import type {MouseEvent, ReactElement} from 'react';
+import type {AppModel} from './AppModel';
 import './ModuleMenu.scss';
 
 /**

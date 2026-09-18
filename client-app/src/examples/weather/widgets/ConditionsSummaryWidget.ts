@@ -2,9 +2,8 @@ import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {img} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {makeObservable} from '@xh/hoist/mobx';
 import {groupBy} from 'lodash';
-import {ForecastResponse} from '../Types';
+import type {ForecastResponse} from '../Types';
 import {AppModel} from '../AppModel';
 
 export const conditionsSummaryWidget = hoistCmp.factory({
@@ -19,11 +18,6 @@ export const conditionsSummaryWidget = hoistCmp.factory({
 
 class ConditionsSummaryModel extends HoistModel {
     @managed gridModel: GridModel;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     override onLinked() {
         this.gridModel = this.createGridModel();

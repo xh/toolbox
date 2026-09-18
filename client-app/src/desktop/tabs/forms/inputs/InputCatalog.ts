@@ -1,5 +1,5 @@
 import {Icon} from '@xh/hoist/icon';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 
 export type InputCategory = 'Text & Code' | 'Numeric' | 'Date & Time' | 'Choice' | 'Boolean';
 

@@ -1,11 +1,11 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {makeObservable, bindable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 
 export class ChartPageModel extends HoistModel {
-    @bindable currentSymbol: string = '';
-    @bindable.ref symbols: string[] = null;
+    @bindable accessor currentSymbol: string = '';
+    @bindable.ref accessor symbols: string[] = null;
 
     numCompanies: number = 3;
 
@@ -14,7 +14,6 @@ export class ChartPageModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.addReaction({
             track: () => this.currentSymbol,
             run: () => this.loadAsync()

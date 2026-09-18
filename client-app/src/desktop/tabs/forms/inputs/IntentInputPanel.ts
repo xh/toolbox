@@ -1,18 +1,14 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {creates, hoistCmp, Intent, managed} from '@xh/hoist/core';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {intentInput, IntentInputProps, switchInput} from '@xh/hoist/desktop/cmp/input';
+import type {IntentInputProps} from '@xh/hoist/desktop/cmp/input';
+import {intentInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {
-    demoFrame,
-    demoGrid,
-    demoPlayground,
-    demoRow,
-    fmtDemoConfig,
-    wrapperOption
-} from '../../../common';
+import {bindable} from '@xh/hoist/mobx';
+import {demoFrame, demoGrid, demoPlayground, demoRow, fmtDemoConfig} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';
@@ -176,17 +172,17 @@ const SEEDS: Record<string, Intent> = {
 
 class IntentInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgShowNames = false;
-    @bindable pgEnableClear = false;
+    @bindable accessor pgShowNames = false;
+    @bindable accessor pgEnableClear = false;
 
     // Inputs
-    @bindable playground: Intent = SEEDS.playground;
-    @bindable plain: Intent = SEEDS.plain;
-    @bindable named: Intent = SEEDS.named;
-    @bindable subset: Intent = SEEDS.subset;
-    @bindable disabledIntent: Intent = SEEDS.disabledIntent;
-    @bindable tbarIntent: Intent = SEEDS.tbarIntent;
-    @bindable tbarNamedIntent: Intent = SEEDS.tbarNamedIntent;
+    @bindable accessor playground: Intent = SEEDS.playground;
+    @bindable accessor plain: Intent = SEEDS.plain;
+    @bindable accessor named: Intent = SEEDS.named;
+    @bindable accessor subset: Intent = SEEDS.subset;
+    @bindable accessor disabledIntent: Intent = SEEDS.disabledIntent;
+    @bindable accessor tbarIntent: Intent = SEEDS.tbarIntent;
+    @bindable accessor tbarNamedIntent: Intent = SEEDS.tbarNamedIntent;
 
     @managed
     override formModel = new FormModel({
@@ -208,7 +204,6 @@ class IntentInputPanelModel extends InputDemoModel {
 
     constructor() {
         super({supportsCompact: true, commitOnChangeDefault: null});
-        makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

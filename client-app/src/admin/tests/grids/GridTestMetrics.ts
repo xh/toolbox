@@ -1,9 +1,9 @@
-import {observable, makeObservable, action} from '@xh/hoist/mobx';
+import {observable, action} from '@xh/hoist/mobx';
 import {mean, take, head} from 'lodash';
 
 export class GridTestMetrics {
-    @observable.ref updateTimes;
-    @observable.ref loadTimes;
+    @observable.ref accessor updateTimes;
+    @observable.ref accessor loadTimes;
 
     get loadTime() {
         return head(this.loadTimes) ?? null;
@@ -21,7 +21,6 @@ export class GridTestMetrics {
 
     constructor() {
         this.clear();
-        makeObservable(this);
     }
 
     @action
