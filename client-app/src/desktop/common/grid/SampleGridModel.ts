@@ -91,7 +91,6 @@ export class SampleGridModel extends HoistModel {
         super();
 
         this.gridModel = new GridModel({
-            enableFullWidthScroll: true,
             selModel: {mode: 'multiple'},
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',
@@ -112,9 +111,26 @@ export class SampleGridModel extends HoistModel {
                 }
             },
             contextMenu: [
+                // A heading's displayFn gets the same ActionFnData as the actions beside it, so it
+                // can name the clicked record. Falls back to its static text over empty space.
+                {
+                    heading: 'Company',
+                    displayFn: ({record}) => (record ? {heading: record.data.company} : null)
+                },
                 this.viewDetailsAction,
                 this.terminateAction,
-                '-',
+
+                // Hidden unless more than one row is selected - taking its heading with it, since
+                // headings left with no items below them are dropped.
+                {heading: 'Selection'},
+                {
+                    text: 'Compare Selected',
+                    icon: Icon.balanceScale(),
+                    displayFn: ({selectedRecords}) => ({hidden: selectedRecords.length < 2}),
+                    actionFn: ({selectedRecords}) => this.showCompareToast(selectedRecords)
+                },
+
+                {heading: 'Grid'},
                 ...GridModel.defaults.contextMenu
             ],
             levelLabels: () => {
@@ -233,6 +249,15 @@ export class SampleGridModel extends HoistModel {
                 `They are based in ${rec.data.city}.`
             ),
             icon: Icon.info(),
+            intent: 'primary',
+            containerRef: this.panelRef.current
+        });
+    }
+
+    private showCompareToast(recs: StoreRecord[]) {
+        XH.toast({
+            message: `You asked to compare ${recs.length} companies.`,
+            icon: Icon.balanceScale(),
             intent: 'primary',
             containerRef: this.panelRef.current
         });

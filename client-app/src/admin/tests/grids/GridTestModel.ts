@@ -125,6 +125,8 @@ export class GridTestModel extends HoistModel {
     @bindable
     @persist
     accessor loadRootAsSummary = false;
+    // True to pin the id column to the left.
+    @bindable accessor pinId = false;
     // True to enable XSS protection at store level.
     @bindable
     @persist
@@ -263,6 +265,7 @@ export class GridTestModel extends HoistModel {
                 this.tree,
                 this.showSummary,
                 this.loadRootAsSummary,
+                this.pinId,
                 this.disableSelect,
                 this.autosizeMode,
                 this.renderedRowsOnly,
@@ -619,6 +622,7 @@ export class GridTestModel extends HoistModel {
         return new GridModel({
             persistWith: persistType ? {[persistType]: PERSIST_KEY} : null,
             selModel: {mode: 'multiple'},
+            filterModel: true,
             sortBy: 'id',
             emptyText: 'No records found...',
             enableExport: true,
@@ -636,23 +640,32 @@ export class GridTestModel extends HoistModel {
             columns: [
                 {
                     field: 'id',
-                    isTreeColumn: this.tree
+                    isTreeColumn: this.tree,
+                    pinned: this.pinId ? 'left' : null
                 },
                 {
                     field: 'symbol',
+                    filterable: true // Hoist native column filtering.
+                },
+                {
+                    field: 'trader',
                     agOptions: {
+                        // Native ag-Grid filter via the header menu button.
                         filter: 'agTextColumnFilter',
                         suppressHeaderMenuButton: false
                     }
                 },
                 {
-                    field: 'trader'
-                },
-                {
                     groupId: 'pnl',
                     headerName: 'P&L',
                     children: [
-                        {field: 'day', highlightOnChange: true, ...pnlColumn},
+                        {
+                            field: 'day',
+                            highlightOnChange: true,
+                            ...pnlColumn,
+                            // Native ag-Grid inline (floating) filter
+                            agOptions: {filter: 'agNumberColumnFilter', floatingFilter: true}
+                        },
                         {field: 'mtd', ...pnlColumn},
                         {field: 'ytd', ...pnlColumn}
                     ]

@@ -1,6 +1,6 @@
 import {XH, HoistModel, managed, LoadSpec, PlainObject} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
-import {GridModel, localDateCol, ExcelFormat} from '@xh/hoist/cmp/grid';
+import { bindable } from '@xh/hoist/mobx';
+import {GridModel, localDate, ExcelFormat} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 
 export class ExternalSortGridPanelModel extends HoistModel {
@@ -106,7 +106,7 @@ export class ExternalSortGridPanelModel extends HoistModel {
                         displayName: 'Date',
                         description: 'Date of last trade (including related derivatives)'
                     },
-                    ...localDateCol,
+                    ...localDate,
                     width: 150
                 }
             ]

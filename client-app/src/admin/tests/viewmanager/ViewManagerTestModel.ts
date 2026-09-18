@@ -22,7 +22,12 @@ import {Icon} from '@xh/hoist/icon';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {action, bindable, computed, observable, runInAction} from '@xh/hoist/mobx';
 import {get} from 'lodash';
-import {sampleGrid, SampleGridModel} from '../../../desktop/common';
+import {
+    sampleColumnGroupsGrid,
+    SampleColumnGroupsGridModel,
+    sampleGrid,
+    SampleGridModel
+} from '../../../desktop/common';
 
 export class ViewManagerTestModel extends HoistModel {
     override telemetryPrefix = 'toolbox.client.viewManager';
@@ -221,26 +226,7 @@ export class ViewManagerTestModel extends HoistModel {
 
         this.dashCanvasModel = new DashCanvasModel({
             persistWith,
-            viewSpecs: [
-                {
-                    id: 'groupingChooser',
-                    title: 'Grouping Chooser',
-                    icon: Icon.treeList(),
-                    content: groupingChooserWidget
-                },
-                {
-                    id: 'filterChooser',
-                    title: 'Filter Chooser (favorites in localStorage)',
-                    icon: Icon.filter(),
-                    content: filterChooserWidget
-                },
-                {
-                    id: 'grid',
-                    title: 'Grid',
-                    icon: Icon.gridPanel(),
-                    content: gridWidget
-                }
-            ],
+            viewSpecs: dashViewSpecs,
             initialState: [
                 {
                     layout: {x: 0, y: 0, w: 12, h: 2},
@@ -253,6 +239,10 @@ export class ViewManagerTestModel extends HoistModel {
                 {
                     layout: {x: 0, y: 14, w: 12, h: 4},
                     viewSpecId: 'grid'
+                },
+                {
+                    layout: {x: 0, y: 18, w: 12, h: 4},
+                    viewSpecId: 'columnGroupsGrid'
                 }
             ]
         });
@@ -260,26 +250,7 @@ export class ViewManagerTestModel extends HoistModel {
         this.dashContainerModel = new DashContainerModel({
             persistWith,
             showMenuButton: true,
-            viewSpecs: [
-                {
-                    id: 'groupingChooser',
-                    title: 'Grouping Chooser',
-                    icon: Icon.treeList(),
-                    content: groupingChooserWidget
-                },
-                {
-                    id: 'filterChooser',
-                    title: 'Filter Chooser (favorites in localStorage)',
-                    icon: Icon.filter(),
-                    content: filterChooserWidget
-                },
-                {
-                    id: 'grid',
-                    title: 'Grid',
-                    icon: Icon.gridPanel(),
-                    content: gridWidget
-                }
-            ],
+            viewSpecs: dashViewSpecs,
             initialState: [
                 // Default state as a developer might spec - will immediately be dirty.
                 {
@@ -287,7 +258,8 @@ export class ViewManagerTestModel extends HoistModel {
                     content: [
                         {type: 'view', id: 'filterChooser'},
                         {type: 'view', id: 'groupingChooser'},
-                        {type: 'view', id: 'grid'}
+                        {type: 'view', id: 'grid'},
+                        {type: 'view', id: 'columnGroupsGrid'}
                     ]
                 }
             ]
@@ -328,7 +300,7 @@ class BaseWidgetModel extends HoistModel {
 }
 
 class GroupingChooserWidgetModel extends BaseWidgetModel {
-    groupingChooserModel: GroupingChooserModel;
+    @managed groupingChooserModel: GroupingChooserModel;
 
     override onLinked() {
         super.onLinked();
@@ -352,7 +324,7 @@ const createGroupingChooserModel = (persistWith: PersistOptions) => {
 };
 
 class FilterChooserWidgetModel extends BaseWidgetModel {
-    filterChooserModel: FilterChooserModel;
+    @managed filterChooserModel: FilterChooserModel;
 
     override onLinked() {
         super.onLinked();
@@ -383,7 +355,7 @@ const createFilterChooserModel = (persistWith: PersistOptions) => {
 };
 
 class gridWidgetModel extends BaseWidgetModel {
-    gridModel: SampleGridModel;
+    @managed gridModel: SampleGridModel;
 
     override onLinked() {
         super.onLinked();
@@ -398,6 +370,52 @@ const gridWidget = hoistCmp.factory({
         return widget(sampleGrid({omitGridTools: true}));
     }
 });
+
+class columnGroupsGridWidgetModel extends BaseWidgetModel {
+    @managed columnGroupsGridModel: SampleColumnGroupsGridModel;
+
+    override onLinked() {
+        super.onLinked();
+        this.columnGroupsGridModel = new SampleColumnGroupsGridModel({
+            gridConfig: {persistWith: this.persistWith}
+        });
+        this.columnGroupsGridModel.loadAsync();
+    }
+}
+
+const columnGroupsGridWidget = hoistCmp.factory({
+    model: creates(columnGroupsGridWidgetModel),
+    render({model}) {
+        return widget(sampleColumnGroupsGrid({flex: 1}));
+    }
+});
+
+const dashViewSpecs = [
+    {
+        id: 'groupingChooser',
+        title: 'Grouping Chooser',
+        icon: Icon.treeList(),
+        content: groupingChooserWidget
+    },
+    {
+        id: 'filterChooser',
+        title: 'Filter Chooser (favorites in localStorage)',
+        icon: Icon.filter(),
+        content: filterChooserWidget
+    },
+    {
+        id: 'grid',
+        title: 'Grid',
+        icon: Icon.gridPanel(),
+        content: gridWidget
+    },
+    {
+        id: 'columnGroupsGrid',
+        title: 'Grid with Column Groups',
+        icon: Icon.gridPanel(),
+        content: columnGroupsGridWidget
+    }
+];
 
 const widget = hoistCmp.factory({
     render({children}) {

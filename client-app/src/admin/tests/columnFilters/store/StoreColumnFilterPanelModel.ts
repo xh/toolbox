@@ -1,5 +1,5 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
-import {boolCheckCol, ExcelFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {boolCheck, ExcelFormat, GridModel, localDate} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {CompoundFilter, FieldFilter} from '@xh/hoist/data';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
@@ -85,7 +85,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                 },
                 {
                     field: 'active',
-                    ...boolCheckCol,
+                    ...boolCheck,
                     headerName: '',
                     chooserName: 'Active Status',
                     tooltip: (active, {record}) =>
@@ -139,7 +139,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                 },
                 {
                     field: 'trade_date',
-                    ...localDateCol,
+                    ...localDate,
                     width: 150
                 }
             ]

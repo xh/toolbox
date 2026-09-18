@@ -88,6 +88,7 @@ export const textAreaPanel = hoistCmp.factory({
                         min: 60,
                         max: 300,
                         stepSize: 20,
+                        majorStepSize: 100,
                         width: 80
                     })
                 })
