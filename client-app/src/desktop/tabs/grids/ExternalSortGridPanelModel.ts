@@ -1,11 +1,11 @@
 import {XH, HoistModel, managed, LoadSpec, PlainObject} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {GridModel, localDate, ExcelFormat} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 
 export class ExternalSortGridPanelModel extends HoistModel {
     @managed gridModel: GridModel;
-    @bindable.ref accessor trades: PlainObject[];
+    @bindableRef accessor trades: PlainObject[];
     @bindable accessor maxRows: number = null;
 
     constructor() {

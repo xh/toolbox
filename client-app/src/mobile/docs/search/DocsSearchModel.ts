@@ -1,5 +1,5 @@
 import {HoistModel, XH} from '@xh/hoist/core';
-import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, runInAction, observableRef} from '@xh/hoist/mobx';
 import {encodeDocId} from '../../../core/docs/DocUtils';
 import {DocEntry} from '../../../core/docs/types';
 import {DocService, DocSearchResult} from '../../../core/svc/DocService';
@@ -22,8 +22,8 @@ const RECENT_SEARCHES_KEY = 'docs.recentSearches',
  */
 export class DocsSearchModel extends HoistModel {
     @bindable accessor query: string = '';
-    @observable.ref accessor results: DocSearchResult[] = [];
-    @observable.ref accessor recentSearches: string[] = [];
+    @observableRef accessor results: DocSearchResult[] = [];
+    @observableRef accessor recentSearches: string[] = [];
 
     private get docService(): DocService {
         return DocService.instance;

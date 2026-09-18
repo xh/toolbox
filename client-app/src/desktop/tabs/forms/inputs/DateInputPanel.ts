@@ -5,7 +5,7 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {dateInput, DateInputProps, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import moment from 'moment';
 import {
@@ -244,14 +244,14 @@ class DateInputPanelModel extends InputDemoModel {
     @bindable accessor pgActionsBar = false;
 
     // Inputs
-    @bindable.ref accessor playground: Date = SEEDS.playground;
-    @bindable.ref accessor minMax: Date = SEEDS.minMax;
-    @bindable.ref accessor localDate: LocalDate = SEEDS.localDate;
-    @bindable.ref accessor timeAmPm: Date = SEEDS.timeAmPm;
-    @bindable.ref accessor customFormat: Date = SEEDS.customFormat;
-    @bindable.ref accessor disabledDate: Date = SEEDS.disabledDate;
-    @bindable.ref accessor tbarDate: Date = SEEDS.tbarDate;
-    @bindable.ref accessor tbarLocalDate: LocalDate = SEEDS.tbarLocalDate;
+    @bindableRef accessor playground: Date = SEEDS.playground;
+    @bindableRef accessor minMax: Date = SEEDS.minMax;
+    @bindableRef accessor localDate: LocalDate = SEEDS.localDate;
+    @bindableRef accessor timeAmPm: Date = SEEDS.timeAmPm;
+    @bindableRef accessor customFormat: Date = SEEDS.customFormat;
+    @bindableRef accessor disabledDate: Date = SEEDS.disabledDate;
+    @bindableRef accessor tbarDate: Date = SEEDS.tbarDate;
+    @bindableRef accessor tbarLocalDate: LocalDate = SEEDS.tbarLocalDate;
 
     @managed
     override formModel = new FormModel({

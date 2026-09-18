@@ -11,7 +11,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
@@ -248,7 +248,7 @@ class ButtonGroupInputPanelModel extends InputDemoModel {
     @bindable accessor pgIntent: Intent = null;
 
     // Inputs
-    @bindable.ref accessor playground: string | string[] = SEEDS.playground;
+    @bindableRef accessor playground: string | string[] = SEEDS.playground;
     @bindable accessor plain: string = SEEDS.plain;
     @bindable accessor iconsOnly: string = SEEDS.iconsOnly;
     @bindable accessor textOnly: string = SEEDS.textOnly;

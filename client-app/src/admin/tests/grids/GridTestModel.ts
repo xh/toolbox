@@ -15,7 +15,7 @@ import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
 import {StringInternSpec} from '@xh/hoist/svc';
 import {isEmpty, random, round, sample, times} from 'lodash';
-import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, observable, runInAction, observableRef} from '@xh/hoist/mobx';
 import {waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {AppModel} from '../../AppModel';
@@ -245,7 +245,7 @@ export class GridTestModel extends HoistModel {
     loadTask = TaskObserver.trackLast();
 
     @managed
-    @observable.ref
+    @observableRef
     accessor gridModel: GridModel;
 
     /** Saves/restores the settings above as named configs - created by AppModel.initAsync(). */

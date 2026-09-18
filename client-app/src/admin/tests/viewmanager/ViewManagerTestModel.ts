@@ -20,7 +20,7 @@ import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
-import {action, bindable, computed, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, computed, runInAction, observableRef} from '@xh/hoist/mobx';
 import {get} from 'lodash';
 import {
     sampleColumnGroupsGrid,
@@ -32,21 +32,21 @@ import {
 export class ViewManagerTestModel extends HoistModel {
     override telemetryPrefix = 'toolbox.client.viewManager';
 
-    @managed @observable.ref accessor viewManagerModel: ViewManagerModel;
+    @managed @observableRef accessor viewManagerModel: ViewManagerModel;
 
     /** FormModel for model configs and component props. */
     @managed configFormModel: FormModel;
 
     /** Persisted models - all implementing Hoist's {@link Persistable} interface. */
-    @managed @observable.ref accessor groupingChooserModel: GroupingChooserModel;
-    @managed @observable.ref accessor filterChooserModel: FilterChooserModel;
-    @managed @observable.ref accessor tabContainerModel: TabContainerModel;
-    @managed @observable.ref accessor panelModel: PanelModel;
-    @managed @observable.ref accessor panelPctModel: PanelModel;
-    @managed @observable.ref accessor gridModel: SampleGridModel;
-    @managed @observable.ref accessor dashContainerModel: DashContainerModel;
-    @managed @observable.ref accessor dashCanvasModel: DashCanvasModel;
-    @managed @observable.ref accessor persistedPropertyModel: PersistedPropertyModel;
+    @managed @observableRef accessor groupingChooserModel: GroupingChooserModel;
+    @managed @observableRef accessor filterChooserModel: FilterChooserModel;
+    @managed @observableRef accessor tabContainerModel: TabContainerModel;
+    @managed @observableRef accessor panelModel: PanelModel;
+    @managed @observableRef accessor panelPctModel: PanelModel;
+    @managed @observableRef accessor gridModel: SampleGridModel;
+    @managed @observableRef accessor dashContainerModel: DashContainerModel;
+    @managed @observableRef accessor dashCanvasModel: DashCanvasModel;
+    @managed @observableRef accessor persistedPropertyModel: PersistedPropertyModel;
 
     @bindable accessor focusedPersistable: string = null;
 

@@ -1,10 +1,10 @@
 import {HoistModel, LoadSpec, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
-import {observable, runInAction} from '@xh/hoist/mobx';
+import {runInAction, observableRef} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 
 export class AgGridViewModel extends HoistModel {
-    @observable.ref accessor data = [];
+    @observableRef accessor data = [];
 
     columnDefs = [
         {

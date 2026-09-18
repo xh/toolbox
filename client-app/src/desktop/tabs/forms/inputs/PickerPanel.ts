@@ -7,7 +7,7 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {picker, PickerProps, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {usStates} from '../../../../core/data';
 import {
     demoFrame,
@@ -449,20 +449,20 @@ class PickerPanelModel extends InputDemoModel {
     @bindable accessor pgShowCount = false;
 
     // Inputs
-    @bindable.ref accessor playground: string | string[] = SEEDS.playground;
+    @bindableRef accessor playground: string | string[] = SEEDS.playground;
     @bindable accessor singleState: string = SEEDS.singleState;
     @bindable accessor minimalPopoverState: string = SEEDS.minimalPopoverState;
     @bindable accessor restaurant: string = SEEDS.restaurant;
-    @bindable.ref accessor badgeStates: string[] = SEEDS.badgeStates;
+    @bindableRef accessor badgeStates: string[] = SEEDS.badgeStates;
     @bindable accessor statusOption: string = SEEDS.statusOption;
-    @bindable.ref accessor wideState: string[] = SEEDS.wideState;
+    @bindableRef accessor wideState: string[] = SEEDS.wideState;
     @bindable accessor buttonTrigger: string = SEEDS.buttonTrigger;
-    @bindable.ref accessor largeListValues: string[] = SEEDS.largeListValues;
+    @bindableRef accessor largeListValues: string[] = SEEDS.largeListValues;
     @bindable accessor intentPrimary: string = SEEDS.intentPrimary;
     @bindable accessor intentSuccess: string = SEEDS.intentSuccess;
     @bindable accessor intentWarning: string = SEEDS.intentWarning;
     @bindable accessor intentDanger: string = SEEDS.intentDanger;
-    @bindable.ref accessor toolbarStates: string[] = SEEDS.toolbarStates;
+    @bindableRef accessor toolbarStates: string[] = SEEDS.toolbarStates;
     @bindable accessor toolbarPriority: string = SEEDS.toolbarPriority;
 
     @managed

@@ -4,7 +4,7 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {CompoundFilter, Cube, FieldFilter, View} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {comparer, computed} from '@xh/hoist/mobx';
+import {computed, compareStructural} from '@xh/hoist/mobx';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
     @managed cube: Cube;
@@ -42,7 +42,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
                 this.view.updateQuery(query);
             },
             fireImmediately: true,
-            equals: comparer.structural
+            equals: compareStructural
         });
     }
 

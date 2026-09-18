@@ -1,11 +1,11 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {bindable, runInAction} from '@xh/hoist/mobx';
+import {runInAction, bindableRef} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {cityCol, companyCol, profitLossCol, tradeVolumeCol} from '../../core/columns';
 
 export class GridPageModel extends HoistModel {
-    @bindable.ref accessor dateLoaded: Date = null;
+    @bindableRef accessor dateLoaded: Date = null;
 
     @managed
     gridModel: GridModel = new GridModel({

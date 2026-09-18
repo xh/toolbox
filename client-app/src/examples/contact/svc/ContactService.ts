@@ -1,5 +1,5 @@
 import {HoistService, persist} from '@xh/hoist/core';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, observableRef} from '@xh/hoist/mobx';
 import {without} from 'lodash';
 
 import {PERSIST_APP} from '../AppModel';
@@ -16,7 +16,7 @@ export class ContactService extends HoistService {
     override persistWith = PERSIST_APP;
 
     /** ids of all contacts that the user has favorited. */
-    @observable.ref
+    @observableRef
     @persist
     accessor userFaves: string[] = [];
 

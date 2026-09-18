@@ -1,5 +1,12 @@
 import {HoistModel, PlainObject, XH} from '@xh/hoist/core';
-import { action, bindable, observable, runInAction } from '@xh/hoist/mobx';
+import {
+    action,
+    bindable,
+    observable,
+    runInAction,
+    observableRef,
+    bindableRef
+} from '@xh/hoist/mobx';
 import {take, times} from 'lodash';
 
 export class SelectTestModel extends HoistModel {
@@ -13,7 +20,7 @@ export class SelectTestModel extends HoistModel {
 
     @bindable accessor groupedValue: string;
 
-    @bindable.ref accessor objectValue: PlainObject;
+    @bindableRef accessor objectValue: PlainObject;
 
     @bindable accessor bigValue: number;
 
@@ -23,18 +30,18 @@ export class SelectTestModel extends HoistModel {
 
     @bindable accessor asyncCreatableValue2: number;
 
-    @bindable.ref accessor objectValue2: PlainObject;
+    @bindableRef accessor objectValue2: PlainObject;
 
-    @bindable.ref accessor enableMultiLeftIcon: string[];
+    @bindableRef accessor enableMultiLeftIcon: string[];
 
-    @bindable.ref accessor enableMultiMenuOpen: string[];
+    @bindableRef accessor enableMultiMenuOpen: string[];
 
     // ID value + generateOptionFn example, pre-populated to verify label (not raw id) on mount
     @bindable
     accessor idNotInOpts: number = 99;
 
     // Shape follows perfEnableMulti - a single value, or an array of them.
-    @bindable.ref accessor perfValue: string | string[];
+    @bindableRef accessor perfValue: string | string[];
 
     @bindable accessor perfEnableMulti = false;
 
@@ -45,7 +52,7 @@ export class SelectTestModel extends HoistModel {
     @bindable accessor perfLatency = 300;
 
     // Ms the main thread was blocked following each of the last few async queries - see noteBlock().
-    @observable.ref accessor blockTimes: number[] = [];
+    @observableRef accessor blockTimes: number[] = [];
 
     constructor() {
         super();

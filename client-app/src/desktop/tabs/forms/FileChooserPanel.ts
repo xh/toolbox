@@ -1,6 +1,6 @@
 import {box, filler, img, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses, XH} from '@xh/hoist/core';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable, observableRef, bindableRef} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     fileChooser,
@@ -343,7 +343,7 @@ class ImagePreviewModel extends HoistModel {
 class FileChooserPanelModel extends HoistModel {
     @bindable accessor disabled = false;
 
-    @bindable.ref accessor acceptedTypes: string[] = ['.png', '.txt'];
+    @bindableRef accessor acceptedTypes: string[] = ['.png', '.txt'];
 
     @bindable accessor maxFiles: number = null;
 
@@ -352,7 +352,7 @@ class FileChooserPanelModel extends HoistModel {
     @bindable accessor placement: 'left' | 'top' | 'hidden' = 'left';
 
     @managed
-    @observable.ref
+    @observableRef
     accessor chooserModel: FileChooserModel;
 
     @managed

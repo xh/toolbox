@@ -1,6 +1,6 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observableRef} from '@xh/hoist/mobx';
 import {ReactElement} from 'react';
 import {isEmpty} from 'lodash';
 import {DocService} from '../../../core/svc/DocService';
@@ -46,7 +46,7 @@ export class NavBladeModel extends HoistModel {
     @bindable accessor isOpen = false;
 
     /** Ids of the groups currently expanded in place. */
-    @observable.ref accessor expandedIds: string[] = [];
+    @observableRef accessor expandedIds: string[] = [];
 
     get homeRoute(): string {
         return HOME_ROUTE;

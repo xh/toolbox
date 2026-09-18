@@ -1,5 +1,5 @@
 import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
-import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, runInAction, observableRef, bindableRef} from '@xh/hoist/mobx';
 import {div, hbox} from '@xh/hoist/cmp/layout';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {StoreRecord, appendFilter, FilterLike} from '@xh/hoist/data';
@@ -18,13 +18,13 @@ export class DirectoryPanelModel extends HoistModel {
     override persistWith = PERSIST_APP;
 
     /** known tags across all contacts. */
-    @observable.ref accessor tagList: string[] = [];
+    @observableRef accessor tagList: string[] = [];
 
     /** known locations across all contacts. */
-    @observable.ref accessor locationList: string[] = [];
+    @observableRef accessor locationList: string[] = [];
 
     /**  tag(s) used to filter results. If multiple, recs must match all. */
-    @bindable.ref accessor tagFilters: string[] = [];
+    @bindableRef accessor tagFilters: string[] = [];
 
     @bindable accessor locationFilter: string;
 

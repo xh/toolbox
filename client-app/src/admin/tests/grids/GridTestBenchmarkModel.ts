@@ -9,7 +9,7 @@ import {
 } from '@xh/hoist/core';
 import {FieldType} from '@xh/hoist/data';
 import {fmtDateTime, numberRenderer} from '@xh/hoist/format';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable, observableRef} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {isEmpty, isFunction, max, min, times} from 'lodash';
@@ -97,7 +97,7 @@ export class GridTestBenchmarkModel extends HoistModel {
     accessor iterations = 3;
 
     /** Accumulated results, newest first. */
-    @observable.ref
+    @observableRef
     @persist
     accessor results: PlainObject[] = [];
 

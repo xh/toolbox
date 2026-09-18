@@ -3,7 +3,7 @@ import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {numberInput, slider, SliderProps, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtThousands} from '@xh/hoist/format';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
@@ -233,7 +233,7 @@ class SliderPanelModel extends InputDemoModel {
 
     // Inputs
     @bindable accessor playground: number = SEEDS.playground;
-    @bindable.ref accessor range: number[] = SEEDS.range;
+    @bindableRef accessor range: number[] = SEEDS.range;
     @bindable accessor noLabels: number = SEEDS.noLabels;
     @bindable accessor fineSteps: number = SEEDS.fineSteps;
     @bindable accessor disabledSlider: number = SEEDS.disabledSlider;

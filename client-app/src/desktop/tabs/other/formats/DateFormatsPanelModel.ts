@@ -1,6 +1,6 @@
 import {HoistModel} from '@xh/hoist/core';
 import * as formatFunctions from '@xh/hoist/format/FormatDate';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import moment from 'moment';
 
 export class DateFormatsPanelModel extends HoistModel {
@@ -27,7 +27,7 @@ export class DateFormatsPanelModel extends HoistModel {
     @bindable accessor nullDisplay: string = null;
     @bindable accessor tooltip = false;
 
-    @bindable.ref accessor tryItData = new Date();
+    @bindableRef accessor tryItData = new Date();
 
     get testResults() {
         return this.testData.map(({date, label}) => ({

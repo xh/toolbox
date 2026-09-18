@@ -1,6 +1,6 @@
 import {RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
 import {HoistModel} from '@xh/hoist/core';
-import {action, bindable} from '@xh/hoist/mobx';
+import {action, bindable, bindableRef} from '@xh/hoist/mobx';
 import {isUndefined, omitBy} from 'lodash';
 
 /** Mirrors the component's own default, so the snippet can omit a matching value. */
@@ -20,7 +20,7 @@ export class RelativeTimestampPanelModel extends HoistModel {
     @bindable accessor localDateMode: RelativeTimestampOptions['localDateMode'] = null;
 
     /** The target timestamp rendered relative to "now". */
-    @bindable.ref accessor timestamp: Date = new Date();
+    @bindableRef accessor timestamp: Date = new Date();
 
     /**
      * The display options every instance on the page spreads, and the single source for the

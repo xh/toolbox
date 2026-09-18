@@ -6,7 +6,7 @@ import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindableRef} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head, uniq} from 'lodash';
 import {Commit} from '../../../../../core/svc/GitHubService';
@@ -17,7 +17,7 @@ export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
     private dashViewModel: DashViewModel;
 
     /** Repos to filter to - empty means show all. */
-    @bindable.ref accessor selectedRepos: string[] = [];
+    @bindableRef accessor selectedRepos: string[] = [];
 
     @managed
     gridModel: GridModel;

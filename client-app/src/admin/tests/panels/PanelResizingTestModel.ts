@@ -1,19 +1,19 @@
 import {HoistModel} from '@xh/hoist/core';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, observable, observableRef} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {h3, li, ol, p} from '@xh/hoist/cmp/layout';
 
 export class PanelResizingTestModel extends HoistModel {
     @observable accessor resizeWhileDragging = false;
 
-    @observable.ref accessor topPanel1Model: PanelModel;
-    @observable.ref accessor topPanel2Model: PanelModel;
-    @observable.ref accessor leftPanel1Model: PanelModel;
-    @observable.ref accessor leftPanel2Model: PanelModel;
-    @observable.ref accessor rightPanel1Model: PanelModel;
-    @observable.ref accessor rightPanel2Model: PanelModel;
-    @observable.ref accessor bottomPanel1Model: PanelModel;
-    @observable.ref accessor bottomPanel2Model: PanelModel;
+    @observableRef accessor topPanel1Model: PanelModel;
+    @observableRef accessor topPanel2Model: PanelModel;
+    @observableRef accessor leftPanel1Model: PanelModel;
+    @observableRef accessor leftPanel2Model: PanelModel;
+    @observableRef accessor rightPanel1Model: PanelModel;
+    @observableRef accessor rightPanel2Model: PanelModel;
+    @observableRef accessor bottomPanel1Model: PanelModel;
+    @observableRef accessor bottomPanel2Model: PanelModel;
 
     resizablePanelNames = [
         'topPanel1Model',

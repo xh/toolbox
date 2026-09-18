@@ -4,7 +4,7 @@ import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {errorMessage} from '@xh/hoist/cmp/error';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {bindable} from '@xh/hoist/mobx';
+import {bindableRef} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
 import {Position} from '../../../core/svc/PortfolioService';
 
@@ -58,7 +58,7 @@ function renderRow(title, value, renderer?) {
 }
 
 class TreeGridDetailPageModel extends HoistModel {
-    @bindable.ref accessor position: Position;
+    @bindableRef accessor position: Position;
 
     get id() {
         return decodeURIComponent(this.componentProps.id);
