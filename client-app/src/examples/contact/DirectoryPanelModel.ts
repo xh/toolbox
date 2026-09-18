@@ -7,7 +7,7 @@ import type {StoreRecord, FilterLike} from '@xh/hoist/data';
 import {appendFilter} from '@xh/hoist/data';
 import {isEmpty, uniq, without} from 'lodash';
 
-import {PERSIST_APP} from './AppModel';
+import {PERSIST_APP} from './constants';
 import {favoriteButton} from './cmp/FavoriteButton';
 import {DetailsPanelModel} from './details/DetailsPanelModel';
 import {cellPhoneCol, emailCol, locationCol, workPhoneCol} from '../../core/columns/Demographics';

@@ -3,7 +3,6 @@ import {Icon} from '@xh/hoist/icon';
 import {action, bindable, observableRef} from '@xh/hoist/mobx';
 import type {ReactElement} from 'react';
 import {isEmpty} from 'lodash';
-import {DocService} from '../../../core/svc/DocService';
 import {mobileTests} from '../../tests/TestsCatalog';
 
 /** A single navigable leaf within the blade - maps to a fully-qualified app route. */
@@ -214,7 +213,7 @@ export class NavBladeModel extends HoistModel {
      */
     get backLabel(): string {
         const {name, params} = XH.routerState,
-            docService = DocService.instance;
+            docService = XH.docService;
         switch (name) {
             case 'default.docs.corpus':
             case 'default.docs.search':

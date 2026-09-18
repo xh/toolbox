@@ -104,7 +104,7 @@ export class DocsPanelModel extends DocViewModel {
         this.searchQuery = '';
         this.searchResults = [];
         this.selectedSearchIdx = -1;
-        this.docService.ensureIndexBuilt();
+        XH.docService.ensureIndexBuilt();
     }
 
     /** Exit search mode - returns to normal doc viewing. */
@@ -259,8 +259,8 @@ export class DocsPanelModel extends DocViewModel {
         this.gridModel.loadData(this.buildTreeData());
 
         const ref = this.docRefFromRoute(XH.routerState.params),
-            registry = this.docService.registry,
-            fromRoute = ref && this.docService.getDocEntry(ref.docId, ref.source),
+            registry = XH.docService.registry,
+            fromRoute = ref && XH.docService.getDocEntry(ref.docId, ref.source),
             initialDoc = fromRoute || registry[0];
         if (initialDoc) {
             this.navigateToDoc(initialDoc.id, initialDoc.source, fromRoute ? ref.section : null);
@@ -281,7 +281,7 @@ export class DocsPanelModel extends DocViewModel {
      */
     private buildTreeData(): any[] {
         let order = 0;
-        const {docService} = this;
+        const {docService} = XH;
 
         return docService.sourceNames.map(sourceName => {
             const sourceLabel = docService.getSourceLabel(sourceName);
@@ -330,7 +330,7 @@ export class DocsPanelModel extends DocViewModel {
     private runSearch(query: string) {
         if (!this.searchMode) return;
         runInAction(() => {
-            this.searchResults = this.docService.searchDocs(query);
+            this.searchResults = XH.docService.searchDocs(query);
         });
     }
 

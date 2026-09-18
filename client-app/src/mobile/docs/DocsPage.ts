@@ -1,13 +1,12 @@
 import {clipboardMenuItem} from '@xh/hoist/cmp/clipboard';
 import {filler, hbox, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, type MenuItemLike} from '@xh/hoist/core';
+import {creates, hoistCmp, type MenuItemLike, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {menuButton} from '@xh/hoist/mobile/cmp/menu';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {docContent} from '../../core/docs/DocContent';
-import {DocService} from '../../core/svc/DocService';
 import {DocsPageModel} from './DocsPageModel';
 import './DocsPage.scss';
 
@@ -80,7 +79,7 @@ const breadcrumb = hoistCmp.factory<DocsPageModel>({
     render({model}) {
         const {activeSource, activeCategory} = model;
         if (!activeSource) return null;
-        const sourceLabel = DocService.instance.getSourceLabel(activeSource);
+        const sourceLabel = XH.docService.getSourceLabel(activeSource);
         return hbox({
             className: 'tb-docs-page__crumb',
             items: [

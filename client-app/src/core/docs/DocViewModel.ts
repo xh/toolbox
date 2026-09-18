@@ -1,7 +1,6 @@
 import type {LoadSpec} from '@xh/hoist/core';
 import {HoistModel, XH} from '@xh/hoist/core';
 import {action, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
-import {DocService} from '../svc/DocService';
 import type {DocCategory, DocEntry, DocSection} from './types';
 import {decodeDocId, encodeDocId, extractSections, resolveDocLink} from './DocUtils';
 
@@ -41,10 +40,6 @@ export abstract class DocViewModel extends HoistModel {
      */
     @observable accessor pendingScrollSection: string = null;
 
-    protected get docService(): DocService {
-        return DocService.instance;
-    }
-
     /**
      * Wire the route-sync reaction once linked (the Hoist-idiomatic place for reactions, vs. the
      * constructor). Tracks the full `routerState` ref so route-*name* changes are caught too, not just
@@ -71,23 +66,23 @@ export abstract class DocViewModel extends HoistModel {
     @computed
     get activeCategory(): DocCategory | null {
         if (!this.activeDoc) return null;
-        const cats = this.docService.getCategories(this.activeDoc.source);
+        const cats = XH.docService.getCategories(this.activeDoc.source);
         return cats.find(c => c.id === this.activeDoc.category) ?? null;
     }
 
     @computed
     get activeCategorySiblings(): DocEntry[] {
         if (!this.activeDoc) return [];
-        return this.docService.getDocsByCategory(this.activeDoc.source, this.activeDoc.category);
+        return XH.docService.getDocsByCategory(this.activeDoc.source, this.activeDoc.category);
     }
 
     @computed
     get activeSourceCategories(): DocCategory[] {
         if (!this.activeDoc) return [];
         const {source} = this.activeDoc;
-        return this.docService
+        return XH.docService
             .getCategories(source)
-            .filter(cat => this.docService.getDocsByCategory(source, cat.id).length > 0);
+            .filter(cat => XH.docService.getDocsByCategory(source, cat.id).length > 0);
     }
 
     /**
@@ -97,8 +92,8 @@ export abstract class DocViewModel extends HoistModel {
     @action
     navigateToDoc(docId: string, source?: string, section?: string) {
         const entry = source
-            ? this.docService.getDocEntry(docId, source)
-            : this.docService.getDocEntry(docId);
+            ? XH.docService.getDocEntry(docId, source)
+            : XH.docService.getDocEntry(docId);
         if (!entry) return;
 
         const sameDoc = entry.id === this.activeDoc?.id && entry.source === this.activeDoc?.source;
@@ -111,7 +106,7 @@ export abstract class DocViewModel extends HoistModel {
         this.activeSection = null;
         this.pendingScrollSection = section ?? null;
         this.content = null;
-        this.docService.noteRecentlyViewed(entry);
+        XH.docService.noteRecentlyViewed(entry);
         this.onDocActivated(entry);
         this.loadAsync();
         this.updateRouteFromDoc();
@@ -119,7 +114,7 @@ export abstract class DocViewModel extends HoistModel {
 
     /** Navigate to the first doc in a given source + category. */
     navigateToCategory(source: string, categoryId: string) {
-        const firstDoc = this.docService.getDocsByCategory(source, categoryId)[0];
+        const firstDoc = XH.docService.getDocsByCategory(source, categoryId)[0];
         if (firstDoc) this.navigateToDoc(firstDoc.id, firstDoc.source);
     }
 
@@ -219,7 +214,7 @@ export abstract class DocViewModel extends HoistModel {
         const {activeDoc} = this;
         if (!activeDoc) return;
         try {
-            const content = await this.docService.fetchContentAsync(activeDoc.source, activeDoc.id);
+            const content = await XH.docService.fetchContentAsync(activeDoc.source, activeDoc.id);
             if (loadSpec.isStale) return;
             runInAction(() => (this.content = content));
         } catch (e) {
