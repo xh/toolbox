@@ -15,7 +15,7 @@ import {
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observableRef} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
@@ -37,7 +37,7 @@ export class InlineEditingPanelModel extends HoistModel {
     @bindable accessor fullRowEditing = false;
 
     @managed
-    @observable.ref
+    @observableRef
     accessor gridModel: GridModel;
 
     @managed

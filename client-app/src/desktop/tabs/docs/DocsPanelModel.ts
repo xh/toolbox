@@ -4,7 +4,7 @@ import {managed, XH} from '@xh/hoist/core';
 import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, computed, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {DocViewModel} from '../../../core/docs/DocViewModel';
 import {getCategoryIcon, getSourceIcon} from '../../../core/docs/DocIcons';
 import type {DocEntry, DocExampleLink} from './docRegistry';
@@ -40,7 +40,7 @@ export class DocsPanelModel extends DocViewModel {
 
     @observable accessor searchMode: boolean = false;
 
-    @observable.ref accessor searchResults: DocSearchResult[] = [];
+    @observableRef accessor searchResults: DocSearchResult[] = [];
 
     @observable accessor selectedSearchIdx: number = -1;
 

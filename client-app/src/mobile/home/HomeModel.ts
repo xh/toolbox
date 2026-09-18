@@ -1,5 +1,5 @@
 import {HoistModel, persist} from '@xh/hoist/core';
-import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, observableRef, runInAction} from '@xh/hoist/mobx';
 import type {WidgetSpec} from './widgets/WidgetCatalog';
 import {DEFAULT_WIDGET_IDS, WIDGETS, widgetSpec} from './widgets/WidgetCatalog';
 
@@ -26,13 +26,13 @@ export class HomeModel extends HoistModel {
     override persistWith = {prefKey: 'mobileHomeWidgets'};
 
     /** Ordered ids of widgets shown on the home stack. */
-    @observable.ref @persist accessor homeIds: string[] = DEFAULT_WIDGET_IDS;
+    @observableRef @persist accessor homeIds: string[] = DEFAULT_WIDGET_IDS;
 
     /** Ordered ids of widgets parked under "Available" (off the home stack). */
-    @observable.ref @persist accessor availableIds: string[] = [];
+    @observableRef @persist accessor availableIds: string[] = [];
 
     /** Ids of widgets collapsed to just their title bar on the home stack. */
-    @observable.ref @persist accessor collapsedIds: string[] = [];
+    @observableRef @persist accessor collapsedIds: string[] = [];
 
     /** Transient: whether the Manage-widgets pull-up sheet is expanded. */
     @bindable accessor isManaging = false;
@@ -42,7 +42,7 @@ export class HomeModel extends HoistModel {
      * Null when not managing - the dashboard then tracks the live committed state. See
      * {@link dashboardWidgets}.
      */
-    @observable.ref private accessor frozenDashboardIds: string[] = null;
+    @observableRef private accessor frozenDashboardIds: string[] = null;
 
     constructor() {
         super();

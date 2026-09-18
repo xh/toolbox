@@ -1,6 +1,6 @@
 import type {LoadSpec} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindableRef, observableRef} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import type {FilterLike, StoreRecord} from '@xh/hoist/data';
 import {appendFilter} from '@xh/hoist/data';
@@ -40,9 +40,9 @@ export class NewsPanelModel extends HoistModel {
         stripeRows: true
     });
 
-    @observable.ref accessor sourceOptions: string[] = [];
+    @observableRef accessor sourceOptions: string[] = [];
 
-    @bindable.ref private accessor sourceFilterValues: string[] = null;
+    @bindableRef private accessor sourceFilterValues: string[] = null;
     private lastRefresh: Date;
 
     constructor() {

@@ -22,7 +22,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed} from '@xh/hoist/mobx';
+import {bindable, bindableRef, computed} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {pluralize} from '@xh/hoist/utils/js';
 import {sortBy} from 'lodash';
@@ -272,9 +272,9 @@ class InputsIndexModel extends InputDemoModel {
     @bindable accessor code: string = SEEDS.code;
     @bindable accessor number: number = SEEDS.number;
     @bindable accessor slider: number = SEEDS.slider;
-    @bindable.ref accessor date: LocalDate = SEEDS.date;
+    @bindableRef accessor date: LocalDate = SEEDS.date;
     @bindable accessor state: string = SEEDS.state;
-    @bindable.ref accessor states: string[] = SEEDS.states;
+    @bindableRef accessor states: string[] = SEEDS.states;
     @bindable accessor segment: string = SEEDS.segment;
     @bindable accessor chartType: string = SEEDS.chartType;
     @bindable accessor side: string = SEEDS.side;

@@ -2,7 +2,7 @@ import type {LoadSpec} from '@xh/hoist/core';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import type {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
-import {bindable, observable, runInAction} from '@xh/hoist/mobx';
+import {bindable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 
 import {
@@ -53,8 +53,8 @@ export class WeatherDashModel extends HoistModel {
     override persistWith = {localStorageKey: 'xhWeatherDash'};
 
     @bindable @persist accessor selectedCity: string = 'New York';
-    @observable.ref accessor currentWeather: CurrentWeatherResponse = null;
-    @observable.ref accessor forecast: ForecastResponse = null;
+    @observableRef accessor currentWeather: CurrentWeatherResponse = null;
+    @observableRef accessor forecast: ForecastResponse = null;
 
     viewManagerModel: ViewManagerModel;
     @managed dashCanvasModel: DashCanvasModel;

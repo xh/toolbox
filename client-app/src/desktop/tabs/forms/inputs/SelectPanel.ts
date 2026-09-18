@@ -7,7 +7,7 @@ import type {SelectProps} from '@xh/hoist/desktop/cmp/input';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {isUndefined} from 'lodash';
 import {restaurants} from '../../../../core/data/Restaurants';
 import {usStates} from '../../../../core/data/USStates';
@@ -471,7 +471,7 @@ class SelectPanelModel extends InputDemoModel {
     @bindable accessor pgLeftIcon = false;
 
     // Inputs
-    @bindable.ref accessor playground: string | string[] = SEEDS.playground;
+    @bindableRef accessor playground: string | string[] = SEEDS.playground;
     @bindable accessor simpleOption: string = SEEDS.simpleOption;
     @bindable accessor restaurant: string = SEEDS.restaurant;
     @bindable accessor asyncValue: number = SEEDS.asyncValue;
@@ -480,13 +480,13 @@ class SelectPanelModel extends InputDemoModel {
     @bindable accessor statusOption: string = SEEDS.statusOption;
     @bindable accessor bigValue: string = SEEDS.bigValue;
     @bindable accessor searchStyle: string = SEEDS.searchStyle;
-    @bindable.ref accessor tooltipMulti: string[] = SEEDS.tooltipMulti;
+    @bindableRef accessor tooltipMulti: string[] = SEEDS.tooltipMulti;
     @bindable accessor menuTop: string = SEEDS.menuTop;
     @bindable accessor wideMenu: string = SEEDS.wideMenu;
     @bindable accessor openOnFocus: string = SEEDS.openOnFocus;
     @bindable accessor disabledState: string = SEEDS.disabledState;
     @bindable accessor toolbarState: string = SEEDS.toolbarState;
-    @bindable.ref accessor toolbarMulti: string[] = SEEDS.toolbarMulti;
+    @bindableRef accessor toolbarMulti: string[] = SEEDS.toolbarMulti;
 
     @managed
     override formModel = new FormModel({
