@@ -3,16 +3,8 @@ import {FormModel} from '@xh/hoist/cmp/form';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {div, frame} from '@xh/hoist/cmp/layout';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {
-    creates,
-    hoistCmp,
-    HoistModel,
-    lookup,
-    managed,
-    persistOptions,
-    PersistOptions,
-    XH
-} from '@xh/hoist/core';
+import type {PersistOptions} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup, managed, persistOptions, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {required} from '@xh/hoist/data';
 import {DashCanvasModel, DashContainerModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
@@ -23,11 +15,11 @@ import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {action, bindable, computed, runInAction, observableRef} from '@xh/hoist/mobx';
 import {get} from 'lodash';
 import {
-    sampleColumnGroupsGrid,
     SampleColumnGroupsGridModel,
-    sampleGrid,
-    SampleGridModel
-} from '../../../desktop/common';
+    sampleColumnGroupsGrid
+} from '../../../desktop/common/grid/SampleColumnGroupsGrid';
+import {SampleGridModel} from '../../../desktop/common/grid/SampleGridModel';
+import {sampleGrid} from '../../../desktop/common/grid/SampleGrid';
 
 export class ViewManagerTestModel extends HoistModel {
     override telemetryPrefix = 'toolbox.client.viewManager';

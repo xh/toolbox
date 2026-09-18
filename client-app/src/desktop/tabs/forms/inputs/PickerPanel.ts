@@ -4,20 +4,21 @@ import {div, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {picker, PickerProps, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
+import type {PickerProps} from '@xh/hoist/desktop/cmp/input';
+import {picker, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, bindableRef} from '@xh/hoist/mobx';
-import {usStates} from '../../../../core/data';
+import {bindable} from '@xh/hoist/mobx';
+import {usStates} from '../../../../core/data/USStates';
 import {
     demoFrame,
     demoGrid,
     demoPlayground,
     demoRow,
     fmtDemoConfig,
-    raw,
-    wrapperOption
-} from '../../../common';
+    raw
+} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';

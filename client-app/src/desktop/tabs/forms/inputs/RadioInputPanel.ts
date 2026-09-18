@@ -1,13 +1,10 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {creates, hoistCmp, HSide, managed} from '@xh/hoist/core';
+import type {HSide} from '@xh/hoist/core';
+import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {
-    radioInput,
-    RadioInputProps,
-    segmentedControl,
-    switchInput
-} from '@xh/hoist/desktop/cmp/input';
+import type {RadioInputProps} from '@xh/hoist/desktop/cmp/input';
+import {radioInput, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {bindable} from '@xh/hoist/mobx';
 import {
     demoFrame,
@@ -15,9 +12,9 @@ import {
     demoPlayground,
     demoRow,
     fmtDemoConfig,
-    raw,
-    wrapperOption
-} from '../../../common';
+    raw
+} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';

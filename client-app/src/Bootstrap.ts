@@ -12,10 +12,10 @@
 import {XH} from '@xh/hoist/core';
 import {when} from '@xh/hoist/mobx';
 
-import {ContactService} from './examples/contact/svc/ContactService';
-import {GitHubService} from './core/svc/GitHubService';
-import {PortfolioService} from './core/svc/PortfolioService';
-import {TaskService} from './examples/todo/TaskService';
+import type {ContactService} from './examples/contact/svc/ContactService';
+import type {GitHubService} from './core/svc/GitHubService';
+import type {PortfolioService} from './core/svc/PortfolioService';
+import type {TaskService} from './examples/todo/TaskService';
 
 declare module '@xh/hoist/core' {
     // Merge interface with XHApi class to include injected services.

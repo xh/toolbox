@@ -1,5 +1,6 @@
-import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
-import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import type {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {bindable, runInAction, observableRef} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
@@ -11,7 +12,7 @@ import {
     temperatureIcon,
     windIcon
 } from './Icons';
-import {CurrentWeatherResponse, ForecastResponse} from './Types';
+import type {CurrentWeatherResponse, ForecastResponse} from './Types';
 import {currentConditionsWidget} from './widgets/CurrentConditionsWidget';
 import {tempForecastWidget} from './widgets/TempForecastWidget';
 import {precipForecastWidget} from './widgets/PrecipForecastWidget';

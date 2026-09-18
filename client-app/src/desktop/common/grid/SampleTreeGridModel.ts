@@ -6,8 +6,9 @@ import {GroupingChooserModel} from '@xh/hoist/desktop/cmp/grouping';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {action} from '@xh/hoist/mobx';
-import {StoreRecord} from '@xh/hoist/data';
-import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
+import type {StoreRecord} from '@xh/hoist/data';
+import {mktValCol, pnlCol} from '../../../core/columns/Positions';
+import {nameCol} from '../../../core/columns/General';
 import {PortfolioService} from '../../../core/svc/PortfolioService';
 
 export class SampleTreeGridModel extends HoistModel {

@@ -1,9 +1,10 @@
-import {HoistService, InitContext, XH} from '@xh/hoist/core';
-import {action, observable, runInAction, observableRef} from '@xh/hoist/mobx';
+import type {InitContext} from '@xh/hoist/core';
+import {HoistService, XH} from '@xh/hoist/core';
+import {action, observable, runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 import MiniSearch from 'minisearch';
 import {sameDoc} from '../docs/DocUtils';
-import {DocCategory, DocEntry, DocSourceInfo} from '../docs/types';
+import type {DocCategory, DocEntry, DocSourceInfo} from '../docs/types';
 
 export interface DocSearchResult {
     entry: DocEntry;

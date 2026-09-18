@@ -6,7 +6,9 @@ import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {mask} from '@xh/hoist/cmp/mask';
-import {sampleGrid, SampleGridModel, wrapper, wrapperAction, wrapperOption} from '../../common';
+import {SampleGridModel} from '../../common/grid/SampleGridModel';
+import {sampleGrid} from '../../common/grid/SampleGrid';
+import {wrapper, wrapperAction, wrapperOption} from '../../common/Wrapper';
 
 export const maskPanel = hoistCmp.factory({
     model: creates(() => MaskPanelModel),

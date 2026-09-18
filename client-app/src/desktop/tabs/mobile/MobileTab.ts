@@ -5,8 +5,8 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {SECONDS} from '@xh/hoist/utils/datetime';
-import {ReactElement} from 'react';
-import {wrapper, wrapperAction} from '../../common';
+import type {ReactElement} from 'react';
+import {wrapper, wrapperAction} from '../../common/Wrapper';
 // @ts-ignore
 import mobileImageDocs from './MobileImageDocs.png';
 // @ts-ignore

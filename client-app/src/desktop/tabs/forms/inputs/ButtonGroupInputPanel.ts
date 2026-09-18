@@ -1,14 +1,11 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {creates, hoistCmp, Intent, managed} from '@xh/hoist/core';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {
-    buttonGroupInput,
-    ButtonGroupInputProps,
-    intentInput,
-    switchInput
-} from '@xh/hoist/desktop/cmp/input';
+import type {ButtonGroupInputProps} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, intentInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, bindableRef} from '@xh/hoist/mobx';
@@ -18,9 +15,9 @@ import {
     demoPlayground,
     demoRow,
     fmtDemoConfig,
-    raw,
-    wrapperOption
-} from '../../../common';
+    raw
+} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';

@@ -1,7 +1,8 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faIcons} from '@fortawesome/pro-regular-svg-icons';
 import {div, filler, placeholder, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {select, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -9,7 +10,7 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, computed} from '@xh/hoist/mobx';
 import {copyToClipboard} from '@xh/hoist/utils/js';
 import {isEmpty, without} from 'lodash';
-import {wrapper, wrapperOption} from '../../common';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 import './IconsPanel.scss';
 
 // Register a custom icon - not pre-imported by `Icon` - and use it as this tab's title icon

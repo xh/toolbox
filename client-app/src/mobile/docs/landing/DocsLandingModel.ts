@@ -1,8 +1,8 @@
 import {HoistModel, XH} from '@xh/hoist/core';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {getSourceIcon} from '../../../core/docs/DocIcons';
 import {encodeDocId} from '../../../core/docs/DocUtils';
-import {DocEntry} from '../../../core/docs/types';
+import type {DocEntry} from '../../../core/docs/types';
 import {DocService} from '../../../core/svc/DocService';
 
 /** A corpus card on the docs landing. */

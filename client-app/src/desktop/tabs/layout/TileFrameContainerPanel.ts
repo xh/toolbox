@@ -4,7 +4,7 @@ import {numberInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon, xhLogo} from '@xh/hoist/icon';
 import {action, bindable} from '@xh/hoist/mobx';
-import {wrapper, wrapperAction, wrapperOption} from '../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../common/Wrapper';
 import './TileFrameContainerPanel.scss';
 
 export const tileFrameContainerPanel = hoistCmp.factory({

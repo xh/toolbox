@@ -3,7 +3,7 @@ import {img} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {groupBy} from 'lodash';
-import {ForecastResponse} from '../Types';
+import type {ForecastResponse} from '../Types';
 import {AppModel} from '../AppModel';
 
 export const conditionsSummaryWidget = hoistCmp.factory({

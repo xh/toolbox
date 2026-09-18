@@ -1,12 +1,13 @@
 import {div} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, LoadSpec, XH} from '@xh/hoist/core';
+import type {LoadSpec} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {errorMessage} from '@xh/hoist/cmp/error';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {bindableRef} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
-import {Position} from '../../../core/svc/PortfolioService';
+import type {Position} from '../../../core/svc/PortfolioService';
 
 export const treeGridDetailPage = hoistCmp.factory<TreeGridDetailPageModel>({
     model: creates(() => TreeGridDetailPageModel),

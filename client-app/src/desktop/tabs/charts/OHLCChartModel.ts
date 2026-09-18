@@ -1,12 +1,12 @@
 import {div} from '@xh/hoist/cmp/layout';
 import {type ContextMenuSpec, HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
+import type {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, observableRef, bindableRef} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
-import {ChartContextMenuMode} from '../../common';
+import type {ChartContextMenuMode} from '../../common/charts/ChartOptions';
 
 export class OHLCChartModel extends HoistModel {
     @bindable accessor currentSymbol: string = '';

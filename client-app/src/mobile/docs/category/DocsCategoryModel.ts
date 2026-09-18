@@ -1,6 +1,6 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {encodeDocId} from '../../../core/docs/DocUtils';
-import {DocCategory, DocEntry} from '../../../core/docs/types';
+import type {DocCategory, DocEntry} from '../../../core/docs/types';
 import {DocService} from '../../../core/svc/DocService';
 
 /**

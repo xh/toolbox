@@ -1,4 +1,5 @@
-import {clock, ClockProps} from '@xh/hoist/cmp/clock';
+import type {ClockProps} from '@xh/hoist/cmp/clock';
+import {clock} from '@xh/hoist/cmp/clock';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {numberInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {TIME_FMT} from '@xh/hoist/format';
@@ -11,11 +12,9 @@ import {
     demoPlayground,
     demoRow,
     demoSection,
-    fmtDemoConfig,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    fmtDemoConfig
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 
 /** The Clock props the rail drives. Named so both the instances and the snippet share one type. */
 type ClockDisplayProps = Pick<ClockProps, 'format' | 'prefix' | 'suffix' | 'updateInterval'>;

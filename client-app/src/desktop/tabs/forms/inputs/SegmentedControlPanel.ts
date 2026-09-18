@@ -1,15 +1,11 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {SegmentedControlOption} from '@xh/hoist/cmp/input';
-import {creates, hoistCmp, Intent, managed} from '@xh/hoist/core';
+import type {SegmentedControlOption} from '@xh/hoist/cmp/input';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {
-    intentInput,
-    segmentedControl,
-    SegmentedControlProps,
-    select,
-    switchInput
-} from '@xh/hoist/desktop/cmp/input';
+import type {SegmentedControlProps} from '@xh/hoist/desktop/cmp/input';
+import {intentInput, segmentedControl, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -19,9 +15,9 @@ import {
     demoPlayground,
     demoRow,
     fmtDemoConfig,
-    raw,
-    wrapperOption
-} from '../../../common';
+    raw
+} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';

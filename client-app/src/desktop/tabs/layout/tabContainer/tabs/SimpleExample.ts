@@ -1,5 +1,6 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {tabContainer, TabContainerConfig} from '@xh/hoist/cmp/tab';
+import type {TabContainerConfig} from '@xh/hoist/cmp/tab';
+import {tabContainer} from '@xh/hoist/cmp/tab';
 import {placeholder} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 

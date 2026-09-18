@@ -20,7 +20,7 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, sortBy} from 'lodash';
-import {ReactNode} from 'react';
+import type {ReactNode} from 'react';
 import {
     demoGrid,
     demoPanel,
@@ -29,11 +29,9 @@ import {
     demoSection,
     demoToolbar,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    raw
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 import './DateRangePickerPanel.scss';
 
 export const dateRangePickerPanel = hoistCmp.factory({

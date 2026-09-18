@@ -1,32 +1,36 @@
-import {ColChooserMode, grid, GridModel} from '@xh/hoist/cmp/grid';
+import type {ColChooserMode} from '@xh/hoist/cmp/grid';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {creates, hoistCmp, HoistModel, HSide, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {FilterMatchMode} from '@xh/hoist/data';
+import type {HSide, LoadSpec} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
+import type {FilterMatchMode} from '@xh/hoist/data';
 import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, observableRef} from '@xh/hoist/mobx';
-import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common';
+import {bindable, observable} from '@xh/hoist/mobx';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 import {
     actualGrossCol,
     actualUnitsSoldCol,
-    cityCol,
     commissionCol,
     commissionRateCol,
+    projectedGrossCol,
+    projectedUnitsSoldCol,
+    retainCol
+} from '../../../core/columns/Sales';
+import {
+    cityCol,
     emailCol,
     firstNameCol,
     fullNameCol,
     lastNameCol,
-    projectedGrossCol,
-    projectedUnitsSoldCol,
-    regionCol,
-    retainCol,
     salaryCol,
     stateCol,
     tenureCol
-} from '../../../core/columns';
+} from '../../../core/columns/Demographics';
+import {regionCol} from '../../../core/columns/Orders';
 
 export const columnChooserPanel = hoistCmp.factory({
     model: creates(() => ColumnChooserPanelModel),

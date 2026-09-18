@@ -1,6 +1,8 @@
-import {card, CardProps} from '@xh/hoist/cmp/card';
+import type {CardProps} from '@xh/hoist/cmp/card';
+import {card} from '@xh/hoist/cmp/card';
 import {p, placeholder} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, Intent} from '@xh/hoist/core';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {intentInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon, xhLogo} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -11,11 +13,9 @@ import {
     demoRow,
     demoSection,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    raw
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 
 /** The four Hoist intents, in their conventional order. */
 const INTENTS: Intent[] = ['primary', 'success', 'warning', 'danger'];

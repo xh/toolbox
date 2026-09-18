@@ -363,6 +363,15 @@ Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged f
 - **Semicolons**: always
 - **Trailing commas**: none
 
+### Imports
+
+- **Use `import type` for type-only imports.** Split mixed imports into two statements - values in `import {...}`, types in `import type {...}`.
+- **Never create barrel files.** No `index.ts` / `index.tsx` re-export modules under `client-app/src`. Import directly from the module that defines the symbol.
+- **No `export * from` or value re-exports** (`export {foo} from '...'`) anywhere in app source. Type re-exports (`export type {Foo} from '...'`) are fine - they are erased at build and create no runtime module edge.
+- Importing **from** hoist-react's barrels (`@xh/hoist/core`, `@xh/hoist/cmp/grid`) is correct and unaffected. These rules govern modules this app defines, not the framework's published entry points.
+
+All four are enforced by ESLint - violations fail `pnpm lint` and the pre-commit hook. The `import type` rule is auto-fixable: `pnpm exec eslint . --fix`, then `pnpm exec prettier --write "src/**/*.{ts,tsx}"` from `client-app/`.
+
 ## Git Workflow
 
 **Branching, committing, and pushing all require an explicit ask - never do them unprompted.**

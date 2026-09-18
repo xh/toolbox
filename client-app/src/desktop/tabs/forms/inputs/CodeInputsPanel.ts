@@ -2,16 +2,11 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {isValidJson} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {codeInput, jsonInput, JsonInputProps, switchInput} from '@xh/hoist/desktop/cmp/input';
+import type {JsonInputProps} from '@xh/hoist/desktop/cmp/input';
+import {codeInput, jsonInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {bindable} from '@xh/hoist/mobx';
-import {
-    demoFrame,
-    demoGrid,
-    demoPlayground,
-    demoRow,
-    fmtDemoConfig,
-    wrapperOption
-} from '../../../common';
+import {demoFrame, demoGrid, demoPlayground, demoRow, fmtDemoConfig} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';

@@ -6,7 +6,8 @@ import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {isEmpty, isUndefined} from 'lodash';
-import {restaurants, usStates} from '../../../core/data';
+import {restaurants} from '../../../core/data/Restaurants';
+import {usStates} from '../../../core/data/USStates';
 import {SelectTestModel} from './SelectTestModel';
 import './SelectTestPanel.scss';
 

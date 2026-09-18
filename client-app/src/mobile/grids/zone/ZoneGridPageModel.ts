@@ -2,15 +2,14 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {runInAction, bindableRef} from '@xh/hoist/mobx';
 import {ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {wait} from '@xh/hoist/promise';
+import {activeCol} from '../../../core/columns/General';
+import {cityCol, companyCol} from '../../../core/columns/Demographics';
 import {
-    activeCol,
-    cityCol,
-    companyCol,
     profitLossCol,
     tradeDateCol,
     tradeVolumeCol,
     winLoseCol
-} from '../../../core/columns';
+} from '../../../core/columns/Trades';
 
 export class ZoneGridPageModel extends HoistModel {
     @bindableRef accessor dateLoaded: Date = null;

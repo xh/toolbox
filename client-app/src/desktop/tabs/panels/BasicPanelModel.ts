@@ -1,5 +1,5 @@
 import {Icon} from '@xh/hoist/icon';
-import {MouseEvent} from 'react';
+import type {MouseEvent} from 'react';
 import {clamp, round} from 'lodash';
 import {type ContextMenuSpec, HoistModel} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';

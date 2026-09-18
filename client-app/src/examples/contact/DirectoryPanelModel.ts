@@ -1,14 +1,17 @@
-import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
-import {action, bindable, runInAction, observableRef, bindableRef} from '@xh/hoist/mobx';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {action, bindable, observable, runInAction} from '@xh/hoist/mobx';
 import {div, hbox} from '@xh/hoist/cmp/layout';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {StoreRecord, appendFilter, FilterLike} from '@xh/hoist/data';
+import type {StoreRecord, FilterLike} from '@xh/hoist/data';
+import {appendFilter} from '@xh/hoist/data';
 import {isEmpty, uniq, without} from 'lodash';
 
 import {PERSIST_APP} from './AppModel';
 import {favoriteButton} from './cmp/FavoriteButton';
 import {DetailsPanelModel} from './details/DetailsPanelModel';
-import {cellPhoneCol, emailCol, locationCol, nameCol, workPhoneCol} from '../../core/columns';
+import {cellPhoneCol, emailCol, locationCol, workPhoneCol} from '../../core/columns/Demographics';
+import {nameCol} from '../../core/columns/General';
 
 /**
  * Primary model to load a list of contacts from the server and manage filter and selection state.

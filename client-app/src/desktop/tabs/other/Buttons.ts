@@ -1,11 +1,14 @@
 import {filler, hbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
-import {button, buttonGroup, ButtonProps} from '@xh/hoist/desktop/cmp/button';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
+import type {ButtonProps} from '@xh/hoist/desktop/cmp/button';
+import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {intentInput, segmentedControl, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
-import {ReactNode} from 'react';
+import type {ReactNode} from 'react';
+import type {DemoConfigProps} from '../../common/Demo';
 import {
     demoGrid,
     demoPanel,
@@ -13,13 +16,10 @@ import {
     demoRow,
     demoSection,
     demoToolbar,
-    DemoConfigProps,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    raw
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 
 /** The three Button looks. `minimal` is the Hoist default; the others are opt-in. */
 type ButtonStyle = 'minimal' | 'standard' | 'outlined';

@@ -1,5 +1,5 @@
 import {millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
-import {ColumnSpec} from '@xh/hoist/cmp/grid';
+import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 
 export const mktValCol: ColumnSpec = {
     field: {name: 'mktVal', type: 'number'},

@@ -1,101 +1,97 @@
 import {box, div, span, vbox} from '@xh/hoist/cmp/layout';
-import {TabConfig, TabContainerModel, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
-import {InitContext, LoadSpec, managed, XH} from '@xh/hoist/core';
+import type {TabConfig, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import type {InitContext, LoadSpec} from '@xh/hoist/core';
+import {managed, XH} from '@xh/hoist/core';
 import {autoRefreshAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {runInAction} from '@xh/hoist/mobx';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {isEmpty, isEqual} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
-import {cardChoiceInput} from './common';
+import {cardChoiceInput} from './common/CardChoiceInput';
 import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {
-    gridTreeMapPanel,
-    lineChartPanel,
-    ohlcChartPanel,
-    simpleTreeMapPanel,
-    splitTreeMapPanel
-} from './tabs/charts';
+import {gridTreeMapPanel} from './tabs/charts/GridTreeMapPanel';
+import {lineChartPanel} from './tabs/charts/LineChartPanel';
+import {ohlcChartPanel} from './tabs/charts/OHLCChartPanel';
+import {simpleTreeMapPanel} from './tabs/charts/SimpleTreeMapPanel';
+import {splitTreeMapPanel} from './tabs/charts/SplitTreeMapPanel';
 import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
-import {
-    buttonGroupInputPanel,
-    codeInputsPanel,
-    dateInputPanel,
-    dateRangePickerPanel,
-    fileChooserPanel,
-    formPanel,
-    leftRightChooserPanel,
-    inputsIndexPanel,
-    intentInputPanel,
-    numberInputPanel,
-    otherControlsPanel,
-    pickerPanel,
-    radioInputPanel,
-    segmentedControlPanel,
-    selectPanel,
-    sliderPanel,
-    textAreaPanel,
-    textInputPanel,
-    togglesPanel,
-    toolbarFormPanel
-} from './tabs/forms';
-import {
-    agGridView,
-    columnChooserPanel,
-    columnFilteringPanel,
-    columnGroupsGridPanel,
-    dataViewPanel,
-    externalSortGridPanel,
-    inlineEditingPanel,
-    restGridPanel,
-    standardGridPanel,
-    treeGridPanel,
-    treeGridWithCheckboxPanel,
-    zoneGridPanel
-} from './tabs/grids';
+import {buttonGroupInputPanel} from './tabs/forms/inputs/ButtonGroupInputPanel';
+import {codeInputsPanel} from './tabs/forms/inputs/CodeInputsPanel';
+import {dateInputPanel} from './tabs/forms/inputs/DateInputPanel';
+import {dateRangePickerPanel} from './tabs/forms/DateRangePickerPanel';
+import {fileChooserPanel} from './tabs/forms/FileChooserPanel';
+import {formPanel} from './tabs/forms/FormPanel';
+import {inputsIndexPanel} from './tabs/forms/inputs/InputsIndexPanel';
+import {intentInputPanel} from './tabs/forms/inputs/IntentInputPanel';
+import {leftRightChooserPanel} from './tabs/forms/LeftRightChooserPanel';
+import {numberInputPanel} from './tabs/forms/inputs/NumberInputPanel';
+import {otherControlsPanel} from './tabs/forms/inputs/OtherControlsPanel';
+import {pickerPanel} from './tabs/forms/inputs/PickerPanel';
+import {radioInputPanel} from './tabs/forms/inputs/RadioInputPanel';
+import {segmentedControlPanel} from './tabs/forms/inputs/SegmentedControlPanel';
+import {selectPanel} from './tabs/forms/inputs/SelectPanel';
+import {sliderPanel} from './tabs/forms/inputs/SliderPanel';
+import {textAreaPanel} from './tabs/forms/inputs/TextAreaPanel';
+import {textInputPanel} from './tabs/forms/inputs/TextInputPanel';
+import {togglesPanel} from './tabs/forms/inputs/TogglesPanel';
+import {toolbarFormPanel} from './tabs/forms/ToolbarFormPanel';
+import {agGridView} from './tabs/grids/AgGridView';
+import {columnChooserPanel} from './tabs/grids/ColumnChooserPanel';
+import {columnFilteringPanel} from './tabs/grids/ColumnFilteringPanel';
+import {columnGroupsGridPanel} from './tabs/grids/ColumnGroupsGridPanel';
+import {dataViewPanel} from './tabs/grids/DataViewPanel';
+import {externalSortGridPanel} from './tabs/grids/ExternalSortGridPanel';
+import {inlineEditingPanel} from './tabs/grids/InlineEditingPanel';
+import {restGridPanel} from './tabs/grids/RestGridPanel';
+import {standardGridPanel} from './tabs/grids/StandardGridPanel';
+import {treeGridPanel} from './tabs/grids/TreeGridPanel';
+import {treeGridWithCheckboxPanel} from './tabs/grids/TreeGridWithCheckboxPanel';
+import {zoneGridPanel} from './tabs/grids/ZoneGridPanel';
 import {homeTab} from './tabs/home/HomeTab';
-import {
-    cardPanel,
-    dashCanvasPanel,
-    dashContainerPanel,
-    dockContainerPanel,
-    hboxContainerPanel,
-    tabPanelContainerPanel,
-    tileFrameContainerPanel,
-    vboxContainerPanel
-} from './tabs/layout';
+import {cardPanel} from './tabs/layout/CardPanel';
+import {dashCanvasPanel} from './tabs/layout/dashCanvas/DashCanvasPanel';
+import {dashContainerPanel} from './tabs/layout/dashContainer/DashContainerPanel';
+import {dockContainerPanel} from './tabs/layout/DockContainerPanel';
+import {hboxContainerPanel} from './tabs/layout/HBoxContainerPanel';
+import {tabPanelContainerPanel} from './tabs/layout/tabContainer/TabPanelContainerPanel';
+import {tileFrameContainerPanel} from './tabs/layout/TileFrameContainerPanel';
+import {vboxContainerPanel} from './tabs/layout/VBoxContainerPanel';
 import {mobileTab} from './tabs/mobile/MobileTab';
-import {
-    appNotificationsPanel,
-    buttonsPanel,
-    clockPanel,
-    customPackagePanel,
-    dateFormatsPanel,
-    errorMessagePanel,
-    exceptionHandlerPanel,
-    iconsPanel,
-    inspectorPanel,
-    jsxPanel,
-    markdownPanel,
-    numberFormatsPanel,
-    pinPadPanel,
-    placeholderPanel,
-    popupsPanel,
-    relativeTimestampPanel,
-    simpleRoutingPanel
-} from './tabs/other';
-import {
-    basicPanel,
-    loadingIndicatorPanel,
-    maskPanel,
-    panelSizingPanel,
-    toolbarPanel
-} from './tabs/panels';
+import {appNotificationsPanel} from './tabs/other/AppNotificationsPanel';
+import {buttonsPanel} from './tabs/other/Buttons';
+import {clockPanel} from './tabs/other/ClockPanel';
+import {customPackagePanel} from './tabs/other/CustomPackagePanel';
+import {dateFormatsPanel} from './tabs/other/formats/DateFormatsPanel';
+import {errorMessagePanel} from './tabs/other/ErrorMessagePanel';
+import {exceptionHandlerPanel} from './tabs/other/exceptions/ExceptionHandlerPanel';
+import {iconsPanel} from './tabs/other/IconsPanel';
+import {inspectorPanel} from './tabs/other/InspectorPanel';
+import {jsxPanel} from './tabs/other/JsxPanel';
+import {markdownPanel} from './tabs/other/MarkdownPanel';
+import {numberFormatsPanel} from './tabs/other/formats/NumberFormatsPanel';
+import {pinPadPanel} from './tabs/other/PinPadPanel';
+import {placeholderPanel} from './tabs/other/PlaceholderPanel';
+import {popupsPanel} from './tabs/other/PopupsPanel';
+import {relativeTimestampPanel} from './tabs/other/relativetimestamp/RelativeTimestampPanel';
+import {simpleRoutingPanel} from './tabs/other/routing/SimpleRoutingPanel';
+import {basicPanel} from './tabs/panels/BasicPanel';
+import {loadingIndicatorPanel} from './tabs/panels/LoadingIndicatorPanel';
+import {maskPanel} from './tabs/panels/MaskPanel';
+import {panelSizingPanel} from './tabs/panels/PanelSizingPanel';
+import {toolbarPanel} from './tabs/panels/ToolbarPanel';
+
+// Tab-level stylesheets, previously carried as side-effect imports by the `tabs/grids`
+// and `tabs/layout` barrels. This file was those barrels' only consumer, so importing
+// them here preserves the prior load behavior exactly.
+import './tabs/grids/GridsTab.scss';
+import './tabs/layout/LayoutTab.scss';
 
 export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */

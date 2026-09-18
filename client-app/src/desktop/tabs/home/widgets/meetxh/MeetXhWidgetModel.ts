@@ -1,5 +1,6 @@
-import {HoistModel, LoadSpec, XH} from '@xh/hoist/core';
-import {action, observable, runInAction, observableRef} from '@xh/hoist/mobx';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
+import {action, observable, runInAction} from '@xh/hoist/mobx';
 import {Timer} from '@xh/hoist/utils/async';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {sample} from 'lodash';

@@ -1,29 +1,26 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {hbox, vbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HSide, managed} from '@xh/hoist/core';
-import {Constraint} from '@xh/hoist/data';
+import type {HSide} from '@xh/hoist/core';
+import {creates, hoistCmp, managed} from '@xh/hoist/core';
+import type {Constraint} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
+import type {
+    CheckboxButtonProps,
+    CheckboxProps,
+    SwitchInputProps
+} from '@xh/hoist/desktop/cmp/input';
 import {
     checkbox,
     checkboxButton,
-    CheckboxButtonProps,
-    CheckboxProps,
     segmentedControl,
     switchInput,
-    SwitchInputProps,
     textInput
 } from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
-import {
-    demoFrame,
-    demoGrid,
-    demoPlayground,
-    demoRow,
-    fmtDemoConfig,
-    wrapperOption
-} from '../../../common';
+import {demoFrame, demoGrid, demoPlayground, demoRow, fmtDemoConfig} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';

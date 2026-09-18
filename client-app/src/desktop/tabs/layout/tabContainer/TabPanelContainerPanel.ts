@@ -3,8 +3,12 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../../common';
-import {customExample, dynamicExample, errorExample, simpleExample, tabStateExample} from './tabs';
+import {wrapper} from '../../../common/Wrapper';
+import {customExample} from './tabs/CustomExample';
+import {dynamicExample} from './tabs/DynamicExample';
+import {errorExample} from './tabs/ErrorExample';
+import {simpleExample} from './tabs/SimpleExample';
+import {tabStateExample} from './tabs/TabStateExample';
 
 export const tabPanelContainerPanel = hoistCmp.factory({
     model: creates(() => TabPanelContainerPanelModel),

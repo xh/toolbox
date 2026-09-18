@@ -1,7 +1,8 @@
-import {HoistModel, LoadSpec, XH} from '@xh/hoist/core';
-import {action, computed, observable, runInAction, observableRef} from '@xh/hoist/mobx';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
+import {action, computed, observable, runInAction} from '@xh/hoist/mobx';
 import {DocService} from '../svc/DocService';
-import {DocCategory, DocEntry, DocSection} from './types';
+import type {DocCategory, DocEntry, DocSection} from './types';
 import {decodeDocId, encodeDocId, extractSections, resolveDocLink} from './DocUtils';
 
 /**

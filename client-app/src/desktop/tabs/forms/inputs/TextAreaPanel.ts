@@ -3,22 +3,11 @@ import {vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {lengthIs, required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {
-    numberInput,
-    switchInput,
-    textArea,
-    TextAreaProps,
-    textInput
-} from '@xh/hoist/desktop/cmp/input';
+import type {TextAreaProps} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, switchInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
 import {bindable} from '@xh/hoist/mobx';
-import {
-    demoFrame,
-    demoGrid,
-    demoPlayground,
-    demoRow,
-    fmtDemoConfig,
-    wrapperOption
-} from '../../../common';
+import {demoFrame, demoGrid, demoPlayground, demoRow, fmtDemoConfig} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';

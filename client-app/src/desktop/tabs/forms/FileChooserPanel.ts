@@ -2,19 +2,15 @@ import {box, filler, img, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses, XH} from '@xh/hoist/core';
 import {action, bindable, observable, observableRef, bindableRef} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {
-    fileChooser,
-    FileChooserConfig,
-    FileChooserModel,
-    FileChooserProps
-} from '@xh/hoist/desktop/cmp/filechooser';
+import type {FileChooserConfig, FileChooserProps} from '@xh/hoist/desktop/cmp/filechooser';
+import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {picker, segmentedControl, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import {isEmpty} from 'lodash';
-import {MouseEvent} from 'react';
+import type {MouseEvent} from 'react';
 import {
     demoGrid,
     demoPanel,
@@ -22,11 +18,9 @@ import {
     demoRow,
     demoSection,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    raw
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 
 // Use decimal MB so the size hint (formatted via `filesize`, decimal by default) reads cleanly.
 const MB = 1_000_000;

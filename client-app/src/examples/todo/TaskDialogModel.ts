@@ -3,7 +3,7 @@ import {FormModel} from '@xh/hoist/cmp/form';
 import {required, lengthIs} from '@xh/hoist/data';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {observable, action} from '@xh/hoist/mobx';
-import {TodoPanelModel} from './TodoPanelModel';
+import type {TodoPanelModel} from './TodoPanelModel';
 
 export class TaskDialogModel extends HoistModel {
     parentModel: TodoPanelModel;

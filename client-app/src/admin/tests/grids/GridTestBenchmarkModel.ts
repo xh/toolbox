@@ -1,12 +1,6 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {
-    HoistModel,
-    managed,
-    persist,
-    PersistOptions,
-    PlainObject,
-    TaskObserver
-} from '@xh/hoist/core';
+import type {PersistOptions, PlainObject} from '@xh/hoist/core';
+import {HoistModel, managed, persist, TaskObserver} from '@xh/hoist/core';
 import {FieldType} from '@xh/hoist/data';
 import {fmtDateTime, numberRenderer} from '@xh/hoist/format';
 import {action, bindable, observable, observableRef} from '@xh/hoist/mobx';

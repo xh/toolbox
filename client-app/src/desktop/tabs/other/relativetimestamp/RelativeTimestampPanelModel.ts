@@ -1,4 +1,4 @@
-import {RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
+import type {RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
 import {HoistModel} from '@xh/hoist/core';
 import {action, bindable, bindableRef} from '@xh/hoist/mobx';
 import {isUndefined, omitBy} from 'lodash';

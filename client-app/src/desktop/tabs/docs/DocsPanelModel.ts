@@ -1,13 +1,15 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {Content, managed, XH} from '@xh/hoist/core';
+import type {Content} from '@xh/hoist/core';
+import {managed, XH} from '@xh/hoist/core';
 import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, observable, runInAction, observableRef} from '@xh/hoist/mobx';
 import {DocViewModel} from '../../../core/docs/DocViewModel';
 import {getCategoryIcon, getSourceIcon} from '../../../core/docs/DocIcons';
-import {DocEntry, DocExampleLink, getDocExamples} from './docRegistry';
-import {DocSearchResult} from '../../../core/svc/DocService';
+import type {DocEntry, DocExampleLink} from './docRegistry';
+import {getDocExamples} from './docRegistry';
+import type {DocSearchResult} from '../../../core/svc/DocService';
 
 /**
  * Primary model for the Docs viewer tab.

@@ -1,17 +1,12 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {numberInput, slider, SliderProps, switchInput} from '@xh/hoist/desktop/cmp/input';
+import type {SliderProps} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, slider, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtThousands} from '@xh/hoist/format';
-import {bindable, bindableRef} from '@xh/hoist/mobx';
-import {
-    demoFrame,
-    demoGrid,
-    demoPlayground,
-    demoRow,
-    fmtDemoConfig,
-    wrapperOption
-} from '../../../common';
+import {bindable} from '@xh/hoist/mobx';
+import {demoFrame, demoGrid, demoPlayground, demoRow, fmtDemoConfig} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';
