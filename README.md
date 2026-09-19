@@ -132,7 +132,7 @@ See the comments in `.env.template` for the exact variable names and recommended
 
 ## Running Toolbox
 
-To run Toolbox locally, start the Grails server and the Webpack dev server in separate terminals:
+To run Toolbox locally, start the Grails server and the Rsbuild dev server in separate terminals:
 
 * **Server** - from the project root: `./gradlew bootRun` (serves the API on port `8080`).
 * **Client** - from the `client-app/` directory: `pnpm start` (serves `http://localhost:3000`).

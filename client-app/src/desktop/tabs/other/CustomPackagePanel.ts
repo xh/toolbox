@@ -16,7 +16,7 @@ export const customPackagePanel = hoistCmp.factory(() =>
             'The styled panel below is imported from that package.',
             '',
             "Note that this package is referenced within Toolbox's own",
-            '`client-app/webpack.config.js` to ensure its codebase is processed at build time',
+            '`client-app/rsbuild.config.mjs` to ensure its codebase is processed at build time',
             'in the same manner as the app codebase and Hoist React itself.'
         ],
         links: [
@@ -26,9 +26,9 @@ export const customPackagePanel = hoistCmp.factory(() =>
                 notes: 'GitHub repo for an extremely simple JS package project.'
             },
             {
-                url: '$TB/client-app/webpack.config.js',
-                text: 'webpack.config.js',
-                notes: 'Webpack config for Toolbox, with special handling for our custom package.'
+                url: '$TB/client-app/rsbuild.config.mjs',
+                text: 'rsbuild.config.mjs',
+                notes: 'Rsbuild config for Toolbox, with special handling for our custom package.'
             }
         ],
         item: customPanel({width: 700})
