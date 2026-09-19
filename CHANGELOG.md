@@ -35,10 +35,15 @@
 
 ### Libraries
 
-* ag-charts-community `13.3 → 14.1`
-* ag-grid-community `35.3 → 36.1`
-* ag-grid-enterprise `35.3 → 36.1`
-* ag-grid-react `35.3 → 36.1`
+* @xh/hoist `87.3 → 88.0`
+* @xh/hoist-dev-utils `15.0 → 16.0`
+* hoist-core `41.0 → 42.0`
+* ag-charts-community `13.3 → 14.2`
+* ag-grid-community `35.3 → 36.2`
+* ag-grid-enterprise `35.3 → 36.2`
+* ag-grid-react `35.3 → 36.2`
+* moment `2.30 → 2.31`
+* React `19.2 → 19.3`
 
 ## 10.0.1 - 2026-09-10
 
