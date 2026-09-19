@@ -1,20 +1,18 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {bindableRef, runInAction} from '@xh/hoist/mobx';
 import {ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {wait} from '@xh/hoist/promise';
+import {activeCol} from '../../../core/columns/General';
+import {cityCol, companyCol} from '../../../core/columns/Demographics';
 import {
-    activeCol,
-    cityCol,
-    companyCol,
     profitLossCol,
     tradeDateCol,
     tradeVolumeCol,
     winLoseCol
-} from '../../../core/columns';
+} from '../../../core/columns/Trades';
 
 export class ZoneGridPageModel extends HoistModel {
-    @bindable.ref
-    dateLoaded: Date = null;
+    @bindableRef accessor dateLoaded: Date = null;
 
     @managed
     zoneGridModel: ZoneGridModel = new ZoneGridModel({
@@ -56,11 +54,6 @@ export class ZoneGridPageModel extends HoistModel {
             br: {max: 1}
         }
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     override async doLoadAsync() {
         await wait(500);

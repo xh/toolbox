@@ -1,12 +1,14 @@
 import {img} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {webSocketIndicator} from '@xh/hoist/cmp/websocket';
-import {hoistCmp, HoistUser, uses} from '@xh/hoist/core';
+import type {HoistUser} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
 import {themeToggleButton} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dynamicTabSwitcher} from '@xh/hoist/desktop/cmp/tab';
-import {profilePic, welcomeMsg} from '../core/cmp';
+import {profilePic} from '../core/cmp/ProfilePic';
+import {welcomeMsg} from '../core/cmp/WelcomeMsg';
 import xhLogo from '../core/img/xh-toolbox-logo.png';
 import '../core/Toolbox.scss';
 import './App.scss';

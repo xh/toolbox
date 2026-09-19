@@ -1,15 +1,16 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faIcons} from '@fortawesome/pro-regular-svg-icons';
 import {div, filler, placeholder, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {select, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
+import {bindable, computed} from '@xh/hoist/mobx';
 import {copyToClipboard} from '@xh/hoist/utils/js';
 import {isEmpty, without} from 'lodash';
-import {wrapper, wrapperOption} from '../../common';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 import './IconsPanel.scss';
 
 // Register a custom icon - not pre-imported by `Icon` - and use it as this tab's title icon
@@ -158,19 +159,14 @@ function getAllIconNames(): string[] {
 }
 
 class IconsPanelModel extends HoistModel {
-    @bindable query = '';
-    @bindable prefix: 'far' | 'fas' | 'fal' | 'fat' = 'far';
-    @bindable intent: 'neutral' | Intent = 'neutral';
+    @bindable accessor query = '';
+    @bindable accessor prefix: 'far' | 'fas' | 'fal' | 'fat' = 'far';
+    @bindable accessor intent: 'neutral' | Intent = 'neutral';
 
     @computed
     get iconNames(): string[] {
         const query = this.query?.trim().toLowerCase(),
             all = getAllIconNames();
         return query ? all.filter(name => name.toLowerCase().includes(query)) : all;
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 }

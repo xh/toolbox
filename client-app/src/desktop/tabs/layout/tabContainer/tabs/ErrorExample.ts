@@ -1,5 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {explodingPanel} from '../../../../common';
+import {explodingPanel} from '../../../../common/ExplodingPanel';
 
 export const errorExample = hoistCmp.factory({
     render() {

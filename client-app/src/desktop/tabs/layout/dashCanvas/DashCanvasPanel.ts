@@ -5,7 +5,7 @@ import {dashCanvasWidgetChooser} from '@xh/hoist/desktop/cmp/dash/canvas/widgetc
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper, wrapperAction, wrapperOption} from '../../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../../common/Wrapper';
 import {DashCanvasPanelModel} from './DashCanvasPanelModel';
 import './DashCanvasPanel.scss';
 

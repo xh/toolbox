@@ -1,7 +1,8 @@
 import {box, div, vbox} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, ButtonGroupInputProps} from '@xh/hoist/desktop/cmp/input';
-import {ReactElement, ReactNode} from 'react';
+import type {ButtonGroupInputProps} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
+import type {ReactElement, ReactNode} from 'react';
 import './CardChoiceInput.scss';
 
 export interface CardChoice {

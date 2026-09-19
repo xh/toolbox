@@ -1,5 +1,5 @@
 import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {div, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -32,13 +32,8 @@ export const optionsWidget = hoistCmp.factory({
 });
 
 class OptionsWidgetModel extends HoistModel {
-    @bindable value: string = DEFAULT_VALUE;
+    @bindable accessor value: string = DEFAULT_VALUE;
     @lookup(DashViewModel) viewModel: DashViewModel;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     override onLinked() {
         const {viewModel} = this;

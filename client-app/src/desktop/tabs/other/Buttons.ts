@@ -1,11 +1,14 @@
 import {filler, hbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
-import {button, buttonGroup, ButtonProps} from '@xh/hoist/desktop/cmp/button';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
+import type {ButtonProps} from '@xh/hoist/desktop/cmp/button';
+import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {intentInput, segmentedControl, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {ReactNode} from 'react';
+import {bindable} from '@xh/hoist/mobx';
+import type {ReactNode} from 'react';
+import type {DemoConfigProps} from '../../common/Demo';
 import {
     demoGrid,
     demoPanel,
@@ -13,13 +16,10 @@ import {
     demoRow,
     demoSection,
     demoToolbar,
-    DemoConfigProps,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    raw
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 
 /** The three Button looks. `minimal` is the Hoist default; the others are opt-in. */
 type ButtonStyle = 'minimal' | 'standard' | 'outlined';
@@ -311,14 +311,14 @@ function toolbarItems(model: ButtonsModel): ReactNode[] {
 //------------------------------------------------------------------
 class ButtonsModel extends HoistModel {
     // Playground props
-    @bindable pgText = 'Submit';
-    @bindable pgIcon = true;
-    @bindable pgIntent: Intent = 'primary';
-    @bindable pgStyle: ButtonStyle = 'minimal';
+    @bindable accessor pgText = 'Submit';
+    @bindable accessor pgIcon = true;
+    @bindable accessor pgIntent: Intent = 'primary';
+    @bindable accessor pgStyle: ButtonStyle = 'minimal';
 
     /** Ambient - applied to every button on the page. */
-    @bindable disabled = false;
-    @bindable active = false;
+    @bindable accessor disabled = false;
+    @bindable accessor active = false;
 
     /** Props every button spreads so the ambient options reach it. */
     get ambientProps(): Pick<ButtonProps, 'disabled' | 'active'> {
@@ -330,10 +330,5 @@ class ButtonsModel extends HoistModel {
     get ambientSnippetProps(): DemoConfigProps<ButtonProps> {
         const {disabled, active} = this;
         return {disabled: disabled || undefined, active: active || undefined};
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 }

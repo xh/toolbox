@@ -3,11 +3,10 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {
-    sampleColumnGroupsGrid,
     SampleColumnGroupsGridModel,
-    wrapper,
-    wrapperOption
-} from '../../common';
+    sampleColumnGroupsGrid
+} from '../../common/grid/SampleColumnGroupsGrid';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 
 export const columnGroupsGridPanel = hoistCmp.factory({
     model: creates(SampleColumnGroupsGridModel),

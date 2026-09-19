@@ -1,16 +1,17 @@
 import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
-import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
-import {PortfolioModel} from '../PortfolioModel';
+import {mktValCol, pnlCol} from '../../../core/columns/Positions';
+import {nameCol} from '../../../core/columns/General';
+import type {PortfolioModel} from '../PortfolioModel';
 
 export class PositionsGridModel extends HoistModel {
     override xhName = 'positionsGrid';
     readonly parentModel: PortfolioModel;
     @managed gridModel: GridModel;
 
-    @bindable loadTimestamp: number;
+    @bindable accessor loadTimestamp: number;
 
     get selectedRecord() {
         return this.gridModel.selectedRecord;
@@ -22,7 +23,6 @@ export class PositionsGridModel extends HoistModel {
 
     constructor({parentModel}) {
         super();
-        makeObservable(this);
         this.parentModel = parentModel;
         this.persistWith = this.parentModel.persistWith;
 

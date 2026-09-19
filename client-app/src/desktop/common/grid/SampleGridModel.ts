@@ -1,23 +1,23 @@
 import {createRef} from 'react';
-import {GridConfig, GridModel} from '@xh/hoist/cmp/grid';
+import type {GridConfig} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {StoreRecord} from '@xh/hoist/data';
+import type {StoreRecord} from '@xh/hoist/data';
 import './SampleGrid.scss';
+import {activeCol} from '../../../core/columns/General';
+import {cityCol, companyCol} from '../../../core/columns/Demographics';
 import {
-    activeCol,
-    companyCol,
-    winLoseCol,
-    cityCol,
-    tradeVolumeCol,
-    profitLossCol,
     dayOfWeekCol,
-    tradeDateCol
-} from '../../../core/columns';
+    profitLossCol,
+    tradeDateCol,
+    tradeVolumeCol,
+    winLoseCol
+} from '../../../core/columns/Trades';
 
 export class SampleGridModel extends HoistModel {
     panelRef = createRef<HTMLDivElement>();

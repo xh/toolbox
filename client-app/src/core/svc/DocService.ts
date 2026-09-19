@@ -1,9 +1,10 @@
-import {HoistService, InitContext, XH} from '@xh/hoist/core';
-import {action, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import type {InitContext} from '@xh/hoist/core';
+import {HoistService, XH} from '@xh/hoist/core';
+import {action, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 import MiniSearch from 'minisearch';
 import {sameDoc} from '../docs/DocUtils';
-import {DocCategory, DocEntry, DocSourceInfo} from '../docs/types';
+import type {DocCategory, DocEntry, DocSourceInfo} from '../docs/types';
 
 export interface DocSearchResult {
     entry: DocEntry;
@@ -29,20 +30,15 @@ export class DocService extends HoistService {
 
     static instance: DocService;
 
-    @observable indexReady: boolean = false;
-    @observable.ref registry: DocEntry[] = [];
-    @observable.ref sourceInfo: Record<string, DocSourceInfo> = {};
+    @observable accessor indexReady: boolean = false;
+    @observableRef accessor registry: DocEntry[] = [];
+    @observableRef accessor sourceInfo: Record<string, DocSourceInfo> = {};
 
     /** Most-recently-viewed docs (most recent first), persisted locally - drives the mobile landing. */
-    @observable.ref recentDocs: DocEntry[] = [];
+    @observableRef accessor recentDocs: DocEntry[] = [];
 
     private cache: Map<string, string> = new Map();
     private index: MiniSearch;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     /** All registered documentation entries. */
     get docs(): DocEntry[] {

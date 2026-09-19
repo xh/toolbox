@@ -25,6 +25,8 @@
 * Added the Column Groups grid as a widget in the ViewManager test dashboards, exercising column group expand/collapse state through `DashCanvas` and `DashContainer` persistence.
 * Upgraded ag-Grid to `36.x`, tracking hoist-react's AG Grid 36 upgrade - the two must move together, as hoist-react requires a v36 runtime and apps supply ag-Grid as a peer.
 * Added a `Pin ID column` option to the admin Grid performance harness, pinning the id column to the left to exercise AG Grid 36's native full-width horizontal scrollbar, which spans pinned columns.
+* Converted all type-only imports to `import type` and added `@typescript-eslint/consistent-type-imports` to prevent regressions - guarantees type-only imports are erased at build time, eliminating 6 of the app's 10 runtime import cycles.
+* Removed all `index.ts` re-export barrels from app source and added lint guards against their reintroduction - imports now reference their defining modules directly, so loading one module no longer pulls in unrelated siblings.
 
 ### Bug Fixes
 
@@ -84,6 +86,10 @@
 
 * @xh/hoist `87.0 → 87.1`
 * @xh/hoist-dev-utils `14.0 → 15.0`
+
+### Technical
+
+* Migrated toolbox to TC39 Stage 3 modern decorators in step with `hoist-react` v88 and `hoist-dev-utils` v16. Removed `experimentalDecorators` from `client-app/tsconfig.json`, added the `accessor` keyword to all `@observable` / `@bindable` fields, and deleted the ~90 `makeObservable(this)` calls that existed across the example apps.
 
 ## 9.4.0 - 2026-08-25
 
@@ -220,6 +226,7 @@
 
 * Upgraded build toolchain to JDK 25. Toolbox now uses JDK 25 for local development and CI.
 * Fixed bug in buildRelease workflow - client appVersion was not being set to release version.
+
 
 ### Libraries
 

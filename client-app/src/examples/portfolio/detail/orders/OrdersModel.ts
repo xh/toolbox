@@ -1,6 +1,7 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, LoadSpec, lookup, managed, XH} from '@xh/hoist/core';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {isNil, map, uniq} from 'lodash';
 import {
@@ -16,8 +17,8 @@ import {
     sectorCol,
     symbolCol,
     traderCol
-} from '../../../../core/columns';
-import {DetailModel} from '../DetailModel';
+} from '../../../../core/columns/Orders';
+import type {DetailModel} from '../DetailModel';
 
 export class OrdersModel extends HoistModel {
     override xhName = 'orders';

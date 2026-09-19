@@ -1,12 +1,13 @@
 import {div, hbox, pre, span, vbox} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistProps, Intent} from '@xh/hoist/core';
+import type {HoistProps, Intent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {isLocalDate} from '@xh/hoist/utils/datetime';
 import classNames from 'classnames';
 import {isArray, isBoolean, isDate, isNil, isNumber, isString} from 'lodash';
-import {ReactNode} from 'react';
+import type {ReactNode} from 'react';
 import './Demo.scss';
 
 /**

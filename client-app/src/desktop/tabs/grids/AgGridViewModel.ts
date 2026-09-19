@@ -1,10 +1,11 @@
-import {HoistModel, LoadSpec, XH} from '@xh/hoist/core';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
-import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {observableRef, runInAction} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 
 export class AgGridViewModel extends HoistModel {
-    @observable.ref data = [];
+    @observableRef accessor data = [];
 
     columnDefs = [
         {
@@ -73,7 +74,6 @@ export class AgGridViewModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.addReaction({
             track: () => [this.data, this.agGridModel.agApi] as const,

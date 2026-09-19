@@ -2,19 +2,14 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {numberIs, required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {numberInput, NumberInputProps, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import type {NumberInputProps} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {NumericPrecision} from '@xh/hoist/format';
+import type {NumericPrecision} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {
-    demoFrame,
-    demoGrid,
-    demoPlayground,
-    demoRow,
-    fmtDemoConfig,
-    wrapperOption
-} from '../../../common';
+import {bindable} from '@xh/hoist/mobx';
+import {demoFrame, demoGrid, demoPlayground, demoRow, fmtDemoConfig} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';
@@ -230,20 +225,20 @@ const SEEDS = {
 
 class NumberInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgCommas = true;
-    @bindable pgShorthand = true;
-    @bindable pgPrecision = 0;
-    @bindable pgValueLabel = '';
+    @bindable accessor pgCommas = true;
+    @bindable accessor pgShorthand = true;
+    @bindable accessor pgPrecision = 0;
+    @bindable accessor pgValueLabel = '';
 
     // Inputs
-    @bindable playground: number = SEEDS.playground;
-    @bindable stepSizes: number = SEEDS.stepSizes;
-    @bindable percent: number = SEEDS.percent;
-    @bindable dollarAmount: number = SEEDS.dollarAmount;
-    @bindable bounded: number = SEEDS.bounded;
-    @bindable disabledAmount: number = SEEDS.disabledAmount;
-    @bindable tbarQty: number = SEEDS.tbarQty;
-    @bindable tbarAmount: number = SEEDS.tbarAmount;
+    @bindable accessor playground: number = SEEDS.playground;
+    @bindable accessor stepSizes: number = SEEDS.stepSizes;
+    @bindable accessor percent: number = SEEDS.percent;
+    @bindable accessor dollarAmount: number = SEEDS.dollarAmount;
+    @bindable accessor bounded: number = SEEDS.bounded;
+    @bindable accessor disabledAmount: number = SEEDS.disabledAmount;
+    @bindable accessor tbarQty: number = SEEDS.tbarQty;
+    @bindable accessor tbarAmount: number = SEEDS.tbarAmount;
 
     @managed
     override formModel = new FormModel({
@@ -270,7 +265,6 @@ class NumberInputPanelModel extends InputDemoModel {
 
     constructor() {
         super();
-        makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

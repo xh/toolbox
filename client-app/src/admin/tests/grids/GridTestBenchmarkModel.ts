@@ -1,15 +1,9 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {
-    HoistModel,
-    managed,
-    persist,
-    PersistOptions,
-    PlainObject,
-    TaskObserver
-} from '@xh/hoist/core';
+import type {PersistOptions, PlainObject} from '@xh/hoist/core';
+import {HoistModel, managed, persist, TaskObserver} from '@xh/hoist/core';
 import {FieldType} from '@xh/hoist/data';
 import {fmtDateTime, numberRenderer} from '@xh/hoist/format';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable, observableRef} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {isEmpty, isFunction, max, min, times} from 'lodash';
@@ -86,26 +80,26 @@ export class GridTestBenchmarkModel extends HoistModel {
 
     readonly parent: GridTestModel;
 
-    @bindable isOpen = false;
+    @bindable accessor isOpen = false;
 
-    @persist
     @bindable
-    scenario: BenchmarkScenario = 'cold';
+    @persist
+    accessor scenario: BenchmarkScenario = 'cold';
 
-    @persist
     @bindable
-    iterations = 3;
+    @persist
+    accessor iterations = 3;
 
     /** Accumulated results, newest first. */
+    @observableRef
     @persist
-    @observable.ref
-    results: PlainObject[] = [];
+    accessor results: PlainObject[] = [];
 
     /** Progress detail while a run is in flight. */
-    @observable status: string = null;
+    @observable accessor status: string = null;
 
     /** Set when the last run could not guarantee independent iterations - see runBenchmarkAsync. */
-    @observable warning: string = null;
+    @observable accessor warning: string = null;
 
     @managed runTask = TaskObserver.trackLast();
 
@@ -138,7 +132,6 @@ export class GridTestBenchmarkModel extends HoistModel {
 
     constructor(parent: GridTestModel) {
         super();
-        makeObservable(this);
         this.parent = parent;
         this.resultsGridModel = this.createResultsGridModel();
         this.addReaction({
