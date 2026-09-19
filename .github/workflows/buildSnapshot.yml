@@ -150,7 +150,7 @@ jobs:
         # pinned version silently defeats it. `pnpm typecheck` is a gate distinct from `pnpm lint`,
         # which never reports compiler errors. See docs/build-and-deploy.md.
         - name: Install and upgrade dependencies, lint, type check, and build client app
-          run: cd client-app && pnpm install && pnpm update --no-save && pnpm lint && pnpm typecheck && pnpm build --env appBuild="${{ needs.prepare.outputs.app-build }}"
+          run: cd client-app && pnpm install && pnpm update --no-save && pnpm lint && pnpm typecheck && XH_APP_BUILD="${{ needs.prepare.outputs.app-build }}" pnpm build
 
         # Lockfile drift from `pnpm update` is expected and mostly too noisy to act on, so this
         # filters to @fortawesome specifically - those bumps cost bandwidth against the FA Pro cap

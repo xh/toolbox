@@ -163,7 +163,7 @@ jobs:
         - name: Install dependencies and build client app
           env:
               VERSION: ${{ inputs.version }}
-          run: cd client-app && pnpm install --frozen-lockfile && pnpm lint && pnpm typecheck && pnpm build --env appVersion="$VERSION" --env appBuild="${{ needs.prepare.outputs.build-tag }}"
+          run: cd client-app && pnpm install --frozen-lockfile && pnpm lint && pnpm typecheck && XH_APP_VERSION="$VERSION" XH_APP_BUILD="${{ needs.prepare.outputs.build-tag }}" pnpm build
 
         - name: Copy client build into Docker context
           run: cp -r client-app/build/ docker/nginx/build/

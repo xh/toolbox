@@ -11,20 +11,21 @@
      each bullet to one change. Use highly concise language suitable for relaying to app users.
   3. Plain ASCII punctuation only. Use " - " for in-sentence breaks, never an em dash.
 -->
+
 ## 11.0.0-SNAPSHOT - unreleased
 
 ### New Features
 
-* Added a list of all top-level modules to the app menu, providing a second and more discoverable way to navigate alongside the tab bar, with a star toggle on each item to add or remove that module from the `DynamicTabSwitcher` favorites - notably offering a way to restore a tab that has been removed from the bar.
-* Added a `Restore Default Tabs` item to the `DynamicTabSwitcher` context menu, resetting tab order and favorites to the app defaults. Disabled when already at defaults.
-
-### Technical
-
+* Added a list of all top-level modules to the app menu, providing a second way to navigate alongside the tab bar, with a star toggle on each item to add or remove that module from the `DynamicTabSwitcher` favorites.
 * Updated the `SampleGrid` Volume column to demo hoist-react's new `Column.cellFlag` and a custom tooltip that explains the flag, replacing a hand-rolled cell class and the custom SCSS that styled it.
 * Updated the Column Groups grid example to demo hoist-react's new `groupShowMode` and `collapsed` configs for collapsible column groups, replacing raw `agOptions.columnGroupShow` passthroughs.
 * Added the Column Groups grid as a widget in the ViewManager test dashboards, exercising column group expand/collapse state through `DashCanvas` and `DashContainer` persistence.
-* Upgraded ag-Grid to `36.x`, tracking hoist-react's AG Grid 36 upgrade - the two must move together, as hoist-react requires a v36 runtime and apps supply ag-Grid as a peer.
-* Added a `Pin ID column` option to the admin Grid performance harness, pinning the id column to the left to exercise AG Grid 36's native full-width horizontal scrollbar, which spans pinned columns.
+* Upgraded AG Grid to `36.x`, tracking hoist-react's AG Grid 36 upgrade.
+
+### Technical
+
+* Migrated to TC39 Stage 3 modern decorators, in step with `@xh/hoist` 88 - `@observable` / `@bindable` fields now take the `accessor` keyword, `@observable.ref` / `@bindable.ref` are now `@observableRef` / `@bindableRef`, `comparer.structural` is now `compareStructural`, and `makeObservable(this)` is gone.
+* Switched the client build from webpack to Rsbuild (Rspack + SWC) via `@xh/hoist-dev-utils` 16 - builds are faster and use far less memory, and build-time options now arrive as `XH_*` environment variables instead of `--env` flags.
 * Converted all type-only imports to `import type` and added `@typescript-eslint/consistent-type-imports` to prevent regressions - guarantees type-only imports are erased at build time, eliminating 6 of the app's 10 runtime import cycles.
 * Removed all `index.ts` re-export barrels from app source and added lint guards against their reintroduction - imports now reference their defining modules directly, so loading one module no longer pulls in unrelated siblings.
 
@@ -34,11 +35,15 @@
 
 ### Libraries
 
-* ag-charts-community `13.3 → 14.1`
-* ag-grid-community `35.3 → 36.1`
-* ag-grid-enterprise `35.3 → 36.1`
-* ag-grid-react `35.3 → 36.1`
-
+* @xh/hoist `87.3 → 88.0`
+* @xh/hoist-dev-utils `15.0 → 16.0`
+* hoist-core `41.0 → 42.0`
+* ag-charts-community `13.3 → 14.2`
+* ag-grid-community `35.3 → 36.2`
+* ag-grid-enterprise `35.3 → 36.2`
+* ag-grid-react `35.3 → 36.2`
+* moment `2.30 → 2.31`
+* React `19.2 → 19.3`
 
 ## 10.0.1 - 2026-09-10
 
@@ -86,10 +91,6 @@
 
 * @xh/hoist `87.0 → 87.1`
 * @xh/hoist-dev-utils `14.0 → 15.0`
-
-### Technical
-
-* Migrated toolbox to TC39 Stage 3 modern decorators in step with `hoist-react` v88 and `hoist-dev-utils` v16. Removed `experimentalDecorators` from `client-app/tsconfig.json`, added the `accessor` keyword to all `@observable` / `@bindable` fields, and deleted the ~90 `makeObservable(this)` calls that existed across the example apps.
 
 ## 9.4.0 - 2026-08-25
 

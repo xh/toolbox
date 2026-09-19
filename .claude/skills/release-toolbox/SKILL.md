@@ -52,19 +52,19 @@ Three invariants that drive the whole process - keep them in mind:
    this client (X) is out of sync with the available server (Y)"). So this invariant is a
    correctness requirement, not tidiness.
 
-   `client-app/package.json` `version` earns its place here because `webpack.config.js` reads it
+   `client-app/package.json` `version` earns its place here because `rsbuild.config.mjs` reads it
    (`appVersion: pkg.version`) and bakes it into the bundle as `XH.appVersion`. **Confirm that
    derivation still holds** rather than assuming it - a literal there silently decouples the client
    from this invariant:
 
    ```bash
-   grep -n 'appVersion:' client-app/webpack.config.js   # want `pkg.version`, NOT a hardcoded string
+   grep -n 'appVersion:' client-app/rsbuild.config.mjs   # want `pkg.version`, NOT a hardcoded string
    ```
 
    The failure mode is **major-release-only**: minor and patch releases reproduce the same snap (see
    the Phase 9.2 table), so a decoupled client stays accidentally in sync and the drift stays hidden
    until a major moves the number. Release builds are unaffected either way - `buildRelease.yml`
-   passes `--env appVersion`, which overrides whatever the config resolves.
+   passes `XH_APP_VERSION`, which overrides whatever the config resolves.
 
 3. **Three libraries swap, not two.** `@xh/hoist` (hoist-react) and `@xh/hoist-dev-utils` both sit
    on the npm dist-tag `next` between releases; `hoistCoreVersion` (hoist-core) sits on an explicit
@@ -118,9 +118,9 @@ Run these checks:
    header - the commands are in Phase 9.2. They should normally match; if they don't, just note it
    in passing - the restore step (Phase 9) rewrites all three in sync and self-heals it. No special
    handling needed.
-   **One thing here is not self-healing:** if `client-app/webpack.config.js` hardcodes an
+   **One thing here is not self-healing:** if `client-app/rsbuild.config.mjs` hardcodes an
    `appVersion` literal instead of reading `pkg.version`, the client is decoupled from that sync and
-   Phase 9 will not fix it. Check it now (`grep -n 'appVersion:' client-app/webpack.config.js`) and
+   Phase 9 will not fix it. Check it now (`grep -n 'appVersion:' client-app/rsbuild.config.mjs`) and
    restore the derivation if needed - see invariant #2.
 
 Summarize findings. If anything is off, ask: "Proceed anyway?" Wait for confirmation.
@@ -576,7 +576,7 @@ and the fourth must show a derivation rather than a literal:
 grep '^xhAppVersion=' gradle.properties                 # server
 node -p "require('./client-app/package.json').version"  # client
 grep -m1 '^## ' CHANGELOG.md                            # changelog header
-grep -n 'appVersion:' client-app/webpack.config.js      # want `pkg.version`, NOT a hardcoded string
+grep -n 'appVersion:' client-app/rsbuild.config.mjs     # want `pkg.version`, NOT a hardcoded string
 ```
 
 If the fourth shows a hardcoded version string, someone has reintroduced the decoupling - fix it to

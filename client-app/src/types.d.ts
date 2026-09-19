@@ -1,30 +1,13 @@
 /**
- * Module declarations for non-code imports processed by webpack.
+ * Ambient declarations for this app.
  *
- * `.md` files resolve to their raw text content (hoist-dev-utils v13+, via Webpack
- * `asset/source`); append `?url` to an import to get an emitted-file URL instead.
- *
- * hoist-react ships an equivalent `*.md` declaration in its `assets.d.ts`, but that is only
- * pulled in when compiling hoist-react *source* (its asset-importing files carry a
- * triple-slash reference to it). The published `.d.ts` in `node_modules` do not, so an app
- * compiling against the installed package still needs its own declaration here.
+ * Note that asset imports (`.md`, `.png`, `.svg`, etc.) need no declaration here - hoist-react's
+ * `assets.d.ts` declares them, and its asset-importing source files pull it in via triple-slash
+ * reference, making those declarations global for any app compiling against the package.
  */
-declare module '*.md' {
-    const content: string;
-    export default content;
-}
 
 /**
- * Image assets imported by hoist-react components resolved via the `@xh/hoist` paths alias
- * (e.g. `Spinner`, `IdlePanel`). Webpack's url-loader handles these at build time.
- */
-declare module '*.png' {
-    const url: string;
-    export default url;
-}
-
-/**
- * Build-time flag injected by hoist-dev-utils via Webpack `DefinePlugin`. Prefer
+ * Build-time flag injected by hoist-dev-utils via Rsbuild's `source.define`. Prefer
  * `XH.isDevelopmentMode` in app code - reach for this global only where the check must be resolved
  * at build time so the guarded block is dropped from production bundles entirely.
  */
