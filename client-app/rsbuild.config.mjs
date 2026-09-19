@@ -10,7 +10,7 @@
  * Toolbox demonstrates the use of a custom JS package (@xh/package-template) that is transpiled
  * and processed alongside the app and hoist-react code. Like hoist-react, this sample package is
  * left unbundled/uncompiled when published to npm so it can be processed in one shot and with the
- * same tooling as the app - hence the `babelIncludePaths` entry below. Apps that do NOT make use of
+ * same tooling as the app - hence the `extraIncludePaths` entry below. Apps that do NOT make use of
  * such a custom package do NOT need it.
  */
 import configureRsbuild, {readCliEnv} from '@xh/hoist-dev-utils/configureRsbuild';
@@ -34,7 +34,7 @@ export default ({envMode}) => {
         // Use React prod mode, primarily to avoid console warnings for react 18
         reactProdMode: false,
         // Include custom package for transpiling for both packaged and inline use cases.
-        babelIncludePaths: [customPkgPath],
+        extraIncludePaths: [customPkgPath],
         // `rsbuild build --env-mode prod` / `rsbuild dev --env-mode inlineHoist`
         prodBuild: envMode === 'prod',
         inlineHoist: envMode === 'inlineHoist',
