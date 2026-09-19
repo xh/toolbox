@@ -27,6 +27,8 @@
 * Added a `Pin ID column` option to the admin Grid performance harness, pinning the id column to the left to exercise AG Grid 36's native full-width horizontal scrollbar, which spans pinned columns.
 * Converted all type-only imports to `import type` and added `@typescript-eslint/consistent-type-imports` to prevent regressions - guarantees type-only imports are erased at build time, eliminating 6 of the app's 10 runtime import cycles.
 * Removed all `index.ts` re-export barrels from app source and added lint guards against their reintroduction - imports now reference their defining modules directly, so loading one module no longer pulls in unrelated siblings.
+* Migrated to TC39 Stage 3 modern decorators, in step with `@xh/hoist` 88 - `@observable` / `@bindable` fields now take the `accessor` keyword, `@observable.ref` / `@bindable.ref` are now `@observableRef` / `@bindableRef`, `comparer.structural` is now `compareStructural`, and `makeObservable(this)` is gone.
+* Switched the client build from webpack to Rsbuild (Rspack + SWC) via `@xh/hoist-dev-utils` 16 - builds are faster and use far less memory, and build-time options now arrive as `XH_*` environment variables instead of `--env` flags.
 
 ### Bug Fixes
 
@@ -38,11 +40,6 @@
 * ag-grid-community `35.3 → 36.1`
 * ag-grid-enterprise `35.3 → 36.1`
 * ag-grid-react `35.3 → 36.1`
-
-
-### Technical
-
-* Switched the client build from webpack to Rsbuild (Rspack + SWC) via hoist-dev-utils 16 - `pnpm start` / `pnpm build` now run `rsbuild`, builds are several times faster on far less memory, and build-time options arrive as `XH_*` environment variables instead of `--env` flags.
 
 ## 10.0.1 - 2026-09-10
 
@@ -90,10 +87,6 @@
 
 * @xh/hoist `87.0 → 87.1`
 * @xh/hoist-dev-utils `14.0 → 15.0`
-
-### Technical
-
-* Migrated toolbox to TC39 Stage 3 modern decorators in step with `hoist-react` v88 and `hoist-dev-utils` v16. Removed `experimentalDecorators` from `client-app/tsconfig.json`, added the `accessor` keyword to all `@observable` / `@bindable` fields, and deleted the ~90 `makeObservable(this)` calls that existed across the example apps.
 
 ## 9.4.0 - 2026-08-25
 

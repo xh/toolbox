@@ -79,14 +79,9 @@ model explicitly: `grid({model: model.leftGridModel})`.
 **HoistModel** - the core state holder:
 ```typescript
 class UserListModel extends HoistModel {
-    @observable.ref users: User[] = [];
-    @bindable selectedUserId: string = null;
+    @observableRef accessor users: User[] = [];
+    @bindable accessor selectedUserId: string = null;
     @managed detailModel = new UserDetailModel();
-
-    constructor() {
-        super();
-        makeObservable(this);  // Required when class adds new observables
-    }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
         const users = await XH.fetchJson({url: 'api/users', loadSpec});
@@ -99,17 +94,30 @@ class UserListModel extends HoistModel {
 
 | Decorator | Purpose |
 |-----------|---------|
-| `@observable` / `@observable.ref` | MobX observable state |
-| `@bindable` | Observable + auto-generated action-wrapped setter |
+| `@observable` / `@observableRef` | MobX observable state - deep, or reference-only |
+| `@bindable` / `@bindableRef` | Observable + auto-generated action-wrapped setter |
 | `@managed` | Mark child object for automatic cleanup on `destroy()` |
 | `@persist` | Sync property with a persistence provider (requires `persistWith`) |
 | `@lookup(ModelClass)` | Inject ancestor model (linked models only, available after `onLinked`) |
 | `@computed` | Cached derived value |
 | `@action` | Mark method as state-modifying |
 
-**`makeObservable(this)`** must be called in the constructor of any class that introduces new
-`@observable`, `@bindable`, or `@computed` properties. The base class call does not cover subclass
-decorators. Forgetting this is the most common Hoist bug.
+**The `accessor` keyword is required** on every `@observable`, `@observableRef`, `@bindable`, and
+`@bindableRef` field - these are TC39 accessor decorators, and the keyword is what transforms the
+field into the getter/setter pair they wrap:
+
+```typescript
+@observable accessor count = 0;                 // deep observability
+@observableRef accessor records: Record[] = []; // track reference changes only
+@bindable accessor showInactive = false;        // adds setShowInactive()
+```
+
+Decorators that wrap a getter (`@computed`), a method (`@action`), or a plain field (`@managed`,
+`@lookup`) take no `accessor`. Where `@persist` combines with a MobX decorator, it comes second in
+source order: `@bindable @persist accessor showAdvanced = false`.
+
+Use `compareStructural` (from `@xh/hoist/mobx`) where a reaction or `@observableRef` needs a
+structural equality check.
 
 **`doLoadAsync(loadSpec)`** - implement this template method to opt into managed data loading.
 Call `model.loadAsync()` or `model.refreshAsync()` to trigger - never call `doLoadAsync` directly.
@@ -128,7 +136,7 @@ XH.getPref('pageSize', 50);              // PrefService alias
 navigation (`navigate`, `appendRoute`), and app state (`appState`, `darkTheme`).
 
 **Critical pitfalls:**
-1. **Forgetting `makeObservable(this)`** - observables silently won't react.
+1. **Omitting `accessor`** on an `@observable` / `@bindable` field - the decorator cannot apply.
 2. **Managing objects you don't own** - only `@managed` objects your class creates. Objects passed
    in from outside are owned by the provider.
 3. **Mutating observables outside actions** - use `runInAction()`, `@action`, or `@bindable`.
@@ -273,7 +281,7 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 
 ## Tech Stack
 
-- **Frontend**: TypeScript, React 18, MobX, AG Grid, Highcharts, `@xh/hoist` framework
+- **Frontend**: TypeScript, React 19, MobX, AG Grid, Highcharts, `@xh/hoist` framework
 - **Backend**: Grails 7 (Groovy/Spring Boot), `hoist-core` framework
 - **JDK**: the JVM version used for local development and CI is set by `majorJavaVersion` in
   `gradle.properties`; the Gradle toolchain in `build.gradle` reads that value. JDK 25+ is not
@@ -281,6 +289,8 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
   itself is separately pinned to a lower bytecode level so its published JAR remains runnable
   by older client apps - see `hoist-core` docs for the current minimum.)
 - **Database**: MySQL (or H2 in-memory for quick local dev via `APP_TOOLBOX_USE_H2=true`)
+- **Client Build**: Rsbuild (Rspack + SWC), configured by `client-app/rsbuild.config.mjs` via
+  `configureRsbuild()` from `@xh/hoist-dev-utils`
 - **Package Manager**: pnpm (frontend, version pinned via `packageManager`), Gradle via wrapper (backend)
 
 ## Common Commands

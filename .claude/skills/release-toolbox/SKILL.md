@@ -64,7 +64,7 @@ Three invariants that drive the whole process - keep them in mind:
    The failure mode is **major-release-only**: minor and patch releases reproduce the same snap (see
    the Phase 9.2 table), so a decoupled client stays accidentally in sync and the drift stays hidden
    until a major moves the number. Release builds are unaffected either way - `buildRelease.yml`
-   passes `--env appVersion`, which overrides whatever the config resolves.
+   passes `XH_APP_VERSION`, which overrides whatever the config resolves.
 
 3. **Three libraries swap, not two.** `@xh/hoist` (hoist-react) and `@xh/hoist-dev-utils` both sit
    on the npm dist-tag `next` between releases; `hoistCoreVersion` (hoist-core) sits on an explicit
@@ -576,7 +576,7 @@ and the fourth must show a derivation rather than a literal:
 grep '^xhAppVersion=' gradle.properties                 # server
 node -p "require('./client-app/package.json').version"  # client
 grep -m1 '^## ' CHANGELOG.md                            # changelog header
-grep -n 'appVersion:' client-app/rsbuild.config.mjs      # want `pkg.version`, NOT a hardcoded string
+grep -n 'appVersion:' client-app/rsbuild.config.mjs     # want `pkg.version`, NOT a hardcoded string
 ```
 
 If the fourth shows a hardcoded version string, someone has reintroduced the decoupling - fix it to
