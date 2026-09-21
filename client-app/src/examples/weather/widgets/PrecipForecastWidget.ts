@@ -1,12 +1,12 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {placeholder} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import type {ForecastResponse} from '../Types';
-import {AppModel} from '../AppModel';
+import type {WeatherDashModel} from '../WeatherDashModel';
 
 export const precipForecastWidget = hoistCmp.factory({
     model: creates(() => PrecipForecastModel),
@@ -23,6 +23,8 @@ export const precipForecastWidget = hoistCmp.factory({
 });
 
 class PrecipForecastModel extends HoistModel {
+    @lookup((m: WeatherDashModel) => !!m.isWeatherDashModel) dashModel: WeatherDashModel;
+
     @managed chartModel: ChartModel;
     @bindable accessor hasData: boolean = false;
 
@@ -30,7 +32,7 @@ class PrecipForecastModel extends HoistModel {
         this.chartModel = this.createChartModel();
 
         this.addReaction({
-            track: () => AppModel.instance.weatherDashModel.forecast,
+            track: () => this.dashModel.forecast,
             run: data => this.updateChart(data),
             fireImmediately: true
         });

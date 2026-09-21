@@ -7,6 +7,7 @@ import {
 } from '@xh/hoist/desktop/cmp/appOption';
 import {BaseAppModel} from '../../BaseAppModel';
 import {WeatherDashModel} from './WeatherDashModel';
+import {initialState, viewSpecs} from './widgets/viewSpecs';
 import {viewManagers} from './viewManagers';
 
 export class AppModel extends BaseAppModel {
@@ -20,7 +21,11 @@ export class AppModel extends BaseAppModel {
         // preselected before WeatherDashModel builds its DashCanvas.
         await viewManagers.initAsync(ctx);
 
-        this.weatherDashModel = new WeatherDashModel(viewManagers.weatherDashboard);
+        this.weatherDashModel = new WeatherDashModel({
+            viewManagerModel: viewManagers.weatherDashboard,
+            viewSpecs,
+            initialState
+        });
         this.loadAsync(ctx);
     }
 
