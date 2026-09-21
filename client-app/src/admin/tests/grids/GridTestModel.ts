@@ -13,7 +13,7 @@ import {isEmpty, random, round, sample, times} from 'lodash';
 import {action, bindable, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
-import {AppModel} from '../../AppModel';
+import {viewManagers} from '../../viewManagers';
 import {GridTestBenchmarkModel} from './GridTestBenchmarkModel';
 import {GridTestMetrics} from './GridTestMetrics';
 
@@ -93,7 +93,7 @@ export class GridTestModel extends HoistModel {
      * and survive a reload (via sessionStorage), while named configs live on the server.
      */
     override persistWith: PersistOptions = {
-        viewManagerModel: AppModel.instance.gridTestViewManager
+        viewManagerModel: viewManagers.gridTestConfig
     };
 
     // Total count (approx) of all nodes generated (parents + children).
@@ -243,9 +243,9 @@ export class GridTestModel extends HoistModel {
     @observableRef
     accessor gridModel: GridModel;
 
-    /** Saves/restores the settings above as named configs - created by AppModel.initAsync(). */
+    /** Saves/restores the settings above as named configs - created during app init. */
     get viewManagerModel(): ViewManagerModel {
-        return AppModel.instance.gridTestViewManager;
+        return viewManagers.gridTestConfig;
     }
 
     constructor() {

@@ -7,6 +7,7 @@ import {Icon} from '@xh/hoist/icon';
 import {welcomeMsg} from '../../core/cmp/WelcomeMsg';
 import {AppModel} from './AppModel';
 import {portfolioPanel} from './PortfolioPanel';
+import {viewManagers} from './viewManagers';
 import '../../core/Toolbox.scss';
 
 export const AppComponent = hoistCmp({
@@ -22,7 +23,7 @@ export const AppComponent = hoistCmp({
                     hideLogoutItem: false
                 },
                 appMenuButtonPosition: 'left',
-                leftItems: [viewManager()],
+                leftItems: [viewManager({model: viewManagers.portfolioLayout})],
                 rightItems: [
                     welcomeMsg(),
                     appBarSeparator(),

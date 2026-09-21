@@ -6,14 +6,14 @@ import {Store} from '@xh/hoist/data';
 import {waitFor} from '@xh/hoist/promise';
 import {round} from 'lodash';
 import type {PositionSession} from '../../core/positions/PositionSession';
-import {AppModel} from './AppModel';
+import {viewManagers} from './viewManagers';
 import {PositionsGridModel} from './grid/PositionsGridModel';
 import {PositionsMapModel} from './map/PositionsMapModel';
 
 export class PortfolioModel extends HoistModel {
     override xhName = 'portfolio';
     override persistWith = {
-        viewManagerModel: AppModel.instance.portfolioViewManager
+        viewManagerModel: viewManagers.portfolioLayout
     };
 
     @managed session: PositionSession;
