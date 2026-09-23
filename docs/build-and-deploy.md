@@ -5,7 +5,7 @@ Docker image builds, and deployment to AWS ECS. All workflow definitions live in
 `.github/workflows/`.
 
 For general background on building and deploying full-stack Hoist applications - including the
-Gradle WAR build, Webpack client build, Docker image structure, nginx configuration, and deployment
+Gradle WAR build, Rsbuild client build, Docker image structure, nginx configuration, and deployment
 patterns - see the
 [Build & Deploy Apps](https://github.com/xh/hoist-react/blob/develop/docs/build-and-deploy-app.md)
 guide in the hoist-react documentation. This document covers the Toolbox-specific GitHub Actions
@@ -139,7 +139,7 @@ Toolbox produces two Docker images per build, stored in Amazon ECR under the `xh
 | Image | Base | Contents |
 |-------|------|----------|
 | `toolbox-tomcat` | `xhio/xh-tomcat` | Grails WAR deployed to Tomcat |
-| `toolbox-nginx` | `xhio/xh-nginx` | Webpack-built client assets served by nginx |
+| `toolbox-nginx` | `xhio/xh-nginx` | Rsbuild-built client assets served by nginx |
 
 The Dockerfiles and supporting configs (including the nginx `app.conf` and Tomcat `setenv.sh`) live
 in the `/docker/` directory. See the

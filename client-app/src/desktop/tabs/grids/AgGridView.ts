@@ -2,7 +2,8 @@ import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {agGridDisplayOptions, wrapper, wrapperAction} from '../../common';
+import {agGridDisplayOptions} from '../../common/grid/options/GridDisplayOptions';
+import {wrapper, wrapperAction} from '../../common/Wrapper';
 import {AgGridViewModel} from './AgGridViewModel';
 
 export const agGridView = hoistCmp.factory({

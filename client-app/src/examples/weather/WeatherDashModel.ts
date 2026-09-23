@@ -1,23 +1,11 @@
-import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
-import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import type {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import type {DashCanvasItemState, DashCanvasViewSpec} from '@xh/hoist/desktop/cmp/dash';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
-import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
-import {Icon} from '@xh/hoist/icon';
+import {bindable, observableRef, runInAction} from '@xh/hoist/mobx';
 
-import {
-    calendarDaysIcon,
-    cloudRainIcon,
-    dropletPercentIcon,
-    temperatureIcon,
-    windIcon
-} from './Icons';
-import {CurrentWeatherResponse, ForecastResponse} from './Types';
-import {currentConditionsWidget} from './widgets/CurrentConditionsWidget';
-import {tempForecastWidget} from './widgets/TempForecastWidget';
-import {precipForecastWidget} from './widgets/PrecipForecastWidget';
-import {windForecastWidget} from './widgets/WindForecastWidget';
-import {humidityPressureWidget} from './widgets/HumidityPressureWidget';
-import {conditionsSummaryWidget} from './widgets/ConditionsSummaryWidget';
+import type {CurrentWeatherResponse, ForecastResponse} from './Types';
 
 export const CITIES = [
     'Atlanta',
@@ -47,20 +35,36 @@ export const CITIES = [
     'Toronto'
 ];
 
+export interface WeatherDashConfig {
+    viewManagerModel: ViewManagerModel;
+    /** Widget catalog - supplied by the app so this model need not import the widgets. */
+    viewSpecs: DashCanvasViewSpec[];
+    /** Default widget layout, applied when no saved view is selected. */
+    initialState: DashCanvasItemState[];
+}
+
 export class WeatherDashModel extends HoistModel {
     override telemetryPrefix = 'toolbox.client.weather';
     override persistWith = {localStorageKey: 'xhWeatherDash'};
 
-    @bindable @persist selectedCity: string = 'New York';
-    @observable.ref currentWeather: CurrentWeatherResponse = null;
-    @observable.ref forecast: ForecastResponse = null;
+    @bindable @persist accessor selectedCity: string = 'New York';
+    @observableRef accessor currentWeather: CurrentWeatherResponse = null;
+    @observableRef accessor forecast: ForecastResponse = null;
 
     viewManagerModel: ViewManagerModel;
     @managed dashCanvasModel: DashCanvasModel;
 
-    constructor(viewManagerModel: ViewManagerModel) {
+    /**
+     * Marker supporting type-safe context lookup from the dashboard widgets. Lets them select this
+     * model with `@lookup((m: WeatherDashModel) => m.isWeatherDashModel)` and so import it as a
+     * *type* only - keeping their dependency on it off the runtime module graph.
+     */
+    get isWeatherDashModel(): boolean {
+        return true;
+    }
+
+    constructor({viewManagerModel, viewSpecs, initialState}: WeatherDashConfig) {
         super();
-        makeObservable(this);
 
         this.viewManagerModel = viewManagerModel;
         this.dashCanvasModel = new DashCanvasModel({
@@ -68,64 +72,8 @@ export class WeatherDashModel extends HoistModel {
             viewSpecDefaults: {
                 unique: true
             },
-            viewSpecs: [
-                {
-                    id: 'currentConditions',
-                    title: 'Current Conditions',
-                    icon: Icon.sun(),
-                    content: currentConditionsWidget,
-                    width: 4,
-                    height: 5
-                },
-                {
-                    id: 'tempForecast',
-                    title: 'Temperature Forecast',
-                    icon: temperatureIcon(),
-                    content: tempForecastWidget,
-                    width: 8,
-                    height: 5
-                },
-                {
-                    id: 'precipForecast',
-                    title: 'Precipitation',
-                    icon: cloudRainIcon(),
-                    content: precipForecastWidget,
-                    width: 6,
-                    height: 5
-                },
-                {
-                    id: 'windForecast',
-                    title: 'Wind',
-                    icon: windIcon(),
-                    content: windForecastWidget,
-                    width: 6,
-                    height: 5
-                },
-                {
-                    id: 'humidityPressure',
-                    title: 'Humidity & Pressure',
-                    icon: dropletPercentIcon(),
-                    content: humidityPressureWidget,
-                    width: 6,
-                    height: 5
-                },
-                {
-                    id: 'conditionsSummary',
-                    title: '5-Day Summary',
-                    icon: calendarDaysIcon(),
-                    content: conditionsSummaryWidget,
-                    width: 6,
-                    height: 5
-                }
-            ],
-            initialState: [
-                {viewSpecId: 'currentConditions', layout: {x: 0, y: 0, w: 4, h: 5}},
-                {viewSpecId: 'tempForecast', layout: {x: 4, y: 0, w: 8, h: 5}},
-                {viewSpecId: 'precipForecast', layout: {x: 0, y: 5, w: 6, h: 5}},
-                {viewSpecId: 'windForecast', layout: {x: 6, y: 5, w: 6, h: 5}},
-                {viewSpecId: 'humidityPressure', layout: {x: 0, y: 10, w: 6, h: 5}},
-                {viewSpecId: 'conditionsSummary', layout: {x: 6, y: 10, w: 6, h: 5}}
-            ]
+            viewSpecs,
+            initialState
         });
 
         this.addReaction({

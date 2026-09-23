@@ -13,7 +13,7 @@ configuration (`.env`), and authentication prerequisites, see the [Database](../
 ## Standard local development (localhost)
 
 Toolbox runs as two processes: the Grails server (the backend API + static asset host in production)
-and the Webpack dev server (which compiles and serves the client app and proxies API calls to the
+and the Rsbuild dev server (which compiles and serves the client app and proxies API calls to the
 backend during development). Run each in its own terminal.
 
 * **Server** - from the project root:
@@ -28,7 +28,7 @@ backend during development). Run each in its own terminal.
   ```
   pnpm start
   ```
-  Starts the Webpack dev server on `http://localhost:3000`. It compiles the client app, watches for
+  Starts the Rsbuild dev server on `http://localhost:3000`. It compiles the client app, watches for
   changes with hot-reload, and proxies any request under `/api/` through to the Grails server at
   `localhost:8080`.
 
@@ -102,6 +102,13 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
   published library (code that uses unreleased APIs looks fine locally but breaks the release
   build), which is exactly the gap the commented-out default closes.
 
+  **Build-time options** - the client builds with Rsbuild (Rspack + SWC) through hoist-dev-utils'
+  `configureRsbuild()`, configured by `rsbuild.config.mjs`. Rsbuild has no `--env key=value`
+  flag: build options arrive as `XH_*` environment variables (see `readCliEnv()` in
+  hoist-dev-utils), which you can also put in a gitignored `client-app/.env.local` that Rsbuild
+  loads on every run - e.g. `XH_DEV_HOST=<your-ip>` or `XH_DEV_LIVE_RELOAD=false` - instead of the
+  `startWithIp`-style script variants.
+
 * **Server against local `hoist-core`** - there are two ways to enable inline mode, and which you
   want depends on whether you need IDE integration:
   * **Per run** - pass the property on the command line:
@@ -132,7 +139,7 @@ clustering behavior):
   ```
 * Start a second client pointed at that server:
   ```
-  pnpm start --env devGrailsPort=8081 devWebpackPort=3001
+  XH_DEV_GRAILS_PORT=8081 XH_DEV_PORT=3001 pnpm start
   ```
 
 ## On-device mobile testing over a LAN IP
@@ -177,7 +184,7 @@ the app or fail to log in.
    pnpm startWithHoistAndIp  # local sibling hoist-react
    ```
    To target a specific address (or a non-Wi-Fi interface), pass it explicitly to the base script
-   instead: `pnpm start --env devHost=<devHost>` (or `pnpm startWithHoist --env devHost=<devHost>`).
+   instead: `XH_DEV_HOST=<devHost> pnpm start` (or `XH_DEV_HOST=<devHost> pnpm startWithHoist`).
    Either way the dev server binds **only to the LAN IP, not to `localhost`** - so on the
    workstation itself you must also browse to `http://<devHost>:3000`, not `http://localhost:3000`.
 
@@ -249,7 +256,7 @@ background and for how to avoid it.
 
 ### Gateway timeout or `ECONNREFUSED` on `/api/` requests
 
-The client loads but data and login calls hang, time out, or log a proxy error. The Webpack dev
+The client loads but data and login calls hang, time out, or log a proxy error. The Rsbuild dev
 server is up but the backend it proxies to is not answering. Check that:
 
 * `bootRun` is actually running and has finished starting - hit `http://localhost:8080/ping`

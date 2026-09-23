@@ -1,5 +1,5 @@
 // Mobile app font: IBM Plex Sans (standard) + IBM Plex Mono (mono), matching the desktop's adopted
-// app font. The @font-face rules bundle from the `@ibm/plex-*` dependencies (webpack resolves `~` to
+// app font. The @font-face rules bundle from the `@ibm/plex-*` dependencies (the bundler resolves `~` to
 // node_modules). Unlike desktop, mobile ships IBM Plex unconditionally for now - no font option yet.
 // `--xh-font-family` / `--xh-font-family-mono` read these `--font-family*` vars, cascading the font
 // across the app; `zero`/`ss01` enable IBM Plex's slashed zero and single-story letterforms.

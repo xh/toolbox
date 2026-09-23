@@ -1,5 +1,6 @@
-import {HoistModel, Thunkable} from '@xh/hoist/core';
-import {action, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import type {Thunkable} from '@xh/hoist/core';
+import {HoistModel} from '@xh/hoist/core';
+import {action, observableRef, runInAction} from '@xh/hoist/mobx';
 import {executeIfFunction} from '@xh/hoist/utils/js';
 
 export interface LoadTime {
@@ -10,13 +11,8 @@ export interface LoadTime {
 
 /** Wall-clock timings for the actions this tester drives, kept as the last of each. */
 export class LoadTimesModel extends HoistModel {
-    @observable.ref fetch: LoadTime = null;
-    @observable.ref total: LoadTime = null;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @observableRef accessor fetch: LoadTime = null;
+    @observableRef accessor total: LoadTime = null;
 
     @action
     clearLoadTimes() {

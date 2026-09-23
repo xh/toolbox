@@ -1,17 +1,19 @@
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
-import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {Store, StoreRecord} from '@xh/hoist/data';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import type {StoreRecord} from '@xh/hoist/data';
+import {Store} from '@xh/hoist/data';
 import {waitFor} from '@xh/hoist/promise';
 import {round} from 'lodash';
-import {PositionSession} from '../../core/positions/PositionSession';
-import {AppModel} from './AppModel';
+import type {PositionSession} from '../../core/positions/PositionSession';
+import {viewManagers} from './viewManagers';
 import {PositionsGridModel} from './grid/PositionsGridModel';
 import {PositionsMapModel} from './map/PositionsMapModel';
 
 export class PortfolioModel extends HoistModel {
     override xhName = 'portfolio';
     override persistWith = {
-        viewManagerModel: AppModel.instance.portfolioViewManager
+        viewManagerModel: viewManagers.portfolioLayout
     };
 
     @managed session: PositionSession;

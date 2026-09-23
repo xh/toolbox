@@ -4,7 +4,7 @@ import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {segmentedControl} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import './TabsPage.scss';
 
@@ -69,7 +69,7 @@ const activityTab = hoistCmp.factory(() =>
 );
 
 class TabsPageModel extends HoistModel {
-    @bindable orientation: 'top' | 'bottom' = 'top';
+    @bindable accessor orientation: 'top' | 'bottom' = 'top';
 
     @managed
     tabContainerModel: TabContainerModel = new TabContainerModel({
@@ -79,9 +79,4 @@ class TabsPageModel extends HoistModel {
             {id: 'activity', title: 'Activity', icon: Icon.clock(), content: activityTab}
         ]
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 }

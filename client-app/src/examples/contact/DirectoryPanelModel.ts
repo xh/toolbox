@@ -1,14 +1,17 @@
-import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
-import {action, bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {action, bindable, bindableRef, observableRef, runInAction} from '@xh/hoist/mobx';
 import {div, hbox} from '@xh/hoist/cmp/layout';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {StoreRecord, appendFilter, FilterLike} from '@xh/hoist/data';
+import type {StoreRecord, FilterLike} from '@xh/hoist/data';
+import {appendFilter} from '@xh/hoist/data';
 import {isEmpty, uniq, without} from 'lodash';
 
-import {PERSIST_APP} from './AppModel';
+import {PERSIST_APP} from './constants';
 import {favoriteButton} from './cmp/FavoriteButton';
 import {DetailsPanelModel} from './details/DetailsPanelModel';
-import {cellPhoneCol, emailCol, locationCol, nameCol, workPhoneCol} from '../../core/columns';
+import {cellPhoneCol, emailCol, locationCol, workPhoneCol} from '../../core/columns/Demographics';
+import {nameCol} from '../../core/columns/General';
 
 /**
  * Primary model to load a list of contacts from the server and manage filter and selection state.
@@ -18,17 +21,17 @@ export class DirectoryPanelModel extends HoistModel {
     override persistWith = PERSIST_APP;
 
     /** known tags across all contacts. */
-    @observable.ref tagList: string[] = [];
+    @observableRef accessor tagList: string[] = [];
 
     /** known locations across all contacts. */
-    @observable.ref locationList: string[] = [];
+    @observableRef accessor locationList: string[] = [];
 
     /**  tag(s) used to filter results. If multiple, recs must match all. */
-    @bindable.ref tagFilters: string[] = [];
+    @bindableRef accessor tagFilters: string[] = [];
 
-    @bindable locationFilter: string;
+    @bindable accessor locationFilter: string;
 
-    @bindable @persist displayMode: 'grid' | 'tiles' = 'tiles';
+    @bindable @persist accessor displayMode: 'grid' | 'tiles' = 'tiles';
 
     @managed detailsPanelModel: DetailsPanelModel;
 
@@ -44,7 +47,6 @@ export class DirectoryPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         const gridModel = (this.gridModel = this.createGridModel());
         this.detailsPanelModel = new DetailsPanelModel(this);

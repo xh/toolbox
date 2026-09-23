@@ -1,30 +1,29 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
+import type {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
 import {div, hr} from '@xh/hoist/cmp/layout';
 import {type ContextMenuSpec, HoistModel, managed, XH} from '@xh/hoist/core';
 import {fmtDate} from '@xh/hoist/format';
-import {observable, makeObservable, runInAction, bindable} from '@xh/hoist/mobx';
+import {bindable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
-import {ChartContextMenuMode} from '../../common';
+import type {ChartContextMenuMode} from '../../common/charts/ChartOptions';
 
 export class LineChartModel extends HoistModel {
-    @bindable currentSymbols: string[] = [];
-    @observable.ref symbols: string[] = [];
+    @bindable accessor currentSymbols: string[] = [];
+    @observableRef accessor symbols: string[] = [];
 
-    @bindable aspectRatio: number = null;
+    @bindable accessor aspectRatio: number = null;
 
-    @bindable currentContextMenu: ChartContextMenuMode = null;
+    @bindable accessor currentContextMenu: ChartContextMenuMode = null;
 
     @managed
-    @observable.ref
-    chartModel: ChartModel;
+    @observableRef
+    accessor chartModel: ChartModel;
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.addReaction({
             track: () => this.currentSymbols,

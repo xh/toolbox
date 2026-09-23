@@ -79,14 +79,9 @@ model explicitly: `grid({model: model.leftGridModel})`.
 **HoistModel** - the core state holder:
 ```typescript
 class UserListModel extends HoistModel {
-    @observable.ref users: User[] = [];
-    @bindable selectedUserId: string = null;
+    @observableRef accessor users: User[] = [];
+    @bindable accessor selectedUserId: string = null;
     @managed detailModel = new UserDetailModel();
-
-    constructor() {
-        super();
-        makeObservable(this);  // Required when class adds new observables
-    }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
         const users = await XH.fetchJson({url: 'api/users', loadSpec});
@@ -99,17 +94,30 @@ class UserListModel extends HoistModel {
 
 | Decorator | Purpose |
 |-----------|---------|
-| `@observable` / `@observable.ref` | MobX observable state |
-| `@bindable` | Observable + auto-generated action-wrapped setter |
+| `@observable` / `@observableRef` | MobX observable state - deep, or reference-only |
+| `@bindable` / `@bindableRef` | Observable + auto-generated action-wrapped setter |
 | `@managed` | Mark child object for automatic cleanup on `destroy()` |
 | `@persist` | Sync property with a persistence provider (requires `persistWith`) |
 | `@lookup(ModelClass)` | Inject ancestor model (linked models only, available after `onLinked`) |
 | `@computed` | Cached derived value |
 | `@action` | Mark method as state-modifying |
 
-**`makeObservable(this)`** must be called in the constructor of any class that introduces new
-`@observable`, `@bindable`, or `@computed` properties. The base class call does not cover subclass
-decorators. Forgetting this is the most common Hoist bug.
+**The `accessor` keyword is required** on every `@observable`, `@observableRef`, `@bindable`, and
+`@bindableRef` field - these are TC39 accessor decorators, and the keyword is what transforms the
+field into the getter/setter pair they wrap:
+
+```typescript
+@observable accessor count = 0;                 // deep observability
+@observableRef accessor records: Record[] = []; // track reference changes only
+@bindable accessor showInactive = false;        // adds setShowInactive()
+```
+
+Decorators that wrap a getter (`@computed`), a method (`@action`), or a plain field (`@managed`,
+`@lookup`) take no `accessor`. Where `@persist` combines with a MobX decorator, it comes second in
+source order: `@bindable @persist accessor showAdvanced = false`.
+
+Use `compareStructural` (from `@xh/hoist/mobx`) where a reaction or `@observableRef` needs a
+structural equality check.
 
 **`doLoadAsync(loadSpec)`** - implement this template method to opt into managed data loading.
 Call `model.loadAsync()` or `model.refreshAsync()` to trigger - never call `doLoadAsync` directly.
@@ -128,7 +136,7 @@ XH.getPref('pageSize', 50);              // PrefService alias
 navigation (`navigate`, `appendRoute`), and app state (`appState`, `darkTheme`).
 
 **Critical pitfalls:**
-1. **Forgetting `makeObservable(this)`** - observables silently won't react.
+1. **Omitting `accessor`** on an `@observable` / `@bindable` field - the decorator cannot apply.
 2. **Managing objects you don't own** - only `@managed` objects your class creates. Objects passed
    in from outside are owned by the provider.
 3. **Mutating observables outside actions** - use `runInAction()`, `@action`, or `@bindable`.
@@ -227,13 +235,30 @@ may show errors on startup - remove `"github"` from your local settings to resol
 operations (`gh pr view`, `gh issue list`, `gh api`, `gh pr create`, etc.). Prefer `gh` over
 crafting raw `curl` calls to the GitHub API.
 
-### jetbrains (opt-in)
+### idea (opt-in)
 
-A JetBrains MCP server is also configured in `.mcp.json`, providing tools for interacting with
-the IntelliJ IDE (file navigation, code inspections, refactoring, terminal commands, etc.).
-This server must be enabled within IntelliJ's settings and requires a running IDE instance to
-connect. Add `"jetbrains"` to `enabledMcpjsonServers` in `.claude/settings.local.json` to
-enable it for Claude Code.
+IntelliJ registers its own MCP server in `.mcp.json` under the name `idea`, providing tools for
+interacting with the IDE (file navigation, code inspections, refactoring, terminal commands, etc.).
+It requires a running IDE instance with the MCP server enabled in IntelliJ's settings.
+
+**Not enabled by default** - the server fails to connect when no IDE is running, which shows as a
+startup error. Add `"idea"` to `enabledMcpjsonServers` in `.claude/settings.local.json` to enable it
+for yourself (local settings merge with the shared `settings.json`):
+
+```json
+{
+  "enabledMcpjsonServers": ["hoist-react", "hoist-core", "idea"]
+}
+```
+
+A read-only subset of its tools (search, read, symbol lookup, inspections) is pre-approved in the
+shared permissions allowlist, so no extra local config is needed once the server is on. Write and
+execute tools - `apply_patch`, `execute_terminal_command`, `execute_sql_query`, the `xdebug_*`
+family - are deliberately left out and still prompt.
+
+IntelliJ rewrites its own entry in `.mcp.json` on startup. Take its changes rather than reverting
+them, or it will keep prompting. Note that it hardcodes the default port `64342`, so a second IDE
+instance on another port needs a local override.
 
 ## Plugins
 
@@ -273,7 +298,7 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 
 ## Tech Stack
 
-- **Frontend**: TypeScript, React 18, MobX, AG Grid, Highcharts, `@xh/hoist` framework
+- **Frontend**: TypeScript, React 19, MobX, AG Grid, Highcharts, `@xh/hoist` framework
 - **Backend**: Grails 7 (Groovy/Spring Boot), `hoist-core` framework
 - **JDK**: the JVM version used for local development and CI is set by `majorJavaVersion` in
   `gradle.properties`; the Gradle toolchain in `build.gradle` reads that value. JDK 25+ is not
@@ -281,6 +306,8 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
   itself is separately pinned to a lower bytecode level so its published JAR remains runnable
   by older client apps - see `hoist-core` docs for the current minimum.)
 - **Database**: MySQL (or H2 in-memory for quick local dev via `APP_TOOLBOX_USE_H2=true`)
+- **Client Build**: Rsbuild (Rspack + SWC), configured by `client-app/rsbuild.config.mjs` via
+  `configureRsbuild()` from `@xh/hoist-dev-utils`
 - **Package Manager**: pnpm (frontend, version pinned via `packageManager`), Gradle via wrapper (backend)
 
 ## Common Commands
@@ -337,7 +364,7 @@ over a network IP, HTTPS, and troubleshooting (including the server timezone che
 
 ### App URLs during Local Development
 
-The webpack dev server runs on **`http://localhost:3000`**. Each file in `client-app/src/apps/`
+The Rsbuild dev server runs on **`http://localhost:3000`**. Each file in `client-app/src/apps/`
 defines an entry point, and its filename (minus the extension) becomes the URL path. For example,
 `apps/app.ts` → `http://localhost:3000/app`.
 
@@ -362,6 +389,15 @@ Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged f
 - **Arrow parens**: avoid when possible (`x => x` not `(x) => x`)
 - **Semicolons**: always
 - **Trailing commas**: none
+
+### Imports
+
+- **Use `import type` for type-only imports.** Split mixed imports into two statements - values in `import {...}`, types in `import type {...}`.
+- **Never create barrel files.** No `index.ts` / `index.tsx` re-export modules under `client-app/src`. Import directly from the module that defines the symbol.
+- **No `export * from` or value re-exports** (`export {foo} from '...'`) anywhere in app source. Type re-exports (`export type {Foo} from '...'`) are fine - they are erased at build and create no runtime module edge.
+- Importing **from** hoist-react's barrels (`@xh/hoist/core`, `@xh/hoist/cmp/grid`) is correct and unaffected. These rules govern modules this app defines, not the framework's published entry points.
+
+All four are enforced by ESLint - violations fail `pnpm lint` and the pre-commit hook. The `import type` rule is auto-fixable: `pnpm exec eslint . --fix`, then `pnpm exec prettier --write "src/**/*.{ts,tsx}"` from `client-app/`.
 
 ## Git Workflow
 
@@ -486,14 +522,39 @@ profile setup (`xh-toolbox-ro` read-only, `xh-toolbox-rw` for writes), SSM port-
 ECS Exec, CloudWatch log access, and the per-command confirmation protocol for write operations.
 
 This repo is **public**: the runbook deliberately omits the AWS account ID, Identity Center URL/ARN,
-RDS endpoints, internal DNS, and DB credentials. Those operational values live in the `Toolbox AWS
-Ops` item in the `XH Team` 1Password vault - fetch them with the `op` CLI
-(`op read "op://XH Team/Toolbox AWS Ops/<field>"`) when running commands from the runbook. Never
-write those values into checked-in files.
+RDS endpoints, internal DNS, and DB credentials. Those operational values live in two items in the
+`XH Team` 1Password vault - `Toolbox AWS Ops` for account / SSO values and `Toolbox DB` for
+everything database-related. Fetch them with the `op` CLI
+(`op read "op://XH Team/<item>/<field>"`) when running commands from the runbook. Never write those
+values into checked-in files.
 
 **Safety protocol for AI agents** (full table in the runbook): reads against dev proceed without
 confirmation; writes against dev, and anything (read or write) against prod, require explicit
 per-command user confirmation - propose the exact command and wait for "go".
+
+## Operating XH's Azure / Entra Tenant
+
+Some of Toolbox's identity config lives in XH's Microsoft Entra tenant - the `Toolbox` OAuth client
+registration used when `oauthProvider` is `ENTRA_ID`, and the shared `xh-hoist-directory-reader`
+registration backing Hoist's `EntraIdService` group lookups. For connecting to that tenant to
+troubleshoot, monitor, or administer it, see [`docs/azure-access.md`](docs/azure-access.md).
+
+That runbook covers two shared operator service principals - `xh-toolbox-ops-ro` (read-only) and
+`xh-toolbox-ops-rw` (writes) - whose credentials live in the `Toolbox Azure Ops` item in the
+`XH Team` 1Password vault. Note two Azure-specific wrinkles the runbook explains in full: the Azure
+CLI has **no per-command `--profile`**, so tiers are separated via the `AZURE_CONFIG_DIR`
+environment variable and `az account show` is a required identity check; and operator logins **must**
+pass `--allow-no-subscriptions`, since these principals deliberately hold no Azure RBAC.
+
+**Scope**: the Entra *directory plane* only. Nothing of Toolbox is deployed on Azure compute, and
+the operator principals hold no subscription role assignments.
+
+**Safety protocol for AI agents** (full table in the runbook): reads proceed without confirmation,
+as do writes to sandbox objects the agent itself created (prefix these `toolbox-test-*`). Modifying
+a pre-existing shared object - notably any credential on `xh-hoist-directory-reader`, which other
+apps authenticate with - and any deletion require explicit per-command confirmation. Granting admin
+consent, assigning directory roles, and creating service principals are Global Administrator tasks
+that the operator tiers **cannot** perform, by design.
 
 ## Changelog
 

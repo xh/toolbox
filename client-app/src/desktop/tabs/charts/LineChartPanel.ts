@@ -4,7 +4,8 @@ import {picker} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {chartDisplayOptions, wrapper} from '../../common';
+import {chartDisplayOptions} from '../../common/charts/ChartOptions';
+import {wrapper} from '../../common/Wrapper';
 import {LineChartModel} from './LineChartModel';
 
 export const lineChartPanel = hoistCmp.factory({

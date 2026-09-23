@@ -1,6 +1,6 @@
 // IBM Plex Sans: an optional app font, toggled against Hoist's default Inter via the in-app
 // Options dialog (see AppModel.getAppOptions + the `font` preference). The @font-face rules are
-// always bundled from the `@ibm/plex-sans` dependency (webpack resolves `~` to node_modules); the
+// always bundled from the `@ibm/plex-sans` dependency (the bundler resolves `~` to node_modules); the
 // override below applies only when AppModel adds the `tbox-font--plex` class to the body, so
 // clearing it falls back to Hoist's Inter default.
 @font-face {

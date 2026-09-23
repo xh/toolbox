@@ -2,10 +2,11 @@ import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {dateInput, DateInputProps, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import type {DateInputProps} from '@xh/hoist/desktop/cmp/input';
+import {dateInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import moment from 'moment';
 import {
@@ -14,9 +15,9 @@ import {
     demoPlayground,
     demoRow,
     fmtDemoConfig,
-    raw,
-    wrapperOption
-} from '../../../common';
+    raw
+} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';
@@ -238,20 +239,20 @@ const SEEDS = {
 
 class DateInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgEnableClear = true;
-    @bindable pgLeftIcon = false;
-    @bindable pgTimePrecision: 'none' | 'minute' | 'second' = 'none';
-    @bindable pgActionsBar = false;
+    @bindable accessor pgEnableClear = true;
+    @bindable accessor pgLeftIcon = false;
+    @bindable accessor pgTimePrecision: 'none' | 'minute' | 'second' = 'none';
+    @bindable accessor pgActionsBar = false;
 
     // Inputs
-    @bindable.ref playground: Date = SEEDS.playground;
-    @bindable.ref minMax: Date = SEEDS.minMax;
-    @bindable.ref localDate: LocalDate = SEEDS.localDate;
-    @bindable.ref timeAmPm: Date = SEEDS.timeAmPm;
-    @bindable.ref customFormat: Date = SEEDS.customFormat;
-    @bindable.ref disabledDate: Date = SEEDS.disabledDate;
-    @bindable.ref tbarDate: Date = SEEDS.tbarDate;
-    @bindable.ref tbarLocalDate: LocalDate = SEEDS.tbarLocalDate;
+    @bindableRef accessor playground: Date = SEEDS.playground;
+    @bindableRef accessor minMax: Date = SEEDS.minMax;
+    @bindableRef accessor localDate: LocalDate = SEEDS.localDate;
+    @bindableRef accessor timeAmPm: Date = SEEDS.timeAmPm;
+    @bindableRef accessor customFormat: Date = SEEDS.customFormat;
+    @bindableRef accessor disabledDate: Date = SEEDS.disabledDate;
+    @bindableRef accessor tbarDate: Date = SEEDS.tbarDate;
+    @bindableRef accessor tbarLocalDate: LocalDate = SEEDS.tbarLocalDate;
 
     @managed
     override formModel = new FormModel({
@@ -273,7 +274,6 @@ class DateInputPanelModel extends InputDemoModel {
 
     constructor() {
         super({commitOnChangeDefault: true});
-        makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

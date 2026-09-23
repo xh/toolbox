@@ -1,7 +1,8 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {creates, hoistCmp, SelectOption} from '@xh/hoist/core';
+import type {SelectOption} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -10,7 +11,12 @@ import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {runInAction} from '@xh/hoist/mobx';
-import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../desktop/common';
+import {
+    wrapper,
+    wrapperAction,
+    wrapperOption,
+    wrapperOptionGroup
+} from '../../../desktop/common/Wrapper';
 import {gridTestBenchmarkDialog} from './GridTestBenchmarkDialog';
 import {GridTestModel, VALUE_MIX_OPTIONS} from './GridTestModel';
 
@@ -77,6 +83,7 @@ export const GridTestPanel = hoistCmp({
                     item: model.hasLoadedOnce
                         ? grid({
                               agOptions: {
+                                  columnMenu: 'legacy', // support for ag native filtering test
                                   rowSelection: {
                                       mode: 'singleRow',
                                       isRowSelectable: ({data: record}) =>
@@ -327,6 +334,11 @@ const gridOptions = (model: GridTestModel) =>
                 label: 'Restrict selection',
                 info: 'Disallow selecting rows with Day P&L < 0, via agOptions isRowSelectable.',
                 control: switchInput({model, bind: 'disableSelect'})
+            }),
+            wrapperOption({
+                label: 'Pin ID column',
+                info: 'Pin the id column to the left - exercises the full-width horizontal scrollbar, which spans pinned columns in AG Grid 36.',
+                control: switchInput({model, bind: 'pinId'})
             }),
             wrapperOption({
                 label: 'Persist state',

@@ -1,11 +1,10 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {img} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {makeObservable} from '@xh/hoist/mobx';
 import {groupBy} from 'lodash';
-import {ForecastResponse} from '../Types';
-import {AppModel} from '../AppModel';
+import type {ForecastResponse} from '../Types';
+import type {WeatherDashModel} from '../WeatherDashModel';
 
 export const conditionsSummaryWidget = hoistCmp.factory({
     model: creates(() => ConditionsSummaryModel),
@@ -18,18 +17,15 @@ export const conditionsSummaryWidget = hoistCmp.factory({
 });
 
 class ConditionsSummaryModel extends HoistModel {
-    @managed gridModel: GridModel;
+    @lookup((m: WeatherDashModel) => !!m.isWeatherDashModel) dashModel: WeatherDashModel;
 
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @managed gridModel: GridModel;
 
     override onLinked() {
         this.gridModel = this.createGridModel();
 
         this.addReaction({
-            track: () => AppModel.instance.weatherDashModel.forecast,
+            track: () => this.dashModel.forecast,
             run: data => this.updateGrid(data),
             fireImmediately: true
         });

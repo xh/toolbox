@@ -1,20 +1,16 @@
 import {box, filler, img, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses, XH} from '@xh/hoist/core';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, bindableRef, observable, observableRef} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {
-    fileChooser,
-    FileChooserConfig,
-    FileChooserModel,
-    FileChooserProps
-} from '@xh/hoist/desktop/cmp/filechooser';
+import type {FileChooserConfig, FileChooserProps} from '@xh/hoist/desktop/cmp/filechooser';
+import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {picker, segmentedControl, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import {isEmpty} from 'lodash';
-import {MouseEvent} from 'react';
+import type {MouseEvent} from 'react';
 import {
     demoGrid,
     demoPanel,
@@ -22,11 +18,9 @@ import {
     demoRow,
     demoSection,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../common';
+    raw
+} from '../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 
 // Use decimal MB so the size hint (formatted via `filesize`, decimal by default) reads cleanly.
 const MB = 1_000_000;
@@ -317,13 +311,7 @@ class ImagePreviewModel extends HoistModel {
     @lookup(() => FileChooserModel)
     chooserModel: FileChooserModel;
 
-    @observable
-    objectUrl: string = null;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @observable accessor objectUrl: string = null;
 
     override onLinked() {
         super.onLinked();
@@ -347,24 +335,19 @@ class ImagePreviewModel extends HoistModel {
 }
 
 class FileChooserPanelModel extends HoistModel {
-    @bindable
-    disabled = false;
+    @bindable accessor disabled = false;
 
-    @bindable.ref
-    acceptedTypes: string[] = ['.png', '.txt'];
+    @bindableRef accessor acceptedTypes: string[] = ['.png', '.txt'];
 
-    @bindable
-    maxFiles: number = null;
+    @bindable accessor maxFiles: number = null;
 
-    @bindable
-    maxFileSize: number = null;
+    @bindable accessor maxFileSize: number = null;
 
-    @bindable
-    placement: 'left' | 'top' | 'hidden' = 'left';
+    @bindable accessor placement: 'left' | 'top' | 'hidden' = 'left';
 
     @managed
-    @observable.ref
-    chooserModel: FileChooserModel;
+    @observableRef
+    accessor chooserModel: FileChooserModel;
 
     @managed
     basicChooserModel = new FileChooserModel({maxFiles: 1});
@@ -374,7 +357,6 @@ class FileChooserPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.createChooserModel();
 
         // Re-create the chooser whenever a configured limit changes - accept / maxFiles /
