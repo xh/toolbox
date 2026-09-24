@@ -70,7 +70,9 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
     'docs/routing.md': [{title: 'Simple Routing', route: `${R}.other.simpleRouting`}],
     'appcontainer/README.md': [
         {title: 'App Notifications', route: `${R}.other.appNotifications`},
-        {title: 'Popups', route: `${R}.other.popups`}
+        {title: 'Banners', route: `${R}.other.banners`},
+        {title: 'Messages', route: `${R}.other.messages`},
+        {title: 'Toast', route: `${R}.other.toast`}
     ],
     'inspector/README.md': [{title: 'Inspector', route: `${R}.other.inspector`}],
     'cmp/README.md': [

@@ -65,6 +65,9 @@ import {tileFrameContainerPanel} from './tabs/layout/TileFrameContainerPanel';
 import {vboxContainerPanel} from './tabs/layout/VBoxContainerPanel';
 import {mobileTab} from './tabs/mobile/MobileTab';
 import {appNotificationsPanel} from './tabs/other/AppNotificationsPanel';
+import {bannersPanel} from './tabs/other/popups/BannersPanel';
+import {messagesPanel} from './tabs/other/popups/MessagesPanel';
+import {toastPanel} from './tabs/other/popups/ToastPanel';
 import {buttonsPanel} from './tabs/other/Buttons';
 import {clockPanel} from './tabs/other/ClockPanel';
 import {customPackagePanel} from './tabs/other/CustomPackagePanel';
@@ -78,7 +81,6 @@ import {markdownPanel} from './tabs/other/MarkdownPanel';
 import {numberFormatsPanel} from './tabs/other/formats/NumberFormatsPanel';
 import {pinPadPanel} from './tabs/other/PinPadPanel';
 import {placeholderPanel} from './tabs/other/PlaceholderPanel';
-import {popupsPanel} from './tabs/other/PopupsPanel';
 import {relativeTimestampPanel} from './tabs/other/relativetimestamp/RelativeTimestampPanel';
 import {simpleRoutingPanel} from './tabs/other/routing/SimpleRoutingPanel';
 import {basicPanel} from './tabs/panels/BasicPanel';
@@ -328,6 +330,7 @@ export class AppModel extends BaseAppModel {
                         path: '/other',
                         children: [
                             {name: 'appNotifications', path: '/appNotifications'},
+                            {name: 'banners', path: '/banners'},
                             {name: 'buttons', path: '/buttons'},
                             {name: 'clock', path: '/clock'},
                             {name: 'customPackage', path: '/customPackage'},
@@ -339,15 +342,16 @@ export class AppModel extends BaseAppModel {
                             {name: 'inspector', path: '/inspector'},
                             {name: 'jsx', path: '/jsx'},
                             {name: 'markdown', path: '/markdown'},
+                            {name: 'messages', path: '/messages'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'placeholder', path: '/placeholder'},
-                            {name: 'popups', path: '/popups'},
                             {
                                 name: 'simpleRouting',
                                 path: '/simpleRouting',
                                 children: [{name: 'recordId', path: '/:recordId'}]
                             },
-                            {name: 'timestamp', path: '/timestamp'}
+                            {name: 'timestamp', path: '/timestamp'},
+                            {name: 'toast', path: '/toast'}
                         ]
                     },
                     {
@@ -554,6 +558,7 @@ export class AppModel extends BaseAppModel {
                     switcher,
                     tabs: [
                         {id: 'appNotifications', content: appNotificationsPanel},
+                        {id: 'banners', content: bannersPanel},
                         {id: 'buttons', content: buttonsPanel},
                         {id: 'clock', content: clockPanel},
                         {id: 'customPackage', content: customPackagePanel},
@@ -569,11 +574,12 @@ export class AppModel extends BaseAppModel {
                         {id: 'icons', content: iconsPanel},
                         {id: 'inspector', content: inspectorPanel},
                         {id: 'markdown', content: markdownPanel},
+                        {id: 'messages', content: messagesPanel},
                         {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                         {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
-                        {id: 'popups', content: popupsPanel},
                         {id: 'simpleRouting', content: simpleRoutingPanel},
-                        {id: 'timestamp', content: relativeTimestampPanel}
+                        {id: 'timestamp', content: relativeTimestampPanel},
+                        {id: 'toast', content: toastPanel}
                     ]
                 }
             },
