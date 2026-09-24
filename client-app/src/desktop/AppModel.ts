@@ -481,58 +481,74 @@ export class AppModel extends BaseAppModel {
                 title: 'Forms + Inputs',
                 icon: Icon.edit(),
                 content: {
-                    switcher,
+                    switcher: {
+                        ...switcher,
+                        groups: [
+                            {key: 'forms', title: 'Forms'},
+                            {key: 'inputs', title: 'All Inputs'},
+                            {key: 'otherControls', title: 'Other Controls'}
+                        ]
+                    },
                     // Concepts first, then the All Inputs index and one page per input.
                     tabs: [
-                        {id: 'form', title: 'FormModel', content: formPanel},
-                        {id: 'toolbarForms', title: 'Forms in Toolbars', content: toolbarFormPanel},
+                        {id: 'form', title: 'FormModel', group: 'forms', content: formPanel},
                         {
-                            id: 'inputs',
-                            title: 'All Inputs',
-                            icon: Icon.grip(),
-                            content: inputsIndexPanel
+                            id: 'toolbarForms',
+                            title: 'Forms in Toolbars',
+                            group: 'forms',
+                            content: toolbarFormPanel
                         },
-                        {id: 'textInput', title: 'TextInput', content: textInputPanel},
-                        {id: 'textArea', title: 'TextArea', content: textAreaPanel},
-                        {id: 'numberInput', title: 'NumberInput', content: numberInputPanel},
-                        {id: 'dateInput', title: 'DateInput', content: dateInputPanel},
-                        {id: 'select', title: 'Select', content: selectPanel},
-                        {id: 'picker', title: 'Picker', content: pickerPanel},
-                        {
-                            id: 'segmentedControl',
-                            title: 'SegmentedControl',
-                            content: segmentedControlPanel
-                        },
-                        {
-                            id: 'buttonGroupInput',
-                            title: 'ButtonGroupInput',
-                            content: buttonGroupInputPanel
-                        },
-                        {id: 'radioInput', title: 'RadioInput', content: radioInputPanel},
-                        {id: 'toggles', title: 'Checkbox & Switch', content: togglesPanel},
-                        {id: 'slider', title: 'Slider', content: sliderPanel},
-                        {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},
-                        {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel},
+                        ...[
+                            {
+                                id: 'inputs',
+                                title: 'Overview',
+                                icon: Icon.grip(),
+                                content: inputsIndexPanel
+                            },
+                            {id: 'textInput', title: 'TextInput', content: textInputPanel},
+                            {id: 'textArea', title: 'TextArea', content: textAreaPanel},
+                            {id: 'numberInput', title: 'NumberInput', content: numberInputPanel},
+                            {id: 'dateInput', title: 'DateInput', content: dateInputPanel},
+                            {id: 'select', title: 'Select', content: selectPanel},
+                            {id: 'picker', title: 'Picker', content: pickerPanel},
+                            {
+                                id: 'segmentedControl',
+                                title: 'SegmentedControl',
+                                content: segmentedControlPanel
+                            },
+                            {
+                                id: 'buttonGroupInput',
+                                title: 'ButtonGroupInput',
+                                content: buttonGroupInputPanel
+                            },
+                            {id: 'radioInput', title: 'RadioInput', content: radioInputPanel},
+                            {id: 'toggles', title: 'Checkbox & Switch', content: togglesPanel},
+                            {id: 'slider', title: 'Slider', content: sliderPanel},
+                            {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},
+                            {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel}
+                        ].map(it => ({...it, group: 'inputs'})),
                         // Controls that take their own model rather than a `bind`, so they are
                         // not `HoistInput`s and cannot sit inside a FormField. Their own gallery
                         // leads them, keeping All Inputs an exact list of the HoistInput set.
-                        {
-                            id: 'otherControls',
-                            title: 'Other Controls',
-                            icon: Icon.grip(),
-                            content: otherControlsPanel
-                        },
-                        {
-                            id: 'dateRangePicker',
-                            title: 'DateRangePicker',
-                            content: dateRangePickerPanel
-                        },
-                        {
-                            id: 'leftRightChooser',
-                            title: 'LeftRightChooser',
-                            content: leftRightChooserPanel
-                        },
-                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel}
+                        ...[
+                            {
+                                id: 'otherControls',
+                                title: 'Overview',
+                                icon: Icon.grip(),
+                                content: otherControlsPanel
+                            },
+                            {
+                                id: 'dateRangePicker',
+                                title: 'DateRangePicker',
+                                content: dateRangePickerPanel
+                            },
+                            {
+                                id: 'leftRightChooser',
+                                title: 'LeftRightChooser',
+                                content: leftRightChooserPanel
+                            },
+                            {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel}
+                        ].map(it => ({...it, group: 'otherControls'}))
                     ]
                 }
             },
