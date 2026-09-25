@@ -24,7 +24,7 @@ export const bannersPanel = hoistCmp.factory({
         const {pgMessage, pgIcon, pgIntent, pgEnableClose} = model;
 
         return wrapper({
-            title: 'Banners',
+            title: 'App Banners',
             icon: Icon.flag(),
             description: [
                 'Banners are persistent, non-modal notifications shown app-wide across the top',
