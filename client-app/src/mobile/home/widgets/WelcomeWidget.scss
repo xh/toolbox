@@ -4,18 +4,18 @@
     font-weight: 500;
     line-height: 1.25;
     color: var(--xh-text-color);
-    margin: var(--xh-pad-half-px) 0;
+    margin: var(--xh-spacing-half) 0;
   }
 
   p {
-    margin: 0 0 var(--xh-pad-px);
-    font-size: var(--xh-font-size-small-px);
+    margin: 0 0 var(--xh-spacing);
+    font-size: var(--xh-font-size-small);
     line-height: 1.5;
     color: var(--xh-text-color-muted);
   }
 
   &__ctas {
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     align-items: stretch;
   }
 

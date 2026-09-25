@@ -1,27 +1,27 @@
 // Shared list styling for the docs drill-down screens (corpus category list + category doc list).
 .tb-docs-list {
   &__header {
-    padding: var(--xh-pad-px);
+    padding: var(--xh-spacing);
     border-bottom: var(--xh-border-solid);
   }
 
   &__header-title {
-    font-size: var(--xh-font-size-large-px);
+    font-size: var(--xh-font-size-large);
     font-weight: 600;
     color: var(--xh-text-color);
   }
 
   &__header-sub {
     margin-top: 2px;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
   &__row {
     align-items: center;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     min-height: 52px;
-    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+    padding: var(--xh-spacing-half) var(--xh-spacing);
     border-bottom: var(--xh-border-solid);
     cursor: pointer;
 
@@ -42,13 +42,13 @@
   }
 
   &__row-title {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     color: var(--xh-text-color);
   }
 
   &__row-subtitle {
     margin-top: 1px;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -57,7 +57,7 @@
 
   &__row-count {
     flex: none;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 

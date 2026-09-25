@@ -51,7 +51,7 @@ body.xh-app {
 .xh-appbar.xh-toolbar {
   // Keep the back button's trailing padding tight - it owns the left slot on sub-pages.
   .xh-appbar-left .xh-button {
-    padding-right: var(--xh-pad-half-px);
+    padding-right: var(--xh-spacing-half);
   }
 
   // The combined hamburger + logo button. Its contents are small, so we grow the button's padding
@@ -61,10 +61,10 @@ body.xh-app {
   .xh-appbar-left .tb-appbar-hamburger.xh-button {
     align-self: stretch;
     height: auto;
-    margin-top: calc(-1 * var(--xh-pad-half-px));
-    margin-bottom: calc(-1 * var(--xh-pad-half-px));
-    padding-left: var(--xh-pad-px);
-    padding-right: var(--xh-pad-px);
+    margin-top: calc(-1 * var(--xh-spacing-half));
+    margin-bottom: calc(-1 * var(--xh-spacing-half));
+    padding-left: var(--xh-spacing);
+    padding-right: var(--xh-spacing);
 
     .tb-appbar-logo {
       display: block;
@@ -76,20 +76,20 @@ body.xh-app {
 
 .tb-page {
   .tb-card {
-    margin: var(--xh-pad-double-px);
-    padding: var(--xh-pad-px);
+    margin: var(--xh-spacing-double);
+    padding: var(--xh-spacing);
     background: var(--xh-bg);
     border: var(--xh-border-solid);
-    border-radius: var(--xh-border-radius-px);
+    border-radius: var(--xh-border-radius);
     box-shadow: 0 1px 12px rgba(0, 0, 0, 0.2);
 
     &__title {
-      padding: 0 0 var(--xh-pad-px);
+      padding: 0 0 var(--xh-spacing);
       font-size: 17px;
     }
 
     &__body {
-      padding: 0 0 var(--xh-pad-px);
+      padding: 0 0 var(--xh-spacing);
       line-height: 1.5;
     }
   }
@@ -99,14 +99,14 @@ body.xh-app {
   .tb-detail-row {
     display: flex;
     background-color: var(--xh-grid-bg);
-    font-size: var(--xh-grid-font-size-px);
+    font-size: var(--xh-grid-font-size);
 
     &:nth-child(even) {
-      background-color: var(--xh-grid-bg-odd);
+      background-color: var(--xh-grid-odd-row-bg);
     }
 
     & > div {
-      padding: var(--xh-pad-half-px) var(--xh-pad-px);
+      padding: var(--xh-spacing-half) var(--xh-spacing);
 
       &:first-child {
         flex: 1;
@@ -118,6 +118,6 @@ body.xh-app {
 .tb-description {
   background-color: var(--xh-bg-alt);
   border-bottom: var(--xh-border-solid);
-  font-size: var(--xh-font-size-small-px);
-  padding: var(--xh-pad-px);
+  font-size: var(--xh-font-size-small);
+  padding: var(--xh-spacing);
 }

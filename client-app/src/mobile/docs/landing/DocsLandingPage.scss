@@ -2,8 +2,8 @@
   &__body {
     display: flex;
     flex-direction: column;
-    gap: calc(var(--xh-pad-px) + var(--xh-pad-half-px));
-    padding: var(--xh-pad-px) var(--xh-pad-double-px);
+    gap: calc(var(--xh-spacing) + var(--xh-spacing-half));
+    padding: var(--xh-spacing) var(--xh-spacing-double);
   }
 
   //------------------------
@@ -11,12 +11,12 @@
   //------------------------
   &__search {
     align-items: center;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
     height: 40px;
-    padding: 0 var(--xh-pad-px);
+    padding: 0 var(--xh-spacing);
     background: var(--xh-bg-alt);
     border: var(--xh-border-solid);
-    border-radius: var(--xh-border-radius-px);
+    border-radius: var(--xh-border-radius);
     color: var(--xh-text-color-muted);
     cursor: pointer;
 
@@ -30,14 +30,14 @@
   }
 
   &__search-text {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
   }
 
   //------------------------
   // Intro
   //------------------------
   &__intro {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     color: var(--xh-text-color-muted);
     line-height: 1.4;
   }
@@ -48,16 +48,16 @@
   &__cards {
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
   }
 
   &__card {
     align-items: center;
-    gap: var(--xh-pad-px);
-    padding: var(--xh-pad-px);
+    gap: var(--xh-spacing);
+    padding: var(--xh-spacing);
     background: var(--xh-bg-alt);
     border: var(--xh-border-solid);
-    border-radius: var(--xh-border-radius-px);
+    border-radius: var(--xh-border-radius);
     cursor: pointer;
 
     &:active {
@@ -73,7 +73,7 @@
     width: 44px;
     height: 44px;
     font-size: 20px;
-    border-radius: var(--xh-border-radius-px);
+    border-radius: var(--xh-border-radius);
     background: var(--xh-bg);
     color: var(--xh-orange);
   }
@@ -83,19 +83,19 @@
   }
 
   &__card-label {
-    font-size: var(--xh-font-size-large-px);
+    font-size: var(--xh-font-size-large);
     font-weight: 600;
     color: var(--xh-text-color);
   }
 
   &__card-tagline {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
   &__card-count {
     margin-top: 2px;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
@@ -108,8 +108,8 @@
   // Recently viewed
   //------------------------
   &__section-title {
-    margin: var(--xh-pad-half-px) 0;
-    font-size: var(--xh-font-size-small-px);
+    margin: var(--xh-spacing-half) 0;
+    font-size: var(--xh-font-size-small);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -118,9 +118,9 @@
 
   &__recent-row {
     align-items: center;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     height: 52px;
-    padding: 0 var(--xh-pad-px);
+    padding: 0 var(--xh-spacing);
     border-bottom: var(--xh-border-solid);
     cursor: pointer;
 
@@ -139,7 +139,7 @@
   }
 
   &__recent-title {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     color: var(--xh-text-color);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -147,7 +147,7 @@
   }
 
   &__recent-src {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 

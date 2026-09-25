@@ -29,7 +29,7 @@
   //------------------------
   &__peek {
     align-items: center;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     width: 100%;
   }
 
@@ -43,25 +43,25 @@
   }
 
   &__peek-title {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     font-weight: 600;
     color: var(--xh-text-color);
   }
 
   &__peek-hint {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
   &__count {
     flex: none;
     align-items: center;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
     padding: 2px 10px;
     border-radius: 999px;
     background: var(--xh-bg);
     border: var(--xh-border-solid);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     font-weight: 600;
     color: var(--xh-text-color);
   }
@@ -74,20 +74,20 @@
   // Expanded sheet body
   //------------------------
   &__segments {
-    margin: var(--xh-pad-px) 0;
+    margin: var(--xh-spacing) 0;
   }
 
   //------------------------
   // Info segment
   //------------------------
   &__info {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     line-height: 1.5;
     color: var(--xh-text-color);
   }
 
   &__empty {
-    padding: var(--xh-pad-px) 0;
+    padding: var(--xh-spacing) 0;
     color: var(--xh-text-color-muted);
     font-style: italic;
   }
@@ -98,11 +98,11 @@
   // Full-width action buttons (exampleAction) sit directly in the options list with no row wrapper,
   // so give them breathing room from the option rows above and from each other.
   &__options > .xh-button {
-    margin-top: var(--xh-pad-double-px);
+    margin-top: var(--xh-spacing-double);
   }
 
   &__option {
-    padding: var(--xh-pad-px) 0;
+    padding: var(--xh-spacing) 0;
     border-bottom: var(--xh-border-solid);
 
     &:last-child {
@@ -112,18 +112,18 @@
 
   &__option-row {
     align-items: center;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     min-height: 32px;
   }
 
   &__option-label {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     color: var(--xh-text-color);
   }
 
   &__option-info {
-    margin-top: var(--xh-pad-half-px);
-    font-size: var(--xh-font-size-small-px);
+    margin-top: var(--xh-spacing-half);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
@@ -132,8 +132,8 @@
   //------------------------
   &__resource {
     align-items: center;
-    gap: var(--xh-pad-px);
-    padding: var(--xh-pad-px) 0;
+    gap: var(--xh-spacing);
+    padding: var(--xh-spacing) 0;
     border-bottom: var(--xh-border-solid);
     cursor: pointer;
 
@@ -150,12 +150,12 @@
   }
 
   &__resource-link {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     color: var(--xh-intent-primary);
   }
 
   &__resource-note {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 

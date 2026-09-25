@@ -18,8 +18,8 @@
     // Cap the reading width and center it - keeps line lengths comfortable on wide displays.
     max-width: 1040px;
     margin: 0 auto;
-    padding: var(--xh-pad-px);
-    gap: var(--xh-pad-px);
+    padding: var(--xh-spacing);
+    gap: var(--xh-spacing);
     align-items: stretch;
     cursor: pointer;
 
@@ -39,7 +39,7 @@
     }
 
     &__title {
-      font-size: var(--xh-font-size-large-px);
+      font-size: var(--xh-font-size-large);
       font-weight: 600;
       line-height: 1.3;
       color: var(--xh-text-color);
@@ -51,7 +51,7 @@
     }
 
     &__desc {
-      font-size: var(--xh-font-size-px);
+      font-size: var(--xh-font-size);
       line-height: 1.4;
       color: var(--xh-text-color-muted);
       display: -webkit-box;
@@ -65,7 +65,7 @@
       flex: 0 0 auto;
       width: 200px;
       height: 100%;
-      border-radius: calc(var(--xh-border-radius-px) * 1.5);
+      border-radius: calc(var(--xh-border-radius) * 1.5);
     }
   }
 }
@@ -83,20 +83,20 @@
     overflow: auto;
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-px);
-    padding: var(--xh-pad-double-px);
+    gap: var(--xh-spacing);
+    padding: var(--xh-spacing-double);
   }
 
   // Larger than the list title, shown in full (no clamp).
   &__title {
-    font-size: calc(var(--xh-font-size-large-px) * 1.15);
+    font-size: calc(var(--xh-font-size-large) * 1.15);
     font-weight: 600;
     line-height: 1.3;
     color: var(--xh-text-color);
   }
 
   &__body {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     line-height: 1.5;
     color: var(--xh-text-color);
   }
@@ -104,7 +104,7 @@
   &__actions {
     display: flex;
     justify-content: center;
-    margin-top: var(--xh-pad-double-px);
+    margin-top: var(--xh-spacing-double);
 
     .xh-button {
       min-width: 220px;
@@ -117,7 +117,7 @@
 //------------------------
 .news-item__meta,
 .tb-news-detail__meta {
-  font-size: var(--xh-font-size-small-px);
+  font-size: var(--xh-font-size-small);
   text-transform: uppercase;
   color: var(--xh-text-color-accent);
 }

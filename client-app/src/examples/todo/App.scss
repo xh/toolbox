@@ -1,12 +1,12 @@
 body.xh-app {
-  --xh-grid-large-font-size: 16;
+  --xh-grid-large-font-size: 16px;
 
   .large-actions {
     font-size: 24px;
   }
 
   .xh-record-action-bar * {
-    font-size: var(--xh-font-size-large-px);
+    font-size: var(--xh-font-size-large);
   }
 
   // A size-managed floating card, centered by its parent frame over the tiled background (it is
@@ -23,6 +23,6 @@ body.xh-app {
   }
 
   .todo-form {
-    padding: var(--xh-pad-px);
+    padding: var(--xh-spacing);
   }
 }

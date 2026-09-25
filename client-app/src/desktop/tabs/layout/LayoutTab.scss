@@ -1,12 +1,12 @@
 .tb-layout-box {
   border: var(--xh-border-solid);
   font-family: var(--xh-font-family-mono);
-  padding: var(--xh-pad-px);
+  padding: var(--xh-spacing);
 }
 
 .tb-layout-tabs {
   .xh-tab {
-    padding: var(--xh-pad-px);
+    padding: var(--xh-spacing);
   }
 
   .tb-layout-tabs__child {

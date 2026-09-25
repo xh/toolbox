@@ -1,6 +1,6 @@
 .tb-welcome-widget {
   &__logo {
-    padding: var(--xh-pad-double-px);
+    padding: var(--xh-spacing-double);
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -17,14 +17,14 @@
   &__content {
     flex: 1;
     overflow-y: auto;
-    padding: var(--xh-pad-double-px);
+    padding: var(--xh-spacing-double);
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
 
     p {
       margin: 0;
-      font-size: var(--xh-font-size-large-px);
+      font-size: var(--xh-font-size-large);
       line-height: 1.5;
     }
   }
@@ -35,8 +35,8 @@
   }
 
   &__ctas {
-    gap: var(--xh-pad-px);
-    margin-top: var(--xh-pad-px);
+    gap: var(--xh-spacing);
+    margin-top: var(--xh-spacing);
     flex: none;
     flex-wrap: wrap;
   }

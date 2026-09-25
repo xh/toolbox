@@ -30,18 +30,18 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
     color: var(--xh-text-color-muted);
     text-align: center;
-    padding: var(--xh-pad-double-px);
+    padding: var(--xh-spacing-double);
 
     p {
       margin: 0;
-      font-size: var(--xh-font-size-px);
+      font-size: var(--xh-font-size);
     }
   }
 
   &__empty-hint {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
   }
 }

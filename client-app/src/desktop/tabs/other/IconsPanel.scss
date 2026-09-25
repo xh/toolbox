@@ -10,8 +10,8 @@
   overflow: auto;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: var(--xh-pad-px);
-  padding: var(--xh-pad-px);
+  gap: var(--xh-spacing);
+  padding: var(--xh-spacing);
   align-content: start;
 }
 
@@ -19,8 +19,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--xh-pad-half-px);
-  padding: var(--xh-pad-px) var(--xh-pad-half-px);
+  gap: var(--xh-spacing-half);
+  padding: var(--xh-spacing) var(--xh-spacing-half);
   border: var(--xh-border-solid);
   border-radius: 6px;
   cursor: pointer;
@@ -48,7 +48,7 @@
 
   &__name {
     font-family: var(--xh-font-family-mono);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
     text-align: center;
     line-height: 1.3;

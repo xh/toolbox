@@ -5,7 +5,7 @@
     iframe {
       background-color: var(--xh-bg-alt);
       border: 3px solid var(--xh-border-color);
-      border-radius: var(--xh-border-radius-px);
+      border-radius: var(--xh-border-radius);
     }
   }
 
@@ -15,13 +15,13 @@
   }
 
   &__app-tile {
-    margin: var(--xh-pad-double-px) var(--xh-pad-px) var(--xh-pad-px) var(--xh-pad-px);
+    margin: var(--xh-spacing-double) var(--xh-spacing) var(--xh-spacing) var(--xh-spacing);
     border: var(--xh-border-solid);
     border-radius: 10px;
     cursor: pointer;
 
     &__contents {
-      padding: var(--xh-pad-px);
+      padding: var(--xh-spacing);
     }
 
     &:hover,

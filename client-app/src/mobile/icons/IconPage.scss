@@ -1,16 +1,16 @@
 .tb-icon-page {
   .tb-icon-page__count {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
-    padding-right: var(--xh-pad-half-px);
+    padding-right: var(--xh-spacing-half);
   }
 
   // Wrapping grid of equal-size tiles.
   &__gallery {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-    gap: var(--xh-pad-px);
-    padding: var(--xh-pad-px);
+    gap: var(--xh-spacing);
+    padding: var(--xh-spacing);
   }
 
   &__tile {
@@ -18,8 +18,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--xh-pad-half-px);
-    padding: var(--xh-pad-px) var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
+    padding: var(--xh-spacing) var(--xh-spacing-half);
     border: var(--xh-border-solid);
     border-radius: 8px;
     background-color: var(--xh-bg-alt);
@@ -43,7 +43,7 @@
     width: 100%;
     text-align: center;
     font-family: var(--xh-font-family-mono);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
     white-space: nowrap;
     overflow: hidden;

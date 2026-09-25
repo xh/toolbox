@@ -1,9 +1,9 @@
 .tb-form-page {
-  padding: var(--xh-pad-px);
+  padding: var(--xh-spacing);
 
   // Room to breathe: label-above fields on a steady vertical rhythm.
   .xh-form-field {
-    margin: 0 0 var(--xh-pad-double-px);
+    margin: 0 0 var(--xh-spacing-double);
 
     &:last-of-type {
       margin: 0;
@@ -20,17 +20,17 @@
   .xh-form-field-set {
     border: none;
     padding: 0;
-    margin: 0 0 var(--xh-pad-double-px);
+    margin: 0 0 var(--xh-spacing-double);
 
     > legend,
     .xh-form-field-set__header {
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      font-size: var(--xh-font-size-small-px);
+      font-size: var(--xh-font-size-small);
       font-weight: 600;
       color: var(--xh-text-color-muted);
-      padding-bottom: var(--xh-pad-half-px);
-      margin-bottom: var(--xh-pad-px);
+      padding-bottom: var(--xh-spacing-half);
+      margin-bottom: var(--xh-spacing);
       border-bottom: var(--xh-border-solid);
     }
   }
@@ -38,7 +38,7 @@
   // Compact density tightens the vertical rhythm.
   &--compact {
     .xh-form-field {
-      margin-bottom: var(--xh-pad-px);
+      margin-bottom: var(--xh-spacing);
     }
   }
 }

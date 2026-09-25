@@ -242,7 +242,7 @@ export const [DemoToolbar, demoToolbar] = hoistCmp.withFactory<DemoToolbarProps>
             info: compact
                 ? 'compact: true - smaller type and controls throughout'
                 : 'Default toolbar height, 30px controls',
-            chip: `${readCssVar(compact ? '--xh-tbar-compact-min-size' : '--xh-tbar-min-size')}px`,
+            chip: readCssVar(compact ? '--xh-toolbar-compact-min-size' : '--xh-toolbar-min-size'),
             item: toolbar({compact, items: children})
         });
     }

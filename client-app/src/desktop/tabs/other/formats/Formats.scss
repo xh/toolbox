@@ -8,7 +8,7 @@
 
         &:nth-child(odd) {
           td {
-            background-color: var(--xh-grid-bg-odd);
+            background-color: var(--xh-grid-odd-row-bg);
           }
         }
       }

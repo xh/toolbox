@@ -1,16 +1,16 @@
 .tb-app-notifications {
   > .xh-panel {
     border: var(--xh-border-solid);
-    margin: var(--xh-pad-double-px);
+    margin: var(--xh-spacing-double);
     width: 325px;
     height: 325px;
 
     p {
-      margin: var(--xh-pad-px);
+      margin: var(--xh-spacing);
     }
 
     button {
-      padding: var(--xh-pad-px);
+      padding: var(--xh-spacing);
     }
   }
 }
