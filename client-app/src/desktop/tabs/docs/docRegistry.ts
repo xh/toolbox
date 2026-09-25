@@ -47,7 +47,8 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
         {title: 'Toolbars', route: `${R}.panels.toolbars`},
         {title: 'Panel Sizing', route: `${R}.panels.sizing`},
         {title: 'Mask', route: `${R}.panels.mask`},
-        {title: 'Loading Indicator', route: `${R}.panels.loadingIndicator`}
+        {title: 'Loading Indicator', route: `${R}.panels.loadingIndicator`},
+        {title: 'Banner', route: `${R}.panels.banner`}
     ],
     'desktop/cmp/dash/README.md': [
         {title: 'DashContainer', route: `${R}.layout.dashContainer`},

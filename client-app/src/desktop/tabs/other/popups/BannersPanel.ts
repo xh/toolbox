@@ -1,7 +1,9 @@
-import {hbox} from '@xh/hoist/cmp/layout';
+import {hbox, placeholder, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, type BannerSpec, type Intent, XH} from '@xh/hoist/core';
+import {banner} from '@xh/hoist/desktop/cmp/banner';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {intentInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {
@@ -27,12 +29,18 @@ export const bannersPanel = hoistCmp.factory({
             title: 'Banners',
             icon: Icon.flag(),
             description: [
-                'Banners are persistent, non-modal notifications shown app-wide across the top',
-                'of the viewport until dismissed - for outages, maintenance windows or anything',
-                'the user should keep seeing while they work.',
+                'Banners are persistent, non-modal notifications that stay in view while the user',
+                'works. They come in two forms.',
                 '',
-                'Show one via `XH.showBanner()` and remove it via `XH.hideBanner()`. Banners',
-                'are keyed by `category`, so an app can manage several independently.'
+                '**App-wide** banners show across the top of the viewport until dismissed - for',
+                'outages, maintenance windows, or new versions. Show one via `XH.showBanner()`',
+                'and remove it via `XH.hideBanner()`. They are keyed by `category`, so an app can',
+                'manage several independently.',
+                '',
+                '**Component** banners flag a state local to part of the app, such as stale data',
+                'in one grid. Render `banner()` anywhere, or set the `banner` prop on a `Panel`.',
+                'They are controlled - the app decides when to show them. See Panels > Banner',
+                'for the Panel integration.'
             ],
             links: [
                 {
@@ -47,6 +55,10 @@ export const bannersPanel = hoistCmp.factory({
                 {
                     url: '$HR/core/XH.ts',
                     notes: 'Top-level APIs: .showBanner(), .hideBanner().'
+                },
+                {
+                    url: '$HR/desktop/cmp/banner/Banner.ts',
+                    notes: 'Component banner, also used to render app-wide banners.'
                 }
             ],
             options: wrapperOptionGroup({
@@ -189,7 +201,8 @@ export const bannersPanel = hoistCmp.factory({
                                 })
                             ]
                         })
-                    })
+                    }),
+                    componentBanners()
                 ]
             })
         });
@@ -197,12 +210,105 @@ export const bannersPanel = hoistCmp.factory({
 });
 
 //------------------------------------------------------------------
+// Component banners
+//------------------------------------------------------------------
+const componentBanners = hoistCmp.factory<BannersPanelModel>(({model}) =>
+    demoSection({
+        title: 'Component Banners',
+        note: 'Rendered in place via banner() or Panel.banner.',
+        items: [
+            demoGrid({
+                columns: 2,
+                items: [
+                    demoRow({
+                        label: 'Intents',
+                        info: 'Tinted background, with a default icon per intent',
+                        item: vbox({
+                            flex: 1,
+                            gap: 6,
+                            items: [
+                                banner({intent: 'primary', message: 'A new report is available.'}),
+                                banner({intent: 'success', message: 'All trades reconciled.'}),
+                                banner({intent: 'warning', message: 'Prices are **delayed**.'}),
+                                banner({intent: 'danger', message: 'Feed disconnected.'}),
+                                banner({intent: null, message: 'Neutral, with no default icon.'})
+                            ]
+                        })
+                    }),
+                    demoRow({
+                        label: 'Options',
+                        info: 'filled, compact, actionButtonProps, onClose',
+                        item: vbox({
+                            flex: 1,
+                            gap: 6,
+                            items: [
+                                banner({
+                                    intent: 'warning',
+                                    filled: true,
+                                    message: 'Filled - the style used by app-wide banners.'
+                                }),
+                                banner({
+                                    intent: 'primary',
+                                    compact: true,
+                                    message: 'Compact - for dense layouts and bottom bars.'
+                                }),
+                                banner({
+                                    intent: 'warning',
+                                    message: 'Positions are 15 minutes old.',
+                                    actionButtonProps: {
+                                        text: 'Refresh',
+                                        icon: Icon.refresh(),
+                                        onClick: () => XH.toast('Action button clicked!')
+                                    }
+                                }),
+                                banner({
+                                    omit: !model.showClosable,
+                                    intent: 'success',
+                                    message: 'Closable - the app hides it via onClose.',
+                                    onClose: () => (model.showClosable = false)
+                                }),
+                                button({
+                                    omit: model.showClosable,
+                                    text: 'Restore closable banner',
+                                    icon: Icon.reset(),
+                                    onClick: () => (model.showClosable = true)
+                                })
+                            ]
+                        })
+                    })
+                ]
+            }),
+            demoRow({
+                label: 'In a Panel',
+                info: "Panel's banner prop places it below the top toolbar, above the content",
+                item: panel({
+                    className: 'tbox-popups__banner-panel',
+                    title: 'Positions',
+                    icon: Icon.portfolio(),
+                    height: 180,
+                    width: 560,
+                    banner: {
+                        intent: 'warning',
+                        message: 'Positions are **read-only** while the market is closed.'
+                    },
+                    tbar: [textInput({placeholder: 'Search...', width: 160})],
+                    item: placeholder('Panel contents')
+                })
+            })
+        ]
+    })
+);
+
+//------------------------------------------------------------------
 // Model
 //------------------------------------------------------------------
 class BannersPanelModel extends HoistModel {
     // Playground props
-    @bindable accessor pgMessage = 'This is a Banner.';
+    @bindable accessor pgMessage = 'This is an _app-wide_ banner showing an **important message**.';
     @bindable accessor pgIcon = false;
     @bindable accessor pgIntent: Intent = 'warning';
     @bindable accessor pgEnableClose = true;
+
+    // Component banner demo
+    @bindable accessor showClosable = true;
 }
