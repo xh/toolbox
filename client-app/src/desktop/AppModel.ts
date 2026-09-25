@@ -83,6 +83,7 @@ import {pinPadPanel} from './tabs/other/PinPadPanel';
 import {placeholderPanel} from './tabs/other/PlaceholderPanel';
 import {relativeTimestampPanel} from './tabs/other/relativetimestamp/RelativeTimestampPanel';
 import {simpleRoutingPanel} from './tabs/other/routing/SimpleRoutingPanel';
+import {bannerPanel} from './tabs/panels/BannerPanel';
 import {basicPanel} from './tabs/panels/BasicPanel';
 import {loadingIndicatorPanel} from './tabs/panels/LoadingIndicatorPanel';
 import {maskPanel} from './tabs/panels/MaskPanel';
@@ -262,7 +263,8 @@ export class AppModel extends BaseAppModel {
                             {name: 'toolbars', path: '/toolbars'},
                             {name: 'sizing', path: '/sizing'},
                             {name: 'mask', path: '/mask'},
-                            {name: 'loadingIndicator', path: '/loadingIndicator'}
+                            {name: 'loadingIndicator', path: '/loadingIndicator'},
+                            {name: 'banner', path: '/banner'}
                         ]
                     },
                     {
@@ -447,7 +449,8 @@ export class AppModel extends BaseAppModel {
                         {id: 'toolbars', content: toolbarPanel},
                         {id: 'sizing', content: panelSizingPanel},
                         {id: 'mask', content: maskPanel},
-                        {id: 'loadingIndicator', content: loadingIndicatorPanel}
+                        {id: 'loadingIndicator', content: loadingIndicatorPanel},
+                        {id: 'banner', content: bannerPanel}
                     ]
                 }
             },
