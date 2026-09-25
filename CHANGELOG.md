@@ -16,7 +16,7 @@
 
 ### New Features
 
-* Split the `Forms + Inputs` tab rail into `Forms`, `All Inputs` and `Other Controls` groups, demoing hoist-react's new `TabConfig.group` headers for vertical `TabSwitcher`s.
+* Grouped the `Forms + Inputs` and `Other` tab rails with hoist-react's new `TabConfig.group` headers for vertical `TabSwitcher`s, and added a `Tab Groups` example to the Tabs page.
 * Added a list of all top-level modules to the app menu, providing a second way to navigate alongside the tab bar, with a star toggle on each item to add or remove that module from the `DynamicTabSwitcher` favorites.
 * Updated the `SampleGrid` Volume column to demo hoist-react's new `Column.cellFlag` and a custom tooltip that explains the flag, replacing a hand-rolled cell class and the custom SCSS that styled it.
 * Updated the Column Groups grid example to demo hoist-react's new `groupShowMode` and `collapsed` configs for collapsible column groups, replacing raw `agOptions.columnGroupShow` passthroughs.

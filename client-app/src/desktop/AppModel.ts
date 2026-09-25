@@ -502,7 +502,6 @@ export class AppModel extends BaseAppModel {
                             {
                                 id: 'inputs',
                                 title: 'Overview',
-                                icon: Icon.grip(),
                                 content: inputsIndexPanel
                             },
                             {id: 'textInput', title: 'TextInput', content: textInputPanel},
@@ -534,7 +533,6 @@ export class AppModel extends BaseAppModel {
                             {
                                 id: 'otherControls',
                                 title: 'Overview',
-                                icon: Icon.grip(),
                                 content: otherControlsPanel
                             },
                             {
@@ -571,31 +569,44 @@ export class AppModel extends BaseAppModel {
                 id: 'other',
                 icon: Icon.boxFull(),
                 content: {
-                    switcher,
+                    switcher: {
+                        ...switcher,
+                        groups: [
+                            {key: 'system', title: 'System'},
+                            {key: 'format', title: 'Formatting'},
+                            {key: 'components', title: 'Other Components'}
+                        ]
+                    },
                     tabs: [
-                        {id: 'appNotifications', content: appNotificationsPanel},
-                        {id: 'banners', content: bannersPanel},
-                        {id: 'buttons', content: buttonsPanel},
-                        {id: 'clock', content: clockPanel},
-                        {id: 'customPackage', content: customPackagePanel},
-                        {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
-                        {
-                            id: 'exceptionHandler',
-                            title: 'Exception Handling',
-                            content: exceptionHandlerPanel
-                        },
-                        {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
-                        {id: 'formatDates', content: dateFormatsPanel},
-                        {id: 'formatNumbers', content: numberFormatsPanel},
-                        {id: 'icons', content: iconsPanel},
-                        {id: 'inspector', content: inspectorPanel},
-                        {id: 'markdown', content: markdownPanel},
-                        {id: 'messages', content: messagesPanel},
-                        {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
-                        {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
-                        {id: 'simpleRouting', content: simpleRoutingPanel},
-                        {id: 'timestamp', content: relativeTimestampPanel},
-                        {id: 'toast', content: toastPanel}
+                        ...[
+                            {id: 'appNotifications', content: appNotificationsPanel},
+                            {id: 'banners', title: 'App Banners', content: bannersPanel},
+                            {id: 'customPackage', content: customPackagePanel},
+                            {
+                                id: 'exceptionHandler',
+                                title: 'Exception Handling',
+                                content: exceptionHandlerPanel
+                            },
+                            {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
+                            {id: 'inspector', content: inspectorPanel},
+                            {id: 'simpleRouting', content: simpleRoutingPanel}
+                        ].map(it => ({...it, group: 'system'})),
+                        ...[
+                            {id: 'formatDates', content: dateFormatsPanel},
+                            {id: 'formatNumbers', content: numberFormatsPanel}
+                        ].map(it => ({...it, group: 'format'})),
+                        ...[
+                            {id: 'buttons', content: buttonsPanel},
+                            {id: 'clock', content: clockPanel},
+                            {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
+                            {id: 'icons', content: iconsPanel},
+                            {id: 'markdown', content: markdownPanel},
+                            {id: 'messages', content: messagesPanel},
+                            {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                            {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                            {id: 'timestamp', content: relativeTimestampPanel},
+                            {id: 'toast', content: toastPanel}
+                        ].map(it => ({...it, group: 'components'}))
                     ]
                 }
             },
