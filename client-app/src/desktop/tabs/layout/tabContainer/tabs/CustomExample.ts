@@ -5,7 +5,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, segmentedControl, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {createContainerModelConfig} from './SimpleExample';
+import {createContainerModelConfig, EXAMPLE_ROUTE} from './SimpleExample';
 
 export const customExample = hoistCmp.factory({
     model: creates(() => CustomExampleModel),
@@ -58,5 +58,5 @@ export const customExample = hoistCmp.factory({
 
 class CustomExampleModel extends HoistModel {
     @managed
-    detachedTabModel = new TabContainerModel(createContainerModelConfig());
+    detachedTabModel = new TabContainerModel(createContainerModelConfig(`${EXAMPLE_ROUTE}.custom`));
 }
