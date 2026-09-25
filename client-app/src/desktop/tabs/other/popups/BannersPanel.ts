@@ -304,7 +304,7 @@ const componentBanners = hoistCmp.factory<BannersPanelModel>(({model}) =>
 //------------------------------------------------------------------
 class BannersPanelModel extends HoistModel {
     // Playground props
-    @bindable accessor pgMessage = 'This is a Banner.';
+    @bindable accessor pgMessage = 'This is an _app-wide_ banner showing an **important message**.';
     @bindable accessor pgIcon = false;
     @bindable accessor pgIntent: Intent = 'warning';
     @bindable accessor pgEnableClose = true;
