@@ -45,7 +45,7 @@
     "classnames": "~2.5.1",
     "core-js": "~3.50.0",
     "filesize": "~11.0.24",
-    "highcharts": "~12.6.0",
+    "highcharts": "~12.6.2",
     "lodash": "~4.18.1",
     "minisearch": "^7.2.0",
     "moment": "~2.31.0",
@@ -59,15 +59,15 @@
     "@xh/eslint-config": "^8.0.1",
     "@xh/hoist-dev-utils": "next",
     "cross-env": "~10.1.0",
-    "eslint": "~10.10.0",
+    "eslint": "^10.11.0",
     "eslint-config-prettier": "~10.1.8",
     "husky": "~9.1.7",
     "lint-staged": "~17.5.1",
     "postcss": "~8.5.28",
-    "prettier": "~3.9.8",
+    "prettier": "~3.9.9",
     "stylelint": "~17.15.0",
     "stylelint-config-recommended-scss": "~17.0.1",
     "typescript": "~5.9.3"
   },
-  "packageManager": "pnpm@12.5.1+sha512.e3f305bc784a2bc89f5ad3b6138889470fae8d2af5f36b61216ec91c2c3d64089775f9de38aac331044ea40f245cb0d5666392dfdf65824e1907ef6a2c62de5f"
+  "packageManager": "pnpm@12.7.0+sha512.9c56477e360068d6e9dca6a92efb4e46b3dc5a52fcebf3d84d78b9736c0ded589a561621a52f68219a7a39facc63cdc079c3226ef9c9d5f02b79f74e69a807b6"
 }
