@@ -48,7 +48,7 @@ export const messagesPanel = hoistCmp.factory({
                 "resolves with the user's response. The `message` accepts strings, JSX, or",
                 'React elements for rich text.',
                 '',
-                'For non-modal notifications, see the Toast and Banners examples.'
+                'For non-modal notifications, see the Toast and App Banners examples.'
             ],
             links: [
                 {

@@ -189,10 +189,10 @@ importers:
         version: 1.1.0
       '@xh/hoist':
         specifier: next
-        version: 88.0.0-SNAPSHOT.1790360845004(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)
+        version: 88.0.0-SNAPSHOT.1790401316487(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)
       '@xh/package-template':
         specifier: ~3.0.4
-        version: 3.0.4(@xh/hoist@88.0.0-SNAPSHOT.1790360845004(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        version: 3.0.4(@xh/hoist@88.0.0-SNAPSHOT.1790401316487(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       ag-charts-community:
         specifier: ~14.2.0
         version: 14.2.0
@@ -247,7 +247,7 @@ importers:
         version: 8.0.1(supports-color@10.2.2)
       '@xh/hoist-dev-utils':
         specifier: next
-        version: 16.0.0-SNAPSHOT.1789779585077(@rspack/core@2.2.7(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)
+        version: 16.0.0-SNAPSHOT.1790381140361(@rspack/core@2.2.7(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)
       cross-env:
         specifier: ~10.1.0
         version: 10.1.0
@@ -1383,12 +1383,12 @@ packages:
   '@xh/eslint-config@8.0.1':
     resolution: {integrity: sha512-t+1R6My3ntLLJKqr5vtF6MF6r73ylwiLwI3UKj/mpz4oKfLB5NHws98kxKNDxYgCLWevVEkGStHo/6SXzVtx/A==}
 
-  '@xh/hoist-dev-utils@16.0.0-SNAPSHOT.1789779585077':
-    resolution: {integrity: sha512-qVB8urg45jA8n1lmu5v6zVZjCk0Tti12x7iEY2vQdCTyT0okhclt3x/f3nwlmoVOfeIJhTlf7cZlwhomvZUhUA==}
+  '@xh/hoist-dev-utils@16.0.0-SNAPSHOT.1790381140361':
+    resolution: {integrity: sha512-2TgLkF3XS0Gg+cSphaE3NtjuNuykiAErmbRsvqIeP6nIyvdLcPDHpspNnURxd3AILqrUl+Qapt1IVCo/EKSdaA==}
     engines: {node: '>=22.15.0'}
 
-  '@xh/hoist@88.0.0-SNAPSHOT.1790360845004':
-    resolution: {integrity: sha512-sBSvG5BxKl6CLoCttueJikj1lc6Xj/oxJThSxrvpwM2aRthZpfPpOqIYD6K4qwFChOd5ZRSSuqECcZXRPiLVzw==}
+  '@xh/hoist@88.0.0-SNAPSHOT.1790401316487':
+    resolution: {integrity: sha512-aoc6PRDsUEEpsJakAwm4Ez3bi+Kah1mV+Y0mhEt67qeZ7cVCsGA++dM0h3m1zOs3H0fDoShyagpPztJSFFmj/A==}
     hasBin: true
     peerDependencies:
       react: ^19.3.0
@@ -1752,8 +1752,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.438:
-    resolution: {integrity: sha512-AN9xMU1hJiT65LkCUPL1DZm5TCbOPb2Qsm5pYwFLEXp6/qj9SdT4yMiqs7Qqstwvkn1zF7l36SRGt+s6XcJ0FA==}
+  electron-to-chromium@1.5.439:
+    resolution: {integrity: sha512-qu6QIPXhsb+CRcAiTMNjR4A1y/7tCYKkKjr5CZXRVih6qkDf79peZ2BpEU3qoDBNCRrcy3Mra3X9nG5oruuA7Q==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -4734,7 +4734,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@xh/hoist-dev-utils@16.0.0-SNAPSHOT.1789779585077(@rspack/core@2.2.7(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)':
+  '@xh/hoist-dev-utils@16.0.0-SNAPSHOT.1790381140361(@rspack/core@2.2.7(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)':
     dependencies:
       '@rsbuild/core': 2.2.9(core-js@3.50.0)
       '@rsbuild/plugin-basic-ssl': 1.2.3(@rsbuild/core@2.2.9(core-js@3.50.0))
@@ -4755,7 +4755,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@xh/hoist@88.0.0-SNAPSHOT.1790360845004(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)':
+  '@xh/hoist@88.0.0-SNAPSHOT.1790401316487(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)':
     dependencies:
       '@auth0/auth0-spa-js': 2.26.0
       '@azure/msal-browser': 5.22.0
@@ -4792,6 +4792,7 @@ snapshots:
       jwt-decode: 4.0.0
       lodash: 4.18.1
       lodash-inflection: 1.5.0
+      minisearch: 7.2.0
       mobx: 7.0.4
       mobx-react-lite: 5.0.3(mobx@7.0.4)(react@19.3.0)
       moment: 2.31.0
@@ -4826,9 +4827,9 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  '@xh/package-template@3.0.4(@xh/hoist@88.0.0-SNAPSHOT.1790360845004(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@xh/package-template@3.0.4(@xh/hoist@88.0.0-SNAPSHOT.1790401316487(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@xh/hoist': 88.0.0-SNAPSHOT.1790360845004(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)
+      '@xh/hoist': 88.0.0-SNAPSHOT.1790401316487(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
 
@@ -4963,7 +4964,7 @@ snapshots:
     dependencies:
       baseline-browser-mapping: 2.11.26
       caniuse-lite: 1.0.30001812
-      electron-to-chromium: 1.5.438
+      electron-to-chromium: 1.5.439
       node-releases: 2.0.57
       update-browserslist-db: 1.3.3(browserslist@4.29.1)
 
@@ -5189,7 +5190,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.438: {}
+  electron-to-chromium@1.5.439: {}
 
   emoji-regex@8.0.0: {}
 

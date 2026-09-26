@@ -16,6 +16,7 @@
 
 ### New Features
 
+* Improved the organization of the desktop app's tabs, using hoist-react's new `TabConfig.group` headers to break up longer tab rails, and added a `Tab Groups` example to the Tabs page.
 * Added a list of all top-level modules to the app menu, providing a second way to navigate alongside the tab bar, with a star toggle on each item to add or remove that module from the `DynamicTabSwitcher` favorites.
 * Updated the `SampleGrid` Volume column to demo hoist-react's new `Column.cellFlag` and a custom tooltip that explains the flag, replacing a hand-rolled cell class and the custom SCSS that styled it.
 * Updated the Column Groups grid example to demo hoist-react's new `groupShowMode` and `collapsed` configs for collapsible column groups, replacing raw `agOptions.columnGroupShow` passthroughs.
