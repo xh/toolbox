@@ -245,26 +245,20 @@ export class AppModel extends BaseAppModel {
                         name: 'layout',
                         path: '/layout',
                         children: [
-                            {name: 'hbox', path: '/hbox'},
-                            {name: 'vbox', path: '/vbox'},
-                            {name: 'card', path: '/card'},
-                            {name: 'tabPanel', path: '/tabPanel'},
-                            {name: 'dock', path: '/dock'},
-                            {name: 'dashContainer', path: '/dashContainer'},
-                            {name: 'dashCanvas', path: '/dashCanvas'},
-                            {name: 'tileFrame', path: '/tileFrame'}
-                        ]
-                    },
-                    {
-                        name: 'panels',
-                        path: '/panels',
-                        children: [
                             {name: 'intro', path: '/intro'},
                             {name: 'toolbars', path: '/toolbars'},
                             {name: 'sizing', path: '/sizing'},
                             {name: 'mask', path: '/mask'},
                             {name: 'loadingIndicator', path: '/loadingIndicator'},
-                            {name: 'banner', path: '/banner'}
+                            {name: 'banner', path: '/banner'},
+                            {name: 'hbox', path: '/hbox'},
+                            {name: 'vbox', path: '/vbox'},
+                            {name: 'card', path: '/card'},
+                            {name: 'tabPanel', path: '/tabPanel'},
+                            {name: 'dock', path: '/dock'},
+                            {name: 'tileFrame', path: '/tileFrame'},
+                            {name: 'dashContainer', path: '/dashContainer'},
+                            {name: 'dashCanvas', path: '/dashCanvas'}
                         ]
                     },
                     {
@@ -331,8 +325,8 @@ export class AppModel extends BaseAppModel {
                         name: 'other',
                         path: '/other',
                         children: [
-                            {name: 'appNotifications', path: '/appNotifications'},
                             {name: 'banners', path: '/banners'},
+                            {name: 'appNotifications', path: '/appNotifications'},
                             {name: 'buttons', path: '/buttons'},
                             {name: 'clock', path: '/clock'},
                             {name: 'customPackage', path: '/customPackage'},
@@ -410,47 +404,43 @@ export class AppModel extends BaseAppModel {
                 id: 'grids',
                 icon: Icon.grid(),
                 content: {
-                    switcher,
+                    switcher: {
+                        ...switcher,
+                        groups: [
+                            {key: 'grid', title: 'Grid'},
+                            {key: 'variants', title: 'Grid Variants'}
+                        ]
+                    },
                     tabs: [
-                        {id: 'standard', content: standardGridPanel},
-                        {id: 'tree', content: treeGridPanel},
-                        {
-                            id: 'treeWithCheckBox',
-                            title: 'Tree w/CheckBox',
-                            content: treeGridWithCheckboxPanel
-                        },
-                        {
-                            id: 'columnChooser',
-                            title: 'Column Chooser',
-                            content: columnChooserPanel
-                        },
-                        {id: 'columnFiltering', content: columnFilteringPanel},
-                        {id: 'inlineEditing', content: inlineEditingPanel},
-                        {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
-                        {id: 'dataview', title: 'DataView', content: dataViewPanel},
-                        {
-                            id: 'groupedCols',
-                            title: 'Grouped Columns',
-                            content: columnGroupsGridPanel
-                        },
-                        {id: 'externalSort', content: externalSortGridPanel},
-                        {id: 'rest', title: 'REST Editor', content: restGridPanel},
-                        {id: 'agGrid', title: 'AG Grid Wrapper', content: agGridView}
-                    ]
-                }
-            },
-            {
-                id: 'panels',
-                icon: Icon.window(),
-                content: {
-                    switcher,
-                    tabs: [
-                        {id: 'intro', content: basicPanel},
-                        {id: 'toolbars', content: toolbarPanel},
-                        {id: 'sizing', content: panelSizingPanel},
-                        {id: 'mask', content: maskPanel},
-                        {id: 'loadingIndicator', content: loadingIndicatorPanel},
-                        {id: 'banner', content: bannerPanel}
+                        ...[
+                            {id: 'standard', content: standardGridPanel},
+                            {id: 'tree', content: treeGridPanel},
+                            {
+                                id: 'treeWithCheckBox',
+                                title: 'Tree w/CheckBox',
+                                content: treeGridWithCheckboxPanel
+                            },
+                            {
+                                id: 'groupedCols',
+                                title: 'Grouped Columns',
+                                content: columnGroupsGridPanel
+                            },
+                            {
+                                id: 'columnChooser',
+                                title: 'Column Chooser',
+                                content: columnChooserPanel
+                            },
+                            {id: 'columnFiltering', content: columnFilteringPanel},
+                            {id: 'inlineEditing', content: inlineEditingPanel},
+                            {id: 'externalSort', content: externalSortGridPanel}
+                        ].map(it => ({...it, group: 'grid'})),
+                        // Components built on or around GridModel, each with its own API.
+                        ...[
+                            {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
+                            {id: 'dataview', title: 'DataView', content: dataViewPanel},
+                            {id: 'rest', title: 'REST Editor', content: restGridPanel},
+                            {id: 'agGrid', title: 'AG Grid Wrapper', content: agGridView}
+                        ].map(it => ({...it, group: 'variants'}))
                     ]
                 }
             },
@@ -458,24 +448,43 @@ export class AppModel extends BaseAppModel {
                 id: 'layout',
                 icon: Icon.layout(),
                 content: {
-                    switcher,
+                    switcher: {
+                        ...switcher,
+                        groups: [
+                            {key: 'panels', title: 'Panels'},
+                            {key: 'containers', title: 'Containers'},
+                            {key: 'dashboards', title: 'Dashboards'}
+                        ]
+                    },
                     tabs: [
-                        {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
-                        {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
-                        {id: 'card', title: 'Card', content: cardPanel},
-                        {
-                            id: 'tabPanel',
-                            title: 'TabContainer',
-                            content: tabPanelContainerPanel
-                        },
-                        {
-                            id: 'dashContainer',
-                            title: 'DashContainer',
-                            content: dashContainerPanel
-                        },
-                        {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel},
-                        {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
-                        {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
+                        ...[
+                            {id: 'intro', content: basicPanel},
+                            {id: 'toolbars', content: toolbarPanel},
+                            {id: 'sizing', content: panelSizingPanel},
+                            {id: 'mask', content: maskPanel},
+                            {id: 'loadingIndicator', content: loadingIndicatorPanel},
+                            {id: 'banner', content: bannerPanel}
+                        ].map(it => ({...it, group: 'panels'})),
+                        ...[
+                            {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
+                            {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
+                            {id: 'card', title: 'Card', content: cardPanel},
+                            {
+                                id: 'tabPanel',
+                                title: 'TabContainer',
+                                content: tabPanelContainerPanel
+                            },
+                            {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
+                            {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
+                        ].map(it => ({...it, group: 'containers'})),
+                        ...[
+                            {
+                                id: 'dashContainer',
+                                title: 'DashContainer',
+                                content: dashContainerPanel
+                            },
+                            {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel}
+                        ].map(it => ({...it, group: 'dashboards'}))
                     ]
                 }
             },
@@ -582,8 +591,8 @@ export class AppModel extends BaseAppModel {
                     },
                     tabs: [
                         ...[
-                            {id: 'appNotifications', content: appNotificationsPanel},
                             {id: 'banners', title: 'App Banners', content: bannersPanel},
+                            {id: 'appNotifications', content: appNotificationsPanel},
                             {id: 'customPackage', content: customPackagePanel},
                             {
                                 id: 'exceptionHandler',
