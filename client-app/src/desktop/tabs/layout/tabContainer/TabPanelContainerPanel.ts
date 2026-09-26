@@ -8,7 +8,8 @@ import {customExample} from './tabs/CustomExample';
 import {dynamicExample} from './tabs/DynamicExample';
 import {errorExample} from './tabs/ErrorExample';
 import {groupsExample} from './tabs/GroupsExample';
-import {simpleExample} from './tabs/SimpleExample';
+import {routingExample} from './tabs/RoutingExample';
+import {EXAMPLE_ROUTE, simpleExample} from './tabs/SimpleExample';
 import {tabStateExample} from './tabs/TabStateExample';
 
 export const tabPanelContainerPanel = hoistCmp.factory({
@@ -56,7 +57,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                 className: 'tb-layout-tabs',
                 height: '60vh',
                 width: '90%',
-                item: tabContainer()
+                item: tabContainer({switcher: {orientation: 'top', enableOverflow: true}})
             })
         });
     }
@@ -65,26 +66,26 @@ export const tabPanelContainerPanel = hoistCmp.factory({
 class TabPanelContainerPanelModel extends HoistModel {
     @managed
     tabModel = new TabContainerModel({
-        persistWith: {localStorageKey: 'tabExampleState'},
+        route: EXAMPLE_ROUTE,
         tabs: [
             {
                 id: 'top',
-                title: 'Top Tabs',
+                title: 'Top',
                 content: topExample()
             },
             {
                 id: 'bottom',
-                title: 'Bottom Tabs',
+                title: 'Bottom',
                 content: simpleExample({orientation: 'bottom'})
             },
             {
                 id: 'left',
-                title: 'Left Tabs',
+                title: 'Left',
                 content: simpleExample({orientation: 'left'})
             },
             {
                 id: 'right',
-                title: 'Right Tabs',
+                title: 'Right',
                 content: simpleExample({orientation: 'right'})
             },
             {
@@ -99,13 +100,18 @@ class TabPanelContainerPanelModel extends HoistModel {
             },
             {
                 id: 'state',
-                title: 'Tab State',
+                title: 'State',
                 content: tabStateExample()
             },
             {
                 id: 'dynamic',
                 title: 'Dynamic',
                 content: dynamicExample()
+            },
+            {
+                id: 'routing',
+                title: 'Routing',
+                content: routingExample()
             },
             {
                 id: 'error',
