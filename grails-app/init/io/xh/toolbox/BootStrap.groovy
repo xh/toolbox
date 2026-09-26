@@ -296,7 +296,7 @@ class BootStrap implements LogSupport {
             new PreferenceSpec(
                 name: 'contactAppState',
                 type: 'json',
-                defaultValue: [],
+                defaultValue: [:],
                 groupName: 'Toolbox - Example Apps',
                 notes: 'Holds favorites, grid state, and displayMode prefs for the XH Contact example app.'
             ),
