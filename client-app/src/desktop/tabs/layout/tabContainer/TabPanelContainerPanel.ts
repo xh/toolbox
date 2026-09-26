@@ -7,6 +7,7 @@ import {wrapper} from '../../../common/Wrapper';
 import {customExample} from './tabs/CustomExample';
 import {dynamicExample} from './tabs/DynamicExample';
 import {errorExample} from './tabs/ErrorExample';
+import {groupsExample} from './tabs/GroupsExample';
 import {routingExample} from './tabs/RoutingExample';
 import {EXAMPLE_ROUTE, simpleExample} from './tabs/SimpleExample';
 import {tabStateExample} from './tabs/TabStateExample';
@@ -86,6 +87,11 @@ class TabPanelContainerPanelModel extends HoistModel {
                 id: 'right',
                 title: 'Right',
                 content: simpleExample({orientation: 'right'})
+            },
+            {
+                id: 'groups',
+                title: 'Tab Groups',
+                content: groupsExample()
             },
             {
                 id: 'custom',
