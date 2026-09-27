@@ -8,12 +8,20 @@ export const simpleExample = hoistCmp.factory(({orientation}) =>
     tabContainer({
         className: 'tb-layout-tabs__child',
         switcher: {orientation},
-        modelConfig: createContainerModelConfig()
+        modelConfig: createContainerModelConfig(`${EXAMPLE_ROUTE}.${orientation}`)
     })
 );
 
-export const createContainerModelConfig = (): TabContainerConfig => {
+/** Route of the outer example container - nested examples route beneath it. */
+export const EXAMPLE_ROUTE = 'default.layout.tabPanel';
+
+/**
+ * @param route - route for the container, with a `people`, `places`, and `things` child route
+ *      defined for it in the desktop AppModel.
+ */
+export const createContainerModelConfig = (route: string): TabContainerConfig => {
     return {
+        route,
         tabs: [
             {
                 id: 'people',

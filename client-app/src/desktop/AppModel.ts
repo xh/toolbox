@@ -232,6 +232,10 @@ export class AppModel extends BaseAppModel {
     }
 
     override getRoutes() {
+        // Child routes for the TabContainer example's nested people/places/things containers.
+        const simpleTabRoutes = () =>
+            ['people', 'places', 'things'].map(name => ({name, path: `/${name}`}));
+
         return [
             {
                 name: 'default',
@@ -254,7 +258,29 @@ export class AppModel extends BaseAppModel {
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
                             {name: 'card', path: '/card'},
-                            {name: 'tabPanel', path: '/tabPanel'},
+                            {
+                                name: 'tabPanel',
+                                path: '/tabPanel',
+                                children: [
+                                    {name: 'top', path: '/top'},
+                                    {name: 'bottom', path: '/bottom', children: simpleTabRoutes()},
+                                    {name: 'left', path: '/left', children: simpleTabRoutes()},
+                                    {name: 'right', path: '/right', children: simpleTabRoutes()},
+                                    {name: 'groups', path: '/groups'},
+                                    {name: 'custom', path: '/custom', children: simpleTabRoutes()},
+                                    {name: 'state', path: '/state', children: simpleTabRoutes()},
+                                    {name: 'dynamic', path: '/dynamic'},
+                                    {
+                                        name: 'routing',
+                                        path: '/routing',
+                                        children: [
+                                            {name: 'people', path: '/people?item'},
+                                            {name: 'places', path: '/places?item'}
+                                        ]
+                                    },
+                                    {name: 'error', path: '/error'}
+                                ]
+                            },
                             {name: 'dock', path: '/dock'},
                             {name: 'tileFrame', path: '/tileFrame'},
                             {name: 'dashContainer', path: '/dashContainer'},
