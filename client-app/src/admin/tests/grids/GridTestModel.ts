@@ -236,7 +236,6 @@ export class GridTestModel extends HoistModel {
     @managed
     benchmarkModel: GridTestBenchmarkModel;
 
-    @managed
     loadTask = TaskObserver.trackLast();
 
     @managed

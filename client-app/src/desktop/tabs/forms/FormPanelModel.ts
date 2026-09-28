@@ -16,7 +16,6 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {filter, isEmpty} from 'lodash';
 
 export class FormPanelModel extends HoistModel {
-    @managed
     validateTask = TaskObserver.trackLast();
 
     // For meta controls below example.

@@ -101,7 +101,7 @@ export class GridTestBenchmarkModel extends HoistModel {
     /** Set when the last run could not guarantee independent iterations - see runBenchmarkAsync. */
     @observable accessor warning: string = null;
 
-    @managed runTask = TaskObserver.trackLast();
+    runTask = TaskObserver.trackLast();
 
     @managed resultsGridModel: GridModel;
 
