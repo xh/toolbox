@@ -25,7 +25,7 @@ export class EmailTestModel extends HoistModel {
         ]
     });
 
-    @managed sendTask = TaskObserver.trackLast();
+    sendTask = TaskObserver.trackLast();
 
     /** Response from the last send - success flag, echoed args, and any error. */
     @observableRef accessor sendResult: PlainObject = null;

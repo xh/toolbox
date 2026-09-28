@@ -9,10 +9,9 @@ import org.springframework.core.io.ByteArrayResource
 /**
  * Exercises `EmailService` from Admin > Tests > Email.
  *
- * Forwards whatever args the page posts to `sendEmail` as a plain Map, so the runtime checks of the
- * named-parameter variant (unknown keys, missing `to`, type mismatches) run exactly as they would
- * for a dynamic caller. Attachments are generated here on request in each supported source type,
- * plus a deliberately invalid one.
+ * Forwards the args the page posts to `sendEmail` as a plain Map, so the runtime checks of the
+ * named-parameter variant run exactly as they would for a dynamic caller. Attachments are generated
+ * here on request in each supported source type, plus a deliberately invalid one.
  *
  * Unlike a normal controller, `send` catches Throwable so that an `AssertionError` from the arg
  * check is reported back to the page as a result rather than a 500.

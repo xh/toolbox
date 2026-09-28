@@ -85,11 +85,7 @@ const sendResult = hoistCmp.factory<EmailTestModel>(({model}) => {
         icon: sendResult ? (sendResult.success ? Icon.check() : Icon.warning()) : Icon.info(),
         compactHeader: true,
         flex: 1,
-        item: pre({
-            className: 'xh-pad',
-            style: {margin: 0, overflow: 'auto', fontSize: 12},
-            item: sendResult ? JSON.stringify(sendResult, null, 2) : 'No email sent yet.'
-        })
+        item: jsonOutput({value: sendResult, placeholder: 'No email sent yet.'})
     });
 });
 
@@ -109,12 +105,9 @@ const parseAddresses = hoistCmp.factory<EmailTestModel>(({model}) =>
                 onClick: () => model.parseAddressesAsync()
             })
         ],
-        item: pre({
-            className: 'xh-pad',
-            style: {margin: 0, overflow: 'auto', fontSize: 12},
-            item: model.parseResult
-                ? JSON.stringify(model.parseResult, null, 2)
-                : 'Blank entries should be dropped and "none" (any case) should return null.'
+        item: jsonOutput({
+            value: model.parseResult,
+            placeholder: 'Blank entries should be dropped and "none" (any case) should return null.'
         })
     })
 );
@@ -134,10 +127,14 @@ const configs = hoistCmp.factory<EmailTestModel>(({model}) =>
                 onClick: () => model.refreshAsync()
             })
         ],
-        item: pre({
-            className: 'xh-pad',
-            style: {margin: 0, overflow: 'auto', fontSize: 12},
-            item: model.configs ? JSON.stringify(model.configs, null, 2) : 'Loading...'
-        })
+        item: jsonOutput({value: model.configs, placeholder: 'Loading...'})
+    })
+);
+
+const jsonOutput = hoistCmp.factory(({value, placeholder}) =>
+    pre({
+        className: 'xh-pad',
+        style: {margin: 0, overflow: 'auto', fontSize: 12},
+        item: value ? JSON.stringify(value, null, 2) : placeholder
     })
 );
