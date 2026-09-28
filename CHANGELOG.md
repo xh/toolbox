@@ -25,6 +25,7 @@
 
 ### Technical
 
+* Removed client-side `manageGlobal` settings from the app's `ViewManagerModel` configs - hoist-core 42 now determines who may manage global views via the `xhJsonBlobConfig.globalWriteRoles` soft config, and hoist-react 88 picks that up automatically.
 * Migrated to TC39 Stage 3 modern decorators, in step with `@xh/hoist` 88 - `@observable` / `@bindable` fields now take the `accessor` keyword, `@observable.ref` / `@bindable.ref` are now `@observableRef` / `@bindableRef`, `comparer.structural` is now `compareStructural`, and `makeObservable(this)` is gone.
 * Switched the client build from webpack to Rsbuild (Rspack + SWC) via `@xh/hoist-dev-utils` 16 - builds are faster and use far less memory, and build-time options now arrive as `XH_*` environment variables instead of `--env` flags.
 * Converted all type-only imports to `import type` and added `@typescript-eslint/consistent-type-imports` to prevent regressions - guarantees type-only imports are erased at build time, eliminating 6 of the app's 10 runtime import cycles.
