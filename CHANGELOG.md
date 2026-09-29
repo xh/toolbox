@@ -12,7 +12,7 @@
   3. Plain ASCII punctuation only. Use " - " for in-sentence breaks, never an em dash.
 -->
 
-## 11.0.0-SNAPSHOT - unreleased
+## 11.0.0 - 2026-09-29
 
 ### New Features
 
@@ -22,6 +22,17 @@
 * Updated the Column Groups grid example to demo hoist-react's new `groupShowMode` and `collapsed` configs for collapsible column groups, replacing raw `agOptions.columnGroupShow` passthroughs.
 * Added the Column Groups grid as a widget in the ViewManager test dashboards, exercising column group expand/collapse state through `DashCanvas` and `DashContainer` persistence.
 * Upgraded AG Grid to `36.x`, tracking hoist-react's AG Grid 36 upgrade.
+* Added demos for hoist-react's new `Banner` component and `Panel.banner` prop, and split the desktop Popups demo into separate Messages, Toast and Banners pages, each with a playground and variants.
+* Added a Routing example tab and routed the `TabContainer` example, demonstrating tabs that own their own route params.
+* Added a SQL autocomplete example to the `CodeInput` demo, using the new `CodeInput.extensions` prop.
+* Added `MenuHeading` demos and replaced hand-rolled menu buttons throughout the app with `MenuButton`.
+* Added an Admin Console test page for sending email via Hoist's email service.
+
+### Bug Fixes
+
+* Fixed the Admin Console Roles tab reporting "No enabled directory service in this application" for every assigned directory group, and returning no results from its group search. Toolbox's mock directory now backs those lookups via a new `MockDirectoryService`, alongside the group membership resolution it already provided.
+* Fixed the Contact example's `contactAppState` preference defaulting to an empty list rather than an empty object.
+* Fixed defects in the Panels demos, including the Intro panel's context-menu Lookup always resolving the same word.
 
 ### Technical
 
@@ -30,10 +41,7 @@
 * Switched the client build from webpack to Rsbuild (Rspack + SWC) via `@xh/hoist-dev-utils` 16 - builds are faster and use far less memory, and build-time options now arrive as `XH_*` environment variables instead of `--env` flags.
 * Converted all type-only imports to `import type` and added `@typescript-eslint/consistent-type-imports` to prevent regressions - guarantees type-only imports are erased at build time, eliminating 6 of the app's 10 runtime import cycles.
 * Removed all `index.ts` re-export barrels from app source and added lint guards against their reintroduction - imports now reference their defining modules directly, so loading one module no longer pulls in unrelated siblings.
-
-### Bug Fixes
-
-* Fixed the Admin Console Roles tab reporting "No enabled directory service in this application" for every assigned directory group, and returning no results from its group search. Toolbox's mock directory now backs those lookups via a new `MockDirectoryService`, alongside the group membership resolution it already provided.
+* Removed the legacy AG Grid theme setup, now that Hoist grids use AG Grid's Theming API.
 
 ### Libraries
 
