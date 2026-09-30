@@ -362,6 +362,13 @@ For the full local-run guide - local Hoist checkouts, multiple instances, on-dev
 over a network IP, HTTPS, and troubleshooting (including the server timezone check) - see
 [`docs/running-locally.md`](docs/running-locally.md).
 
+When you drive Toolbox in a browser, the developer's normal setup is the default - they may already
+be logged in, or want their own state or the OAuth flow in play. If you need to log in yourself and
+have no session to use, you can run the server on a throwaway H2 database with a temporary admin
+login. Check with the developer first if it is not clear which they want. Never enter a
+developer's own credentials. See
+[Agent-driven sessions](docs/running-locally.md#agent-driven-sessions-with-a-throwaway-database).
+
 ### App URLs during Local Development
 
 The Rsbuild dev server runs on **`http://localhost:3000`**. Each file in `client-app/src/apps/`
