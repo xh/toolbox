@@ -290,7 +290,7 @@ class CodeInputsPanelModel extends InputDemoModel {
     }
 
     constructor() {
-        super({commitOnChangeDefault: true});
+        super({commitOnChangeDefault: true, supportsReadonly: true});
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

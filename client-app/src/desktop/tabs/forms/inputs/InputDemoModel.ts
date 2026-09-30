@@ -8,19 +8,25 @@ import type {DemoConfigProps} from '../../../common/Demo';
 /**
  * The ambient props spread onto every input on a page. Deliberately not tied to one component's
  * interface, since these pages cover sixteen of them: `disabled` is universal via
- * `HoistInputProps`, while `compact` and `commitOnChange` are spread only where the page declares
- * the input supports them.
+ * `HoistInputProps`, while `compact`, `commitOnChange` and `readonly` are spread only where the
+ * page declares the input supports them.
  */
 export interface AmbientInputProps {
     disabled: boolean;
     compact?: boolean;
     commitOnChange?: boolean;
+    readonly?: boolean;
 }
 
 /** Per-page declaration of which ambient options apply, and how the input behaves by default. */
 export interface InputDemoConfig {
     /** True for inputs with a `compact` prop - shows the ambient Compact switch. */
     supportsCompact?: boolean;
+    /**
+     * True for inputs with their own `readonly` prop (CodeInput, JsonInput) - the ambient Read-only
+     * switch then reaches the inputs directly, not just the In a Form section.
+     */
+    supportsReadonly?: boolean;
     /**
      * The input's own default for `commitOnChange`, or null when it has no such prop. The ambient
      * switch starts in that state and the snippet shows the prop only when it differs.
@@ -40,11 +46,19 @@ export abstract class InputDemoModel extends HoistModel {
     @bindable accessor compact = false;
     /** Ambient - `disabled` on every input. */
     @bindable accessor disabled = false;
+    /**
+     * Ambient - `readonly` on the In a Form section's FormModel, and on every input that supports
+     * it directly.
+     */
+    @bindable accessor readonly = false;
     /** Ambient - `commitOnChange` on every input that supports it. */
     @bindable accessor commitOnChange = false;
 
     /** True for inputs with a `compact` prop - shows the ambient Compact switch. */
     readonly supportsCompact: boolean;
+
+    /** True for inputs with their own `readonly` prop - see {@link InputDemoConfig}. */
+    readonly supportsReadonly: boolean;
 
     /**
      * The input's own default for `commitOnChange`, or null when it has no such prop. The ambient
@@ -58,43 +72,60 @@ export abstract class InputDemoModel extends HoistModel {
     /** Seed values for every input field, keyed by property name. Also applied on reset. */
     abstract get inputSeeds(): PlainObject;
 
-    constructor({supportsCompact = false, commitOnChangeDefault = false}: InputDemoConfig = {}) {
+    constructor({
+        supportsCompact = false,
+        supportsReadonly = false,
+        commitOnChangeDefault = false
+    }: InputDemoConfig = {}) {
         super();
 
         this.supportsCompact = supportsCompact;
+        this.supportsReadonly = supportsReadonly;
         this.commitOnChangeDefault = commitOnChangeDefault;
         this.commitOnChange = commitOnChangeDefault ?? false;
 
-        // FormField reads `disabled` from its FieldModel, so route the ambient flag through the
-        // form.
-        this.addReaction({
-            track: () => this.disabled,
-            run: disabled => {
-                if (this.formModel) this.formModel.disabled = disabled;
+        // FormField reads `disabled` and `readonly` from its FieldModel, so route the ambient
+        // flags through the form.
+        this.addReaction(
+            {
+                track: () => this.disabled,
+                run: disabled => {
+                    if (this.formModel) this.formModel.disabled = disabled;
+                }
+            },
+            {
+                track: () => this.readonly,
+                run: readonly => {
+                    if (this.formModel) this.formModel.readonly = readonly;
+                }
             }
-        });
+        );
     }
 
     /** Props every input spreads so the ambient options reach it. */
     get ambientProps(): AmbientInputProps {
-        const {disabled, compact, commitOnChange, supportsCompact, commitOnChangeDefault} = this;
+        const {disabled, compact, commitOnChange, readonly} = this,
+            {supportsCompact, supportsReadonly, commitOnChangeDefault} = this;
         return {
             disabled,
             ...(supportsCompact ? {compact} : {}),
-            ...(commitOnChangeDefault != null ? {commitOnChange} : {})
+            ...(commitOnChangeDefault != null ? {commitOnChange} : {}),
+            ...(supportsReadonly ? {readonly} : {})
         };
     }
 
     /** Ambient entries for a Playground snippet - shown only where they differ from the default. */
     get ambientSnippetProps(): DemoConfigProps<AmbientInputProps> {
-        const {disabled, compact, commitOnChange, supportsCompact, commitOnChangeDefault} = this;
+        const {disabled, compact, commitOnChange, readonly} = this,
+            {supportsCompact, supportsReadonly, commitOnChangeDefault} = this;
         return {
             disabled: disabled || undefined,
             compact: supportsCompact && compact ? true : undefined,
             commitOnChange:
                 commitOnChangeDefault != null && commitOnChange !== commitOnChangeDefault
                     ? commitOnChange
-                    : undefined
+                    : undefined,
+            readonly: supportsReadonly && readonly ? true : undefined
         };
     }
 
