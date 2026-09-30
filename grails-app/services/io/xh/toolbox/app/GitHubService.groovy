@@ -97,16 +97,15 @@ class GitHubService extends BaseService {
     // Implementation
     //------------------
     private void loadAllGitHubData() {
+        if (!configService.getStringIfSet('gitHubAccessToken')) {
+            logInfo('GitHub integration disabled - no "gitHubAccessToken" config set. Expected for local and throwaway databases.')
+            return
+        }
         loadCommitsForAllRepos()
         loadReleasesForAllRepos()
     }
 
     private void loadCommitsForAllRepos(Boolean forceFullLoad = false) {
-        if (configService.getString('gitHubAccessToken', 'none') == 'none') {
-            logWarn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
-            return
-        }
-
         def repos = configService.getList('gitHubRepos', []),
             newCommitCount = 0
 
@@ -196,11 +195,6 @@ class GitHubService extends BaseService {
     }
 
     private void loadReleasesForAllRepos() {
-        if (configService.getString('gitHubAccessToken', 'none') == 'none') {
-            logWarn('Required "gitHubAccessToken" config not present or set to "none" - no releases will be loaded from GitHub.')
-            return
-        }
-
         def repos = configService.getList('gitHubRepos', []),
             changed = false
 
