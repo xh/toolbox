@@ -38,7 +38,7 @@ export class AuthModel extends HoistAuthModel {
         // supported client implementations - either Auth0 (default) or MSAL (also supported, for testing OAuth
         // against Microsoft Entra ID).
         this.client = this.createClient(config);
-        await this.client.initAsync();
+        await this.client.initAsync(ctx);
 
         // With the client initialized, we tell FetchService to pass the ID token (a JWT) via a custom
         // header on any local/relative requests going back to Toolbox Grails server.
