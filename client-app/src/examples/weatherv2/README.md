@@ -27,6 +27,7 @@ unchanged; both share the same server-side weather endpoints.
 ```
 weatherv2/
 ├── AppModel.ts / AppComponent.ts   — App shell (app bar + DashCanvas + harness panels)
+├── viewManagers.ts                 — ViewManagerModel for saved layouts (held outside AppModel)
 ├── Icons.ts, Types.ts              — Shared icons and normalized weather data types
 ├── WeatherV2.scss                  — V2-specific styles
 ├── dash/
@@ -35,6 +36,7 @@ weatherv2/
 │   ├── WidgetRegistry.ts           — Widget type registry + LLM prompt/schema generation
 │   ├── types.ts                    — WidgetMeta, BindingSpec, DashSpec, ValidationResult
 │   ├── validation.ts               — 3-stage validation pipeline (structural/semantic/referential)
+│   ├── colorCoding.ts              — Linkage colors for input widgets and their consumers
 │   ├── unitUtils.ts                — Temperature/wind unit conversion helpers
 │   └── exampleSpecs.ts             — Curated example dashboard specs
 ├── svc/
@@ -45,7 +47,9 @@ weatherv2/
 │   ├── JsonHarnessModel.ts/Panel.ts    — JSON editor: view/edit/validate/apply specs
 │   └── ChatHarnessModel.ts/Panel.ts    — LLM chat: natural language → dashboard
 ├── widgets/
+│   ├── viewSpecs.ts                    — Widget catalog + default layout passed to the dash model
 │   ├── BaseWeatherWidgetModel.ts       — Base class: resolveInput/publishOutput/persistence
+│   ├── WidgetSettingsForm.ts           — Settings modal: input bindings, columns, config
 │   ├── CityChooserWidget.ts            — City select input, publishes selectedCity
 │   ├── UnitsToggleWidget.ts            — Imperial/metric toggle, publishes units
 │   ├── CurrentConditionsWidget.ts      — Solid gauge + conditions details
@@ -62,7 +66,8 @@ weatherv2/
 
 - `grails-app/controllers/io/xh/toolbox/llm/LlmController.groovy` — POST `/llm/generate` endpoint
 - `grails-app/services/io/xh/toolbox/llm/LlmService.groovy` — Anthropic Messages API proxy,
-  per-user rate limiting, config-driven (API key, model, max tokens)
+  per-user rate limiting, config-driven (API key, model, max tokens, rate limit). Its `llm*`
+  configs are created with defaults by `BootStrap`.
 - Weather endpoints are shared with V1 via `WeatherController`/`WeatherService` (OpenWeatherMap)
 
 ## Widget Catalog (9 widgets)
@@ -81,7 +86,10 @@ weatherv2/
 
 ## Planning Docs
 
-Detailed design documents are in [`./planning/`](./planning/):
+Detailed design documents are in [`./planning/`](./planning/). These are the original design and
+build log - code snippets in them predate the hoist-react v88 upgrade (legacy decorators,
+`AppModel.instance` access) and are not kept in sync with the code. The source and the Agent Notes
+below are authoritative.
 
 | Document | Contents |
 |----------|----------|
@@ -112,7 +120,7 @@ Things that matter when working on this code:
    accepts it. Don't introduce an intermediate format.
 
 3. **Widget instance IDs are positional.** DashCanvasModel assigns IDs based on order in the `state`
-   array: first `cityChooser` → ID `"cityChooser"`, second → `"cityChooser_2"`. Bindings use these
+   array: first `cityChooser` → ID `"cityChooser_0"`, second → `"cityChooser_1"`. Bindings use these
    IDs. The validation pipeline's `computeInstanceIds` must match DashCanvasModel's behavior.
 
 4. **WiringModel is MobX-reactive.** Widgets publish outputs to an observable map; downstream
@@ -124,7 +132,12 @@ Things that matter when working on this code:
    additively, don't break V1's existing contract.
 
 6. **LLM proxy requires config.** The Grails `LlmService` reads `llmApiKey`, `llmModel`,
-   `llmMaxTokens`, and `llmRateLimit` from Hoist Config. Without `llmApiKey` configured on the
-   server, the chat harness will show a helpful error but the JSON harness still works.
+   `llmMaxTokens`, and `llmRateLimit` from Hoist Config (created with defaults on startup). Until
+   `llmApiKey` is set, the chat harness shows a helpful error but the JSON harness still works.
 
-7. **Branch: `weatherv2`.** All V2 work happens on this branch. Commit frequently as checkpoints.
+7. **Keep the runtime import graph acyclic.** Widgets, services, and helpers must not import
+   `AppModel` (or `WeatherV2DashModel`) as a value - `AppModel` imports the widget catalog, so that
+   would close a runtime cycle, which TC39 decorators can turn into a startup `ReferenceError`.
+   Read the app model via `XH.appModel as AppModel` with `import type {AppModel}`, and the saved
+   layouts via `viewManagers`. Widget modules register their `meta` with `widgetRegistry` on load;
+   `widgets/viewSpecs.ts` imports them all, so the registry is complete before the dash is built.

@@ -13,11 +13,11 @@ This checklist codifies the "house style" expectations for V2 implementation. Ev
 
 ## Model Conventions
 
-- [ ] Models extend `HoistModel`. Call `makeObservable(this)` in every constructor that adds `@observable`, `@bindable`, or `@computed`.
+- [ ] Models extend `HoistModel`. Declare `@observable` / `@bindable` fields with the `accessor` keyword (TC39 decorators, hoist-react v88+) - no `makeObservable(this)` call.
 - [ ] Use `@bindable` for properties that have corresponding UI inputs (auto-generates setter).
-- [ ] Use `@observable.ref` for object/array references that are replaced wholesale.
+- [ ] Use `@observableRef` / `@bindableRef` for object/array references that are replaced wholesale.
 - [ ] Use `@managed` on child models the class creates and owns.
-- [ ] Use `@persist` + `persistWith` for properties that should survive page reload.
+- [ ] Use `@persist` + `persistWith` for properties that should survive page reload. `@persist` goes *after* the MobX decorator (`@bindable @persist accessor foo`).
 - [ ] Use `@lookup(() => DashViewModel)` in widget models to find parent view model in `onLinked()`.
 - [ ] Defer `persistWith` and `markPersist()` calls to `onLinked()` (after context available).
 - [ ] Implement `doLoadAsync(loadSpec)` for data loading — never call it directly, use `loadAsync()` / `refreshAsync()`.
