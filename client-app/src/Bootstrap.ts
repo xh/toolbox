@@ -17,6 +17,9 @@ import type {DocService} from './core/svc/DocService';
 import type {GitHubService} from './core/svc/GitHubService';
 import type {PortfolioService} from './core/svc/PortfolioService';
 import type {TaskService} from './examples/todo/TaskService';
+import type {LlmChatService} from './examples/weatherv2/svc/LlmChatService';
+import type {LlmToolService} from './examples/weatherv2/svc/LlmToolService';
+import type {WeatherDataService} from './examples/weatherv2/svc/WeatherDataService';
 
 declare module '@xh/hoist/core' {
     // Merge interface with XHApi class to include injected services.
@@ -24,8 +27,11 @@ declare module '@xh/hoist/core' {
         contactService: ContactService;
         docService: DocService;
         gitHubService: GitHubService;
+        llmChatService: LlmChatService;
+        llmToolService: LlmToolService;
         portfolioService: PortfolioService;
         taskService: TaskService;
+        weatherDataService: WeatherDataService;
     }
 
     export interface HoistUser {

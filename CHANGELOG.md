@@ -14,6 +14,10 @@
 
 ## 12.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added the Weather V2 example app - an LLM-driven `DashCanvas` dashboard whose persisted state doubles as a declarative JSON spec, with typed inter-widget wiring, a JSON spec editor, and a Dashboard Agent chat that builds and edits layouts via Anthropic tool calling through a new server-side `LlmService` proxy (configured via new `llm*` app configs).
+
 ## 11.0.0 - 2026-09-29
 
 ### New Features
