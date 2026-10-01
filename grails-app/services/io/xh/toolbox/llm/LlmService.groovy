@@ -13,15 +13,18 @@ import org.apache.hc.core5.http.io.entity.StringEntity
  *
  * Proxies requests to the Anthropic Messages API. The API key is stored in a
  * Hoist config entry ('llmApiKey') so it never reaches the client. Supports
- * basic per-user rate limiting via an in-memory counter map.
+ * basic per-user rate limiting via an in-memory counter map - per server instance,
+ * not shared across the cluster.
  *
- * Config entries:
- *   - llmApiKey (string/pwd): Anthropic API key.
+ * Config entries (created with defaults by BootStrap):
+ *   - llmApiKey (pwd): Anthropic API key.
  *   - llmModel (string): Model identifier, default 'claude-sonnet-4-6'.
- *   - llmMaxTokens (int): Max response tokens, default 4096.
+ *   - llmMaxTokens (int): Max response tokens, default 8192.
  *   - llmRateLimit (int): Max requests per user per hour, default 20.
  */
 class LlmService extends BaseService {
+
+    String telemetryPrefix = 'toolbox.llm'
 
     static clearCachesConfigs = ['llmApiKey', 'llmModel', 'llmMaxTokens', 'llmRateLimit']
 
@@ -48,8 +51,8 @@ class LlmService extends BaseService {
         checkApiKey()
         checkRateLimit(username)
 
-        def model = configService.getString('llmModel', 'claude-sonnet-4-6'),
-            maxTokens = configService.getInt('llmMaxTokens', 8192),
+        def model = configService.getString('llmModel'),
+            maxTokens = configService.getInt('llmMaxTokens'),
             apiKey = configService.getPwd('llmApiKey')
 
         def body = [
@@ -72,7 +75,9 @@ class LlmService extends BaseService {
         post.setEntity(new StringEntity(serialized))
 
         try {
-            def response = client.executeAsMap(post)
+            def response = span('generate', [model: model, toolCount: tools?.size() ?: 0])
+                .logDebug("Calling Anthropic API with $model")
+                .run { client.executeAsMap(post) }
             recordRequest(username)
             return response
         } catch (Exception e) {
@@ -84,8 +89,8 @@ class LlmService extends BaseService {
     //--------------------------------------------------
     // Rate limiting
     //--------------------------------------------------
-    private void checkRateLimit(String username) {
-        def limit = configService.getInt('llmRateLimit', 20),
+    private synchronized void checkRateLimit(String username) {
+        def limit = configService.getInt('llmRateLimit'),
             now = System.currentTimeMillis(),
             oneHourAgo = now - 3600_000
 
@@ -100,13 +105,13 @@ class LlmService extends BaseService {
         }
     }
 
-    private void recordRequest(String username) {
+    private synchronized void recordRequest(String username) {
         _rateLimitMap[username] << System.currentTimeMillis()
     }
 
     private void checkApiKey() {
-        def key = configService.getPwd('llmApiKey', 'none')
-        if (key == 'none' || !key?.trim()) {
+        def key = configService.getPwd('llmApiKey')
+        if (!key?.trim() || key == 'UNCONFIGURED') {
             throw new DataNotAvailableException(
                 'LLM API key not configured. Set the "llmApiKey" config entry in the Hoist Admin console.'
             )
