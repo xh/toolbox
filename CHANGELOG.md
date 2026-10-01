@@ -14,6 +14,10 @@
 
 ## 12.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added `StoreFilterField` and `GridFindField` to the desktop `ZoneGrid` demo, and bound the mobile demo's filter to its `ZoneGridModel`. Both search the fields mapped to the grid's zones, using hoist-react's new ZoneGrid support.
+
 ## 11.0.0 - 2026-09-29
 
 ### New Features
