@@ -65,7 +65,7 @@ export const zoneGridPage = hoistCmp.factory({
             ],
             item: panel({
                 mask: 'onLoad',
-                tbar: [storeFilterField({zoneGridModel}), filler(), zoneMapperButton()],
+                tbar: [storeFilterField({gridModel: zoneGridModel}), filler(), zoneMapperButton()],
                 item: zoneGrid()
             })
         });
