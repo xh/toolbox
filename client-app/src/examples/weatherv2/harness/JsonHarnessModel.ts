@@ -1,20 +1,21 @@
 import {createRef} from 'react';
 import {HoistModel, PersistableState, XH} from '@xh/hoist/core';
-import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
-import {action, bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
-import {DashSpec, DashWidgetState, ValidationResult} from '../dash/types';
+import type {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
+import {action, bindable, computed, observableRef} from '@xh/hoist/mobx';
+import type {DashSpec, DashWidgetState, ValidationResult} from '../dash/types';
 import {validateSpec, migrateSpec} from '../dash/validation';
-import {EXAMPLE_SPECS, ExampleSpec} from '../dash/exampleSpecs';
-import {AppModel} from '../AppModel';
+import type {ExampleSpec} from '../dash/exampleSpecs';
+import {EXAMPLE_SPECS} from '../dash/exampleSpecs';
+import type {AppModel} from '../AppModel';
 
 /**
  * Model for the JSON harness — manages the editor state, validation,
  * and the apply/export workflow.
  */
 export class JsonHarnessModel extends HoistModel {
-    @bindable editorValue: string = '';
-    @observable.ref lastValidation: ValidationResult = null;
-    @bindable lastError: string = null;
+    @bindable accessor editorValue: string = '';
+    @observableRef accessor lastValidation: ValidationResult = null;
+    @bindable accessor lastError: string = null;
     containerRef = createRef<HTMLElement>();
 
     get exampleSpecs(): ExampleSpec[] {
@@ -26,7 +27,7 @@ export class JsonHarnessModel extends HoistModel {
     get isDiverged(): boolean {
         try {
             const editorNormalized = JSON.stringify(JSON.parse(this.editorValue));
-            const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
+            const dashModel = (XH.appModel as AppModel).weatherV2DashModel.dashCanvasModel;
             const dashSpec: DashSpec = {version: 1, state: this.buildSpecState(dashModel)};
             const dashNormalized = JSON.stringify(dashSpec);
             return editorNormalized !== dashNormalized;
@@ -38,7 +39,6 @@ export class JsonHarnessModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.syncFromDashboard();
     }
 
@@ -46,7 +46,7 @@ export class JsonHarnessModel extends HoistModel {
     @action
     syncFromDashboard() {
         try {
-            const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
+            const dashModel = (XH.appModel as AppModel).weatherV2DashModel.dashCanvasModel;
             const spec: DashSpec = {version: 1, state: this.buildSpecState(dashModel)};
             this.editorValue = JSON.stringify(spec, null, 2);
             this.lastValidation = null;
@@ -88,7 +88,7 @@ export class JsonHarnessModel extends HoistModel {
 
         // Apply to dashboard
         try {
-            const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
+            const dashModel = (XH.appModel as AppModel).weatherV2DashModel.dashCanvasModel;
             dashModel.setPersistableState(new PersistableState({state: spec.state}));
             XH.successToast('Dashboard spec applied.');
         } catch (e) {

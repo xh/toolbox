@@ -1,21 +1,22 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
-import {DashCanvasModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
-import {Icon} from '@xh/hoist/icon';
-import {makeObservable} from '@xh/hoist/mobx';
+import type {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import type {
+    DashCanvasItemState,
+    DashCanvasViewSpec,
+    DashViewModel
+} from '@xh/hoist/desktop/cmp/dash';
+import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
+import type {AppModel} from '../AppModel';
 import {WiringModel} from './WiringModel';
 import {widgetRegistry} from './WidgetRegistry';
 
-import {temperatureIcon, cloudRainIcon, calendarDaysIcon, windIcon} from '../Icons';
-import {cityChooserWidget} from '../widgets/CityChooserWidget';
-import {currentConditionsWidget} from '../widgets/CurrentConditionsWidget';
-import {forecastChartWidget} from '../widgets/ForecastChartWidget';
-import {precipChartWidget} from '../widgets/PrecipChartWidget';
-import {summaryGridWidget} from '../widgets/SummaryGridWidget';
-import {unitsToggleWidget} from '../widgets/UnitsToggleWidget';
-import {windChartWidget} from '../widgets/WindChartWidget';
-import {markdownContentWidget} from '../widgets/MarkdownContentWidget';
-import {dashInspectorWidget} from '../widgets/DashInspectorWidget';
+export interface WeatherV2DashConfig {
+    viewManagerModel: ViewManagerModel;
+    /** Widget catalog - supplied by the app so this model need not import the widgets. */
+    viewSpecs: DashCanvasViewSpec[];
+    /** Default widget layout, applied when no saved view is selected. */
+    initialState: DashCanvasItemState[];
+}
 
 /**
  * Central model for the Weather V2 dashboard.
@@ -29,9 +30,8 @@ export class WeatherV2DashModel extends HoistModel {
 
     viewManagerModel: ViewManagerModel;
 
-    constructor(viewManagerModel: ViewManagerModel) {
+    constructor({viewManagerModel, viewSpecs, initialState}: WeatherV2DashConfig) {
         super();
-        makeObservable(this);
 
         this.viewManagerModel = viewManagerModel;
         this.wiringModel = new WiringModel();
@@ -40,170 +40,8 @@ export class WeatherV2DashModel extends HoistModel {
             persistWith: {viewManagerModel},
             rowHeight: 30,
             allowsDrop: true,
-            viewSpecs: [
-                {
-                    id: 'cityChooser',
-                    title: 'City Chooser',
-                    icon: Icon.globe(),
-                    groupName: 'Input',
-                    content: cityChooserWidget,
-                    unique: false,
-                    allowRename: false,
-                    width: 3,
-                    height: 3
-                },
-                {
-                    id: 'unitsToggle',
-                    title: 'Units Toggle',
-                    icon: Icon.gear(),
-                    groupName: 'Input',
-                    content: unitsToggleWidget,
-                    unique: false,
-                    allowRename: false,
-                    width: 3,
-                    height: 3
-                },
-                {
-                    id: 'currentConditions',
-                    title: 'Current Conditions',
-                    icon: Icon.sun(),
-                    groupName: 'Display',
-                    content: currentConditionsWidget,
-                    unique: false,
-                    allowRename: false,
-                    width: 4,
-                    height: 8
-                },
-                {
-                    id: 'forecastChart',
-                    title: 'Forecast Chart',
-                    icon: temperatureIcon(),
-                    groupName: 'Display',
-                    content: forecastChartWidget,
-                    unique: false,
-                    allowRename: false,
-                    width: 8,
-                    height: 8
-                },
-                {
-                    id: 'precipChart',
-                    title: 'Precipitation',
-                    icon: cloudRainIcon(),
-                    groupName: 'Display',
-                    content: precipChartWidget,
-                    unique: false,
-                    allowRename: false,
-                    width: 6,
-                    height: 8
-                },
-                {
-                    id: 'summaryGrid',
-                    title: '5-Day Summary',
-                    icon: calendarDaysIcon(),
-                    groupName: 'Display',
-                    content: summaryGridWidget,
-                    unique: false,
-                    allowRename: false,
-                    width: 6,
-                    height: 8
-                },
-                {
-                    id: 'windChart',
-                    title: 'Wind',
-                    icon: windIcon(),
-                    groupName: 'Display',
-                    content: windChartWidget,
-                    unique: false,
-                    allowRename: false,
-                    width: 6,
-                    height: 8
-                },
-                {
-                    id: 'markdownContent',
-                    title: 'Markdown Content',
-                    icon: Icon.info(),
-                    groupName: 'Utility',
-                    content: markdownContentWidget,
-                    unique: false,
-                    allowRename: false,
-                    width: 4,
-                    height: 5
-                },
-                {
-                    id: 'dashInspector',
-                    title: 'Dash Inspector',
-                    icon: Icon.code(),
-                    groupName: 'Utility',
-                    content: dashInspectorWidget,
-                    unique: true,
-                    allowRename: false,
-                    width: 6,
-                    height: 8
-                }
-            ],
-            initialState: [
-                {
-                    viewSpecId: 'cityChooser',
-                    layout: {x: 0, y: 0, w: 3, h: 3},
-                    state: {selectedCity: 'New York'}
-                },
-                {
-                    viewSpecId: 'unitsToggle',
-                    layout: {x: 0, y: 3, w: 3, h: 3},
-                    state: {units: 'imperial'}
-                },
-                {
-                    viewSpecId: 'currentConditions',
-                    layout: {x: 3, y: 0, w: 4, h: 8},
-                    state: {
-                        bindings: {
-                            city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
-                            units: {fromWidget: 'unitsToggle_0', output: 'units'}
-                        }
-                    }
-                },
-                {
-                    viewSpecId: 'forecastChart',
-                    layout: {x: 7, y: 0, w: 5, h: 8},
-                    state: {
-                        bindings: {
-                            city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
-                            units: {fromWidget: 'unitsToggle_0', output: 'units'}
-                        },
-                        series: ['temp', 'feelsLike'],
-                        chartType: 'line'
-                    }
-                },
-                {
-                    viewSpecId: 'precipChart',
-                    layout: {x: 0, y: 8, w: 6, h: 8},
-                    state: {
-                        bindings: {
-                            city: {fromWidget: 'cityChooser_0', output: 'selectedCity'}
-                        }
-                    }
-                },
-                {
-                    viewSpecId: 'windChart',
-                    layout: {x: 6, y: 8, w: 6, h: 8},
-                    state: {
-                        bindings: {
-                            city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
-                            units: {fromWidget: 'unitsToggle_0', output: 'units'}
-                        }
-                    }
-                },
-                {
-                    viewSpecId: 'summaryGrid',
-                    layout: {x: 0, y: 16, w: 12, h: 8},
-                    state: {
-                        bindings: {
-                            city: {fromWidget: 'cityChooser_0', output: 'selectedCity'},
-                            units: {fromWidget: 'unitsToggle_0', output: 'units'}
-                        }
-                    }
-                }
-            ]
+            viewSpecs,
+            initialState
         });
 
         // Widget lifecycle: track viewModel additions/removals to cull stale bindings
@@ -251,7 +89,7 @@ export class WeatherV2DashModel extends HoistModel {
 
         // Lock/unlock canvas editing based on manual editing toggle.
         this.addReaction({
-            track: () => (XH.appModel as any).manualEditingEnabled,
+            track: () => (XH.appModel as AppModel).manualEditingEnabled,
             run: enabled => {
                 const locked = !enabled;
                 this.dashCanvasModel.layoutLocked = locked;

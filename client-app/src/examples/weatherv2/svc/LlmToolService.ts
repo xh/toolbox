@@ -1,6 +1,7 @@
 import {HoistService, PersistableState, XH} from '@xh/hoist/core';
-import {AppModel} from '../AppModel';
-import {DashSpec, DashWidgetState} from '../dash/types';
+import type {AppModel} from '../AppModel';
+import {viewManagers} from '../viewManagers';
+import type {DashSpec, DashWidgetState} from '../dash/types';
 import {validateSpec, migrateSpec, computeInstanceIds} from '../dash/validation';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 
@@ -49,8 +50,8 @@ export class LlmToolService extends HoistService {
     // Implementation
     //------------------
     private async doExecuteAsync(name: string, input: Record<string, any>): Promise<string> {
-        const appModel = AppModel.instance,
-            viewManager = appModel.weatherViewManager;
+        const appModel = XH.appModel as AppModel,
+            viewManager = viewManagers.weatherDashboardV2;
 
         switch (name) {
             //----------------------------------------------
@@ -321,14 +322,14 @@ export class LlmToolService extends HoistService {
 
     /** Get the current dashboard state array from DashCanvasModel. */
     private getCurrentStateArray(): DashWidgetState[] {
-        const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
+        const dashModel = (XH.appModel as AppModel).weatherV2DashModel.dashCanvasModel;
         const persistable = dashModel.getPersistableState();
         return persistable?.value?.state ?? [];
     }
 
     /** Validate and apply a state array to the dashboard. */
     private applyState(state: DashWidgetState[]) {
-        const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
+        const dashModel = (XH.appModel as AppModel).weatherV2DashModel.dashCanvasModel;
         dashModel.setPersistableState(new PersistableState({state}));
     }
 

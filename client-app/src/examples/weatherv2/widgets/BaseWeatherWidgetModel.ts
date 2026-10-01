@@ -1,16 +1,19 @@
-import {createElement, ReactNode} from 'react';
-import {HoistModel, lookup, managed} from '@xh/hoist/core';
-import {DashCanvasViewModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
+import type {ReactNode} from 'react';
+import {createElement} from 'react';
+import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';
+import type {DashCanvasViewModel} from '@xh/hoist/desktop/cmp/dash';
+import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {required, numberIs} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
+import {compareStructural} from '@xh/hoist/mobx';
 import {isEqual} from 'lodash';
-import {WidgetMeta, BindingSpec, ConfigPropertyDef} from '../dash/types';
-import {WiringModel} from '../dash/WiringModel';
+import type {WidgetMeta, BindingSpec, ConfigPropertyDef} from '../dash/types';
+import type {WiringModel} from '../dash/WiringModel';
 import {getInputWidgetColor, getConsumerWidgetColors} from '../dash/colorCoding';
-import {AppModel} from '../AppModel';
+import type {AppModel} from '../AppModel';
 
 /**
  * Abstract base class for all V2 weather dashboard widget models.
@@ -127,17 +130,18 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
             track: () => {
                 const meta = (this.constructor as any).meta as WidgetMeta;
                 if (!meta) return null;
-                const vmId = this.viewModel.id;
-                // Track editing toggle to rebuild header items (gear visibility).
-                void AppModel.instance.manualEditingEnabled;
-                if (meta.category === 'input') return getInputWidgetColor(vmId);
-                if (meta.inputs.length > 0) return getConsumerWidgetColors(vmId);
-                return null;
+                const vmId = this.viewModel.id,
+                    // Returned (not just read) so a toggle re-runs even when colors are unchanged.
+                    editing = this.appModel.manualEditingEnabled;
+                if (meta.category === 'input') return [editing, getInputWidgetColor(vmId)];
+                if (meta.inputs.length > 0) return [editing, getConsumerWidgetColors(vmId)];
+                return [editing];
             },
             run: () => {
                 const canvasVM = this.viewModel as DashCanvasViewModel;
                 canvasVM.headerItems = this.buildHeaderItems();
             },
+            equals: compareStructural,
             fireImmediately: true,
             delay: 1
         });
@@ -171,7 +175,7 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
         // delay: 1 avoids modifying canvasVM observable state during render.
         this.addReaction({
             track: () => ({
-                editing: AppModel.instance.manualEditingEnabled,
+                editing: this.appModel.manualEditingEnabled,
                 hide: this.viewModel.viewState?.hidePanelHeader ?? false
             }),
             run: ({editing, hide}) => {
@@ -213,7 +217,7 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
         }
 
         // Gear button — only visible when manual editing is enabled
-        if (this.panelModel && AppModel.instance.manualEditingEnabled) {
+        if (this.panelModel && this.appModel.manualEditingEnabled) {
             items.push(
                 button({
                     icon: Icon.gear(),
@@ -272,9 +276,17 @@ export abstract class BaseWeatherWidgetModel extends HoistModel {
     // Internal
     //--------------------------------------------------
 
+    /**
+     * The app's AppModel singleton. Read via `XH.appModel` with a type-only import - importing
+     * `AppModel` as a value here would close a runtime import cycle through the widget catalog.
+     */
+    protected get appModel(): AppModel {
+        return XH.appModel as AppModel;
+    }
+
     /** Access to the shared WiringModel via AppModel singleton. */
     protected get wiringModel(): WiringModel {
-        return AppModel.instance.weatherV2DashModel.wiringModel;
+        return this.appModel.weatherV2DashModel.wiringModel;
     }
 }
 

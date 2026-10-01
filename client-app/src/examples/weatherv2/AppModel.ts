@@ -1,7 +1,7 @@
-import {InitContext, managed, persist, XH} from '@xh/hoist/core';
-import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import type {InitContext} from '@xh/hoist/core';
+import {managed, persist, XH} from '@xh/hoist/core';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {
     autoRefreshAppOption,
     themeAppOption,
@@ -12,23 +12,19 @@ import {WeatherV2DashModel} from './dash/WeatherV2DashModel';
 import {LlmChatService} from './svc/LlmChatService';
 import {LlmToolService} from './svc/LlmToolService';
 import {WeatherDataService} from './svc/WeatherDataService';
+import {viewManagers} from './viewManagers';
+import {initialState, viewSpecs} from './widgets/viewSpecs';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
     override persistWith = {localStorageKey: 'weatherV2App'};
 
     @managed weatherV2DashModel: WeatherV2DashModel;
-    @managed weatherViewManager: ViewManagerModel;
     @managed harnessPanelModel: PanelModel;
-    @persist @bindable manualEditingEnabled: boolean = true;
-    @persist @bindable showJsonHarness: boolean = false;
-    @persist @bindable showChatHarness: boolean = true;
-    @persist @bindable showWidgetChooser: boolean = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable @persist accessor manualEditingEnabled: boolean = true;
+    @bindable @persist accessor showJsonHarness: boolean = false;
+    @bindable @persist accessor showChatHarness: boolean = true;
+    @bindable @persist accessor showWidgetChooser: boolean = false;
 
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
@@ -43,19 +39,15 @@ export class AppModel extends BaseAppModel {
             persistWith: {...this.persistWith, path: 'harnessPanel'}
         });
 
-        await this.newSpan({name: 'toolbox.weatherv2.loadViews', parent: ctx.span}).run(
-            async () => {
-                this.weatherViewManager = await ViewManagerModel.createAsync({
-                    type: 'weatherDashboardV2',
-                    typeDisplayName: 'Layout',
-                    enableDefault: true,
-                    enableAutoSave: false,
-                    manageGlobal: XH.getUser().isHoistAdmin
-                });
-            }
-        );
+        // Awaited here, in initAsync, so that saved layouts are loaded and the desired option
+        // preselected before WeatherV2DashModel builds its DashCanvas.
+        await viewManagers.initAsync(ctx);
 
-        this.weatherV2DashModel = new WeatherV2DashModel(this.weatherViewManager);
+        this.weatherV2DashModel = new WeatherV2DashModel({
+            viewManagerModel: viewManagers.weatherDashboardV2,
+            viewSpecs,
+            initialState
+        });
 
         this.addReaction({
             track: () => this.manualEditingEnabled,

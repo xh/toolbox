@@ -7,12 +7,8 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {jsonInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {sparklesIcon} from '../Icons';
-import {
-    ChatHarnessModel,
-    DisplayMessage,
-    ToolCallDisplay,
-    formatMessageContent
-} from './ChatHarnessModel';
+import type {DisplayMessage, ToolCallDisplay} from './ChatHarnessModel';
+import {ChatHarnessModel, formatMessageContent} from './ChatHarnessModel';
 
 export const chatHarnessPanel = hoistCmp.factory({
     displayName: 'ChatHarnessPanel',
@@ -189,7 +185,7 @@ function renderToolPayload(label: string, value: any, isError?: boolean): any {
                     readonly: true,
                     showCopyButton: true,
                     showFullscreenButton: true,
-                    editorProps: {lineNumbers: false},
+                    lineNumbers: false,
                     width: '100%',
                     minHeight: 240
                 })

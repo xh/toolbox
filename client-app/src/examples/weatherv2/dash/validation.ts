@@ -1,5 +1,11 @@
 import {widgetRegistry} from './WidgetRegistry';
-import {ValidationResult, ValidationMessage, DashSpec, DashWidgetState, BindingSpec} from './types';
+import type {
+    ValidationResult,
+    ValidationMessage,
+    DashSpec,
+    DashWidgetState,
+    BindingSpec
+} from './types';
 
 const CURRENT_VERSION = 1;
 

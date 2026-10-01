@@ -1,14 +1,15 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {placeholder} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
+import type {LoadSpec} from '@xh/hoist/core';
+import {creates, hoistCmp, managed, XH} from '@xh/hoist/core';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
+import {bindable, computed} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
-import {WidgetMeta} from '../dash/types';
-import {WeatherData} from '../Types';
+import type {WidgetMeta} from '../dash/types';
+import type {WeatherData} from '../Types';
 
 //--------------------------------------------------
 // Model
@@ -53,12 +54,7 @@ export class PrecipChartModel extends BaseWeatherWidgetModel {
     };
 
     @managed chartModel: ChartModel;
-    @bindable hasData: boolean = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor hasData: boolean = false;
 
     @computed get city(): string {
         return this.resolveInput('city') ?? 'New York';

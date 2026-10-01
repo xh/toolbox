@@ -1,6 +1,6 @@
 import {HoistModel} from '@xh/hoist/core';
-import {action, makeObservable, observable} from '@xh/hoist/mobx';
-import {BindingSpec} from './types';
+import {action, observableRef} from '@xh/hoist/mobx';
+import type {BindingSpec} from './types';
 
 /**
  * Runtime wiring coordinator for the V2 dashboard.
@@ -11,13 +11,7 @@ import {BindingSpec} from './types';
  */
 export class WiringModel extends HoistModel {
     /** Map: widgetInstanceId → {outputName → current value} */
-    @observable.ref
-    private _outputs = new Map<string, Map<string, any>>();
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @observableRef private accessor _outputs = new Map<string, Map<string, any>>();
 
     /** Publish a named output value from a widget instance. */
     @action

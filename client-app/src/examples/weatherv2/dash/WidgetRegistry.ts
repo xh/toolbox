@@ -1,4 +1,4 @@
-import {WidgetMeta} from './types';
+import type {WidgetMeta} from './types';
 
 /**
  * Singleton registry of all V2 widget type schemas.

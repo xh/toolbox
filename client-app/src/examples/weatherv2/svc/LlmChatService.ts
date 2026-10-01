@@ -1,9 +1,9 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import {widgetRegistry} from '../dash/WidgetRegistry';
-import {DashSpec} from '../dash/types';
+import type {DashSpec} from '../dash/types';
 import {computeInstanceIds} from '../dash/validation';
 import {CITIES} from '../widgets/CityChooserWidget';
-import {ToolDefinition} from './LlmToolService';
+import type {ToolDefinition} from './LlmToolService';
 
 /** A content block in an Anthropic API message. */
 export interface ContentBlock {

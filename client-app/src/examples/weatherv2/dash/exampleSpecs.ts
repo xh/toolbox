@@ -1,4 +1,4 @@
-import {DashSpec} from './types';
+import type {DashSpec} from './types';
 
 export interface ExampleSpec {
     name: string;

@@ -1,11 +1,11 @@
 import {hoistCmp, creates} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
-import {WidgetMeta} from '../dash/types';
+import type {WidgetMeta} from '../dash/types';
 
 //--------------------------------------------------
 // Model
@@ -40,13 +40,9 @@ export class MarkdownContentModel extends BaseWeatherWidgetModel {
         minSize: {w: 2, h: 2}
     };
 
-    @bindable content: string = "# Welcome\n\nEdit this widget's content in the dashboard spec.";
-    @bindable widgetTitle: string = 'Markdown Content';
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor content: string =
+        "# Welcome\n\nEdit this widget's content in the dashboard spec.";
+    @bindable accessor widgetTitle: string = 'Markdown Content';
 
     override onLinked() {
         super.onLinked();

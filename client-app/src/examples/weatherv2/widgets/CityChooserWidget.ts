@@ -1,11 +1,11 @@
 import {hoistCmp, creates} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {box} from '@xh/hoist/cmp/layout';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
-import {WidgetMeta} from '../dash/types';
+import type {WidgetMeta} from '../dash/types';
 
 /**
  * Curated list of major cities known to work well with the OpenWeatherMap API.
@@ -86,12 +86,7 @@ export class CityChooserModel extends BaseWeatherWidgetModel {
         minSize: {w: 2, h: 3}
     };
 
-    @bindable selectedCity: string = 'New York';
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor selectedCity: string = 'New York';
 
     override onLinked() {
         super.onLinked();

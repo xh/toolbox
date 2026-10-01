@@ -1,7 +1,7 @@
-import {ReactNode} from 'react';
+import type {ReactNode} from 'react';
 import {frame, hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
+import type {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetSettingsForm} from './WidgetSettingsForm';
 
 /**

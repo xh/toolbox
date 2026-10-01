@@ -1,8 +1,8 @@
 import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
-import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
-import {DashSpec} from '../dash/types';
-import {ChatMessage, ContentBlock} from '../svc/LlmChatService';
-import {AppModel} from '../AppModel';
+import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
+import type {DashSpec} from '../dash/types';
+import type {ChatMessage, ContentBlock} from '../svc/LlmChatService';
+import type {AppModel} from '../AppModel';
 
 /** Tool call info for display in the chat UI. */
 export interface ToolCallDisplay {
@@ -33,14 +33,14 @@ const MAX_TOOL_ITERATIONS = 5;
  * execute within the tool-use loop alongside app operation tools.
  */
 export class ChatHarnessModel extends HoistModel {
-    @bindable userInput: string = '';
-    @observable.ref messages: ChatMessage[] = [];
-    @observable.ref displayMessages: DisplayMessage[] = [];
-    @observable.ref lastError: string = null;
+    @bindable accessor userInput: string = '';
+    @observableRef accessor messages: ChatMessage[] = [];
+    @observableRef accessor displayMessages: DisplayMessage[] = [];
+    @observableRef accessor lastError: string = null;
 
     // Typewriter effect state
-    @observable typingMessageIdx: number = -1;
-    @observable typingChars: number = 0;
+    @observable accessor typingMessageIdx: number = -1;
+    @observable accessor typingChars: number = 0;
 
     @managed
     generateTask = TaskObserver.trackLast();
@@ -50,11 +50,6 @@ export class ChatHarnessModel extends HoistModel {
     // generateTask.isPending check which can miss rapid-fire calls from the
     // same tick due to batching.
     private _isGenerating = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     /**
      * Get displayed content for a message, accounting for typewriter effect.
@@ -274,7 +269,7 @@ export class ChatHarnessModel extends HoistModel {
 
     private getCurrentSpec(): DashSpec | undefined {
         try {
-            const dashModel = AppModel.instance.weatherV2DashModel.dashCanvasModel;
+            const dashModel = (XH.appModel as AppModel).weatherV2DashModel.dashCanvasModel;
             const persistable = dashModel.getPersistableState();
             return {version: 1, state: persistable?.value?.state ?? []};
         } catch {

@@ -1,15 +1,15 @@
 import {grid, GridAutosizeMode, GridModel} from '@xh/hoist/cmp/grid';
 import {img} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {ColChooserModel} from '@xh/hoist/desktop/cmp/grid/impl/colchooser/ColChooserModel';
-import {computed, makeObservable} from '@xh/hoist/mobx';
+import type {LoadSpec} from '@xh/hoist/core';
+import {creates, hoistCmp, managed, XH} from '@xh/hoist/core';
+import {computed} from '@xh/hoist/mobx';
 import {groupBy} from 'lodash';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import {fmtTemp, fmtWind} from '../dash/unitUtils';
-import {WidgetMeta} from '../dash/types';
-import {WeatherData} from '../Types';
+import type {WidgetMeta} from '../dash/types';
+import type {WeatherData} from '../Types';
 
 //--------------------------------------------------
 // Model
@@ -52,11 +52,6 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
 
     @managed gridModel: GridModel;
 
-    constructor() {
-        super();
-        makeObservable(this);
-    }
-
     @computed get city(): string {
         return this.resolveInput('city') ?? 'New York';
     }
@@ -80,17 +75,6 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
             run: () => this.updateGrid(),
             fireImmediately: true
         });
-
-        // Sync chooser data when settings modal opens so the LeftRightChooser
-        // reflects the current column visibility state.
-        this.addReaction({
-            track: () => this.panelModel.isModal,
-            run: isModal => {
-                if (isModal) {
-                    (this.gridModel.colChooserModel as ColChooserModel).syncChooserData();
-                }
-            }
-        });
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
@@ -112,7 +96,10 @@ export class SummaryGridModel extends BaseWeatherWidgetModel {
             sortBy: 'date',
             emptyText: 'No forecast data available.',
             autosizeOptions: {mode: GridAutosizeMode.MANAGED},
-            colChooserModel: {commitOnChange: true},
+            // Chooser renders inline in the settings modal (see WidgetSettingsForm) - fill its
+            // width, and skip pinning so it shows only the (short) column list.
+            colChooserModel: {commitOnChange: true, width: '100%', height: 320},
+            enableColumnPinning: false,
             persistWith: {
                 dashViewModel: this.viewModel,
                 persistSort: false,

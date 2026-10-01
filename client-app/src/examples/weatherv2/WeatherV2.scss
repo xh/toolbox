@@ -689,10 +689,10 @@
     height: 230px;
   }
 
-  // Inline ColumnChooser — constrain the LeftRightChooser to fit within
-  // the settings panel without overflowing.
+  // Inline ColChooser — constrain the chooser to fit within the settings
+  // panel without overflowing.
+  // Height is set via the grid's `colChooserModel` config, applied inline by the chooser.
   .xh-col-chooser {
-    height: 300px;
     border: var(--xh-border-solid);
     border-radius: var(--xh-border-radius-px);
   }

@@ -1,11 +1,11 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {creates, hoistCmp, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, managed, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {computed, makeObservable} from '@xh/hoist/mobx';
+import {computed} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
-import {WidgetMeta} from '../dash/types';
-import {AppModel} from '../AppModel';
+import type {WidgetMeta} from '../dash/types';
+import type {AppModel} from '../AppModel';
 
 //--------------------------------------------------
 // Model
@@ -32,11 +32,6 @@ export class DashInspectorModel extends BaseWeatherWidgetModel {
 
     @managed gridModel: GridModel;
 
-    constructor() {
-        super();
-        makeObservable(this);
-    }
-
     override onLinked() {
         super.onLinked();
         this.gridModel = this.createGridModel();
@@ -49,7 +44,7 @@ export class DashInspectorModel extends BaseWeatherWidgetModel {
 
     @computed
     get inspectorData(): Record<string, any>[] {
-        const dashModel = AppModel.instance.weatherV2DashModel,
+        const dashModel = (XH.appModel as AppModel).weatherV2DashModel,
             wiringModel = dashModel.wiringModel,
             canvasModel = dashModel.dashCanvasModel,
             allOutputs = wiringModel.allOutputs;

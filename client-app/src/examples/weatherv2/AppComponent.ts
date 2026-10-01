@@ -8,6 +8,7 @@ import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {Icon} from '@xh/hoist/icon';
 import {sparklesIcon} from './Icons';
 import {AppModel} from './AppModel';
+import {viewManagers} from './viewManagers';
 import {jsonHarnessPanel} from './harness/JsonHarnessPanel';
 import {chatHarnessPanel} from './harness/ChatHarnessPanel';
 import '../../core/Toolbox.scss';
@@ -19,7 +20,6 @@ export const AppComponent = hoistCmp({
 
     render({model}) {
         const {
-                weatherViewManager,
                 weatherV2DashModel,
                 manualEditingEnabled,
                 showJsonHarness,
@@ -35,7 +35,7 @@ export const AppComponent = hoistCmp({
                 icon: Icon.sun({size: '2x', prefix: 'fal'}),
                 title: 'Weather V2',
                 rightItems: [
-                    viewManager({model: weatherViewManager}),
+                    viewManager({model: viewManagers.weatherDashboardV2}),
                     appBarSeparator(),
                     button({
                         testId: 'manual-editing-btn',

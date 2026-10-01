@@ -1,5 +1,6 @@
+import {XH} from '@xh/hoist/core';
 import {widgetRegistry} from './WidgetRegistry';
-import {AppModel} from '../AppModel';
+import type {AppModel} from '../AppModel';
 
 /**
  * Color palette for input widgets. Colors are assigned in order of widget
@@ -22,7 +23,7 @@ const INPUT_WIDGET_COLORS = [
  * Returns undefined for non-input widgets.
  */
 export function getInputWidgetColor(widgetId: string): string | undefined {
-    const dashModel = AppModel.instance?.weatherV2DashModel;
+    const dashModel = (XH.appModel as AppModel)?.weatherV2DashModel;
     if (!dashModel) return undefined;
 
     const canvasModel = dashModel.dashCanvasModel,
@@ -41,7 +42,7 @@ export function getInputWidgetColor(widgetId: string): string | undefined {
  * Used by WeatherV2DashModel for reactive title decoration.
  */
 export function getAllInputWidgetColors(): Map<string, string> {
-    const dashModel = AppModel.instance?.weatherV2DashModel;
+    const dashModel = (XH.appModel as AppModel)?.weatherV2DashModel;
     if (!dashModel) return new Map();
 
     const canvasModel = dashModel.dashCanvasModel,
@@ -63,7 +64,7 @@ export function getAllInputWidgetColors(): Map<string, string> {
  * Returns an array of colors for all active input bindings.
  */
 export function getConsumerWidgetColors(widgetId: string): string[] {
-    const dashModel = AppModel.instance?.weatherV2DashModel;
+    const dashModel = (XH.appModel as AppModel)?.weatherV2DashModel;
     if (!dashModel) return [];
 
     const canvasModel = dashModel.dashCanvasModel,

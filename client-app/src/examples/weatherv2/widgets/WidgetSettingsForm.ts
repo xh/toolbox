@@ -1,11 +1,11 @@
-import {hoistCmp, uses} from '@xh/hoist/core';
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {hoistCmp, uses, XH} from '@xh/hoist/core';
+import type {GridModel} from '@xh/hoist/cmp/grid';
 import {div, filler, span, vbox} from '@xh/hoist/cmp/layout';
 import {form} from '@xh/hoist/cmp/form';
 import {genDisplayName} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {colChooser} from '@xh/hoist/desktop/cmp/grid/impl/colchooser/ColChooser';
-import {ColChooserModel} from '@xh/hoist/desktop/cmp/grid/impl/colchooser/ColChooserModel';
+import type {ColChooserModel} from '@xh/hoist/desktop/cmp/grid/impl/colchooser/ColChooserModel';
 import {
     codeInput,
     select,
@@ -20,8 +20,8 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
-import {InputDef, ConfigPropertyDef, WidgetMeta} from '../dash/types';
-import {AppModel} from '../AppModel';
+import type {InputDef, ConfigPropertyDef, WidgetMeta} from '../dash/types';
+import type {AppModel} from '../AppModel';
 import {getInputWidgetColor} from '../dash/colorCoding';
 
 //--------------------------------------------------
@@ -164,7 +164,7 @@ function renderInputField(widgetModel: BaseWeatherWidgetModel, inputDef: InputDe
 }
 
 //--------------------------------------------------
-// Column Chooser Section — native LeftRightChooser for grid widgets
+// Column Chooser Section — inline ColChooser for grid widgets
 //--------------------------------------------------
 function renderColumnChooserSection(widgetModel: BaseWeatherWidgetModel) {
     const gridModel = (widgetModel as any).gridModel as GridModel | undefined;
@@ -262,7 +262,7 @@ function renderConfigField(configKey: string, configDef: ConfigPropertyDef) {
             return formField({
                 field: configKey,
                 info,
-                item: codeInput({mode: 'markdown', showFullscreenButton: true})
+                item: codeInput({language: 'markdown', showFullscreenButton: true})
             });
 
         case 'string':
@@ -284,7 +284,7 @@ interface ProviderInfo {
 
 /** Find all widget instances that produce outputs compatible with the given input. */
 function findProviders(inputDef: InputDef, currentWidgetId: string): ProviderInfo[] {
-    const dashModel = AppModel.instance.weatherV2DashModel,
+    const dashModel = (XH.appModel as AppModel).weatherV2DashModel,
         canvasModel = dashModel.dashCanvasModel,
         providers: ProviderInfo[] = [];
 

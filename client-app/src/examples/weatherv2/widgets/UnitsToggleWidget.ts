@@ -2,11 +2,11 @@ import {hoistCmp, creates} from '@xh/hoist/core';
 import {box} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {BaseWeatherWidgetModel} from './BaseWeatherWidgetModel';
 import {settingsAwarePanel} from './settingsAwarePanel';
 import {widgetRegistry} from '../dash/WidgetRegistry';
-import {WidgetMeta} from '../dash/types';
+import type {WidgetMeta} from '../dash/types';
 
 //--------------------------------------------------
 // Model
@@ -34,12 +34,7 @@ export class UnitsToggleModel extends BaseWeatherWidgetModel {
         minSize: {w: 2, h: 3}
     };
 
-    @bindable units: string = 'imperial';
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor units: string = 'imperial';
 
     override onLinked() {
         super.onLinked();

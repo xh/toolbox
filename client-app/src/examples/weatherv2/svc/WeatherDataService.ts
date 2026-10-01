@@ -1,6 +1,7 @@
-import {HoistService, LoadSpec, XH} from '@xh/hoist/core';
-import {action, makeObservable, observable} from '@xh/hoist/mobx';
-import {
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistService, XH} from '@xh/hoist/core';
+import {action, observableRef} from '@xh/hoist/mobx';
+import type {
     WeatherData,
     NormalizedCurrent,
     NormalizedForecastEntry,
@@ -22,13 +23,7 @@ export class WeatherDataService extends HoistService {
     static instance: WeatherDataService;
 
     /** Observable cache: city → WeatherData. Replace the map reference to trigger reactions. */
-    @observable.ref
-    private _cache = new Map<string, WeatherData>();
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @observableRef private accessor _cache = new Map<string, WeatherData>();
 
     /** Get cached data for a city (synchronous, may return null if not yet loaded). */
     getData(city: string): WeatherData | null {
@@ -44,8 +39,8 @@ export class WeatherDataService extends HoistService {
         if (cached && !this.isStale(cached)) return cached;
 
         const [currentRaw, forecastRaw] = await Promise.all([
-            XH.fetchJson({url: 'weather/current', params: {city}, loadSpec}),
-            XH.fetchJson({url: 'weather/forecast', params: {city}, loadSpec})
+            XH.fetchJson({url: 'weather/current', params: {city}}, {loadSpec}),
+            XH.fetchJson({url: 'weather/forecast', params: {city}}, {loadSpec})
         ]);
 
         if (loadSpec?.isStale) return cached ?? this.emptyData(city);
