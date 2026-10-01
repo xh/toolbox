@@ -35,7 +35,7 @@ class EntraIdTokenService extends BaseService {
         return [
             provider: 'ENTRA_ID',
             authority: authority,
-            *: config
+            *: config.formatForJSON()
         ]
     }
 
@@ -112,8 +112,8 @@ class EntraIdTokenService extends BaseService {
             }
     }
 
-    private getConfig() {
-        configService.getMap('entraIdConfig')
+    private EntraIdConfig getConfig() {
+        configService.getObject(EntraIdConfig)
     }
 
     private String getClientId() {

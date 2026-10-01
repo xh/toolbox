@@ -1,20 +1,20 @@
 import {badge} from '@xh/hoist/cmp/badge';
+import {clipboardMenuItem} from '@xh/hoist/cmp/clipboard';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hbox, hframe, hspacer, placeholder, span} from '@xh/hoist/cmp/layout';
-import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp, uses, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dockContainer} from '@xh/hoist/desktop/cmp/dock';
 import {textArea, textInput} from '@xh/hoist/desktop/cmp/input';
+import {menuButton} from '@xh/hoist/desktop/cmp/menu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {menu, menuItem, popover, tooltip} from '@xh/hoist/kit/blueprint';
+import {tooltip} from '@xh/hoist/kit/blueprint';
 import {pluralize} from '@xh/hoist/utils/js';
-import React, {useCallback, useEffect, useRef} from 'react';
-import {resolveDocLink} from './docRegistry';
+import {useEffect, useRef} from 'react';
+import {docContent} from '../../../core/docs/DocContent';
 import {DocsPanelModel} from './DocsPanelModel';
-import {DocService} from '../../../core/svc/DocService';
 import './DocsTab.scss';
 
 /**
@@ -71,7 +71,7 @@ const navPanel = hoistCmp.factory<DocsPanelModel>({
 //------------------
 const contentPanel = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
-        const {activeDoc, loadContentTask, searchMode} = model;
+        const {activeDoc, searchMode} = model;
 
         if (searchMode) return searchPanel();
 
@@ -110,8 +110,8 @@ const contentPanel = hoistCmp.factory<DocsPanelModel>({
                     })
                 ]
             }),
-            item: contentBody(),
-            mask: loadContentTask
+            item: docContent(),
+            mask: 'onLoad'
         });
     }
 });
@@ -139,7 +139,7 @@ const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
                 : placeholder(Icon.skull(), 'No results found.');
         }
 
-        const docService = DocService.instance;
+        const docService = XH.docService;
 
         return div({
             className: 'tb-docs__search-results',
@@ -221,7 +221,7 @@ const searchPanel = hoistCmp.factory<DocsPanelModel>({
 const breadcrumb = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
         const {activeCategory, activeDoc, activeSource, sections, activeSection} = model,
-            docService = DocService.instance;
+            docService = XH.docService;
 
         if (!activeCategory || !activeDoc || !activeSource) return null;
 
@@ -239,78 +239,59 @@ const breadcrumb = hoistCmp.factory<DocsPanelModel>({
                     item: sourceLabel
                 }),
                 span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()}),
-                // Category dropdown — scoped to the active source's categories
-                popover({
-                    position: 'bottom-left',
+                // Category dropdown - scoped to the active source's categories
+                menuButton({
+                    className: 'tb-docs__breadcrumb-btn',
+                    icon: model.getCategoryIcon(activeCategory.id),
+                    text: activeCategory.title,
                     minimal: true,
-                    item: button({
-                        className: 'tb-docs__breadcrumb-btn',
-                        icon: model.getCategoryIcon(activeCategory.id),
-                        text: activeCategory.title,
-                        minimal: true
-                    }),
-                    content: menu(
-                        ...model.activeSourceCategories.map(cat =>
-                            menuItem({
-                                text: cat.title,
-                                icon: model.getCategoryIcon(cat.id),
-                                active: cat.id === activeCategory.id,
-                                onClick: () => model.navigateToCategory(activeSource, cat.id)
-                            })
-                        )
-                    )
+                    menuItems: model.activeSourceCategories.map(cat => ({
+                        text: cat.title,
+                        icon: model.getCategoryIcon(cat.id),
+                        active: cat.id === activeCategory.id,
+                        actionFn: () => model.navigateToCategory(activeSource, cat.id)
+                    }))
                 }),
                 span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()}),
                 // Doc dropdown
-                popover({
-                    position: 'bottom-left',
+                menuButton({
+                    className: 'tb-docs__breadcrumb-btn',
+                    text: activeDoc.title,
                     minimal: true,
-                    item: button({
-                        className: 'tb-docs__breadcrumb-btn',
-                        text: activeDoc.title,
-                        minimal: true
-                    }),
-                    content: menu(
-                        ...model.activeCategorySiblings.map(doc =>
-                            menuItem({
-                                text: doc.title,
-                                active: doc.id === activeDoc.id && doc.source === activeDoc.source,
-                                onClick: () => model.navigateToDoc(doc.id, doc.source)
-                            })
-                        )
-                    )
+                    menuItems: model.activeCategorySiblings.map(doc => ({
+                        text: doc.title,
+                        active: doc.id === activeDoc.id && doc.source === activeDoc.source,
+                        actionFn: () => model.navigateToDoc(doc.id, doc.source)
+                    }))
                 }),
                 sections.length > 0
                     ? span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()})
                     : null,
                 sections.length > 0
-                    ? popover({
-                          position: 'bottom-left',
+                    ? menuButton({
+                          className: 'tb-docs__breadcrumb-btn tb-docs__breadcrumb-section',
+                          icon: Icon.list(),
+                          text: activeSectionTitle,
                           minimal: true,
-                          item: button({
-                              className: 'tb-docs__breadcrumb-btn tb-docs__breadcrumb-section',
-                              icon: Icon.list(),
-                              text: activeSectionTitle,
-                              minimal: true
-                          }),
-                          content: menu(
-                              ...sections.map(sec =>
-                                  menuItem({
-                                      text: sec.title,
-                                      active: sec.id === activeSection,
-                                      onClick: () => {
-                                          const el = document.getElementById(sec.id);
-                                          if (el) {
-                                              el.scrollIntoView({
-                                                  behavior: 'smooth',
-                                                  block: 'start'
-                                              });
-                                              model.setActiveSection(sec.id);
-                                          }
+                          menuItems: [
+                              ...sections.map(sec => ({
+                                  text: sec.title,
+                                  active: sec.id === activeSection,
+                                  actionFn: () => {
+                                      const el = document.getElementById(sec.id);
+                                      if (el) {
+                                          el.scrollIntoView({behavior: 'smooth', block: 'start'});
+                                          model.setActiveSection(sec.id);
                                       }
-                                  })
-                              )
-                          )
+                                  }
+                              })),
+                              '-',
+                              clipboardMenuItem({
+                                  text: 'Copy Link',
+                                  getCopyText: () => window.location.href,
+                                  successMessage: true
+                              })
+                          ]
                       })
                     : null
             ]
@@ -337,25 +318,18 @@ const examplesMenu = hoistCmp.factory<DocsPanelModel>({
             });
         }
 
-        return popover({
-            position: 'bottom-right',
+        return menuButton({
+            className: 'tb-docs__examples-btn',
+            icon: Icon.code(),
+            text: pluralize('Example', count, true),
             minimal: true,
-            item: button({
-                className: 'tb-docs__examples-btn',
-                icon: Icon.code(),
-                text: pluralize('Example', count, true),
-                minimal: true,
-                rightIcon: Icon.chevronDown()
-            }),
-            content: menu(
-                ...activeDocExamples.map(ex =>
-                    menuItem({
-                        text: ex.title,
-                        icon: Icon.openExternal(),
-                        onClick: () => XH.navigate(ex.route)
-                    })
-                )
-            )
+            rightIcon: Icon.chevronDown(),
+            menuPosition: 'bottom-right',
+            menuItems: activeDocExamples.map(ex => ({
+                text: ex.title,
+                icon: Icon.openExternal(),
+                actionFn: () => XH.navigate(ex.route)
+            }))
         });
     }
 });
@@ -412,118 +386,6 @@ const feedbackPanel = hoistCmp.factory<DocsPanelModel>({
             )
         });
     }
-});
-
-//------------------
-// Content body
-//------------------
-const contentBody = hoistCmp.factory<DocsPanelModel>(({model}) => {
-    const {content, activeDoc} = model,
-        scrollRef = useRef<HTMLDivElement>(null);
-
-    // Scroll to top when the active doc changes
-    useEffect(() => {
-        scrollRef.current?.scrollTo(0, 0);
-    }, [activeDoc]);
-
-    // After content renders: assign slug IDs to H2 elements and track active section.
-    useEffect(() => {
-        const container = scrollRef.current;
-        if (!container || !content) return;
-
-        // Assign IDs to H2s from the model's parsed sections, ensuring 1:1 correspondence.
-        const headings = container.querySelectorAll('h2'),
-            secs = model.sections;
-        headings.forEach((h2, i) => {
-            if (i < secs.length) h2.id = secs[i].id;
-        });
-
-        // Track active section based on scroll position — the last H2 that has
-        // scrolled past the top of the container is considered "active".
-        let ticking = false;
-        const onScroll = () => {
-            if (ticking) return;
-            ticking = true;
-            window.requestAnimationFrame(() => {
-                const containerTop = container.getBoundingClientRect().top;
-                let activeId: string = null;
-                container.querySelectorAll('h2[id]').forEach(h2 => {
-                    if (h2.getBoundingClientRect().top <= containerTop + 60) {
-                        activeId = h2.id;
-                    }
-                });
-                if (activeId !== model.activeSection) model.setActiveSection(activeId);
-                ticking = false;
-            });
-        };
-        container.addEventListener('scroll', onScroll, {passive: true});
-
-        // If the URL has a hash fragment, scroll to the matching section.
-        const hash = window.location.hash?.slice(1);
-        if (hash) {
-            window.requestAnimationFrame(() => {
-                const target = document.getElementById(hash);
-                if (target) {
-                    target.scrollIntoView({block: 'start'});
-                    model.setActiveSection(hash);
-                }
-            });
-        }
-
-        return () => container.removeEventListener('scroll', onScroll);
-    }, [model, content]);
-
-    // Handle clicks on links within the rendered markdown.
-    const handleLinkClick = useCallback(
-        (e: React.MouseEvent<HTMLDivElement>) => {
-            const anchor = (e.target as HTMLElement).closest('a');
-            if (!anchor) return;
-
-            const href = anchor.getAttribute('href');
-            if (!href) return;
-
-            // Anchor-only links: scroll to the section within the current doc.
-            if (href.startsWith('#')) {
-                e.preventDefault();
-                const sectionId = href.slice(1),
-                    el = document.getElementById(sectionId);
-                if (el) {
-                    el.scrollIntoView({behavior: 'smooth', block: 'start'});
-                    model.setActiveSection(sectionId);
-                }
-                return;
-            }
-
-            // Try to resolve as an internal doc link
-            if (activeDoc && !href.startsWith('http')) {
-                e.preventDefault();
-                const target = resolveDocLink(activeDoc, href);
-                if (target) model.navigateToDoc(target.id, target.source);
-                // Unresolved relative links (e.g. .ts source files) are silently
-                // consumed to prevent the browser from navigating away from the SPA.
-                return;
-            }
-
-            // External links: open in new tab
-            if (href.startsWith('http')) {
-                e.preventDefault();
-                window.open(href, '_blank', 'noopener');
-            }
-        },
-        [model, activeDoc]
-    );
-
-    if (!content) return null;
-
-    return div({
-        className: 'tb-docs__content-body',
-        ref: scrollRef,
-        onClick: handleLinkClick,
-        item: div({
-            className: 'tb-docs__content-inner',
-            item: markdown({content, lineBreaks: false})
-        })
-    });
 });
 
 //------------------

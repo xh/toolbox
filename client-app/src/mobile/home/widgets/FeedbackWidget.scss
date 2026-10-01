@@ -1,0 +1,38 @@
+.tb-feedback {
+  &__inner {
+    align-items: stretch;
+    gap: var(--xh-pad-half-px);
+
+    &--thanks {
+      align-items: center;
+      text-align: center;
+      gap: var(--xh-pad-px);
+      padding: var(--xh-pad-px) 0;
+    }
+  }
+
+  &__question {
+    font-size: var(--xh-font-size-px);
+    font-weight: 500;
+    color: var(--xh-text-color);
+  }
+
+  &__sub {
+    font-size: var(--xh-font-size-px);
+  }
+
+  &__ratings {
+    justify-content: space-around;
+    margin-top: var(--xh-pad-px);
+
+    .xh-button {
+      color: var(--xh-orange);
+    }
+  }
+
+  &__actions {
+    align-items: center;
+    gap: var(--xh-pad-half-px);
+    margin-top: var(--xh-pad-half-px);
+  }
+}

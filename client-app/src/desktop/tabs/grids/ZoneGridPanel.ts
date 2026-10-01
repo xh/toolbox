@@ -1,54 +1,54 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {action, makeObservable, observable} from '@xh/hoist/mobx';
-import {filler, p, span} from '@xh/hoist/cmp/layout';
+import {action, observable} from '@xh/hoist/mobx';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {zoneGrid, ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {zoneMapperButton} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
+import {activeCol} from '../../../core/columns/General';
+import {cityCol, companyCol} from '../../../core/columns/Demographics';
 import {
-    activeCol,
-    cityCol,
-    companyCol,
     profitLossCol,
     tradeDateCol,
     tradeVolumeCol,
     winLoseCol
-} from '../../../core/columns';
+} from '../../../core/columns/Trades';
 
 export const zoneGridPanel = hoistCmp.factory({
     model: creates(() => ZoneGridPanelModel),
     render() {
         return wrapper({
+            title: 'Zone Grid',
+            icon: Icon.gridLarge(),
             description: [
-                p(
-                    'The ZoneGrid component leverages an underlying Grid / GridModel instance to display multi-line full-width rows with configurable fields.'
-                ),
-                p('Typically used to display dense information when horizontal space is limited.')
+                'The `ZoneGrid` component leverages an underlying `Grid` / `GridModel`',
+                'instance to display multi-line full-width rows with configurable fields.',
+                '',
+                'Typically used to display dense information when horizontal space is limited.'
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/grids/ZoneGridPanel.ts',
                     notes: 'This example.'
                 },
+                {
+                    url: '$HR/cmp/grid/README.md',
+                    text: 'Grid docs',
+                    notes: 'Grid component guide that ZoneGrid builds on.'
+                },
                 {url: '$HR/cmp/zoneGrid/ZoneGrid.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/cmp/zoneGrid/ZoneGridModel.ts',
-                    notes: 'Hoist model for configuring and interacting with Zone Grids.'
-                },
-                {
-                    url: '$HR/cmp/zoneGrid/impl/ZoneGridPersistenceModel.ts',
-                    notes: 'Hoist model for persisting Zone Grid state.'
+                    notes: 'Hoist model for configuring and interacting with Zone Grids, including persistence.'
                 }
             ],
             item: panel({
-                title: 'Grids › Zone Grid',
-                icon: Icon.gridLarge(),
                 className: 'tb-zone-grid-panel',
-                width: 500,
-                height: 700,
+                width: 600,
+                height: '50vh',
                 item: zoneGrid(),
                 tbar: [
                     span('Group by:'),
@@ -73,8 +73,7 @@ export const zoneGridPanel = hoistCmp.factory({
 });
 
 class ZoneGridPanelModel extends HoistModel {
-    @observable
-    groupBy: string = null;
+    @observable accessor groupBy: string = null;
 
     @managed
     zoneGridModel: ZoneGridModel = new ZoneGridModel({
@@ -94,13 +93,12 @@ class ZoneGridPanelModel extends HoistModel {
                 ? ['City', 'Win/Lose', 'Company']
                 : ['Win/Lose', 'City', 'Company'];
         },
-        groupSortFn: (a, b, groupField) => {
-            if (a === b) return 0;
+        groupSortFn: (a, b, groupField, {gridModel}) => {
             if (groupField === 'winLose') {
+                if (a === b) return 0;
                 return a === 'Winner' ? -1 : 1;
-            } else {
-                return a < b ? -1 : 1;
             }
+            return gridModel.defaultGroupSortFn(a, b);
         },
         restoreDefaultsFn: () => this.restoreDefaultsFn(),
         columns: [
@@ -125,11 +123,6 @@ class ZoneGridPanelModel extends HoistModel {
             br: {max: 1}
         }
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     override async doLoadAsync() {
         await wait(500);

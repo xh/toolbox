@@ -1,119 +1,64 @@
-import {hoistCmp, XH} from '@xh/hoist/core';
-import {div} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {button} from '@xh/hoist/mobile/cmp/button';
+import {div, p, vbox} from '@xh/hoist/cmp/layout';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {isEmpty} from 'lodash';
+import {HomeModel} from './HomeModel';
+import {manageWidgetsSheet} from './ManageWidgetsSheet';
+import {widgetCard} from './widgets/WidgetCard';
+import './HomePage.scss';
 
+/**
+ * Mobile home dashboard - a personalizable vertical stack of widget cards. Each card carries a quiet
+ * collapsible header; the app-bar pencil opens the {@link manageWidgetsSheet} to toggle membership
+ * and reorder. Widget membership, order, and collapsed state persist per user via {@link HomeModel}.
+ */
 export const homePage = hoistCmp.factory({
-    render() {
+    displayName: 'HomePage',
+    model: uses(HomeModel),
+
+    render({model}) {
         return panel({
-            scrollable: true,
-            className: 'tb-page xh-tiled-bg',
-            items: [
-                summaryCard({
-                    title: 'Grids',
-                    icon: Icon.gridPanel(),
-                    summary:
-                        'Grids are at the heart of many Hoist React projects, and Grid, GridModel, and related helper components are key elements of the framework.',
-                    route: 'grids'
-                }),
-                summaryCard({
-                    title: 'Tree Grids',
-                    icon: Icon.treeList(),
-                    summary:
-                        "Hoist's Grid supports the display of hierarchical tree data. Applications provide standard record data with children nodes containing their sub-records",
-                    route: 'treegrids'
-                }),
-                summaryCard({
-                    title: 'Zone Grids',
-                    icon: Icon.gridLarge(),
-                    summary:
-                        'Zone Grids leverage an underlying Grid to render multi-line full-width rows.',
-                    route: 'zoneGrid'
-                }),
-                summaryCard({
-                    title: 'DataViews',
-                    icon: Icon.addressCard(),
-                    summary:
-                        'The DataView component leverages an underlying Grid / GridModel instance to display individual component "cards" for each rendered item.',
-                    route: 'dataview'
-                }),
-                summaryCard({
-                    title: 'Forms',
-                    icon: Icon.edit(),
-                    summary: 'Form fields can be bound to a model.',
-                    route: 'form'
-                }),
-                summaryCard({
-                    title: 'Charts',
-                    icon: Icon.chartLine(),
-                    summary: 'Customize interactive charts with dynamically updated data.',
-                    route: 'charts'
-                }),
-                summaryCard({
-                    title: 'Tree Map',
-                    icon: Icon.gridLarge(),
-                    summary: 'TreeMap visualizations.', // Todo: Add more details
-                    route: 'treeMap'
-                }),
-                summaryCard({
-                    title: 'Containers',
-                    icon: Icon.box(),
-                    summary: 'Layout children in Tabs, or flexed horizontally or vertically.',
-                    route: 'containers'
-                }),
-                summaryCard({
-                    title: 'Panels',
-                    icon: Icon.window(),
-                    summary: 'Core building block component with support for header and toolbars.',
-                    route: 'panels'
-                }),
-                summaryCard({
-                    title: 'Popovers',
-                    icon: Icon.openExternal(),
-                    summary: 'Popovers display floating content next to a target element.',
-                    route: 'popovers'
-                }),
-                summaryCard({
-                    title: 'Popups',
-                    icon: Icon.comment(),
-                    summary: 'Dialogs and Toasts.',
-                    route: 'popups'
-                }),
-                summaryCard({
-                    title: 'Buttons',
-                    icon: Icon.pointerUp(),
-                    summary: 'Buttons trigger actions when tapped.',
-                    route: 'buttons'
-                }),
-                summaryCard({
-                    title: 'Icons',
-                    icon: Icon.rocket(),
-                    summary: 'A collection of FontAwesome SVG icons, available in 3 variants.',
-                    route: 'icons'
-                }),
-                summaryCard({
-                    title: 'PinPad',
-                    icon: Icon.unlock(),
-                    summary:
-                        'A specialized PIN input, used for lightweight authentication of users.',
-                    route: 'pinPad'
-                })
-            ]
+            className: 'tb-home',
+            item: div({
+                className: 'tb-home__frame',
+                items: [
+                    div({
+                        className: 'tb-home__stack xh-tiled-bg',
+                        item: isEmpty(model.dashboardWidgets) ? emptyState() : stack({model})
+                    }),
+                    manageWidgetsSheet()
+                ]
+            })
         });
     }
 });
 
-const summaryCard = hoistCmp.factory(({title, icon, summary, route}) =>
+const stack = hoistCmp.factory<HomeModel>(({model}) =>
     div({
-        className: 'tb-card',
+        className: 'tb-home__cards',
+        items: model.dashboardWidgets.map(w =>
+            widgetCard({
+                key: w.id,
+                title: w.title,
+                icon: w.icon,
+                collapsed: model.isCollapsed(w.id),
+                onToggleCollapsed: () => model.toggleCollapsed(w.id),
+                item: w.content()
+            })
+        )
+    })
+);
+
+const emptyState = hoistCmp.factory(() =>
+    vbox({
+        className: 'tb-home__empty',
         items: [
-            div({className: 'tb-card__title', item: title}),
-            div({className: 'tb-card__body', item: summary}),
-            button({
-                icon: icon,
-                text: `Go to ${title}`,
-                onClick: () => XH.appendRoute(route)
+            Icon.gridLarge({size: '3x'}),
+            p('Your home is empty.'),
+            p({
+                className: 'tb-home__empty-hint',
+                items: ['Tap ', Icon.edit(), ' in the app bar to add widgets.']
             })
         ]
     })

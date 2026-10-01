@@ -1,12 +1,229 @@
 # Changelog
 
-## 9.0-SNAPSHOT - unreleased
+<!--
+  Entry conventions: CLAUDE.md ("Changelog" section) - read it before adding entries here.
 
-* Downgraded toolbox build toolchain back to JDK 21 — JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
+  Entries are parsed at build time and shown in-app to users. Three rules:
+
+  1. Every bullet is a single line, however long. The parser is line-based - a wrapped bullet keeps
+     its first line and silently drops the rest.
+  2. Open with a past-tense verb (Added / Fixed / Removed), name what changed in backticks, and keep
+     each bullet to one change. Use highly concise language suitable for relaying to app users.
+  3. Plain ASCII punctuation only. Use " - " for in-sentence breaks, never an em dash.
+-->
+
+## 12.0-SNAPSHOT - unreleased
+
+## 11.0.0 - 2026-09-29
+
+### New Features
+
+* Improved the organization of the desktop app's tabs, using hoist-react's new `TabConfig.group` headers to break up longer tab rails, and added a `Tab Groups` example to the Tabs page.
+* Added a list of all top-level modules to the app menu, providing a second way to navigate alongside the tab bar, with a star toggle on each item to add or remove that module from the `DynamicTabSwitcher` favorites.
+* Updated the `SampleGrid` Volume column to demo hoist-react's new `Column.cellFlag` and a custom tooltip that explains the flag, replacing a hand-rolled cell class and the custom SCSS that styled it.
+* Updated the Column Groups grid example to demo hoist-react's new `groupShowMode` and `collapsed` configs for collapsible column groups, replacing raw `agOptions.columnGroupShow` passthroughs.
+* Added the Column Groups grid as a widget in the ViewManager test dashboards, exercising column group expand/collapse state through `DashCanvas` and `DashContainer` persistence.
+* Upgraded AG Grid to `36.x`, tracking hoist-react's AG Grid 36 upgrade.
+* Added demos for hoist-react's new `Banner` component and `Panel.banner` prop, and split the desktop Popups demo into separate Messages, Toast and Banners pages, each with a playground and variants.
+* Added a Routing example tab and routed the `TabContainer` example, demonstrating tabs that own their own route params.
+* Added a SQL autocomplete example to the `CodeInput` demo, using the new `CodeInput.extensions` prop.
+* Added `MenuHeading` demos and replaced hand-rolled menu buttons throughout the app with `MenuButton`.
+* Added an Admin Console test page for sending email via Hoist's email service.
+
+### Bug Fixes
+
+* Fixed the Admin Console Roles tab reporting "No enabled directory service in this application" for every assigned directory group, and returning no results from its group search. Toolbox's mock directory now backs those lookups via a new `MockDirectoryService`, alongside the group membership resolution it already provided.
+* Fixed the Contact example's `contactAppState` preference defaulting to an empty list rather than an empty object.
+* Fixed defects in the Panels demos, including the Intro panel's context-menu Lookup always resolving the same word.
+
+### Technical
+
+* Removed client-side `manageGlobal` settings from the app's `ViewManagerModel` configs - hoist-core 42 now determines who may manage global views via the `xhJsonBlobConfig.globalWriteRoles` soft config, and hoist-react 88 picks that up automatically.
+* Migrated to TC39 Stage 3 modern decorators, in step with `@xh/hoist` 88 - `@observable` / `@bindable` fields now take the `accessor` keyword, `@observable.ref` / `@bindable.ref` are now `@observableRef` / `@bindableRef`, `comparer.structural` is now `compareStructural`, and `makeObservable(this)` is gone.
+* Switched the client build from webpack to Rsbuild (Rspack + SWC) via `@xh/hoist-dev-utils` 16 - builds are faster and use far less memory, and build-time options now arrive as `XH_*` environment variables instead of `--env` flags.
+* Converted all type-only imports to `import type` and added `@typescript-eslint/consistent-type-imports` to prevent regressions - guarantees type-only imports are erased at build time, eliminating 6 of the app's 10 runtime import cycles.
+* Removed all `index.ts` re-export barrels from app source and added lint guards against their reintroduction - imports now reference their defining modules directly, so loading one module no longer pulls in unrelated siblings.
+* Removed the legacy AG Grid theme setup, now that Hoist grids use AG Grid's Theming API.
+
+### Libraries
+
+* @xh/hoist `87.3 → 88.0`
+* @xh/hoist-dev-utils `15.0 → 16.0`
+* hoist-core `41.0 → 42.0`
+* ag-charts-community `13.3 → 14.2`
+* ag-grid-community `35.3 → 36.2`
+* ag-grid-enterprise `35.3 → 36.2`
+* ag-grid-react `35.3 → 36.2`
+* moment `2.30 → 2.31`
+* React `19.2 → 19.3`
+
+## 10.0.1 - 2026-09-10
+
+### Libraries
+
+* @xh/hoist `87.2 → 87.3`
+
+## 10.0.0 - 2026-09-09
+
+### New Features
+
+* Reorganized the Hoist Inputs demos into an index page plus one page per input, each with a playground and preconfigured variants.
+* Rebuilt many other component demos on the same shared harness, each gaining a playground with a live code snippet.
+* Added a demo page for Hoist's new `DateRangePicker` component.
+* Added a demo for Hoist's new `IntentInput` component within the Hoist Inputs section.
+
+### Bug Fixes
+
+* Fixed demo pages crushing their content in a narrow window - the demo region now holds a minimum width and scrolls horizontally instead.
+
+### Technical
+
+* Updated the `SegmentedControl` examples to track the hoist-react component tune-up.
+* Improved the custom `groupSortFn` examples on the `SampleGrid` and `ZoneGrid` demos.
+* Named the Portfolio example's models via hoist-react's new `HoistBase.xhName`.
+* Updated client-app package management to pnpm v12 - run `corepack enable pnpm` if your pinned version is out of date.
+* Documented the MySQL LTS requirement for local development.
+
+### Libraries
+
+* @xh/hoist `87.1 → 87.2`
+
+## 9.5.0 - 2026-08-28
+
+### Bug Fixes
+
+* Fixed the docs viewer silently dropping the hoist-react source on SNAPSHOT builds, where the `@xh/hoist` dependency spec is an npm dist-tag rather than a released version.
+
+### Technical
+
+* Switched the nginx image to the `xh-nginx:next-brotli` variant.
+* Enabled source maps on deployed builds.
+
+### Libraries
+
+* @xh/hoist `87.0 → 87.1`
+* @xh/hoist-dev-utils `14.0 → 15.0`
+
+## 9.4.0 - 2026-08-25
+
+### Technical
+
+* Migrated client-app package management from yarn classic to pnpm, with the version pinned via `packageManager`. Run `corepack enable pnpm` once before your next install.
+* Added a Tests section to the mobile app, gated on `HOIST_ADMIN_READER`, so test harnesses no longer live in the demo pages.
+* Added async `Select` performance tester, reproducing the O(n²) option merge fixed in hoist-react #4589. Options are served by a new `SelectTestController`; each tester reports the main-thread block per query.
+* Overhauled the admin Grid test panel into a fuller Store performance harness. Test data is now generated on the server and loaded via streaming NDJSON or conventional JSON, options cover the Store's memory-related configs (`useRawAsData`, `freezeData`, `retainRaw`, `reuseRecords`) along with string interning and server-generated field values, parameter sets can be saved as named `ViewManager` configs, and a repeatable benchmark dialog measures heap and load-time costs across runs. The panel itself was redesigned around the same documented options sidebar used by the desktop example apps.
+
+### Libraries
+
+* @xh/hoist `86.3.0 → 87.0.0`
+* @xh/hoist-dev-utils `13.x → 14.x`
+* hoist-core `40.2.0 → 41.0.0`
+* React `18.2 → 19.2`
+
+## 9.3.0 - 2026-07-10
+
+### Technical
+
+* Added Select `generateOptionFn` examples to the desktop Select test panel and the mobile Forms page, demonstrating dynamic creation of options from free-typed user input.
+* Adopted hoist-react's new built-in `FilterChooser` `popover` prop in the Portfolio orders grid, replacing the now-deprecated `PopoverFilterChooser` wrapper.
+* Bumped Grails and the Gradle wrapper to their latest patch releases.
+
+### Bug Fixes
+
+* Restored the local-development guard on `SlackAlertService` so a developer's local instance never posts monitor, client-error, or feedback alerts to the live Slack channel.
+
+### Libraries
+
+* @xh/hoist `86.2.0 → 86.3.0`
+* hoist-core `40.1.0 → 40.2.0`
+
+## 9.2.1 - 2026-06-25
+
+### Bug Fixes
+
+* Fixed broken JSON/code syntax highlighting caused by a duplicate `@codemirror/language` version in the client lockfile; de-duplicated `yarn.lock` so a single CodeMirror language package resolves.
+
+## 9.2.0 - 2026-06-25
+
+### Technical
+
+* Adopted hoist-react's new `JsonInput` `autoFormat` prop in the column-filter test panels, dropping manual `JSON.stringify` pre-indentation now that readonly inputs format their content for display automatically.
+* Demoed hoist-react's windowed `Select` / `SelectEditor` menu auto-sizing: the Forms > Select "Large list (windowed)" example now uses varied-length labels, and the Grids > Inline Editing `category` editor uses a windowed dropdown in a narrow cell so the menu visibly grows to fit its widest option.
+* Wired up the Other > Format Numbers demo to exercise `fmtQuantity`'s new `lossless` option (with `useMillions` / `useBillions` switches) and `fmtNumber`'s `null` full-precision handling, with sample values that show the lossless cutoff collapsing to m/b units only when no precision is lost.
+* Removed Toolbox's bespoke vertical sub-tab switcher styling now that hoist-react provides the rounded-pill treatment by default, retaining only the app-specific fixed rail width.
+
+### Libraries
+
+* @xh/hoist `86.1.0 → 86.2.0`
+
+## 9.1.1 - 2026-06-24
+
+### Bug Fixes
+
+* Fixed the mobile App Menu button to always render as the user's profile pic, so it no longer appears as a second hamburger alongside the nav-blade button when the (desktop-only) "profile pic menu" preference is off.
+
+## 9.1.0 - 2026-06-24
+
+### New Features
+
+* Promoted the mobile documentation viewer to a top-level Docs section: a library-chooser landing (hoist-react and hoist-core as cards plus recently-viewed shortcuts), iOS-style push drill-down through categories and documents, and a search screen with recent searches and library-grouped, highlighted results - all routing into the existing single-doc reader.
+
+### Technical
+
+* Extended Toolbox's use of hoist-core's `TypedConfigMap` typed soft-config pattern, for more accurate typing and validation of map-style JSON soft configs with known keys.
+
+### Libraries
+
+* @xh/hoist `86.1.0`
+* hoist-core `40.1.0`
+
+## 9.0.0 - 2026-06-22
+
+### New Features
+
+* Carried the desktop redesign to the mobile (phone) client, fronted by a new left navigation blade - a drawer grouping the example catalog into expandable categories with theme and settings docked in its footer.
+* Gave every mobile example a consistent screen pattern: the demo stays full-bleed while a pull-up sheet surfaces Info, Options, and Resources.
+* Replaced the static mobile home page with a personalizable widget dashboard of collapsible cards (Welcome, Start Here, Hoist Releases, Recent Commits, Meet XH, Enjoying Hoist?) mirroring desktop, with a "Manage widgets" sheet to toggle and drag-reorder widgets.
+* Expanded the mobile example library: new Inputs, Select, Badge, Mask, and Tabs screens, a filterable tap-to-copy Icons gallery, Forms recast as a validated candidate-intake form, and expanded runtime display options across examples.
+* Added an in-app documentation reader to the mobile client - tapping a "Docs" resource link opens that doc inside Toolbox with rendered markdown, an "On this page" section jump, tap-to-copy code blocks, and in-content doc-to-doc links; its platform-neutral core code is shared by both clients.
+* Added Slack as a second channel for home-page user feedback: feedback now posts a Block Kit message to a configurable Slack channel alongside the existing email notification, demonstrating an outbound Slack integration via the Slack Web API.
+* Improved the formatting on pre-existing Slack alerts for client error and status monitor reporting.
+
+### Technical
+
+* The feedback widget now coalesces each interaction (sentiment click plus optional comment) into a single activity-tracking entry on the client, using a typing-reset inactivity timer plus a page-teardown flush that reacts to `XH.pageState` and relies on `TrackService`'s keepalive flush - eliminating duplicate feedback emails/Slack posts and capturing reliably on unload.
+* Typed the `slackAlertConfig` soft config with hoist-core's `TypedConfigMap`, adding per-notification-type enable flags.
+* Instrumented `SlackAlertService`'s send path with a Hoist `ObservedRun` counter (`toolbox.slack.messagesSent`, tagged by message type and an automatic success/failure outcome), demonstrating the framework's OTEL metrics builder alongside its tracing.
+
+### Libraries
+
+* @xh/hoist `86.0 → 87.0`
+
+
+## 8.5.0 - 2026-06-12
+
+### New Features
+
+* Redesigned the desktop app home page as a modern `DashCanvas` dashboard - featuring an updated welcome, a Start Here launchpad for first-time visitors, an auto-updating feed of hoist-react and hoist-core GitHub releases, a refreshed commit-activity grid with live stats floated into its title, a Team Spotlight introducing XH's engineers via the Contact app's data, live version info, and a lightweight "Enjoying Hoist?" feedback widget built on Hoist's activity tracking.
+* Redesigned the desktop component-demo `Wrapper`: a collapsible left info rail now unifies each tab's title, intro text, and reference links (replacing the full-width description band and the docked links panel), and redundant breadcrumb titles were removed from the demo panels.
+* Consolidated each example's scattered display-option controls into the Wrapper rail's new Options section via shared `wrapperOption` / `wrapperAction` helpers, with on-hover disclosure of the underlying Hoist API (e.g. `GridConfig.stripeRows`) each option maps to.
+* Polished nearly every desktop example tab - layout, copy, icons, controls, and assorted bug fixes - to more clearly showcase idiomatic Hoist usage for developers and prospective clients evaluating the framework.
+* Replaced the dated mobile-tab screenshots with a theme-aware CSS device frame, and refreshed the DashCanvas / DashContainer examples with a live random-walk Chart widget and a stateful `SegmentedControl` Options widget.
+* Added an IBM Plex Sans font preference to the desktop app, selectable alongside the theme via new macOS-style card pickers in the Options dialog.
+* Overhauled the News example with cleaner card image handling, a master-detail reading pane, and a refreshed set of working NewsAPI sources.
+
+### Technical
+
+* Extended the server-side `GitHubService` to fetch published GitHub releases alongside commits via the GraphQL API, cached and replicated cluster-wide and pushed to clients over WebSockets (using the existing `gitHubRepos` config).
+* Removed the long-stale Hoist Roadmap widget, its admin console editor, and backing `Phase`/`Project` domain classes - the auto-updating Releases and Commits feeds now tell that story without manual curation.
+* Downgraded toolbox build toolchain back to JDK 21 - JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
 * Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
 
 ### Libraries
 
+* @xh/hoist `85.0 → 86.0`
+* @xh/hoist-dev-utils `12.2 → 13.0` - breaking: `.md` imports now resolve to raw text content (was a URL to fetch).
+* hoist-core `39.0 → 41.0`
 * ag-Grid `34.2 → 35.3`
 
 ## 8.4.0 - 2026-04-30
@@ -22,6 +239,7 @@
 
 * Upgraded build toolchain to JDK 25. Toolbox now uses JDK 25 for local development and CI.
 * Fixed bug in buildRelease workflow - client appVersion was not being set to release version.
+
 
 ### Libraries
 
@@ -74,11 +292,11 @@
 
 ### New Features
 
-* Added a built-in Docs tab — an integrated viewer for all hoist-react documentation, rendered directly within the Toolbox app. Features a navigable tree sidebar, full-text search across all docs with ranked results, inter-document link navigation, and deep-linking via route parameters (e.g. `/app/docs/core`).
-* Added Forms > Picker example sub-tab — demos the new `Picker` component with single/multi-select modes, custom renderers, badge counts, intent variants, and compact toolbar usage.
-* Added Forms > Select example sub-tab — a dedicated 3-column showcase of the `Select` component covering single/multi-select, async queries, creatable entries, grouped options, custom renderers, windowed rendering, and appearance/behavior options.
+* Added a built-in Docs tab - an integrated viewer for all hoist-react documentation, rendered directly within the Toolbox app. Features a navigable tree sidebar, full-text search across all docs with ranked results, inter-document link navigation, and deep-linking via route parameters (e.g. `/app/docs/core`).
+* Added Forms > Picker example sub-tab - demos the new `Picker` component with single/multi-select modes, custom renderers, badge counts, intent variants, and compact toolbar usage.
+* Added Forms > Select example sub-tab - a dedicated 3-column showcase of the `Select` component covering single/multi-select, async queries, creatable entries, grouped options, custom renderers, windowed rendering, and appearance/behavior options.
 * Updated `DashCanvas` example to demo the new `DashCanvasWidgetChooser` component.
-* Added Other > Markdown example tab — demos the `markdown` component with a live editor, GFM support, and a toggleable custom CSS class showcasing opt-in styling for rendered markdown content.
+* Added Other > Markdown example tab - demos the `markdown` component with a live editor, GFM support, and a toggleable custom CSS class showcasing opt-in styling for rendered markdown content.
 
 ### Technical
 
@@ -93,7 +311,7 @@
 
 ### New Features
 
-* Added Weather Dashboard example app — a full-stack weather dashboard backed by the OpenWeatherMap API, featuring a `DashCanvas` layout with multiple chart types and a grid summary view. Server-side caching via Hoist `Cache`, city persistence via `@persist`, and `ViewManager` support for saved layouts. This example was coded entirely by AI (Claude) without any human-written application code.
+* Added Weather Dashboard example app - a full-stack weather dashboard backed by the OpenWeatherMap API, featuring a `DashCanvas` layout with multiple chart types and a grid summary view. Server-side caching via Hoist `Cache`, city persistence via `@persist`, and `ViewManager` support for saved layouts. This example was coded entirely by AI (Claude) without any human-written application code.
 * Added Layout > Card example page showcasing the new `Card` component with titles, icons, intent-based styling, and collapsibility.
 * Updated Forms example to demonstrate `formFieldSet` for visually grouping related form fields.
 * Updated `LeftRightChooser` example to demo new `matchMode` filter options (`start`, `startWord`, `any`).
@@ -336,7 +554,7 @@
 
 ### New Features
 
-* Added support for running Toolbox with an in-memory H2 DB, with all needed configs and preferences pre-loaded — useful for quickly checking out the project without creating a database. See the "instance config file" section in README.md for setup.
+* Added support for running Toolbox with an in-memory H2 DB, with all needed configs and preferences pre-loaded - useful for quickly checking out the project without creating a database. See the "instance config file" section in README.md for setup.
 
 ### Libraries
 

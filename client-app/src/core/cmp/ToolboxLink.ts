@@ -1,5 +1,7 @@
 import {a} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
+import {docRouteParams} from '../docs/DocUtils';
 
 export interface ToolboxLinkProps extends HoistProps {
     /**
@@ -30,9 +32,29 @@ export const [ToolboxLink, toolboxLink] = hoistCmp.withFactory<ToolboxLinkProps>
     displayName: 'ToolboxLink',
 
     render({text, url}) {
+        const linkText = text || createDefaultText(url);
+
+        // Markdown docs route into Toolbox's own document viewer for a fluid, in-app experience
+        // rather than bouncing the user out to GitHub. Only the main desktop app registers the
+        // viewer's route - other apps hosting this component (e.g. the admin console) fall
+        // through to the external GitHub link below.
+        const docRef = docRouteParams(url);
+        if (docRef && hasDocsRoute()) {
+            const params: Record<string, string> = {source: docRef.source, docId: docRef.docId};
+            if (docRef.section) params.section = docRef.section;
+            return a({
+                href: XH.router.buildPath(DOCS_ROUTE, params),
+                item: linkText,
+                onClick: e => {
+                    e.preventDefault();
+                    XH.navigate(DOCS_ROUTE, params);
+                }
+            });
+        }
+
         return a({
             href: toolboxUrl(url),
-            item: text || createDefaultText(url),
+            item: linkText,
             target: '_blank'
         });
     }
@@ -41,6 +63,16 @@ export const [ToolboxLink, toolboxLink] = hoistCmp.withFactory<ToolboxLinkProps>
 export function toolboxUrl(url: string) {
     const sourceUrls = XH.getConf('sourceUrls');
     return url.replace('$TB', sourceUrls.toolbox).replace('$HR', sourceUrls.hoistReact);
+}
+
+const DOCS_ROUTE = 'default.docs.docRef';
+
+/**
+ * True if the hosting app registers the in-app docs viewer route - router5's `buildPath`
+ * returns null for unknown route names, making it a safe probe.
+ */
+function hasDocsRoute(): boolean {
+    return !!XH.router.buildPath(DOCS_ROUTE, {source: 'hoistReact', docId: 'probe'});
 }
 
 function createDefaultText(url: string) {

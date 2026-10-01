@@ -4,9 +4,9 @@ Toolbox uses [GitHub Actions](https://docs.github.com/en/actions) for continuous
 Docker image builds, and deployment to AWS ECS. All workflow definitions live in
 `.github/workflows/`.
 
-For general background on building and deploying full-stack Hoist applications — including the
-Gradle WAR build, Webpack client build, Docker image structure, nginx configuration, and deployment
-patterns — see the
+For general background on building and deploying full-stack Hoist applications - including the
+Gradle WAR build, Rsbuild client build, Docker image structure, nginx configuration, and deployment
+patterns - see the
 [Build & Deploy Apps](https://github.com/xh/hoist-react/blob/develop/docs/build-and-deploy-app.md)
 guide in the hoist-react documentation. This document covers the Toolbox-specific GitHub Actions
 that automate that process.
@@ -15,11 +15,16 @@ that automate that process.
 
 Runs automatically on pushes and pull requests to `develop`. Includes three independent jobs:
 
-- **Build** — checks out the project, sets up Java and Gradle, and runs `./gradlew build` to
+- **Build** - checks out the project, sets up Java and Gradle, and runs `./gradlew build` to
   validate the Grails server compiles successfully.
-- **Lint** — sets up Node.js (version from `client-app/.nvmrc`), installs JS dependencies via
-  `yarn install --frozen-lockfile`, and runs `yarn lint` to validate the client code.
-- **Dependency Submission** — generates and submits a Gradle dependency graph to GitHub, enabling
+- **Lint** - sets up Node.js (version from `client-app/.nvmrc`), installs JS dependencies via
+  `pnpm install --frozen-lockfile`, then runs `pnpm lint` (ESLint + Stylelint) and `pnpm typecheck`
+  (`tsc --noEmit`) as distinct steps. The two are disjoint gates - linting never reports TypeScript
+  compiler errors. `--frozen-lockfile` pins the type-check to the `@xh/hoist` recorded in
+  `pnpm-lock.yaml`, catching app code that uses APIs the locked version lacks. Build Snapshot runs
+  the same pair against a freshly refreshed snapshot instead: see
+  [Picking up fresh framework snapshots](#picking-up-fresh-framework-snapshots).
+- **Dependency Submission** - generates and submits a Gradle dependency graph to GitHub, enabling
   Dependabot vulnerability alerts for all server-side dependencies.
 
 This workflow does not publish any artifacts. For Docker image builds, see Build Snapshot and
@@ -29,19 +34,59 @@ Build Release below.
 
 Builds snapshot Docker images on every push to `develop` and pushes them to Amazon ECR. Also
 triggered by `repository_dispatch` events from hoist-core and hoist-react when those libraries
-publish new snapshots, ensuring Toolbox stays current with framework changes. Can also be triggered
-manually via `workflow_dispatch`.
+publish new snapshots (see [Picking up fresh framework
+snapshots](#picking-up-fresh-framework-snapshots)), and manually via `workflow_dispatch`.
 
 Uses `concurrency` with `cancel-in-progress: true` to avoid redundant builds when multiple pushes
 land in quick succession.
 
-Two jobs run in parallel:
+The workflow runs in three stages:
 
-- **build-tomcat** — builds the Grails WAR via `./gradlew war` (using the default SNAPSHOT version
-  from `gradle.properties`), copies it into the `docker/tomcat` context, and pushes a
-  `toolbox-tomcat:snapshot` image to ECR.
-- **build-nginx** — installs JS dependencies, runs `yarn lint` and `yarn build`, copies the built
-  client assets into the `docker/nginx` context, and pushes a `toolbox-nginx:snapshot` image to ECR.
+- **prepare** - uses the shared `xh/hoist-dev-utils` `build-snapshot-tag` composite action to derive
+  two identifiers from one snapped timestamp, exposed as job outputs. `app-build` is the readable
+  value (`<ref>_<sha>_<timestamp>`, e.g. `develop_9fab876_2026-06-06T17:17Z`), baked into `appBuild`
+  on both client and server and shown in-app. `image-tag` is the immutable ECR tag
+  (`snap_<ref>_<sha>_<ts>`), sanitized to be a valid Docker/ECR tag for any ref (allowlist charset,
+  bounded length, colon-free) so a build never fails on tag rules - those constraints apply to
+  `image-tag` only, never to the displayed `app-build`. Sharing one timestamp keeps a run's two
+  values in correspondence, and both build jobs consume the same `app-build`, so client and server
+  always report the same build - what the version-skew check compares. The action and its unit test
+  live in hoist-dev-utils, shared across XH app repos.
+- **build-tomcat** / **build-nginx** (parallel) - build the Grails WAR (via `./gradlew war`, default
+  SNAPSHOT version from `gradle.properties`) and the client assets (`pnpm install` +
+  `pnpm update --no-save` + `pnpm lint` + `pnpm typecheck` + `pnpm build`, see
+  [Picking up fresh framework snapshots](#picking-up-fresh-framework-snapshots))
+  respectively, and push each to the run's *immutable* `image-tag` in ECR - **not** `:snapshot`.
+- **promote** - runs only after both build jobs succeed, and retags both images to `:snapshot` via a
+  registry-side manifest copy. This is the only step that advances the mutable `:snapshot` pointer,
+  so the deployed pair always comes from a single run and re-running one build job in isolation
+  cannot leave server and client on mismatched builds.
+
+### Picking up fresh framework snapshots
+
+A `hoist-core-snapshot` / `hoist-react-snapshot` dispatch only matters if the build resolves the
+newly published library. On the client that is what `pnpm update --no-save` does: `pnpm install`
+alone honors the committed `pnpm-lock.yaml` and would rebuild the same `@xh/hoist` as the previous
+run. `--no-save` keeps the refresh out of `package.json`, since this is a build, not a dependency
+bump.
+
+This depends on `@xh/hoist` being specified as the `next` dist-tag, which re-resolves on every
+update. A pinned version defeats it silently: `pnpm update` cannot move an exact pin, so the trigger
+keeps firing while the build ships a frozen snapshot. See
+[Updating to the latest hoist-react snapshot](running-locally.md#updating-to-the-latest-hoist-react-snapshot).
+
+`pnpm update` also moves transitive dependencies, so the job follows it with a FontAwesome drift
+check: if any `@fortawesome/*` package moved past the lockfile, the run emits a warning and a
+job-summary diff. Not fatal, but every build re-downloads those tarballs against the Font Awesome
+Pro bandwidth cap until the refreshed lockfile is committed.
+
+### Image retention
+
+Because the `snap_` images stay permanently tagged (rather than going untagged on supersession), an
+ECR lifecycle policy on both repos retains only the most recent few `snap_`-prefixed images
+(`imageCountMoreThan`) while still expiring untagged images after a day; release tags and the live
+`:snapshot` are left untouched. That policy is applied directly to ECR via
+`aws ecr put-lifecycle-policy` and is not tracked in this repo.
 
 ## Deploy Snapshot (`deploySnapshot.yml`)
 
@@ -54,24 +99,30 @@ cluster / `toolbox-dev` service.
 
 ## Build Release (`buildRelease.yml`)
 
-Builds a numbered release as Docker images and pushes them to ECR. **Manually triggered** from the
-`master` branch via `workflow_dispatch`. Requires two inputs:
+> **Orchestrating a release:** Don't run these release steps by hand. The `release-toolbox` skill
+> (`/release-toolbox`) is the authoritative runbook - it swaps the Hoist libraries to their
+> released versions, finalizes the `CHANGELOG`, manages the `develop` -> `master` ff-merge, triggers
+> and watches the workflows below, and restores `develop` afterward, with a confirmation gate at
+> every mutating step. The sections here document the underlying mechanics that skill relies on; if
+> you change a workflow's inputs, branch rules, or the auto-deploy behavior, update the skill to
+> match.
 
-- **Release Version** — a semver string (e.g. `9.0.0`). Must be exactly one increment (major,
+Builds a numbered release as Docker images and pushes them to ECR. **Manually triggered** from the
+`master` branch via `workflow_dispatch`. Requires one input:
+
+- **Release Version** - a semver string (e.g. `9.0.0`). Must be exactly one increment (major,
   minor, or patch) from the latest existing release tag.
-- **Is Hotfix** — check when releasing a hotfix to a version other than the latest. Requires the
-  workflow to be run from a branch other than `master` or `develop`.
 
 The workflow proceeds through four jobs:
 
-1. **validate** — guards against accidental release from `develop`. Validates the version strictly:
-   semver format, no duplicate tags, correct increment relative to existing tags. Hotfix versions
-   are validated against existing tags for their major version.
-2. **build-tomcat** — builds the WAR with the release version (`-PxhAppVersion`), pushes a versioned
+1. **validate** - runs only from `master`, guarding against an accidental release from `develop` or
+   any other branch. Validates the version strictly: semver format, no duplicate tags, and a correct
+   single increment from the latest release tag.
+2. **build-tomcat** - builds the WAR with the release version (`-PxhAppVersion`), pushes a versioned
    image and a `latest` tag to ECR.
-3. **build-nginx** — builds the client app, pushes a versioned image and a `latest` tag to ECR.
-4. **release** — creates and pushes a `vX.Y.Z` git tag, then creates a GitHub Release with
-   auto-generated notes. Hotfixes are marked as not-latest.
+3. **build-nginx** - builds the client app, pushes a versioned image and a `latest` tag to ECR.
+4. **release** - creates and pushes a `vX.Y.Z` git tag, then creates a GitHub Release with
+   auto-generated notes (marked as the latest release).
 
 ## Deploy Release (`deployRelease.yml`)
 
@@ -88,20 +139,40 @@ Toolbox produces two Docker images per build, stored in Amazon ECR under the `xh
 | Image | Base | Contents |
 |-------|------|----------|
 | `toolbox-tomcat` | `xhio/xh-tomcat` | Grails WAR deployed to Tomcat |
-| `toolbox-nginx` | `xhio/xh-nginx` | Webpack-built client assets served by nginx |
+| `toolbox-nginx` | `xhio/xh-nginx` | Rsbuild-built client assets served by nginx |
 
 The Dockerfiles and supporting configs (including the nginx `app.conf` and Tomcat `setenv.sh`) live
 in the `/docker/` directory. See the
 [hoist-react app build guide](https://github.com/xh/hoist-react/blob/develop/docs/build-and-deploy-app.md#docker-container-images)
 for details on the base images and container structure.
 
+## AWS Authentication (OIDC)
+
+Every job that touches AWS (ECR push/pull, the `:snapshot` retag in `promote`, and the ECS
+`update-service` deploys) authenticates with **GitHub OIDC** rather than long-lived access keys.
+Each such job:
+
+- declares `permissions: id-token: write` (alongside `contents: read`), which lets the runner mint
+  a short-lived GitHub OIDC token, and
+- passes `role-to-assume: arn:aws:iam::<account-id>:role/xh-github-actions-deploy` to
+  `aws-actions/configure-aws-credentials`, which exchanges that token for temporary STS credentials.
+
+The `xh-github-actions-deploy` IAM role trusts the `token.actions.githubusercontent.com` OIDC
+provider for the `xh` GitHub org and grants only what these workflows need: ECR authorization plus
+push/pull on `xh/*` repositories, and `ecs:UpdateService` / `ecs:DescribeServices` for the forced
+deployments. No static AWS keys are stored as repo secrets, so there is nothing to rotate. Jobs that
+do not touch AWS (e.g. `prepare`, `validate`, `release`) do not request `id-token` and keep a minimal
+permission scope.
+
 ## Required Secrets
 
 | Secret | Used By | Purpose |
 |--------|---------|---------|
-| `AWS_ACCESS_KEY_ID` | Build + Deploy | AWS credentials for ECR and ECS access |
-| `AWS_SECRET_ACCESS_KEY` | Build + Deploy | AWS credentials for ECR and ECS access |
 | `AWS_REGION` | Build + Deploy | AWS region for ECR and ECS |
-| `AWS_ACCOUNT_ID` | Build | Used to construct the ECR registry URL |
+| `AWS_ACCOUNT_ID` | Build + Deploy | Used to construct the ECR registry URL and the OIDC role ARN |
 | `FONTAWESOME_PACKAGE_TOKEN` | CI, Build | Auth token for the Font Awesome Pro npm registry (`npm.fontawesome.com`) |
 | `GITHUB_TOKEN` | Build Release | Provided automatically by GitHub Actions; used for `gh release create` |
+
+------------------------------------------
+
+info@xh.io | <https://xh.io/>

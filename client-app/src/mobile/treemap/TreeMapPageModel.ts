@@ -1,13 +1,17 @@
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
+import type {TreeMapAlgorithm, TreeMapColorMode} from '@xh/hoist/cmp/treemap';
 import {SplitTreeMapModel, TreeMapModel} from '@xh/hoist/cmp/treemap';
 import {Store} from '@xh/hoist/data';
 import {fmtMillions} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 
 export class TreeMapPageModel extends HoistModel {
-    @bindable
-    type: 'treeMap' | 'splitTreeMap' = 'treeMap';
+    @bindable accessor type: 'treeMap' | 'splitTreeMap' = 'treeMap';
+
+    // Display options applied live to both the simple and split maps.
+    @bindable accessor colorMode: TreeMapColorMode = 'linear';
+    @bindable accessor algorithm: TreeMapAlgorithm = 'squarified';
 
     @managed
     store = new Store({
@@ -57,7 +61,18 @@ export class TreeMapPageModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
+        this.addReaction({
+            track: () => [this.colorMode, this.algorithm] as const,
+            run: ([colorMode, algorithm]) => {
+                this.treeMapModel.colorMode = colorMode;
+                this.treeMapModel.algorithm = algorithm;
+                // SplitTreeMapModel exposes colorMode/algorithm as read-only getters; its setter
+                // methods fan the change out to both the primary and secondary child maps.
+                this.splitTreeMapModel.setColorMode(colorMode);
+                this.splitTreeMapModel.setAlgorithm(algorithm);
+            },
+            fireImmediately: true
+        });
     }
 
     override async doLoadAsync() {

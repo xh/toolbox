@@ -12,6 +12,9 @@
 # Local instance configs w/secrets
 toolbox.yml
 .env
+# Per-developer Rsbuild dotenv overrides (client-app)
+.env.local
+.env.*.local
 
 # Compiled source
 .gradle/
@@ -22,9 +25,10 @@ out/
 /client-app/node_modules/
 /client-app/tsconfig.tsbuildinfo
 
-# Logs
+# Logs + temp
 toolbox-logs/
 *.log
+.tmp
 
 # OS generated files
 .DS_Store

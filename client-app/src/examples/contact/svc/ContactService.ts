@@ -1,30 +1,28 @@
-import {HoistService, persist, XH} from '@xh/hoist/core';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {HoistService, persist} from '@xh/hoist/core';
+import {action, observableRef} from '@xh/hoist/mobx';
 import {without} from 'lodash';
 
-import {PERSIST_APP} from '../AppModel';
+import {PERSIST_APP} from '../constants';
 
 /**
  * Service to manage fetching and updating contacts.
  * Favorites are persisted for each user using the Hoist preference system.
  */
 export class ContactService extends HoistService {
+    override telemetryPrefix = 'toolbox.client.contacts';
+
     static instance: ContactService;
 
     override persistWith = PERSIST_APP;
 
     /** ids of all contacts that the user has favorited. */
-    @observable.ref
+    @observableRef
     @persist
-    userFaves: string[] = [];
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    accessor userFaves: string[] = [];
 
     async getContactsAsync() {
-        return this.newSpan('toolbox.client.contacts.getContacts')
+        return this.runner()
+            .span('getContacts')
             .fetchJson({url: 'contacts'})
             .tap(ret => {
                 ret.forEach(it => {
@@ -37,10 +35,10 @@ export class ContactService extends HoistService {
     }
 
     async updateContactAsync(id, update) {
-        await this.newSpan('toolbox.client.contacts.update').run(ctx =>
-            XH.fetchService.postJson({
+        await this.runner()
+            .span('update')
+            .postJson({
                 url: `contacts/update/${id}`,
-                span: ctx.span,
                 body: update,
                 track: {
                     category: 'Contacts',
@@ -48,8 +46,7 @@ export class ContactService extends HoistService {
                     data: {id, ...update},
                     logData: true
                 }
-            })
-        );
+            });
     }
 
     @action

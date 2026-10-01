@@ -1,0 +1,166 @@
+.tb-nav-blade {
+  // Fixed overlay covering the whole viewport; floats above the navigator. Non-interactive and
+  // hidden until opened, so it never intercepts taps meant for the app behind it.
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  visibility: hidden;
+  // Delay hiding until the slide-out transition completes.
+  transition: visibility 0s linear 200ms;
+
+  &--open {
+    pointer-events: auto;
+    visibility: visible;
+    transition: visibility 0s;
+  }
+
+  &__scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  &--open &__scrim {
+    opacity: 1;
+  }
+
+  &__drawer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    width: 280px;
+    max-width: 80%;
+    background: var(--xh-bg);
+    box-shadow: 6px 0 24px rgba(0, 0, 0, 0.45);
+    transform: translateX(-100%);
+    transition: transform 200ms ease;
+    will-change: transform;
+  }
+
+  &--open &__drawer {
+    transform: translateX(0);
+  }
+
+  //------------------------
+  // Header
+  //------------------------
+  &__header {
+    flex: none;
+    align-items: center;
+    gap: var(--xh-pad-px);
+    height: 64px;
+    padding: 0 var(--xh-pad-px);
+    background: var(--xh-bg-alt);
+    border-bottom: var(--xh-border-solid);
+  }
+
+  &__logo {
+    color: var(--xh-orange);
+  }
+
+  &__header-text {
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  &__title {
+    font-size: var(--xh-font-size-large-px);
+    font-weight: 600;
+    color: var(--xh-text-color);
+  }
+
+  &__subtitle {
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  //------------------------
+  // Nav list
+  //------------------------
+  &__nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--xh-pad-half-px);
+  }
+
+  &__sub-items {
+    padding-left: 30px;
+  }
+
+  // Hairline separating the top-level destinations (Home, Docs) from the example groups.
+  &__rule {
+    height: 0;
+    margin: var(--xh-pad-half-px) var(--xh-pad-px);
+    border-top: var(--xh-border-solid);
+  }
+
+  &__row {
+    align-items: center;
+    gap: var(--xh-pad-px);
+    height: 44px;
+    padding: 0 var(--xh-pad-px);
+    border-radius: var(--xh-border-radius-px);
+    color: var(--xh-text-color);
+    cursor: pointer;
+    user-select: none;
+
+    &:active {
+      background: var(--xh-bg-alt);
+    }
+
+    &--sub {
+      height: 40px;
+      color: var(--xh-text-color-muted);
+    }
+
+    &--active {
+      background: var(--xh-bg-highlight);
+      color: var(--xh-intent-primary);
+
+      .tb-nav-blade__row-icon {
+        color: var(--xh-intent-primary);
+      }
+    }
+  }
+
+  &__row-icon {
+    flex: none;
+    width: 18px;
+    text-align: center;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__row-text {
+    font-size: var(--xh-font-size-px);
+  }
+
+  &__row-chevron {
+    flex: none;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  //------------------------
+  // Footer
+  //------------------------
+  &__footer {
+    flex: none;
+    align-items: center;
+    gap: var(--xh-pad-half-px);
+    padding: var(--xh-pad-half-px);
+    // Keep the footer clear of the iOS home indicator / safe area in standalone (PWA) mode.
+    padding-bottom: calc(var(--xh-pad-half-px) + var(--xh-pad-safe-bottom, 0px));
+    border-top: var(--xh-border-solid);
+  }
+
+  &__footer-btn {
+    flex: 1;
+    justify-content: flex-start;
+  }
+}

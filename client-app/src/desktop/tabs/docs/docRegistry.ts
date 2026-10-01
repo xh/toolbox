@@ -1,112 +1,16 @@
 /**
- * Types and utilities for the multi-source documentation viewer.
+ * Desktop-only doc -> Toolbox example tab mappings.
  *
- * The registry itself is loaded from the server (DocsService) at runtime.
- * This file retains the type definitions and utility functions used by
- * DocsPanelModel and DocsTab.
+ * Shared doc types and link/section utilities now live in `core/docs`; this file retains the
+ * desktop-route example map and re-exports the shared types so existing desktop importers keep
+ * resolving. Type re-exports are erased at build time and create no runtime module edge.
  */
-import {DocService} from '../../../core/svc/DocService';
+import type {DocExampleLink} from '../../../core/docs/types';
+
+export type {DocEntry, DocCategory, DocSourceInfo, DocExampleLink} from '../../../core/docs/types';
 
 // ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-export interface DocEntry {
-    /** Unique identifier AND relative file path (e.g. 'docs/base-classes.md'). */
-    id: string;
-    source: string;
-    title: string;
-    category: string;
-    description: string;
-    keywords: string[];
-}
-
-export interface DocCategory {
-    id: string;
-    title: string;
-}
-
-export interface DocSourceInfo {
-    label: string;
-    categories: DocCategory[];
-    mode: string;
-}
-
-export interface DocExampleLink {
-    title: string;
-    /** Full Router5 route name, e.g. 'default.grids.standard'. */
-    route: string;
-}
-
-// ---------------------------------------------------------------------------
-// Link resolution
-// ---------------------------------------------------------------------------
-/**
- * Resolve a relative link from one doc to another.
- * Given the current doc entry and a relative href (e.g., '../core/README.md'),
- * returns the matching DocEntry, or undefined if not found.
- *
- * Since entry IDs are now file paths, we resolve the relative href against
- * the current doc's directory and look up the result directly in the registry.
- */
-export function resolveDocLink(currentDoc: DocEntry, href: string): DocEntry | undefined {
-    if (href.startsWith('http') || href.startsWith('#') || href.startsWith('mailto:')) {
-        return undefined;
-    }
-
-    const cleanHref = href.split('#')[0];
-    if (!cleanHref) return undefined;
-
-    const docService = DocService.instance;
-
-    // Resolve the relative path from the current doc's directory
-    const currentDir = currentDoc.id.substring(0, currentDoc.id.lastIndexOf('/') + 1);
-    const resolved = normalizePath(currentDir + cleanHref);
-
-    // Check within same source first
-    const sameSourceDoc = docService.registry.find(
-        e => e.source === currentDoc.source && e.id === resolved
-    );
-    if (sameSourceDoc) return sameSourceDoc;
-
-    // Check for cross-source links (e.g. ../../hoist-core/docs/authentication.md)
-    if (currentDoc.source === 'hoist-react') {
-        const coreMatch = resolved.match(/^(?:\.\.\/)*hoist-core\/(.+)$/);
-        if (coreMatch) {
-            return docService.registry.find(
-                e => e.source === 'hoist-core' && e.id === coreMatch[1]
-            );
-        }
-    }
-
-    if (currentDoc.source === 'hoist-core') {
-        const reactMatch = cleanHref.match(/^(?:\.\.\/)*hoist-react\/(.+)$/);
-        if (reactMatch) {
-            return docService.registry.find(
-                e => e.source === 'hoist-react' && e.id === reactMatch[1]
-            );
-        }
-    }
-
-    return undefined;
-}
-
-/** Normalize a path by resolving `.` and `..` segments. */
-function normalizePath(path: string): string {
-    const parts = path.split('/');
-    const result: string[] = [];
-    for (const part of parts) {
-        if (part === '.' || part === '') continue;
-        if (part === '..') {
-            result.pop();
-        } else {
-            result.push(part);
-        }
-    }
-    return result.join('/');
-}
-
-// ---------------------------------------------------------------------------
-// Doc → Toolbox example tab mappings (hoist-react only)
+// Doc -> Toolbox example tab mappings (hoist-react only)
 // ---------------------------------------------------------------------------
 const R = 'default';
 
@@ -126,10 +30,10 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
     ],
     'cmp/form/README.md': [
         {title: 'FormModel', route: `${R}.forms.form`},
-        {title: 'Hoist Inputs', route: `${R}.forms.inputs`}
+        {title: 'All Inputs', route: `${R}.forms.inputs`}
     ],
     'cmp/input/README.md': [
-        {title: 'Hoist Inputs', route: `${R}.forms.inputs`},
+        {title: 'All Inputs', route: `${R}.forms.inputs`},
         {title: 'Select', route: `${R}.forms.select`},
         {title: 'Picker', route: `${R}.forms.picker`}
     ],
@@ -139,20 +43,21 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
     ],
     'cmp/tab/README.md': [{title: 'TabContainer', route: `${R}.layout.tabPanel`}],
     'desktop/cmp/panel/README.md': [
-        {title: 'Panel Intro', route: `${R}.panels.intro`},
-        {title: 'Toolbars', route: `${R}.panels.toolbars`},
-        {title: 'Panel Sizing', route: `${R}.panels.sizing`},
-        {title: 'Mask', route: `${R}.panels.mask`},
-        {title: 'Loading Indicator', route: `${R}.panels.loadingIndicator`}
+        {title: 'Panel Intro', route: `${R}.layout.intro`},
+        {title: 'Toolbars', route: `${R}.layout.toolbars`},
+        {title: 'Panel Sizing', route: `${R}.layout.sizing`},
+        {title: 'Mask', route: `${R}.layout.mask`},
+        {title: 'Loading Indicator', route: `${R}.layout.loadingIndicator`},
+        {title: 'Banner', route: `${R}.layout.banner`}
     ],
     'desktop/cmp/dash/README.md': [
         {title: 'DashContainer', route: `${R}.layout.dashContainer`},
         {title: 'DashCanvas', route: `${R}.layout.dashCanvas`}
     ],
     'desktop/README.md': [
-        {title: 'Hoist Inputs', route: `${R}.forms.inputs`},
+        {title: 'All Inputs', route: `${R}.forms.inputs`},
         {title: 'Select', route: `${R}.forms.select`},
-        {title: 'LeftRightChooser', route: `${R}.other.leftRightChooser`}
+        {title: 'LeftRightChooser', route: `${R}.forms.leftRightChooser`}
     ],
     'format/README.md': [
         {title: 'Date Formats', route: `${R}.other.formatDates`},
@@ -166,7 +71,9 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
     'docs/routing.md': [{title: 'Simple Routing', route: `${R}.other.simpleRouting`}],
     'appcontainer/README.md': [
         {title: 'App Notifications', route: `${R}.other.appNotifications`},
-        {title: 'Popups', route: `${R}.other.popups`}
+        {title: 'Banners', route: `${R}.other.banners`},
+        {title: 'Messages', route: `${R}.other.messages`},
+        {title: 'Toast', route: `${R}.other.toast`}
     ],
     'inspector/README.md': [{title: 'Inspector', route: `${R}.other.inspector`}],
     'cmp/README.md': [

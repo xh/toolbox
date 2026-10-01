@@ -1,41 +1,29 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
+import type {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
 import {div, hr} from '@xh/hoist/cmp/layout';
 import {type ContextMenuSpec, HoistModel, managed, XH} from '@xh/hoist/core';
 import {fmtDate} from '@xh/hoist/format';
-import {observable, makeObservable, runInAction, bindable} from '@xh/hoist/mobx';
+import {bindable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
+import type {ChartContextMenuMode} from '../../common/charts/ChartOptions';
 
 export class LineChartModel extends HoistModel {
-    @bindable currentSymbols: string[] = [];
-    @observable.ref symbols: string[] = [];
+    @bindable accessor currentSymbols: string[] = [];
+    @observableRef accessor symbols: string[] = [];
 
-    @bindable currentContextMenu = null;
-    contextMenuOptions = [
-        {
-            label: 'Default',
-            value: null
-        },
-        {
-            label: 'None',
-            value: false
-        },
-        {
-            label: 'Custom',
-            value: 'custom'
-        }
-    ];
+    @bindable accessor aspectRatio: number = null;
+
+    @bindable accessor currentContextMenu: ChartContextMenuMode = null;
 
     @managed
-    @observable.ref
-    chartModel: ChartModel;
+    @observableRef
+    accessor chartModel: ChartModel;
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.addReaction({
             track: () => this.currentSymbols,
@@ -45,12 +33,24 @@ export class LineChartModel extends HoistModel {
         this.addReaction({
             track: () => this.currentContextMenu,
             run: () => {
+                XH.safeDestroy(this.chartModel);
                 this.chartModel = this.getChartModel();
                 this.loadAsync();
             }
         });
 
         this.chartModel = this.getChartModel();
+    }
+
+    /** Demonstrate reaching through ChartModel to the underlying Highcharts API. */
+    callChartApi() {
+        const {highchart} = this.chartModel;
+        if (!highchart) return;
+        const xExtremes = highchart.axes[0].getExtremes();
+        XH.alert({
+            title: 'X-axis extremes - as read from chart API',
+            message: JSON.stringify(xExtremes)
+        });
     }
 
     override async doLoadAsync(loadSpec) {
@@ -68,11 +68,7 @@ export class LineChartModel extends HoistModel {
             this.currentSymbols.map(
                 it =>
                     XH.portfolioService
-                        .getLineChartSeriesAsync({
-                            symbol: it,
-                            dimension: 'close',
-                            loadSpec
-                        })
+                        .getLineChartSeriesAsync({symbol: it, dimension: 'close'}, loadSpec)
                         .catchDefault() ?? {}
             )
         );

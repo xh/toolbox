@@ -1,11 +1,12 @@
-import {GridModel} from '@xh/hoist/cmp/grid';
+import type {GridModel} from '@xh/hoist/cmp/grid';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed} from '@xh/hoist/core';
 import {SplitTreeMapModel} from '@xh/hoist/cmp/treemap';
 import {fmtMillions} from '@xh/hoist/format';
-import {PortfolioModel} from '../PortfolioModel';
+import type {PortfolioModel} from '../PortfolioModel';
 
 export class PositionsMapModel extends HoistModel {
+    override xhName = 'positionsMap';
     readonly parentModel: PortfolioModel;
 
     @managed splitTreeMapModel: SplitTreeMapModel;
@@ -15,6 +16,7 @@ export class PositionsMapModel extends HoistModel {
         this.parentModel = parentModel;
 
         this.splitTreeMapModel = new SplitTreeMapModel({
+            xhName: this.childXhName('treeMap'),
             gridModel,
             mapTitleFn: (model, isPrimary) => {
                 return [

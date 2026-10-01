@@ -1,24 +1,25 @@
 import {AppModel as HoistAdminAppModel} from '@xh/hoist/admin/AppModel';
-import {TabConfig} from '@xh/hoist/cmp/tab';
-import {InitContext, XH} from '@xh/hoist/core';
+import type {TabConfig} from '@xh/hoist/cmp/tab';
+import type {InitContext} from '@xh/hoist/core';
+import {XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {phaseRestPanel, projectRestPanel} from './roadmap';
-import {
-    asyncLoopPanel,
-    storeColumnFilterPanel,
-    viewColumnFilterPanel,
-    CubeTestPanel,
-    dataViewTestPanel,
-    FetchApiTestPanel,
-    GridTestPanel,
-    gridScrolling,
-    LocalDateTestPanel,
-    PanelResizingTestPanel,
-    SelectTestPanel,
-    viewManagerTestPanel,
-    WebSocketTestPanel
-} from './tests';
+import {viewManagers} from './viewManagers';
+import {CubeTestPanel} from './tests/cube/CubeTestPanel';
+import {EmailTestPanel} from './tests/email/EmailTestPanel';
+import {FetchApiTestPanel} from './tests/fetch/FetchApiTestPanel';
+import {GridTestPanel} from './tests/grids/GridTestPanel';
+import {LocalDateTestPanel} from './tests/localDate/LocalDateTestPanel';
+import {PanelResizingTestPanel} from './tests/panels/PanelResizingTestPanel';
+import {SelectTestPanel} from './tests/select/SelectTestPanel';
+import {WebSocketTestPanel} from './tests/websocket/WebSocketTestPanel';
+import {asyncLoopPanel} from './tests/asyncLoops/AsyncLoopPanel';
+import {columnChooserTestPanel} from './tests/columnChooser/ColumnChooserTestPanel';
+import {dataViewTestPanel} from './tests/dataview/DataViewTestPanel';
+import {gridScrolling} from './tests/gridScrolling/GridScrolling';
+import {storeColumnFilterPanel} from './tests/columnFilters/store/StoreColumnFilterPanel';
+import {viewColumnFilterPanel} from './tests/columnFilters/view/ViewColumnFilterPanel';
+import {viewManagerTestPanel} from './tests/viewmanager/ViewManagerTestPanel';
 
 export class AppModel extends HoistAdminAppModel {
     static instance: AppModel;
@@ -26,6 +27,10 @@ export class AppModel extends HoistAdminAppModel {
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
         await XH.installServicesAsync([PortfolioService], ctx);
+
+        // Awaited here, in initAsync, so that all saved configs are loaded and the desired one
+        // preselected before GridTestModel binds its settings within its constructor.
+        await viewManagers.initAsync(ctx);
     }
 
     //------------------------
@@ -35,20 +40,14 @@ export class AppModel extends HoistAdminAppModel {
         return [
             ...super.getTabRoutes(),
             {
-                name: 'roadmap',
-                path: '/roadmap',
-                children: [
-                    {name: 'projects', path: '/projects'},
-                    {name: 'phases', path: '/phases'}
-                ]
-            },
-            {
                 name: 'tests',
                 path: '/tests',
                 children: [
                     {name: 'asyncLoop', path: '/asyncLoop'},
+                    {name: 'columnChooser', path: '/columnChooser'},
                     {name: 'cube', path: '/cube'},
                     {name: 'dataView', path: '/dataView'},
+                    {name: 'email', path: '/email'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
                     {name: 'grid', path: '/grid'},
                     {name: 'gridScrolling', path: '/gridScrolling'},
@@ -69,26 +68,20 @@ export class AppModel extends HoistAdminAppModel {
         return [
             ...super.createTabs(),
             {
-                id: 'roadmap',
-                title: 'Roadmap',
-                icon: Icon.mapSigns(),
-                content: {
-                    switcher,
-                    tabs: [
-                        {id: 'phases', icon: Icon.calendar(), content: phaseRestPanel},
-                        {id: 'projects', icon: Icon.checkCircle(), content: projectRestPanel}
-                    ]
-                }
-            },
-            {
                 id: 'tests',
                 icon: Icon.stopwatch(),
                 content: {
                     switcher,
                     tabs: [
                         {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
+                        {
+                            id: 'columnChooser',
+                            title: 'Column Chooser',
+                            content: columnChooserTestPanel
+                        },
                         {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
                         {id: 'dataView', content: dataViewTestPanel},
+                        {id: 'email', title: 'Email', content: EmailTestPanel},
                         {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
                         {id: 'grid', title: 'Grid', content: GridTestPanel},
                         {id: 'gridScrolling', content: gridScrolling},

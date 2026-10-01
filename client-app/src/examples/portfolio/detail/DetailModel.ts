@@ -1,43 +1,40 @@
-import {HoistModel, lookup, managed} from '@xh/hoist/core';
+import {HoistModel, lookup, managed, persistOptions} from '@xh/hoist/core';
 import {DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {bindable, observable} from '@xh/hoist/mobx';
 import {PortfolioModel} from '../PortfolioModel';
 import {chartsPanel} from './charts/ChartsPanel';
 import {ordersGrid} from './orders/OrdersGrid';
-import {OrdersModel} from './orders/OrdersModel';
+import type {OrdersModel} from './orders/OrdersModel';
 
 export class DetailModel extends HoistModel {
+    override xhName = 'detail';
     @lookup(PortfolioModel) parentModel: PortfolioModel;
 
     @managed dashModel: DashContainerModel;
     @managed ordersModel: OrdersModel;
     @managed panelModel: PanelModel;
 
-    @observable positionId = null;
+    @observable accessor positionId = null;
 
     /**
      * Symbol-level context for any charts within this detail panel.
      * Set by ordersModel when a symbol is selected.
      */
-    @bindable selectedSymbol: string = null;
+    @bindable accessor selectedSymbol: string = null;
 
     get collapsed() {
         return this.panelModel.collapsed;
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     override onLinked() {
         const {persistWith} = this.parentModel;
 
         this.dashModel = new DashContainerModel({
+            xhName: this.childXhName('dash'),
             showMenuButton: true,
-            persistWith: {...persistWith, path: 'detailDash', settleTime: 1500},
+            persistWith: persistOptions(persistWith, {path: 'detailDash', settleTime: 1500}),
             viewSpecs: [
                 {
                     id: 'orders',
@@ -62,7 +59,8 @@ export class DetailModel extends HoistModel {
         });
 
         this.panelModel = new PanelModel({
-            persistWith: {...persistWith, path: 'detailPanel'},
+            xhName: this.childXhName('panel'),
+            persistWith: persistOptions(persistWith, {path: 'detailPanel'}),
             defaultSize: 400,
             side: 'bottom',
             renderMode: 'unmountOnHide'

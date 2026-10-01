@@ -1,0 +1,99 @@
+.tb-pull-up-sheet {
+  // Peek bar height shown when collapsed (grab handle + peek content row).
+  --tb-sheet-peek-h: 60px;
+  // Expanded sheet height as a share of the containing demo frame.
+  --tb-sheet-expanded-h: 72%;
+
+  position: absolute;
+  inset: 0;
+  // Collapsed: only the bottom peek bar should intercept taps; the rest passes through to the
+  // live demo behind. The panel re-enables pointer events on itself.
+  pointer-events: none;
+  z-index: 10;
+
+  &__scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+  }
+
+  &--expanded &__scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  &__panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    height: var(--tb-sheet-expanded-h);
+    // Collapsed: only the peek bar shows above the bottom edge; the rest sits below it. The slide is
+    // animated via `bottom`, NOT `transform` - a CSS transform would make this panel the containing
+    // block for any position:fixed descendant, which offsets react-beautiful-dnd's drag clone in the
+    // Manage widgets sheet (the floating row would appear well below the finger).
+    bottom: calc(var(--tb-sheet-peek-h) - var(--tb-sheet-expanded-h));
+    // Use the standard app background (rather than the lighter --xh-bg-alt) in both themes - it
+    // reads as a recessed drawer surface and interacts better with the controls inside the sheet.
+    background: var(--xh-bg);
+    border-top: var(--xh-border-solid);
+    border-radius: 16px 16px 0 0;
+    // Light mode: a soft lift. (Dark mode overridden below - a black shadow is invisible there.)
+    box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.12);
+    pointer-events: auto;
+    transition: bottom 200ms ease;
+
+    // A black drop shadow is invisible on the dark drawer surface; use a faint light top-edge
+    // highlight (with a soft ambient) so the drawer still reads as separated from the content behind.
+    body.xh-dark & {
+      box-shadow:
+        0 -1px 0 rgba(255, 255, 255, 0.08),
+        0 -8px 24px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  &--expanded &__panel {
+    bottom: 0;
+  }
+
+  &__peek {
+    flex: none;
+    height: var(--tb-sheet-peek-h);
+    cursor: pointer;
+    user-select: none;
+    touch-action: none;
+  }
+
+  &__grabber {
+    width: 36px;
+    height: 4px;
+    margin: 8px auto 0;
+    border-radius: 2px;
+    background: var(--xh-text-color-muted);
+    opacity: 0.5;
+  }
+
+  &__peek-content {
+    display: flex;
+    align-items: center;
+    height: calc(var(--tb-sheet-peek-h) - 12px);
+    padding: 0 var(--xh-pad-px);
+  }
+
+  &__body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 var(--xh-pad-px) var(--xh-pad-px);
+  }
+
+  // Pinned footer below the scrolling body (e.g. a reset action).
+  &__footer {
+    flex: none;
+    border-top: var(--xh-border-solid);
+  }
+}

@@ -1,16 +1,46 @@
-.tb-popover {
-  padding: var(--xh-pad-double-px);
-  width: 200px;
-  text-align: center;
-  border: var(--xh-border-solid);
-
-  h1 {
-    margin: 0 0 var(--xh-pad-px) !important;
-    font-size: var(--xh-font-size-large-px);
+// Short context line under each card title (mirrors the Popups example).
+.tb-overlay-card {
+  &__subtitle {
+    padding-bottom: var(--xh-pad-px);
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
   }
+}
+
+// Tuck the subtitle tight under the title so the two read as a pair, above the trigger.
+.tb-page .tb-overlay-card .tb-card__title {
+  padding-bottom: 2px;
+}
+
+// Center the (fixed-width) trigger in the card. Centering leaves room on both sides so the
+// left / right positions can open without pushing the menu mostly offscreen.
+.tb-popover-trigger {
+  text-align: center;
+
+  .xh-popover__target-wrapper {
+    display: inline-block;
+  }
+}
+
+// Popover content: a vertical actions menu of full-width, left-aligned buttons. (Menu width is
+// set in TS to match the trigger so the two align flush.)
+.tb-popover-menu {
+  .xh-button {
+    justify-content: flex-start;
+    border-radius: 0;
+    width: 100%;
+  }
+}
+
+.tb-overlay-dialog {
+  max-width: 320px;
+  line-height: 1.5;
 
   p {
-    margin: 0;
-    font-size: var(--xh-font-size-px);
+    margin: 0 0 var(--xh-pad-px);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }

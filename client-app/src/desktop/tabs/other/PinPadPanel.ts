@@ -1,6 +1,6 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {h3, p} from '@xh/hoist/cmp/layout';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable} from '@xh/hoist/mobx';
 import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -8,14 +8,25 @@ import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 
 import './PinPadPanel.scss';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
 
 export const pinPadPanel = hoistCmp.factory({
     model: creates(() => PinPadPanelModel),
 
     render({model}) {
         return wrapper({
-            description: 'A specialized PIN input, used for lightweight authentication of users.',
+            title: 'PinPad',
+            icon: Icon.unlock(),
+            description: [
+                '`PinPad` is a specialized numeric input for lightweight authentication, such',
+                'as unlocking a kiosk or confirming a sensitive action.',
+                '',
+                'Its `PinPadModel` drives the displayed header, subheader, and error text and exposes the',
+                'entered value, letting the application validate the PIN, enforce attempt',
+                'limits, and lock out repeated failures.',
+                '',
+                'Enter the PIN **12345** below to unlock the demo.'
+            ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/other/PinPadPanel.ts',
@@ -28,8 +39,6 @@ export const pinPadPanel = hoistCmp.factory({
                 }
             ],
             item: panel({
-                title: 'Other › PinPad',
-                icon: Icon.unlock(),
                 width: 380,
                 height: 500,
                 className: 'tb-pinpad-container',
@@ -62,9 +71,6 @@ const secretPlans = hoistCmp.factory(() =>
             ),
             p(
                 'Nam et tincidunt risus, at faucibus enim. Aliquam tortor est, finibus ac metus id, eleifend auctor quam. Aenean purus odio, tempus interdum velit et, faucibus placerat nisi. Etiam eget nunc vehicula, eleifend justo quis, varius leo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris bibendum mollis tempor.'
-            ),
-            p(
-                'Fusce ac sollicitudin nunc, at tempus sem. Fusce dapibus lorem malesuada vestibulum luctus. Etiam semper est in ligula sagittis facilisis. Phasellus accumsan placerat ex, eu fringilla mauris semper nec.'
             )
         ]
     })
@@ -80,11 +86,10 @@ class PinPadPanelModel extends HoistModel {
     attempts = 0;
     maxAttempts = 5;
 
-    @observable loggedIn = false;
+    @observable accessor loggedIn = false;
 
     constructor() {
         super();
-        makeObservable(this);
         const {pinPadModel: pad} = this;
         this.addReaction({
             track: () => pad.completedPin,

@@ -268,8 +268,8 @@ class PositionService extends BaseService {
         }
     }
 
-    private Map getConfig() {
-        configService.getMap('portfolioConfigs')
+    private PortfolioConfig getConfig() {
+        configService.getObject(PortfolioConfig)
     }
 
     Map getAdminStats() {[

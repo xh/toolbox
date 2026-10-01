@@ -24,11 +24,11 @@ applications, which typically use whatever enterprise database is already in pla
 infrastructure, but it provides a common and easy-to-run DB for local development and our AWS-based
 deployments.
 
-* For initial/test usage, Toolbox is can run with a transient in-memory database (H2) that will be
+* For initial/test usage, Toolbox can run with a transient in-memory database (H2) that will be
   rebuilt at startup of the app. This is enabled via the `useH2` instance configuration (see below).
-* For persistent deployments, Toolbox is designed to work with MySQL. If you don't already have it
-  installed and are on a Mac, we recommend installing via [Homebrew](https://brew.sh/) with
-  `brew install mysql`.
+* For persistent deployments, Toolbox is designed to work with MySQL. Install a Long-Term Support
+  (LTS) release - see [MySQL versions](#mysql-versions) below for the recommended command on each
+  platform. Do not install the plain `mysql` Homebrew formula.
 * Create a new empty database named `toolbox`, being sure to use a UTF8 charset (fortunately this is
   the default for newer versions of MySQL). Alternatively, use an export of the deployed toolbox DB
   with `CREATE DATABASE` included (Anselm can provide).
@@ -40,6 +40,44 @@ deployments.
   on first run as long as a suitable value is provided for the `dbCreate` data source parameter. See
   the `DBConfig` class for where this is set - we leave toolbox on `update` to allow for automatic
   schema changes as needed.
+
+### MySQL versions
+
+MySQL publishes two release tracks, and picking the wrong one causes real pain later:
+
+* **LTS** releases hold a stable feature set for years. This is what you want. The current LTS is
+  the 9.7 series.
+* **Innovation** releases ship roughly quarterly, and each one is superseded by the next. Starting
+  with 26.7, they use calendar versioning (`YY.M.P`), so a high version number signals a recent
+  Innovation release, not a more mature one.
+
+Toolbox has no special database requirements beyond what Grails and Hibernate expect, so **always
+install the LTS**.
+
+**macOS** - install the versioned Homebrew formula, not the plain `mysql` one:
+
+```bash
+brew install mysql@9.7
+brew link --force mysql@9.7    # keg-only, so link it or add its bin/ to your PATH
+brew services start mysql@9.7
+```
+
+The plain `mysql` formula tracks whichever release is newest on *either* track, so `brew upgrade`
+will silently walk you onto the Innovation train. Versioned formulae exist only for LTS releases
+(`mysql@8.0`, `mysql@8.4`, `mysql@9.7`), which makes them a reliable way to stay put while still
+receiving patch updates within the series.
+
+**Windows** - use the MySQL Installer and select an LTS series when prompted for the server version.
+
+**Linux** - use the MySQL APT or Yum repository and select the LTS series during repo configuration,
+or install your distribution's MySQL package, which generally tracks an LTS.
+
+> **Why this matters.** A MySQL data directory is upgraded when the *server starts*, not when the
+> package is upgraded. MySQL only accepts an upgrade within the same lineage, or from the
+> immediately preceding LTS. Upgrade the binary across two lineages without starting the server in
+> between and the data directory is stranded - the new server refuses to open it. See
+> [Troubleshooting](docs/running-locally.md#database-connection-fails-at-startup) for the recovery
+> steps.
 
 ## Instance Configuration
 
@@ -57,77 +95,53 @@ Copy `.env.template` to `.env` and fill in the required values for your local da
 
 ## Authentication
 
-Note that Toolbox uses 'Auth0' as its authentication provider, and includes various client-side and
-server side adaptors for that. Typical Hoist applications will use an enterprise-specific Single
-Sign-On (SSO) such as JESPA/NTLM, kerberos, or another OAuth based solution.
+By default, Toolbox uses 'Auth0' as its authentication provider, and includes various client-side
+and server side adaptors for that. Typical Hoist applications will use an enterprise-specific Single
+Sign-On (SSO) such as JESPA/NTLM, kerberos, or another OAuth based solution. (Toolbox can also be
+pointed at Azure Entra ID by setting the `oauthProvider` instance config to `ENTRA_ID`, exercising
+Hoist's MSAL adaptor as an alternate OAuth provider.)
 
 When adding a new top-level entry-point for Toolbox (such as a new example application), the desired
 URL must be registered with Auth0 as a valid OAuth callback URL. Either Lee or Anselm can update our
 Auth0 config accordingly.
 
+### Running Locally Without OAuth (Form-Based Login)
+
+OAuth is convenient in deployed environments but can be inconvenient for local development - for
+example when working offline, or when loading the client on a private network IP (e.g. for on-device
+mobile testing) that is not a registered Auth0 redirect URL. For these cases, Toolbox supports
+disabling OAuth entirely and falling back to a simple username/password login form. This is atypical
+of most Hoist apps and is implemented specifically as a development/testing convenience - see
+`AuthenticationService.groovy` (server) and `AuthModel.ts` (client) for how the fallback is wired.
+
+Two instance configs (set as environment variables in your local `.env` file) control this:
+
+* `APP_TOOLBOX_OAUTH_PROVIDER=NONE` - disables the OAuth flow. The server reports `useOAuth: false`
+  in its client config, and the client enables Hoist's built-in login form instead of redirecting
+  to an OAuth provider.
+* `APP_TOOLBOX_BOOTSTRAP_ADMIN_USER` / `APP_TOOLBOX_BOOTSTRAP_ADMIN_PASSWORD` - when both are set,
+  `BootStrap.createLocalAdminUserIfNeeded()` seeds (or updates the password of) a password-enabled
+  `User` in the Toolbox database on startup, granting admin rights. Use these credentials to log in
+  via the form.
+
+Setting `APP_TOOLBOX_BOOTSTRAP_ADMIN_USER` on its own (without a password, and while OAuth remains
+enabled) is also supported - it grants admin rights to that OAuth-sourced user in local development
+via Hoist Core's `DefaultRoleService`, without enabling form-based login.
+
+See the comments in `.env.template` for the exact variable names and recommended pairings.
+
 ## Running Toolbox
 
-To run toolbox locally on your machine, use the following commands:
+To run Toolbox locally, start the Grails server and the Rsbuild dev server in separate terminals:
 
-* Start the server with the command `./gradlew bootRun -Duser.timezone=Etc/UTC` in the `toolbox`
-  package.
-* Start the client with the command `yarn start` in the `toolbox/client-app` package.
+* **Server** - from the project root: `./gradlew bootRun` (serves the API on port `8080`).
+* **Client** - from the `client-app/` directory: `pnpm start` (serves `http://localhost:3000`).
 
-## Toolbox + Hoist development
+Then open `http://localhost:3000/app` (desktop app), `/admin` (admin console), or `/mobile`.
 
-Toolbox is often developed alongside the Hoist Core and React libraries, so that changes to the
-libraries themselves can be developed and tested locally using Toolbox as a reference app. This is
-the recommended configuration for XH developers to use when setting up Toolbox.
-
-* Create or find a suitable directory for multiple project repositories, like homedir or (if using
-  IntelliJ) `~/IdeaProjects/`.
-* Within this directory, check out the `toolbox`, `hoist-react`, and `hoist-core` repositories as
-  siblings.
-
-### Running Toolbox using local Hoist
-
-* To run the server using the local `hoist-core`, you need `hoist-core` to exist as sibling of the
-  `toolbox` package, and do one of the following:
-    * Edit the `toolbox/gradle.properties` file and set `runHoistInline=true` or set it in your
-      default gradle properties, e.g. ~/.gradle/gradle.properties
-
-  Note this is _only_ required if you're changing hoist-core code.
-
-* To run the client using the local `hoist-react`, you need `hoist-react` to exist as sibling of the
-  `toolbox` package, and to start your local webpack-dev-server from the `toolbox/client-app`
-  directory by running `yarn startWithHoist`.
-
-  Note this is _only_ required if you're changing hoist-react code.
-
-### Running multiple instances of Toolbox
-
-* Make sure that the `APP_TOOLBOX_MULTI_INSTANCE_ENABLED` property in `.env` is set to `true`.
-* Run the first instance of the server and client as normal.
-* To run a second instance of the server, you run the command
-  `./gradlew bootRun -Duser.timezone=Etc/UTC -Dserver.port=8081` from the `toolbox` directory.
-* To run a second instance of the client connected to the second server, start another local
-  webpack-dev-server from the `toolbox/client-app` directory using
-  `yarn start --env devGrailsPort=8081 devWebpackPort=3001`.
-
-## Developing with HTTPS on `xh.io` domain
-
-It can be useful to run Toolbox locally with HTTPS enabled and on a sub-domain of `xh.io`,
-especially when testing OAuth, CORS, or cookie dependent features. Follow these steps to run with
-HTTPS on the `toolbox-local.xh.io:3000` domain:
-
-1. Add this entry to your dev machine's `hosts` file: `127.0.0.1 toolbox-local.xh.io`
-2. Start the Grails server with the additional VM options below. The referenced files are
-   self-signed certs commited to the repo for local dev purposes.
-    ```
-    -Dserver.ssl.enabled=true
-    -Dserver.ssl.certificate=classpath:local-dev/toolbox-local.xh.io-self-signed.crt
-    -Dserver.ssl.certificate-private-key=classpath:local-dev/toolbox-local.xh.io-self-signed.key
-    -Dserver.ssl.trust-certificate=classpath:local-dev/toolbox-local.xh.io-self-signed.ca.crt
-    ```
-3. Visit `https://toolbox-local.xh.io:8080/ping` in your browser to proceed past the SSL warning
-   for API calls.
-4. Start the GUI with the `startWithHoistSecure` npm script. Go to
-   `https://toolbox-local.xh.io:3000/app/` in your browser and proceed past the SSL warning.
+For the complete guide - running against local Hoist framework checkouts, running multiple
+instances, on-device mobile testing over a network IP, HTTPS setup, and troubleshooting - see
+[**Running Toolbox Locally**](docs/running-locally.md).
 
 ------------------------------------------
 

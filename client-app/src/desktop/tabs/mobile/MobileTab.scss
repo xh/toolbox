@@ -1,15 +1,370 @@
 .tb-mobile {
-  margin: var(--xh-pad-double-px);
-  max-width: 1600px;
-  max-height: 800px;
-  width: 80%;
+  // Frame coloration tracks the desktop app's theme: a dark device by default, a light/silver one
+  // when the `--light` modifier is applied (set from `XH.darkTheme` in MobileTab.ts). The screenshot
+  // content swaps to a matching light/dark capture there as well.
+  --tb-bezel: linear-gradient(150deg, #43464d 0%, #1c1e22 16%, #0c0d10 100%);
+  --tb-chrome: #08090b;
+  --tb-status: rgba(255, 255, 255, 0.75);
+  --tb-home: rgba(255, 255, 255, 0.5);
+  --tb-button: linear-gradient(180deg, #34373d, #15171b);
+  --tb-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.3), 0 6px 14px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07), inset 0 0 0 2px rgba(0, 0, 0, 0.55);
 
-  &__screenshots {
-    justify-content: center;
-    margin: var(--xh-pad-px) var(--xh-pad-px) 0 var(--xh-pad-px);
+  &--light {
+    --tb-bezel: linear-gradient(150deg, #fbfcfd 0%, #e4e6ea 18%, #d0d3d9 100%);
+    --tb-chrome: #eef0f3;
+    --tb-status: rgba(0, 0, 0, 0.55);
+    --tb-home: rgba(0, 0, 0, 0.4);
+    --tb-button: linear-gradient(180deg, #d6d8dd, #b6b9bf);
+    --tb-shadow:
+      0 18px 40px rgba(0, 0, 0, 0.18), 0 6px 14px rgba(0, 0, 0, 0.12),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.7), inset 0 0 0 2px rgba(0, 0, 0, 0.12);
+  }
 
-    img {
-      margin: var(--xh-pad-px);
+  // A modern smartphone: thin dark bezel, large continuous-corner radius, dynamic-island pill,
+  // and a soft floating shadow. Sized by height to fill the tour stage; the screen image fills the
+  // slot via object-fit.
+  &__device {
+    position: relative;
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+    // A definite height (capped to the available space) rather than `min(100%, 760px)`: the screen
+    // captures are now absolutely positioned for the cross-fade and contribute no height, so a
+    // content-derived fallback would collapse the bezel. `height` sets the target; `max-height`
+    // honors a shorter stage.
+    height: 760px;
+    max-height: 100%;
+    // Device aspect chosen so the screen slot (after bezel + status/home chrome gaps) matches the
+    // ~804:1508 capture aspect at this nominal height - so the shot fills edge-to-edge with no side
+    // crop and no letterbox. Slightly wider than a real 9:19.5 phone to suit the captured shots.
+    aspect-ratio: 101 / 200;
+    padding: 9px;
+    border-radius: 46px;
+    background: var(--tb-bezel);
+    box-shadow: var(--tb-shadow);
+  }
+
+  // The screen surface: a dark "OS chrome" backdrop with a large radius. Reserves a top status-bar
+  // gap and a bottom home-indicator gap (via padding) so the rounded corners clip these dark bands,
+  // never the app content. The screenshot fills the area between them.
+  &__screen {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 28px;
+    overflow: hidden;
+    background: var(--tb-chrome);
+    // Top status-bar gap kept just deep enough to clear the corner radius and seat the island;
+    // a slightly deeper bottom gap for the home indicator.
+    padding: 28px 0 30px;
+  }
+
+  // The shot area between the chrome gaps. Every screen's capture is stacked here (absolutely
+  // positioned, filling this box) and cross-faded via opacity, so this just establishes the
+  // positioning context and fills the space the single shot used to occupy.
+  &__shots {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+  }
+
+  &__shot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    // The slot is tuned (via the device aspect above) to match the capture aspect, so `cover` fills
+    // it exactly with no side crop. Anchored to the top so any sub-pixel overflow at off-nominal
+    // sizes trims harmlessly off the bottom rather than clipping content at the sides.
+    object-fit: cover;
+    object-position: top center;
+    // Cross-fade between screens: inactive shots sit transparent below; the active one fades in on
+    // top (raised z-index), covering the outgoing shot so there is no dark dip mid-transition.
+    opacity: 0;
+    z-index: 1;
+    transition: opacity 0.35s ease;
+
+    &--active {
+      opacity: 1;
+      z-index: 2;
     }
   }
+
+  // The iOS-style home indicator pill, centered in the bottom gap.
+  &__home {
+    position: absolute;
+    bottom: 19px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32%;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--tb-home);
+    z-index: 2;
+  }
+
+  // A faux iOS status bar filling the top chrome gap: clock at left; carrier + signal + battery at
+  // right. Inset horizontally so it clears the screen's rounded corners.
+  &__statusbar {
+    position: absolute;
+    top: 9px; // bezel thickness
+    left: 9px;
+    right: 9px;
+    height: 28px; // matches the screen's top status-bar gap
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    color: var(--tb-status);
+    font-size: 11px;
+    font-weight: 600;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  &__clock {
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__status-right {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  &__carrier {
+    font-size: 8.5px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  // CSS signal-strength meter: four ascending bars.
+  &__signal {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5px;
+    height: 10px;
+  }
+
+  &__bar {
+    width: 2.5px;
+    background: currentColor;
+    border-radius: 1px;
+
+    &:nth-child(1) {
+      height: 40%;
+    }
+    &:nth-child(2) {
+      height: 60%;
+    }
+    &:nth-child(3) {
+      height: 80%;
+    }
+    &:nth-child(4) {
+      height: 100%;
+    }
+  }
+
+  // Battery glyph: rounded body, positive-terminal nub, and a near-full fill.
+  &__battery {
+    position: relative;
+    width: 18px;
+    height: 9px;
+    padding: 1px;
+    border: 1px solid currentColor;
+    border-radius: 2.5px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: -2.5px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.5px;
+      height: 4px;
+      border-radius: 0 1px 1px 0;
+      background: currentColor;
+    }
+  }
+
+  &__battery-fill {
+    width: 80%;
+    height: 100%;
+    background: currentColor;
+    border-radius: 1px;
+  }
+
+  // Subtle side buttons - a volume rocker (left) and a power button (right) - flush to the bezel
+  // edge. Just enough device realism to read unmistakably as a phone, without looking toy-like.
+  &__device::before,
+  &__device::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--tb-button);
+  }
+
+  // Volume rocker, upper-left.
+  &__device::before {
+    left: -2px;
+    top: 24%;
+    height: 13%;
+  }
+
+  // Power button, upper-right (a touch lower, as on a modern phone).
+  &__device::after {
+    right: -2px;
+    top: 30%;
+    height: 9%;
+  }
+}
+
+// Feature tour: a vertical list of selectable feature cards (left) beside a single phone bezel
+// (right), inside the "Mobile App - Feature Tour" panel. Brand orange (`--xh-orange`, reserved for
+// highlights) marks the active card; everything else stays on neutral `--xh-*` tokens so both
+// themes work from the same rules.
+// Cap the example frame (the titled panel) itself so it does not grow beyond 1000px on a wide
+// window; it stays centered in the demo region (the tiled backdrop breathes down the sides) and its
+// content fills it. This keeps the phone beside the nav cards instead of drifting to the far edge.
+.tbox-wrapper__demo > .tb-tour-panel {
+  flex: 1;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.tb-tour {
+  flex: 1;
+  min-height: 0;
+  gap: 32px;
+  padding: 18px 22px;
+  align-items: stretch;
+}
+
+// Left column: the nav list. Capped to a comfortable reading width so the cards don't sprawl on
+// wide windows (they grow unwieldy past ~600px); shrinks below that on narrower windows. Scrolls
+// on its own once the tour grows past the visible height.
+.tb-tour__nav {
+  flex: 0 1 600px;
+  min-width: 0;
+  gap: 14px;
+  overflow: auto;
+}
+
+.tb-tour__nav-label {
+  flex: none;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--xh-text-color-muted);
+  margin-bottom: 2px;
+}
+
+// One selectable card per feature: icon chip + title, expanding to reveal its blurb when active.
+.tb-tour__card {
+  flex: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: var(--xh-bg-alt);
+  border: 1px solid var(--xh-border-color);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    border-color: var(--xh-orange);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--xh-orange);
+    outline-offset: 2px;
+  }
+
+  // Active card: brand-orange border, and the only card showing its blurb. The orange border plus
+  // the filled icon chip are enough to mark it - no extra accent rail.
+  &--active {
+    border-color: var(--xh-orange);
+  }
+}
+
+// Icon chip: the chip surface stays neutral in both states; on the active card only the glyph
+// itself picks up the brand-orange accent.
+.tb-tour__chip {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--xh-bg);
+  border: 1px solid var(--xh-border-color);
+  color: var(--xh-text-color-muted);
+  font-size: 18px;
+
+  .tb-tour__card--active & {
+    color: var(--xh-orange);
+  }
+}
+
+.tb-tour__card-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 2px;
+}
+
+.tb-tour__card-label {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--xh-text-color);
+}
+
+// Collapsed cards show the one-line tagline; the active card shows the fuller body blurb.
+.tb-tour__card-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--xh-text-color-muted);
+
+  .tb-tour__card--active & {
+    color: var(--xh-text-color);
+  }
+}
+
+.tb-tour__card-chev {
+  flex: none;
+  align-self: center;
+  color: var(--xh-text-color-muted);
+  transition: color 0.15s ease;
+
+  .tb-tour__card:hover &,
+  .tb-tour__card--active & {
+    color: var(--xh-orange);
+  }
+}
+
+// Right column: the single phone bezel, pushed to the right edge (per spec) and top-aligned so its
+// top edge lines up with the nav cards rather than floating to vertical center on a tall window.
+.tb-tour__stage {
+  flex: none;
+  margin-left: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
 }

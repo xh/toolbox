@@ -21,7 +21,8 @@ export class ContainersPageModel extends HoistModel {
             },
             {
                 id: 'toolbars',
-                content: toolbarPage
+                content: toolbarPage,
+                title: 'Toolbars'
             }
         ]
     });

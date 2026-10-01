@@ -1,17 +1,20 @@
 import {HoistModel} from '@xh/hoist/core';
+import {bindable} from '@xh/hoist/mobx';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {required} from '@xh/hoist/data';
 import {random} from 'lodash';
 
 export class ToolbarFormPanelModel extends HoistModel {
+    /** Render every toolbar on the page in its compact variant. */
+    @bindable accessor compact = false;
+
     topFormModel = new FormModel({
         fields: [
             {name: 'text1', rules: [required]},
             {name: 'number1', initialValue: random(0, 10000000)},
             {name: 'date1'},
             {name: 'buttonGroup1', initialValue: 'button2'},
-            {name: 'bool1', rules: [required]},
-            {name: 'bool2'}
+            {name: 'bool1', rules: [required]}
         ]
     });
 

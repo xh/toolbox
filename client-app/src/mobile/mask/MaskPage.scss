@@ -1,0 +1,10 @@
+.tb-mask-page__stage {
+  flex: 1;
+  // Establish a positioned context so the inline mask overlays this stage (not the whole page).
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  gap: var(--xh-pad-px);
+  padding: var(--xh-pad-px);
+  text-align: center;
+}

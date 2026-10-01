@@ -1,12 +1,16 @@
 package io.xh.toolbox
 
 import grails.gorm.transactions.Transactional
+import io.xh.hoist.config.AppConfig
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.log.LogSupport
 import io.xh.hoist.pref.PrefService
 import io.xh.hoist.telemetry.trace.TraceService
 import io.xh.hoist.config.ConfigSpec
 import io.xh.hoist.pref.PreferenceSpec
+import io.xh.toolbox.portfolio.PortfolioConfig
+import io.xh.toolbox.security.Auth0Config
+import io.xh.toolbox.security.EntraIdConfig
 import io.xh.toolbox.user.User
 
 import java.time.LocalDate
@@ -86,10 +90,8 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'auth0Config',
                 valueType: 'json',
-                defaultValue: [
-                    clientId: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
-                    domain: 'login.xh.io'
-                ],
+                defaultValue: [:],
+                typedClass: Auth0Config,
                 groupName: 'Auth',
                 note: 'OAuth config for the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
             ),
@@ -133,10 +135,8 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'entraIdConfig',
                 valueType: 'json',
-                defaultValue: [
-                    clientId: '5d933976-8fe4-40fc-bc13-b9d239a2efe5',
-                    tenantId: '51759969-dc12-46ec-a1e9-2532084dc881'
-                ],
+                defaultValue: [:],
+                typedClass: EntraIdConfig,
                 groupName: 'Auth',
                 note: 'OAuth config for the Toolbox app registered at our Azure Entra ID tenant. For testing Entra ID as an alternate OAuth provider.'
             ),
@@ -150,7 +150,7 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'gitHubAccessToken',
                 valueType: 'string',
-                defaultValue: 'realTokenGoesHere',
+                defaultValue: AppConfig.NONE,
                 groupName: 'GitHub Integration',
                 note: 'Personal access token with minimal scopes required to query public repos and commits.'
             ),
@@ -171,10 +171,10 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'gitHubRepos',
                 valueType: 'json',
-                defaultValue: [],
+                defaultValue: ['hoist-react', 'hoist-core', 'toolbox', 'hoist-dev-utils'],
                 clientVisible: true,
                 groupName: 'GitHub Integration',
-                note: 'List of repos from which Toolbox will pull commits to display on its dashboard.'
+                note: 'List of repos from which Toolbox will pull commits and published releases to display on its home page.'
             ),
             new ConfigSpec(
                 name: 'gitHubWebhookTriggerSecret',
@@ -205,23 +205,29 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'newsSources',
                 valueType: 'json',
+                // NewsAPI source IDs (https://newsapi.org/sources). Many sources NewsAPI lists no
+                // longer return any articles - this set was verified to currently return stories
+                // (with images). Note the `google-news` aggregator is intentionally omitted: it
+                // returns self-referential entries and HTML-laden descriptions that read poorly.
                 defaultValue: [
+                    'associated-press': 'Associated Press',
+                    'bbc-news': 'BBC News',
                     cnn: 'CNN',
-                    'google-news': 'Google News'
+                    'nbc-news': 'NBC News',
+                    'cbs-news': 'CBS News',
+                    'abc-news': 'ABC News',
+                    'usa-today': 'USA Today',
+                    'the-washington-post': 'The Washington Post',
+                    bloomberg: 'Bloomberg',
+                    'the-verge': 'The Verge'
                 ],
                 groupName: 'Toolbox - Example Apps'
             ),
             new ConfigSpec(
                 name: 'portfolioConfigs',
                 valueType: 'json',
-                defaultValue: [
-                    instrumentCount: 500,
-                    orderCount: 20000,
-                    updateIntervalSecs: 5,
-                    updatePctInstruments: 20,
-                    updatePctPriceRange: 0.025,
-                    pushUpdatesIntervalSecs: 5
-                ],
+                defaultValue: [:],
+                typedClass: PortfolioConfig,
                 groupName: 'Toolbox - Example Apps'
             ),
             new ConfigSpec(
@@ -229,6 +235,14 @@ class BootStrap implements LogSupport {
                 valueType: 'string',
                 defaultValue: 'api.fda.gov',
                 groupName: 'Toolbox - Example Apps'
+            ),
+            new ConfigSpec(
+                name: 'slackAlertConfig',
+                valueType: 'json',
+                defaultValue: [:],
+                typedClass: SlackAlertConfig,
+                groupName: 'Slack Integration',
+                note: 'Slack bot token + target channels for monitor alerts, client-error reports, and user feedback. All disabled by default; set enabled plus the specific per-type flag(s) and channel(s) to post.'
             ),
             new ConfigSpec(
                 name: 'sourceUrls',
@@ -274,18 +288,18 @@ class BootStrap implements LogSupport {
                 notes: 'True to render the main app menu button using the alternate user profile (initials) mode.'
             ),
             new PreferenceSpec(
-                name: 'contactAppState',
-                type: 'json',
-                defaultValue: [],
-                groupName: 'Toolbox - Example Apps',
-                notes: 'Holds favorites, grid state, and displayMode prefs for the XH Contact example app.'
+                name: 'font',
+                type: 'string',
+                defaultValue: 'IBM Plex Sans',
+                groupName: 'Toolbox',
+                notes: 'App UI font, toggled via the in-app Options dialog. Either "IBM Plex Sans" or "Inter".'
             ),
             new PreferenceSpec(
-                name: 'expandDockedLinks',
-                type: 'bool',
-                defaultValue: false,
-                groupName: 'Toolbox',
-                notes: 'True to expand the docked linked panel by default, false to start collapsed.'
+                name: 'contactAppState',
+                type: 'json',
+                defaultValue: [:],
+                groupName: 'Toolbox - Example Apps',
+                notes: 'Holds favorites, grid state, and displayMode prefs for the XH Contact example app.'
             ),
             new PreferenceSpec(
                 name: 'todoTasks',
@@ -322,8 +336,16 @@ class BootStrap implements LogSupport {
             new PreferenceSpec(
                 name: 'cubeTestUserDims',
                 type: 'json',
-                defaultValue: [],
-                groupName: 'Toolbox'
+                defaultValue: [:],
+                groupName: 'Toolbox',
+                notes: 'Persisted GroupingChooser state (value + favorites) for the Cube test panel.'
+            ),
+            new PreferenceSpec(
+                name: 'mobileHomeWidgets',
+                type: 'json',
+                defaultValue: [:],
+                groupName: 'Toolbox',
+                notes: 'Per-user mobile home dashboard state: widget membership/order (homeIds, availableIds) and collapsed widget ids.'
             )
         ])
     }

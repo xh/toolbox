@@ -1,16 +1,19 @@
 import {img} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {webSocketIndicator} from '@xh/hoist/cmp/websocket';
-import {hoistCmp, HoistUser, uses} from '@xh/hoist/core';
+import type {HoistUser} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
+import {themeToggleButton} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dynamicTabSwitcher} from '@xh/hoist/desktop/cmp/tab';
-import {profilePic, welcomeMsg} from '../core/cmp';
-// @ts-ignore
+import {profilePic} from '../core/cmp/ProfilePic';
+import {welcomeMsg} from '../core/cmp/WelcomeMsg';
 import xhLogo from '../core/img/xh-toolbox-logo.png';
 import '../core/Toolbox.scss';
 import './App.scss';
 import {AppModel} from './AppModel';
+import {moduleMenuItems} from './ModuleMenu';
 
 export const AppComponent = hoistCmp({
     displayName: 'App',
@@ -25,16 +28,20 @@ export const AppComponent = hoistCmp({
             tbar: appBar({
                 icon: img({src: xhLogo, onClick: () => model.goHome()}),
                 title: null,
-                leftItems: [dynamicTabSwitcher()],
+                leftItems: [dynamicTabSwitcher({testId: 'top-level-tabs'})],
                 rightItems: [
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
-                    appBarSeparator()
+                    appBarSeparator(),
+                    themeToggleButton()
                 ],
                 hideRefreshButton: false,
                 appMenuButtonProps: {
                     renderWithUserProfile,
                     hideLogoutItem: false,
-                    extraItems: [welcomeMsg({multiline: true})]
+                    // Theme toggle is exposed directly in the AppBar above, so hide the duplicate
+                    // app-menu entry (the modal Options dialog still offers theme + "system" sync).
+                    hideThemeItem: true,
+                    extraItems: [welcomeMsg({multiline: true}), '-', ...moduleMenuItems(model)]
                 }
             }),
             hotkeys: [
@@ -47,7 +54,9 @@ export const AppComponent = hoistCmp({
             ],
             item: tabContainer({
                 switcher: false,
-                childContainerProps: {switcher: {orientation: 'left', className: 'tb-switcher'}}
+                childContainerProps: {
+                    switcher: {orientation: 'left', className: 'tb-switcher', animate: true}
+                }
             }),
             mask: 'onLoad'
         });

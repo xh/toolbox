@@ -9,9 +9,17 @@ body {
     font-size: var(--xh-font-size-large-px);
   }
 
+  // A size-managed floating card, centered by its parent frame over the tiled background (it is
+  // pinned with `flex: none` via a panel prop so these dimensions hold). The height caps at 720px
+  // and leaves a margin on shorter viewports, so the card stays balanced. A theme-aware border
+  // plus a soft shadow lift it off the monogram backdrop (subtle in both light and dark).
   .tbox-todoapp {
-    margin: 100px 0;
     width: 600px;
+    height: min(720px, calc(100vh - 160px));
+    border: var(--xh-border-solid);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
   }
 
   .todo-form {

@@ -2,14 +2,9 @@ import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {
-    activeCol,
-    cityCol,
-    companyCol,
-    profitLossCol,
-    tradeDateCol,
-    tradeVolumeCol
-} from '../../../core/columns';
+import {activeCol} from '../../../core/columns/General';
+import {cityCol, companyCol} from '../../../core/columns/Demographics';
+import {profitLossCol, tagsCol, tradeDateCol, tradeVolumeCol} from '../../../core/columns/Trades';
 
 export class ColumnFilteringPanelModel extends HoistModel {
     @managed gridModel: GridModel;
@@ -53,7 +48,8 @@ export class ColumnFilteringPanelModel extends HoistModel {
                 cityCol,
                 tradeVolumeCol,
                 profitLossCol,
-                tradeDateCol
+                tradeDateCol,
+                tagsCol
             ]
         });
     }
@@ -71,7 +67,8 @@ export class ColumnFilteringPanelModel extends HoistModel {
                 {
                     field: 'trade_volume',
                     valueRenderer: millionsRenderer({precision: 1, label: true})
-                }
+                },
+                'tags'
             ]
         });
     }
