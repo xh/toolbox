@@ -78,6 +78,7 @@ import {iconsPanel} from './tabs/other/IconsPanel';
 import {inspectorPanel} from './tabs/other/InspectorPanel';
 import {jsxPanel} from './tabs/other/JsxPanel';
 import {markdownPanel} from './tabs/other/MarkdownPanel';
+import {pdfViewerPanel} from './tabs/other/PdfViewerPanel';
 import {numberFormatsPanel} from './tabs/other/formats/NumberFormatsPanel';
 import {pinPadPanel} from './tabs/other/PinPadPanel';
 import {placeholderPanel} from './tabs/other/PlaceholderPanel';
@@ -365,6 +366,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'jsx', path: '/jsx'},
                             {name: 'markdown', path: '/markdown'},
                             {name: 'messages', path: '/messages'},
+                            {name: 'pdfViewer', path: '/pdfViewer'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'placeholder', path: '/placeholder'},
                             {
@@ -640,6 +642,7 @@ export class AppModel extends BaseAppModel {
                             {id: 'icons', content: iconsPanel},
                             {id: 'markdown', content: markdownPanel},
                             {id: 'messages', content: messagesPanel},
+                            {id: 'pdfViewer', title: 'PdfViewer', content: pdfViewerPanel},
                             {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                             {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                             {id: 'timestamp', content: relativeTimestampPanel},
