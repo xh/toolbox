@@ -100,6 +100,21 @@ export class CubeModel extends HoistModel {
 
                 {name: 'commission', aggregator: 'SUM'},
                 {name: 'pctCommission', aggregator: new PctTotalAggregator()},
+                // Derived at each leaf, then summed.
+                {
+                    name: 'notional',
+                    aggregator: 'SUM',
+                    dependsOn: ['quantity', 'price'],
+                    derivedFn: d => d.quantity * d.price
+                },
+                // Derived at every level from that row's sums.
+                {
+                    name: 'commissionBps',
+                    displayName: 'Comm (bps)',
+                    dependsOn: ['commission', 'notional'],
+                    derivedFn: row =>
+                        row.notional ? (row.commission / row.notional) * 10000 : null
+                },
 
                 {name: 'maxConfidence', aggregator: 'MAX'},
                 {name: 'minConfidence', aggregator: 'MIN'},
