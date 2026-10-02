@@ -142,6 +142,46 @@ clustering behavior):
   XH_DEV_GRAILS_PORT=8081 XH_DEV_PORT=3001 pnpm start
   ```
 
+### Agent-driven sessions with a throwaway database
+
+An AI agent driving Toolbox in a browser, e.g. to reproduce or verify a hoist-react bug, normally
+uses the developer's standard setup. The developer may already be logged in, or may want the agent
+to work with their own saved state or to exercise the OAuth flow.
+
+When the agent needs to log in itself and has no session to use, it can instead run the server
+against an in-memory H2 database with a throwaway admin login. This is a fallback, not a
+replacement for the standard setup. It avoids sharing a developer's credentials and leaves the
+local MySQL database untouched. All settings are passed on the command line for that run only -
+`.env` is not edited.
+
+* **Server** - from the project root:
+  ```
+  export AGENT_PASSWORD=$(openssl rand -hex 12)
+  APP_TOOLBOX_USE_H2=true \
+  APP_TOOLBOX_OAUTH_PROVIDER=NONE \
+  APP_TOOLBOX_BOOTSTRAP_ADMIN_USER=agent@xh.io \
+  APP_TOOLBOX_BOOTSTRAP_ADMIN_PASSWORD=$AGENT_PASSWORD \
+  ./gradlew bootRun
+  ```
+  Startup logs `Local admin user available as per instanceConfig` once the user is seeded.
+
+* **Client** - start as usual, with `pnpm startWithHoist` to test local hoist-react changes.
+
+* **Login** - POST to the login endpoint from a page on `http://localhost:3000` instead of filling
+  in the login form. Password manager extensions can put an overlay on the form that blocks browser
+  automation tools.
+  ```js
+  await fetch('/api/xh/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({username: 'agent@xh.io', password: '<AGENT_PASSWORD>'})
+  });
+  ```
+  Reload the page after a `{"success":true}` response.
+
+The database starts empty and is discarded when the server stops. Bootstrap recreates required
+configs with defaults, so features that depend on stored data or configured secrets may not work.
+
 ## On-device mobile testing over a LAN IP
 
 To load Toolbox on a physical device (e.g. to verify mobile-specific behavior, native inputs, or

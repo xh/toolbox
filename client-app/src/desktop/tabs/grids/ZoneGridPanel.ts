@@ -1,10 +1,12 @@
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {action, observable} from '@xh/hoist/mobx';
 import {filler, span} from '@xh/hoist/cmp/layout';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {zoneGrid, ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {zoneMapperButton} from '@xh/hoist/desktop/cmp/button';
+import {gridFindField} from '@xh/hoist/desktop/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 import {wrapper} from '../../common/Wrapper';
@@ -27,7 +29,10 @@ export const zoneGridPanel = hoistCmp.factory({
                 'The `ZoneGrid` component leverages an underlying `Grid` / `GridModel`',
                 'instance to display multi-line full-width rows with configurable fields.',
                 '',
-                'Typically used to display dense information when horizontal space is limited.'
+                'Typically used to display dense information when horizontal space is limited.',
+                '',
+                '`StoreFilterField` and `GridFindField` bind to a `ZoneGridModel` from context and',
+                'search the fields currently mapped to its zones. Remap fields to change what they match.'
             ],
             links: [
                 {
@@ -66,7 +71,8 @@ export const zoneGridPanel = hoistCmp.factory({
                     }),
                     filler(),
                     zoneMapperButton()
-                ]
+                ],
+                bbar: [storeFilterField(), filler(), gridFindField()]
             })
         });
     }

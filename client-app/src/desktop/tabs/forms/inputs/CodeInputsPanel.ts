@@ -1,3 +1,4 @@
+import {autocompletion, completeFromList} from '@codemirror/autocomplete';
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {isValidJson} from '@xh/hoist/data';
@@ -153,6 +154,20 @@ export const codeInputsPanel = hoistCmp.factory({
                     })
                 }),
                 demoRow({
+                    label: 'Autocomplete',
+                    info: 'extensions: [autocompletion(...)] - Ctrl-Space or type to complete',
+                    item: codeInput({
+                        bind: 'sql',
+                        ...ambientProps,
+                        language: 'sql',
+                        extensions: [
+                            autocompletion({override: [completeFromList(SQL_OPERATIONS)]})
+                        ],
+                        height: 140,
+                        width: '100%'
+                    })
+                }),
+                demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
                     item: jsonInput({
@@ -220,6 +235,8 @@ const TOOLBOX_JSON = JSON.stringify(
     null,
     2
 );
+const SQL_OPERATIONS = ['SELECT', 'FROM', 'WHERE', 'GROUP BY', 'ORDER BY', 'LIMIT', 'JOIN'];
+const SAMPLE_SQL = 'SELECT name, version\nFROM apps\n';
 const SAMPLE_CODE = "const model = new FormModel({\n    fields: [{name: 'email'}]\n});";
 
 const SEEDS = {
@@ -228,6 +245,7 @@ const SEEDS = {
     code: SAMPLE_CODE,
     readonlyCode: SAMPLE_CODE,
     styledCode: SAMPLE_CODE,
+    sql: SAMPLE_SQL,
     disabledJson: TOOLBOX_JSON
 };
 
@@ -245,6 +263,7 @@ class CodeInputsPanelModel extends InputDemoModel {
     @bindable accessor code: string = SEEDS.code;
     @bindable accessor readonlyCode: string = SEEDS.readonlyCode;
     @bindable accessor styledCode: string = SEEDS.styledCode;
+    @bindable accessor sql: string = SEEDS.sql;
     @bindable accessor disabledJson: string = SEEDS.disabledJson;
 
     @managed

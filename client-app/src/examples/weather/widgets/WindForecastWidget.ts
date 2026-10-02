@@ -1,9 +1,9 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import type {ForecastResponse} from '../Types';
-import {AppModel} from '../AppModel';
+import type {WeatherDashModel} from '../WeatherDashModel';
 
 export const windForecastWidget = hoistCmp.factory({
     model: creates(() => WindForecastModel),
@@ -16,13 +16,15 @@ export const windForecastWidget = hoistCmp.factory({
 });
 
 class WindForecastModel extends HoistModel {
+    @lookup((m: WeatherDashModel) => !!m.isWeatherDashModel) dashModel: WeatherDashModel;
+
     @managed chartModel: ChartModel;
 
     override onLinked() {
         this.chartModel = this.createChartModel();
 
         this.addReaction({
-            track: () => AppModel.instance.weatherDashModel.forecast,
+            track: () => this.dashModel.forecast,
             run: data => this.updateChart(data),
             fireImmediately: true
         });
