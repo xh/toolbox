@@ -1,14 +1,9 @@
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faGithub} from '@fortawesome/free-brands-svg-icons';
 import type {InitContext, LoadSpec} from '@xh/hoist/core';
 import {HoistService, XH} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
 import {computed, observableRef, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {forOwn, sortBy} from 'lodash';
-
-// Register the GitHub brand icon for use across commit/release widgets and toasts.
-library.add(faGithub);
+import {githubIcon} from '../Icons';
 
 export interface RepoCommitHistory {
     repo: string;
@@ -125,7 +120,7 @@ export class GitHubService extends HoistService {
                 if (priorCommitCount && newCommitCount > priorCommitCount) {
                     XH.toast({
                         message: 'New Hoist commit detected!',
-                        icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
+                        icon: githubIcon(),
                         intent: 'primary'
                     });
                 }
