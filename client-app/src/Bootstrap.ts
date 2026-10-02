@@ -36,6 +36,8 @@ declare module '@xh/hoist/core' {
 //-----------------------------------------------------------------
 // Hoist Configuration
 //-----------------------------------------------------------------
+// Custom icons, registered with Hoist's Icon catalog via Icon.register().
+import './core/Icons';
 
 //-----------------------------------------------------------------
 // ag-Grid -- Import and Register

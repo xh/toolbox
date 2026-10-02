@@ -1,5 +1,3 @@
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faMarkdown} from '@fortawesome/free-brands-svg-icons';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {codeInput, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -9,8 +7,7 @@ import {bindable} from '@xh/hoist/mobx';
 import {wrapper, wrapperOption} from '../../common/Wrapper';
 import './MarkdownPanel.scss';
 import initialContent from './MarkdownPanelContent.md';
-
-library.add(faMarkdown);
+import {markdownIcon} from '../../../core/Icons';
 
 export const markdownPanel = hoistCmp.factory({
     displayName: 'MarkdownPanel',
@@ -19,7 +16,7 @@ export const markdownPanel = hoistCmp.factory({
     render({model}) {
         return wrapper({
             title: 'Markdown',
-            icon: Icon.icon({prefix: 'fab', iconName: 'markdown'}),
+            icon: markdownIcon(),
             description: [
                 "Hoist's `Markdown` component wraps the `react-markdown` library to render a",
                 'Markdown string as a React element tree. Content can be imported directly',
@@ -77,7 +74,7 @@ export const markdownPanel = hoistCmp.factory({
                     }),
                     panel({
                         title: 'Rendered Markdown',
-                        icon: Icon.icon({prefix: 'fab', iconName: 'markdown'}),
+                        icon: markdownIcon(),
                         compactHeader: true,
                         className: model.useCustomStyles ? 'tb-markdown-panel--styled' : undefined,
                         flex: 3,

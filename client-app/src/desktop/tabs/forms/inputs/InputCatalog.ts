@@ -1,5 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
 import type {ReactElement} from 'react';
+import {iconsIcon} from '../../../../core/Icons';
 
 export type InputCategory = 'Text & Code' | 'Numeric' | 'Date & Time' | 'Choice' | 'Boolean';
 
@@ -124,6 +125,13 @@ export const INPUT_CATALOG: InputCatalogEntry[] = [
         description: 'Swatch picker for the four Hoist intents.',
         route: `${R}.intentInput`,
         icon: () => Icon.tags()
+    },
+    {
+        name: 'IconPicker',
+        category: 'Choice',
+        description: 'Searchable icon grid, including app-registered icons.',
+        route: `${R}.iconPicker`,
+        icon: () => iconsIcon()
     },
     {
         name: 'Checkbox',

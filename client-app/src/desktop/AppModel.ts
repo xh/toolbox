@@ -29,6 +29,7 @@ import {dateRangePickerPanel} from './tabs/forms/DateRangePickerPanel';
 import {fileChooserPanel} from './tabs/forms/FileChooserPanel';
 import {formPanel} from './tabs/forms/FormPanel';
 import {inputsIndexPanel} from './tabs/forms/inputs/InputsIndexPanel';
+import {iconPickerPanel} from './tabs/forms/inputs/IconPickerPanel';
 import {intentInputPanel} from './tabs/forms/inputs/IntentInputPanel';
 import {leftRightChooserPanel} from './tabs/forms/LeftRightChooserPanel';
 import {numberInputPanel} from './tabs/forms/inputs/NumberInputPanel';
@@ -95,6 +96,7 @@ import {toolbarPanel} from './tabs/panels/ToolbarPanel';
 // them here preserves the prior load behavior exactly.
 import './tabs/grids/GridsTab.scss';
 import './tabs/layout/LayoutTab.scss';
+import {githubIcon} from '../core/Icons';
 
 export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
@@ -325,6 +327,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'toggles', path: '/toggles'},
                             {name: 'slider', path: '/slider'},
                             {name: 'intentInput', path: '/intentInput'},
+                            {name: 'iconPicker', path: '/iconPicker'},
                             {name: 'codeInputs', path: '/codeInputs'},
                             {name: 'otherControls', path: '/otherControls'},
                             {name: 'dateRangePicker', path: '/dateRangePicker'},
@@ -397,7 +400,7 @@ export class AppModel extends BaseAppModel {
         return [
             ...super.getAboutDialogItems(),
             {
-                label: span(Icon.icon({iconName: 'github', prefix: 'fab'}), 'Last Commit'),
+                label: span(githubIcon(), 'Last Commit'),
                 value: lastGitHubCommit,
                 omit: !lastGitHubCommit
             }
@@ -562,6 +565,7 @@ export class AppModel extends BaseAppModel {
                             {id: 'toggles', title: 'Checkbox & Switch', content: togglesPanel},
                             {id: 'slider', title: 'Slider', content: sliderPanel},
                             {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},
+                            {id: 'iconPicker', title: 'IconPicker', content: iconPickerPanel},
                             {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel}
                         ].map(it => ({...it, group: 'inputs'})),
                         // Controls that take their own model rather than a `bind`, so they are

@@ -17,6 +17,9 @@
 ### New Features
 
 * Added `StoreFilterField` and `GridFindField` to the desktop `ZoneGrid` demo, and bound the mobile demo's filter to its `ZoneGridModel`. Both search the fields mapped to the grid's zones, using hoist-react's new ZoneGrid support.
+* Added an `IconPicker` demo page to Forms + Inputs, including Toolbox's own custom icons alongside Hoist's built-in set.
+* Updated the desktop and mobile Icons galleries to browse hoist-react's new icon catalog - search now matches aliases and keywords, and custom icons are flagged.
+* Updated Toolbox's custom icons (GitHub, React, Markdown, feedback faces, weather glyphs) to register via hoist-react's new `Icon.register()`.
 
 ## 11.0.0 - 2026-09-29
 
