@@ -11,7 +11,7 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {radioCardInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {executeIfFunction} from '@xh/hoist/utils/js';
-import {demoFrame, demoGrid, demoPanel, demoPlayground, demoSection} from '../../common/Demo';
+import {demoFrame, demoGallery, demoPanel, demoPlayground, demoSection} from '../../common/Demo';
 import {wrapper} from '../../common/Wrapper';
 import {chartThumb} from '../forms/inputs/RadioCardPreviews';
 
@@ -81,8 +81,11 @@ export const appOptionsPanel = hoistCmp.factory({
                         note: 'Bound to local fields here - nothing is applied or saved.',
                         item: form({
                             model: formModel,
-                            item: demoGrid({
-                                columns: 2,
+                            // Responsive tiles - two columns when there's room, one when narrow.
+                            // The 440px floor clears the widest preset, the four-mode
+                            // SegmentedControl.
+                            item: demoGallery({
+                                minTileWidth: 440,
                                 items: [
                                     presetFrame({
                                         label: 'themeAppOption()',
