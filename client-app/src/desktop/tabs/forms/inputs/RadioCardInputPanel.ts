@@ -1,0 +1,303 @@
+import {form, FormModel} from '@xh/hoist/cmp/form';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, managed} from '@xh/hoist/core';
+import {required} from '@xh/hoist/data';
+import {formField} from '@xh/hoist/desktop/cmp/form';
+import type {RadioCardInputProps, RadioCardOption} from '@xh/hoist/desktop/cmp/input';
+import {intentInput, radioCardInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {Icon} from '@xh/hoist/icon';
+import {bindable} from '@xh/hoist/mobx';
+import {
+    demoFrame,
+    demoGrid,
+    demoPlayground,
+    demoRow,
+    fmtDemoConfig,
+    raw
+} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
+import {inputEntry} from './InputCatalog';
+import {InputDemoModel} from './InputDemoModel';
+import {inputDemoPage} from './InputDemoPage';
+import {chartThumb, layoutThumb} from './RadioCardPreviews';
+
+const ENTRY = inputEntry('RadioCardInput');
+
+interface ChartOptionsSpec {
+    withDescriptions?: boolean;
+    disablePie?: boolean;
+}
+
+/** Chart-type cards with SVG thumbnails - built fresh per instance. */
+const chartOptions = ({withDescriptions, disablePie}: ChartOptionsSpec = {}): RadioCardOption[] => [
+    {
+        value: 'line',
+        label: 'Line',
+        preview: chartThumb('line'),
+        description: withDescriptions ? 'Trends over time' : undefined
+    },
+    {
+        value: 'area',
+        label: 'Area',
+        preview: chartThumb('area'),
+        description: withDescriptions ? 'Cumulative volume' : undefined
+    },
+    {
+        value: 'bar',
+        label: 'Bar',
+        preview: chartThumb('bar'),
+        description: withDescriptions ? 'Compare categories' : undefined
+    },
+    {
+        value: 'pie',
+        label: 'Pie',
+        preview: chartThumb('pie'),
+        description: withDescriptions ? 'Share of a whole' : undefined,
+        disabled: disablePie
+    }
+];
+
+const layoutOptions = (): RadioCardOption[] => [
+    {value: 'single', label: 'Single', preview: layoutThumb('single')},
+    {value: 'split', label: 'Split', preview: layoutThumb('split')},
+    {value: 'sidebar', label: 'Sidebar', preview: layoutThumb('sidebar')},
+    {value: 'grid', label: 'Grid', preview: layoutThumb('grid')}
+];
+
+/** Plan tiers - text-only cards, with a description and no preview. */
+const PLAN_OPTIONS: RadioCardOption[] = [
+    {value: 'starter', label: 'Starter', description: 'Up to 5 users, community support'},
+    {value: 'team', label: 'Team', description: 'Unlimited users, SSO, email support'},
+    {
+        value: 'enterprise',
+        label: 'Enterprise',
+        description: 'Contact sales to enable',
+        disabled: true
+    }
+];
+
+const notifyOptions = (): RadioCardOption[] => [
+    {value: 'email', label: 'Email', preview: Icon.envelope({size: '2x'})},
+    {value: 'push', label: 'Mobile push', preview: Icon.mobile({size: '2x'})},
+    {value: 'inbox', label: 'In-app', preview: Icon.inbox({size: '2x'})}
+];
+
+export const radioCardInputPanel = hoistCmp.factory({
+    displayName: 'RadioCardInputPanel',
+    model: creates(() => RadioCardInputPanelModel),
+
+    render({model}) {
+        const {ambientProps, ambientSnippetProps} = model;
+        return inputDemoPage({
+            entry: ENTRY,
+            description: [
+                'A single choice from a few options, each drawn as a large card with a visual',
+                '`preview`, a label and an optional `description`. The selected card takes an',
+                'accent ring. Suits choices that are easier to see than to name - chart types,',
+                'layouts, themes, typefaces.',
+                '',
+                'Renders as a `radiogroup` with arrow-key navigation. Reach for `SegmentedControl`',
+                'or `RadioInput` when the options need no visual.'
+            ],
+            links: [
+                {
+                    url: '$HR/cmp/input/README.md',
+                    text: 'Inputs docs',
+                    notes: 'Input components guide and shared concepts.'
+                },
+                {
+                    url: '$TB/client-app/src/desktop/tabs/forms/inputs/RadioCardInputPanel.ts',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$TB/client-app/src/desktop/tabs/forms/inputs/RadioCardPreviews.ts',
+                    notes: 'Chart and layout thumbnails used as card previews.'
+                },
+                {url: '$HR/desktop/cmp/input/RadioCardInput.ts', notes: 'Hoist component.'},
+                {
+                    url: '$HR/cmp/input/HoistInputModel.ts',
+                    notes: 'Base class shared by all Hoist inputs.'
+                }
+            ],
+            playgroundOptions: [
+                wrapperOption({
+                    label: 'Clear on reselect',
+                    propName: 'RadioCardInputProps.enableClear',
+                    info: 'Clicking the selected card clears it.',
+                    control: switchInput({bind: 'pgEnableClear'})
+                }),
+                wrapperOption({
+                    label: 'Intent',
+                    propName: 'RadioCardInputProps.intent',
+                    control: intentInput({bind: 'pgIntent', enableClear: true})
+                }),
+                wrapperOption({
+                    label: 'Descriptions',
+                    propName: 'RadioCardOption.description',
+                    control: switchInput({bind: 'pgDescriptions'})
+                }),
+                wrapperOption({
+                    label: 'Disable Pie',
+                    propName: 'RadioCardOption.disabled',
+                    control: switchInput({bind: 'pgDisablePie'})
+                })
+            ],
+            playground: demoPlayground({
+                instanceWidth: 420,
+                config: fmtDemoConfig<RadioCardInputProps>('radioCardInput', {
+                    bind: 'value',
+                    options: raw('CHART_OPTIONS'),
+                    enableClear: model.pgEnableClear || undefined,
+                    intent: model.pgIntent || undefined,
+                    ...ambientSnippetProps
+                }),
+                value: model.playground,
+                item: radioCardInput({
+                    bind: 'playground',
+                    ...ambientProps,
+                    enableClear: model.pgEnableClear,
+                    intent: model.pgIntent ?? undefined,
+                    options: chartOptions({
+                        withDescriptions: model.pgDescriptions,
+                        disablePie: model.pgDisablePie
+                    })
+                })
+            }),
+            variants: [
+                demoRow({
+                    label: 'Chart type',
+                    info: 'SVG thumbnails as previews',
+                    item: radioCardInput({
+                        bind: 'chartType',
+                        ...ambientProps,
+                        options: chartOptions()
+                    })
+                }),
+                demoRow({
+                    label: 'Layout picker',
+                    info: 'Wireframe previews',
+                    item: radioCardInput({
+                        bind: 'layout',
+                        ...ambientProps,
+                        options: layoutOptions()
+                    })
+                }),
+                demoRow({
+                    label: 'Icon previews',
+                    info: 'Any ReactNode works as a preview',
+                    item: radioCardInput({
+                        bind: 'notify',
+                        ...ambientProps,
+                        options: notifyOptions()
+                    })
+                }),
+                demoRow({
+                    label: 'Text only',
+                    info: 'Label and description, no preview - one option disabled',
+                    item: radioCardInput({
+                        bind: 'plan',
+                        ...ambientProps,
+                        options: PLAN_OPTIONS
+                    })
+                }),
+                demoRow({
+                    label: 'Primitive options',
+                    info: "options: ['Daily', 'Weekly', 'Monthly'], intent: 'success'",
+                    item: radioCardInput({
+                        bind: 'frequency',
+                        ...ambientProps,
+                        intent: 'success',
+                        options: ['Daily', 'Weekly', 'Monthly']
+                    })
+                }),
+                demoRow({
+                    label: 'Invalid',
+                    info: 'Bound to a failing FormField rule',
+                    item: form({
+                        model: model.formModel,
+                        item: formField({
+                            field: 'invalidLayout',
+                            label: null,
+                            minimal: true,
+                            item: radioCardInput({options: layoutOptions()})
+                        })
+                    })
+                })
+            ],
+            form: demoGrid({
+                columns: 2,
+                items: [
+                    demoFrame({
+                        info: 'FormField, label above, required rule satisfied',
+                        item: form({
+                            model: model.formModel,
+                            item: formField({
+                                field: 'chartType',
+                                item: radioCardInput({options: chartOptions()})
+                            })
+                        })
+                    }),
+                    demoFrame({
+                        info: 'Label above, validation message below the field',
+                        item: form({
+                            model: model.formModel,
+                            item: formField({
+                                field: 'plan',
+                                item: radioCardInput({options: PLAN_OPTIONS})
+                            })
+                        })
+                    })
+                ]
+            })
+        });
+    }
+});
+
+const SEEDS = {
+    playground: 'area',
+    chartType: 'bar',
+    layout: 'sidebar',
+    notify: 'email',
+    plan: 'team',
+    frequency: 'Weekly'
+};
+
+class RadioCardInputPanelModel extends InputDemoModel {
+    // Playground props
+    @bindable accessor pgEnableClear = false;
+    @bindable accessor pgIntent: Intent = null;
+    @bindable accessor pgDescriptions = false;
+    @bindable accessor pgDisablePie = false;
+
+    // Inputs
+    @bindable accessor playground: string = SEEDS.playground;
+    @bindable accessor chartType: string = SEEDS.chartType;
+    @bindable accessor layout: string = SEEDS.layout;
+    @bindable accessor notify: string = SEEDS.notify;
+    @bindable accessor plan: string = SEEDS.plan;
+    @bindable accessor frequency: string = SEEDS.frequency;
+
+    @managed
+    override formModel = new FormModel({
+        fields: [
+            {
+                name: 'chartType',
+                displayName: 'Chart type',
+                initialValue: 'line',
+                rules: [required]
+            },
+            {name: 'plan', displayName: 'Plan', initialValue: null, rules: [required]},
+            {name: 'invalidLayout', initialValue: null, rules: [required]}
+        ]
+    });
+
+    get inputSeeds() {
+        return SEEDS;
+    }
+
+    constructor() {
+        super({commitOnChangeDefault: null});
+        // Show the failing rules on load - FormField displays messages only after validation runs.
+        this.formModel.validateAsync();
+    }
+}

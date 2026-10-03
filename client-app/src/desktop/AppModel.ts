@@ -34,6 +34,7 @@ import {leftRightChooserPanel} from './tabs/forms/LeftRightChooserPanel';
 import {numberInputPanel} from './tabs/forms/inputs/NumberInputPanel';
 import {otherControlsPanel} from './tabs/forms/inputs/OtherControlsPanel';
 import {pickerPanel} from './tabs/forms/inputs/PickerPanel';
+import {radioCardInputPanel} from './tabs/forms/inputs/RadioCardInputPanel';
 import {radioInputPanel} from './tabs/forms/inputs/RadioInputPanel';
 import {segmentedControlPanel} from './tabs/forms/inputs/SegmentedControlPanel';
 import {selectPanel} from './tabs/forms/inputs/SelectPanel';
@@ -322,6 +323,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'segmentedControl', path: '/segmentedControl'},
                             {name: 'buttonGroupInput', path: '/buttonGroupInput'},
                             {name: 'radioInput', path: '/radioInput'},
+                            {name: 'radioCardInput', path: '/radioCardInput'},
                             {name: 'toggles', path: '/toggles'},
                             {name: 'slider', path: '/slider'},
                             {name: 'intentInput', path: '/intentInput'},
@@ -559,6 +561,11 @@ export class AppModel extends BaseAppModel {
                                 content: buttonGroupInputPanel
                             },
                             {id: 'radioInput', title: 'RadioInput', content: radioInputPanel},
+                            {
+                                id: 'radioCardInput',
+                                title: 'RadioCardInput',
+                                content: radioCardInputPanel
+                            },
                             {id: 'toggles', title: 'Checkbox & Switch', content: togglesPanel},
                             {id: 'slider', title: 'Slider', content: sliderPanel},
                             {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},

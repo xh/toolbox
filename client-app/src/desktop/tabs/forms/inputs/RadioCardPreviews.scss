@@ -1,0 +1,66 @@
+// Card previews for the RadioCardInput demo page - see RadioCardPreviews.ts.
+
+.tb-rc-chart {
+  display: block;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  &__axis {
+    stroke: var(--xh-text-color-muted);
+    stroke-width: 1;
+    opacity: 0.5;
+  }
+
+  &__line {
+    stroke: var(--xh-blue);
+    stroke-width: 2;
+  }
+
+  &__fill {
+    fill: var(--xh-blue);
+    opacity: 0.25;
+  }
+
+  &__bar {
+    fill: var(--xh-blue);
+  }
+
+  &__slice {
+    fill: var(--xh-blue);
+  }
+}
+
+.tb-rc-layout {
+  display: grid;
+  width: 64px;
+  height: 40px;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--xh-border-color);
+  border-radius: 4px;
+  background: var(--xh-bg);
+
+  &__pane {
+    border-radius: 2px;
+    background: var(--xh-blue);
+    opacity: 0.35;
+  }
+
+  &--single {
+    grid-template-columns: 1fr;
+  }
+
+  &--split {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &--sidebar {
+    grid-template-columns: 1fr 3fr;
+  }
+
+  &--grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}

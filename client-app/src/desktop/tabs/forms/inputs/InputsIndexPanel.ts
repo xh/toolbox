@@ -12,6 +12,7 @@ import {
     jsonInput,
     numberInput,
     picker,
+    radioCardInput,
     radioInput,
     segmentedControl,
     select,
@@ -34,6 +35,7 @@ import type {InputCatalogEntry} from './InputCatalog';
 import {INPUT_CATALOG, INPUT_CATEGORIES} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import './InputsIndexPanel.scss';
+import {chartThumb} from './RadioCardPreviews';
 
 export const inputsIndexPanel = hoistCmp.factory({
     displayName: 'InputsIndexPanel',
@@ -228,6 +230,16 @@ const TILE_INPUTS: Record<string, (m: InputsIndexModel) => ReactElement> = {
                 button({icon: Icon.chartLine(), text: 'Linear', value: 'linear'}),
                 button({icon: Icon.chartArea(), text: 'Area', value: 'area'}),
                 button({icon: Icon.chartBar(), text: 'Bar', value: 'bar'})
+            ]
+        }),
+    RadioCardInput: m =>
+        radioCardInput({
+            bind: 'chartType',
+            disabled: m.disabled,
+            options: [
+                {value: 'linear', label: 'Linear', preview: chartThumb('line')},
+                {value: 'area', label: 'Area', preview: chartThumb('area')},
+                {value: 'bar', label: 'Bar', preview: chartThumb('bar')}
             ]
         }),
     RadioInput: m =>
