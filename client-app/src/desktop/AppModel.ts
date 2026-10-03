@@ -1,17 +1,20 @@
-import {box, div, span, vbox} from '@xh/hoist/cmp/layout';
+import {box, span, vbox} from '@xh/hoist/cmp/layout';
 import type {TabConfig, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import type {InitContext, LoadSpec} from '@xh/hoist/core';
 import {managed, XH} from '@xh/hoist/core';
-import {autoRefreshAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {
+    autoRefreshAppOption,
+    sizingModeAppOption,
+    themeAppOption
+} from '@xh/hoist/desktop/cmp/appOption';
+import {radioCardInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {runInAction} from '@xh/hoist/mobx';
 import type {ReactElement} from 'react';
 import {isEmpty, isEqual} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
-import {cardChoiceInput} from './common/CardChoiceInput';
 import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
@@ -130,23 +133,9 @@ export class AppModel extends BaseAppModel {
 
     override getAppOptions() {
         return [
-            // The two visual "appearance" choices lead the dialog as chunky, macOS-Settings-style
-            // preview cards (custom `cardChoiceInput`), followed by the compact behavior controls.
-            // Theme mirrors Hoist's built-in `themeAppOption` (xhTheme pref + XH.setTheme).
-            {
-                name: 'theme',
-                prefName: 'xhTheme',
-                refreshRequired: false,
-                valueSetter: v => XH.setTheme(v),
-                formField: {
-                    label: 'Theme',
-                    item: cardChoiceInput([
-                        {value: 'light', label: 'Light', preview: this.themeSwatch('light')},
-                        {value: 'dark', label: 'Dark', preview: this.themeSwatch('dark')},
-                        {value: 'system', label: 'System', preview: this.themeSwatch('system')}
-                    ])
-                }
-            },
+            // The two visual "appearance" choices lead the dialog as preview cards, followed by
+            // the compact behavior controls.
+            themeAppOption({previewCards: true}),
             {
                 name: 'font',
                 refreshRequired: false,
@@ -157,14 +146,16 @@ export class AppModel extends BaseAppModel {
                 },
                 formField: {
                     label: 'Font',
-                    item: cardChoiceInput([
-                        {
-                            value: 'IBM Plex Sans',
-                            label: 'IBM Plex Sans',
-                            preview: this.fontSwatch('IBM Plex Sans')
-                        },
-                        {value: 'Inter', label: 'Inter', preview: this.fontSwatch('Inter')}
-                    ])
+                    item: radioCardInput({
+                        options: [
+                            {
+                                value: 'IBM Plex Sans',
+                                label: 'IBM Plex Sans',
+                                preview: this.fontSwatch('IBM Plex Sans')
+                            },
+                            {value: 'Inter', label: 'Inter', preview: this.fontSwatch('Inter')}
+                        ]
+                    })
                 }
             },
             sizingModeAppOption(),
@@ -191,27 +182,6 @@ export class AppModel extends BaseAppModel {
      */
     private applyFont(font: string) {
         document.body.classList.toggle('tbox-font--plex', font === 'IBM Plex Sans');
-    }
-
-    /** A mini app-window mockup used as a theme-choice card preview (fixed light/dark, not live). */
-    private themeSwatch(mode: 'light' | 'dark' | 'system'): ReactElement {
-        return div({
-            className: `tbox-theme-swatch tbox-theme-swatch--${mode}`,
-            items: [
-                div({
-                    className: 'tbox-theme-swatch__chrome',
-                    items: [0, 1, 2].map(i => div({key: i, className: 'tbox-theme-swatch__dot'}))
-                }),
-                div({
-                    className: 'tbox-theme-swatch__content',
-                    items: [
-                        div({className: 'tbox-theme-swatch__accent'}),
-                        div({className: 'tbox-theme-swatch__line'}),
-                        div({className: 'tbox-theme-swatch__line tbox-theme-swatch__line--short'})
-                    ]
-                })
-            ]
-        });
     }
 
     /** A live type specimen rendered in the given face, used as a font-choice card preview. */
