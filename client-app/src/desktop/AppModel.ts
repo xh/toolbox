@@ -135,7 +135,7 @@ export class AppModel extends BaseAppModel {
         return [
             // The two visual "appearance" choices lead the dialog as preview cards, followed by
             // the compact behavior controls.
-            themeAppOption({previewCards: true}),
+            themeAppOption(),
             {
                 name: 'font',
                 refreshRequired: false,
