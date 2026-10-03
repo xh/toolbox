@@ -3,7 +3,7 @@ import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import type {RadioCardInputProps, RadioCardOption} from '@xh/hoist/desktop/cmp/input';
-import {radioCardInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {radioCardInput, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {
@@ -129,6 +129,20 @@ export const radioCardInputPanel = hoistCmp.factory({
             ],
             playgroundOptions: [
                 wrapperOption({
+                    label: 'Fixed card width',
+                    propName: 'RadioCardInputProps.cardWidth',
+                    info: 'Clips wider previews and wraps long labels.',
+                    control: segmentedControl({
+                        bind: 'pgCardWidth',
+                        fill: false,
+                        options: [
+                            {label: 'Auto', value: null},
+                            {label: '80', value: 80},
+                            {label: '110', value: 110}
+                        ]
+                    })
+                }),
+                wrapperOption({
                     label: 'Descriptions',
                     propName: 'RadioCardOption.description',
                     control: switchInput({bind: 'pgDescriptions'})
@@ -144,12 +158,14 @@ export const radioCardInputPanel = hoistCmp.factory({
                 config: fmtDemoConfig<RadioCardInputProps>('radioCardInput', {
                     bind: 'value',
                     options: raw('CHART_OPTIONS'),
+                    cardWidth: model.pgCardWidth ?? undefined,
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
                 item: radioCardInput({
                     bind: 'playground',
                     ...ambientProps,
+                    cardWidth: model.pgCardWidth ?? undefined,
                     options: chartOptions({
                         withDescriptions: model.pgDescriptions,
                         disablePie: model.pgDisablePie
@@ -186,10 +202,11 @@ export const radioCardInputPanel = hoistCmp.factory({
                 }),
                 demoRow({
                     label: 'Text only',
-                    info: 'Label and description, no preview - one option disabled',
+                    info: 'No preview, cardWidth: 180 for equal cards - one option disabled',
                     item: radioCardInput({
                         bind: 'plan',
                         ...ambientProps,
+                        cardWidth: 180,
                         options: PLAN_OPTIONS
                     })
                 }),
@@ -258,6 +275,7 @@ class RadioCardInputPanelModel extends InputDemoModel {
     // Playground props
     @bindable accessor pgDescriptions = false;
     @bindable accessor pgDisablePie = false;
+    @bindable accessor pgCardWidth: number = null;
 
     // Inputs
     @bindable accessor playground: string = SEEDS.playground;
