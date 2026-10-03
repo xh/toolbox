@@ -1,10 +1,9 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import type {Intent} from '@xh/hoist/core';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import type {RadioCardInputProps, RadioCardOption} from '@xh/hoist/desktop/cmp/input';
-import {intentInput, radioCardInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {radioCardInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {
@@ -130,11 +129,6 @@ export const radioCardInputPanel = hoistCmp.factory({
             ],
             playgroundOptions: [
                 wrapperOption({
-                    label: 'Intent',
-                    propName: 'RadioCardInputProps.intent',
-                    control: intentInput({bind: 'pgIntent', enableClear: true})
-                }),
-                wrapperOption({
                     label: 'Descriptions',
                     propName: 'RadioCardOption.description',
                     control: switchInput({bind: 'pgDescriptions'})
@@ -150,14 +144,12 @@ export const radioCardInputPanel = hoistCmp.factory({
                 config: fmtDemoConfig<RadioCardInputProps>('radioCardInput', {
                     bind: 'value',
                     options: raw('CHART_OPTIONS'),
-                    intent: model.pgIntent || undefined,
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
                 item: radioCardInput({
                     bind: 'playground',
                     ...ambientProps,
-                    intent: model.pgIntent ?? undefined,
                     options: chartOptions({
                         withDescriptions: model.pgDescriptions,
                         disablePie: model.pgDisablePie
@@ -203,11 +195,10 @@ export const radioCardInputPanel = hoistCmp.factory({
                 }),
                 demoRow({
                     label: 'Primitive options',
-                    info: "options: ['Daily', 'Weekly', 'Monthly'], intent: 'success'",
+                    info: "options: ['Daily', 'Weekly', 'Monthly']",
                     item: radioCardInput({
                         bind: 'frequency',
                         ...ambientProps,
-                        intent: 'success',
                         options: ['Daily', 'Weekly', 'Monthly']
                     })
                 }),
@@ -265,7 +256,6 @@ const SEEDS = {
 
 class RadioCardInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable accessor pgIntent: Intent = null;
     @bindable accessor pgDescriptions = false;
     @bindable accessor pgDisablePie = false;
 
