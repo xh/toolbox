@@ -11,8 +11,10 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {radioCardInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {executeIfFunction} from '@xh/hoist/utils/js';
+import {startCase} from 'lodash';
 import {demoFrame, demoGallery, demoPanel, demoPlayground, demoSection} from '../../common/Demo';
 import {wrapper} from '../../common/Wrapper';
+import type {ChartShape} from '../forms/inputs/RadioCardPreviews';
 import {chartThumb} from '../forms/inputs/RadioCardPreviews';
 
 export const appOptionsPanel = hoistCmp.factory({
@@ -130,12 +132,13 @@ export const appOptionsPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Custom option',
                         note: 'Any input works - here a RadioCardInput.',
+                        // Narrow instance and no value pane, so the band fits a ~700px panel -
+                        // the bound value is shown in the caption instead.
                         item: demoPlayground({
-                            instanceWidth: 360,
-                            caption:
-                                'Rendered from the spec at right. Toolbox uses the same pattern for its Font option.',
+                            instanceWidth: 300,
+                            showValue: false,
+                            caption: `Rendered from the spec at right, value '${formModel.values.chartType}'. Toolbox's Font option uses the same pattern.`,
                             config: CUSTOM_SNIPPET,
-                            value: formModel.values.chartType,
                             item: form({
                                 model: formModel,
                                 item: formField({field: 'chartType', ...CUSTOM_OPTION.formField})
@@ -174,6 +177,8 @@ function presetFrame({
 
 const SIZING_SUBSET = [SizingMode.COMPACT, SizingMode.STANDARD, SizingMode.LARGE];
 
+const CHART_SHAPES: ChartShape[] = ['line', 'area', 'bar'];
+
 const CUSTOM_OPTION: AppOptionSpec = {
     name: 'defaultChartType',
     prefName: 'defaultChartType',
@@ -181,11 +186,11 @@ const CUSTOM_OPTION: AppOptionSpec = {
     formField: {
         label: 'Chart type',
         item: radioCardInput({
-            options: [
-                {value: 'line', label: 'Line', preview: chartThumb('line')},
-                {value: 'area', label: 'Area', preview: chartThumb('area')},
-                {value: 'bar', label: 'Bar', preview: chartThumb('bar')}
-            ]
+            options: CHART_SHAPES.map(v => ({
+                value: v,
+                label: startCase(v),
+                preview: chartThumb(v)
+            }))
         })
     }
 };
@@ -197,11 +202,11 @@ const CUSTOM_SNIPPET = `{
     formField: {
         label: 'Chart type',
         item: radioCardInput({
-            options: [
-                {value: 'line', label: 'Line', preview: chartThumb('line')},
-                {value: 'area', label: 'Area', preview: chartThumb('area')},
-                {value: 'bar', label: 'Bar', preview: chartThumb('bar')}
-            ]
+            options: ['line', 'area', 'bar'].map(v => ({
+                value: v,
+                label: startCase(v),
+                preview: chartThumb(v)
+            }))
         })
     }
 }`;
