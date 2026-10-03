@@ -150,7 +150,7 @@ export class AppModel extends BaseAppModel {
                         options: [
                             {
                                 value: 'IBM Plex Sans',
-                                label: 'IBM Plex Sans',
+                                label: 'IBM Plex',
                                 preview: this.fontSwatch('IBM Plex Sans')
                             },
                             {value: 'Inter', label: 'Inter', preview: this.fontSwatch('Inter')}
