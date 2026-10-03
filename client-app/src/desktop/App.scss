@@ -38,23 +38,24 @@ body.xh-app.tbox-font--plex {
 // Font-choice card previews (see AppModel.fontSwatch): a type specimen rendered in each candidate
 // face, so the difference between IBM Plex Sans and Inter is visible at a glance.
 .tbox-font-swatch {
-  width: 76px;
-  height: 42px;
+  width: 64px;
+  height: 36px;
   align-items: center;
   justify-content: center;
   gap: 1px;
   color: var(--xh-text-color);
 
   &__big {
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 600;
     // Room for descenders (e.g. the "g" tail) so they are not clipped.
     line-height: 1.25;
   }
 
   &__small {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 500;
+    line-height: 1.2;
     letter-spacing: 0.04em;
     opacity: 0.75;
   }
