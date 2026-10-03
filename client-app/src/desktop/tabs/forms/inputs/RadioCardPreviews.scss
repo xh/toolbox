@@ -64,3 +64,9 @@
     grid-template-rows: 1fr 1fr;
   }
 }
+
+// Muted icon for a "None" card - the null-value option.
+.tb-rc-none {
+  color: var(--xh-text-color-muted);
+  opacity: 0.6;
+}

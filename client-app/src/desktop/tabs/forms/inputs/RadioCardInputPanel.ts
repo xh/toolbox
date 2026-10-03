@@ -76,7 +76,13 @@ const PLAN_OPTIONS: RadioCardOption[] = [
     }
 ];
 
+/** Notification channels, led by an explicit "None" card - the null-value option pattern. */
 const notifyOptions = (): RadioCardOption[] => [
+    {
+        value: null,
+        label: 'None',
+        preview: Icon.disabled({size: '2x', className: 'tb-rc-none'})
+    },
     {value: 'email', label: 'Email', preview: Icon.envelope({size: '2x'})},
     {value: 'push', label: 'Mobile push', preview: Icon.mobile({size: '2x'})},
     {value: 'inbox', label: 'In-app', preview: Icon.inbox({size: '2x'})}
@@ -96,8 +102,11 @@ export const radioCardInputPanel = hoistCmp.factory({
                 'accent ring. Suits choices that are easier to see than to name - chart types,',
                 'layouts, themes, typefaces.',
                 '',
-                'Renders as a `radiogroup` with arrow-key navigation. Reach for `SegmentedControl`',
-                'or `RadioInput` when the options need no visual.'
+                'Renders as a `radiogroup` with arrow-key navigation. As with any radio group, a',
+                'selected card cannot be cleared - offer "no value" as an explicit option with',
+                "`value: null` and a label such as 'None'.",
+                '',
+                'Reach for `SegmentedControl` or `RadioInput` when the options need no visual.'
             ],
             links: [
                 {
@@ -121,12 +130,6 @@ export const radioCardInputPanel = hoistCmp.factory({
             ],
             playgroundOptions: [
                 wrapperOption({
-                    label: 'Clear on reselect',
-                    propName: 'RadioCardInputProps.enableClear',
-                    info: 'Clicking the selected card clears it.',
-                    control: switchInput({bind: 'pgEnableClear'})
-                }),
-                wrapperOption({
                     label: 'Intent',
                     propName: 'RadioCardInputProps.intent',
                     control: intentInput({bind: 'pgIntent', enableClear: true})
@@ -147,7 +150,6 @@ export const radioCardInputPanel = hoistCmp.factory({
                 config: fmtDemoConfig<RadioCardInputProps>('radioCardInput', {
                     bind: 'value',
                     options: raw('CHART_OPTIONS'),
-                    enableClear: model.pgEnableClear || undefined,
                     intent: model.pgIntent || undefined,
                     ...ambientSnippetProps
                 }),
@@ -155,7 +157,6 @@ export const radioCardInputPanel = hoistCmp.factory({
                 item: radioCardInput({
                     bind: 'playground',
                     ...ambientProps,
-                    enableClear: model.pgEnableClear,
                     intent: model.pgIntent ?? undefined,
                     options: chartOptions({
                         withDescriptions: model.pgDescriptions,
@@ -184,7 +185,7 @@ export const radioCardInputPanel = hoistCmp.factory({
                 }),
                 demoRow({
                     label: 'Icon previews',
-                    info: 'Any ReactNode works as a preview',
+                    info: "Icon previews, plus a 'None' card with value: null",
                     item: radioCardInput({
                         bind: 'notify',
                         ...ambientProps,
@@ -264,7 +265,6 @@ const SEEDS = {
 
 class RadioCardInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable accessor pgEnableClear = false;
     @bindable accessor pgIntent: Intent = null;
     @bindable accessor pgDescriptions = false;
     @bindable accessor pgDisablePie = false;
