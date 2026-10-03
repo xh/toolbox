@@ -202,11 +202,11 @@ export const radioCardInputPanel = hoistCmp.factory({
                 }),
                 demoRow({
                     label: 'Text only',
-                    info: 'No preview, cardWidth: 180 for equal cards - one option disabled',
+                    info: 'No preview, cardWidth: 140 for equal cards - one option disabled',
                     item: radioCardInput({
                         bind: 'plan',
                         ...ambientProps,
-                        cardWidth: 180,
+                        cardWidth: 140,
                         options: PLAN_OPTIONS
                     })
                 }),
