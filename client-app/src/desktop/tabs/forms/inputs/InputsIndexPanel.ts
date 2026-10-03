@@ -232,14 +232,15 @@ const TILE_INPUTS: Record<string, (m: InputsIndexModel) => ReactElement> = {
                 button({icon: Icon.chartBar(), text: 'Bar', value: 'bar'})
             ]
         }),
+    // Two cards fit the tile on one row. Shares `chartType` with the ButtonGroupInput tile - its
+    // 'bar' choice leaves no card selected here.
     RadioCardInput: m =>
         radioCardInput({
             bind: 'chartType',
             disabled: m.disabled,
             options: [
                 {value: 'linear', label: 'Linear', preview: chartThumb('line')},
-                {value: 'area', label: 'Area', preview: chartThumb('area')},
-                {value: 'bar', label: 'Bar', preview: chartThumb('bar')}
+                {value: 'area', label: 'Area', preview: chartThumb('area')}
             ]
         }),
     RadioInput: m =>

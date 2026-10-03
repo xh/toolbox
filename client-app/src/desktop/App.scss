@@ -35,13 +35,6 @@ body.xh-app.tbox-font--plex {
   --font-feature-settings: 'tnum', 'zero', 'ss01';
 }
 
-// Widen the app Options dialog (default 500px) so the chunky Theme / Grid sizing / Font card rows
-// fit beside the 120px label column without clipping. (Both classes sit on the same dialog element;
-// the compound selector outranks Hoist's default width rule without needing !important.)
-.xh-options-dialog.bp6-dialog {
-  width: 560px;
-}
-
 // Font-choice card previews (see AppModel.fontSwatch): a type specimen rendered in each candidate
 // face, so the difference between IBM Plex Sans and Inter is visible at a glance.
 .tbox-font-swatch {
