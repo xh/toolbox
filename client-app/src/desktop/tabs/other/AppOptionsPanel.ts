@@ -1,6 +1,7 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import type {AppOptionSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, SizingMode, XH} from '@xh/hoist/core';
+import {hbox} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     autoRefreshAppOption,
@@ -70,12 +71,16 @@ export const appOptionsPanel = hoistCmp.factory({
                         note: 'The real dialog for this app.',
                         item: demoFrame({
                             info: 'Changes made in the dialog apply to the app and are saved to your preferences.',
-                            item: button({
-                                icon: Icon.options(),
-                                text: 'Open Options dialog',
-                                outlined: true,
-                                onClick: () => XH.showOptionsDialog()
-                            })
+                            // Row wrapper sizes the button to its content.
+                            item: hbox(
+                                button({
+                                    icon: Icon.options(),
+                                    text: 'Open Options dialog',
+                                    intent: 'primary',
+                                    minimal: false,
+                                    onClick: () => XH.showOptionsDialog()
+                                })
+                            )
                         })
                     }),
                     demoSection({
