@@ -69,6 +69,7 @@ import {tileFrameContainerPanel} from './tabs/layout/TileFrameContainerPanel';
 import {vboxContainerPanel} from './tabs/layout/VBoxContainerPanel';
 import {mobileTab} from './tabs/mobile/MobileTab';
 import {appNotificationsPanel} from './tabs/other/AppNotificationsPanel';
+import {appOptionsPanel} from './tabs/other/AppOptionsPanel';
 import {bannersPanel} from './tabs/other/popups/BannersPanel';
 import {messagesPanel} from './tabs/other/popups/MessagesPanel';
 import {toastPanel} from './tabs/other/popups/ToastPanel';
@@ -325,6 +326,7 @@ export class AppModel extends BaseAppModel {
                         children: [
                             {name: 'banners', path: '/banners'},
                             {name: 'appNotifications', path: '/appNotifications'},
+                            {name: 'appOptions', path: '/appOptions'},
                             {name: 'buttons', path: '/buttons'},
                             {name: 'clock', path: '/clock'},
                             {name: 'customPackage', path: '/customPackage'},
@@ -596,6 +598,7 @@ export class AppModel extends BaseAppModel {
                         ...[
                             {id: 'banners', title: 'App Banners', content: bannersPanel},
                             {id: 'appNotifications', content: appNotificationsPanel},
+                            {id: 'appOptions', title: 'App Options', content: appOptionsPanel},
                             {id: 'customPackage', content: customPackagePanel},
                             {
                                 id: 'exceptionHandler',
