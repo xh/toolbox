@@ -134,8 +134,7 @@ export class AppModel extends BaseAppModel {
 
     override getAppOptions() {
         return [
-            // The two visual "appearance" choices lead the dialog as preview cards, followed by
-            // the compact behavior controls.
+            // Theme, Font, and Grid sizing render as preview cards, then the compact switches.
             themeAppOption(),
             {
                 name: 'font',

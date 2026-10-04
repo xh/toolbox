@@ -166,7 +166,7 @@ export const radioCardInputPanel = hoistCmp.factory({
                 instanceWidth: 420,
                 config: fmtDemoConfig<RadioCardInputProps>('radioCardInput', {
                     bind: 'value',
-                    options: raw('CHART_OPTIONS'),
+                    options: raw('chartOptions()'),
                     cardWidth: model.pgCardWidth ?? undefined,
                     fill: model.pgFill || undefined,
                     ...ambientSnippetProps
