@@ -105,6 +105,9 @@ export const radioCardInputPanel = hoistCmp.factory({
                 'selected card cannot be cleared - offer "no value" as an explicit option with',
                 "`value: null` and a label such as 'None'.",
                 '',
+                'All cards share one width - `cardWidth`, default 88px - and wrap onto new rows.',
+                'Raise `cardWidth` for longer text, or set `fill` to stretch cards across the row.',
+                '',
                 'Reach for `SegmentedControl` or `RadioInput` when the options need no visual.'
             ],
             links: [
@@ -129,18 +132,24 @@ export const radioCardInputPanel = hoistCmp.factory({
             ],
             playgroundOptions: [
                 wrapperOption({
-                    label: 'Fixed card width',
+                    label: 'Card width',
                     propName: 'RadioCardInputProps.cardWidth',
-                    info: 'Clips wider previews and wraps long labels.',
+                    info: 'Shared by every card. Default is 88px.',
                     control: segmentedControl({
                         bind: 'pgCardWidth',
                         fill: false,
                         options: [
-                            {label: 'Auto', value: null},
-                            {label: '80', value: 80},
-                            {label: '110', value: 110}
+                            {label: 'Default', value: null},
+                            {label: '110', value: 110},
+                            {label: '140', value: 140}
                         ]
                     })
+                }),
+                wrapperOption({
+                    label: 'Fill',
+                    propName: 'RadioCardInputProps.fill',
+                    info: 'Stretch cards across each row, with card width as the minimum.',
+                    control: switchInput({bind: 'pgFill'})
                 }),
                 wrapperOption({
                     label: 'Descriptions',
@@ -159,6 +168,7 @@ export const radioCardInputPanel = hoistCmp.factory({
                     bind: 'value',
                     options: raw('CHART_OPTIONS'),
                     cardWidth: model.pgCardWidth ?? undefined,
+                    fill: model.pgFill || undefined,
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
@@ -166,6 +176,7 @@ export const radioCardInputPanel = hoistCmp.factory({
                     bind: 'playground',
                     ...ambientProps,
                     cardWidth: model.pgCardWidth ?? undefined,
+                    fill: model.pgFill,
                     options: chartOptions({
                         withDescriptions: model.pgDescriptions,
                         disablePie: model.pgDisablePie
@@ -252,7 +263,7 @@ export const radioCardInputPanel = hoistCmp.factory({
                             model: model.formModel,
                             item: formField({
                                 field: 'plan',
-                                item: radioCardInput({options: PLAN_OPTIONS})
+                                item: radioCardInput({cardWidth: 140, options: PLAN_OPTIONS})
                             })
                         })
                     })
@@ -276,6 +287,7 @@ class RadioCardInputPanelModel extends InputDemoModel {
     @bindable accessor pgDescriptions = false;
     @bindable accessor pgDisablePie = false;
     @bindable accessor pgCardWidth: number = null;
+    @bindable accessor pgFill = false;
 
     // Inputs
     @bindable accessor playground: string = SEEDS.playground;
