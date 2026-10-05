@@ -128,7 +128,7 @@ const gallery = hoistCmp.factory<IconsPanelModel>(({model}) => {
     }
     return div({
         className: 'tb-icons-gallery',
-        items: entries.map(entry => iconTile({key: entry.iconName, entry}))
+        items: entries.map(entry => iconTile({key: entry.faName, entry}))
     });
 });
 

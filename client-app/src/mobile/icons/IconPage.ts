@@ -109,7 +109,7 @@ const gallery = hoistCmp.factory<IconPageModel>(({model}) => {
     }
     return div({
         className: 'tb-icon-page__gallery',
-        items: entries.map(entry => iconTile({key: entry.iconName, entry}))
+        items: entries.map(entry => iconTile({key: entry.faName, entry}))
     });
 });
 

@@ -33,6 +33,15 @@ const CURATED_ICONS = [
     'globe'
 ];
 
+// Semantic icons for a hypothetical rules feature - app names for built-in Hoist glyphs. A picker
+// with `valueField: 'name'` stores these names, so re-pointing one later updates every stored rule.
+const RULE_ICONS = ['businessRule', 'complianceRule', 'riskRule'];
+Icon.registerAll([
+    {name: 'businessRule', faName: 'briefcase', displayName: 'Business rule'},
+    {name: 'complianceRule', faName: 'balance-scale', displayName: 'Compliance rule'},
+    {name: 'riskRule', faName: 'shield-check', displayName: 'Risk rule'}
+]);
+
 export const iconPickerPanel = hoistCmp.factory({
     displayName: 'IconPickerPanel',
     model: creates(() => IconPickerPanelModel),
@@ -89,6 +98,17 @@ export const iconPickerPanel = hoistCmp.factory({
                     control: switchInput({bind: 'pgEnableClear'})
                 }),
                 wrapperOption({
+                    label: 'Value field',
+                    propName: 'IconPickerProps.valueField',
+                    info: 'Emit the FA name, or the Icon name.',
+                    control: segmentedControl({
+                        bind: 'pgValueField',
+                        fill: false,
+                        compact: true,
+                        options: ['faName', 'name']
+                    })
+                }),
+                wrapperOption({
                     label: 'Weight',
                     propName: 'IconPickerProps.prefix',
                     info: 'Icons not registered in a weight fall back to their default.',
@@ -107,6 +127,7 @@ export const iconPickerPanel = hoistCmp.factory({
                     enableFilter: model.pgEnableFilter ? undefined : false,
                     enableClear: model.pgEnableClear ? undefined : false,
                     prefix: model.pgPrefix === 'far' ? undefined : model.pgPrefix,
+                    valueField: model.pgValueField === 'faName' ? undefined : model.pgValueField,
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
@@ -116,7 +137,8 @@ export const iconPickerPanel = hoistCmp.factory({
                     showName: model.pgShowName,
                     enableFilter: model.pgEnableFilter,
                     enableClear: model.pgEnableClear,
-                    prefix: model.pgPrefix
+                    prefix: model.pgPrefix,
+                    valueField: model.pgValueField
                 })
             }),
             variants: [
@@ -129,6 +151,24 @@ export const iconPickerPanel = hoistCmp.factory({
                         items: [
                             iconPicker({bind: 'roundTrip', ...ambientProps}),
                             span(model.roundTrip ? Icon.get(model.roundTrip, {size: '2x'}) : null)
+                        ]
+                    })
+                }),
+                demoRow({
+                    label: 'Semantic names',
+                    info: "valueField: 'name' - stores the app's own icon names",
+                    item: hbox({
+                        alignItems: 'center',
+                        gap: 12,
+                        items: [
+                            iconPicker({
+                                bind: 'ruleIcon',
+                                ...ambientProps,
+                                valueField: 'name',
+                                icons: RULE_ICONS,
+                                columns: 3
+                            }),
+                            span({className: 'xh-font-family-mono', item: `'${model.ruleIcon}'`})
                         ]
                     })
                 }),
@@ -246,6 +286,7 @@ export const iconPickerPanel = hoistCmp.factory({
 const SEEDS: Record<string, string> = {
     playground: 'chart-line',
     roundTrip: 'rocket',
+    ruleIcon: 'businessRule',
     iconOnly: 'star',
     subset: 'github',
     noFilter: 'face-smile',
@@ -263,10 +304,12 @@ class IconPickerPanelModel extends InputDemoModel {
     @bindable accessor pgEnableFilter = true;
     @bindable accessor pgEnableClear = true;
     @bindable accessor pgPrefix: HoistIconPrefix = 'far';
+    @bindable accessor pgValueField: 'faName' | 'name' = 'faName';
 
     // Inputs
     @bindable accessor playground: string = SEEDS.playground;
     @bindable accessor roundTrip: string = SEEDS.roundTrip;
+    @bindable accessor ruleIcon: string = SEEDS.ruleIcon;
     @bindable accessor iconOnly: string = SEEDS.iconOnly;
     @bindable accessor subset: string = SEEDS.subset;
     @bindable accessor noFilter: string = SEEDS.noFilter;
