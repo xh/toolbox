@@ -1,5 +1,5 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {wrapper, wrapperOption} from '../../../common';
+import {wrapper, wrapperOption} from '../../../common/Wrapper';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {vframe, div} from '@xh/hoist/cmp/layout';
@@ -97,6 +97,7 @@ export const exceptionHandlerPanel = hoistCmp.factory({
                     control: segmentedControl({
                         model,
                         bind: 'alertType',
+                        compact: true,
                         disabled: !model.showAlert,
                         options: [
                             {value: 'dialog', label: 'Dialog'},

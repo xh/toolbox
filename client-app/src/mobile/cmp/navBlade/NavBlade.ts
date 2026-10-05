@@ -1,10 +1,12 @@
 import {div, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistProps, uses, XH} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp, uses, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import classNames from 'classnames';
-import {ReactElement} from 'react';
-import {NavBladeGroup, NavBladeModel} from './NavBladeModel';
+import type {ReactElement} from 'react';
+import type {NavBladeGroup} from './NavBladeModel';
+import {NavBladeModel} from './NavBladeModel';
 import './NavBlade.scss';
 
 /**

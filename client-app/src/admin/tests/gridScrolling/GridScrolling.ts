@@ -1,6 +1,7 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, hframe, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistProps} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {GridScrollingModel} from './GridScrollingModel';
 import {AgGridReact} from 'ag-grid-react';

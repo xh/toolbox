@@ -2,15 +2,14 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {SampleTreeGridModel} from '../../common/grid/SampleTreeGridModel';
 import {
     expandCollapseButton,
     gridDisplayActions,
-    gridDisplayOptions,
-    sampleTreeGrid,
-    SampleTreeGridModel,
-    wrapper,
-    wrapperOption
-} from '../../common';
+    gridDisplayOptions
+} from '../../common/grid/options/GridDisplayOptions';
+import {sampleTreeGrid} from '../../common/grid/SampleTreeGrid';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 
 export const treeGridPanel = hoistCmp.factory({
     model: creates(() => new SampleTreeGridModel({includeCheckboxes: false})),

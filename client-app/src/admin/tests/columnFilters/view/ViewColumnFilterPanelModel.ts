@@ -1,10 +1,12 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
-import {ColumnSpec, GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
+import type {ColumnSpec} from '@xh/hoist/cmp/grid';
+import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {CompoundFilter, Cube, FieldFilter, View} from '@xh/hoist/data';
+import type {CompoundFilter, FieldFilter, View} from '@xh/hoist/data';
+import {Cube} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {comparer, makeObservable, computed} from '@xh/hoist/mobx';
+import {compareStructural, computed} from '@xh/hoist/mobx';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
     @managed cube: Cube;
@@ -25,7 +27,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         // Setup Cube mode
         this.cube = this.createCube();
@@ -43,7 +44,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
                 this.view.updateQuery(query);
             },
             fireImmediately: true,
-            equals: comparer.structural
+            equals: compareStructural
         });
     }
 
@@ -130,10 +131,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         const {view} = this;
         return new GridModel({
             treeMode: true,
-            store: {
-                projectionOnly: true,
-                idEncodesTreePath: true
-            },
+            store: {projectionOnly: true},
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'cubeLabel',
             emptyText: 'No records found...',

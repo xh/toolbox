@@ -1,9 +1,8 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
-import {ReactElement} from 'react';
+import {action, bindable, observableRef} from '@xh/hoist/mobx';
+import type {ReactElement} from 'react';
 import {isEmpty} from 'lodash';
-import {DocService} from '../../../core/svc/DocService';
 import {mobileTests} from '../../tests/TestsCatalog';
 
 /** A single navigable leaf within the blade - maps to a fully-qualified app route. */
@@ -43,10 +42,10 @@ const BLANK_TITLE = ' ';
  * shared `@xh/hoist/mobile` kit.
  */
 export class NavBladeModel extends HoistModel {
-    @bindable isOpen = false;
+    @bindable accessor isOpen = false;
 
     /** Ids of the groups currently expanded in place. */
-    @observable.ref expandedIds: string[] = [];
+    @observableRef accessor expandedIds: string[] = [];
 
     get homeRoute(): string {
         return HOME_ROUTE;
@@ -130,7 +129,6 @@ export class NavBladeModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         // Dismiss the blade on any route change - covers browser back/forward and any navigation
         // that originates outside the blade (mirrors how Hoist's built-in dialogs self-dismiss).
@@ -215,7 +213,7 @@ export class NavBladeModel extends HoistModel {
      */
     get backLabel(): string {
         const {name, params} = XH.routerState,
-            docService = DocService.instance;
+            docService = XH.docService;
         switch (name) {
             case 'default.docs.corpus':
             case 'default.docs.search':

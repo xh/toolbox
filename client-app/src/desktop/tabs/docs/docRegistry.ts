@@ -2,13 +2,12 @@
  * Desktop-only doc -> Toolbox example tab mappings.
  *
  * Shared doc types and link/section utilities now live in `core/docs`; this file retains the
- * desktop-route example map and re-exports the shared types + `resolveDocLink` so existing desktop
- * importers keep resolving.
+ * desktop-route example map and re-exports the shared types so existing desktop importers keep
+ * resolving. Type re-exports are erased at build time and create no runtime module edge.
  */
-import {DocExampleLink} from '../../../core/docs/types';
+import type {DocExampleLink} from '../../../core/docs/types';
 
 export type {DocEntry, DocCategory, DocSourceInfo, DocExampleLink} from '../../../core/docs/types';
-export {resolveDocLink} from '../../../core/docs/DocUtils';
 
 // ---------------------------------------------------------------------------
 // Doc -> Toolbox example tab mappings (hoist-react only)
@@ -31,10 +30,10 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
     ],
     'cmp/form/README.md': [
         {title: 'FormModel', route: `${R}.forms.form`},
-        {title: 'Hoist Inputs', route: `${R}.forms.inputs`}
+        {title: 'All Inputs', route: `${R}.forms.inputs`}
     ],
     'cmp/input/README.md': [
-        {title: 'Hoist Inputs', route: `${R}.forms.inputs`},
+        {title: 'All Inputs', route: `${R}.forms.inputs`},
         {title: 'Select', route: `${R}.forms.select`},
         {title: 'Picker', route: `${R}.forms.picker`}
     ],
@@ -44,20 +43,21 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
     ],
     'cmp/tab/README.md': [{title: 'TabContainer', route: `${R}.layout.tabPanel`}],
     'desktop/cmp/panel/README.md': [
-        {title: 'Panel Intro', route: `${R}.panels.intro`},
-        {title: 'Toolbars', route: `${R}.panels.toolbars`},
-        {title: 'Panel Sizing', route: `${R}.panels.sizing`},
-        {title: 'Mask', route: `${R}.panels.mask`},
-        {title: 'Loading Indicator', route: `${R}.panels.loadingIndicator`}
+        {title: 'Panel Intro', route: `${R}.layout.intro`},
+        {title: 'Toolbars', route: `${R}.layout.toolbars`},
+        {title: 'Panel Sizing', route: `${R}.layout.sizing`},
+        {title: 'Mask', route: `${R}.layout.mask`},
+        {title: 'Loading Indicator', route: `${R}.layout.loadingIndicator`},
+        {title: 'Banner', route: `${R}.layout.banner`}
     ],
     'desktop/cmp/dash/README.md': [
         {title: 'DashContainer', route: `${R}.layout.dashContainer`},
         {title: 'DashCanvas', route: `${R}.layout.dashCanvas`}
     ],
     'desktop/README.md': [
-        {title: 'Hoist Inputs', route: `${R}.forms.inputs`},
+        {title: 'All Inputs', route: `${R}.forms.inputs`},
         {title: 'Select', route: `${R}.forms.select`},
-        {title: 'LeftRightChooser', route: `${R}.other.leftRightChooser`}
+        {title: 'LeftRightChooser', route: `${R}.forms.leftRightChooser`}
     ],
     'format/README.md': [
         {title: 'Date Formats', route: `${R}.other.formatDates`},
@@ -71,7 +71,9 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
     'docs/routing.md': [{title: 'Simple Routing', route: `${R}.other.simpleRouting`}],
     'appcontainer/README.md': [
         {title: 'App Notifications', route: `${R}.other.appNotifications`},
-        {title: 'Popups', route: `${R}.other.popups`}
+        {title: 'Banners', route: `${R}.other.banners`},
+        {title: 'Messages', route: `${R}.other.messages`},
+        {title: 'Toast', route: `${R}.other.toast`}
     ],
     'inspector/README.md': [{title: 'Inspector', route: `${R}.other.inspector`}],
     'cmp/README.md': [

@@ -1,13 +1,10 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {
-    gridDisplayActions,
-    gridDisplayOptions,
-    sampleGrid,
-    SampleGridModel,
-    wrapper
-} from '../../common';
+import {SampleGridModel} from '../../common/grid/SampleGridModel';
+import {gridDisplayActions, gridDisplayOptions} from '../../common/grid/options/GridDisplayOptions';
+import {sampleGrid} from '../../common/grid/SampleGrid';
+import {wrapper} from '../../common/Wrapper';
 
 export const standardGridPanel = hoistCmp.factory({
     model: creates(SampleGridModel),
@@ -46,6 +43,11 @@ export const standardGridPanel = hoistCmp.factory({
                     url: '$HR/data',
                     text: 'Data package',
                     notes: 'Hoist-managed data classes, including Store and StoreRecord.'
+                },
+                {
+                    url: '$HR/cmp/grid/README.md#cell-corner-flags',
+                    text: 'Cell flag docs',
+                    notes: 'Config, precedence vs. validation, and the flag size CSS custom property.'
                 },
                 {
                     url: 'https://www.ag-grid.com/javascript-data-grid/',

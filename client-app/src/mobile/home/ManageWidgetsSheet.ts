@@ -1,16 +1,17 @@
 import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistProps, uses} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {dragDropContext, draggable, droppable} from '@xh/hoist/kit/react-beautiful-dnd';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import classNames from 'classnames';
 import {isEmpty} from 'lodash';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {createPortal} from 'react-dom';
 import {pullUpSheet} from '../cmp/pullUpSheet/PullUpSheet';
 import {HomeModel} from './HomeModel';
-import {WidgetSpec} from './widgets/WidgetCatalog';
+import type {WidgetSpec} from './widgets/WidgetCatalog';
 import './ManageWidgetsSheet.scss';
 
 /**

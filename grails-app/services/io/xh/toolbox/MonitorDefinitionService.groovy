@@ -128,6 +128,12 @@ class MonitorDefinitionService extends DefaultMonitorDefinitionService {
      * all configured repos have been loaded with at least some commits.
      */
     def gitHubLastUpdateMins(MonitorResult result) {
+        if (!configService.getStringIfSet('gitHubAccessToken')) {
+            result.status = INACTIVE
+            result.message = 'GitHub integration disabled - no "gitHubAccessToken" config set.'
+            return
+        }
+
         def repos = configService.getList('gitHubRepos', []) as List<String>
         Instant leastRecentUpdate = null
 

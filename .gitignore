@@ -12,6 +12,9 @@
 # Local instance configs w/secrets
 toolbox.yml
 .env
+# Per-developer Rsbuild dotenv overrides (client-app)
+.env.local
+.env.*.local
 
 # Compiled source
 .gradle/

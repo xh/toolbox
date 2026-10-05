@@ -1,23 +1,23 @@
 import {createRef} from 'react';
-import {GridConfig, GridModel} from '@xh/hoist/cmp/grid';
+import type {GridConfig} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {StoreRecord} from '@xh/hoist/data';
+import type {StoreRecord} from '@xh/hoist/data';
 import './SampleGrid.scss';
+import {activeCol} from '../../../core/columns/General';
+import {cityCol, companyCol} from '../../../core/columns/Demographics';
 import {
-    activeCol,
-    companyCol,
-    winLoseCol,
-    cityCol,
-    tradeVolumeCol,
-    profitLossCol,
     dayOfWeekCol,
-    tradeDateCol
-} from '../../../core/columns';
+    profitLossCol,
+    tradeDateCol,
+    tradeVolumeCol,
+    winLoseCol
+} from '../../../core/columns/Trades';
 
 export class SampleGridModel extends HoistModel {
     panelRef = createRef<HTMLDivElement>();
@@ -91,7 +91,6 @@ export class SampleGridModel extends HoistModel {
         super();
 
         this.gridModel = new GridModel({
-            enableFullWidthScroll: true,
             selModel: {mode: 'multiple'},
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',
@@ -112,21 +111,37 @@ export class SampleGridModel extends HoistModel {
                 }
             },
             contextMenu: [
+                // A heading's displayFn gets the same ActionFnData as the actions beside it, so it
+                // can name the clicked record. Falls back to its static text over empty space.
+                {
+                    heading: 'Company',
+                    displayFn: ({record}) => (record ? {heading: record.data.company} : null)
+                },
                 this.viewDetailsAction,
                 this.terminateAction,
-                '-',
+
+                // Hidden unless more than one row is selected - taking its heading with it, since
+                // headings left with no items below them are dropped.
+                {heading: 'Selection'},
+                {
+                    text: 'Compare Selected',
+                    icon: Icon.balanceScale(),
+                    displayFn: ({selectedRecords}) => ({hidden: selectedRecords.length < 2}),
+                    actionFn: ({selectedRecords}) => this.showCompareToast(selectedRecords)
+                },
+
+                {heading: 'Grid'},
                 ...GridModel.defaults.contextMenu
             ],
             levelLabels: () => {
                 return [...this.groupingChooserModel.valueDisplayNames, 'Company'];
             },
-            groupSortFn: (a, b, groupField) => {
-                if (a === b) return 0;
+            groupSortFn: (a, b, groupField, {gridModel}) => {
                 if (groupField === 'winLose') {
+                    if (a === b) return 0;
                     return a === 'Winner' ? -1 : 1;
-                } else {
-                    return a < b ? -1 : 1;
                 }
+                return gridModel.defaultGroupSortFn(a, b);
             },
             restoreDefaultsFn: () => this.restoreDefaultsFn(),
             colDefaults: {
@@ -210,8 +225,9 @@ export class SampleGridModel extends HoistModel {
             allowEmpty: true,
             commitOnChange: true,
             dimensions: [
-                {name: 'city', displayName: 'City'},
-                {name: 'winLose', displayName: 'Win/Lose'}
+                {name: 'city'},
+                {name: 'winLose', displayName: 'Win/Lose'},
+                {name: 'trade_date'}
             ],
             initialValue: []
         });
@@ -233,6 +249,15 @@ export class SampleGridModel extends HoistModel {
                 `They are based in ${rec.data.city}.`
             ),
             icon: Icon.info(),
+            intent: 'primary',
+            containerRef: this.panelRef.current
+        });
+    }
+
+    private showCompareToast(recs: StoreRecord[]) {
+        XH.toast({
+            message: `You asked to compare ${recs.length} companies.`,
+            icon: Icon.balanceScale(),
             intent: 'primary',
             containerRef: this.panelRef.current
         });

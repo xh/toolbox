@@ -1,11 +1,10 @@
 {
   "name": "toolbox",
-  "version": "10.0-SNAPSHOT",
+  "version": "12.0-SNAPSHOT",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "build": "webpack --env prodBuild",
-    "buildAndAnalyze": "webpack --env prodBuild --env analyzeBundles",
+    "build": "rsbuild build --env-mode prod",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "pnpm lint:all",
     "validateDocs": "node scripts/validate-doc-registry.mjs",
@@ -14,13 +13,11 @@
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
     "typecheck": "tsc --noEmit",
     "prepare": "cd .. && husky client-app/.husky",
-    "start": "pnpm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
-    "startAndAnalyze": "pnpm start --env analyzeBundles",
-    "startWithIp": "pnpm start --env devHost=$(ipconfig getifaddr en0)",
-    "startWithHoist": "(cd ../../hoist-react && pnpm install) && pnpm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
-    "startWithHoistAndAnalyze": "pnpm startWithHoist --env analyzeBundles",
-    "startWithHoistAndIp": "pnpm startWithHoist --env devHost=$(ipconfig getifaddr en0)",
-    "startWithHoistSecure": "pnpm startWithHoist --env devHttps=true --env devHost=toolbox-local.xh.io"
+    "start": "pnpm install && rsbuild dev",
+    "startWithIp": "XH_DEV_HOST=$(ipconfig getifaddr en0) pnpm start",
+    "startWithHoist": "(cd ../../hoist-react && pnpm install) && pnpm install && rsbuild dev --env-mode inlineHoist",
+    "startWithHoistAndIp": "XH_DEV_HOST=$(ipconfig getifaddr en0) pnpm startWithHoist",
+    "startWithHoistSecure": "cross-env XH_DEV_HTTPS=true XH_DEV_HOST=toolbox-local.xh.io pnpm startWithHoist"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -33,6 +30,7 @@
     ]
   },
   "dependencies": {
+    "@codemirror/autocomplete": "^6.20.3",
     "@fortawesome/fontawesome-svg-core": "^7.3.1",
     "@fortawesome/free-brands-svg-icons": "^7.3.1",
     "@fortawesome/pro-regular-svg-icons": "^7.3.1",
@@ -40,35 +38,36 @@
     "@ibm/plex-sans": "^1.1.0",
     "@xh/hoist": "next",
     "@xh/package-template": "~3.0.4",
-    "ag-charts-community": "~13.3.1",
-    "ag-grid-community": "~35.3.1",
-    "ag-grid-enterprise": "~35.3.1",
-    "ag-grid-react": "~35.3.1",
+    "ag-charts-community": "~14.2.0",
+    "ag-grid-community": "~36.2.0",
+    "ag-grid-enterprise": "~36.2.0",
+    "ag-grid-react": "~36.2.0",
     "classnames": "~2.5.1",
     "core-js": "~3.50.0",
-    "filesize": "~11.0.22",
-    "highcharts": "~12.6.0",
+    "filesize": "~11.0.24",
+    "highcharts": "~12.6.2",
     "lodash": "~4.18.1",
     "minisearch": "^7.2.0",
-    "moment": "~2.30.1",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "moment": "~2.31.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
     "@types/lodash": "~4.17.25",
-    "@types/react": "~19.2.18",
-    "@types/react-dom": "~19.2.5",
-    "@xh/hoist-dev-utils": "^14.0.1",
+    "@types/react": "~19.3.0",
+    "@types/react-dom": "~19.3.0",
+    "@xh/eslint-config": "^8.0.1",
+    "@xh/hoist-dev-utils": "next",
     "cross-env": "~10.1.0",
-    "eslint": "~10.9.1",
+    "eslint": "^10.11.0",
     "eslint-config-prettier": "~10.1.8",
     "husky": "~9.1.7",
-    "lint-staged": "~17.3.0",
-    "postcss": "~8.5.26",
-    "prettier": "~3.9.6",
-    "stylelint": "~17.14.1",
+    "lint-staged": "~17.5.1",
+    "postcss": "~8.5.28",
+    "prettier": "~3.9.9",
+    "stylelint": "~17.15.0",
     "stylelint-config-recommended-scss": "~17.0.1",
     "typescript": "~5.9.3"
   },
-  "packageManager": "pnpm@11.24.0+sha512.bd27e345e976dcb0be0b7a1228217b049a817e21b1f355c90dbe7dc46671895a8bc1e6d06c24554505ea93ea0b45f489a27ec1bfbc8de6a9659fca0f16fa0000"
+  "packageManager": "pnpm@12.7.0+sha512.9c56477e360068d6e9dca6a92efb4e46b3dc5a52fcebf3d84d78b9736c0ded589a561621a52f68219a7a39facc63cdc079c3226ef9c9d5f02b79f74e69a807b6"
 }
