@@ -1,6 +1,6 @@
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {Cube} from '@xh/hoist/data';
+import {AverageWeightedAggregator, Cube} from '@xh/hoist/data';
 import {fmtThousands} from '@xh/hoist/format';
 import {observableRef} from '@xh/hoist/mobx';
 import {times} from 'lodash';
@@ -96,7 +96,11 @@ export class CubeModel extends HoistModel {
                 {name: 'dir', displayName: 'Direction', isDimension: true},
 
                 {name: 'quantity', aggregator: 'SUM', canAggregateFn: isInstrument},
-                {name: 'price', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
+                {
+                    name: 'price',
+                    aggregator: new AverageWeightedAggregator('quantity'),
+                    canAggregateFn: isInstrument
+                },
 
                 {name: 'commission', aggregator: 'SUM'},
                 {name: 'pctCommission', aggregator: new PctTotalAggregator()},
