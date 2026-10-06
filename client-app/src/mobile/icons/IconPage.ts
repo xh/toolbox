@@ -29,7 +29,7 @@ export const iconPage = hoistCmp.factory({
                 "`Icon.register()` to add it to Hoist's icon catalog, as the icon in this example's",
                 'title bar demonstrates.',
                 '',
-                'Filter the catalog below - built-ins plus Toolbox registrations, flagged as custom -',
+                'Filter the catalog below - built-ins plus Toolbox registrations, badged as app icons -',
                 'and tap any icon to copy the call that renders it.'
             ],
             options: [
@@ -114,9 +114,10 @@ const gallery = hoistCmp.factory<IconPageModel>(({model}) => {
 });
 
 const iconTile = hoistCmp.factory<IconPageModel>(({model, entry}) => {
-    const {name, isCustom} = entry,
-        // Registered names are not typed on `Icon`, so resolve custom icons by name.
-        usage = isCustom ? `Icon.get('${name}')` : `Icon.${name}()`;
+    const {name} = entry,
+        isAppIcon = entry.source === 'app',
+        // Registered names are not typed on `Icon`, so resolve app icons by name.
+        usage = isAppIcon ? `Icon.get('${name}')` : `Icon.${name}()`;
     return div({
         className: 'tb-icon-page__tile',
         onClick: () =>
@@ -133,7 +134,7 @@ const iconTile = hoistCmp.factory<IconPageModel>(({model, entry}) => {
                 })
             }),
             div({className: 'tb-icon-page__name', item: name}),
-            div({omit: !isCustom, className: 'tb-icon-page__badge', item: 'custom'})
+            div({omit: !isAppIcon, className: 'tb-icon-page__badge', item: 'app'})
         ]
     });
 });

@@ -33,7 +33,7 @@ export const iconsPanel = hoistCmp.factory({
                 'registration - see `core/Icons.ts` in Toolbox.',
                 '',
                 "Browse the catalog below via `Icon.getCatalog()` - Hoist's built-in set plus",
-                "Toolbox's own registrations, flagged as custom. Search matches each icon's",
+                "Toolbox's own registrations, badged as app icons. Search matches each icon's",
                 'aliases and keywords. Click any icon to copy the call that renders it.'
             ],
             links: [
@@ -133,9 +133,10 @@ const gallery = hoistCmp.factory<IconsPanelModel>(({model}) => {
 });
 
 const iconTile = hoistCmp.factory<IconsPanelModel>(({model, entry}) => {
-    const {name, isCustom} = entry,
-        // Registered names are not typed on `Icon`, so resolve custom icons by name.
-        usage = isCustom ? `Icon.get('${name}')` : `Icon.${name}()`;
+    const {name} = entry,
+        isAppIcon = entry.source === 'app',
+        // Registered names are not typed on `Icon`, so resolve app icons by name.
+        usage = isAppIcon ? `Icon.get('${name}')` : `Icon.${name}()`;
     return div({
         className: 'tb-icons-tile',
         title: `${entry.displayName}\nAliases: ${entry.names.join(', ')}\n\nClick to copy ${usage}`,
@@ -153,7 +154,7 @@ const iconTile = hoistCmp.factory<IconsPanelModel>(({model, entry}) => {
                 })
             }),
             div({className: 'tb-icons-tile__name', item: name}),
-            div({omit: !isCustom, className: 'tb-icons-tile__badge', item: 'custom'})
+            div({omit: !isAppIcon, className: 'tb-icons-tile__badge', item: 'app'})
         ]
     });
 });
