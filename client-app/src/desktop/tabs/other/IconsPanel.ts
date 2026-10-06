@@ -20,19 +20,31 @@ export const iconsPanel = hoistCmp.factory({
             title: 'Icons',
             icon: iconsIcon(),
             description: [
-                'Hoist includes the latest version of the ubiquitous [Font',
-                'Awesome](https://fontawesome.com/icons) library and its companion project,',
-                'react-fontawesome. Hoist exports an `Icon` constant to expose a preselected',
-                'set of icons as element factories. This ensures that many of the most common',
-                'glyphs are built-in (while also mapping icons to several concepts particular',
-                'to finance and trading).',
+                'Hoist builds on [Font Awesome Pro](https://fontawesome.com/icons) (FA), a commercial',
+                'icon library. Each app needs its own FA Pro license, and a license token to install',
+                'the Pro packages. The `Icon` singleton exposes a curated set of FA glyphs as element',
+                'factories, such as `Icon.check()`. It adds semantic aliases such as `Icon.add()`',
+                'and `Icon.refresh()`, plus icons for several finance and trading concepts.',
                 '',
-                'Apps are not limited to the set of FA icons imported by the framework. Pass any',
-                "imported FA definition to `Icon.register()` to add it to Hoist's icon catalog and",
-                "get back a factory for it. The icon shown in this tab's title is one such custom",
-                'registration - see `core/Icons.ts` in Toolbox.',
+                'Apps can add any other FA glyph with `Icon.register()`. Pass the imported',
+                "definition, and Hoist adds it to the FA library and to Hoist's icon catalog. The",
+                'call returns a factory to export and use:',
                 '',
-                "Browse the catalog below via `Icon.getCatalog()` - Hoist's built-in set plus",
+                '```ts',
+                'const invoiceIcon = Icon.register({',
+                "    name: 'invoice',",
+                '    defs: faFileInvoiceDollar',
+                '});',
+                '```',
+                '',
+                "The icon in this sidebar's header is registered this way, in `core/Icons.ts`.",
+                '',
+                '`Icon.get()` renders any icon in the catalog from its name, such as a choice saved',
+                'by a user. `IconPicker` lets users make that choice - see its page under Forms +',
+                'Inputs. To change an icon that Hoist itself uses, such as `Icon.refresh()`,',
+                'register a new icon under that name with `replace: true`.',
+                '',
+                "Browse the catalog below with `Icon.getCatalog()`: Hoist's built-in set plus",
                 "Toolbox's own registrations, badged as app icons. Search matches each icon's",
                 'aliases and keywords. Click any icon to copy the call that renders it.'
             ],
@@ -53,9 +65,7 @@ export const iconsPanel = hoistCmp.factory({
                 {
                     url: 'https://fontawesome.com/icons',
                     text: 'FontAwesome',
-                    notes:
-                        'The library used by Hoist to provide enumerated icons. Note that not all icons are included ' +
-                        'in the Hoist Icon class, but can be easily added.'
+                    notes: "The library behind Hoist's icons. Add any glyph not in Hoist's set with Icon.register()."
                 }
             ],
             options: [
