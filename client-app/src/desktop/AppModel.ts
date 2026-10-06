@@ -1,17 +1,20 @@
-import {box, div, span, vbox} from '@xh/hoist/cmp/layout';
+import {box, span, vbox} from '@xh/hoist/cmp/layout';
 import type {TabConfig, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import type {InitContext, LoadSpec} from '@xh/hoist/core';
 import {managed, XH} from '@xh/hoist/core';
-import {autoRefreshAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {
+    autoRefreshAppOption,
+    sizingModeAppOption,
+    themeAppOption
+} from '@xh/hoist/desktop/cmp/appOption';
+import {radioCardInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {runInAction} from '@xh/hoist/mobx';
 import type {ReactElement} from 'react';
 import {isEmpty, isEqual} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
-import {cardChoiceInput} from './common/CardChoiceInput';
 import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
@@ -35,6 +38,7 @@ import {leftRightChooserPanel} from './tabs/forms/LeftRightChooserPanel';
 import {numberInputPanel} from './tabs/forms/inputs/NumberInputPanel';
 import {otherControlsPanel} from './tabs/forms/inputs/OtherControlsPanel';
 import {pickerPanel} from './tabs/forms/inputs/PickerPanel';
+import {radioCardInputPanel} from './tabs/forms/inputs/RadioCardInputPanel';
 import {radioInputPanel} from './tabs/forms/inputs/RadioInputPanel';
 import {segmentedControlPanel} from './tabs/forms/inputs/SegmentedControlPanel';
 import {selectPanel} from './tabs/forms/inputs/SelectPanel';
@@ -66,6 +70,7 @@ import {tileFrameContainerPanel} from './tabs/layout/TileFrameContainerPanel';
 import {vboxContainerPanel} from './tabs/layout/VBoxContainerPanel';
 import {mobileTab} from './tabs/mobile/MobileTab';
 import {appNotificationsPanel} from './tabs/other/AppNotificationsPanel';
+import {appOptionsPanel} from './tabs/other/AppOptionsPanel';
 import {bannersPanel} from './tabs/other/popups/BannersPanel';
 import {messagesPanel} from './tabs/other/popups/MessagesPanel';
 import {toastPanel} from './tabs/other/popups/ToastPanel';
@@ -131,23 +136,8 @@ export class AppModel extends BaseAppModel {
 
     override getAppOptions() {
         return [
-            // The two visual "appearance" choices lead the dialog as chunky, macOS-Settings-style
-            // preview cards (custom `cardChoiceInput`), followed by the compact behavior controls.
-            // Theme mirrors Hoist's built-in `themeAppOption` (xhTheme pref + XH.setTheme).
-            {
-                name: 'theme',
-                prefName: 'xhTheme',
-                refreshRequired: false,
-                valueSetter: v => XH.setTheme(v),
-                formField: {
-                    label: 'Theme',
-                    item: cardChoiceInput([
-                        {value: 'light', label: 'Light', preview: this.themeSwatch('light')},
-                        {value: 'dark', label: 'Dark', preview: this.themeSwatch('dark')},
-                        {value: 'system', label: 'System', preview: this.themeSwatch('system')}
-                    ])
-                }
-            },
+            // Theme, Font, and Grid sizing render as preview cards, then the compact switches.
+            themeAppOption(),
             {
                 name: 'font',
                 refreshRequired: false,
@@ -158,14 +148,16 @@ export class AppModel extends BaseAppModel {
                 },
                 formField: {
                     label: 'Font',
-                    item: cardChoiceInput([
-                        {
-                            value: 'IBM Plex Sans',
-                            label: 'IBM Plex Sans',
-                            preview: this.fontSwatch('IBM Plex Sans')
-                        },
-                        {value: 'Inter', label: 'Inter', preview: this.fontSwatch('Inter')}
-                    ])
+                    item: radioCardInput({
+                        options: [
+                            {
+                                value: 'IBM Plex Sans',
+                                label: 'IBM Plex',
+                                preview: this.fontSwatch('IBM Plex Sans')
+                            },
+                            {value: 'Inter', label: 'Inter', preview: this.fontSwatch('Inter')}
+                        ]
+                    })
                 }
             },
             sizingModeAppOption(),
@@ -192,27 +184,6 @@ export class AppModel extends BaseAppModel {
      */
     private applyFont(font: string) {
         document.body.classList.toggle('tbox-font--plex', font === 'IBM Plex Sans');
-    }
-
-    /** A mini app-window mockup used as a theme-choice card preview (fixed light/dark, not live). */
-    private themeSwatch(mode: 'light' | 'dark' | 'system'): ReactElement {
-        return div({
-            className: `tbox-theme-swatch tbox-theme-swatch--${mode}`,
-            items: [
-                div({
-                    className: 'tbox-theme-swatch__chrome',
-                    items: [0, 1, 2].map(i => div({key: i, className: 'tbox-theme-swatch__dot'}))
-                }),
-                div({
-                    className: 'tbox-theme-swatch__content',
-                    items: [
-                        div({className: 'tbox-theme-swatch__accent'}),
-                        div({className: 'tbox-theme-swatch__line'}),
-                        div({className: 'tbox-theme-swatch__line tbox-theme-swatch__line--short'})
-                    ]
-                })
-            ]
-        });
     }
 
     /** A live type specimen rendered in the given face, used as a font-choice card preview. */
@@ -324,6 +295,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'segmentedControl', path: '/segmentedControl'},
                             {name: 'buttonGroupInput', path: '/buttonGroupInput'},
                             {name: 'radioInput', path: '/radioInput'},
+                            {name: 'radioCardInput', path: '/radioCardInput'},
                             {name: 'toggles', path: '/toggles'},
                             {name: 'slider', path: '/slider'},
                             {name: 'intentInput', path: '/intentInput'},
@@ -356,6 +328,7 @@ export class AppModel extends BaseAppModel {
                         children: [
                             {name: 'banners', path: '/banners'},
                             {name: 'appNotifications', path: '/appNotifications'},
+                            {name: 'appOptions', path: '/appOptions'},
                             {name: 'buttons', path: '/buttons'},
                             {name: 'clock', path: '/clock'},
                             {name: 'customPackage', path: '/customPackage'},
@@ -562,6 +535,11 @@ export class AppModel extends BaseAppModel {
                                 content: buttonGroupInputPanel
                             },
                             {id: 'radioInput', title: 'RadioInput', content: radioInputPanel},
+                            {
+                                id: 'radioCardInput',
+                                title: 'RadioCardInput',
+                                content: radioCardInputPanel
+                            },
                             {id: 'toggles', title: 'Checkbox & Switch', content: togglesPanel},
                             {id: 'slider', title: 'Slider', content: sliderPanel},
                             {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},
@@ -623,6 +601,7 @@ export class AppModel extends BaseAppModel {
                         ...[
                             {id: 'banners', title: 'App Banners', content: bannersPanel},
                             {id: 'appNotifications', content: appNotificationsPanel},
+                            {id: 'appOptions', title: 'App Options', content: appOptionsPanel},
                             {id: 'customPackage', content: customPackagePanel},
                             {
                                 id: 'exceptionHandler',

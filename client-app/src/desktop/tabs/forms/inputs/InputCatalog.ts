@@ -113,6 +113,13 @@ export const INPUT_CATALOG: InputCatalogEntry[] = [
         icon: () => Icon.gridPanel()
     },
     {
+        name: 'RadioCardInput',
+        category: 'Choice',
+        description: 'Large cards with visual previews, one selected.',
+        route: `${R}.radioCardInput`,
+        icon: () => Icon.layout()
+    },
+    {
         name: 'RadioInput',
         category: 'Choice',
         description: 'Stacked or inline radios, per-option disabling.',
