@@ -7,8 +7,10 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "noImplicitOverride": true,
+    "noUncheckedSideEffectImports": false,
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "strict": false,
     "target": "ES2022",
     "useDefineForClassFields": true,
 

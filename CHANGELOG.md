@@ -18,6 +18,14 @@
 
 * Added `StoreFilterField` and `GridFindField` to the desktop `ZoneGrid` demo, and bound the mobile demo's filter to its `ZoneGridModel`. Both search the fields mapped to the grid's zones, using hoist-react's new ZoneGrid support.
 
+### Technical
+
+* Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
+
+### Libraries
+
+* typescript `5.9 → 7.0`
+
 ## 11.0.0 - 2026-09-29
 
 ### New Features
