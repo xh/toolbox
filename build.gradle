@@ -97,13 +97,7 @@ dependencies {
     testImplementation "io.xh:hoist-core-test:$hoistCoreVersion"
 }
 
-tasks.withType(Test).configureEach {
-    useJUnitPlatform()
-    testLogging {
-        events 'failed', 'skipped'
-        exceptionFormat = 'full'
-    }
-}
+tasks.withType(Test).configureEach { useJUnitPlatform() }
 
 //------------------------------------------------------------------
 // hoist-core MCP server + CLI tools — version-locked launchers
