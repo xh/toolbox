@@ -1,5 +1,12 @@
-import {PlainObject} from '@xh/hoist/core';
-import {PivotCellField, PivotPath, PivotViewResult, Store, View, ViewRowData} from '@xh/hoist/data';
+import type {PlainObject} from '@xh/hoist/core';
+import type {
+    PivotCellField,
+    PivotPath,
+    PivotViewResult,
+    Store,
+    View,
+    ViewRowData
+} from '@xh/hoist/data';
 import {isEmpty, isEqual, isNumber} from 'lodash';
 
 /**

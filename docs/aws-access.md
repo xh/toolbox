@@ -360,6 +360,49 @@ aws ecs update-service --cluster toolbox --service toolbox-dev \
 
 ---
 
+## Clustering: tasks need a network path to each other
+
+Toolbox runs multiple tasks in dev, and they form a Hazelcast cluster (see `ClusterConfig`).
+Members connect to each other on **TCP 5701**, so each task security group carries a
+**self-referencing** ingress rule for 5701-5703 alongside the ALB's ingress on 80.
+
+**Each environment has its own task security group**, so the self-reference scopes cluster traffic
+to that environment alone. Sharing one group between dev and prod does not corrupt the cluster —
+Hoist embeds the environment in `clusterName`, so members reject each other — but every task then
+discovers peers from the other environment and spends time attempting joins that are refused with
+`the target cluster has a different cluster-name`, delaying startup. Keep them separate.
+
+Without that rule the failure is silent. Every task starts, serves traffic and passes its health
+check, but forms its own single-member cluster and believes it is primary. `primaryOnly` timers
+then run on every instance instead of once, and replicated `Cache` / `CachedValue` invalidations
+never propagate between them.
+
+The tell is one line per task at startup:
+
+```
+ClusterService [INFO] | Joining a cluster of 1 as the PRIMARY instance     <- NOT clustered
+ClusterService [INFO] | Joining a cluster of N as a SECONDARY instance     <- clustered
+```
+
+To check the live state:
+
+```bash
+for T in $(aws ecs list-tasks --cluster toolbox --service-name toolbox-dev \
+    --profile xh-toolbox-ro --query 'taskArns[]' --output text | tr '\t' '\n'); do
+  ID=${T##*/}
+  aws logs get-log-events --log-group-name /ecs/toolbox-dev \
+    --log-stream-name "ecs/tomcat/$ID" --start-from-head \
+    --profile xh-toolbox-ro --limit 2000 --query 'events[].message' --output text \
+    | tr '\t' '\n' | grep -m1 "Joining a cluster"
+done
+```
+
+If a service runs more than one task and every task reports `a cluster of 1`, the 5701 path is
+missing. Scope any replacement rule to the task security group itself - never `0.0.0.0/0`, which
+would expose the cluster port to the internet.
+
+---
+
 ## Resource inventory (discoverable, low sensitivity)
 
 | Resource | Identifier |
@@ -367,6 +410,7 @@ aws ecs update-service --cluster toolbox --service toolbox-dev \
 | ECS cluster | `toolbox` |
 | Toolbox services | `toolbox-dev`, `toolbox-prod` |
 | Containers per task | `tomcat`, `nginx`, `aws-otel-collector` |
+| Task security groups | `xh-toolbox-dev-tasks`, `xh-toolbox-prod-tasks` (one per environment) |
 | Task IAM role | `aws-ecs-task-role` |
 | Execution IAM role | `ecsTaskExecutionRole` |
 | Read-only permission set | `ToolboxReadOnly` |

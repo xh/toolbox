@@ -1,10 +1,13 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
-import {Cube, CubeFieldSpec, PivotView} from '@xh/hoist/data';
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import type {CubeFieldSpec, PivotView} from '@xh/hoist/data';
+import {Cube} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import {PivotProfile, PROFILES, generateLeaves, tickLeaves} from './PivotBenchData';
+import type {PivotProfile} from './PivotBenchData';
+import {PROFILES, generateLeaves, tickLeaves} from './PivotBenchData';
 
 /**
  * Benchmark for the {@link PivotView} data layer against the acceptance gates.
@@ -27,12 +30,12 @@ const GATES: Record<string, {buildMs: number; deltaTickMs: number}> = {
 };
 
 export class PivotViewBenchModel extends HoistModel {
-    @bindable tickPct = 1;
-    @bindable tickReps = 5;
+    @bindable accessor tickPct = 1;
+    @bindable accessor tickReps = 5;
     // Bindable rather than observable: both are observed, and Hoist's bindable setter is itself an
     // action - a plain observable assigned outside one trips MobX's `enforceActions: 'observed'`.
-    @bindable running = false;
-    @bindable status: string = null;
+    @bindable accessor running = false;
+    @bindable accessor status: string = null;
 
     private seq = 0;
 
@@ -83,11 +86,6 @@ export class PivotViewBenchModel extends HoistModel {
             }
         ]
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     async runAllAsync() {
         await this.runAsync(PROFILES.filter(p => !p.optIn));

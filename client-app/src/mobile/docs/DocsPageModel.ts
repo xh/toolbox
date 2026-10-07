@@ -1,6 +1,6 @@
 import {XH} from '@xh/hoist/core';
 import {computed} from '@xh/hoist/mobx';
-import {DocEntry} from '../../core/docs/types';
+import type {DocEntry} from '../../core/docs/types';
 import {DocViewModel} from '../../core/docs/DocViewModel';
 
 /**
@@ -65,8 +65,8 @@ export class DocsPageModel extends DocViewModel {
         if (nextDoc) this.navigateToDoc(nextDoc.id, nextDoc.source);
     }
 
-    override onLinked() {
-        super.onLinked();
+    override afterLinked() {
+        super.afterLinked();
         this.loadInitialDocFromRoute();
     }
 }

@@ -1,13 +1,15 @@
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {pivotGrid, PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
-import {creates, hoistCmp, HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {Cube, PivotView} from '@xh/hoist/data';
+import type {LoadSpec} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
+import type {PivotView} from '@xh/hoist/data';
+import {Cube} from '@xh/hoist/data';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
-import {wrapper} from '../../common';
+import {bindable, observableRef, runInAction} from '@xh/hoist/mobx';
+import {wrapper} from '../../common/Wrapper';
 
 export const pivotGridPanel = hoistCmp.factory({
     model: creates(() => PivotGridPanelModel),
@@ -85,17 +87,16 @@ const gridCmp = hoistCmp.factory<PivotGridPanelModel>(({model}) =>
 );
 
 class PivotGridPanelModel extends HoistModel {
-    @bindable groupBy = 'fund,trader';
-    @bindable pivotBy = 'region';
-    @bindable showSummaries = true;
+    @bindable accessor groupBy = 'fund,trader';
+    @bindable accessor pivotBy = 'region';
+    @bindable accessor showSummaries = true;
 
     @managed cube: Cube;
     @managed view: PivotView;
-    @managed @observable.ref pivotGridModel: PivotGridModel;
+    @managed @observableRef accessor pivotGridModel: PivotGridModel;
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.cube = new Cube({
             idSpec: 'id',

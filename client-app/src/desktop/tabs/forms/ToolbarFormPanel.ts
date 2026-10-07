@@ -18,8 +18,8 @@ import {
     switchInput,
     textInput
 } from '@xh/hoist/desktop/cmp/input';
-import {usStates} from '../../../core/data';
-import {wrapper, wrapperOption} from '../../common';
+import {usStates} from '../../../core/data/USStates';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 import {ToolbarFormPanelModel} from './ToolbarFormPanelModel';
 import './ToolbarFormPanel.scss';
 

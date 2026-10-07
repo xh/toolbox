@@ -1,6 +1,6 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {h3, p} from '@xh/hoist/cmp/layout';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable} from '@xh/hoist/mobx';
 import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -8,7 +8,7 @@ import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 
 import './PinPadPanel.scss';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
 
 export const pinPadPanel = hoistCmp.factory({
     model: creates(() => PinPadPanelModel),
@@ -86,11 +86,10 @@ class PinPadPanelModel extends HoistModel {
     attempts = 0;
     maxAttempts = 5;
 
-    @observable loggedIn = false;
+    @observable accessor loggedIn = false;
 
     constructor() {
         super();
-        makeObservable(this);
         const {pinPadModel: pad} = this;
         this.addReaction({
             track: () => pad.completedPin,

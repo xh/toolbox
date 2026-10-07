@@ -1,31 +1,21 @@
-import {InitContext, XH} from '@xh/hoist/core';
-import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import type {InitContext} from '@xh/hoist/core';
+import {XH} from '@xh/hoist/core';
 import {sizingModeAppOption, themeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {Icon} from '@xh/hoist/icon';
 import {BaseAppModel} from '../../BaseAppModel';
 import {PortfolioService} from '../../core/svc/PortfolioService';
+import {viewManagers} from './viewManagers';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
-
-    portfolioViewManager: ViewManagerModel;
 
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
         await XH.installServicesAsync([PortfolioService], ctx);
 
-        // Constructed here, in initAsync, so we can await the async factory and ensure that all
-        // saved views are loaded and the desired option has been preselected before the model
-        // is used to construct component-level models within PortfolioModel.
-        this.portfolioViewManager = await ViewManagerModel.createAsync(
-            {
-                type: 'portfolioLayout',
-                typeDisplayName: 'Layout',
-                enableDefault: true,
-                manageGlobal: XH.getUser().isHoistAdmin
-            },
-            ctx
-        );
+        // Awaited here, in initAsync, so that all saved views are loaded and the desired option
+        // preselected before component-level models are constructed within PortfolioModel.
+        await viewManagers.initAsync(ctx);
 
         this.addReaction({
             track: () => XH.webSocketService.connected,

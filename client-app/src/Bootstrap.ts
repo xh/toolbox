@@ -12,15 +12,17 @@
 import {XH} from '@xh/hoist/core';
 import {when} from '@xh/hoist/mobx';
 
-import {ContactService} from './examples/contact/svc/ContactService';
-import {GitHubService} from './core/svc/GitHubService';
-import {PortfolioService} from './core/svc/PortfolioService';
-import {TaskService} from './examples/todo/TaskService';
+import type {ContactService} from './examples/contact/svc/ContactService';
+import type {DocService} from './core/svc/DocService';
+import type {GitHubService} from './core/svc/GitHubService';
+import type {PortfolioService} from './core/svc/PortfolioService';
+import type {TaskService} from './examples/todo/TaskService';
 
 declare module '@xh/hoist/core' {
     // Merge interface with XHApi class to include injected services.
     export interface XHApi {
         contactService: ContactService;
+        docService: DocService;
         gitHubService: GitHubService;
         portfolioService: PortfolioService;
         taskService: TaskService;
@@ -42,11 +44,9 @@ declare module '@xh/hoist/core' {
 // you must provide your own license
 //-----------------------------------------------------------------
 import {installAgGrid} from '@xh/hoist/kit/ag-grid';
-import {ModuleRegistry, provideGlobalGridOptions} from 'ag-grid-community';
+import {ModuleRegistry} from 'ag-grid-community';
 import {LicenseManager} from 'ag-grid-enterprise';
 import {AgGridReact} from 'ag-grid-react';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-balham.css';
 
 // 1) Standard community modules - required for all Hoist Apps.
 import {
@@ -130,7 +130,6 @@ if (xhIsDevelopmentMode) {
     enableDevValidations({showOverlayOn: [], throwOn: [], suppress: []});
 }
 
-provideGlobalGridOptions({theme: 'legacy'});
 installAgGrid(AgGridReact as any, ClientSideRowModelModule.version);
 
 when(

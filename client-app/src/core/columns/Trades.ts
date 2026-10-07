@@ -2,7 +2,7 @@ import {ExcelFormat, localDate, tags} from '@xh/hoist/cmp/grid';
 import {hbox, vbox} from '@xh/hoist/cmp/layout';
 import {dateRenderer, millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {ColumnSpec} from '@xh/hoist/cmp/grid';
+import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 
 export const profitLossCol: ColumnSpec = {
     field: {

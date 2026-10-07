@@ -4,7 +4,8 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {SplitTreeMapModel} from '@xh/hoist/cmp/treemap';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {fmtMillions} from '@xh/hoist/format';
-import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
+import {mktValCol, pnlCol} from '../../../core/columns/Positions';
+import {nameCol} from '../../../core/columns/General';
 
 export class SplitTreeMapPanelModel extends HoistModel {
     @managed

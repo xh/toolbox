@@ -1,5 +1,5 @@
-import {ColumnOrGroupSpec, ColumnSpec} from '@xh/hoist/cmp/grid';
-import {PlainObject} from '@xh/hoist/core';
+import type {ColumnOrGroupSpec, ColumnSpec} from '@xh/hoist/cmp/grid';
+import type {PlainObject} from '@xh/hoist/core';
 import {dateRenderer, numberRenderer} from '@xh/hoist/format';
 import {cloneDeep} from 'lodash';
 

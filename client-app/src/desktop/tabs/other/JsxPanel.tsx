@@ -2,12 +2,12 @@ import {hoistCmp} from '@xh/hoist/core';
 import {codeInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
 import './JsxPanel.scss';
 
 export const jsxPanel = hoistCmp.factory(() =>
     wrapper({
-        title: 'JSX',
+        title: 'Factories vs. JSX',
         icon: Icon.code(),
         description: [
             'JSX is the XML-like extension to Javascript typically used to specify and',

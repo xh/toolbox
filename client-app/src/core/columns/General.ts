@@ -1,5 +1,5 @@
 import {boolCheck} from '@xh/hoist/cmp/grid';
-import {ColumnSpec} from '@xh/hoist/cmp/grid';
+import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 
 export const nameCol: ColumnSpec = {
     field: {name: 'name', type: 'string'},

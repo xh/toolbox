@@ -1,6 +1,6 @@
 import {boolCheck} from '@xh/hoist/cmp/grid';
 import {numberRenderer, percentRenderer} from '@xh/hoist/format';
-import {ColumnSpec} from '@xh/hoist/cmp/grid';
+import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 
 const unitColOpts: ColumnSpec = {
     headerName: 'Units',

@@ -1,4 +1,4 @@
-import {PlainObject} from '@xh/hoist/core';
+import type {PlainObject} from '@xh/hoist/core';
 import {throwIf} from '@xh/hoist/utils/js';
 
 /**

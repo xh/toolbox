@@ -2,15 +2,14 @@ import {creates, hoistCmp, lookup, HoistModel, managed, XH} from '@xh/hoist/core
 import {grid} from '@xh/hoist/cmp/grid';
 import {DashViewModel} from '@xh/hoist/desktop/cmp/dash/DashViewModel';
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {activeCol} from '../../../../core/columns/General';
+import {cityCol, companyCol} from '../../../../core/columns/Demographics';
 import {
-    activeCol,
-    cityCol,
-    companyCol,
     profitLossCol,
     tradeDateCol,
     tradeVolumeCol,
     winLoseCol
-} from '../../../../core/columns';
+} from '../../../../core/columns/Trades';
 import {DashCanvasViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {colChooserButton, modalToggleButton} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';

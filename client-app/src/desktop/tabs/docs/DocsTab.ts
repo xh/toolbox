@@ -1,19 +1,20 @@
 import {badge} from '@xh/hoist/cmp/badge';
+import {clipboardMenuItem} from '@xh/hoist/cmp/clipboard';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hbox, hframe, hspacer, placeholder, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dockContainer} from '@xh/hoist/desktop/cmp/dock';
 import {textArea, textInput} from '@xh/hoist/desktop/cmp/input';
+import {menuButton} from '@xh/hoist/desktop/cmp/menu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {menu, menuItem, popover, tooltip} from '@xh/hoist/kit/blueprint';
+import {tooltip} from '@xh/hoist/kit/blueprint';
 import {pluralize} from '@xh/hoist/utils/js';
 import {useEffect, useRef} from 'react';
 import {docContent} from '../../../core/docs/DocContent';
 import {DocsPanelModel} from './DocsPanelModel';
-import {DocService} from '../../../core/svc/DocService';
 import './DocsTab.scss';
 
 /**
@@ -138,7 +139,7 @@ const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
                 : placeholder(Icon.skull(), 'No results found.');
         }
 
-        const docService = DocService.instance;
+        const docService = XH.docService;
 
         return div({
             className: 'tb-docs__search-results',
@@ -220,7 +221,7 @@ const searchPanel = hoistCmp.factory<DocsPanelModel>({
 const breadcrumb = hoistCmp.factory<DocsPanelModel>({
     render({model}) {
         const {activeCategory, activeDoc, activeSource, sections, activeSection} = model,
-            docService = DocService.instance;
+            docService = XH.docService;
 
         if (!activeCategory || !activeDoc || !activeSource) return null;
 
@@ -239,77 +240,58 @@ const breadcrumb = hoistCmp.factory<DocsPanelModel>({
                 }),
                 span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()}),
                 // Category dropdown - scoped to the active source's categories
-                popover({
-                    position: 'bottom-left',
+                menuButton({
+                    className: 'tb-docs__breadcrumb-btn',
+                    icon: model.getCategoryIcon(activeCategory.id),
+                    text: activeCategory.title,
                     minimal: true,
-                    item: button({
-                        className: 'tb-docs__breadcrumb-btn',
-                        icon: model.getCategoryIcon(activeCategory.id),
-                        text: activeCategory.title,
-                        minimal: true
-                    }),
-                    content: menu(
-                        ...model.activeSourceCategories.map(cat =>
-                            menuItem({
-                                text: cat.title,
-                                icon: model.getCategoryIcon(cat.id),
-                                active: cat.id === activeCategory.id,
-                                onClick: () => model.navigateToCategory(activeSource, cat.id)
-                            })
-                        )
-                    )
+                    menuItems: model.activeSourceCategories.map(cat => ({
+                        text: cat.title,
+                        icon: model.getCategoryIcon(cat.id),
+                        active: cat.id === activeCategory.id,
+                        actionFn: () => model.navigateToCategory(activeSource, cat.id)
+                    }))
                 }),
                 span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()}),
                 // Doc dropdown
-                popover({
-                    position: 'bottom-left',
+                menuButton({
+                    className: 'tb-docs__breadcrumb-btn',
+                    text: activeDoc.title,
                     minimal: true,
-                    item: button({
-                        className: 'tb-docs__breadcrumb-btn',
-                        text: activeDoc.title,
-                        minimal: true
-                    }),
-                    content: menu(
-                        ...model.activeCategorySiblings.map(doc =>
-                            menuItem({
-                                text: doc.title,
-                                active: doc.id === activeDoc.id && doc.source === activeDoc.source,
-                                onClick: () => model.navigateToDoc(doc.id, doc.source)
-                            })
-                        )
-                    )
+                    menuItems: model.activeCategorySiblings.map(doc => ({
+                        text: doc.title,
+                        active: doc.id === activeDoc.id && doc.source === activeDoc.source,
+                        actionFn: () => model.navigateToDoc(doc.id, doc.source)
+                    }))
                 }),
                 sections.length > 0
                     ? span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()})
                     : null,
                 sections.length > 0
-                    ? popover({
-                          position: 'bottom-left',
+                    ? menuButton({
+                          className: 'tb-docs__breadcrumb-btn tb-docs__breadcrumb-section',
+                          icon: Icon.list(),
+                          text: activeSectionTitle,
                           minimal: true,
-                          item: button({
-                              className: 'tb-docs__breadcrumb-btn tb-docs__breadcrumb-section',
-                              icon: Icon.list(),
-                              text: activeSectionTitle,
-                              minimal: true
-                          }),
-                          content: menu(
-                              ...sections.map(sec =>
-                                  menuItem({
-                                      text: sec.title,
-                                      active: sec.id === activeSection,
-                                      onClick: () => {
-                                          const el = document.getElementById(sec.id);
-                                          if (el) {
-                                              el.scrollIntoView({
-                                                  behavior: 'smooth',
-                                                  block: 'start'
-                                              });
-                                              model.setActiveSection(sec.id);
-                                          }
+                          menuItems: [
+                              ...sections.map(sec => ({
+                                  text: sec.title,
+                                  active: sec.id === activeSection,
+                                  actionFn: () => {
+                                      const el = document.getElementById(sec.id);
+                                      if (el) {
+                                          el.scrollIntoView({behavior: 'smooth', block: 'start'});
+                                          model.setActiveSection(sec.id);
                                       }
-                                  })
-                              )
-                          )
+                                  }
+                              })),
+                              '-',
+                              clipboardMenuItem({
+                                  text: 'Copy Link',
+                                  getCopyText: () => window.location.href,
+                                  successMessage: true
+                              })
+                          ]
                       })
                     : null
             ]
@@ -336,25 +318,18 @@ const examplesMenu = hoistCmp.factory<DocsPanelModel>({
             });
         }
 
-        return popover({
-            position: 'bottom-right',
+        return menuButton({
+            className: 'tb-docs__examples-btn',
+            icon: Icon.code(),
+            text: pluralize('Example', count, true),
             minimal: true,
-            item: button({
-                className: 'tb-docs__examples-btn',
-                icon: Icon.code(),
-                text: pluralize('Example', count, true),
-                minimal: true,
-                rightIcon: Icon.chevronDown()
-            }),
-            content: menu(
-                ...activeDocExamples.map(ex =>
-                    menuItem({
-                        text: ex.title,
-                        icon: Icon.openExternal(),
-                        onClick: () => XH.navigate(ex.route)
-                    })
-                )
-            )
+            rightIcon: Icon.chevronDown(),
+            menuPosition: 'bottom-right',
+            menuItems: activeDocExamples.map(ex => ({
+                text: ex.title,
+                icon: Icon.openExternal(),
+                actionFn: () => XH.navigate(ex.route)
+            }))
         });
     }
 });

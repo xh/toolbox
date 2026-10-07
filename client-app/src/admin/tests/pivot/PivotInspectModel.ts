@@ -1,6 +1,8 @@
-import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
-import {Cube, PivotPath, PivotQuery, PivotView, Store} from '@xh/hoist/data';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import type {PivotPath, PivotQuery, PivotView} from '@xh/hoist/data';
+import {Cube, Store} from '@xh/hoist/data';
+import {action, bindable, observable, observableRef} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 
 /**
@@ -16,24 +18,24 @@ import {isEmpty} from 'lodash';
  */
 export class PivotInspectModel extends HoistModel {
     /** 1 pivot dimension (region), or 2 (region then sector) to materialize pivot totals. */
-    @bindable pivotDepth: number = 1;
+    @bindable accessor pivotDepth: number = 1;
 
     /** Drop one record so a cell is unpopulated - it must read null, not undefined or zero. */
-    @bindable sparse = false;
+    @bindable accessor sparse = false;
 
     /** Publish the value-totals row. */
-    @bindable includeRoot = true;
+    @bindable accessor includeRoot = true;
 
     /** Expose leaf records as tree children under their innermost group. */
-    @bindable includeLeaves = false;
+    @bindable accessor includeLeaves = false;
 
-    @observable queryJson = '';
-    @observable rawJson = '';
-    @observable rowsJson = '';
-    @observable pathsJson = '';
-    @observable cellFieldsJson = '';
-    @observable storeJson = '';
-    @observable.ref status = '';
+    @observable accessor queryJson = '';
+    @observable accessor rawJson = '';
+    @observable accessor rowsJson = '';
+    @observable accessor pathsJson = '';
+    @observable accessor cellFieldsJson = '';
+    @observable accessor storeJson = '';
+    @observableRef accessor status = '';
 
     @managed private cube: Cube;
     @managed private view: PivotView;
@@ -43,7 +45,6 @@ export class PivotInspectModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         // Reaction rather than per-control onChange: those fire before the bound value commits, so a
         // rebuild triggered from one reads the previous config.

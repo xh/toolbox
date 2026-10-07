@@ -1,8 +1,11 @@
-import {PivotGridModel, PivotSort} from '@xh/hoist/cmp/pivotgrid';
-import {HoistModel, HSide, managed, PlainObject, VSide, XH} from '@xh/hoist/core';
-import {Cube, CubeFieldSpec, PivotView} from '@xh/hoist/data';
+import type {PivotSort} from '@xh/hoist/cmp/pivotgrid';
+import {PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
+import type {HSide, PlainObject, VSide} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import type {CubeFieldSpec, PivotView} from '@xh/hoist/data';
+import {Cube} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {bindable, bindableRef, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {isEmpty, uniq} from 'lodash';
 import {generateLeaves, getProfile, tickLeaves} from './PivotBenchData';
 
@@ -22,34 +25,33 @@ export class PivotGridTestModel extends HoistModel {
     static PIVOT_DIMS = ['regionCore', 'assetClass'];
     static VALUE_FIELDS = ['pnl', 'mktVal', 'quantity'];
 
-    @bindable.ref groupBy: string[] = ['fund', 'strategy'];
-    @bindable.ref pivotBy: string[] = ['regionCore', 'assetClass'];
-    @bindable.ref valueFields: string[] = ['pnl'];
-    @bindable includeRoot = true;
-    @bindable includeLeaves = false;
-    @bindable excludeEmptyPivotValues = false;
-    @bindable leafCount = 5000;
+    @bindableRef accessor groupBy: string[] = ['fund', 'strategy'];
+    @bindableRef accessor pivotBy: string[] = ['regionCore', 'assetClass'];
+    @bindableRef accessor valueFields: string[] = ['pnl'];
+    @bindable accessor includeRoot = true;
+    @bindable accessor includeLeaves = false;
+    @bindable accessor excludeEmptyPivotValues = false;
+    @bindable accessor leafCount = 5000;
 
     /** Fixed at Store construction, so flipping it rebuilds the Cube and everything downstream. */
-    @bindable patchRecordSets = false;
+    @bindable accessor patchRecordSets = false;
 
     /** Applied to the outermost pivot dimension only - enough to see it work. */
-    @bindable pivotSort: PivotSort = null;
+    @bindable accessor pivotSort: PivotSort = null;
 
-    @observable.ref status = '';
-    @observable rebuilding = false;
+    @observableRef accessor status = '';
+    @observable accessor rebuilding = false;
 
     @managed private cube: Cube;
     // Observable so the panel re-renders and the status reaction re-tracks on a rebuild.
-    @managed @observable.ref view: PivotView;
-    @managed @observable.ref pivotGridModel: PivotGridModel;
+    @managed @observableRef accessor view: PivotView;
+    @managed @observableRef accessor pivotGridModel: PivotGridModel;
 
     private leaves: PlainObject[] = [];
     private tickGen = 0;
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.addReaction(
             {

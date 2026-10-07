@@ -1,5 +1,5 @@
 import {Icon} from '@xh/hoist/icon';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 
 export type InputCategory = 'Text & Code' | 'Numeric' | 'Date & Time' | 'Choice' | 'Boolean';
 
@@ -110,6 +110,13 @@ export const INPUT_CATALOG: InputCatalogEntry[] = [
         description: 'Buttons as a value, with icons and intents.',
         route: `${R}.buttonGroupInput`,
         icon: () => Icon.gridPanel()
+    },
+    {
+        name: 'RadioCardInput',
+        category: 'Choice',
+        description: 'Large cards with visual previews, one selected.',
+        route: `${R}.radioCardInput`,
+        icon: () => Icon.layout()
     },
     {
         name: 'RadioInput',

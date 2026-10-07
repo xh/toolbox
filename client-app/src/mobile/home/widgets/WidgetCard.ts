@@ -1,8 +1,9 @@
 import {div, filler, hbox} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistProps} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import classNames from 'classnames';
-import {ReactElement, ReactNode} from 'react';
+import type {ReactElement, ReactNode} from 'react';
 import './WidgetCard.scss';
 
 export interface WidgetCardProps extends HoistProps {

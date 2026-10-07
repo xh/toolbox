@@ -5,7 +5,7 @@ import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {span} from '@xh/hoist/cmp/layout';
 import {fmtCompactDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {every, isEmpty} from 'lodash';
 import {createRef} from 'react';
@@ -20,11 +20,11 @@ export class TodoPanelModel extends HoistModel {
 
     @bindable
     @persist
-    showCompleted = false;
+    accessor showCompleted = false;
 
     @bindable
     @persist
-    showGroups = true;
+    accessor showGroups = true;
 
     @managed
     gridModel: GridModel;
@@ -84,7 +84,6 @@ export class TodoPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.gridModel = this.createGridModel();
 

@@ -1,5 +1,5 @@
 import {numberRenderer} from '@xh/hoist/format';
-import {ColumnSpec, ColumnRenderer} from '@xh/hoist/cmp/grid';
+import type {ColumnSpec, ColumnRenderer} from '@xh/hoist/cmp/grid';
 
 const fullNameRenderer: ColumnRenderer = (v, {record}) =>
     record ? `${record.data.firstName} ${record.data.lastName}` : '';

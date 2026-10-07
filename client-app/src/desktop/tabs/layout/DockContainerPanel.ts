@@ -3,8 +3,9 @@ import {box, br, frame, p, placeholder} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {DockContainerModel, dockContainer} from '@xh/hoist/desktop/cmp/dock';
-import {sampleGrid, wrapper, wrapperAction} from '../../common';
-import {errorWidget} from './widgets';
+import {sampleGrid} from '../../common/grid/SampleGrid';
+import {wrapper, wrapperAction} from '../../common/Wrapper';
+import {errorWidget} from './widgets/ErrorWidget';
 
 export const dockContainerPanel = hoistCmp.factory({
     model: creates(() => DockContainerPanelModel),

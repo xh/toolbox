@@ -1,5 +1,6 @@
 import {hbox, input, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistProps} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {
     numberInput,
     segmentedControl,
@@ -9,7 +10,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {range} from 'lodash';
-import {wrapper, wrapperOption} from '../../../common';
+import {wrapper, wrapperOption} from '../../../common/Wrapper';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
 import './Formats.scss';

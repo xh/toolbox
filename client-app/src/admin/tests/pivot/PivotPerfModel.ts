@@ -1,13 +1,16 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
-import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
-import {Cube, CubeFieldSpec, PivotView, Store, View} from '@xh/hoist/data';
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import type {CubeFieldSpec, PivotView, View} from '@xh/hoist/data';
+import {Cube, Store} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {bindable, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {wait, waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {throwIf} from '@xh/hoist/utils/js';
-import {generateLeaves, PivotProfile} from './PivotBenchData';
+import type {PivotProfile} from './PivotBenchData';
+import {generateLeaves} from './PivotBenchData';
 
 /**
  * Comprehensive performance and memory matrix for `PivotView` / `PivotGridModel`, with a plain
@@ -101,16 +104,16 @@ export interface PerfResult extends PlainObject {
 
 export class PivotPerfModel extends HoistModel {
     /** Measure each config twice - data layer alone, then with a GridModel bound. */
-    @bindable withGrid = true;
-    @bindable withoutGrid = true;
+    @bindable accessor withGrid = true;
+    @bindable accessor withoutGrid = true;
     /** Reps for the repeatable metrics (ticks). Structural ops are single-shot by nature. */
-    @bindable reps = 3;
+    @bindable accessor reps = 3;
 
-    @observable running = false;
-    @observable status: string = null;
+    @observable accessor running = false;
+    @observable accessor status: string = null;
 
     /** Grid under test, rendered by the panel - ag-Grid does not exist until it mounts. */
-    @observable.ref activeGrid: GridModel = null;
+    @observableRef accessor activeGrid: GridModel = null;
 
     private seq = 0;
 
@@ -251,11 +254,6 @@ export class PivotPerfModel extends HoistModel {
             }
         ]
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     async runAllAsync() {
         await this.runConfigsAsync(PERF_CONFIGS);

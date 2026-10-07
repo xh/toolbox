@@ -1,32 +1,25 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
-import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
-import {
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import type {
     AggregatorToken,
     BucketSpecFn,
-    Cube,
     CubeFieldSpec,
-    flattenFilter,
-    getCubeLeaves,
     PivotQueryConfig,
     PivotView,
     QueryConfig,
-    Store,
     View,
     ViewRowData
 } from '@xh/hoist/data';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {Cube, flattenFilter, getCubeLeaves, Store} from '@xh/hoist/data';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 import {castArray, difference, isEmpty, isEqual, uniq} from 'lodash';
 import {generateLeaves, getProfile, tickLeaves} from './PivotBenchData';
-import {
-    checkCellStore,
-    checkPivotView,
-    comparePivotViews,
-    PivotCheck,
-    RefAggKind
-} from './PivotViewCheck';
+import type {PivotCheck, RefAggKind} from './PivotViewCheck';
+import {checkCellStore, checkPivotView, comparePivotViews} from './PivotViewCheck';
 
 interface Scenario {
     id: string;
@@ -422,17 +415,17 @@ function boolCheck(name: string, ok: boolean, detail?: string): PivotCheck {
 }
 
 export class PivotViewTestModel extends HoistModel {
-    @bindable tickPct = 2;
+    @bindable accessor tickPct = 2;
 
     /**
      * Run every Cube and connected Store on {@link PatchableRecordSet}. The whole suite is expected to
      * pass either way - the flag changes how record sets are derived, not what they hold - so a check
      * that only fails with it on is a bug in the incremental path.
      */
-    @bindable patchRecordSets = false;
+    @bindable accessor patchRecordSets = false;
     // Bindable, not observable: `running` is observed and is set outside an action below - Hoist's
     // bindable setter wraps in one, which `enforceActions: 'observed'` requires.
-    @bindable running = false;
+    @bindable accessor running = false;
 
     @managed
     gridModel: GridModel = new GridModel({
@@ -469,11 +462,6 @@ export class PivotViewTestModel extends HoistModel {
 
     get checkCount(): number {
         return this.gridModel.store.allRecords.length;
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     async runAllAsync() {
