@@ -351,6 +351,7 @@ it before committing.
 ```bash
 ./gradlew bootRun     # Start Grails server on port 8080
 ./gradlew console     # Grails interactive console
+./gradlew test        # Spock unit tests in src/test/groovy (see hoist-core's docs/testing.md)
 ```
 
 ### Local Development
