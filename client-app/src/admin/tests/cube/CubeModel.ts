@@ -1,14 +1,15 @@
-import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
-import {Cube} from '@xh/hoist/data';
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {WeightedAverageAggregator, Cube} from '@xh/hoist/data';
 import {fmtThousands} from '@xh/hoist/format';
-import {makeObservable, observable} from '@xh/hoist/mobx';
+import {observableRef} from '@xh/hoist/mobx';
 import {times} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {PctTotalAggregator} from './PctTotalAggregator';
-import {CubeTestModel} from './CubeTestModel';
+import type {CubeTestModel} from './CubeTestModel';
 
 export class CubeModel extends HoistModel {
-    @managed @observable.ref cube: Cube;
+    @managed @observableRef accessor cube: Cube;
     @managed orders: PlainObject[] = [];
 
     parent: CubeTestModel;
@@ -19,7 +20,6 @@ export class CubeModel extends HoistModel {
 
     constructor(parent) {
         super();
-        makeObservable(this);
         this.parent = parent;
         this.cube = this.createCube();
 
@@ -96,7 +96,11 @@ export class CubeModel extends HoistModel {
                 {name: 'dir', displayName: 'Direction', isDimension: true},
 
                 {name: 'quantity', aggregator: 'SUM', canAggregateFn: isInstrument},
-                {name: 'price', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
+                {
+                    name: 'price',
+                    aggregator: new WeightedAverageAggregator('quantity'),
+                    canAggregateFn: isInstrument
+                },
 
                 {name: 'commission', aggregator: 'SUM'},
                 {name: 'pctCommission', aggregator: new PctTotalAggregator()},

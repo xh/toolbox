@@ -12,15 +12,17 @@
 import {XH} from '@xh/hoist/core';
 import {when} from '@xh/hoist/mobx';
 
-import {ContactService} from './examples/contact/svc/ContactService';
-import {GitHubService} from './core/svc/GitHubService';
-import {PortfolioService} from './core/svc/PortfolioService';
-import {TaskService} from './examples/todo/TaskService';
+import type {ContactService} from './examples/contact/svc/ContactService';
+import type {DocService} from './core/svc/DocService';
+import type {GitHubService} from './core/svc/GitHubService';
+import type {PortfolioService} from './core/svc/PortfolioService';
+import type {TaskService} from './examples/todo/TaskService';
 
 declare module '@xh/hoist/core' {
     // Merge interface with XHApi class to include injected services.
     export interface XHApi {
         contactService: ContactService;
+        docService: DocService;
         gitHubService: GitHubService;
         portfolioService: PortfolioService;
         taskService: TaskService;
@@ -42,11 +44,9 @@ declare module '@xh/hoist/core' {
 // you must provide your own license
 //-----------------------------------------------------------------
 import {installAgGrid} from '@xh/hoist/kit/ag-grid';
-import {ModuleRegistry, provideGlobalGridOptions} from 'ag-grid-community';
+import {ModuleRegistry} from 'ag-grid-community';
 import {LicenseManager} from 'ag-grid-enterprise';
 import {AgGridReact} from 'ag-grid-react';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-balham.css';
 
 // 1) Standard community modules - required for all Hoist Apps.
 import {
@@ -122,16 +122,14 @@ ModuleRegistry.registerModules([
     TextFilterModule
 ]);
 
-// 4) Development only - turns AG Grid's terse numeric error codes into full messages, notably when
-// a required module is missing. AG Grid recommends omitting it from production builds, so this is
-// gated on the build-time `xhIsDevelopmentMode` constant (not `XH.isDevelopmentMode`, a runtime
-// read) - the block is dropped at build time, leaving the module out of the prod bundle.
-import {ValidationModule} from 'ag-grid-community';
+// 4) Development only - turns AG Grid's terse numeric error codes into full console messages, with
+// its on-grid overlay left off. Gated on the build-time `xhIsDevelopmentMode` constant (not
+// `XH.isDevelopmentMode`, a runtime read), so the call drops out of prod builds.
+import {enableDevValidations} from 'ag-grid-community';
 if (xhIsDevelopmentMode) {
-    ModuleRegistry.registerModules([ValidationModule]);
+    enableDevValidations({showOverlayOn: [], throwOn: [], suppress: []});
 }
 
-provideGlobalGridOptions({theme: 'legacy'});
 installAgGrid(AgGridReact as any, ClientSideRowModelModule.version);
 
 when(

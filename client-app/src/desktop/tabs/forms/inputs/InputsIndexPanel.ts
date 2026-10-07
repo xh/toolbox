@@ -1,5 +1,6 @@
 import {filler, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistProps, Intent, XH} from '@xh/hoist/core';
+import type {HoistProps, Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     buttonGroupInput,
@@ -11,6 +12,7 @@ import {
     jsonInput,
     numberInput,
     picker,
+    radioCardInput,
     radioInput,
     segmentedControl,
     select,
@@ -21,24 +23,19 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed, makeObservable} from '@xh/hoist/mobx';
+import {bindable, bindableRef, computed} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {pluralize} from '@xh/hoist/utils/js';
 import {sortBy} from 'lodash';
-import {ReactElement} from 'react';
-import {usStates} from '../../../../core/data';
-import {
-    demoGallery,
-    demoGalleryTile,
-    demoPanel,
-    demoSection,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../../common';
-import {INPUT_CATALOG, INPUT_CATEGORIES, InputCatalogEntry} from './InputCatalog';
+import type {ReactElement} from 'react';
+import {usStates} from '../../../../core/data/USStates';
+import {demoGallery, demoGalleryTile, demoPanel, demoSection} from '../../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
+import type {InputCatalogEntry} from './InputCatalog';
+import {INPUT_CATALOG, INPUT_CATEGORIES} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import './InputsIndexPanel.scss';
+import {chartThumb} from './RadioCardPreviews';
 
 export const inputsIndexPanel = hoistCmp.factory({
     displayName: 'InputsIndexPanel',
@@ -235,6 +232,17 @@ const TILE_INPUTS: Record<string, (m: InputsIndexModel) => ReactElement> = {
                 button({icon: Icon.chartBar(), text: 'Bar', value: 'bar'})
             ]
         }),
+    // Two cards fit the tile on one row. Shares `chartType` with the ButtonGroupInput tile - its
+    // 'bar' choice leaves no card selected here.
+    RadioCardInput: m =>
+        radioCardInput({
+            bind: 'chartType',
+            disabled: m.disabled,
+            options: [
+                {value: 'linear', label: 'Linear', preview: chartThumb('line')},
+                {value: 'area', label: 'Area', preview: chartThumb('area')}
+            ]
+        }),
     RadioInput: m =>
         radioInput({
             bind: 'side',
@@ -267,24 +275,24 @@ const SEEDS = {
 };
 
 class InputsIndexModel extends InputDemoModel {
-    @bindable filter = '';
-    @bindable groupByCategory = true;
-    @bindable showInputs = true;
+    @bindable accessor filter = '';
+    @bindable accessor groupByCategory = true;
+    @bindable accessor showInputs = true;
 
-    @bindable text: string = SEEDS.text;
-    @bindable textArea: string = SEEDS.textArea;
-    @bindable json: string = SEEDS.json;
-    @bindable code: string = SEEDS.code;
-    @bindable number: number = SEEDS.number;
-    @bindable slider: number = SEEDS.slider;
-    @bindable.ref date: LocalDate = SEEDS.date;
-    @bindable state: string = SEEDS.state;
-    @bindable.ref states: string[] = SEEDS.states;
-    @bindable segment: string = SEEDS.segment;
-    @bindable chartType: string = SEEDS.chartType;
-    @bindable side: string = SEEDS.side;
-    @bindable intent: Intent = SEEDS.intent;
-    @bindable checked: boolean = SEEDS.checked;
+    @bindable accessor text: string = SEEDS.text;
+    @bindable accessor textArea: string = SEEDS.textArea;
+    @bindable accessor json: string = SEEDS.json;
+    @bindable accessor code: string = SEEDS.code;
+    @bindable accessor number: number = SEEDS.number;
+    @bindable accessor slider: number = SEEDS.slider;
+    @bindableRef accessor date: LocalDate = SEEDS.date;
+    @bindable accessor state: string = SEEDS.state;
+    @bindableRef accessor states: string[] = SEEDS.states;
+    @bindable accessor segment: string = SEEDS.segment;
+    @bindable accessor chartType: string = SEEDS.chartType;
+    @bindable accessor side: string = SEEDS.side;
+    @bindable accessor intent: Intent = SEEDS.intent;
+    @bindable accessor checked: boolean = SEEDS.checked;
 
     get inputSeeds() {
         return SEEDS;
@@ -299,10 +307,5 @@ class InputsIndexModel extends InputDemoModel {
                       it.name.toLowerCase().includes(q) || it.description.toLowerCase().includes(q)
               )
             : INPUT_CATALOG;
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 }

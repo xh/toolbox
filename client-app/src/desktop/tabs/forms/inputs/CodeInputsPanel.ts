@@ -1,17 +1,13 @@
+import {autocompletion, completeFromList} from '@codemirror/autocomplete';
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {isValidJson} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {codeInput, jsonInput, JsonInputProps, switchInput} from '@xh/hoist/desktop/cmp/input';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {
-    demoFrame,
-    demoGrid,
-    demoPlayground,
-    demoRow,
-    fmtDemoConfig,
-    wrapperOption
-} from '../../../common';
+import type {JsonInputProps} from '@xh/hoist/desktop/cmp/input';
+import {codeInput, jsonInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {bindable} from '@xh/hoist/mobx';
+import {demoFrame, demoGrid, demoPlayground, demoRow, fmtDemoConfig} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';
@@ -158,6 +154,20 @@ export const codeInputsPanel = hoistCmp.factory({
                     })
                 }),
                 demoRow({
+                    label: 'Autocomplete',
+                    info: 'extensions: [autocompletion(...)] - Ctrl-Space or type to complete',
+                    item: codeInput({
+                        bind: 'sql',
+                        ...ambientProps,
+                        language: 'sql',
+                        extensions: [
+                            autocompletion({override: [completeFromList(SQL_OPERATIONS)]})
+                        ],
+                        height: 140,
+                        width: '100%'
+                    })
+                }),
+                demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
                     item: jsonInput({
@@ -225,6 +235,8 @@ const TOOLBOX_JSON = JSON.stringify(
     null,
     2
 );
+const SQL_OPERATIONS = ['SELECT', 'FROM', 'WHERE', 'GROUP BY', 'ORDER BY', 'LIMIT', 'JOIN'];
+const SAMPLE_SQL = 'SELECT name, version\nFROM apps\n';
 const SAMPLE_CODE = "const model = new FormModel({\n    fields: [{name: 'email'}]\n});";
 
 const SEEDS = {
@@ -233,24 +245,26 @@ const SEEDS = {
     code: SAMPLE_CODE,
     readonlyCode: SAMPLE_CODE,
     styledCode: SAMPLE_CODE,
+    sql: SAMPLE_SQL,
     disabledJson: TOOLBOX_JSON
 };
 
 class CodeInputsPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgAutoFormat = true;
-    @bindable pgSearch = true;
-    @bindable pgToolbar = false;
-    @bindable pgFullscreen = true;
-    @bindable pgWrap = false;
+    @bindable accessor pgAutoFormat = true;
+    @bindable accessor pgSearch = true;
+    @bindable accessor pgToolbar = false;
+    @bindable accessor pgFullscreen = true;
+    @bindable accessor pgWrap = false;
 
     // Inputs
-    @bindable playground: string = SEEDS.playground;
-    @bindable json: string = SEEDS.json;
-    @bindable code: string = SEEDS.code;
-    @bindable readonlyCode: string = SEEDS.readonlyCode;
-    @bindable styledCode: string = SEEDS.styledCode;
-    @bindable disabledJson: string = SEEDS.disabledJson;
+    @bindable accessor playground: string = SEEDS.playground;
+    @bindable accessor json: string = SEEDS.json;
+    @bindable accessor code: string = SEEDS.code;
+    @bindable accessor readonlyCode: string = SEEDS.readonlyCode;
+    @bindable accessor styledCode: string = SEEDS.styledCode;
+    @bindable accessor sql: string = SEEDS.sql;
+    @bindable accessor disabledJson: string = SEEDS.disabledJson;
 
     @managed
     override formModel = new FormModel({
@@ -277,7 +291,6 @@ class CodeInputsPanelModel extends InputDemoModel {
 
     constructor() {
         super({commitOnChangeDefault: true});
-        makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

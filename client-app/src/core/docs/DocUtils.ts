@@ -1,5 +1,5 @@
-import {DocService} from '../svc/DocService';
-import {DocEntry, DocSection} from './types';
+import {XH} from '@xh/hoist/core';
+import type {DocEntry, DocSection} from './types';
 
 // --- Source repo tokens (matching `$HR`/`$HC` url prefixes) -> doc viewer source names. ---
 const DOC_SOURCE_TOKENS: Record<string, string> = {
@@ -59,7 +59,7 @@ export function resolveDocLink(currentDoc: DocEntry, href: string): DocEntry | u
     const cleanHref = href.split('#')[0];
     if (!cleanHref) return undefined;
 
-    const docService = DocService.instance;
+    const docService = XH.docService;
 
     // Resolve the relative path from the current doc's directory.
     const currentDir = currentDoc.id.substring(0, currentDoc.id.lastIndexOf('/') + 1);

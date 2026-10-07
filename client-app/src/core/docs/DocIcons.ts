@@ -1,7 +1,7 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faReact} from '@fortawesome/free-brands-svg-icons';
 import {Icon} from '@xh/hoist/icon';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 
 // Register the React brand icon used for the hoist-react source (brand glyphs are opt-in).
 library.add(faReact);

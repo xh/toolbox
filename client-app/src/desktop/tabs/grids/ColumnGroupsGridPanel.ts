@@ -3,11 +3,10 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {
-    sampleColumnGroupsGrid,
     SampleColumnGroupsGridModel,
-    wrapper,
-    wrapperOption
-} from '../../common';
+    sampleColumnGroupsGrid
+} from '../../common/grid/SampleColumnGroupsGrid';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 
 export const columnGroupsGridPanel = hoistCmp.factory({
     model: creates(SampleColumnGroupsGridModel),
@@ -23,6 +22,10 @@ export const columnGroupsGridPanel = hoistCmp.factory({
                 '`groupId` property, which must be unique within the `GridModel`. Column groups in',
                 "Hoist React are also 'sealed', meaning that columns may be reordered *within* the",
                 'group in which they are defined but not broken out from them.',
+                '',
+                'The `Demographics` group here is collapsible - click its header to expand it. Its',
+                'columns each set `groupShowMode` to appear only when the group is `expanded` or',
+                '`collapsed`, and the group itself sets `collapsed: true` to start collapsed.',
                 '',
                 'This grid also persists its state (column order, sizing, and visibility) to the',
                 "browser's local storage."

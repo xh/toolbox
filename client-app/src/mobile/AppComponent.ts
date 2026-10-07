@@ -1,11 +1,12 @@
-import {hoistCmp, XH, uses, HoistUser} from '@xh/hoist/core';
+import type {HoistUser} from '@xh/hoist/core';
+import {hoistCmp, XH, uses} from '@xh/hoist/core';
 import {img} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {navigator} from '@xh/hoist/mobile/cmp/navigator';
 import {Icon} from '@xh/hoist/icon';
-import {profilePic} from '../core/cmp';
+import {profilePic} from '../core/cmp/ProfilePic';
 import {AppModel} from './AppModel';
 import {navBlade} from './cmp/navBlade/NavBlade';
 // @ts-ignore

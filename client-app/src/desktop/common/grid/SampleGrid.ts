@@ -1,7 +1,8 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, vframe} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {BoxProps, hoistCmp, HoistProps, uses} from '@xh/hoist/core';
+import type {BoxProps, HoistProps} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {colAutosizeButton, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {panel} from '@xh/hoist/desktop/cmp/panel';

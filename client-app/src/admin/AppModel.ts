@@ -1,50 +1,36 @@
 import {AppModel as HoistAdminAppModel} from '@xh/hoist/admin/AppModel';
-import {TabConfig} from '@xh/hoist/cmp/tab';
-import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
-import {InitContext, managed, XH} from '@xh/hoist/core';
+import type {TabConfig} from '@xh/hoist/cmp/tab';
+import type {InitContext} from '@xh/hoist/core';
+import {XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {
-    asyncLoopPanel,
-    columnChooserTestPanel,
-    storeColumnFilterPanel,
-    viewColumnFilterPanel,
-    CubeTestPanel,
-    dataViewTestPanel,
-    FetchApiTestPanel,
-    GridTestPanel,
-    gridScrolling,
-    LocalDateTestPanel,
-    PanelResizingTestPanel,
-    SelectTestPanel,
-    viewManagerTestPanel,
-    WebSocketTestPanel
-} from './tests';
+import {viewManagers} from './viewManagers';
+import {CubeTestPanel} from './tests/cube/CubeTestPanel';
+import {EmailTestPanel} from './tests/email/EmailTestPanel';
+import {FetchApiTestPanel} from './tests/fetch/FetchApiTestPanel';
+import {GridTestPanel} from './tests/grids/GridTestPanel';
+import {LocalDateTestPanel} from './tests/localDate/LocalDateTestPanel';
+import {PanelResizingTestPanel} from './tests/panels/PanelResizingTestPanel';
+import {SelectTestPanel} from './tests/select/SelectTestPanel';
+import {WebSocketTestPanel} from './tests/websocket/WebSocketTestPanel';
+import {asyncLoopPanel} from './tests/asyncLoops/AsyncLoopPanel';
+import {columnChooserTestPanel} from './tests/columnChooser/ColumnChooserTestPanel';
+import {dataViewTestPanel} from './tests/dataview/DataViewTestPanel';
+import {gridScrolling} from './tests/gridScrolling/GridScrolling';
+import {storeColumnFilterPanel} from './tests/columnFilters/store/StoreColumnFilterPanel';
+import {viewColumnFilterPanel} from './tests/columnFilters/view/ViewColumnFilterPanel';
+import {viewManagerTestPanel} from './tests/viewmanager/ViewManagerTestPanel';
 
 export class AppModel extends HoistAdminAppModel {
     static instance: AppModel;
-
-    /** Named parameter sets for the Grid test panel - see GridTestModel. */
-    @managed gridTestViewManager: ViewManagerModel;
 
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
         await XH.installServicesAsync([PortfolioService], ctx);
 
-        // Constructed here, in initAsync, so we can await the async factory and ensure that all
-        // saved configs are loaded and the desired one preselected before GridTestModel binds its
-        // settings to this model within its constructor.
-        this.gridTestViewManager = await ViewManagerModel.createAsync(
-            {
-                type: 'gridTestConfig',
-                typeDisplayName: 'config',
-                // Benchmark configs should only change when explicitly saved - a silent auto-save
-                // would quietly re-baseline a config mid-comparison.
-                enableAutoSave: false,
-                manageGlobal: XH.getUser().isHoistAdmin
-            },
-            ctx
-        );
+        // Awaited here, in initAsync, so that all saved configs are loaded and the desired one
+        // preselected before GridTestModel binds its settings within its constructor.
+        await viewManagers.initAsync(ctx);
     }
 
     //------------------------
@@ -61,6 +47,7 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'columnChooser', path: '/columnChooser'},
                     {name: 'cube', path: '/cube'},
                     {name: 'dataView', path: '/dataView'},
+                    {name: 'email', path: '/email'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
                     {name: 'grid', path: '/grid'},
                     {name: 'gridScrolling', path: '/gridScrolling'},
@@ -94,6 +81,7 @@ export class AppModel extends HoistAdminAppModel {
                         },
                         {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
                         {id: 'dataView', content: dataViewTestPanel},
+                        {id: 'email', title: 'Email', content: EmailTestPanel},
                         {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
                         {id: 'grid', title: 'Grid', content: GridTestPanel},
                         {id: 'gridScrolling', content: gridScrolling},

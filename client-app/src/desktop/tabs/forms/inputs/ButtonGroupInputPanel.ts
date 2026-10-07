@@ -1,26 +1,23 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {creates, hoistCmp, Intent, managed} from '@xh/hoist/core';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {
-    buttonGroupInput,
-    ButtonGroupInputProps,
-    intentInput,
-    switchInput
-} from '@xh/hoist/desktop/cmp/input';
+import type {ButtonGroupInputProps} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, intentInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
     demoPlayground,
     demoRow,
     fmtDemoConfig,
-    raw,
-    wrapperOption
-} from '../../../common';
+    raw
+} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';
@@ -242,20 +239,20 @@ const SEEDS = {
 
 class ButtonGroupInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgOutlined = false;
-    @bindable pgMulti = false;
-    @bindable pgEnableClear = false;
-    @bindable pgIntent: Intent = null;
+    @bindable accessor pgOutlined = false;
+    @bindable accessor pgMulti = false;
+    @bindable accessor pgEnableClear = false;
+    @bindable accessor pgIntent: Intent = null;
 
     // Inputs
-    @bindable.ref playground: string | string[] = SEEDS.playground;
-    @bindable plain: string = SEEDS.plain;
-    @bindable iconsOnly: string = SEEDS.iconsOnly;
-    @bindable textOnly: string = SEEDS.textOnly;
-    @bindable outlinedPrimary: string = SEEDS.outlinedPrimary;
-    @bindable disabledChart: string = SEEDS.disabledChart;
-    @bindable tbarChart: string = SEEDS.tbarChart;
-    @bindable tbarView: string = SEEDS.tbarView;
+    @bindableRef accessor playground: string | string[] = SEEDS.playground;
+    @bindable accessor plain: string = SEEDS.plain;
+    @bindable accessor iconsOnly: string = SEEDS.iconsOnly;
+    @bindable accessor textOnly: string = SEEDS.textOnly;
+    @bindable accessor outlinedPrimary: string = SEEDS.outlinedPrimary;
+    @bindable accessor disabledChart: string = SEEDS.disabledChart;
+    @bindable accessor tbarChart: string = SEEDS.tbarChart;
+    @bindable accessor tbarView: string = SEEDS.tbarView;
 
     @managed
     override formModel = new FormModel({
@@ -277,7 +274,6 @@ class ButtonGroupInputPanelModel extends InputDemoModel {
 
     constructor() {
         super({commitOnChangeDefault: null});
-        makeObservable(this);
         // Playground value type flips between string and string[] with multi-select - reset it
         // whenever that toggle changes, since a stale value would no longer match the input's
         // mode.

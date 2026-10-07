@@ -1,23 +1,20 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {creates, hoistCmp, HSide, managed} from '@xh/hoist/core';
+import type {HSide} from '@xh/hoist/core';
+import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {
-    radioInput,
-    RadioInputProps,
-    segmentedControl,
-    switchInput
-} from '@xh/hoist/desktop/cmp/input';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import type {RadioInputProps} from '@xh/hoist/desktop/cmp/input';
+import {radioInput, segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {bindable} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
     demoPlayground,
     demoRow,
     fmtDemoConfig,
-    raw,
-    wrapperOption
-} from '../../../common';
+    raw
+} from '../../../common/Demo';
+import {wrapperOption} from '../../../common/Wrapper';
 import {inputEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import {inputDemoPage} from './InputDemoPage';
@@ -186,15 +183,15 @@ const SEEDS = {
 
 class RadioInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable pgInline = false;
-    @bindable pgLabelSide: HSide = 'right';
+    @bindable accessor pgInline = false;
+    @bindable accessor pgLabelSide: HSide = 'right';
 
     // Inputs
-    @bindable playground: string = SEEDS.playground;
-    @bindable stacked: string = SEEDS.stacked;
-    @bindable orderType: string = SEEDS.orderType;
-    @bindable disabledClass: string = SEEDS.disabledClass;
-    @bindable tbarClass: string = SEEDS.tbarClass;
+    @bindable accessor playground: string = SEEDS.playground;
+    @bindable accessor stacked: string = SEEDS.stacked;
+    @bindable accessor orderType: string = SEEDS.orderType;
+    @bindable accessor disabledClass: string = SEEDS.disabledClass;
+    @bindable accessor tbarClass: string = SEEDS.tbarClass;
 
     @managed
     override formModel = new FormModel({
@@ -216,7 +213,6 @@ class RadioInputPanelModel extends InputDemoModel {
 
     constructor() {
         super({commitOnChangeDefault: null});
-        makeObservable(this);
         // Show the failing rules on load - FormField displays messages only after validation runs.
         this.formModel.validateAsync();
     }

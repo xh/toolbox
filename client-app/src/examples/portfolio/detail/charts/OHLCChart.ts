@@ -1,5 +1,6 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
-import {creates, hoistCmp, HoistModel, LoadSpec, lookup, managed, XH} from '@xh/hoist/core';
+import type {LoadSpec} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {errorMessage} from '@xh/hoist/cmp/error';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';

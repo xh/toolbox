@@ -3,7 +3,7 @@ import {hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
 
 export const inspectorPanel = hoistCmp.factory({
     render() {

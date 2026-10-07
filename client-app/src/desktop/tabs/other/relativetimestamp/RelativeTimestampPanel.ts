@@ -1,5 +1,6 @@
 import {box} from '@xh/hoist/cmp/layout';
-import {relativeTimestamp, RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
+import type {RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {dateInput, numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
@@ -12,11 +13,9 @@ import {
     demoRow,
     demoSection,
     fmtDemoConfig,
-    raw,
-    wrapper,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../../common';
+    raw
+} from '../../../common/Demo';
+import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import {RelativeTimestampPanelModel} from './RelativeTimestampPanelModel';
 import './RelativeTimestampPanel.scss';
 

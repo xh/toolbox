@@ -1,20 +1,13 @@
-import {hoistCmp, HoistProps, uses} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {isEmpty} from 'lodash';
-import {ReactElement, ReactNode} from 'react';
-import {ToolboxLinkProps} from '../../../../core/cmp/ToolboxLink';
-import {
-    demoGrid,
-    demoPanel,
-    demoSection,
-    demoToolbar,
-    wrapper,
-    wrapperAction,
-    wrapperOption,
-    wrapperOptionGroup
-} from '../../../common';
-import {InputCatalogEntry} from './InputCatalog';
+import type {ReactElement, ReactNode} from 'react';
+import type {ToolboxLinkProps} from '../../../../core/cmp/ToolboxLink';
+import {demoGrid, demoPanel, demoSection, demoToolbar} from '../../../common/Demo';
+import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
+import type {InputCatalogEntry} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 
 export interface InputDemoPageProps extends HoistProps<InputDemoModel> {

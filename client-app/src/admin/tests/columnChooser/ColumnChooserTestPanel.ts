@@ -1,21 +1,22 @@
-import {ColChooserMode, ColumnOrGroupSpec, ColumnSpec, grid, GridModel} from '@xh/hoist/cmp/grid';
+import type {ColChooserMode, ColumnOrGroupSpec, ColumnSpec} from '@xh/hoist/cmp/grid';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {creates, hoistCmp, HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
+import type {PlainObject} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {button, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, jsonInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed, makeObservable, observable} from '@xh/hoist/mobx';
-import {addColumnDialog, AddColumnDialogModel, AddColumnHost} from './AddColumnDialog';
+import {bindable, computed, observableRef} from '@xh/hoist/mobx';
+import type {AddColumnHost} from './AddColumnDialog';
+import {addColumnDialog, AddColumnDialogModel} from './AddColumnDialog';
+import type {CustomColumn, GridSize, GroupOption} from './generateColumns';
 import {
     collectChooserGroups,
     collectGroups,
-    CustomColumn,
     generateGridData,
-    GridSize,
-    GroupOption,
     mergeCustomColumns
 } from './generateColumns';
 
@@ -87,13 +88,13 @@ export const columnChooserTestPanel = hoistCmp.factory({
 });
 
 class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
-    @bindable size: GridSize = 'medium';
-    @bindable chooserMode: ColChooserMode = 'docked';
-    @bindable lockColumnGroups = true;
-    @bindable enableColumnPinning = true;
+    @bindable accessor size: GridSize = 'medium';
+    @bindable accessor chooserMode: ColChooserMode = 'docked';
+    @bindable accessor lockColumnGroups = true;
+    @bindable accessor enableColumnPinning = true;
 
-    @observable.ref customColumns: CustomColumn[] = [];
-    @managed @observable.ref gridModel: GridModel;
+    @observableRef accessor customColumns: CustomColumn[] = [];
+    @managed @observableRef accessor gridModel: GridModel;
     @managed addColumnModel = new AddColumnDialogModel(this);
 
     private baseColumns: ColumnOrGroupSpec[] = [];
@@ -123,7 +124,6 @@ class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
 
     constructor() {
         super();
-        makeObservable(this);
         this.gridModel = this.createGridModel();
 
         this.addReaction({

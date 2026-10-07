@@ -1,4 +1,5 @@
-import {ColumnSpec, dateTime, localDate} from '@xh/hoist/cmp/grid';
+import type {ColumnSpec} from '@xh/hoist/cmp/grid';
+import {dateTime, localDate} from '@xh/hoist/cmp/grid';
 import {fmtDate, fmtNumber, numberRenderer} from '@xh/hoist/format';
 
 export const symbolCol: ColumnSpec = {
