@@ -633,7 +633,7 @@ export class AppModel extends BaseAppModel {
                         ...switcher,
                         groups: [
                             {key: 'concepts', title: 'Concepts'},
-                            {key: 'messaging', title: 'Messaging'},
+                            {key: 'dialogs', title: 'Dialogs & Alerts'},
                             {key: 'format', title: 'Formatting'}
                         ]
                     },
@@ -659,7 +659,7 @@ export class AppModel extends BaseAppModel {
                             {id: 'banners', content: bannersPanel},
                             {id: 'messages', content: messagesPanel},
                             {id: 'toast', content: toastPanel}
-                        ].map(it => ({...it, group: 'messaging'})),
+                        ].map(it => ({...it, group: 'dialogs'})),
                         ...[
                             {id: 'formatDates', content: dateFormatsPanel},
                             {id: 'formatNumbers', content: numberFormatsPanel}
