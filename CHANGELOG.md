@@ -18,8 +18,14 @@
 
 * Added `StoreFilterField` and `GridFindField` to the desktop `ZoneGrid` demo, and bound the mobile demo's filter to its `ZoneGridModel`. Both search the fields mapped to the grid's zones, using hoist-react's new ZoneGrid support.
 
+### Bug Fixes
+
+* Fixed the doc viewer giving the third and later repeats of an H2 heading the same section id, which sent deep links to the wrong section.
+* Fixed the GitHub `Commit` type, which named the server's `changedFiles` field `changeFiles`.
+
 ### Technical
 
+* Added Vitest unit tests for app models and services, run against hoist-react's fake hoist-core via `@xh/hoist/test-support` and the `configureVitest()` preset from hoist-dev-utils. Specs sit beside their source as `*.spec.ts`, and CI, snapshot and release builds now run `pnpm test`.
 * Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
 * Added a `clusterMemberCount` status monitor that fails when an instance sees fewer cluster members than expected - catching tasks that are down or have failed to join the cluster.
 

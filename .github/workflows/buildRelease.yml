@@ -160,10 +160,10 @@ jobs:
         # `pnpm typecheck` is a distinct gate from `pnpm lint` - linting never reports TypeScript
         # compiler errors. Both run here, so the release build type-checks the app against the
         # exact `@xh/hoist` version it ships with.
-        - name: Install dependencies and build client app
+        - name: Install dependencies, test, and build client app
           env:
               VERSION: ${{ inputs.version }}
-          run: cd client-app && pnpm install --frozen-lockfile && pnpm lint && pnpm typecheck && XH_APP_VERSION="$VERSION" XH_APP_BUILD="${{ needs.prepare.outputs.build-tag }}" pnpm build
+          run: cd client-app && pnpm install --frozen-lockfile && pnpm lint && pnpm typecheck && pnpm test && XH_APP_VERSION="$VERSION" XH_APP_BUILD="${{ needs.prepare.outputs.build-tag }}" pnpm build
 
         - name: Copy client build into Docker context
           run: cp -r client-app/build/ docker/nginx/build/

@@ -327,7 +327,10 @@ pnpm lint                 # Run ESLint + Stylelint
 pnpm lint:code            # ESLint only
 pnpm lint:styles          # Stylelint only
 pnpm typecheck            # Type check (tsc --noEmit)
+pnpm test                 # Unit tests (Vitest)
+pnpm test:watch           # Unit tests in watch mode
 pnpm startWithHoist       # Dev server using local sibling hoist-react
+pnpm testWithHoist        # Unit tests against local sibling hoist-react
 ```
 
 Linting and type-checking are separate concerns, and neither subsumes the other - run both. ESLint
@@ -385,6 +388,24 @@ defines an entry point, and its filename (minus the extension) becomes the URL p
 
 **Example apps**: `/contact`, `/todo`, `/portfolio`, `/news`, `/recalls`, `/fileManager`,
 `/weather` - each at `http://localhost:3000/<name>`.
+
+### Unit Tests
+
+Vitest specs sit beside their source as `Foo.spec.ts`. They boot Hoist's real client services
+against the fake hoist-core in `@xh/hoist/test-support`, configured by `client-app/vitest.config.mts`
+via `configureVitest()` from hoist-dev-utils. CI, snapshot and release builds all run `pnpm test`.
+
+- `src/test/toolboxFake.ts` seeds the fake with Toolbox's client-visible configs and prefs from
+  `BootStrap.groovy`. Keep it in sync in the same change.
+- Serve app endpoints from a spec with `hoistCore.route()`. A request the fake does not serve fails
+  the test.
+- Test app logic - model rules, derived state, transforms and the requests services send. Leave
+  rendering, layout and Hoist itself out.
+- Fake state persists across the tests in a file, and each file boots once. Undo a test's changes
+  in that test, and use a separate file per role set or user.
+
+Read the "Unit Tests in an App" section of hoist-react's `docs/unit-testing.md` before writing
+specs. The MCP doc id is `docs/unit-testing.md`.
 
 ### Pre-commit Hooks
 Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged files) and conditionally the TypeScript compiler (`pnpm typecheck`) if TS/JS/package files are staged. Note that `tsc` type-checks against the installed `@xh/hoist` in `node_modules`, not a local sibling checkout, unless the `paths` block in `client-app/tsconfig.json` is uncommented for inline hoist-react work (see [`docs/running-locally.md`](docs/running-locally.md)).
