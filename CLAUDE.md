@@ -395,7 +395,7 @@ Vitest specs sit beside their source as `Foo.spec.ts`. They boot Hoist's real cl
 against the fake hoist-core in `@xh/hoist/test-support`, configured by `client-app/vitest.config.mts`
 via `configureVitest()` from hoist-dev-utils. CI, snapshot and release builds all run `pnpm test`.
 
-- `src/test/toolboxFake.ts` seeds the fake with Toolbox's client-visible configs and prefs from
+- `src/test-support/toolboxFake.ts` seeds the fake with Toolbox's client-visible configs and prefs from
   `BootStrap.groovy`. Keep it in sync in the same change.
 - Serve app endpoints from a spec with `hoistCore.route()`. A request the fake does not serve fails
   the test.

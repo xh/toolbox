@@ -25,6 +25,6 @@ export default defineConfig(
         appVersion: pkg.version,
         // Compile the custom package as the build does - see rsbuild.config.mjs.
         extraIncludePaths: [path.resolve('node_modules/@xh/package-template')],
-        setupFiles: ['./src/test/setup.ts']
+        setupFiles: ['./src/test-support/setup.ts']
     })
 );

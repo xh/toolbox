@@ -2,7 +2,7 @@ import type {FakeHoistCore, PrefEntry} from '@xh/hoist/test-support';
 
 /**
  * Seed the fake hoist-core with Toolbox's own server state, so a spec boots against what the
- * Toolbox server gives a client. Called once per spec file from `src/test/setup.ts`, before boot.
+ * Toolbox server gives a client. Called once per spec file from `src/test-support/setup.ts`, before boot.
  *
  * Configs and prefs mirror the client-visible specs in `grails-app/init/io/xh/toolbox/BootStrap.groovy`,
  * at their server defaults. Update this file in the same change as BootStrap.
