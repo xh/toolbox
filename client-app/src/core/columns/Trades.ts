@@ -1,6 +1,6 @@
 import {ExcelFormat, localDate, tags} from '@xh/hoist/cmp/grid';
 import {hbox, vbox} from '@xh/hoist/cmp/layout';
-import {dateRenderer, millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
+import {dateFormatter, millionsFormatter, numberFormatter, fmtNumberTooltip} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 
@@ -15,7 +15,7 @@ export const profitLossCol: ColumnSpec = {
     align: 'right',
     absSort: true,
     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
-    renderer: numberRenderer({
+    formatter: numberFormatter({
         precision: 0,
         ledger: true,
         colorSpec: true
@@ -61,7 +61,7 @@ export const tradeVolumeCol: ColumnSpec = {
                   ]
               })
             : fmtNumberTooltip(volume),
-    renderer: millionsRenderer({
+    formatter: millionsFormatter({
         precision: 1,
         label: true
     }),
@@ -99,5 +99,5 @@ export const dayOfWeekCol: ColumnSpec = {
     displayName: 'Day of Week',
     chooserDescription: 'Used for testing storeFilterField matching on rendered dates.',
     width: 130,
-    renderer: dateRenderer({fmt: 'dddd'})
+    formatter: dateFormatter({fmt: 'dddd'})
 };
