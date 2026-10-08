@@ -6,8 +6,6 @@ import type {
     AggregatorToken,
     BucketSpecFn,
     CubeFieldSpec,
-    PivotQueryConfig,
-    PivotView,
     QueryConfig,
     View,
     ViewRowData
@@ -134,7 +132,7 @@ const SCENARIOS: Scenario[] = [
     },
     {
         id: 'noPivots',
-        label: 'Empty pivotDimensions degenerates to a plain View',
+        label: 'Empty pivot dimensions degenerate to a plain View',
         groupBy: ['fund', 'strategy'],
         pivotBy: [],
         valueFields: ['pnl'],
@@ -217,13 +215,13 @@ const QUERY_SCENARIO: Scenario = {
 };
 
 /**
- * `PivotView.createStore` declares and maintains cell fields itself, so nothing here re-declares
+ * `View.createStore` declares and maintains cell fields itself, so nothing here re-declares
  * them - which is the whole point. Three groupings over 10 funds so a structural change confined to
  * one fund leaves most of the tree untouched, making record retention observable.
  */
 const STORE_FACTORY_SCENARIO: Scenario = {
     id: 'storeFactory',
-    label: 'PivotView.createStore - field sync, connection, record retention',
+    label: 'View.createStore - field sync, connection, record retention',
     groupBy: ['fund', 'strategy', 'sector'],
     pivotBy: ['region'],
     valueFields: ['pnl', 'tag'],
@@ -265,7 +263,7 @@ const DIM_TRANSITION_SCENARIO: Scenario = {
     leaves: 2000
 };
 
-/** `(dimensions, pivotDimensions)` states walked by {@link DIM_TRANSITION_SCENARIO}, in order. */
+/** `(dimensions, pivot.dimensions)` states walked by {@link DIM_TRANSITION_SCENARIO}, in order. */
 const DIM_TRANSITIONS: Array<{label: string; groupBy: string[]; pivotBy: string[]}> = [
     {label: 'initial', groupBy: ['fund', 'strategy', 'sector'], pivotBy: ['region']},
     {label: 'pivot deepened', groupBy: ['fund', 'strategy'], pivotBy: ['region', 'sector']},
@@ -524,14 +522,14 @@ export class PivotViewTestModel extends HoistModel {
             // from a probe result - the same ordering PivotGridModel faces observing `cellFields`.
             let store: Store = null;
             if (scenario.withCellStore) {
-                const probe = cube.createPivotView({query: queryConf});
+                const probe = cube.createView({query: queryConf});
                 store = this.buildCellStore(probe, scenario);
                 XH.safeDestroy(probe);
             } else if (scenario.withStore) {
                 store = this.buildStore(valueFields);
             }
 
-            const view = cube.createPivotView({query: queryConf, stores: store, connect: true});
+            const view = cube.createView({query: queryConf, stores: store, connect: true});
 
             const refLeaves = scenario.excludeEmptyPivotValues
                 ? leaves.filter(l => pivotBy.every(d => l[d] != null && l[d] !== ''))
@@ -616,7 +614,7 @@ export class PivotViewTestModel extends HoistModel {
             }
 
             // The check the incremental path cannot cheat: same data, built from nothing.
-            const rebuilt = cube.createPivotView({query: queryConf});
+            const rebuilt = cube.createView({query: queryConf});
             this.record(scenario, [
                 comparePivotViews(
                     view,
@@ -630,7 +628,7 @@ export class PivotViewTestModel extends HoistModel {
             XH.safeDestroy(rebuilt);
 
             // A *pivot* dimension value change is structural too - it re-partitions the cells, so
-            // `PivotView.hasDimOrBucketUpdates` must refuse it. Values are reshuffled among those
+            // `View.hasDimOrBucketUpdates` must refuse it. Values are reshuffled among those
             // already present, so the path tree is unchanged and only the routing is under test.
             if (!isEmpty(pivotBy)) {
                 const dim = pivotBy[pivotBy.length - 1],
@@ -721,7 +719,7 @@ export class PivotViewTestModel extends HoistModel {
         await cube.loadDataAsync(leaves);
 
         try {
-            const view = cube.createPivotView({query: queryConf, connect: true}),
+            const view = cube.createView({query: queryConf, connect: true}),
                 check = (label: string, refLeaves: PlainObject[]) =>
                     this.record(
                         scenario,
@@ -748,7 +746,7 @@ export class PivotViewTestModel extends HoistModel {
             view.setFilter(null);
             check('filter: after widen', leaves);
 
-            const rebuilt = cube.createPivotView({query: queryConf});
+            const rebuilt = cube.createView({query: queryConf});
             this.record(scenario, [
                 comparePivotViews(view, rebuilt, valueFields, 'filter: matches a full rebuild')
             ]);
@@ -789,11 +787,11 @@ export class PivotViewTestModel extends HoistModel {
 
         try {
             const fund = uniq(leaves.map(l => l.fund)).sort()[0],
-                queryConf: PivotQueryConfig = {
+                queryConf: QueryConfig = {
                     ...this.buildQueryConf(scenario),
                     filter: {field: 'fund', op: '!=', value: [fund]}
                 },
-                view = cube.createPivotView({query: queryConf, connect: true}),
+                view = cube.createView({query: queryConf, connect: true}),
                 {query} = view;
 
             this.record(scenario, [
@@ -830,7 +828,7 @@ export class PivotViewTestModel extends HoistModel {
             ]);
 
             // A bare FilterTestFn is not an array or object, so a naive isEmpty() check drops it.
-            const fnView = cube.createPivotView({
+            const fnView = cube.createView({
                 query: {...this.buildQueryConf(scenario), filter: rec => rec.data.pnl > 0}
             });
 
@@ -857,7 +855,7 @@ export class PivotViewTestModel extends HoistModel {
     }
 
     /**
-     * `PivotView.createStore` declares a Field per cell field and re-declares them itself on every
+     * `View.createStore` declares a Field per cell field and re-declares them itself on every
      * structural change - nothing here does that, which is the whole point. Two connected stores on
      * one view also stand in for the two-`PivotGridModel`s-on-one-view case.
      *
@@ -876,7 +874,7 @@ export class PivotViewTestModel extends HoistModel {
         await cube.loadDataAsync(leaves);
 
         try {
-            const view = cube.createPivotView({query: queryConf, connect: true}),
+            const view = cube.createView({query: queryConf, connect: true}),
                 {experimental} = this,
                 live = view.createStore({connect: true, projectionOnly: false, experimental}),
                 proj = view.createStore({connect: true, experimental}),
@@ -1011,7 +1009,7 @@ export class PivotViewTestModel extends HoistModel {
         await cube.loadDataAsync(leaves);
 
         try {
-            const view = cube.createPivotView({query: queryConf, connect: true}),
+            const view = cube.createView({query: queryConf, connect: true}),
                 keysOf = () => view.result.cellFields.map(cf => cf.name),
                 pathKeys = () => view.result.paths.map(p => p.key);
 
@@ -1019,7 +1017,7 @@ export class PivotViewTestModel extends HoistModel {
                 pathKeysBefore = pathKeys();
 
             // Drop a value field. Every path key holds, so only the cell fields should move.
-            view.updateQuery({valueFields: [valueFields[0]]});
+            view.updateQuery({pivot: {...view.query.pivot, valueFields: [valueFields[0]]}});
 
             this.record(scenario, [
                 boolCheck(
@@ -1048,7 +1046,7 @@ export class PivotViewTestModel extends HoistModel {
             // it, and reports null for every cell of the restored column.
             this.tickMeasures(leaves, 1);
             await cube.updateDataAsync(leaves);
-            view.updateQuery({valueFields});
+            view.updateQuery({pivot: {...view.query.pivot, valueFields}});
             this.record(
                 scenario,
                 checkPivotView({
@@ -1063,7 +1061,7 @@ export class PivotViewTestModel extends HoistModel {
 
             // Relabel the empty segment. Its key is a fixed sentinel, so no key moves here either.
             const emptyBefore = view.result.paths.filter(p => p.isEmpty).map(p => p.label);
-            view.updateQuery({emptyPathLabel: '(none)'});
+            view.updateQuery({pivot: {...view.query.pivot, emptyPathLabel: '(none)'}});
             const emptyAfter = view.result.paths.filter(p => p.isEmpty).map(p => p.label);
 
             this.record(scenario, [
@@ -1097,7 +1095,7 @@ export class PivotViewTestModel extends HoistModel {
             fields = this.buildFields(scenario),
             // Every dimension any transition uses, so no transition gains a query field.
             allDims = uniq(DIM_TRANSITIONS.flatMap(t => [...t.groupBy, ...t.pivotBy])),
-            queryConf: PivotQueryConfig = {
+            queryConf: QueryConfig = {
                 ...this.buildQueryConf(scenario),
                 fields: uniq([...allDims, ...AGG_FIELDS, ...valueFields])
             };
@@ -1106,16 +1104,16 @@ export class PivotViewTestModel extends HoistModel {
         await cube.loadDataAsync(leaves);
 
         try {
-            const view = cube.createPivotView({query: queryConf, connect: true});
+            const view = cube.createView({query: queryConf, connect: true});
             let loads = 0,
                 patched = 0;
 
             for (let i = 0; i < DIM_TRANSITIONS.length; i++) {
                 const {label, groupBy, pivotBy} = DIM_TRANSITIONS[i],
-                    conf: PivotQueryConfig = {
+                    conf: QueryConfig = {
                         ...queryConf,
                         dimensions: groupBy,
-                        pivotDimensions: pivotBy
+                        pivot: {...queryConf.pivot, dimensions: pivotBy}
                     };
 
                 if (i) {
@@ -1130,7 +1128,10 @@ export class PivotViewTestModel extends HoistModel {
                     } else {
                         await cube.updateDataAsync(leaves);
                     }
-                    view.updateQuery({dimensions: groupBy, pivotDimensions: pivotBy});
+                    view.updateQuery({
+                        dimensions: groupBy,
+                        pivot: {...view.query.pivot, dimensions: pivotBy}
+                    });
                 }
 
                 this.record(
@@ -1145,7 +1146,7 @@ export class PivotViewTestModel extends HoistModel {
                     })
                 );
 
-                const rebuilt = cube.createPivotView({query: conf});
+                const rebuilt = cube.createView({query: conf});
                 this.record(scenario, [
                     comparePivotViews(
                         view,
@@ -1195,7 +1196,7 @@ export class PivotViewTestModel extends HoistModel {
         await cube.loadDataAsync(leaves);
 
         try {
-            const view = cube.createPivotView({query: queryConf, connect: true});
+            const view = cube.createView({query: queryConf, connect: true});
 
             this.record(scenario, [
                 boolCheck(
@@ -1219,7 +1220,7 @@ export class PivotViewTestModel extends HoistModel {
             // The tick that follows a leaf's stale `pivotParent` into a discarded cell.
             await this.tickAsync(scenario, leaves, cube, 1);
 
-            const flat = cube.createPivotView({query: {...queryConf, includeRoot: false}});
+            const flat = cube.createView({query: {...queryConf, includeRoot: false}});
             this.record(scenario, [
                 comparePivotViews(
                     view,
@@ -1278,7 +1279,7 @@ export class PivotViewTestModel extends HoistModel {
         await cube.loadDataAsync(leaves);
 
         try {
-            const view = cube.createPivotView({query: queryConf, connect: true}),
+            const view = cube.createView({query: queryConf, connect: true}),
                 model = new PivotGridModel({
                     view,
                     rowSummary: true,
@@ -1308,9 +1309,9 @@ export class PivotViewTestModel extends HoistModel {
                 ),
                 boolCheck(
                     "columns: row summaries bind the value fields' own names",
-                    view.query.valueFields.every(f => ids.includes(f.name)),
+                    view.query.pivot.valueFields.every(f => ids.includes(f.name)),
                     `missing [${difference(
-                        view.query.valueFields.map(f => f.name),
+                        view.query.pivot.valueFields.map(f => f.name),
                         ids
                     )}]`
                 ),
@@ -1650,7 +1651,7 @@ export class PivotViewTestModel extends HoistModel {
      * column that group rows and leaf rows both flow through, so a drill-down would push that call
      * site megamorphic for the whole grid. Own keys are the only observable proof either way.
      */
-    private checkLeafShape(view: PivotView): PivotCheck {
+    private checkLeafShape(view: View): PivotCheck {
         const check: PivotCheck = {
                 name: 'exposed leaves all share one own-key shape',
                 errors: [],
@@ -1688,7 +1689,7 @@ export class PivotViewTestModel extends HoistModel {
      * its group row's own child count - otherwise the reference comparison could be satisfied by a
      * copy of the group value.
      */
-    private checkCellChildCount(view: PivotView): PivotCheck {
+    private checkCellChildCount(view: View): PivotCheck {
         const names = view.result.cellFields
                 .filter(cf => cf.valueField.name === 'childCount' && cf.path.depth === 1)
                 .map(cf => cf.name),
@@ -1719,7 +1720,7 @@ export class PivotViewTestModel extends HoistModel {
     }
 
     /** Every cell field the view published, plus its row-meta and query fields, declared on `store`. */
-    private checkDeclaredFields(view: PivotView, store: Store, name: string): PivotCheck {
+    private checkDeclaredFields(view: View, store: Store, name: string): PivotCheck {
         const check: PivotCheck = {name, errors: [], checked: 0, maxDrift: 0},
             want = [
                 'cubeLabel',
@@ -1821,14 +1822,16 @@ export class PivotViewTestModel extends HoistModel {
      * `omitRedundantNodes` off so the visible tree maps 1:1 to group dimension prefixes, which is
      * what the reference walk assumes.
      */
-    private buildQueryConf(scenario: Scenario): PivotQueryConfig {
+    private buildQueryConf(scenario: Scenario): QueryConfig {
         const {pivotBy, valueFields} = scenario;
         return {
             ...this.buildPlainQueryConf(scenario),
-            pivotDimensions: pivotBy,
-            valueFields,
-            excludeEmptyPivotValues: scenario.excludeEmptyPivotValues,
-            maxPivotPaths: null
+            pivot: {
+                dimensions: pivotBy,
+                valueFields,
+                excludeEmptyPivotValues: scenario.excludeEmptyPivotValues,
+                maxPivotPaths: null
+            }
         };
     }
 
@@ -1869,7 +1872,7 @@ export class PivotViewTestModel extends HoistModel {
      * via a cloned template), a value above the field count makes every record sparse (defaults via a
      * shared prototype). Both must resolve an absent cell to null.
      */
-    private buildCellStore(view: PivotView, scenario: Scenario): Store {
+    private buildCellStore(view: View, scenario: Scenario): Store {
         const {cellFields} = view.result;
         return new Store({
             idSpec: 'id',

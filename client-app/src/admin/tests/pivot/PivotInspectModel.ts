@@ -1,12 +1,12 @@
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import type {PivotPath, PivotQuery, PivotView} from '@xh/hoist/data';
+import type {PivotPath, Query, View} from '@xh/hoist/data';
 import {Cube, Store} from '@xh/hoist/data';
 import {action, bindable, observable, observableRef} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 
 /**
- * A hand-sized `PivotView`, dumped as JSON at every stage so the whole pipeline can be read by eye.
+ * A hand-sized pivoted `View`, dumped as JSON at every stage so the whole pipeline can be read by eye.
  *
  * The data is eight records with values 10, 20, ... 80, which makes every aggregate verifiable by
  * mental arithmetic: on the one-pivot preset, Fund 1 / Strat A reads US 10, EU 20, Total 30, and the
@@ -38,7 +38,7 @@ export class PivotInspectModel extends HoistModel {
     @observableRef accessor status = '';
 
     @managed private cube: Cube;
-    @managed private view: PivotView;
+    @managed private view: View;
     @managed private store: Store;
     private leaves: PlainObject[] = [];
     private tickCount = 0;
@@ -65,8 +65,7 @@ export class PivotInspectModel extends HoistModel {
             dimensions = pivotDepth === 2 ? ['fund'] : ['fund', 'strategy'],
             query = {
                 dimensions,
-                pivotDimensions,
-                valueFields: ['pnl'],
+                pivot: {dimensions: pivotDimensions, valueFields: ['pnl']},
                 includeRoot,
                 includeLeaves
             };
@@ -87,7 +86,7 @@ export class PivotInspectModel extends HoistModel {
 
         // Two passes, because cell field names only exist once a view has run - exactly the ordering
         // PivotGridModel faces when it observes `result.cellFields` to declare its Store fields.
-        const probe = this.cube.createPivotView({query});
+        const probe = this.cube.createView({query});
         const cellFields = probe.result.cellFields;
         XH.safeDestroy(probe);
 
@@ -97,7 +96,7 @@ export class PivotInspectModel extends HoistModel {
             fields: cellFields.map(cf => ({name: cf.name, type: cf.valueField.type}))
         });
 
-        this.view = this.cube.createPivotView({query, stores: this.store, connect: true});
+        this.view = this.cube.createView({query, stores: this.store, connect: true});
 
         this.publish(`Built: ${this.leaves.length} records, ${cellFields.length} cell fields`);
     }
@@ -200,16 +199,17 @@ function json(value: any, replacer?: (key: string, value: any) => any): string {
 }
 
 /**
- * The resolved query as `PivotView` holds it - names rather than `CubeField`s, since each of those
+ * The resolved query as the View holds it - names rather than `CubeField`s, since each of those
  * references the whole Cube. `dimensions` is the row hierarchy and stays unconcatenated with
- * `pivotDimensions`; `fields` is the full aggregated set, of which `valueFields` are the measures
- * sliced across the pivot axis.
+ * `pivot.dimensions`; `fields` is the full aggregated set, of which `pivot.valueFields` are the
+ * measures sliced across the pivot axis.
  */
-function querySummary(query: PivotQuery): PlainObject {
+function querySummary(query: Query): PlainObject {
+    const {pivot} = query;
     return {
         dimensions: query.dimensions.map(f => f.name),
-        pivotDimensions: query.pivotDimensions.map(f => f.name),
-        valueFields: query.valueFields.map(f => f.name),
+        pivotDimensions: pivot.dimensions.map(f => f.name),
+        valueFields: pivot.valueFields.map(f => f.name),
         fields: query.fields.map(
             f => `${f.name}${f.aggregator ? ` (${f.aggregator.constructor.name})` : ''}`
         ),
@@ -218,9 +218,9 @@ function querySummary(query: PivotQuery): PlainObject {
         includeLeaves: query.includeLeaves,
         provideLeaves: query.provideLeaves,
         omitRedundantNodes: query.omitRedundantNodes,
-        emptyPathLabel: query.emptyPathLabel,
-        excludeEmptyPivotValues: query.excludeEmptyPivotValues,
-        maxPivotPaths: query.maxPivotPaths,
+        emptyPathLabel: pivot.emptyPathLabel,
+        excludeEmptyPivotValues: pivot.excludeEmptyPivotValues,
+        maxPivotPaths: pivot.maxPivotPaths,
         hasFilter: query.hasFilter,
         filter: query.filter?.toJSON?.() ?? null,
         lockFn: fnLabel(query.lockFn),

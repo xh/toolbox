@@ -1,7 +1,7 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import type {CubeFieldSpec, PivotView} from '@xh/hoist/data';
+import type {CubeFieldSpec, View} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable} from '@xh/hoist/mobx';
@@ -10,7 +10,7 @@ import type {PivotProfile} from './PivotBenchData';
 import {PROFILES, generateLeaves, tickLeaves} from './PivotBenchData';
 
 /**
- * Benchmark for the {@link PivotView} data layer against the acceptance gates.
+ * Benchmark for the {@link View} data layer against the acceptance gates.
  *
  * `build` is measured from raw data - Cube load plus view creation. Both tick metrics perturb a slice
  * of leaves and push them through a *connected* view: `deltaTick` submits only the changed records,
@@ -196,17 +196,19 @@ export class PivotViewBenchModel extends HoistModel {
     private async buildAsync(
         profile: PivotProfile,
         leaves: PlainObject[]
-    ): Promise<{cube: Cube; view: PivotView}> {
+    ): Promise<{cube: Cube; view: View}> {
         const cube = new Cube({fields: cubeFields(profile), idSpec: 'id'});
         await cube.loadDataAsync(leaves);
 
-        const view = cube.createPivotView({
+        const view = cube.createView({
             query: {
                 dimensions: profile.groupBy,
-                pivotDimensions: profile.pivotBy,
-                valueFields: profile.valueFields,
                 includeRoot: true,
-                maxPivotPaths: null
+                pivot: {
+                    dimensions: profile.pivotBy,
+                    valueFields: profile.valueFields,
+                    maxPivotPaths: null
+                }
             },
             connect: true
         });

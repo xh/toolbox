@@ -10,7 +10,7 @@ import {PivotGridTestModel, SUMMARY_H_OPTIONS, SUMMARY_V_OPTIONS} from './PivotG
 
 /**
  * A live PivotGrid with its config surface on two toolbars: the query above, the presentation below.
- * The split is the real one - query config lives on the PivotQuery, everything else on PivotGridModel.
+ * The split is the real one - query config lives on the Query, everything else on PivotGridModel.
  */
 export const PivotGridTestPanel = hoistCmp({
     displayName: 'PivotGridTestPanel',

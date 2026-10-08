@@ -19,7 +19,7 @@ const JSON_PROPS = {
 const SIDE_BY_SIDE_JSON_PROPS = {...JSON_PROPS, height: '100%'};
 
 /**
- * A small enough PivotView to check by hand, shown as JSON at every stage - raw records in, published
+ * A small enough pivoted View to check by hand, shown as JSON at every stage - raw records in, published
  * rows out, the pivot paths and synthetic Store fields between, and the records a Grid would bind to.
  */
 export const PivotInspectPanel = hoistCmp({
@@ -32,7 +32,7 @@ export const PivotInspectPanel = hoistCmp({
             item: vframe(
                 hframe(
                     panel({
-                        title: '1. PivotQuery, as the view resolved it',
+                        title: '1. Query, as the view resolved it',
                         icon: Icon.filter(),
                         width: 360,
                         item: jsonInput({value: model.queryJson, ...SIDE_BY_SIDE_JSON_PROPS})

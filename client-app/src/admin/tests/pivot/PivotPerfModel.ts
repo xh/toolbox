@@ -2,7 +2,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import type {CubeFieldSpec, PivotView, View} from '@xh/hoist/data';
+import type {CubeFieldSpec, PivotSpec, View} from '@xh/hoist/data';
 import {Cube, Store} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, observable, observableRef, runInAction} from '@xh/hoist/mobx';
@@ -13,7 +13,7 @@ import type {PivotProfile} from './PivotBenchData';
 import {generateLeaves} from './PivotBenchData';
 
 /**
- * Comprehensive performance and memory matrix for `PivotView` / `PivotGridModel`, with a plain
+ * Comprehensive performance and memory matrix for pivoted `View`s / `PivotGridModel`, with a plain
  * `View` + `GridModel` control at comparable record width.
  *
  * Read the reported numbers with three caveats, all of them earned the hard way:
@@ -27,7 +27,7 @@ import {generateLeaves} from './PivotBenchData';
  *   recording anything.
  */
 
-/** Dimension pools, disjoint by axis - `PivotQuery` rejects a field used as both. */
+/** Dimension pools, disjoint by axis - a pivot rejects a field used as both. */
 const GROUP_DIMS: Array<[string, number]> = [
         ['fund', 12],
         ['strategy', 25],
@@ -348,7 +348,7 @@ export class PivotPerfModel extends HoistModel {
         // 30s mount `waitFor`, most plausibly - must not leak its Cube, or every heap figure
         // measured after it in the session is wrong.
         let cube: Cube,
-            view: View | PivotView,
+            view: View,
             pivotGrid: PivotGridModel,
             controlGrid: GridModel,
             controlStore: Store;
@@ -364,12 +364,10 @@ export class PivotPerfModel extends HoistModel {
             // 2. View creation.
             const viewMs = time(() => {
                 view = pivotDims
-                    ? cube.createPivotView({
+                    ? cube.createView({
                           query: {
                               ...queryBase,
-                              pivotDimensions: pivotBy,
-                              valueFields: values,
-                              maxPivotPaths: null
+                              pivot: {dimensions: pivotBy, valueFields: values, maxPivotPaths: null}
                           },
                           connect: true
                       })
@@ -385,7 +383,7 @@ export class PivotPerfModel extends HoistModel {
                 gridMs = time(() => {
                     if (pivotDims) {
                         pivotGrid = new PivotGridModel({
-                            view: view as PivotView,
+                            view,
                             rowSummary: 'right',
                             gridConfig: {autosizeOptions: {mode: 'disabled'}}
                         });
@@ -431,7 +429,7 @@ export class PivotPerfModel extends HoistModel {
             // Captured here - the structural probes below deliberately add paths and would inflate them.
             const shape = {
                 rows: countRows(view),
-                cells: pivotDims ? (view as PivotView).result.cellFields.length : null,
+                cells: pivotDims ? view.result.cellFields.length : null,
                 cols: withGrid
                     ? (pivotGrid?.gridModel ?? controlGrid).getLeafColumns().length
                     : null
@@ -471,17 +469,19 @@ export class PivotPerfModel extends HoistModel {
                 newValueMs: number = null;
 
             if (pivotDims) {
-                const pv = view as PivotView;
+                const pv = view,
+                    repivot = (overrides: Partial<PivotSpec>) =>
+                        pv.updateQuery({pivot: {...pv.query.pivot, ...overrides}});
                 pivotChangeMs = await timeAsync(async () =>
-                    pv.updateQuery({pivotDimensions: pivotBy.slice(0, Math.max(1, pivotDims - 1))})
+                    repivot({dimensions: pivotBy.slice(0, Math.max(1, pivotDims - 1))})
                 );
-                pv.updateQuery({pivotDimensions: pivotBy});
+                repivot({dimensions: pivotBy});
 
                 if (valueFields > 1) {
                     valueChangeMs = await timeAsync(async () =>
-                        pv.updateQuery({valueFields: values.slice(0, valueFields - 1)})
+                        repivot({valueFields: values.slice(0, valueFields - 1)})
                     );
-                    pv.updateQuery({valueFields: values});
+                    repivot({valueFields: values});
                 }
 
                 // A brand-new pivot value: re-declares Store fields and rebuilds columns.

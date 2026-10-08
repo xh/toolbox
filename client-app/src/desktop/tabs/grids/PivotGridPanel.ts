@@ -2,7 +2,7 @@ import {filler, span} from '@xh/hoist/cmp/layout';
 import {pivotGrid, PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
 import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import type {PivotView} from '@xh/hoist/data';
+import type {View} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -18,7 +18,7 @@ export const pivotGridPanel = hoistCmp.factory({
             title: 'Pivot Grid',
             icon: Icon.gridPanel(),
             description: [
-                'The `PivotGrid` component renders a `PivotView` - a `Cube` query that slices its',
+                'The `PivotGrid` component renders a pivoted `View` - a `Cube` query that slices its',
                 'measures across a *pivot* axis, so extra dimensions become nested column groups',
                 'rather than more levels of row grouping.',
                 '',
@@ -26,7 +26,7 @@ export const pivotGridPanel = hoistCmp.factory({
                 'that would make an inefficient tree grouping, and keep the cardinality in the rows.',
                 '',
                 'All query configuration - groupings, pivot dimensions, measures - lives on the',
-                '`PivotQuery`. Apps reconfigure by calling `view.updateQuery()` and the grid follows.'
+                '`Query` under `pivot`. Apps reconfigure by calling `view.updateQuery()` and the grid follows.'
             ],
             links: [
                 {
@@ -39,12 +39,12 @@ export const pivotGridPanel = hoistCmp.factory({
                     notes: 'Presentation config - summaries, pivot sort, value column specs.'
                 },
                 {
-                    url: '$HR/data/cube/PivotView.ts',
+                    url: '$HR/data/cube/impl/PivotCells.ts',
                     notes: 'The data layer. Produces the cells this grid renders.'
                 },
                 {
-                    url: '$HR/data/cube/PivotQuery.ts',
-                    notes: 'Query spec - dimensions, pivotDimensions, valueFields.'
+                    url: '$HR/data/cube/Query.ts',
+                    notes: 'Query spec - `dimensions` plus `pivot.dimensions` and `pivot.valueFields`.'
                 }
             ],
             item: panel({
@@ -92,7 +92,7 @@ class PivotGridPanelModel extends HoistModel {
     @bindable accessor showSummaries = true;
 
     @managed cube: Cube;
-    @managed view: PivotView;
+    @managed view: View;
     @managed @observableRef accessor pivotGridModel: PivotGridModel;
 
     constructor() {
@@ -139,7 +139,7 @@ class PivotGridPanelModel extends HoistModel {
 
         // First load only - the view needs data before it can discover its pivot paths, and the
         // grid model binds to a view for life.
-        const view = this.cube.createPivotView({query: this.queryConfig(), connect: true});
+        const view = this.cube.createView({query: this.queryConfig(), connect: true});
         runInAction(() => {
             this.view = view;
             this.pivotGridModel = new PivotGridModel({
@@ -166,10 +166,9 @@ class PivotGridPanelModel extends HoistModel {
     private queryConfig() {
         return {
             dimensions: this.groupBy.split(','),
-            pivotDimensions: this.pivotBy.split(','),
             fields: ['fund', 'trader', 'model', 'region', 'sector', 'mktVal', 'pnl'],
-            valueFields: ['mktVal', 'pnl'],
-            includeRoot: true
+            includeRoot: true,
+            pivot: {dimensions: this.pivotBy.split(','), valueFields: ['mktVal', 'pnl']}
         };
     }
 }

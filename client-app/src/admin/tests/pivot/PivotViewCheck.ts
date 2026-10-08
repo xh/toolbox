@@ -1,16 +1,9 @@
 import type {PlainObject} from '@xh/hoist/core';
-import type {
-    PivotCellField,
-    PivotPath,
-    PivotViewResult,
-    Store,
-    View,
-    ViewRowData
-} from '@xh/hoist/data';
+import type {PivotCellField, PivotPath, Store, View, ViewRowData} from '@xh/hoist/data';
 import {isEmpty, isEqual, isNumber} from 'lodash';
 
 /**
- * Correctness assertions for {@link View} and {@link PivotView}, checked against values accumulated
+ * Correctness assertions for plain and pivoted {@link View}s, checked against values accumulated
  * directly from the raw leaf records. The unit suite in hoist-react
  * (`data/cube/impl/PivotStructure.spec.ts`) proves the structure combinatorics; this proves the parts
  * that need the live framework - real aggregators over real rows, cell projection onto row data, and
@@ -230,10 +223,10 @@ interface FlatPath {
     names: string[];
 }
 
-/** Pivot members of the result, absent on a plain View. */
+/** Pivot members of the result, empty on a plain View. */
 function pivotResult(view: View): {paths: PivotPath[]; cellFields: PivotCellField[]} {
-    const {paths, cellFields} = view.result as PivotViewResult;
-    return {paths: paths ?? [], cellFields: cellFields ?? []};
+    const {paths, cellFields} = view.result;
+    return {paths, cellFields};
 }
 
 /**

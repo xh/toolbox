@@ -2,7 +2,7 @@ import type {PivotSort} from '@xh/hoist/cmp/pivotgrid';
 import {PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
 import type {HSide, PlainObject, VSide} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import type {CubeFieldSpec, PivotView} from '@xh/hoist/data';
+import type {CubeFieldSpec, View} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, bindableRef, observable, observableRef, runInAction} from '@xh/hoist/mobx';
@@ -16,7 +16,7 @@ const PATCH_RATIO = 0.1;
  * A live `PivotGrid` with its whole config surface driven from a toolbar - the panel to reach for when
  * a question is "what does this look like", rather than "is this correct".
  *
- * Grouping and pivot dimensions come from disjoint pools, since `PivotQuery` rejects a field used as
+ * Grouping and pivot dimensions come from disjoint pools, since a pivot rejects a field used as
  * both. Everything on the query side goes through `view.updateQuery()`, which is the only way an app
  * reconfigures a pivot grid - `PivotGridModel` holds no query config and is bound to its view for life.
  */
@@ -44,7 +44,7 @@ export class PivotGridTestModel extends HoistModel {
 
     @managed private cube: Cube;
     // Observable so the panel re-renders and the status reaction re-tracks on a rebuild.
-    @managed @observableRef accessor view: PivotView;
+    @managed @observableRef accessor view: View;
     @managed @observableRef accessor pivotGridModel: PivotGridModel;
 
     private leaves: PlainObject[] = [];
@@ -112,7 +112,7 @@ export class PivotGridTestModel extends HoistModel {
             });
             await this.cube.loadDataAsync(this.leaves);
 
-            const view = this.cube.createPivotView({query: this.queryConfig(), connect: true}),
+            const view = this.cube.createView({query: this.queryConfig(), connect: true}),
                 pivotGridModel = new PivotGridModel({
                     view,
                     rowSummary: 'right',
@@ -174,7 +174,7 @@ export class PivotGridTestModel extends HoistModel {
     //------------------------
 
     private updateQuery() {
-        // PivotQuery rejects an empty `valueFields`, and the toolbar can transiently produce one.
+        // A pivot rejects an empty `valueFields`, and the toolbar can transiently produce one.
         if (isEmpty(this.valueFields)) return;
         this.view.updateQuery(this.queryConfig());
     }
@@ -184,13 +184,15 @@ export class PivotGridTestModel extends HoistModel {
         return {
             dimensions: groupBy,
             fields: this.cubeFields().map(it => it.name),
-            pivotDimensions: pivotBy,
-            valueFields,
             includeRoot,
             includeLeaves,
-            excludeEmptyPivotValues: this.excludeEmptyPivotValues,
             omitRedundantNodes: false,
-            maxPivotPaths: null
+            pivot: {
+                dimensions: pivotBy,
+                valueFields,
+                excludeEmptyPivotValues: this.excludeEmptyPivotValues,
+                maxPivotPaths: null
+            }
         };
     }
 
