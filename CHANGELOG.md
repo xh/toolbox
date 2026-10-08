@@ -22,10 +22,12 @@
 
 * Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
 * Added a `clusterMemberCount` status monitor that fails when an instance sees fewer cluster members than expected - catching tasks that are down or have failed to join the cluster.
+* Updated the Custom Package demo to `@xh/package-template` 4.0, now written in TypeScript for Hoist 88 and React 19. Its panel adds a click counter backed by a TC39-decorated model from the package.
 
 ### Libraries
 
 * typescript `5.9 → 7.0`
+* @xh/package-template `3.0 → 4.0`
 
 ## 11.0.0 - 2026-09-29
 

@@ -7,7 +7,7 @@
  * `readCliEnv()` helper, or through Rsbuild's own `--env-mode` flag as mapped below. Per-developer
  * defaults such as `XH_DEV_HOST` belong in a gitignored `.env.local`, which Rsbuild loads on every run.
  *
- * Toolbox demonstrates the use of a custom JS package (@xh/package-template) that is transpiled
+ * Toolbox demonstrates the use of a custom TS package (@xh/package-template) that is transpiled
  * and processed alongside the app and hoist-react code. Like hoist-react, this sample package is
  * left unbundled/uncompiled when published to npm so it can be processed in one shot and with the
  * same tooling as the app - hence the `extraIncludePaths` entry below. Apps that do NOT make use of
