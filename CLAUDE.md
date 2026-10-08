@@ -512,7 +512,7 @@ distinguishable from framework spans in the trace view.
 
 ### Frontend (`client-app/src/`)
 - **`apps/`** - Entry points for each app (app.ts, admin.ts, contact.ts, etc.). Each calls `XH.renderApp()`.
-- **`desktop/`** - Main desktop app: `AppModel.ts` (state) + `AppComponent.tsx` (UI), organized into `tabs/` (home, forms, grids, charts, layout, panels, other, examples).
+- **`desktop/`** - Main desktop app: `AppModel.ts` (state) + `AppComponent.tsx` (UI), organized into `tabs/` folders that mirror its top-level tabs (home, grids, layout, forms, components, mobile, system, docs, examples).
 - **`mobile/`** - Mobile app variant.
 - **`admin/`** - Admin console.
 - **`examples/`** - Standalone example applications (contact, todo, portfolio, news, recalls, filemanager).
