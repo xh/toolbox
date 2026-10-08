@@ -30,7 +30,7 @@ export interface Commit {
     isRelease: boolean;
     messageHeadline: string;
     messageBody: string;
-    changeFiles: number;
+    changedFiles: number;
     additions: number;
     deletions: number;
     url: string;

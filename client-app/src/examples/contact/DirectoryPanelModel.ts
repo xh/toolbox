@@ -26,7 +26,7 @@ export class DirectoryPanelModel extends HoistModel {
     /** known locations across all contacts. */
     @observableRef accessor locationList: string[] = [];
 
-    /**  tag(s) used to filter results. If multiple, recs must match all. */
+    /** Tag(s) used to filter results. If multiple, recs must match any one of them. */
     @bindableRef accessor tagFilters: string[] = [];
 
     @bindable accessor locationFilter: string;
