@@ -10,7 +10,7 @@ export const simpleRoutingPanel = hoistCmp.factory({
     model: creates(() => new SimpleRoutingPanelModel()),
 
     render() {
-        const routePath = '/app/other/simpleRouting/123',
+        const routePath = '/app/system/simpleRouting/123',
             routedUrl = `${window.location.origin}${routePath}`;
         return wrapper({
             title: 'Simple Routing',
@@ -60,7 +60,7 @@ export const simpleRoutingPanel = hoistCmp.factory({
 });
 
 class SimpleRoutingPanelModel extends HoistModel {
-    private readonly BASE_ROUTE = 'default.other.simpleRouting';
+    private readonly BASE_ROUTE = 'default.system.simpleRouting';
 
     @managed gridModel = new GridModel({
         columns: [{field: 'id'}, {field: 'company', flex: 1}]
@@ -113,12 +113,12 @@ class SimpleRoutingPanelModel extends HoistModel {
 
         if (selectedId) {
             XH.navigate(
-                'default.other.simpleRouting.recordId',
+                'default.system.simpleRouting.recordId',
                 {recordId: selectedId},
                 {replace: true} // avoids adding steps to browser history
             );
         } else {
-            XH.navigate('default.other.simpleRouting', {replace: true});
+            XH.navigate('default.system.simpleRouting', {replace: true});
         }
     }
 

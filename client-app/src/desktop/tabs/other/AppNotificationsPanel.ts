@@ -9,7 +9,7 @@ import {wrapper} from '../../common/Wrapper';
 
 export const appNotificationsPanel = hoistCmp.factory(() =>
     wrapper({
-        title: 'App Notifications',
+        title: 'Updates & Idle',
         icon: Icon.rocket(),
         description: [
             "Hoist surfaces important runtime events without interrupting the user's work. The",

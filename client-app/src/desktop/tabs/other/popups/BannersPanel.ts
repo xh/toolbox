@@ -24,7 +24,7 @@ export const bannersPanel = hoistCmp.factory({
         const {pgMessage, pgIcon, pgIntent, pgEnableClose} = model;
 
         return wrapper({
-            title: 'App Banners',
+            title: 'Banners',
             icon: Icon.flag(),
             description: [
                 'Banners are persistent, non-modal notifications that stay in view while the user',
@@ -36,7 +36,7 @@ export const bannersPanel = hoistCmp.factory({
                 'manage several independently.',
                 '',
                 '**Component** banners flag a state local to part of the app, such as stale data',
-                'in one grid, via `banner()` or the `banner` prop on a `Panel`. See Panels > Banner.'
+                'in one grid, via `banner()` or the `banner` prop on a `Panel`. See Layout > Banner.'
             ],
             links: [
                 {

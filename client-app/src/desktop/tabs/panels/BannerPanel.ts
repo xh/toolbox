@@ -42,7 +42,7 @@ export const bannerPanel = hoistCmp.factory({
                 'entries skipped for conditional banners. Render `banner()` directly anywhere else.',
                 '',
                 'Banners are controlled - provide `onClose` to show a close button, and stop',
-                'rendering the banner when it fires. See Other > App Banners for app-wide banners.'
+                'rendering the banner when it fires. See System > Banners for app-wide banners.'
             ],
             links: [
                 {

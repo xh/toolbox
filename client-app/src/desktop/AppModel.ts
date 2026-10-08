@@ -36,7 +36,6 @@ import {iconPickerPanel} from './tabs/forms/inputs/IconPickerPanel';
 import {intentInputPanel} from './tabs/forms/inputs/IntentInputPanel';
 import {leftRightChooserPanel} from './tabs/forms/LeftRightChooserPanel';
 import {numberInputPanel} from './tabs/forms/inputs/NumberInputPanel';
-import {otherControlsPanel} from './tabs/forms/inputs/OtherControlsPanel';
 import {pickerPanel} from './tabs/forms/inputs/PickerPanel';
 import {radioCardInputPanel} from './tabs/forms/inputs/RadioCardInputPanel';
 import {radioInputPanel} from './tabs/forms/inputs/RadioInputPanel';
@@ -50,6 +49,10 @@ import {toolbarFormPanel} from './tabs/forms/ToolbarFormPanel';
 import {agGridView} from './tabs/grids/AgGridView';
 import {columnChooserPanel} from './tabs/grids/ColumnChooserPanel';
 import {columnFilteringPanel} from './tabs/grids/ColumnFilteringPanel';
+import {filterChooserPanel} from './tabs/grids/FilterChooserPanel';
+import {gridFindFieldPanel} from './tabs/grids/GridFindFieldPanel';
+import {groupingChooserPanel} from './tabs/grids/GroupingChooserPanel';
+import {storeFilterFieldPanel} from './tabs/grids/StoreFilterFieldPanel';
 import {columnGroupsGridPanel} from './tabs/grids/ColumnGroupsGridPanel';
 import {dataViewPanel} from './tabs/grids/DataViewPanel';
 import {externalSortGridPanel} from './tabs/grids/ExternalSortGridPanel';
@@ -276,7 +279,11 @@ export class AppModel extends BaseAppModel {
                             {name: 'zoneGrid', path: '/zoneGrid'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'agGrid', path: '/agGrid'},
-                            {name: 'columnChooser', path: '/columnChooser'}
+                            {name: 'columnChooser', path: '/columnChooser'},
+                            {name: 'filterChooser', path: '/filterChooser'},
+                            {name: 'gridFindField', path: '/gridFindField'},
+                            {name: 'groupingChooser', path: '/groupingChooser'},
+                            {name: 'storeFilterField', path: '/storeFilterField'}
                         ]
                     },
                     {
@@ -300,22 +307,29 @@ export class AppModel extends BaseAppModel {
                             {name: 'slider', path: '/slider'},
                             {name: 'intentInput', path: '/intentInput'},
                             {name: 'iconPicker', path: '/iconPicker'},
-                            {name: 'codeInputs', path: '/codeInputs'},
-                            {name: 'otherControls', path: '/otherControls'},
-                            {name: 'dateRangePicker', path: '/dateRangePicker'},
-                            {name: 'leftRightChooser', path: '/leftRightChooser'},
-                            {name: 'fileChooser', path: '/fileChooser'}
+                            {name: 'codeInputs', path: '/codeInputs'}
                         ]
                     },
                     {
-                        name: 'charts',
-                        path: '/charts',
+                        name: 'components',
+                        path: '/components',
                         children: [
                             {name: 'ohlc', path: '/ohlc'},
                             {name: 'line', path: '/line'},
                             {name: 'simpleTreeMap', path: '/simpleTreeMap'},
                             {name: 'gridTreeMap', path: '/gridTreeMap'},
-                            {name: 'splitTreeMap', path: '/splitTreeMap'}
+                            {name: 'splitTreeMap', path: '/splitTreeMap'},
+                            {name: 'buttons', path: '/buttons'},
+                            {name: 'errorMessage', path: '/errorMessage'},
+                            {name: 'icons', path: '/icons'},
+                            {name: 'markdown', path: '/markdown'},
+                            {name: 'dateRangePicker', path: '/dateRangePicker'},
+                            {name: 'leftRightChooser', path: '/leftRightChooser'},
+                            {name: 'fileChooser', path: '/fileChooser'},
+                            {name: 'clock', path: '/clock'},
+                            {name: 'pinPad', path: '/pinPad'},
+                            {name: 'timestamp', path: '/timestamp'},
+                            {name: 'placeholder', path: '/placeholder'}
                         ]
                     },
                     {
@@ -323,32 +337,24 @@ export class AppModel extends BaseAppModel {
                         path: '/mobile'
                     },
                     {
-                        name: 'other',
-                        path: '/other',
+                        name: 'system',
+                        path: '/system',
                         children: [
                             {name: 'banners', path: '/banners'},
-                            {name: 'appNotifications', path: '/appNotifications'},
+                            {name: 'updatesIdle', path: '/updatesIdle'},
                             {name: 'appOptions', path: '/appOptions'},
-                            {name: 'buttons', path: '/buttons'},
-                            {name: 'clock', path: '/clock'},
                             {name: 'customPackage', path: '/customPackage'},
-                            {name: 'errorMessage', path: '/errorMessage'},
                             {name: 'exceptionHandler', path: '/exceptionHandler'},
                             {name: 'formatDates', path: '/formatDates'},
                             {name: 'formatNumbers', path: '/formatNumbers'},
-                            {name: 'icons', path: '/icons'},
                             {name: 'inspector', path: '/inspector'},
                             {name: 'jsx', path: '/jsx'},
-                            {name: 'markdown', path: '/markdown'},
                             {name: 'messages', path: '/messages'},
-                            {name: 'pinPad', path: '/pinPad'},
-                            {name: 'placeholder', path: '/placeholder'},
                             {
                                 name: 'simpleRouting',
                                 path: '/simpleRouting',
                                 children: [{name: 'recordId', path: '/:recordId'}]
                             },
-                            {name: 'timestamp', path: '/timestamp'},
                             {name: 'toast', path: '/toast'}
                         ]
                     },
@@ -410,7 +416,8 @@ export class AppModel extends BaseAppModel {
                         ...switcher,
                         groups: [
                             {key: 'grid', title: 'Grid'},
-                            {key: 'variants', title: 'Grid Variants'}
+                            {key: 'variants', title: 'Grid Variants'},
+                            {key: 'helpers', title: 'Grid Helpers'}
                         ]
                     },
                     tabs: [
@@ -442,7 +449,30 @@ export class AppModel extends BaseAppModel {
                             {id: 'dataview', title: 'DataView', content: dataViewPanel},
                             {id: 'rest', title: 'REST Editor', content: restGridPanel},
                             {id: 'agGrid', title: 'AG Grid Wrapper', content: agGridView}
-                        ].map(it => ({...it, group: 'variants'}))
+                        ].map(it => ({...it, group: 'variants'})),
+                        // Controls that sit beside a grid to filter, group, or search its data.
+                        ...[
+                            {
+                                id: 'filterChooser',
+                                title: 'FilterChooser',
+                                content: filterChooserPanel
+                            },
+                            {
+                                id: 'gridFindField',
+                                title: 'GridFindField',
+                                content: gridFindFieldPanel
+                            },
+                            {
+                                id: 'groupingChooser',
+                                title: 'GroupingChooser',
+                                content: groupingChooserPanel
+                            },
+                            {
+                                id: 'storeFilterField',
+                                title: 'StoreFilterField',
+                                content: storeFilterFieldPanel
+                            }
+                        ].map(it => ({...it, group: 'helpers'}))
                     ]
                 }
             },
@@ -499,8 +529,7 @@ export class AppModel extends BaseAppModel {
                         ...switcher,
                         groups: [
                             {key: 'forms', title: 'Forms'},
-                            {key: 'inputs', title: 'All Inputs'},
-                            {key: 'otherControls', title: 'Other Controls'}
+                            {key: 'inputs', title: 'All Inputs'}
                         ]
                     },
                     // Concepts first, then the All Inputs index and one page per input.
@@ -545,62 +574,71 @@ export class AppModel extends BaseAppModel {
                             {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},
                             {id: 'iconPicker', title: 'IconPicker', content: iconPickerPanel},
                             {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel}
-                        ].map(it => ({...it, group: 'inputs'})),
-                        // Controls that take their own model rather than a `bind`, so they are
-                        // not `HoistInput`s and cannot sit inside a FormField. Their own gallery
-                        // leads them, keeping All Inputs an exact list of the HoistInput set.
+                        ].map(it => ({...it, group: 'inputs'}))
+                    ]
+                }
+            },
+            {
+                id: 'components',
+                icon: Icon.cube(),
+                content: {
+                    switcher: {
+                        ...switcher,
+                        groups: [
+                            {key: 'general', title: 'General'},
+                            {key: 'charts', title: 'Charts'},
+                            {key: 'choosers', title: 'Choosers & Pickers'}
+                        ]
+                    },
+                    tabs: [
                         ...[
-                            {
-                                id: 'otherControls',
-                                title: 'Overview',
-                                content: otherControlsPanel
-                            },
+                            {id: 'buttons', content: buttonsPanel},
+                            {id: 'clock', content: clockPanel},
+                            {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
+                            {id: 'icons', content: iconsPanel},
+                            {id: 'markdown', content: markdownPanel},
+                            {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                            {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                            {id: 'timestamp', content: relativeTimestampPanel}
+                        ].map(it => ({...it, group: 'general'})),
+                        ...[
+                            {id: 'line', content: lineChartPanel},
+                            {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
+                            {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
+                            {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
+                            {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
+                        ].map(it => ({...it, group: 'charts'})),
+                        ...[
                             {
                                 id: 'dateRangePicker',
                                 title: 'DateRangePicker',
                                 content: dateRangePickerPanel
                             },
+                            {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                             {
                                 id: 'leftRightChooser',
                                 title: 'LeftRightChooser',
                                 content: leftRightChooserPanel
-                            },
-                            {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel}
-                        ].map(it => ({...it, group: 'otherControls'}))
-                    ]
-                }
-            },
-            {
-                id: 'charts',
-                icon: Icon.chartLine(),
-                content: {
-                    switcher,
-                    tabs: [
-                        {id: 'line', content: lineChartPanel},
-                        {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
-                        {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
-                        {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
-                        {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
+                            }
+                        ].map(it => ({...it, group: 'choosers'}))
                     ]
                 }
             },
             {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
             {
-                id: 'other',
+                id: 'system',
                 icon: Icon.boxFull(),
                 content: {
                     switcher: {
                         ...switcher,
                         groups: [
-                            {key: 'system', title: 'System'},
-                            {key: 'format', title: 'Formatting'},
-                            {key: 'components', title: 'Other Components'}
+                            {key: 'concepts', title: 'Concepts'},
+                            {key: 'messaging', title: 'Messaging'},
+                            {key: 'format', title: 'Formatting'}
                         ]
                     },
                     tabs: [
                         ...[
-                            {id: 'banners', title: 'App Banners', content: bannersPanel},
-                            {id: 'appNotifications', content: appNotificationsPanel},
                             {id: 'appOptions', title: 'App Options', content: appOptionsPanel},
                             {id: 'customPackage', content: customPackagePanel},
                             {
@@ -610,24 +648,22 @@ export class AppModel extends BaseAppModel {
                             },
                             {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
                             {id: 'inspector', content: inspectorPanel},
-                            {id: 'simpleRouting', content: simpleRoutingPanel}
-                        ].map(it => ({...it, group: 'system'})),
+                            {id: 'simpleRouting', content: simpleRoutingPanel},
+                            {
+                                id: 'updatesIdle',
+                                title: 'Updates & Idle',
+                                content: appNotificationsPanel
+                            }
+                        ].map(it => ({...it, group: 'concepts'})),
+                        ...[
+                            {id: 'banners', content: bannersPanel},
+                            {id: 'messages', content: messagesPanel},
+                            {id: 'toast', content: toastPanel}
+                        ].map(it => ({...it, group: 'messaging'})),
                         ...[
                             {id: 'formatDates', content: dateFormatsPanel},
                             {id: 'formatNumbers', content: numberFormatsPanel}
-                        ].map(it => ({...it, group: 'format'})),
-                        ...[
-                            {id: 'buttons', content: buttonsPanel},
-                            {id: 'clock', content: clockPanel},
-                            {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
-                            {id: 'icons', content: iconsPanel},
-                            {id: 'markdown', content: markdownPanel},
-                            {id: 'messages', content: messagesPanel},
-                            {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
-                            {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
-                            {id: 'timestamp', content: relativeTimestampPanel},
-                            {id: 'toast', content: toastPanel}
-                        ].map(it => ({...it, group: 'components'}))
+                        ].map(it => ({...it, group: 'format'}))
                     ]
                 }
             },
