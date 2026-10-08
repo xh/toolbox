@@ -1,10 +1,6 @@
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faReact} from '@fortawesome/free-brands-svg-icons';
 import {Icon} from '@xh/hoist/icon';
 import type {ReactElement} from 'react';
-
-// Register the React brand icon used for the hoist-react source (brand glyphs are opt-in).
-library.add(faReact);
+import {reactIcon} from '../Icons';
 
 /**
  * Shared icon helpers for the documentation viewer, used by both the desktop tree-grid nav and the
@@ -15,7 +11,7 @@ library.add(faReact);
 export function getSourceIcon(source: string): ReactElement {
     switch (source) {
         case 'hoist-react':
-            return Icon.icon({iconName: 'react', prefix: 'fab'});
+            return reactIcon();
         case 'hoist-core':
             return Icon.server();
         default:

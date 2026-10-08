@@ -1,43 +1,52 @@
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faIcons} from '@fortawesome/pro-regular-svg-icons';
 import {div, filler, placeholder, span} from '@xh/hoist/cmp/layout';
 import type {Intent} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {select, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import type {IconCatalogEntry} from '@xh/hoist/icon';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, computed} from '@xh/hoist/mobx';
 import {copyToClipboard} from '@xh/hoist/utils/js';
-import {isEmpty, without} from 'lodash';
+import {isEmpty} from 'lodash';
 import {wrapper, wrapperOption} from '../../common/Wrapper';
 import './IconsPanel.scss';
-
-// Register a custom icon - not pre-imported by `Icon` - and use it as this tab's title icon
-// below to demonstrate pulling any glyph from Font Awesome into an app.
-// @see https://www.npmjs.com/package/@fortawesome/react-fontawesome#build-a-library-to-reference-icons-throughout-your-app-more-conveniently
-library.add(faIcons);
+import {iconsIcon} from '../../../core/Icons';
 
 export const iconsPanel = hoistCmp.factory({
     model: creates(() => IconsPanelModel),
     render({model}) {
         return wrapper({
             title: 'Icons',
-            icon: Icon.icon({iconName: 'icons'}),
+            icon: iconsIcon(),
             description: [
-                'Hoist includes the latest version of the ubiquitous [Font',
-                'Awesome](https://fontawesome.com/icons) library and its companion project,',
-                'react-fontawesome. Hoist exports an `Icon` constant to expose a preselected',
-                'set of icons as element factories. This ensures that many of the most common',
-                'glyphs are built-in (while also mapping icons to several concepts particular',
-                'to finance and trading).',
+                'Hoist builds on [Font Awesome Pro](https://fontawesome.com/icons) (FA), a commercial',
+                'icon library. Each app needs its own FA Pro license, and a license token to install',
+                'the Pro packages. The `Icon` singleton exposes a curated set of FA glyphs as element',
+                'factories, such as `Icon.check()`. It adds semantic aliases such as `Icon.add()`',
+                'and `Icon.refresh()`, plus icons for several finance and trading concepts.',
                 '',
-                'Apps are not limited to the set of FA icons imported by the framework.',
-                'Developers can use any icon from the library, as long as they import those',
-                'glyphs directly and register them with FA to include them in the bundled',
-                "output. The icon shown in this tab's title is one such custom import.",
+                'Apps can add any other FA glyph with `Icon.register()`. Pass the imported',
+                "definition, and Hoist adds it to the FA library and to Hoist's icon catalog. The",
+                'call returns a factory to export and use:',
                 '',
-                'Browse the built-in set below, and click any icon to copy its factory call.'
+                '```ts',
+                'const invoiceIcon = Icon.register({',
+                "    name: 'invoice',",
+                '    defs: faFileInvoiceDollar',
+                '});',
+                '```',
+                '',
+                "The icon in this sidebar's header is registered this way, in `core/Icons.ts`.",
+                '',
+                '`Icon.get()` renders any icon in the catalog from its name, such as a choice saved',
+                'by a user. `IconPicker` lets users make that choice - see its page under Forms +',
+                'Inputs. To change an icon that Hoist itself uses, such as `Icon.refresh()`,',
+                'register a new icon under that name with `replace: true`.',
+                '',
+                "Browse the catalog below with `Icon.getCatalog()`: Hoist's built-in set plus",
+                "Toolbox's own registrations, badged as app icons. Search matches each icon's",
+                'aliases and keywords. Click any icon to copy the call that renders it.'
             ],
             links: [
                 {
@@ -50,11 +59,13 @@ export const iconsPanel = hoistCmp.factory({
                     notes: 'Icon system guide.'
                 },
                 {
+                    url: '$TB/client-app/src/core/Icons.ts',
+                    notes: 'Toolbox custom icon registrations.'
+                },
+                {
                     url: 'https://fontawesome.com/icons',
                     text: 'FontAwesome',
-                    notes:
-                        'The library used by Hoist to provide enumerated icons. Note that not all icons are included ' +
-                        'in the Hoist Icon class, but can be easily added.'
+                    notes: "The library behind Hoist's icons. Add any glyph not in Hoist's set with Icon.register()."
                 }
             ],
             options: [
@@ -110,32 +121,35 @@ const tbar = hoistCmp.factory<IconsPanelModel>(({model}) =>
             bind: 'query',
             leftIcon: Icon.search(),
             enableClear: true,
-            placeholder: 'Filter icons by name...',
+            placeholder: 'Filter by name, alias or keyword...',
             commitOnChange: true,
             flex: 1,
             maxWidth: 320
         }),
         filler(),
-        span(`${model.iconNames.length} icons`)
+        span(`${model.entries.length} icons`)
     )
 );
 
 const gallery = hoistCmp.factory<IconsPanelModel>(({model}) => {
-    const {iconNames} = model;
-    if (isEmpty(iconNames)) {
+    const {entries} = model;
+    if (isEmpty(entries)) {
         return placeholder(Icon.search(), `No icons match "${model.query}"`);
     }
     return div({
         className: 'tb-icons-gallery',
-        items: iconNames.map(name => iconTile({key: name, name}))
+        items: entries.map(entry => iconTile({key: entry.faName, entry}))
     });
 });
 
-const iconTile = hoistCmp.factory<IconsPanelModel>(({model, name}) => {
-    const usage = `Icon.${name}()`;
+const iconTile = hoistCmp.factory<IconsPanelModel>(({model, entry}) => {
+    const {name} = entry,
+        isAppIcon = entry.source === 'app',
+        // Registered names are not typed on `Icon`, so resolve app icons by name.
+        usage = isAppIcon ? `Icon.get('${name}')` : `Icon.${name}()`;
     return div({
         className: 'tb-icons-tile',
-        title: `Click to copy ${usage}`,
+        title: `${entry.displayName}\nAliases: ${entry.names.join(', ')}\n\nClick to copy ${usage}`,
         onClick: () =>
             copyToClipboard(usage)
                 .then(() => XH.successToast(`Copied ${usage}`))
@@ -143,19 +157,21 @@ const iconTile = hoistCmp.factory<IconsPanelModel>(({model, name}) => {
         items: [
             div({
                 className: 'tb-icons-tile__glyph',
-                item: Icon[name]({
+                item: entry.factory({
                     prefix: model.prefix,
                     size: '2x',
                     intent: model.intent === 'neutral' ? null : model.intent
                 })
             }),
-            div({className: 'tb-icons-tile__name', item: name})
+            div({className: 'tb-icons-tile__name', item: name}),
+            div({omit: !isAppIcon, className: 'tb-icons-tile__badge', item: 'app'})
         ]
     });
 });
 
-function getAllIconNames(): string[] {
-    return without(Object.keys(Icon), 'icon', 'fileIcon', 'placeholder').sort();
+function matches(entry: IconCatalogEntry, query: string): boolean {
+    const {displayName, names, keywords} = entry;
+    return [displayName, ...names, ...keywords].some(it => it.toLowerCase().includes(query));
 }
 
 class IconsPanelModel extends HoistModel {
@@ -164,9 +180,9 @@ class IconsPanelModel extends HoistModel {
     @bindable accessor intent: 'neutral' | Intent = 'neutral';
 
     @computed
-    get iconNames(): string[] {
+    get entries(): IconCatalogEntry[] {
         const query = this.query?.trim().toLowerCase(),
-            all = getAllIconNames();
-        return query ? all.filter(name => name.toLowerCase().includes(query)) : all;
+            all = Icon.getCatalog();
+        return query ? all.filter(it => matches(it, query)) : all;
     }
 }
