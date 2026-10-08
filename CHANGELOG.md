@@ -20,6 +20,7 @@
 
 ### Technical
 
+* Admin > Tests > Grid Scrolling now compares a Hoist `Grid` with a bare `AgGridReact` under measured, stepped scrolls - reporting total and worst-step times - with toggles for column virtualization and per-cell renderers, the two settings that most affect scroll cost.
 * Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
 * Added a `clusterMemberCount` status monitor that fails when an instance sees fewer cluster members than expected - catching tasks that are down or have failed to join the cluster.
 
