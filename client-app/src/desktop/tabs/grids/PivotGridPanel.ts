@@ -39,7 +39,7 @@ export const pivotGridPanel = hoistCmp.factory({
                     notes: 'Presentation config - summaries, pivot sort, value column specs.'
                 },
                 {
-                    url: '$HR/data/cube/impl/PivotCells.ts',
+                    url: '$HR/data/cube/pivot/impl/PivotCells.ts',
                     notes: 'The data layer. Produces the cells this grid renders.'
                 },
                 {
