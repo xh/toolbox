@@ -11,7 +11,6 @@ import {
 import {radioCardInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {runInAction} from '@xh/hoist/mobx';
 import type {ReactElement} from 'react';
 import {isEmpty, isEqual} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
@@ -110,7 +109,14 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
-        this.applyFont(XH.getPref('font'));
+
+        // Apply the font pref on init and whenever it changes - e.g. via the Options dialog.
+        this.addReaction({
+            track: () => XH.getPref('font'),
+            run: font => this.applyFont(font),
+            fireImmediately: true
+        });
+
         await XH.installServicesAsync([DocService, GitHubService, PortfolioService], ctx);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
@@ -138,12 +144,8 @@ export class AppModel extends BaseAppModel {
             themeAppOption(),
             {
                 name: 'font',
+                prefName: 'font',
                 refreshRequired: false,
-                valueGetter: () => XH.getPref('font'),
-                valueSetter: v => {
-                    XH.setPref('font', v);
-                    this.applyFont(v);
-                },
                 formField: {
                     label: 'Font',
                     item: radioCardInput({
@@ -162,11 +164,8 @@ export class AppModel extends BaseAppModel {
             autoRefreshAppOption(),
             {
                 name: 'appMenuButtonWithUserProfile',
-                valueSetter: v => {
-                    runInAction(() => (this.renderWithUserProfile = v));
-                    XH.setPref('appMenuButtonWithUserProfile', v);
-                },
-                valueGetter: () => XH.getPref('appMenuButtonWithUserProfile'),
+                prefName: 'appMenuButtonWithUserProfile',
+                refreshRequired: false,
                 formField: {
                     label: 'Profile pic menu',
                     info: 'Render the App Menu button using your profile pic',

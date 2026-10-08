@@ -1,17 +1,13 @@
 import {HoistAppModel, XH} from '@xh/hoist/core';
-import {observable} from '@xh/hoist/mobx';
 
 export class BaseAppModel extends HoistAppModel {
-    /** Observable relay of appMenuButtonWithUserProfile preference. */
-    @observable accessor renderWithUserProfile: boolean;
+    /** True to render the app menu button with the user's profile pic. Observable via its pref. */
+    get renderWithUserProfile(): boolean {
+        return XH.getPref('appMenuButtonWithUserProfile') ?? false;
+    }
 
     /** Suppress version bar footer when app is running in an iframe (example app browser). */
     override get supportsVersionBar(): boolean {
         return window.self === window.top;
-    }
-
-    constructor() {
-        super();
-        this.renderWithUserProfile = XH.getPref('appMenuButtonWithUserProfile') ?? false;
     }
 }
