@@ -78,7 +78,7 @@ export const iconPickerPanel = hoistCmp.factory({
                     notes: 'Toolbox custom icon registrations.'
                 },
                 {url: '$HR/desktop/cmp/input/IconPicker.ts', notes: 'Hoist component.'},
-                {url: '$HR/icon/impl/IconRegistry.ts', notes: 'Catalog behind the picker.'}
+                {url: '$HR/icon/impl/IconCatalog.ts', notes: 'Catalog behind the picker.'}
             ],
             playgroundOptions: [
                 wrapperOption({
