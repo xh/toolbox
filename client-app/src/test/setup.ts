@@ -5,8 +5,4 @@
 import {hoistCore} from '@xh/hoist/test-support';
 import {installToolboxFake} from './toolboxFake';
 
-// Onsen UI, loaded by any mobile component, throws "Invalid state" at import unless the root
-// element's computed style lists a transition property. jsdom lists only the properties set on it.
-document.documentElement.style.transitionDuration = '0s';
-
 installToolboxFake(hoistCore);

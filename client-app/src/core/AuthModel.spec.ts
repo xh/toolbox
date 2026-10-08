@@ -1,5 +1,4 @@
 import {XH} from '@xh/hoist/core';
-import {when} from '@xh/hoist/mobx';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {beforeAll, expect, it} from 'vitest';
 import {AuthModel} from './AuthModel';
@@ -8,9 +7,9 @@ import {AuthModel} from './AuthModel';
 beforeAll(async () => {
     hoistCore.route('GET', 'xh/authConfig', () => ({useOAuth: false}));
     hoistCore.authenticated = false;
-    // Boot waits at LOGIN_REQUIRED for the user to sign in, so its promise never settles.
-    void initTestAppAsync({authModelClass: AuthModel});
-    await when(() => XH.appState === 'LOGIN_REQUIRED', {timeout: 5000});
+    await expect(initTestAppAsync({authModelClass: AuthModel})).rejects.toThrow(
+        "state is 'LOGIN_REQUIRED'"
+    );
 });
 
 it('turns on the forms login and stops at LOGIN_REQUIRED', () => {

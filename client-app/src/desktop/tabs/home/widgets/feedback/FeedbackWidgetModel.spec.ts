@@ -1,36 +1,23 @@
 import {XH} from '@xh/hoist/core';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
-import type {MockInstance} from 'vitest';
 import {afterEach, beforeAll, beforeEach, describe, expect, it, vi} from 'vitest';
 import {FeedbackWidgetModel} from './FeedbackWidgetModel';
 
 beforeAll(() => initTestAppAsync());
 
-let model: FeedbackWidgetModel,
-    // Watches track pushes, so a test can wait for the ones the model starts without awaiting.
-    pushSpy: MockInstance;
+let model: FeedbackWidgetModel;
 
 beforeEach(() => {
     vi.useFakeTimers({toFake: ['setTimeout', 'clearTimeout', 'Date']});
     vi.spyOn(XH, 'successToast').mockImplementation(() => null);
-    pushSpy = vi.spyOn(XH.trackService, 'pushPendingAsync');
     model = new FeedbackWidgetModel();
 });
 
-// Destroy can send an entry - let it land before the next test starts.
-afterEach(async () => {
-    model.destroy();
-    await settleAsync();
-});
+afterEach(() => model.destroy());
 
-async function settleAsync() {
-    await Promise.all(pushSpy.mock.results.map(it => it.value));
-}
-
-// Feedback entries the client has sent to the server.
+// Feedback entries the client has sent to the server, once its requests have landed.
 async function sentFeedbackAsync() {
-    vi.useRealTimers();
-    await settleAsync();
+    await hoistCore.settleAsync();
     return hoistCore
         .requestsTo('xh/track')
         .flatMap(req => req.json.entries)
