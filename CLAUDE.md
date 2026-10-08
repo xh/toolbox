@@ -393,7 +393,8 @@ defines an entry point, and its filename (minus the extension) becomes the URL p
 
 Vitest specs sit beside their source as `Foo.spec.ts`. They boot Hoist's real client services
 against the fake hoist-core in `@xh/hoist/test-support`, configured by `client-app/vitest.config.mts`
-via `configureVitest()` from hoist-dev-utils. CI, snapshot and release builds all run `pnpm test`.
+via `configureVitest()` from hoist-dev-utils. The Unit Tests workflow runs `pnpm test` on PRs, and
+snapshot and release builds run it before building.
 
 - `src/test-support/toolboxFake.ts` seeds the fake with Toolbox's client-visible configs and prefs from
   `BootStrap.groovy`. Keep it in sync in the same change.
