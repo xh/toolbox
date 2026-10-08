@@ -20,6 +20,10 @@ import {gridScrolling} from './tests/gridScrolling/GridScrolling';
 import {storeColumnFilterPanel} from './tests/columnFilters/store/StoreColumnFilterPanel';
 import {viewColumnFilterPanel} from './tests/columnFilters/view/ViewColumnFilterPanel';
 import {viewManagerTestPanel} from './tests/viewmanager/ViewManagerTestPanel';
+import {PivotGridTestPanel} from './tests/pivot/PivotGridTestPanel';
+import {PivotInspectPanel} from './tests/pivot/PivotInspectPanel';
+import {PivotPerfPanel} from './tests/pivot/PivotPerfPanel';
+import {PivotViewTestPanel} from './tests/pivot/PivotViewTestPanel';
 
 export class AppModel extends HoistAdminAppModel {
     static instance: AppModel;
@@ -53,6 +57,10 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'gridScrolling', path: '/gridScrolling'},
                     {name: 'localDate', path: '/localDate'},
                     {name: 'panelResizing', path: '/panelResizing'},
+                    {name: 'pivotGrid', path: '/pivotGrid'},
+                    {name: 'pivotInspect', path: '/pivotInspect'},
+                    {name: 'pivotPerf', path: '/pivotPerf'},
+                    {name: 'pivotView', path: '/pivotView'},
                     {name: 'select', path: '/select'},
                     {name: 'storeColumnFilters', path: '/storeColumnFilters'},
                     {name: 'viewColumnFilters', path: '/viewColumnFilters'},
@@ -87,6 +95,10 @@ export class AppModel extends HoistAdminAppModel {
                         {id: 'gridScrolling', content: gridScrolling},
                         {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
                         {id: 'panelResizing', content: PanelResizingTestPanel},
+                        {id: 'pivotGrid', title: 'Pivot Grid', content: PivotGridTestPanel},
+                        {id: 'pivotInspect', title: 'Pivot Inspect', content: PivotInspectPanel},
+                        {id: 'pivotPerf', title: 'Pivot Perf', content: PivotPerfPanel},
+                        {id: 'pivotView', title: 'Pivot View', content: PivotViewTestPanel},
                         {id: 'select', content: SelectTestPanel},
                         {id: 'storeColumnFilters', content: storeColumnFilterPanel},
                         {id: 'viewColumnFilters', content: viewColumnFilterPanel},

@@ -58,6 +58,7 @@ import {standardGridPanel} from './tabs/grids/StandardGridPanel';
 import {treeGridPanel} from './tabs/grids/TreeGridPanel';
 import {treeGridWithCheckboxPanel} from './tabs/grids/TreeGridWithCheckboxPanel';
 import {zoneGridPanel} from './tabs/grids/ZoneGridPanel';
+import {pivotGridPanel} from './tabs/grids/PivotGridPanel';
 import {homeTab} from './tabs/home/HomeTab';
 import {cardPanel} from './tabs/layout/CardPanel';
 import {dashCanvasPanel} from './tabs/layout/dashCanvas/DashCanvasPanel';
@@ -272,6 +273,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'columnFiltering', path: '/columnFiltering'},
                             {name: 'externalSort', path: '/externalSort'},
                             {name: 'zoneGrid', path: '/zoneGrid'},
+                            {name: 'pivotGrid', path: '/pivotGrid'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'agGrid', path: '/agGrid'},
                             {name: 'columnChooser', path: '/columnChooser'}
@@ -436,6 +438,7 @@ export class AppModel extends BaseAppModel {
                         // Components built on or around GridModel, each with its own API.
                         ...[
                             {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
+                            {id: 'pivotGrid', title: 'Pivot Grid', content: pivotGridPanel},
                             {id: 'dataview', title: 'DataView', content: dataViewPanel},
                             {id: 'rest', title: 'REST Editor', content: restGridPanel},
                             {id: 'agGrid', title: 'AG Grid Wrapper', content: agGridView}
