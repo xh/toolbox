@@ -31,7 +31,6 @@ const savedTasks = [
 beforeAll(async () => {
     setClock();
     hoistCore.prefs.todoTasks.value = savedTasks;
-    hoistCore.prefs.todoTasks.isSet = true;
     await initTestAppAsync({modelClass: TodoTestModel});
 });
 
@@ -99,7 +98,7 @@ describe('saving', () => {
 
         const pref = await savedPrefAsync();
         expect(hoistCore.requestsTo('xh/unsetPrefs')[0].json).toEqual(['todoTasks']);
-        expect(pref.isSet).toBe(false);
+        expect(pref.value).toBeUndefined();
         expect(XH.getPref('todoTasks')).toEqual(pref.defaultValue);
     });
 });

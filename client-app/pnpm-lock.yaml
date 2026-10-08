@@ -189,10 +189,10 @@ importers:
         version: 1.1.0
       '@xh/hoist':
         specifier: next
-        version: 89.0.0-SNAPSHOT.1791477033480(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
+        version: 89.0.0-SNAPSHOT.1791495313632(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
       '@xh/package-template':
         specifier: ~4.0.0
-        version: 4.0.0(@xh/hoist@89.0.0-SNAPSHOT.1791477033480(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        version: 4.0.0(@xh/hoist@89.0.0-SNAPSHOT.1791495313632(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       ag-charts-community:
         specifier: ~14.2.0
         version: 14.2.0
@@ -253,7 +253,7 @@ importers:
         version: 8.1.0(supports-color@10.2.2)
       '@xh/hoist-dev-utils':
         specifier: next
-        version: 17.0.0-SNAPSHOT.1791474043895(@rspack/core@2.2.8(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)
+        version: 17.0.0-SNAPSHOT.1791489294110(@rspack/core@2.2.8(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)
       cross-env:
         specifier: ~10.1.0
         version: 10.1.0
@@ -1799,12 +1799,12 @@ packages:
   '@xh/eslint-config@8.1.0':
     resolution: {integrity: sha512-RcBbyvh2Gq/yKZzv8pYA9vU/0Cc6839EMBb39NBHZr4ZUXZz978WCzHmZqHXL1X4iS3dk/fDL/1S9xICa+0NTg==}
 
-  '@xh/hoist-dev-utils@17.0.0-SNAPSHOT.1791474043895':
-    resolution: {integrity: sha512-8PAS9ltm5iWFwCfo5LfZcbL1X9je3TfkEo+3i/IXzKFV8Pli/2lZGxy+UZIHDZ3k5M7SurjA9J6H1MjWrWp5eQ==}
+  '@xh/hoist-dev-utils@17.0.0-SNAPSHOT.1791489294110':
+    resolution: {integrity: sha512-ZmaleWOEbkbNNlsSRQN8vd8fXH2KGNG3rEo4dLUbdq9CXRMhApH3+mcH8TsfJQ2Bdj+TtKHvOLVFks0+BXI2EA==}
     engines: {node: '>=22.15.0'}
 
-  '@xh/hoist@89.0.0-SNAPSHOT.1791477033480':
-    resolution: {integrity: sha512-qoR9Egvqt93aG6vDzl55NY3Xe+Kd1pQS47VZ3bL3fSkDaxAFk6JDTNPoSTIyMidce7lCxBrgA8vfaVxMC6lELQ==}
+  '@xh/hoist@89.0.0-SNAPSHOT.1791495313632':
+    resolution: {integrity: sha512-HVfblmtgQ87Ex4zGjcXqA6eYlIqKMHa2iURLADSCUx3lWXAbhHDFSxQgyzQyHe/lhVni1+SkH1uvj+8xEQRX0w==}
     hasBin: true
     peerDependencies:
       '@testing-library/dom': ^10.4.2
@@ -5928,7 +5928,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@xh/hoist-dev-utils@17.0.0-SNAPSHOT.1791474043895(@rspack/core@2.2.8(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)':
+  '@xh/hoist-dev-utils@17.0.0-SNAPSHOT.1791489294110(@rspack/core@2.2.8(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)':
     dependencies:
       '@rsbuild/core': 2.2.12(core-js@3.50.0)
       '@rsbuild/plugin-basic-ssl': 2.0.0(@rsbuild/core@2.2.12(core-js@3.50.0))
@@ -5949,7 +5949,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@xh/hoist@89.0.0-SNAPSHOT.1791477033480(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))':
+  '@xh/hoist@89.0.0-SNAPSHOT.1791495313632(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))':
     dependencies:
       '@auth0/auth0-spa-js': 2.28.2
       '@azure/msal-browser': 5.24.0
@@ -6027,9 +6027,9 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  '@xh/package-template@4.0.0(@xh/hoist@89.0.0-SNAPSHOT.1791477033480(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@xh/package-template@4.0.0(@xh/hoist@89.0.0-SNAPSHOT.1791495313632(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@xh/hoist': 89.0.0-SNAPSHOT.1791477033480(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
+      '@xh/hoist': 89.0.0-SNAPSHOT.1791495313632(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
 

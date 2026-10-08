@@ -1,4 +1,4 @@
-import type {FakeHoistCore, PrefEntry} from '@xh/hoist/test-support';
+import type {FakeHoistCore, PrefSpec} from '@xh/hoist/test-support';
 
 /**
  * Seed the fake hoist-core with Toolbox's own server state, so a spec boots against what the
@@ -34,7 +34,7 @@ export function installToolboxFake(core: FakeHoistCore) {
     });
 }
 
-/** A pref at its default value, as hoist-core renders one the user has not set. */
-export function pref(type: PrefEntry['type'], defaultValue: any): PrefEntry {
-    return {type, value: structuredClone(defaultValue), defaultValue, isSet: false};
+/** A pref the user has not set, at its server default. */
+export function pref(type: PrefSpec['type'], defaultValue: any): PrefSpec {
+    return {type, defaultValue};
 }
