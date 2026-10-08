@@ -94,10 +94,6 @@ jobs:
         - name: Type check
           run: cd client-app && pnpm typecheck
 
-        # Vitest unit specs, run against hoist-react's fake hoist-core. See vitest.config.mts.
-        - name: Unit tests
-          run: cd client-app && pnpm test
-
     dependency-submission:
 
         runs-on: ubuntu-latest

@@ -30,6 +30,13 @@ Runs automatically on pushes and pull requests to `develop`. Includes three inde
 This workflow does not publish any artifacts. For Docker image builds, see Build Snapshot and
 Build Release below.
 
+## Unit Tests (`unit-tests.yml`)
+
+Runs the client app's Vitest unit specs (`pnpm test`) on pushes and pull requests to `develop`, and
+manually via `workflow_dispatch`. It is a separate workflow so that the README badge and the
+"Unit Tests" PR check show the state of the tests alone. Vitest's built-in GitHub Actions reporter
+writes a summary to the run page and annotates each failing assertion on the PR diff.
+
 ## Build Snapshot (`buildSnapshot.yml`)
 
 Builds snapshot Docker images on every push to `develop` and pushes them to Amazon ECR. Also
@@ -54,7 +61,7 @@ The workflow runs in three stages:
   live in hoist-dev-utils, shared across XH app repos.
 - **build-tomcat** / **build-nginx** (parallel) - build the Grails WAR (via `./gradlew war`, default
   SNAPSHOT version from `gradle.properties`) and the client assets (`pnpm install` +
-  `pnpm update --no-save` + `pnpm lint` + `pnpm typecheck` + `pnpm build`, see
+  `pnpm update --no-save` + `pnpm lint` + `pnpm typecheck` + `pnpm test` + `pnpm build`, see
   [Picking up fresh framework snapshots](#picking-up-fresh-framework-snapshots))
   respectively, and push each to the run's *immutable* `image-tag` in ECR - **not** `:snapshot`.
 - **promote** - runs only after both build jobs succeed, and retags both images to `:snapshot` via a
