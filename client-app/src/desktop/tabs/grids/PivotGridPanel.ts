@@ -1,9 +1,11 @@
 import {filler, span} from '@xh/hoist/cmp/layout';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 import {pivotGrid, PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
 import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import type {View} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
+import {gridFindField} from '@xh/hoist/desktop/cmp/grid';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
@@ -26,7 +28,10 @@ export const pivotGridPanel = hoistCmp.factory({
                 'that would make an inefficient tree grouping, and keep the cardinality in the rows.',
                 '',
                 'All query configuration - groupings, pivot dimensions, measures - lives on the',
-                '`Query` under `pivot`. Apps reconfigure by calling `view.updateQuery()` and the grid follows.'
+                '`Query` under `pivot`. Apps reconfigure by calling `view.updateQuery()` and the grid follows.',
+                '',
+                '`StoreFilterField` and `GridFindField` bind to the `PivotGridModel` from context and',
+                'search the fields of its visible columns - the group labels and every pivot cell.'
             ],
             links: [
                 {
@@ -75,7 +80,8 @@ export const pivotGridPanel = hoistCmp.factory({
                     }),
                     filler(),
                     switchInput({bind: 'showSummaries', label: 'Summaries'})
-                ]
+                ],
+                bbar: [storeFilterField(), filler(), gridFindField()]
             })
         });
     }
