@@ -45,7 +45,7 @@ catalog:
 overrides:
   core-js: 'catalog:'
 
-# Several transitive deps (react-popper, react-onsenui, react-windowed-select, package-template)
+# Several transitive deps (react-popper, react-onsenui, react-windowed-select)
 # still declare react/react-dom peer ranges capped at 18. The app runs React 19 per hoist-react
 # v87 - acknowledge that here rather than surfacing unmet-peer warnings on every install.
 peerDependencyRules:

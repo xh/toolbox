@@ -13,7 +13,8 @@ export const customPackagePanel = hoistCmp.factory(() =>
             'package for use across apps.',
             '',
             'The minimal `@xh/package-template` project provides an example of such a project.',
-            'The styled panel below is imported from that package.',
+            'The styled panel below, and the model behind its click counter, are imported from',
+            'that package.',
             '',
             "Note that this package is referenced within Toolbox's own",
             '`client-app/rsbuild.config.mjs` to ensure its codebase is processed at build time',
@@ -23,7 +24,7 @@ export const customPackagePanel = hoistCmp.factory(() =>
             {
                 url: 'https://github.com/xh/package-template',
                 text: '@xh/package-template',
-                notes: 'GitHub repo for an extremely simple JS package project.'
+                notes: 'GitHub repo for an extremely simple TS package project.'
             },
             {
                 url: '$TB/client-app/rsbuild.config.mjs',
