@@ -20,6 +20,7 @@
 
 ### Technical
 
+* Simplified the Font and Profile pic menu app options to plain `prefName` options, applied by observing the now-observable `XH.getPref()` rather than relaying each value by hand - neither refreshes the app on save.
 * Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
 * Added a `clusterMemberCount` status monitor that fails when an instance sees fewer cluster members than expected - catching tasks that are down or have failed to join the cluster.
 
