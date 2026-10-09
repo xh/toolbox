@@ -674,7 +674,7 @@ export class AppModel extends BaseAppModel {
         const defaultFavoriteTabIds = tabs.map(it => it.id);
 
         return new TabContainerModel({
-            persistWith: {localStorageKey: 'tabState'},
+            persistWith: {localStorageKey: 'tabStateV2'},
             route: 'default',
             track: true,
             tabs,
