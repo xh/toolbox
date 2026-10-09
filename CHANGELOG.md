@@ -20,6 +20,9 @@
 * Added an `IconPicker` demo page to Forms + Inputs, including Toolbox's own custom icons alongside Hoist's built-in set.
 * Updated the desktop and mobile Icons galleries to browse hoist-react's new icon catalog - search now matches aliases and keywords, and custom icons are flagged.
 * Updated Toolbox's custom icons (GitHub, React, Markdown, feedback faces, weather glyphs) to register via hoist-react's new `Icon.register()`.
+* Reorganized the desktop tabs - a new Components tab gathers General components, Charts, and Choosers & Pickers, and the Other tab is now System, grouped into Concepts, Dialogs & Alerts, and Formatting. Tab URLs changed to match (e.g. `/app/charts/line` is now `/app/components/line`).
+* Added a Grid Helpers group to the Grids tab, with new `FilterChooser`, `GroupingChooser`, `StoreFilterField`, and `GridFindField` demo pages, each driving a live trades grid.
+* Renamed the App Notifications demo to Updates & Idle and App Banners to Banners, and removed the Forms > Other Controls overview page - its controls now live under Components > Choosers & Pickers.
 
 ### Bug Fixes
 
