@@ -529,10 +529,10 @@ export class AppModel extends BaseAppModel {
                         ...switcher,
                         groups: [
                             {key: 'forms', title: 'Forms'},
-                            {key: 'inputs', title: 'All Inputs'}
+                            {key: 'inputs', title: 'Inputs'}
                         ]
                     },
-                    // Concepts first, then the All Inputs index and one page per input.
+                    // Concepts first, then the Inputs index and one page per input.
                     tabs: [
                         {id: 'form', title: 'FormModel', group: 'forms', content: formPanel},
                         {

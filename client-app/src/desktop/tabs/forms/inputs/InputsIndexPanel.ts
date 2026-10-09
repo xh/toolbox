@@ -46,8 +46,8 @@ export const inputsIndexPanel = hoistCmp.factory({
         const {visibleEntries, groupByCategory} = model,
             count = visibleEntries.length;
         return wrapper({
-            title: 'All Inputs',
-            icon: Icon.grip(),
+            title: 'Inputs',
+            icon: Icon.edit(),
             description: [
                 'Every desktop `HoistInput`, live and side by side. Use it to find the right',
                 'control, or to sweep the whole set after a framework change.',

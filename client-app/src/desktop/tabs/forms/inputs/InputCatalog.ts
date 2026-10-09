@@ -16,7 +16,7 @@ export const INPUT_CATEGORIES: InputCategory[] = [
 export interface InputCatalogEntry {
     /** Component name - also the index tile title. */
     name: string;
-    /** Set for `HoistInput`s, which the All Inputs index groups by value type. */
+    /** Set for `HoistInput`s, which the Inputs index groups by value type. */
     category?: InputCategory;
     /** One-line description shown on the index tile. */
     description: string;
@@ -30,7 +30,7 @@ const R = 'default.forms';
 
 /**
  * Every desktop `HoistInput`, in index order within its category - the single source of truth for
- * the All Inputs index and the per-input page headers. Membership is the contract itself: the
+ * the Inputs index and the per-input page headers. Membership is the contract itself: the
  * component takes a `bind` and can sit inside a `FormField`.
  */
 export const INPUT_CATALOG: InputCatalogEntry[] = [
