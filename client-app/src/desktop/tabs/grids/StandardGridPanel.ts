@@ -25,7 +25,7 @@ export const standardGridPanel = hoistCmp.factory({
                 'custom column selection UI, server-side exports, enhanced column definitions,',
                 'absolute value sorting, and more.',
                 '',
-                'The Volume, P&L and Date columns set a `Column.formatter`, so ag-Grid writes',
+                'The Volume, P&L and Date columns set a `Column.formatter`, so AG Grid writes',
                 'their text into plain cells. Switch Cell Formatting to compare them with',
                 'renderers.'
             ],

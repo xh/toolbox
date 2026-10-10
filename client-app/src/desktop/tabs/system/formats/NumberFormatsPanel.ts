@@ -40,7 +40,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                 'In a grid column, prefer the matching formatter factory, such as `numberFormatter`',
                 'or `millionsFormatter`, as `Column.formatter`. It takes the same options, less',
                 'those that need markup, such as `withSignGlyph` or a `colorSpec` with inline',
-                'styles. It returns plain text, which ag-Grid writes into the cell with no React',
+                'styles. It returns plain text, which AG Grid writes into the cell with no React',
                 'component, so the grid renders and scrolls faster than with `numberRenderer`.'
             ],
             links: [
