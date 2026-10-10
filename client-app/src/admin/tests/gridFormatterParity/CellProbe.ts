@@ -22,8 +22,14 @@ export interface CellDiff {
     formatter: string;
 }
 
-// Offsets and widths within this many px count as equal, to allow for sub-pixel rounding.
+// Offsets within this many px count as equal, to allow for sub-pixel rounding.
 const TOLERANCE_PX = 0.5;
+
+// Widths within this many px count as equal. Autosize renders each column's widest values in a
+// hidden cell and takes its width in whole px. A renderer's markup and a formatter's plain text
+// can measure a fraction of a px apart and so round 1px apart - in compact sizing, the
+// `billionsRenderer` and `billionsFormatter` text for -0.001b measures 57.500 and 57.484px.
+const WIDTH_TOLERANCE_PX = 1;
 
 /** Read the visible content, sign styling, ledger placeholder and geometry of a grid cell. */
 export function readCell(cell: HTMLElement): CellReading {
@@ -72,12 +78,13 @@ export function compareCells(renderer: CellReading, formatter: CellReading): Cel
     if (renderer.placeholder !== formatter.placeholder) {
         add('placeholder', renderer.placeholder, formatter.placeholder);
     }
-    if (!offsetsMatch(renderer.offsets, formatter.offsets)) {
+    // A cell up to 1px wider moves its text by as much on the side away from its alignment.
+    const widthGap = Math.abs(renderer.width - formatter.width),
+        offsetSlack = Math.min(widthGap, WIDTH_TOLERANCE_PX);
+    if (!offsetsMatch(renderer.offsets, formatter.offsets, offsetSlack)) {
         add('alignment', roundOffsets(renderer.offsets), roundOffsets(formatter.offsets));
     }
-    if (!withinTolerance(renderer.width, formatter.width)) {
-        add('width', renderer.width, formatter.width);
-    }
+    if (widthGap > WIDTH_TOLERANCE_PX) add('width', renderer.width, formatter.width);
     return ret;
 }
 
@@ -104,17 +111,22 @@ function hasLedgerPlaceholder(cell: HTMLElement): boolean {
     );
 }
 
-function offsetsMatch(a: CellReading['offsets'], b: CellReading['offsets']): boolean {
+// Horizontal offsets may also differ by `slack`, the gap between the two cells' widths.
+function offsetsMatch(
+    a: CellReading['offsets'],
+    b: CellReading['offsets'],
+    slack: number
+): boolean {
     if (!a || !b) return a === b;
     return (
-        withinTolerance(a.left, b.left) &&
-        withinTolerance(a.right, b.right) &&
+        withinTolerance(a.left, b.left, slack) &&
+        withinTolerance(a.right, b.right, slack) &&
         withinTolerance(a.middle, b.middle)
     );
 }
 
-function withinTolerance(a: number, b: number): boolean {
-    return Math.abs(a - b) <= TOLERANCE_PX;
+function withinTolerance(a: number, b: number, slack = 0): boolean {
+    return Math.abs(a - b) <= TOLERANCE_PX + slack;
 }
 
 function roundOffsets(offsets: CellReading['offsets']) {
