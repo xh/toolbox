@@ -125,8 +125,8 @@ export class GridScrollingModel extends HoistModel {
             if (cellFormatting === 'formatter') {
                 ret.valueFormatter = p => formatter(p.value);
                 // The class rules keep this grid's cost in line with the Hoist grid's. The ledger
-                // placeholder is a Hoist grid style, so the digits of positive P&L values here sit
-                // one `)` further right than those of negatives.
+                // placeholder is a Hoist grid style that this grid lacks. So here, the digits of
+                // positive P&L values sit one `)` further right than those of negatives.
                 ret.cellClassRules = formatter.cellClassRules;
             } else if (cellFormatting === 'renderer') {
                 ret.cellRenderer = p => createElement('span', null, renderer(p.value));

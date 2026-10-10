@@ -1,6 +1,6 @@
 // The Admin app shrinks units labels. A formatter writes its label as plain text, with no
-// `xh-units-label` span to style, so show the renderer's label at full size to compare like with
-// like.
+// `xh-units-label` span to style. Show the renderer's label at full size, so the pair compares
+// like with like.
 .tb-formatter-parity__row .xh-units-label {
   font-size: inherit;
 }

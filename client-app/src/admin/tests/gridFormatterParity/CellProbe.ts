@@ -27,7 +27,7 @@ const TOLERANCE_PX = 0.5;
 
 // Widths within this many px count as equal. Autosize renders each column's widest values in a
 // hidden cell and takes its width in whole px. A renderer's markup and a formatter's plain text
-// can measure a fraction of a px apart and so round 1px apart - in compact sizing, the
+// can measure a fraction of a px apart, and so round 1px apart. In compact sizing, the
 // `billionsRenderer` and `billionsFormatter` text for -0.001b measures 57.500 and 57.484px.
 const WIDTH_TOLERANCE_PX = 1;
 
