@@ -64,10 +64,11 @@ const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
                 items: [
                     formField({
                         field: 'rowCount',
+                        // No `min` - with `displayWithCommas` it leaves the input blank. The
+                        // field's `numberIs` rule rejects a negative count instead.
                         item: numberInput({
                             displayWithCommas: true,
                             enableShorthandUnits: true,
-                            min: 0,
                             width: 80
                         })
                     }),
