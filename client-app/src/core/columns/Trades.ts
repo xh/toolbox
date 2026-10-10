@@ -1,8 +1,22 @@
 import {ExcelFormat, localDate, tags} from '@xh/hoist/cmp/grid';
 import {hbox, vbox} from '@xh/hoist/cmp/layout';
-import {dateFormatter, millionsFormatter, numberFormatter, fmtNumberTooltip} from '@xh/hoist/format';
+import {
+    dateFormatter,
+    dateRenderer,
+    fmtNumberTooltip,
+    millionsFormatter,
+    millionsRenderer,
+    numberFormatter,
+    numberRenderer
+} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import type {ColumnSpec} from '@xh/hoist/cmp/grid';
+import type {ColumnRenderer, ColumnSpec} from '@xh/hoist/cmp/grid';
+import type {NumberFormatterOptions} from '@xh/hoist/format';
+
+// Format options for the P&L and Volume columns, shared by their formatters and the matching
+// renderers below.
+const PNL_FORMAT: NumberFormatterOptions = {precision: 0, ledger: true, colorSpec: true},
+    VOLUME_FORMAT: NumberFormatterOptions = {precision: 1, label: true};
 
 export const profitLossCol: ColumnSpec = {
     field: {
@@ -15,11 +29,7 @@ export const profitLossCol: ColumnSpec = {
     align: 'right',
     absSort: true,
     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
-    formatter: numberFormatter({
-        precision: 0,
-        ledger: true,
-        colorSpec: true
-    }),
+    formatter: numberFormatter(PNL_FORMAT),
     excelFormat: ExcelFormat.LEDGER_COLOR
 };
 
@@ -61,10 +71,7 @@ export const tradeVolumeCol: ColumnSpec = {
                   ]
               })
             : fmtNumberTooltip(volume),
-    formatter: millionsFormatter({
-        precision: 1,
-        label: true
-    }),
+    formatter: millionsFormatter(VOLUME_FORMAT),
     cellFlag: volume => (isHighVolume(volume) ? 'warning' : null),
     excelFormat: ExcelFormat.NUM_DELIMITED
 };
@@ -78,6 +85,13 @@ export const tradeDateCol: ColumnSpec = {
         description: 'Date of last trade (including related derivatives)'
     }
 };
+
+// Renderers with the same options as the formatters on the trade columns above. A renderer wins
+// over a formatter, so `{...profitLossCol, renderer: profitLossRenderer}` gives the column a React
+// component per cell in place of plain text. The Standard grid demo switches between the two.
+export const profitLossRenderer: ColumnRenderer = numberRenderer(PNL_FORMAT),
+    tradeVolumeRenderer: ColumnRenderer = millionsRenderer(VOLUME_FORMAT),
+    tradeDateRenderer: ColumnRenderer = dateRenderer();
 
 export const tagsCol: ColumnSpec = {
     ...tags,
@@ -93,7 +107,10 @@ export const tagsCol: ColumnSpec = {
 export const dayOfWeekCol: ColumnSpec = {
     field: {
         name: 'trade_date',
-        type: 'localDate'
+        type: 'localDate',
+        // The grid's store takes this field from the first column that uses it, which can be this
+        // one. Name it as `tradeDateCol` does, so this column's own displayName does not leak.
+        displayName: 'Date'
     },
     colId: 'dayOfWeek',
     displayName: 'Day of Week',

@@ -1,5 +1,5 @@
 import {createRef} from 'react';
-import type {GridConfig} from '@xh/hoist/cmp/grid';
+import type {ColumnOrGroupSpec, ColumnRenderer, ColumnSpec, GridConfig} from '@xh/hoist/cmp/grid';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
@@ -7,6 +7,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {bindable} from '@xh/hoist/mobx';
 import type {StoreRecord} from '@xh/hoist/data';
 import './SampleGrid.scss';
 import {activeCol} from '../../../core/columns/General';
@@ -14,12 +15,25 @@ import {cityCol, companyCol} from '../../../core/columns/Demographics';
 import {
     dayOfWeekCol,
     profitLossCol,
+    profitLossRenderer,
     tradeDateCol,
+    tradeDateRenderer,
     tradeVolumeCol,
+    tradeVolumeRenderer,
     winLoseCol
 } from '../../../core/columns/Trades';
 
+/** How the trade columns turn values into cell content - see `SampleGridModel.cellFormatting`. */
+export type CellFormatting = 'formatter' | 'renderer';
+
 export class SampleGridModel extends HoistModel {
+    /**
+     * 'formatter' to show the Volume, P&L and Date columns as plain text cells, through their
+     * `Column.formatter`. 'renderer' to show them through renderers with the same options, as a
+     * React component per cell. Both should look identical.
+     */
+    @bindable accessor cellFormatting: CellFormatting = 'formatter';
+
     panelRef = createRef<HTMLDivElement>();
 
     viewDetailsAction = {
@@ -180,43 +194,7 @@ export class SampleGridModel extends HoistModel {
                     });
                 }
             },
-            columns: [
-                {field: 'id', hidden: true},
-                {
-                    ...actionCol,
-                    width: calcActionColWidth(2),
-                    actionsShowOnHoverOnly: true,
-                    actions: [this.viewDetailsAction, this.terminateAction],
-                    pinned: 'left'
-                },
-                {
-                    ...companyCol,
-                    headerName: ({gridModel}) => {
-                        let ret = 'Company';
-                        if (gridModel.selectedRecord) {
-                            ret += ` (${gridModel.selectedRecord.data.company})`;
-                        }
-                        return ret;
-                    },
-                    exportName: 'Company',
-                    headerTooltip: 'Select a company & continue'
-                },
-                {...winLoseCol, hidden: true},
-                {
-                    ...cityCol,
-                    tooltip: (val, {record}) => `${record.data.company} is located in ${val}`
-                },
-                {...tradeVolumeCol},
-                {...profitLossCol},
-                {...dayOfWeekCol, hidden: true},
-                {...tradeDateCol},
-                {
-                    ...activeCol,
-                    tooltip: (active, {record}) =>
-                        active ? `${record.data.company} is active` : '',
-                    pinned: 'right'
-                }
-            ],
+            columns: this.createColumns(),
             ...gridConfig
         });
 
@@ -231,6 +209,11 @@ export class SampleGridModel extends HoistModel {
             ],
             initialValue: []
         });
+
+        this.addReaction({
+            track: () => this.cellFormatting,
+            run: () => this.swapCellFormatting()
+        });
     }
 
     override async doLoadAsync(loadSpec) {
@@ -239,6 +222,57 @@ export class SampleGridModel extends HoistModel {
 
         gridModel.loadData(trades);
         await gridModel.preSelectFirstAsync();
+    }
+
+    private createColumns(): ColumnOrGroupSpec[] {
+        // A renderer wins over a formatter, so adding one is all it takes to switch paths.
+        const withRenderer = (col: ColumnSpec, renderer: ColumnRenderer): ColumnSpec =>
+            this.cellFormatting === 'renderer' ? {...col, renderer} : {...col};
+
+        return [
+            {field: 'id', hidden: true},
+            {
+                ...actionCol,
+                width: calcActionColWidth(2),
+                actionsShowOnHoverOnly: true,
+                actions: [this.viewDetailsAction, this.terminateAction],
+                pinned: 'left'
+            },
+            {
+                ...companyCol,
+                headerName: ({gridModel}) => {
+                    let ret = 'Company';
+                    if (gridModel.selectedRecord) {
+                        ret += ` (${gridModel.selectedRecord.data.company})`;
+                    }
+                    return ret;
+                },
+                exportName: 'Company',
+                headerTooltip: 'Select a company & continue'
+            },
+            {...winLoseCol, hidden: true},
+            {
+                ...cityCol,
+                tooltip: (val, {record}) => `${record.data.company} is located in ${val}`
+            },
+            withRenderer(tradeVolumeCol, tradeVolumeRenderer),
+            withRenderer(profitLossCol, profitLossRenderer),
+            {...dayOfWeekCol, hidden: true},
+            withRenderer(tradeDateCol, tradeDateRenderer),
+            {
+                ...activeCol,
+                tooltip: (active, {record}) => (active ? `${record.data.company} is active` : ''),
+                pinned: 'right'
+            }
+        ];
+    }
+
+    // Rebuild the columns on the other path, keeping their order, widths and visibility.
+    private swapCellFormatting() {
+        const {gridModel} = this,
+            {columnState} = gridModel;
+        gridModel.setColumns(this.createColumns());
+        gridModel.setColumnState(columnState);
     }
 
     private showInfoToast(rec: StoreRecord) {
@@ -287,5 +321,6 @@ export class SampleGridModel extends HoistModel {
         this.gridModel.showHover = false;
         this.gridModel.showCellFocus = false;
         this.gridModel.emptyText = 'No records found...';
+        this.cellFormatting = 'formatter';
     }
 }
