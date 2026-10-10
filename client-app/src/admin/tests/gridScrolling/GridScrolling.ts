@@ -94,10 +94,12 @@ const tbar = hoistCmp.factory(() =>
                                 {value: 'renderer', label: 'Renderer'}
                             ]
                         })
-                    })
+                    }),
+                    // Here, so Apply moves with the fields and the toolbar has three items. With
+                    // four, Blueprint's overflow list can keep one in the menu after a big widening.
+                    applyButton()
                 ]
             }),
-            applyButton(),
             toolbarSeparator(),
             // One item, so the label and input move into the overflow menu together.
             hbox({
