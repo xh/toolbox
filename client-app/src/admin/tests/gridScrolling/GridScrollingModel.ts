@@ -1,5 +1,6 @@
 import {FormModel} from '@xh/hoist/cmp/form';
-import {type ColumnSpec, GridModel} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
+import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberIs, required} from '@xh/hoist/data';

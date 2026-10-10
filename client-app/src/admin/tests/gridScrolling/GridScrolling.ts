@@ -11,12 +11,8 @@ import {toolbar, toolbarSeparator} from '@xh/hoist/desktop/cmp/toolbar';
 import {AgGridReact} from 'ag-grid-react';
 import {upperFirst} from 'lodash';
 import {createElement} from 'react';
-import {
-    GRID_SIZING,
-    GridScrollingModel,
-    type ScrollResult,
-    type ScrollTarget
-} from './GridScrollingModel';
+import {GRID_SIZING, GridScrollingModel} from './GridScrollingModel';
+import type {ScrollResult, ScrollTarget} from './GridScrollingModel';
 
 export const gridScrolling = hoistCmp.factory({
     model: creates(GridScrollingModel),
