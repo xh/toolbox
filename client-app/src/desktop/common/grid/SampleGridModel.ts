@@ -7,7 +7,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {observable, runInAction} from '@xh/hoist/mobx';
 import type {StoreRecord} from '@xh/hoist/data';
 import {isEmpty} from 'lodash';
 import './SampleGrid.scss';
@@ -31,9 +31,9 @@ export class SampleGridModel extends HoistModel {
     /**
      * 'formatter' to show the Volume, P&L and Date columns as plain text cells, through their
      * `Column.formatter`. 'renderer' to show them through renderers with the same options, as a
-     * React component per cell. Both should look identical.
+     * React component per cell. Both should look identical. Change it with `setCellFormatting`.
      */
-    @bindable accessor cellFormatting: CellFormatting = 'formatter';
+    @observable accessor cellFormatting: CellFormatting = 'formatter';
 
     panelRef = createRef<HTMLDivElement>();
 
@@ -210,11 +210,16 @@ export class SampleGridModel extends HoistModel {
             ],
             initialValue: []
         });
+    }
 
-        this.addReaction({
-            track: () => this.cellFormatting,
-            run: () => this.swapCellFormatting()
-        });
+    /**
+     * Switch the trade columns to the given path. Call it outside any action or reaction, so the
+     * grid applies each column change before `swapCellFormatting` hides grouped columns again.
+     */
+    setCellFormatting(value: CellFormatting) {
+        if (value === this.cellFormatting) return;
+        runInAction(() => (this.cellFormatting = value));
+        this.swapCellFormatting();
     }
 
     override async doLoadAsync(loadSpec) {
@@ -271,17 +276,29 @@ export class SampleGridModel extends HoistModel {
     // Rebuild the columns on the other path, keeping their order, widths and visibility.
     private swapCellFormatting() {
         const {gridModel} = this,
-            {columnState} = gridModel;
+            {agApi, columnState, groupBy} = gridModel,
+            isGrouped = agApi && !isEmpty(groupBy);
+
+        // `setColumns` and `setColumnState` each re-show a column hidden by grouping, and Hoist
+        // hides it again only when `groupBy` changes. So hide it below, in the same event, and
+        // React renders the header once without it. Pause AG Grid's column animation until the
+        // next frame too, or the other columns slide back from where the re-shown column put them.
+        if (isGrouped) {
+            const suppress = agApi.getGridOption('suppressColumnMoveAnimation');
+            agApi.setGridOption('suppressColumnMoveAnimation', true);
+            window.requestAnimationFrame(() => {
+                if (!agApi.isDestroyed()) {
+                    agApi.setGridOption('suppressColumnMoveAnimation', suppress);
+                }
+            });
+        }
+
         gridModel.setColumns(this.createColumns());
         gridModel.setColumnState(columnState);
 
-        // Both calls above re-show a column hidden by grouping, and Hoist hides it again only when
-        // `groupBy` changes. So hide it here, in a microtask that runs after the grid's reactions.
-        queueMicrotask(() => {
-            const {agApi, groupBy} = gridModel;
-            if (!agApi || isEmpty(groupBy)) return;
+        if (isGrouped) {
             agApi.applyColumnState({state: groupBy.map(colId => ({colId, hide: true}))});
-        });
+        }
     }
 
     private showInfoToast(rec: StoreRecord) {
@@ -330,6 +347,6 @@ export class SampleGridModel extends HoistModel {
         this.gridModel.showHover = false;
         this.gridModel.showCellFocus = false;
         this.gridModel.emptyText = 'No records found...';
-        this.cellFormatting = 'formatter';
+        this.setCellFormatting('formatter');
     }
 }
