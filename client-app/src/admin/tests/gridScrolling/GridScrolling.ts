@@ -5,7 +5,7 @@ import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {checkbox, numberInput} from '@xh/hoist/desktop/cmp/input';
+import {checkbox, numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSeparator} from '@xh/hoist/desktop/cmp/toolbar';
 import {AgGridReact} from 'ag-grid-react';
@@ -68,8 +68,17 @@ const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
                         item: checkbox()
                     }),
                     formField({
-                        field: 'useRenderers',
-                        item: checkbox()
+                        field: 'cellFormat',
+                        item: select({
+                            width: 110,
+                            enableFilter: false,
+                            hideSelectedOptionCheck: true,
+                            options: [
+                                {value: 'plain', label: 'Plain'},
+                                {value: 'formatters', label: 'Formatters'},
+                                {value: 'renderers', label: 'Renderers'}
+                            ]
+                        })
                     })
                 ]
             }),

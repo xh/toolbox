@@ -3,12 +3,30 @@ import {type ColumnSpec, GridModel} from '@xh/hoist/cmp/grid';
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
+import {
+    dateFormatter,
+    dateRenderer,
+    millionsFormatter,
+    millionsRenderer,
+    numberFormatter,
+    numberRenderer
+} from '@xh/hoist/format';
+import type {NumberFormatterOptions} from '@xh/hoist/format';
 import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
+import {LocalDate} from '@xh/hoist/utils/datetime';
 import type {ColDef} from 'ag-grid-community';
-import {keyBy, mapValues, max, range} from 'lodash';
+import {max, random, range, sample} from 'lodash';
 import {createElement, createRef} from 'react';
 
 export type ScrollTarget = 'hoist' | 'ag';
+
+/**
+ * How the grids turn cell values into content:
+ * - 'plain' - no formatting, ag-Grid writes the raw value.
+ * - 'formatters' - a formatter returns the cell's text, and ag-Grid writes it.
+ * - 'renderers' - a renderer with the same options, rendered as a React component per cell.
+ */
+export type CellFormat = 'plain' | 'formatters' | 'renderers';
 
 /** Timings from one measured scroll - see {@link GridScrollingModel.scrollGridAsync}. */
 export interface ScrollResult {
@@ -21,8 +39,8 @@ export interface ScrollResult {
 
 /**
  * Side-by-side scrolling test of a Hoist `Grid` against a bare `AgGridReact` on the same data,
- * to isolate the cost of Hoist's integration layer. Column virtualisation and per-cell renderers
- * are the two settings with the largest effect on scroll cost, so both can be toggled. The scroll
+ * to isolate the cost of Hoist's integration layer. Column virtualisation and cell formatting are
+ * the two settings with the largest effect on scroll cost, so both can be changed. The scroll
  * buttons run a measured, stepped scroll and report its timings.
  */
 export class GridScrollingModel extends HoistModel {
@@ -32,9 +50,7 @@ export class GridScrollingModel extends HoistModel {
     @observable accessor colCount = 20;
     @observable accessor rowCount = 100_000;
     @observable accessor isColVirtualizationEnabled = true;
-    // True to give every column a (pass-through) renderer - a React component per cell in both
-    // grids - vs. plain text cells that ag-Grid writes itself.
-    @observable accessor useRenderers = false;
+    @observable accessor cellFormat: CellFormat = 'formatters';
     // Viewport-heights to scroll per button click - one step per viewport.
     @bindable accessor scrollFactor = 8;
 
@@ -53,28 +69,54 @@ export class GridScrollingModel extends HoistModel {
 
     @computed
     get rowData(): PlainObject[] {
-        return range(0, this.rowCount).map(y =>
-            mapValues(keyBy(this.fields, 'field'), (_, x) => `${x}-${y}`)
-        );
+        const {fields} = this;
+        return range(0, this.rowCount).map(() => {
+            const row: PlainObject = {};
+            fields.forEach(({field, kind}) => (row[field] = COLUMN_KINDS[kind].value()));
+            return row;
+        });
     }
 
     @computed
-    get fields(): Array<{field: string}> {
-        return range(0, this.colCount).map(it => ({field: String(it)}));
+    get fields(): Array<{field: string; kind: ColumnKind}> {
+        const kinds = Object.keys(COLUMN_KINDS) as ColumnKind[];
+        return range(0, this.colCount).map(it => ({
+            field: String(it),
+            kind: kinds[it % kinds.length]
+        }));
     }
 
     @computed
     get hoistColumns(): ColumnSpec[] {
-        const renderer = this.useRenderers ? v => v : undefined;
-        return this.fields.map(({field}) => ({field, renderer}));
+        const {cellFormat} = this;
+        return this.fields.map(({field, kind}) => {
+            const {formatter, renderer} = COLUMN_KINDS[kind];
+            return {
+                field,
+                align: 'right',
+                formatter: cellFormat === 'formatters' ? formatter : undefined,
+                renderer: cellFormat === 'renderers' ? renderer : undefined
+            };
+        });
     }
 
+    // The same formatters and renderers through ag-Grid's own `valueFormatter` and `cellRenderer`.
     @computed
     get agColumnDefs(): ColDef[] {
-        const cellRenderer = this.useRenderers
-            ? p => createElement('span', null, p.value)
-            : undefined;
-        return this.fields.map(({field}) => ({field, cellRenderer}));
+        const {cellFormat} = this;
+        return this.fields.map(({field, kind}) => {
+            const {formatter, renderer} = COLUMN_KINDS[kind],
+                // No inferred data type, so ag-Grid adds no formatter of its own in 'plain' mode.
+                ret: ColDef = {field, type: 'rightAligned', cellDataType: false};
+
+            if (cellFormat === 'formatters') {
+                ret.valueFormatter = p => formatter(p.value);
+                ret.cellClassRules = formatter.cellClassRules;
+            } else if (cellFormat === 'renderers') {
+                ret.cellRenderer = p => createElement('span', null, renderer(p.value));
+            }
+            return ret;
+        });
     }
 
     constructor() {
@@ -126,11 +168,11 @@ export class GridScrollingModel extends HoistModel {
     applyConfigs(): void {
         const {formModel} = this;
         if (!formModel.isValid) return;
-        const {colCount, rowCount, isColVirtualizationEnabled, useRenderers} = formModel.getData();
+        const {colCount, rowCount, isColVirtualizationEnabled, cellFormat} = formModel.getData();
         this.colCount = colCount;
         this.rowCount = rowCount;
         this.isColVirtualizationEnabled = isColVirtualizationEnabled;
-        this.useRenderers = useRenderers;
+        this.cellFormat = cellFormat;
         // The applied values are the new baseline, so Apply re-enables only on a further change.
         formModel.init(formModel.getData());
     }
@@ -158,9 +200,10 @@ export class GridScrollingModel extends HoistModel {
                     initialValue: this.isColVirtualizationEnabled
                 },
                 {
-                    name: 'useRenderers',
-                    displayName: 'Cell Renderers',
-                    initialValue: this.useRenderers
+                    name: 'cellFormat',
+                    displayName: 'Cells',
+                    initialValue: this.cellFormat,
+                    rules: [required]
                 }
             ]
         });
@@ -174,6 +217,39 @@ export class GridScrollingModel extends HoistModel {
         });
     }
 }
+
+//------------------
+// Column kinds
+//------------------
+const PNL_FORMAT: NumberFormatterOptions = {precision: 0, ledger: true, colorSpec: true},
+    VOLUME_FORMAT: NumberFormatterOptions = {precision: 1, label: true},
+    DATE_FORMAT = {fmt: 'MMM D, YYYY'},
+    // A shared pool, so the rows reuse a few hundred LocalDate instances.
+    DATES = range(0, 500).map(it => LocalDate.get('2026-01-01').subtract(it));
+
+/**
+ * The kinds of column the grids cycle through, each with a value generator and a formatter and
+ * renderer that take the same options.
+ */
+const COLUMN_KINDS = {
+    pnl: {
+        value: () => random(-5_000_000, 5_000_000),
+        formatter: numberFormatter(PNL_FORMAT),
+        renderer: numberRenderer(PNL_FORMAT)
+    },
+    volume: {
+        value: () => random(0, 10_000_000_000),
+        formatter: millionsFormatter(VOLUME_FORMAT),
+        renderer: millionsRenderer(VOLUME_FORMAT)
+    },
+    date: {
+        value: () => sample(DATES),
+        formatter: dateFormatter(DATE_FORMAT),
+        renderer: dateRenderer(DATE_FORMAT)
+    }
+};
+
+type ColumnKind = keyof typeof COLUMN_KINDS;
 
 // Resolves after the browser has painted the current state - two frames, as the first callback
 // runs before the paint that follows the scroll.
