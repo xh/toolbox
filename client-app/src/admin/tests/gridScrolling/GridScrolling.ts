@@ -52,7 +52,7 @@ export const gridScrolling = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
+const tbar = hoistCmp.factory(() =>
     toolbar({
         // Items that do not fit move into a menu, so a narrow window can still reach them.
         enableOverflowMenu: true,
@@ -97,12 +97,7 @@ const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
                     })
                 ]
             }),
-            button({
-                text: 'Apply',
-                outlined: true,
-                disabled: !model.formModel.isValid || !model.formModel.isDirty,
-                onClick: () => model.applyConfigs()
-            }),
+            applyButton(),
             toolbarSeparator(),
             // One item, so the label and input move into the overflow menu together.
             hbox({
@@ -116,6 +111,18 @@ const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
         ]
     })
 );
+
+// Reads the form state itself, so an edit re-renders only this button. A toolbar re-render would
+// rebuild the overflow menu and close it mid-edit.
+const applyButton = hoistCmp.factory<GridScrollingModel>(({model}) => {
+    const {formModel} = model;
+    return button({
+        text: 'Apply',
+        outlined: true,
+        disabled: !formModel.isValid || !formModel.isDirty,
+        onClick: () => model.applyConfigs()
+    });
+});
 
 interface ScrollTargetProps extends HoistProps<GridScrollingModel> {
     grid: ScrollTarget;
