@@ -116,11 +116,10 @@ export function extractSections(content: string): DocSection[] {
     let match: RegExpExecArray;
     while ((match = regex.exec(content)) !== null) {
         const title = stripInlineMarkdown(match[1].trim());
-        let id = slugify(title);
-        const count = slugCounts.get(id) || 0;
-        if (count > 0) id += `-${count}`;
-        slugCounts.set(id, count + 1);
-        sections.push({id, title});
+        const slug = slugify(title),
+            count = slugCounts.get(slug) || 0;
+        slugCounts.set(slug, count + 1);
+        sections.push({id: count > 0 ? `${slug}-${count}` : slug, title});
     }
     return sections;
 }

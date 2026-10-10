@@ -45,10 +45,13 @@ catalog:
 overrides:
   core-js: 'catalog:'
 
-# Several transitive deps (react-popper, react-onsenui, react-windowed-select, package-template)
+# Several transitive deps (react-popper, react-onsenui, react-windowed-select)
 # still declare react/react-dom peer ranges capped at 18. The app runs React 19 per hoist-react
 # v87 - acknowledge that here rather than surfacing unmet-peer warnings on every install.
+# Vitest's mocker declares an msw 2 peer, but only Vitest's browser mode uses it there. Unit tests
+# run on msw 3, as hoist-react's test kit requires.
 peerDependencyRules:
   allowedVersions:
     react: '19'
     react-dom: '19'
+    '@vitest/mocker>msw': '3'

@@ -18,24 +18,24 @@ import {BaseAppModel} from '../BaseAppModel';
 import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {gridTreeMapPanel} from './tabs/charts/GridTreeMapPanel';
-import {lineChartPanel} from './tabs/charts/LineChartPanel';
-import {ohlcChartPanel} from './tabs/charts/OHLCChartPanel';
-import {simpleTreeMapPanel} from './tabs/charts/SimpleTreeMapPanel';
-import {splitTreeMapPanel} from './tabs/charts/SplitTreeMapPanel';
+import {gridTreeMapPanel} from './tabs/components/charts/GridTreeMapPanel';
+import {lineChartPanel} from './tabs/components/charts/LineChartPanel';
+import {ohlcChartPanel} from './tabs/components/charts/OHLCChartPanel';
+import {simpleTreeMapPanel} from './tabs/components/charts/SimpleTreeMapPanel';
+import {splitTreeMapPanel} from './tabs/components/charts/SplitTreeMapPanel';
 import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
 import {buttonGroupInputPanel} from './tabs/forms/inputs/ButtonGroupInputPanel';
 import {codeInputsPanel} from './tabs/forms/inputs/CodeInputsPanel';
 import {dateInputPanel} from './tabs/forms/inputs/DateInputPanel';
-import {dateRangePickerPanel} from './tabs/forms/DateRangePickerPanel';
-import {fileChooserPanel} from './tabs/forms/FileChooserPanel';
+import {dateRangePickerPanel} from './tabs/components/choosers/DateRangePickerPanel';
+import {fileChooserPanel} from './tabs/components/choosers/FileChooserPanel';
 import {formPanel} from './tabs/forms/FormPanel';
 import {inputsIndexPanel} from './tabs/forms/inputs/InputsIndexPanel';
+import {iconPickerPanel} from './tabs/forms/inputs/IconPickerPanel';
 import {intentInputPanel} from './tabs/forms/inputs/IntentInputPanel';
-import {leftRightChooserPanel} from './tabs/forms/LeftRightChooserPanel';
+import {leftRightChooserPanel} from './tabs/components/choosers/LeftRightChooserPanel';
 import {numberInputPanel} from './tabs/forms/inputs/NumberInputPanel';
-import {otherControlsPanel} from './tabs/forms/inputs/OtherControlsPanel';
 import {pickerPanel} from './tabs/forms/inputs/PickerPanel';
 import {radioCardInputPanel} from './tabs/forms/inputs/RadioCardInputPanel';
 import {radioInputPanel} from './tabs/forms/inputs/RadioInputPanel';
@@ -49,6 +49,10 @@ import {toolbarFormPanel} from './tabs/forms/ToolbarFormPanel';
 import {agGridView} from './tabs/grids/AgGridView';
 import {columnChooserPanel} from './tabs/grids/ColumnChooserPanel';
 import {columnFilteringPanel} from './tabs/grids/ColumnFilteringPanel';
+import {filterChooserPanel} from './tabs/grids/FilterChooserPanel';
+import {gridFindFieldPanel} from './tabs/grids/GridFindFieldPanel';
+import {groupingChooserPanel} from './tabs/grids/GroupingChooserPanel';
+import {storeFilterFieldPanel} from './tabs/grids/StoreFilterFieldPanel';
 import {columnGroupsGridPanel} from './tabs/grids/ColumnGroupsGridPanel';
 import {dataViewPanel} from './tabs/grids/DataViewPanel';
 import {externalSortGridPanel} from './tabs/grids/ExternalSortGridPanel';
@@ -68,38 +72,39 @@ import {tabPanelContainerPanel} from './tabs/layout/tabContainer/TabPanelContain
 import {tileFrameContainerPanel} from './tabs/layout/TileFrameContainerPanel';
 import {vboxContainerPanel} from './tabs/layout/VBoxContainerPanel';
 import {mobileTab} from './tabs/mobile/MobileTab';
-import {appNotificationsPanel} from './tabs/other/AppNotificationsPanel';
-import {appOptionsPanel} from './tabs/other/AppOptionsPanel';
-import {bannersPanel} from './tabs/other/popups/BannersPanel';
-import {messagesPanel} from './tabs/other/popups/MessagesPanel';
-import {toastPanel} from './tabs/other/popups/ToastPanel';
-import {buttonsPanel} from './tabs/other/Buttons';
-import {clockPanel} from './tabs/other/ClockPanel';
-import {customPackagePanel} from './tabs/other/CustomPackagePanel';
-import {dateFormatsPanel} from './tabs/other/formats/DateFormatsPanel';
-import {errorMessagePanel} from './tabs/other/ErrorMessagePanel';
-import {exceptionHandlerPanel} from './tabs/other/exceptions/ExceptionHandlerPanel';
-import {iconsPanel} from './tabs/other/IconsPanel';
-import {inspectorPanel} from './tabs/other/InspectorPanel';
-import {jsxPanel} from './tabs/other/JsxPanel';
-import {markdownPanel} from './tabs/other/MarkdownPanel';
-import {numberFormatsPanel} from './tabs/other/formats/NumberFormatsPanel';
-import {pinPadPanel} from './tabs/other/PinPadPanel';
-import {placeholderPanel} from './tabs/other/PlaceholderPanel';
-import {relativeTimestampPanel} from './tabs/other/relativetimestamp/RelativeTimestampPanel';
-import {simpleRoutingPanel} from './tabs/other/routing/SimpleRoutingPanel';
-import {bannerPanel} from './tabs/panels/BannerPanel';
-import {basicPanel} from './tabs/panels/BasicPanel';
-import {loadingIndicatorPanel} from './tabs/panels/LoadingIndicatorPanel';
-import {maskPanel} from './tabs/panels/MaskPanel';
-import {panelSizingPanel} from './tabs/panels/PanelSizingPanel';
-import {toolbarPanel} from './tabs/panels/ToolbarPanel';
+import {appNotificationsPanel} from './tabs/system/UpdatesIdlePanel';
+import {appOptionsPanel} from './tabs/system/AppOptionsPanel';
+import {bannersPanel} from './tabs/system/dialogs/BannersPanel';
+import {messagesPanel} from './tabs/system/dialogs/MessagesPanel';
+import {toastPanel} from './tabs/system/dialogs/ToastPanel';
+import {buttonsPanel} from './tabs/components/general/ButtonsPanel';
+import {clockPanel} from './tabs/components/general/ClockPanel';
+import {customPackagePanel} from './tabs/system/CustomPackagePanel';
+import {dateFormatsPanel} from './tabs/system/formats/DateFormatsPanel';
+import {errorMessagePanel} from './tabs/components/general/ErrorMessagePanel';
+import {exceptionHandlerPanel} from './tabs/system/exceptions/ExceptionHandlerPanel';
+import {iconsPanel} from './tabs/components/general/IconsPanel';
+import {inspectorPanel} from './tabs/system/InspectorPanel';
+import {jsxPanel} from './tabs/system/JsxPanel';
+import {markdownPanel} from './tabs/components/general/MarkdownPanel';
+import {numberFormatsPanel} from './tabs/system/formats/NumberFormatsPanel';
+import {pinPadPanel} from './tabs/components/general/PinPadPanel';
+import {placeholderPanel} from './tabs/components/general/PlaceholderPanel';
+import {relativeTimestampPanel} from './tabs/components/general/relativetimestamp/RelativeTimestampPanel';
+import {simpleRoutingPanel} from './tabs/system/routing/SimpleRoutingPanel';
+import {bannerPanel} from './tabs/layout/panels/BannerPanel';
+import {basicPanel} from './tabs/layout/panels/BasicPanel';
+import {loadingIndicatorPanel} from './tabs/layout/panels/LoadingIndicatorPanel';
+import {maskPanel} from './tabs/layout/panels/MaskPanel';
+import {panelSizingPanel} from './tabs/layout/panels/PanelSizingPanel';
+import {toolbarPanel} from './tabs/layout/panels/ToolbarPanel';
 
 // Tab-level stylesheets, previously carried as side-effect imports by the `tabs/grids`
 // and `tabs/layout` barrels. This file was those barrels' only consumer, so importing
 // them here preserves the prior load behavior exactly.
 import './tabs/grids/GridsTab.scss';
 import './tabs/layout/LayoutTab.scss';
+import {githubIcon} from '../core/Icons';
 
 export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
@@ -274,7 +279,11 @@ export class AppModel extends BaseAppModel {
                             {name: 'zoneGrid', path: '/zoneGrid'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'agGrid', path: '/agGrid'},
-                            {name: 'columnChooser', path: '/columnChooser'}
+                            {name: 'columnChooser', path: '/columnChooser'},
+                            {name: 'filterChooser', path: '/filterChooser'},
+                            {name: 'gridFindField', path: '/gridFindField'},
+                            {name: 'groupingChooser', path: '/groupingChooser'},
+                            {name: 'storeFilterField', path: '/storeFilterField'}
                         ]
                     },
                     {
@@ -297,22 +306,30 @@ export class AppModel extends BaseAppModel {
                             {name: 'toggles', path: '/toggles'},
                             {name: 'slider', path: '/slider'},
                             {name: 'intentInput', path: '/intentInput'},
-                            {name: 'codeInputs', path: '/codeInputs'},
-                            {name: 'otherControls', path: '/otherControls'},
-                            {name: 'dateRangePicker', path: '/dateRangePicker'},
-                            {name: 'leftRightChooser', path: '/leftRightChooser'},
-                            {name: 'fileChooser', path: '/fileChooser'}
+                            {name: 'iconPicker', path: '/iconPicker'},
+                            {name: 'codeInputs', path: '/codeInputs'}
                         ]
                     },
                     {
-                        name: 'charts',
-                        path: '/charts',
+                        name: 'components',
+                        path: '/components',
                         children: [
                             {name: 'ohlc', path: '/ohlc'},
                             {name: 'line', path: '/line'},
                             {name: 'simpleTreeMap', path: '/simpleTreeMap'},
                             {name: 'gridTreeMap', path: '/gridTreeMap'},
-                            {name: 'splitTreeMap', path: '/splitTreeMap'}
+                            {name: 'splitTreeMap', path: '/splitTreeMap'},
+                            {name: 'buttons', path: '/buttons'},
+                            {name: 'errorMessage', path: '/errorMessage'},
+                            {name: 'icons', path: '/icons'},
+                            {name: 'markdown', path: '/markdown'},
+                            {name: 'dateRangePicker', path: '/dateRangePicker'},
+                            {name: 'leftRightChooser', path: '/leftRightChooser'},
+                            {name: 'fileChooser', path: '/fileChooser'},
+                            {name: 'clock', path: '/clock'},
+                            {name: 'pinPad', path: '/pinPad'},
+                            {name: 'timestamp', path: '/timestamp'},
+                            {name: 'placeholder', path: '/placeholder'}
                         ]
                     },
                     {
@@ -320,32 +337,24 @@ export class AppModel extends BaseAppModel {
                         path: '/mobile'
                     },
                     {
-                        name: 'other',
-                        path: '/other',
+                        name: 'system',
+                        path: '/system',
                         children: [
                             {name: 'banners', path: '/banners'},
-                            {name: 'appNotifications', path: '/appNotifications'},
+                            {name: 'updatesIdle', path: '/updatesIdle'},
                             {name: 'appOptions', path: '/appOptions'},
-                            {name: 'buttons', path: '/buttons'},
-                            {name: 'clock', path: '/clock'},
                             {name: 'customPackage', path: '/customPackage'},
-                            {name: 'errorMessage', path: '/errorMessage'},
                             {name: 'exceptionHandler', path: '/exceptionHandler'},
                             {name: 'formatDates', path: '/formatDates'},
                             {name: 'formatNumbers', path: '/formatNumbers'},
-                            {name: 'icons', path: '/icons'},
                             {name: 'inspector', path: '/inspector'},
                             {name: 'jsx', path: '/jsx'},
-                            {name: 'markdown', path: '/markdown'},
                             {name: 'messages', path: '/messages'},
-                            {name: 'pinPad', path: '/pinPad'},
-                            {name: 'placeholder', path: '/placeholder'},
                             {
                                 name: 'simpleRouting',
                                 path: '/simpleRouting',
                                 children: [{name: 'recordId', path: '/:recordId'}]
                             },
-                            {name: 'timestamp', path: '/timestamp'},
                             {name: 'toast', path: '/toast'}
                         ]
                     },
@@ -370,7 +379,7 @@ export class AppModel extends BaseAppModel {
         return [
             ...super.getAboutDialogItems(),
             {
-                label: span(Icon.icon({iconName: 'github', prefix: 'fab'}), 'Last Commit'),
+                label: span(githubIcon(), 'Last Commit'),
                 value: lastGitHubCommit,
                 omit: !lastGitHubCommit
             }
@@ -407,7 +416,8 @@ export class AppModel extends BaseAppModel {
                         ...switcher,
                         groups: [
                             {key: 'grid', title: 'Grid'},
-                            {key: 'variants', title: 'Grid Variants'}
+                            {key: 'variants', title: 'Grid Variants'},
+                            {key: 'helpers', title: 'Grid Helpers'}
                         ]
                     },
                     tabs: [
@@ -439,7 +449,30 @@ export class AppModel extends BaseAppModel {
                             {id: 'dataview', title: 'DataView', content: dataViewPanel},
                             {id: 'rest', title: 'REST Editor', content: restGridPanel},
                             {id: 'agGrid', title: 'AG Grid Wrapper', content: agGridView}
-                        ].map(it => ({...it, group: 'variants'}))
+                        ].map(it => ({...it, group: 'variants'})),
+                        // Controls that sit beside a grid to filter, group, or search its data.
+                        ...[
+                            {
+                                id: 'filterChooser',
+                                title: 'FilterChooser',
+                                content: filterChooserPanel
+                            },
+                            {
+                                id: 'gridFindField',
+                                title: 'GridFindField',
+                                content: gridFindFieldPanel
+                            },
+                            {
+                                id: 'groupingChooser',
+                                title: 'GroupingChooser',
+                                content: groupingChooserPanel
+                            },
+                            {
+                                id: 'storeFilterField',
+                                title: 'StoreFilterField',
+                                content: storeFilterFieldPanel
+                            }
+                        ].map(it => ({...it, group: 'helpers'}))
                     ]
                 }
             },
@@ -496,11 +529,10 @@ export class AppModel extends BaseAppModel {
                         ...switcher,
                         groups: [
                             {key: 'forms', title: 'Forms'},
-                            {key: 'inputs', title: 'All Inputs'},
-                            {key: 'otherControls', title: 'Other Controls'}
+                            {key: 'inputs', title: 'Inputs'}
                         ]
                     },
-                    // Concepts first, then the All Inputs index and one page per input.
+                    // Concepts first, then the Inputs index and one page per input.
                     tabs: [
                         {id: 'form', title: 'FormModel', group: 'forms', content: formPanel},
                         {
@@ -540,63 +572,73 @@ export class AppModel extends BaseAppModel {
                             {id: 'toggles', title: 'Checkbox & Switch', content: togglesPanel},
                             {id: 'slider', title: 'Slider', content: sliderPanel},
                             {id: 'intentInput', title: 'IntentInput', content: intentInputPanel},
+                            {id: 'iconPicker', title: 'IconPicker', content: iconPickerPanel},
                             {id: 'codeInputs', title: 'JsonInput & Code', content: codeInputsPanel}
-                        ].map(it => ({...it, group: 'inputs'})),
-                        // Controls that take their own model rather than a `bind`, so they are
-                        // not `HoistInput`s and cannot sit inside a FormField. Their own gallery
-                        // leads them, keeping All Inputs an exact list of the HoistInput set.
+                        ].map(it => ({...it, group: 'inputs'}))
+                    ]
+                }
+            },
+            {
+                id: 'components',
+                icon: Icon.cube(),
+                content: {
+                    switcher: {
+                        ...switcher,
+                        groups: [
+                            {key: 'general', title: 'General'},
+                            {key: 'charts', title: 'Charts'},
+                            {key: 'choosers', title: 'Choosers & Pickers'}
+                        ]
+                    },
+                    tabs: [
                         ...[
-                            {
-                                id: 'otherControls',
-                                title: 'Overview',
-                                content: otherControlsPanel
-                            },
+                            {id: 'buttons', content: buttonsPanel},
+                            {id: 'clock', content: clockPanel},
+                            {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
+                            {id: 'icons', content: iconsPanel},
+                            {id: 'markdown', content: markdownPanel},
+                            {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                            {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                            {id: 'timestamp', content: relativeTimestampPanel}
+                        ].map(it => ({...it, group: 'general'})),
+                        ...[
+                            {id: 'line', content: lineChartPanel},
+                            {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
+                            {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
+                            {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
+                            {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
+                        ].map(it => ({...it, group: 'charts'})),
+                        ...[
                             {
                                 id: 'dateRangePicker',
                                 title: 'DateRangePicker',
                                 content: dateRangePickerPanel
                             },
+                            {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                             {
                                 id: 'leftRightChooser',
                                 title: 'LeftRightChooser',
                                 content: leftRightChooserPanel
-                            },
-                            {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel}
-                        ].map(it => ({...it, group: 'otherControls'}))
-                    ]
-                }
-            },
-            {
-                id: 'charts',
-                icon: Icon.chartLine(),
-                content: {
-                    switcher,
-                    tabs: [
-                        {id: 'line', content: lineChartPanel},
-                        {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
-                        {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
-                        {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
-                        {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
+                            }
+                        ].map(it => ({...it, group: 'choosers'}))
                     ]
                 }
             },
             {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
             {
-                id: 'other',
+                id: 'system',
                 icon: Icon.boxFull(),
                 content: {
                     switcher: {
                         ...switcher,
                         groups: [
-                            {key: 'system', title: 'System'},
-                            {key: 'format', title: 'Formatting'},
-                            {key: 'components', title: 'Other Components'}
+                            {key: 'concepts', title: 'Concepts'},
+                            {key: 'dialogs', title: 'Dialogs & Alerts'},
+                            {key: 'format', title: 'Formatting'}
                         ]
                     },
                     tabs: [
                         ...[
-                            {id: 'banners', title: 'App Banners', content: bannersPanel},
-                            {id: 'appNotifications', content: appNotificationsPanel},
                             {id: 'appOptions', title: 'App Options', content: appOptionsPanel},
                             {id: 'customPackage', content: customPackagePanel},
                             {
@@ -606,24 +648,22 @@ export class AppModel extends BaseAppModel {
                             },
                             {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
                             {id: 'inspector', content: inspectorPanel},
-                            {id: 'simpleRouting', content: simpleRoutingPanel}
-                        ].map(it => ({...it, group: 'system'})),
+                            {id: 'simpleRouting', content: simpleRoutingPanel},
+                            {
+                                id: 'updatesIdle',
+                                title: 'Updates & Idle',
+                                content: appNotificationsPanel
+                            }
+                        ].map(it => ({...it, group: 'concepts'})),
+                        ...[
+                            {id: 'banners', content: bannersPanel},
+                            {id: 'messages', content: messagesPanel},
+                            {id: 'toast', content: toastPanel}
+                        ].map(it => ({...it, group: 'dialogs'})),
                         ...[
                             {id: 'formatDates', content: dateFormatsPanel},
                             {id: 'formatNumbers', content: numberFormatsPanel}
-                        ].map(it => ({...it, group: 'format'})),
-                        ...[
-                            {id: 'buttons', content: buttonsPanel},
-                            {id: 'clock', content: clockPanel},
-                            {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
-                            {id: 'icons', content: iconsPanel},
-                            {id: 'markdown', content: markdownPanel},
-                            {id: 'messages', content: messagesPanel},
-                            {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
-                            {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
-                            {id: 'timestamp', content: relativeTimestampPanel},
-                            {id: 'toast', content: toastPanel}
-                        ].map(it => ({...it, group: 'components'}))
+                        ].map(it => ({...it, group: 'format'}))
                     ]
                 }
             },
@@ -634,7 +674,7 @@ export class AppModel extends BaseAppModel {
         const defaultFavoriteTabIds = tabs.map(it => it.id);
 
         return new TabContainerModel({
-            persistWith: {localStorageKey: 'tabState'},
+            persistWith: {localStorageKey: 'tabStateV2'},
             route: 'default',
             track: true,
             tabs,

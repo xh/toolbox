@@ -1,13 +1,7 @@
 import type {DashCanvasItemState, DashCanvasViewSpec} from '@xh/hoist/desktop/cmp/dash';
 import {Icon} from '@xh/hoist/icon';
 
-import {
-    calendarDaysIcon,
-    cloudRainIcon,
-    dropletPercentIcon,
-    temperatureIcon,
-    windIcon
-} from '../Icons';
+import {cloudRainIcon, dropletPercentIcon, temperatureIcon, windIcon} from '../Icons';
 import {conditionsSummaryWidget} from './ConditionsSummaryWidget';
 import {currentConditionsWidget} from './CurrentConditionsWidget';
 import {humidityPressureWidget} from './HumidityPressureWidget';
@@ -66,7 +60,7 @@ export const viewSpecs: DashCanvasViewSpec[] = [
     {
         id: 'conditionsSummary',
         title: '5-Day Summary',
-        icon: calendarDaysIcon(),
+        icon: Icon.calendarDays(),
         content: conditionsSummaryWidget,
         width: 6,
         height: 5
