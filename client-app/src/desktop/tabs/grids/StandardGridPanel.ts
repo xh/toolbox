@@ -1,3 +1,4 @@
+import {code, fragment} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {segmentedControl} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -49,12 +50,12 @@ export const standardGridPanel = hoistCmp.factory({
                     notes: 'Trade column specs, with their formatters and matching renderers.'
                 },
                 {
-                    url: '$HR/cmp/grid/README.md#formatters',
+                    url: '$HR/cmp/grid/README.md#common-usage-patterns',
                     text: 'Formatter docs',
-                    notes: 'Column.formatter vs. renderer, and when to use each.'
+                    notes: 'Column.formatter vs. renderer - see the Formatters subsection.'
                 },
                 {
-                    url: '$HR/format/README.md#formatter-factories',
+                    url: '$HR/format/README.md#formatters-vs-renderers',
                     text: 'Formatter factories',
                     notes: 'numberFormatter, dateFormatter and friends, and the options they take.'
                 },
@@ -78,7 +79,6 @@ export const standardGridPanel = hoistCmp.factory({
                 ...gridDisplayOptions(gridModel),
                 wrapperOption({
                     label: 'Cell Formatting',
-                    propName: 'ColumnSpec.formatter',
                     control: segmentedControl({
                         model,
                         bind: 'cellFormatting',
@@ -88,9 +88,12 @@ export const standardGridPanel = hoistCmp.factory({
                             {value: 'renderer', label: 'Renderer'}
                         ]
                     }),
-                    info:
-                        'Formatter writes Volume, P&L and Date as plain text. Renderer mounts a ' +
-                        'React component per cell. The output should look identical.'
+                    info: fragment(
+                        code('formatter'),
+                        ' writes Volume, P&L and Date as plain text. ',
+                        code('renderer'),
+                        ' mounts a React component per cell. The output should look identical.'
+                    )
                 }),
                 ...gridDisplayActions(gridModel)
             ],
