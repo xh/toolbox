@@ -1,0 +1,593 @@
+// Favicon Generator example app.
+
+.tb-favicons {
+  --tb-fav-check-a: #ffffff;
+  --tb-fav-check-b: #e6e9ed;
+  --tb-fav-card-shadow: 0 1px 2px rgb(0 0 0 / 6%), 0 4px 16px rgb(0 0 0 / 6%);
+  --tb-fav-mono: var(--xh-font-family-mono);
+}
+
+.xh-dark .tb-favicons {
+  --tb-fav-check-a: #2b2e33;
+  --tb-fav-check-b: #212327;
+  --tb-fav-card-shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 16px rgb(0 0 0 / 30%);
+}
+
+.tb-fav-checkerboard {
+  background-color: var(--tb-fav-check-a);
+  background-image: conic-gradient(
+    var(--tb-fav-check-b) 25%,
+    transparent 0 50%,
+    var(--tb-fav-check-b) 0 75%,
+    transparent 0
+  );
+  background-size: 16px 16px;
+}
+
+.tb-fav-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--xh-bg-alt);
+  color: var(--xh-text-color-muted);
+  font-family: var(--tb-fav-mono);
+  font-size: var(--xh-font-size-small-px);
+  white-space: nowrap;
+}
+
+//------------------
+// Controls
+//------------------
+.tb-favicons-controls {
+  border-right: var(--xh-border-solid);
+
+  &__section {
+    padding: 10px 14px 12px;
+    border-bottom: var(--xh-border-solid);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__section-header {
+    align-items: center;
+    min-height: 24px;
+    font-size: var(--xh-font-size-small-px);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__presets {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__preset {
+    display: flex;
+    padding: 2px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+    transition:
+      transform 120ms ease,
+      border-color 120ms ease;
+
+    img {
+      display: block;
+    }
+
+    &:hover {
+      transform: translateY(-2px) scale(1.12);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--xh-intent-primary);
+      outline-offset: 1px;
+    }
+
+    &--active {
+      border-color: var(--xh-intent-primary);
+    }
+  }
+
+  &__colors {
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  &__swap {
+    margin-bottom: 1px;
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__row-label {
+    align-items: baseline;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__row-value {
+    font-family: var(--tb-fav-mono);
+    color: var(--xh-text-color);
+  }
+
+  // The row label shows the current value - hide the handle's own label, which overlaps the ticks.
+  .xh-slider .bp6-slider-handle .bp6-slider-label {
+    display: none;
+  }
+
+  &__flips {
+    gap: 8px;
+
+    > * {
+      flex: 1;
+    }
+  }
+
+  &__hint {
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+    line-height: 1.35;
+  }
+
+  &__credit {
+    padding-left: 6px;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+}
+
+.tb-color-field {
+  &__label {
+    display: block;
+    margin-bottom: 2px;
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__inputs {
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__swatch {
+    flex: none;
+    width: 30px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+      border: var(--xh-border-solid);
+      border-radius: 4px;
+    }
+
+    &::-moz-color-swatch {
+      border: var(--xh-border-solid);
+      border-radius: 4px;
+    }
+  }
+
+  &__hex input {
+    font-family: var(--tb-fav-mono);
+  }
+}
+
+//------------------
+// Previews
+//------------------
+.tb-favicons__grid-wrap {
+  container-type: inline-size;
+}
+
+// One column when narrow, two at the Examples-iframe size, three when there is room - with the
+// size strip spanning two columns and the snippet spanning all of them.
+.tb-favicons__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px;
+
+  @container (min-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @container (min-width: 960px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    .tb-fav-sizes {
+      grid-column: span 2;
+    }
+  }
+}
+
+.tb-fav-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--xh-bg);
+  border: var(--xh-border-solid);
+  border-radius: 8px;
+  box-shadow: var(--tb-fav-card-shadow);
+  overflow: hidden;
+
+  &__header {
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 4px 8px 4px 12px;
+    border-bottom: var(--xh-border-solid);
+  }
+
+  &__icon {
+    color: var(--xh-text-color-muted);
+  }
+
+  &__title {
+    font-weight: 600;
+  }
+
+  &__header-items {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+  }
+}
+
+.tb-fav-hero {
+  .tb-fav-card__body {
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__stage {
+    width: min(256px, 100%);
+    aspect-ratio: 1;
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  &__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 6px 12px rgb(0 0 0 / 18%));
+    transition: transform 200ms ease;
+
+    &:hover {
+      transform: scale(1.04) rotate(-2deg);
+    }
+  }
+
+  &__caption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+}
+
+.tb-fav-sizes {
+  grid-column: 1 / -1;
+
+  .tb-fav-card__body {
+    flex-flow: row wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px 24px;
+  }
+
+  &__row {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+  }
+
+  &__tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__frame {
+    border-radius: 3px;
+    outline: var(--xh-border-solid);
+
+    img {
+      display: block;
+    }
+  }
+
+  &__img--pixelated {
+    image-rendering: pixelated;
+  }
+
+  &__label {
+    font-family: var(--tb-fav-mono);
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__peek {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 12px 6px;
+    border-radius: 8px;
+    background: var(--xh-bg-alt);
+  }
+
+  &__peek-title {
+    font-size: var(--xh-font-size-small-px);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--xh-text-color-muted);
+  }
+}
+
+// Chrome-like tab strips - fixed palettes, independent of the app theme.
+.tb-fav-tabs {
+  .tb-fav-card__body {
+    justify-content: center;
+  }
+
+  &__browser {
+    --tab-strip: #dee1e6;
+    --tab-active: #ffffff;
+    --tab-text: #3c4043;
+    --tab-text-inactive: #5f6368;
+    --tab-address: #f1f3f4;
+
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--tab-strip);
+    border: 1px solid rgb(0 0 0 / 8%);
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+
+    &--dark {
+      --tab-strip: #202124;
+      --tab-active: #35363a;
+      --tab-text: #e8eaed;
+      --tab-text-inactive: #9aa0a6;
+      --tab-address: #202124;
+    }
+  }
+
+  &__strip {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    padding: 6px 8px 0;
+  }
+
+  &__tab {
+    flex: 0 1 180px;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 8px 8px 0 0;
+    color: var(--tab-text-inactive);
+
+    img {
+      flex: none;
+    }
+
+    &--active {
+      background: var(--tab-active);
+      color: var(--tab-text);
+    }
+  }
+
+  &__other-icon {
+    flex: none;
+    width: 16px;
+  }
+
+  &__title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__close {
+    flex: none;
+    opacity: 0.7;
+    font-size: 14px;
+  }
+
+  &__toolbar {
+    padding: 6px 8px;
+    background: var(--tab-active);
+  }
+
+  &__address {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--tab-address);
+    color: var(--tab-text-inactive);
+  }
+}
+
+.tb-fav-home {
+  .tb-fav-card__body {
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__phone {
+    padding: 8px 8px 14px;
+    border: 6px solid #111111;
+    border-radius: 30px;
+    background:
+      radial-gradient(circle at 20% 15%, rgb(255 255 255 / 25%), transparent 45%),
+      linear-gradient(160deg, #3949ab 0%, #8e24aa 50%, #f4511e 100%);
+    font-family: system-ui, sans-serif;
+  }
+
+  &__status {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 8px 12px;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 56px);
+    gap: 12px 8px;
+  }
+
+  &__app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__tile {
+    width: 56px;
+    height: 56px;
+    border-radius: 22.5%;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
+    transition: transform 150ms ease;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__app:hover &__tile {
+    transform: scale(1.08);
+  }
+
+  &__app--ours &__tile {
+    animation: tb-fav-pop 400ms ease-out;
+  }
+
+  &__glyph {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+    font-size: 24px;
+  }
+
+  &__name {
+    max-width: 64px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #ffffff;
+    font-size: 10px;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 50%);
+  }
+}
+
+@keyframes tb-fav-pop {
+  0% {
+    transform: scale(0.6);
+  }
+
+  70% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.tb-fav-hints {
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+
+    > svg {
+      flex: none;
+      margin-top: 3px;
+    }
+  }
+
+  &__full-tab {
+    align-self: flex-start;
+  }
+}
+
+.tb-fav-snippet {
+  grid-column: 1 / -1;
+
+  &__step {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 6px;
+  }
+
+  &__num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-right: 2px;
+    border-radius: 50%;
+    background: var(--xh-intent-primary);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  &__code {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: var(--xh-bg-alt);
+    font-family: var(--tb-fav-mono);
+    font-size: var(--xh-font-size-small-px);
+  }
+
+  &__editor {
+    border: var(--xh-border-solid);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+}

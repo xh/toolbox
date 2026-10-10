@@ -388,7 +388,7 @@ defines an entry point, and its filename (minus the extension) becomes the URL p
 | Mobile app | http://localhost:3000/mobile |
 
 **Example apps**: `/contact`, `/todo`, `/portfolio`, `/news`, `/recalls`, `/fileManager`,
-`/weather` - each at `http://localhost:3000/<name>`.
+`/weather`, `/favicons` - each at `http://localhost:3000/<name>`.
 
 ### Unit Tests
 

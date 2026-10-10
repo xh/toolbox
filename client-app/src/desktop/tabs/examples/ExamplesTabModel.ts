@@ -111,6 +111,18 @@ export class ExamplesTabModel extends HoistModel {
                     ' to prevent arbitrary file uploads. Contact us for a walkthrough.'
                 )
             ]
+        },
+        {
+            title: 'Favicon Generator',
+            icon: Icon.magic(),
+            path: 'favicons',
+            srcPath: 'favicons',
+            text: [
+                p('Mint a complete favicon set for your next Hoist app in seconds.'),
+                p(
+                    'Pick any Font Awesome Pro or brand glyph, style it with colors, a backdrop shape and padding, preview it live in browser tabs and on a home screen, then download a zip ready to drop into client-app/public.'
+                )
+            ]
         }
     ];
 }

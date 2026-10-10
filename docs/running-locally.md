@@ -48,7 +48,7 @@ Once both are up, open the app in your browser:
 
 Each file in `client-app/src/apps/` defines an entry point whose filename (minus extension) becomes
 the URL path. The standalone example apps are reachable the same way: `/contact`, `/todo`,
-`/portfolio`, `/news`, `/recalls`, `/fileManager`, `/weather`.
+`/portfolio`, `/news`, `/recalls`, `/fileManager`, `/weather`, `/favicons`.
 
 ### Updating to the latest hoist-react snapshot
 

@@ -23,6 +23,7 @@
 * Reorganized the desktop tabs - a new Components tab gathers General components, Charts, and Choosers & Pickers, and the Other tab is now System, grouped into Concepts, Dialogs & Alerts, and Formatting. Tab URLs changed to match (e.g. `/app/charts/line` is now `/app/components/line`).
 * Added a Grid Helpers group to the Grids tab, with new `FilterChooser`, `GroupingChooser`, `StoreFilterField`, and `GridFindField` demo pages, each driving a live trades grid.
 * Renamed the App Notifications demo to Updates & Idle and App Banners to Banners, and removed the Forms > Other Controls overview page - its controls now live under Components > Choosers & Pickers.
+* Added Favicon Generator example app - a client-only tool that builds a Hoist app's favicon set from any Font Awesome Pro or brand glyph, with custom colors, backdrop shapes, padding, rotation and flips, live browser-tab and home-screen previews, shareable design URLs, and a one-click zip of `favicon.svg` plus the PNGs `configureRsbuild()` picks up.
 
 ### Bug Fixes
 
