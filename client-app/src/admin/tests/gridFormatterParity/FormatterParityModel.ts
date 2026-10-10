@@ -111,7 +111,7 @@ export class FormatterParityModel extends HoistModel {
     private createGridModel(): GridModel {
         const columns: ColumnOrGroupSpec[] = [
             {field: 'id', headerName: 'Row', width: 50, pinned: 'left'},
-            {field: 'num', colId: 'rawNum', headerName: 'Raw num', width: 110, pinned: 'left'},
+            {field: 'num', colId: 'rawNum', headerName: 'Raw Num', width: 110, pinned: 'left'},
             ...PARITY_CASES.map(parityCase => {
                 const {name, field, renderer, formatter} = parityCase,
                     id = caseId(parityCase),
@@ -175,8 +175,9 @@ export class FormatterParityModel extends HoistModel {
     }
 }
 
-// Values that exercise signs, zero, null, rounding and scale. Dates cycle through a shorter list.
-const NUMBERS = [1234567.891, -1234567.891, 0, null, 0.004, -0.004, 12.5, -12.5, 2.5e9, 0.25];
+// Values that exercise signs, zero, null, rounding, scale and a 4-digit whole number. Dates cycle
+// through a shorter list.
+const NUMBERS = [1234567.891, -1234567.891, 0, null, 0.004, -0.004, 12.5, -12.5, 2.5e9, 0.25, 1500];
 
 function createRows(): PlainObject[] {
     const dates = [

@@ -30,7 +30,7 @@ import {
     timeRenderer
 } from '@xh/hoist/format';
 import type {ColumnFormatter, ColumnRenderer, ColumnSpec} from '@xh/hoist/cmp/grid';
-import type {NumberFormatterOptions} from '@xh/hoist/format';
+import type {NumberFormatterOptions, QuantityFormatterOptions} from '@xh/hoist/format';
 
 /** The store field that a case displays. */
 export type ParityField = 'num' | 'date' | 'localDate';
@@ -61,9 +61,11 @@ export const PARITY_CASES: ParityCase[] = [
         formatter: {...date, formatter: dateFormatter({fmt: 'MMM D', nullDisplay: '-'})}
     },
 
-    // Each number formatter option, through numberFormatter unless named otherwise.
+    // Each option the number formatters take, through numberFormatter unless named otherwise.
     numberCase('precision', {precision: 2}),
+    numberCase('precision: null', {precision: null}),
     numberCase('zeroPad', {precision: 4, zeroPad: 2}),
+    numberCase('formatConfig', {formatConfig: {thousandSeparated: true, mantissa: 1}}),
     numberCase('ledger', {ledger: true, precision: 0}),
     numberCase('ledger, no align', {ledger: true, forceLedgerAlign: false, precision: 0}),
     numberCase('colorSpec', {colorSpec: true, precision: 0}),
@@ -74,6 +76,7 @@ export const PARITY_CASES: ParityCase[] = [
     numberCase('ledger, colorSpec', {ledger: true, colorSpec: true, precision: 0}),
     numberCase('label', {label: 'm', precision: 1}),
     numberCase('withCommas: false', {withCommas: false, precision: 2}),
+    numberCase('omitFourDigitComma', {omitFourDigitComma: true, precision: 0}),
     numberCase('withPlusSign', {withPlusSign: true, precision: 2}),
     numberCase('nullDisplay', {nullDisplay: '-', precision: 2}),
     numberCase('zeroDisplay', {zeroDisplay: '--', precision: 2}),
@@ -94,7 +97,10 @@ export const PARITY_CASES: ParityCase[] = [
     numberCase('thousands', {label: true, precision: 1}, thousandsRenderer, thousandsFormatter),
     numberCase('millions', {label: true, precision: 1}, millionsRenderer, millionsFormatter),
     numberCase('billions', {label: true, precision: 3}, billionsRenderer, billionsFormatter),
-    numberCase('quantity', {}, quantityRenderer, quantityFormatter),
+    quantityCase('quantity', {}),
+    quantityCase('useMillions: false', {useMillions: false}),
+    quantityCase('useBillions: false', {useBillions: false}),
+    quantityCase('lossless', {lossless: true}),
     numberCase('price', {}, priceRenderer, priceFormatter),
     numberCase('percent', {colorSpec: true}, percentRenderer, percentFormatter)
 ];
@@ -111,11 +117,11 @@ function specCase(
     return {name, field, renderer: {...spec, renderer}, formatter: spec};
 }
 
-function numberCase(
+function numberCase<O extends NumberFormatterOptions>(
     name: string,
-    opts: NumberFormatterOptions,
-    rendererFactory: (opts: NumberFormatterOptions) => ColumnRenderer = numberRenderer,
-    formatterFactory: (opts: NumberFormatterOptions) => ColumnFormatter = numberFormatter
+    opts: O,
+    rendererFactory: (opts: O) => ColumnRenderer = numberRenderer,
+    formatterFactory: (opts: O) => ColumnFormatter = numberFormatter
 ): ParityCase {
     return {
         name,
@@ -123,4 +129,8 @@ function numberCase(
         renderer: {...number, renderer: rendererFactory(opts)},
         formatter: {...number, formatter: formatterFactory(opts)}
     };
+}
+
+function quantityCase(name: string, opts: QuantityFormatterOptions): ParityCase {
+    return numberCase<QuantityFormatterOptions>(name, opts, quantityRenderer, quantityFormatter);
 }

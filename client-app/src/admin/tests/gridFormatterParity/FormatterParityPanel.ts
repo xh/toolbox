@@ -14,10 +14,11 @@ import './FormatterParityPanel.scss';
 const INTRO =
     'Each column pair shows the same values twice: R through a renderer and F through the ' +
     'matching formatter. The pairs cover the built-in number and date column specs and each ' +
-    'number formatter option. Run probe autosizes the grid, then compares each cell pair for ' +
-    'text, sign class and color, ledger placeholder, alignment and width. Autosize rounds each ' +
-    'width to a whole px, so a pair may differ by 1px in width. Any other difference likely ' +
-    'points to a bug in hoist-react. Rerun in both themes and in each sizing mode.';
+    'option the number formatters take. Run Probe autosizes the grid, then compares each cell ' +
+    'pair for text, sign class and color, ledger placeholder, alignment and width. Autosize ' +
+    'rounds each width to a whole px, so a pair may differ by 1px in width. Any other ' +
+    'difference likely points to a bug in hoist-react. Rerun in both themes and in each sizing ' +
+    'mode.';
 
 export const formatterParityPanel = hoistCmp.factory({
     displayName: 'FormatterParityPanel',
@@ -28,14 +29,14 @@ export const formatterParityPanel = hoistCmp.factory({
         return panel({
             tbar: [
                 button({
-                    text: 'Run probe',
+                    text: 'Run Probe',
                     icon: Icon.play(),
                     intent: 'primary',
                     outlined: true,
                     onClick: () => model.runProbeAsync()
                 }),
                 toolbarSeparator(),
-                span('Sizing mode'),
+                span('Sizing Mode'),
                 select({
                     model: gridModel.agGridModel,
                     bind: 'sizingMode',
