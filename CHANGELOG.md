@@ -16,7 +16,7 @@
 
 ### New Features
 
-* Added demos for hoist-react's new `Column.formatter`. A Cell Formatting option on the Standard grid switches its trade columns between formatters and renderers. The Number Formats page names the formatter to use in a grid column. A new Grid Formatter Parity page in Admin > Tests checks that both paths render the same cells.
+* Added demos for hoist-react's new `Column.formatter`. A Cell Formatting option on the Standard grid switches its trade columns between formatters and renderers, and the Number Formats page names the formatter to use in a grid column.
 * Added `StoreFilterField` and `GridFindField` to the desktop `ZoneGrid` demo, and bound the mobile demo's filter to its `ZoneGridModel`. Both search the fields mapped to the grid's zones, using hoist-react's new ZoneGrid support.
 * Added an `IconPicker` demo page to Forms + Inputs, including Toolbox's own custom icons alongside Hoist's built-in set.
 * Updated the desktop and mobile Icons galleries to browse hoist-react's new icon catalog - search now matches aliases and keywords, and custom icons are flagged.
@@ -33,6 +33,7 @@
 ### Technical
 
 * Admin > Tests > Grid Scrolling now compares a Hoist `Grid` with a bare `AgGridReact` under measured, stepped scrolls, reporting total and worst-step times. Its options cover column virtualization and cell formatting (plain text, formatters or renderers), the two settings that most affect scroll cost.
+* Added Admin > Tests > Grid Formatter Parity, which checks that `Column.formatter` and renderer cells display the same.
 * Added Vitest unit tests for app models and services, run against hoist-react's fake hoist-core via `@xh/hoist/test-support` and the `configureVitest()` preset from hoist-dev-utils. Specs sit beside their source as `*.spec.ts`, and CI, snapshot and release builds now run `pnpm test`.
 * Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
 * Added a `clusterMemberCount` status monitor that fails when an instance sees fewer cluster members than expected - catching tasks that are down or have failed to join the cluster.
