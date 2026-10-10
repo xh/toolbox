@@ -178,7 +178,16 @@ importers:
       '@fortawesome/free-brands-svg-icons':
         specifier: ^7.3.1
         version: 7.3.1
+      '@fortawesome/pro-light-svg-icons':
+        specifier: ^7.3.1
+        version: 7.3.1
       '@fortawesome/pro-regular-svg-icons':
+        specifier: ^7.3.1
+        version: 7.3.1
+      '@fortawesome/pro-solid-svg-icons':
+        specifier: ^7.3.1
+        version: 7.3.1
+      '@fortawesome/pro-thin-svg-icons':
         specifier: ^7.3.1
         version: 7.3.1
       '@ibm/plex-mono':
@@ -189,10 +198,10 @@ importers:
         version: 1.1.0
       '@xh/hoist':
         specifier: next
-        version: 89.0.0-SNAPSHOT.1791495313632(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
+        version: 89.0.0-SNAPSHOT.1791586053159(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
       '@xh/package-template':
         specifier: ~4.0.0
-        version: 4.0.0(@xh/hoist@89.0.0-SNAPSHOT.1791495313632(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        version: 4.0.0(@xh/hoist@89.0.0-SNAPSHOT.1791586053159(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       ag-charts-community:
         specifier: ~14.2.0
         version: 14.2.0
@@ -211,6 +220,9 @@ importers:
       core-js:
         specifier: ~3.50.0
         version: 3.50.0
+      fflate:
+        specifier: ~0.8.3
+        version: 0.8.3
       filesize:
         specifier: ~11.0.25
         version: 11.0.25
@@ -884,10 +896,6 @@ packages:
 
   '@fortawesome/fontawesome-common-types@7.3.1':
     resolution: {integrity: sha512-k0C0sdHmZtAo6dRDtd1Z/qcpyHbL0CKsjV8seMY/21xGhY5Wsv0XRmiI/xEEH4y2c9b1+jvgNs/3EqhV27yUEA==, tarball: https://npm.fontawesome.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-7.3.1.tgz}
-    engines: {node: '>=6'}
-
-  '@fortawesome/fontawesome-pro@7.3.1':
-    resolution: {integrity: sha512-Y7cPcgdqYkuwa1huWuB3N57ICm2+3XdepQ3hZN0Zm0lJFxujtzl10FmvTQu86/21rpUMIQcBUCYsWBdenaWuMw==, tarball: https://npm.fontawesome.com/@fortawesome/fontawesome-pro/-/fontawesome-pro-7.3.1.tgz}
     engines: {node: '>=6'}
 
   '@fortawesome/fontawesome-svg-core@7.3.1':
@@ -1803,8 +1811,8 @@ packages:
     resolution: {integrity: sha512-ZmaleWOEbkbNNlsSRQN8vd8fXH2KGNG3rEo4dLUbdq9CXRMhApH3+mcH8TsfJQ2Bdj+TtKHvOLVFks0+BXI2EA==}
     engines: {node: '>=22.15.0'}
 
-  '@xh/hoist@89.0.0-SNAPSHOT.1791495313632':
-    resolution: {integrity: sha512-HVfblmtgQ87Ex4zGjcXqA6eYlIqKMHa2iURLADSCUx3lWXAbhHDFSxQgyzQyHe/lhVni1+SkH1uvj+8xEQRX0w==}
+  '@xh/hoist@89.0.0-SNAPSHOT.1791586053159':
+    resolution: {integrity: sha512-YzHrt7K2Sf+swfkxPqawctMtV1tuw3VxXKlnX2+5cDcDHjzQXLiHaM0Ocjm4qIG7joeTa6vYE4sBdynRkUEa3w==}
     hasBin: true
     peerDependencies:
       '@testing-library/dom': ^10.4.2
@@ -2434,6 +2442,9 @@ packages:
     peerDependenciesMeta:
       picomatch:
         optional: true
+
+  fflate@0.8.3:
+    resolution: {integrity: sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==}
 
   file-entry-cache@11.1.5:
     resolution: {integrity: sha512-+PFTHITI08JIGhnNpGNI8T8inUpgZfk3GNEqfT9R2zZV2iFXg3CvqzSl/uEhs7TSGujYRELEANyDvS8Fj7+S7Q==}
@@ -5039,8 +5050,6 @@ snapshots:
 
   '@fortawesome/fontawesome-common-types@7.3.1': {}
 
-  '@fortawesome/fontawesome-pro@7.3.1': {}
-
   '@fortawesome/fontawesome-svg-core@7.3.1':
     dependencies:
       '@fortawesome/fontawesome-common-types': 7.3.1
@@ -5949,7 +5958,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@xh/hoist@89.0.0-SNAPSHOT.1791495313632(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))':
+  '@xh/hoist@89.0.0-SNAPSHOT.1791586053159(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))':
     dependencies:
       '@auth0/auth0-spa-js': 2.28.2
       '@azure/msal-browser': 5.24.0
@@ -5964,7 +5973,6 @@ snapshots:
       '@codemirror/view': 6.43.14
       '@daypicker/react': 10.0.2(@types/react@19.3.0)(react@19.3.0)
       '@floating-ui/react': 0.27.20(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@fortawesome/fontawesome-pro': 7.3.1
       '@fortawesome/fontawesome-svg-core': 7.3.1
       '@fortawesome/pro-light-svg-icons': 7.3.1
       '@fortawesome/pro-regular-svg-icons': 7.3.1
@@ -6027,9 +6035,9 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  '@xh/package-template@4.0.0(@xh/hoist@89.0.0-SNAPSHOT.1791495313632(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@xh/package-template@4.0.0(@xh/hoist@89.0.0-SNAPSHOT.1791586053159(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@xh/hoist': 89.0.0-SNAPSHOT.1791495313632(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
+      '@xh/hoist': 89.0.0-SNAPSHOT.1791586053159(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@10.2.2)(vitest@5.0.3(@types/node@26.6.4)(jsdom@30.1.2(@noble/hashes@1.8.0))(msw@3.0.2(@types/node@26.6.4)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.3(@types/node@26.6.4)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
 
@@ -6676,6 +6684,8 @@ snapshots:
   fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
       picomatch: 4.0.7
+
+  fflate@0.8.3: {}
 
   file-entry-cache@11.1.5:
     dependencies:
