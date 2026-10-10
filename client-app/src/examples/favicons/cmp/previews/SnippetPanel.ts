@@ -1,24 +1,34 @@
 import {badge} from '@xh/hoist/cmp/badge';
-import {card} from '@xh/hoist/cmp/card';
-import {filler, hbox, span} from '@xh/hoist/cmp/layout';
+import {hbox, span} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {clipboardButton} from '@xh/hoist/desktop/cmp/clipboard';
 import {codeInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import type {ReactNode} from 'react';
 import {FaviconModel} from '../../FaviconModel';
 import {FAVICON_FILE_NAMES} from '../../lib/FaviconExport';
 
 /** How to install the download - the files in the zip, and the `configureRsbuild()` snippet. */
-export const snippetCard = hoistCmp.factory({
-    displayName: 'SnippetCard',
+export const snippetPanel = hoistCmp.factory({
+    displayName: 'SnippetPanel',
     model: uses(FaviconModel),
 
     render({model}) {
-        return card({
+        return panel({
             title: 'Add it to your Hoist app',
             icon: Icon.code(),
+            compactHeader: true,
             className: 'tb-fav-snippet',
+            headerItems: [
+                clipboardButton({
+                    text: 'Copy SVG',
+                    icon: Icon.copy(),
+                    tooltip: 'Just need the vector? Copy the SVG markup for inline use.',
+                    getCopyText: () => model.svg,
+                    successMessage: 'SVG markup copied to clipboard.'
+                })
+            ],
             items: [
                 step(1, [
                     span('Unzip into'),
@@ -30,16 +40,7 @@ export const snippetCard = hoistCmp.factory({
                 step(2, [
                     span('Merge into'),
                     code('configureRsbuild()'),
-                    span('in rsbuild.config.mjs:'),
-                    filler(),
-                    clipboardButton({
-                        text: 'Copy SVG',
-                        icon: Icon.copy(),
-                        outlined: true,
-                        tooltip: 'Just need the vector? Copy the SVG markup for inline use.',
-                        getCopyText: () => model.svg,
-                        successMessage: 'SVG markup copied to clipboard.'
-                    })
+                    span('in rsbuild.config.mjs:')
                 ]),
                 codeInput({
                     className: 'tb-fav-snippet__editor',

@@ -1,9 +1,10 @@
-import {card} from '@xh/hoist/cmp/card';
 import {div, hbox, img, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import type {ReactElement} from 'react';
 import {FaviconModel} from '../../FaviconModel';
+import {checkBanners, tileCls} from './CheckBanners';
 
 const SIZES = [16, 32, 48, 64, 180];
 const PEEK_SIZES = [16, 32] as const;
@@ -11,7 +12,8 @@ const PEEK_ZOOM = 4;
 
 /**
  * The design at common display sizes, 1:1 in CSS px, plus a "pixel peek" - real 16px and 32px
- * PNG renders blown up 4x with no smoothing, to show exactly which pixels survive.
+ * PNG renders blown up 4x with no smoothing, to show exactly which pixels survive. Flags Light/Thin
+ * strokes with a banner, in room the tile reserves for it so the previews grid does not move.
  */
 export const sizeStrip = hoistCmp.factory({
     displayName: 'SizeStrip',
@@ -19,10 +21,12 @@ export const sizeStrip = hoistCmp.factory({
 
     render({model}) {
         const {svgDataUrl, peekUrls} = model;
-        return card({
+        return panel({
             title: 'Every size',
             icon: Icon.search(),
-            className: 'tb-fav-sizes',
+            compactHeader: true,
+            className: tileCls(model, 'sizes', 'tb-fav-sizes'),
+            banner: checkBanners(model, 'sizes'),
             contentBoxProps: {
                 flexFlow: 'row wrap',
                 alignItems: 'flex-end',

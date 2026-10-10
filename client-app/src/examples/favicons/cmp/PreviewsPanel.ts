@@ -3,13 +3,13 @@ import {hoistCmp, uses} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {FaviconModel} from '../FaviconModel';
 import {browserTabMock} from './previews/BrowserTabMock';
+import {checksPanel} from './previews/ChecksPanel';
 import {heroPreview} from './previews/HeroPreview';
-import {hintsCard} from './previews/HintsCard';
 import {homeScreenMock} from './previews/HomeScreenMock';
 import {sizeStrip} from './previews/SizeStrip';
-import {snippetCard} from './previews/SnippetCard';
+import {snippetPanel} from './previews/SnippetPanel';
 
-/** Scrolling grid of preview cards for the current design. */
+/** Scrolling grid of preview tiles - minimally restyled Hoist panels - for the current design. */
 export const previewsPanel = hoistCmp.factory({
     displayName: 'PreviewsPanel',
     model: uses(FaviconModel),
@@ -28,9 +28,9 @@ export const previewsPanel = hoistCmp.factory({
                         heroPreview(),
                         browserTabMock(),
                         homeScreenMock(),
-                        hintsCard(),
+                        checksPanel(),
                         sizeStrip(),
-                        snippetCard()
+                        snippetPanel()
                     ]
                 })
             })

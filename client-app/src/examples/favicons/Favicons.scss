@@ -3,14 +3,12 @@
 .tb-favicons {
   --tb-fav-check-a: #ffffff;
   --tb-fav-check-b: #e6e9ed;
-  --tb-fav-card-shadow: 0 1px 2px rgb(0 0 0 / 6%), 0 4px 16px rgb(0 0 0 / 6%);
   --tb-fav-mono: var(--xh-font-family-mono);
 }
 
 .xh-dark .tb-favicons {
   --tb-fav-check-a: #2b2e33;
   --tb-fav-check-b: #212327;
-  --tb-fav-card-shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 16px rgb(0 0 0 / 30%);
 }
 
 .tb-fav-checkerboard {
@@ -139,6 +137,21 @@
   gap: 14px;
   padding: 14px;
 
+  // Preview tiles are Hoist panels, restyled as minimal rounded tiles purely via Panel's CSS vars.
+  // Border width and radius are hooks each panel reads itself, so they scope to this container.
+  --panel-border-radius: 8;
+  --panel-border-width: 1;
+
+  // Hoist resolves the other panel hooks (`--panel-title-bg` etc.) on `body` only, so setting them
+  // here has no effect - override the resolved `--xh-panel-*` vars instead, which these panels
+  // inherit. A transparent header in the body text color lets each tile read as a single surface.
+  --xh-panel-title-bg: transparent;
+  --xh-panel-title-text-color: var(--xh-text-color);
+
+  // Height of a compact, single-line check banner - see `checkBanners()`. The tiles that set their
+  // row's height make room for one, so a warning coming or going never moves the grid.
+  --tb-fav-banner-h: 24px;
+
   @container (min-width: 640px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -150,35 +163,43 @@
       grid-column: span 2;
     }
   }
+
+  // Let tiles shrink below their min-content width within the grid.
+  > .xh-panel {
+    min-width: 0;
+  }
+
+  .xh-panel__content {
+    gap: 10px;
+    padding: 4px 10px 10px;
+  }
+
+  // Workaround: compact headers and banners have no right padding, so header items and banner
+  // actions would sit against - and on hover be clipped by - the rounded corners.
+  .xh-panel-header,
+  .xh-panel__banner {
+    padding-right: 4px;
+  }
 }
 
 // Hoist cards render as a <fieldset> and keep the browser's default fieldset margin and uneven
-// padding - reset both so card edges align with the grid gutters and content insets are even.
+// padding - reset both so card edges align and content insets are even.
 .tb-favicons .xh-card {
   margin: 0;
   padding: 4px 10px 10px;
 }
 
-// Preview tiles are Hoist cards - make each a flex column (so its content fills a stretched grid
-// row) and let it shrink below its min-content width within the grid.
-.tb-favicons__grid > .xh-card {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  box-shadow: var(--tb-fav-card-shadow);
-
-  > .xh-card__content {
-    flex: 1;
-    gap: 10px;
-  }
-}
-
+// The hero sets its row's height - while it shows a check banner, shrink the stage to make room.
 .tb-fav-hero {
   &__stage {
     width: min(256px, 100%);
     aspect-ratio: 1;
     padding: 12px;
     border-radius: 10px;
+  }
+
+  &.tb-fav-tile--flagged &__stage {
+    width: min(calc(256px - var(--tb-fav-banner-h)), 100%);
   }
 
   &__img {
@@ -194,8 +215,13 @@
   }
 }
 
+// The size strip sets its row's height - reserve room for a check banner while it has none.
 .tb-fav-sizes {
   grid-column: 1 / -1;
+
+  &:not(.tb-fav-tile--flagged) .xh-panel__content {
+    padding-top: calc(4px + var(--tb-fav-banner-h));
+  }
 
   &__frame {
     border-radius: 3px;
@@ -411,14 +437,18 @@
   }
 }
 
-.tb-fav-hints {
-  &__item {
+.tb-fav-checks {
+  &__summary {
     line-height: 1.4;
+  }
 
-    > svg {
-      flex: none;
-      margin-top: 3px;
-    }
+  &__list {
+    gap: 6px;
+  }
+
+  &__item {
+    align-items: center;
+    gap: 8px;
   }
 }
 

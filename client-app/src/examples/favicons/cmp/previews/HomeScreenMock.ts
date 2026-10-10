@@ -1,6 +1,6 @@
-import {card} from '@xh/hoist/cmp/card';
 import {div, img, span} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import type {ReactElement} from 'react';
 import {FaviconModel} from '../../FaviconModel';
@@ -54,9 +54,10 @@ export const homeScreenMock = hoistCmp.factory({
             })
         );
 
-        return card({
+        return panel({
             title: 'Home screen',
             icon: Icon.mobile(),
+            compactHeader: true,
             className: 'tb-fav-home',
             contentBoxProps: {alignItems: 'center', justifyContent: 'center'},
             items: [

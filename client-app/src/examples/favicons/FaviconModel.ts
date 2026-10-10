@@ -13,7 +13,8 @@ import {
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {downloadBlob} from '@xh/hoist/utils/js';
 import {isEqual, omit} from 'lodash';
-import {contrastRatio} from './lib/Colors';
+import type {FaviconCheck, FaviconPreviewId} from './lib/Checks';
+import {designChecks} from './lib/Checks';
 import {buildConfigSnippet} from './lib/ConfigSnippet';
 import {
     allIconNames,
@@ -37,18 +38,6 @@ import {FAVICON_PRESETS, randomSpec} from './lib/Presets';
 import {rasterizePngAsync} from './lib/Rasterizer';
 import {buildShareUrl, decodeSpec, writeSpecToUrl} from './lib/SpecUrlCodec';
 import {buildFaviconSvg, svgToDataUrl} from './lib/SvgBuilder';
-
-/** A note about the current design, shown in the Checks card. */
-export interface FaviconHint {
-    type: 'warning' | 'info';
-    text: string;
-}
-
-/** Active-tab colors of the browser-tab mocks - checked for glyph contrast with shape 'none'. */
-export const LIGHT_TAB_BG = '#ffffff';
-export const DARK_TAB_BG = '#35363a';
-
-const MIN_CONTRAST = 3;
 
 /**
  * Design state and derived output for the Favicon Generator.
@@ -179,51 +168,15 @@ export class FaviconModel extends HoistModel {
         return zipFileName(this.spec.appName);
     }
 
+    /** Design checks - contrast and stroke weight - for the current spec. */
     @computed
-    get hints(): FaviconHint[] {
-        const {fgColor, bgColor, shape, prefix} = this.spec,
-            ret: FaviconHint[] = [];
+    get checks(): FaviconCheck[] {
+        return designChecks(this.spec);
+    }
 
-        if (shape === 'none') {
-            const light = contrastRatio(fgColor, LIGHT_TAB_BG),
-                dark = contrastRatio(fgColor, DARK_TAB_BG);
-            if (light < MIN_CONTRAST) {
-                ret.push({
-                    type: 'warning',
-                    text: `Hard to see on light browser tabs (${fmtRatio(light)} contrast) - try a darker glyph, or add a backdrop.`
-                });
-            }
-            if (dark < MIN_CONTRAST) {
-                ret.push({
-                    type: 'warning',
-                    text: `Hard to see on dark browser tabs (${fmtRatio(dark)} contrast) - try a lighter glyph, or add a backdrop.`
-                });
-            }
-        } else {
-            const ratio = contrastRatio(fgColor, bgColor);
-            if (ratio < MIN_CONTRAST) {
-                ret.push({
-                    type: 'warning',
-                    text: `Low contrast between glyph and backdrop (${fmtRatio(ratio)}) - aim for at least 3:1.`
-                });
-            }
-        }
-
-        if (prefix === 'fal' || prefix === 'fat') {
-            ret.push({
-                type: 'warning',
-                text: 'Light/Thin strokes can vanish at 16px - check the pixel peek.'
-            });
-        }
-
-        if (this.isFramed) {
-            ret.push({
-                type: 'info',
-                text: 'Open the generator in a full tab to preview your design live as this browser tab icon.'
-            });
-        }
-
-        return ret;
+    /** Failed checks that are flagged on the given preview. */
+    failedChecksFor(preview: FaviconPreviewId): FaviconCheck[] {
+        return this.checks.filter(it => it.preview === preview && it.warning);
     }
 
     /** IconPicker value for the current glyph - its catalog `faName`, which may be an alias. */
@@ -398,8 +351,4 @@ export class FaviconModel extends HoistModel {
         URL.revokeObjectURL(urls[16]);
         URL.revokeObjectURL(urls[32]);
     }
-}
-
-function fmtRatio(ratio: number): string {
-    return `${ratio.toFixed(1)}:1`;
 }
