@@ -9,6 +9,7 @@ import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import type {StoreRecord} from '@xh/hoist/data';
+import {isEmpty} from 'lodash';
 import './SampleGrid.scss';
 import {activeCol} from '../../../core/columns/General';
 import {cityCol, companyCol} from '../../../core/columns/Demographics';
@@ -273,6 +274,14 @@ export class SampleGridModel extends HoistModel {
             {columnState} = gridModel;
         gridModel.setColumns(this.createColumns());
         gridModel.setColumnState(columnState);
+
+        // Both calls above re-show a column hidden by grouping, and Hoist hides it again only when
+        // `groupBy` changes. So hide it here, in a microtask that runs after the grid's reactions.
+        queueMicrotask(() => {
+            const {agApi, groupBy} = gridModel;
+            if (!agApi || isEmpty(groupBy)) return;
+            agApi.applyColumnState({state: groupBy.map(colId => ({colId, hide: true}))});
+        });
     }
 
     private showInfoToast(rec: StoreRecord) {
