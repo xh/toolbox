@@ -97,6 +97,7 @@ import {basicPanel} from './tabs/layout/panels/BasicPanel';
 import {loadingIndicatorPanel} from './tabs/layout/panels/LoadingIndicatorPanel';
 import {maskPanel} from './tabs/layout/panels/MaskPanel';
 import {panelSizingPanel} from './tabs/layout/panels/PanelSizingPanel';
+import {panelStylingPanel} from './tabs/layout/panels/PanelStylingPanel';
 import {toolbarPanel} from './tabs/layout/panels/ToolbarPanel';
 
 // Tab-level stylesheets, previously carried as side-effect imports by the `tabs/grids`
@@ -231,6 +232,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'mask', path: '/mask'},
                             {name: 'loadingIndicator', path: '/loadingIndicator'},
                             {name: 'banner', path: '/banner'},
+                            {name: 'styling', path: '/styling'},
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
                             {name: 'card', path: '/card'},
@@ -495,7 +497,8 @@ export class AppModel extends BaseAppModel {
                             {id: 'sizing', content: panelSizingPanel},
                             {id: 'mask', content: maskPanel},
                             {id: 'loadingIndicator', content: loadingIndicatorPanel},
-                            {id: 'banner', content: bannerPanel}
+                            {id: 'banner', content: bannerPanel},
+                            {id: 'styling', content: panelStylingPanel}
                         ].map(it => ({...it, group: 'panels'})),
                         ...[
                             {id: 'hbox', title: 'HBox', content: hboxContainerPanel},

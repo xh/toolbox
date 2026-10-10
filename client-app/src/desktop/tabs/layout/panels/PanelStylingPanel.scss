@@ -1,0 +1,24 @@
+// Gapped tile layout on a contrasting background - the setting a panel border radius is made for.
+.tb-panel-styling {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 90%;
+  height: 70vh;
+  padding: 12px;
+  background-color: var(--xh-bg-alt);
+  border: var(--xh-border-solid);
+  border-radius: 8px;
+  box-shadow: var(--tbox-card-shadow);
+
+  &__row {
+    flex: 1;
+    gap: 12px;
+    min-height: 0;
+  }
+
+  // Contrasting content background, so any gap or overhang at the corners stands out.
+  &__content {
+    background-color: var(--xh-intent-primary-trans1);
+  }
+}
