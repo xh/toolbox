@@ -1,8 +1,9 @@
-import {div, img} from '@xh/hoist/cmp/layout';
+import {card} from '@xh/hoist/cmp/card';
+import {div, hbox, img, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
+import type {ReactElement} from 'react';
 import {FaviconModel} from '../../FaviconModel';
-import {previewCard} from './PreviewCard';
 
 const SIZES = [16, 32, 48, 64, 180];
 const PEEK_SIZES = [16, 32] as const;
@@ -18,14 +19,19 @@ export const sizeStrip = hoistCmp.factory({
 
     render({model}) {
         const {svgDataUrl, peekUrls} = model;
-        return previewCard({
+        return card({
             title: 'Every size',
             icon: Icon.search(),
             className: 'tb-fav-sizes',
+            contentBoxProps: {
+                flexFlow: 'row wrap',
+                alignItems: 'flex-end',
+                justifyContent: 'space-between',
+                gap: '16px 24px'
+            },
             items: [
-                div({
-                    className: 'tb-fav-sizes__row',
-                    items: SIZES.map(size =>
+                sizeRow(
+                    SIZES.map(size =>
                         sizeTile({
                             key: size,
                             label: `${size}`,
@@ -34,14 +40,13 @@ export const sizeStrip = hoistCmp.factory({
                             displaySize: size
                         })
                     )
-                }),
+                ),
                 div({
                     className: 'tb-fav-sizes__peek',
                     items: [
                         div({className: 'tb-fav-sizes__peek-title', item: 'Pixel peek'}),
-                        div({
-                            className: 'tb-fav-sizes__row',
-                            items: PEEK_SIZES.map(size =>
+                        sizeRow(
+                            PEEK_SIZES.map(size =>
                                 sizeTile({
                                     key: size,
                                     label: `${size}px x${PEEK_ZOOM}`,
@@ -51,13 +56,17 @@ export const sizeStrip = hoistCmp.factory({
                                     pixelated: true
                                 })
                             )
-                        })
+                        )
                     ]
                 })
             ]
         });
     }
 });
+
+function sizeRow(items: ReactElement[]) {
+    return hbox({alignItems: 'flex-end', gap: 16, overflow: 'visible', items});
+}
 
 function sizeTile({
     key,
@@ -74,9 +83,12 @@ function sizeTile({
     displaySize: number;
     pixelated?: boolean;
 }) {
-    return div({
+    // Overflow stays visible so the frame's outline is not clipped.
+    return vbox({
         key,
-        className: 'tb-fav-sizes__tile',
+        alignItems: 'center',
+        gap: 4,
+        overflow: 'visible',
         items: [
             div({
                 className: 'tb-fav-sizes__frame tb-fav-checkerboard',

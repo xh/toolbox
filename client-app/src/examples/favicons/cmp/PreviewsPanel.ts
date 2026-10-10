@@ -13,7 +13,7 @@ import {snippetCard} from './previews/SnippetCard';
 export const previewsPanel = hoistCmp.factory({
     displayName: 'PreviewsPanel',
     model: uses(FaviconModel),
-    className: 'tb-favicons-previews xh-tiled-bg',
+    className: 'xh-tiled-bg',
 
     render({className}) {
         return panel({

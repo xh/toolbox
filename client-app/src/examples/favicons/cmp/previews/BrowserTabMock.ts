@@ -1,8 +1,8 @@
+import {card} from '@xh/hoist/cmp/card';
 import {div, img, span} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {FaviconModel} from '../../FaviconModel';
-import {previewCard} from './PreviewCard';
 
 /** The 16px favicon in light and dark browser tab strips. */
 export const browserTabMock = hoistCmp.factory({
@@ -13,10 +13,11 @@ export const browserTabMock = hoistCmp.factory({
         const {svgDataUrl, spec} = model,
             appName = spec.appName || 'My App';
 
-        return previewCard({
+        return card({
             title: 'Browser tabs',
             icon: Icon.window(),
             className: 'tb-fav-tabs',
+            contentBoxProps: {justifyContent: 'center'},
             items: ['light', 'dark'].map(theme =>
                 div({
                     key: theme,

@@ -1,19 +1,19 @@
-import {div, filler, hbox, img, span} from '@xh/hoist/cmp/layout';
+import type {CardProps} from '@xh/hoist/cmp/card';
+import {card} from '@xh/hoist/cmp/card';
+import {div, filler, hbox, img, span, vbox} from '@xh/hoist/cmp/layout';
 import type {ReactElement, ReactNode} from 'react';
-import {elementFactory, hoistCmp, uses} from '@xh/hoist/core';
+import type {ElementSpec} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import type {SliderProps} from '@xh/hoist/desktop/cmp/input';
 import {iconPicker, segmentedControl, slider, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import classNames from 'classnames';
 import {FaviconModel} from '../FaviconModel';
 import type {FaviconShape} from '../lib/FaviconSpec';
 import {MAX_PADDING, MAX_RADIUS} from '../lib/FaviconSpec';
 import {FAVICON_PRESETS} from '../lib/Presets';
 import {colorField} from './ColorField';
-
-const nativeButton = elementFactory('button');
 
 const SHAPE_OPTIONS: {value: FaviconShape; label: string}[] = [
     {value: 'none', label: 'None'},
@@ -31,17 +31,22 @@ export const controlsPanel = hoistCmp.factory({
     render({model, className}) {
         return panel({
             className,
-            width: 300,
+            width: 320,
             flex: 'none',
             scrollable: true,
-            items: [
-                presetsSection(),
-                iconSection(),
-                colorsSection(),
-                shapeSection(),
-                transformSection(),
-                appSection()
-            ],
+            item: vbox({
+                flex: 'none',
+                gap: 8,
+                padding: 8,
+                items: [
+                    presetsCard(),
+                    iconCard(),
+                    colorsCard(),
+                    shapeCard(),
+                    transformCard(),
+                    appCard()
+                ]
+            }),
             bbar: [
                 span({className: 'tb-favicons-controls__credit', item: 'Font Awesome 7 Pro'}),
                 filler(),
@@ -57,46 +62,47 @@ export const controlsPanel = hoistCmp.factory({
 });
 
 //------------------
-// Sections
+// Cards
 //------------------
-const presetsSection = hoistCmp.factory({
+const presetsCard = hoistCmp.factory({
     model: uses(FaviconModel),
     render({model}) {
         const {presetThumbs, activePresetIdx} = model;
-        return section({
+        return controlCard({
             title: 'Presets',
-            headerItem: button({
-                className: 'tb-favicons-controls__surprise',
-                text: 'Surprise me',
-                icon: Icon.random(),
-                intent: 'primary',
-                onClick: () => model.surpriseMe()
-            }),
-            items: div({
-                className: 'tb-favicons-controls__presets',
-                items: FAVICON_PRESETS.map((p, idx) =>
-                    nativeButton({
-                        key: p.name,
-                        type: 'button',
-                        className: classNames(
-                            'tb-favicons-controls__preset',
-                            idx === activePresetIdx && 'tb-favicons-controls__preset--active'
-                        ),
-                        title: p.name,
-                        'aria-label': `Apply preset ${p.name}`,
-                        onClick: () => model.applyPreset(p),
-                        item: img({src: presetThumbs[idx], alt: '', width: 28, height: 28})
-                    })
-                )
-            })
+            items: [
+                hbox({
+                    justifyContent: 'space-between',
+                    overflow: 'visible',
+                    items: FAVICON_PRESETS.map((p, idx) =>
+                        button({
+                            key: p.name,
+                            className: 'tb-favicons-controls__preset',
+                            icon: img({src: presetThumbs[idx], alt: '', width: 28, height: 28}),
+                            active: idx === activePresetIdx,
+                            tooltip: p.name,
+                            'aria-label': `Apply preset ${p.name}`,
+                            padding: 3,
+                            onClick: () => model.applyPreset(p)
+                        })
+                    )
+                }),
+                button({
+                    text: 'Surprise me',
+                    icon: Icon.random(),
+                    intent: 'primary',
+                    outlined: true,
+                    onClick: () => model.surpriseMe()
+                })
+            ]
         });
     }
 });
 
-const iconSection = hoistCmp.factory({
+const iconCard = hoistCmp.factory({
     model: uses(FaviconModel),
     render({model}) {
-        return section({
+        return controlCard({
             title: 'Icon',
             items: [
                 iconPicker({
@@ -121,14 +127,15 @@ const iconSection = hoistCmp.factory({
     }
 });
 
-const colorsSection = hoistCmp.factory({
+const colorsCard = hoistCmp.factory({
     model: uses(FaviconModel),
     render({model}) {
-        return section({
+        return controlCard({
             title: 'Colors',
             items: [
                 hbox({
-                    className: 'tb-favicons-controls__colors',
+                    alignItems: 'flex-end',
+                    justifyContent: 'space-between',
                     items: [
                         colorField({
                             label: 'Glyph',
@@ -136,7 +143,7 @@ const colorsSection = hoistCmp.factory({
                             onChange: v => (model.fgColor = v)
                         }),
                         button({
-                            className: 'tb-favicons-controls__swap',
+                            marginBottom: 1,
                             icon: Icon.arrowRightArrowLeft(),
                             tooltip: 'Swap glyph and backdrop colors',
                             onClick: () => model.swapColors()
@@ -154,10 +161,10 @@ const colorsSection = hoistCmp.factory({
     }
 });
 
-const shapeSection = hoistCmp.factory({
+const shapeCard = hoistCmp.factory({
     model: uses(FaviconModel),
     render({model}) {
-        return section({
+        return controlCard({
             title: 'Shape',
             items: [
                 segmentedControl({
@@ -168,7 +175,7 @@ const shapeSection = hoistCmp.factory({
                     fill: true
                 }),
                 model.shape === 'rounded'
-                    ? sliderRow({
+                    ? fieldRow({
                           label: 'Corner radius',
                           value: `${model.radius}%`,
                           item: rangeSlider({
@@ -179,7 +186,7 @@ const shapeSection = hoistCmp.factory({
                           })
                       })
                     : null,
-                sliderRow({
+                fieldRow({
                     label: 'Padding',
                     value: `${model.padding}%`,
                     item: rangeSlider({
@@ -194,13 +201,13 @@ const shapeSection = hoistCmp.factory({
     }
 });
 
-const transformSection = hoistCmp.factory({
+const transformCard = hoistCmp.factory({
     model: uses(FaviconModel),
     render({model}) {
-        return section({
+        return controlCard({
             title: 'Transform',
             items: [
-                sliderRow({
+                fieldRow({
                     label: 'Rotation',
                     value: `${model.rotation}°`,
                     item: rangeSlider({
@@ -213,10 +220,11 @@ const transformSection = hoistCmp.factory({
                     })
                 }),
                 hbox({
-                    className: 'tb-favicons-controls__flips',
+                    gap: 8,
                     items: [
                         button({
                             text: 'Flip H',
+                            flex: 1,
                             icon: Icon.arrowsLeftRight(),
                             active: model.flipH,
                             outlined: true,
@@ -224,6 +232,7 @@ const transformSection = hoistCmp.factory({
                         }),
                         button({
                             text: 'Flip V',
+                            flex: 1,
                             icon: Icon.arrowsUpDown(),
                             active: model.flipV,
                             outlined: true,
@@ -236,10 +245,10 @@ const transformSection = hoistCmp.factory({
     }
 });
 
-const appSection = hoistCmp.factory({
+const appCard = hoistCmp.factory({
     model: uses(FaviconModel),
     render({model}) {
-        return section({
+        return controlCard({
             title: 'App',
             items: [
                 fieldRow({
@@ -252,7 +261,10 @@ const appSection = hoistCmp.factory({
                         width: '100%'
                     })
                 }),
-                hint(`Labels the previews and names the download - ${model.zipFileName}`)
+                hint([
+                    'Labels the previews and names the download - ',
+                    span({className: 'tb-favicons-controls__nowrap', item: model.zipFileName})
+                ])
             ]
         });
     }
@@ -261,33 +273,26 @@ const appSection = hoistCmp.factory({
 //------------------
 // Helpers
 //------------------
-function section({
-    title,
-    headerItem,
-    items
-}: {
-    title: string;
-    headerItem?: ReactElement;
-    items: ReactNode;
-}) {
-    return div({
-        className: 'tb-favicons-controls__section',
-        items: [
-            hbox({
-                className: 'tb-favicons-controls__section-header',
-                items: [span(title), filler(), headerItem]
-            }),
-            ...(Array.isArray(items) ? items : [items])
-        ]
-    });
+/**
+ * A control-column card, with a consistent gap between its rows. Content overflow stays visible so
+ * focus rings and the preset hover lift are not clipped at the card's inner edge.
+ */
+function controlCard(props: ElementSpec<CardProps>) {
+    return card({contentBoxProps: {gap: 8, overflow: 'visible'}, ...props});
 }
 
+/**
+ * A labelled input row. Sliders pass their current value to show beside the label, rather than
+ * over the tick labels.
+ */
 function fieldRow({label, value, item}: {label: string; value?: string; item: ReactElement}) {
-    return div({
-        className: 'tb-favicons-controls__row',
+    return vbox({
+        gap: 2,
+        overflow: 'visible',
         items: [
             hbox({
                 className: 'tb-favicons-controls__row-label',
+                alignItems: 'baseline',
                 items: [
                     span(label),
                     filler(),
@@ -299,16 +304,11 @@ function fieldRow({label, value, item}: {label: string; value?: string; item: Re
     });
 }
 
-/** A labelled slider row - the current value shows beside the label, not over the tick labels. */
-function sliderRow(args: {label: string; value: string; item: ReactElement}) {
-    return fieldRow(args);
-}
-
 /** A full-width slider from 0, sized to sit within the controls column. */
 function rangeSlider(props: SliderProps) {
     return slider({min: 0, width: '100%', paddingLeft: 10, paddingRight: 14, ...props});
 }
 
-function hint(text: string) {
-    return div({className: 'tb-favicons-controls__hint', item: text});
+function hint(content: ReactNode) {
+    return div({className: 'tb-favicons-controls__hint', item: content});
 }

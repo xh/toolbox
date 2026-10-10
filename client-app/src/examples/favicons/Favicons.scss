@@ -41,75 +41,16 @@
 .tb-favicons-controls {
   border-right: var(--xh-border-solid);
 
-  &__section {
-    padding: 10px 14px 12px;
-    border-bottom: var(--xh-border-solid);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  &__section-header {
-    align-items: center;
-    min-height: 24px;
-    font-size: var(--xh-font-size-small-px);
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--xh-text-color-muted);
-  }
-
-  &__presets {
-    display: flex;
-    justify-content: space-between;
-  }
-
+  // Preset thumbnails are Hoist buttons - add a playful lift on hover.
   &__preset {
-    display: flex;
-    padding: 2px;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    background: none;
-    cursor: pointer;
-    transition:
-      transform 120ms ease,
-      border-color 120ms ease;
-
-    img {
-      display: block;
-    }
+    transition: transform 120ms ease;
 
     &:hover {
       transform: translateY(-2px) scale(1.12);
     }
-
-    &:focus-visible {
-      outline: 2px solid var(--xh-intent-primary);
-      outline-offset: 1px;
-    }
-
-    &--active {
-      border-color: var(--xh-intent-primary);
-    }
-  }
-
-  &__colors {
-    align-items: flex-end;
-    justify-content: space-between;
-  }
-
-  &__swap {
-    margin-bottom: 1px;
-  }
-
-  &__row {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
   }
 
   &__row-label {
-    align-items: baseline;
     font-size: var(--xh-font-size-small-px);
     color: var(--xh-text-color-muted);
   }
@@ -124,18 +65,14 @@
     display: none;
   }
 
-  &__flips {
-    gap: 8px;
-
-    > * {
-      flex: 1;
-    }
-  }
-
   &__hint {
     font-size: var(--xh-font-size-small-px);
     color: var(--xh-text-color-muted);
     line-height: 1.35;
+  }
+
+  &__nowrap {
+    white-space: nowrap;
   }
 
   &__credit {
@@ -215,53 +152,28 @@
   }
 }
 
-.tb-fav-card {
+// Hoist cards render as a <fieldset> and keep the browser's default fieldset margin and uneven
+// padding - reset both so card edges align with the grid gutters and content insets are even.
+.tb-favicons .xh-card {
+  margin: 0;
+  padding: 4px 10px 10px;
+}
+
+// Preview tiles are Hoist cards - make each a flex column (so its content fills a stretched grid
+// row) and let it shrink below its min-content width within the grid.
+.tb-favicons__grid > .xh-card {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: var(--xh-bg);
-  border: var(--xh-border-solid);
-  border-radius: 8px;
   box-shadow: var(--tb-fav-card-shadow);
-  overflow: hidden;
 
-  &__header {
-    align-items: center;
-    gap: 8px;
-    min-height: 36px;
-    padding: 4px 8px 4px 12px;
-    border-bottom: var(--xh-border-solid);
-  }
-
-  &__icon {
-    color: var(--xh-text-color-muted);
-  }
-
-  &__title {
-    font-weight: 600;
-  }
-
-  &__header-items {
-    display: flex;
-    gap: 6px;
-    margin-left: auto;
-  }
-
-  &__body {
+  > .xh-card__content {
     flex: 1;
-    display: flex;
-    flex-direction: column;
     gap: 10px;
-    padding: 12px;
   }
 }
 
 .tb-fav-hero {
-  .tb-fav-card__body {
-    align-items: center;
-    justify-content: center;
-  }
-
   &__stage {
     width: min(256px, 100%);
     aspect-ratio: 1;
@@ -280,37 +192,10 @@
       transform: scale(1.04) rotate(-2deg);
     }
   }
-
-  &__caption {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-  }
 }
 
 .tb-fav-sizes {
   grid-column: 1 / -1;
-
-  .tb-fav-card__body {
-    flex-flow: row wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 16px 24px;
-  }
-
-  &__row {
-    display: flex;
-    align-items: flex-end;
-    gap: 16px;
-  }
-
-  &__tile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
 
   &__frame {
     border-radius: 3px;
@@ -351,10 +236,6 @@
 
 // Chrome-like tab strips - fixed palettes, independent of the app theme.
 .tb-fav-tabs {
-  .tb-fav-card__body {
-    justify-content: center;
-  }
-
   &__browser {
     --tab-strip: #dee1e6;
     --tab-active: #ffffff;
@@ -439,11 +320,6 @@
 }
 
 .tb-fav-home {
-  .tb-fav-card__body {
-    align-items: center;
-    justify-content: center;
-  }
-
   &__phone {
     padding: 8px 8px 14px;
     border: 6px solid #111111;
@@ -537,9 +413,6 @@
 
 .tb-fav-hints {
   &__item {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
     line-height: 1.4;
 
     > svg {
@@ -547,35 +420,10 @@
       margin-top: 3px;
     }
   }
-
-  &__full-tab {
-    align-self: flex-start;
-  }
 }
 
 .tb-fav-snippet {
   grid-column: 1 / -1;
-
-  &__step {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px 6px;
-  }
-
-  &__num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    margin-right: 2px;
-    border-radius: 50%;
-    background: var(--xh-intent-primary);
-    color: #ffffff;
-    font-size: 11px;
-    font-weight: 700;
-  }
 
   &__code {
     padding: 1px 6px;
