@@ -16,7 +16,7 @@
 
 ### New Features
 
-* Added demos for hoist-react's new `Column.formatter`. A Cell Formatting option on the Standard grid switches its trade columns between formatters and renderers, and the Number Formats page names the formatter to use in a grid column.
+* Added demos for hoist-react's new `Column.formatter`. A Cell Formatting option on the Standard grid switches its trade columns between formatters and renderers. The Number Formats page names the formatter to use in a grid column.
 * Added `StoreFilterField` and `GridFindField` to the desktop `ZoneGrid` demo, and bound the mobile demo's filter to its `ZoneGridModel`. Both search the fields mapped to the grid's zones, using hoist-react's new ZoneGrid support.
 * Added an `IconPicker` demo page to Forms + Inputs, including Toolbox's own custom icons alongside Hoist's built-in set.
 * Updated the desktop and mobile Icons galleries to browse hoist-react's new icon catalog - search now matches aliases and keywords, and custom icons are flagged.
