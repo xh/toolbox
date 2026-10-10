@@ -137,14 +137,10 @@
   gap: 14px;
   padding: 14px;
 
-  // Preview tiles are Hoist panels, restyled as minimal rounded tiles purely via Panel's CSS vars.
-  // Border width and radius are hooks each panel reads itself, so they scope to this container.
-  --panel-border-radius: 8;
-  --panel-border-width: 1;
-
-  // Hoist resolves the other panel hooks (`--panel-title-bg` etc.) on `body` only, so setting them
-  // here has no effect - override the resolved `--xh-panel-*` vars instead, which these panels
-  // inherit. A transparent header in the body text color lets each tile read as a single surface.
+  // Preview tiles are Hoist panels, restyled as minimal outlined tiles by overriding Panel's
+  // `--xh-panel-*` CSS vars on this container - the panels within inherit them. A transparent header
+  // in the body text color lets each tile read as a single surface.
+  --xh-panel-border-width-px: 1px;
   --xh-panel-title-bg: transparent;
   --xh-panel-title-text-color: var(--xh-text-color);
 
@@ -167,6 +163,12 @@
   // Let tiles shrink below their min-content width within the grid.
   > .xh-panel {
     min-width: 0;
+  }
+
+  // Panel has no border-radius var yet, so round each tile's inner box directly. As a Hoist vbox it
+  // already clips its overflow, so the header, banners and content follow the curve.
+  > .xh-panel > .xh-panel__inner {
+    border-radius: 8px;
   }
 
   .xh-panel__content {
