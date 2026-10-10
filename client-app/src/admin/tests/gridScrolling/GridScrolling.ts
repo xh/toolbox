@@ -11,7 +11,12 @@ import {toolbar, toolbarSeparator} from '@xh/hoist/desktop/cmp/toolbar';
 import {AgGridReact} from 'ag-grid-react';
 import {upperFirst} from 'lodash';
 import {createElement} from 'react';
-import {GRID_SIZING, GridScrollingModel, type ScrollTarget} from './GridScrollingModel';
+import {
+    GRID_SIZING,
+    GridScrollingModel,
+    type ScrollResult,
+    type ScrollTarget
+} from './GridScrollingModel';
 
 export const gridScrolling = hoistCmp.factory({
     model: creates(GridScrollingModel),
@@ -21,22 +26,30 @@ export const gridScrolling = hoistCmp.factory({
             tbar: tbar(),
             // Keyed so both grids remount when Apply rebuilds them - see `gridGeneration`.
             item: hframe(
-                grid({
-                    key: model.gridGeneration,
-                    ref: model.hoistGridRef
-                }),
-                div({
-                    ref: model.agGridRef,
-                    style: {flex: 1},
-                    item: createElement(AgGridReact, {
+                panel({
+                    flex: 1,
+                    item: grid({
                         key: model.gridGeneration,
-                        rowData: model.rowData,
-                        columnDefs: model.agColumnDefs,
-                        rowHeight: GRID_SIZING.rowHeight,
-                        headerHeight: GRID_SIZING.headerHeight,
-                        suppressColumnVirtualisation: !model.isColVirtualizationEnabled,
-                        animateRows: false
-                    })
+                        ref: model.hoistGridRef
+                    }),
+                    bbar: scrollBar({grid: 'hoist'})
+                }),
+                panel({
+                    flex: 1,
+                    item: div({
+                        ref: model.agGridRef,
+                        style: {flex: 1},
+                        item: createElement(AgGridReact, {
+                            key: model.gridGeneration,
+                            rowData: model.rowData,
+                            columnDefs: model.agColumnDefs,
+                            rowHeight: GRID_SIZING.rowHeight,
+                            headerHeight: GRID_SIZING.headerHeight,
+                            suppressColumnVirtualisation: !model.isColVirtualizationEnabled,
+                            animateRows: false
+                        })
+                    }),
+                    bbar: scrollBar({grid: 'ag'})
                 })
             )
         });
@@ -92,11 +105,7 @@ const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
             }),
             toolbarSeparator(),
             span('Scroll Factor'),
-            numberInput({bind: 'scrollFactor', width: 50}),
-            scrollButton({grid: 'hoist'}),
-            scrollResult({grid: 'hoist'}),
-            scrollButton({grid: 'ag'}),
-            scrollResult({grid: 'ag'})
+            numberInput({bind: 'scrollFactor', width: 50})
         ]
     })
 );
@@ -105,21 +114,23 @@ interface ScrollTargetProps extends HoistProps<GridScrollingModel> {
     grid: ScrollTarget;
 }
 
-const scrollButton = hoistCmp.factory<ScrollTargetProps>(({model, grid}) =>
-    button({
-        text: `Scroll ${upperFirst(grid)}Grid`,
-        onClick: () => model.scrollGridAsync(grid),
-        disabled: !model.scrollFactor
-    })
+// Sits under each grid, so its readout stays beside the grid it measured.
+const scrollBar = hoistCmp.factory<ScrollTargetProps>(({model, grid}) =>
+    toolbar(
+        button({
+            text: `Scroll ${upperFirst(grid)}Grid`,
+            onClick: () => model.scrollGridAsync(grid),
+            disabled: !model.scrollFactor
+        }),
+        span({
+            className: 'xh-text-color-muted',
+            item: formatResult(model.scrollResults[grid])
+        })
+    )
 );
 
-const scrollResult = hoistCmp.factory<ScrollTargetProps>(({model, grid}) => {
-    const result = model.scrollResults[grid];
+function formatResult(result: ScrollResult): string {
     if (!result) return null;
-
     const {totalMs, maxStepMs, steps} = result;
-    return span({
-        className: 'xh-text-color-muted',
-        item: `${Math.round(totalMs)}ms / ${steps} steps, worst ${Math.round(maxStepMs)}ms`
-    });
-});
+    return `${Math.round(totalMs)}ms / ${steps} steps, worst ${Math.round(maxStepMs)}ms`;
+}
