@@ -4,7 +4,6 @@ buildscript {
     repositories {
         mavenCentral()
         maven {url = 'https://repo.grails.org/grails/restricted'}
-        maven {url = 'https://repository.apache.org/content/repositories/snapshots'}
     }
     dependencies { // Not Published to Gradle Plugin Portal
         classpath platform("org.apache.grails:grails-bom:$grailsVersion")
@@ -28,7 +27,6 @@ group = xhAppPackage
 repositories {
     mavenCentral()
     maven {url = 'https://repo.grails.org/grails/restricted'}
-    maven {url = 'https://repository.apache.org/content/repositories/snapshots'}
     maven {url = 'https://central.sonatype.com/repository/maven-snapshots'}
 }
 
