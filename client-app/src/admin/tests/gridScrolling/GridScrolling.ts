@@ -71,12 +71,13 @@ const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
                         item: numberInput({
                             displayWithCommas: true,
                             enableShorthandUnits: true,
+                            min: 0,
                             width: 80
                         })
                     }),
                     formField({
                         field: 'colCount',
-                        item: numberInput({width: 80})
+                        item: numberInput({min: 1, width: 80})
                     }),
                     formField({
                         field: 'isColVirtualizationEnabled',

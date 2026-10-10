@@ -2,7 +2,7 @@ import {FormModel} from '@xh/hoist/cmp/form';
 import {type ColumnSpec, GridModel} from '@xh/hoist/cmp/grid';
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {required} from '@xh/hoist/data';
+import {numberIs, required} from '@xh/hoist/data';
 import {
     dateFormatter,
     dateRenderer,
@@ -203,12 +203,12 @@ export class GridScrollingModel extends HoistModel {
                 {
                     name: 'rowCount',
                     initialValue: this.rowCount,
-                    rules: [required]
+                    rules: [required, numberIs({min: 0})]
                 },
                 {
                     name: 'colCount',
                     initialValue: this.colCount,
-                    rules: [required]
+                    rules: [required, numberIs({min: 1})]
                 },
                 {
                     name: 'isColVirtualizationEnabled',
