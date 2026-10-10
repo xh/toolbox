@@ -66,8 +66,8 @@ const tbar = hoistCmp.factory(() =>
                 items: [
                     formField({
                         field: 'rowCount',
-                        // No `min` - with `displayWithCommas` it leaves the input blank. The
-                        // field's `numberIs` rule rejects a negative count instead.
+                        // No `min` or `max` - with `displayWithCommas` they leave the input
+                        // blank. The field's rules reject a count out of range instead.
                         item: numberInput({
                             displayWithCommas: true,
                             enableShorthandUnits: true,

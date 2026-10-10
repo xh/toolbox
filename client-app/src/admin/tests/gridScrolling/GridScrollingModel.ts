@@ -4,9 +4,11 @@ import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberIs, required} from '@xh/hoist/data';
+import type {Constraint} from '@xh/hoist/data';
 import {
     dateFormatter,
     dateRenderer,
+    fmtNumber,
     millionsFormatter,
     millionsRenderer,
     numberFormatter,
@@ -204,12 +206,12 @@ export class GridScrollingModel extends HoistModel {
                 {
                     name: 'rowCount',
                     initialValue: this.rowCount,
-                    rules: [required, numberIs({min: 0})]
+                    rules: [required, numberIs({min: 0, max: MAX_ROWS}), maxCells]
                 },
                 {
                     name: 'colCount',
                     initialValue: this.colCount,
-                    rules: [required, numberIs({min: 1})]
+                    rules: [required, numberIs({min: 1, max: MAX_COLS}), maxCells]
                 },
                 {
                     name: 'isColVirtualizationEnabled',
@@ -236,6 +238,20 @@ export class GridScrollingModel extends HoistModel {
         });
     }
 }
+
+//------------------
+// Size limits
+//------------------
+// Caps on the data the grids build. Much past these, the page runs out of memory.
+const MAX_ROWS = 1_000_000,
+    MAX_COLS = 200,
+    MAX_CELLS = 10_000_000;
+
+// On both count fields, so the one being edited shows the error.
+const maxCells: Constraint<number> = (_, {rowCount, colCount}) =>
+    rowCount * colCount > MAX_CELLS
+        ? `Row Count times Col Count must be at most ${fmtNumber(MAX_CELLS, {precision: 0})}.`
+        : null;
 
 //------------------
 // Column kinds
