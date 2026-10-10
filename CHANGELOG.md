@@ -31,6 +31,9 @@
 
 ### Technical
 
+* Upgraded to Grails 8 and the Gradle 9 wrapper.
+* Moved to Java 25 for builds, CI and the deployed Tomcat 11 container (`xhio/xh-tomcat:next-tc11-jdk25`). Grails 8 requires Java 21+ and Tomcat 11.
+* Reworked the `hoistCoreCli` configuration to resolve the active hoist-core version via `withDependencies`, deferring it to task execution. Resolving `runtimeClasspath` at configuration time under the Grails/Spring Boot plugin locks `developmentOnly` before its `afterEvaluate` hook can populate it.
 * Added Vitest unit tests for app models and services, run against hoist-react's fake hoist-core via `@xh/hoist/test-support` and the `configureVitest()` preset from hoist-dev-utils. Specs sit beside their source as `*.spec.ts`, and CI, snapshot and release builds now run `pnpm test`.
 * Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
 * Added a `clusterMemberCount` status monitor that fails when an instance sees fewer cluster members than expected - catching tasks that are down or have failed to join the cluster.
@@ -40,6 +43,9 @@
 
 * typescript `5.9 → 7.0`
 * @xh/package-template `3.0 → 4.0`
+* Grails `7.2.2 → 8.0.0`
+* Gradle `8.14.5 → 9.8.0`
+* Java `21 → 25`
 
 ## 11.0.0 - 2026-09-29
 
