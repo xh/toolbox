@@ -1,4 +1,4 @@
-import {hbox, input, span} from '@xh/hoist/cmp/layout';
+import {code, fragment, hbox, input, span} from '@xh/hoist/cmp/layout';
 import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {
@@ -9,7 +9,7 @@ import {
     textInput
 } from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
-import {range} from 'lodash';
+import {lowerFirst, range} from 'lodash';
 import {wrapper, wrapperOption} from '../../../common/Wrapper';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
@@ -34,7 +34,13 @@ export const numberFormatsPanel = hoistCmp.factory({
                 '',
                 'Pick a function and adjust its options at left to see how each value below is',
                 'formatted. All Hoist formatting functions also support the `asHtml` option to',
-                'produce a raw HTML string rather than a React element.'
+                'produce a raw HTML string rather than a React element.',
+                '',
+                'In a grid column, prefer the matching formatter factory, such as `numberFormatter`',
+                'or `millionsFormatter`, as `Column.formatter`. It takes the same options, less',
+                'those that need markup such as `withSignGlyph`, and returns plain text. ag-Grid',
+                'writes that text into the cell with no React component, so the grid renders and',
+                'scrolls faster than with `numberRenderer`.'
             ],
             links: [
                 {
@@ -45,6 +51,11 @@ export const numberFormatsPanel = hoistCmp.factory({
                     url: '$HR/format/README.md',
                     text: 'Formatting docs',
                     notes: 'Number, date, and misc formatting guide.'
+                },
+                {
+                    url: '$HR/format/README.md#formatter-factories',
+                    text: 'Formatter factories',
+                    notes: 'Formatters for grid columns, and the options they take.'
                 },
                 {
                     url: '$HR/format/FormatNumber.ts',
@@ -74,7 +85,12 @@ export const numberFormatsPanel = hoistCmp.factory({
                             'fmtMillions',
                             'fmtBillions'
                         ]
-                    })
+                    }),
+                    info: fragment(
+                        'In a grid column, use ',
+                        code(`${lowerFirst(model.fnName.slice(3))}Formatter`),
+                        '.'
+                    )
                 }),
                 wrapperOption({
                     omit: model.fnName !== 'fmtQuantity',
