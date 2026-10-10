@@ -1,6 +1,6 @@
 import {form} from '@xh/hoist/cmp/form';
 import {grid} from '@xh/hoist/cmp/grid';
-import {div, hframe, span} from '@xh/hoist/cmp/layout';
+import {div, hbox, hframe, span} from '@xh/hoist/cmp/layout';
 import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -54,6 +54,8 @@ export const gridScrolling = hoistCmp.factory({
 
 const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
     toolbar({
+        // Items that do not fit move into a menu, so a narrow window can still reach them.
+        enableOverflowMenu: true,
         items: [
             form({
                 fieldDefaults: {
@@ -102,8 +104,15 @@ const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
                 onClick: () => model.applyConfigs()
             }),
             toolbarSeparator(),
-            span('Scroll Factor'),
-            numberInput({bind: 'scrollFactor', min: 1, width: 50})
+            // One item, so the label and input move into the overflow menu together.
+            hbox({
+                alignItems: 'center',
+                gap: true,
+                items: [
+                    span('Scroll Factor'),
+                    numberInput({bind: 'scrollFactor', min: 1, width: 50})
+                ]
+            })
         ]
     })
 );
