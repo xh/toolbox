@@ -176,9 +176,9 @@
     padding: 4px 10px 10px;
   }
 
-  // Drop the divider Panel draws below a top banner, so a check banner sits flush within the tile.
-  .xh-panel__banner--top {
-    border-bottom: none;
+  // Drop the divider Panel draws above a bottom banner, so a check banner sits flush within the tile.
+  .xh-panel__banner--bottom {
+    border-top: none;
   }
 
   // Workaround: compact headers and banners have no right padding, so header items and banner
@@ -227,7 +227,7 @@
   grid-column: 1 / -1;
 
   &:not(.tb-fav-tile--flagged) .xh-panel__content {
-    padding-top: calc(4px + var(--tb-fav-banner-h));
+    padding-bottom: calc(10px + var(--tb-fav-banner-h));
   }
 
   &__frame {
