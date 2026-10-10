@@ -28,8 +28,3 @@ declare module '@fortawesome/pro-thin-svg-icons/index?full' {
     import type {IconPack} from '@fortawesome/fontawesome-svg-core';
     export const fat: IconPack;
 }
-
-declare module '@fortawesome/free-brands-svg-icons/index?full' {
-    import type {IconPack} from '@fortawesome/fontawesome-svg-core';
-    export const fab: IconPack;
-}

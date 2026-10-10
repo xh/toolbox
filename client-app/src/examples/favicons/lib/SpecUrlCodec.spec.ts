@@ -115,6 +115,12 @@ describe('decodeSpec', () => {
         expect(spec).toEqual({...DEFAULT_SPEC, iconName: 'leaf'});
     });
 
+    it('rejects the retired brands weight', () => {
+        const {spec, warnings} = decodeSpec('icon=leaf&w=fab');
+        expect(warnings).toEqual(["Ignored invalid value for 'w': 'fab'."]);
+        expect(spec).toEqual({...DEFAULT_SPEC, iconName: 'leaf'});
+    });
+
     it('rejects icon names over 64 chars', () => {
         expect(decodeSpec('icon=' + 'x'.repeat(65)).warnings).toHaveLength(1);
     });

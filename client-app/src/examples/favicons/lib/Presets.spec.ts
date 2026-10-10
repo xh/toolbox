@@ -1,5 +1,4 @@
 import type {IconDefinition, IconPack} from '@fortawesome/fontawesome-svg-core';
-import {fab} from '@fortawesome/free-brands-svg-icons';
 import {fal} from '@fortawesome/pro-light-svg-icons';
 import {far} from '@fortawesome/pro-regular-svg-icons';
 import {fas} from '@fortawesome/pro-solid-svg-icons';
@@ -10,16 +9,16 @@ import {contrastRatio} from './Colors';
 import {DEFAULT_PADDING, DEFAULT_RADIUS, DEFAULT_SPEC, normalizeSpec} from './FaviconSpec';
 import {FAVICON_PRESETS, randomSpec} from './Presets';
 
-const PACKS: Record<HoistIconPrefix, IconPack> = {fas, far, fal, fat, fab};
+const PACKS: Partial<Record<HoistIconPrefix, IconPack>> = {fas, far, fal, fat};
 
 function canonicalNames(pack: IconPack): Set<string> {
     return new Set(Object.values(pack).map((def: IconDefinition) => def.iconName));
 }
 
 describe('FAVICON_PRESETS', () => {
-    it('has seven uniquely named presets', () => {
-        expect(FAVICON_PRESETS).toHaveLength(7);
-        expect(new Set(FAVICON_PRESETS.map(p => p.name)).size).toBe(7);
+    it('has six uniquely named presets', () => {
+        expect(FAVICON_PRESETS).toHaveLength(6);
+        expect(new Set(FAVICON_PRESETS.map(p => p.name)).size).toBe(6);
     });
 
     it('starts with the default design', () => {
@@ -47,10 +46,7 @@ describe('FAVICON_PRESETS', () => {
 });
 
 describe('randomSpec', () => {
-    const names = {
-        pro: ['rocket', 'bolt', 'leaf', 'gear', 'house', 'star'],
-        brands: ['github', 'gitlab']
-    };
+    const names = ['rocket', 'bolt', 'leaf', 'gear', 'house', 'star'];
     const current = {...DEFAULT_SPEC, appName: 'Keep Me', rotation: 90, flipH: true};
 
     it('is deterministic for a seeded rng', () => {
@@ -78,11 +74,7 @@ describe('randomSpec', () => {
             expect(s.radius).toBe(DEFAULT_RADIUS);
             expect(s.padding).toBe(DEFAULT_PADDING[s.shape]);
 
-            if (s.prefix === 'fab') {
-                expect(names.brands).toContain(s.iconName);
-            } else {
-                expect(names.pro).toContain(s.iconName);
-            }
+            expect(names).toContain(s.iconName);
 
             // The glyph is always legible against whatever it sits on (backdrop or, for the
             // apple icon with shape 'none', the bg color).
@@ -90,11 +82,11 @@ describe('randomSpec', () => {
         }
 
         expect([...shapes].sort()).toEqual(['circle', 'none', 'rounded', 'square']);
-        expect([...prefixes].sort()).toEqual(['fab', 'fal', 'far', 'fas', 'fat']);
+        expect([...prefixes].sort()).toEqual(['fal', 'far', 'fas', 'fat']);
     });
 
     it('keeps the current glyph when there are no names', () => {
-        const s = randomSpec(mulberry32(1), {pro: [], brands: []}, current);
+        const s = randomSpec(mulberry32(1), [], current);
         expect(s.iconName).toBe(current.iconName);
         expect(s.prefix).toBe(current.prefix);
     });

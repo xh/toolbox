@@ -1,6 +1,6 @@
-import {fab} from '@fortawesome/free-brands-svg-icons';
 import type {IconDefinition, IconPack} from '@fortawesome/fontawesome-svg-core';
 import {faCircle, faGear, far} from '@fortawesome/pro-regular-svg-icons';
+import {fas} from '@fortawesome/pro-solid-svg-icons';
 import {describe, expect, it} from 'vitest';
 import {glyphFromDefinition} from './FaviconSpec';
 import type {Bounds, Matrix, Seg} from './PathGeometry';
@@ -186,9 +186,9 @@ describe('pathBounds', () => {
         expectBoundsClose(circle, {x: 0, y: 0, width: 512, height: 512}, 1e-9);
     });
 
-    it('is finite, covers its endpoints and matches dense sampling for every far and fab glyph', () => {
+    it('is finite, covers its endpoints and matches dense sampling for every far and fas glyph', () => {
         let count = 0;
-        for (const def of uniqueDefs(far, fab)) {
+        for (const def of uniqueDefs(far, fas)) {
             const segs = glyphSegs(glyphFromDefinition(def)),
                 b = pathBounds(segs),
                 ctx = `${def.prefix}:${def.iconName}`;

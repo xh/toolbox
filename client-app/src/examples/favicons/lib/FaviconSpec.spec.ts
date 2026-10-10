@@ -5,7 +5,8 @@ import {
     DEFAULT_SPEC,
     glyphFromDefinition,
     normalizeHex,
-    normalizeSpec
+    normalizeSpec,
+    PREFIXES
 } from './FaviconSpec';
 
 describe('normalizeHex', () => {
@@ -67,8 +68,8 @@ describe('normalizeSpec', () => {
 
     it('keeps valid values', () => {
         const spec = {
-            iconName: 'github',
-            prefix: 'fab' as const,
+            iconName: 'leaf',
+            prefix: 'fat' as const,
             fgColor: '#ffffff',
             bgColor: '#01579b',
             shape: 'circle' as const,
@@ -112,6 +113,11 @@ describe('normalizeSpec', () => {
             appName: 42 as any
         });
         expect(spec).toEqual(DEFAULT_SPEC);
+    });
+
+    it('accepts only the Pro weights', () => {
+        expect(PREFIXES).toEqual(['fas', 'far', 'fal', 'fat']);
+        expect(normalizeSpec({prefix: 'fab'}).prefix).toBe(DEFAULT_SPEC.prefix);
     });
 
     it('normalizes colors to lowercase six-digit hex', () => {

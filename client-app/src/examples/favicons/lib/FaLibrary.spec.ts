@@ -1,27 +1,29 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
-import {fab} from '@fortawesome/free-brands-svg-icons';
 import {far} from '@fortawesome/pro-regular-svg-icons';
 import {Icon} from '@xh/hoist/icon';
 import {beforeAll, describe, expect, it} from 'vitest';
+// Toolbox's app-wide icons, as at runtime - including brand glyphs (e.g. `github`) with no Pro weight.
+import '../../../core/Icons';
 import {
     allIconNames,
     availablePrefixes,
     canonicalIconName,
     catalogConfigsForPacks,
     getIconDef,
+    pickerIcons,
     registerFaPacks,
     toPickerValue
 } from './FaLibrary';
 
 beforeAll(() => {
-    library.add(far, fab);
+    library.add(far);
 });
 
 describe('catalogConfigsForPacks', () => {
     it('emits one faName-only config per distinct glyph', () => {
-        const configs = catalogConfigsForPacks([far, fab], () => false),
+        const configs = catalogConfigsForPacks([far], () => false),
             names = configs.map(it => it.faName),
-            distinct = new Set([...Object.values(far), ...Object.values(fab)].map(d => d.iconName));
+            distinct = new Set(Object.values(far).map(d => d.iconName));
 
         expect(names.length).toBe(distinct.size);
         expect(new Set(names).size).toBe(names.length);
@@ -58,14 +60,18 @@ describe('name helpers', () => {
     it('resolves aliases to canonical names', () => {
         expect(canonicalIconName('cog')).toBe('gear');
         expect(canonicalIconName('gear')).toBe('gear');
-        expect(canonicalIconName('github')).toBe('github');
         expect(canonicalIconName('not-a-real-glyph')).toBeNull();
     });
 
     it('lists available weights in UI order', () => {
-        expect(availablePrefixes('github')).toEqual(['fab']);
         expect(availablePrefixes('alicorn')).toContain('far');
         expect(availablePrefixes('not-a-real-glyph')).toEqual([]);
+    });
+
+    it('treats brand glyphs as unknown, though in the FA library', () => {
+        expect(getIconDef('github', 'fab')).toBeTruthy();
+        expect(availablePrefixes('github')).toEqual([]);
+        expect(canonicalIconName('github')).toBeNull();
     });
 
     it('returns icon definitions or null', () => {
@@ -77,7 +83,7 @@ describe('name helpers', () => {
 
 describe('registerFaPacks', () => {
     beforeAll(() => {
-        registerFaPacks([far, fab]);
+        registerFaPacks([far]);
     });
 
     it('catalogs every glyph once', () => {
@@ -96,12 +102,27 @@ describe('registerFaPacks', () => {
         expect(toPickerValue('alicorn')).toBe('alicorn');
     });
 
-    it('splits names into pro and brands', () => {
-        const {pro, brands} = allIconNames();
-        expect(pro).toContain('alicorn');
-        expect(pro).toContain('gear');
-        expect(pro).not.toContain('github');
-        expect(brands).toContain('github');
-        expect(brands).not.toContain('gear');
+    it('lists canonical names of Pro glyphs only', () => {
+        const names = allIconNames();
+        expect(names).toContain('alicorn');
+        expect(names).toContain('gear');
+        expect(names).not.toContain('cog');
+        expect(names).toEqual([...names].sort());
+    });
+
+    it('offers only Pro glyphs to the picker, by their catalog names', () => {
+        const icons = pickerIcons();
+        expect(icons).toHaveLength(allIconNames().length);
+        expect(icons).toContain('alicorn');
+        expect(icons).toContain('cog');
+        expect(icons).not.toContain('gear');
+    });
+
+    it('leaves out cataloged brand glyphs', () => {
+        for (const brand of ['github', 'markdown', 'react']) {
+            expect(Icon.getCatalogEntry(brand), brand).toBeTruthy();
+            expect(allIconNames(), brand).not.toContain(brand);
+            expect(pickerIcons(), brand).not.toContain(brand);
+        }
     });
 });

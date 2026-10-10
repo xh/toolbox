@@ -13,32 +13,21 @@ export const FAVICON_PRESETS: FaviconPreset[] = [
     preset('Trading Desk', 'chart-line', 'fas', '#ffffff', '#1976d2', 'square'),
     preset('Ledger', 'scale-balanced', 'fal', '#263238', '#eceff1', 'circle'),
     preset('Go Green', 'leaf', 'fas', '#ffffff', '#2e7d32', 'circle'),
-    preset('Midnight', 'moon-stars', 'fas', '#f7931c', '#263238', 'rounded', 30),
-    preset('Open Source', 'github', 'fab', '#ffffff', '#01579b', 'circle')
+    preset('Midnight', 'moon-stars', 'fas', '#f7931c', '#263238', 'rounded', 30)
 ];
 
 /**
  * Generate a random but tasteful design. Deterministic for a given `rng` sequence.
  *
  * @param rng - source of uniform randoms in [0, 1), e.g. `Math.random`.
- * @param names - candidate glyph names, split into pro (multi-weight) and brand glyphs.
+ * @param names - candidate canonical glyph names, as from `allIconNames()`.
  * @param current - the current design - its `appName` is kept, and its glyph is reused if `names`
  *      is empty.
  */
-export function randomSpec(
-    rng: () => number,
-    names: {pro: string[]; brands: string[]},
-    current: FaviconSpec
-): FaviconSpec {
-    const {pro, brands} = names,
-        useBrand = brands.length > 0 && (rng() < 0.1 || pro.length === 0);
-
+export function randomSpec(rng: () => number, names: string[], current: FaviconSpec): FaviconSpec {
     let iconName: string, prefix: HoistIconPrefix;
-    if (useBrand) {
-        iconName = pick(rng, brands);
-        prefix = 'fab';
-    } else if (pro.length) {
-        iconName = pick(rng, pro);
+    if (names.length) {
+        iconName = pick(rng, names);
         prefix = rng() < 0.5 ? 'fas' : pick(rng, ['far', 'fal', 'fat'] as HoistIconPrefix[]);
     } else {
         iconName = current.iconName;

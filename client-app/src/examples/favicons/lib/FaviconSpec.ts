@@ -42,7 +42,7 @@ export interface FaviconPreset extends Omit<FaviconSpec, 'appName'> {
 }
 
 export const SHAPES: FaviconShape[] = ['none', 'square', 'rounded', 'circle'];
-export const PREFIXES: HoistIconPrefix[] = ['fas', 'far', 'fal', 'fat', 'fab'];
+export const PREFIXES: HoistIconPrefix[] = ['fas', 'far', 'fal', 'fat'];
 
 export const MAX_RADIUS = 50;
 export const MAX_PADDING = 40;
@@ -57,12 +57,11 @@ export const DEFAULT_PADDING: Record<FaviconShape, number> = {
 
 export const DEFAULT_RADIUS = 20;
 
-export const PREFIX_LABELS: Record<HoistIconPrefix, string> = {
+export const PREFIX_LABELS: Partial<Record<HoistIconPrefix, string>> = {
     fas: 'Solid',
     far: 'Regular',
     fal: 'Light',
-    fat: 'Thin',
-    fab: 'Brand'
+    fat: 'Thin'
 };
 
 /**

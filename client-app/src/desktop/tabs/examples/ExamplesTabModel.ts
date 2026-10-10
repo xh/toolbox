@@ -120,7 +120,7 @@ export class ExamplesTabModel extends HoistModel {
             text: [
                 p('Mint a complete favicon set for your next Hoist app in seconds.'),
                 p(
-                    'Pick any Font Awesome Pro or brand glyph, style it with colors, a backdrop shape and padding, preview it live in browser tabs and on a home screen, then download a zip ready to drop into client-app/public.'
+                    'Pick any Font Awesome Pro glyph, style it with colors, a backdrop shape and padding, preview it live in browser tabs and on a home screen, then download a zip ready to drop into client-app/public.'
                 )
             ]
         }

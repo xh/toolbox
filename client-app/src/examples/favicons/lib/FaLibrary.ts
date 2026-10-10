@@ -12,17 +12,20 @@ import {isFunction, isString, startCase, union} from 'lodash';
  */
 
 /** FA weights in the order the UI offers them. */
-export const PREFIX_ORDER: HoistIconPrefix[] = ['fas', 'far', 'fal', 'fat', 'fab'];
+export const PREFIX_ORDER: HoistIconPrefix[] = ['fas', 'far', 'fal', 'fat'];
 
 /** Canonical iconName → the catalog `faName` the IconPicker emits for it (may be an alias). */
 let pickerValueByCanonical = new Map<string, string>();
 
-/** Canonical names of all cataloged glyphs, split into Pro glyphs and brand-only glyphs. */
-let iconNames: {pro: string[]; brands: string[]} = {pro: [], brands: []};
+/** Canonical names of all pickable glyphs with a Pro weight, sorted. */
+let iconNames: string[] = [];
+
+/** Catalog `faName`s of the same glyphs, in catalog order - the options IconPicker offers. */
+let pickerIconNames: string[] = [];
 
 /**
  * Add the given packs to the FA library and register every glyph not already cataloged by Hoist
- * or Toolbox with Hoist's `Icon` catalog, so they are all offered by IconPicker.
+ * or Toolbox with Hoist's `Icon` catalog, so they can all be offered by IconPicker.
  */
 export function registerFaPacks(packs: IconPack[]): void {
     library.add(...packs);
@@ -97,9 +100,17 @@ export function toPickerValue(iconName: string): string {
     return pickerValueByCanonical.get(iconName) ?? iconName;
 }
 
-/** Canonical names of all cataloged glyphs, split into Pro and brand-only lists. */
-export function allIconNames(): {pro: string[]; brands: string[]} {
+/** Canonical names of all pickable glyphs - those cataloged with at least one Pro weight. */
+export function allIconNames(): string[] {
     return iconNames;
+}
+
+/**
+ * IconPicker options - the catalog `faName` of every glyph in {@link allIconNames}. Leaves out
+ * catalog entries with no Pro weight, such as Toolbox's own brand icons (e.g. `github`).
+ */
+export function pickerIcons(): string[] {
+    return pickerIconNames;
 }
 
 //------------------------
@@ -107,10 +118,10 @@ export function allIconNames(): {pro: string[]; brands: string[]} {
 //------------------------
 function indexCatalog() {
     const byCanonical = new Map<string, string>(),
-        pro = new Set<string>(),
-        brands = new Set<string>();
+        names = new Set<string>();
 
     Icon.getCatalog().forEach(e => {
+        // Null for a glyph with no Pro weight - e.g. a brand icon registered by Toolbox.
         const canonical = canonicalIconName(e.faName);
         if (!canonical) return;
 
@@ -118,16 +129,11 @@ function indexCatalog() {
         if (e.faName === canonical || !byCanonical.has(canonical)) {
             byCanonical.set(canonical, e.faName);
         }
-        if (e.hideFromPicker) return;
-
-        const prefixes = availablePrefixes(canonical);
-        if (prefixes.some(it => it !== 'fab')) {
-            pro.add(canonical);
-        } else if (prefixes.includes('fab')) {
-            brands.add(canonical);
-        }
+        if (!e.hideFromPicker) names.add(canonical);
     });
 
     pickerValueByCanonical = byCanonical;
-    iconNames = {pro: [...pro].sort(), brands: [...brands].sort()};
+    iconNames = [...names].sort();
+    // Keep catalog order (by display name), as the picker shows its options in the order given.
+    pickerIconNames = [...names].map(it => byCanonical.get(it));
 }

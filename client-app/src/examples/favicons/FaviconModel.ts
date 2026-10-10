@@ -21,6 +21,7 @@ import {
     availablePrefixes,
     canonicalIconName,
     getIconDef,
+    pickerIcons,
     PREFIX_ORDER,
     toPickerValue
 } from './lib/FaLibrary';
@@ -184,6 +185,11 @@ export class FaviconModel extends HoistModel {
         return toPickerValue(this.iconName);
     }
 
+    /** Glyphs offered by the IconPicker - only those with a Pro weight. */
+    get pickerIcons(): string[] {
+        return pickerIcons();
+    }
+
     /** True inside a frame (e.g. the Toolbox Examples tab), where the tab icon is not ours. */
     get isFramed(): boolean {
         return !this.liveTabIcon.canPreview;
@@ -252,8 +258,7 @@ export class FaviconModel extends HoistModel {
             n = normalizeSpec({...base, ...s});
 
         this.iconName = n.iconName;
-        // A brand glyph is always drawn as 'fab' - keep the user's Pro weight for the next glyph.
-        if (n.prefix !== 'fab') this.preferredPrefix = n.prefix;
+        this.preferredPrefix = n.prefix;
         this.fgColor = n.fgColor;
         this.bgColor = n.bgColor;
         this.shape = n.shape;

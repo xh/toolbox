@@ -108,6 +108,7 @@ const iconCard = hoistCmp.factory({
                 iconPicker({
                     value: model.pickerValue,
                     onChange: v => model.setIconFromPicker(v),
+                    icons: model.pickerIcons,
                     prefix: model.prefix,
                     enableClear: false,
                     columns: 9,
