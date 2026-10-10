@@ -68,15 +68,15 @@ const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
                         item: checkbox()
                     }),
                     formField({
-                        field: 'cellFormat',
+                        field: 'cellFormatting',
                         item: select({
                             width: 110,
                             enableFilter: false,
                             hideSelectedOptionCheck: true,
                             options: [
                                 {value: 'plain', label: 'Plain'},
-                                {value: 'formatters', label: 'Formatters'},
-                                {value: 'renderers', label: 'Renderers'}
+                                {value: 'formatter', label: 'Formatter'},
+                                {value: 'renderer', label: 'Renderer'}
                             ]
                         })
                     })

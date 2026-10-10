@@ -15,7 +15,7 @@ import type {NumberFormatterOptions} from '@xh/hoist/format';
 
 // Format options for the P&L and Volume columns, shared by their formatters and the matching
 // renderers below.
-const PNL_FORMAT: NumberFormatterOptions = {precision: 0, ledger: true, colorSpec: true},
+export const PNL_FORMAT: NumberFormatterOptions = {precision: 0, ledger: true, colorSpec: true},
     VOLUME_FORMAT: NumberFormatterOptions = {precision: 1, label: true};
 
 export const profitLossCol: ColumnSpec = {

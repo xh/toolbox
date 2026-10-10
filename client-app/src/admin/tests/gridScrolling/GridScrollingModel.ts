@@ -11,22 +11,22 @@ import {
     numberFormatter,
     numberRenderer
 } from '@xh/hoist/format';
-import type {NumberFormatterOptions} from '@xh/hoist/format';
 import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import type {ColDef} from 'ag-grid-community';
 import {max, random, range, sample} from 'lodash';
 import {createElement, createRef} from 'react';
+import {PNL_FORMAT, VOLUME_FORMAT} from '../../../core/columns/Trades';
 
 export type ScrollTarget = 'hoist' | 'ag';
 
 /**
  * How the grids turn cell values into content:
  * - 'plain' - no formatting, ag-Grid writes the raw value.
- * - 'formatters' - a formatter returns the cell's text, and ag-Grid writes it.
- * - 'renderers' - a renderer with the same options, rendered as a React component per cell.
+ * - 'formatter' - a formatter returns the cell's text, and ag-Grid writes it.
+ * - 'renderer' - a renderer with the same options, rendered as a React component per cell.
  */
-export type CellFormat = 'plain' | 'formatters' | 'renderers';
+export type CellFormatting = 'plain' | 'formatter' | 'renderer';
 
 /** Timings from one measured scroll - see {@link GridScrollingModel.scrollGridAsync}. */
 export interface ScrollResult {
@@ -50,7 +50,7 @@ export class GridScrollingModel extends HoistModel {
     @observable accessor colCount = 20;
     @observable accessor rowCount = 100_000;
     @observable accessor isColVirtualizationEnabled = true;
-    @observable accessor cellFormat: CellFormat = 'formatters';
+    @observable accessor cellFormatting: CellFormatting = 'formatter';
     // Viewport-heights to scroll per button click - one step per viewport.
     @bindable accessor scrollFactor = 8;
 
@@ -88,14 +88,14 @@ export class GridScrollingModel extends HoistModel {
 
     @computed
     get hoistColumns(): ColumnSpec[] {
-        const {cellFormat} = this;
+        const {cellFormatting} = this;
         return this.fields.map(({field, kind}) => {
             const {formatter, renderer} = COLUMN_KINDS[kind];
             return {
                 field,
                 align: 'right',
-                formatter: cellFormat === 'formatters' ? formatter : undefined,
-                renderer: cellFormat === 'renderers' ? renderer : undefined
+                formatter: cellFormatting === 'formatter' ? formatter : undefined,
+                renderer: cellFormatting === 'renderer' ? renderer : undefined
             };
         });
     }
@@ -103,16 +103,19 @@ export class GridScrollingModel extends HoistModel {
     // The same formatters and renderers through ag-Grid's own `valueFormatter` and `cellRenderer`.
     @computed
     get agColumnDefs(): ColDef[] {
-        const {cellFormat} = this;
+        const {cellFormatting} = this;
         return this.fields.map(({field, kind}) => {
             const {formatter, renderer} = COLUMN_KINDS[kind],
                 // No inferred data type, so ag-Grid adds no formatter of its own in 'plain' mode.
                 ret: ColDef = {field, type: 'rightAligned', cellDataType: false};
 
-            if (cellFormat === 'formatters') {
+            if (cellFormatting === 'formatter') {
                 ret.valueFormatter = p => formatter(p.value);
+                // The class rules keep this grid's cost in line with the Hoist grid's. The ledger
+                // placeholder is a Hoist grid style, so the digits of positive P&L values here sit
+                // one `)` further right than those of negatives.
                 ret.cellClassRules = formatter.cellClassRules;
-            } else if (cellFormat === 'renderers') {
+            } else if (cellFormatting === 'renderer') {
                 ret.cellRenderer = p => createElement('span', null, renderer(p.value));
             }
             return ret;
@@ -168,11 +171,12 @@ export class GridScrollingModel extends HoistModel {
     applyConfigs(): void {
         const {formModel} = this;
         if (!formModel.isValid) return;
-        const {colCount, rowCount, isColVirtualizationEnabled, cellFormat} = formModel.getData();
+        const {colCount, rowCount, isColVirtualizationEnabled, cellFormatting} =
+            formModel.getData();
         this.colCount = colCount;
         this.rowCount = rowCount;
         this.isColVirtualizationEnabled = isColVirtualizationEnabled;
-        this.cellFormat = cellFormat;
+        this.cellFormatting = cellFormatting;
         // The applied values are the new baseline, so Apply re-enables only on a further change.
         formModel.init(formModel.getData());
     }
@@ -200,9 +204,8 @@ export class GridScrollingModel extends HoistModel {
                     initialValue: this.isColVirtualizationEnabled
                 },
                 {
-                    name: 'cellFormat',
-                    displayName: 'Cells',
-                    initialValue: this.cellFormat,
+                    name: 'cellFormatting',
+                    initialValue: this.cellFormatting,
                     rules: [required]
                 }
             ]
@@ -221,9 +224,7 @@ export class GridScrollingModel extends HoistModel {
 //------------------
 // Column kinds
 //------------------
-const PNL_FORMAT: NumberFormatterOptions = {precision: 0, ledger: true, colorSpec: true},
-    VOLUME_FORMAT: NumberFormatterOptions = {precision: 1, label: true},
-    DATE_FORMAT = {fmt: 'MMM D, YYYY'},
+const DATE_FORMAT = {fmt: 'MMM D, YYYY'},
     // A shared pool, so the rows reuse a few hundred LocalDate instances.
     DATES = range(0, 500).map(it => LocalDate.get('2026-01-01').subtract(it));
 
