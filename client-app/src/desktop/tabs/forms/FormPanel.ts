@@ -145,7 +145,7 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                 formFieldSet({
                     modelConfig: {collapsible: true},
                     icon: Icon.phone(),
-                    title: hbox('References', badge(model.formModel.values.references.length)),
+                    title: span('References ', badge(model.formModel.values.references.length)),
                     item: references()
                 })
             ]

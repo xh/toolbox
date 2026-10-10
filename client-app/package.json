@@ -12,6 +12,9 @@
     "lint:code": "eslint .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "testWithHoist": "(cd ../../hoist-react && pnpm install) && pnpm install && XH_INLINE_HOIST=true vitest",
     "prepare": "cd .. && husky client-app/.husky",
     "start": "pnpm install && rsbuild dev",
     "startWithIp": "XH_DEV_HOST=$(ipconfig getifaddr en0) pnpm start",
@@ -37,7 +40,7 @@
     "@ibm/plex-mono": "^2.5.0",
     "@ibm/plex-sans": "^1.1.0",
     "@xh/hoist": "next",
-    "@xh/package-template": "~3.0.4",
+    "@xh/package-template": "~4.0.0",
     "ag-charts-community": "~14.2.0",
     "ag-grid-community": "~36.2.0",
     "ag-grid-enterprise": "~36.2.0",
@@ -53,6 +56,8 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
     "@types/lodash": "~4.17.25",
     "@types/react": "~19.3.0",
     "@types/react-dom": "~19.3.0",
@@ -62,12 +67,15 @@
     "eslint": "^10.12.0",
     "eslint-config-prettier": "~10.1.8",
     "husky": "~9.1.7",
+    "jsdom": "^30.1.2",
     "lint-staged": "~17.5.1",
+    "msw": "^3.0.2",
     "postcss": "~8.5.29",
     "prettier": "~3.9.9",
     "stylelint": "~17.15.0",
     "stylelint-config-recommended-scss": "~17.0.1",
-    "typescript": "~7.0.2"
+    "typescript": "~7.0.2",
+    "vitest": "^5.0.3"
   },
   "packageManager": "pnpm@12.7.0+sha512.9c56477e360068d6e9dca6a92efb4e46b3dc5a52fcebf3d84d78b9736c0ded589a561621a52f68219a7a39facc63cdc079c3226ef9c9d5f02b79f74e69a807b6"
 }

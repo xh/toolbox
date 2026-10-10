@@ -92,7 +92,12 @@ dependencies {
     // Stifle dev errors on Macs
     developmentOnly "io.methvin:directory-watcher:0.19.1"
     console "org.apache.grails:grails-console"
+
+    // Spock unit testing, via Hoist's test-support library - see hoist-core's docs/testing.md.
+    testImplementation "io.xh:hoist-core-test:$hoistCoreVersion"
 }
+
+tasks.withType(Test).configureEach { useJUnitPlatform() }
 
 //------------------------------------------------------------------
 // hoist-core MCP server + CLI tools — version-locked launchers

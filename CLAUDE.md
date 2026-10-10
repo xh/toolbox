@@ -327,7 +327,10 @@ pnpm lint                 # Run ESLint + Stylelint
 pnpm lint:code            # ESLint only
 pnpm lint:styles          # Stylelint only
 pnpm typecheck            # Type check (tsc --noEmit)
+pnpm test                 # Unit tests (Vitest)
+pnpm test:watch           # Unit tests in watch mode
 pnpm startWithHoist       # Dev server using local sibling hoist-react
+pnpm testWithHoist        # Unit tests against local sibling hoist-react
 ```
 
 Linting and type-checking are separate concerns, and neither subsumes the other - run both. ESLint
@@ -351,6 +354,7 @@ it before committing.
 ```bash
 ./gradlew bootRun     # Start Grails server on port 8080
 ./gradlew console     # Grails interactive console
+./gradlew test        # Spock unit tests in src/test/groovy (see hoist-core's docs/testing.md)
 ```
 
 ### Local Development
@@ -385,6 +389,25 @@ defines an entry point, and its filename (minus the extension) becomes the URL p
 
 **Example apps**: `/contact`, `/todo`, `/portfolio`, `/news`, `/recalls`, `/fileManager`,
 `/weather` - each at `http://localhost:3000/<name>`.
+
+### Unit Tests
+
+Vitest specs sit beside their source as `Foo.spec.ts`. They boot Hoist's real client services
+against the fake hoist-core in `@xh/hoist/test-support`, configured by `client-app/vitest.config.mts`
+via `configureVitest()` from hoist-dev-utils. The Unit Tests workflow runs `pnpm test` on PRs, and
+snapshot and release builds run it before building.
+
+- `src/test-support/toolboxFake.ts` seeds the fake with Toolbox's client-visible configs and prefs from
+  `BootStrap.groovy`. Keep it in sync in the same change.
+- Serve app endpoints from a spec with `hoistCore.route()`. A request the fake does not serve fails
+  the test.
+- Test app logic - model rules, derived state, transforms and the requests services send. Leave
+  rendering, layout and Hoist itself out.
+- Fake state persists across the tests in a file, and each file boots once. Undo a test's changes
+  in that test, and use a separate file per role set or user.
+
+Read the "Unit Tests in an App" section of hoist-react's `docs/unit-testing.md` before writing
+specs. The MCP doc id is `docs/unit-testing.md`.
 
 ### Pre-commit Hooks
 Husky runs automatically on commit: `lint-staged` (prettier + eslint on staged files) and conditionally the TypeScript compiler (`pnpm typecheck`) if TS/JS/package files are staged. Note that `tsc` type-checks against the installed `@xh/hoist` in `node_modules`, not a local sibling checkout, unless the `paths` block in `client-app/tsconfig.json` is uncommented for inline hoist-react work (see [`docs/running-locally.md`](docs/running-locally.md)).
@@ -490,7 +513,7 @@ distinguishable from framework spans in the trace view.
 
 ### Frontend (`client-app/src/`)
 - **`apps/`** - Entry points for each app (app.ts, admin.ts, contact.ts, etc.). Each calls `XH.renderApp()`.
-- **`desktop/`** - Main desktop app: `AppModel.ts` (state) + `AppComponent.tsx` (UI), organized into `tabs/` (home, forms, grids, charts, layout, panels, other, examples).
+- **`desktop/`** - Main desktop app: `AppModel.ts` (state) + `AppComponent.tsx` (UI), organized into `tabs/` folders that mirror its top-level tabs (home, grids, layout, forms, components, mobile, system, docs, examples).
 - **`mobile/`** - Mobile app variant.
 - **`admin/`** - Admin console.
 - **`examples/`** - Standalone example applications (contact, todo, portfolio, news, recalls, filemanager).
