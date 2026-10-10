@@ -10,6 +10,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {lowerFirst, range} from 'lodash';
+import type {ReactNode} from 'react';
 import {wrapper, wrapperOption} from '../../../common/Wrapper';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
@@ -38,9 +39,9 @@ export const numberFormatsPanel = hoistCmp.factory({
                 '',
                 'In a grid column, prefer the matching formatter factory, such as `numberFormatter`',
                 'or `millionsFormatter`, as `Column.formatter`. It takes the same options, less',
-                'those that need markup such as `withSignGlyph`, and returns plain text. ag-Grid',
-                'writes that text into the cell with no React component, so the grid renders and',
-                'scrolls faster than with `numberRenderer`.'
+                'those that need markup, such as `withSignGlyph` or a `colorSpec` with inline',
+                'styles. It returns plain text, which ag-Grid writes into the cell with no React',
+                'component, so the grid renders and scrolls faster than with `numberRenderer`.'
             ],
             links: [
                 {
@@ -53,7 +54,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                     notes: 'Number, date, and misc formatting guide.'
                 },
                 {
-                    url: '$HR/format/README.md#formatter-factories',
+                    url: '$HR/format/README.md#formatters-vs-renderers',
                     text: 'Formatter factories',
                     notes: 'Formatters for grid columns, and the options they take.'
                 },
@@ -86,11 +87,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                             'fmtBillions'
                         ]
                     }),
-                    info: fragment(
-                        'In a grid column, use ',
-                        code(`${lowerFirst(model.fnName.slice(3))}Formatter`),
-                        '.'
-                    )
+                    info: gridFnInfo(model)
                 }),
                 wrapperOption({
                     omit: model.fnName !== 'fmtQuantity',
@@ -260,6 +257,15 @@ export const numberFormatsPanel = hoistCmp.factory({
         });
     }
 });
+
+// Names the factory to use for the selected function in a grid column: its formatter, or its
+// renderer when the options set need markup.
+function gridFnInfo(model: NumberFormatsPanelModel): ReactNode {
+    const baseName = lowerFirst(model.fnName.slice(3));
+    return model.needsRenderer
+        ? fragment('In a grid column, use ', code(`${baseName}Renderer`), ' for these options.')
+        : fragment('In a grid column, use ', code(`${baseName}Formatter`), '.');
+}
 
 // Custom-value row for the results table: a left-aligned label paired with a right-aligned,
 // commitOnChange numberInput so the prepopulated value reformats live as the user types.
