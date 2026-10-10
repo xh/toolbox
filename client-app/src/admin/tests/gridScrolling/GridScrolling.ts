@@ -103,7 +103,7 @@ const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
             }),
             toolbarSeparator(),
             span('Scroll Factor'),
-            numberInput({bind: 'scrollFactor', width: 50})
+            numberInput({bind: 'scrollFactor', min: 1, width: 50})
         ]
     })
 );
