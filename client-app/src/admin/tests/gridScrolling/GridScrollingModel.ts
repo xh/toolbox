@@ -21,6 +21,12 @@ import {PNL_FORMAT, VOLUME_FORMAT} from '../../../core/columns/Trades';
 export type ScrollTarget = 'hoist' | 'ag';
 
 /**
+ * Sizing shared by both grids, so each renders the same rows and cells per viewport. The heights
+ * are Hoist's for its 'standard' sizing mode, which the Hoist grid is fixed to.
+ */
+export const GRID_SIZING = {rowHeight: 28, headerHeight: 24, colWidth: 130};
+
+/**
  * How the grids turn cell values into content:
  * - 'plain' - no formatting, ag-Grid writes the raw value.
  * - 'formatter' - a formatter returns the cell's text, and ag-Grid writes it.
@@ -93,6 +99,7 @@ export class GridScrollingModel extends HoistModel {
             const {formatter, renderer} = COLUMN_KINDS[kind];
             return {
                 field,
+                width: GRID_SIZING.colWidth,
                 align: 'right',
                 formatter: cellFormatting === 'formatter' ? formatter : undefined,
                 renderer: cellFormatting === 'renderer' ? renderer : undefined
@@ -107,7 +114,12 @@ export class GridScrollingModel extends HoistModel {
         return this.fields.map(({field, kind}) => {
             const {formatter, renderer} = COLUMN_KINDS[kind],
                 // No inferred data type, so ag-Grid adds no formatter of its own in 'plain' mode.
-                ret: ColDef = {field, type: 'rightAligned', cellDataType: false};
+                ret: ColDef = {
+                    field,
+                    width: GRID_SIZING.colWidth,
+                    type: 'rightAligned',
+                    cellDataType: false
+                };
 
             if (cellFormatting === 'formatter') {
                 ret.valueFormatter = p => formatter(p.value);
@@ -216,7 +228,10 @@ export class GridScrollingModel extends HoistModel {
         return new GridModel({
             store: {idSpec: XH.genId},
             columns: this.hoistColumns,
-            useVirtualColumns: this.isColVirtualizationEnabled
+            useVirtualColumns: this.isColVirtualizationEnabled,
+            // Fixed sizing, so the grid matches the bare grid's rows and columns per viewport.
+            sizingMode: 'standard',
+            autosizeOptions: {mode: 'disabled'}
         });
     }
 }
