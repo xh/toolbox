@@ -34,81 +34,57 @@ describe('decodeSpec', () => {
                 padding: int(-10, 60),
                 appName: Array.from({length: int(0, 50)}, () => pick([...chars])).join('')
             };
-            const {spec, warnings} = decodeSpec(encodeSpec(s));
-            expect(spec).toEqual(normalizeSpec(s));
-            expect(warnings).toEqual([]);
+            expect(decodeSpec(encodeSpec(s))).toEqual(normalizeSpec(s));
         }
     });
 
-    it('gives the default for an empty query, with no warnings', () => {
-        expect(decodeSpec('')).toEqual({spec: DEFAULT_SPEC, warnings: []});
-        expect(decodeSpec('?')).toEqual({spec: DEFAULT_SPEC, warnings: []});
-        expect(decodeSpec(undefined)).toEqual({spec: DEFAULT_SPEC, warnings: []});
+    it('gives the default for an empty query', () => {
+        expect(decodeSpec('')).toEqual(DEFAULT_SPEC);
+        expect(decodeSpec('?')).toEqual(DEFAULT_SPEC);
+        expect(decodeSpec(undefined)).toEqual(DEFAULT_SPEC);
     });
 
     it('accepts a leading ?', () => {
-        expect(decodeSpec('?icon=leaf').spec.iconName).toBe('leaf');
+        expect(decodeSpec('?icon=leaf').iconName).toBe('leaf');
     });
 
-    it('fills missing keys silently', () => {
-        const {spec, warnings} = decodeSpec('icon=leaf&shape=circle');
-        expect(warnings).toEqual([]);
-        expect(spec).toEqual({...DEFAULT_SPEC, iconName: 'leaf', shape: 'circle'});
+    it('fills missing keys with defaults', () => {
+        expect(decodeSpec('icon=leaf&shape=circle')).toEqual({
+            ...DEFAULT_SPEC,
+            iconName: 'leaf',
+            shape: 'circle'
+        });
     });
 
     it('normalizes hex3 and uppercase colors', () => {
-        const {spec, warnings} = decodeSpec('fg=FFF&bg=0B4F6C');
-        expect(warnings).toEqual([]);
+        const spec = decodeSpec('fg=FFF&bg=0B4F6C');
         expect(spec.fgColor).toBe('#ffffff');
         expect(spec.bgColor).toBe('#0b4f6c');
     });
 
     it('clamps out-of-range numbers', () => {
-        const {spec, warnings} = decodeSpec('pad=99&r=-3');
-        expect(warnings).toEqual([]);
+        const spec = decodeSpec('pad=99&r=-3');
         expect(spec.padding).toBe(40);
         expect(spec.radius).toBe(0);
     });
 
     it('truncates long app names', () => {
-        expect(decodeSpec('name=' + 'n'.repeat(60)).spec.appName).toBe('n'.repeat(40));
-        expect(decodeSpec('name=').spec.appName).toBe('');
+        expect(decodeSpec('name=' + 'n'.repeat(60)).appName).toBe('n'.repeat(40));
+        expect(decodeSpec('name=').appName).toBe('');
     });
 
-    it('falls back to defaults with a warning per invalid value', () => {
-        const {spec, warnings} = decodeSpec(
-            'icon=Bad_Name&w=fax&fg=red&bg=12&shape=hexagon&r=1.5&pad=x'
-        );
-        expect(spec).toEqual(DEFAULT_SPEC);
-        expect(warnings).toHaveLength(7);
-        for (const key of ['icon', 'w', 'fg', 'bg', 'shape', 'r', 'pad']) {
-            expect(
-                warnings.some(w => w.includes(`'${key}'`)),
-                key
-            ).toBe(true);
-        }
-    });
-
-    it('keeps valid values alongside invalid ones', () => {
-        const {spec, warnings} = decodeSpec('icon=leaf&fg=zzz&shape=circle');
-        expect(warnings).toHaveLength(1);
-        expect(spec).toEqual({...DEFAULT_SPEC, iconName: 'leaf', shape: 'circle'});
+    it('falls back to defaults for invalid values, keeping valid ones', () => {
+        expect(decodeSpec('w=fab&fg=red&bg=12&shape=hexagon&pad=x&icon=leaf')).toEqual({
+            ...DEFAULT_SPEC,
+            iconName: 'leaf'
+        });
     });
 
     it('ignores unknown params', () => {
-        const {spec, warnings} = decodeSpec('xhCacheBuster=12345&icon=leaf&foo=bar');
-        expect(warnings).toEqual([]);
-        expect(spec).toEqual({...DEFAULT_SPEC, iconName: 'leaf'});
-    });
-
-    it('rejects the retired brands weight', () => {
-        const {spec, warnings} = decodeSpec('icon=leaf&w=fab');
-        expect(warnings).toEqual(["Ignored invalid value for 'w': 'fab'."]);
-        expect(spec).toEqual({...DEFAULT_SPEC, iconName: 'leaf'});
-    });
-
-    it('rejects icon names over 64 chars', () => {
-        expect(decodeSpec('icon=' + 'x'.repeat(65)).warnings).toHaveLength(1);
+        expect(decodeSpec('xhCacheBuster=12345&icon=leaf&foo=bar')).toEqual({
+            ...DEFAULT_SPEC,
+            iconName: 'leaf'
+        });
     });
 });
 
@@ -144,7 +120,7 @@ describe('writeSpecToUrl', () => {
         expect(window.location.hash).toBe('#frag');
         expect(window.history.state).toEqual({keep: 1});
         expect(window.history.length).toBe(len);
-        expect(decodeSpec(window.location.search).spec).toEqual(spec);
+        expect(decodeSpec(window.location.search)).toEqual(spec);
     });
 });
 

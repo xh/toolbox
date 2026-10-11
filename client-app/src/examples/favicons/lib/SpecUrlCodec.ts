@@ -1,15 +1,6 @@
 import type {HoistIconPrefix} from '@xh/hoist/icon';
 import type {FaviconShape, FaviconSpec} from './FaviconSpec';
-import {
-    DEFAULT_SPEC,
-    MAX_APP_NAME_LENGTH,
-    MAX_PADDING,
-    MAX_RADIUS,
-    normalizeHex,
-    normalizeSpec,
-    PREFIXES,
-    SHAPES
-} from './FaviconSpec';
+import {normalizeSpec} from './FaviconSpec';
 
 /**
  * Serialize a design as a readable query string (no leading '?'). Every field is always written,
@@ -30,40 +21,25 @@ export function encodeSpec(spec: FaviconSpec): string {
 }
 
 /**
- * Parse a design from a query string (leading '?' optional). Missing keys silently take their
- * default, invalid values take their default and add a warning, out-of-range numbers are clamped
- * and unknown params are ignored. Whether the icon exists is left to the caller.
+ * Parse a design from a query string (leading '?' optional). Missing or invalid values take their
+ * default, out-of-range numbers are clamped and unknown params are ignored. Whether the icon exists
+ * is left to the caller.
  */
-export function decodeSpec(search: string): {spec: FaviconSpec; warnings: string[]} {
+export function decodeSpec(search: string): FaviconSpec {
     const params = new URLSearchParams(search ?? ''),
-        warnings: string[] = [],
-        ret: Partial<FaviconSpec> = {};
+        str = (key: string) => params.get(key) ?? undefined,
+        num = (key: string) => (params.has(key) ? parseFloat(params.get(key)) : undefined);
 
-    const read = <T>(key: string, parse: (v: string) => T | undefined, apply: (v: T) => void) => {
-        if (!params.has(key)) return;
-        const raw = params.get(key),
-            val = parse(raw);
-        if (val === undefined) {
-            warnings.push(`Ignored invalid value for '${key}': '${raw}'.`);
-        } else {
-            apply(val);
-        }
-    };
-
-    read('icon', parseIconName, v => (ret.iconName = v));
-    read('w', parsePrefix, v => (ret.prefix = v));
-    read('fg', parseColor, v => (ret.fgColor = v));
-    read('bg', parseColor, v => (ret.bgColor = v));
-    read('shape', parseShape, v => (ret.shape = v));
-    read('r', parseInteger, v => (ret.radius = Math.min(Math.max(v, 0), MAX_RADIUS)));
-    read('pad', parseInteger, v => (ret.padding = Math.min(Math.max(v, 0), MAX_PADDING)));
-    read(
-        'name',
-        v => v,
-        v => (ret.appName = v.slice(0, MAX_APP_NAME_LENGTH))
-    );
-
-    return {spec: normalizeSpec({...DEFAULT_SPEC, ...ret}), warnings};
+    return normalizeSpec({
+        iconName: str('icon'),
+        prefix: str('w') as HoistIconPrefix,
+        fgColor: str('fg'),
+        bgColor: str('bg'),
+        shape: str('shape') as FaviconShape,
+        radius: num('r'),
+        padding: num('pad'),
+        appName: str('name')
+    });
 }
 
 /** Absolute URL that reopens the app with the given design. */
@@ -78,27 +54,4 @@ export function buildShareUrl(
 export function writeSpecToUrl(spec: FaviconSpec): void {
     const {pathname, hash} = window.location;
     window.history.replaceState(window.history.state, '', `${pathname}?${encodeSpec(spec)}${hash}`);
-}
-
-//------------------
-// Implementation
-//------------------
-function parseIconName(v: string): string | undefined {
-    return /^[a-z0-9-]{1,64}$/.test(v) ? v : undefined;
-}
-
-function parsePrefix(v: string): HoistIconPrefix | undefined {
-    return PREFIXES.find(it => it === v);
-}
-
-function parseColor(v: string): string | undefined {
-    return /^#?(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(v) ? normalizeHex(v) : undefined;
-}
-
-function parseShape(v: string): FaviconShape | undefined {
-    return SHAPES.find(it => it === v);
-}
-
-function parseInteger(v: string): number | undefined {
-    return /^[+-]?\d{1,6}$/.test(v) ? parseInt(v, 10) : undefined;
 }

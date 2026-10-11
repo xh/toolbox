@@ -2,7 +2,6 @@ import type {SegmentedControlOption} from '@xh/hoist/cmp/input';
 import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import type {HoistIconPrefix} from '@xh/hoist/icon';
 import {action, bindable, compareStructural, computed, observable} from '@xh/hoist/mobx';
-import {SECONDS} from '@xh/hoist/utils/datetime';
 import {downloadBlob} from '@xh/hoist/utils/js';
 import {isEqual, omit} from 'lodash';
 import {buildConfigSnippet} from './lib/ConfigSnippet';
@@ -169,27 +168,16 @@ export class FaviconModel extends HoistModel {
     constructor() {
         super();
 
-        const {spec, warnings} = decodeSpec(window.location.search);
-        if (!availablePrefixes(spec.iconName).length) {
-            warnings.push(`Unknown icon '${spec.iconName}'.`);
-            spec.iconName = DEFAULT_SPEC.iconName;
-        }
+        const spec = decodeSpec(window.location.search);
+        if (!availablePrefixes(spec.iconName).length) spec.iconName = DEFAULT_SPEC.iconName;
         this.applySpec(spec);
-
-        if (warnings.length) {
-            // Replace the bad link right away, so a reload or copy does not repeat the warning.
-            writeSpecToUrl(this.spec);
-            XH.warningToast({
-                message: `Some settings in this link were invalid and have been reset to defaults. ${warnings.join(' ')}`,
-                timeout: 10 * SECONDS
-            });
-        }
 
         this.addReaction({
             track: () => this.spec,
             run: spec => writeSpecToUrl(spec),
             equals: compareStructural,
-            debounce: 250
+            debounce: 250,
+            fireImmediately: true
         });
 
         if (!this.isFramed) {
