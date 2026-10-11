@@ -1,15 +1,6 @@
 import type {FaviconSpec, Glyph} from './FaviconSpec';
 import type {Matrix, Seg} from './PathGeometry';
-import {
-    flipMatrix,
-    glyphSegs,
-    multiply,
-    pathBounds,
-    rotationMatrix,
-    samplePath,
-    scale,
-    translate
-} from './PathGeometry';
+import {glyphSegs, pathBounds, samplePath} from './PathGeometry';
 
 /** Side length of the square output tile, in SVG user units. */
 export const TILE = 512;
@@ -21,10 +12,7 @@ export interface GlyphLayout {
     scale: number;
 }
 
-export type LayoutSpec = Pick<
-    FaviconSpec,
-    'shape' | 'radius' | 'padding' | 'rotation' | 'flipH' | 'flipV'
->;
+export type LayoutSpec = Pick<FaviconSpec, 'shape' | 'radius' | 'padding'>;
 
 /**
  * Fit and centre a glyph in the tile. Padding is the inset from the visible edge of the backdrop
@@ -32,8 +20,7 @@ export type LayoutSpec = Pick<
  */
 export function layoutGlyph(glyph: Glyph, s: LayoutSpec): GlyphLayout {
     const segs = glyphSegs(glyph),
-        orient = multiply(rotationMatrix(s.rotation), flipMatrix(s.flipH, s.flipV)),
-        b = pathBounds(segs, orient),
+        b = pathBounds(segs),
         cx = b.x + b.width / 2,
         cy = b.y + b.height / 2,
         width = b.width || 1,
@@ -45,24 +32,18 @@ export function layoutGlyph(glyph: Glyph, s: LayoutSpec): GlyphLayout {
     let k: number;
     switch (s.shape) {
         case 'circle':
-            k = circleScale(segs, orient, cx, cy, half);
+            k = circleScale(segs, cx, cy, half);
             break;
         case 'rounded': {
             const r = Math.max(0, (s.radius / 100) * TILE - pad);
-            k = roundedScale(segs, orient, cx, cy, half, r, kSquare);
+            k = roundedScale(segs, cx, cy, half, r, kSquare);
             break;
         }
         default:
             k = kSquare;
     }
 
-    return {
-        matrix: multiply(
-            translate(TILE / 2 - k * cx, TILE / 2 - k * cy),
-            multiply(scale(k), orient)
-        ),
-        scale: k
-    };
+    return {matrix: [k, 0, 0, k, TILE / 2 - k * cx, TILE / 2 - k * cy], scale: k};
 }
 
 /**
@@ -88,8 +69,8 @@ function maxDistance(pts: Float64Array, cx: number, cy: number): number {
     return max || 1;
 }
 
-function circleScale(segs: Seg[], orient: Matrix, cx: number, cy: number, radius: number): number {
-    return radius / (CIRCLE_SAFETY * maxDistance(samplePath(segs, orient), cx, cy));
+function circleScale(segs: Seg[], cx: number, cy: number, radius: number): number {
+    return radius / (CIRCLE_SAFETY * maxDistance(samplePath(segs), cx, cy));
 }
 
 /**
@@ -98,14 +79,13 @@ function circleScale(segs: Seg[], orient: Matrix, cx: number, cy: number, radius
  */
 function roundedScale(
     segs: Seg[],
-    orient: Matrix,
     cx: number,
     cy: number,
     half: number,
     r: number,
     kSquare: number
 ): number {
-    const pts = samplePath(segs, orient),
+    const pts = samplePath(segs),
         inner = half - r,
         tol = 1e-9 * half;
 

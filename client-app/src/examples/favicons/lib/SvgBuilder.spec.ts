@@ -105,11 +105,6 @@ describe('buildFaviconSvg', () => {
         expect(buildFaviconSvg(gear, DEFAULT_SPEC)).not.toContain('<!--');
     });
 
-    it('writes compact numbers, never -0', () => {
-        const svg = buildFaviconSvg(twoPath, withShape('none', {padding: 0, flipH: true}));
-        expect(transformOf(svg)).toBe('matrix(-1 0 0 1 512 0)');
-    });
-
     it('renders a synthetic glyph exactly', () => {
         const glyph: Glyph = {
                 prefix: 'fas',
@@ -124,15 +119,14 @@ describe('buildFaviconSvg', () => {
                 bgColor: '#1976d2',
                 shape: 'rounded',
                 radius: 20,
-                padding: 14,
-                rotation: 90
+                padding: 14
             };
         expect(buildFaviconSvg(glyph, spec, {size: 32, comment: 'Made with -- test'}))
             .toMatchInlineSnapshot(`
               "<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
               <!-- Made with - test -->
               <rect width="512" height="512" rx="102.4" fill="#1976d2"/>
-              <path fill="#ffffff" transform="matrix(0 0.576 -0.576 0 403.456 71.68)" d="M0 0H640V512H0Z"/>
+              <path fill="#ffffff" transform="matrix(0.576 0 0 0.576 71.68 108.544)" d="M0 0H640V512H0Z"/>
               </svg>"
             `);
     });

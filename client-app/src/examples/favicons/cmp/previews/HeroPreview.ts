@@ -5,12 +5,8 @@ import {Icon} from '@xh/hoist/icon';
 import {startCase} from 'lodash';
 import {FaviconModel} from '../../FaviconModel';
 import {PREFIX_LABELS} from '../../lib/FaviconSpec';
-import {checkBanners, tileCls} from './CheckBanners';
 
-/**
- * The full-size 512px output, on a checkerboard to show any transparency. Flags low glyph/backdrop
- * contrast with a banner, shrinking the stage to make room so the previews grid does not move.
- */
+/** The full-size 512px output, on a checkerboard to show any transparency. */
 export const heroPreview = hoistCmp.factory({
     displayName: 'HeroPreview',
     model: uses(FaviconModel),
@@ -21,8 +17,7 @@ export const heroPreview = hoistCmp.factory({
             title: 'favicon.svg',
             icon: Icon.magic(),
             compactHeader: true,
-            className: tileCls(model, 'hero', 'tb-fav-hero'),
-            banner: checkBanners(model, 'hero'),
+            className: 'tb-fav-hero',
             contentBoxProps: {alignItems: 'center', justifyContent: 'center'},
             items: [
                 div({

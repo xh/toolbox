@@ -31,8 +31,6 @@ describe('FAVICON_PRESETS', () => {
         for (const {name, ...rest} of FAVICON_PRESETS) {
             const spec = {...rest, appName: 'x'};
             expect(normalizeSpec(spec), name).toEqual(spec);
-            expect(spec.rotation, name).toBe(0);
-            expect(spec.flipH || spec.flipV, name).toBe(false);
         }
     });
 
@@ -47,7 +45,7 @@ describe('FAVICON_PRESETS', () => {
 
 describe('randomSpec', () => {
     const names = ['rocket', 'bolt', 'leaf', 'gear', 'house', 'star'];
-    const current = {...DEFAULT_SPEC, appName: 'Keep Me', rotation: 90, flipH: true};
+    const current = {...DEFAULT_SPEC, appName: 'Keep Me'};
 
     it('is deterministic for a seeded rng', () => {
         const a = Array.from({length: 20}, (_, i) => randomSpec(mulberry32(i), names, current)),
@@ -68,9 +66,6 @@ describe('randomSpec', () => {
             prefixes.add(s.prefix);
 
             expect(s.appName).toBe('Keep Me');
-            expect(s.rotation).toBe(0);
-            expect(s.flipH).toBe(false);
-            expect(s.flipV).toBe(false);
             expect(s.radius).toBe(DEFAULT_RADIUS);
             expect(s.padding).toBe(DEFAULT_PADDING[s.shape]);
 

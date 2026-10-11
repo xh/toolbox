@@ -3,20 +3,14 @@ import {faCircle, faGear, far} from '@fortawesome/pro-regular-svg-icons';
 import {fas} from '@fortawesome/pro-solid-svg-icons';
 import {describe, expect, it} from 'vitest';
 import {glyphFromDefinition} from './FaviconSpec';
-import type {Bounds, Matrix, Seg} from './PathGeometry';
+import type {Bounds, Seg} from './PathGeometry';
 import {
-    applyMatrix,
-    flipMatrix,
     glyphSegs,
     IDENTITY,
-    multiply,
     normalizePath,
     pathBounds,
-    rotationMatrix,
     samplePath,
-    scale,
-    tokenizePath,
-    translate
+    tokenizePath
 } from './PathGeometry';
 
 describe('tokenizePath', () => {
@@ -158,16 +152,12 @@ describe('pathBounds', () => {
     });
 
     it('applies a matrix before measuring', () => {
-        const segs = normalizePath('M0 0H100V100H0Z'),
-            b = pathBounds(segs, rotationMatrix(45));
-        expect(b.width).toBeCloseTo(100 * Math.SQRT2, 9);
-        expect(b.height).toBeCloseTo(100 * Math.SQRT2, 9);
-
-        expectBoundsClose(pathBounds(segs, translate(10, -5)), {
+        const segs = normalizePath('M0 0H100V100H0Z');
+        expectBoundsClose(pathBounds(segs, [2, 0, 0, 2, 10, -5]), {
             x: 10,
             y: -5,
-            width: 100,
-            height: 100
+            width: 200,
+            height: 200
         });
     });
 
@@ -215,41 +205,10 @@ describe('pathBounds', () => {
 describe('samplePath', () => {
     it('emits M/L points plus perCurve points per cubic, transformed', () => {
         const segs = normalizePath('M0 0L10 0C10 5 15 10 20 10Z'),
-            pts = samplePath(segs, translate(1, 2), 4);
+            pts = samplePath(segs, [1, 0, 0, 1, 1, 2], 4);
         expect(pts.length).toBe((2 + 4) * 2);
         expect(Array.from(pts.slice(0, 4))).toEqual([1, 2, 11, 2]);
         expect(Array.from(pts.slice(-2))).toEqual([21, 12]);
-    });
-});
-
-describe('matrices', () => {
-    it('multiplies so that the right-hand matrix applies first', () => {
-        const m = multiply(translate(10, 0), scale(2));
-        expect(applyMatrix(m, 1, 1)).toEqual([12, 2]);
-        const n = multiply(scale(2), translate(10, 0));
-        expect(applyMatrix(n, 1, 1)).toEqual([22, 2]);
-    });
-
-    it('treats IDENTITY as a no-op', () => {
-        const m: Matrix = [1, 2, 3, 4, 5, 6];
-        expect(multiply(IDENTITY, m)).toEqual(m);
-        expect(multiply(m, IDENTITY)).toEqual(m);
-    });
-
-    it('rotates clockwise on screen, with exact right angles', () => {
-        expect(applyMatrix(rotationMatrix(90), 1, 0)).toEqual([0, 1]);
-        expect(applyMatrix(rotationMatrix(180), 1, 0)).toEqual([-1, 0]);
-        expect(rotationMatrix(360)).toEqual(rotationMatrix(0));
-        expect(rotationMatrix(-90)).toEqual(rotationMatrix(270));
-        const [x, y] = applyMatrix(rotationMatrix(45), 1, 0);
-        expect(x).toBeCloseTo(Math.SQRT1_2, 12);
-        expect(y).toBeCloseTo(Math.SQRT1_2, 12);
-    });
-
-    it('flips about the origin', () => {
-        expect(applyMatrix(flipMatrix(true, false), 3, 4)).toEqual([-3, 4]);
-        expect(applyMatrix(flipMatrix(false, true), 3, 4)).toEqual([3, -4]);
-        expect(flipMatrix(false, false)).toEqual(IDENTITY);
     });
 });
 

@@ -1,8 +1,8 @@
 import type {Glyph} from './FaviconSpec';
 
 /**
- * Pure SVG path geometry for laying out FA glyphs - parsing, exact bounds, sampling and affine
- * matrices. Computed in plain TypeScript (not via `getBBox`) so it runs under jsdom in unit tests.
+ * Pure SVG path geometry for laying out FA glyphs - parsing, exact bounds and sampling. Computed
+ * in plain TypeScript (not via `getBBox`) so it runs under jsdom in unit tests.
  */
 
 /** An SVG affine matrix `[a b c d e f]`, mapping (x, y) to (a·x + c·y + e, b·x + d·y + f). */
@@ -306,41 +306,6 @@ export function samplePath(segs: Seg[], m: Matrix = IDENTITY, perCurve: number =
     }
 
     return out;
-}
-
-/** Matrix product `a · b` - the result applies `b` first, then `a`. */
-export function multiply(a: Matrix, b: Matrix): Matrix {
-    return [
-        a[0] * b[0] + a[2] * b[1],
-        a[1] * b[0] + a[3] * b[1],
-        a[0] * b[2] + a[2] * b[3],
-        a[1] * b[2] + a[3] * b[3],
-        a[0] * b[4] + a[2] * b[5] + a[4],
-        a[1] * b[4] + a[3] * b[5] + a[5]
-    ];
-}
-
-/** Rotation about the origin, clockwise on screen (SVG's y axis points down). */
-export function rotationMatrix(deg: number): Matrix {
-    const norm = ((deg % 360) + 360) % 360;
-    // Exact values for right angles, avoiding floating-point noise such as cos(90°) = 6e-17.
-    const exact = {0: [1, 0], 90: [0, 1], 180: [-1, 0], 270: [0, -1]}[norm],
-        rad = (norm * Math.PI) / 180,
-        [cos, sin] = exact ?? [Math.cos(rad), Math.sin(rad)];
-    return [cos, sin, -sin, cos, 0, 0];
-}
-
-/** Mirror about the origin - horizontally (x → -x) and/or vertically (y → -y). */
-export function flipMatrix(flipH: boolean, flipV: boolean): Matrix {
-    return [flipH ? -1 : 1, 0, 0, flipV ? -1 : 1, 0, 0];
-}
-
-export function translate(x: number, y: number): Matrix {
-    return [1, 0, 0, 1, x, y];
-}
-
-export function scale(k: number): Matrix {
-    return [k, 0, 0, k, 0, 0];
 }
 
 export function applyMatrix(m: Matrix, x: number, y: number): [number, number] {

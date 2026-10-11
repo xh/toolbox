@@ -1,20 +1,10 @@
 import type {SegmentedControlOption} from '@xh/hoist/cmp/input';
 import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import type {HoistIconPrefix} from '@xh/hoist/icon';
-import {
-    action,
-    bindable,
-    compareStructural,
-    computed,
-    observable,
-    observableRef,
-    runInAction
-} from '@xh/hoist/mobx';
+import {action, bindable, compareStructural, computed, observable} from '@xh/hoist/mobx';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {downloadBlob} from '@xh/hoist/utils/js';
 import {isEqual, omit} from 'lodash';
-import type {FaviconCheck, FaviconPreviewId} from './lib/Checks';
-import {designChecks} from './lib/Checks';
 import {buildConfigSnippet} from './lib/ConfigSnippet';
 import {
     allIconNames,
@@ -58,19 +48,11 @@ export class FaviconModel extends HoistModel {
     @observable accessor shape: FaviconShape;
     @bindable accessor radius: number;
     @bindable accessor padding: number;
-    @bindable accessor rotation: number;
-    @bindable accessor flipH: boolean;
-    @bindable accessor flipV: boolean;
     @bindable accessor appName: string;
-
-    /** Object URLs of real 16px and 32px PNG renders, for the pixel peek. */
-    @observableRef accessor peekUrls: {16: string; 32: string} = null;
 
     @managed downloadTask = TaskObserver.trackLast({message: 'Building favicons...'});
 
     readonly liveTabIcon = new LiveTabIcon();
-
-    private peekRequestId = 0;
 
     //------------------
     // Derived state
@@ -94,9 +76,6 @@ export class FaviconModel extends HoistModel {
             shape: this.shape,
             radius: this.radius,
             padding: this.padding,
-            rotation: this.rotation,
-            flipH: this.flipH,
-            flipV: this.flipV,
             appName: this.appName
         });
     }
@@ -169,17 +148,6 @@ export class FaviconModel extends HoistModel {
         return zipFileName(this.spec.appName);
     }
 
-    /** Design checks - contrast and stroke weight - for the current spec. */
-    @computed
-    get checks(): FaviconCheck[] {
-        return designChecks(this.spec);
-    }
-
-    /** Failed checks that are flagged on the given preview. */
-    failedChecksFor(preview: FaviconPreviewId): FaviconCheck[] {
-        return this.checks.filter(it => it.preview === preview && it.warning);
-    }
-
     /** IconPicker value for the current glyph - its catalog `faName`, which may be an alias. */
     get pickerValue(): string {
         return toPickerValue(this.iconName);
@@ -217,20 +185,12 @@ export class FaviconModel extends HoistModel {
             });
         }
 
-        this.addReaction(
-            {
-                track: () => this.spec,
-                run: spec => writeSpecToUrl(spec),
-                equals: compareStructural,
-                debounce: 250
-            },
-            {
-                track: () => this.svg,
-                run: () => this.updatePeekAsync(),
-                debounce: 150,
-                fireImmediately: true
-            }
-        );
+        this.addReaction({
+            track: () => this.spec,
+            run: spec => writeSpecToUrl(spec),
+            equals: compareStructural,
+            debounce: 250
+        });
 
         if (!this.isFramed) {
             this.addReaction({
@@ -244,7 +204,6 @@ export class FaviconModel extends HoistModel {
 
     override destroy() {
         this.liveTabIcon.restore();
-        this.revokePeekUrls(this.peekUrls);
         super.destroy();
     }
 
@@ -264,9 +223,6 @@ export class FaviconModel extends HoistModel {
         this.shape = n.shape;
         this.radius = n.radius;
         this.padding = n.padding;
-        this.rotation = n.rotation;
-        this.flipH = n.flipH;
-        this.flipV = n.flipV;
         this.appName = n.appName;
     }
 
@@ -298,7 +254,6 @@ export class FaviconModel extends HoistModel {
 
     @action
     reset() {
-        this.preferredPrefix = DEFAULT_SPEC.prefix;
         this.applySpec({...DEFAULT_SPEC, appName: this.appName});
     }
 
@@ -323,37 +278,5 @@ export class FaviconModel extends HoistModel {
             })
             .linkTo(this.downloadTask)
             .catchDefault();
-    }
-
-    //------------------
-    // Implementation
-    //------------------
-    /** Rasterize real 16px and 32px PNGs for the pixel peek, swapping in fresh object URLs. */
-    private async updatePeekAsync() {
-        const requestId = ++this.peekRequestId,
-            {glyph, spec} = this;
-
-        try {
-            const [png16, png32] = await Promise.all(
-                [16, 32].map(size => rasterizePngAsync(buildFaviconSvg(glyph, spec, {size}), size))
-            );
-
-            // Drop a stale result if a newer render has started, or the model is gone.
-            if (requestId !== this.peekRequestId || this.isDestroyed) return;
-
-            const old = this.peekUrls;
-            runInAction(() => {
-                this.peekUrls = {16: URL.createObjectURL(png16), 32: URL.createObjectURL(png32)};
-            });
-            this.revokePeekUrls(old);
-        } catch (e) {
-            this.logWarn('Failed to render pixel peek', e);
-        }
-    }
-
-    private revokePeekUrls(urls: {16: string; 32: string}) {
-        if (!urls) return;
-        URL.revokeObjectURL(urls[16]);
-        URL.revokeObjectURL(urls[32]);
     }
 }

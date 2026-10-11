@@ -38,14 +38,7 @@ export const controlsPanel = hoistCmp.factory({
                 flex: 'none',
                 gap: 8,
                 padding: 8,
-                items: [
-                    presetsCard(),
-                    iconCard(),
-                    colorsCard(),
-                    shapeCard(),
-                    transformCard(),
-                    appCard()
-                ]
+                items: [presetsCard(), iconCard(), colorsCard(), shapeCard(), appCard()]
             }),
             bbar: [
                 span({className: 'tb-favicons-controls__credit', item: 'Font Awesome 7 Pro'}),
@@ -196,50 +189,6 @@ const shapeCard = hoistCmp.factory({
                         max: MAX_PADDING,
                         labelStepSize: 10
                     })
-                })
-            ]
-        });
-    }
-});
-
-const transformCard = hoistCmp.factory({
-    model: uses(FaviconModel),
-    render({model}) {
-        return controlCard({
-            title: 'Transform',
-            items: [
-                fieldRow({
-                    label: 'Rotation',
-                    value: `${model.rotation}°`,
-                    item: rangeSlider({
-                        model,
-                        bind: 'rotation',
-                        max: 345,
-                        stepSize: 15,
-                        labelStepSize: 90,
-                        labelRenderer: v => `${v}°`
-                    })
-                }),
-                hbox({
-                    gap: 8,
-                    items: [
-                        button({
-                            text: 'Flip H',
-                            flex: 1,
-                            icon: Icon.arrowsLeftRight(),
-                            active: model.flipH,
-                            outlined: true,
-                            onClick: () => (model.flipH = !model.flipH)
-                        }),
-                        button({
-                            text: 'Flip V',
-                            flex: 1,
-                            icon: Icon.arrowsUpDown(),
-                            active: model.flipV,
-                            outlined: true,
-                            onClick: () => (model.flipV = !model.flipV)
-                        })
-                    ]
                 })
             ]
         });

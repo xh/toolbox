@@ -3,11 +3,10 @@ import {hoistCmp, uses, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {FaviconModel} from '../../FaviconModel';
-import {checkBanners} from './CheckBanners';
 
 /**
- * The 16px favicon in light and dark browser tab strips. Flags tab-contrast warnings with banners
- * and - when framed, where this page's own tab icon is not ours to set - offers a full tab.
+ * The 16px favicon in light and dark browser tab strips. When framed - where this page's own tab
+ * icon is not ours to set - offers to open the design in a full tab.
  */
 export const browserTabMock = hoistCmp.factory({
     displayName: 'BrowserTabMock',
@@ -22,22 +21,19 @@ export const browserTabMock = hoistCmp.factory({
             icon: Icon.window(),
             compactHeader: true,
             className: 'tb-fav-tabs',
-            banner: [
-                ...checkBanners(model, 'tabs'),
-                model.isFramed
-                    ? {
-                          message: 'See it live in a full tab',
-                          compact: true,
-                          wrap: false,
-                          position: 'bottom',
-                          actionButtonProps: {
-                              text: 'Open',
-                              icon: Icon.openExternal(),
-                              onClick: () => XH.openWindow(model.shareUrl)
-                          }
+            banner: model.isFramed
+                ? {
+                      message: 'See it live in a full tab',
+                      compact: true,
+                      wrap: false,
+                      position: 'bottom',
+                      actionButtonProps: {
+                          text: 'Open',
+                          icon: Icon.openExternal(),
+                          onClick: () => XH.openWindow(model.shareUrl)
                       }
-                    : null
-            ],
+                  }
+                : null,
             contentBoxProps: {justifyContent: 'center'},
             items: ['light', 'dark'].map(theme =>
                 div({

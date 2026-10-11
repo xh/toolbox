@@ -1,6 +1,6 @@
 import type {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 import type {HoistIconPrefix} from '@xh/hoist/icon';
-import {clamp, isBoolean, isFinite, isString} from 'lodash';
+import {clamp, isFinite, isString} from 'lodash';
 
 /** Backdrop shape drawn behind the glyph. */
 export type FaviconShape = 'none' | 'square' | 'rounded' | 'circle';
@@ -20,10 +20,6 @@ export interface FaviconSpec {
     radius: number;
     /** Inset from the visible shape edge, 0-40, as a % of the tile. */
     padding: number;
-    /** Clockwise rotation in degrees, 0-359 integer. */
-    rotation: number;
-    flipH: boolean;
-    flipV: boolean;
     /** Used for the zip name and mock labels - max 40 chars. */
     appName: string;
 }
@@ -76,9 +72,6 @@ export const DEFAULT_SPEC: FaviconSpec = Object.freeze({
     shape: 'rounded',
     radius: DEFAULT_RADIUS,
     padding: DEFAULT_PADDING.rounded,
-    rotation: 0,
-    flipH: false,
-    flipV: false,
     appName: 'My App'
 }) as FaviconSpec;
 
@@ -95,8 +88,8 @@ export function normalizeHex(s: string): string | null {
 
 /**
  * Produce a complete, valid spec from a partial or untrusted one. Missing or invalid fields take
- * their `DEFAULT_SPEC` value; numbers are rounded and clamped, rotation is taken mod 360, colors are
- * normalized to lowercase '#rrggbb' and the app name is truncated to 40 chars.
+ * their `DEFAULT_SPEC` value; numbers are rounded and clamped, colors are normalized to lowercase
+ * '#rrggbb' and the app name is truncated to 40 chars.
  */
 export function normalizeSpec(s: Partial<FaviconSpec>): FaviconSpec {
     s = s ?? {};
@@ -109,9 +102,6 @@ export function normalizeSpec(s: Partial<FaviconSpec>): FaviconSpec {
         shape: SHAPES.includes(s.shape) ? s.shape : d.shape,
         radius: clampInt(s.radius, 0, MAX_RADIUS, d.radius),
         padding: clampInt(s.padding, 0, MAX_PADDING, d.padding),
-        rotation: isFinite(s.rotation) ? mod360(Math.round(s.rotation)) : d.rotation,
-        flipH: isBoolean(s.flipH) ? s.flipH : d.flipH,
-        flipV: isBoolean(s.flipV) ? s.flipV : d.flipV,
         appName: isString(s.appName) ? s.appName.slice(0, MAX_APP_NAME_LENGTH) : d.appName
     };
 }
@@ -135,9 +125,4 @@ export function glyphFromDefinition(def: IconDefinition): Glyph {
 //------------------
 function clampInt(v: number, min: number, max: number, fallback: number): number {
     return isFinite(v) ? clamp(Math.round(v), min, max) : fallback;
-}
-
-function mod360(v: number): number {
-    const ret = ((v % 360) + 360) % 360;
-    return ret === 0 ? 0 : ret; // avoid -0
 }

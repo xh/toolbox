@@ -129,8 +129,8 @@
   container-type: inline-size;
 }
 
-// One column when narrow, two at the Examples-iframe size, three when there is room - with the
-// size strip spanning two columns and the snippet spanning all of them.
+// One column when narrow, two at the Examples-iframe size, three when there is room. The snippet
+// spans the full width, or the two columns beside the size strip when there are three.
 .tb-favicons__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -144,10 +144,6 @@
   --xh-panel-title-bg: transparent;
   --xh-panel-title-text-color: var(--xh-text-color);
 
-  // Height of a compact, single-line check banner - see `checkBanners()`. The tiles that set their
-  // row's height make room for one, so a warning coming or going never moves the grid.
-  --tb-fav-banner-h: 24px;
-
   @container (min-width: 640px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -155,7 +151,7 @@
   @container (min-width: 960px) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
 
-    .tb-fav-sizes {
+    .tb-fav-snippet {
       grid-column: span 2;
     }
   }
@@ -176,7 +172,7 @@
     padding: 4px 10px 10px;
   }
 
-  // Drop the divider Panel draws above a bottom banner, so a check banner sits flush within the tile.
+  // Drop the divider Panel draws above a bottom banner, so the banner sits flush within the tile.
   .xh-panel__banner--bottom {
     border-top: none;
   }
@@ -196,17 +192,12 @@
   padding: 4px 10px 10px;
 }
 
-// The hero sets its row's height - while it shows a check banner, shrink the stage to make room.
 .tb-fav-hero {
   &__stage {
     width: min(256px, 100%);
     aspect-ratio: 1;
     padding: 12px;
     border-radius: 10px;
-  }
-
-  &.tb-fav-tile--flagged &__stage {
-    width: min(calc(256px - var(--tb-fav-banner-h)), 100%);
   }
 
   &__img {
@@ -222,14 +213,7 @@
   }
 }
 
-// The size strip sets its row's height - reserve room for a check banner while it has none.
 .tb-fav-sizes {
-  grid-column: 1 / -1;
-
-  &:not(.tb-fav-tile--flagged) .xh-panel__content {
-    padding-bottom: calc(10px + var(--tb-fav-banner-h));
-  }
-
   &__frame {
     border-radius: 3px;
     outline: var(--xh-border-solid);
@@ -239,30 +223,9 @@
     }
   }
 
-  &__img--pixelated {
-    image-rendering: pixelated;
-  }
-
   &__label {
     font-family: var(--tb-fav-mono);
     font-size: var(--xh-font-size-small-px);
-    color: var(--xh-text-color-muted);
-  }
-
-  &__peek {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 8px 12px 6px;
-    border-radius: 8px;
-    background: var(--xh-bg-alt);
-  }
-
-  &__peek-title {
-    font-size: var(--xh-font-size-small-px);
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
     color: var(--xh-text-color-muted);
   }
 }
@@ -441,21 +404,6 @@
 
   100% {
     transform: scale(1);
-  }
-}
-
-.tb-fav-checks {
-  &__summary {
-    line-height: 1.4;
-  }
-
-  &__list {
-    gap: 6px;
-  }
-
-  &__item {
-    align-items: center;
-    gap: 8px;
   }
 }
 

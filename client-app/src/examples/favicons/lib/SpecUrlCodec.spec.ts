@@ -6,17 +6,8 @@ import {buildShareUrl, decodeSpec, encodeSpec, writeSpecToUrl} from './SpecUrlCo
 describe('encodeSpec', () => {
     it('writes every key, in a readable form', () => {
         expect(encodeSpec(DEFAULT_SPEC)).toBe(
-            'icon=rocket&w=fas&fg=263238&bg=f7931c&shape=rounded&r=20&pad=14&rot=0&flip=none&name=My+App'
+            'icon=rocket&w=fas&fg=263238&bg=f7931c&shape=rounded&r=20&pad=14&name=My+App'
         );
-    });
-
-    it('encodes flips', () => {
-        const flip = (flipH: boolean, flipV: boolean) =>
-            new URLSearchParams(encodeSpec({...DEFAULT_SPEC, flipH, flipV})).get('flip');
-        expect(flip(false, false)).toBe('none');
-        expect(flip(true, false)).toBe('h');
-        expect(flip(false, true)).toBe('v');
-        expect(flip(true, true)).toBe('hv');
     });
 });
 
@@ -41,9 +32,6 @@ describe('decodeSpec', () => {
                 shape: pick(SHAPES) as FaviconShape,
                 radius: int(-10, 70),
                 padding: int(-10, 60),
-                rotation: int(-720, 720),
-                flipH: rng() < 0.5,
-                flipV: rng() < 0.5,
                 appName: Array.from({length: int(0, 50)}, () => pick([...chars])).join('')
             };
             const {spec, warnings} = decodeSpec(encodeSpec(s));
@@ -75,13 +63,11 @@ describe('decodeSpec', () => {
         expect(spec.bgColor).toBe('#0b4f6c');
     });
 
-    it('clamps out-of-range numbers and wraps rotation', () => {
-        const {spec, warnings} = decodeSpec('pad=99&r=-3&rot=-90');
+    it('clamps out-of-range numbers', () => {
+        const {spec, warnings} = decodeSpec('pad=99&r=-3');
         expect(warnings).toEqual([]);
         expect(spec.padding).toBe(40);
         expect(spec.radius).toBe(0);
-        expect(spec.rotation).toBe(270);
-        expect(decodeSpec('rot=720').spec.rotation).toBe(0);
     });
 
     it('truncates long app names', () => {
@@ -91,11 +77,11 @@ describe('decodeSpec', () => {
 
     it('falls back to defaults with a warning per invalid value', () => {
         const {spec, warnings} = decodeSpec(
-            'icon=Bad_Name&w=fax&fg=red&bg=12&shape=hexagon&r=1.5&pad=x&rot=&flip=sideways'
+            'icon=Bad_Name&w=fax&fg=red&bg=12&shape=hexagon&r=1.5&pad=x'
         );
         expect(spec).toEqual(DEFAULT_SPEC);
-        expect(warnings).toHaveLength(9);
-        for (const key of ['icon', 'w', 'fg', 'bg', 'shape', 'r', 'pad', 'rot', 'flip']) {
+        expect(warnings).toHaveLength(7);
+        for (const key of ['icon', 'w', 'fg', 'bg', 'shape', 'r', 'pad']) {
             expect(
                 warnings.some(w => w.includes(`'${key}'`)),
                 key
@@ -104,9 +90,9 @@ describe('decodeSpec', () => {
     });
 
     it('keeps valid values alongside invalid ones', () => {
-        const {spec, warnings} = decodeSpec('icon=leaf&fg=zzz&flip=hv');
+        const {spec, warnings} = decodeSpec('icon=leaf&fg=zzz&shape=circle');
         expect(warnings).toHaveLength(1);
-        expect(spec).toEqual({...DEFAULT_SPEC, iconName: 'leaf', flipH: true, flipV: true});
+        expect(spec).toEqual({...DEFAULT_SPEC, iconName: 'leaf', shape: 'circle'});
     });
 
     it('ignores unknown params', () => {

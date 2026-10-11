@@ -3,7 +3,6 @@ import {hoistCmp, uses} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {FaviconModel} from '../FaviconModel';
 import {browserTabMock} from './previews/BrowserTabMock';
-import {checksPanel} from './previews/ChecksPanel';
 import {heroPreview} from './previews/HeroPreview';
 import {homeScreenMock} from './previews/HomeScreenMock';
 import {sizeStrip} from './previews/SizeStrip';
@@ -28,7 +27,6 @@ export const previewsPanel = hoistCmp.factory({
                         heroPreview(),
                         browserTabMock(),
                         homeScreenMock(),
-                        checksPanel(),
                         sizeStrip(),
                         snippetPanel()
                     ]

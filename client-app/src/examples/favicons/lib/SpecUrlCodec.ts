@@ -25,8 +25,6 @@ export function encodeSpec(spec: FaviconSpec): string {
         ['shape', s.shape],
         ['r', String(s.radius)],
         ['pad', String(s.padding)],
-        ['rot', String(s.rotation)],
-        ['flip', (s.flipH ? 'h' : '') + (s.flipV ? 'v' : '') || 'none'],
         ['name', s.appName]
     ]).toString();
 }
@@ -59,8 +57,6 @@ export function decodeSpec(search: string): {spec: FaviconSpec; warnings: string
     read('shape', parseShape, v => (ret.shape = v));
     read('r', parseInteger, v => (ret.radius = Math.min(Math.max(v, 0), MAX_RADIUS)));
     read('pad', parseInteger, v => (ret.padding = Math.min(Math.max(v, 0), MAX_PADDING)));
-    read('rot', parseInteger, v => (ret.rotation = v));
-    read('flip', parseFlip, v => Object.assign(ret, v));
     read(
         'name',
         v => v,
@@ -105,19 +101,4 @@ function parseShape(v: string): FaviconShape | undefined {
 
 function parseInteger(v: string): number | undefined {
     return /^[+-]?\d{1,6}$/.test(v) ? parseInt(v, 10) : undefined;
-}
-
-function parseFlip(v: string): Pick<FaviconSpec, 'flipH' | 'flipV'> | undefined {
-    switch (v) {
-        case 'none':
-            return {flipH: false, flipV: false};
-        case 'h':
-            return {flipH: true, flipV: false};
-        case 'v':
-            return {flipH: false, flipV: true};
-        case 'hv':
-            return {flipH: true, flipV: true};
-        default:
-            return undefined;
-    }
 }

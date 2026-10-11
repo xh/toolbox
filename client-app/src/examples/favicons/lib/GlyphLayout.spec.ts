@@ -83,30 +83,6 @@ describe('layoutGlyph', () => {
         }
         expect(k(20)).toBeGreaterThanOrEqual(k(40));
     });
-
-    it('swaps dimensions when rotated 90 degrees', () => {
-        const a = laidOutBounds(wide640, spec('none', {padding: 0})),
-            b = laidOutBounds(wide640, spec('none', {padding: 0, rotation: 90}));
-        expect(b.width).toBeCloseTo(a.height, 9);
-        expect(b.height).toBeCloseTo(a.width, 9);
-    });
-
-    it('treats rotations of 0 and 360 identically', () => {
-        expect(layoutGlyph(gear, spec('rounded', {rotation: 360}))).toEqual(
-            layoutGlyph(gear, spec('rounded', {rotation: 0}))
-        );
-    });
-
-    it('mirrors with flipH, keeping the laid-out bounds', () => {
-        const plain = layoutGlyph(gear, spec('square')),
-            flipped = layoutGlyph(gear, spec('square', {flipH: true}));
-        expect(flipped.matrix[0]).toBeLessThan(0);
-        expect(flipped.scale).toBeCloseTo(plain.scale, 9);
-
-        const pb = laidOutBounds(gear, spec('square')),
-            fb = laidOutBounds(gear, spec('square', {flipH: true}));
-        expectClose([fb.x, fb.y, fb.width, fb.height], [pb.x, pb.y, pb.width, pb.height]);
-    });
 });
 
 describe('appleLayoutSpec', () => {
@@ -120,11 +96,10 @@ describe('appleLayoutSpec', () => {
     });
 
     it('keeps the remaining fields', () => {
-        const s = {...DEFAULT_SPEC, fgColor: '#123456', rotation: 45, flipV: true},
+        const s = {...DEFAULT_SPEC, fgColor: '#123456', iconName: 'leaf'},
             ret = appleLayoutSpec(s);
         expect(ret.fgColor).toBe('#123456');
-        expect(ret.rotation).toBe(45);
-        expect(ret.flipV).toBe(true);
+        expect(ret.iconName).toBe('leaf');
     });
 });
 
@@ -134,7 +109,7 @@ describe('appleLayoutSpec', () => {
 const SHAPES: FaviconShape[] = ['none', 'square', 'rounded', 'circle'];
 
 function spec(shape: FaviconShape, overrides: Partial<LayoutSpec> = {}): LayoutSpec {
-    return {shape, radius: 20, padding: 0, rotation: 0, flipH: false, flipV: false, ...overrides};
+    return {shape, radius: 20, padding: 0, ...overrides};
 }
 
 function synthGlyph(iconName: string, width: number, height: number, d: string): Glyph {

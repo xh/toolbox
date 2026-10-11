@@ -5,7 +5,7 @@ import {DEFAULT_PADDING, DEFAULT_RADIUS, normalizeSpec} from './FaviconSpec';
 
 /**
  * Curated starting designs. The first ('Hoist Classic') is also the app default - keep it in sync
- * with `DEFAULT_SPEC`. All use rotation 0 and no flips; `radius` is used only for 'rounded'.
+ * with `DEFAULT_SPEC`. `radius` is used only for 'rounded'.
  */
 export const FAVICON_PRESETS: FaviconPreset[] = [
     preset('Hoist Classic', 'rocket', 'fas', '#263238', '#f7931c', 'rounded'),
@@ -58,9 +58,6 @@ export function randomSpec(rng: () => number, names: string[], current: FaviconS
         shape,
         radius: DEFAULT_RADIUS,
         padding: DEFAULT_PADDING[shape],
-        rotation: 0,
-        flipH: false,
-        flipV: false,
         appName: current.appName
     });
 }
@@ -85,10 +82,7 @@ function preset(
         bgColor,
         shape,
         radius,
-        padding: DEFAULT_PADDING[shape],
-        rotation: 0,
-        flipH: false,
-        flipV: false
+        padding: DEFAULT_PADDING[shape]
     };
 }
 

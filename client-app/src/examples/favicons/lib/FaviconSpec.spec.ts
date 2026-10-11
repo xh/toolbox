@@ -59,9 +59,6 @@ describe('normalizeSpec', () => {
             shape: 'rounded',
             radius: 20,
             padding: DEFAULT_PADDING.rounded,
-            rotation: 0,
-            flipH: false,
-            flipV: false,
             appName: 'My App'
         });
     });
@@ -75,9 +72,6 @@ describe('normalizeSpec', () => {
             shape: 'circle' as const,
             radius: 33,
             padding: 0,
-            rotation: 359,
-            flipH: true,
-            flipV: true,
             appName: ''
         };
         expect(normalizeSpec(spec)).toEqual(spec);
@@ -89,15 +83,6 @@ describe('normalizeSpec', () => {
         expect(normalizeSpec({radius: 12.6, padding: 7.4})).toMatchObject({radius: 13, padding: 7});
     });
 
-    it('takes rotation mod 360', () => {
-        expect(normalizeSpec({rotation: 360}).rotation).toBe(0);
-        expect(normalizeSpec({rotation: 450}).rotation).toBe(90);
-        expect(normalizeSpec({rotation: -90}).rotation).toBe(270);
-        expect(normalizeSpec({rotation: -360}).rotation).toBe(0);
-        expect(Object.is(normalizeSpec({rotation: -360}).rotation, 0)).toBe(true);
-        expect(normalizeSpec({rotation: 44.6}).rotation).toBe(45);
-    });
-
     it('falls back to defaults for invalid values', () => {
         const spec = normalizeSpec({
             iconName: '  ',
@@ -107,9 +92,6 @@ describe('normalizeSpec', () => {
             shape: 'hexagon' as any,
             radius: NaN,
             padding: Infinity,
-            rotation: 'x' as any,
-            flipH: 'yes' as any,
-            flipV: null,
             appName: 42 as any
         });
         expect(spec).toEqual(DEFAULT_SPEC);
