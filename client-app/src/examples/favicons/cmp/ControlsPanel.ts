@@ -3,7 +3,7 @@ import {card} from '@xh/hoist/cmp/card';
 import {div, filler, hbox, img, span, vbox} from '@xh/hoist/cmp/layout';
 import type {ReactElement, ReactNode} from 'react';
 import type {ElementSpec} from '@xh/hoist/core';
-import {hoistCmp, uses} from '@xh/hoist/core';
+import {hoistCmp, uses, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import type {SliderProps} from '@xh/hoist/desktop/cmp/input';
 import {iconPicker, segmentedControl, slider, textInput} from '@xh/hoist/desktop/cmp/input';
@@ -101,7 +101,7 @@ const iconCard = hoistCmp.factory({
                 iconPicker({
                     value: model.pickerValue,
                     onChange: v => model.setIconFromPicker(v),
-                    icons: model.pickerIcons,
+                    icons: XH.glyphService.pickerIcons,
                     prefix: model.prefix,
                     enableClear: false,
                     columns: 9,

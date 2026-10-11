@@ -20,7 +20,7 @@ export const FAVICON_PRESETS: FaviconPreset[] = [
  * Generate a random but tasteful design. Deterministic for a given `rng` sequence.
  *
  * @param rng - source of uniform randoms in [0, 1), e.g. `Math.random`.
- * @param names - candidate canonical glyph names, as from `allIconNames()`.
+ * @param names - candidate canonical glyph names, as from `GlyphService.iconNames`.
  * @param current - the current design - its `appName` is kept, and its glyph is reused if `names`
  *      is empty.
  */

@@ -5,23 +5,14 @@ import {action, bindable, compareStructural, computed, observable} from '@xh/hoi
 import {downloadBlob} from '@xh/hoist/utils/js';
 import {isEqual, omit} from 'lodash';
 import {buildConfigSnippet} from './lib/ConfigSnippet';
-import {
-    allIconNames,
-    availablePrefixes,
-    canonicalIconName,
-    getIconDef,
-    pickerIcons,
-    PREFIX_ORDER,
-    toPickerValue
-} from './lib/FaLibrary';
 import {buildFaviconZip, renderFaviconFilesAsync, zipFileName} from './lib/FaviconExport';
 import type {FaviconPreset, FaviconShape, FaviconSpec, Glyph} from './lib/FaviconSpec';
 import {
     DEFAULT_PADDING,
     DEFAULT_SPEC,
-    glyphFromDefinition,
     normalizeSpec,
-    PREFIX_LABELS
+    PREFIX_LABELS,
+    PREFIXES
 } from './lib/FaviconSpec';
 import {LiveTabIcon} from './lib/LiveTabIcon';
 import {FAVICON_PRESETS, randomSpec} from './lib/Presets';
@@ -32,8 +23,8 @@ import {buildFaviconSvg, svgToDataUrl} from './lib/SvgBuilder';
 /**
  * Design state and derived output for the Favicon Generator.
  *
- * Created by `AppModel` only once the full Font Awesome library has loaded, so every glyph lookup
- * here can rely on the packs being present. The design is restored from - and kept in sync with -
+ * Created by `AppModel` once `GlyphService` is installed, so every glyph lookup here can rely on
+ * the full Font Awesome library being present. The design is restored from - and kept in sync with -
  * the page URL, so any design can be shared or bookmarked.
  */
 export class FaviconModel extends HoistModel {
@@ -59,7 +50,7 @@ export class FaviconModel extends HoistModel {
     /** Effective weight - the preferred one if the glyph has it, else the glyph's first weight. */
     @computed
     get prefix(): HoistIconPrefix {
-        const available = availablePrefixes(this.iconName);
+        const available = XH.glyphService.availablePrefixes(this.iconName);
         return available.includes(this.preferredPrefix)
             ? this.preferredPrefix
             : (available[0] ?? DEFAULT_SPEC.prefix);
@@ -81,11 +72,11 @@ export class FaviconModel extends HoistModel {
 
     @computed
     get glyph(): Glyph {
-        const {iconName, prefix} = this,
-            def =
-                getIconDef(iconName, prefix) ??
-                getIconDef(DEFAULT_SPEC.iconName, DEFAULT_SPEC.prefix);
-        return glyphFromDefinition(def);
+        const {glyphService} = XH;
+        return (
+            glyphService.getGlyph(this.iconName, this.prefix) ??
+            glyphService.getGlyph(DEFAULT_SPEC.iconName, DEFAULT_SPEC.prefix)
+        );
     }
 
     @computed
@@ -106,8 +97,8 @@ export class FaviconModel extends HoistModel {
 
     @computed
     get weightOptions(): SegmentedControlOption[] {
-        const available = availablePrefixes(this.iconName);
-        return PREFIX_ORDER.map(value => ({
+        const available = XH.glyphService.availablePrefixes(this.iconName);
+        return PREFIXES.map(value => ({
             value,
             label: PREFIX_LABELS[value],
             disabled: !available.includes(value)
@@ -118,10 +109,10 @@ export class FaviconModel extends HoistModel {
     @computed
     get presetThumbs(): string[] {
         return FAVICON_PRESETS.map(p => {
-            const def = getIconDef(p.iconName, p.prefix);
-            if (!def) return null;
+            const glyph = XH.glyphService.getGlyph(p.iconName, p.prefix);
+            if (!glyph) return null;
             const spec = normalizeSpec({...omit(p, 'name'), appName: ''});
-            return svgToDataUrl(buildFaviconSvg(glyphFromDefinition(def), spec, {size: 64}));
+            return svgToDataUrl(buildFaviconSvg(glyph, spec, {size: 64}));
         });
     }
 
@@ -149,12 +140,7 @@ export class FaviconModel extends HoistModel {
 
     /** IconPicker value for the current glyph - its catalog `faName`, which may be an alias. */
     get pickerValue(): string {
-        return toPickerValue(this.iconName);
-    }
-
-    /** Glyphs offered by the IconPicker - only those with a Pro weight. */
-    get pickerIcons(): string[] {
-        return pickerIcons();
+        return XH.glyphService.toPickerValue(this.iconName);
     }
 
     /** True inside a frame (e.g. the Toolbox Examples tab), where the tab icon is not ours. */
@@ -169,7 +155,7 @@ export class FaviconModel extends HoistModel {
         super();
 
         const spec = decodeSpec(window.location.search);
-        if (!availablePrefixes(spec.iconName).length) spec.iconName = DEFAULT_SPEC.iconName;
+        spec.iconName = XH.glyphService.canonicalName(spec.iconName) ?? DEFAULT_SPEC.iconName;
         this.applySpec(spec);
 
         this.addReaction({
@@ -226,7 +212,7 @@ export class FaviconModel extends HoistModel {
 
     @action
     setIconFromPicker(v: string) {
-        if (v) this.iconName = canonicalIconName(v) ?? this.iconName;
+        if (v) this.iconName = XH.glyphService.canonicalName(v) ?? this.iconName;
     }
 
     /** Apply a preset design, keeping the current app name. */
@@ -237,7 +223,7 @@ export class FaviconModel extends HoistModel {
 
     @action
     surpriseMe() {
-        this.applySpec(randomSpec(Math.random, allIconNames(), this.spec));
+        this.applySpec(randomSpec(Math.random, XH.glyphService.iconNames, this.spec));
     }
 
     @action

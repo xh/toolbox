@@ -1,23 +1,31 @@
-import {library} from '@fortawesome/fontawesome-svg-core';
+import type {IconPack} from '@fortawesome/fontawesome-svg-core';
 import {far} from '@fortawesome/pro-regular-svg-icons';
+import type {InitContext} from '@xh/hoist/core';
+import {XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {beforeAll, describe, expect, it} from 'vitest';
+import {initTestAppAsync, TestAppModel} from '@xh/hoist/test-support';
+import {beforeAll, describe, expect, it, vi} from 'vitest';
 // Toolbox's app-wide icons, as at runtime - including brand glyphs (e.g. `github`) with no Pro weight.
 import '../../../core/Icons';
-import {
-    allIconNames,
-    availablePrefixes,
-    canonicalIconName,
-    catalogConfigsForPacks,
-    getIconDef,
-    pickerIcons,
-    registerFaPacks,
-    toPickerValue
-} from './FaLibrary';
+import {catalogConfigsForPacks, GlyphService} from './GlyphService';
 
-beforeAll(() => {
-    library.add(far);
+// Load just the regular pack, in place of all four.
+vi.mock('./FaPacks', async () => {
+    const {far} = await import('@fortawesome/pro-regular-svg-icons');
+    return {loadFaPacksAsync: async () => [far]};
 });
+
+class GlyphTestModel extends TestAppModel {
+    override async initAsync(ctx: InitContext) {
+        await XH.installServicesAsync(GlyphService, ctx);
+    }
+}
+
+beforeAll(async () => {
+    await initTestAppAsync({modelClass: GlyphTestModel});
+});
+
+const svc = () => XH.glyphService;
 
 describe('catalogConfigsForPacks', () => {
     it('emits one faName-only config per distinct glyph', () => {
@@ -47,43 +55,43 @@ describe('catalogConfigsForPacks', () => {
     });
 
     it('prefixes names that collide with existing Icon functions', () => {
-        const configs = catalogConfigsForPacks([far], () => false),
+        const fresh = {iconName: 'not-yet-cataloged', prefix: 'far', icon: [512, 512, [], '', '']},
+            configs = catalogConfigsForPacks([far, {fresh} as unknown as IconPack], () => false),
             byFaName = name => configs.find(it => it.faName === name);
 
+        // Hoist's own `Icon.gear()` factory.
         expect(byFaName('gear').name).toBe('fa-gear');
-        expect(byFaName('alicorn').name).toBe('alicorn');
-        expect(byFaName('arrow-left').name).toBe('arrow-left');
+        expect(byFaName('not-yet-cataloged').name).toBe('not-yet-cataloged');
     });
 });
 
-describe('name helpers', () => {
+describe('GlyphService', () => {
     it('resolves aliases to canonical names', () => {
-        expect(canonicalIconName('cog')).toBe('gear');
-        expect(canonicalIconName('gear')).toBe('gear');
-        expect(canonicalIconName('not-a-real-glyph')).toBeNull();
+        expect(svc().canonicalName('cog')).toBe('gear');
+        expect(svc().canonicalName('gear')).toBe('gear');
+        expect(svc().canonicalName('not-a-real-glyph')).toBeNull();
     });
 
-    it('lists available weights in UI order', () => {
-        expect(availablePrefixes('alicorn')).toContain('far');
-        expect(availablePrefixes('not-a-real-glyph')).toEqual([]);
+    it('lists available weights', () => {
+        expect(svc().availablePrefixes('alicorn')).toEqual(['far']);
+        expect(svc().availablePrefixes('not-a-real-glyph')).toEqual([]);
+    });
+
+    it('returns glyphs, or null when the library does not have one', () => {
+        const gear = svc().getGlyph('gear', 'far');
+        expect(gear.iconName).toBe('gear');
+        expect(gear.prefix).toBe('far');
+        expect(gear.paths.length).toBeGreaterThan(0);
+
+        expect(svc().getGlyph('alicorn', 'fas')).toBeNull();
+        expect(svc().getGlyph('not-a-real-glyph', 'far')).toBeNull();
+        expect(svc().getGlyph(null, 'far')).toBeNull();
     });
 
     it('treats brand glyphs as unknown, though in the FA library', () => {
-        expect(getIconDef('github', 'fab')).toBeTruthy();
-        expect(availablePrefixes('github')).toEqual([]);
-        expect(canonicalIconName('github')).toBeNull();
-    });
-
-    it('returns icon definitions or null', () => {
-        expect(getIconDef('gear', 'far').iconName).toBe('gear');
-        expect(getIconDef('github', 'far')).toBeNull();
-        expect(getIconDef(null, 'far')).toBeNull();
-    });
-});
-
-describe('registerFaPacks', () => {
-    beforeAll(() => {
-        registerFaPacks([far]);
+        expect(svc().availablePrefixes('github')).toEqual([]);
+        expect(svc().canonicalName('github')).toBeNull();
+        expect(svc().getGlyph('github', 'far')).toBeNull();
     });
 
     it('catalogs every glyph once', () => {
@@ -92,18 +100,17 @@ describe('registerFaPacks', () => {
         expect(entry.prefixes).toContain('far');
 
         // Hoist's `gear` icon is cataloged under its alias `cog` - no second entry for `gear`.
-        expect(Icon.getCatalog().filter(e => canonicalIconName(e.faName) === 'gear')).toHaveLength(
-            1
-        );
+        const gears = Icon.getCatalog().filter(e => svc().canonicalName(e.faName) === 'gear');
+        expect(gears).toHaveLength(1);
     });
 
     it('maps canonical names to picker values', () => {
-        expect(toPickerValue('gear')).toBe('cog');
-        expect(toPickerValue('alicorn')).toBe('alicorn');
+        expect(svc().toPickerValue('gear')).toBe('cog');
+        expect(svc().toPickerValue('alicorn')).toBe('alicorn');
     });
 
     it('lists canonical names of Pro glyphs only', () => {
-        const names = allIconNames();
+        const names = svc().iconNames;
         expect(names).toContain('alicorn');
         expect(names).toContain('gear');
         expect(names).not.toContain('cog');
@@ -111,8 +118,8 @@ describe('registerFaPacks', () => {
     });
 
     it('offers only Pro glyphs to the picker, by their catalog names', () => {
-        const icons = pickerIcons();
-        expect(icons).toHaveLength(allIconNames().length);
+        const icons = svc().pickerIcons;
+        expect(icons).toHaveLength(svc().iconNames.length);
         expect(icons).toContain('alicorn');
         expect(icons).toContain('cog');
         expect(icons).not.toContain('gear');
@@ -121,8 +128,8 @@ describe('registerFaPacks', () => {
     it('leaves out cataloged brand glyphs', () => {
         for (const brand of ['github', 'markdown', 'react']) {
             expect(Icon.getCatalogEntry(brand), brand).toBeTruthy();
-            expect(allIconNames(), brand).not.toContain(brand);
-            expect(pickerIcons(), brand).not.toContain(brand);
+            expect(svc().iconNames, brand).not.toContain(brand);
+            expect(svc().pickerIcons, brand).not.toContain(brand);
         }
     });
 });

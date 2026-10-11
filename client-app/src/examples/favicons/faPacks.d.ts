@@ -1,5 +1,5 @@
 /**
- * Ambient declarations for the full Font Awesome packs, loaded on demand by `lib/FaPacks.ts`.
+ * Ambient declarations for the full Font Awesome packs, loaded on demand by `svc/FaPacks.ts`.
  *
  * The `?full` query gives each pack its own module identity, so the bundler emits it to an async
  * chunk rather than merging it with the per-glyph imports Hoist and Toolbox make statically - which
