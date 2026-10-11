@@ -37,6 +37,8 @@ export class SampleGridModel extends HoistModel {
 
     panelRef = createRef<HTMLDivElement>();
 
+    private columnAnimationPaused = false;
+
     viewDetailsAction = {
         text: 'View Details',
         icon: Icon.search(),
@@ -283,10 +285,13 @@ export class SampleGridModel extends HoistModel {
         // hides it again only when `groupBy` changes. So hide it below, in the same event, and
         // React renders the header once without it. Pause AG Grid's column animation until the
         // next frame too, or the other columns slide back from where the re-shown column put them.
-        if (isGrouped) {
+        // A second swap in that frame keeps the first pause, so the original setting comes back.
+        if (isGrouped && !this.columnAnimationPaused) {
             const suppress = agApi.getGridOption('suppressColumnMoveAnimation');
+            this.columnAnimationPaused = true;
             agApi.setGridOption('suppressColumnMoveAnimation', true);
             window.requestAnimationFrame(() => {
+                this.columnAnimationPaused = false;
                 if (!agApi.isDestroyed()) {
                     agApi.setGridOption('suppressColumnMoveAnimation', suppress);
                 }
