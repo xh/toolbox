@@ -40,7 +40,7 @@ describe('renderFaviconFilesAsync', () => {
 
     it('returns the main SVG with its comment and the PNG bytes', async () => {
         const comment =
-                'Made with the Hoist Favicon Generator: https://example.com/favicons/?icon=rocket',
+                'Made with the Hoist Favicon Designer: https://example.com/favicons/?icon=rocket',
             files = await renderFaviconFilesAsync(GLYPH, SPEC, {
                 rasterize: fakeRasterize,
                 comment

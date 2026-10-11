@@ -9,7 +9,7 @@ import {glyphFromDefinition, PREFIXES} from '../lib/FaviconSpec';
 import {loadFaPacksAsync} from './FaPacks';
 
 /**
- * Catalog of the full Font Awesome Pro library, for the Favicon Generator.
+ * Catalog of the full Font Awesome Pro library, for the Favicon Designer.
  *
  * Loads all four Pro packs at startup, adds them to the FA library and registers every glyph with
  * Hoist's `Icon` catalog, so `IconPicker` can offer them all.

@@ -3,6 +3,7 @@ import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable} from '@xh/hoist/mobx';
 import {p, strong} from '@xh/hoist/cmp/layout';
+import {iconsIcon} from '../../../core/Icons';
 
 export class ExamplesTabModel extends HoistModel {
     @managed
@@ -113,8 +114,8 @@ export class ExamplesTabModel extends HoistModel {
             ]
         },
         {
-            title: 'Favicon Generator',
-            icon: Icon.magic(),
+            title: 'Favicon Designer',
+            icon: iconsIcon(),
             path: 'favicons',
             srcPath: 'favicons',
             text: [

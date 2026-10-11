@@ -1,4 +1,4 @@
-# Favicon Generator
+# Favicon Designer
 
 A client-only Toolbox example app that builds a Hoist app's favicon set from any Font Awesome Pro
 glyph. Pick a glyph and weight, set the colors, backdrop shape and padding, then download a zip
@@ -6,7 +6,7 @@ ready to drop into `client-app/public`.
 
 ## Using it
 
-Open `/favicons`, or open Example Apps > Favicon Generator in the desktop app.
+Open `/favicons`, or open Example Apps > Favicon Designer in the desktop app.
 
 1. Design the icon. Start from a preset or "Surprise me" if you like.
 2. Click **Download .zip** and unzip it into your app's `client-app/public`.

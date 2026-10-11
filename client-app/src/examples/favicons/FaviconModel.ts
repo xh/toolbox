@@ -21,7 +21,7 @@ import {buildShareUrl, decodeSpec, writeSpecToUrl} from './lib/SpecUrlCodec';
 import {buildFaviconSvg, svgToDataUrl} from './lib/SvgBuilder';
 
 /**
- * Design state and derived output for the Favicon Generator.
+ * Design state and derived output for the Favicon Designer.
  *
  * Created by `AppModel` once `GlyphService` is installed, so every glyph lookup here can rely on
  * the full Font Awesome library being present. The design is restored from - and kept in sync with -
@@ -243,7 +243,7 @@ export class FaviconModel extends HoistModel {
         const {glyph, spec, shareUrl, zipFileName} = this;
         await renderFaviconFilesAsync(glyph, spec, {
             rasterize: rasterizePngAsync,
-            comment: `Made with the Hoist Favicon Generator: ${shareUrl}`
+            comment: `Made with the Hoist Favicon Designer: ${shareUrl}`
         })
             .then(files => {
                 const zip = buildFaviconZip(files);

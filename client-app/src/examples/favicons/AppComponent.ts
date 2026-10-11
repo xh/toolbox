@@ -5,6 +5,7 @@ import {button, themeToggleButton} from '@xh/hoist/desktop/cmp/button';
 import {clipboardButton} from '@xh/hoist/desktop/cmp/clipboard';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {iconsIcon} from '../../core/Icons';
 import {AppModel} from './AppModel';
 import {controlsPanel} from './cmp/ControlsPanel';
 import {previewsPanel} from './cmp/PreviewsPanel';
@@ -20,7 +21,7 @@ export const AppComponent = hoistCmp({
         return panel({
             className: 'tb-favicons',
             tbar: appBar({
-                icon: Icon.magic({size: '2x'}),
+                icon: iconsIcon({size: '2x'}),
                 hideAppMenuButton: true,
                 hideRefreshButton: true,
                 hideWhatsNewButton: true,

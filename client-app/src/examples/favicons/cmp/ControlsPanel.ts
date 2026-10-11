@@ -1,6 +1,6 @@
 import type {CardProps} from '@xh/hoist/cmp/card';
 import {card} from '@xh/hoist/cmp/card';
-import {div, filler, hbox, img, span, vbox} from '@xh/hoist/cmp/layout';
+import {a, div, filler, hbox, img, span, vbox} from '@xh/hoist/cmp/layout';
 import type {ReactElement, ReactNode} from 'react';
 import type {ElementSpec} from '@xh/hoist/core';
 import {hoistCmp, uses, XH} from '@xh/hoist/core';
@@ -9,6 +9,7 @@ import type {SliderProps} from '@xh/hoist/desktop/cmp/input';
 import {iconPicker, segmentedControl, slider, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {tooltip} from '@xh/hoist/kit/blueprint';
 import {FaviconModel} from '../FaviconModel';
 import type {FaviconShape} from '../lib/FaviconSpec';
 import {MAX_PADDING, MAX_RADIUS} from '../lib/FaviconSpec';
@@ -41,7 +42,7 @@ export const controlsPanel = hoistCmp.factory({
                 items: [presetsCard(), iconCard(), colorsCard(), shapeCard(), appCard()]
             }),
             bbar: [
-                span({className: 'tb-favicons-controls__credit', item: 'Font Awesome 7 Pro'}),
+                fontAwesomeCredit(),
                 filler(),
                 button({
                     text: 'Reset',
@@ -257,6 +258,29 @@ function fieldRow({label, value, item}: {label: string; value?: string; item: Re
 /** A full-width slider from 0, sized to sit within the controls column. */
 function rangeSlider(props: SliderProps) {
     return slider({min: 0, width: '100%', paddingLeft: 10, paddingRight: 14, ...props});
+}
+
+/** Footer link to the Font Awesome catalog, with a note on the Pro license apps need. */
+function fontAwesomeCredit() {
+    return hbox({
+        className: 'tb-favicons-controls__credit',
+        alignItems: 'center',
+        gap: 6,
+        items: [
+            a({
+                href: 'https://fontawesome.com/icons',
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                item: 'Icons via Font Awesome Pro'
+            }),
+            tooltip({
+                content:
+                    'These glyphs come from Font Awesome Pro. Apps need their own Pro license to use them.',
+                placement: 'top',
+                item: Icon.info()
+            })
+        ]
+    });
 }
 
 function hint(content: ReactNode) {

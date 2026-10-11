@@ -8,7 +8,7 @@ import {AuthModel} from '../core/AuthModel';
 
 XH.renderApp({
     clientAppCode: 'favicons',
-    clientAppName: 'XH Favicons',
+    clientAppName: 'Hoist Favicon Designer',
     componentClass: AppComponent,
     modelClass: AppModel,
     containerClass: AppContainer,

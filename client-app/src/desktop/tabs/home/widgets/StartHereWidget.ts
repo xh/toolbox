@@ -28,7 +28,7 @@ const ITEMS: StartHereItem[] = [
     {
         icon: Icon.rocket(),
         title: 'Browse the example apps',
-        blurb: 'Complete mini-apps - portfolio, weather, contacts, a favicon generator, and more.',
+        blurb: 'Complete mini-apps - portfolio, weather, contacts, a favicon designer, and more.',
         onClick: () => XH.navigate('default.examples')
     },
     {

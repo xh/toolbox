@@ -1,8 +1,8 @@
 import {div, hbox, img, span} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
 import {startCase} from 'lodash';
+import {iconsIcon} from '../../../../core/Icons';
 import {FaviconModel} from '../../FaviconModel';
 import {PREFIX_LABELS} from '../../lib/FaviconSpec';
 
@@ -15,7 +15,7 @@ export const heroPreview = hoistCmp.factory({
         const {spec, svgDataUrl} = model;
         return panel({
             title: 'favicon.svg',
-            icon: Icon.magic(),
+            icon: iconsIcon(),
             compactHeader: true,
             className: 'tb-fav-hero',
             contentBoxProps: {alignItems: 'center', justifyContent: 'center'},

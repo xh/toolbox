@@ -1,4 +1,4 @@
-// Favicon Generator example app.
+// Favicon Designer example app.
 
 .tb-favicons {
   --tb-fav-check-a: #ffffff;
@@ -77,6 +77,14 @@
     padding-left: 6px;
     font-size: var(--xh-font-size-small-px);
     color: var(--xh-text-color-muted);
+
+    a {
+      color: inherit;
+
+      &:hover {
+        color: var(--xh-text-color);
+      }
+    }
   }
 }
 
