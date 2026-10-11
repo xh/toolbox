@@ -3,6 +3,7 @@ import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable} from '@xh/hoist/mobx';
 import {p, strong} from '@xh/hoist/cmp/layout';
+import {iconsIcon} from '../../../core/Icons';
 
 export class ExamplesTabModel extends HoistModel {
     @managed
@@ -109,6 +110,18 @@ export class ExamplesTabModel extends HoistModel {
                 p(
                     strong('This example is visible only to admins'),
                     ' to prevent arbitrary file uploads. Contact us for a walkthrough.'
+                )
+            ]
+        },
+        {
+            title: 'Favicon Designer',
+            icon: iconsIcon(),
+            path: 'favicons',
+            srcPath: 'favicons',
+            text: [
+                p('Mint a complete favicon set for your next Hoist app in seconds.'),
+                p(
+                    'Pick any Font Awesome Pro glyph, style it with colors, a backdrop shape and padding, preview it live in browser tabs and on a home screen, then download a zip ready to drop into client-app/public.'
                 )
             ]
         }
