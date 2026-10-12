@@ -1,27 +1,11 @@
-import type {ViewInfo, ViewManagerConfig} from '@xh/hoist/cmp/viewmanager';
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import type {ViewManagerStateButtonMode} from '@xh/hoist/desktop/cmp/viewmanager';
 import {action, bindable, computed, observableRef, runInAction} from '@xh/hoist/mobx';
 import {get, isEqual, isUndefined, trim} from 'lodash';
-import {fmtDemoConfig, raw} from '../../../common/Demo';
 import {PersistedModels} from './PersistedModels';
-
-/** The ViewManagerModel config options set from the rail, applied on rebuild. */
-export interface DemoModelConfig {
-    type: string;
-    instance: string;
-    typeDisplayName: string;
-    defaultDisplayName: string;
-    globalDisplayName: string;
-    initialViewName: string;
-    enableAutoSave: boolean;
-    enableDefault: boolean;
-    enableGlobal: boolean;
-    enableSharing: boolean;
-    manageGlobal: boolean;
-    preserveUnsavedChanges: boolean;
-}
+import type {DemoModelConfig} from './ViewManagerDemoConfig';
+import {createConfigSnippet, createModelConfig} from './ViewManagerDemoConfig';
 
 /**
  * The state of one persisted component within the current view. Read from the ViewManagerModel's
@@ -158,28 +142,7 @@ export class ViewManagerPanelModel extends HoistModel {
     @computed
     get configSnippet(): string {
         const {appliedConfig} = this;
-        if (!appliedConfig) return '';
-        const live = createModelConfig(appliedConfig),
-            nonDefault = <K extends keyof typeof FRAMEWORK_DEFAULTS>(key: K) =>
-                live[key] === FRAMEWORK_DEFAULTS[key] ? undefined : live[key];
-
-        const call = fmtDemoConfig<ViewManagerConfig>('ViewManagerModel.createAsync', {
-            type: live.type,
-            instance: nonDefault('instance'),
-            typeDisplayName: live.typeDisplayName,
-            defaultDisplayName: nonDefault('defaultDisplayName'),
-            globalDisplayName: nonDefault('globalDisplayName'),
-            initialViewSpec: live.initialViewSpec
-                ? raw(initialViewSpecCode(appliedConfig))
-                : undefined,
-            enableDefault: nonDefault('enableDefault'),
-            enableAutoSave: nonDefault('enableAutoSave'),
-            enableSharing: nonDefault('enableSharing'),
-            enableGlobal: nonDefault('enableGlobal'),
-            manageGlobal: appliedConfig.manageGlobal ? undefined : false,
-            preserveUnsavedChanges: nonDefault('preserveUnsavedChanges')
-        });
-        return `const viewManagerModel = await ${call};`;
+        return appliedConfig ? createConfigSnippet(appliedConfig) : '';
     }
 
     constructor() {
@@ -240,6 +203,7 @@ export class ViewManagerPanelModel extends HoistModel {
     @action
     rebuildPersistedModels() {
         const {viewManagerModel} = this;
+        if (!viewManagerModel) return;
         XH.safeDestroy(this.persistedModels);
         this.persistedModels = new PersistedModels(viewManagerModel, {
             shorthandDashState: this.shorthandDashState
@@ -258,55 +222,4 @@ export class ViewManagerPanelModel extends HoistModel {
         this.viewManagerModel = null;
         Object.assign(window, {testViewManagerModel: null});
     }
-}
-
-/** Framework defaults for the rail's config options. The snippet leaves these out. */
-const FRAMEWORK_DEFAULTS = {
-    instance: 'default',
-    defaultDisplayName: 'default',
-    globalDisplayName: 'global',
-    enableAutoSave: true,
-    enableDefault: true,
-    enableGlobal: true,
-    enableSharing: true,
-    preserveUnsavedChanges: true
-} as const;
-
-/** Build a `ViewManagerConfig` from the rail values. */
-function createModelConfig(config: DemoModelConfig): ViewManagerConfig {
-    return {
-        type: trim(config.type),
-        // A blank text option falls back to the framework default.
-        instance: trim(config.instance) || undefined,
-        typeDisplayName: trim(config.typeDisplayName) || undefined,
-        defaultDisplayName: trim(config.defaultDisplayName) || undefined,
-        globalDisplayName: trim(config.globalDisplayName) || undefined,
-        enableAutoSave: config.enableAutoSave,
-        enableDefault: config.enableDefault,
-        enableGlobal: config.enableGlobal,
-        enableSharing: config.enableSharing,
-        preserveUnsavedChanges: config.preserveUnsavedChanges,
-        // On defers to the server. The client config can only restrict it.
-        manageGlobal: config.manageGlobal ? undefined : false,
-        initialViewSpec: createInitialViewSpec(config)
-    };
-}
-
-/**
- * Pick the initial view by name. Required when the default view is off - otherwise the in-code
- * default is the fallback. Keep in step with `initialViewSpecCode` below, which shows this code.
- */
-function createInitialViewSpec(config: DemoModelConfig): (views: ViewInfo[]) => ViewInfo {
-    const name = trim(config.initialViewName),
-        {enableDefault} = config;
-    if (!name && enableDefault) return undefined;
-    return views => views.find(it => it.name === name) ?? (enableDefault ? null : views[0]);
-}
-
-function initialViewSpecCode(config: DemoModelConfig): string {
-    const name = trim(config.initialViewName),
-        fallback = config.enableDefault ? 'null' : 'views[0]';
-    if (!name) return `views => ${fallback}`;
-    const literal = `'${name.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
-    return `views => views.find(it => it.name === ${literal}) ?? ${fallback}`;
 }
