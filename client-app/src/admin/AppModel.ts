@@ -19,7 +19,6 @@ import {dataViewTestPanel} from './tests/dataview/DataViewTestPanel';
 import {gridScrolling} from './tests/gridScrolling/GridScrolling';
 import {storeColumnFilterPanel} from './tests/columnFilters/store/StoreColumnFilterPanel';
 import {viewColumnFilterPanel} from './tests/columnFilters/view/ViewColumnFilterPanel';
-import {viewManagerTestPanel} from './tests/viewmanager/ViewManagerTestPanel';
 
 export class AppModel extends HoistAdminAppModel {
     static instance: AppModel;
@@ -56,7 +55,6 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'select', path: '/select'},
                     {name: 'storeColumnFilters', path: '/storeColumnFilters'},
                     {name: 'viewColumnFilters', path: '/viewColumnFilters'},
-                    {name: 'viewManager', path: '/viewManager'},
                     {name: 'webSockets', path: '/webSockets'}
                 ]
             }
@@ -90,7 +88,6 @@ export class AppModel extends HoistAdminAppModel {
                         {id: 'select', content: SelectTestPanel},
                         {id: 'storeColumnFilters', content: storeColumnFilterPanel},
                         {id: 'viewColumnFilters', content: viewColumnFilterPanel},
-                        {id: 'viewManager', content: viewManagerTestPanel},
                         {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel}
                     ]
                 }

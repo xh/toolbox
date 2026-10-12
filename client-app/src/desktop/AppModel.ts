@@ -92,6 +92,7 @@ import {pinPadPanel} from './tabs/components/general/PinPadPanel';
 import {placeholderPanel} from './tabs/components/general/PlaceholderPanel';
 import {relativeTimestampPanel} from './tabs/components/general/relativetimestamp/RelativeTimestampPanel';
 import {simpleRoutingPanel} from './tabs/system/routing/SimpleRoutingPanel';
+import {viewManagerPanel} from './tabs/system/viewmanager/ViewManagerPanel';
 import {bannerPanel} from './tabs/layout/panels/BannerPanel';
 import {basicPanel} from './tabs/layout/panels/BasicPanel';
 import {loadingIndicatorPanel} from './tabs/layout/panels/LoadingIndicatorPanel';
@@ -355,7 +356,8 @@ export class AppModel extends BaseAppModel {
                                 path: '/simpleRouting',
                                 children: [{name: 'recordId', path: '/:recordId'}]
                             },
-                            {name: 'toast', path: '/toast'}
+                            {name: 'toast', path: '/toast'},
+                            {name: 'viewManager', path: '/viewManager'}
                         ]
                     },
                     {
@@ -653,7 +655,8 @@ export class AppModel extends BaseAppModel {
                                 id: 'updatesIdle',
                                 title: 'Updates & Idle',
                                 content: appNotificationsPanel
-                            }
+                            },
+                            {id: 'viewManager', title: 'ViewManager', content: viewManagerPanel}
                         ].map(it => ({...it, group: 'concepts'})),
                         ...[
                             {id: 'banners', content: bannersPanel},
