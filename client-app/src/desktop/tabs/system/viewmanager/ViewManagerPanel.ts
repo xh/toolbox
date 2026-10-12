@@ -39,6 +39,8 @@ import './ViewManagerPanel.scss';
  * - Timing: wait about 300ms after a change before reading badges - providers debounce their
  *   writes by 250ms. Wait more than 1s after a view loads before changing a dashboard, which
  *   ignores changes during its settle time.
+ * - The Type option shows only to HOIST_ADMIN users. Use Instance to keep a separate current view
+ *   without a separate library of views.
  * - Auto-save is a per-user setting, stored on the server. Check `autoSave` first - when it is on,
  *   badges return to Clean about 2s after an edit.
  */
@@ -171,9 +173,12 @@ const railOptions = hoistCmp.factory<ViewManagerPanelModel>({
                 info: 'Takes effect when you rebuild.',
                 items: [
                     wrapperOption({
+                        // Admins only, so views that visitors save all stay under the one demo type,
+                        // where they are easy to find and clean up.
+                        omit: !XH.getUser().isHoistAdmin,
                         label: 'Type',
                         propName: 'ViewManagerConfig.type',
-                        info: 'Saved views are stored under this type.',
+                        info: 'Saved views are stored under this type. Shown to admins only.',
                         control: textInput({bind: 'type', width: 150})
                     }),
                     wrapperOption({
