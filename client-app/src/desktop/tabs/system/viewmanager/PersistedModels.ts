@@ -353,7 +353,10 @@ class GridWidgetModel extends WidgetModel {
     override onLinked() {
         super.onLinked();
         this.gridModel = new SampleGridModel({gridConfig: {persistWith: this.persistWith}});
-        this.gridModel.loadAsync();
+    }
+
+    override async doLoadAsync(loadSpec: LoadSpec) {
+        await this.gridModel.loadAsync(loadSpec);
     }
 }
 
@@ -372,7 +375,10 @@ class ColumnGroupsGridWidgetModel extends WidgetModel {
         this.columnGroupsGridModel = new SampleColumnGroupsGridModel({
             gridConfig: {persistWith: this.persistWith}
         });
-        this.columnGroupsGridModel.loadAsync();
+    }
+
+    override async doLoadAsync(loadSpec: LoadSpec) {
+        await this.columnGroupsGridModel.loadAsync(loadSpec);
     }
 }
 

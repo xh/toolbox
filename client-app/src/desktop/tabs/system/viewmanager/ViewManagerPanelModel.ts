@@ -192,7 +192,8 @@ export class ViewManagerPanelModel extends HoistModel {
             Object.assign(window, {testViewManagerModel: viewManagerModel});
             this.rebuildPersistedModels();
         } catch (e) {
-            XH.handleException(e);
+            // A stale build's failure is moot - a later build or unmount has replaced it.
+            if (buildId === this.buildId && !this.isDestroyed) XH.handleException(e);
         }
     }
 

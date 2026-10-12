@@ -30,9 +30,12 @@ import './ViewManagerPanel.scss';
  * - `window.testViewManagerModel` holds the live model. It is null while a rebuild is in progress.
  * - Read state from the model rather than the DOM where you can. The JSON panes use CodeMirror,
  *   which renders only the visible lines.
- * - testIds: `vm-playground`, `vm-rebuild`, `vm-rebuild-components`, `vm-card-{path}` with its
- *   `-default`, `-dirty` and `-focus` children, and `vm-view-summary-{key}` and `vm-view-dirty` in
- *   the View State panel. ViewManager menus and dialogs render in portals, outside `vm-playground`.
+ * - testIds:
+ *   - Demo: `vm-playground`, and `vm-card-{path}` with its `-default`, `-dirty` and `-focus`
+ *     children. ViewManager menus and dialogs render in portals, outside `vm-playground`.
+ *   - Rail: `vm-rebuild` and `vm-rebuild-components`.
+ *   - View State panel: `vm-view-state`, `vm-view-state-clear-focus`, `vm-view-summary` with a
+ *     `vm-view-summary-{key}` per value, `vm-saved-value`, `vm-pending-value`, and `vm-view-dirty`.
  * - Timing: wait about 300ms after a change before reading badges - providers debounce their
  *   writes by 250ms. Wait more than 1s after a view loads before changing a dashboard, which
  *   ignores changes during its settle time.

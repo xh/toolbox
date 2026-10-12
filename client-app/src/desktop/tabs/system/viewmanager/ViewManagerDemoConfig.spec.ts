@@ -1,3 +1,5 @@
+// Protects the rail-to-config mapping behind the ViewManager demo, and keeps the Playground's
+// config snippet in step with the config the live model is built with.
 import type {ViewInfo} from '@xh/hoist/cmp/viewmanager';
 import {describe, expect, it} from 'vitest';
 import type {DemoModelConfig} from './ViewManagerDemoConfig';

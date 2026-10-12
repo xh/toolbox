@@ -55,7 +55,7 @@ export function createConfigSnippet(config: DemoModelConfig): string {
         enableAutoSave: nonDefault('enableAutoSave'),
         enableSharing: nonDefault('enableSharing'),
         enableGlobal: nonDefault('enableGlobal'),
-        manageGlobal: config.manageGlobal ? undefined : false,
+        manageGlobal: live.manageGlobal === false ? false : undefined,
         preserveUnsavedChanges: nonDefault('preserveUnsavedChanges')
     });
     return `const viewManagerModel = await ${call};`;
