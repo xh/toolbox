@@ -20,12 +20,12 @@ import classNames from 'classnames';
 import type {ReactElement, ReactNode} from 'react';
 import {sampleColumnGroupsGrid} from '../../../common/grid/SampleColumnGroupsGrid';
 import {sampleGrid} from '../../../common/grid/SampleGrid';
-import {demoGrid} from '../../../common/Demo';
+import {demoGallery} from '../../../common/Demo';
 import {ViewManagerPanelModel} from './ViewManagerPanelModel';
 
 /**
- * The inventory of persisted components - one card per persist path. Small components sit two to
- * a row. Grids and dashboards take the full width.
+ * The inventory of persisted components - one card per persist path. Small components fill as many
+ * columns as fit, down to one. Grids and dashboards take the full width.
  */
 export const persistedComponents = hoistCmp.factory({
     model: uses(ViewManagerPanelModel),
@@ -37,8 +37,8 @@ export const persistedComponents = hoistCmp.factory({
         return vbox({
             className: 'tb-vm-inventory',
             items: [
-                demoGrid({
-                    columns: 2,
+                demoGallery({
+                    minTileWidth: 320,
                     items: [
                         persistedCard({
                             path: 'notes',
@@ -210,7 +210,9 @@ export const persistedComponents = hoistCmp.factory({
                     path: 'dashContainer',
                     title: 'DashContainer',
                     icon: Icon.layout(),
-                    info: 'Persists the layout and each widget. Its shorthand initialState marks the Default view dirty - a known hoist-react issue.',
+                    info: pm.shorthandDashState
+                        ? 'Persists the layout and each widget. Shorthand initial state is on, so the Default view may load dirty - a known hoist-react issue.'
+                        : 'Persists the layout and each widget.',
                     height: 480,
                     item: dashContainer({model: pm.dashContainerModel})
                 })
@@ -256,32 +258,37 @@ const persistedCard = hoistCmp.factory<PersistedCardProps>({
                 'tb-vm-card--focused': isFocused
             }),
             items: [
+                // Wraps when narrow, keeping the badges and button right-aligned.
                 hbox({
                     className: 'tb-vm-card__header',
                     items: [
                         icon,
                         span({className: 'tb-vm-card__title', item: title}),
-                        code({className: 'tb-vm-card__path', item: path}),
-                        filler(),
-                        badge({
-                            testId: `${testId}-default`,
-                            intent: isCustom ? 'warning' : 'primary',
-                            item: isCustom ? 'Custom' : 'Default'
-                        }),
-                        badge({
-                            testId: `${testId}-dirty`,
-                            intent: isDirty ? 'danger' : 'success',
-                            item: isDirty ? 'Dirty' : 'Clean'
-                        }),
-                        button({
-                            testId: `${testId}-focus`,
-                            icon: Icon.target(),
-                            intent: isFocused ? 'primary' : null,
-                            minimal: !isFocused,
-                            title: isFocused
-                                ? 'Show the whole view'
-                                : 'Show only this component in the View State panel',
-                            onClick: () => model.toggleFocus(path)
+                        code({className: 'tb-vm-path-chip', item: path}),
+                        hbox({
+                            className: 'tb-vm-card__state',
+                            items: [
+                                badge({
+                                    testId: `${testId}-default`,
+                                    intent: isCustom ? 'warning' : 'primary',
+                                    item: isCustom ? 'Custom' : 'Default'
+                                }),
+                                badge({
+                                    testId: `${testId}-dirty`,
+                                    intent: isDirty ? 'danger' : 'success',
+                                    item: isDirty ? 'Dirty' : 'Clean'
+                                }),
+                                button({
+                                    testId: `${testId}-focus`,
+                                    icon: Icon.target(),
+                                    intent: isFocused ? 'primary' : null,
+                                    minimal: !isFocused,
+                                    title: isFocused
+                                        ? 'Show the whole view'
+                                        : 'Show only this component in the View State panel',
+                                    onClick: () => model.toggleFocus(path)
+                                })
+                            ]
                         })
                     ]
                 }),

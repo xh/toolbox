@@ -1,9 +1,18 @@
-// ViewManager demo - persisted component cards and the View State panel. Tokens only.
+// ViewManager demo - persisted component cards and the View State panel. Colors, spacing and type
+// come from Hoist tokens, apart from a few small fixed sizes on the chips and summary rows.
 
-.tb-vm-inventory {
-  gap: var(--xh-pad-double-px);
+// A monospace persist path, in the card headers and the View State panel header.
+.tb-vm-path-chip {
+  padding: 1px 6px;
+  border-radius: var(--xh-border-radius-px);
+  background: var(--xh-bg-alt);
+  color: var(--xh-text-color-muted);
+  font-family: var(--xh-font-family-mono);
+  font-size: var(--xh-font-size-small-px);
 }
 
+// The --custom and --dirty modifiers carry no styles. They are hooks for test automation, which
+// can read a card's state from its classes as well as from its badges.
 .tb-vm-card {
   flex: none;
   min-width: 0;
@@ -16,11 +25,16 @@
   }
 
   &__header {
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--xh-pad-half-px);
     padding: var(--xh-pad-half-px) var(--xh-pad-half-px) var(--xh-pad-half-px) var(--xh-pad-px);
     background: var(--xh-bg-alt);
     border-bottom: 1px solid var(--xh-border-color);
+
+    .tb-vm-path-chip {
+      background: var(--xh-bg);
+    }
   }
 
   &__title {
@@ -28,13 +42,11 @@
     white-space: nowrap;
   }
 
-  &__path {
-    padding: 1px 6px;
-    border-radius: var(--xh-border-radius-px);
-    background: var(--xh-bg);
-    color: var(--xh-text-color-muted);
-    font-family: var(--xh-font-family-mono);
-    font-size: var(--xh-font-size-small-px);
+  &__state {
+    flex: none;
+    align-items: center;
+    gap: var(--xh-pad-half-px);
+    margin-left: auto;
   }
 
   &__info {
@@ -43,9 +55,12 @@
     font-size: var(--xh-font-size-small-px);
   }
 
+  // Inline-size containment stops wide content - grid toolbars, dashboards - from setting the
+  // page's minimum width. That content scrolls or clips within the card instead.
   &__body {
     min-width: 0;
     padding: var(--xh-pad-px);
+    contain: inline-size;
   }
 
   &__panels {
@@ -53,11 +68,34 @@
   }
 }
 
-.tb-vm-state__path {
-  padding: 1px 6px;
-  border-radius: var(--xh-border-radius-px);
-  background: var(--xh-bg-alt);
-  color: var(--xh-text-color-muted);
-  font-family: var(--xh-font-family-mono);
-  font-size: var(--xh-font-size-small-px);
+.tb-vm-state {
+  &__summary {
+    flex: 1;
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: 2px var(--xh-pad-px);
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+    border-bottom: 1px solid var(--xh-border-color);
+    font-size: var(--xh-font-size-small-px);
+  }
+
+  &__key {
+    color: var(--xh-text-color-muted);
+  }
+
+  &__value {
+    min-width: 0;
+    font-family: var(--xh-font-family-mono);
+    overflow-wrap: anywhere;
+
+    &--true {
+      color: var(--xh-intent-primary-text-color);
+    }
+  }
+
+  &__empty {
+    padding: var(--xh-pad-px);
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+  }
 }

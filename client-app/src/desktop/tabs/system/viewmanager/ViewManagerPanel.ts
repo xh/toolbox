@@ -1,5 +1,4 @@
-import type {ViewManagerConfig} from '@xh/hoist/cmp/viewmanager';
-import {box, filler, hframe, placeholder} from '@xh/hoist/cmp/layout';
+import {box, filler, fragment, hframe, placeholder} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
@@ -25,6 +24,21 @@ import {ViewManagerPanelModel} from './ViewManagerPanelModel';
 import {viewStatePanel} from './ViewStatePanel';
 import './ViewManagerPanel.scss';
 
+/**
+ * ViewManager demo - also a harness for agents and tests that exercise ViewManager.
+ *
+ * - `window.testViewManagerModel` holds the live model. It is null while a rebuild is in progress.
+ * - Read state from the model rather than the DOM where you can. The JSON panes use CodeMirror,
+ *   which renders only the visible lines.
+ * - testIds: `vm-playground`, `vm-rebuild`, `vm-rebuild-components`, `vm-card-{path}` with its
+ *   `-default`, `-dirty` and `-focus` children, and `vm-view-summary-{key}` and `vm-view-dirty` in
+ *   the View State panel. ViewManager menus and dialogs render in portals, outside `vm-playground`.
+ * - Timing: wait about 300ms after a change before reading badges - providers debounce their
+ *   writes by 250ms. Wait more than 1s after a view loads before changing a dashboard, which
+ *   ignores changes during its settle time.
+ * - Auto-save is a per-user setting, stored on the server. Check `autoSave` first - when it is on,
+ *   badges return to Clean about 2s after an edit.
+ */
 export const viewManagerPanel = hoistCmp.factory({
     displayName: 'ViewManagerPanel',
     model: creates(ViewManagerPanelModel),
@@ -35,8 +49,8 @@ export const viewManagerPanel = hoistCmp.factory({
             icon: Icon.bookmark(),
             description: [
                 'A **view** is a named bundle of component state. Bind a model to a',
-                '`ViewManagerModel` with `persistWith: {viewManagerModel}`, and its state becomes',
-                'part of every view.',
+                '`ViewManagerModel` with `persistWith: {viewManagerModel}`, and each view saves its',
+                'state.',
                 '',
                 'Views are private, shared with other users, or global for everyone. The',
                 "**Default** view restores each component's in-code state. Users can turn on",
@@ -71,6 +85,10 @@ export const viewManagerPanel = hoistCmp.factory({
                 {
                     url: '$HR/desktop/cmp/viewmanager/ViewManager.ts',
                     notes: 'Hoist component - the menu and its save and revert buttons.'
+                },
+                {
+                    url: '$TB/client-app/src/examples/portfolio/viewManagers.ts',
+                    notes: 'How an app creates its models at startup, in the Portfolio example.'
                 }
             ],
             options: railOptions({model}),
@@ -93,7 +111,7 @@ export const viewManagerPanel = hoistCmp.factory({
                                       toolbarSection(),
                                       demoSection({
                                           title: 'Persisted Components',
-                                          note: 'All bound to the one model. Badges show each one in the current view.',
+                                          note: "Badges show each component's state in the current view.",
                                           item: persistedComponents()
                                       })
                                   ]
@@ -115,8 +133,8 @@ export const viewManagerPanel = hoistCmp.factory({
 //------------------------------------------------------------------
 const railOptions = hoistCmp.factory<ViewManagerPanelModel>({
     render({model}) {
-        const {isConfigPending, isConfigValid} = model;
-        return [
+        const {isConfigPending, isConfigValid, isHarnessPending, isRebuilding} = model;
+        return fragment(
             wrapperOptionGroup({
                 label: 'Playground only - props',
                 icon: Icon.experiment(),
@@ -146,8 +164,8 @@ const railOptions = hoistCmp.factory<ViewManagerPanelModel>({
                 ]
             }),
             wrapperOptionGroup({
-                label: 'ViewManagerModel config',
-                info: 'Applies to every instance on the page. Takes effect when you rebuild.',
+                label: 'All instances - model config',
+                info: 'Takes effect when you rebuild.',
                 items: [
                     wrapperOption({
                         label: 'Type',
@@ -209,13 +227,13 @@ const railOptions = hoistCmp.factory<ViewManagerPanelModel>({
                     wrapperOption({
                         label: 'Manage global',
                         propName: 'ViewManagerConfig.manageGlobal',
-                        info: 'The server decides who may manage global views. Off restricts it on this model. On defers to the server.',
+                        info: "Off blocks global view management. On defers to the server's roles.",
                         control: switchInput({bind: 'manageGlobal'})
                     }),
                     wrapperOption({
                         label: 'Keep unsaved',
                         propName: 'ViewManagerConfig.preserveUnsavedChanges',
-                        info: 'Keeps unsaved changes in session storage across a browser refresh.',
+                        info: 'Keeps pending changes in session storage. Rebuilds and reloads restore them - use Revert to clear them.',
                         control: switchInput({bind: 'preserveUnsavedChanges'})
                     })
                 ]
@@ -225,11 +243,31 @@ const railOptions = hoistCmp.factory<ViewManagerPanelModel>({
                 icon: isConfigPending ? Icon.warning() : Icon.refresh(),
                 text: isConfigPending ? 'Rebuild to apply changes' : 'Rebuild ViewManagerModel',
                 intent: 'primary',
-                disabled: !isConfigValid,
+                disabled: !isConfigValid || isRebuilding,
                 title: 'Destroy and recreate the ViewManagerModel and every model bound to it.',
                 onClick: () => model.rebuildAsync()
+            }),
+            wrapperOptionGroup({
+                label: 'Test harness',
+                info: 'For agents and tests exercising ViewManager.',
+                items: [
+                    wrapperOption({
+                        label: 'Shorthand dash state',
+                        propName: 'DashContainerConfig.initialState',
+                        info: 'Gives the DashContainer shorthand initial state, which can load the Default view dirty. Takes effect on either rebuild.',
+                        control: switchInput({bind: 'shorthandDashState'})
+                    })
+                ]
+            }),
+            wrapperAction({
+                testId: 'vm-rebuild-components',
+                icon: isHarnessPending ? Icon.warning() : Icon.refresh(),
+                text: isHarnessPending ? 'Rebuild components to apply' : 'Rebuild components',
+                disabled: !model.viewManagerModel || isRebuilding,
+                title: 'Destroy and recreate the bound models only, against the same ViewManagerModel.',
+                onClick: () => model.rebuildPersistedModels()
             })
-        ];
+        );
     }
 });
 
@@ -249,10 +287,12 @@ const playgroundSection = hoistCmp.factory<ViewManagerPanelModel>({
             title: 'Playground',
             intent: 'primary',
             item: demoPlayground({
-                instanceWidth: 300,
+                instanceWidth: 200,
+                // The current view's state shows at the top of the View State panel instead.
+                showValue: false,
                 caption: 'Open the menu to save, manage, and switch views.',
                 config: [
-                    modelSnippet(model),
+                    model.configSnippet,
                     fmtDemoConfig<ViewManagerProps>('viewManager', {
                         model: raw('viewManagerModel'),
                         showSaveButton: showSaveButton === 'whenDirty' ? undefined : showSaveButton,
@@ -261,7 +301,6 @@ const playgroundSection = hoistCmp.factory<ViewManagerPanelModel>({
                         buttonSide: buttonSide === 'right' ? undefined : buttonSide
                     })
                 ].join('\n\n'),
-                value: model.viewSummary,
                 item: box({
                     testId: 'vm-playground',
                     item: viewManager({
@@ -275,31 +314,6 @@ const playgroundSection = hoistCmp.factory<ViewManagerPanelModel>({
         });
     }
 });
-
-/** The `createAsync` call that built the live model - framework defaults are left out. */
-function modelSnippet(model: ViewManagerPanelModel): string {
-    const c = model.appliedConfig,
-        initialViewSpec = c.initialViewName
-            ? raw(`views => views.find(it => it.name === '${c.initialViewName}')`)
-            : !c.enableDefault
-              ? raw('views => views[0]')
-              : undefined;
-    const call = fmtDemoConfig<ViewManagerConfig>('ViewManagerModel.createAsync', {
-        type: c.type,
-        instance: c.instance || undefined,
-        typeDisplayName: c.typeDisplayName || undefined,
-        defaultDisplayName: c.defaultDisplayName === 'default' ? undefined : c.defaultDisplayName,
-        globalDisplayName: c.globalDisplayName === 'global' ? undefined : c.globalDisplayName,
-        initialViewSpec,
-        enableDefault: c.enableDefault ? undefined : false,
-        enableAutoSave: c.enableAutoSave ? undefined : false,
-        enableSharing: c.enableSharing ? undefined : false,
-        enableGlobal: c.enableGlobal ? undefined : false,
-        manageGlobal: c.manageGlobal ? undefined : false,
-        preserveUnsavedChanges: c.preserveUnsavedChanges ? undefined : false
-    });
-    return `const viewManagerModel = await ${call};`;
-}
 
 const variantsSection = hoistCmp.factory<ViewManagerPanelModel>({
     render({model}) {

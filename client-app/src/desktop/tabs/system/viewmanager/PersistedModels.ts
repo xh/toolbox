@@ -9,7 +9,11 @@ import type {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import type {LoadSpec, PersistOptions} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, lookup, managed, persist, XH} from '@xh/hoist/core';
-import type {DashCanvasViewSpec, DashContainerViewSpec} from '@xh/hoist/desktop/cmp/dash';
+import type {
+    DashCanvasViewSpec,
+    DashContainerViewSpec,
+    DashContainerViewState
+} from '@xh/hoist/desktop/cmp/dash';
 import {DashCanvasModel, DashContainerModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
@@ -51,13 +55,22 @@ export class PersistedModels extends HoistModel {
     @managed dashCanvasModel: DashCanvasModel;
     @managed dashContainerModel: DashContainerModel;
 
-    constructor(viewManagerModel: ViewManagerModel) {
+    /** True if the DashContainer was given shorthand initial state - see the test harness. */
+    readonly shorthandDashState: boolean;
+
+    constructor(viewManagerModel: ViewManagerModel, {shorthandDashState = false} = {}) {
         super();
-        const persistWith = {viewManagerModel};
+        const persistWith = {viewManagerModel},
+            {type, instance} = viewManagerModel;
+        this.shorthandDashState = shorthandDashState;
 
         this.propsModel = new PersistedPropsModel(persistWith);
         this.groupingChooserModel = createGroupingChooserModel(persistWith);
-        this.filterChooserModel = createFilterChooserModel(persistWith);
+        this.filterChooserModel = createFilterChooserModel(
+            persistWith,
+            // Favorites are not part of a view. Keep a separate list for each type and instance.
+            `toolboxViewManagerFilterFavorites.${type}.${instance}`
+        );
         this.dateRangePickerModel = new DateRangePickerModel({persistWith});
 
         this.tabContainerModel = new TabContainerModel({
@@ -131,30 +144,7 @@ export class PersistedModels extends HoistModel {
             persistWith,
             showMenuButton: true,
             viewSpecs: dashContainerViewSpecs,
-            // Shorthand state, as an app might write it. GoldenLayout normalizes it on render, which
-            // currently marks the view dirty - a known hoist-react issue, left visible here.
-            initialState: [
-                {
-                    type: 'row',
-                    content: [
-                        {
-                            type: 'column',
-                            width: 40,
-                            content: [
-                                {type: 'view', id: 'groupingChooser'},
-                                {type: 'view', id: 'filterChooser'}
-                            ]
-                        },
-                        {
-                            type: 'stack',
-                            content: [
-                                {type: 'view', id: 'grid'},
-                                {type: 'view', id: 'columnGroupsGrid'}
-                            ]
-                        }
-                    ]
-                }
-            ]
+            initialState: shorthandDashState ? SHORTHAND_DASH_STATE : NORMALIZED_DASH_STATE
         });
     }
 
@@ -169,6 +159,93 @@ export class PersistedModels extends HoistModel {
         ]);
     }
 }
+
+//------------------------------------------------------------------
+// DashContainer initial state
+//------------------------------------------------------------------
+/** `DashContainerViewState`, plus the fields GoldenLayout adds when it fills in a layout. */
+type FullDashState = DashContainerViewState & {
+    allowRemove?: boolean;
+    activeItemIndex?: number;
+    viewModelId?: string;
+    content?: FullDashState[];
+};
+
+/**
+ * The layout in the full form GoldenLayout produces once it renders. It matches the state the
+ * DashContainer publishes, so the Default view loads clean.
+ */
+const NORMALIZED_DASH_STATE: FullDashState[] = [
+    {
+        type: 'row',
+        allowRemove: true,
+        content: [
+            {
+                type: 'column',
+                allowRemove: true,
+                width: 40,
+                content: [
+                    {
+                        type: 'stack',
+                        allowRemove: true,
+                        height: 50,
+                        activeItemIndex: 0,
+                        content: [
+                            {type: 'view', viewModelId: 'groupingChooser_0', id: 'groupingChooser'}
+                        ]
+                    },
+                    {
+                        type: 'stack',
+                        allowRemove: true,
+                        height: 50,
+                        activeItemIndex: 0,
+                        content: [
+                            {type: 'view', viewModelId: 'filterChooser_0', id: 'filterChooser'}
+                        ]
+                    }
+                ]
+            },
+            {
+                type: 'stack',
+                allowRemove: true,
+                width: 60,
+                activeItemIndex: 0,
+                content: [
+                    {type: 'view', viewModelId: 'grid_0', id: 'grid'},
+                    {type: 'view', viewModelId: 'columnGroupsGrid_0', id: 'columnGroupsGrid'}
+                ]
+            }
+        ]
+    }
+];
+
+/**
+ * The same layout in the shorthand an app might write. GoldenLayout fills it in when it renders,
+ * and the filled-in state no longer matches the captured default. Whether the view then goes
+ * dirty depends on render timing - a known hoist-react issue, reachable from the test harness.
+ */
+const SHORTHAND_DASH_STATE: DashContainerViewState[] = [
+    {
+        type: 'row',
+        content: [
+            {
+                type: 'column',
+                width: 40,
+                content: [
+                    {type: 'view', id: 'groupingChooser'},
+                    {type: 'view', id: 'filterChooser'}
+                ]
+            },
+            {
+                type: 'stack',
+                content: [
+                    {type: 'view', id: 'grid'},
+                    {type: 'view', id: 'columnGroupsGrid'}
+                ]
+            }
+        ]
+    }
+];
 
 //------------------------------------------------------------------
 // Persisted model properties
@@ -188,7 +265,7 @@ class PersistWithModel extends HoistModel {
 }
 
 /** Plain model properties, persisted with `markPersist()` and with the `@persist` decorator. */
-export class PersistedPropsModel extends PersistWithModel {
+class PersistedPropsModel extends PersistWithModel {
     @bindable accessor notes = 'Some default notes';
     @bindable @persist accessor priority = 'Medium';
 
@@ -209,11 +286,12 @@ function createGroupingChooserModel(persistWith: PersistOptions) {
     });
 }
 
-function createFilterChooserModel(persistWith: PersistOptions) {
+/** Favorites are offered only when `favoritesKey` is set. */
+function createFilterChooserModel(persistWith: PersistOptions, favoritesKey?: string) {
     return new FilterChooserModel({
         persistWith: {
             persistValue: persistWith,
-            persistFavorites: {localStorageKey: 'toolboxViewManagerFilterFavorites'}
+            persistFavorites: favoritesKey ? {localStorageKey: favoritesKey} : false
         },
         fieldSpecs: [
             {field: 'color', values: ['green', 'blue', 'red']},
