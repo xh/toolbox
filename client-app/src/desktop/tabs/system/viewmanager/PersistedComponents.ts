@@ -258,7 +258,7 @@ const persistedCard = hoistCmp.factory<PersistedCardProps>({
                 'tb-vm-card--focused': isFocused
             }),
             items: [
-                // Title row, then the badges and focus button on a second row, right-aligned.
+                // Wraps when narrow, keeping the badges and button right-aligned.
                 hbox({
                     className: 'tb-vm-card__header',
                     items: [

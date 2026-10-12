@@ -42,12 +42,11 @@
     white-space: nowrap;
   }
 
-  // Always a second row, so every card's header lines up the same way.
   &__state {
-    flex: 1 0 100%;
-    justify-content: flex-end;
+    flex: none;
     align-items: center;
     gap: var(--xh-pad-half-px);
+    margin-left: auto;
   }
 
   &__info {
