@@ -14,6 +14,20 @@
     "target": "ES2022",
     "useDefineForClassFields": true,
 
+    // Linked @xh/hoist-chat-kit - resolve the kit's imports against this app's copies, not the
+    // kit's own node_modules, so there is one set of Hoist and React types. For inline hoist-react
+    // type-checking, point the `@xh/hoist/*` entry here at "../../hoist-react/*" instead of
+    // uncommenting the block below. See src/examples/weatherv2/README.md.
+    "paths": {
+      "@xh/hoist/*": ["./node_modules/@xh/hoist/*"],
+      "lodash": ["./node_modules/@types/lodash"],
+      "lodash/*": ["./node_modules/@types/lodash/*"],
+      "react": ["./node_modules/@types/react"],
+      "react/*": ["./node_modules/@types/react/*"],
+      "react-dom": ["./node_modules/@types/react-dom"],
+      "react-dom/*": ["./node_modules/@types/react-dom/*"]
+    },
+
     // Inline hoist-react development - commented out by default (see docs/running-locally.md).
     //
     // Left off, `tsc` resolves `@xh/hoist` against the installed published version in
