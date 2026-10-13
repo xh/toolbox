@@ -1,5 +1,7 @@
 # Welcome to Toolbox
 
+[![Unit Tests](https://github.com/xh/toolbox/actions/workflows/unit-tests.yml/badge.svg?branch=develop)](https://github.com/xh/toolbox/actions/workflows/unit-tests.yml?query=branch%3Adevelop)
+
 Toolbox is an application designed to showcase Hoist, Extremely Heavy's full-stack UI toolkit.
 
 Toolbox consists of both a desktop and mobile app with examples of all Hoist Components, their

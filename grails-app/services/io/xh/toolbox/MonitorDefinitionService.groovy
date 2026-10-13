@@ -17,6 +17,8 @@ import java.time.Instant
 
 import static io.xh.hoist.monitor.MonitorStatus.*
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
+import static io.xh.hoist.util.Utils.isLocalDevelopment
+import static io.xh.hoist.util.Utils.isProduction
 import static java.lang.System.currentTimeMillis
 
 class MonitorDefinitionService extends DefaultMonitorDefinitionService {
@@ -33,6 +35,17 @@ class MonitorDefinitionService extends DefaultMonitorDefinitionService {
         super.init()
 
         ensureRequiredMonitorsCreated([
+
+            // Cluster
+            new MonitorSpec(
+                code         : 'clusterMemberCount',
+                name         : 'Cluster: Member Count',
+                metricType   : Floor,
+                metricUnit   : 'instances',
+                failThreshold: isProduction ? 1 : 3,
+                active       : true,
+                notes        : 'Reports the member count of the cluster each instance has joined. Set failThreshold to the ECS desired count for this environment. A count below it means tasks are down or have failed to cluster.'
+            ),
 
             // Portfolio
             new MonitorSpec(
@@ -109,6 +122,21 @@ class MonitorDefinitionService extends DefaultMonitorDefinitionService {
         ])
     }
 
+
+    /**
+     * Report the member count of the cluster this instance has joined. Runs on every instance, so
+     * a task that fails to cluster reports its own cluster of 1.
+     */
+    def clusterMemberCount(MonitorResult result) {
+        if (isLocalDevelopment) {
+            result.status = INACTIVE
+            result.message = 'Not checked in local development.'
+            return
+        }
+
+        result.metric = clusterService.members.size()
+        result.message = "Primary is '${clusterService.primaryName}'."
+    }
 
     /** Always fail attempting to divide by zero, to demonstrate built-in exception handling. */
     def divideByZeroMonitor(MonitorResult result) {
