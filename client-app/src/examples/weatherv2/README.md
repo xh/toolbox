@@ -15,12 +15,11 @@ unchanged; both share the same server-side weather endpoints.
 - **Inter-widget wiring** — Widgets declare typed inputs and outputs. A `WiringModel` coordinates
   reactive data flow via MobX observables. A city chooser publishes `selectedCity`; display widgets
   bind to it and update automatically.
-- **LLM generation pipeline** — User describes a dashboard in natural language → system prompt with
-  widget schemas + spec format → LLM produces JSON spec → validation pipeline checks it → valid
-  specs hydrate into a live dashboard.
-- **LLM tool use** — The LLM has access to callable tools (via Anthropic's function calling API)
-  for app operations: saving/loading views, toggling theme, opening panels. Tools execute
-  client-side; the server passes tool definitions through to the Anthropic API.
+- **Dashboard Agent** — A chat with Claude, built on `@xh/hoist-chat-kit`. The user describes a
+  dashboard in natural language. The model reads the widget catalog, spec format and current
+  dashboard from its system prompt, then calls tools that validate and apply spec changes.
+- **Client-side tools** — Every tool runs in the browser: dashboard edits, saving and switching
+  views, theme, panels. The server only relays the model's stream.
 
 ## Directory Structure
 
@@ -40,12 +39,12 @@ weatherv2/
 │   ├── unitUtils.ts                — Temperature/wind unit conversion helpers
 │   └── exampleSpecs.ts             — Curated example dashboard specs
 ├── svc/
-│   ├── LlmChatService.ts                — System prompt builder + LLM API client (HoistService)
-│   ├── LlmToolService.ts                — LLM tool definitions + execution (HoistService)
+│   ├── LlmChatService.ts                — Dashboard Agent system prompt builder (HoistService)
+│   ├── LlmToolService.ts                — Dashboard Agent tools, as chat kit `ChatToolSpec`s (HoistService)
 │   └── WeatherDataService.ts            — Per-city weather data caching (HoistService)
 ├── harness/
 │   ├── JsonHarnessModel.ts/Panel.ts    — JSON editor: view/edit/validate/apply specs
-│   └── ChatHarnessModel.ts/Panel.ts    — LLM chat: natural language → dashboard
+│   └── DashboardAgentModel.ts/Panel.ts — Dashboard Agent chat, built on the chat kit
 ├── widgets/
 │   ├── viewSpecs.ts                    — Widget catalog + default layout passed to the dash model
 │   ├── BaseWeatherWidgetModel.ts       — Base class: resolveInput/publishOutput/persistence
@@ -65,9 +64,9 @@ weatherv2/
 ### Server-side
 
 - `grails-app/controllers/io/xh/toolbox/llm/LlmController.groovy` — POST `/llm/generate` returns
-  one Anthropic response. POST `/llm/stream` takes an Anthropic Messages body
-  (`{system?, messages, tools?, ...}`) and returns NDJSON: one Anthropic stream event per line,
-  flushed as each arrives. The server sets `model`, `max_tokens` and `stream`. Errors before the
+  one Anthropic response, and no longer has a client caller. POST `/llm/stream` takes an Anthropic
+  Messages body (`{system?, messages, tools?, ...}`) and returns NDJSON: one Anthropic stream
+  event per line, flushed as each arrives. The server sets `model`, `max_tokens` and `stream`. Errors before the
   first line render as normal Hoist errors. A mid-stream failure ends the stream with an unparseable
   line, as hoist-core's `renderNDJSON` does, so `XH.fetchNdjson` rejects it. If the client
   disconnects, the server aborts the upstream request.
@@ -75,6 +74,28 @@ weatherv2/
   per-user rate limiting, config-driven (API key, model, max tokens, rate limit). Its `llm*`
   configs are created with defaults by `BootStrap`.
 - Weather endpoints are shared with V1 via `WeatherController`/`WeatherService` (OpenWeatherMap)
+
+### Dashboard Agent
+
+The agent's chat UI and run loop come from `@xh/hoist-chat-kit`. The app supplies the prompt,
+the tools and the wiring.
+
+- `DashboardAgentModel` owns a kit `ChatModel`. Its transport is a `HoistChatTransport` that
+  posts to `llm/stream`, with an `AnthropicCodec`. The codec builds the Anthropic request and
+  decodes the relayed stream, so the server translates nothing.
+- The codec calls `LlmChatService.buildSystemPrompt` before every model call, so the model sees
+  the live dashboard, including changes its own tools made earlier in the turn. The static
+  instructions come first, marked for prompt caching. `cacheControl` caches the tools too.
+- `LlmToolService.tools` declares each tool once: name, description and JSON Schema for the
+  model, title, icon and summary for its card in the chat, and an `execute` function. A thrown
+  error goes back to the model, which can correct itself. `reset_dashboard` asks the user to
+  approve it first, as it discards unsaved changes.
+- The `ChatModel` runs the tool loop, streams replies and handles stop, retry, regenerate and
+  edit. `onTurnComplete` shows one "Dashboard updated." toast per turn that changed the
+  dashboard.
+- `DashboardAgentPanel` renders the kit's `chatPanel` with the app's title, clear button, empty
+  state and suggestions. `AppModel` owns the agent, so the conversation survives hiding the
+  panel.
 
 ### Chat kit (`@xh/hoist-chat-kit`)
 
@@ -158,7 +179,8 @@ Things that matter when working on this code:
 
 6. **LLM proxy requires config.** The Grails `LlmService` reads `llmApiKey`, `llmModel`,
    `llmMaxTokens`, and `llmRateLimit` from Hoist Config (created with defaults on startup). Until
-   `llmApiKey` is set, the chat harness shows a helpful error but the JSON harness still works.
+   `llmApiKey` is set, the Dashboard Agent shows the server's error but the JSON harness still
+   works.
 
 7. **Keep the runtime import graph acyclic.** Widgets, services, and helpers must not import
    `AppModel` (or `WeatherV2DashModel`) as a value - `AppModel` imports the widget catalog, so that

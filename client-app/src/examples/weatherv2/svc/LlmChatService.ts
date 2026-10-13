@@ -1,140 +1,56 @@
-import {HoistService, XH} from '@xh/hoist/core';
+import type {PlainObject} from '@xh/hoist/core';
+import {HoistService} from '@xh/hoist/core';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import type {DashSpec} from '../dash/types';
 import {computeInstanceIds} from '../dash/validation';
 import {CITIES} from '../widgets/CityChooserWidget';
-import type {ToolDefinition} from './LlmToolService';
-
-/** A content block in an Anthropic API message. */
-export interface ContentBlock {
-    type: 'text' | 'tool_use' | 'tool_result';
-    // text block
-    text?: string;
-    // tool_use block
-    id?: string;
-    name?: string;
-    input?: Record<string, any>;
-    // tool_result block
-    tool_use_id?: string;
-    content?: string;
-    is_error?: boolean;
-}
 
 /**
- * A message in the conversation history.
- * User messages use a simple string content; assistant messages may contain
- * rich content blocks (text + tool_use) when tool calling is active.
- */
-export interface ChatMessage {
-    role: 'user' | 'assistant';
-    content: string | ContentBlock[];
-}
-
-/**
- * Service for assembling LLM prompts, calling the server proxy,
- * and parsing spec responses.
+ * Service that builds the Dashboard Agent's system prompt: the widget catalog, the spec format,
+ * the wiring, layout and tool rules, and the current state of the dashboard.
  */
 export class LlmChatService extends HoistService {
     static instance: LlmChatService;
 
-    /** Build the system prompt including widget schemas, spec format, and rules. */
-    buildSystemPrompt(currentSpec?: DashSpec): string {
-        const widgetDocs = widgetRegistry.generateLLMPrompt();
-        const cityList = CITIES.join(', ');
-        const parts: string[] = [
-            SYSTEM_INTRO,
-            '## Widget Types\n\n' + widgetDocs,
-            SPEC_FORMAT_DOCS,
-            WIRING_RULES,
-            LAYOUT_RULES,
-            CITY_RULES.replace('{{CITIES}}', cityList)
-        ];
+    /**
+     * Build the system prompt as Anthropic system blocks. The instructions come first, marked for
+     * prompt caching, as they are the same on every call. The current dashboard follows, as it
+     * changes with every edit.
+     */
+    buildSystemPrompt(currentSpec: DashSpec): PlainObject[] {
+        const instructions = [
+                SYSTEM_INTRO,
+                '## Widget Types\n\n' + widgetRegistry.generateLLMPrompt(),
+                SPEC_FORMAT_DOCS,
+                WIRING_RULES,
+                LAYOUT_RULES,
+                CITY_RULES.replace('{{CITIES}}', CITIES.join(', ')),
+                TOOL_USE_GUIDANCE,
+                OUTPUT_RULES
+            ].join('\n\n'),
+            ret: PlainObject[] = [
+                {type: 'text', text: instructions, cache_control: {type: 'ephemeral'}}
+            ];
 
-        if (currentSpec?.state?.length) {
-            const ids = computeInstanceIds(currentSpec.state);
-            const annotated = currentSpec.state.map((widget, idx) => ({
-                instanceId: ids[idx],
-                ...widget
-            }));
-            parts.push(
-                '## Current Dashboard State\n\n' +
+        if (currentSpec.state.length) {
+            const ids = computeInstanceIds(currentSpec.state),
+                annotated = currentSpec.state.map((widget, idx) => ({
+                    instanceId: ids[idx],
+                    ...widget
+                }));
+            ret.push({
+                type: 'text',
+                text:
+                    '## Current Dashboard State\n\n' +
                     `The dashboard currently has ${annotated.length} widget(s). ` +
-                    'Each widget is shown with its `instanceId` — use these IDs with ' +
+                    'Each widget is shown with its `instanceId` - use these IDs with ' +
                     'update_widget, remove_widget, and move_widget tools.\n\n```json\n' +
                     JSON.stringify(annotated, null, 2) +
                     '\n```'
-            );
+            });
         }
 
-        parts.push(TOOL_USE_GUIDANCE);
-        parts.push(OUTPUT_RULES);
-        return parts.join('\n\n');
-    }
-
-    /**
-     * Call the LLM proxy endpoint and return the full response.
-     * Returns the raw content block array (which may contain text + tool_use blocks),
-     * the stop reason, and the full API response.
-     */
-    async generateAsync(
-        systemPrompt: string,
-        messages: ChatMessage[],
-        tools?: ToolDefinition[]
-    ): Promise<{content: ContentBlock[]; stopReason: string; raw: any}> {
-        const body: any = {systemPrompt, messages};
-        if (tools?.length) body.tools = tools;
-
-        const response = await XH.postJson({
-            url: 'llm/generate',
-            body,
-            timeout: {interval: 120_000, message: 'LLM request timed out.'},
-            track: {
-                category: 'WeatherV2',
-                message: 'LLM generate',
-                severity: 'DEBUG',
-                data: {messageCount: messages.length},
-                logData: true
-            }
-        });
-
-        const content: ContentBlock[] = response?.content ?? [];
-        const stopReason: string = response?.stop_reason ?? 'end_turn';
-        return {content, stopReason, raw: response};
-    }
-
-    /**
-     * Extract a JSON dashboard spec from the LLM's text response.
-     * Looks for the first ```json code block, or falls back to raw JSON.
-     */
-    parseSpecFromResponse(text: string): DashSpec | null {
-        // Try to find a fenced JSON block
-        const fenceMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)```/);
-        if (fenceMatch) {
-            try {
-                return JSON.parse(fenceMatch[1].trim()) as DashSpec;
-            } catch {
-                // Fall through
-            }
-        }
-
-        // Try to parse the entire response as JSON
-        try {
-            return JSON.parse(text.trim()) as DashSpec;
-        } catch {
-            // Fall through
-        }
-
-        // Try to find a JSON object in the response
-        const braceMatch = text.match(/\{[\s\S]*\}/);
-        if (braceMatch) {
-            try {
-                return JSON.parse(braceMatch[0]) as DashSpec;
-            } catch {
-                // Give up
-            }
-        }
-
-        return null;
+        return ret;
     }
 }
 

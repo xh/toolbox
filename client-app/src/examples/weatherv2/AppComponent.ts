@@ -10,7 +10,7 @@ import {sparklesIcon} from './Icons';
 import {AppModel} from './AppModel';
 import {viewManagers} from './viewManagers';
 import {jsonHarnessPanel} from './harness/JsonHarnessPanel';
-import {chatHarnessPanel} from './harness/ChatHarnessPanel';
+import {dashboardAgentPanel} from './harness/DashboardAgentPanel';
 import '../../core/Toolbox.scss';
 import './WeatherV2.scss';
 
@@ -90,7 +90,7 @@ export const AppComponent = hoistCmp({
                 panel({
                     model: model.harnessPanelModel,
                     items: [
-                        showChatHarness ? chatHarnessPanel() : null,
+                        showChatHarness ? dashboardAgentPanel() : null,
                         showJsonHarness ? jsonHarnessPanel() : null,
                         activeWidgetChooser
                             ? panel({

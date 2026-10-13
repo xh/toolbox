@@ -9,6 +9,7 @@ import {
 } from '@xh/hoist/desktop/cmp/appOption';
 import {BaseAppModel} from '../../BaseAppModel';
 import {WeatherV2DashModel} from './dash/WeatherV2DashModel';
+import {DashboardAgentModel} from './harness/DashboardAgentModel';
 import {LlmChatService} from './svc/LlmChatService';
 import {LlmToolService} from './svc/LlmToolService';
 import {WeatherDataService} from './svc/WeatherDataService';
@@ -21,6 +22,7 @@ export class AppModel extends BaseAppModel {
 
     @managed weatherV2DashModel: WeatherV2DashModel;
     @managed harnessPanelModel: PanelModel;
+    @managed dashboardAgentModel: DashboardAgentModel;
     @bindable @persist accessor manualEditingEnabled: boolean = true;
     @bindable @persist accessor showJsonHarness: boolean = false;
     @bindable @persist accessor showChatHarness: boolean = true;
@@ -48,6 +50,9 @@ export class AppModel extends BaseAppModel {
             viewSpecs,
             initialState
         });
+
+        // Owned here, not by its panel, so the conversation survives the panel being hidden.
+        this.dashboardAgentModel = new DashboardAgentModel();
 
         this.addReaction({
             track: () => this.manualEditingEnabled,

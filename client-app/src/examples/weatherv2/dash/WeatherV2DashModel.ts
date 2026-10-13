@@ -7,6 +7,7 @@ import type {
 } from '@xh/hoist/desktop/cmp/dash';
 import {DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import type {AppModel} from '../AppModel';
+import type {DashSpec} from './types';
 import {WiringModel} from './WiringModel';
 import {widgetRegistry} from './WidgetRegistry';
 
@@ -29,6 +30,11 @@ export class WeatherV2DashModel extends HoistModel {
     @managed dashCanvasModel: DashCanvasModel;
 
     viewManagerModel: ViewManagerModel;
+
+    /** The live dashboard as a spec - the DashCanvas's persisted state, which is the DSL. */
+    get spec(): DashSpec {
+        return {version: 1, state: this.dashCanvasModel.getPersistableState()?.value?.state ?? []};
+    }
 
     constructor({viewManagerModel, viewSpecs, initialState}: WeatherV2DashConfig) {
         super();
