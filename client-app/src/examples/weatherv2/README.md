@@ -98,7 +98,10 @@ the tools and the wiring.
   error goes back to the model, which can correct itself. `reset_dashboard` discards unsaved
   changes, so the user must approve it first. Its `approvalPrompt` says so on the card.
 - The `ChatModel` runs the tool loop, streams replies and handles stop, retry, regenerate and
-  edit.
+  edit. It caps a turn at 5 steps with `maxSteps`, down from the kit's default of 10. Each step is
+  one model call, and the server's `llmRateLimit` counts model calls: 20 per user per hour by
+  default. The cap keeps one turn from using more than a quarter of that. To allow more use, raise
+  the config rather than `maxSteps`.
 - `DashboardAgentPanel` renders the kit's `chatPanel` with the app's title, the kit's
   `chatClearButton`, an empty state and suggestions. `AppModel` owns the agent and passes it the
   dash model, so the conversation survives hiding the panel.

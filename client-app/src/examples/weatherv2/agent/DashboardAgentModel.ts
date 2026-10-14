@@ -29,7 +29,10 @@ export class DashboardAgentModel extends HoistModel {
                 codec: new AnthropicCodec({system: () => buildSystemPrompt(this.dashModel.spec)}),
                 track: {category: 'WeatherV2', message: 'Dashboard Agent call', severity: 'DEBUG'}
             }),
-            tools: XH.llmToolService.tools
+            tools: XH.llmToolService.tools,
+            // Each step is a model call, and counts toward the server's per-user `llmRateLimit`.
+            // The system prompt carries the live spec, so the agent needs no lookup step to edit.
+            maxSteps: 5
         });
     }
 }

@@ -36,8 +36,9 @@ attempt at that message. The live demo talks to Claude through the Toolbox serve
 The live demo posts to `llm/stream`, the server relay that the Weather V2 Dashboard Agent also
 uses. See `LlmService.groovy` for the request policy and the `llm*` configs. The demo needs the
 `llmApiKey` config set. Until then it shows the server's error. Each model call counts toward the
-per-user `llmRateLimit`, which the live demo shares with Weather V2. A reply that uses tools
-makes one call per step.
+per-user `llmRateLimit`, which the live demo shares with Weather V2. A reply makes one call per
+step, and each component the model shows ends a step. The demo caps a reply at 4 steps with
+`maxSteps`, enough for three components and a closing message.
 
 ## Kit dependency
 

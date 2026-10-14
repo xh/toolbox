@@ -33,7 +33,10 @@ export const liveDemo: ChatKitDemo = {
                 }),
                 track: {category: 'ChatKit', message: 'Live demo call', severity: 'DEBUG'}
             }),
-            tools: catalog.tools
+            tools: catalog.tools,
+            // Each component the model shows ends a step, and each step is a model call that
+            // counts toward the server's per-user `llmRateLimit`. Four allows three components.
+            maxSteps: 4
         };
     }
 };
