@@ -105,22 +105,17 @@ the tools and the wiring.
 
 ### Chat kit (`@xh/hoist-chat-kit`)
 
-This branch links the sibling `../hoist-chat-kit` checkout into the client as source, for
-development of the kit against a real app. It needs that checkout next to `toolbox/`, with its own
-`pnpm install` done.
+Toolbox installs the kit from npm. As with `@xh/hoist`, `package.json` declares it as the `next`
+dist-tag, which tracks the kit's latest snapshot. Refresh it with `pnpm update @xh/hoist-chat-kit`.
 
-- `package.json` declares `"@xh/hoist-chat-kit": "link:../../hoist-chat-kit"`. pnpm symlinks it
-  and does not install the kit's dependencies here.
-- `rsbuild.config.mjs` adds the kit to `extraIncludePaths`, so SWC compiles it with the app and
-  edits to it rebuild the dev server. Resolve aliases point the kit's `@xh/hoist`, `react`,
-  `react-dom` and `lodash` imports at this app's copies. Without them the kit's real path resolves
-  its own `node_modules`, and the app loads a second Hoist with a second `XH`.
-- `tsconfig.json` has matching `paths`, so `tsc` sees one set of Hoist and React types.
-- The kit must import MobX from `@xh/hoist/mobx`. A bare `mobx` import is not aliased.
-- For inline hoist-react (`pnpm startWithHoist`), configureRsbuild replaces the `@xh/hoist`,
-  `react` and `react-dom` aliases with its own. To type-check against the checkout too, point the
-  `@xh/hoist/*` entry in `paths` at `../../hoist-react/*`.
-- Vitest specs that import the kit would need the same aliases in `vitest.config.mts`.
+- The kit ships TypeScript and SCSS source, as hoist-react does. `rsbuild.config.mjs` adds it to
+  `extraIncludePaths`, as it does `@xh/package-template`, so SWC compiles it with the app.
+- `@xh/hoist`, `react` and `react-dom` are peer dependencies of the kit, so it uses the app's
+  copies.
+- To work on the kit against Toolbox, link a sibling `../hoist-chat-kit` checkout. The steps are
+  under "Client against local `hoist-chat-kit`" in
+  [`docs/running-locally.md`](../../../../docs/running-locally.md#running-against-a-local-hoist-framework-checkout).
+  Do not commit them.
 
 ## Widget Catalog (9 widgets)
 

@@ -41,5 +41,5 @@ makes one call per step.
 
 ## Kit dependency
 
-This branch links the sibling `../hoist-chat-kit` checkout into the client as source. See the
-"Chat kit" section of the Weather V2 README for the setup.
+Toolbox installs `@xh/hoist-chat-kit` from npm under `next`. See the "Chat kit" section of the
+Weather V2 README for how the app builds it, and how to link a local kit checkout instead.

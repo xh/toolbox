@@ -68,6 +68,7 @@ pnpm hoistVer             # confirm which snapshot you landed on
 `pnpm install` on its own will **not** move it - it honors the committed `pnpm-lock.yaml`, which is
 what keeps builds reproducible. `pnpm update` is the deliberate refresh, and it advances the
 lockfile while leaving the `next` spec in `package.json` untouched. Commit the updated lockfile.
+`@xh/hoist-chat-kit` tracks `next` the same way. Refresh it with `pnpm update @xh/hoist-chat-kit`.
 
 Two things to know:
 
@@ -125,6 +126,58 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
 
   Either way the sibling `../hoist-core` is used and the pinned `hoistCoreVersion` is ignored. Only
   needed when you are changing or testing hoist-core code.
+
+* **Client against local `hoist-chat-kit`** - Toolbox installs `@xh/hoist-chat-kit` from npm under
+  `next`, like `@xh/hoist`. To run it against a sibling `../hoist-chat-kit` checkout instead, make
+  the local, uncommitted edits below in `client-app/`. Only needed when you are changing or
+  testing kit code.
+
+  1. In `package.json`, set `"@xh/hoist-chat-kit": "link:../../hoist-chat-kit"` and run
+     `pnpm install`. Run `pnpm install` in the kit checkout too.
+  2. In `rsbuild.config.mjs`, point the include path at the link's real path, keep the build out
+     of the kit's own `node_modules`, and alias the libraries the kit shares with the app. Without
+     the aliases, the kit's imports resolve from its own `node_modules`. The bundle then holds a
+     second `@xh/hoist`, with a second `XH` singleton, and a second React.
+
+     ```js
+     import fs from 'node:fs';
+
+     const chatKitPath = fs.realpathSync(path.resolve('node_modules/@xh/hoist-chat-kit')),
+         appPkg = name => fs.realpathSync(path.resolve('node_modules', name));
+
+     // In the configureRsbuild() call:
+     extraIncludePaths: [customPkgPath, chatKitPath],
+     extraExcludePaths: [path.resolve(chatKitPath, 'node_modules')],
+     resolveAliases: {
+         '@xh/hoist': appPkg('@xh/hoist'),
+         react: appPkg('react'),
+         'react-dom': appPkg('react-dom'),
+         lodash: appPkg('lodash')
+     },
+     ```
+
+     With `pnpm startWithHoist`, `configureRsbuild()` replaces the `@xh/hoist`, `react` and
+     `react-dom` aliases with its own, so the two local checkouts work together.
+  3. In `tsconfig.json`, add a `paths` block so `tsc` and your IDE read the same single copy of
+     Hoist and React types. To type-check against a local hoist-react as well, point the
+     `@xh/hoist/*` entry at `../../hoist-react/*`.
+
+     ```json
+     "paths": {
+       "@xh/hoist/*": ["./node_modules/@xh/hoist/*"],
+       "lodash": ["./node_modules/@types/lodash"],
+       "lodash/*": ["./node_modules/@types/lodash/*"],
+       "react": ["./node_modules/@types/react"],
+       "react/*": ["./node_modules/@types/react/*"],
+       "react-dom": ["./node_modules/@types/react-dom"],
+       "react-dom/*": ["./node_modules/@types/react-dom/*"]
+     }
+     ```
+
+  **Revert all four files before committing** (`package.json`, `pnpm-lock.yaml`,
+  `rsbuild.config.mjs` and `tsconfig.json`), then run `pnpm install`. A committed `link:` breaks
+  any checkout without the sibling kit, including CI. Toolbox code that uses kit APIs not yet
+  published under `next` fails `pnpm typecheck` once you revert, until a kit snapshot has them.
 
 ### Running multiple instances
 
