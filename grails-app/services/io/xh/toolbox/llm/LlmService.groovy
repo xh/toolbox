@@ -3,13 +3,19 @@ package io.xh.toolbox.llm
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.exception.DataNotAvailableException
-import io.xh.hoist.http.JSONClient
+import io.xh.hoist.exception.ExternalHttpException
+import io.xh.hoist.exception.RoutineRuntimeException
+import io.xh.hoist.json.JSONParser
 import io.xh.hoist.json.JSONSerializer
 import org.apache.hc.client5.http.classic.methods.HttpPost
+import org.apache.hc.client5.http.config.ConnectionConfig
 import org.apache.hc.client5.http.config.RequestConfig
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse
 import org.apache.hc.client5.http.impl.classic.HttpClients
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder
+import org.apache.hc.core5.http.ConnectionRequestTimeoutException
 import org.apache.hc.core5.http.io.entity.StringEntity
 import org.apache.hc.core5.util.Timeout
 
@@ -17,79 +23,79 @@ import static io.xh.hoist.util.StringUtils.elide
 import static java.nio.charset.StandardCharsets.UTF_8
 
 /**
- * Proxy service for LLM API calls.
+ * Relays the Anthropic Messages API as a token stream, for the Toolbox chats built on
+ * `@xh/hoist-chat-kit`: the Weather V2 Dashboard Agent and the Chat Kit app's live demo. The API key
+ * lives in the `llmApiKey` config, so it never reaches the client.
  *
- * Proxies requests to the Anthropic Messages API, either as a single response ({@link #generate})
- * or as a token stream ({@link #stream}). The API key is stored in a Hoist config entry
- * ('llmApiKey') so it never reaches the client. Supports basic per-user rate limiting via an
- * in-memory counter map - per server instance, not shared across the cluster.
+ * Request policy - the browser builds the request body, with the kit's `AnthropicCodec`, so the
+ * service treats it as untrusted:
+ *   - It forwards only `system`, `messages`, `tools` and `tool_choice`. It drops `model`,
+ *     `max_tokens` and `stream`, which a codec may send, and rejects a request with any other key.
+ *   - It sets `model`, `max_tokens` and `stream` from config. Other request params, such as
+ *     `thinking` or `temperature`, come only from the `llmRequestParams` config.
+ *   - It accepts only client tools, sent as `{name, description, input_schema}`. Anthropic server
+ *     tools, such as web search or code execution, cost extra and reach other systems. The server
+ *     adds those enabled in the `llmServerTools` config, and rejects any the client sends.
+ *   - It caps the size of the request and the number of messages.
+ *   - It limits each user to `llmRateLimit` model calls per hour. The count is per server instance,
+ *     not shared across the cluster, and a tool loop makes one call per step.
+ *
+ * Errors - expected failures throw routine exceptions, which log at DEBUG and which the client does
+ * not report as errors: a rate limit hit, a rejected request, a full connection pool, and an
+ * upstream that is busy or down (429, 529, 5xx or unreachable). An upstream failure also logs one
+ * WARN line. Any other upstream rejection, such as a bad key or a malformed request, throws an
+ * `ExternalHttpException`, as it needs a fix.
  *
  * Config entries (created with defaults by BootStrap):
  *   - llmApiKey (pwd): Anthropic API key.
- *   - llmModel (string): Model identifier, default 'claude-sonnet-4-6'.
- *   - llmMaxTokens (int): Max response tokens, default 8192.
- *   - llmRateLimit (int): Max requests per user per hour, default 20.
+ *   - llmModel (string): Model identifier.
+ *   - llmMaxTokens (int): Max response tokens per model call.
+ *   - llmRateLimit (int): Max model calls per user per hour.
+ *   - llmMaxStreams (int): Max concurrent streams. A request beyond it fails at once, routinely.
+ *   - llmRequestParams (json): Other Messages API params to send, such as `thinking`.
+ *   - llmServerTools (json): Anthropic server tool definitions to add to every request.
  */
 class LlmService extends BaseService {
 
     String telemetryPrefix = 'toolbox.llm'
 
-    static clearCachesConfigs = ['llmApiKey', 'llmModel', 'llmMaxTokens', 'llmRateLimit']
+    static clearCachesConfigs = [
+        'llmApiKey', 'llmModel', 'llmMaxTokens', 'llmRateLimit', 'llmMaxStreams',
+        'llmRequestParams', 'llmServerTools'
+    ]
 
     ConfigService configService
 
-    // Simple per-user rate limiter: username → list of timestamps
+    // Simple per-user rate limiter: username -> timestamps of recent model calls.
     private Map<String, List<Long>> _rateLimitMap = [:].withDefault { [] }
 
-    private JSONClient _jsonClient
-    private JSONClient getClient() {
-        _jsonClient ?= new JSONClient()
-    }
+    // The pool size is the cap on concurrent streams. Its limits are set from config on init and
+    // on config change. A request that finds the pool full waits briefly, then fails.
+    private final PoolingHttpClientConnectionManager connectionManager =
+        PoolingHttpClientConnectionManagerBuilder.create()
+            .setDefaultConnectionConfig(
+                ConnectionConfig.custom().setConnectTimeout(Timeout.ofSeconds(10)).build()
+            )
+            .build()
 
-    // Raw client for streaming - JSONClient buffers the whole response. The response timeout
-    // bounds each read, not the whole stream; Anthropic sends periodic `ping` events. Compression
-    // is off, as a compressed stream may be buffered along the way. Holds no config, so it is not
-    // reset by clearCaches() - closing it would cut off streams in flight.
+    // A raw client, as JSONClient reads the whole response. The response timeout bounds each read,
+    // not the whole stream - Anthropic sends periodic `ping` events. Compression is off, as a
+    // compressed stream may be buffered along the way. Not rebuilt by clearCaches() - closing it
+    // would cut off streams in flight.
     private final CloseableHttpClient streamClient = HttpClients.custom()
+        .setConnectionManager(connectionManager)
         .disableContentCompression()
-        .setDefaultRequestConfig(RequestConfig.custom().setResponseTimeout(Timeout.ofMinutes(2)).build())
+        .setDefaultRequestConfig(
+            RequestConfig.custom()
+                .setConnectionRequestTimeout(Timeout.ofSeconds(5))
+                .setResponseTimeout(Timeout.ofMinutes(2))
+                .build()
+        )
         .build()
 
-    /**
-     * Generate a response from the LLM.
-     *
-     * @param systemPrompt - system message for the LLM
-     * @param messages - conversation messages [{role: 'user'|'assistant', content: '...'}]
-     * @param username - for rate limiting
-     * @param tools - optional list of tool definitions for function calling
-     * @return parsed response map from the Anthropic API
-     */
-    Map generate(String systemPrompt, List<Map> messages, String username, List<Map> tools = null) {
-        checkApiKey()
-        checkRateLimit(username)
-
-        def model = configService.getString('llmModel'),
-            body = [
-                model     : model,
-                max_tokens: configService.getInt('llmMaxTokens'),
-                system    : systemPrompt,
-                messages  : messages
-            ]
-
-        if (tools) {
-            body.tools = tools
-        }
-
-        try {
-            def response = span('generate', [model: model, toolCount: tools?.size() ?: 0])
-                .logDebug("Calling Anthropic API with $model")
-                .run { client.executeAsMap(createPost(body)) }
-            recordRequest(username)
-            return response
-        } catch (Exception e) {
-            logError("LLM API call failed", e)
-            throw new RuntimeException("LLM API call failed: ${e.message}")
-        }
+    @Override
+    protected void init() {
+        applyStreamLimit()
     }
 
     /**
@@ -99,8 +105,8 @@ class LlmService extends BaseService {
      * or rejected request throws before `onEvent` is first called. Upstream `error` events that
      * arrive mid-stream are relayed like any other event.
      *
-     * @param request - Anthropic Messages request body ({system?, messages, tools?, ...}). The
-     *      `model`, `max_tokens` and `stream` keys are always set here from config.
+     * @param request - Anthropic Messages request body, as built by the kit's `AnthropicCodec`.
+     *      Checked and filtered as described in the class doc.
      * @param username - for rate limiting.
      * @param onEvent - called with the JSON payload of each SSE `data:` field, in order. Return
      *      false to stop - e.g. when the client has disconnected. The upstream connection is
@@ -110,25 +116,18 @@ class LlmService extends BaseService {
         checkApiKey()
         checkRateLimit(username)
 
-        def model = configService.getString('llmModel'),
-            body = request + [
-                model     : model,
-                max_tokens: configService.getInt('llmMaxTokens'),
-                stream    : true
-            ],
+        def body = createBody(request),
             post = createPost(body)
 
-        span('stream', [model: model, toolCount: (request.tools as List)?.size() ?: 0])
-            .logDebug("Streaming from Anthropic API with $model")
+        span('stream', [model: body.model, toolCount: (body.tools as List)?.size() ?: 0])
+            .logDebug("Streaming from Anthropic API with $body.model")
             .run {
                 CloseableHttpResponse response = null
                 boolean complete = false
                 try {
-                    response = streamClient.execute(post)
+                    response = execute(post)
                     if (response.code != 200) {
-                        // Status not passed through - an upstream 401 would read as a Hoist auth failure.
-                        def detail = elide(response.entity?.content?.getText('UTF-8') ?: '', 500)
-                        throw new RuntimeException("LLM API call failed with status ${response.code}: $detail")
+                        throw upstreamException(response.code, response.entity?.content?.getText('UTF-8'))
                     }
                     recordRequest(username)
                     complete = relayEvents(response, onEvent)
@@ -142,15 +141,88 @@ class LlmService extends BaseService {
     }
 
     //--------------------------------------------------
-    // Implementation
+    // Request
     //--------------------------------------------------
+    /** The request to send upstream - the client's allowed keys plus the server's own settings. */
+    private Map createBody(Map request) {
+        def disallowed = request.keySet() - CLIENT_KEYS - SERVER_KEYS
+        if (disallowed) {
+            throw new RoutineRuntimeException("Request key(s) not accepted: ${disallowed.join(', ')}.")
+        }
+
+        def messages = request.messages as List
+        if (!messages) throw new RoutineRuntimeException('Request has no messages.')
+        if (messages.size() > MAX_MESSAGES) {
+            throw new RoutineRuntimeException('This conversation is too long. Clear it to start again.')
+        }
+
+        def clientTools = (request.tools ?: []) as List<Map>,
+            serverTools = configService.getList('llmServerTools', [])
+        if (clientTools.any { it.type && it.type != 'custom' }) {
+            throw new RoutineRuntimeException('Request includes server tools, which are not accepted.')
+        }
+
+        def ret = configService.getMap('llmRequestParams', [:]) + request.subMap(CLIENT_KEYS) + [
+            model     : configService.getString('llmModel'),
+            max_tokens: configService.getInt('llmMaxTokens'),
+            stream    : true
+        ]
+        ret.tools = serverTools + clientTools
+        if (!ret.tools) ret.remove('tools')
+        return ret
+    }
+
     private HttpPost createPost(Map body) {
+        def json = JSONSerializer.serialize(body)
+        if (json.length() > MAX_REQUEST_CHARS) {
+            throw new RoutineRuntimeException(
+                'This conversation is too large to send. Clear it to start again.'
+            )
+        }
+
         def post = new HttpPost('https://api.anthropic.com/v1/messages')
         post.setHeader('Content-Type', 'application/json')
         post.setHeader('x-api-key', configService.getPwd('llmApiKey'))
         post.setHeader('anthropic-version', '2023-06-01')
-        post.setEntity(new StringEntity(JSONSerializer.serialize(body), UTF_8))
+        post.setEntity(new StringEntity(json, UTF_8))
         return post
+    }
+
+    //--------------------------------------------------
+    // Response
+    //--------------------------------------------------
+    private CloseableHttpResponse execute(HttpPost post) {
+        try {
+            return streamClient.execute(post)
+        } catch (ConnectionRequestTimeoutException ignored) {
+            logWarn('LLM stream limit reached', [llmMaxStreams: configService.getInt('llmMaxStreams')])
+            throw new RoutineRuntimeException(BUSY_MSG)
+        } catch (IOException e) {
+            logWarn('Anthropic API unreachable', [error: e])
+            throw new RoutineRuntimeException(UNAVAILABLE_MSG)
+        }
+    }
+
+    /**
+     * The exception for an upstream error status. Its message stands alone for the user, as the
+     * upstream status is not passed through - an upstream 401 would read as a Hoist auth failure.
+     */
+    private Exception upstreamException(int status, String responseText) {
+        def error = parseError(responseText)
+        if (status in [429, 529] || status >= 500) {
+            logWarn('Anthropic API unavailable', [status: status, error: error])
+            return new RoutineRuntimeException(status >= 500 && status != 529 ? UNAVAILABLE_MSG : BUSY_MSG)
+        }
+        return new ExternalHttpException("The LLM API rejected the request: $error", null, status)
+    }
+
+    /** The type and message of an Anthropic error body, or the start of the raw text. */
+    private String parseError(String responseText) {
+        try {
+            Map error = JSONParser.parseObject(responseText).error as Map
+            if (error?.message) return error.type ? "${error.message} [${error.type}]" : error.message
+        } catch (Exception ignored) {}
+        return elide(responseText ?: 'no details', 300)
     }
 
     /**
@@ -177,26 +249,29 @@ class LlmService extends BaseService {
     }
 
     //--------------------------------------------------
-    // Rate limiting
+    // Limits
     //--------------------------------------------------
     private synchronized void checkRateLimit(String username) {
         def limit = configService.getInt('llmRateLimit'),
-            now = System.currentTimeMillis(),
-            oneHourAgo = now - 3600_000
+            oneHourAgo = System.currentTimeMillis() - 3600_000,
+            userRequests = _rateLimitMap[username]
 
-        // Prune old entries
-        def userRequests = _rateLimitMap[username]
         userRequests.removeAll { it < oneHourAgo }
-
         if (userRequests.size() >= limit) {
-            throw new RuntimeException(
-                "Rate limit exceeded. Max ${limit} requests per hour. Please wait and try again."
+            throw new RoutineRuntimeException(
+                "You have reached the limit of $limit assistant requests per hour. Try again later."
             )
         }
     }
 
     private synchronized void recordRequest(String username) {
         _rateLimitMap[username] << System.currentTimeMillis()
+    }
+
+    private void applyStreamLimit() {
+        def max = configService.getInt('llmMaxStreams')
+        connectionManager.maxTotal = max
+        connectionManager.defaultMaxPerRoute = max
     }
 
     private void checkApiKey() {
@@ -211,8 +286,8 @@ class LlmService extends BaseService {
     @Override
     void clearCaches() {
         super.clearCaches()
-        _jsonClient = null
         _rateLimitMap.clear()
+        applyStreamLimit()
     }
 
     @Override
@@ -222,7 +297,23 @@ class LlmService extends BaseService {
     }
 
     @Override
-    Map getAdminStats() {[
-        config: configForAdminStats('llmApiKey', 'llmModel', 'llmMaxTokens', 'llmRateLimit')
-    ]}
+    Map getAdminStats() {
+        def streams = connectionManager.totalStats
+        return [
+            config : configForAdminStats(*clearCachesConfigs),
+            streams: [active: streams.leased, waiting: streams.pending, max: streams.max]
+        ]
+    }
+
+    /** Request keys forwarded from the client. */
+    private static final List<String> CLIENT_KEYS = ['system', 'messages', 'tools', 'tool_choice']
+
+    /** Request keys a codec may send, which the server always sets itself. */
+    private static final List<String> SERVER_KEYS = ['model', 'max_tokens', 'stream']
+
+    private static final int MAX_MESSAGES = 400
+    private static final int MAX_REQUEST_CHARS = 4_000_000
+
+    private static final String BUSY_MSG = 'The model is busy. Try again in a minute.'
+    private static final String UNAVAILABLE_MSG = 'The model is not available right now. Try again in a few minutes.'
 }
