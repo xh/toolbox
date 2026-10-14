@@ -1,7 +1,10 @@
-import {type ChatSuggestion, chatEmptyState, chatPanel} from '@xh/hoist-chat-kit/desktop/cmp/chat';
+import {
+    type ChatSuggestion,
+    chatClearButton,
+    chatEmptyState,
+    chatPanel
+} from '@xh/hoist-chat-kit/desktop/cmp/chat';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {Icon} from '@xh/hoist/icon';
 import {sparklesIcon} from '../Icons';
 import {DashboardAgentModel} from './DashboardAgentModel';
 
@@ -21,21 +24,14 @@ export const dashboardAgentPanel = hoistCmp.factory({
             compactHeader: true,
             flex: 1,
             minHeight: 0,
-            headerItems: [
-                button({
-                    testId: 'chat-clear-btn',
-                    icon: Icon.reset(),
-                    tooltip: 'Clear conversation',
-                    disabled: chatModel.isEmpty,
-                    onClick: () => chatModel.clear()
-                })
-            ],
+            headerItems: [chatClearButton({testId: 'chat-clear-btn'})],
             emptyState: chatEmptyState({
                 icon: sparklesIcon(),
                 title: 'What should we build?',
                 text: 'Tell the agent what to build and it will create or update your dashboard.',
                 suggestions: SUGGESTIONS
             }),
+            composerProps: {placeholder: 'Tell the agent what to build...'},
             messageListProps: {assistantName: 'Dashboard Agent', assistantIcon: sparklesIcon()}
         });
     }

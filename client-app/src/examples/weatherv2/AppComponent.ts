@@ -10,7 +10,7 @@ import {sparklesIcon} from './Icons';
 import {AppModel} from './AppModel';
 import {viewManagers} from './viewManagers';
 import {jsonHarnessPanel} from './harness/JsonHarnessPanel';
-import {dashboardAgentPanel} from './harness/DashboardAgentPanel';
+import {dashboardAgentPanel} from './agent/DashboardAgentPanel';
 import '../../core/Toolbox.scss';
 import './WeatherV2.scss';
 
@@ -23,12 +23,12 @@ export const AppComponent = hoistCmp({
                 weatherV2DashModel,
                 manualEditingEnabled,
                 showJsonHarness,
-                showChatHarness,
+                showAgent,
                 showWidgetChooser
             } = model,
             {dashCanvasModel} = weatherV2DashModel,
             activeWidgetChooser = showWidgetChooser && manualEditingEnabled,
-            showHarness = showChatHarness || showJsonHarness || activeWidgetChooser;
+            showSidePanel = showAgent || showJsonHarness || activeWidgetChooser;
 
         return panel({
             tbar: appBar({
@@ -54,13 +54,13 @@ export const AppComponent = hoistCmp({
                     }),
                     appBarSeparator(),
                     button({
-                        testId: 'chat-btn',
+                        testId: 'agent-btn',
                         icon: sparklesIcon(),
                         text: 'Dashboard Agent',
-                        active: showChatHarness,
+                        active: showAgent,
                         outlined: true,
-                        intent: showChatHarness ? 'primary' : undefined,
-                        onClick: () => (model.showChatHarness = !showChatHarness)
+                        intent: showAgent ? 'primary' : undefined,
+                        onClick: () => (model.showAgent = !showAgent)
                     }),
                     button({
                         testId: 'json-btn',
@@ -88,9 +88,9 @@ export const AppComponent = hoistCmp({
             item: hframe(
                 frame(dashCanvas({model: dashCanvasModel})),
                 panel({
-                    model: model.harnessPanelModel,
+                    model: model.sidePanelModel,
                     items: [
-                        showChatHarness ? dashboardAgentPanel() : null,
+                        showAgent ? dashboardAgentPanel() : null,
                         showJsonHarness ? jsonHarnessPanel() : null,
                         activeWidgetChooser
                             ? panel({
@@ -104,7 +104,7 @@ export const AppComponent = hoistCmp({
                               })
                             : null
                     ],
-                    omit: !showHarness
+                    omit: !showSidePanel
                 })
             ),
             className: 'weather-v2-app'

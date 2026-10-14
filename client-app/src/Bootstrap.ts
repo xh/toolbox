@@ -18,7 +18,6 @@ import type {GitHubService} from './core/svc/GitHubService';
 import type {GlyphService} from './examples/favicons/svc/GlyphService';
 import type {PortfolioService} from './core/svc/PortfolioService';
 import type {TaskService} from './examples/todo/TaskService';
-import type {LlmChatService} from './examples/weatherv2/svc/LlmChatService';
 import type {LlmToolService} from './examples/weatherv2/svc/LlmToolService';
 import type {WeatherDataService} from './examples/weatherv2/svc/WeatherDataService';
 
@@ -29,7 +28,6 @@ declare module '@xh/hoist/core' {
         docService: DocService;
         gitHubService: GitHubService;
         glyphService: GlyphService;
-        llmChatService: LlmChatService;
         llmToolService: LlmToolService;
         portfolioService: PortfolioService;
         taskService: TaskService;

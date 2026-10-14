@@ -1,4 +1,4 @@
-import type {ChatMessage, ChatToolSpec} from '@xh/hoist-chat-kit/core';
+import type {ChatToolSpec} from '@xh/hoist-chat-kit/core';
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistService, PersistableState, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
@@ -27,13 +27,6 @@ export class LlmToolService extends HoistService {
 
     /** Tools for the Dashboard Agent's `ChatModel`. */
     readonly tools: ChatToolSpec[] = this.createTools();
-
-    /** True if any tool call in the message changed the dashboard. */
-    changedDashboard(message: ChatMessage): boolean {
-        return message.toolCalls.some(
-            it => it.state === 'output-available' && DASHBOARD_EDIT_TOOLS.includes(it.toolName)
-        );
-    }
 
     //------------------
     // Implementation
@@ -217,6 +210,8 @@ export class LlmToolService extends HoistService {
                 icon: Icon.reset(),
                 // Discards the user's unsaved changes, so the user confirms first.
                 needsApproval: true,
+                approvalPrompt:
+                    'Discard your unsaved changes and reset the dashboard to its last saved state?',
                 execute: () => this.resetDashboardAsync()
             },
             {
@@ -475,15 +470,6 @@ export class LlmToolService extends HoistService {
 //--------------------------------------------------
 // Tool schemas and display helpers
 //--------------------------------------------------
-/** Tools that change the dashboard, for the once-per-turn "Dashboard updated" toast. */
-const DASHBOARD_EDIT_TOOLS = [
-    'set_dashboard',
-    'add_widget',
-    'remove_widget',
-    'update_widget',
-    'move_widget'
-];
-
 function objectSchema(properties: PlainObject = {}, required: string[] = []): PlainObject {
     return {type: 'object', properties, required};
 }

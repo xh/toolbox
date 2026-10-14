@@ -1,57 +1,50 @@
 import type {PlainObject} from '@xh/hoist/core';
-import {HoistService} from '@xh/hoist/core';
 import {widgetRegistry} from '../dash/WidgetRegistry';
 import type {DashSpec} from '../dash/types';
 import {computeInstanceIds} from '../dash/validation';
 import {CITIES} from '../widgets/CityChooserWidget';
 
 /**
- * Service that builds the Dashboard Agent's system prompt: the widget catalog, the spec format,
- * the wiring, layout and tool rules, and the current state of the dashboard.
+ * The Dashboard Agent's system prompt, as Anthropic system blocks: the instructions - the widget
+ * catalog, the spec format, and the wiring, layout and tool rules - then the current dashboard.
+ *
+ * The instructions are the same on every call, so their block carries the prompt cache breakpoint.
+ * The dashboard block follows it, unmarked, as it changes with every edit.
  */
-export class LlmChatService extends HoistService {
-    static instance: LlmChatService;
+export function buildSystemPrompt(currentSpec: DashSpec): PlainObject[] {
+    const instructions = [
+            SYSTEM_INTRO,
+            '## Widget Types\n\n' + widgetRegistry.generateLLMPrompt(),
+            SPEC_FORMAT_DOCS,
+            WIRING_RULES,
+            LAYOUT_RULES,
+            CITY_RULES.replace('{{CITIES}}', CITIES.join(', ')),
+            TOOL_USE_GUIDANCE,
+            OUTPUT_RULES
+        ].join('\n\n'),
+        ret: PlainObject[] = [
+            {type: 'text', text: instructions, cache_control: {type: 'ephemeral'}}
+        ];
 
-    /**
-     * Build the system prompt as Anthropic system blocks. The instructions come first, marked for
-     * prompt caching, as they are the same on every call. The current dashboard follows, as it
-     * changes with every edit.
-     */
-    buildSystemPrompt(currentSpec: DashSpec): PlainObject[] {
-        const instructions = [
-                SYSTEM_INTRO,
-                '## Widget Types\n\n' + widgetRegistry.generateLLMPrompt(),
-                SPEC_FORMAT_DOCS,
-                WIRING_RULES,
-                LAYOUT_RULES,
-                CITY_RULES.replace('{{CITIES}}', CITIES.join(', ')),
-                TOOL_USE_GUIDANCE,
-                OUTPUT_RULES
-            ].join('\n\n'),
-            ret: PlainObject[] = [
-                {type: 'text', text: instructions, cache_control: {type: 'ephemeral'}}
-            ];
-
-        if (currentSpec.state.length) {
-            const ids = computeInstanceIds(currentSpec.state),
-                annotated = currentSpec.state.map((widget, idx) => ({
-                    instanceId: ids[idx],
-                    ...widget
-                }));
-            ret.push({
-                type: 'text',
-                text:
-                    '## Current Dashboard State\n\n' +
-                    `The dashboard currently has ${annotated.length} widget(s). ` +
-                    'Each widget is shown with its `instanceId` - use these IDs with ' +
-                    'update_widget, remove_widget, and move_widget tools.\n\n```json\n' +
-                    JSON.stringify(annotated, null, 2) +
-                    '\n```'
-            });
-        }
-
-        return ret;
+    if (currentSpec.state.length) {
+        const ids = computeInstanceIds(currentSpec.state),
+            annotated = currentSpec.state.map((widget, idx) => ({
+                instanceId: ids[idx],
+                ...widget
+            }));
+        ret.push({
+            type: 'text',
+            text:
+                '## Current Dashboard State\n\n' +
+                `The dashboard currently has ${annotated.length} widget(s). ` +
+                'Each widget is shown with its `instanceId` - use these IDs with ' +
+                'update_widget, remove_widget, and move_widget tools.\n\n```json\n' +
+                JSON.stringify(annotated, null, 2) +
+                '\n```'
+        });
     }
+
+    return ret;
 }
 
 //--------------------------------------------------
@@ -171,7 +164,7 @@ Use \`update_widget\` ONLY for small, isolated changes to 1-3 existing widgets w
 
 **App operation tools:** save_dashboard_as_view, switch_to_view, reset_dashboard, toggle_theme, open_widget_chooser, show_json_spec, toggle_manual_editing.
 
-After tool calls, briefly confirm the result in your text response.`;
+Before your first tool call, write one short sentence on what you are about to do, so the user has something to read while a large dashboard builds. After tool calls, briefly confirm the result in your text response.`;
 
 const OUTPUT_RULES = `## Output Rules
 

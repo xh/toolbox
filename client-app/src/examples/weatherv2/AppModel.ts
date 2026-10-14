@@ -9,8 +9,7 @@ import {
 } from '@xh/hoist/desktop/cmp/appOption';
 import {BaseAppModel} from '../../BaseAppModel';
 import {WeatherV2DashModel} from './dash/WeatherV2DashModel';
-import {DashboardAgentModel} from './harness/DashboardAgentModel';
-import {LlmChatService} from './svc/LlmChatService';
+import {DashboardAgentModel} from './agent/DashboardAgentModel';
 import {LlmToolService} from './svc/LlmToolService';
 import {WeatherDataService} from './svc/WeatherDataService';
 import {viewManagers} from './viewManagers';
@@ -21,24 +20,24 @@ export class AppModel extends BaseAppModel {
     override persistWith = {localStorageKey: 'weatherV2App'};
 
     @managed weatherV2DashModel: WeatherV2DashModel;
-    @managed harnessPanelModel: PanelModel;
+    @managed sidePanelModel: PanelModel;
     @managed dashboardAgentModel: DashboardAgentModel;
     @bindable @persist accessor manualEditingEnabled: boolean = true;
     @bindable @persist accessor showJsonHarness: boolean = false;
-    @bindable @persist accessor showChatHarness: boolean = true;
+    @bindable @persist accessor showAgent: boolean = true;
     @bindable @persist accessor showWidgetChooser: boolean = false;
 
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
-        await XH.installServicesAsync([LlmChatService, LlmToolService, WeatherDataService], ctx);
+        await XH.installServicesAsync([LlmToolService, WeatherDataService], ctx);
 
-        this.harnessPanelModel = new PanelModel({
+        this.sidePanelModel = new PanelModel({
             side: 'right',
             defaultSize: 500,
             minSize: 300,
             resizable: true,
             collapsible: false,
-            persistWith: {...this.persistWith, path: 'harnessPanel'}
+            persistWith: {...this.persistWith, path: 'sidePanel'}
         });
 
         // Awaited here, in initAsync, so that saved layouts are loaded and the desired option
@@ -52,7 +51,7 @@ export class AppModel extends BaseAppModel {
         });
 
         // Owned here, not by its panel, so the conversation survives the panel being hidden.
-        this.dashboardAgentModel = new DashboardAgentModel();
+        this.dashboardAgentModel = new DashboardAgentModel(this.weatherV2DashModel);
 
         this.addReaction({
             track: () => this.manualEditingEnabled,
