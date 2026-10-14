@@ -27,6 +27,7 @@
 * Added the Weather V2 example app - an LLM-driven `DashCanvas` dashboard whose persisted state doubles as a declarative JSON spec, with typed inter-widget wiring, a JSON spec editor, and a Dashboard Agent chat that builds and edits layouts via Anthropic tool calling through a new server-side `LlmService` proxy (configured via new `llm*` app configs).
 * Moved the Weather V2 Dashboard Agent onto `@xh/hoist-chat-kit`, XH's new library of chat components for Hoist. The kit now supplies the agent's chat panel, tool loop and tool-call cards, with replies streamed token by token through a new `/llm/stream` server endpoint that replaces the old non-streaming `generate` call.
 * Added the Chat Kit example app - a tour of `@xh/hoist-chat-kit` with scripted demos of rich content, reasoning and tools, tool approval, attachments, errors and stop, and generative UI, plus a live demo that talks to Claude through `/llm/stream`.
+* Added `guide/*` server endpoints that emulate a retrieval-augmented guideline assistant over a small document library - a streamed answer dialect with resets, citations and idempotent retries, plus chat history, rename, delete and feedback - as the backend for a coming Chat Kit server-mode demo.
 
 ### Bug Fixes
 
