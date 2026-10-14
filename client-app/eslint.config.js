@@ -61,9 +61,5 @@ module.exports = defineConfig([
             ]
         }
     },
-    globalIgnores(['build/**/*', 'node_modules/**/*', 'scripts/**/*']),
-    // The guideline assistant example uses chat kit APIs not yet published under `next`, so
-    // tsconfig.json leaves it out, and type-aware linting cannot see it. Remove this, and the
-    // exclusions in tsconfig.json and vitest.config.mts, once they are. See the example's README.
-    globalIgnores(['src/examples/chatkit/guide/**/*'])
+    globalIgnores(['build/**/*', 'node_modules/**/*', 'scripts/**/*'])
 ]);

@@ -34,7 +34,7 @@ export const genUiDemo: ChatKitDemo = {
     suggestions: [{text: 'How is the Tech book doing?'}, {text: 'Give me a portfolio review'}],
     createChatConfig: () => ({
         transport: new ScriptedChatTransport({delayMs: 14, respond: createResponse}),
-        tools: createCatalog().tools
+        catalog: createCatalog()
     })
 };
 
@@ -259,9 +259,19 @@ function createNvdaCard(): ChatUiCardSpecProps {
             {label: 'Next earnings', value: 'Nov 19, 2026'}
         ],
         actions: [
-            {text: 'Show NVDA trades', prompt: 'Show my recent NVDA trades.'},
-            {text: 'Sector exposure', prompt: 'How is the book spread across sectors?'},
-            {text: 'Explain the move', prompt: 'Why did NVDA fall 6% today?'}
+            {type: 'send', label: 'Show NVDA trades', text: 'Show my recent NVDA trades.'},
+            {
+                type: 'send',
+                label: 'Sector exposure',
+                text: 'How is the book spread across sectors?'
+            },
+            // The context shows under the sent message, and goes to the model with it.
+            {
+                type: 'send',
+                label: 'Explain the move',
+                text: 'Why did NVDA fall 6% today?',
+                context: {ticker: 'NVDA'}
+            }
         ]
     };
 }

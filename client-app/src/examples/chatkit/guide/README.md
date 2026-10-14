@@ -109,21 +109,8 @@ The real backend's contract may differ from the emulator's in a few places. Each
 
 ## Not yet wired into the app
 
-The code uses kit APIs that are not yet published under `next`: `ChatThreadsModel`,
-`ChatThreadStore`, `historyMode`, `runOptions`, `xh.chat.textReplace` and source markers. Until
-they are, the folder is excluded so the app still builds against the published kit:
-
-- `tsconfig.json` - `"exclude": ["src/examples/chatkit/guide"]`
-- `vitest.config.mts` - `unpublishedKitSpecs` in `test.exclude`
-- `eslint.config.js` - `globalIgnores(['src/examples/chatkit/guide/**/*'])`
-- No entry point imports the folder, so the build leaves it out.
-
-Once a kit snapshot with these APIs is under `next`, run `pnpm update @xh/hoist-chat-kit`, remove
-the three exclusions, and run `pnpm lint`, `pnpm typecheck` and `pnpm test`.
-
-To work on the folder before then, link the local kit checkout as described in
-`docs/running-locally.md`, and lift the three exclusions locally. Revert all of it before you
-commit.
+The folder builds, lints and tests against the published kit, but no entry point imports it yet,
+so the app build leaves it out. The UI step below wires it in.
 
 ## What the UI step adds
 

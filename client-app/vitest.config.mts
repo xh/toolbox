@@ -13,29 +13,21 @@
 import configureVitest from '@xh/hoist-dev-utils/configureVitest';
 import {createRequire} from 'node:module';
 import path from 'node:path';
-import {configDefaults, defineConfig, mergeConfig} from 'vitest/config';
+import {defineConfig} from 'vitest/config';
 
 const require = createRequire(import.meta.url),
     pkg = require('./package.json');
 
-// The guideline assistant example uses chat kit APIs not yet published under `next`. Remove this
-// exclusion, and the ones in tsconfig.json and eslint.config.js, once they are. See the example's
-// README.
-const unpublishedKitSpecs = ['src/examples/chatkit/guide/**'];
-
 export default defineConfig(
-    mergeConfig(
-        configureVitest({
-            appCode: 'toolbox',
-            appName: 'Toolbox',
-            appVersion: pkg.version,
-            // Compile the custom packages as the build does - see rsbuild.config.mjs.
-            extraIncludePaths: [
-                path.resolve('node_modules/@xh/package-template'),
-                path.resolve('node_modules/@xh/hoist-chat-kit')
-            ],
-            setupFiles: ['./src/test-support/setup.ts']
-        }),
-        {test: {exclude: [...configDefaults.exclude, ...unpublishedKitSpecs]}}
-    )
+    configureVitest({
+        appCode: 'toolbox',
+        appName: 'Toolbox',
+        appVersion: pkg.version,
+        // Compile the custom packages as the build does - see rsbuild.config.mjs.
+        extraIncludePaths: [
+            path.resolve('node_modules/@xh/package-template'),
+            path.resolve('node_modules/@xh/hoist-chat-kit')
+        ],
+        setupFiles: ['./src/test-support/setup.ts']
+    })
 );
