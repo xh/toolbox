@@ -114,16 +114,7 @@ export const persistedComponents = hoistCmp.factory({
                                 model: pm.fieldSetFormModel,
                                 fieldDefaults: {inline: true, labelWidth: 60},
                                 item: formFieldSet({
-                                    // Created by the component from modelConfig. An explicit model
-                                    // finds itself in context as its own parent - a hoist-react bug.
-                                    // FormFieldSetModel extends CardModel, so it needs its own path.
-                                    modelConfig: {
-                                        collapsible: true,
-                                        persistWith: {
-                                            viewManagerModel: model.viewManagerModel,
-                                            path: 'formFieldSet'
-                                        }
-                                    },
+                                    model: pm.fieldSetModel,
                                     title: 'Address',
                                     width: '100%',
                                     items: [

@@ -1,7 +1,7 @@
 import {CardModel} from '@xh/hoist/cmp/card';
 import {DateRangePickerModel} from '@xh/hoist/cmp/daterange';
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
-import {FormModel} from '@xh/hoist/cmp/form';
+import {FormFieldSetModel, FormModel} from '@xh/hoist/cmp/form';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {div, frame} from '@xh/hoist/cmp/layout';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
@@ -32,8 +32,7 @@ import {SampleGridModel} from '../../../common/grid/SampleGridModel';
 
 /**
  * The models on the page that persist their state to the ViewManagerModel. They are built as one
- * unit, so a rebuild can destroy them all and recreate them against a new ViewManagerModel. The
- * FormFieldSet card is the exception - its component creates its own model.
+ * unit, so a rebuild can destroy them all and recreate them against a new ViewManagerModel.
  *
  * Most models set no `path` and use their built-in default. A model sets one only where two of
  * the same kind would otherwise share a path.
@@ -46,6 +45,7 @@ export class PersistedModels extends HoistModel {
     @managed tabContainerModel: TabContainerModel;
     @managed cardModel: CardModel;
     @managed formModel: FormModel;
+    @managed fieldSetModel: FormFieldSetModel;
     @managed fieldSetFormModel: FormModel;
     @managed panelModel: PanelModel;
     @managed panelPctModel: PanelModel;
@@ -93,6 +93,12 @@ export class PersistedModels extends HoistModel {
                 {name: 'quantity', initialValue: 100},
                 {name: 'active', initialValue: true}
             ]
+        });
+
+        // FormFieldSetModel extends CardModel, so it needs its own path.
+        this.fieldSetModel = new FormFieldSetModel({
+            collapsible: true,
+            persistWith: {...persistWith, path: 'formFieldSet'}
         });
 
         // Holds the fields inside the FormFieldSet. Not persisted - only the collapsed state is.

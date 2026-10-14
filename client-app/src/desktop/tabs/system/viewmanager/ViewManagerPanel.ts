@@ -31,8 +31,10 @@ import './ViewManagerPanel.scss';
  * - Read state from the model rather than the DOM where you can. The JSON panes use CodeMirror,
  *   which renders only the visible lines.
  * - testIds:
- *   - Demo: `vm-playground`, and `vm-card-{path}` with its `-default`, `-dirty` and `-focus`
- *     children. ViewManager menus and dialogs render in portals, outside `vm-playground`.
+ *   - Demo: `vm-playground` on the Playground ViewManager, which derives `-menu-btn`, `-menu`,
+ *     `-save-btn`, `-revert-btn`, `-manage-dialog` and `-save-as-dialog` from it. Menus and
+ *     dialogs render in portals, outside the ViewManager's own element. Each card is
+ *     `vm-card-{path}`, with `-default`, `-dirty` and `-focus` children.
  *   - Rail: `vm-rebuild` and `vm-rebuild-components`.
  *   - View State panel: `vm-view-state`, `vm-view-state-clear-focus`, `vm-view-summary` with a
  *     `vm-view-summary-{key}` per value, `vm-saved-value`, `vm-pending-value`, and `vm-view-dirty`.
@@ -309,14 +311,12 @@ const playgroundSection = hoistCmp.factory<ViewManagerPanelModel>({
                         buttonSide: buttonSide === 'right' ? undefined : buttonSide
                     })
                 ].join('\n\n'),
-                item: box({
+                item: viewManager({
                     testId: 'vm-playground',
-                    item: viewManager({
-                        model: viewManagerModel,
-                        showSaveButton,
-                        showRevertButton,
-                        buttonSide
-                    })
+                    model: viewManagerModel,
+                    showSaveButton,
+                    showRevertButton,
+                    buttonSide
                 })
             })
         });

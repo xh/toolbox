@@ -51,7 +51,7 @@
     "classnames": "~2.5.1",
     "core-js": "~3.50.0",
     "fflate": "~0.8.3",
-    "filesize": "~11.0.25",
+    "filesize": "~11.0.26",
     "highcharts": "~12.6.2",
     "lodash": "~4.18.1",
     "minisearch": "^7.2.0",
@@ -74,12 +74,12 @@
     "jsdom": "^30.1.2",
     "lint-staged": "~17.5.1",
     "msw": "^3.0.3",
-    "postcss": "~8.5.29",
+    "postcss": "~8.5.30",
     "prettier": "~3.9.10",
     "stylelint": "~17.15.0",
     "stylelint-config-recommended-scss": "~17.0.1",
     "typescript": "~7.0.2",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.4"
   },
   "packageManager": "pnpm@12.7.0+sha512.9c56477e360068d6e9dca6a92efb4e46b3dc5a52fcebf3d84d78b9736c0ded589a561621a52f68219a7a39facc63cdc079c3226ef9c9d5f02b79f74e69a807b6"
 }
