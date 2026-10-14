@@ -134,7 +134,7 @@ export const messagesPanel = hoistCmp.factory({
                     wrapperOption({
                         label: 'Cancel on dismiss',
                         propName: 'MessageSpec.cancelOnDismiss',
-                        info: 'Dismissing resolves false rather than null.',
+                        info: 'Dismissing calls onCancel. The result is false either way.',
                         control: switchInput({
                             bind: 'pgCancelOnDismiss',
                             disabled: !pgDismissable
