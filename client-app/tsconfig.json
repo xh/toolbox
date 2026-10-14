@@ -32,5 +32,9 @@
   // Reference hoist-react as a composite build.
   // Allows for distinct tsconfig options in hoist-react vs. this application.
   "references": [{"path": "./node_modules/@xh/hoist"}],
-  "include": ["src"]
+  "include": ["src"],
+  // The guideline assistant example uses chat kit APIs not yet published under `next`. Remove this
+  // exclusion, and the matching ones in vitest.config.mts and eslint.config.js, once they are. See
+  // the example's README.
+  "exclude": ["src/examples/chatkit/guide"]
 }
