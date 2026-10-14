@@ -63,6 +63,20 @@ export class ExamplesTabModel extends HoistModel {
             ]
         },
         {
+            title: 'Chat Kit',
+            icon: Icon.sparkles(),
+            path: 'chatkit',
+            srcPath: 'chatkit',
+            text: [
+                p(
+                    'A tour of @xh/hoist-chat-kit: streaming markdown, reasoning, tool calls, approvals, attachments, errors and stop.'
+                ),
+                p(
+                    'Includes generative UI - the model answers with live Hoist grids, charts, metric tiles and cards.'
+                )
+            ]
+        },
+        {
             title: 'Contacts',
             icon: Icon.users(),
             path: 'contact',

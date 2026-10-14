@@ -1,0 +1,106 @@
+.tb-chatkit {
+  &__nav-items {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;
+    padding: var(--xh-pad-half-px);
+  }
+
+  &__nav-item {
+    align-items: center;
+    border-left: 3px solid transparent;
+    border-radius: var(--xh-border-radius-px);
+    cursor: pointer;
+    display: flex;
+    gap: var(--xh-pad-px);
+    padding: var(--xh-pad-px);
+
+    &:hover {
+      background-color: var(--xh-intent-neutral-trans1);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--xh-focus-outline-color, var(--xh-intent-primary));
+      outline-offset: -2px;
+    }
+
+    &--active,
+    &--active:hover {
+      background-color: var(--xh-intent-primary-trans1);
+      border-left-color: var(--xh-intent-primary);
+    }
+  }
+
+  &__nav-icon {
+    color: var(--xh-text-color-muted);
+    display: flex;
+    flex: none;
+    justify-content: center;
+    width: 20px;
+  }
+
+  &__nav-item--active &__nav-icon {
+    color: var(--xh-intent-primary-text-color);
+  }
+
+  &__nav-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__nav-title {
+    font-weight: 600;
+  }
+
+  &__nav-description {
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__nav-status {
+    color: var(--xh-text-color-muted);
+    flex: none;
+  }
+}
+
+.tb-order-ticket {
+  display: flex;
+  flex-direction: column;
+  gap: var(--xh-pad-half-px);
+  max-width: 320px;
+
+  &__headline {
+    align-items: baseline;
+    display: flex;
+    font-size: var(--xh-font-size-large-px);
+    font-weight: 600;
+    gap: var(--xh-pad-px);
+    margin-bottom: var(--xh-pad-half-px);
+  }
+
+  &__side--buy {
+    color: var(--xh-pos-val-color);
+  }
+
+  &__side--sell {
+    color: var(--xh-neg-val-color);
+  }
+
+  &__field {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--xh-pad-double-px);
+  }
+
+  &__label {
+    color: var(--xh-text-color-muted);
+  }
+}
