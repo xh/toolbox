@@ -94,12 +94,8 @@ export class GuideDocumentModel extends HoistModel {
 
         const passage = GuideDocumentModel.findPassage(document, request.passage);
         this.setDocument(document, passage);
-        // The viewer shows a document as one page.
-        sidePanel.setDocumentStatus({
-            state: passage ? 'located' : 'notLocated',
-            page: 1,
-            pageCount: 1
-        });
+        // The documents have no pages, so the panel shows no page label.
+        sidePanel.setDocumentStatus({state: passage ? 'located' : 'notLocated'});
     }
 
     @action

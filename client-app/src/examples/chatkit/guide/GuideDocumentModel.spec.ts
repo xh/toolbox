@@ -37,9 +37,7 @@ describe('GuideDocumentModel', () => {
         sidePanel.open(request('Loans above 2 million dollars need a second...'));
 
         expect(sidePanel.documentStatus).toEqual({state: 'opening'});
-        await vi.waitFor(() =>
-            expect(sidePanel.documentStatus).toEqual({state: 'located', page: 1, pageCount: 1})
-        );
+        await vi.waitFor(() => expect(sidePanel.documentStatus).toEqual({state: 'located'}));
         expect(model.document.documentName).toBe('Property and Appraisal');
         expect(model.located).toEqual({passageId: 'property-appraisal-2'});
     });
@@ -49,9 +47,7 @@ describe('GuideDocumentModel', () => {
 
         sidePanel.open(request('A passage that was since removed.'));
 
-        await vi.waitFor(() =>
-            expect(sidePanel.documentStatus).toEqual({state: 'notLocated', page: 1, pageCount: 1})
-        );
+        await vi.waitFor(() => expect(sidePanel.documentStatus).toEqual({state: 'notLocated'}));
         expect(model.document).not.toBeNull();
         expect(model.located).toBeNull();
     });
@@ -64,7 +60,7 @@ describe('GuideDocumentModel', () => {
         await vi.waitFor(() => expect(sidePanel.documentStatus?.state).toBe('located'));
         sidePanel.open(request('Condominium units must be'));
 
-        expect(sidePanel.documentStatus).toEqual({state: 'located', page: 1, pageCount: 1});
+        expect(sidePanel.documentStatus).toEqual({state: 'located'});
         expect(model.located).toEqual({passageId: 'property-appraisal-3'});
         expect(hoistCore.requestsTo(DOCUMENT_URL)).toHaveLength(before + 1);
     });
