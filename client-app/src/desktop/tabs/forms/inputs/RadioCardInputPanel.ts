@@ -137,7 +137,6 @@ export const radioCardInputPanel = hoistCmp.factory({
                     info: 'Shared by every card. Default is 88px.',
                     control: segmentedControl({
                         bind: 'pgCardWidth',
-                        fill: false,
                         options: [
                             {label: 'Default', value: null},
                             {label: '110', value: 110},
