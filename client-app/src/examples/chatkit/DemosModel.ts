@@ -8,6 +8,7 @@ import {errorsDemo} from './demos/errorsDemo';
 import {genUiDemo} from './demos/genUiDemo';
 import {liveDemo} from './demos/liveDemo';
 import {reasoningDemo} from './demos/reasoningDemo';
+import {timelineDemo} from './demos/timelineDemo';
 import {richContentDemo} from './demos/richContentDemo';
 
 /**
@@ -30,6 +31,7 @@ export class DemosModel extends HoistModel {
     @managed readonly demoModels: ChatKitDemoModel[] = [
         richContentDemo,
         reasoningDemo,
+        timelineDemo,
         approvalDemo,
         genUiDemo,
         errorsDemo,
