@@ -6,12 +6,10 @@ import {Icon} from '@xh/hoist/icon';
 import {BaseAppModel} from '../../BaseAppModel';
 import {demosPanel} from './DemosPanel';
 import {guideAssistantPanel} from './guide/GuideAssistantPanel';
-import {gridHelperPanel} from './helper/GridHelperPanel';
 
 /**
- * A showcase of `@xh/hoist-chat-kit`, in three tabs: demo conversations, each a chat panel of its
- * own, the guideline assistant, a full chat workspace over a server-owned backend, and a grid with
- * a component helper beside it.
+ * A showcase of `@xh/hoist-chat-kit`, in two tabs: demo conversations, each a chat panel of its
+ * own, and the guideline assistant, a full chat workspace over a server-owned backend.
  */
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
@@ -30,12 +28,6 @@ export class AppModel extends BaseAppModel {
                     title: 'Guideline Assistant',
                     icon: Icon.book(),
                     content: guideAssistantPanel
-                },
-                {
-                    id: 'gridHelper',
-                    title: 'Grid Helper',
-                    icon: Icon.gridPanel(),
-                    content: gridHelperPanel
                 }
             ],
             persistWith: {...this.persistWith, path: 'tabs'}
