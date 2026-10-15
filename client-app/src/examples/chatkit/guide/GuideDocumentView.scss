@@ -1,0 +1,37 @@
+// A document as a white page on the viewer's surround, as the chat kit's side panel expects.
+// The page stays white in the dark theme: a document is never inverted.
+.tb-guide-doc {
+  background-color: var(--xh-chat-viewer-surround-bg);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--xh-pad-double-px);
+
+  &__page {
+    background-color: var(--xh-chat-viewer-page-bg);
+    border: var(--xh-border-solid);
+    color: var(--xh-chat-viewer-page-text-color);
+    font-size: var(--xh-font-size-px);
+    line-height: 1.6;
+    padding: 24px 28px;
+  }
+
+  // Hoist colors headings for the app theme. The page keeps its own colors.
+  & &__title {
+    color: inherit;
+    font-size: var(--xh-font-size-large-px);
+    font-weight: 600;
+    margin: 0 0 var(--xh-pad-px);
+  }
+
+  &__passage {
+    border-radius: 2px;
+    margin: 0 0 var(--xh-pad-px);
+    padding: 2px 4px;
+
+    &--cited {
+      background-color: var(--xh-intent-warning-trans2);
+      box-shadow: 0 0 0 1px var(--xh-intent-warning-trans2);
+    }
+  }
+}

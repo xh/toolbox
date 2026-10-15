@@ -109,6 +109,29 @@ export const REPLAY_STREAM = String.raw`data: {"type":"final_summary","answer":"
 
 `;
 
+/**
+ * An answer that found nothing in the documents searched: the fixed "not found" text in chunks,
+ * then a `final_summary` with no sources and `sourceType: 'none'`. Composed in the server's
+ * format, from `GuideService.NOT_FOUND_ANSWER`.
+ */
+export const NO_ANSWER_STREAM = String.raw`data: {"type":"chunk","text":"I could"}
+
+data: {"type":"chunk","text":" not find this"}
+
+data: {"type":"chunk","text":" in the guideline"}
+
+data: {"type":"chunk","text":" library. Try"}
+
+data: {"type":"chunk","text":" rephrasing the"}
+
+data: {"type":"chunk","text":" question, or"}
+
+data: {"type":"chunk","text":" search more documents."}
+
+data: {"type":"final_summary","answer":"I could not find this in the guideline library. Try rephrasing the question, or search more documents.","sources":[],"sourceType":"none","queryId":"0b8f5d0e-7c3a-4a51-9a3e-2f6d1c9e4b17"}
+
+`;
+
 /** A retry of the same `idempotencyKey` while the run is still going. */
 export const DUPLICATE_STREAM = String.raw`data: {"type":"duplicate_in_progress","message":"An identical request is already being processed.","retryAfterSeconds":4}
 

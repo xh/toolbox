@@ -5,13 +5,20 @@ import {SseChatTransport} from '@xh/hoist-chat-kit/transport';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {beforeAll, describe, expect, it, onTestFinished} from 'vitest';
 import {GuideCodec} from './GuideCodec';
-import {DUPLICATE_STREAM, ERROR_STREAM, REPLAY_STREAM, RESET_STREAM} from './GuideStreams.fixtures';
+import type {GuideDocument} from './GuideApi';
+import {
+    DUPLICATE_STREAM,
+    ERROR_STREAM,
+    NO_ANSWER_STREAM,
+    REPLAY_STREAM,
+    RESET_STREAM
+} from './GuideStreams.fixtures';
 
 /**
  * GuideCodec is the only translator between the guideline assistant's stream dialect and the kit.
  * It must send just the new question with the turn's ids and scope, and turn each frame into the
  * events that leave the chat with the backend's authoritative answer, its cited sources and its
- * server id - or with an error the user can retry.
+ * server id - or with the kit's fixed reply when nothing was found, or an error the user can retry.
  */
 describe('GuideCodec', () => {
     beforeAll(async () => {
@@ -99,6 +106,7 @@ describe('GuideCodec', () => {
                     name: 'xh.chat.source',
                     value: {
                         id: 'q1-source-1',
+                        sourceType: 'document',
                         title: 'Appraisal',
                         marker: 1,
                         metadata: {documentId: 'd1', excerpt: 'Valid...'}
@@ -116,6 +124,55 @@ describe('GuideCodec', () => {
                     metadata: {finishReason: 'stop', sourceType: 'library', duplicate: false}
                 }
             ]);
+        });
+
+        it('puts the fixed reply in place of the text when nothing was found, naming the documents searched', () => {
+            const decode = new GuideCodec({documents: () => DOCUMENTS}).createDecoder(
+                    request({runOptions: {scope: ['policy-exceptions']}})
+                ),
+                events = decode({
+                    type: 'final_summary',
+                    answer: 'I could not find this in the guideline library.',
+                    sources: [],
+                    sourceType: 'none',
+                    queryId: 'q2'
+                });
+
+            expect(events).toEqual([
+                {type: 'CUSTOM', name: 'xh.chat.textReplace', value: {text: ''}},
+                {
+                    type: 'CUSTOM',
+                    name: 'xh.chat.data',
+                    value: {
+                        id: 'no-answer',
+                        dataType: 'xh.chat.noAnswer',
+                        data: {documents: [{id: 'policy-exceptions', name: 'Policy Exceptions'}]}
+                    }
+                },
+                {
+                    type: 'CUSTOM',
+                    name: 'xh.chat.message',
+                    value: {role: 'assistant', serverId: 'q2'}
+                },
+                {
+                    type: 'RUN_FINISHED',
+                    threadId: 't1',
+                    runId: 'r1',
+                    metadata: {finishReason: 'stop', sourceType: 'none', duplicate: false}
+                }
+            ]);
+        });
+
+        it('names every document for a question that searched the whole library', () => {
+            const decode = new GuideCodec({documents: () => DOCUMENTS}).createDecoder(request()),
+                [, noAnswer] = decode({
+                    type: 'final_summary',
+                    answer: 'Not found.',
+                    sources: [],
+                    sourceType: 'none',
+                    queryId: 'q2'
+                });
+            expect(noAnswer).toMatchObject({value: {data: {documents: [{}, {}]}}});
         });
 
         it('fails the turn on error and on duplicate_in_progress, with the wait to retry', () => {
@@ -172,6 +229,25 @@ describe('GuideCodec', () => {
                 },
                 {title: 'Policy Exceptions', marker: 2, metadata: {documentId: 'policy-exceptions'}}
             ]);
+        });
+
+        it('ends an answer that found nothing with the fixed reply, and no text', async () => {
+            const chatModel = serveChat(NO_ANSWER_STREAM);
+            chatModel.runOptions = {scope: ['property-appraisal']};
+
+            await chatModel.sendAsync('Do you lend on houseboats?');
+
+            const answer = chatModel.lastMessage;
+            expect(answer.status).toBe('complete');
+            expect(answer.text).toBe('');
+            expect(answer.metadata).toMatchObject({
+                serverId: expect.any(String),
+                sourceType: 'none'
+            });
+            expect(answer.parts.find(it => it.type === 'data')).toMatchObject({
+                dataType: 'xh.chat.noAnswer',
+                data: {documents: [{id: 'property-appraisal', name: 'Property and Appraisal'}]}
+            });
         });
 
         it('takes a replayed answer whole, and marks it a duplicate', async () => {
@@ -239,8 +315,16 @@ function serveChat(stream: string): ChatModel {
     const ret = new ChatModel({
         threadId: 'thread-1',
         historyMode: 'server',
-        transport: new SseChatTransport({url: 'guide/query', codec: new GuideCodec()})
+        transport: new SseChatTransport({
+            url: 'guide/query',
+            codec: new GuideCodec({documents: () => DOCUMENTS})
+        })
     });
     onTestFinished(() => ret.destroy());
     return ret;
 }
+
+const DOCUMENTS: GuideDocument[] = [
+    {documentId: 'property-appraisal', documentName: 'Property and Appraisal', passageCount: 4},
+    {documentId: 'policy-exceptions', documentName: 'Policy Exceptions', passageCount: 4}
+];

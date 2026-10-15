@@ -68,6 +68,13 @@ class GuideService extends BaseService {
         return documents
     }
 
+    /** A document of the library, by id. Throws a 404 for a document the library does not have. */
+    GuideDocument getDocument(String documentId) {
+        def ret = documents.find { it.id == documentId }
+        if (!ret) throw new NotFoundException('Document not found.')
+        return ret
+    }
+
     //------------------------
     // Query
     //------------------------

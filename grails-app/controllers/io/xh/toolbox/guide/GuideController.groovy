@@ -101,6 +101,15 @@ class GuideController extends BaseController {
         renderJSON(documents: guideService.listDocuments())
     }
 
+    /**
+     * GET /guide/documents/{documentId}
+     * Returns: `{documentId, documentName, passages: [{id, text}]}`, the passages in document order.
+     *      404 for a document the library does not have.
+     */
+    def showDocument(String documentId) {
+        renderJSON(guideService.getDocument(documentId).formatWithPassages())
+    }
+
     //------------------------
     // Implementation
     //------------------------

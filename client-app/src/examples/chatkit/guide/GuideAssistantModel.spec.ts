@@ -53,10 +53,9 @@ describe('GuideAssistantModel', () => {
             () => new Response(RESET_STREAM, {headers: {'Content-Type': 'text/event-stream'}})
         );
         const model = createModel();
-        model.newThread();
         model.setScope(['property-appraisal']);
 
-        const chatModel = model.newThread();
+        const chatModel = model.threadsModel.newThread();
         expect(model.scope).toEqual(['property-appraisal']);
         await chatModel.sendAsync('How long is an appraisal valid?');
 

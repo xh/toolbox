@@ -1,9 +1,13 @@
 # Chat Kit
 
 A tour of [`@xh/hoist-chat-kit`](https://github.com/xh/hoist-chat-kit), the chat components for
-Hoist apps. The app lists demo conversations on the left and shows the active one on the right.
-Each demo runs its own `ChatModel`, so it keeps its conversation when you switch away. Run it at
-`/chatkit`.
+Hoist apps. Run it at `/chatkit`. It has two tabs:
+
+- **Demos** lists demo conversations on the left and shows the active one on the right. Each demo
+  runs its own `ChatModel`, so it keeps its conversation when you switch away.
+- **Guideline Assistant** is a full chat workspace over a backend that owns its conversations: a
+  thread sidebar, document scope, `[n]` citations that open the cited passage beside the chat,
+  feedback and a fixed "not found" reply. See [`guide/README.md`](guide/README.md).
 
 All demos but the last run on a `ScriptedChatTransport`, with replies scripted in the browser.
 They need no server, model or API key. Each script's `respond` function picks its reply from the
@@ -24,12 +28,14 @@ attempt at that message. The live demo talks to Claude through the Toolbox serve
 
 ## Structure
 
-- `AppModel` creates one `ChatKitDemoModel` per demo and persists the active demo.
+- `AppModel` holds the two tabs, and persists the active one.
+- `DemosPanel` creates a `DemosModel`, which creates one `ChatKitDemoModel` per demo and persists
+  the active demo. It renders the nav and the kit's `chatPanel` for the active demo, with the
+  kit's `chatClearButton` in its header.
 - `ChatKitDemoModel` owns the demo's `ChatModel`, built from the demo's `createChatConfig()`.
-- `AppComponent` renders the nav and the kit's `chatPanel` for the active demo, with the kit's
-  `chatClearButton` in its header.
 - `demos/Types.ts` declares a demo: its title, nav text, empty state and chat config.
   `demos/scriptUtils.ts` holds the `markdown` helper for the scripted replies.
+- `guide/` holds the Guideline Assistant, with its own README.
 
 ## Live model
 

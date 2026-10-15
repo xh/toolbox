@@ -23,4 +23,13 @@ class GuideDocument implements JSONFormat {
     Map formatForJSON() {
         return [documentId: id, documentName: name, passageCount: passages.size()]
     }
+
+    /** The document with its passages, each with an id unique in the library. */
+    Map formatWithPassages() {
+        return [
+            documentId  : id,
+            documentName: name,
+            passages    : passages.withIndex().collect { text, idx -> [id: "$id-${idx + 1}", text: text] }
+        ]
+    }
 }

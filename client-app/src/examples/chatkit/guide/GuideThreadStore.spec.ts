@@ -1,12 +1,13 @@
 import {hoistCore, hoistError, initTestAppAsync} from '@xh/hoist/test-support';
 import {beforeAll, describe, expect, it} from 'vitest';
-import type {GuideChatRecord, GuideMessageRecord} from './GuideApi';
+import type {GuideChatRecord, GuideDocument, GuideMessageRecord} from './GuideApi';
 import {GuideThreadStore} from './GuideThreadStore';
 
 /**
  * GuideThreadStore maps the guideline assistant's REST records to the kit's thread shapes. A
  * reloaded chat must match the one that streamed - server ids for feedback, ratings, sources with
- * their markers, and each question's scope - and a missing chat must read as the kit expects.
+ * their markers, each question's scope, and the fixed reply for an answer that found nothing -
+ * and a missing chat must read as the kit expects.
  */
 describe('GuideThreadStore', () => {
     beforeAll(async () => {
@@ -19,7 +20,7 @@ describe('GuideThreadStore', () => {
         await initTestAppAsync();
     });
 
-    const store = new GuideThreadStore();
+    const store = new GuideThreadStore({documents: () => DOCUMENTS});
 
     describe('listThreadsAsync', () => {
         it('lists chats as threads, with activity in epoch millis', async () => {
@@ -68,6 +69,7 @@ describe('GuideThreadStore', () => {
                         {
                             type: 'source',
                             id: 'q1-source-1',
+                            sourceType: 'document',
                             title: 'Assets and Reserves',
                             marker: 1,
                             metadata: {documentId: 'assets-reserves', excerpt: 'Gifts may not...'}
@@ -85,7 +87,28 @@ describe('GuideThreadStore', () => {
         it('leaves out feedback for an answer with no rating', async () => {
             const {messages} = await store.loadMessagesAsync({threadId: 's1'});
             expect(messages[3].metadata).toEqual({serverId: 'q2', sourceType: 'none'});
-            expect(messages[3].parts).toHaveLength(1);
+        });
+
+        it('restores an answer that found nothing as the fixed reply, naming the documents searched', async () => {
+            const {messages} = await store.loadMessagesAsync({threadId: 's1'});
+            expect(messages[3].parts).toEqual([
+                {
+                    type: 'data',
+                    id: 'no-answer',
+                    dataType: 'xh.chat.noAnswer',
+                    data: {
+                        documents: [
+                            {id: 'credit-standards', name: 'Credit Standards'},
+                            {id: 'assets-reserves', name: 'Assets and Reserves'}
+                        ]
+                    }
+                }
+            ]);
+        });
+
+        it('counts the documents searched when the library has not loaded', async () => {
+            const {messages} = await new GuideThreadStore().loadMessagesAsync({threadId: 's1'});
+            expect(messages[3].parts[0]).toMatchObject({data: {documentCount: 2}});
         });
 
         it('rejects with httpStatus 404 for a chat with no question yet', async () => {
@@ -179,9 +202,15 @@ const MESSAGES: GuideMessageRecord[] = [
         answer: 'I could not find this in the guideline library.',
         sources: [],
         sourceType: 'none',
-        documentIds: [],
+        documentIds: ['assets-reserves', 'credit-standards'],
         createdAt: 1_792_000_060
     }
+];
+
+const DOCUMENTS: GuideDocument[] = [
+    {documentId: 'credit-standards', documentName: 'Credit Standards', passageCount: 4},
+    {documentId: 'debt-to-income', documentName: 'Debt-to-Income Limits', passageCount: 4},
+    {documentId: 'assets-reserves', documentName: 'Assets and Reserves', passageCount: 4}
 ];
 
 const FEEDBACK = {threadId: 's1', messageId: 'm1', serverId: 'q1', runId: 'r1', rating: null};

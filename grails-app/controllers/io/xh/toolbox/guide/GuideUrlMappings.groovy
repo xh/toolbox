@@ -15,6 +15,7 @@ class GuideUrlMappings {
             "/chats/$sessionId"(controller: "guide", action: [PATCH: "renameChat", DELETE: "deleteChat"])
             patch "/messages/$queryId"(controller: "guide", action: "submitFeedback")
             get "/documents"(controller: "guide", action: "documents")
+            get "/documents/$documentId"(controller: "guide", action: "showDocument")
         }
     }
 }

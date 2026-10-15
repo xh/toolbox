@@ -1,9 +1,19 @@
 import type {ChatCodec, ChatDecoder, ChatEvent, ChatRunRequest} from '@xh/hoist-chat-kit/transport';
+import {noAnswerEvents} from '@xh/hoist-chat-kit/transport';
 import type {PlainObject} from '@xh/hoist/core';
 import {logDebug, throwIf} from '@xh/hoist/utils/js';
 import {findLast} from 'lodash';
-import type {GuideRunOptions, GuideSource} from './GuideApi';
-import {toSourceFields} from './GuideApi';
+import type {GuideDocument, GuideRunOptions, GuideSource} from './GuideApi';
+import {NO_ANSWER_PART_ID, toNoAnswerData, toSourceFields} from './GuideApi';
+
+/** Configuration for a {@link GuideCodec}. */
+export interface GuideCodecConfig {
+    /**
+     * The library's documents, read when an answer finds nothing, to name the documents its
+     * question searched. Default none - the reply then shows only the count of a scope.
+     */
+    documents?: () => GuideDocument[];
+}
 
 /**
  * Codec for the guideline assistant's query stream - Server-Sent Events in a dialect of its own,
@@ -23,12 +33,17 @@ import {toSourceFields} from './GuideApi';
  *  - `reset {}` - clears the answer, with an `xh.chat.textReplace` of empty text. Chunks follow.
  *  - `final_summary {answer, sources, sourceType, queryId}` - replaces the answer with its
  *    authoritative text, adds a source per cited passage, records `queryId` as the answer's server
- *    id, and finishes the run.
+ *    id, and finishes the run. For `sourceType: 'none'` - nothing found - it clears the text and
+ *    adds the kit's fixed "not found" reply in its place, naming the documents searched.
  *  - `error {message}` - fails the turn, with code `guide-error`.
  *  - `duplicate_in_progress {message, retryAfterSeconds}` - fails the turn, with code
  *    `duplicate-in-progress` and the wait the backend asks for before a retry.
  */
 export class GuideCodec implements ChatCodec {
+    constructor(config: GuideCodecConfig = {}) {
+        this.getDocuments = config.documents ?? (() => []);
+    }
+
     encodeRequest(request: ChatRunRequest): PlainObject {
         const {historyMode, newMessages, threadId, runOptions} = request,
             question = findLast(newMessages, it => it.isUser)?.text;
@@ -47,7 +62,8 @@ export class GuideCodec implements ChatCodec {
     }
 
     createDecoder(request: ChatRunRequest): ChatDecoder {
-        const {threadId, runId} = request;
+        const {threadId, runId, runOptions} = request,
+            scope = (runOptions as GuideRunOptions)?.scope ?? [];
         return (frame: PlainObject): ChatEvent[] => {
             switch (frame.type) {
                 case 'chunk':
@@ -56,7 +72,7 @@ export class GuideCodec implements ChatCodec {
                     return [textReplace('')];
                 case 'final_summary':
                     return [
-                        textReplace(frame.answer),
+                        ...this.answerEvents(frame, scope),
                         ...(frame.sources as GuideSource[]).map((source, idx): ChatEvent => ({
                             type: 'CUSTOM',
                             name: 'xh.chat.source',
@@ -95,6 +111,18 @@ export class GuideCodec implements ChatCodec {
             }
         };
     }
+
+    //------------------
+    // Implementation
+    //------------------
+    private readonly getDocuments: () => GuideDocument[];
+
+    /** The final answer's text - or, for an answer that found nothing, the fixed reply. */
+    private answerEvents({answer, sourceType}: PlainObject, scope: string[]): ChatEvent[] {
+        if (sourceType !== 'none') return [textReplace(answer)];
+        const data = toNoAnswerData(scope, this.getDocuments());
+        return [textReplace(''), ...noAnswerEvents(data, {id: NO_ANSWER_PART_ID})];
+    }
 }
 
 //------------------
@@ -102,7 +130,6 @@ export class GuideCodec implements ChatCodec {
 //------------------
 /** Id of the answer's text part. The backend streams one answer per run. */
 const ANSWER_ID = 'answer';
-
 function textReplace(text: string): ChatEvent {
     return {type: 'CUSTOM', name: 'xh.chat.textReplace', value: {text}};
 }
