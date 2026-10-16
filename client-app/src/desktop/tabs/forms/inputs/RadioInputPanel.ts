@@ -77,7 +77,6 @@ export const radioInputPanel = hoistCmp.factory({
                     propName: 'RadioInputProps.labelSide',
                     control: segmentedControl({
                         bind: 'pgLabelSide',
-                        fill: false,
                         compact: true,
                         options: ['left', 'right']
                     })
