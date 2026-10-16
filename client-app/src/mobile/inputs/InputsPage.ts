@@ -121,6 +121,16 @@ const numbersCard = hoistCmp.factory<InputsPageModel>(({model}) =>
             })
         }),
         demoRow({
+            label: "displayWithCommas: 'always'",
+            info: 'Commas appear while typing',
+            control: numberInput({
+                model,
+                bind: 'liveCommasNumber',
+                disabled: model.disabled,
+                displayWithCommas: 'always'
+            })
+        }),
+        demoRow({
             label: 'scaleFactor, valueLabel',
             info: 'Stores 0-1, displays as %',
             control: numberInput({
