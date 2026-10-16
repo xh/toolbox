@@ -74,6 +74,7 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
         {title: 'ErrorMessage', route: `${R}.components.errorMessage`}
     ],
     'docs/routing.md': [{title: 'Simple Routing', route: `${R}.system.simpleRouting`}],
+    'docs/persistence.md': [{title: 'ViewManager', route: `${R}.system.viewManager`}],
     'appcontainer/README.md': [
         {title: 'Updates & Idle', route: `${R}.system.updatesIdle`},
         {title: 'Banners', route: `${R}.system.banners`},
@@ -92,7 +93,7 @@ const DOC_EXAMPLES: Record<string, DocExampleLink[]> = {
         {title: 'FilterChooser', route: `${R}.grids.filterChooser`},
         {title: 'GroupingChooser', route: `${R}.grids.groupingChooser`}
     ],
-    'cmp/viewmanager/README.md': [{title: 'Standard Grid', route: `${R}.grids.standard`}],
+    'cmp/viewmanager/README.md': [{title: 'ViewManager', route: `${R}.system.viewManager`}],
     'core/README.md': [{title: 'Factories vs. JSX', route: `${R}.system.jsx`}],
     'mobile/README.md': [{title: 'Mobile', route: `${R}.mobile`}]
 };
