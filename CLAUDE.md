@@ -370,7 +370,8 @@ When you drive Toolbox in a browser, the developer's normal setup is the default
 be logged in, or want their own state or the OAuth flow in play. If you need to log in yourself and
 have no session to use, you can run the server on a throwaway H2 database with a temporary admin
 login. Check with the developer first if it is not clear which they want. Never enter a
-developer's own credentials. See
+developer's own credentials. A throwaway server always uses the fixed login `agent@xh.io` /
+`localDevOnly`, never a generated password, so anyone who finds its login prompt can sign in. See
 [Agent-driven sessions](docs/running-locally.md#agent-driven-sessions-with-a-throwaway-database).
 
 ### App URLs during Local Development

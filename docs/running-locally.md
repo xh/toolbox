@@ -156,14 +156,18 @@ local MySQL database untouched. All settings are passed on the command line for 
 
 * **Server** - from the project root:
   ```
-  export AGENT_PASSWORD=$(openssl rand -hex 12)
   APP_TOOLBOX_USE_H2=true \
   APP_TOOLBOX_OAUTH_PROVIDER=NONE \
   APP_TOOLBOX_BOOTSTRAP_ADMIN_USER=agent@xh.io \
-  APP_TOOLBOX_BOOTSTRAP_ADMIN_PASSWORD=$AGENT_PASSWORD \
+  APP_TOOLBOX_BOOTSTRAP_ADMIN_PASSWORD=localDevOnly \
   ./gradlew bootRun
   ```
   Startup logs `Local admin user available as per instanceConfig` once the user is seeded.
+
+  Always use these exact credentials - `agent@xh.io` / `localDevOnly` - and never a generated
+  password. Then the developer, or any other agent that finds the login prompt, can sign in to a
+  throwaway server without tracking down the session that started it. The password guards nothing:
+  the user exists only in an in-memory database on a local machine.
 
 * **Client** - start as usual, with `pnpm startWithHoist` to test local hoist-react changes.
 
@@ -174,7 +178,7 @@ local MySQL database untouched. All settings are passed on the command line for 
   await fetch('/api/xh/login', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: new URLSearchParams({username: 'agent@xh.io', password: '<AGENT_PASSWORD>'})
+      body: new URLSearchParams({username: 'agent@xh.io', password: 'localDevOnly'})
   });
   ```
   Reload the page after a `{"success":true}` response.
