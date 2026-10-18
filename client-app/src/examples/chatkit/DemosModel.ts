@@ -6,6 +6,7 @@ import {approvalDemo} from './demos/approvalDemo';
 import {attachmentsDemo} from './demos/attachmentsDemo';
 import {errorsDemo} from './demos/errorsDemo';
 import {genUiDemo} from './demos/genUiDemo';
+import {interruptsDemo} from './demos/interruptsDemo';
 import {liveDemo} from './demos/liveDemo';
 import {reasoningDemo} from './demos/reasoningDemo';
 import {timelineDemo} from './demos/timelineDemo';
@@ -33,6 +34,7 @@ export class DemosModel extends HoistModel {
         reasoningDemo,
         timelineDemo,
         approvalDemo,
+        interruptsDemo,
         genUiDemo,
         errorsDemo,
         attachmentsDemo,
