@@ -16,7 +16,7 @@ import {XH} from '@xh/hoist/core';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {throwIf} from '@xh/hoist/utils/js';
 import type {GuideChatRecord, GuideDocument, GuideMessageRecord, GuideRunOptions} from './GuideApi';
-import {NO_ANSWER_PART_ID, toNoAnswerData, toSourceFields} from './GuideApi';
+import {NO_ANSWER_PART_ID, stripLeakedTags, toNoAnswerData, toSourceFields} from './GuideApi';
 
 /** Configuration for a {@link GuideThreadStore}. */
 export interface GuideThreadStoreConfig {
@@ -29,14 +29,13 @@ export interface GuideThreadStoreConfig {
 
 /**
  * Thread store for the guideline assistant, over its REST endpoints. The browser mints each chat's
- * session id, and the backend creates the chat on its first question, so the store has no
- * `createThreadAsync`. The backend has no pins and no paging, so the store lists every chat, loads
- * every message, and searches titles itself.
+ * session id, and the backend creates the chat on its first question. The store lists every chat,
+ * loads every message, and searches titles itself, as the backend cannot.
  *
  * Each history record is one question and its answer. The store maps it to a user message and an
  * assistant message, keyed by the record's `queryId`. The answer keeps the id as its server id,
  * for feedback, with its rating and its cited passages as source parts. The question keeps the
- * documents it searched as its run options, so a retry or an edit searches them again. An answer
+ * documents it searched as its run options, so a retry searches them again. An answer
  * that found nothing - `sourceType: 'none'` - restores as the kit's fixed "not found" reply, as it
  * streamed.
  */
@@ -88,7 +87,7 @@ export class GuideThreadStore implements ChatThreadStore {
         throwIf(!serverId, 'This answer has no id from the server yet, so it cannot be rated.');
         await XH.fetchService.patchJson({
             url: `guide/messages/${encode(serverId)}`,
-            body: {rating: rating ? RATINGS[rating] : null, comment: comment ?? null}
+            body: {rating: RATINGS[rating], comment: comment ?? null}
         });
     }
 
@@ -116,7 +115,7 @@ export class GuideThreadStore implements ChatThreadStore {
                           dataType: CHAT_NO_ANSWER_DATA_TYPE,
                           data: toNoAnswerData(runOptions.scope, this.getDocuments())
                       }
-                    : {type: 'text', id: 'answer', text: answer, state: 'done'};
+                    : {type: 'text', id: 'answer', text: stripLeakedTags(answer), state: 'done'};
 
         return [
             {

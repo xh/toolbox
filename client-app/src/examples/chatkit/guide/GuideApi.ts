@@ -127,3 +127,41 @@ export function toNoAnswerData(
     }
     return isEmpty(documentIds) ? {} : {documentCount: documentIds.length};
 }
+
+/**
+ * An answer's text without the markup the backend's model can leak. A `<thinking>` or
+ * `<function_calls>` block goes with its content, closed or still streaming. A stray `<invoke>`,
+ * `<parameter>`, `<reason>` or `<answer>` tag goes, and its text stays. The chat's
+ * `textTransform` applies it as the answer streams, and the store applies it to history, which
+ * the transform does not reach.
+ *
+ * @param text - the answer's text so far.
+ * @param isStreaming - true while more text may arrive. A tag cut off at the end of the text,
+ *      such as `<thin`, then goes too, so it does not flash before the rest of it arrives.
+ */
+export function stripLeakedTags(text: string, isStreaming: boolean = false): string {
+    text = text.replace(LEAKED_BLOCKS, '').replace(LEAKED_TAGS, '');
+    return isStreaming ? trimPartialTag(text) : text;
+}
+
+//------------------
+// Implementation
+//------------------
+const TAG_NAMES = ['thinking', 'function_calls', 'invoke', 'parameter', 'reason', 'answer'],
+    LEAKED_BLOCKS = /<(thinking|function_calls)(\s[^>]*)?>[\s\S]*?(<\/\1>|$)/g,
+    LEAKED_TAGS = /<\/?(invoke|parameter|reason|answer)(\s[^>]*)?>/g,
+    PARTIAL_TAG = /^<\/?([a-z_]*)(\s[^>]*)?$/;
+
+/**
+ * The text without a leaked tag cut off at its end: a `<` or `</` with part of a tag's name, or
+ * with all of it and attributes still arriving. A `<` in prose, such as `DTI < 43%`, stays.
+ */
+function trimPartialTag(text: string): string {
+    const idx = text.lastIndexOf('<'),
+        match = idx >= 0 ? PARTIAL_TAG.exec(text.slice(idx)) : null;
+    if (!match) return text;
+
+    const [, name, attrs] = match,
+        isTag = attrs ? TAG_NAMES.includes(name) : TAG_NAMES.some(it => it.startsWith(name));
+    return isTag ? text.slice(0, idx) : text;
+}

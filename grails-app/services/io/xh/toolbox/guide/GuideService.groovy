@@ -193,12 +193,11 @@ class GuideService extends BaseService {
 
     /**
      * Rate an answer `up` or `down`, by the `queryId` of its `final_summary`. A down rating needs a
-     * comment. A null rating clears the rating - an addition of this demo, as a real backend may
-     * offer no way to clear one.
+     * comment. A rating cannot be cleared, only changed, as with the real backend this emulates.
      */
     Map submitFeedback(String username, String queryId, String rating, String comment) {
         comment = comment?.trim()
-        if (!(rating in ['up', 'down', null])) {
+        if (!(rating in ['up', 'down'])) {
             throw new RoutineRuntimeException('Rating must be "up" or "down".')
         }
         if (rating == 'down' && !comment) {
@@ -210,7 +209,7 @@ class GuideService extends BaseService {
         if (!message) throw new NotFoundException('Message not found.')
 
         message.feedback = rating
-        message.comment = rating ? elide(comment, MAX_COMMENT_CHARS) : null
+        message.comment = elide(comment, MAX_COMMENT_CHARS)
         return [queryId: queryId, rating: rating]
     }
 

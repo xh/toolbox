@@ -7,6 +7,7 @@ import type {LoadSpec} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {action, computed, observableRef} from '@xh/hoist/mobx';
 import type {GuideDocument, GuideRunOptions} from './GuideApi';
+import {stripLeakedTags} from './GuideApi';
 import {GuideCodec} from './GuideCodec';
 import {GuideDocumentModel} from './GuideDocumentModel';
 import {guideDocumentView} from './GuideDocumentView';
@@ -21,7 +22,8 @@ import {GuideThreadStore} from './GuideThreadStore';
  *   user selects, or that still has a turn running.
  * - `workspaceModel` lays out the kit's chat workspace over the chats: the thread sidebar, the
  *   conversation, and a side panel for cited documents.
- * - Each chat streams answers over an `SseChatTransport`, decoded by a `GuideCodec`.
+ * - Each chat streams answers over an `SseChatTransport`, decoded by a `GuideCodec`. The backend
+ *   only appends to a chat, so a chat offers no edit or regenerate.
  * - The document scope is each chat's own run options, as a `GuideRunOptions`. A new chat starts
  *   with the scope of the chat the user was in.
  * - Each answer's sources are documents, with the `marker` that cites them. A click on a citation
@@ -63,8 +65,17 @@ export class GuideAssistantModel extends HoistModel {
                         codec: new GuideCodec({documents})
                     }),
                     runOptions: {scope: isNew ? this.scope : []} as GuideRunOptions,
-                    // The backend requires a comment with a down rating.
-                    feedback: {commentOn: 'negative', requireComment: true}
+                    textTransform: (text, {isStreaming}) => stripLeakedTags(text, isStreaming),
+                    // The backend requires a comment with a down rating, keeps 2,000 characters
+                    // of it, and cannot clear a rating.
+                    feedback: {
+                        requireComment: true,
+                        clearable: false,
+                        maxCommentLength: 2000
+                    },
+                    // The backend only appends to a chat - it cannot rewrite or replace an answer.
+                    allowEdit: false,
+                    allowRegenerate: false
                 })
         });
 

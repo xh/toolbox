@@ -85,7 +85,7 @@ class GuideController extends BaseController {
 
     /**
      * PATCH /guide/messages/{queryId}
-     * Body: `{rating: 'up' | 'down' | null, comment?}` - a comment is required for `down`.
+     * Body: `{rating: 'up' | 'down', comment?}` - a comment is required for `down`.
      * Returns: `{queryId, rating}`.
      */
     def submitFeedback(String queryId) {

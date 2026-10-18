@@ -16,15 +16,17 @@ attempt at that message. The live demo talks to Claude through the Toolbox serve
 
 ## Demos
 
-| Demo                | What it shows                                                                                                    | Kit API                                                          | Source                                   |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------- |
-| Rich content        | A streamed markdown reply: headings, lists, a table, code blocks, a blockquote, citations and sources            | `textEvents`, `citationEvents`, `sourceEvents`                   | `demos/richContentDemo.ts`               |
-| Reasoning and tools | Streamed thinking, then three tool calls the browser runs in turn. One fails, and the answer works with the rest | `reasoningEvents`, `toolCallEvents`, `ChatToolSpec.execute`      | `demos/reasoningDemo.ts`                 |
-| Approval            | An order that waits for Approve or Deny, shown as an order ticket                                                | `needsApproval`, `approvalPrompt`, `renderer`                    | `demos/approvalDemo.ts`                  |
-| Generative UI       | KPI tiles, a grid that fills in as it streams, a chart, and a card whose buttons ask follow-ups                  | `ChatUiCatalog` and the built-in `chatUi*Spec` components        | `demos/genUiDemo.ts`, `demos/catalog.ts` |
-| Errors and stop     | A reply that fails partway, with Retry. The retry streams a long reply to cut short with Stop                    | `errorEvents`, the `attempt` passed to `respond`, retry and stop | `demos/errorsDemo.ts`                    |
-| Attachments         | Files attached with the paperclip, dropped on the chat or pasted                                                 | `ChatComposerConfig` attachment options                          | `demos/attachmentsDemo.ts`               |
-| Live model          | A real conversation with Claude, with the same generative UI catalog                                             | `HoistChatTransport`, `AnthropicCodec`                           | `demos/liveDemo.ts`                      |
+| Demo                | What it shows                                                                                                                       | Kit API                                                          | Source                                   |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------- |
+| Rich content        | A streamed markdown reply: headings, lists, a table, code blocks, a blockquote, citations and sources                               | `textEvents`, `citationEvents`, `sourceEvents`                   | `demos/richContentDemo.ts`               |
+| Reasoning and tools | Streamed thinking, then three tool calls the browser runs in turn. One fails, and the answer works with the rest                    | `reasoningEvents`, `toolCallEvents`, `ChatToolSpec.execute`      | `demos/reasoningDemo.ts`                 |
+| Agent timeline      | An agent run in the activity timeline: a pinned plan, a query, a batch of three calls, and a sub-agent whose failed call is retried | `subagentEvents`, `toolCallEvents`, `ChatToolSpec.display`       | `demos/timelineDemo.ts`                  |
+| Approval            | An order that waits for Approve or Deny, shown as an order ticket                                                                   | `needsApproval`, `approvalPrompt`, `renderer`                    | `demos/approvalDemo.ts`                  |
+| Agent Questions     | A server agent that pauses its run to ask a question, fill in a short form, or approve one of its tools, then resumes               | `interruptEvents`, `ChatRunRequest.resume`                       | `demos/interruptsDemo.ts`                |
+| Generative UI       | KPI tiles, a grid that fills in as it streams, a chart, and a card whose buttons ask follow-ups                                     | `ChatUiCatalog` and the built-in `chatUi*Spec` components        | `demos/genUiDemo.ts`, `demos/catalog.ts` |
+| Errors and stop     | A reply that fails partway, with Retry. The retry streams a long reply to cut short with Stop                                       | `errorEvents`, the `attempt` passed to `respond`, retry and stop | `demos/errorsDemo.ts`                    |
+| Attachments         | Files attached with the paperclip, dropped on the chat or pasted                                                                    | `ChatComposerConfig` attachment options                          | `demos/attachmentsDemo.ts`               |
+| Live model          | A real conversation with Claude, with the same generative UI catalog                                                                | `HoistChatTransport`, `AnthropicCodec`                           | `demos/liveDemo.ts`                      |
 
 ## Structure
 

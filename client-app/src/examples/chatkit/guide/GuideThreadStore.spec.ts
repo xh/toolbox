@@ -12,11 +12,16 @@ import {GuideThreadStore} from './GuideThreadStore';
 describe('GuideThreadStore', () => {
     beforeAll(async () => {
         hoistCore.route('GET', 'guide/chats', () => ({chats: CHATS}));
-        hoistCore.route('GET', 'guide/chats/:sessionId/messages', ({params}) =>
-            params.sessionId === 's1'
-                ? {messages: MESSAGES}
-                : hoistError(404, {name: 'NotFoundException', message: 'Chat not found.'})
-        );
+        hoistCore.route('GET', 'guide/chats/:sessionId/messages', ({params}) => {
+            switch (params.sessionId) {
+                case 's1':
+                    return {messages: MESSAGES};
+                case 'leaky':
+                    return {messages: [LEAKY_MESSAGE]};
+                default:
+                    return hoistError(404, {name: 'NotFoundException', message: 'Chat not found.'});
+            }
+        });
         await initTestAppAsync();
     });
 
@@ -24,7 +29,7 @@ describe('GuideThreadStore', () => {
 
     describe('listThreadsAsync', () => {
         it('lists chats as threads, with activity in epoch millis', async () => {
-            const {threads, nextCursor} = await store.listThreadsAsync({});
+            const {threads} = await store.listThreadsAsync({});
             expect(threads).toEqual([
                 {
                     id: 's1',
@@ -39,7 +44,6 @@ describe('GuideThreadStore', () => {
                     isRunning: true
                 }
             ]);
-            expect(nextCursor).toBeUndefined();
         });
 
         it('searches titles, as the backend cannot', async () => {
@@ -82,6 +86,16 @@ describe('GuideThreadStore', () => {
                     }
                 }
             ]);
+        });
+
+        it('strips markup the model leaked from an answer', async () => {
+            const {messages} = await store.loadMessagesAsync({threadId: 'leaky'});
+            expect(messages[1].parts[0]).toEqual({
+                type: 'text',
+                id: 'answer',
+                text: 'No. [1]',
+                state: 'done'
+            });
         });
 
         it('leaves out feedback for an answer with no rating', async () => {
@@ -152,12 +166,10 @@ describe('GuideThreadStore', () => {
                 comment: 'Out of date.'
             });
             await store.submitFeedbackAsync({...FEEDBACK, rating: 'positive'});
-            await store.submitFeedbackAsync({...FEEDBACK, rating: null});
 
             expect(hoistCore.requestsTo('guide/messages/q1').map(it => it.json)).toEqual([
                 {rating: 'down', comment: 'Out of date.'},
-                {rating: 'up', comment: null},
-                {rating: null, comment: null}
+                {rating: 'up', comment: null}
             ]);
         });
 
@@ -206,6 +218,11 @@ const MESSAGES: GuideMessageRecord[] = [
         createdAt: 1_792_000_060
     }
 ];
+
+const LEAKY_MESSAGE: GuideMessageRecord = {
+    ...MESSAGES[0],
+    answer: '<thinking>Check reserves.</thinking><function_calls><invoke name="search"></invoke></function_calls>No. [1]'
+};
 
 const DOCUMENTS: GuideDocument[] = [
     {documentId: 'credit-standards', documentName: 'Credit Standards', passageCount: 4},

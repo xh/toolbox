@@ -16,7 +16,7 @@ Open it in the Chat Kit app at `/chatkit`, on the Guideline Assistant tab. See
 GuideAssistantModel (HoistModel)
 ├── threadsModel: ChatThreadsModel        # The user's chats, one ChatModel per open chat
 │   ├── store: GuideThreadStore           # REST: list, history, rename, delete, feedback
-│   └── createChatModel → ChatModel       # historyMode 'server', feedback with comments
+│   └── createChatModel → ChatModel       # historyMode 'server', append only, feedback with comments
 │       └── SseChatTransport('guide/query')
 │           └── codec: GuideCodec         # The stream dialect <-> kit events
 ├── workspaceModel: ChatWorkspaceModel    # The kit's workspace: sidebar, chat, side panel
@@ -53,7 +53,7 @@ All endpoints are relative to the Toolbox server. Each user sees only their own 
 | `GET guide/chats/{sessionId}/messages` | -                                                       | `{messages: [{queryId, question, answer, sources, sourceType, documentIds, createdAt, feedback?, comment?}]}`, oldest first. 404 for a chat the user does not have |
 | `PATCH guide/chats/{sessionId}`        | `{title}`                                               | `{sessionId, title}`                                                                                                                                               |
 | `DELETE guide/chats/{sessionId}`       | -                                                       | `{sessionId, deleted: true}`. 404 for a chat the user does not have                                                                                                |
-| `PATCH guide/messages/{queryId}`       | `{rating: 'up' \| 'down' \| null, comment?}`            | `{queryId, rating}`. A down rating needs a comment                                                                                                                 |
+| `PATCH guide/messages/{queryId}`       | `{rating: 'up' \| 'down', comment?}`                    | `{queryId, rating}`. A down rating needs a comment, cut to 2,000 characters. A rating cannot be cleared                                                            |
 | `GET guide/documents`                  | -                                                       | `{documents: [{documentId, documentName, passageCount}]}`                                                                                                          |
 | `GET guide/documents/{documentId}`     | -                                                       | `{documentId, documentName, passages: [{id, text}]}`, in document order. 404 for a document the library does not have                                              |
 
@@ -106,19 +106,20 @@ The real backend's contract may differ from the emulator's in a few places. Each
 - **Scope in history** - the emulator returns each question's `documentIds`, which the store
   restores as the question's run options. A backend that does not store them needs the app to
   keep them by `queryId`.
-- **Comments and clearing** - the emulator returns a rating's comment, and takes a null rating to
-  clear one. A backend without either needs the store to omit the comment, and the UI to hide
-  the clear.
+- **Comments** - the emulator returns a rating's comment. A backend that does not needs the store
+  to omit it.
 - **External sources** - a source that is already a URL sets `url` and `sourceType: 'url'` in
   `toSourceFields()`, so the default click opens it in a new tab.
 - **Documents** - the viewer shows the emulator's passages as text. A real library serves files,
   such as PDFs. Replace `GuideDocumentView` with a viewer for them, and keep the model's status
   reports. If the backend returns a page or a passage id with each source, pass it in the source's
   `metadata`, and locate by it rather than by the excerpt.
-- **Leaked model markup** - a model that leaks tags such as `<thinking>` needs a `textTransform`
-  on the chat, and the same clean-up in the store's mapping.
-- **Paging and search** - the store lists every chat, loads every message and searches titles
-  itself, as the backend has neither. A backend with cursors passes them through.
+- **Leaked model markup** - the real backend's model can leak markup into an answer.
+  `stripLeakedTags` drops `<thinking>` and `<function_calls>` blocks with their content, and stray
+  `<invoke>`, `<parameter>`, `<reason>` and `<answer>` tags. The chat applies it as its
+  `textTransform`, and the store applies it to history, so stored and streamed answers agree.
+- **Search** - the store lists every chat, loads every message and searches titles itself, as the
+  backend cannot search.
 
 ## The page
 
@@ -140,5 +141,9 @@ no state.
 - **Not found** - an answer with `sourceType: 'none'` shows the kit's fixed reply, which names the
   documents searched. Its only thumb is a down vote, meaning "it is in these documents".
 - **Feedback** - thumbs on each answer. A down vote opens the kit's comment form, and saves only
-  with its comment, as the backend requires one.
+  with its comment, as the backend requires one. The form takes up to 2,000 characters, the most
+  the backend keeps. A rating can be changed but not cleared, as the backend has no way to clear
+  one.
+- **Append only** - the backend adds each answer to the chat and cannot rewrite or replace one,
+  so the chat sets `allowEdit` and `allowRegenerate` false. A failed answer can still be retried.
 - **Empty state** - suggested questions, including one that shows the "not found" reply.
