@@ -47,7 +47,7 @@ export const segmentedControlPanel = hoistCmp.factory({
             entry: ENTRY,
             description: [
                 'A single choice from a small, mutually exclusive set, rendered as toggle segments',
-                'in a tray. Fills its container by default or hugs its options with `fill: false`.',
+                'in a tray. Sized to its options by default - set `width` or `flex` to size it.',
                 '',
                 'Options take a label, value, icon, disabled flag and intent; a null-valued option',
                 'gives the control an explicit empty state.'
@@ -71,8 +71,8 @@ export const segmentedControlPanel = hoistCmp.factory({
             ],
             playgroundOptions: [
                 wrapperOption({
-                    label: 'Fill width',
-                    propName: 'SegmentedControlProps.fill',
+                    label: 'Full width',
+                    propName: 'LayoutProps.width',
                     control: switchInput({bind: 'pgFill'})
                 }),
                 wrapperOption({
@@ -105,7 +105,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                 config: fmtDemoConfig<SegmentedControlProps>('segmentedControl', {
                     bind: 'value',
                     options: raw('SC_OPTIONS'),
-                    fill: model.pgFill ? undefined : false,
+                    width: model.pgFill ? '100%' : undefined,
                     showTrayBackground: model.pgTrayBackground ? undefined : false,
                     outlined: model.pgOutlined ? undefined : false,
                     showOptionDividers:
@@ -117,7 +117,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                 item: segmentedControl({
                     bind: 'playground',
                     ...ambientProps,
-                    fill: model.pgFill,
+                    width: model.pgFill ? '100%' : undefined,
                     showTrayBackground: model.pgTrayBackground,
                     outlined: model.pgOutlined,
                     showOptionDividers:
@@ -189,7 +189,6 @@ export const segmentedControlPanel = hoistCmp.factory({
                     bind: 'tbarSegment',
                     ...ambientProps,
                     compact,
-                    fill: false,
                     options: SC_OPTIONS
                 }),
                 toolbarSep(),
@@ -197,7 +196,6 @@ export const segmentedControlPanel = hoistCmp.factory({
                     bind: 'tbarLevel',
                     ...ambientProps,
                     compact,
-                    fill: false,
                     options: ['Low', 'Medium', 'High']
                 })
             ],
@@ -210,7 +208,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                             model: model.formModel,
                             item: formField({
                                 field: 'role',
-                                item: segmentedControl({fill: false, options: SC_OPTIONS})
+                                item: segmentedControl({options: SC_OPTIONS})
                             })
                         })
                     }),
@@ -222,7 +220,6 @@ export const segmentedControlPanel = hoistCmp.factory({
                                 field: 'level',
                                 inline: true,
                                 item: segmentedControl({
-                                    fill: false,
                                     options: ['Low', 'Medium', 'High']
                                 })
                             })
@@ -248,7 +245,7 @@ const SEEDS = {
 
 class SegmentedControlPanelModel extends InputDemoModel {
     // Playground props
-    @bindable accessor pgFill = true;
+    @bindable accessor pgFill = false;
     @bindable accessor pgTrayBackground = true;
     @bindable accessor pgOutlined = true;
     @bindable accessor pgDividers: 'auto' | 'true' | 'false' = 'auto';

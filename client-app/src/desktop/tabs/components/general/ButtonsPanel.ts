@@ -88,7 +88,6 @@ export const buttonsPanel = hoistCmp.factory({
                             propName: 'ButtonProps.minimal / outlined',
                             control: segmentedControl({
                                 bind: 'pgStyle',
-                                fill: false,
                                 compact: true,
                                 options: [
                                     {value: 'minimal', label: 'Minimal'},

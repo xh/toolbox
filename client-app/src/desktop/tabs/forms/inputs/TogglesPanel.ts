@@ -77,7 +77,6 @@ export const togglesPanel = hoistCmp.factory({
                     info: 'Checkbox and SwitchInput.',
                     control: segmentedControl({
                         bind: 'pgLabelSide',
-                        fill: false,
                         compact: true,
                         options: ['left', 'right']
                     })

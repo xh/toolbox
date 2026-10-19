@@ -144,7 +144,6 @@ const bottomBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
         items: [
             segmentedControl({
                 bind: 'visible',
-                fill: false,
                 compact: model.compact,
                 options: [
                     {value: true, label: 'Show', icon: Icon.eye()},

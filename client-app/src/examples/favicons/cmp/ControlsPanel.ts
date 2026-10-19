@@ -115,7 +115,7 @@ const iconCard = hoistCmp.factory({
                     onChange: v => (model.preferredPrefix = v),
                     options: model.weightOptions,
                     compact: true,
-                    fill: true
+                    width: '100%'
                 })
             ]
         });
@@ -167,7 +167,7 @@ const shapeCard = hoistCmp.factory({
                     onChange: v => model.setShape(v),
                     options: SHAPE_OPTIONS,
                     compact: true,
-                    fill: true
+                    width: '100%'
                 }),
                 model.shape === 'rounded'
                     ? fieldRow({

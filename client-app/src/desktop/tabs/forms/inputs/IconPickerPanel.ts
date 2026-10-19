@@ -103,7 +103,6 @@ export const iconPickerPanel = hoistCmp.factory({
                     info: 'Emit the FA name, or the Icon name.',
                     control: segmentedControl({
                         bind: 'pgValueField',
-                        fill: false,
                         compact: true,
                         options: ['faName', 'name']
                     })
@@ -114,7 +113,6 @@ export const iconPickerPanel = hoistCmp.factory({
                     info: 'Icons not registered in a weight fall back to their default.',
                     control: segmentedControl({
                         bind: 'pgPrefix',
-                        fill: false,
                         compact: true,
                         options: ['far', 'fas', 'fal', 'fat']
                     })
