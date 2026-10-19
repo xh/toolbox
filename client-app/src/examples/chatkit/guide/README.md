@@ -101,11 +101,19 @@ and leave the codec unchanged in shape.
 
 The real backend's contract may differ from the emulator's in a few places. Each has one home:
 
-- **Identity and keys** - the Hoist server proxies the calls, adds the API key from config and the
-  user's token, and throttles per user. The browser never calls the backend directly.
+- **Identity and keys** - the emulator sits behind Toolbox's own server, so its calls carry
+  Hoist's usual auth. Reach a real backend as "Choose where requests go" in the kit's transport
+  README says. A backend that takes the user's OAuth token can be called from the browser: give
+  the transport and the store absolute URLs and a `headers` function that sends a fresh token. On
+  a cross-origin call, pass `fetchOpts: {credentials: 'omit'}`, and `correlationId: false` if the
+  app turns on correlation ids, to the transport and to each store call. A backend that needs a
+  secret key goes through a relay on the Hoist server, which holds the key. Every question is a
+  model run, so throttle where the calls are made.
 - **Scope in history** - the emulator returns each question's `documentIds`, which the store
-  restores as the question's run options. A backend that does not store them needs the app to
-  keep them by `queryId`.
+  restores as the question's run options. A backend that does not store them restores no scope:
+  a reopened chat searches every document, which is the scope a new chat starts with. A restored
+  "not found" reply then cannot name the documents its question searched, so give it empty data
+  (`{}`) rather than the whole library. To restore the scope, the app keeps it by `queryId`.
 - **Comments** - the emulator returns a rating's comment. A backend that does not needs the store
   to omit it.
 - **External sources** - a source that is already a URL sets `url` and `sourceType: 'url'` in
