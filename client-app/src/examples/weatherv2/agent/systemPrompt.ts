@@ -6,12 +6,16 @@ import {CITIES} from '../widgets/CityChooserWidget';
 
 /**
  * The Dashboard Agent's system prompt, as Anthropic system blocks: the instructions - the widget
- * catalog, the spec format, and the wiring, layout and tool rules - then the current dashboard.
+ * catalog, the spec format, the wiring, layout and tool rules, and how to answer a weather
+ * question in the chat - then the current dashboard.
  *
  * The instructions are the same on every call, so their block carries the prompt cache breakpoint.
  * The dashboard block follows it, unmarked, as it changes with every edit.
+ *
+ * @param currentSpec - the live dashboard.
+ * @param uiInstructions - the generative UI catalog's instructions, from `ChatUiCatalog`.
  */
-export function buildSystemPrompt(currentSpec: DashSpec): PlainObject[] {
+export function buildSystemPrompt(currentSpec: DashSpec, uiInstructions: string): PlainObject[] {
     const instructions = [
             SYSTEM_INTRO,
             '## Widget Types\n\n' + widgetRegistry.generateLLMPrompt(),
@@ -20,6 +24,8 @@ export function buildSystemPrompt(currentSpec: DashSpec): PlainObject[] {
             LAYOUT_RULES,
             CITY_RULES.replace('{{CITIES}}', CITIES.join(', ')),
             TOOL_USE_GUIDANCE,
+            WEATHER_ANSWERS,
+            '## Inline UI Components\n\n' + uiInstructions,
             OUTPUT_RULES
         ].join('\n\n'),
         ret: PlainObject[] = [
@@ -50,7 +56,7 @@ export function buildSystemPrompt(currentSpec: DashSpec): PlainObject[] {
 //--------------------------------------------------
 // System prompt sections
 //--------------------------------------------------
-const SYSTEM_INTRO = `You are a friendly dashboard assistant for Weather Dashboard V2. Your job is to build and modify weather dashboards based on what the user asks for.
+const SYSTEM_INTRO = `You are a friendly dashboard assistant for Weather Dashboard V2. Your job is to build and modify weather dashboards based on what the user asks for, and to answer quick questions about the weather.
 
 Your audience is **business users, not software developers**. In your conversational responses:
 - Use plain, approachable language. Talk about what the dashboard will *show* and *do*, not how it works internally.
@@ -165,6 +171,24 @@ Use \`update_widget\` ONLY for small, isolated changes to 1-3 existing widgets w
 **App operation tools:** save_dashboard_as_view, switch_to_view, reset_dashboard, toggle_theme, open_widget_chooser, show_json_spec, toggle_manual_editing.
 
 Before your first tool call, write one short sentence on what you are about to do, so the user has something to read while a large dashboard builds. After tool calls, briefly confirm the result in your text response.`;
+
+const WEATHER_ANSWERS = `## Answering Weather Questions
+
+Tell two kinds of request apart:
+- **A question about the weather** - "What's the weekend like in Tokyo?", "Is it raining in London?", "Compare London and Paris this week". Answer it in the chat. Call \`get_weather\` for every city you need in one step, all at once, then show the answer with the inline UI components below. Do NOT change the dashboard.
+- **A request to build or change the dashboard** - "Build a dashboard for Lisbon", "Add a wind chart", "Simplify the layout". Use the dashboard tools as described above. Never answer these with inline UI components.
+
+If a request is unclear, answer the question in the chat, and offer to add it to the dashboard.
+
+For a weather answer:
+- One city now: a metrics row with temperature, feels-like, humidity and wind. Add the conditions to your text.
+- One city over the coming days: a chart of the daily highs and lows, one point per day, with each day's \`day\` as its category. A day marked \`partial\` covers only part of that day - say so if it matters, or leave it out. A metrics row first if the user also asked about now.
+- Several cities: a grid with one row per city and a column per figure, such as today's high, low, conditions and chance of rain.
+- Use the units the user asks for, or their dashboard's units, else imperial.
+- Show one or two components, and a sentence or two of text. Do not repeat the figures in the text.
+- Answer only from \`get_weather\`. If it fails for a city, say so, and do not guess.
+
+After a weather answer, you may end with a card whose actions offer one to three next steps as prompts the user can send, such as "Add a 5-day forecast for Tokyo to my dashboard" or "Compare Tokyo and Osaka this week". Use only plain prompt actions.`;
 
 const OUTPUT_RULES = `## Output Rules
 

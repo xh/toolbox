@@ -3,24 +3,31 @@ import type {PlainObject} from '@xh/hoist/core';
 import {HoistService, PersistableState, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
+import {countBy, groupBy, maxBy, mean} from 'lodash';
 import type {AppModel} from '../AppModel';
+import {temperatureIcon} from '../Icons';
 import {viewManagers} from '../viewManagers';
 import type {DashSpec, DashWidgetState} from '../dash/types';
 import {validateSpec, migrateSpec, computeInstanceIds} from '../dash/validation';
 import {widgetRegistry} from '../dash/WidgetRegistry';
+import {toMetricTemp, toMetricWind} from '../dash/unitUtils';
+import type {WeatherData} from '../Types';
 
 /**
  * Service that provides the Dashboard Agent's tools - the client-side operations the LLM calls to
  * change the dashboard and the app.
  *
  * Each tool is a `ChatToolSpec`: its name, description and input schema for the model, its title,
- * icon and summary for the tool call cards in the chat, and an `execute` function that runs it.
- * A tool returns a short result for the model, or throws an error written so the model can
- * correct itself.
+ * icon and summary for its row in the chat, and an `execute` function that runs it. Every tool
+ * shows in the reply's activity timeline, so a dashboard build reads as one block that opens to
+ * list each call. A tool returns a short result for the model, or throws an error written so the
+ * model can correct itself.
  *
  * Dashboard tools (set_dashboard, add_widget, remove_widget, update_widget, move_widget,
- * list_widgets) provide structured, validated dashboard manipulation. App tools (save/load views,
- * toggle theme, etc.) handle non-dashboard operations.
+ * list_widgets) provide structured, validated dashboard manipulation. The weather tool
+ * (get_weather) reads a city's conditions and forecast, so the agent can answer a question in the
+ * chat without changing the dashboard. App tools (save/load views, toggle theme, etc.) handle
+ * non-dashboard operations.
  */
 export class LlmToolService extends HoistService {
     static instance: LlmToolService;
@@ -50,6 +57,7 @@ export class LlmToolService extends HoistService {
                 parameters: objectSchema({spec: SPEC_SCHEMA}, ['spec']),
                 displayName: 'Build dashboard',
                 icon: Icon.gridLarge(),
+                display: 'timeline',
                 summary: ({input}) => {
                     const count = input?.spec?.state?.length;
                     return count ? pluralize('widget', count, true) : null;
@@ -86,6 +94,7 @@ export class LlmToolService extends HoistService {
                 ),
                 displayName: 'Add widget',
                 icon: Icon.add(),
+                display: 'timeline',
                 summary: ({input}) => widgetRegistry.get(input?.viewSpecId)?.title,
                 execute: input => this.addWidget(input)
             },
@@ -97,6 +106,7 @@ export class LlmToolService extends HoistService {
                 parameters: objectSchema({instanceId: instanceIdSchema('remove')}, ['instanceId']),
                 displayName: 'Remove widget',
                 icon: Icon.delete(),
+                display: 'timeline',
                 summary: ({input}) => describeWidget(input?.instanceId),
                 execute: input => this.removeWidget(input.instanceId)
             },
@@ -127,6 +137,7 @@ export class LlmToolService extends HoistService {
                 ),
                 displayName: 'Update widget',
                 icon: Icon.gear(),
+                display: 'timeline',
                 summary: ({input}) => describeWidget(input?.instanceId),
                 execute: input => this.updateWidget(input)
             },
@@ -147,6 +158,7 @@ export class LlmToolService extends HoistService {
                 ),
                 displayName: 'Move widget',
                 icon: Icon.arrowsLeftRight(),
+                display: 'timeline',
                 summary: ({input}) => describeWidget(input?.instanceId),
                 execute: input => this.moveWidget(input)
             },
@@ -159,7 +171,38 @@ export class LlmToolService extends HoistService {
                 parameters: objectSchema(),
                 displayName: 'Review dashboard',
                 icon: Icon.list(),
+                display: 'timeline',
                 execute: () => this.listWidgets()
+            },
+
+            //----------------------------------------------
+            // Weather tools
+            //----------------------------------------------
+            {
+                name: 'get_weather',
+                description:
+                    'Get the current conditions and the daily forecast for a city, for up to 5 ' +
+                    'days. Use it to answer a question about the weather in the chat. It does not ' +
+                    'change the dashboard.',
+                parameters: objectSchema(
+                    {
+                        city: {
+                            type: 'string',
+                            description: 'City name, e.g. "Tokyo" or "Paris, FR".'
+                        },
+                        units: {
+                            type: 'string',
+                            enum: ['imperial', 'metric'],
+                            description: 'imperial for °F and mph (default), metric for °C and m/s.'
+                        }
+                    },
+                    ['city']
+                ),
+                displayName: 'Check weather',
+                icon: temperatureIcon(),
+                display: 'timeline',
+                summary: ({input}) => input?.city,
+                execute: input => this.getWeatherAsync(input.city, input.units)
             },
 
             //----------------------------------------------
@@ -180,6 +223,7 @@ export class LlmToolService extends HoistService {
                 ),
                 displayName: 'Save view',
                 icon: Icon.floppyDisk(),
+                display: 'timeline',
                 summary: ({input}) => input?.name,
                 execute: input => this.saveViewAsync(input.name)
             },
@@ -198,6 +242,7 @@ export class LlmToolService extends HoistService {
                 ),
                 displayName: 'Open view',
                 icon: Icon.folderOpen(),
+                display: 'timeline',
                 summary: ({input}) => input?.name,
                 execute: input => this.switchToViewAsync(input.name)
             },
@@ -208,6 +253,7 @@ export class LlmToolService extends HoistService {
                 parameters: objectSchema(),
                 displayName: 'Reset dashboard',
                 icon: Icon.reset(),
+                display: 'timeline',
                 // Discards the user's unsaved changes, so the user confirms first.
                 needsApproval: true,
                 approvalPrompt:
@@ -220,6 +266,7 @@ export class LlmToolService extends HoistService {
                 parameters: objectSchema(),
                 displayName: 'Switch theme',
                 icon: Icon.moon(),
+                display: 'timeline',
                 execute: () => this.toggleTheme()
             },
             {
@@ -229,6 +276,7 @@ export class LlmToolService extends HoistService {
                 parameters: objectSchema(),
                 displayName: 'Open widget chooser',
                 icon: Icon.boxFull(),
+                display: 'timeline',
                 execute: () => this.openWidgetChooser()
             },
             {
@@ -238,6 +286,7 @@ export class LlmToolService extends HoistService {
                 parameters: objectSchema(),
                 displayName: 'Show JSON spec',
                 icon: Icon.json(),
+                display: 'timeline',
                 execute: () => this.showJsonSpec()
             },
             {
@@ -247,6 +296,7 @@ export class LlmToolService extends HoistService {
                 parameters: objectSchema(),
                 displayName: 'Toggle manual editing',
                 icon: Icon.edit(),
+                display: 'timeline',
                 execute: () => this.toggleManualEditing()
             }
         ];
@@ -352,6 +402,49 @@ export class LlmToolService extends HoistService {
             }));
 
         return JSON.stringify(widgets, null, 2);
+    }
+
+    //----------------------------------------------
+    // Weather tool implementations
+    //----------------------------------------------
+    /**
+     * A city's current conditions and its forecast by day, compact for the model: each day's
+     * weekday, high, low, most common conditions, highest chance of precipitation and mean wind.
+     * The feed has one entry per 3 hours for 5 days, so the first and last days are usually cut
+     * short - a day with fewer than 8 entries is marked `partial`, as its figures cover only part
+     * of it.
+     */
+    private async getWeatherAsync(city: string, units: string = 'imperial'): Promise<PlainObject> {
+        if (!city?.trim()) throw new Error('city is required.');
+
+        const data: WeatherData = await XH.weatherDataService.ensureDataAsync(city.trim()),
+            {current, forecast} = data,
+            metric = units === 'metric',
+            temp = (f: number) => (metric ? toMetricTemp(f) : Math.round(f)),
+            wind = (mph: number) => (metric ? toMetricWind(mph) : Math.round(mph)),
+            byDay = groupBy(forecast, it => toDateKey(it.dt));
+
+        return {
+            city: data.city,
+            units: metric ? {temp: '°C', wind: 'm/s'} : {temp: '°F', wind: 'mph'},
+            current: {
+                temp: temp(current.temp),
+                feelsLike: temp(current.feelsLike),
+                conditions: current.description || current.conditions,
+                humidity: current.humidity,
+                wind: wind(current.windSpeed)
+            },
+            daily: Object.entries(byDay).map(([date, entries]) => ({
+                date,
+                day: new Date(entries[0].dt).toLocaleDateString('en-US', {weekday: 'short'}),
+                ...(entries.length < 8 ? {partial: true} : {}),
+                high: temp(maxBy(entries, 'tempMax').tempMax),
+                low: temp(Math.min(...entries.map(it => it.tempMin))),
+                conditions: maxBy(Object.entries(countBy(entries, 'conditions')), 1)[0],
+                precipChance: Math.max(...entries.map(it => it.precipProbability)),
+                wind: wind(mean(entries.map(it => it.windSpeed)))
+            }))
+        };
     }
 
     //----------------------------------------------
@@ -470,6 +563,13 @@ export class LlmToolService extends HoistService {
 //--------------------------------------------------
 // Tool schemas and display helpers
 //--------------------------------------------------
+/** A forecast time as a local `YYYY-MM-DD` date - the day it falls on, as the widgets group it. */
+function toDateKey(dt: number): string {
+    const d = new Date(dt),
+        pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 function objectSchema(properties: PlainObject = {}, required: string[] = []): PlainObject {
     return {type: 'object', properties, required};
 }

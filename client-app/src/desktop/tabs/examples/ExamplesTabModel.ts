@@ -55,10 +55,10 @@ export class ExamplesTabModel extends HoistModel {
             srcPath: 'weatherv2',
             text: [
                 p(
-                    'Weather Dashboard V2 — a declarative, wirable dashboard with inter-widget bindings and LLM-driven spec generation.'
+                    'A declarative, wirable dashboard with inter-widget bindings, built and edited by a Dashboard Agent chat on @xh/hoist-chat-kit.'
                 ),
                 p(
-                    "Demonstrates dashboard-as-DSL: Hoist's native persisted state as a machine-readable spec that an LLM can generate and validate."
+                    "Demonstrates dashboard-as-DSL: Hoist's native persisted state as a machine-readable spec that an LLM can generate and validate. The agent also answers quick weather questions in the chat with generative UI."
                 )
             ]
         },

@@ -1,5 +1,24 @@
 # Deployment & LLM Integration Memo
 
+## Current deployment settings
+
+This memo is the original design record. The live settings are in the "Deployment settings"
+section of the [Weather V2 README](../README.md#deployment-settings). In short:
+
+- The server relays the Anthropic Messages API from `llm/stream`, with the key in the `llmApiKey`
+  config. Model, token limit and other params come from config, never from the browser.
+- **Access** - the `TOOLBOX_LLM_USER` role, or every signed-in user while `llmOpenToAllUsers` is
+  true. Grant the role to selected users in Admin Console > Roles. `TOOLBOX_LLM_UNLIMITED` adds an
+  exemption from the hourly limit. `HOIST_ADMIN` members hold both.
+- **Limits** - `llmRateLimit` model calls per user per hour, 20 by default, counted in memory on
+  each instance, and two replies at once. Set `llmRateLimit` to 0 to allow only the unlimited role.
+  Set `llmMaxTokens` to 4096 unless reasoning is on.
+- **Watching use** - Admin Console > Activity > Tracking, category `LLM`: each call with its token
+  counts, and refused requests at WARN. To cut a user off at once, remove their role.
+- **Reasoning** - set `llmRequestParams` to
+  `{"thinking": {"type": "adaptive", "display": "summarized"}}` to show the model's reasoning in
+  each reply. It is off by default.
+
 ## Decision Summary
 
 | Aspect | Decision | Rationale |

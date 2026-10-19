@@ -17,9 +17,11 @@ unchanged; both share the same server-side weather endpoints.
   bind to it and update automatically.
 - **Dashboard Agent** - A chat with Claude, built on `@xh/hoist-chat-kit`. The user describes a
   dashboard in natural language. The model reads the widget catalog, spec format and current
-  dashboard from its system prompt, then calls tools that validate and apply spec changes.
-- **Client-side tools** - Every tool runs in the browser: dashboard edits, saving and switching
-  views, theme, panels. The server only relays the model's stream.
+  dashboard from its system prompt, then calls tools that validate and apply spec changes. It also
+  answers quick weather questions in the chat, with metrics, charts and grids drawn as generative
+  UI, without touching the dashboard.
+- **Client-side tools** - Every tool runs in the browser: dashboard edits, weather lookups, saving
+  and switching views, theme, panels. The server only relays the model's stream.
 
 ## Directory Structure
 
@@ -41,6 +43,7 @@ weatherv2/
 ├── agent/
 │   ├── DashboardAgentModel.ts    - Dashboard Agent chat model, built on the chat kit
 │   ├── DashboardAgentPanel.ts    - Dashboard Agent chat panel
+│   ├── catalog.ts                - Generative UI catalog for inline weather answers
 │   └── systemPrompt.ts           - Dashboard Agent system prompt builder
 ├── svc/
 │   ├── LlmToolService.ts         - Dashboard Agent tools, as chat kit `ChatToolSpec`s
@@ -71,12 +74,14 @@ weatherv2/
   a normal Hoist error. A failure after it ends the stream with an Anthropic `error` event. If the
   client disconnects, the server aborts the upstream request.
 - `grails-app/services/io/xh/toolbox/llm/LlmService.groovy` - relays the Anthropic Messages API.
-  It treats the request body as untrusted. It forwards only `system`, `messages`, `tools` and
-  `tool_choice`, and rejects Anthropic server tools such as web search. The server sets the model,
+  It checks the user's access first. It treats the request body as untrusted: it forwards only
+  `system`, `messages`, `tools` and `tool_choice`, accepts only text, tool and thinking content,
+  caps the size, and rejects Anthropic server tools such as web search. The server sets the model,
   the token limit and any other params from config. The service also applies a per-user rate
   limit and a cap on concurrent streams. Busy, rate-limited and unavailable upstreams return a
   short routine error, which the client does not report as a bug. Its Groovydoc lists the full
-  policy and the `llm*` configs, which `BootStrap` creates with defaults.
+  policy and the `llm*` configs, which `BootStrap` creates with defaults. See
+  [Deployment settings](#deployment-settings) for access and limits.
 - Weather endpoints are shared with V1 through `WeatherController` and `WeatherService`, which
   call OpenWeatherMap.
 
@@ -94,17 +99,71 @@ the tools and the wiring.
   ahead of the system prompt. The dashboard state follows, unmarked, as it changes with every
   edit.
 - `LlmToolService.tools` declares each tool once: name, description and JSON Schema for the
-  model, title, icon and summary for its card in the chat, and an `execute` function. A thrown
-  error goes back to the model, which can correct itself. `reset_dashboard` discards unsaved
-  changes, so the user must approve it first. Its `approvalPrompt` says so on the card.
+  model, title, icon and summary for its row in the chat, and an `execute` function. A thrown
+  error goes back to the model, which can correct itself. Every tool sets `display: 'timeline'`,
+  so a dashboard build shows as one activity timeline that opens to list each call.
+  `reset_dashboard` discards unsaved changes, so the user must approve it first. Its
+  `approvalPrompt` says so in the timeline, with Allow and Deny.
+- `get_weather` reads a city's conditions and forecast through `WeatherDataService`, the same
+  cache the widgets use. It returns a compact summary for the model: current conditions, then one
+  entry per day with the weekday, high, low, conditions, chance of precipitation and wind. The
+  first and last days of the 5-day feed are usually partial, and say so.
+- `agent/catalog.ts` creates a `ChatUiCatalog` with the kit's four built-in components: metrics,
+  chart, grid and card. The model shows one by calling its `show_*` tool, and the chat renders it
+  inline in the reply. The catalog's instructions join the system prompt. The prompt tells the
+  agent to answer a weather question with these components, and a build or change request with
+  the dashboard tools, never both. A card after an answer can offer next steps, such as adding
+  the forecast to the dashboard, as prompts the user sends with one click.
 - The `ChatModel` runs the tool loop, streams replies and handles stop, retry, regenerate and
   edit. It caps a turn at 5 steps with `maxSteps`, down from the kit's default of 10. Each step is
   one model call, and the server's `llmRateLimit` counts model calls: 20 per user per hour by
   default. The cap keeps one turn from using more than a quarter of that. To allow more use, raise
   the config rather than `maxSteps`.
+- Each reply takes a thumbs up or down, with an optional comment on a down vote. The chat's
+  `feedback.submitAsync` records the rating with Hoist activity tracking, in category
+  `WeatherV2`, with the rating, the comment and the names of the tools the reply used. It never
+  records the text of the chat. See the ratings in the Admin Console's Activity tab.
 - `DashboardAgentPanel` renders the kit's `chatPanel` with the app's title, the kit's
-  `chatClearButton`, an empty state and suggestions. `AppModel` owns the agent and passes it the
-  dash model, so the conversation survives hiding the panel.
+  `chatClearButton`, an empty state and suggestions that mix weather questions with builds.
+  `AppModel` owns the agent and passes it the dash model, so the conversation survives hiding the
+  panel.
+
+### Deployment settings
+
+The agent needs the `llmApiKey` config. The other `llm*` configs have working defaults. All are
+in the Admin Console's Config tab. These settings also cover the Chat Kit app's live demo, which
+uses the same relay.
+
+- **Access** - the LLM features need the `TOOLBOX_LLM_USER` role, unless the `llmOpenToAllUsers`
+  config is true. To open them to every signed-in user, set the config to true. To limit them to
+  selected users, leave it false and add those users to `TOOLBOX_LLM_USER` in Admin Console >
+  Roles. Without access, the Dashboard Agent panel and the live demo show a one-line notice, and
+  the rest of Weather V2 works as usual. The server enforces the rule on every call. A local
+  bootstrap admin user, from `APP_TOOLBOX_BOOTSTRAP_ADMIN_USER`, holds only Hoist's own roles, so
+  on a fresh local database set `llmOpenToAllUsers` to true or add the user to the role.
+- **Unlimited use** - members of `TOOLBOX_LLM_UNLIMITED` have access and no hourly limit. Both
+  roles go to `HOIST_ADMIN` members.
+- **Limits** - each other user may make `llmRateLimit` model calls per hour, 20 by default, and
+  run two replies at once. A call counts when it starts, whether or not it succeeds, and each
+  step of a reply is a call. The counts are in memory on each server instance, so a cluster of
+  two allows twice the limit. Saving an `llm*` config does not reset them.
+- **Cutting off use** - to stop all use but the unlimited role's, set `llmOpenToAllUsers` to
+  false and `llmRateLimit` to 0. To cut off one user at once, remove them from the roles, or set
+  `llmOpenToAllUsers` to false if they had access through it. Disabling a user's account takes
+  effect only at their next sign-in.
+- **Watching use** - every model call is tracked in Admin Console > Activity > Tracking, category
+  `LLM`, with its token counts, and at WARN with its error if it failed. A refused request is
+  tracked there at WARN too: `LLM access denied`, `LLM rate limit hit`, `LLM stream limit hit`,
+  `LLM request refused` or `LLM request too large`. Ratings of the agent's replies are in
+  category `WeatherV2`.
+- **Token limit** - `llmMaxTokens` caps each call's output. 4096 covers a full dashboard build and
+  keeps a runaway reply cheap. Raise it if you turn on reasoning.
+- **Reasoning** - the relay takes `thinking` only from the `llmRequestParams` config, never from
+  the browser. To show the model's reasoning, set it to
+  `{"thinking": {"type": "adaptive", "display": "summarized"}}`. Each reply then opens with the
+  kit's reasoning disclosure, which the user can expand. Thinking adds output tokens to each
+  step, so expect slower and costlier replies. It is off by default. The codec sends thinking
+  back with its signature, as the Messages API requires within a tool loop.
 
 ### Chat kit (`@xh/hoist-chat-kit`)
 
