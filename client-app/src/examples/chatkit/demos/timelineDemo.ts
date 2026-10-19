@@ -1,4 +1,5 @@
-import type {ChatToolSpec} from '@xh/hoist-chat-kit/core';
+import type {ChatToolCallPart, ChatToolSpec} from '@xh/hoist-chat-kit/core';
+import {chatSpinner} from '@xh/hoist-chat-kit/desktop/cmp/chat';
 import {
     ScriptedChatTransport,
     type ScriptedItem,
@@ -7,13 +8,21 @@ import {
     textEvents,
     toolCallEvents
 } from '@xh/hoist-chat-kit/transport';
+import {div, li, span, ul} from '@xh/hoist/cmp/layout';
+import {hoistCmp} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
+import {isArray} from 'lodash';
+import type {ReactNode} from 'react';
 import type {ChatKitDemo} from './Types';
 
 /**
  * An agentic run in the activity timeline: a plan, a query, narration, a batch of three calls, a
  * sub-agent whose call fails and is retried, and the answer. Every call is a backend call with its
  * result in the script, so the browser runs no tools.
+ *
+ * The plan is a tool of its own, shown inline where the agent calls it, as a checklist drawn by
+ * the tool's renderer. The agent calls it to set out the plan and again to mark it done.
  */
 export const timelineDemo: ChatKitDemo = {
     id: 'timeline',
@@ -105,11 +114,77 @@ function createRun(): ScriptedItem[] {
     ];
 }
 
-/** Backend tools shown in the timeline, and the plan. */
+/** The plan, inline in the reply, and the backend tools shown in the timeline. */
 const TOOLS: ChatToolSpec[] = [
-    {name: 'update_plan', display: 'pinned'},
+    {
+        name: 'update_plan',
+        displayName: 'Update plan',
+        display: 'inline',
+        renderer: part => planChecklist({part})
+    },
     {name: 'run_sql', displayName: 'Load desk limits', display: 'timeline'},
     {name: 'query_exposure', displayName: 'Query exposure', display: 'timeline'},
     {name: 'read_policy', displayName: 'Read policy', display: 'timeline'},
     {name: 'fetch_marks', displayName: 'Fetch intraday marks', display: 'timeline'}
 ];
+
+type PlanStatus = 'pending' | 'active' | 'done' | 'skipped';
+
+interface PlanItem {
+    title: string;
+    status: PlanStatus;
+}
+
+interface PlanChecklistProps extends HoistProps {
+    part: ChatToolCallPart;
+}
+
+/** The plan in a call to `update_plan`: each step with its status, and how far the agent is. */
+const planChecklist = hoistCmp.factory<PlanChecklistProps>({
+    displayName: 'PlanChecklist',
+    className: 'tb-plan-checklist',
+
+    render({className, part}) {
+        const items = (part.input as {items?: PlanItem[]})?.items;
+        if (!isArray(items)) return null;
+
+        const activeIdx = items.findIndex(it => it.status === 'active'),
+            position = activeIdx >= 0 ? activeIdx + 1 : items.filter(isDone).length;
+        return div({
+            className,
+            items: [
+                div({
+                    className: 'tb-plan-checklist__head',
+                    item: `Plan · ${position} of ${items.length}`
+                }),
+                ul({
+                    className: 'tb-plan-checklist__list',
+                    items: items.map((it, idx) =>
+                        li({
+                            key: idx,
+                            className: `tb-plan-checklist__item tb-plan-checklist__item--${it.status}`,
+                            items: [
+                                span({
+                                    className: 'tb-plan-checklist__icon',
+                                    item: STATUS_ICONS[it.status]?.() ?? Icon.circle()
+                                }),
+                                span(it.title)
+                            ]
+                        })
+                    )
+                })
+            ]
+        });
+    }
+});
+
+const STATUS_ICONS: Record<PlanStatus, () => ReactNode> = {
+    done: () => Icon.check(),
+    active: () => chatSpinner(),
+    pending: () => Icon.circle(),
+    skipped: () => Icon.slashedCircle()
+};
+
+function isDone(item: PlanItem): boolean {
+    return item.status === 'done';
+}
