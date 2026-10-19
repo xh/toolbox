@@ -24,6 +24,7 @@
 * Added a Grid Helpers group to the Grids tab, with new `FilterChooser`, `GroupingChooser`, `StoreFilterField`, and `GridFindField` demo pages, each driving a live trades grid.
 * Renamed the App Notifications demo to Updates & Idle and App Banners to Banners, and removed the Forms > Other Controls overview page - its controls now live under Components > Choosers & Pickers.
 * Added Favicon Designer example app - a client-only tool that builds a Hoist app's favicon set from any Font Awesome Pro glyph, with custom colors, backdrop shapes and padding, live browser-tab and home-screen previews, shareable design URLs, and a one-click zip of `favicon.svg` plus the PNGs `configureRsbuild()` picks up.
+* Added sample widgets in nested groups to the `DashCanvas` and `DashContainer` demos, to show a slash-delimited `groupName` nesting the add view menus and the `DashCanvasWidgetChooser`.
 
 ### Bug Fixes
 
