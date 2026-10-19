@@ -1,4 +1,4 @@
-import {HoistService, persist} from '@xh/hoist/core';
+import {CallContextLike, HoistService, persist} from '@xh/hoist/core';
 import {action, observableRef} from '@xh/hoist/mobx';
 import {without} from 'lodash';
 
@@ -20,8 +20,8 @@ export class ContactService extends HoistService {
     @persist
     accessor userFaves: string[] = [];
 
-    async getContactsAsync() {
-        return this.runner()
+    async getContactsAsync(ctx?: CallContextLike) {
+        return this.runner(ctx)
             .span('getContacts')
             .fetchJson({url: 'contacts'})
             .tap(ret => {
