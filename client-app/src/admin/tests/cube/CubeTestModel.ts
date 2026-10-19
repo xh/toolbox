@@ -35,8 +35,6 @@ export class CubeTestModel extends HoistModel {
     @bindable accessor updateFreq = -1;
     @bindable accessor updateCount = 5;
 
-    @bindable accessor projectionOnly = true;
-
     /** Grid experimental sort flags, applied live for A/B tuning. */
     @bindable accessor deferredSortFactor = 4;
     @bindable accessor deltaSortRatio = 50;
@@ -83,12 +81,6 @@ export class CubeTestModel extends HoistModel {
             track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
             equals: compareStructural
-        });
-
-        // Reconstruct the Store in the new mode, for A/B comparison.
-        this.addReaction({
-            track: () => this.projectionOnly,
-            run: () => this.buildGridAndView()
         });
 
         // Applied live to the existing Stores - the ratio is read on each operation.
@@ -261,7 +253,6 @@ export class CubeTestModel extends HoistModel {
             showSummary: this.showSummary,
             store: {
                 loadRootAsSummary: this.showSummary,
-                projectionOnly: this.projectionOnly,
                 experimental: {maxPatchRatio: this.maxPatchRatio},
                 fields: [{name: 'cubeDimension', type: 'string'}]
             },
@@ -281,7 +272,7 @@ export class CubeTestModel extends HoistModel {
                     groupingChooserModel.getDimDisplayName(it)
                 );
             },
-            // Edits route through the Cube - Store.modifyRecords throws under projectionOnly.
+            // Edits route through the Cube - connected stores are read-only projections.
             colDefaults: {
                 editable: ({record}) => !record.data.cubeDimension, // Only editable if leaf node
                 setValueFn: ({value, record, field}) => {
@@ -356,6 +347,21 @@ export class CubeTestModel extends HoistModel {
                     renderer: numberRenderer({
                         precision: 6
                     })
+                },
+                {
+                    field: 'notional',
+                    align: 'right',
+                    width: 130,
+                    editable: false,
+                    renderer: numberRenderer({precision: 0, ledger: true}),
+                    hidden: true
+                },
+                {
+                    field: 'commissionBps',
+                    align: 'right',
+                    width: 130,
+                    editable: false,
+                    renderer: numberRenderer({precision: 2})
                 },
                 {
                     field: 'maxConfidence',
