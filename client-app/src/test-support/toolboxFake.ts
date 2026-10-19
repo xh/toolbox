@@ -14,6 +14,7 @@ export function installToolboxFake(core: FakeHoistCore) {
             hoistReact: 'https://github.com/xh/hoist-react/tree/develop',
             toolbox: 'https://github.com/xh/toolbox/tree/develop'
         },
+        llmOpenToAllUsers: false,
         cubeTestDefaultDims: [
             ['fund', 'trader'],
             ['sector', 'symbol'],

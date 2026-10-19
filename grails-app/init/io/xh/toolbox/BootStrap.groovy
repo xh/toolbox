@@ -222,7 +222,15 @@ class BootStrap implements LogSupport {
                 valueType: 'int',
                 defaultValue: 20,
                 groupName: 'Toolbox - Example Apps',
-                note: 'Max LLM calls per user per hour (per server instance). A tool loop makes one call per step.'
+                note: 'Max LLM calls per user per hour (per server instance). A tool loop makes one call per step. Members of TOOLBOX_LLM_UNLIMITED have no limit, and with 0 only they can make calls.'
+            ),
+            new ConfigSpec(
+                name: 'llmOpenToAllUsers',
+                valueType: 'bool',
+                defaultValue: false,
+                clientVisible: true,
+                groupName: 'Toolbox - Example Apps',
+                note: 'True to let every signed-in user use the LLM chat demos. When false, only members of the TOOLBOX_LLM_USER role can.'
             ),
             new ConfigSpec(
                 name: 'llmMaxStreams',

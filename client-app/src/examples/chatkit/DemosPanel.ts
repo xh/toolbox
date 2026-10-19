@@ -1,9 +1,10 @@
 import {chatClearButton, chatEmptyState, chatPanel} from '@xh/hoist-chat-kit/desktop/cmp/chat';
-import {div, hframe} from '@xh/hoist/cmp/layout';
+import {div, hframe, placeholder} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import type {HoistProps} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {canUseLlm, LLM_NO_ACCESS_MSG} from '../../core/llmAccess';
 import type {ChatKitDemoModel} from './ChatKitDemoModel';
 import {DemosModel} from './DemosModel';
 
@@ -74,11 +75,22 @@ const navItem = hoistCmp.factory<NavItemProps>({
     }
 });
 
-/** The chat for the active demo, on the right. */
+/** The chat for the active demo, on the right - or a notice, for a live demo the user cannot use. */
 const demoChat = hoistCmp.factory({
     model: uses(DemosModel),
     render({model}) {
         const {demo, chatModel} = model.activeDemoModel;
+
+        if (demo.requiresLlm && !canUseLlm()) {
+            return panel({
+                key: demo.id,
+                title: demo.title,
+                icon: demo.icon,
+                compactHeader: true,
+                flex: 1,
+                item: placeholder(Icon.lock(), LLM_NO_ACCESS_MSG)
+            });
+        }
 
         return chatPanel({
             key: demo.id,

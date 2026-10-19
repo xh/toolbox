@@ -4,9 +4,12 @@ import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.exception.DataNotAvailableException
 import io.xh.hoist.exception.ExternalHttpException
+import io.xh.hoist.exception.NotAuthorizedException
 import io.xh.hoist.exception.RoutineRuntimeException
 import io.xh.hoist.json.JSONParser
 import io.xh.hoist.json.JSONSerializer
+import io.xh.hoist.track.TrackService
+import io.xh.hoist.user.HoistUser
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.config.ConnectionConfig
 import org.apache.hc.client5.http.config.RequestConfig
@@ -19,6 +22,7 @@ import org.apache.hc.core5.http.ConnectionRequestTimeoutException
 import org.apache.hc.core5.http.io.entity.StringEntity
 import org.apache.hc.core5.util.Timeout
 
+import static io.xh.hoist.util.DateTimeUtils.HOURS
 import static io.xh.hoist.util.StringUtils.elide
 import static java.nio.charset.StandardCharsets.UTF_8
 
@@ -26,6 +30,10 @@ import static java.nio.charset.StandardCharsets.UTF_8
  * Relays the Anthropic Messages API as a token stream, for the Toolbox chats built on
  * `@xh/hoist-chat-kit`: the Weather V2 Dashboard Agent and the Chat Kit app's live demo. The API key
  * lives in the `llmApiKey` config, so it never reaches the client.
+ *
+ * Access - a user needs the `TOOLBOX_LLM_USER` role, unless the `llmOpenToAllUsers` config is true.
+ * `TOOLBOX_LLM_UNLIMITED` grants it too, and exempts its members from the rate limit. Both roles
+ * go to HOIST_ADMIN members. See {@link #canUse}.
  *
  * Request policy - the browser builds the request body, with the kit's `AnthropicCodec`, so the
  * service treats it as untrusted:
@@ -36,9 +44,18 @@ import static java.nio.charset.StandardCharsets.UTF_8
  *   - It accepts only client tools, sent as `{name, description, input_schema}`. Anthropic server
  *     tools, such as web search or code execution, cost extra and reach other systems. The server
  *     adds those enabled in the `llmServerTools` config, and rejects any the client sends.
- *   - It caps the size of the request and the number of messages.
- *   - It limits each user to `llmRateLimit` model calls per hour. The count is per server instance,
- *     not shared across the cluster, and a tool loop makes one call per step.
+ *   - It caps the size of the request and the number of messages, and accepts only text, tool and
+ *     thinking content blocks.
+ *   - It limits each user to `llmRateLimit` model calls per hour, counted from the moment a call
+ *     is admitted, whether or not it succeeds, and to two streams at once. The count is in memory,
+ *     per server instance, not shared across the cluster. A tool loop makes one call per step.
+ *     Members of `TOOLBOX_LLM_UNLIMITED` have no hourly limit. With a limit of 0, only they can
+ *     make calls.
+ *
+ * Tracking - each call is tracked in category `LLM`, with its token counts, and at WARN if it
+ * failed. A refused request - no
+ * access, a limit hit, or a request the policy rejects - is tracked at WARN, so admins can see it
+ * in the Admin Console's Activity tab.
  *
  * Errors - expected failures throw routine exceptions, which log at DEBUG and which the client does
  * not report as errors: a rate limit hit, a rejected request, a full connection pool, and an
@@ -50,7 +67,8 @@ import static java.nio.charset.StandardCharsets.UTF_8
  *   - llmApiKey (pwd): Anthropic API key.
  *   - llmModel (string): Model identifier.
  *   - llmMaxTokens (int): Max response tokens per model call.
- *   - llmRateLimit (int): Max model calls per user per hour.
+ *   - llmRateLimit (int): Max model calls per user per hour, for users without TOOLBOX_LLM_UNLIMITED.
+ *   - llmOpenToAllUsers (bool): True to let every signed-in user use the LLM features.
  *   - llmMaxStreams (int): Max concurrent streams. A request beyond it fails at once, routinely.
  *   - llmRequestParams (json): Other Messages API params to send, such as `thinking`.
  *   - llmServerTools (json): Anthropic server tool definitions to add to every request.
@@ -61,13 +79,19 @@ class LlmService extends BaseService {
 
     static clearCachesConfigs = [
         'llmApiKey', 'llmModel', 'llmMaxTokens', 'llmRateLimit', 'llmMaxStreams',
-        'llmRequestParams', 'llmServerTools'
+        'llmRequestParams', 'llmServerTools', 'llmOpenToAllUsers'
     ]
 
-    ConfigService configService
+    static final String USER_ROLE = 'TOOLBOX_LLM_USER'
+    static final String UNLIMITED_ROLE = 'TOOLBOX_LLM_UNLIMITED'
 
-    // Simple per-user rate limiter: username -> timestamps of recent model calls.
-    private Map<String, List<Long>> _rateLimitMap = [:].withDefault { [] }
+    ConfigService configService
+    TrackService trackService
+
+    // Per-user limits, guarded by this service's lock: username -> times of the calls admitted in
+    // the last hour, and username -> streams in progress.
+    private final Map<String, List<Long>> _callTimes = [:]
+    private final Map<String, Integer> _activeStreams = [:]
 
     // The pool size is the cap on concurrent streams. Its limits are set from config on init and
     // on config change. A request that finds the pool full waits briefly, then fails.
@@ -99,45 +123,92 @@ class LlmService extends BaseService {
     }
 
     /**
+     * True if the user may use the LLM features: a member of `TOOLBOX_LLM_USER`, or any user while
+     * the `llmOpenToAllUsers` config is true. The client reads the same role and config to show or
+     * hide its LLM features.
+     */
+    boolean canUse(HoistUser user) {
+        return user && (user.hasRole(USER_ROLE) || configService.getBool('llmOpenToAllUsers', false))
+    }
+
+    /** Throw a routine `NotAuthorizedException` for a user who may not use the LLM features. */
+    void checkAccess(HoistUser user) {
+        if (!canUse(user)) {
+            warn('LLM access denied')
+            throw new NotAuthorizedException('The assistant is not available to you.')
+        }
+    }
+
+    /**
+     * Reject a request body larger than any chat should send, before it is parsed. A body of
+     * unknown length (-1), such as a chunked one, is rejected too - a browser always sends one.
+     */
+    void checkRequestSize(long bytes) {
+        if (bytes < 0 || bytes > MAX_BODY_BYTES) {
+            warn('LLM request too large', [bytes: bytes])
+            throw new RoutineRuntimeException(TOO_LARGE_MSG)
+        }
+    }
+
+    /**
      * Stream a response from the LLM, relaying each Anthropic server-sent event as it arrives.
      *
-     * Opens the upstream stream before returning any data, so a missing key, exceeded rate limit
-     * or rejected request throws before `onEvent` is first called. Upstream `error` events that
-     * arrive mid-stream are relayed like any other event.
+     * Opens the upstream stream before returning any data, so a missing key, refused access,
+     * exceeded limit or rejected request throws before `onEvent` is first called. Upstream `error`
+     * events that arrive mid-stream are relayed like any other event.
      *
      * @param request - Anthropic Messages request body, as built by the kit's `AnthropicCodec`.
      *      Checked and filtered as described in the class doc.
-     * @param username - for rate limiting.
+     * @param user - the authenticated user, for access and limits.
      * @param onEvent - called with the JSON payload of each SSE `data:` field, in order. Return
      *      false to stop - e.g. when the client has disconnected. The upstream connection is
      *      then aborted, so no further tokens are generated or billed.
      */
-    void stream(Map request, String username, Closure<Boolean> onEvent) {
+    void stream(Map request, HoistUser user, Closure<Boolean> onEvent) {
+        checkAccess(user)
         checkApiKey()
-        checkRateLimit(username)
 
-        def body = createBody(request),
+        Map body
+        HttpPost post
+        try {
+            body = createBody(request)
             post = createPost(body)
+        } catch (RoutineRuntimeException e) {
+            warn('LLM request refused', [reason: e.message])
+            throw e
+        }
 
-        span('stream', [model: body.model, toolCount: (body.tools as List)?.size() ?: 0])
-            .logDebug("Streaming from Anthropic API with $body.model")
-            .run {
-                CloseableHttpResponse response = null
-                boolean complete = false
-                try {
-                    response = execute(post)
-                    if (response.code != 200) {
-                        throw upstreamException(response.code, response.entity?.content?.getText('UTF-8'))
+        reserveCall(user)
+        def usage = [:],
+            toolCount = (body.tools as List)?.size() ?: 0,
+            startTime = System.currentTimeMillis(),
+            complete = false
+        Throwable error = null
+        try {
+            span('stream', [model: body.model, toolCount: toolCount])
+                .logDebug("Streaming from Anthropic API with $body.model")
+                .run {
+                    CloseableHttpResponse response = null
+                    try {
+                        response = execute(post)
+                        if (response.code != 200) {
+                            throw upstreamException(response.code, response.entity?.content?.getText('UTF-8'))
+                        }
+                        complete = relayEvents(response, onEvent, usage)
+                        if (!complete) logInfo('Client disconnected - aborted LLM stream')
+                    } finally {
+                        // Abort rather than drain: closing an unread response reads it to the end.
+                        if (!complete) post.abort()
+                        try { response?.close() } catch (Exception ignored) {}
                     }
-                    recordRequest(username)
-                    complete = relayEvents(response, onEvent)
-                    if (!complete) logInfo('Client disconnected - aborted LLM stream')
-                } finally {
-                    // Abort rather than drain: closing an unread response reads it to the end.
-                    if (!complete) post.abort()
-                    try { response?.close() } catch (Exception ignored) {}
                 }
-            }
+        } catch (Throwable t) {
+            error = t
+            throw t
+        } finally {
+            releaseCall(user.username)
+            trackCall(body.model as String, toolCount, usage, complete, error, startTime)
+        }
     }
 
     //--------------------------------------------------
@@ -161,6 +232,7 @@ class LlmService extends BaseService {
         if (clientTools.any { it.type && it.type != 'custom' }) {
             throw new RoutineRuntimeException('Request includes server tools, which are not accepted.')
         }
+        checkContentBlocks(messages, !serverTools.isEmpty())
 
         def ret = configService.getMap('llmRequestParams', [:]) + request.subMap(CLIENT_KEYS) + [
             model     : configService.getString('llmModel'),
@@ -172,13 +244,31 @@ class LlmService extends BaseService {
         return ret
     }
 
+    /**
+     * Accept only the content blocks the chats send: text, tool calls and results, and the model's
+     * own thinking, which goes back with its signature. Server tool blocks are accepted only while
+     * server tools are configured.
+     */
+    private void checkContentBlocks(List messages, boolean allowServerTools) {
+        messages.each { message ->
+            def content = (message as Map)?.content
+            if (content instanceof String) return
+            if (!(content instanceof List)) {
+                throw new RoutineRuntimeException('Request has a message with no content.')
+            }
+            content.each { block ->
+                def type = (block as Map)?.type as String
+                def isServerTool = type == 'server_tool_use' || type?.endsWith('_tool_result')
+                if (!(type in CONTENT_TYPES) && !(allowServerTools && isServerTool)) {
+                    throw new RoutineRuntimeException("Message content type not accepted: $type.")
+                }
+            }
+        }
+    }
+
     private HttpPost createPost(Map body) {
         def json = JSONSerializer.serialize(body)
-        if (json.length() > MAX_REQUEST_CHARS) {
-            throw new RoutineRuntimeException(
-                'This conversation is too large to send. Clear it to start again.'
-            )
-        }
+        if (json.length() > MAX_REQUEST_CHARS) throw new RoutineRuntimeException(TOO_LARGE_MSG)
 
         def post = new HttpPost('https://api.anthropic.com/v1/messages')
         post.setHeader('Content-Type', 'application/json')
@@ -226,10 +316,10 @@ class LlmService extends BaseService {
     }
 
     /**
-     * Parse the SSE stream and pass each event's data to the callback.
-     * Returns true if the stream ended normally, false if the callback asked to stop.
+     * Parse the SSE stream and pass each event's data to the callback, noting the token counts in
+     * `usage`. Returns true if the stream ended normally, false if the callback asked to stop.
      */
-    private boolean relayEvents(CloseableHttpResponse response, Closure<Boolean> onEvent) {
+    private boolean relayEvents(CloseableHttpResponse response, Closure<Boolean> onEvent, Map usage) {
         def reader = new BufferedReader(new InputStreamReader(response.entity.content, UTF_8)),
             data = new StringBuilder()
         String line
@@ -241,31 +331,115 @@ class LlmService extends BaseService {
             } else if (!line && data) {
                 // A blank line ends the event. Lines starting `event:`, `id:` and `:` are ignored -
                 // each Anthropic data payload carries its own `type`.
-                if (!onEvent(data.toString())) return false
+                if (!relayEvent(data.toString(), onEvent, usage)) return false
                 data.setLength(0)
             }
         }
-        return !data || onEvent(data.toString())
+        return !data || relayEvent(data.toString(), onEvent, usage)
+    }
+
+    private boolean relayEvent(String event, Closure<Boolean> onEvent, Map usage) {
+        readUsage(event, usage)
+        return onEvent(event)
+    }
+
+    /**
+     * Note the token counts from a `message_start` or `message_delta` event. The delta's output
+     * count is the total so far, so a later one replaces an earlier one.
+     */
+    private void readUsage(String event, Map usage) {
+        if (!event.contains('"message_start"') && !event.contains('"message_delta"')) return
+        try {
+            Map parsed = JSONParser.parseObject(event),
+                counts = (parsed.type == 'message_start' ? (parsed.message as Map)?.usage : parsed.usage) as Map
+            counts?.each { k, v -> if (v instanceof Number) usage[k] = v }
+        } catch (Exception ignored) {}
     }
 
     //--------------------------------------------------
     // Limits
     //--------------------------------------------------
-    private synchronized void checkRateLimit(String username) {
-        def limit = configService.getInt('llmRateLimit'),
-            oneHourAgo = System.currentTimeMillis() - 3600_000,
-            userRequests = _rateLimitMap[username]
-
-        userRequests.removeAll { it < oneHourAgo }
-        if (userRequests.size() >= limit) {
-            throw new RoutineRuntimeException(
-                "You have reached the limit of $limit assistant requests per hour. Try again later."
-            )
+    /**
+     * Admit a call within the user's limits, counting it at once, so that parallel requests cannot
+     * all pass the check. Release it with {@link #releaseCall}.
+     */
+    private void reserveCall(HoistUser user) {
+        def refusal = tryReserve(user)
+        if (refusal) {
+            warn(refusal.msg as String, refusal.data as Map)
+            throw new RoutineRuntimeException(refusal.error as String)
         }
     }
 
-    private synchronized void recordRequest(String username) {
-        _rateLimitMap[username] << System.currentTimeMillis()
+    /** Count the call and return null, or return why it is refused. */
+    private synchronized Map tryReserve(HoistUser user) {
+        def username = user.username
+        if ((_activeStreams[username] ?: 0) >= MAX_STREAMS_PER_USER) {
+            return [
+                msg  : 'LLM stream limit hit',
+                data : [limit: MAX_STREAMS_PER_USER],
+                error: 'You already have two replies running. Wait for one to finish.'
+            ]
+        }
+
+        if (!user.hasRole(UNLIMITED_ROLE)) {
+            def limit = configService.getInt('llmRateLimit'),
+                now = System.currentTimeMillis(),
+                times = _callTimes.computeIfAbsent(username) { [] }
+            times.removeAll { it < now - HOURS }
+            if (times.size() >= limit) {
+                return [
+                    msg  : 'LLM rate limit hit',
+                    data : [limit: limit],
+                    error: limit > 0 ?
+                        "You have reached the limit of $limit assistant requests per hour. Try again later." :
+                        'The assistant is not available right now.'
+                ]
+            }
+            times << now
+        }
+
+        _activeStreams[username] = (_activeStreams[username] ?: 0) + 1
+        return null
+    }
+
+    private synchronized void releaseCall(String username) {
+        def count = (_activeStreams[username] ?: 1) - 1
+        count ? _activeStreams.put(username, count) : _activeStreams.remove(username)
+    }
+
+    //--------------------------------------------------
+    // Tracking
+    //--------------------------------------------------
+    /**
+     * Track a model call - at WARN if it failed, or ended before any usage arrived, as when the
+     * upstream rejected it.
+     */
+    private void trackCall(
+        String model, int toolCount, Map usage, boolean complete, Throwable error, long startTime
+    ) {
+        trackService.track(
+            category: 'LLM',
+            msg: 'LLM call',
+            severity: error || !usage ? 'WARN' : 'INFO',
+            elapsed: System.currentTimeMillis() - startTime,
+            data: [
+                model           : model,
+                inputTokens     : usage.input_tokens,
+                cacheReadTokens : usage.cache_read_input_tokens,
+                cacheWriteTokens: usage.cache_creation_input_tokens,
+                outputTokens    : usage.output_tokens,
+                toolCount       : toolCount,
+                complete        : complete,
+                error           : error?.message
+            ]
+        )
+    }
+
+    /** Log a refused request, and track it at WARN for admins. */
+    private void warn(String msg, Map data = [:]) {
+        logInfo(msg, data)
+        trackService.track(category: 'LLM', msg: msg, severity: 'WARN', data: data)
     }
 
     private void applyStreamLimit() {
@@ -285,8 +459,8 @@ class LlmService extends BaseService {
 
     @Override
     void clearCaches() {
+        // Keeps the per-user counts, so a config change does not reset anyone's limit.
         super.clearCaches()
-        _rateLimitMap.clear()
         applyStreamLimit()
     }
 
@@ -311,8 +485,17 @@ class LlmService extends BaseService {
     /** Request keys a codec may send, which the server always sets itself. */
     private static final List<String> SERVER_KEYS = ['model', 'max_tokens', 'stream']
 
-    private static final int MAX_MESSAGES = 400
-    private static final int MAX_REQUEST_CHARS = 4_000_000
+    /** Content block types accepted in messages - see {@link #checkContentBlocks}. */
+    private static final List<String> CONTENT_TYPES = [
+        'text', 'tool_use', 'tool_result', 'thinking', 'redacted_thinking'
+    ]
+
+    private static final int MAX_MESSAGES = 200
+    private static final int MAX_REQUEST_CHARS = 400_000
+    private static final long MAX_BODY_BYTES = 1_000_000
+    private static final int MAX_STREAMS_PER_USER = 2
+
+    private static final String TOO_LARGE_MSG = 'This conversation is too large to send. Clear it to start again.'
 
     private static final String BUSY_MSG = 'The model is busy. Try again in a minute.'
     private static final String UNAVAILABLE_MSG = 'The model is not available right now. Try again in a few minutes.'

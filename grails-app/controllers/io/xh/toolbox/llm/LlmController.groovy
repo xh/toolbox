@@ -10,7 +10,11 @@ import static java.nio.charset.StandardCharsets.UTF_8
 /**
  * Relays the Anthropic Messages API for the Toolbox chats built on `@xh/hoist-chat-kit`: the
  * Weather V2 Dashboard Agent and the Chat Kit app's live demo. LlmService holds the API key, checks
- * each request and applies the rate limit.
+ * each request and applies the limits.
+ *
+ * Access is `@AccessAll` here, as an annotation cannot express its rule: the `TOOLBOX_LLM_USER`
+ * role, or any user while the `llmOpenToAllUsers` config is true. `LlmService.checkAccess` applies
+ * it, first thing in every action.
  */
 @AccessAll
 class LlmController extends BaseController {
@@ -29,6 +33,8 @@ class LlmController extends BaseController {
      * Anthropic `error` event, which the client shows as the reason the reply stopped.
      */
     def stream() {
+        llmService.checkAccess(authUser)
+        llmService.checkRequestSize(request.contentLengthLong)
         def body = parseRequestJSON()
 
         response.contentType = 'application/x-ndjson'
@@ -38,7 +44,7 @@ class LlmController extends BaseController {
 
         OutputStream out = null
         try {
-            llmService.stream(body, authUsername) { String event ->
+            llmService.stream(body, authUser) { String event ->
                 try {
                     out = out ?: response.outputStream
                     out.write((event + '\n').getBytes(UTF_8))

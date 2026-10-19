@@ -2,6 +2,7 @@ package io.xh.toolbox.user
 
 import io.xh.hoist.directory.DirectoryService
 import io.xh.hoist.role.provided.DefaultRoleService
+import io.xh.hoist.role.provided.RoleSpec
 
 /**
  * Toolbox leverages Hoist's built-in, database-backed Role management and its associated Admin Console UI.
@@ -22,5 +23,29 @@ class RoleService extends DefaultRoleService {
     protected DirectoryService getDirectoryService() {
         def svc = super.getDirectoryService()
         svc.enabled ? svc : mockDirectoryService
+    }
+
+    /**
+     * Create the roles for the LLM chat demos - see LlmService. HOIST_ADMIN members get both. Grant
+     * TOOLBOX_LLM_USER to selected users in the Admin Console, or open the demos to every user with
+     * the `llmOpenToAllUsers` config.
+     */
+    @Override
+    protected void ensureRequiredConfigAndRolesCreated() {
+        super.ensureRequiredConfigAndRolesCreated()
+        ensureRequiredRolesCreated([
+            new RoleSpec(
+                name: 'TOOLBOX_LLM_UNLIMITED',
+                category: 'Toolbox',
+                notes: 'Can use the LLM chat demos, with no hourly limit on model calls.',
+                roles: ['HOIST_ADMIN']
+            ),
+            new RoleSpec(
+                name: 'TOOLBOX_LLM_USER',
+                category: 'Toolbox',
+                notes: 'Can use the LLM chat demos: the Weather V2 Dashboard Agent and the Chat Kit live demo.',
+                roles: ['TOOLBOX_LLM_UNLIMITED']
+            )
+        ])
     }
 }

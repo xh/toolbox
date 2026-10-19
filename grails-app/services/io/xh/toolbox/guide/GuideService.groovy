@@ -43,7 +43,9 @@ import static io.xh.hoist.util.StringUtils.elide
  *
  * DEMO STORAGE - chats, messages, feedback and idempotency keys live in memory on this server node,
  * keyed by Hoist username. They are not shared across a cluster, and are lost on restart. Clear
- * Caches in the Admin Console resets them.
+ * Caches in the Admin Console resets them. To bound memory, each user keeps at most 50 chats - the
+ * least recently active go first - and each chat its last 100 answers. A chat idle for a day is
+ * dropped.
  */
 class GuideService extends BaseService {
 
@@ -61,7 +63,7 @@ class GuideService extends BaseService {
             def resource = applicationContext.getResource("classpath:guide/${it}.md")
             new GuideDocument(it, resource.inputStream.getText('UTF-8'))
         }
-        createTimer(name: 'pruneTimer', runFn: this.&pruneRuns, interval: 10 * MINUTES)
+        createTimer(name: 'pruneTimer', runFn: this.&prune, interval: 10 * MINUTES)
     }
 
     List<GuideDocument> listDocuments() {
@@ -91,6 +93,10 @@ class GuideService extends BaseService {
         def disallowed = request.keySet() - REQUEST_KEYS
         if (disallowed) {
             throw new RoutineRuntimeException("Request key(s) not accepted: ${disallowed.join(', ')}.")
+        }
+        if ((request.sessionId as String)?.size() > MAX_ID_CHARS ||
+            (request.idempotencyKey as String)?.size() > MAX_ID_CHARS) {
+            throw new RoutineRuntimeException("An id must be at most $MAX_ID_CHARS characters.")
         }
         def question = (request.question as String)?.trim()
         if (!question) throw new RoutineRuntimeException('A question is required.')
@@ -226,12 +232,20 @@ class GuideService extends BaseService {
         return ret
     }
 
-    /** The chat for a run, created on the first query of its session. */
+    /**
+     * The chat for a run, created on the first query of its session. A new chat beyond the user's
+     * limit evicts their least recently active chat that is not running.
+     */
     private GuideChat openChat(String username, String sessionId, String question) {
-        def ret = userChats(username).computeIfAbsent(sessionId) {
-            new GuideChat(sessionId, elide(question, NEW_TITLE_CHARS))
-        }
+        def chats = userChats(username),
+            ret = chats.computeIfAbsent(sessionId) {
+                new GuideChat(sessionId, elide(question, NEW_TITLE_CHARS))
+            }
         ret.startRun()
+        if (chats.size() > MAX_CHATS_PER_USER) {
+            def oldest = chats.values().findAll { !it.running }.min { it.lastActivityAt }
+            if (oldest) chats.remove(oldest.sessionId, oldest)
+        }
         return ret
     }
 
@@ -348,10 +362,13 @@ class GuideService extends BaseService {
         return JSONSerializer.serialize(frame)
     }
 
-    /** Drop finished runs, and their idempotency keys, after an hour. */
-    private void pruneRuns() {
-        def cutoff = System.currentTimeMillis() - HOURS
-        runs.values().removeIf { !it.running && it.createdAt < cutoff }
+    /** Drop idempotency keys after an hour, and chats idle for a day. */
+    private void prune() {
+        def now = System.currentTimeMillis()
+        runs.values().removeIf { !it.running && it.createdAt < now - HOURS }
+        chatsByUser.values().each { chats ->
+            chats.values().removeIf { !it.running && it.lastActivityAt < now - 24 * HOURS }
+        }
     }
 
     @Override
@@ -403,4 +420,6 @@ class GuideService extends BaseService {
     private static final int NEW_TITLE_CHARS = 60
     private static final int MAX_TITLE_CHARS = 80
     private static final int MAX_COMMENT_CHARS = 2000
+    private static final int MAX_ID_CHARS = 100
+    private static final int MAX_CHATS_PER_USER = 50
 }

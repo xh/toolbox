@@ -11,6 +11,9 @@ import java.util.concurrent.CopyOnWriteArrayList
  */
 class GuideChat implements JSONFormat {
 
+    /** Most answers a chat keeps. The oldest go first. */
+    static final int MAX_MESSAGES = 100
+
     final String sessionId
     final long createdAt = System.currentTimeMillis()
     final List<Map> messages = new CopyOnWriteArrayList<>()
@@ -37,9 +40,10 @@ class GuideChat implements JSONFormat {
         activeRuns > 0
     }
 
-    /** Record a finished answer. */
-    void addMessage(Map message) {
+    /** Record a finished answer, keeping the chat's last {@link #MAX_MESSAGES}. */
+    synchronized void addMessage(Map message) {
         messages << message
+        if (messages.size() > MAX_MESSAGES) messages.remove(0)
         lastActivityAt = System.currentTimeMillis()
     }
 

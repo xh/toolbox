@@ -27,6 +27,9 @@ export interface ChatKitDemo {
     /** Placeholder for the composer. */
     placeholder?: string;
 
+    /** True for a demo that calls a model through the server, which needs LLM access. */
+    requiresLlm?: boolean;
+
     /** Creates the config for the demo's ChatModel - its transport, tools and composer. */
     createChatConfig: () => ChatModelConfig;
 }

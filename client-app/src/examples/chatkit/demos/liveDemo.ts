@@ -12,6 +12,7 @@ export const liveDemo: ChatKitDemo = {
     title: 'Live model',
     description: 'Claude, with the generative UI catalog',
     icon: Icon.bolt(),
+    requiresLlm: true,
     heading: 'Ask Claude anything',
     intro:
         'A real conversation with Claude, relayed by the Toolbox server. The model has the ' +

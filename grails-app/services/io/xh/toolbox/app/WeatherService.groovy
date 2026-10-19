@@ -4,6 +4,8 @@ import io.xh.hoist.BaseService
 import io.xh.hoist.cache.Cache
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.exception.DataNotAvailableException
+import io.xh.hoist.exception.ExternalHttpException
+import io.xh.hoist.exception.RoutineRuntimeException
 import io.xh.hoist.http.JSONClient
 import org.apache.hc.client5.http.classic.methods.HttpGet
 
@@ -36,27 +38,37 @@ class WeatherService extends BaseService {
     // Implementation
     //------------------------
     private Map loadCurrentWeather(String city) {
-        def apiKey = getApiKey(),
-            encodedCity = URLEncoder.encode(city, 'UTF-8'),
-            url = "https://api.openweathermap.org/data/2.5/weather?q=${encodedCity}&appid=${apiKey}&units=imperial"
-
-        span('getCurrent')
-            .logDebug("Loading forecast for $city")
-            .run {
-                client.executeAsMap(new HttpGet(url))
-            }
-      }
+        load('getCurrent', 'weather', city)
+    }
 
     private Map loadForecast(String city) {
+        load('getForecast', 'forecast', city)
+    }
+
+    /**
+     * Call an OpenWeatherMap endpoint for a city. Its URL carries the API key, so a failure never
+     * passes the client's exception on - its message holds the URL. An unknown city is a routine 404.
+     */
+    private Map load(String spanName, String endpoint, String city) {
         def apiKey = getApiKey(),
             encodedCity = URLEncoder.encode(city, 'UTF-8'),
-            url = "https://api.openweathermap.org/data/2.5/forecast?q=${encodedCity}&appid=${apiKey}&units=imperial"
+            url = "https://api.openweathermap.org/data/2.5/${endpoint}?q=${encodedCity}&appid=${apiKey}&units=imperial"
 
-        span('getForecast')
-            .logDebug("Loading forecast for $city")
+        span(spanName)
+            .logDebug("Loading $endpoint for $city")
             .run {
-                client.executeAsMap(new HttpGet(url))
+                try {
+                    client.executeAsMap(new HttpGet(url))
+                } catch (ExternalHttpException e) {
+                    throw toWeatherException(city, e.statusCode)
+                }
             }
+    }
+
+    private Exception toWeatherException(String city, Integer status) {
+        if (status == 404) return new CityNotFoundException(city)
+        logWarn('OpenWeatherMap call failed', [city: city, status: status])
+        return new RoutineRuntimeException('The weather service is not available right now. Try again later.')
     }
 
     private String getApiKey() {
