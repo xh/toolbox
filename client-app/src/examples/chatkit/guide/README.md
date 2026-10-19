@@ -114,6 +114,11 @@ The real backend's contract may differ from the emulator's in a few places. Each
   a reopened chat searches every document, which is the scope a new chat starts with. A restored
   "not found" reply then cannot name the documents its question searched, so give it empty data
   (`{}`) rather than the whole library. To restore the scope, the app keeps it by `queryId`.
+- **No sources** - the emulator answers `sourceType: 'none'` only when a search found nothing, so
+  the codec and the store swap that answer for the kit's fixed "not found" reply. A backend that
+  also marks small talk `none`, such as a reply to "Hi", needs its own text kept. Otherwise a
+  greeting reads as "not found". Use the fixed reply only when the backend reports a search that
+  found nothing apart from a reply with no search.
 - **Comments** - the emulator returns a rating's comment. A backend that does not needs the store
   to omit it.
 - **External sources** - a source that is already a URL sets `url` and `sourceType: 'url'` in
