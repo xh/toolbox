@@ -2,7 +2,15 @@ import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
-import {mktValCol, pnlCol} from '../../../core/columns/Positions';
+import {
+    commissionCol,
+    costCol,
+    dayPnlCol,
+    longMktValCol,
+    mktValCol,
+    pnlCol,
+    shortMktValCol
+} from '../../../core/columns/Positions';
 import {nameCol} from '../../../core/columns/General';
 import type {PortfolioModel} from '../PortfolioModel';
 
@@ -49,12 +57,16 @@ export class PositionsGridModel extends HoistModel {
                 },
                 {
                     ...nameCol,
-                    width: null,
-                    flex: 1,
-                    isTreeColumn: true
+                    isTreeColumn: true,
+                    pinned: true
                 },
                 {...mktValCol},
-                {...pnlCol, highlightOnChange: true}
+                {...pnlCol, highlightOnChange: true},
+                {...dayPnlCol, highlightOnChange: true},
+                {...longMktValCol},
+                {...shortMktValCol},
+                {...costCol},
+                {...commissionCol}
             ]
         });
     }
