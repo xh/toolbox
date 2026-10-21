@@ -17,15 +17,37 @@
 ### New Features
 
 * Added `StoreFilterField` and `GridFindField` to the desktop `ZoneGrid` demo, and bound the mobile demo's filter to its `ZoneGridModel`. Both search the fields mapped to the grid's zones, using hoist-react's new ZoneGrid support.
+* Added an `IconPicker` demo page to Forms + Inputs, including Toolbox's own custom icons alongside Hoist's built-in set.
+* Updated the desktop and mobile Icons galleries to browse hoist-react's new icon catalog - search now matches aliases and keywords, and custom icons are flagged.
+* Updated Toolbox's custom icons (GitHub, React, Markdown, feedback faces, weather glyphs) to register via hoist-react's new `Icon.register()`.
+* Reorganized the desktop tabs - a new Components tab gathers General components, Charts, and Choosers & Pickers, and the Other tab is now System, grouped into Concepts, Dialogs & Alerts, and Formatting. Tab URLs changed to match (e.g. `/app/charts/line` is now `/app/components/line`).
+* Added a Grid Helpers group to the Grids tab, with new `FilterChooser`, `GroupingChooser`, `StoreFilterField`, and `GridFindField` demo pages, each driving a live trades grid.
+* Renamed the App Notifications demo to Updates & Idle and App Banners to Banners, and removed the Forms > Other Controls overview page - its controls now live under Components > Choosers & Pickers.
+* Added Favicon Designer example app - a client-only tool that builds a Hoist app's favicon set from any Font Awesome Pro glyph, with custom colors, backdrop shapes and padding, live browser-tab and home-screen previews, shareable design URLs, and a one-click zip of `favicon.svg` plus the PNGs `configureRsbuild()` picks up.
+* Added sample widgets in nested groups to the `DashCanvas` and `DashContainer` demos, to show a slash-delimited `groupName` nesting the add view menus and the `DashCanvasWidgetChooser`.
+
+### Bug Fixes
+
+* Fixed the doc viewer giving the third and later repeats of an H2 heading the same section id, which sent deep links to the wrong section.
+* Fixed the GitHub `Commit` type, which named the server's `changedFiles` field `changeFiles`.
 
 ### Technical
 
+* Upgraded to Grails 8 and the Gradle 9 wrapper.
+* Moved to Java 25 for builds, CI and the deployed Tomcat 11 container (`xhio/xh-tomcat:next-tc11-jdk25`). Grails 8 requires Java 21+ and Tomcat 11.
+* Reworked the `hoistCoreCli` configuration to resolve the active hoist-core version via `withDependencies`, deferring it to task execution. Resolving `runtimeClasspath` at configuration time under the Grails/Spring Boot plugin locks `developmentOnly` before its `afterEvaluate` hook can populate it.
+* Added Vitest unit tests for app models and services, run against hoist-react's fake hoist-core via `@xh/hoist/test-support` and the `configureVitest()` preset from hoist-dev-utils. Specs sit beside their source as `*.spec.ts`, and CI, snapshot and release builds now run `pnpm test`.
 * Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
 * Added a `clusterMemberCount` status monitor that fails when an instance sees fewer cluster members than expected - catching tasks that are down or have failed to join the cluster.
+* Updated the Custom Package demo to `@xh/package-template` 4.0, now written in TypeScript for Hoist 88 and React 19. Its panel adds a click counter backed by a TC39-decorated model from the package.
 
 ### Libraries
 
 * typescript `5.9 → 7.0`
+* @xh/package-template `3.0 → 4.0`
+* Grails `7.2.2 → 8.0.0`
+* Gradle `8.14.5 → 9.8.0`
+* Java `21 → 25`
 
 ## 11.0.0 - 2026-09-29
 

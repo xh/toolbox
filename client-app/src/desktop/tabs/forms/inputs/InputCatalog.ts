@@ -1,5 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
 import type {ReactElement} from 'react';
+import {iconsIcon} from '../../../../core/Icons';
 
 export type InputCategory = 'Text & Code' | 'Numeric' | 'Date & Time' | 'Choice' | 'Boolean';
 
@@ -15,7 +16,7 @@ export const INPUT_CATEGORIES: InputCategory[] = [
 export interface InputCatalogEntry {
     /** Component name - also the index tile title. */
     name: string;
-    /** Set for `HoistInput`s, which the All Inputs index groups by value type. */
+    /** Set for `HoistInput`s, which the Inputs index groups by value type. */
     category?: InputCategory;
     /** One-line description shown on the index tile. */
     description: string;
@@ -29,7 +30,7 @@ const R = 'default.forms';
 
 /**
  * Every desktop `HoistInput`, in index order within its category - the single source of truth for
- * the All Inputs index and the per-input page headers. Membership is the contract itself: the
+ * the Inputs index and the per-input page headers. Membership is the contract itself: the
  * component takes a `bind` and can sit inside a `FormField`.
  */
 export const INPUT_CATALOG: InputCatalogEntry[] = [
@@ -133,6 +134,13 @@ export const INPUT_CATALOG: InputCatalogEntry[] = [
         icon: () => Icon.tags()
     },
     {
+        name: 'IconPicker',
+        category: 'Choice',
+        description: 'Searchable icon grid, including app-registered icons.',
+        route: `${R}.iconPicker`,
+        icon: () => iconsIcon()
+    },
+    {
         name: 'Checkbox',
         category: 'Boolean',
         description: 'Boolean toggle, optional indeterminate state.',
@@ -155,34 +163,9 @@ export const INPUT_CATALOG: InputCatalogEntry[] = [
     }
 ];
 
-/**
- * Related controls that take their own model rather than a `bind`. Not `HoistInput`s, so they stay
- * out of the All Inputs index and are listed by their own gallery instead.
- */
-export const OTHER_CONTROLS: InputCatalogEntry[] = [
-    {
-        name: 'DateRangePicker',
-        description: 'Range selection with presets, lookbacks and custom dates.',
-        route: `${R}.dateRangePicker`,
-        icon: () => Icon.calendarRange()
-    },
-    {
-        name: 'LeftRightChooser',
-        description: 'Move items between two grouped lists.',
-        route: `${R}.leftRightChooser`,
-        icon: () => Icon.arrowsLeftRight()
-    },
-    {
-        name: 'FileChooser',
-        description: 'Drag-and-drop or browse for local files.',
-        route: `${R}.fileChooser`,
-        icon: () => Icon.copy()
-    }
-];
-
 /** Lookup by component name - throws on a typo so a page cannot silently detach from the index. */
 export function inputEntry(name: string): InputCatalogEntry {
-    const ret = [...INPUT_CATALOG, ...OTHER_CONTROLS].find(it => it.name === name);
-    if (!ret) throw new Error(`Unknown control '${name}' - add it to a catalog in this file.`);
+    const ret = INPUT_CATALOG.find(it => it.name === name);
+    if (!ret) throw new Error(`Unknown control '${name}' - add it to INPUT_CATALOG.`);
     return ret;
 }

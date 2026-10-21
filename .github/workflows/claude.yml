@@ -12,11 +12,26 @@ on:
 
 jobs:
   claude:
+    # Restrict to actors with a trusted relationship to the repo. Without this gate, any GitHub
+    # user who can comment on an issue or PR in this public repo could invoke a job that holds
+    # contents/issues/pull-requests write permissions and the Anthropic API key.
+    #
+    # Each event is checked against the association of the user who wrote the triggering text -
+    # never `github.event.issue.author_association` on a comment event, which is the association
+    # of the issue/PR author and would let anyone trigger via a comment on a member's issue or PR.
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+      (github.event_name == 'issue_comment' &&
+       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association) &&
+       contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' &&
+       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association) &&
+       contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' &&
+       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.review.author_association) &&
+       contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' &&
+       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) &&
+       (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,7 +47,9 @@ jobs:
 
       - name: Run Claude Code
         id: claude
-        uses: anthropics/claude-code-action@v1
+        # Pinned to the commit SHA of the v1 tag at time of pinning - bump manually (this repo
+        # has no Dependabot config) by resolving `git ls-remote <action repo> 'refs/tags/v1^{}'`.
+        uses: anthropics/claude-code-action@2dca132ff0e0c4094ce6048b422c6915a071210b # v1.0.247
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 
