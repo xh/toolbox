@@ -25,7 +25,7 @@ class BootStrap implements LogSupport {
     PrefService prefService
     TraceService traceService
 
-    def init = {servletContext ->
+    def init = {
         logStartupMsg()
 
         traceService.withSpan(name: 'toolbox.server.appLoad', caller: this) {

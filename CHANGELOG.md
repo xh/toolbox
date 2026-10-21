@@ -32,6 +32,7 @@
 * Added the Chat Kit example app - a tour of `@xh/hoist-chat-kit` with scripted demos of rich content, reasoning and tools, tool approval, attachments, errors and stop, and generative UI, plus a live demo that talks to Claude through `/llm/stream`.
 * Added `guide/*` server endpoints that emulate a retrieval-augmented guideline assistant over a small document library - a streamed answer dialect with resets, citations and idempotent retries, plus chat history, rename, delete and feedback - as the backend for a coming Chat Kit server-mode demo.
 * Added a Guideline Assistant tab to the Chat Kit example app - the kit's full-page `chatWorkspace` over the emulated `guide/*` backend, with a thread sidebar, a document scope chip, `[n]` citations that open the cited passage in a side-panel document viewer, thumbs feedback with a required comment on a down vote, and the kit's fixed "not found" reply. Added a `guide/documents/{documentId}` endpoint that serves a document's passages to the viewer.
+* Added sample widgets in nested groups to the `DashCanvas` and `DashContainer` demos, to show a slash-delimited `groupName` nesting the add view menus and the `DashCanvasWidgetChooser`.
 
 ### Bug Fixes
 

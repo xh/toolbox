@@ -28,9 +28,9 @@ export const numberFormatsPanel = hoistCmp.factory({
                 'useful options. More specific methods delegate to `fmtNumber` and set useful',
                 'defaults.',
                 '',
-                '`fmtNumber` is backed by [numbro.js](https://numbrojs.com/) and makes the',
-                'full numbro API available via the `formatConfig` property, which takes a',
-                'numbro configuration object.',
+                "`fmtNumber` formats digits with the browser's `Intl.NumberFormat`, fixed to",
+                'the `en-US` locale, and adds options for precision, zero padding, signs,',
+                'colors, and units.',
                 '',
                 'Pick a function and adjust its options at left to see how each value below is',
                 'formatted. All Hoist formatting functions also support the `asHtml` option to',
@@ -51,9 +51,9 @@ export const numberFormatsPanel = hoistCmp.factory({
                     notes: 'fmtNumber and the related number formatting functions.'
                 },
                 {
-                    url: 'https://numbrojs.com/',
-                    text: 'numbro.js',
-                    notes: 'The underlying number formatting library.'
+                    url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat',
+                    text: 'Intl.NumberFormat',
+                    notes: 'The browser API that formats the digits.'
                 }
             ],
             options: [
