@@ -11,6 +11,7 @@ class RawPosition {
     final String trader
     final Long cost
     final Long endQty
+    final Long commission
 
     String getRegion() { instrument.region }
     String getSector() { instrument.sector }
@@ -23,6 +24,7 @@ class RawPosition {
         trader = mp.trader
         cost = mp.cost as Long
         endQty = mp.endQty as Long
+        commission = mp.commission as Long
     }
 
 }

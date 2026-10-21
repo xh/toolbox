@@ -7,7 +7,15 @@ import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {action} from '@xh/hoist/mobx';
 import type {StoreRecord} from '@xh/hoist/data';
-import {mktValCol, pnlCol} from '../../../core/columns/Positions';
+import {
+    commissionCol,
+    costCol,
+    dayPnlCol,
+    longMktValCol,
+    mktValCol,
+    pnlCol,
+    shortMktValCol
+} from '../../../core/columns/Positions';
 import {nameCol} from '../../../core/columns/General';
 import {PortfolioService} from '../../../core/svc/PortfolioService';
 
@@ -132,7 +140,12 @@ export class SampleTreeGridModel extends HoistModel {
                     ...(includeCheckboxes ? this.createCheckboxTreeColumn() : {})
                 },
                 {...mktValCol},
-                {...pnlCol}
+                {...pnlCol},
+                {...dayPnlCol},
+                {...longMktValCol},
+                {...shortMktValCol},
+                {...costCol},
+                {...commissionCol}
             ]
         });
     }
