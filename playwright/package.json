@@ -1,0 +1,28 @@
+{
+  "name": "toolbox-playwright",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "postinstall": "playwright install --with-deps chromium",
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test",
+    "testWithUI": "playwright test --ui",
+    "testHeaded": "playwright test --headed",
+    "testDebug": "PWDEBUG=1 playwright test"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.1",
+    "lodash": "4.x"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/lodash": "4.x",
+    "@types/node": "20.x",
+    "prettier": "3.x",
+    "typescript": "~5.9.3"
+  },
+  "resolutions": {
+    "core-js": "^3.0.0"
+  }
+}

@@ -33,6 +33,7 @@
 
 ### Technical
 
+* Updated `User` to hash passwords with hoist-core's `HoistPasswordEncryptor`, a drop-in replacement for jasypt's `BasicPasswordEncryptor` removed in hoist-core v44.
 * Upgraded to Grails 8 and the Gradle 9 wrapper.
 * Moved to Java 25 for builds, CI and the deployed Tomcat 11 container (`xhio/xh-tomcat:next-tc11-jdk25`). Grails 8 requires Java 21+ and Tomcat 11.
 * Reworked the `hoistCoreCli` configuration to resolve the active hoist-core version via `withDependencies`, deferring it to task execution. Resolving `runtimeClasspath` at configuration time under the Grails/Spring Boot plugin locks `developmentOnly` before its `afterEvaluate` hook can populate it.
@@ -253,6 +254,14 @@
 * Removed the long-stale Hoist Roadmap widget, its admin console editor, and backing `Phase`/`Project` domain classes - the auto-updating Releases and Commits feeds now tell that story without manual curation.
 * Downgraded toolbox build toolchain back to JDK 21 - JDK 25 is not currently usable out of the box (Gradle 8.x caps its compatible JVM at version 24) and requires advanced setup not recommended for most production apps.
 * Added a `majorJavaVersion` property to `gradle.properties` to centralize JVM version control, this is a good pattern to have in client apps.
+
+### New Features
+
+* Added a Playwright end-to-end testing setup at `playwright/` — a standalone npm project that drives a real Toolbox instance against bootstrapped local test users, providing the foundation for systematic Hoist-aware browser testing across the desktop app, admin console, and (planned) a dedicated component-scenario host sub-app.
+
+### Technical
+
+* Bootstrap now creates `test-admin@xh.io` and `test-user@xh.io` in local dev when `APP_TOOLBOX_TEST_USER_PASSWORD` is set, with `test-admin` granted `HOIST_ADMIN` via `RoleService`. Pair with `APP_TOOLBOX_OAUTH_PROVIDER=NONE` for the Hoist password login form used by the new Playwright suite.
 
 ### Libraries
 
