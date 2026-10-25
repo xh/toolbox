@@ -90,7 +90,7 @@ function findFiles(dir, suffix, prefix = '') {
 function main() {
     if (!existsSync(HOIST_ROOT)) {
         console.error(
-            '❌ @xh/hoist not found in node_modules. Run yarn install first.'
+            '❌ @xh/hoist not found in node_modules. Run pnpm install first.'
         );
         process.exit(1);
     }

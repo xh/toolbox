@@ -1,5 +1,6 @@
 import {div, img} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistProps, HoistUser, XH} from '@xh/hoist/core';
+import type {HoistProps, HoistUser} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import './ProfilePic.scss';
 
 export const profilePic = hoistCmp.factory<HoistProps & {user: HoistUser}>({

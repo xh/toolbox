@@ -1,0 +1,137 @@
+import {code} from '@xh/hoist/cmp/layout';
+import {HoistModel} from '@xh/hoist/core';
+import * as formatFunctions from '@xh/hoist/format/FormatNumber';
+import {bindable} from '@xh/hoist/mobx';
+import {isBoolean} from 'lodash';
+
+export class NumberFormatsPanelModel extends HoistModel {
+    testData = [
+        Math.PI,
+        Math.E,
+        1.6180339887, // Golden Mean
+        -0.0012, // tests that output is (0.00) with ledger: true, zeroPad: true
+        -1842343,
+        1.23456e-6,
+        1.23456e-7,
+        0,
+        0.2,
+        0.25,
+        50,
+        101,
+        1265, // tests omitFourDigitComma option
+        12456.12,
+        123400.1,
+        123450, // tests that rightmost zero is not cut off when precision: 0 && zeroPad: false
+        920120.21343,
+        7100100, // tests fmtQuantity `lossless` - stays full, does not collapse to 7.10m
+        7120000, // tests fmtQuantity `lossless` - collapses cleanly to 7.12m
+        12345600,
+        100000001,
+        123456789.12,
+        1234567890.12,
+        5000000000, // fmtQuantity + lossless: collapses to 5b (no precision lost)
+        1.23456e14,
+        null,
+        undefined
+    ];
+
+    @bindable accessor fnName = 'fmtNumber';
+    @bindable accessor colorSpec: boolean | 'custom' = true;
+    @bindable accessor forceLedgerAlign = true;
+    @bindable accessor label: string = null;
+    @bindable accessor ledger = false;
+    @bindable accessor nullDisplay: string = null;
+    @bindable accessor omitFourDigitComma = false;
+    @bindable accessor precision = -1; // -2 => null (full), -1 => 'auto'
+    @bindable accessor prefix: string = null;
+    @bindable accessor strictZero = true;
+    @bindable accessor withCommas = true;
+    @bindable accessor withPlusSign = false;
+    @bindable accessor withSignGlyph = false;
+    @bindable accessor zeroDisplay: string = null;
+    @bindable accessor zeroPad = -2; // -2 => undefined, -1 => false, 0 => true, # => pad length
+
+    // fmtQuantity-only options.
+    @bindable accessor useMillions = true;
+    @bindable accessor useBillions = true;
+    @bindable accessor lossless = false;
+    @bindable accessor positiveColor = '#00aa00';
+    @bindable accessor negativeColor = '#cc0000';
+    @bindable accessor neutralColor = '#999999';
+
+    @bindable accessor tryItData: number = 1234567.89;
+
+    get testResults() {
+        return this.testData.map(data => ({
+            data,
+            formattedData: nilAwareFormat(data),
+            result: this.getResult(data)
+        }));
+    }
+
+    get tryItResult() {
+        return this.getResult(this.tryItData);
+    }
+
+    //------------------
+    // Implementation
+    //------------------
+    private getResult(input: number) {
+        const options = {
+            colorSpec: isBoolean(this.colorSpec)
+                ? this.colorSpec
+                : {
+                      pos: {color: this.positiveColor},
+                      neg: {color: this.negativeColor},
+                      neutral: {color: this.neutralColor}
+                  },
+            forceLedgerAlign: this.forceLedgerAlign,
+            label: this.label ? this.label : undefined,
+            ledger: this.ledger,
+            nullDisplay: this.nullDisplay != null ? this.nullDisplay : undefined,
+            omitFourDigitComma: this.omitFourDigitComma,
+            precision: this.toPrecision(this.precision),
+            prefix: this.prefix,
+            strictZero: this.strictZero,
+            withCommas: this.withCommas,
+            withPlusSign: this.withPlusSign,
+            withSignGlyph: this.withSignGlyph,
+            zeroPad: this.toZeroPad(this.zeroPad),
+            useMillions: this.useMillions,
+            useBillions: this.useBillions,
+            lossless: this.lossless
+        };
+
+        try {
+            return formatFunctions[this.fnName](input, options);
+        } catch (e) {
+            this.logError(e);
+            return '#exception#';
+        }
+    }
+
+    private toPrecision(formVal: number) {
+        if (formVal === -2) return null;
+        if (formVal === -1) return 'auto';
+        return formVal;
+    }
+
+    private toZeroPad(formVal: number) {
+        switch (formVal) {
+            case -2:
+                return undefined;
+            case -1:
+                return false;
+            case 0:
+                return true;
+            default:
+                return formVal;
+        }
+    }
+}
+
+function nilAwareFormat(val: any) {
+    if (val === undefined) return code('undefined');
+    if (val === null) return code('null');
+    return val;
+}

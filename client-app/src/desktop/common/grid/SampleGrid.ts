@@ -1,12 +1,12 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, vframe} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {BoxProps, hoistCmp, HoistProps, uses} from '@xh/hoist/core';
+import type {BoxProps, HoistProps} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {colAutosizeButton, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {gridOptionsPanel} from './options/GridOptionsPanel';
 import './SampleGrid.scss';
 import {SampleGridModel} from './SampleGridModel';
 
@@ -58,17 +58,13 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
             ref: model.panelRef,
             mask: omitMask ? null : 'onLoad',
             ...props,
-            contentBoxProps: {flexDirection: 'row'},
-            items: [
-                vframe(
-                    grid(),
-                    hbox({
-                        items: [Icon.info(), selText],
-                        className: 'tb-sample-grid__selbar'
-                    })
-                ),
-                gridOptionsPanel({model: model.gridModel})
-            ],
+            item: vframe(
+                grid(),
+                hbox({
+                    items: [Icon.info(), selText],
+                    className: 'tb-sample-grid__selbar'
+                })
+            ),
             tbar: [
                 groupingChooser({icon: Icon.treeList(), emptyText: 'Ungrouped', minWidth: 200}),
                 filler(),

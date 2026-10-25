@@ -8,6 +8,7 @@ import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {Icon} from '@xh/hoist/icon';
 import {AppModel} from './AppModel';
 import {CITIES} from './WeatherDashModel';
+import {viewManagers} from './viewManagers';
 import '../../core/Toolbox.scss';
 import './Weather.scss';
 
@@ -29,7 +30,7 @@ export const AppComponent = hoistCmp({
                         width: 200
                     }),
                     appBarSeparator(),
-                    viewManager()
+                    viewManager({model: viewManagers.weatherDashboard})
                 ],
                 rightItems: [
                     relativeTimestamp({

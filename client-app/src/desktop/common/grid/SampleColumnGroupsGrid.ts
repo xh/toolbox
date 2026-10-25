@@ -1,86 +1,40 @@
+import type {GridConfig} from '@xh/hoist/cmp/grid';
 import {grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
-import {filler, hframe} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {StoreRecord} from '@xh/hoist/data';
+import {hoistCmp, HoistModel, managed, uses, XH} from '@xh/hoist/core';
+import type {StoreRecord} from '@xh/hoist/data';
 import {colAutosizeButton, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 import {
     actualGrossCol,
     actualUnitsSoldCol,
+    projectedGrossCol,
+    projectedUnitsSoldCol,
+    retainCol
+} from '../../../core/columns/Sales';
+import {
     cityCol,
     firstNameCol,
     fullNameCol,
     lastNameCol,
-    projectedGrossCol,
-    projectedUnitsSoldCol,
-    retainCol,
     salaryCol,
     stateCol
-} from '../../../core/columns';
-import {gridOptionsPanel} from './options/GridOptionsPanel';
+} from '../../../core/columns/Demographics';
 
-export const sampleColumnGroupsGrid = hoistCmp.factory({
-    model: creates(() => SampleColumnGroupsGridModel),
-
-    render({model, ...props}) {
-        const {gridModel} = model;
-
-        return panel({
-            item: hframe(grid(), gridOptionsPanel({model: gridModel})),
-            ref: model.panelRef,
-            mask: 'onLoad',
-            tbar: [
-                switchInput({
-                    bind: 'groupRows',
-                    label: 'Group rows:',
-                    labelSide: 'left'
-                }),
-                toolbarSep(),
-                switchInput({
-                    bind: 'inMillions',
-                    label: 'Sales in millions:',
-                    labelSide: 'left'
-                }),
-                filler(),
-                gridCountLabel(),
-                '-',
-                storeFilterField(),
-                '-',
-                colAutosizeButton(),
-                colChooserButton(),
-                exportButton()
-            ],
-            ...props
-        });
-    }
-});
-
-class SampleColumnGroupsGridModel extends HoistModel {
+export class SampleColumnGroupsGridModel extends HoistModel {
     @managed gridModel: GridModel;
-    @bindable inMillions: boolean = false;
-    @bindable groupRows: boolean = true;
+    @bindable accessor inMillions: boolean = false;
 
     panelRef = createRef<HTMLElement>();
 
-    constructor() {
+    constructor({gridConfig}: {gridConfig?: Partial<GridConfig>} = {}) {
         super();
-        makeObservable(this);
-        this.gridModel = this.createGridModel();
-
-        this.addReaction({
-            track: () => this.groupRows,
-            run: groupRows => {
-                this.gridModel.setGroupBy(groupRows ? ['state'] : null);
-            },
-            fireImmediately: true
-        });
+        this.gridModel = this.createGridModel(gridConfig);
 
         this.addReaction({
             track: () => this.inMillions,
@@ -96,7 +50,7 @@ class SampleColumnGroupsGridModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    private createGridModel() {
+    private createGridModel(gridConfig: Partial<GridConfig>) {
         const millionsAwareCol = {
             headerName: () => 'Gross' + (this.inMillions ? ' (m)' : ''),
             rendererIsComplex: true,
@@ -108,7 +62,7 @@ class SampleColumnGroupsGridModel extends HoistModel {
         };
 
         return new GridModel({
-            persistWith: {localStorageKey: 'toolboxGroupGrid'},
+            persistWith: {localStorageKey: 'toolboxGroupGrid', persistGrouping: false},
             store: {
                 idSpec: data => `${data.firstName}~${data.lastName}~${data.city}~${data.state}`
             },
@@ -131,38 +85,13 @@ class SampleColumnGroupsGridModel extends HoistModel {
             columns: [
                 {
                     groupId: 'demographics',
+                    collapsed: true,
                     children: [
-                        {
-                            ...fullNameCol,
-                            agOptions: {
-                                columnGroupShow: 'closed'
-                            }
-                        },
-                        {
-                            ...firstNameCol,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        },
-                        {
-                            ...lastNameCol,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        },
-                        {
-                            ...cityCol,
-                            hidden: true,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        },
-                        {
-                            ...stateCol,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        }
+                        {...fullNameCol, groupShowMode: 'collapsed'},
+                        {...firstNameCol, groupShowMode: 'expanded'},
+                        {...lastNameCol, groupShowMode: 'expanded'},
+                        {...cityCol, hidden: true, groupShowMode: 'expanded'},
+                        {...stateCol, groupShowMode: 'expanded'}
                     ]
                 },
                 {...salaryCol},
@@ -194,7 +123,8 @@ class SampleColumnGroupsGridModel extends HoistModel {
                     ]
                 },
                 {...retainCol}
-            ]
+            ],
+            ...gridConfig
         });
     }
 
@@ -212,3 +142,26 @@ class SampleColumnGroupsGridModel extends HoistModel {
         });
     }
 }
+
+export const sampleColumnGroupsGrid = hoistCmp.factory({
+    model: uses(SampleColumnGroupsGridModel),
+
+    render({model, ...props}) {
+        return panel({
+            item: grid(),
+            ref: model.panelRef,
+            mask: 'onLoad',
+            tbar: [
+                filler(),
+                gridCountLabel(),
+                '-',
+                storeFilterField(),
+                '-',
+                colAutosizeButton(),
+                colChooserButton(),
+                exportButton()
+            ],
+            ...props
+        });
+    }
+});

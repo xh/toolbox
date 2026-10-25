@@ -1,0 +1,26 @@
+.tb-welcome-widget {
+  &__headline {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--xh-text-color);
+    margin: var(--xh-pad-half-px) 0;
+  }
+
+  p {
+    margin: 0 0 var(--xh-pad-px);
+    font-size: var(--xh-font-size-small-px);
+    line-height: 1.5;
+    color: var(--xh-text-color-muted);
+  }
+
+  &__ctas {
+    gap: var(--xh-pad-px);
+    align-items: stretch;
+  }
+
+  // Let the primary CTA take the row; the code button stays square at the end.
+  &__read-docs {
+    flex: 1;
+  }
+}

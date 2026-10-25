@@ -1,8 +1,9 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {makeObservable, bindable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {p, strong} from '@xh/hoist/cmp/layout';
+import {iconsIcon} from '../../../core/Icons';
 
 export class ExamplesTabModel extends HoistModel {
     @managed
@@ -13,7 +14,7 @@ export class ExamplesTabModel extends HoistModel {
         side: 'left'
     });
 
-    @bindable activeApp: string = 'Portfolio';
+    @bindable accessor activeApp: string = 'Portfolio';
 
     get activeAppConfig() {
         return this.examples.find(it => it.title === this.activeApp);
@@ -48,7 +49,7 @@ export class ExamplesTabModel extends HoistModel {
             ]
         },
         {
-            title: 'Contact',
+            title: 'Contacts',
             icon: Icon.users(),
             path: 'contact',
             srcPath: 'contact',
@@ -60,7 +61,19 @@ export class ExamplesTabModel extends HoistModel {
             ]
         },
         {
-            title: 'TODO',
+            title: 'Favicon Designer',
+            icon: iconsIcon(),
+            path: 'favicons',
+            srcPath: 'favicons',
+            text: [
+                p('Mint a complete favicon set for your next Hoist app in seconds.'),
+                p(
+                    'Pick any Font Awesome Pro glyph, style it with colors, a backdrop shape and padding, preview it live in browser tabs and on a home screen, then download a zip ready to drop into client-app/public.'
+                )
+            ]
+        },
+        {
+            title: '#TODO',
             icon: Icon.clipboard(),
             path: 'todo',
             srcPath: 'todo',
@@ -113,9 +126,4 @@ export class ExamplesTabModel extends HoistModel {
             ]
         }
     ];
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 }

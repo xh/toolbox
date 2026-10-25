@@ -10,15 +10,6 @@
       margin-right: 4px;
     }
   }
-
-  // To demo Column.cellClassRules
-  .ag-row:not(.ag-row-pinned) {
-    .tb-sample-grid__high-volume-cell {
-      color: var(--xh-intent-warning-text-color);
-      border-left: 4px solid var(--xh-intent-warning) !important;
-      border-right: 4px solid var(--xh-intent-warning) !important;
-    }
-  }
 }
 
 .tb-sample-grid-tooltip {

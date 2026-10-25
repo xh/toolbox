@@ -14,7 +14,7 @@ export const AppComponent = hoistCmp({
     render() {
         return panel({
             tbar: appBar({
-                icon: Icon.folder({size: '2x', prefix: 'fal'}),
+                icon: Icon.fileText({size: '2x', prefix: 'fal'}),
                 hideRefreshButton: true,
                 appMenuButtonProps: {hideLogoutItem: false}
             }),

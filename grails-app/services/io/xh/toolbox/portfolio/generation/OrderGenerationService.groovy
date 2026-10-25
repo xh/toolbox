@@ -4,6 +4,7 @@ import io.xh.hoist.BaseService
 import io.xh.toolbox.portfolio.Instrument
 import io.xh.toolbox.portfolio.MarketPrice
 import io.xh.toolbox.portfolio.Order
+import io.xh.toolbox.portfolio.PortfolioConfig
 
 import java.time.Instant
 import java.time.LocalTime
@@ -75,8 +76,8 @@ class OrderGenerationService extends BaseService {
             }
     }
 
-    private Map getConfig() {
-        configService.getMap('portfolioConfigs')
+    private PortfolioConfig getConfig() {
+        configService.getObject(PortfolioConfig)
     }
 
     Map getAdminStats() {[

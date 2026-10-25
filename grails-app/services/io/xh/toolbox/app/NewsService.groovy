@@ -7,6 +7,7 @@ import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
 import io.xh.toolbox.NewsItem
 import org.apache.hc.client5.http.classic.methods.HttpGet
+import org.springframework.web.util.HtmlUtils
 
 import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
@@ -54,15 +55,15 @@ class NewsService extends BaseService {
 
             def articles = response.articles,
                 ret = []
-            articles.eachWithIndex { article, idx ->
+            articles.eachWithIndex { Map article, idx ->
                 if (article.publishedAt) {
                     def cleanPubString = article.publishedAt.take(19) + 'Z'
                     ret << new NewsItem(
                         id: idx,
                         source: article.source.name,
-                        title: article.title,
+                        title: cleanText(article.title),
                         author: article.author,
-                        text: article.description,
+                        text: cleanText(article.description),
                         url: article.url,
                         imageUrl: article.urlToImage,
                         published: Date.parse("yyyy-MM-dd'T'HH:mm:ssX", cleanPubString)
@@ -74,6 +75,16 @@ class NewsService extends BaseService {
 
             return ret
         }
+    }
+
+    /**
+     * Normalize free-text fields from the news feed for display: strip any embedded HTML markup
+     * (some sources/aggregators include tags or list fragments in titles/descriptions), decode
+     * HTML entities, and collapse runs of whitespace.
+     */
+    private static String cleanText(String raw) {
+        if (!raw) return raw
+        HtmlUtils.htmlUnescape(raw.replaceAll(/<[^>]*>/, ' ')).replaceAll(/\s+/, ' ').trim()
     }
 
     private JSONClient _jsonClient

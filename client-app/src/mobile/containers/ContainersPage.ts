@@ -6,6 +6,7 @@ import './ContainersPage.scss';
 export const containersPage = hoistCmp.factory({
     model: creates(ContainersPageModel),
     render() {
-        return tabContainer();
+        // Switcher to the top so it never collides with each tab's bottom pull-up sheet.
+        return tabContainer({switcher: {orientation: 'top'}});
     }
 });

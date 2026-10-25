@@ -1,0 +1,60 @@
+.tb-docs-page {
+  // Top header line: muted breadcrumb (the hierarchy above the page). Reset the panel header's
+  // default title weight so it reads as a quiet breadcrumb rather than a heading.
+  &__crumb-header {
+    .xh-panel-header__title {
+      font-weight: normal;
+    }
+  }
+
+  &__crumb {
+    align-items: center;
+    gap: var(--xh-pad-half-px);
+    font-size: var(--xh-font-size-small-px);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__crumb-sep {
+    opacity: 0.6;
+  }
+
+  //------------------------
+  // Lower header line: doc title + "On this page"
+  //------------------------
+  &__title-bar {
+    align-items: center;
+    gap: var(--xh-pad-half-px);
+  }
+
+  &__title-text {
+    font-size: var(--xh-font-size-large-px);
+    color: var(--xh-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  //------------------------
+  // Footer pager (prev / next within category)
+  //------------------------
+  &__pager {
+    gap: var(--xh-pad-px);
+  }
+
+  &__pager-btn {
+    // Cap each button so a long neighbor title cannot crowd out the other side.
+    max-width: 48%;
+  }
+
+  &__pager-label {
+    align-items: center;
+    gap: var(--xh-pad-half-px);
+    overflow: hidden;
+  }
+
+  &__pager-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

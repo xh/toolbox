@@ -14,7 +14,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {Icon} from '@xh/hoist/icon';
 import {get, isEqual} from 'lodash';
-import {sampleGrid} from '../../../desktop/common';
+import {sampleGrid} from '../../../desktop/common/grid/SampleGrid';
 import {ViewManagerTestModel} from './ViewManagerTestModel';
 import './ViewManagerTest.scss';
 

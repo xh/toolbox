@@ -1,5 +1,6 @@
-import {PlainObject, XH} from '@xh/hoist/core';
-import {WebSocketSubscription, WebSocketMessage} from '@xh/hoist/svc';
+import type {PlainObject} from '@xh/hoist/core';
+import {XH} from '@xh/hoist/core';
+import type {WebSocketSubscription, WebSocketMessage} from '@xh/hoist/svc';
 
 export class PositionSession {
     id: string;

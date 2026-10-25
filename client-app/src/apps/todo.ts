@@ -8,7 +8,7 @@ import {AuthModel} from '../core/AuthModel';
 
 XH.renderApp({
     clientAppCode: 'todo',
-    clientAppName: 'Todo',
+    clientAppName: '#TODO',
     componentClass: AppComponent,
     modelClass: AppModel,
     containerClass: AppContainer,

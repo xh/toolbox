@@ -1,30 +1,24 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
-import {boolCheckCol, ExcelFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {boolCheck, ExcelFormat, GridModel, localDate} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {CompoundFilter, FieldFilter} from '@xh/hoist/data';
+import type {CompoundFilter, FieldFilter} from '@xh/hoist/data';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {computed} from '@xh/hoist/mobx';
 
 export class StoreColumnFilterPanelModel extends HoistModel {
-    @bindable.ref filterJson: string = JSON.stringify(null);
-
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;
 
+    @computed
+    get filterJson(): FieldFilter | CompoundFilter {
+        return this.gridModel.filterModel.filter as FieldFilter | CompoundFilter;
+    }
+
     constructor() {
         super();
-        makeObservable(this);
 
         this.gridModel = this.createGridModel();
         this.filterChooserModel = this.createFilterChooserModel();
-
-        // Update filter JSON
-        this.addReaction({
-            track: () => this.gridModel.filterModel.filter as FieldFilter | CompoundFilter,
-            run: filter => {
-                this.filterJson = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
-            }
-        });
     }
 
     override async doLoadAsync(loadSpec) {
@@ -91,7 +85,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                 },
                 {
                     field: 'active',
-                    ...boolCheckCol,
+                    ...boolCheck,
                     headerName: '',
                     chooserName: 'Active Status',
                     tooltip: (active, {record}) =>
@@ -145,7 +139,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                 },
                 {
                     field: 'trade_date',
-                    ...localDateCol,
+                    ...localDate,
                     width: 150
                 }
             ]

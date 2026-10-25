@@ -1,3 +1,3 @@
-/.yarn
 /build
 /public
+pnpm-lock.yaml

@@ -1,0 +1,626 @@
+---
+name: release-toolbox
+description: Cut a versioned production release of Toolbox - swap Hoist libraries from their working SNAPSHOTs to the latest official releases (hoist-core + @xh/hoist), finalize the CHANGELOG, commit on develop, ff-merge develop into master, trigger and watch the Build Release + Deploy Release GitHub Actions through to a successful prod deploy, then restore develop to its working-SNAPSHOT state. Use this skill whenever the developer wants to release Toolbox, cut a new Toolbox version, do a Toolbox prod release, ship a versioned build, or asks "let's release" / "release a new version" in this repo - even if they don't name every step. This is the authoritative runbook for the Toolbox release process; do not improvise the steps from memory.
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, mcp__hoist-react__hoist-search-docs, mcp__hoist-react__hoist-read-doc
+---
+
+# Release Toolbox
+
+The authoritative runbook for cutting a versioned production release of Toolbox. Follow the phases
+in order. Each phase that mutates files, git state, or remote/cloud state has an explicit
+confirmation gate - **never push, merge, or trigger a build without the developer's explicit go.**
+
+## Mental model - read this first
+
+Toolbox is XH's canary app: `develop` is kept on **working SNAPSHOT** versions of the Hoist
+libraries so we dogfood unreleased framework changes. For hoist-react that is expressed as the bare
+npm dist-tag `"@xh/hoist": "next"` rather than a pinned version or range (see Phase 9 for why); for
+hoist-core, as an explicit `x.y-SNAPSHOT` in `gradle.properties`. But we **ship** Toolbox against
+the latest **official, versioned** Hoist releases. A release is therefore a brief, deliberate excursion from
+SNAPSHOTs to releases and back:
+
+```
+develop (snaps) --[swap to releases + finalize CHANGELOG, commit]--> develop (release-pinned)
+                --[ff-merge develop -> master]--> master  ──[Build Release from master]──> prod
+                --[back on develop: restore snaps + new CHANGELOG header, commit]--> develop (snaps)
+```
+
+Three invariants that drive the whole process - keep them in mind:
+
+1. **The app's release version is never written into code.** The version (e.g. `10.0.0`) is passed
+   to the build only as `-PxhAppVersion` (see the comment in `buildRelease.yml`). `gradle.properties`
+   `xhAppVersion` and `client-app/package.json` `version` stay on their working `x.y-SNAPSHOT` value
+   across the release. The git tag deliberately points at a SNAPSHOT commit - that's expected, not a
+   bug. **Corollary: after a release, `master` permanently sits on a commit whose `xhAppVersion` /
+   `package.json` version read `x.y-SNAPSHOT`. That is the *app* version, and it is correct - it is
+   NOT a sign that the Phase 9 SNAPSHOT restore leaked onto master.** What distinguishes master from
+   develop is the *library* versions, never the app version: master carries the **release-pinned**
+   Hoist libraries as shipped (e.g. `@xh/hoist 86.1.0`, `hoistCoreVersion 40.1.0`), while only
+   `develop` is restored to library SNAPSHOTs. So to sanity-check master after a release, read the
+   **Hoist library** versions (they must be the released ones) - not the app version string, which
+   stays SNAPSHOT by design.
+
+2. **The app SNAPSHOT version lives in three places that must stay in sync** - `gradle.properties`
+   `xhAppVersion` (the **server**), `client-app/package.json` `version` (the **client**), and the
+   `CHANGELOG.md` unreleased header. All three use the 2-part Maven form `x.y-SNAPSHOT` (e.g.
+   `10.0-SNAPSHOT`). By the Java convention, the snap is always
+   `(latest_released_major + 1).0-SNAPSHOT`.
+
+   **Client and server versions are not cosmetic - a mismatch breaks the app.** Hoist's
+   `EnvironmentService.ensureVersionRunnable()` compares the version baked into the client bundle
+   against the one the server reports and **throws at startup** if they differ ("The version of
+   this client (X) is out of sync with the available server (Y)"). So this invariant is a
+   correctness requirement, not tidiness.
+
+   `client-app/package.json` `version` earns its place here because `rsbuild.config.mjs` reads it
+   (`appVersion: pkg.version`) and bakes it into the bundle as `XH.appVersion`. **Confirm that
+   derivation still holds** rather than assuming it - a literal there silently decouples the client
+   from this invariant:
+
+   ```bash
+   grep -n 'appVersion:' client-app/rsbuild.config.mjs   # want `pkg.version`, NOT a hardcoded string
+   ```
+
+   The failure mode is **major-release-only**: minor and patch releases reproduce the same snap (see
+   the Phase 9.2 table), so a decoupled client stays accidentally in sync and the drift stays hidden
+   until a major moves the number. Release builds are unaffected either way - `buildRelease.yml`
+   passes `XH_APP_VERSION`, which overrides whatever the config resolves.
+
+3. **Three libraries swap, not two.** `@xh/hoist` (hoist-react) and `@xh/hoist-dev-utils` both sit
+   on the npm dist-tag `next` between releases; `hoistCoreVersion` (hoist-core) sits on an explicit
+   `x.y-SNAPSHOT` in `gradle.properties`. All three pin to a release for the release commit and are
+   restored afterward. (dev-utils moved onto `next` alongside hoist-react - earlier revisions of this
+   runbook said it stays on a caret range and never swaps, which is no longer true.)
+
+## gh is a core tool
+
+This skill drives the GitHub Actions via the `gh` CLI (`gh workflow run`, `gh run watch`,
+`gh run list`). `gh` is considered core to XH's AI automation and is expected to be installed,
+configured, and authenticated. If a `gh` command fails with an auth/install error, **stop and
+prompt the developer to fix it** (`brew install gh`, `gh auth login`) rather than silently working
+around it. The GitHub Actions UI (Actions tab -> Build Release -> Run workflow) is a fallback to
+mention only if the developer asks or `gh` is genuinely unavailable.
+
+---
+
+## Phase 1: Preconditions
+
+Gather state and surface any concerns. **These are strong warnings, not hard gates** - the
+developer can always override (they may be releasing from `master` directly, or knowingly releasing
+off an unusual state). Present problems clearly and ask before proceeding; do not block.
+
+Run these checks:
+
+1. **On `develop`?** `git rev-parse --abbrev-ref HEAD`. The standard path runs on `develop`.
+   Releasing directly from `master` is also valid when `develop` is mid-major and can't take a
+   versioned Hoist release (see the note in Phase 3); on any other branch, confirm with the developer.
+2. **Clean working tree?** `git status --porcelain`. If dirty, warn strongly - the release adds
+   commits and a clean tree gives a clean rollback point.
+3. **Synced with origin?** `git fetch origin` then compare `develop` to `origin/develop`
+   (`git rev-list --left-right --count develop...origin/develop`). Warn strongly if behind/ahead.
+4. **Local `master` current with `origin/master`?**
+   `git rev-list --left-right --count master...origin/master` (the `git fetch origin` from check 3
+   already ran). Local `master` is only ever touched during a release, so between releases it drifts
+   far behind - dozens of commits is normal and not alarming. Unlike the other checks, **do not just
+   warn: fix it now**, so Phase 6 starts from a known-good `master`:
+   - **Behind only** (left count `0`, right count non-zero) - fast-forward the local ref without
+     checking it out:
+     `git branch -f master origin/master`. Safe precisely because the left count is `0`, proving no
+     local-only commits, and because `master` is not the current branch. (On the master-direct path
+     from check 1 `master` *is* checked out, so `git branch -f` refuses - use
+     `git merge --ff-only origin/master` there instead.)
+   - **Ahead at all** (left count non-zero) - **stop and ask.** Unpushed local commits on `master`
+     are unexpected and may be unreviewed work that an ff-merge would sweep into a release.
+5. **CI green on `develop`?** `gh run list --branch develop --workflow ci.yml --limit 1`. Warn
+   strongly if the latest CI run is failing or in progress.
+6. **App-version 3-way sync?** Quickly confirm the snap version agrees across `gradle.properties`
+   (`xhAppVersion`), `client-app/package.json` (`version`), and the `CHANGELOG.md` unreleased
+   header - the commands are in Phase 9.2. They should normally match; if they don't, just note it
+   in passing - the restore step (Phase 9) rewrites all three in sync and self-heals it. No special
+   handling needed.
+   **One thing here is not self-healing:** if `client-app/rsbuild.config.mjs` hardcodes an
+   `appVersion` literal instead of reading `pkg.version`, the client is decoupled from that sync and
+   Phase 9 will not fix it. Check it now (`grep -n 'appVersion:' client-app/rsbuild.config.mjs`) and
+   restore the derivation if needed - see invariant #2.
+
+Summarize findings. If anything is off, ask: "Proceed anyway?" Wait for confirmation.
+
+---
+
+## Phase 2: Determine the Hoist release targets
+
+Toolbox ships against the latest **official** releases of hoist-core and @xh/hoist. Discover them,
+classify the situation, and confirm with the developer before changing anything.
+
+### 1. Read current SNAPSHOT versions
+
+- `@xh/hoist`: **not readable from `client-app/package.json`** - between releases the spec there is
+  the bare dist-tag `next`, which carries no version. Read the resolved snapshot from
+  `client-app/pnpm-lock.yaml` instead: under `importers` -> `.` -> `dependencies` -> `'@xh/hoist'`,
+  the `version:` field (e.g. `87.0.0-SNAPSHOT.1786485357526` -> snap major 87). Equivalently,
+  `npm view @xh/hoist dist-tags --json` and read the `next` tag. See "Why `next`, not a caret
+  range" in Phase 9 for the background.
+- `@xh/hoist-dev-utils`: same story - the spec is the `next` dist-tag, so read the resolved version
+  from `pnpm-lock.yaml` or `npm view @xh/hoist-dev-utils dist-tags --json`.
+- `hoistCoreVersion`: `gradle.properties` (e.g. `41.0-SNAPSHOT` -> snap major 41).
+
+### 2. Discover the latest published releases
+
+- **hoist-react** (npm): `npm view @xh/hoist dist-tags --json`. Use the `latest` tag - that is the
+  newest stable release. **The `next` tag must be ignored here** - it points at the current
+  SNAPSHOT. (Note `next` is also the dependency spec `develop` sits on between releases, per
+  Phase 9; the two uses are unrelated - here you want `latest`.)
+- **hoist-dev-utils** (npm): `npm view @xh/hoist-dev-utils dist-tags --json`, again reading
+  `latest`. It versions on its own line, independent of hoist-react.
+- **hoist-core** (Maven Central): `curl -s https://repo1.maven.org/maven2/io/xh/hoist-core/maven-metadata.xml`
+  and read the `<release>` element - the newest non-SNAPSHOT version. (SNAPSHOTs live in a separate
+  repo and won't appear here.)
+
+### 3. Classify each library against its snap major
+
+Classify the two libraries **independently**: hoist-react and hoist-core version separately, on
+their own release schedules, and can land in different cases in the same release. For each,
+compare that library's latest release to that library's current snap major (snap = next-major).
+The examples below are hoist-react's; substitute hoist-core's own numbers when classifying it.
+
+- **"Major just released" case** - a release exists matching the snap major (e.g. snap `87-SNAP`
+  and `87.0.0` is published). This means the Hoist major was just released (and Hoist itself has
+  already moved to `88-SNAP`). **Take that matching release** (e.g. `87.0.0`). This is the clean
+  catch-up case.
+- **"Still developing the major" case** - the latest release is behind the snap major (e.g. snap
+  `87-SNAP` but latest release is `86.1.0`). Toolbox is dogfooding an unreleased major.
+  **Take the latest release of the prior line** (e.g. `86.1.0`) - **but only after confirming
+  Toolbox actually runs on it** (next step). Never silently downgrade.
+
+### 4. Confirm Toolbox runs on the chosen release (critical in the "still developing" case)
+
+When taking a release behind the current snap major, Toolbox may have already adapted to **breaking
+changes** introduced in the unreleased snapshot - code that compiles against the snap but would
+break against the latest release. Before pinning, assess this:
+
+- Read Toolbox's own `CHANGELOG.md` (current unreleased section) for entries that mention adapting
+  to new framework APIs.
+- Check recent commits: `git log --oneline -30` for framework-adaptation work.
+- Consult the hoist-react changelog / upgrade notes for what changed between the latest release and
+  the snap (the hoist-react reference tools or the sibling `../hoist-react` checkout if present).
+
+This review is an early read; the **authoritative** confirmation is the type-check Phase 3 runs
+against the actually-installed release (`pnpm typecheck`). If this review shows any sign Toolbox has
+adapted to not-yet-released breaking changes, flag it now and expect Phase 3 to confirm it. Either
+way, two possibilities when it's incompatible:
+- This should wait for the matching Hoist release, or
+- Ship the release directly from `master` instead of `develop` (see the note in Phase 3).
+
+In the clean cases (matching release exists, or no breaking-change adaptation), proceed.
+
+### 5. Propose and confirm
+
+State the proposed target versions plainly and **always confirm with the developer** before
+applying - e.g. "Proposing hoist-core `40.1.0` and @xh/hoist `86.1.0` (both 'still developing the
+next major' - latest releases of the current lines; Toolbox looks compatible). OK?" Wait for go.
+
+---
+
+## Phase 3: Apply the library version swaps
+
+Once the developer confirms the targets, edit the two files:
+
+- **`client-app/package.json`**: replace the `next` dist-tag spec with the **exact** release
+  version, no caret or range (e.g. `"@xh/hoist": "86.1.0"`). We pin exact because we revert to the
+  SNAPSHOT tag immediately after the release, so a range buys nothing. (pnpm leaves an exact stable
+  version alone - the spec-rewriting described in Phase 9 only affects prerelease versions.)
+- **`gradle.properties`**: set `hoistCoreVersion` to the **full semver** release (e.g.
+  `hoistCoreVersion=40.1.0`).
+- **`client-app/package.json`**: pin `@xh/hoist-dev-utils` the same way - it is also on the `next`
+  dist-tag, so replace it with its **exact** latest release (e.g. `"@xh/hoist-dev-utils": "15.0.0"`).
+
+Then refresh the client lockfile so the build is reproducible:
+
+```bash
+cd client-app && pnpm install
+```
+
+Both CI and the release build install with `pnpm install --frozen-lockfile`, so **`pnpm-lock.yaml`
+must be committed alongside the `package.json` change**. A lockfile out of sync with the manifest
+fails the release build at the install step, before lint, typecheck, or the build itself run.
+
+(Do not run `startWithHoist` / `runHoistInline` - the release must build against the published
+libraries, not local sibling checkouts.)
+
+### Verify compatibility against the installed release (the real gate)
+
+This is the authoritative confirmation of the Phase 2.4 assessment - run it, don't skip it:
+
+```bash
+cd client-app && pnpm lint && pnpm typecheck
+```
+
+`pnpm typecheck` (`tsc --noEmit`) **type-checks Toolbox against the `@xh/hoist` you just
+installed** - the same check CI and the release build run, and a gate distinct from `pnpm lint`
+(linting never reports compiler errors). A type error here almost
+certainly means Toolbox uses an API that exists on the SNAPSHOT line but **not** in this release.
+If so, **stop**: this should wait for the matching Hoist release, or be shipped directly from
+`master` instead (see the note below). Do not proceed to commit a release that fails this check.
+
+**Caveat - make sure the check is honest.** Type-checking is only truthful when `tsc` resolves
+`@xh/hoist` from `node_modules` (the installed release), which is the default. If the developer has
+**uncommented the `paths` mapping in `client-app/tsconfig.json`** for local hoist-react development,
+`tsc` resolves against their local sibling checkout instead and will **false-pass**. Before trusting
+this gate, confirm that `paths` block is still commented out (its default state); if it's enabled,
+have the developer re-comment it, then re-run.
+
+> **Note - releasing directly from `master` when `develop` is mid-major (supported, and NOT a
+> "hotfix").** When Toolbox on `develop` has adopted breaking changes for an unreleased Hoist
+> snapshot, `develop` *cannot* take a versioned Hoist release - but you can still ship the next
+> patch/minor on the current released line directly from `master`, which already sits on the last
+> release with its release-pinned libraries. Adapt the flow: **skip the develop-side library swap
+> (Phases 3 and 5)**, commit the fix(es) and a finalized CHANGELOG section straight onto `master`
+> (Phase 4), trigger Build Release from `master` (Phase 8), then - in place of the Phase 9 restore -
+> **merge `master` back into `develop`**, resolving the CHANGELOG so the unreleased `x.y-SNAPSHOT`
+> header stays on top with the newly released section below it. This is still an ordinary sequential
+> release (the version is just the next increment from the latest tag). The library "hotfix" concept
+> - shipping an *older* line after a newer major has already released - does **not** apply to an app
+> with a single production line, which only ever moves forward. When Phase 2.4 or the Phase 3
+> type-check surfaces this situation, confirm the master-direct path with the developer before
+> proceeding.
+
+---
+
+## Phase 4: Finalize the CHANGELOG
+
+The `CHANGELOG.md` is parsed at build time and shown in-app, so correctness and formatting matter.
+Read `CLAUDE.md` ("Changelog" section) for the full conventions; the essentials:
+
+### 1. Choose the release version (semver)
+
+The unreleased header's number is a working placeholder, **not** authoritative. Decide the real
+version from what actually changed, and **suggest** a level to the developer:
+
+- **Major** - a large set of feature work or a reorg/redesign (developer's discretion).
+- **Minor** - a notable Hoist library bump with Toolbox otherwise steady.
+- **Patch** - a Hoist patch release or Toolbox bugfixes only.
+
+Validate the choice: the Build Release action requires the version be **exactly one increment**
+(major, minor, or patch) from the latest existing release tag. Find the latest tag with
+`git tag --list 'v*' --sort=-v:refname | head -1` (or `gh release list --limit 1`). Confirm the
+proposed version is a valid single increment (e.g. latest `9.0.0` -> valid: `10.0.0`, `9.1.0`,
+`9.0.1`). **Confirm the final version with the developer.**
+
+### 2. Finalize the entries
+
+- Change the top header from `## x.y...-SNAPSHOT - unreleased` to `## <chosen-version> - <today>`
+  using the **full 3-part semver** for the released version and today's date (`YYYY-MM-DD`).
+- Review the accumulated entries for completeness - scan commits since the last release tag
+  (`git log <last-tag>..HEAD --oneline`) for material features, bug fixes, or technical changes not
+  yet captured. Add what's missing under the right category (`New Features`, `Bug Fixes`,
+  `Technical`, `Breaking Changes`).
+- Add/confirm a **`Libraries`** entry for each library whose **released version** actually moved,
+  e.g. `* @xh/hoist \`87.0 → 87.1\``. Use the two-part `major.minor` form with the `→` separator -
+  **not** the 3-part `87.0.0 → 87.1.0` and **not** the retired `ZZ.x` shorthand (`14.x → 15.x`).
+  Older sections of the file predate this convention and are inconsistent, so **do not pattern-match
+  on the file** - `CLAUDE.md` ("Changelog" section) is authoritative. Omit a library whose released
+  version is unchanged even though its spec moved off a SNAPSHOT (e.g. `41.0-SNAPSHOT` pinned back
+  to `41.0.0`).
+- **A patch-only bump gets no entry either.** Because the form is two-part, a move like
+  `15.0.0 → 15.0.1` renders as `15.0 → 15.0` - a line that says nothing. Omit it; do **not** reach
+  for the 3-part form to make it legible. The two-part convention is deliberate, and patch-level
+  library churn is not release-note material.
+- **Formatting is critical and fails silently** - a malformed entry is dropped from the parsed
+  output while the build still succeeds. Every bullet must be a **single line** however long, and
+  every bullet and `###` header must start at **column 0** - one leading space drops it. See the
+  header comment at the top of `CHANGELOG.md`.
+- **No em dashes** anywhere in the copy (per user/global style) - use a plain hyphen. The `→` in
+  Libraries entries is the one exception.
+
+---
+
+## Phase 5: Commit on develop
+
+Stage the library swaps, the lockfile, and the finalized CHANGELOG, and commit on `develop`:
+
+```bash
+git add gradle.properties client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md
+git commit -m "Toolbox <version> - release against Hoist <core-ver> / hoist-react <hr-ver>"
+```
+
+Match the repo's commit-message conventions (no hard wrapping in the body, no AI attribution
+trailer). Show the developer the staged diff before committing if there's any ambiguity.
+
+---
+
+## Phase 6: Merge develop into master
+
+Toolbox does versioned releases from `master`. Move the just-finalized commit onto `master` with a
+**fast-forward-only** merge so master lands exactly on the release commit.
+
+### Re-confirm local `master` before merging
+
+Phase 1.4 should have brought it current, but re-check - a stale local `master` is the most common
+way this phase goes subtly wrong:
+
+```bash
+git rev-list --left-right --count master...origin/master   # want "0	0"
+```
+
+Why this deserves a second look: a stale `master` **still fast-forwards correctly**. `git checkout
+master` prints a reassuring "Your branch is behind 'origin/master' by N commits, and can be
+fast-forwarded", the merge then advances past all of it, and the result is right. That benign
+message is the hazard - it trains you to wave off the *one* case that matters, local-only commits on
+`master`, which either fail the ff-merge or sweep unreviewed work into a release. Do not read "behind
+by N" as "handled"; read the count and resolve anything non-zero first.
+
+### Merge
+
+Propose and confirm, then run:
+
+```bash
+git checkout master
+git merge --ff-only develop
+```
+
+If the ff-merge fails (master has diverged), **stop and ask** - do not force or create a non-ff
+merge without the developer's direction.
+
+### Verify the result
+
+Do not proceed on the merge's exit code alone - confirm master actually landed where you intend:
+
+```bash
+git rev-list --left-right --count master...develop   # must be "0	0" - master is identical to develop
+git log origin/master..master --oneline              # the release commit, plus everything since the last release
+```
+
+The second command is the useful sanity read: it should list the release commit on top and the work
+this release ships beneath it. If it lists commits you don't recognize, stop.
+
+---
+
+## Phase 7: Push (ask first - never assume)
+
+**Do not assume pushing is allowed or wanted.** Many developers (the default posture here) push
+themselves as a final human checkpoint. Surface the exact commands and ask whether the developer
+wants you to push or will do it themselves:
+
+```bash
+git push origin master
+git push origin develop
+```
+
+Only run them on an explicit go. If the developer pushes themselves, wait for them to confirm both
+branches are pushed before continuing - Build Release runs from the pushed `master`.
+
+---
+
+## Phase 8: Build Release + Deploy Release
+
+Both the build and the prod deploy run as GitHub Actions. **Deploy Release is automatic** - it
+triggers on a successful Build Release (`workflow_run`) and deploys to the `toolbox-prod` ECS
+service. So you trigger one workflow and watch two.
+
+### 0. Confirm this runbook still matches the build/deploy docs
+
+Before triggering anything, read `docs/build-and-deploy.md` (from the repo root - the
+"Build Release", "Deploy Release", and AWS sections) and verify it still confirms the specifics
+this phase relies on - they can drift if the workflows are edited:
+
+- Workflow filenames (`buildRelease.yml`, `deployRelease.yml`) and the Build Release input
+  (`version`).
+- Build Release is manually triggered **from `master`** (the `validate` job runs only from `master`).
+- Deploy Release fires **automatically** on a successful Build Release and targets the
+  **`toolbox-prod`** ECS service (cluster `toolbox`).
+
+If the doc - or the actual workflow files in `.github/workflows/` - disagrees with the steps below
+(different inputs, branch rules, a manual rather than automatic prod deploy, a different service),
+**stop and alert the developer** with the specific discrepancy rather than running a stale command.
+The mechanics, not this skill's prose, are authoritative; flag the mismatch so both can be brought
+back in sync.
+
+### 1. Trigger Build Release (from master)
+
+Confirm the version with the developer one last time, then:
+
+```bash
+gh workflow run buildRelease.yml --ref master -f version=<version>
+```
+
+(`--ref master` is required - the workflow's `validate` job runs only from `master`.)
+
+### 2. Watch Build Release
+
+Find the run and follow it:
+
+```bash
+gh run list --workflow buildRelease.yml --limit 1
+gh run watch <run-id> --exit-status
+```
+
+Build Release validates the version, builds the tomcat (WAR via `-PxhAppVersion`) and nginx
+(client) images in parallel, pushes them to ECR with `:<version>` and `:latest` tags, then creates
+the `v<version>` git tag and a GitHub Release. If `validate` fails, read the logs
+(`gh run view <run-id> --log-failed`) - the most common cause is a version that isn't a valid
+single increment, or running from the wrong branch.
+
+### 3. Watch Deploy Release (auto-triggered)
+
+After Build Release succeeds, Deploy Release fires automatically. Find and watch it:
+
+```bash
+gh run list --workflow deployRelease.yml --limit 1
+gh run watch <run-id> --exit-status
+```
+
+It forces a new ECS deployment of `toolbox-prod`. Confirm it completes successfully. (The ECS
+rollout itself - tasks turning healthy - happens on AWS after the action's `update-service` call
+returns; if the developer wants to verify the live app, point them at the prod URL or the AWS
+runbook in `docs/aws-access.md`.)
+
+### 4. Confirm success
+
+Report: Build Release succeeded, the `v<version>` tag + GitHub Release exist, and Deploy Release
+succeeded. **Only proceed to restore once the release is confirmed successful.** If anything
+failed, stop and work the failure with the developer - do not restore develop over a broken
+release.
+
+---
+
+## Phase 9: Restore develop to working SNAPSHOTs
+
+With the release confirmed, return `develop` to its canary state. **This entire phase happens on
+`develop` only - never touch `master`.** master must stay frozen on the release commit (release-pinned
+libraries, as shipped); restoring SNAPSHOTs there would break invariant #1 and make master no longer
+match the released code. Switch back first:
+
+```bash
+git checkout develop
+```
+
+### 1. Restore the Hoist libraries to SNAPSHOTs
+
+Reset all three libraries. They restore differently - hoist-react and hoist-dev-utils by dist-tag,
+hoist-core by explicit version:
+
+**hoist-react + hoist-dev-utils** - always restore both `client-app/package.json` specs to the bare
+dist-tag, in every case:
+
+```json
+{
+  "dependencies": {"@xh/hoist": "next"},
+  "devDependencies": {"@xh/hoist-dev-utils": "next"}
+}
+```
+
+No version number, no caret. `next` always points at the library's current SNAPSHOT, so this is
+correct whether the major was just released (the tag has already advanced to the next major's
+SNAPSHOT line) or is still in development (the tag still points at the line you started from). The
+Phase 2 case distinction does not apply here - the tag self-corrects, which is the point.
+
+**hoist-core** - Maven has no dist-tag equivalent, so `gradle.properties` still takes an explicit
+snap, and the Phase 2 case does apply. Classify on **hoist-core's own** version line, which
+advances independently of hoist-react's; the examples below are all hoist-core versions:
+
+- **"Major just released"** (the release you shipped matched the snap major - e.g. you were on
+  `41.0-SNAPSHOT` and shipped `41.0.0`): advance `hoistCoreVersion` to the next major snap,
+  `42.0-SNAPSHOT`. hoist-core's own `develop` has already opened that snap, so **verify it exists**
+  in the snapshot Maven repo before pinning. If it is missing, stop and ask.
+- **"Still developing the major"** (you shipped a prior-line release - e.g. you were on
+  `41.0-SNAPSHOT` and shipped `40.1.0`): restore the **same snap you started from**,
+  `41.0-SNAPSHOT`.
+
+Then `cd client-app && pnpm install` to update the lockfile. It prints a version delta for each
+package that moved, but read the resolved versions back before committing - `pnpm hoistVer` covers
+`@xh/hoist` only, so check dev-utils explicitly:
+
+```bash
+cd client-app && pnpm hoistVer && node -p "require('@xh/hoist-dev-utils/package.json').version"
+```
+
+#### Why `next`, not a caret range
+
+`develop` previously carried a caret range (`^87.0.0-SNAPSHOT`). That form is actively broken under
+pnpm and must not be reintroduced:
+
+- **`pnpm update` destroys it.** On any prerelease, pnpm drops the range prefix and writes the
+  resolved version as an exact pin (`87.0.0-SNAPSHOT.1786248333699`). This is an acknowledged pnpm
+  bug, open since 2023 - see [pnpm#7002](https://github.com/pnpm/pnpm/issues/7002). There is no
+  setting to prevent it; `--save-prefix` is not consulted on the prerelease code path.
+- **The resulting pin is a dead end.** A subsequent `pnpm update` cannot move an exact pin, and
+  `pnpm update --latest` won't either (it refuses to "downgrade" a prerelease to the lower `latest`
+  tag). The snapshot silently freezes while Toolbox code keeps advancing - which is exactly how CI
+  broke during the pnpm migration, type-checking against a snapshot days behind the APIs in use.
+- **A caret range never floated anyway.** `pnpm install` honors the lockfile over the range, so the
+  range only ever mattered at `pnpm update` time - the one moment pnpm was rewriting it.
+
+`next` survives `pnpm update` untouched (there is no version in it to rewrite) *and* gets
+re-resolved by it, which is the behavior the caret range was reaching for. Reproducibility is
+unaffected: `pnpm-lock.yaml` still records one exact build, and CI installs `--frozen-lockfile`. If
+the tag ever stops existing, pnpm fails loudly with `ERR_PNPM_NO_MATCHING_VERSION` rather than
+silently reusing a stale lockfile entry.
+
+### 2. Set the app SNAPSHOT version (all three places, in sync)
+
+**First compute the value, then write it.** Take the major of the version you **just released** and
+add one:
+
+```
+SNAP = (major of the released version) + 1, as `<SNAP>.0-SNAPSHOT`
+```
+
+The input is the **released** major, never the major of the snap currently in the files. Deriving it
+from the current snap gives an answer one too high - the most common mistake in this phase.
+
+Write that 2-part value to **all three** locations so they stay in sync:
+
+- `gradle.properties` -> `xhAppVersion=<SNAP>.0-SNAPSHOT`
+- `client-app/package.json` -> `"version": "<SNAP>.0-SNAPSHOT"`
+- `CHANGELOG.md` -> a fresh top header `## <SNAP>.0-SNAPSHOT - unreleased`
+
+**A major release advances the snap; a minor or patch release does not.** Releasing off the prior
+line reproduces the snap already in the files, so the version files should come out unchanged:
+
+| Just released | Snap before | SNAP | Result |
+|---|---|---|---|
+| `10.0.0` | `10.0-SNAPSHOT` | `(10+1)` = 11 | advances to `11.0-SNAPSHOT` |
+| `10.1.1` | `11.0-SNAPSHOT` | `(10+1)` = 11 | stays `11.0-SNAPSHOT` |
+| `9.5.0` | `10.0-SNAPSHOT` | `(9+1)` = 10 | stays `10.0-SNAPSHOT` |
+
+**Self-check before committing:** on a minor or patch release, `git diff` should show **no change**
+to `gradle.properties` `xhAppVersion` or to `package.json` `version` - only the CHANGELOG header and
+the library specs move. If either version file changed, you derived SNAP from the snap instead of
+the release. Writing all three unconditionally also self-heals any prior drift found in Phase 1.6.
+
+**Then verify the three actually agree - do not trust the edits.** Per invariant #2 a client/server
+mismatch throws at app startup. Run all four; the first three must print the same `x.y-SNAPSHOT`,
+and the fourth must show a derivation rather than a literal:
+
+```bash
+grep '^xhAppVersion=' gradle.properties                 # server
+node -p "require('./client-app/package.json').version"  # client
+grep -m1 '^## ' CHANGELOG.md                            # changelog header
+grep -n 'appVersion:' client-app/rsbuild.config.mjs     # want `pkg.version`, NOT a hardcoded string
+```
+
+If the fourth shows a hardcoded version string, someone has reintroduced the decoupling - fix it to
+read from `package.json` rather than hand-editing a fifth copy of the number.
+
+**Run this every time, even though it only bites on a major.** On a minor or patch release the snap
+doesn't move, so a decoupled client stays accidentally correct and the check passes for the wrong
+reason.
+
+Leave the new CHANGELOG section empty (no category sub-headers) - entries accumulate as new work
+lands.
+
+### 3. Commit and push (ask first)
+
+```bash
+git add gradle.properties client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md
+git commit -m "Restore Hoist SNAPSHOTs and open <next-major>.0-SNAPSHOT for development"
+```
+
+Then, **same as Phase 7, ask before pushing** - do not assume:
+
+```bash
+git push origin develop
+```
+
+### 4. Confirm `toolbox-dev` comes back up
+
+Pushing `develop` triggers Build Snapshot, which on success auto-deploys `toolbox-dev`. The restore
+just moved the app version, so this is the first time the new snap runs anywhere - and a
+client/server mismatch (invariant #2) surfaces only here, as a startup exception rather than a build
+failure. Neither the release build nor CI will have caught it.
+
+```bash
+gh run list --workflow buildSnapshot.yml --limit 1
+```
+
+Watch it to success, then confirm the dev app actually loads and reports the new snap for **both**
+client and server. If the developer pushed themselves and you're wrapping up, call this out as an
+explicit follow-up rather than declaring the release done.
+
+---
+
+## Done
+
+Summarize for the developer: released version, the Hoist versions shipped, the GitHub Release link,
+prod deploy status, and the new working SNAPSHOT state of `develop`. Note anything that still needs
+their attention (e.g. branches not yet pushed if they opted to push themselves).

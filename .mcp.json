@@ -3,7 +3,9 @@
     "hoist-react": {
       "type": "stdio",
       "command": "bash",
-      "args": [".claude/start-hoist-react-mcp.sh"]
+      "args": [
+        ".claude/start-hoist-react-mcp.sh"
+      ]
     },
     "hoist-core": {
       "command": "./bin/hoist-core-mcp"
@@ -15,9 +17,9 @@
         "GITHUB_PERSONAL_ACCESS_TOKEN=\"$(gh auth token)\" exec docker run -i --rm -e GITHUB_PERSONAL_ACCESS_TOKEN ghcr.io/github/github-mcp-server"
       ]
     },
-    "jetbrains": {
-      "url": "http://localhost:${JETBRAINS_MCP_PORT:-64342}/sse",
-      "type": "sse"
+    "idea": {
+      "url": "http://127.0.0.1:64342/stream",
+      "type": "http"
     }
   }
 }

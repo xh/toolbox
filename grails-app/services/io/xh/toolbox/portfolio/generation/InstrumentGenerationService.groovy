@@ -2,6 +2,7 @@ package io.xh.toolbox.portfolio.generation
 
 import io.xh.hoist.BaseService
 import io.xh.toolbox.portfolio.Instrument
+import io.xh.toolbox.portfolio.PortfolioConfig
 
 import static io.xh.toolbox.portfolio.Lookups.getREGIONS
 import static io.xh.toolbox.portfolio.Lookups.getSECTORS
@@ -51,8 +52,8 @@ class InstrumentGenerationService extends BaseService {
         return ret
     }
 
-    private Map getConfig() {
-        configService.getMap('portfolioConfigs')
+    private PortfolioConfig getConfig() {
+        configService.getObject(PortfolioConfig)
     }
 
     Map getAdminStats() {[

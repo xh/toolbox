@@ -1,11 +1,13 @@
 import {box, div, hbox, label, p} from '@xh/hoist/cmp/layout';
 
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {isUndefined} from 'lodash';
-import {restaurants, usStates} from '../../../core/data';
+import {isEmpty, isUndefined} from 'lodash';
+import {restaurants} from '../../../core/data/Restaurants';
+import {usStates} from '../../../core/data/USStates';
 import {SelectTestModel} from './SelectTestModel';
 import './SelectTestPanel.scss';
 
@@ -111,12 +113,76 @@ export const SelectTestPanel = hoistCmp({
                             hideSelectedOptions: false,
                             closeMenuOnSelect: false
                         }
+                    }),
+                    // ID value + generateOptionFn example, pre-populated with a numeric id whose
+                    // value is not in the options list. Should display the label on mount, not
+                    // the raw id number.
+                    example({
+                        name: 'starting ID value, options (value not in list), generateOptionFn',
+                        bind: 'idNotInOpts',
+                        selectProps: {
+                            options: model.selectableEmployees,
+                            generateOptionFn: id => {
+                                const emp = model.lookupEmployeeById(id);
+                                return emp ? {label: emp.name, value: emp.id} : null;
+                            },
+                            labelField: 'name',
+                            valueField: 'id',
+                            enableClear: true,
+                            placeholder: 'Select an employee...'
+                        }
+                    }),
+                    // Repro for the O(n²) async option merge fixed in hoist-react #4589 - type one
+                    // character for a large result, then a second for a 2-option result. Both
+                    // keystrokes blocked for seconds before that fix.
+                    //
+                    // enableCreate still blocks the second keystroke: react-select's Creatable
+                    // scans every option to decide whether to offer a "Create..." entry, lowercasing
+                    // each label and value, on each input change. enableMulti is not in that path.
+                    example({
+                        name: 'queryFn - large async result (#4589)',
+                        bind: 'perfValue',
+                        selectProps: {
+                            width: 350,
+                            queryFn: query => model.queryPerfOptionsAsync(query),
+                            enableMulti: model.perfEnableMulti,
+                            enableCreate: model.perfEnableCreate,
+                            enableClear: true,
+                            placeholder: 'Type one char, then a second...'
+                        },
+                        extraItems: [
+                            numberInput({bind: 'numPerfOptions', valueLabel: ' options'}),
+                            numberInput({bind: 'perfLatency', valueLabel: 'ms latency'}),
+                            switchInput({bind: 'perfEnableMulti', label: 'enableMulti'}),
+                            switchInput({bind: 'perfEnableCreate', label: 'enableCreate'}),
+                            blockTimes()
+                        ]
                     })
                 ]
             })
         });
     }
 });
+
+// Ms the main thread was blocked after each recent query resolved - the merge cost.
+const blockTimes = hoistCmp.factory<SelectTestModel>(({model}) =>
+    hbox({
+        alignItems: 'center',
+        items: [
+            label(
+                isEmpty(model.blockTimes)
+                    ? 'blocked: --'
+                    : 'blocked: ' + model.blockTimes.map(it => `${it}ms`).join(', ')
+            ),
+            button({
+                text: 'Clear',
+                minimal: true,
+                omit: isEmpty(model.blockTimes),
+                onClick: () => model.clearBlockTimes()
+            })
+        ]
+    })
+);
 
 const example = hoistCmp.factory<SelectTestModel>(
     ({model, name, bind, selectProps, extraItems = []}) =>
@@ -179,7 +245,7 @@ const customerProps = {
 async function queryCustomersAsync(query) {
     return XH.fetchJson({
         url: 'customer',
-        params: {query}
+        params: {query, activeOnly: true}
     });
 }
 

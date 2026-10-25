@@ -24,7 +24,7 @@
 #
 # Toolbox needs the wrapper because it doubles as the primary development
 # harness for the @xh/hoist framework itself. XH developers commonly work
-# with a sibling ../hoist-react checkout (paired with `yarn startWithHoist`
+# with a sibling ../hoist-react checkout (paired with `pnpm startWithHoist`
 # on the client and `runHoistInline=true` on the server) so framework
 # changes can be exercised inline against a real app. This script is the
 # MCP analogue of those affordances: when a sibling checkout is present,

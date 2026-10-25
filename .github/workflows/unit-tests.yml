@@ -1,0 +1,71 @@
+# Unit Tests - Runs the client app's Vitest unit specs on PRs and pushes to develop, against
+# hoist-react's fake hoist-core. Kept apart from CI so the README badge and the PR check show the
+# state of the tests alone. Vitest's built-in GitHub Actions reporter adds a summary to the run
+# page and annotates each failing assertion on the PR diff.
+#
+# Snapshot and release builds also run `pnpm test`, so a failing suite blocks the publish. See
+# client-app/vitest.config.mts.
+
+name: Unit Tests
+
+on:
+    push:
+        branches: [ "develop" ]
+    pull_request:
+        branches: [ "develop" ]
+    # Manual runs against any branch, from the Actions tab or `gh workflow run unit-tests.yml --ref
+    # <branch>`. GitHub only offers this trigger once this file is on the default branch.
+    workflow_dispatch:
+
+# Only the latest commit's result matters - cancel superseded runs for the same PR or branch.
+concurrency:
+    group: unit-tests-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    test:
+
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+
+        steps:
+        - uses: actions/checkout@v6
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v6
+          with:
+              node-version-file: 'client-app/.nvmrc'
+
+        # Installs the pnpm version pinned via the packageManager field in package.json.
+        - name: Setup pnpm
+          uses: pnpm/setup@v2
+          with:
+              package-json-file: 'client-app/package.json'
+              # `install: false` - this workflow runs its own install step below, after
+              # registry auth and store-cache restore, and with the lockfile flags it wants.
+              install: false
+
+        # Cache the pnpm store directly, as in ci.yml - see the notes there.
+        - name: Resolve pnpm store directory
+          id: pnpm-store-dir
+          run: echo "dir=$(cd client-app && pnpm store path)" >> "$GITHUB_OUTPUT"
+
+        - name: Restore pnpm store
+          uses: actions/cache@v5
+          with:
+              path: ${{ steps.pnpm-store-dir.outputs.dir }}
+              key: pnpm-${{ runner.os }}-${{ hashFiles('client-app/pnpm-lock.yaml') }}
+              restore-keys: |
+                  pnpm-${{ runner.os }}-
+
+        - name: Configure Font Awesome registry auth
+          env:
+              FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
+          run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> client-app/.npmrc
+
+        - name: Install dependencies
+          run: cd client-app && pnpm install --frozen-lockfile
+
+        - name: Unit tests
+          run: cd client-app && pnpm test

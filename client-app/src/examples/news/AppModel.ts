@@ -1,4 +1,5 @@
-import {InitContext, managed} from '@xh/hoist/core';
+import type {InitContext} from '@xh/hoist/core';
+import {managed} from '@xh/hoist/core';
 import {NewsPanelModel} from './NewsPanelModel';
 import {BaseAppModel} from '../../BaseAppModel';
 

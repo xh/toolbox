@@ -1,34 +1,160 @@
-import {hoistCmp} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
+import {box, div, placeholder, span} from '@xh/hoist/cmp/layout';
+import type {Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
+import type {IconCatalogEntry} from '@xh/hoist/icon';
 import {Icon} from '@xh/hoist/icon';
+import {select, textInput} from '@xh/hoist/mobile/cmp/input';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
+import {bindable, computed} from '@xh/hoist/mobx';
+import {copyToClipboard} from '@xh/hoist/utils/js';
+import {isEmpty} from 'lodash';
+import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import './IconPage.scss';
-import {without} from 'lodash';
+import {iconsIcon} from '../../core/Icons';
 
 export const iconPage = hoistCmp.factory({
-    render() {
-        return panel({
-            scrollable: true,
-            className: 'tb-icon-page',
-            item: table(
-                tbody(
-                    tr(th('name'), th('regular'), th('solid'), th('light')),
-                    ...allIcons().map(it =>
-                        tr(td(it.name), td(it.regular), td(it.solid), td(it.light))
-                    )
-                )
-            )
+    model: creates(() => IconPageModel),
+
+    render({model}) {
+        return exampleScreen({
+            title: 'Icons',
+            icon: iconsIcon(),
+            description: [
+                'Hoist builds on [Font Awesome Pro](https://fontawesome.com/icons), a commercial icon',
+                'library. Each app needs its own Font Awesome Pro license, and a license token to',
+                'install the Pro packages. The `Icon` singleton exposes a curated set of Font Awesome',
+                'glyphs as element factories, plus semantic aliases and icons for several finance and',
+                'trading concepts.',
+                '',
+                'Apps can add any other glyph with `Icon.register()`, which adds it to the icon',
+                'catalog and returns a factory for it. The icon beside the title of this panel is',
+                'registered this way. `Icon.get()` renders any icon in the catalog from its name.',
+                '',
+                'Filter the catalog below - built-ins plus Toolbox registrations, badged as app icons -',
+                'and tap any icon to copy the call that renders it.'
+            ],
+            options: [
+                exampleOption({
+                    label: 'Style',
+                    control: select({
+                        model,
+                        bind: 'prefix',
+                        width: 130,
+                        enableFilter: false,
+                        hideSelectedOptionCheck: true,
+                        options: [
+                            {value: 'far', label: 'Regular'},
+                            {value: 'fas', label: 'Solid'},
+                            {value: 'fal', label: 'Light'},
+                            {value: 'fat', label: 'Thin'}
+                        ]
+                    })
+                }),
+                exampleOption({
+                    label: 'Intent',
+                    control: select({
+                        model,
+                        bind: 'intent',
+                        width: 130,
+                        enableFilter: false,
+                        hideSelectedOptionCheck: true,
+                        options: [
+                            {value: 'neutral', label: 'Neutral'},
+                            {value: 'primary', label: 'Primary'},
+                            {value: 'success', label: 'Success'},
+                            {value: 'warning', label: 'Warning'},
+                            {value: 'danger', label: 'Danger'}
+                        ]
+                    })
+                })
+            ],
+            links: [
+                {url: '$TB/client-app/src/mobile/icons/IconPage.ts', notes: 'This example.'},
+                {url: '$HR/icon/README.md', text: 'Icon docs', notes: 'Icon system guide.'},
+                {
+                    url: 'https://fontawesome.com/icons',
+                    text: 'FontAwesome',
+                    notes: 'The underlying glyph library - opens browser.'
+                }
+            ],
+            item: panel({
+                className: 'tb-icon-page',
+                tbar: tbar(),
+                item: gallery()
+            })
         });
     }
 });
 
-function allIcons() {
-    const factories = without(Object.keys(Icon), 'icon', 'fileIcon');
+const tbar = hoistCmp.factory<IconPageModel>(({model}) =>
+    toolbar(
+        box({
+            flex: 1,
+            item: textInput({
+                model,
+                bind: 'query',
+                leftIcon: Icon.search(),
+                enableClear: true,
+                placeholder: 'Filter by name or keyword...',
+                commitOnChange: true
+            })
+        }),
+        span({className: 'tb-icon-page__count', item: `${model.entries.length}`})
+    )
+);
 
-    return factories.map(key => ({
-        name: key,
-        regular: Icon[key]({prefix: 'far', size: '2x'}),
-        solid: Icon[key]({prefix: 'fas', size: '2x'}),
-        light: Icon[key]({prefix: 'fal', size: '2x'})
-    }));
+const gallery = hoistCmp.factory<IconPageModel>(({model}) => {
+    const {entries} = model;
+    if (isEmpty(entries)) {
+        return placeholder(Icon.search(), `No icons match "${model.query}"`);
+    }
+    return div({
+        className: 'tb-icon-page__gallery',
+        items: entries.map(entry => iconTile({key: entry.faName, entry}))
+    });
+});
+
+const iconTile = hoistCmp.factory<IconPageModel>(({model, entry}) => {
+    const {name} = entry,
+        isAppIcon = entry.source === 'app',
+        // Registered names are not typed on `Icon`, so resolve app icons by name.
+        usage = isAppIcon ? `Icon.get('${name}')` : `Icon.${name}()`;
+    return div({
+        className: 'tb-icon-page__tile',
+        onClick: () =>
+            copyToClipboard(usage)
+                .then(() => XH.successToast(`Copied ${usage}`))
+                .catch(() => XH.warningToast(`Could not copy ${usage}`)),
+        items: [
+            div({
+                className: 'tb-icon-page__glyph',
+                item: entry.factory({
+                    prefix: model.prefix,
+                    size: '2x',
+                    intent: model.intent === 'neutral' ? null : model.intent
+                })
+            }),
+            div({className: 'tb-icon-page__name', item: name}),
+            div({omit: !isAppIcon, className: 'tb-icon-page__badge', item: 'app'})
+        ]
+    });
+});
+
+function matches(entry: IconCatalogEntry, query: string): boolean {
+    const {displayName, names, keywords} = entry;
+    return [displayName, ...names, ...keywords].some(it => it.toLowerCase().includes(query));
+}
+
+class IconPageModel extends HoistModel {
+    @bindable accessor query = '';
+    @bindable accessor prefix: 'far' | 'fas' | 'fal' | 'fat' = 'far';
+    @bindable accessor intent: 'neutral' | Intent = 'neutral';
+
+    @computed
+    get entries(): IconCatalogEntry[] {
+        const query = this.query?.trim().toLowerCase(),
+            all = Icon.getCatalog();
+        return query ? all.filter(it => matches(it, query)) : all;
+    }
 }

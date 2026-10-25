@@ -1,0 +1,14 @@
+.tb-drp-panel {
+  // Dashed host for the stretched-trigger variant, so the width it is measuring is visible.
+  &__narrow-host {
+    padding: 4px;
+    border: 1px dashed var(--xh-border-color);
+    border-radius: var(--xh-border-radius-px);
+  }
+
+  // Derived model values read as code, and some (filters, selections) are long JSON.
+  &__value {
+    font-size: var(--xh-font-size-small-px);
+    overflow-wrap: anywhere;
+  }
+}

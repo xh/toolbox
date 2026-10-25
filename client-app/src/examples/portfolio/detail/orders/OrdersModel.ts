@@ -1,6 +1,7 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, LoadSpec, lookup, managed, XH} from '@xh/hoist/core';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {isNil, map, uniq} from 'lodash';
 import {
@@ -16,10 +17,11 @@ import {
     sectorCol,
     symbolCol,
     traderCol
-} from '../../../../core/columns';
-import {DetailModel} from '../DetailModel';
+} from '../../../../core/columns/Orders';
+import type {DetailModel} from '../DetailModel';
 
 export class OrdersModel extends HoistModel {
+    override xhName = 'orders';
     parentModel: DetailModel;
     @lookup(DashViewModel) dashViewModel: DashViewModel;
 
@@ -46,6 +48,7 @@ export class OrdersModel extends HoistModel {
 
         const hidden = true;
         this.gridModel = new GridModel({
+            xhName: this.childXhName('grid'),
             persistWith: {dashViewModel},
             groupBy: 'dir',
             sortBy: 'time|desc',
@@ -71,6 +74,7 @@ export class OrdersModel extends HoistModel {
         });
 
         this.filterChooserModel = new FilterChooserModel({
+            xhName: this.childXhName('filterChooser'),
             persistWith: {
                 dashViewModel,
                 persistFavorites: false
@@ -116,11 +120,11 @@ export class OrdersModel extends HoistModel {
         }
 
         try {
-            const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec}),
-                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync({
-                    symbols: uniq(map(orders, 'symbol')),
+            const orders = await XH.portfolioService.getOrdersAsync(positionId, loadSpec),
+                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync(
+                    uniq(map(orders, 'symbol')),
                     loadSpec
-                });
+                );
             if (loadSpec.isStale) return;
 
             dashViewModel.titleDetails = `(${orders.length})`;

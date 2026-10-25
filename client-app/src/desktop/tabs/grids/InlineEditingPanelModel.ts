@@ -1,6 +1,7 @@
-import {checkboxRenderer, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {checkboxRenderer, GridModel, localDate} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {dateIs, lengthIs, numberIs, required, Store, StoreRecord} from '@xh/hoist/data';
+import type {StoreRecord} from '@xh/hoist/data';
+import {dateIs, lengthIs, numberIs, required, Store} from '@xh/hoist/data';
 import {
     actionCol,
     booleanEditor,
@@ -14,27 +15,35 @@ import {
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observableRef} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
 
-export class InlineEditingPanelModel extends HoistModel {
-    @bindable
-    asyncValidation = false;
+// Real values first (seed data + `category === 'US'` validation need them), padded past the
+// windowing threshold so the `category` editor exercises windowed mode.
+const CATEGORY_OPTIONS = [
+    'US',
+    'BRIC',
+    'Emerging Markets',
+    'EU',
+    'Asia/Pac',
+    ...Array.from({length: 120}, (_, i) => `Region ${i + 1} - extended market category label`)
+];
 
-    @bindable
-    fullRowEditing = false;
+export class InlineEditingPanelModel extends HoistModel {
+    @bindable accessor asyncValidation = false;
+
+    @bindable accessor fullRowEditing = false;
 
     @managed
-    @observable.ref
-    gridModel: GridModel;
+    @observableRef
+    accessor gridModel: GridModel;
 
     @managed
     store: Store;
 
-    @bindable
-    clicksToEdit = 2;
+    @bindable accessor clicksToEdit = 2;
 
     @managed
     panelModel: PanelModel;
@@ -52,7 +61,6 @@ export class InlineEditingPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.panelModel = this.createPanelModel();
         this.store = this.createStore();
         this.gridModel = this.createGridModel();
@@ -82,7 +90,11 @@ export class InlineEditingPanelModel extends HoistModel {
     }
 
     async beginEditAsync(opts?) {
-        await this.gridModel.beginEditAsync(opts);
+        // This grid disables row selection (selModel: null), so beginEditAsync has no selected -
+        // or, with selection off, "selectable" - row to fall back to. Target the first record
+        // explicitly so the "Edit first row / amount" actions work. Pass the StoreRecord itself
+        // (not its id) since the first record's id is 0, which beginEditAsync treats as falsy.
+        await this.gridModel.beginEditAsync({record: this.store.records[0], ...opts});
     }
 
     async endEditAsync() {
@@ -328,17 +340,19 @@ export class InlineEditingPanelModel extends HoistModel {
                     field: 'category',
                     width: 80,
                     editable: ifNotRestricted,
+                    // Windowed editor in a narrow cell - menu auto-sizes to content, not cell width.
                     editor: props =>
                         selectEditor({
                             ...props,
                             inputProps: {
-                                options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
+                                enableWindowed: true,
+                                options: CATEGORY_OPTIONS
                             }
                         })
                 },
                 {
                     field: 'date',
-                    ...localDateCol,
+                    ...localDate,
                     editable: ifNotRestricted,
                     editor: props =>
                         dateEditor({
