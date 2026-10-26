@@ -137,13 +137,12 @@ export const dateInputPanel = hoistCmp.factory({
                     })
                 }),
                 demoRow({
-                    label: 'Time with AM/PM',
-                    info: "timePrecision: 'minute', timePickerProps: {useAmPm: true}",
+                    label: 'Time to the second',
+                    info: "timePrecision: 'second'",
                     item: dateInput({
-                        bind: 'timeAmPm',
+                        bind: 'dateTime',
                         ...ambientProps,
-                        timePrecision: 'minute',
-                        timePickerProps: {useAmPm: true},
+                        timePrecision: 'second',
                         width: '100%'
                     })
                 }),
@@ -230,7 +229,7 @@ const SEEDS = {
     playground: moment().startOf('hour').toDate(),
     minMax: null,
     localDate: LocalDate.today(),
-    timeAmPm: moment().startOf('hour').toDate(),
+    dateTime: moment().startOf('hour').toDate(),
     customFormat: new Date(),
     disabledDate: new Date(),
     tbarDate: null,
@@ -248,7 +247,7 @@ class DateInputPanelModel extends InputDemoModel {
     @bindableRef accessor playground: Date = SEEDS.playground;
     @bindableRef accessor minMax: Date = SEEDS.minMax;
     @bindableRef accessor localDate: LocalDate = SEEDS.localDate;
-    @bindableRef accessor timeAmPm: Date = SEEDS.timeAmPm;
+    @bindableRef accessor dateTime: Date = SEEDS.dateTime;
     @bindableRef accessor customFormat: Date = SEEDS.customFormat;
     @bindableRef accessor disabledDate: Date = SEEDS.disabledDate;
     @bindableRef accessor tbarDate: Date = SEEDS.tbarDate;
