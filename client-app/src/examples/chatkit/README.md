@@ -1,13 +1,15 @@
 # Chat Kit
 
 A tour of [`@xh/hoist-chat-kit`](https://github.com/xh/hoist-chat-kit), the chat components for
-Hoist apps. Run it at `/chatkit`. It has two tabs:
+Hoist apps. Run it at `/chatkit`. It has three tabs:
 
 - **Demos** lists demo conversations on the left and shows the active one on the right. Each demo
   runs its own `ChatModel`, so it keeps its conversation when you switch away.
 - **Guideline Assistant** is a full chat workspace over a backend that owns its conversations: a
   thread sidebar, document scope, `[n]` citations that open the cited passage beside the chat,
   feedback and a fixed "not found" reply. See [`guide/README.md`](guide/README.md).
+- **Other Chat Library** is the kit's workspace and thread list around a conversation that runs
+  on another library, such as OpenUI. See [`other/README.md`](other/README.md).
 
 All demos but the last run on a `ScriptedChatTransport`, with replies scripted in the browser.
 They need no server, model or API key. Each script's `respond` function picks its reply from the

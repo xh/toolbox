@@ -1,0 +1,76 @@
+// The other library's view: deliberately plain, so it reads as not the kit's.
+.tb-other-chat {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+
+  &__badge {
+    background: var(--xh-orange);
+    border-radius: 0 0 0 6px;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  &__messages {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    padding: 24px 20px;
+  }
+
+  &__empty {
+    color: var(--xh-text-color-muted);
+    margin: auto;
+  }
+
+  &__msg {
+    border-radius: 4px;
+    line-height: 1.5;
+    max-width: 640px;
+    padding: 8px 12px;
+    white-space: pre-wrap;
+
+    &--user {
+      align-self: flex-end;
+      background: var(--xh-bg-alt);
+    }
+
+    &--assistant {
+      align-self: flex-start;
+      border: 1px dashed var(--xh-orange);
+    }
+  }
+
+  &__status {
+    color: var(--xh-red);
+    font-style: italic;
+  }
+
+  &__composer {
+    border-top: 1px dashed var(--xh-orange);
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+
+    textarea {
+      flex: 1;
+      font: inherit;
+      min-height: 48px;
+      padding: 6px;
+      resize: vertical;
+    }
+
+    button {
+      min-width: 70px;
+    }
+  }
+}
