@@ -17,20 +17,31 @@ export const panelsPage = hoistCmp.factory({
     model: creates(() => PanelsPageModel),
 
     render({model}) {
-        const {mask, loadingIndicator} = model;
+        const {mask, loadingIndicator, showBanner, bannerAtBottom} = model;
         return exampleScreen({
             title: 'Panel',
             icon: Icon.window(),
             description: [
                 '`Panel` is a core building block for layouts in Hoist. It supports an optional header',
                 'bar with an icon, title, and custom header items, props for top and bottom toolbars,',
-                'and built-in `mask` / `loadingIndicator` overlays.',
+                'a `banner` prop for info or warning states, and built-in `mask` /',
+                '`loadingIndicator` overlays.',
                 '',
                 'This panel also sets `scrollable: true`, so its body scrolls within the fixed header',
                 'and toolbars once the content overflows - scroll it to see the behavior. Toggle the',
                 'options to explore each feature.'
             ],
             options: [
+                exampleOption({
+                    label: 'Banner',
+                    control: switchInput({model, bind: 'showBanner'}),
+                    info: 'Warning banner below the top toolbar.'
+                }),
+                exampleOption({
+                    label: 'Banner at bottom',
+                    control: switchInput({model, bind: 'bannerAtBottom'}),
+                    info: "Set the banner's position to 'bottom'."
+                }),
                 exampleOption({
                     label: 'Mask',
                     control: switchInput({model, bind: 'mask'}),
@@ -53,6 +64,14 @@ export const panelsPage = hoistCmp.factory({
                 className: 'tb-panels-panel',
                 mask,
                 loadingIndicator,
+                banner: showBanner
+                    ? {
+                          intent: 'warning',
+                          message: 'You are **offline** - changes will sync when reconnected.',
+                          position: bannerAtBottom ? 'bottom' : 'top',
+                          onClose: () => (model.showBanner = false)
+                      }
+                    : null,
                 headerItems: [relativeTimestamp({timestamp: Date.now(), prefix: 'Rendered'})],
                 tbar: toolbar(
                     button({icon: Icon.add(), text: 'New'}),
@@ -92,4 +111,6 @@ export const panelsPage = hoistCmp.factory({
 class PanelsPageModel extends HoistModel {
     @bindable accessor mask: boolean = false;
     @bindable accessor loadingIndicator: boolean = false;
+    @bindable accessor showBanner: boolean = true;
+    @bindable accessor bannerAtBottom: boolean = false;
 }

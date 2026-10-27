@@ -1,6 +1,5 @@
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import type {InitContext} from '@xh/hoist/core';
-import {XH} from '@xh/hoist/core';
 
 /**
  * ViewManagerModels for the Weather app.
@@ -24,8 +23,7 @@ class ViewManagers {
             {
                 type: 'weatherDashboard',
                 typeDisplayName: 'Layout',
-                enableDefault: true,
-                manageGlobal: XH.getUser().isHoistAdmin
+                enableDefault: true
             },
             ctx
         );

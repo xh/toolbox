@@ -1,6 +1,5 @@
 import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import type {InitContext} from '@xh/hoist/core';
-import {XH} from '@xh/hoist/core';
 
 /**
  * ViewManagerModels for the Admin app.
@@ -26,8 +25,7 @@ class ViewManagers {
                 typeDisplayName: 'config',
                 // Benchmark configs should only change when explicitly saved - a silent auto-save
                 // would quietly re-baseline a config mid-comparison.
-                enableAutoSave: false,
-                manageGlobal: XH.getUser().isHoistAdmin
+                enableAutoSave: false
             },
             ctx
         );

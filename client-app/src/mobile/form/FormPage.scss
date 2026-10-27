@@ -17,21 +17,33 @@
   }
 
   // Field Sets become light, collapsible small-caps section headers - no bordered panel-in-panel.
-  .xh-form-field-set {
+  // A Hoist FormFieldSet renders as a Card - a <fieldset> with its header in a <legend>.
+  .xh-card {
     border: none;
     padding: 0;
     margin: 0 0 var(--xh-spacing-double);
 
-    > legend,
-    .xh-form-field-set__header {
+    > legend {
+      width: 100%;
+      padding: 0 0 var(--xh-spacing-half);
+      margin-bottom: var(--xh-spacing);
+      border-bottom: var(--xh-border-solid);
+    }
+
+    .xh-card__header,
+    .xh-card__collapsible-header {
       text-transform: uppercase;
       letter-spacing: 0.06em;
       font-size: var(--xh-font-size-small);
       font-weight: 600;
       color: var(--xh-text-color-muted);
-      padding-bottom: var(--xh-spacing-half);
-      margin-bottom: var(--xh-spacing);
-      border-bottom: var(--xh-border-solid);
+      padding: 0;
+      min-height: 0;
+    }
+
+    // The collapsible header is a full-width button - title at left, collapse caret at right.
+    .xh-card__collapsible-header {
+      justify-content: space-between;
     }
   }
 

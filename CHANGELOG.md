@@ -12,26 +12,74 @@
   3. Plain ASCII punctuation only. Use " - " for in-sentence breaks, never an em dash.
 -->
 
-## 11.0.0-SNAPSHOT - unreleased
+## 12.0-SNAPSHOT - unreleased
 
 ### New Features
 
+* Added `StoreFilterField` and `GridFindField` to the desktop `ZoneGrid` demo, and bound the mobile demo's filter to its `ZoneGridModel`. Both search the fields mapped to the grid's zones, using hoist-react's new ZoneGrid support.
+* Added an `IconPicker` demo page to Forms + Inputs, including Toolbox's own custom icons alongside Hoist's built-in set.
+* Updated the desktop and mobile Icons galleries to browse hoist-react's new icon catalog - search now matches aliases and keywords, and custom icons are flagged.
+* Updated Toolbox's custom icons (GitHub, React, Markdown, feedback faces, weather glyphs) to register via hoist-react's new `Icon.register()`.
+* Reorganized the desktop tabs - a new Components tab gathers General components, Charts, and Choosers & Pickers, and the Other tab is now System, grouped into Concepts, Dialogs & Alerts, and Formatting. Tab URLs changed to match (e.g. `/app/charts/line` is now `/app/components/line`).
+* Added a Grid Helpers group to the Grids tab, with new `FilterChooser`, `GroupingChooser`, `StoreFilterField`, and `GridFindField` demo pages, each driving a live trades grid.
+* Renamed the App Notifications demo to Updates & Idle and App Banners to Banners, and removed the Forms > Other Controls overview page - its controls now live under Components > Choosers & Pickers.
+* Added Favicon Designer example app - a client-only tool that builds a Hoist app's favicon set from any Font Awesome Pro glyph, with custom colors, backdrop shapes and padding, live browser-tab and home-screen previews, shareable design URLs, and a one-click zip of `favicon.svg` plus the PNGs `configureRsbuild()` picks up.
+* Added sample widgets in nested groups to the `DashCanvas` and `DashContainer` demos, to show a slash-delimited `groupName` nesting the add view menus and the `DashCanvasWidgetChooser`.
+
+### Bug Fixes
+
+* Fixed the doc viewer giving the third and later repeats of an H2 heading the same section id, which sent deep links to the wrong section.
+* Fixed the GitHub `Commit` type, which named the server's `changedFiles` field `changeFiles`.
+
+### Technical
+
+* Upgraded to Grails 8 and the Gradle 9 wrapper.
+* Moved to Java 25 for builds, CI and the deployed Tomcat 11 container (`xhio/xh-tomcat:next-tc11-jdk25`). Grails 8 requires Java 21+ and Tomcat 11.
+* Reworked the `hoistCoreCli` configuration to resolve the active hoist-core version via `withDependencies`, deferring it to task execution. Resolving `runtimeClasspath` at configuration time under the Grails/Spring Boot plugin locks `developmentOnly` before its `afterEvaluate` hook can populate it.
+* Added Vitest unit tests for app models and services, run against hoist-react's fake hoist-core via `@xh/hoist/test-support` and the `configureVitest()` preset from hoist-dev-utils. Specs sit beside their source as `*.spec.ts`, and CI, snapshot and release builds now run `pnpm test`.
+* Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
+* Added a `clusterMemberCount` status monitor that fails when an instance sees fewer cluster members than expected - catching tasks that are down or have failed to join the cluster.
+* Updated the Custom Package demo to `@xh/package-template` 4.0, now written in TypeScript for Hoist 88 and React 19. Its panel adds a click counter backed by a TC39-decorated model from the package.
+* Migrated app CSS variable overrides and reads to hoist-react v90's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
+
+### Libraries
+
+* typescript `5.9 → 7.0`
+* @xh/package-template `3.0 → 4.0`
+* Grails `7.2.2 → 8.0.0`
+* Gradle `8.14.5 → 9.8.0`
+* Java `21 → 25`
+
+## 11.0.0 - 2026-09-29
+
+### New Features
+
+* Improved the organization of the desktop app's tabs, using hoist-react's new `TabConfig.group` headers to break up longer tab rails, and added a `Tab Groups` example to the Tabs page.
 * Added a list of all top-level modules to the app menu, providing a second way to navigate alongside the tab bar, with a star toggle on each item to add or remove that module from the `DynamicTabSwitcher` favorites.
 * Updated the `SampleGrid` Volume column to demo hoist-react's new `Column.cellFlag` and a custom tooltip that explains the flag, replacing a hand-rolled cell class and the custom SCSS that styled it.
 * Updated the Column Groups grid example to demo hoist-react's new `groupShowMode` and `collapsed` configs for collapsible column groups, replacing raw `agOptions.columnGroupShow` passthroughs.
 * Added the Column Groups grid as a widget in the ViewManager test dashboards, exercising column group expand/collapse state through `DashCanvas` and `DashContainer` persistence.
 * Upgraded AG Grid to `36.x`, tracking hoist-react's AG Grid 36 upgrade.
-
-### Technical
-
-* Migrated to TC39 Stage 3 modern decorators, in step with `@xh/hoist` 88 - `@observable` / `@bindable` fields now take the `accessor` keyword, `@observable.ref` / `@bindable.ref` are now `@observableRef` / `@bindableRef`, `comparer.structural` is now `compareStructural`, and `makeObservable(this)` is gone.
-* Switched the client build from webpack to Rsbuild (Rspack + SWC) via `@xh/hoist-dev-utils` 16 - builds are faster and use far less memory, and build-time options now arrive as `XH_*` environment variables instead of `--env` flags.
-* Converted all type-only imports to `import type` and added `@typescript-eslint/consistent-type-imports` to prevent regressions - guarantees type-only imports are erased at build time, eliminating 6 of the app's 10 runtime import cycles.
-* Removed all `index.ts` re-export barrels from app source and added lint guards against their reintroduction - imports now reference their defining modules directly, so loading one module no longer pulls in unrelated siblings.
+* Added demos for hoist-react's new `Banner` component and `Panel.banner` prop, and split the desktop Popups demo into separate Messages, Toast and Banners pages, each with a playground and variants.
+* Added a Routing example tab and routed the `TabContainer` example, demonstrating tabs that own their own route params.
+* Added a SQL autocomplete example to the `CodeInput` demo, using the new `CodeInput.extensions` prop.
+* Added `MenuHeading` demos and replaced hand-rolled menu buttons throughout the app with `MenuButton`.
+* Added an Admin Console test page for sending email via Hoist's email service.
 
 ### Bug Fixes
 
 * Fixed the Admin Console Roles tab reporting "No enabled directory service in this application" for every assigned directory group, and returning no results from its group search. Toolbox's mock directory now backs those lookups via a new `MockDirectoryService`, alongside the group membership resolution it already provided.
+* Fixed the Contact example's `contactAppState` preference defaulting to an empty list rather than an empty object.
+* Fixed defects in the Panels demos, including the Intro panel's context-menu Lookup always resolving the same word.
+
+### Technical
+
+* Removed client-side `manageGlobal` settings from the app's `ViewManagerModel` configs - hoist-core 42 now determines who may manage global views via the `xhJsonBlobConfig.globalWriteRoles` soft config, and hoist-react 88 picks that up automatically.
+* Migrated to TC39 Stage 3 modern decorators, in step with `@xh/hoist` 88 - `@observable` / `@bindable` fields now take the `accessor` keyword, `@observable.ref` / `@bindable.ref` are now `@observableRef` / `@bindableRef`, `comparer.structural` is now `compareStructural`, and `makeObservable(this)` is gone.
+* Switched the client build from webpack to Rsbuild (Rspack + SWC) via `@xh/hoist-dev-utils` 16 - builds are faster and use far less memory, and build-time options now arrive as `XH_*` environment variables instead of `--env` flags.
+* Converted all type-only imports to `import type` and added `@typescript-eslint/consistent-type-imports` to prevent regressions - guarantees type-only imports are erased at build time, eliminating 6 of the app's 10 runtime import cycles.
+* Removed all `index.ts` re-export barrels from app source and added lint guards against their reintroduction - imports now reference their defining modules directly, so loading one module no longer pulls in unrelated siblings.
+* Removed the legacy AG Grid theme setup, now that Hoist grids use AG Grid's Theming API.
 
 ### Libraries
 
@@ -44,10 +92,6 @@
 * ag-grid-react `35.3 → 36.2`
 * moment `2.30 → 2.31`
 * React `19.2 → 19.3`
-
-### Technical
-
-* Migrated app-level CSS variable overrides from Hoist's unprefixed hook names (e.g. `--font-family`) to the `--xh-` prefixed variables they configure (e.g. `--xh-font-family`), ahead of hoist-react v88 removing the unprefixed hooks.
 
 ## 10.0.1 - 2026-09-10
 

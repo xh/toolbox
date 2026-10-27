@@ -6,6 +6,7 @@ import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {viewManagers} from './viewManagers';
 import {CubeTestPanel} from './tests/cube/CubeTestPanel';
+import {EmailTestPanel} from './tests/email/EmailTestPanel';
 import {FetchApiTestPanel} from './tests/fetch/FetchApiTestPanel';
 import {GridTestPanel} from './tests/grids/GridTestPanel';
 import {LocalDateTestPanel} from './tests/localDate/LocalDateTestPanel';
@@ -46,6 +47,7 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'columnChooser', path: '/columnChooser'},
                     {name: 'cube', path: '/cube'},
                     {name: 'dataView', path: '/dataView'},
+                    {name: 'email', path: '/email'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
                     {name: 'grid', path: '/grid'},
                     {name: 'gridScrolling', path: '/gridScrolling'},
@@ -79,6 +81,7 @@ export class AppModel extends HoistAdminAppModel {
                         },
                         {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
                         {id: 'dataView', content: dataViewTestPanel},
+                        {id: 'email', title: 'Email', content: EmailTestPanel},
                         {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
                         {id: 'grid', title: 'Grid', content: GridTestPanel},
                         {id: 'gridScrolling', content: gridScrolling},

@@ -13,7 +13,6 @@ export class FormPageModel extends HoistModel {
     @bindable accessor requiredMarkers: boolean = true;
     @bindable accessor density: 'comfortable' | 'compact' = 'comfortable';
 
-    @managed
     validateTask = TaskObserver.trackLast();
 
     readonly regionOptions = ['California', 'London', 'Montreal', 'New York'];

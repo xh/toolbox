@@ -1,6 +1,7 @@
 package io.xh.toolbox
 
 import grails.gorm.transactions.Transactional
+import io.xh.hoist.config.AppConfig
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.log.LogSupport
 import io.xh.hoist.pref.PrefService
@@ -24,7 +25,7 @@ class BootStrap implements LogSupport {
     PrefService prefService
     TraceService traceService
 
-    def init = {servletContext ->
+    def init = {
         logStartupMsg()
 
         traceService.withSpan(name: 'toolbox.server.appLoad', caller: this) {
@@ -149,7 +150,7 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'gitHubAccessToken',
                 valueType: 'string',
-                defaultValue: 'realTokenGoesHere',
+                defaultValue: AppConfig.NONE,
                 groupName: 'GitHub Integration',
                 note: 'Personal access token with minimal scopes required to query public repos and commits.'
             ),
@@ -296,7 +297,7 @@ class BootStrap implements LogSupport {
             new PreferenceSpec(
                 name: 'contactAppState',
                 type: 'json',
-                defaultValue: [],
+                defaultValue: [:],
                 groupName: 'Toolbox - Example Apps',
                 notes: 'Holds favorites, grid state, and displayMode prefs for the XH Contact example app.'
             ),

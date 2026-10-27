@@ -35,7 +35,6 @@ export class FetchApiTestModel extends HoistModel {
         {value: 'deleteJson'}
     ];
 
-    @managed
     taskModel = TaskObserver.trackLast();
 
     @managed
