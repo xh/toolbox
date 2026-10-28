@@ -38,10 +38,7 @@ configurations {
     }
 }
 
-// Lock resolved dependency versions to the committed `gradle.lockfile`. After changing a dependency,
-// run `./gradlew dependencies --write-locks -PrunHoistInline=false`. Packaged mode matters: inline
-// mode substitutes the local hoist-core project and leaves it out of the lockfile, which then fails
-// in CI. See hoist-core's docs/build-and-publish.md.
+// After changing a dependency, run: ./gradlew dependencies --write-locks -PrunHoistInline=false
 dependencyLocking { lockAllConfigurations() }
 
 springBoot {
