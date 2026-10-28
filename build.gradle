@@ -10,7 +10,7 @@ buildscript {
         classpath "org.apache.grails:grails-data-hibernate5"
         classpath "org.apache.grails:grails-gradle-plugins"
     }
-    dependencyLocking { lockAllConfigurations() }
+    dependencyLocking { lockAllConfigurations(); lockMode = LockMode.STRICT }
 }
 
 plugins {
@@ -39,7 +39,10 @@ configurations {
 }
 
 // After changing a dependency, run: ./gradlew dependencies --write-locks -PrunHoistInline=false
-dependencyLocking { lockAllConfigurations() }
+dependencyLocking {
+    lockAllConfigurations()
+    lockMode = LockMode.STRICT
+}
 
 springBoot {
     mainClass = xhAppPackage + ".Application"
