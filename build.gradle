@@ -10,6 +10,7 @@ buildscript {
         classpath "org.apache.grails:grails-data-hibernate5"
         classpath "org.apache.grails:grails-gradle-plugins"
     }
+    dependencyLocking { lockAllConfigurations() }
 }
 
 plugins {
@@ -36,6 +37,12 @@ configurations {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
 }
+
+// Lock resolved dependency versions to the committed `gradle.lockfile`. After changing a dependency,
+// run `./gradlew dependencies --write-locks -PrunHoistInline=false`. Packaged mode matters: inline
+// mode substitutes the local hoist-core project and leaves it out of the lockfile, which then fails
+// in CI. See hoist-core's docs/build-and-publish.md.
+dependencyLocking { lockAllConfigurations() }
 
 springBoot {
     mainClass = xhAppPackage + ".Application"
