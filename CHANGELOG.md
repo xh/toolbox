@@ -33,6 +33,7 @@
 
 ### Technical
 
+* Enabled Gradle dependency locking - after changing a dependency, run `./gradlew dependencies --write-locks -PrunHoistInline=false` and commit the lockfiles.
 * Updated `User` to hash passwords with hoist-core's `HoistPasswordEncryptor`, a drop-in replacement for jasypt's `BasicPasswordEncryptor` removed in hoist-core v44.
 * Upgraded to Grails 8 and the Gradle 9 wrapper.
 * Moved to Java 25 for builds, CI and the deployed Tomcat 11 container (`xhio/xh-tomcat:next-tc11-jdk25`). Grails 8 requires Java 21+ and Tomcat 11.
