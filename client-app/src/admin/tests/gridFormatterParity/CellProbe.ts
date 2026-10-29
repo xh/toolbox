@@ -19,16 +19,16 @@ export type ParityCheck = 'text' | 'sign' | 'placeholder' | 'alignment' | 'width
 export interface CellDiff {
     check: ParityCheck;
     renderer: string;
-    formatter: string;
+    textRenderer: string;
 }
 
 // Offsets within this many px count as equal, to allow for sub-pixel rounding.
 const TOLERANCE_PX = 0.5;
 
 // Widths within this many px count as equal. Autosize renders each column's widest values in a
-// hidden cell and takes its width in whole px. A renderer's markup and a formatter's plain text
+// hidden cell and takes its width in whole px. A renderer's markup and a text renderer's text
 // can measure a fraction of a px apart, and so round 1px apart. In compact sizing, the
-// `billionsRenderer` and `billionsFormatter` text for -0.001b measures 57.500 and 57.484px.
+// `billionsRenderer` and `billionsTextRenderer` text for -0.001b measures 57.500 and 57.484px.
 const WIDTH_TOLERANCE_PX = 1;
 
 /** Read the visible content, sign styling, ledger placeholder and geometry of a grid cell. */
@@ -67,24 +67,24 @@ export function readCell(cell: HTMLElement): CellReading {
     };
 }
 
-/** Compare the renderer and formatter readings of one cell pair, returning each difference. */
-export function compareCells(renderer: CellReading, formatter: CellReading): CellDiff[] {
+/** Compare the renderer and text renderer readings of one cell pair, returning each difference. */
+export function compareCells(renderer: CellReading, text: CellReading): CellDiff[] {
     const ret: CellDiff[] = [],
         add = (check: ParityCheck, r: any, f: any) =>
-            ret.push({check, renderer: JSON.stringify(r), formatter: JSON.stringify(f)});
+            ret.push({check, renderer: JSON.stringify(r), textRenderer: JSON.stringify(f)});
 
-    if (renderer.text !== formatter.text) add('text', renderer.text, formatter.text);
-    if (renderer.sign !== formatter.sign) add('sign', renderer.sign, formatter.sign);
-    if (renderer.placeholder !== formatter.placeholder) {
-        add('placeholder', renderer.placeholder, formatter.placeholder);
+    if (renderer.text !== text.text) add('text', renderer.text, text.text);
+    if (renderer.sign !== text.sign) add('sign', renderer.sign, text.sign);
+    if (renderer.placeholder !== text.placeholder) {
+        add('placeholder', renderer.placeholder, text.placeholder);
     }
     // A cell up to 1px wider moves its text by as much on the side away from its alignment.
-    const widthGap = Math.abs(renderer.width - formatter.width),
+    const widthGap = Math.abs(renderer.width - text.width),
         offsetSlack = Math.min(widthGap, WIDTH_TOLERANCE_PX);
-    if (!offsetsMatch(renderer.offsets, formatter.offsets, offsetSlack)) {
-        add('alignment', roundOffsets(renderer.offsets), roundOffsets(formatter.offsets));
+    if (!offsetsMatch(renderer.offsets, text.offsets, offsetSlack)) {
+        add('alignment', roundOffsets(renderer.offsets), roundOffsets(text.offsets));
     }
-    if (widthGap > WIDTH_TOLERANCE_PX) add('width', renderer.width, formatter.width);
+    if (widthGap > WIDTH_TOLERANCE_PX) add('width', renderer.width, text.width);
     return ret;
 }
 
@@ -103,7 +103,7 @@ function visibleTextNodes(cell: HTMLElement): Text[] {
     return ret;
 }
 
-// A renderer reserves the room with a hidden `)` span. A formatter cell does it with an `::after`.
+// A renderer reserves the room with a hidden `)` span. A text renderer cell uses an `::after`.
 function hasLedgerPlaceholder(cell: HTMLElement): boolean {
     return (
         !!cell.querySelector('[style*="visibility: hidden"]') ||

@@ -89,7 +89,7 @@ const tbar = hoistCmp.factory(() =>
                             hideSelectedOptionCheck: true,
                             options: [
                                 {value: 'plain', label: 'Plain'},
-                                {value: 'formatter', label: 'Formatter'},
+                                {value: 'textRenderer', label: 'Text Renderer'},
                                 {value: 'renderer', label: 'Renderer'}
                             ]
                         })

@@ -6,12 +6,12 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberIs, required} from '@xh/hoist/data';
 import type {Constraint} from '@xh/hoist/data';
 import {
-    dateFormatter,
+    dateTextRenderer,
     dateRenderer,
     fmtNumber,
-    millionsFormatter,
+    millionsTextRenderer,
     millionsRenderer,
-    numberFormatter,
+    numberTextRenderer,
     numberRenderer
 } from '@xh/hoist/format';
 import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
@@ -32,10 +32,10 @@ export const GRID_SIZING = {rowHeight: 28, headerHeight: 24, colWidth: 130};
 /**
  * How the grids turn cell values into content:
  * - 'plain' - no formatting, ag-Grid writes the raw value.
- * - 'formatter' - a formatter returns the cell's text, and ag-Grid writes it.
+ * - 'textRenderer' - a text renderer returns the cell's text, and ag-Grid writes it.
  * - 'renderer' - a renderer with the same options, rendered as a React component per cell.
  */
-export type CellFormatting = 'plain' | 'formatter' | 'renderer';
+export type CellFormatting = 'plain' | 'textRenderer' | 'renderer';
 
 /** Timings from one measured scroll - see {@link GridScrollingModel.scrollGridAsync}. */
 export interface ScrollResult {
@@ -59,7 +59,7 @@ export class GridScrollingModel extends HoistModel {
     @observable accessor colCount = 20;
     @observable accessor rowCount = 100_000;
     @observable accessor isColVirtualizationEnabled = true;
-    @observable accessor cellFormatting: CellFormatting = 'formatter';
+    @observable accessor cellFormatting: CellFormatting = 'textRenderer';
     // Viewport-heights to scroll per button click - one step per viewport.
     @bindable accessor scrollFactor = 8;
 
@@ -99,23 +99,23 @@ export class GridScrollingModel extends HoistModel {
     get hoistColumns(): ColumnSpec[] {
         const {cellFormatting} = this;
         return this.fields.map(({field, kind}) => {
-            const {formatter, renderer} = COLUMN_KINDS[kind];
+            const {textRenderer, renderer} = COLUMN_KINDS[kind];
             return {
                 field,
                 width: GRID_SIZING.colWidth,
                 align: 'right',
-                formatter: cellFormatting === 'formatter' ? formatter : undefined,
+                textRenderer: cellFormatting === 'textRenderer' ? textRenderer : undefined,
                 renderer: cellFormatting === 'renderer' ? renderer : undefined
             };
         });
     }
 
-    // The same formatters and renderers through ag-Grid's own `valueFormatter` and `cellRenderer`.
+    // The same text renderers and renderers through ag-Grid's own `valueFormatter` and `cellRenderer`.
     @computed
     get agColumnDefs(): ColDef[] {
         const {cellFormatting} = this;
         return this.fields.map(({field, kind}) => {
-            const {formatter, renderer} = COLUMN_KINDS[kind],
+            const {textRenderer, renderer} = COLUMN_KINDS[kind],
                 // No inferred data type, so ag-Grid adds no formatter of its own in 'plain' mode.
                 ret: ColDef = {
                     field,
@@ -124,12 +124,12 @@ export class GridScrollingModel extends HoistModel {
                     cellDataType: false
                 };
 
-            if (cellFormatting === 'formatter') {
-                ret.valueFormatter = p => formatter(p.value);
+            if (cellFormatting === 'textRenderer') {
+                ret.valueFormatter = p => textRenderer(p.value);
                 // The class rules keep this grid's cost in line with the Hoist grid's. The ledger
                 // placeholder is a Hoist grid style that this grid lacks. So here, the digits of
                 // positive P&L values sit one `)` further right than those of negatives.
-                ret.cellClassRules = formatter.cellClassRules;
+                ret.cellClassRules = textRenderer.cellClassRules;
             } else if (cellFormatting === 'renderer') {
                 ret.cellRenderer = p => createElement('span', null, renderer(p.value));
             }
@@ -261,23 +261,23 @@ const DATE_FORMAT = {fmt: 'MMM D, YYYY'},
     DATES = range(0, 500).map(it => LocalDate.get('2026-01-01').subtract(it));
 
 /**
- * The kinds of column the grids cycle through, each with a value generator and a formatter and
- * renderer that take the same options.
+ * The kinds of column the grids cycle through, each with a value generator and a text renderer
+ * and renderer that take the same options.
  */
 const COLUMN_KINDS = {
     pnl: {
         value: () => random(-5_000_000, 5_000_000),
-        formatter: numberFormatter(PNL_FORMAT),
+        textRenderer: numberTextRenderer(PNL_FORMAT),
         renderer: numberRenderer(PNL_FORMAT)
     },
     volume: {
         value: () => random(0, 10_000_000_000),
-        formatter: millionsFormatter(VOLUME_FORMAT),
+        textRenderer: millionsTextRenderer(VOLUME_FORMAT),
         renderer: millionsRenderer(VOLUME_FORMAT)
     },
     date: {
         value: () => sample(DATES),
-        formatter: dateFormatter(DATE_FORMAT),
+        textRenderer: dateTextRenderer(DATE_FORMAT),
         renderer: dateRenderer(DATE_FORMAT)
     }
 };

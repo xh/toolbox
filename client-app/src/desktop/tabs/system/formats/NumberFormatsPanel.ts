@@ -37,8 +37,8 @@ export const numberFormatsPanel = hoistCmp.factory({
                 'formatted. All Hoist formatting functions also support the `asHtml` option to',
                 'produce a raw HTML string rather than a React element.',
                 '',
-                'In a grid column, prefer the matching formatter factory, such as `numberFormatter`',
-                'or `millionsFormatter`, as `Column.formatter`. It takes the same options, less',
+                'In a grid column, prefer the matching text renderer, such as `numberTextRenderer`',
+                'or `millionsTextRenderer`, as `Column.textRenderer`. It takes the same options, less',
                 'those that need markup, such as `withSignGlyph` or a `colorSpec` with inline',
                 'styles. It returns plain text, which AG Grid writes into the cell with no React',
                 'component, so the grid renders and scrolls faster than with `numberRenderer`.'
@@ -55,8 +55,8 @@ export const numberFormatsPanel = hoistCmp.factory({
                 },
                 {
                     url: '$HR/format/README.md#formatters-vs-renderers',
-                    text: 'Formatter factories',
-                    notes: 'Formatters for grid columns, and the options they take.'
+                    text: 'Text renderer factories',
+                    notes: 'Text renderers for grid columns, and the options they take.'
                 },
                 {
                     url: '$HR/format/FormatNumber.ts',
@@ -258,13 +258,13 @@ export const numberFormatsPanel = hoistCmp.factory({
     }
 });
 
-// Names the factory to use for the selected function in a grid column: its formatter, or its
+// Names the factory to use for the selected function in a grid column: its text renderer, or its
 // renderer when the options set need markup.
 function gridFnInfo(model: NumberFormatsPanelModel): ReactNode {
     const baseName = lowerFirst(model.fnName.slice(3));
     return model.needsRenderer
         ? fragment('In a grid column, use ', code(`${baseName}Renderer`), ' for these options.')
-        : fragment('In a grid column, use ', code(`${baseName}Formatter`), '.');
+        : fragment('In a grid column, use ', code(`${baseName}TextRenderer`), '.');
 }
 
 // Custom-value row for the results table: a left-aligned label paired with a right-aligned,

@@ -1,22 +1,22 @@
 import {ExcelFormat, localDate, tags} from '@xh/hoist/cmp/grid';
 import {hbox, vbox} from '@xh/hoist/cmp/layout';
 import {
-    dateFormatter,
+    dateTextRenderer,
     dateRenderer,
     fmtNumberTooltip,
-    millionsFormatter,
+    millionsTextRenderer,
     millionsRenderer,
-    numberFormatter,
+    numberTextRenderer,
     numberRenderer
 } from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import type {ColumnRenderer, ColumnSpec} from '@xh/hoist/cmp/grid';
-import type {NumberFormatterOptions} from '@xh/hoist/format';
+import type {NumberTextRendererOptions} from '@xh/hoist/format';
 
-// Format options for the P&L and Volume columns, shared by their formatters and the matching
+// Format options for the P&L and Volume columns, shared by their text renderers and the matching
 // renderers below.
-export const PNL_FORMAT: NumberFormatterOptions = {precision: 0, ledger: true, colorSpec: true},
-    VOLUME_FORMAT: NumberFormatterOptions = {precision: 1, label: true};
+export const PNL_FORMAT: NumberTextRendererOptions = {precision: 0, ledger: true, colorSpec: true},
+    VOLUME_FORMAT: NumberTextRendererOptions = {precision: 1, label: true};
 
 export const profitLossCol: ColumnSpec = {
     field: {
@@ -29,7 +29,7 @@ export const profitLossCol: ColumnSpec = {
     align: 'right',
     absSort: true,
     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
-    formatter: numberFormatter(PNL_FORMAT),
+    textRenderer: numberTextRenderer(PNL_FORMAT),
     excelFormat: ExcelFormat.LEDGER_COLOR
 };
 
@@ -71,7 +71,7 @@ export const tradeVolumeCol: ColumnSpec = {
                   ]
               })
             : fmtNumberTooltip(volume),
-    formatter: millionsFormatter(VOLUME_FORMAT),
+    textRenderer: millionsTextRenderer(VOLUME_FORMAT),
     cellFlag: volume => (isHighVolume(volume) ? 'warning' : null),
     excelFormat: ExcelFormat.NUM_DELIMITED
 };
@@ -86,8 +86,8 @@ export const tradeDateCol: ColumnSpec = {
     }
 };
 
-// Renderers with the same options as the formatters on the trade columns above. A renderer wins
-// over a formatter, so `{...profitLossCol, renderer: profitLossRenderer}` gives the column a React
+// Renderers with the same options as the text renderers on the trade columns above. A renderer
+// wins over a text renderer, so `{...profitLossCol, renderer: profitLossRenderer}` gives the column a React
 // component per cell in place of plain text. The Standard grid demo switches between the two.
 export const profitLossRenderer: ColumnRenderer = numberRenderer(PNL_FORMAT),
     tradeVolumeRenderer: ColumnRenderer = millionsRenderer(VOLUME_FORMAT),
@@ -116,5 +116,5 @@ export const dayOfWeekCol: ColumnSpec = {
     displayName: 'Day of Week',
     chooserDescription: 'Used for testing storeFilterField matching on rendered dates.',
     width: 130,
-    formatter: dateFormatter({fmt: 'dddd'})
+    textRenderer: dateTextRenderer({fmt: 'dddd'})
 };

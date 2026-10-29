@@ -73,7 +73,7 @@ export class NumberFormatsPanelModel extends HoistModel {
         return this.getResult(this.tryItData);
     }
 
-    /** True if the options set here need markup, which a grid column's formatter cannot return. */
+    /** True if the options set here need markup, which a grid column's text renderer cannot return. */
     get needsRenderer(): boolean {
         return this.withSignGlyph || this.colorSpec === 'custom';
     }

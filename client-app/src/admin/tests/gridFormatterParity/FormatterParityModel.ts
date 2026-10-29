@@ -22,8 +22,8 @@ export interface ProbeResult {
 }
 
 /**
- * Regression check for hoist-react's `Column.formatter`. Each case renders one field through a
- * renderer and through the matching formatter. The probe reads both cells of every pair from the
+ * Regression check for hoist-react's `Column.textRenderer`. Each case renders one field through a
+ * renderer and through the matching text renderer. The probe reads both cells of every pair from the
  * DOM and checks that they display the same.
  */
 export class FormatterParityModel extends HoistModel {
@@ -68,15 +68,15 @@ export class FormatterParityModel extends HoistModel {
             PARITY_CASES.forEach(parityCase => {
                 const id = caseId(parityCase),
                     rendererCell = cellOf(`${id}_r`),
-                    formatterCell = cellOf(`${id}_f`),
+                    textCell = cellOf(`${id}_t`),
                     pairDiffs: CellDiff[] =
-                        rendererCell && formatterCell
-                            ? compareCells(readCell(rendererCell), readCell(formatterCell))
+                        rendererCell && textCell
+                            ? compareCells(readCell(rendererCell), readCell(textCell))
                             : [
                                   {
                                       check: 'missing',
                                       renderer: rendererCell ? 'rendered' : 'not rendered',
-                                      formatter: formatterCell ? 'rendered' : 'not rendered'
+                                      textRenderer: textCell ? 'rendered' : 'not rendered'
                                   }
                               ];
 
@@ -113,7 +113,7 @@ export class FormatterParityModel extends HoistModel {
             {field: 'id', headerName: 'Row', width: 50, pinned: 'left'},
             {field: 'num', colId: 'rawNum', headerName: 'Raw Num', width: 110, pinned: 'left'},
             ...PARITY_CASES.map(parityCase => {
-                const {name, field, renderer, formatter} = parityCase,
+                const {name, field, renderer, textRenderer} = parityCase,
                     id = caseId(parityCase),
                     // Size each column on its cells alone, so the pair's widths can be compared.
                     common = {field, autosizeIncludeHeader: false};
@@ -131,11 +131,11 @@ export class FormatterParityModel extends HoistModel {
                             headerTooltip: 'Renderer'
                         },
                         {
-                            ...formatter,
+                            ...textRenderer,
                             ...common,
-                            colId: `${id}_f`,
-                            headerName: 'F',
-                            headerTooltip: 'Formatter'
+                            colId: `${id}_t`,
+                            headerName: 'T',
+                            headerTooltip: 'Text renderer'
                         }
                     ]
                 };
@@ -169,7 +169,7 @@ export class FormatterParityModel extends HoistModel {
                 {field: 'row', width: 60},
                 {field: 'check', width: 100},
                 {field: 'renderer', flex: 1},
-                {field: 'formatter', flex: 1}
+                {field: 'textRenderer', flex: 1}
             ]
         });
     }

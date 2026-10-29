@@ -25,7 +25,7 @@ export const standardGridPanel = hoistCmp.factory({
                 'custom column selection UI, server-side exports, enhanced column definitions,',
                 'absolute value sorting, and more.',
                 '',
-                'The Volume, P&L and Date columns set a `Column.formatter`, so AG Grid writes',
+                'The Volume, P&L and Date columns set a `Column.textRenderer`, so AG Grid writes',
                 'their text into plain cells. Switch Cell Formatting to compare them with',
                 'renderers.'
             ],
@@ -47,17 +47,17 @@ export const standardGridPanel = hoistCmp.factory({
                 {url: '$HR/cmp/grid/columns/Column.ts', notes: 'Hoist class for Column config.'},
                 {
                     url: '$TB/client-app/src/core/columns/Trades.ts',
-                    notes: 'Trade column specs, with their formatters and matching renderers.'
+                    notes: 'Trade column specs, with their text renderers and matching renderers.'
                 },
                 {
                     url: '$HR/cmp/grid/README.md#common-usage-patterns',
-                    text: 'Formatter docs',
-                    notes: 'Column.formatter vs. renderer - see the Formatters subsection.'
+                    text: 'Text renderer docs',
+                    notes: 'Column.textRenderer vs. renderer - see the Text Renderers subsection.'
                 },
                 {
                     url: '$HR/format/README.md#formatters-vs-renderers',
-                    text: 'Formatter factories',
-                    notes: 'numberFormatter, dateFormatter and friends, and the options they take.'
+                    text: 'Text renderer factories',
+                    notes: 'numberTextRenderer, dateTextRenderer and friends, and the options they take.'
                 },
                 {
                     url: '$HR/data',
@@ -84,12 +84,12 @@ export const standardGridPanel = hoistCmp.factory({
                         bind: 'cellFormatting',
                         compact: true,
                         options: [
-                            {value: 'formatter', label: 'Formatter'},
+                            {value: 'textRenderer', label: 'Text Renderer'},
                             {value: 'renderer', label: 'Renderer'}
                         ]
                     }),
                     info: fragment(
-                        code('formatter'),
+                        code('textRenderer'),
                         ' writes Volume, P&L and Date as plain text. ',
                         code('renderer'),
                         ' mounts a React component per cell. The output should look identical.'

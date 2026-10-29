@@ -25,15 +25,15 @@ import {
 } from '../../../core/columns/Trades';
 
 /** How the trade columns turn values into cell content - see `SampleGridModel.cellFormatting`. */
-export type CellFormatting = 'formatter' | 'renderer';
+export type CellFormatting = 'textRenderer' | 'renderer';
 
 export class SampleGridModel extends HoistModel {
     /**
-     * 'formatter' to show the Volume, P&L and Date columns as plain text cells, through their
-     * `Column.formatter`. 'renderer' to show them through renderers with the same options, as a
+     * 'textRenderer' to show the Volume, P&L and Date columns as plain text cells, through their
+     * `Column.textRenderer`. 'renderer' to show them through renderers with the same options, as a
      * React component per cell. Both should look identical. Change it with `setCellFormatting`.
      */
-    @observable accessor cellFormatting: CellFormatting = 'formatter';
+    @observable accessor cellFormatting: CellFormatting = 'textRenderer';
 
     panelRef = createRef<HTMLDivElement>();
 
@@ -233,7 +233,7 @@ export class SampleGridModel extends HoistModel {
     }
 
     private createColumns(): ColumnOrGroupSpec[] {
-        // A renderer wins over a formatter, so adding one is all it takes to switch paths.
+        // A renderer wins over a text renderer, so adding one is all it takes to switch paths.
         const withRenderer = (col: ColumnSpec, renderer: ColumnRenderer): ColumnSpec =>
             this.cellFormatting === 'renderer' ? {...col, renderer} : {...col};
 
@@ -352,6 +352,6 @@ export class SampleGridModel extends HoistModel {
         this.gridModel.showHover = false;
         this.gridModel.showCellFocus = false;
         this.gridModel.emptyText = 'No records found...';
-        this.setCellFormatting('formatter');
+        this.setCellFormatting('textRenderer');
     }
 }
