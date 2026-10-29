@@ -1,0 +1,7 @@
+// Headline outputs inside an already-padded container, restyled through StatCard's CSS variables.
+// A scoped override sets the resolved `--xh-` variables - the unprefixed ones are read at the root.
+.tb-stat-card-panel__headline {
+  --xh-stat-card-strip-padding: 0;
+  --xh-stat-card-title-letter-spacing: 0.04em;
+  --xh-stat-card-title-text-transform: uppercase;
+}
