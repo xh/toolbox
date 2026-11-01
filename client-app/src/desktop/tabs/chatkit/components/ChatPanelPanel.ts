@@ -1,6 +1,6 @@
 import type {ChatModelConfig, ChatToolSpec} from '@xh/hoist-chat-kit/core';
 import {ChatModel} from '@xh/hoist-chat-kit/core';
-import type {ChatPanelProps, ChatSuggestion} from '@xh/hoist-chat-kit/desktop/cmp/chat';
+import type {ChatPanelProps} from '@xh/hoist-chat-kit/desktop/cmp/chat';
 import {
     chatClearButton,
     chatComposer,
@@ -37,7 +37,7 @@ import {chatKitPage} from '../ChatKitCatalog';
 import {KIT_LINKS, tabSourceLink} from '../common/ChatDemo';
 import {createSampleConversation} from '../common/sampleConversation';
 import {markdown} from '../common/scriptUtils';
-import {arrayLiteral, objectLiteral, rawObject, snippet} from '../common/snippetUtils';
+import {arrayLiteral, rawObject, snippet} from '../common/snippetUtils';
 import './ChatPanelPanel.scss';
 
 /**
@@ -368,20 +368,7 @@ class ChatPanelPanelModel extends HoistModel {
                 title: this.emptyTitle || undefined,
                 text: this.emptyText || undefined
             }),
-            suggestions: this.showSuggestions
-                ? snippet(
-                      arrayLiteral(
-                          SUGGESTIONS.map(it =>
-                              raw(
-                                  objectLiteral({
-                                      text: it.text,
-                                      icon: raw(it.iconCode)
-                                  })
-                              )
-                          )
-                      )
-                  )
-                : undefined,
+            suggestions: this.showSuggestions ? snippet(arrayLiteral(SUGGESTIONS)) : undefined,
             composerProps: rawObject({
                 placeholder: this.placeholder || undefined,
                 layout: this.composerLayout === 'inline' ? 'inline' : undefined
@@ -409,14 +396,7 @@ class ChatPanelPanelModel extends HoistModel {
 //------------------------------------------------------------------
 // Script
 //------------------------------------------------------------------
-const SUGGESTIONS: Array<ChatSuggestion & {iconCode: string}> = [
-    {
-        text: 'Why is the Rates book down today?',
-        icon: Icon.chartLine(),
-        iconCode: 'Icon.chartLine()'
-    },
-    {text: 'Summarize my P&L by book', icon: Icon.portfolio(), iconCode: 'Icon.portfolio()'}
-];
+const SUGGESTIONS = ['Why is the Rates book down today?', 'Summarize my P&L by book'];
 
 function createChatConfig(config: Partial<ChatModelConfig> = {}): ChatModelConfig {
     return {
