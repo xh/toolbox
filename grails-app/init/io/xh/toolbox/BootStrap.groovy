@@ -197,6 +197,63 @@ class BootStrap implements LogSupport {
                 note: 'API key for OpenWeatherMap (https://openweathermap.org/api). Sign up for a free key.'
             ),
             new ConfigSpec(
+                name: 'llmApiKey',
+                valueType: 'pwd',
+                defaultValue: 'UNCONFIGURED',
+                groupName: 'Toolbox - Example Apps',
+                note: 'Anthropic API key for the LLM relay used by the Live Model demo on the Chat Kit tab (https://console.anthropic.com/).'
+            ),
+            new ConfigSpec(
+                name: 'llmModel',
+                valueType: 'string',
+                defaultValue: 'claude-sonnet-4-6',
+                groupName: 'Toolbox - Example Apps',
+                note: 'Anthropic model ID used by the LLM relay.'
+            ),
+            new ConfigSpec(
+                name: 'llmMaxTokens',
+                valueType: 'int',
+                defaultValue: 8192,
+                groupName: 'Toolbox - Example Apps',
+                note: 'Max output tokens per LLM call.'
+            ),
+            new ConfigSpec(
+                name: 'llmRateLimit',
+                valueType: 'int',
+                defaultValue: 20,
+                groupName: 'Toolbox - Example Apps',
+                note: 'Max LLM calls per user per hour (per server instance). A tool loop makes one call per step. Members of TOOLBOX_LLM_UNLIMITED have no limit, and with 0 only they can make calls.'
+            ),
+            new ConfigSpec(
+                name: 'llmOpenToAllUsers',
+                valueType: 'bool',
+                defaultValue: false,
+                clientVisible: true,
+                groupName: 'Toolbox - Example Apps',
+                note: 'True to let every signed-in user use the Live Model demo on the Chat Kit tab. When false, only members of the TOOLBOX_LLM_USER role can.'
+            ),
+            new ConfigSpec(
+                name: 'llmMaxStreams',
+                valueType: 'int',
+                defaultValue: 20,
+                groupName: 'Toolbox - Example Apps',
+                note: 'Max concurrent LLM streams (per server instance). Each holds a request thread for its whole length. A request beyond the limit fails at once with a "busy" message.'
+            ),
+            new ConfigSpec(
+                name: 'llmRequestParams',
+                valueType: 'json',
+                defaultValue: [:],
+                groupName: 'Toolbox - Example Apps',
+                note: 'Other Anthropic Messages API params the LLM relay sends with every call, e.g. {"temperature": 0.5} or {"thinking": {"type": "enabled", "budget_tokens": 4000}}. The client cannot set these.'
+            ),
+            new ConfigSpec(
+                name: 'llmServerTools',
+                valueType: 'json',
+                defaultValue: [],
+                groupName: 'Toolbox - Example Apps',
+                note: 'Anthropic server tool definitions the LLM relay adds to every call, e.g. [{"type": "web_search_20250305", "name": "web_search", "max_uses": 3}]. Server tools cost extra, so the relay rejects any the client sends.'
+            ),
+            new ConfigSpec(
                 name: 'newsRefreshMins',
                 valueType: 'int',
                 defaultValue: 60,
