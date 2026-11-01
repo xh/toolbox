@@ -1,0 +1,18 @@
+// The Playground list, framed so its scroll region reads as one box.
+.tb-chatkit-message-list__frame {
+  border: var(--xh-border-width-px) solid var(--xh-border-color);
+  border-radius: var(--xh-border-radius-px);
+  background-color: var(--xh-bg);
+  overflow: hidden;
+}
+
+// A header item: the model that answered.
+.tb-chatkit-message-list__badge {
+  padding: 0 var(--xh-pad-half-px);
+  border: var(--xh-border-width-px) solid var(--xh-border-color);
+  border-radius: var(--xh-border-radius-px);
+  color: var(--xh-text-color-muted);
+  font-family: var(--xh-font-family-mono);
+  font-size: var(--xh-font-size-small-px);
+  line-height: 1.5;
+}
