@@ -29,7 +29,8 @@ import static java.nio.charset.StandardCharsets.UTF_8
 /**
  * Relays the Anthropic Messages API as a token stream, for the Live Model demo on the desktop app's
  * Chat Kit tab, built on `@xh/hoist-chat-kit`. The API key lives in the `llmApiKey` config, so it
- * never reaches the client.
+ * never reaches the client. In local development, set it once in `.env` as `APP_TOOLBOX_LLM_API_KEY`,
+ * which overrides the config on every start, H2 included.
  *
  * Access - a user needs the `TOOLBOX_LLM_USER` role, unless the `llmOpenToAllUsers` config is true.
  * `TOOLBOX_LLM_UNLIMITED` grants it too, and exempts its members from the rate limit. Both roles
@@ -451,7 +452,8 @@ class LlmService extends BaseService {
         def key = configService.getPwd('llmApiKey')
         if (!key?.trim() || key == 'UNCONFIGURED') {
             throw new DataNotAvailableException(
-                'LLM API key not configured. Set the "llmApiKey" config entry in the Hoist Admin console.'
+                'LLM API key not configured. Set the "llmApiKey" config in the Admin Console, or ' +
+                    'APP_TOOLBOX_LLM_API_KEY in .env for local development.'
             )
         }
     }
