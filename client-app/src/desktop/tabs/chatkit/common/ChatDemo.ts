@@ -2,6 +2,7 @@ import type {ChatModelConfig} from '@xh/hoist-chat-kit/core';
 import {ChatModel} from '@xh/hoist-chat-kit/core';
 import type {ChatSuggestion} from '@xh/hoist-chat-kit/desktop/cmp/chat';
 import {chatClearButton, chatPanel} from '@xh/hoist-chat-kit/desktop/cmp/chat';
+import {code, span} from '@xh/hoist/cmp/layout';
 import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, uses} from '@xh/hoist/core';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
@@ -193,12 +194,20 @@ export const chatDemoPage = hoistCmp.factory<HoistProps<ChatDemoModel>>({
                         }),
                         wrapperOption({
                             label: 'Compact density',
-                            info: 'Adds `xh-chat--compact` to a parent of the chat.',
+                            info: span(
+                                'Adds ',
+                                code('xh-chat--compact'),
+                                ' to a parent of the chat.'
+                            ),
                             control: switchInput({bind: 'compact'})
                         }),
                         wrapperOption({
                             label: 'Reduced motion',
-                            info: 'Adds `xh-chat--reduced-motion`, for the static twin of each cue.',
+                            info: span(
+                                'Adds ',
+                                code('xh-chat--reduced-motion'),
+                                ', for the static twin of each cue.'
+                            ),
                             control: switchInput({bind: 'reducedMotion'})
                         })
                     ]
@@ -219,7 +228,9 @@ export const chatDemoPage = hoistCmp.factory<HoistProps<ChatDemoModel>>({
                     reducedMotion && 'xh-chat--reduced-motion'
                 ),
                 testId: `chatkit-${spec.pageId}`,
-                flex: 1,
+                // The Wrapper centers its demo region's child, so fill it explicitly.
+                width: '100%',
+                height: '100%',
                 title,
                 icon,
                 compactHeader: true,

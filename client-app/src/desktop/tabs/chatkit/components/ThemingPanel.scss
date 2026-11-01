@@ -1,0 +1,39 @@
+.tb-chatkit-theming {
+  &__preview {
+    display: flex;
+    width: 100%;
+
+    > .xh-panel {
+      border: var(--xh-border-width-px) solid var(--xh-border-color);
+      border-radius: var(--xh-border-radius-px);
+      flex: 1;
+      overflow: hidden;
+    }
+  }
+
+  &__table {
+    border-collapse: collapse;
+    font-size: var(--xh-font-size-small-px);
+    width: 100%;
+
+    th,
+    td {
+      border-bottom: var(--xh-border-width-px) solid var(--xh-border-color);
+      padding: 4px var(--xh-pad-px);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--xh-text-color-muted);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    td:first-child {
+      color: var(--xh-text-color-muted);
+      white-space: nowrap;
+    }
+  }
+}

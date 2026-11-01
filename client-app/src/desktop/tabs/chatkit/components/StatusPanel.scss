@@ -1,0 +1,27 @@
+.tb-chatkit-status {
+  &__cue {
+    align-items: center;
+    display: flex;
+    min-height: 28px;
+  }
+
+  &__none {
+    color: var(--xh-text-color-muted);
+    font-style: italic;
+  }
+
+  &__elapsed {
+    gap: var(--xh-pad-px);
+
+    .tb-chatkit-status__cue {
+      font-size: var(--xh-font-size-large-px);
+      min-width: 90px;
+    }
+  }
+
+  &__chat {
+    border: var(--xh-border-width-px) solid var(--xh-border-color);
+    border-radius: var(--xh-border-radius-px);
+    padding-bottom: var(--xh-pad-px);
+  }
+}
