@@ -105,7 +105,7 @@ function createDrillDown() {
         toolCallEvents('show_chart', createSectorChart()),
         textEvents(
             'The position was built mostly in September, at an average of $104. Semiconductors ' +
-                'are now a third of the book, above the 25% guideline.'
+                'are now a third of the book, above the 25% limit.'
         )
     ];
 }

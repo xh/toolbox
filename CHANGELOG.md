@@ -25,6 +25,8 @@
 * Renamed the App Notifications demo to Updates & Idle and App Banners to Banners, and removed the Forms > Other Controls overview page - its controls now live under Components > Choosers & Pickers.
 * Added Favicon Designer example app - a client-only tool that builds a Hoist app's favicon set from any Font Awesome Pro glyph, with custom colors, backdrop shapes and padding, live browser-tab and home-screen previews, shareable design URLs, and a one-click zip of `favicon.svg` plus the PNGs `configureRsbuild()` picks up.
 * Added sample widgets in nested groups to the `DashCanvas` and `DashContainer` demos, to show a slash-delimited `groupName` nesting the add view menus and the `DashCanvasWidgetChooser`.
+* Added a Chat Kit tab to the desktop app - a tour of `@xh/hoist-chat-kit`, XH's new library of chat components for Hoist apps. Component pages put `ChatPanel`, `ChatComposer`, `ChatMessageList`, `ChatMarkdown`, sources and citations, the empty state, feedback, status cues and theming in a playground of their curated props. Scripted conversations show rich content, reasoning and tools, the agent timeline, approvals, agent questions, attachments, errors and stop, and generative UI without a server or a model. Two integrations show the kit wired up: a full `chatWorkspace` over a client-side thread store, and a live Claude chat relayed by the Toolbox server with tools that act on the app.
+* Added the Hoist Chat Kit docs to the Docs tab, served from the installed `@xh/hoist-chat-kit` package or a sibling checkout in local development, and a `$CK` link token that opens them in the viewer.
 
 ### Bug Fixes
 
@@ -33,6 +35,7 @@
 
 ### Technical
 
+* Added `LlmService` and a `/llm/stream` endpoint that relay the Anthropic Messages API as a token stream for the Chat Kit tab's Live Model demo. Access needs the new `TOOLBOX_LLM_USER` role, or the `llmOpenToAllUsers` config, with a per-user hourly limit that `TOOLBOX_LLM_UNLIMITED` lifts, and every call tracked in category `LLM`. Configure with the new `llm*` configs, starting with `llmApiKey`.
 * Enabled Gradle dependency locking - after changing a dependency, run `./gradlew dependencies --write-locks -PrunHoistInline=false` and commit the lockfiles.
 * Updated `User` to hash passwords with hoist-core's `HoistPasswordEncryptor`, a drop-in replacement for jasypt's `BasicPasswordEncryptor` removed in hoist-core v44.
 * Upgraded to Grails 8 and the Gradle 9 wrapper.
@@ -50,6 +53,10 @@
 * Grails `7.2.2 → 8.0.0`
 * Gradle `8.14.5 → 9.8.0`
 * Java `21 → 25`
+
+### Libraries
+
+* @xh/hoist-chat-kit `1.0` - new
 
 ## 11.0.0 - 2026-09-29
 
