@@ -69,18 +69,22 @@ export const overviewPanel = hoistCmp.factory({
                         })
                     }),
                     demoSection({
-                        title: 'Add a chat to an app',
+                        title: 'Quick start',
                         note: 'A ChatModel with a transport and a tool, rendered by chatPanel.',
                         items: [
                             p({
                                 className: 'tb-chatkit-overview__lede',
                                 items: [
-                                    'Install with ',
+                                    'Run ',
                                     code('pnpm add @xh/hoist-chat-kit'),
-                                    ', add the package to ',
+                                    ', then add it to ',
                                     code('extraIncludePaths'),
-                                    " in the app's Rsbuild config so the build transpiles it, then:"
+                                    ' in your Rsbuild config.'
                                 ]
+                            }),
+                            p({
+                                className: 'tb-chatkit-overview__lede',
+                                item: 'The build then transpiles the kit along with the app. A minimal chat looks like this:'
                             }),
                             pre({className: 'tb-chatkit-overview__code', item: QUICK_START})
                         ]
@@ -159,8 +163,8 @@ const FEATURES: Array<{icon: ReactElement; title: string; text: string}> = [
     },
     {
         icon: Icon.server(),
-        title: 'Built for hoist-core',
-        text: "The default transport streams NDJSON from your own server, with Hoist's auth, tracing and error handling."
+        title: 'Bring your own backend',
+        text: "HTTP and SSE transports stream from any server. The Hoist transport adds Hoist's auth, tracing and error handling when the backend is hoist-core."
     }
 ];
 
