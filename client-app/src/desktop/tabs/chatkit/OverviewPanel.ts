@@ -73,7 +73,7 @@ export const overviewPanel = hoistCmp.factory({
                         note: 'A ChatModel with a transport and a tool, rendered by chatPanel.',
                         items: [
                             p({
-                                className: 'tb-chatkit-overview__lede',
+                                className: 'tb-chatkit-overview__prose',
                                 items: [
                                     'Run ',
                                     code('pnpm add @xh/hoist-chat-kit'),
@@ -83,7 +83,7 @@ export const overviewPanel = hoistCmp.factory({
                                 ]
                             }),
                             p({
-                                className: 'tb-chatkit-overview__lede',
+                                className: 'tb-chatkit-overview__prose',
                                 item: 'The build then transpiles the kit along with the app. A minimal chat looks like this:'
                             }),
                             pre({className: 'tb-chatkit-overview__code', item: QUICK_START})

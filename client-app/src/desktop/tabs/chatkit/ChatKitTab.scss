@@ -7,12 +7,9 @@
 
 // Overview page.
 .tb-chatkit-overview {
-  &__lede {
-    color: var(--xh-text-color);
-    font-size: var(--xh-font-size-large-px);
+  &__prose {
     line-height: 1.5;
     margin: 0;
-    max-width: 760px;
   }
 
   &__features {
