@@ -1,0 +1,70 @@
+// Empty State page.
+.tb-chatkit-empty {
+  // A chat fills a fixed box, as it fills its parent.
+  &__instance {
+    border: var(--xh-border-width-px) solid var(--xh-border-color);
+    display: flex;
+    height: 480px;
+    width: 100%;
+
+    &--custom {
+      height: 420px;
+      max-width: 720px;
+    }
+  }
+
+  // The product mark in the empty state's header slot.
+  &__mark {
+    align-items: center;
+    color: var(--xh-intent-primary-text-color);
+    display: flex;
+    font-size: var(--xh-font-size-large-px);
+    font-weight: 600;
+    gap: var(--xh-pad-half-px);
+    margin-bottom: var(--xh-pad-px);
+  }
+
+  // The help line and the footer note.
+  &__note {
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+  }
+
+  &__standalone {
+    background-color: var(--xh-chat-bg);
+    gap: var(--xh-pad-px);
+    max-width: 640px;
+    padding: var(--xh-pad-px);
+  }
+
+  &__suggestions {
+    max-width: 640px;
+  }
+
+  // The custom empty state: a gallery of report templates.
+  &__gallery {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--xh-pad-px);
+    justify-content: center;
+    padding: var(--xh-pad-double-px);
+  }
+
+  &__gallery-title {
+    font-size: var(--xh-font-size-large-px);
+    font-weight: 600;
+  }
+
+  &__gallery-tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--xh-pad-px);
+    justify-content: center;
+  }
+
+  &__tile {
+    min-width: 140px;
+  }
+}
