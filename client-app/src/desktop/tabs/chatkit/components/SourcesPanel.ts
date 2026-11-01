@@ -7,9 +7,10 @@ import {chatMessageList, chatSources} from '@xh/hoist-chat-kit/desktop/cmp/chat'
 import {box} from '@xh/hoist/cmp/layout';
 import type {PlainObject} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
-import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, bindableRef, observableRef} from '@xh/hoist/mobx';
+import type {DemoConfigValue} from '../../../common/Demo';
 import {
     demoFrame,
     demoPanel,
@@ -37,7 +38,7 @@ export const sourcesPanel = hoistCmp.factory({
                 showNumbers,
                 showExternalIcon,
                 title,
-                handleClicks
+                clickMode
             } = model;
 
         return wrapper({
@@ -117,7 +118,7 @@ export const sourcesPanel = hoistCmp.factory({
                     wrapperOption({
                         label: 'External icon',
                         propName: 'ChatSourcesProps.showExternalIcon',
-                        info: 'Marks rows that open a new tab. A row that onSourceClick takes opens no tab, so turn that off to see it.',
+                        info: 'Marks rows that open a new tab. A row that onSourceClick takes opens no tab, so it shows under "Documents only" or "Off".',
                         control: switchInput({bind: 'showExternalIcon'})
                     }),
                     wrapperOption({
@@ -133,8 +134,13 @@ export const sourcesPanel = hoistCmp.factory({
                     wrapperOption({
                         label: 'Handle clicks',
                         propName: 'ChatSourcesProps.onSourceClick',
-                        info: 'On, a click toasts what the app would open. Off, a link opens a new tab, and a document with no URL says it cannot open here.',
-                        control: switchInput({bind: 'handleClicks'})
+                        info: 'A function takes every source. An object keyed by sourceType takes only its types, and the rest keep the default: a link opens a new tab. Off, a document with no URL says it cannot open here.',
+                        control: select({
+                            bind: 'clickMode',
+                            options: CLICK_MODE_OPTIONS,
+                            enableFilter: false,
+                            width: 150
+                        })
                     })
                 ]
             }),
@@ -155,7 +161,7 @@ export const sourcesPanel = hoistCmp.factory({
                                 visibleRows: visibleRows === 3 ? undefined : visibleRows,
                                 showNumbers: showNumbers ? undefined : false,
                                 showExternalIcon: showExternalIcon ? undefined : false,
-                                onSourceClick: handleClicks ? raw('this.openSource') : undefined
+                                onSourceClick: CLICK_MODE_SNIPPETS[clickMode]
                             }),
                             value: model.lastOpened,
                             item: chatSources({
@@ -168,7 +174,7 @@ export const sourcesPanel = hoistCmp.factory({
                                 visibleRows,
                                 showNumbers,
                                 showExternalIcon,
-                                onSourceClick: handleClicks ? model.openSource : undefined
+                                onSourceClick: model.sourceClick
                             })
                         })
                     }),
@@ -211,6 +217,21 @@ export const sourcesPanel = hoistCmp.factory({
 //------------------------------------------------------------------
 // Model
 //------------------------------------------------------------------
+type ClickMode = 'all' | 'documents' | 'none';
+
+const CLICK_MODE_OPTIONS: Array<{value: ClickMode; label: string}> = [
+    {value: 'all', label: 'Every source'},
+    {value: 'documents', label: 'Documents only'},
+    {value: 'none', label: 'Off'}
+];
+
+/** The `onSourceClick` entry of the snippet, by click mode. */
+const CLICK_MODE_SNIPPETS: Record<ClickMode, DemoConfigValue> = {
+    all: raw('this.openSource'),
+    documents: raw('{document: this.openSource}'),
+    none: undefined
+};
+
 class SourcesPanelModel extends HoistModel {
     @bindable accessor compact = true;
     @bindable accessor startCollapsed = false;
@@ -218,7 +239,7 @@ class SourcesPanelModel extends HoistModel {
     @bindable accessor showNumbers = true;
     @bindable accessor showExternalIcon = true;
     @bindable accessor title = '';
-    @bindable accessor handleClicks = true;
+    @bindable accessor clickMode: ClickMode = 'all';
 
     /** The source the Playground last opened, for its value readout. */
     @bindableRef accessor lastOpened: PlainObject = null;
@@ -231,6 +252,23 @@ class SourcesPanelModel extends HoistModel {
         sources: SOURCES,
         onClick: source => this.openSource(source)
     };
+
+    /** Handlers by source type - a stable object, as the prop must be. */
+    readonly documentClick: ChatSourcesProps['onSourceClick'] = {
+        document: source => this.openSource(source)
+    };
+
+    /** The `onSourceClick` prop for the Playground, by the rail's choice. */
+    get sourceClick(): ChatSourcesProps['onSourceClick'] {
+        switch (this.clickMode) {
+            case 'all':
+                return this.openSource;
+            case 'documents':
+                return this.documentClick;
+            default:
+                return undefined;
+        }
+    }
 
     // An arrow function field, so that the prop stays the same function across renders.
     openSource = (source: ChatSourcePart) => {

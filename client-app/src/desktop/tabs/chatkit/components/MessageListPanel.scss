@@ -14,5 +14,10 @@
   color: var(--xh-text-color-muted);
   font-family: var(--xh-font-family-mono);
   font-size: var(--xh-font-size-small-px);
-  line-height: 1.5;
+  // The reply header is one 16px line that clips overflow, so size the badge to it.
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 16px;
+  line-height: 14px;
 }
