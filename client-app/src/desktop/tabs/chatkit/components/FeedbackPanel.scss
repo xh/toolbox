@@ -1,0 +1,9 @@
+// The Playground reply: its text above the feedback controls, as a message view lays it out.
+.tb-chatkit-feedback__reply {
+  gap: var(--xh-pad-half-px);
+  width: 100%;
+  padding: var(--xh-pad-px) var(--xh-pad-double-px);
+  border: var(--xh-border-width-px) solid var(--xh-border-color);
+  border-radius: var(--xh-border-radius-px);
+  background-color: var(--xh-bg);
+}
