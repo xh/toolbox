@@ -47,7 +47,8 @@ export const statusPanel = hoistCmp.factory({
     model: creates(() => StatusPanelModel),
 
     render({model}) {
-        const {status, label, stalledMs, showSpinner, startedAt, endedAt, chatModel} = model;
+        const {status, label, stalledMs, showSpinner, startedAt, endedAt, chatModel, showStopHint} =
+            model;
         return wrapper({
             title: PAGE.title,
             icon: PAGE.icon(),
@@ -141,6 +142,11 @@ export const statusPanel = hoistCmp.factory({
                                 enableFilter: false,
                                 width: 150
                             })
+                        }),
+                        wrapperOption({
+                            label: 'Show "Esc to stop"',
+                            propName: 'ChatStatusRegionProps.showStopHint',
+                            control: switchInput({bind: 'showStopHint'})
                         }),
                         wrapperOption({
                             label: 'Block sending',
@@ -260,7 +266,8 @@ export const statusPanel = hoistCmp.factory({
                                     chatMessageList({model: chatModel, assistantName: 'Analyst'}),
                                     chatStatusRegion({
                                         model: chatModel.composerModel,
-                                        assistantName: 'Analyst'
+                                        assistantName: 'Analyst',
+                                        showStopHint
                                     }),
                                     chatComposer({
                                         model: chatModel.composerModel,
@@ -329,6 +336,7 @@ class StatusPanelModel extends HoistModel {
     // Status region
     @bindable accessor nextReply: NextReply = 'ok';
     @bindable accessor blockSending = false;
+    @bindable accessor showStopHint = true;
 
     @managed readonly chatModel = new ChatModel({
         transport: new ScriptedChatTransport({

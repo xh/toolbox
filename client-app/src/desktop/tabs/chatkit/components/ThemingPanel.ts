@@ -265,9 +265,26 @@ class ThemingPanelModel extends HoistModel {
         initialMessages: createSampleConversation()
     });
 
-    /** The variables that differ from their defaults, as a style object for the preview. */
+    /**
+     * The variables for the preview's container. The overrides, plus the variables that derive
+     * from two of them on `body`, restated so the preview follows them as `body.xh-app` would.
+     */
     @computed
     get cssVars(): Record<string, string> {
+        const ret = {...this.overrides},
+            meta = ret['--xh-chat-meta-text-color'],
+            fontSize = ret['--xh-chat-font-size'];
+        if (meta) {
+            ret['--xh-chat-timeline-narration-color'] = meta;
+            ret['--xh-chat-timeline-done-icon-color'] = meta;
+        }
+        if (fontSize) ret['--xh-chat-empty-state-text-font-size'] = fontSize;
+        return ret;
+    }
+
+    /** The variables that differ from their defaults - what an app would set on `body.xh-app`. */
+    @computed
+    get overrides(): Record<string, string> {
         const {
                 turnGap,
                 fontSize,
@@ -296,7 +313,7 @@ class ThemingPanelModel extends HoistModel {
     /** The same overrides as the SCSS an app would write. */
     @computed
     get scss(): string {
-        const lines = Object.entries(this.cssVars).map(([k, v]) => `  ${k}: ${v};`);
+        const lines = Object.entries(this.overrides).map(([k, v]) => `  ${k}: ${v};`);
         return isEmpty(lines)
             ? '// Every variable at its default - nothing to override.'
             : `body.xh-app {\n${lines.join('\n')}\n}`;
