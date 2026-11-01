@@ -5,7 +5,7 @@ import type {
 } from '@xh/hoist-chat-kit/cmp/markdown';
 import {chatMarkdown} from '@xh/hoist-chat-kit/cmp/markdown';
 import {CHAT_MARKDOWN_COMPONENTS, chatCodeBlock} from '@xh/hoist-chat-kit/desktop/cmp/chat';
-import {div, span, table, vbox} from '@xh/hoist/cmp/layout';
+import {code, div, span, table, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {switchInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
@@ -95,13 +95,22 @@ export const markdownPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Kit components',
                             propName: 'ChatMarkdownProps.components',
-                            info: '`CHAT_MARKDOWN_COMPONENTS` - fenced code as a `ChatCodeBlock`, as the chat renders it.',
+                            info: span(
+                                code('CHAT_MARKDOWN_COMPONENTS'),
+                                ' - fenced code as a ',
+                                code('ChatCodeBlock'),
+                                ', as the chat renders it.'
+                            ),
                             control: switchInput({bind: 'kitComponents'})
                         }),
                         wrapperOption({
                             label: 'Card tables',
                             propName: 'ChatMarkdownProps.components',
-                            info: "A `table` override of the page's own, which wraps each table in a card.",
+                            info: span(
+                                'A ',
+                                code('table'),
+                                " override of the page's own, which wraps each table in a card."
+                            ),
                             control: switchInput({bind: 'cardTables'})
                         }),
                         wrapperOption({

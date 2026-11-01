@@ -15,7 +15,7 @@ import {
     textEvents,
     toolCallEvents
 } from '@xh/hoist-chat-kit/transport';
-import {div, filler, hframe, placeholder, span, vframe} from '@xh/hoist/cmp/layout';
+import {code, div, filler, hframe, placeholder, span, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {segmentedControl, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -163,12 +163,20 @@ export const chatPanelPanel = hoistCmp.factory({
                         }),
                         wrapperOption({
                             label: 'Compact density',
-                            info: 'Adds `xh-chat--compact` to the panel, for a narrow host.',
+                            info: span(
+                                'Adds ',
+                                code('xh-chat--compact'),
+                                ' to the panel, for a narrow host.'
+                            ),
                             control: switchInput({bind: 'compact'})
                         }),
                         wrapperOption({
                             label: 'Reduced motion',
-                            info: 'Adds `xh-chat--reduced-motion`, for the static twin of each cue.',
+                            info: span(
+                                'Adds ',
+                                code('xh-chat--reduced-motion'),
+                                ', for the static twin of each cue.'
+                            ),
                             control: switchInput({bind: 'reducedMotion'})
                         })
                     ]
