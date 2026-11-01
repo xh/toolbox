@@ -27,7 +27,7 @@ const ITEMS: StartHereItem[] = [
     {
         icon: Icon.book(),
         title: 'Read the docs',
-        blurb: 'Browse hoist-react + hoist-core',
+        blurb: 'Hoist React, Core and Chat Kit',
         onClick: () => XH.navigate('default.docs')
     },
     {

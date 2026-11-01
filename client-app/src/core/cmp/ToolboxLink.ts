@@ -13,6 +13,10 @@ export interface ToolboxLinkProps extends HoistProps {
      *      `$TB` for toolbox files, e.g. '$TB/client-app/src/desktop/App.js'
      *          - or -
      *      `$HR` for hoist-react files, e.g. '$HR/desktop/cmp/button/Button.js'
+     *          - or -
+     *      `$CK` for hoist-chat-kit files, e.g. '$CK/core/ChatModel.ts'
+     *
+     * A markdown doc under `$HR`, `$HC` or `$CK` opens in Toolbox's own doc viewer.
      */
     url: string;
 
@@ -62,8 +66,14 @@ export const [ToolboxLink, toolboxLink] = hoistCmp.withFactory<ToolboxLinkProps>
 
 export function toolboxUrl(url: string) {
     const sourceUrls = XH.getConf('sourceUrls');
-    return url.replace('$TB', sourceUrls.toolbox).replace('$HR', sourceUrls.hoistReact);
+    return url
+        .replace('$TB', sourceUrls.toolbox)
+        .replace('$HR', sourceUrls.hoistReact)
+        .replace('$CK', sourceUrls.hoistChatKit ?? HOIST_CHAT_KIT_URL);
 }
+
+/** Default root for `$CK` links, for an existing `sourceUrls` config without a `hoistChatKit` key. */
+const HOIST_CHAT_KIT_URL = 'https://github.com/xh/hoist-chat-kit/tree/develop';
 
 const DOCS_ROUTE = 'default.docs.docRef';
 

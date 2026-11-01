@@ -6,12 +6,18 @@ import io.xh.hoist.log.LogSupport
 import static io.xh.hoist.json.JSONParser.parseObject
 
 /**
- * Unified registry of documentation entries for both hoist-react and hoist-core.
+ * Unified registry of documentation entries for hoist-react, hoist-core and hoist-chat-kit.
  * Entries are loaded from docs/doc-registry.json in each project and validated
  * against the active ContentSources at init.
  */
 class DocRegistry implements LogSupport, JSONFormat {
 
+    /** Display labels for the known sources, by source name. */
+    static final Map<String, String> SOURCE_LABELS = [
+        'hoist-react'   : 'Hoist React',
+        'hoist-core'    : 'Hoist Core',
+        'hoist-chat-kit': 'Hoist Chat Kit'
+    ]
 
     final Map<String, Map> sourceMetadata
     final List<DocEntry> entries
@@ -23,7 +29,7 @@ class DocRegistry implements LogSupport, JSONFormat {
         sources.each { sourceName, source ->
             def raw = loadRaw(source, sourceName)
             metadata[sourceName] = [
-                label: sourceName == 'hoist-react' ? 'Hoist React' : 'Hoist Core',
+                label: SOURCE_LABELS[sourceName] ?: sourceName,
                 categories: raw.viewerCategories ?: []
             ]
             allEntries.addAll(buildEntries(raw, sourceName, source))
