@@ -87,6 +87,14 @@ check: if any `@fortawesome/*` package moved past the lockfile, the run emits a 
 job-summary diff. Not fatal, but every build re-downloads those tarballs against the Font Awesome
 Pro bandwidth cap until the refreshed lockfile is committed.
 
+On the server, `gradle.lockfile` pins hoist-core by its version string only, so the build resolves
+each new hoist-core snapshot. The lockfile also pins every transitive dependency as a Gradle
+`strictly` constraint. If a new snapshot bumps a transitive dependency, the build still passes, but
+it quietly keeps the older locked version. For example, the 45.0 snapshot moved json-path to 3.0.0
+while Toolbox builds kept 2.10.0. If the snapshot adds or removes a dependency, the build fails. In
+both cases, run `./gradlew dependencies --write-locks -PrunHoistInline=false` and commit the
+result.
+
 ### Image retention
 
 Because the `snap_` images stay permanently tagged (rather than going untagged on supersession), an
