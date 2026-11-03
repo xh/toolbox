@@ -53,7 +53,7 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
         toolbarItems,
         form
     }) {
-        const {supportsCompact, commitOnChangeDefault} = model;
+        const {supportsCompact, supportsReadonly, commitOnChangeDefault, formModel} = model;
         return wrapper({
             title,
             icon: entry.icon(),
@@ -81,6 +81,17 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
                             label: 'Disabled',
                             propName: 'HoistInputProps.disabled',
                             control: switchInput({bind: 'disabled'})
+                        }),
+                        wrapperOption({
+                            omit: !supportsReadonly && !formModel,
+                            label: 'Read-only',
+                            propName: supportsReadonly
+                                ? `${entry.name}Props.readonly`
+                                : 'FormModel.readonly',
+                            info: supportsReadonly
+                                ? 'Also sets FormModel.readonly on the form.'
+                                : '`readonly` applies to inputs within a form.',
+                            control: switchInput({bind: 'readonly'})
                         }),
                         wrapperOption({
                             omit: commitOnChangeDefault == null,

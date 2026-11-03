@@ -84,14 +84,14 @@ export const formPanel = hoistCmp.factory({
                     control: switchInput({model, bind: 'usDateFormat'})
                 }),
                 wrapperOption({
-                    label: 'Read-only',
-                    propName: 'FormModel.readonly',
-                    control: switchInput({model: formModel, bind: 'readonly'})
-                }),
-                wrapperOption({
                     label: 'Disabled',
                     propName: 'FormModel.disabled',
                     control: switchInput({model: formModel, bind: 'disabled'})
+                }),
+                wrapperOption({
+                    label: 'Read-only',
+                    propName: 'FormModel.readonly',
+                    control: switchInput({model: formModel, bind: 'readonly'})
                 })
             ],
             item: panel({

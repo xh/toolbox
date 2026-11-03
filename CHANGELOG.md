@@ -64,6 +64,10 @@
 * Gradle `8.14 → 9.8`
 * Java `21 → 25`
 
+### New Features
+
+* Added a `Read-only` switch beneath `Disabled` on the per-input demo pages, showing inputs in a form with `FormModel.readonly` set, and applying `readonly` directly on the `JsonInput` & `CodeInput` page. Also moved the Form demo's `Read-only` switch below `Disabled`.
+
 ## 11.0.0 - 2026-09-29
 
 ### New Features
