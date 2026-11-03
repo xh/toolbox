@@ -72,8 +72,9 @@ Three invariants that drive the whole process - keep them in mind:
    restored afterward. (dev-utils moved onto `next` alongside hoist-react - earlier revisions of this
    runbook said it stays on a caret range and never swaps, which is no longer true.) Each swap
    also moves **two lockfiles**: `client-app/pnpm-lock.yaml` for the npm pair and `gradle.lockfile`
-   for hoist-core. Gradle dependency locking is `STRICT`. If you change `hoistCoreVersion` without
-   `--write-locks`, every Gradle build fails, the release build included.
+   for hoist-core. A stale `gradle.lockfile` is dangerous. If the lock holds a higher hoist-core
+   than `hoistCoreVersion`, Gradle silently resolves the locked version. A release that pins
+   `45.0-SNAPSHOT` down to `44.0.0` without `--write-locks` builds clean and ships the snapshot.
 
 ## gh is a core tool
 
@@ -255,8 +256,10 @@ and run `pnpm dedupe`. The list should be short.
 
 **Then regenerate the Gradle dependency lockfile.** Toolbox locks all Gradle configurations in
 `STRICT` mode (see `build.gradle`). `gradle.lockfile` records the exact hoist-core version and its
-transitive graph. If you change `hoistCoreVersion` and do not rewrite the locks, every Gradle build
-fails, Build Release included:
+transitive graph. Gradle treats each locked version as a `strictly` constraint. If
+`hoistCoreVersion` moves up without new locks, the build fails. If it moves down, as it does in the
+usual release swap, the build does not fail. Gradle keeps the locked snapshot, and Build Release
+ships it. So never skip this step:
 
 ```bash
 ./gradlew dependencies --write-locks -PrunHoistInline=false
@@ -264,6 +267,9 @@ fails, Build Release included:
 
 Always pass `-PrunHoistInline=false`. An inline build takes its graph from the local hoist-core
 checkout, and locking cannot track that graph.
+
+Make sure the lockfile names the release. `grep '^io.xh:hoist-core:' gradle.lockfile` must show
+the release version, not a snapshot. A passing build does not prove this.
 
 Review the `gradle.lockfile` diff. Expect the hoist-core lines to change, and expect transitive
 libraries to move to the versions that the released hoist-core declares. For example, POI and the
