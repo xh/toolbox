@@ -12,7 +12,7 @@
   3. Plain ASCII punctuation only. Use " - " for in-sentence breaks, never an em dash.
 -->
 
-## 12.0-SNAPSHOT - unreleased
+## 12.0.0 - 2026-11-02
 
 ### New Features
 
@@ -25,11 +25,17 @@
 * Renamed the App Notifications demo to Updates & Idle and App Banners to Banners, and removed the Forms > Other Controls overview page - its controls now live under Components > Choosers & Pickers.
 * Added Favicon Designer example app - a client-only tool that builds a Hoist app's favicon set from any Font Awesome Pro glyph, with custom colors, backdrop shapes and padding, live browser-tab and home-screen previews, shareable design URLs, and a one-click zip of `favicon.svg` plus the PNGs `configureRsbuild()` picks up.
 * Added sample widgets in nested groups to the `DashCanvas` and `DashContainer` demos, to show a slash-delimited `groupName` nesting the add view menus and the `DashCanvasWidgetChooser`.
+* Added a `RadioCardInput` demo page to Forms + Inputs, and an App Options demo page.
+* Updated the desktop `NumberInput` playground and mobile inputs page to demo `displayWithCommas: 'always'`.
+* Updated demos for hoist-react v90 - the Format Numbers page now describes `Intl.NumberFormat`, the `DateInput` AM/PM example is replaced ahead of the removal of `timePickerProps`, and the Admin Panel Sizing test includes an untitled collapsible panel.
 
 ### Bug Fixes
 
 * Fixed the doc viewer giving the third and later repeats of an H2 heading the same section id, which sent deep links to the wrong section.
 * Fixed the GitHub `Commit` type, which named the server's `changedFiles` field `changeFiles`.
+* Fixed the error page rendering every status message - nginx served pre-compressed copies that bypassed SSI.
+* Fixed the mobile Form page field set styles, which targeted classes `FormFieldSet` never renders.
+* Fixed a database with no GitHub access token logging 401 errors and failing the GitHub monitor - the integration is now treated as disabled and the monitor reports INACTIVE.
 
 ### Technical
 
@@ -39,16 +45,21 @@
 * Moved to Java 25 for builds, CI and the deployed Tomcat 11 container (`xhio/xh-tomcat:next-tc11-jdk25`). Grails 8 requires Java 21+ and Tomcat 11.
 * Reworked the `hoistCoreCli` configuration to resolve the active hoist-core version via `withDependencies`, deferring it to task execution. Resolving `runtimeClasspath` at configuration time under the Grails/Spring Boot plugin locks `developmentOnly` before its `afterEvaluate` hook can populate it.
 * Added Vitest unit tests for app models and services, run against hoist-react's fake hoist-core via `@xh/hoist/test-support` and the `configureVitest()` preset from hoist-dev-utils. Specs sit beside their source as `*.spec.ts`, and CI, snapshot and release builds now run `pnpm test`.
+* Added Spock unit tests for server code via hoist-core's new `hoist-core-test` library, run with `./gradlew test`.
+* Passed the auth context to the OAuth client's `initAsync()`, so the `xh.client.auth` span records the auth method.
 * Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
 * Added a `clusterMemberCount` status monitor that fails when an instance sees fewer cluster members than expected - catching tasks that are down or have failed to join the cluster.
 * Updated the Custom Package demo to `@xh/package-template` 4.0, now written in TypeScript for Hoist 88 and React 19. Its panel adds a click counter backed by a TC39-decorated model from the package.
 
 ### Libraries
 
+* @xh/hoist `88.0 → 90.0`
+* @xh/hoist-dev-utils `16.0 → 16.2`
+* hoist-core `42.0 → 44.0`
 * typescript `5.9 → 7.0`
 * @xh/package-template `3.0 → 4.0`
-* Grails `7.2.2 → 8.0.0`
-* Gradle `8.14.5 → 9.8.0`
+* Grails `7.2 → 8.0`
+* Gradle `8.14 → 9.8`
 * Java `21 → 25`
 
 ## 11.0.0 - 2026-09-29
