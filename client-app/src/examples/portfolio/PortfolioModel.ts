@@ -88,6 +88,11 @@ export class PortfolioModel extends HoistModel {
                 {name: 'name', type: 'string'},
                 {name: 'mktVal', type: 'number'},
                 {name: 'pnl', type: 'number', displayName: 'P&L'},
+                {name: 'dayPnl', type: 'number', displayName: 'Day P&L'},
+                {name: 'longMktVal', type: 'number'},
+                {name: 'shortMktVal', type: 'number'},
+                {name: 'cost', type: 'number'},
+                {name: 'commission', type: 'number'},
                 {name: 'pnlMktVal', type: 'number', displayName: 'P&L / Mkt Val'}
             ],
             processRawData: r => {

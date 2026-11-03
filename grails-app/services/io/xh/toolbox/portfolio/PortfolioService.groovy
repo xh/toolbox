@@ -161,6 +161,7 @@ class PortfolioService extends BaseService {
             String symbol = first.symbol
             long endQty = ordersForKey.sum { it.quantity } as long
             long cost = ordersForKey.sum { it.cost } as long
+            long commission = ordersForKey.sum { it.commission } as long
 
             return new RawPosition(
                     instrument: instruments[symbol],
@@ -168,7 +169,8 @@ class PortfolioService extends BaseService {
                     fund: first.fund,
                     trader: first.trader,
                     cost: cost,
-                    endQty: endQty
+                    endQty: endQty,
+                    commission: commission
             )
         }
         }

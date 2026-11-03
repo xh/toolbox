@@ -8,15 +8,22 @@ class PricedRawPosition implements JSONFormat{
     final Double endPx
     final Long mktVal
     final Long pnl
+    final Long dayPnl
 
-    PricedRawPosition(RawPosition rawPosition, Double endPx) {
+    PricedRawPosition(RawPosition rawPosition, MarketPrice price) {
         this.rawPosition = rawPosition
-        this.endPx = endPx
+        this.endPx = price?.close
         if (endPx != null) {
             mktVal = (rawPosition.endQty * endPx).round()
             pnl = mktVal - rawPosition.cost
+            dayPnl = (rawPosition.endQty * (endPx - price.open)).round()
         }
     }
+
+    Long getLongMktVal() { mktVal > 0 ? mktVal : 0 }
+    Long getShortMktVal() { mktVal < 0 ? mktVal : 0 }
+    Long getCost() { rawPosition.cost }
+    Long getCommission() { rawPosition.commission }
 
     Map formatForJSON() {
         return [

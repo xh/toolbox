@@ -182,7 +182,12 @@ export interface Position {
     id: string;
     name: string;
     pnl: number;
+    dayPnl: number;
     mktVal: number;
+    longMktVal: number;
+    shortMktVal: number;
+    cost: number;
+    commission: number;
     children: Position[];
 }
 

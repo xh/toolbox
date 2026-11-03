@@ -41,13 +41,7 @@ class PositionService extends BaseService {
 
         List<Position> positions = groupPositions(query.dims, rawPositions, 'root')
 
-        Position root = new Position(
-                id: 'root',
-                name: 'Total',
-                pnl: (positions.sum { it.pnl }) as long,
-                mktVal: (positions.sum { it.mktVal }) as long,
-                children: positions
-        )
+        Position root = Position.rollup('root', 'Total', positions, positions)
 
         Map options = [
                 maxCount: query.maxCount,
@@ -66,7 +60,7 @@ class PositionService extends BaseService {
         Map<String, MarketPrice> prices = portfolioService.getCurrentPrices()
         return portfolioService
                 .getPortfolio()
-                .rawPositions.collect{new PricedRawPosition(it, prices[it.symbol]?.close)}
+                .rawPositions.collect{new PricedRawPosition(it, prices[it.symbol])}
     }
 
     Position getPosition(String positionId) {
@@ -87,15 +81,9 @@ class PositionService extends BaseService {
             }
         }
 
-        List<PricedRawPosition> pricedRawPositions = rawPositions.collect{new PricedRawPosition(it, prices[it.symbol]?.close)}
+        List<PricedRawPosition> pricedRawPositions = rawPositions.collect{new PricedRawPosition(it, prices[it.symbol])}
 
-        return new Position(
-                id: positionId,
-                name: dimVals.last(),
-                children: null,
-                pnl: pricedRawPositions.sum { it.pnl } as long,
-                mktVal: pricedRawPositions.sum { it.mktVal } as long,
-        )
+        return Position.rollup(positionId, dimVals.last(), pricedRawPositions)
     }
 
     List<Order> ordersForPosition(String positionId) {
@@ -131,13 +119,7 @@ class PositionService extends BaseService {
             List<Position> children = childDims ? groupPositions(childDims, members, posId) : null
             List<Object> calcChildren = children ?: members
 
-            new Position(
-                    id: posId,
-                    name: dimVal,
-                    children: children,
-                    pnl: calcChildren.sum { it.pnl } as long,
-                    mktVal: calcChildren.sum { it.mktVal } as long
-            )
+            Position.rollup(posId, dimVal, calcChildren, children)
         }
     }
 
@@ -216,16 +198,8 @@ class PositionService extends BaseService {
         String firstPosId = minors.first().id
         Integer idx = firstPosId.lastIndexOf(':')
         String basketId = firstPosId.substring(0, idx+1) + basketName
-        Long basketPnl = minors.sum { it.pnl } as Long
-        Long basketMktVal = minors.sum { it.mktVal } as Long
 
-        return new Position(
-                id: basketId,
-                name: basketName,
-                pnl: basketPnl,
-                mktVal: basketMktVal,
-                children: null
-        )
+        return Position.rollup(basketId, basketName, minors)
     }
 
     private Map<Position, Position> buildParentMap(Position root) {
