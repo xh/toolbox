@@ -10,6 +10,7 @@ buildscript {
         classpath "org.apache.grails:grails-data-hibernate5"
         classpath "org.apache.grails:grails-gradle-plugins"
     }
+    dependencyLocking { lockAllConfigurations(); lockMode = LockMode.STRICT }
 }
 
 plugins {
@@ -34,6 +35,16 @@ configurations {
     all {
         // Ensure any SNAPSHOT dependencies are always resolved to the latest available version.
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+}
+
+// After changing a dependency, run: ./gradlew dependencies --write-locks -PrunHoistInline=false
+// Locking applies to packaged builds only. An inline build takes its transitive graph from the
+// local hoist-core checkout, which the lock state cannot track.
+if (!parseBoolean(runHoistInline)) {
+    dependencyLocking {
+        lockAllConfigurations()
+        lockMode = LockMode.STRICT
     }
 }
 

@@ -1,12 +1,12 @@
 package io.xh.toolbox.user
 
+import io.xh.hoist.security.HoistPasswordEncryptor
 import io.xh.hoist.user.HoistUser
-import org.jasypt.util.password.BasicPasswordEncryptor
 
 
 class User implements HoistUser {
 
-    private static encryptor = new BasicPasswordEncryptor()
+    private static encryptor = new HoistPasswordEncryptor()
 
     // Email captured and stored as username.
     String email
