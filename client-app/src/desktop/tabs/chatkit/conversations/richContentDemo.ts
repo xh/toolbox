@@ -7,7 +7,7 @@ import {
 } from '@xh/hoist-chat-kit/transport';
 import type {ChatDemoSpec} from '../common/ChatDemo';
 import {chatDemoPanel, KIT_LINKS} from '../common/ChatDemo';
-import {markdown} from '../common/scriptUtils';
+import {markdown} from '../common/ChatDemoUtils';
 
 /**
  * A long markdown answer: headings, lists, a table, code in two languages, a blockquote, and

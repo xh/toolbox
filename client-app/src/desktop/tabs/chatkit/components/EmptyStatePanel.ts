@@ -27,7 +27,7 @@ import {
 import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import {chatKitPage} from '../ChatKitCatalog';
 import {KIT_LINKS, tabSourceLink} from '../common/ChatDemo';
-import {arrayLiteral, objectLiteral, rawObject, snippet} from '../common/snippetUtils';
+import {arrayLiteral, objectLiteral, rawObject, snippet} from '../common/ChatDemoUtils';
 import './EmptyStatePanel.scss';
 
 /**

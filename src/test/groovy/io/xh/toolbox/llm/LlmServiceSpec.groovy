@@ -1,54 +1,25 @@
 package io.xh.toolbox.llm
 
 import grails.testing.services.ServiceUnitTest
-import io.xh.hoist.exception.NotAuthorizedException
 import io.xh.hoist.exception.RoutineRuntimeException
 import io.xh.hoist.test.HoistUnitTest
 import io.xh.hoist.test.fakes.TestUser
 import spock.lang.Specification
 
 /**
- * Tests the access rule, the per-user limits and the request checks of {@link LlmService} - the
- * policy that keeps the relay from being an open proxy. Nothing here calls the upstream API.
+ * Tests the per-user limits and the request checks of {@link LlmService} - the policy that keeps
+ * the relay from being an open proxy. Access is gated by the role on {@link LlmController}. Nothing
+ * here calls the upstream API.
  */
 class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService>, HoistUnitTest {
 
-    TestUser member = new TestUser('member', [LlmService.USER_ROLE]),
-             unlimited = new TestUser('unlimited', [LlmService.USER_ROLE, LlmService.UNLIMITED_ROLE]),
-             outsider = new TestUser('outsider')
+    TestUser member = new TestUser('member', ['TOOLBOX_LLM_USER']),
+             unlimited = new TestUser('unlimited', ['TOOLBOX_LLM_USER', LlmService.UNLIMITED_ROLE])
 
     def setup() {
-        testConfigService.setAll(
-            llmOpenToAllUsers: false,
-            llmRateLimit: 2,
-            llmMaxStreams: 20,
-            llmApiKey: 'test-key',
-            llmModel: 'test-model',
-            llmMaxTokens: 1000,
-            llmRequestParams: [:],
-            llmServerTools: []
-        )
-    }
-
-    def 'a user needs the role, unless the feature is open to all users'() {
-        expect:
-        service.canUse(member)
-        !service.canUse(outsider)
-
-        when:
-        loginAs(outsider)
-        service.checkAccess(outsider)
-
-        then:
-        thrown(NotAuthorizedException)
-        testTrackService.lastTracked.msg == 'LLM access denied'
-        testTrackService.lastTracked.severity == 'WARN'
-
-        when:
-        testConfigService.set('llmOpenToAllUsers', true)
-
-        then:
-        service.canUse(outsider)
+        testConfigService.registerTypedConfig('llmConfig', LlmConfig)
+        testConfigService.set('llmApiKey', 'test-key')
+        setLlmConfig()
     }
 
     def 'a call counts toward the hourly limit the moment it is admitted'() {
@@ -73,7 +44,7 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
 
     def 'unlimited users have no hourly limit, and a limit of 0 leaves only them'() {
         given:
-        testConfigService.set('llmRateLimit', 0)
+        setLlmConfig(rateLimit: 0)
 
         when:
         5.times {
@@ -93,7 +64,7 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
 
     def 'a user may run at most two streams at once'() {
         given:
-        testConfigService.set('llmRateLimit', 10)
+        setLlmConfig(rateLimit: 10)
         2.times { service.reserveCall(unlimited) }
 
         when:
@@ -225,6 +196,10 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
     //------------------
     // Implementation
     //------------------
+    private void setLlmConfig(Map overrides = [:]) {
+        testConfigService.set('llmConfig', [model: 'test-model', maxTokens: 1000, rateLimit: 2] + overrides)
+    }
+
     private Map request(List<Map> content) {
         [messages: [[role: 'user', content: 'Hi'], [role: 'assistant', content: content]]]
     }

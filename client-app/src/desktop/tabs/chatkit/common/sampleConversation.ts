@@ -1,5 +1,5 @@
 import type {ChatMessageSpec, ChatSourcePart} from '@xh/hoist-chat-kit/core';
-import {markdown} from './scriptUtils';
+import {markdown} from './ChatDemoUtils';
 
 /**
  * A finished conversation, as message specs, for the component pages that render replies

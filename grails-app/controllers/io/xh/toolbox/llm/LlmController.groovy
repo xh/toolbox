@@ -2,7 +2,7 @@ package io.xh.toolbox.llm
 
 import io.xh.hoist.exception.RoutineException
 import io.xh.hoist.json.JSONSerializer
-import io.xh.hoist.security.AccessAll
+import io.xh.hoist.security.AccessRequiresRole
 import io.xh.toolbox.BaseController
 
 import static java.nio.charset.StandardCharsets.UTF_8
@@ -11,15 +11,11 @@ import static java.nio.charset.StandardCharsets.UTF_8
  * Relays the Anthropic Messages API for the Live Model demo on the desktop app's Chat Kit tab,
  * built on `@xh/hoist-chat-kit`. LlmService holds the API key, checks each request and applies the
  * limits.
- *
- * Access is `@AccessAll` here, as an annotation cannot express its rule: the `TOOLBOX_LLM_USER`
- * role, or any user while the `llmOpenToAllUsers` config is true. `LlmService.checkAccess` applies
- * it, first thing in every action.
  */
-@AccessAll
+@AccessRequiresRole('TOOLBOX_LLM_USER')
 class LlmController extends BaseController {
 
-    def llmService
+    LlmService llmService
 
     /**
      * POST /llm/stream
@@ -33,7 +29,6 @@ class LlmController extends BaseController {
      * Anthropic `error` event, which the client shows as the reason the reply stopped.
      */
     def stream() {
-        llmService.checkAccess(authUser)
         llmService.checkRequestSize(request.contentLengthLong)
         def body = parseRequestJSON()
 

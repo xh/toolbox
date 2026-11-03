@@ -36,8 +36,7 @@ import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../.
 import {chatKitPage} from '../ChatKitCatalog';
 import {KIT_LINKS, tabSourceLink} from '../common/ChatDemo';
 import {createSampleConversation} from '../common/sampleConversation';
-import {markdown} from '../common/scriptUtils';
-import {arrayLiteral, rawObject, snippet} from '../common/snippetUtils';
+import {arrayLiteral, markdown, rawObject, snippet} from '../common/ChatDemoUtils';
 import './ChatPanelPanel.scss';
 
 /**

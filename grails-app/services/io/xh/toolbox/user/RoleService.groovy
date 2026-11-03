@@ -27,8 +27,7 @@ class RoleService extends DefaultRoleService {
 
     /**
      * Create the roles for the Live Model demo on the Chat Kit tab - see LlmService. HOIST_ADMIN
-     * members get both. Grant TOOLBOX_LLM_USER to selected users in the Admin Console, or open the
-     * demo to every user with the `llmOpenToAllUsers` config.
+     * members get both. Grant TOOLBOX_LLM_USER to users or directory groups in the Admin Console.
      */
     @Override
     protected void ensureRequiredConfigAndRolesCreated() {

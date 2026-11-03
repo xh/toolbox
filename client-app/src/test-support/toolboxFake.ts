@@ -15,7 +15,6 @@ export function installToolboxFake(core: FakeHoistCore) {
             hoistChatKit: 'https://github.com/xh/hoist-chat-kit/tree/develop',
             toolbox: 'https://github.com/xh/toolbox/tree/develop'
         },
-        llmOpenToAllUsers: false,
         cubeTestDefaultDims: [
             ['fund', 'trader'],
             ['sector', 'symbol'],

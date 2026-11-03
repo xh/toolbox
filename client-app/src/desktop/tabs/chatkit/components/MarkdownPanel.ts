@@ -25,8 +25,7 @@ import {
 import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import {chatKitPage} from '../ChatKitCatalog';
 import {KIT_LINKS, tabSourceLink} from '../common/ChatDemo';
-import {markdown} from '../common/scriptUtils';
-import {snippet} from '../common/snippetUtils';
+import {markdown, snippet} from '../common/ChatDemoUtils';
 import './MarkdownPanel.scss';
 
 /**

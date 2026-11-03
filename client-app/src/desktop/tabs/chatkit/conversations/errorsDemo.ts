@@ -6,7 +6,7 @@ import {
 } from '@xh/hoist-chat-kit/transport';
 import type {ChatDemoSpec} from '../common/ChatDemo';
 import {chatDemoPanel} from '../common/ChatDemo';
-import {markdown} from '../common/scriptUtils';
+import {markdown} from '../common/ChatDemoUtils';
 
 /**
  * A reply that fails partway, with the error and a Retry button shown under it - then, on retry,

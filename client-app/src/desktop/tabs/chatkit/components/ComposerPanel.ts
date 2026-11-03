@@ -37,7 +37,7 @@ import {
 import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import {chatKitPage} from '../ChatKitCatalog';
 import {KIT_LINKS, tabSourceLink} from '../common/ChatDemo';
-import {arrayLiteral, snippet} from '../common/snippetUtils';
+import {arrayLiteral, snippet} from '../common/ChatDemoUtils';
 import './ComposerPanel.scss';
 
 /**

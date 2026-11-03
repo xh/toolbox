@@ -9,7 +9,6 @@ import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, observableRef} from '@xh/hoist/mobx';
-import {canUseLlm, LLM_NO_ACCESS_MSG} from '../../../../core/llmAccess';
 import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import {CHAT_KIT_PAGES, chatKitPage, chatKitRoute} from '../ChatKitCatalog';
 import {KIT_LINKS, tabSourceLink} from '../common/ChatDemo';
@@ -122,7 +121,7 @@ export const liveModelPanel = hoistCmp.factory({
         const page = chatKitPage('liveModel'),
             title = page.title,
             icon = page.icon(),
-            hasAccess = canUseLlm(),
+            hasAccess = XH.getUser().hasRole('TOOLBOX_LLM_USER'),
             {chatModel, assistantName} = model;
 
         return wrapper({
@@ -188,7 +187,7 @@ export const liveModelPanel = hoistCmp.factory({
                       },
                       messageListProps: {assistantName}
                   })
-                : placeholder(Icon.lock(), LLM_NO_ACCESS_MSG)
+                : placeholder(Icon.lock(), NO_ACCESS_MSG)
         });
     }
 });
@@ -212,10 +211,13 @@ const DESCRIPTION = [
     'toast once you approve it, and read the app version and current user. It has no live data,',
     'so it answers with sample figures.',
     '',
-    'Access needs the `TOOLBOX_LLM_USER` role, unless the `llmOpenToAllUsers` config is on. The',
-    'server limits each user to `llmRateLimit` model calls an hour, and a tool loop makes one call',
-    'per step. The server needs an Anthropic key in the `llmApiKey` config.'
+    'Access needs the `TOOLBOX_LLM_USER` role. The server limits each user to the `rateLimit` set',
+    'in the `llmConfig` config, in model calls an hour, and a tool loop makes one call per step.',
+    'The server needs an Anthropic key in the `llmApiKey` config.'
 ];
+
+const NO_ACCESS_MSG =
+    'The AI assistant is not enabled for your account. Contact XH to request access.';
 
 const EMPTY_STATE = {
     icon: null,

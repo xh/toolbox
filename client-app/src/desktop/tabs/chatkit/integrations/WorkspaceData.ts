@@ -15,7 +15,7 @@ import {
 import {Icon} from '@xh/hoist/icon';
 import {last} from 'lodash';
 import {createSampleConversation} from '../common/sampleConversation';
-import {markdown} from '../common/scriptUtils';
+import {markdown} from '../common/ChatDemoUtils';
 import type {LocalThread} from './LocalThreadStore';
 
 /**

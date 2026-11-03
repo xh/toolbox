@@ -4,7 +4,6 @@ import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.exception.DataNotAvailableException
 import io.xh.hoist.exception.ExternalHttpException
-import io.xh.hoist.exception.NotAuthorizedException
 import io.xh.hoist.exception.RoutineRuntimeException
 import io.xh.hoist.json.JSONParser
 import io.xh.hoist.json.JSONSerializer
@@ -32,30 +31,29 @@ import static java.nio.charset.StandardCharsets.UTF_8
  * never reaches the client. In local development, set it once in `.env` as `APP_TOOLBOX_LLM_API_KEY`,
  * which overrides the config on every start, H2 included.
  *
- * Access - a user needs the `TOOLBOX_LLM_USER` role, unless the `llmOpenToAllUsers` config is true.
- * `TOOLBOX_LLM_UNLIMITED` grants it too, and exempts its members from the rate limit. Both roles
- * go to HOIST_ADMIN members. See {@link #canUse}.
+ * Access - {@link LlmController} requires the `TOOLBOX_LLM_USER` role. `TOOLBOX_LLM_UNLIMITED`
+ * grants it too, and exempts its members from the rate limit. Both roles go to HOIST_ADMIN members.
  *
  * Request policy - the browser builds the request body, with the kit's `AnthropicCodec`, so the
  * service treats it as untrusted:
  *   - It forwards only `system`, `messages`, `tools` and `tool_choice`. It drops `model`,
  *     `max_tokens` and `stream`, which a codec may send, and rejects a request with any other key.
  *   - It sets `model`, `max_tokens` and `stream` from config. Other request params, such as
- *     `thinking` or `temperature`, come only from the `llmRequestParams` config.
+ *     `thinking` or `temperature`, come only from `LlmConfig.requestParams`.
  *   - It accepts only client tools, sent as `{name, description, input_schema}`. Anthropic server
  *     tools, such as web search or code execution, cost extra and reach other systems. The server
- *     adds those enabled in the `llmServerTools` config, and rejects any the client sends.
+ *     adds those enabled in `LlmConfig.serverTools`, and rejects any the client sends.
  *   - It caps the size of the request and the number of messages, and accepts only text, tool and
  *     thinking content blocks.
- *   - It limits each user to `llmRateLimit` model calls per hour, counted from the moment a call
- *     is admitted, whether or not it succeeds, and to two streams at once. The count is in memory,
- *     per server instance, not shared across the cluster. A tool loop makes one call per step.
- *     Members of `TOOLBOX_LLM_UNLIMITED` have no hourly limit. With a limit of 0, only they can
- *     make calls.
+ *   - It limits each user to `LlmConfig.rateLimit` model calls per hour, counted from the moment a
+ *     call is admitted, whether or not it succeeds, and to two streams at once. The count is in
+ *     memory, per server instance, not shared across the cluster. A tool loop makes one call per
+ *     step. Members of `TOOLBOX_LLM_UNLIMITED` have no hourly limit. With a limit of 0, only they
+ *     can make calls.
  *
  * Tracking - each call is tracked in category `LLM`, with its token counts, and at WARN if it
- * failed. A refused request - no access, a limit hit, or a request the policy rejects - is tracked
- * at WARN, so admins can see it in the Admin Console's Activity tab.
+ * failed. A refused request - a limit hit, or a request the policy rejects - is tracked at WARN,
+ * so admins can see it in the Admin Console's Activity tab.
  *
  * Errors - expected failures throw routine exceptions, which log at DEBUG and which the client does
  * not report as errors: a rate limit hit, a rejected request, a full connection pool, and an
@@ -63,26 +61,16 @@ import static java.nio.charset.StandardCharsets.UTF_8
  * WARN line. Any other upstream rejection, such as a bad key or a malformed request, throws an
  * `ExternalHttpException`, as it needs a fix.
  *
- * Config entries (created with defaults by BootStrap):
+ * Config entries (created by BootStrap):
  *   - llmApiKey (pwd): Anthropic API key.
- *   - llmModel (string): Model identifier.
- *   - llmMaxTokens (int): Max response tokens per model call.
- *   - llmRateLimit (int): Max model calls per user per hour, for users without TOOLBOX_LLM_UNLIMITED.
- *   - llmOpenToAllUsers (bool): True to let every signed-in user use the LLM features.
- *   - llmMaxStreams (int): Max concurrent streams. A request beyond it fails at once, routinely.
- *   - llmRequestParams (json): Other Messages API params to send, such as `thinking`.
- *   - llmServerTools (json): Anthropic server tool definitions to add to every request.
+ *   - llmConfig (json): Model, limits, request params and server tools - see {@link LlmConfig}.
  */
 class LlmService extends BaseService {
 
     String telemetryPrefix = 'toolbox.llm'
 
-    static clearCachesConfigs = [
-        'llmApiKey', 'llmModel', 'llmMaxTokens', 'llmRateLimit', 'llmMaxStreams',
-        'llmRequestParams', 'llmServerTools', 'llmOpenToAllUsers'
-    ]
+    static clearCachesConfigs = ['llmApiKey', 'llmConfig']
 
-    static final String USER_ROLE = 'TOOLBOX_LLM_USER'
     static final String UNLIMITED_ROLE = 'TOOLBOX_LLM_UNLIMITED'
 
     ConfigService configService
@@ -123,23 +111,6 @@ class LlmService extends BaseService {
     }
 
     /**
-     * True if the user may use the LLM features: a member of `TOOLBOX_LLM_USER`, or any user while
-     * the `llmOpenToAllUsers` config is true. The client reads the same role and config to show or
-     * hide its LLM features.
-     */
-    boolean canUse(HoistUser user) {
-        return user && (user.hasRole(USER_ROLE) || configService.getBool('llmOpenToAllUsers', false))
-    }
-
-    /** Throw a routine `NotAuthorizedException` for a user who may not use the LLM features. */
-    void checkAccess(HoistUser user) {
-        if (!canUse(user)) {
-            warn('LLM access denied')
-            throw new NotAuthorizedException('The assistant is not available to you.')
-        }
-    }
-
-    /**
      * Reject a request body larger than any chat should send, before it is parsed. A body of
      * unknown length (-1), such as a chunked one, is rejected too - a browser always sends one.
      */
@@ -153,19 +124,18 @@ class LlmService extends BaseService {
     /**
      * Stream a response from the LLM, relaying each Anthropic server-sent event as it arrives.
      *
-     * Opens the upstream stream before returning any data, so a missing key, refused access,
-     * exceeded limit or rejected request throws before `onEvent` is first called. Upstream `error`
-     * events that arrive mid-stream are relayed like any other event.
+     * Opens the upstream stream before returning any data, so a missing key, exceeded limit or
+     * rejected request throws before `onEvent` is first called. Upstream `error` events that arrive
+     * mid-stream are relayed like any other event.
      *
      * @param request - Anthropic Messages request body, as built by the kit's `AnthropicCodec`.
      *      Checked and filtered as described in the class doc.
-     * @param user - the authenticated user, for access and limits.
+     * @param user - the authenticated user, for limits.
      * @param onEvent - called with the JSON payload of each SSE `data:` field, in order. Return
      *      false to stop - e.g. when the client has disconnected. The upstream connection is
      *      then aborted, so no further tokens are generated or billed.
      */
     void stream(Map request, HoistUser user, Closure<Boolean> onEvent) {
-        checkAccess(user)
         checkApiKey()
 
         Map body
@@ -227,16 +197,17 @@ class LlmService extends BaseService {
             throw new RoutineRuntimeException('This conversation is too long. Clear it to start again.')
         }
 
-        def clientTools = (request.tools ?: []) as List<Map>,
-            serverTools = configService.getList('llmServerTools', [])
+        def config = getConfig(),
+            clientTools = (request.tools ?: []) as List<Map>,
+            serverTools = config.serverTools ?: []
         if (clientTools.any { it.type && it.type != 'custom' }) {
             throw new RoutineRuntimeException('Request includes server tools, which are not accepted.')
         }
         checkContentBlocks(messages, !serverTools.isEmpty())
 
-        def ret = configService.getMap('llmRequestParams', [:]) + request.subMap(CLIENT_KEYS) + [
-            model     : configService.getString('llmModel'),
-            max_tokens: configService.getInt('llmMaxTokens'),
+        def ret = (config.requestParams ?: [:]) + request.subMap(CLIENT_KEYS) + [
+            model     : config.model,
+            max_tokens: config.maxTokens,
             stream    : true
         ]
         ret.tools = serverTools + clientTools
@@ -285,7 +256,7 @@ class LlmService extends BaseService {
         try {
             return streamClient.execute(post)
         } catch (ConnectionRequestTimeoutException ignored) {
-            logWarn('LLM stream limit reached', [llmMaxStreams: configService.getInt('llmMaxStreams')])
+            logWarn('LLM stream limit reached', [maxStreams: config.maxStreams])
             throw new RoutineRuntimeException(BUSY_MSG)
         } catch (IOException e) {
             logWarn('Anthropic API unreachable', [error: e])
@@ -383,7 +354,7 @@ class LlmService extends BaseService {
         }
 
         if (!user.hasRole(UNLIMITED_ROLE)) {
-            def limit = configService.getInt('llmRateLimit'),
+            def limit = config.rateLimit,
                 now = System.currentTimeMillis(),
                 times = _callTimes.computeIfAbsent(username) { [] }
             times.removeAll { it < now - HOURS }
@@ -442,8 +413,12 @@ class LlmService extends BaseService {
         trackService.track(category: 'LLM', msg: msg, severity: 'WARN', data: data)
     }
 
+    private LlmConfig getConfig() {
+        configService.getObject(LlmConfig)
+    }
+
     private void applyStreamLimit() {
-        def max = configService.getInt('llmMaxStreams')
+        def max = config.maxStreams
         connectionManager.maxTotal = max
         connectionManager.defaultMaxPerRoute = max
     }

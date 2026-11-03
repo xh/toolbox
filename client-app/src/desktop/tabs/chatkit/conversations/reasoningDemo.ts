@@ -10,7 +10,7 @@ import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import type {ChatDemoSpec} from '../common/ChatDemo';
 import {chatDemoPanel, KIT_LINKS} from '../common/ChatDemo';
-import {markdown} from '../common/scriptUtils';
+import {markdown} from '../common/ChatDemoUtils';
 
 /**
  * Streamed reasoning, then three tool calls the browser runs in turn - one of which fails - and an

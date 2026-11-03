@@ -30,7 +30,7 @@ import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../.
 import {chatKitPage} from '../ChatKitCatalog';
 import {KIT_LINKS, tabSourceLink} from '../common/ChatDemo';
 import {createSampleConversation} from '../common/sampleConversation';
-import {markdown} from '../common/scriptUtils';
+import {markdown} from '../common/ChatDemoUtils';
 import './MessageListPanel.scss';
 
 export const messageListPanel = hoistCmp.factory({
