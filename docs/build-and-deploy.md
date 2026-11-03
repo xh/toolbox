@@ -132,7 +132,10 @@ The workflow proceeds through four jobs:
 
 1. **validate** - runs only from `master`, guarding against an accidental release from `develop` or
    any other branch. Validates the version strictly: semver format, no duplicate tags, and a correct
-   single increment from the latest release tag.
+   single increment from the latest release tag. Also checks that the release ships released Hoist
+   libraries. `@xh/hoist`, `@xh/hoist-dev-utils`, and `hoistCoreVersion` must each be an exact
+   `x.y.z` release, and `gradle.lockfile` must lock that hoist-core version. A missed swap or a
+   stale lock would otherwise build clean and ship a snapshot.
 2. **build-tomcat** - builds the WAR with the release version (`-PxhAppVersion`), pushes a versioned
    image and a `latest` tag to ECR.
 3. **build-nginx** - builds the client app, pushes a versioned image and a `latest` tag to ECR.

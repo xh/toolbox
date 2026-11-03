@@ -269,7 +269,9 @@ Always pass `-PrunHoistInline=false`. An inline build takes its graph from the l
 checkout, and locking cannot track that graph.
 
 Make sure the lockfile names the release. `grep '^io.xh:hoist-core:' gradle.lockfile` must show
-the release version, not a snapshot. A passing build does not prove this.
+the release version, not a snapshot. A passing build does not prove this. Build Release's
+`validate` job fails on a mismatch as a backstop, but check here so the release commit is right
+the first time.
 
 Review the `gradle.lockfile` diff. Expect the hoist-core lines to change, and expect transitive
 libraries to move to the versions that the released hoist-core declares. For example, POI and the
@@ -491,7 +493,10 @@ Build Release validates the version, builds the tomcat (WAR via `-PxhAppVersion`
 (client) images in parallel, pushes them to ECR with `:<version>` and `:latest` tags, then creates
 the `v<version>` git tag and a GitHub Release. If `validate` fails, read the logs
 (`gh run view <run-id> --log-failed`) - the most common cause is a version that isn't a valid
-single increment, or running from the wrong branch.
+single increment, or running from the wrong branch. `validate` also fails if a Hoist library on
+`master` is not an exact release, or if `gradle.lockfile` does not lock the declared
+`hoistCoreVersion`. The error names the file. Fix it on `develop` (Phases 3 and 5), ff-merge to
+`master` again, and rerun.
 
 ### 3. Watch Deploy Release (auto-triggered)
 
