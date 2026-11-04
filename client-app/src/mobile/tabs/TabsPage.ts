@@ -26,7 +26,6 @@ export const tabsPage = hoistCmp.factory({
                     control: segmentedControl({
                         model,
                         bind: 'orientation',
-                        fill: false,
                         options: [
                             {value: 'top', label: 'Top'},
                             {value: 'bottom', label: 'Bottom'}

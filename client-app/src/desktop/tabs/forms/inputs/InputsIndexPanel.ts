@@ -110,7 +110,6 @@ export const inputsIndexPanel = hoistCmp.factory({
                     span('Group by'),
                     segmentedControl({
                         bind: 'groupByCategory',
-                        fill: false,
                         options: [
                             {value: true, label: 'Category'},
                             {value: false, label: 'A-Z'}

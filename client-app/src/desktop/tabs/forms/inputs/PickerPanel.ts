@@ -118,7 +118,6 @@ export const pickerPanel = hoistCmp.factory({
                     propName: 'PickerProps.multiSelectButtonStyle',
                     control: segmentedControl({
                         bind: 'pgButtonStyle',
-                        fill: false,
                         compact: true,
                         options: ['summary', 'values']
                     })

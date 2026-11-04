@@ -22,7 +22,6 @@ export const treeMapPage = hoistCmp.factory({
                     control: segmentedControl({
                         model,
                         bind: 'type',
-                        fill: false,
                         options: [
                             {value: 'treeMap', label: 'Simple'},
                             {value: 'splitTreeMap', label: 'Split'}
@@ -34,7 +33,6 @@ export const treeMapPage = hoistCmp.factory({
                     control: segmentedControl({
                         model,
                         bind: 'colorMode',
-                        fill: false,
                         options: [
                             {value: 'linear', label: 'Linear'},
                             {value: 'wash', label: 'Wash'},

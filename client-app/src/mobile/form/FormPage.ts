@@ -57,7 +57,6 @@ export const formPage = hoistCmp.factory({
                     control: segmentedControl({
                         model,
                         bind: 'density',
-                        fill: false,
                         options: [
                             {value: 'comfortable', label: 'Comfortable'},
                             {value: 'compact', label: 'Compact'}
