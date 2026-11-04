@@ -5,12 +5,14 @@ import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import type {QueryConfig} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
+import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {gridFindField} from '@xh/hoist/desktop/cmp/grid';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {action, bindable, bindableRef} from '@xh/hoist/mobx';
+import {isEmpty, takeRight} from 'lodash';
 import {wrapper, wrapperOption} from '../../common/Wrapper';
 
 export const cubeGridPanel = hoistCmp.factory({
@@ -21,19 +23,21 @@ export const cubeGridPanel = hoistCmp.factory({
             title: 'Cube Grid',
             icon: Icon.gridPanel(),
             description: [
-                'The `CubeGrid` component renders a `Cube` `View` as a tree grid. Give its model a',
-                'cube and a query and it owns the view, the store and the grid - no wiring needed.',
+                '`CubeGrid` is the grid for a `Cube` `View`. Give its model a cube and a query and',
+                "it owns the view, the store and the grid. The query's `dimensions` become the",
+                'rows of a tree grid, one level per dimension, and the app writes its columns as',
+                "for any grid - here a position count and two measures, bound to the view's",
+                'fields. The column chooser, quick filter and find field work as they do on any',
+                'grid.',
                 '',
-                'The app writes the fixed columns, as for any grid. When the query sets `pivot`, the',
-                'view slices its measures across a *pivot* axis and the grid appends a column group',
-                'per pivot value to the right of those columns, so a low-cardinality dimension',
-                '(region, asset class) becomes columns rather than another level of row grouping.',
+                'Pivoting is optional. When the query sets `pivot`, the view slices the chosen',
+                'measures across a second axis and the grid appends a column group per pivot',
+                'value to the right of the fixed columns, so a low-cardinality dimension (region,',
+                'asset class) becomes columns rather than another level of rows. Pick up to two',
+                'measures to see each value render as a group.',
                 '',
                 'All query configuration - groupings, pivot dimensions, measures - lives on the',
-                '`Query`. Apps reconfigure by calling `view.updateQuery()` and the grid follows.',
-                '',
-                '`StoreFilterField` and `GridFindField` bind to the `CubeGridModel` from context and',
-                'search the fields of its visible columns - the group labels and every pivot cell.'
+                '`Query`. Apps reconfigure by calling `view.updateQuery()` and the grid follows.'
             ],
             links: [
                 {
@@ -56,11 +60,11 @@ export const cubeGridPanel = hoistCmp.factory({
             ],
             options: [
                 wrapperOption({
-                    label: 'Pivot summary',
-                    propName: 'CubeGridConfig.pivotSummary',
+                    label: 'Pivot value summary',
+                    propName: 'CubeGridConfig.pivotValueSummary',
                     control: select({
                         model: cubeGridModel,
-                        bind: 'pivotSummary',
+                        bind: 'pivotValueSummary',
                         options: H_SIDE_OPTIONS,
                         enableFilter: false,
                         width: 110
@@ -68,16 +72,16 @@ export const cubeGridPanel = hoistCmp.factory({
                     info: "Docked column with each row's total across all pivot values."
                 }),
                 wrapperOption({
-                    label: 'Pivot subtotal',
-                    propName: 'CubeGridConfig.pivotSubtotal',
+                    label: 'Pivot group summary',
+                    propName: 'CubeGridConfig.pivotGroupSummary',
                     control: select({
                         model: cubeGridModel,
-                        bind: 'pivotSubtotal',
+                        bind: 'pivotGroupSummary',
                         options: H_SIDE_OPTIONS,
                         enableFilter: false,
                         width: 110
                     }),
-                    info: 'Subtotal within each group - needs two pivot dimensions.'
+                    info: "Summary column inside each parent path's group - needs two pivot dimensions."
                 }),
                 wrapperOption({
                     label: 'Summary row',
@@ -118,7 +122,24 @@ export const cubeGridPanel = hoistCmp.factory({
                         ],
                         width: 170,
                         enableFilter: false
-                    })
+                    }),
+                    select({
+                        bind: 'pivotMeasures',
+                        options: [
+                            {value: 'mktVal', label: 'Mkt Val'},
+                            {value: 'pnl', label: 'Pnl'},
+                            {value: 'positions', label: '# Pos'}
+                        ],
+                        enableMulti: true,
+                        enableClear: false,
+                        enableFilter: false,
+                        hideDropdownIndicator: true,
+                        placeholder: 'Measures...',
+                        width: 220,
+                        omit: !model.pivotBy
+                    }),
+                    filler(),
+                    colChooserButton({gridModel: model.cubeGridModel})
                 ],
                 bbar: [storeFilterField(), filler(), gridFindField()]
             })
@@ -133,6 +154,9 @@ const gridCmp = hoistCmp.factory<CubeGridPanelModel>(({model}) =>
 class CubeGridPanelModel extends HoistModel {
     @bindable accessor groupBy = 'fund,trader';
     @bindable accessor pivotBy = 'region';
+
+    /** Measures pivoted into columns, capped at two - each one multiplies the column count. */
+    @bindableRef accessor pivotMeasures = ['mktVal', 'pnl'];
 
     @managed cube: Cube;
     @managed cubeGridModel: CubeGridModel;
@@ -155,7 +179,8 @@ class CubeGridPanelModel extends HoistModel {
         });
 
         // The model owns the view it creates here. Pivot columns appear once the cube has data.
-        const mktVal = {width: 120, renderer: v => fmtMillions(v, {precision: 2, label: true})},
+        const positions = {headerName: '# Pos', width: 80, align: 'right' as const},
+            mktVal = {width: 120, renderer: v => fmtMillions(v, {precision: 2, label: true})},
             pnl = {width: 110, renderer: v => fmtNumber(v, {precision: 0, colorSpec: true})};
         this.cubeGridModel = new CubeGridModel({
             cube: this.cube,
@@ -163,12 +188,12 @@ class CubeGridPanelModel extends HoistModel {
             // Fixed columns, shown whether or not the query pivots. A measure's bare field is its
             // row total, so these double as the totals for the pivot columns to their right.
             columns: [
-                {field: 'positions', headerName: '# Pos', width: 80, align: 'right'},
+                {field: 'positions', ...positions},
                 {field: 'mktVal', ...mktVal},
                 {field: 'pnl', ...pnl}
             ],
-            pivotSubtotal: 'right',
-            pivotValueSpecs: {mktVal, pnl},
+            pivotGroupSummary: 'right',
+            pivotValueSpecs: {positions, mktVal, pnl},
             // Managed autosize fits the tree column to its fund names, and re-fits whenever a
             // structural change mints new columns.
             gridConfig: {
@@ -180,9 +205,15 @@ class CubeGridPanelModel extends HoistModel {
 
         // Query config lives on the query - the grid follows without being rebuilt.
         this.addReaction({
-            track: () => [this.groupBy, this.pivotBy],
+            track: () => [this.groupBy, this.pivotBy, this.pivotMeasures],
             run: () => this.cubeGridModel.view.updateQuery(this.queryConfig())
         });
+    }
+
+    /** Keeps the most recent picks, so a third choice replaces the oldest. */
+    @action
+    setPivotMeasures(measures: string[]) {
+        this.pivotMeasures = takeRight(measures ?? [], 2);
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
@@ -192,12 +223,15 @@ class CubeGridPanelModel extends HoistModel {
     }
 
     private queryConfig(): QueryConfig {
-        const {pivotBy} = this;
+        const {pivotBy, pivotMeasures} = this;
         return {
             dimensions: this.groupBy.split(','),
             fields: ['fund', 'trader', 'model', 'region', 'sector', 'mktVal', 'pnl', 'positions'],
             includeRoot: true,
-            pivot: pivotBy ? {dimensions: pivotBy.split(','), valueFields: ['mktVal', 'pnl']} : null
+            pivot:
+                pivotBy && !isEmpty(pivotMeasures)
+                    ? {dimensions: pivotBy.split(','), valueFields: pivotMeasures}
+                    : null
         };
     }
 }

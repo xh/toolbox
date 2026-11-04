@@ -1282,8 +1282,8 @@ export class PivotViewTestModel extends HoistModel {
             const view = cube.createView({query: queryConf, connect: true}),
                 model = new CubeGridModel({
                     view,
-                    pivotSummary: true,
-                    pivotSubtotal: true,
+                    pivotValueSummary: true,
+                    pivotGroupSummary: true,
                     gridConfig: {showSummary: true}
                 }),
                 {gridModel} = model;
@@ -1323,13 +1323,13 @@ export class PivotViewTestModel extends HoistModel {
             ]);
 
             // Turning pivot summaries off must drop exactly the partial-path cells, and nothing else.
-            model.pivotSubtotal = false;
+            model.pivotGroupSummary = false;
             const partials = view.result.cellFields
                 .filter(cf => !cf.path.isRoot && !isEmpty(cf.path.children))
                 .map(cf => cf.name);
             this.record(scenario, [
                 boolCheck(
-                    'columns: pivotSubtotal gates exactly the partial-path cells',
+                    'columns: pivotGroupSummary gates exactly the partial-path cells',
                     !isEmpty(partials) &&
                         isEqual([...valueColIds()].sort(), [...difference(names, partials)].sort()),
                     isEmpty(partials)
@@ -1337,20 +1337,20 @@ export class PivotViewTestModel extends HoistModel {
                         : `${valueColIds().length} columns, expected ${names.length - partials.length}`
                 )
             ]);
-            model.pivotSubtotal = true;
+            model.pivotGroupSummary = true;
 
             // Side placement, and the `true` -> default-side resolution behind it. Column 0 is
             // always the tree label column.
             const groupIdAt = (i: number) => (model.gridModel.columns.at(i) as any)?.groupId;
-            model.pivotSummary = 'left';
+            model.pivotValueSummary = 'left';
             const leftPlaced = groupIdAt(1);
-            model.pivotSummary = true;
+            model.pivotValueSummary = true;
             const rightPlaced = groupIdAt(-1);
 
             this.record(scenario, [
                 boolCheck(
-                    'pivotSummary: a side places the column, and true resolves to right',
-                    leftPlaced === 'pivotSummary' && rightPlaced === 'pivotSummary',
+                    'pivotValueSummary: a side places the column, and true resolves to right',
+                    leftPlaced === 'pivotValueSummary' && rightPlaced === 'pivotValueSummary',
                     `left put ${leftPlaced} first, true put ${rightPlaced} last`
                 )
             ]);
@@ -1427,7 +1427,7 @@ export class PivotViewTestModel extends HoistModel {
     /** Header names of the top-level pivot column groups, in display order. */
     private topGroupIds(model: CubeGridModel): string[] {
         return model.gridModel.columns
-            .filter(it => 'children' in it && it.groupId !== 'pivotSummary')
+            .filter(it => 'children' in it && it.groupId !== 'pivotValueSummary')
             .map((it: any) => it.groupId);
     }
 
