@@ -1,6 +1,6 @@
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {cubeGrid, CubeGridModel} from '@xh/hoist/cmp/cubegrid';
+import {cubeGrid, CubeGridModel, PIVOT_GROUP_ID} from '@xh/hoist/cmp/cubegrid';
 import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import type {QueryConfig} from '@xh/hoist/data';
@@ -84,7 +84,7 @@ export const cubeGridPanel = hoistCmp.factory({
                     label: 'Pivot groups collapsed',
                     propName: 'CubeGridConfig.pivotGroupsCollapsed',
                     control: switchInput({bind: 'pivotGroupsCollapsed'}),
-                    info: 'Each parent pivot group collapsed to its summary - needs two pivot dimensions.'
+                    info: 'The pivot region and each parent pivot group collapsed to its summary.'
                 }),
                 wrapperOption({
                     label: 'Summary row',
@@ -216,7 +216,7 @@ class CubeGridPanelModel extends HoistModel {
                 run: () => this.cubeGridModel.view.updateQuery(this.queryConfig())
             },
             {
-                track: () => [this.pivotGroupsCollapsed, this.parentPathKeys],
+                track: () => [this.pivotGroupsCollapsed, this.pivotGroupIds],
                 equals: 'shallow',
                 run: () => this.applyPivotGroupState()
             }
@@ -229,18 +229,19 @@ class CubeGridPanelModel extends HoistModel {
         this.pivotMeasures = takeRight(measures ?? [], 2);
     }
 
-    /** Group ids of the parent pivot paths - the collapsible column groups. */
+    /** Group ids of the collapsible pivot groups - the region and every parent path. */
     @computed
-    get parentPathKeys(): string[] {
-        return this.cubeGridModel.view.result.paths
-            .filter(it => !isEmpty(it.children))
-            .map(it => it.key);
+    get pivotGroupIds(): string[] {
+        const {paths} = this.cubeGridModel.view.result;
+        return isEmpty(paths)
+            ? []
+            : [PIVOT_GROUP_ID, ...paths.filter(it => !isEmpty(it.children)).map(it => it.key)];
     }
 
     private applyPivotGroupState() {
         const {gridModel} = this.cubeGridModel,
             expanded = !this.pivotGroupsCollapsed;
-        this.parentPathKeys.forEach(key => gridModel.setColumnGroupExpanded(key, expanded));
+        this.pivotGroupIds.forEach(id => gridModel.setColumnGroupExpanded(id, expanded));
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
