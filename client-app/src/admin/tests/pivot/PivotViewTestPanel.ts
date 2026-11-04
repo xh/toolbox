@@ -17,7 +17,7 @@ export const PivotViewTestPanel = hoistCmp({
     render() {
         return vframe(
             panel({
-                title: 'PivotView › Correctness',
+                title: 'Pivoted View › Correctness',
                 icon: Icon.checkCircle(),
                 flex: 1,
                 tbar: checkTbar(),
@@ -66,7 +66,7 @@ const benchPanel = hoistCmp.factory({
 
     render({model}) {
         return panel({
-            title: 'PivotView › Benchmark',
+            title: 'Pivoted View › Benchmark',
             icon: Icon.chartLine(),
             modelConfig: {side: 'bottom', defaultSize: 320, collapsible: true, resizable: true},
             tbar: benchTbar(),

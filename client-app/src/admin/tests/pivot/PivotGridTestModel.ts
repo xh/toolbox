@@ -104,7 +104,7 @@ export class PivotGridTestModel extends HoistModel {
             XH.safeDestroy(prior);
         });
         try {
-            this.leaves = generateLeaves({...getProfile('heavy'), leaves: this.leafCount} as any);
+            this.leaves = generateLeaves({...getProfile('heavy'), leaves: this.leafCount});
             this.cube = new Cube({
                 fields: this.cubeFields(),
                 idSpec: 'id',
@@ -182,7 +182,6 @@ export class PivotGridTestModel extends HoistModel {
         const {groupBy, pivotBy, valueFields, includeRoot, includeLeaves} = this;
         return {
             dimensions: groupBy,
-            fields: this.cubeFields().map(it => it.name),
             includeRoot,
             includeLeaves,
             omitRedundantNodes: false,

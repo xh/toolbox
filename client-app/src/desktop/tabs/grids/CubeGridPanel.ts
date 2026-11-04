@@ -49,10 +49,7 @@ export const cubeGridPanel = hoistCmp.factory({
                     url: '$HR/cmp/cubegrid/CubeGridModel.ts',
                     notes: 'Presentation config - fixed columns, summaries, pivot sort, value column specs.'
                 },
-                {
-                    url: '$HR/data/cube/pivot/impl/PivotCells.ts',
-                    notes: 'The data layer. Produces the cells this grid renders.'
-                },
+                {url: '$HR/cmp/cubegrid/README.md', notes: 'CubeGrid README.'},
                 {
                     url: '$HR/data/cube/Query.ts',
                     notes: 'Query spec - `dimensions` plus `pivot.dimensions` and `pivot.valueFields`.'
@@ -226,7 +223,6 @@ class CubeGridPanelModel extends HoistModel {
         const {pivotBy, pivotMeasures} = this;
         return {
             dimensions: this.groupBy.split(','),
-            fields: ['fund', 'trader', 'model', 'region', 'sector', 'mktVal', 'pnl', 'positions'],
             includeRoot: true,
             pivot:
                 pivotBy && !isEmpty(pivotMeasures)

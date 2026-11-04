@@ -136,7 +136,7 @@ export class PivotViewBenchModel extends HoistModel {
             buildMs = performance.now() - t0;
 
         const groupRows = countRows(view.result.rows),
-            cells = (view as any)._cellRows?.length ?? 0,
+            cells = view.diagnostics.pivot?.cells ?? 0,
             paths = view.result.cellFields.length / valueFields.length;
 
         this.status = `${label}: ticking ${tickCount} leaves x ${this.tickReps}...`;

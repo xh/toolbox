@@ -84,8 +84,7 @@ export class PivotInspectModel extends HoistModel {
         });
         await this.cube.loadDataAsync(this.leaves);
 
-        // Two passes, because cell field names only exist once a view has run - exactly the ordering
-        // CubeGridModel faces when it observes `result.cellFields` to declare its Store fields.
+        // Two passes, because cell field names only exist once a view has run.
         const probe = this.cube.createView({query});
         const cellFields = probe.result.cellFields;
         XH.safeDestroy(probe);

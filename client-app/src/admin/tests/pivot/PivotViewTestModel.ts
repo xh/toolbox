@@ -1,4 +1,4 @@
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {ColumnGroup, GridModel} from '@xh/hoist/cmp/grid';
 import {CubeGridModel} from '@xh/hoist/cmp/cubegrid';
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
@@ -1341,7 +1341,10 @@ export class PivotViewTestModel extends HoistModel {
 
             // Side placement, and the `true` -> default-side resolution behind it. Column 0 is
             // always the tree label column.
-            const groupIdAt = (i: number) => (model.gridModel.columns.at(i) as any)?.groupId;
+            const groupIdAt = (i: number) => {
+                const col = model.gridModel.columns.at(i);
+                return col instanceof ColumnGroup ? col.groupId : null;
+            };
             model.pivotValueSummary = 'left';
             const leftPlaced = groupIdAt(1);
             model.pivotValueSummary = true;
@@ -1899,7 +1902,7 @@ export class PivotViewTestModel extends HoistModel {
 
     private buildLeaves(scenario: Scenario): PlainObject[] {
         const profile = {...getProfile('typical'), leaves: scenario.leaves},
-            ret = generateLeaves(profile as any);
+            ret = generateLeaves(profile);
 
         // A second low-cardinality dimension for the three-pivot scenario.
         ret.forEach((rec, i) => (rec.strategy2 = `S2-${i % 3}`));
