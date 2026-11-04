@@ -126,6 +126,13 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
   Either way the sibling `../hoist-core` is used and the pinned `hoistCoreVersion` is ignored. Only
   needed when you are changing or testing hoist-core code.
 
+  Inline builds also skip Gradle dependency locking, because the local checkout decides the
+  dependency graph. If you change a dependency while you work inline, regenerate the lockfiles in
+  packaged mode before you commit:
+  ```
+  ./gradlew dependencies --write-locks -PrunHoistInline=false
+  ```
+
 ### Running multiple instances
 
 To run a second, independent instance alongside the first (e.g. to exercise multi-instance

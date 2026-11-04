@@ -110,9 +110,8 @@ export const mobileTab = hoistCmp.factory({
             icon: Icon.mobile(),
             description: [
                 'Mobile apps share many of the same components and logic as their desktop',
-                'counterparts, with some mobile-specific Hoist components that are supported by',
-                'the open-source framework [Onsen](https://onsen.io) to improve the native mobile',
-                'UI experience.',
+                'counterparts, with a set of mobile-specific Hoist components built for touch,',
+                'including swipeable page navigation, pull-to-refresh, and touch-friendly inputs.',
                 '',
                 'Explore the mobile-web version of Toolbox on your device at',
                 '[toolbox.xh.io/mobile](https://toolbox.xh.io/mobile).'
@@ -136,11 +135,6 @@ export const mobileTab = hoistCmp.factory({
                     url: '$HR/mobile',
                     text: 'Mobile package',
                     notes: 'Mobile-specific Hoist components.'
-                },
-                {
-                    url: 'https://onsen.io',
-                    text: 'Onsen UI',
-                    notes: 'The underlying mobile UI framework.'
                 }
             ],
             options: [
