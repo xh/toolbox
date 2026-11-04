@@ -5,13 +5,13 @@ import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import type {QueryConfig} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
-import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {gridFindField} from '@xh/hoist/desktop/cmp/grid';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, bindableRef} from '@xh/hoist/mobx';
+import {action, bindable, bindableRef, computed} from '@xh/hoist/mobx';
 import {isEmpty, takeRight} from 'lodash';
 import {wrapper, wrapperOption} from '../../common/Wrapper';
 
@@ -135,6 +135,12 @@ export const cubeGridPanel = hoistCmp.factory({
                         width: 220,
                         omit: !model.pivotBy
                     }),
+                    button({
+                        text: model.pivotGroupsCollapsed ? 'Expand groups' : 'Collapse groups',
+                        icon: model.pivotGroupsCollapsed ? Icon.expand() : Icon.collapse(),
+                        omit: isEmpty(model.parentPathKeys),
+                        onClick: () => model.togglePivotGroups()
+                    }),
                     filler(),
                     colChooserButton({gridModel: model.cubeGridModel})
                 ],
@@ -211,6 +217,26 @@ class CubeGridPanelModel extends HoistModel {
     @action
     setPivotMeasures(measures: string[]) {
         this.pivotMeasures = takeRight(measures ?? [], 2);
+    }
+
+    /** Group ids of the parent pivot paths - the collapsible column groups. */
+    @computed
+    get parentPathKeys(): string[] {
+        return this.cubeGridModel.view.result.paths
+            .filter(it => !isEmpty(it.children))
+            .map(it => it.key);
+    }
+
+    @computed
+    get pivotGroupsCollapsed(): boolean {
+        const {gridModel} = this.cubeGridModel;
+        return this.parentPathKeys.every(key => !gridModel.isColumnGroupExpanded(key));
+    }
+
+    togglePivotGroups() {
+        const {gridModel} = this.cubeGridModel,
+            expanded = this.pivotGroupsCollapsed;
+        this.parentPathKeys.forEach(key => gridModel.setColumnGroupExpanded(key, expanded));
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
