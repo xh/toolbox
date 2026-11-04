@@ -13,7 +13,7 @@ import {isEmpty} from 'lodash';
  * value-totals row reads US 160, EU 200, Total 360.
  *
  * `storeJson` is the payload after a real round trip through a `Store` declaring one Field per
- * published `cellFields` entry - i.e. the load path a `PivotGridModel` will use, not a reformatting
+ * published `cellFields` entry - i.e. the load path a `CubeGridModel` will use, not a reformatting
  * of `result.rows`.
  */
 export class PivotInspectModel extends HoistModel {
@@ -85,7 +85,7 @@ export class PivotInspectModel extends HoistModel {
         await this.cube.loadDataAsync(this.leaves);
 
         // Two passes, because cell field names only exist once a view has run - exactly the ordering
-        // PivotGridModel faces when it observes `result.cellFields` to declare its Store fields.
+        // CubeGridModel faces when it observes `result.cellFields` to declare its Store fields.
         const probe = this.cube.createView({query});
         const cellFields = probe.result.cellFields;
         XH.safeDestroy(probe);

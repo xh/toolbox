@@ -2,7 +2,7 @@ import type {PlainObject} from '@xh/hoist/core';
 import {throwIf} from '@xh/hoist/utils/js';
 
 /**
- * Profiles and synthetic data for the PivotGrid benchmark.
+ * Profiles and synthetic data for the CubeGrid benchmark.
  *
  * Pivot grids are *summary* grids - they exist to collapse data into a compact table that reads
  * without horizontal scrolling. Pivot dimensions are therefore low cardinality by nature (`region`
@@ -12,8 +12,6 @@ import {throwIf} from '@xh/hoist/utils/js';
  * So these profiles hold pivot paths and value fields near their realistic values and scale the
  * group-row count, which is what actually grows. The exception is `pathological`, which pivots on a
  * near-unique dimension to find the cliff.
- *
- * See `docs/planning/pivot-grid.md` in hoist-react for the acceptance criteria these feed.
  */
 
 /** Real-ish pools for the low-cardinality dimensions that make good pivots. */

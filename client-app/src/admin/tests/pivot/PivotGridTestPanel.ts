@@ -1,4 +1,4 @@
-import {pivotGrid} from '@xh/hoist/cmp/pivotgrid';
+import {cubeGrid} from '@xh/hoist/cmp/cubegrid';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -9,8 +9,8 @@ import {Icon} from '@xh/hoist/icon';
 import {PivotGridTestModel, SUMMARY_H_OPTIONS, SUMMARY_V_OPTIONS} from './PivotGridTestModel';
 
 /**
- * A live PivotGrid with its config surface on two toolbars: the query above, the presentation below.
- * The split is the real one - query config lives on the Query, everything else on PivotGridModel.
+ * A live CubeGrid with its config surface on two toolbars: the query above, the presentation below.
+ * The split is the real one - query config lives on the Query, everything else on CubeGridModel.
  */
 export const PivotGridTestPanel = hoistCmp({
     displayName: 'PivotGridTestPanel',
@@ -21,8 +21,8 @@ export const PivotGridTestPanel = hoistCmp({
             tbar: queryBar(),
             bbar: displayBar(),
             mask: model.rebuilding,
-            item: model.pivotGridModel
-                ? pivotGrid({model: model.pivotGridModel, testId: 'pivot-grid'})
+            item: model.cubeGridModel
+                ? cubeGrid({model: model.cubeGridModel, testId: 'pivot-grid'})
                 : null
         });
     }
@@ -64,30 +64,30 @@ const queryBar = hoistCmp.factory<PivotGridTestModel>(() =>
 );
 
 const displayBar = hoistCmp.factory<PivotGridTestModel>(({model}) => {
-    const {pivotGridModel} = model;
+    const {cubeGridModel} = model;
     return toolbar(
-        'Row summary',
-        select({
-            model: pivotGridModel,
-            bind: 'rowSummary',
-            options: SUMMARY_H_OPTIONS,
-            enableFilter: false,
-            enableClear: false,
-            width: 100
-        }),
         'Pivot summary',
         select({
-            model: pivotGridModel,
+            model: cubeGridModel,
             bind: 'pivotSummary',
             options: SUMMARY_H_OPTIONS,
             enableFilter: false,
             enableClear: false,
             width: 100
         }),
-        'Value summary',
+        'Pivot subtotal',
         select({
-            model: pivotGridModel,
-            bind: 'valueSummary',
+            model: cubeGridModel,
+            bind: 'pivotSubtotal',
+            options: SUMMARY_H_OPTIONS,
+            enableFilter: false,
+            enableClear: false,
+            width: 100
+        }),
+        'Summary row',
+        select({
+            model: cubeGridModel,
+            bind: 'showSummary',
             options: SUMMARY_V_OPTIONS,
             enableFilter: false,
             enableClear: false,

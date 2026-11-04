@@ -1,5 +1,5 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
+import {CubeGridModel} from '@xh/hoist/cmp/cubegrid';
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import type {
@@ -302,7 +302,7 @@ const CELL_BAIL_SCENARIO: Scenario = {
  */
 const PIVOT_GRID_SCENARIO: Scenario = {
     id: 'pivotGrid',
-    label: 'PivotGridModel - columns, summaries, and rebuild gating',
+    label: 'CubeGridModel - columns, summaries, and rebuild gating',
     groupBy: ['fund', 'strategy'],
     pivotBy: ['region', 'sector'],
     valueFields: ['pnl', 'mktVal'],
@@ -519,7 +519,7 @@ export class PivotViewTestModel extends HoistModel {
 
         try {
             // Cell field names only exist once a view has run, so a cell store has to be declared
-            // from a probe result - the same ordering PivotGridModel faces observing `cellFields`.
+            // from a probe result - the same ordering CubeGridModel faces observing `cellFields`.
             let store: Store = null;
             if (scenario.withCellStore) {
                 const probe = cube.createView({query: queryConf});
@@ -661,7 +661,7 @@ export class PivotViewTestModel extends HoistModel {
             }
 
             // A brand-new pivot value mints cell fields that did not exist when the store above was
-            // declared. Re-declaring from the new `cellFields` and reloading is what PivotGridModel
+            // declared. Re-declaring from the new `cellFields` and reloading is what CubeGridModel
             // must do on a structural change, and it has to load as cleanly as the first build.
             if (scenario.withCellStore) {
                 const dim = pivotBy[pivotBy.length - 1],
@@ -857,7 +857,7 @@ export class PivotViewTestModel extends HoistModel {
     /**
      * `View.createStore` declares a Field per cell field and re-declares them itself on every
      * structural change - nothing here does that, which is the whole point. Two connected stores on
-     * one view also stand in for the two-`PivotGridModel`s-on-one-view case.
+     * one view also stand in for the two-`CubeGridModel`s-on-one-view case.
      *
      * Values are asserted through a *non*-projection store: under `projectionOnly` a record's data is
      * the view's own row data object, so any store-vs-view comparison is a row against itself. The
@@ -1258,7 +1258,7 @@ export class PivotViewTestModel extends HoistModel {
     }
 
     /**
-     * The rewired `PivotGridModel` against the column tree it builds. No grid is mounted - the model
+     * The rewired `CubeGridModel` against the column tree it builds. No grid is mounted - the model
      * needs no DOM, and the structure is the thing under test.
      */
     private async runPivotGridScenarioAsync() {
@@ -1280,11 +1280,11 @@ export class PivotViewTestModel extends HoistModel {
 
         try {
             const view = cube.createView({query: queryConf, connect: true}),
-                model = new PivotGridModel({
+                model = new CubeGridModel({
                     view,
-                    rowSummary: true,
                     pivotSummary: true,
-                    valueSummary: true
+                    pivotSubtotal: true,
+                    gridConfig: {showSummary: true}
                 }),
                 {gridModel} = model;
 
@@ -1316,20 +1316,20 @@ export class PivotViewTestModel extends HoistModel {
                     )}]`
                 ),
                 boolCheck(
-                    'columns: valueSummary wires includeRoot through to showSummary',
-                    gridModel.showSummary === 'top',
+                    'columns: showSummary passes through to the grid',
+                    !!gridModel.showSummary,
                     `showSummary is ${gridModel.showSummary}`
                 )
             ]);
 
             // Turning pivot summaries off must drop exactly the partial-path cells, and nothing else.
-            model.pivotSummary = false;
+            model.pivotSubtotal = false;
             const partials = view.result.cellFields
                 .filter(cf => !cf.path.isRoot && !isEmpty(cf.path.children))
                 .map(cf => cf.name);
             this.record(scenario, [
                 boolCheck(
-                    'columns: pivotSummary gates exactly the partial-path cells',
+                    'columns: pivotSubtotal gates exactly the partial-path cells',
                     !isEmpty(partials) &&
                         isEqual([...valueColIds()].sort(), [...difference(names, partials)].sort()),
                     isEmpty(partials)
@@ -1337,20 +1337,20 @@ export class PivotViewTestModel extends HoistModel {
                         : `${valueColIds().length} columns, expected ${names.length - partials.length}`
                 )
             ]);
-            model.pivotSummary = true;
+            model.pivotSubtotal = true;
 
             // Side placement, and the `true` -> default-side resolution behind it. Column 0 is
             // always the tree label column.
             const groupIdAt = (i: number) => (model.gridModel.columns.at(i) as any)?.groupId;
-            model.rowSummary = 'left';
+            model.pivotSummary = 'left';
             const leftPlaced = groupIdAt(1);
-            model.rowSummary = true;
+            model.pivotSummary = true;
             const rightPlaced = groupIdAt(-1);
 
             this.record(scenario, [
                 boolCheck(
-                    'rowSummary: a side places the column, and true resolves to right',
-                    leftPlaced === 'rowSummary' && rightPlaced === 'rowSummary',
+                    'pivotSummary: a side places the column, and true resolves to right',
+                    leftPlaced === 'pivotSummary' && rightPlaced === 'pivotSummary',
                     `left put ${leftPlaced} first, true put ${rightPlaced} last`
                 )
             ]);
@@ -1425,9 +1425,9 @@ export class PivotViewTestModel extends HoistModel {
     }
 
     /** Header names of the top-level pivot column groups, in display order. */
-    private topGroupIds(model: PivotGridModel): string[] {
+    private topGroupIds(model: CubeGridModel): string[] {
         return model.gridModel.columns
-            .filter(it => 'children' in it && it.groupId !== 'rowSummary')
+            .filter(it => 'children' in it && it.groupId !== 'pivotSummary')
             .map((it: any) => it.groupId);
     }
 

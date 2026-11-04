@@ -1,5 +1,5 @@
-import type {PivotSort} from '@xh/hoist/cmp/pivotgrid';
-import {PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
+import type {PivotSort} from '@xh/hoist/cmp/cubegrid';
+import {CubeGridModel} from '@xh/hoist/cmp/cubegrid';
 import type {HSide, PlainObject, VSide} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import type {CubeFieldSpec, View} from '@xh/hoist/data';
@@ -13,12 +13,12 @@ import {generateLeaves, getProfile, tickLeaves} from './PivotBenchData';
 const PATCH_RATIO = 0.1;
 
 /**
- * A live `PivotGrid` with its whole config surface driven from a toolbar - the panel to reach for when
+ * A live `CubeGrid` with its whole config surface driven from a toolbar - the panel to reach for when
  * a question is "what does this look like", rather than "is this correct".
  *
  * Grouping and pivot dimensions come from disjoint pools, since a pivot rejects a field used as
  * both. Everything on the query side goes through `view.updateQuery()`, which is the only way an app
- * reconfigures a pivot grid - `PivotGridModel` holds no query config and is bound to its view for life.
+ * reconfigures a pivot grid - `CubeGridModel` holds no query config and is bound to its view for life.
  */
 export class PivotGridTestModel extends HoistModel {
     static GROUP_DIMS = ['fund', 'strategy', 'sector'];
@@ -45,7 +45,7 @@ export class PivotGridTestModel extends HoistModel {
     @managed private cube: Cube;
     // Observable so the panel re-renders and the status reaction re-tracks on a rebuild.
     @managed @observableRef accessor view: View;
-    @managed @observableRef accessor pivotGridModel: PivotGridModel;
+    @managed @observableRef accessor cubeGridModel: CubeGridModel;
 
     private leaves: PlainObject[] = [];
     private tickGen = 0;
@@ -75,15 +75,15 @@ export class PivotGridTestModel extends HoistModel {
             {
                 track: () => this.pivotSort,
                 run: sort => {
-                    if (this.pivotGridModel) {
-                        this.pivotGridModel.pivotSortBy = sort ? [sort] : [];
+                    if (this.cubeGridModel) {
+                        this.cubeGridModel.pivotSortBy = sort ? [sort] : [];
                     }
                 }
             },
             // Columns rebuild in their own reaction, so anything reading them right after a query
             // change reads the outgoing set.
             {
-                track: () => [this.view?.result, this.pivotGridModel?.gridModel.columns],
+                track: () => [this.view?.result, this.cubeGridModel?.gridModel.columns],
                 equals: 'shallow',
                 run: () => this.noteStatus()
             }
@@ -93,12 +93,12 @@ export class PivotGridTestModel extends HoistModel {
     /** Reload the Cube and mint a fresh view and grid - a leaf-count change is a new dataset. */
     async rebuildAsync() {
         // Clear the observable refs *before* destroying, and in one action: the panel renders
-        // `pivotGridModel` and the status reaction reads both, so a destroyed model left in place is
+        // `cubeGridModel` and the status reaction reads both, so a destroyed model left in place is
         // rendered across the `await` below, and an unbatched reassignment is seen half-done.
         runInAction(() => {
             this.rebuilding = true;
-            const prior = [this.pivotGridModel, this.view, this.cube];
-            this.pivotGridModel = null;
+            const prior = [this.cubeGridModel, this.view, this.cube];
+            this.cubeGridModel = null;
             this.view = null;
             this.cube = null;
             XH.safeDestroy(prior);
@@ -113,11 +113,10 @@ export class PivotGridTestModel extends HoistModel {
             await this.cube.loadDataAsync(this.leaves);
 
             const view = this.cube.createView({query: this.queryConfig(), connect: true}),
-                pivotGridModel = new PivotGridModel({
+                cubeGridModel = new CubeGridModel({
                     view,
-                    rowSummary: 'right',
-                    valueSummary: 'top',
-                    valueColumnSpecs: {
+                    pivotSummary: 'right',
+                    pivotValueSpecs: {
                         pnl: {
                             width: 110,
                             renderer: numberRenderer({precision: 0, colorSpec: true})
@@ -130,11 +129,11 @@ export class PivotGridTestModel extends HoistModel {
                         autosizeOptions: {mode: 'managed', includeHiddenColumns: false}
                     }
                 });
-            if (this.pivotSort) pivotGridModel.pivotSortBy = [this.pivotSort];
+            if (this.pivotSort) cubeGridModel.pivotSortBy = [this.pivotSort];
 
             runInAction(() => {
                 this.view = view;
-                this.pivotGridModel = pivotGridModel;
+                this.cubeGridModel = cubeGridModel;
             });
         } finally {
             runInAction(() => (this.rebuilding = false));
@@ -209,9 +208,9 @@ export class PivotGridTestModel extends HoistModel {
     }
 
     private noteStatus() {
-        if (!this.view || !this.pivotGridModel) return;
+        if (!this.view || !this.cubeGridModel) return;
         const {result} = this.view,
-            {store, gridModel} = this.pivotGridModel;
+            {store, gridModel} = this.cubeGridModel;
 
         runInAction(() => {
             this.status =

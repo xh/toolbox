@@ -15,9 +15,6 @@ import {PROFILES, generateLeaves, tickLeaves} from './PivotBenchData';
  * `build` is measured from raw data - Cube load plus view creation. Both tick metrics perturb a slice
  * of leaves and push them through a *connected* view: `deltaTick` submits only the changed records,
  * `tick` resubmits the whole leaf array.
- *
- * See `docs/planning/pivot-grid.md` in hoist-react for the acceptance criteria and the recorded
- * figures. The retired `PivotDataModel` prototype's baseline lives there and nowhere else now.
  */
 
 /**

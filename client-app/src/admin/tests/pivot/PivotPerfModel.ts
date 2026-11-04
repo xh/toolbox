@@ -1,5 +1,5 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {PivotGridModel} from '@xh/hoist/cmp/pivotgrid';
+import {CubeGridModel} from '@xh/hoist/cmp/cubegrid';
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import type {CubeFieldSpec, PivotSpec, View} from '@xh/hoist/data';
@@ -13,7 +13,7 @@ import type {PivotProfile} from './PivotBenchData';
 import {generateLeaves} from './PivotBenchData';
 
 /**
- * Comprehensive performance and memory matrix for pivoted `View`s / `PivotGridModel`, with a plain
+ * Comprehensive performance and memory matrix for pivoted `View`s / `CubeGridModel`, with a plain
  * `View` + `GridModel` control at comparable record width.
  *
  * Read the reported numbers with three caveats, all of them earned the hard way:
@@ -349,7 +349,7 @@ export class PivotPerfModel extends HoistModel {
         // measured after it in the session is wrong.
         let cube: Cube,
             view: View,
-            pivotGrid: PivotGridModel,
+            cubeGrid: CubeGridModel,
             controlGrid: GridModel,
             controlStore: Store;
 
@@ -375,16 +375,16 @@ export class PivotPerfModel extends HoistModel {
             });
             const heapView = await this.sampleHeapAsync();
 
-            // 3. Grid layer - PivotGridModel mints and loads its own store; the control builds the
+            // 3. Grid layer - CubeGridModel mints and loads its own store; the control builds the
             //    equivalent by hand so the comparison includes the same Store work.
             let gridMs: number = null;
 
             if (withGrid) {
                 gridMs = time(() => {
                     if (pivotDims) {
-                        pivotGrid = new PivotGridModel({
+                        cubeGrid = new CubeGridModel({
                             view,
-                            rowSummary: 'right',
+                            pivotSummary: 'right',
                             gridConfig: {autosizeOptions: {mode: 'disabled'}}
                         });
                     } else {
@@ -416,7 +416,7 @@ export class PivotPerfModel extends HoistModel {
             // component renders, so without this there are no column defs, row nodes, cells or paint.
             let mountMs: number = null;
             if (withGrid) {
-                const gm = pivotGrid?.gridModel ?? controlGrid;
+                const gm = cubeGrid?.gridModel ?? controlGrid;
                 mountMs = await timeAsync(async () => {
                     runInAction(() => (this.activeGrid = gm));
                     await waitFor(() => gm.agGridModel?.agApi != null, {timeout: 30 * SECONDS});
@@ -430,9 +430,7 @@ export class PivotPerfModel extends HoistModel {
             const shape = {
                 rows: countRows(view),
                 cells: pivotDims ? view.result.cellFields.length : null,
-                cols: withGrid
-                    ? (pivotGrid?.gridModel ?? controlGrid).getLeafColumns().length
-                    : null
+                cols: withGrid ? (cubeGrid?.gridModel ?? controlGrid).getLeafColumns().length : null
             };
 
             // 4. Delta ticks at four magnitudes, median of `reps`. Every pass takes a fresh
@@ -500,7 +498,7 @@ export class PivotPerfModel extends HoistModel {
             // this would be measuring a degraded grid.
             let setColumnsMs: number = null;
             if (withGrid) {
-                const gm = pivotGrid?.gridModel ?? controlGrid;
+                const gm = cubeGrid?.gridModel ?? controlGrid;
                 setColumnsMs = time(() => gm.setColumns(gm.columns.map(toSpec)));
             }
 
@@ -535,7 +533,7 @@ export class PivotPerfModel extends HoistModel {
                 runInAction(() => (this.activeGrid = null));
                 await paint();
             }
-            XH.safeDestroy(pivotGrid, controlGrid, controlStore, view, cube);
+            XH.safeDestroy(cubeGrid, controlGrid, controlStore, view, cube);
             await this.sampleHeapAsync();
         }
     }
