@@ -5,9 +5,9 @@ import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import type {QueryConfig} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
-import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {gridFindField} from '@xh/hoist/desktop/cmp/grid';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -81,6 +81,12 @@ export const cubeGridPanel = hoistCmp.factory({
                     info: "Summary column inside each parent path's group - needs two pivot dimensions."
                 }),
                 wrapperOption({
+                    label: 'Pivot groups collapsed',
+                    propName: 'CubeGridConfig.pivotGroupsCollapsed',
+                    control: switchInput({bind: 'pivotGroupsCollapsed'}),
+                    info: 'Each parent pivot group collapsed to its summary - needs two pivot dimensions.'
+                }),
+                wrapperOption({
                     label: 'Summary row',
                     propName: 'GridConfig.showSummary',
                     control: select({
@@ -135,12 +141,6 @@ export const cubeGridPanel = hoistCmp.factory({
                         width: 220,
                         omit: !model.pivotBy
                     }),
-                    button({
-                        text: model.pivotGroupsCollapsed ? 'Expand groups' : 'Collapse groups',
-                        icon: model.pivotGroupsCollapsed ? Icon.expand() : Icon.collapse(),
-                        omit: isEmpty(model.parentPathKeys),
-                        onClick: () => model.togglePivotGroups()
-                    }),
                     filler(),
                     colChooserButton({gridModel: model.cubeGridModel})
                 ],
@@ -160,6 +160,9 @@ class CubeGridPanelModel extends HoistModel {
 
     /** Measures pivoted into columns, capped at two - each one multiplies the column count. */
     @bindableRef accessor pivotMeasures = ['mktVal', 'pnl'];
+
+    /** Mirrors `CubeGridConfig.pivotGroupsCollapsed`, applied live through the grid's group state. */
+    @bindable accessor pivotGroupsCollapsed = false;
 
     @managed cube: Cube;
     @managed cubeGridModel: CubeGridModel;
@@ -207,10 +210,17 @@ class CubeGridPanelModel extends HoistModel {
         });
 
         // Query config lives on the query - the grid follows without being rebuilt.
-        this.addReaction({
-            track: () => [this.groupBy, this.pivotBy, this.pivotMeasures],
-            run: () => this.cubeGridModel.view.updateQuery(this.queryConfig())
-        });
+        this.addReaction(
+            {
+                track: () => [this.groupBy, this.pivotBy, this.pivotMeasures],
+                run: () => this.cubeGridModel.view.updateQuery(this.queryConfig())
+            },
+            {
+                track: () => [this.pivotGroupsCollapsed, this.parentPathKeys],
+                equals: 'shallow',
+                run: () => this.applyPivotGroupState()
+            }
+        );
     }
 
     /** Keeps the most recent picks, so a third choice replaces the oldest. */
@@ -227,15 +237,9 @@ class CubeGridPanelModel extends HoistModel {
             .map(it => it.key);
     }
 
-    @computed
-    get pivotGroupsCollapsed(): boolean {
-        const {gridModel} = this.cubeGridModel;
-        return this.parentPathKeys.every(key => !gridModel.isColumnGroupExpanded(key));
-    }
-
-    togglePivotGroups() {
+    private applyPivotGroupState() {
         const {gridModel} = this.cubeGridModel,
-            expanded = this.pivotGroupsCollapsed;
+            expanded = !this.pivotGroupsCollapsed;
         this.parentPathKeys.forEach(key => gridModel.setColumnGroupExpanded(key, expanded));
     }
 
