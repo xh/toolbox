@@ -2,6 +2,7 @@ import {cubeGrid} from '@xh/hoist/cmp/cubegrid';
 import {filler, fragment, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -9,15 +10,16 @@ import {Icon} from '@xh/hoist/icon';
 import {
     CubeGridTestModel,
     EXPAND_LEVEL_OPTIONS,
+    FILTER_OPTIONS,
     SORT_OPTIONS,
     SUMMARY_H_OPTIONS,
     SUMMARY_V_OPTIONS
 } from './CubeGridTestModel';
 
 /**
- * A live CubeGrid with its config surface on four toolbars: the query shape on top, its options
- * next, the presentation below them, and the data on the bottom. The split is the real one - query
- * config lives on the Query, everything else on CubeGridModel.
+ * A live CubeGrid with its config surface on five toolbars: the query shape on top, its options
+ * next, a filter chooser on the view, the presentation below them, and the data on the bottom.
+ * The split is the real one - query config lives on the Query, everything else on CubeGridModel.
  */
 export const CubeGridTestPanel = hoistCmp({
     displayName: 'CubeGridTestPanel',
@@ -25,7 +27,7 @@ export const CubeGridTestPanel = hoistCmp({
 
     render({model}) {
         return panel({
-            tbar: fragment(queryBar(), queryOptionsBar(), presentationBar()),
+            tbar: fragment(queryBar(), queryOptionsBar(), filterBar(), presentationBar()),
             bbar: dataBar(),
             mask: model.rebuilding,
             item: model.cubeGridModel
@@ -78,6 +80,13 @@ const queryOptionsBar = hoistCmp.factory<CubeGridTestModel>(() =>
     )
 );
 
+const filterBar = hoistCmp.factory<CubeGridTestModel>(({model}) =>
+    toolbar({
+        omit: !model.filterChooserModel,
+        item: filterChooser({model: model.filterChooserModel, flex: 1, enableClear: true})
+    })
+);
+
 const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
     const {cubeGridModel} = model;
     return toolbar(
@@ -96,6 +105,21 @@ const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
             enableFilter: false,
             enableClear: false,
             width: 100
+        }),
+        toolbarSep(),
+        span('Filters'),
+        select({
+            bind: 'columnFilters',
+            options: FILTER_OPTIONS,
+            enableFilter: false,
+            enableClear: false,
+            width: 90
+        }),
+        button({
+            icon: Icon.filter(),
+            title: 'filterModel.openDialog()',
+            omit: !cubeGridModel?.gridModel.filterModel,
+            onClick: () => cubeGridModel.gridModel.filterModel.openDialog()
         }),
         toolbarSep(),
         switchInput({bind: 'pivotGroupsCollapsible', label: 'Collapsible'}),

@@ -210,14 +210,6 @@ class CubeGridPanelModel extends HoistModel {
             columns,
             pivotColumns: columns,
             showPivotSummaries: true,
-            // Bold the P&L total of each region, header and cells, leaving its other summaries
-            // and cells alone - and the `Total` group header above it.
-            pivotColumnSpecFn: ({kind, field}) =>
-                kind === 'total' && field.name === 'pnl'
-                    ? {cellClass: 'tb-cube-grid__bold', headerClass: 'tb-cube-grid__bold'}
-                    : null,
-            pivotColumnGroupSpecFn: ({kind}) =>
-                kind === 'total' ? {headerClass: 'tb-cube-grid__bold'} : null,
             // Managed autosize fits the tree column to its fund names, and re-fits whenever a
             // structural change mints new columns.
             gridConfig: {

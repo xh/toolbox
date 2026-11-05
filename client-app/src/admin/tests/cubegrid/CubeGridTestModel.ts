@@ -1,5 +1,6 @@
 import type {PivotSort} from '@xh/hoist/cmp/cubegrid';
 import {CubeGridModel} from '@xh/hoist/cmp/cubegrid';
+import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 import type {HSide, PlainObject, VSide} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
@@ -7,7 +8,7 @@ import type {CubeFieldSpec, View} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, bindableRef, observable, observableRef, runInAction} from '@xh/hoist/mobx';
-import {isEmpty, map, uniq} from 'lodash';
+import {isEmpty, map, startCase, uniq} from 'lodash';
 import {generateLeaves, getProfile, tickLeaves} from './CubeGridBenchData';
 
 /** `experimental.maxPatchRatio` applied when record patching is toggled on. */
@@ -15,6 +16,9 @@ const PATCH_RATIO = 0.1;
 
 /** Per-level pivot sort, as the toolbar offers it. `custom` is an explicit value order. */
 export type SortChoice = 'view' | 'asc' | 'desc' | 'custom';
+
+/** Column filter target - the view re-aggregates, the store filters the group rows as they are. */
+export type FilterChoice = 'off' | 'view' | 'store';
 
 /** Explicit orderings for `custom` - a value or two pulled to the front, the rest in view order. */
 const CUSTOM_ORDERS: Record<string, string[]> = {
@@ -60,6 +64,8 @@ export class CubeGridTestModel extends HoistModel {
     @bindable accessor pivotExpandLevel = -1;
     @bindable accessor sortLevel0: SortChoice = 'view';
     @bindable accessor sortLevel1: SortChoice = 'view';
+    /** Fixed on the GridModel, so a change rebuilds. */
+    @bindable accessor columnFilters: FilterChoice = 'view';
 
     //------------------------
     // Data
@@ -75,6 +81,8 @@ export class CubeGridTestModel extends HoistModel {
     @managed private cube: Cube;
     // Observable so the panel re-renders and the status reaction re-tracks on a rebuild.
     @managed @observableRef accessor cubeGridModel: CubeGridModel;
+    /** Bound to the view, so it filters the facts and re-aggregates - reaches the pivot dims. */
+    @managed @observableRef accessor filterChooserModel: FilterChooserModel;
 
     get view(): View {
         return this.cubeGridModel?.view;
@@ -88,7 +96,7 @@ export class CubeGridTestModel extends HoistModel {
 
         this.addReaction(
             {
-                track: () => [this.leafCount, this.patchRecordSets],
+                track: () => [this.leafCount, this.patchRecordSets, this.columnFilters],
                 equals: 'shallow',
                 run: () => this.rebuildAsync(),
                 fireImmediately: true
@@ -145,12 +153,14 @@ export class CubeGridTestModel extends HoistModel {
 
     /** Reload the Cube and mint a fresh view and grid - a leaf-count change is a new dataset. */
     async rebuildAsync() {
+        const {columnFilters} = this;
         // Clear the observable ref *before* destroying: the panel renders `cubeGridModel` and the
         // status reaction reads it, so a destroyed model left in place is rendered across the
         // `await` below.
         runInAction(() => {
             this.rebuilding = true;
-            const prior = [this.cubeGridModel, this.cube];
+            const prior = [this.filterChooserModel, this.cubeGridModel, this.cube];
+            this.filterChooserModel = null;
             this.cubeGridModel = null;
             this.cube = null;
             XH.safeDestroy(prior);
@@ -178,10 +188,16 @@ export class CubeGridTestModel extends HoistModel {
                     showSummary: this.showSummary,
                     sizingMode: 'compact',
                     colChooserModel: true,
+                    colDefaults: {filterable: true},
+                    filterModel: columnFilters === 'off' ? false : {bind: columnFilters},
                     autosizeOptions: {mode: 'managed', includeHiddenColumns: false}
                 }
             });
-            runInAction(() => (this.cubeGridModel = cubeGridModel));
+            const filterChooserModel = new FilterChooserModel({bind: cubeGridModel.view});
+            runInAction(() => {
+                this.cubeGridModel = cubeGridModel;
+                this.filterChooserModel = filterChooserModel;
+            });
         } finally {
             runInAction(() => (this.rebuilding = false));
         }
@@ -282,14 +298,26 @@ const VALUE_SPECS: Record<string, ColumnSpec> = {
 
 /**
  * Fixed columns, hidden until added through the column chooser - the only region the chooser
- * manages. A measure's bare name is its row total, whether or not the query pivots it.
+ * manages. A measure's bare name is its row total, whether or not the query pivots it. The group
+ * dimensions are here to reach a column filter on them.
  */
 const FIXED_COLUMNS: ColumnSpec[] = [
     {field: 'cubeDimension', headerName: 'Dimension', width: 100},
+    ...CubeGridTestModel.GROUP_DIMS.map(field => ({
+        field,
+        headerName: startCase(field),
+        width: 100
+    })),
     {field: 'pnl', headerName: 'Total P&L', ...VALUE_SPECS.pnl},
     {field: 'mktVal', headerName: 'Total Mkt Val', ...VALUE_SPECS.mktVal},
     {field: 'quantity', headerName: 'Total Qty', ...VALUE_SPECS.quantity}
 ].map(it => ({...it, chooserName: it.headerName as string, hidden: true}));
+
+export const FILTER_OPTIONS: Array<{value: FilterChoice; label: string}> = [
+    {value: 'off', label: 'Off'},
+    {value: 'view', label: 'View'},
+    {value: 'store', label: 'Store'}
+];
 
 function toPivotSort(choice: SortChoice, dim: string): PivotSort {
     switch (choice) {
