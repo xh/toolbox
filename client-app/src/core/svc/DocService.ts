@@ -20,7 +20,7 @@ const RECENT_DOCS_KEY = 'docs.recentDocs',
     RECENT_DOCS_MAX = 8;
 
 /**
- * Service providing access to hoist-react and hoist-core documentation content.
+ * Service providing access to hoist-react, hoist-core and hoist-chat-kit documentation content.
  *
  * Fetches a registry of all doc entries and their content from the server-side
  * DocsService API. Maintains a MiniSearch full-text index for ranked search.

@@ -1,0 +1,55 @@
+// The workspace fills the Wrapper's demo region, and lays itself out by its own width.
+.tb-chatkit-workspace {
+  // The demo region centers its children. Stretch, so the workspace measures the full width.
+  align-self: stretch;
+  min-height: 0;
+  background-color: var(--xh-bg);
+  min-width: 0;
+}
+
+// The sample document viewer in the side panel.
+.tb-chatkit-workspace__doc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--xh-pad-px);
+  padding: var(--xh-pad-double-px);
+  overflow-y: auto;
+  line-height: 1.5;
+
+  &-meta {
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+  }
+
+  &-para {
+    padding: 2px var(--xh-pad-px);
+    border-left: 3px solid transparent;
+
+    &--cited {
+      border-left-color: var(--xh-intent-warning);
+      background-color: color-mix(in srgb, var(--xh-intent-warning) 15%, transparent);
+    }
+  }
+}
+
+// The app's own side panel content: the source library.
+.tb-chatkit-workspace__library {
+  display: flex;
+  flex-direction: column;
+  gap: var(--xh-pad-px);
+  padding: var(--xh-pad-double-px);
+  line-height: 1.5;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--xh-pad-px);
+    padding: var(--xh-pad-half-px) 0;
+  }
+}

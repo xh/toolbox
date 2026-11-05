@@ -44,7 +44,7 @@ const searchTrigger = hoistCmp.factory<DocsLandingModel>({
 const introBlurb = hoistCmp.factory(() =>
     div({
         className: 'tb-docs-landing__intro',
-        item: 'Browse the Hoist documentation. Pick a library to start, or search across both.'
+        item: 'Browse the Hoist documentation. Pick a library to start, or search across all of them.'
     })
 );
 

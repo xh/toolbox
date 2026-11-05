@@ -14,6 +14,19 @@
 
 ## 13.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added a Chat Kit tab to the desktop app - a tour of `@xh/hoist-chat-kit`, XH's new library of chat components for Hoist apps. Component pages put `ChatPanel`, `ChatComposer`, `ChatMessageList`, `ChatMarkdown`, sources and citations, the empty state, feedback, status cues and theming in a playground of their curated props. Scripted conversations show rich content, reasoning and tools, the agent timeline, approvals, agent questions, attachments, errors and stop, and generative UI without a server or a model. Two integrations show the kit wired up: a full `chatWorkspace` over a client-side thread store, and a live Claude chat relayed by the Toolbox server with tools that act on the app.
+* Added the Hoist Chat Kit docs to the Docs tab, served from the installed `@xh/hoist-chat-kit` package or a sibling checkout in local development, and a `$CK` link token that opens them in the viewer.
+
+### Technical
+
+* Added `LlmService` and a `/llm/stream` endpoint that relay the Anthropic Messages API as a token stream for the Chat Kit tab's Live Model demo. Access needs the new `TOOLBOX_LLM_USER` role, with a per-user hourly limit that `TOOLBOX_LLM_UNLIMITED` lifts, and every call tracked in category `LLM`. Configure with the new `llmApiKey` config and the typed `llmConfig` JSON config.
+
+### Libraries
+
+* @xh/hoist-chat-kit `2.0` - new
+
 ## 12.0.0 - 2026-11-02
 
 ### New Features

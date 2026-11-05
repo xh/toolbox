@@ -186,15 +186,15 @@ exec "\$JAVA" -jar "${jar.absolutePath}" ${args} "\$@"
 }
 // end hoist-ai-snippet
 
+Map clientDeps = new groovy.json.JsonSlurper().parse(file('client-app/package.json')).dependencies
 Map hoistMetaData = [
     'info.xh.appCode': xhAppCode,
     'info.xh.appName': xhAppName,
     'info.xh.appPackage': xhAppPackage,
     'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN',
-    'info.xh.hoistReactVersion': new groovy.json.JsonSlurper()
-        .parse(file('client-app/package.json'))
-        .dependencies['@xh/hoist']
-        .replaceAll(/[\^~]/, '')
+    'info.xh.hoistReactVersion': clientDeps['@xh/hoist'].replaceAll(/[\^~]/, ''),
+    // Read by DocsService to pick the hoist-chat-kit docs that match the installed kit.
+    'info.toolbox.hoistChatKitVersion': (clientDeps['@xh/hoist-chat-kit'] ?: '').replaceAll(/[\^~]/, '')
 ]
 
 //-------------------------

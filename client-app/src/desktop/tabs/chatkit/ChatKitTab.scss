@@ -1,0 +1,145 @@
+// Shared styles for the Chat Kit tab. Page-specific styles sit beside their page.
+
+// A conversation demo's chat fills the Wrapper's demo region.
+.tb-chatkit-demo {
+  min-height: 0;
+}
+
+// Overview page.
+.tb-chatkit-overview {
+  &__prose {
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  &__features {
+    display: grid;
+    gap: var(--xh-pad-px) var(--xh-pad-double-px);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__feature {
+    display: flex;
+    gap: var(--xh-pad-px);
+    line-height: 1.45;
+
+    svg {
+      color: var(--xh-intent-primary-text-color);
+      flex: none;
+      margin-top: 3px;
+    }
+  }
+
+  &__feature-text strong {
+    display: block;
+  }
+
+  &__code {
+    background-color: var(--xh-bg-alt);
+    border: var(--xh-border-width-px) solid var(--xh-border-color);
+    border-radius: var(--xh-border-radius-px);
+    font-family: var(--xh-font-family-mono);
+    font-size: var(--xh-font-size-small-px);
+    line-height: 1.5;
+    margin: 0;
+    overflow-x: auto;
+    padding: var(--xh-pad-px) var(--xh-pad-double-px);
+    white-space: pre;
+  }
+
+  &__tile-icon {
+    color: var(--xh-text-color-muted);
+    margin-right: var(--xh-pad-half-px);
+  }
+}
+
+// The order ticket in the Approval demo's tool renderer.
+.tb-order-ticket {
+  display: flex;
+  flex-direction: column;
+  gap: var(--xh-pad-half-px);
+  max-width: 320px;
+
+  &__headline {
+    align-items: baseline;
+    display: flex;
+    font-size: var(--xh-font-size-large-px);
+    font-weight: 600;
+    gap: var(--xh-pad-px);
+    margin-bottom: var(--xh-pad-half-px);
+  }
+
+  &__side--buy {
+    color: var(--xh-pos-val-color);
+  }
+
+  &__side--sell {
+    color: var(--xh-neg-val-color);
+  }
+
+  &__field {
+    display: flex;
+    gap: var(--xh-pad-double-px);
+    justify-content: space-between;
+  }
+
+  &__label {
+    color: var(--xh-text-color-muted);
+  }
+}
+
+// The inline plan in the Agent Timeline demo.
+.tb-plan-checklist {
+  border: var(--xh-border-width-px) solid var(--xh-border-color);
+  border-radius: var(--xh-border-radius-px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 420px;
+  padding: var(--xh-pad-half-px) var(--xh-pad-px);
+
+  &__head {
+    color: var(--xh-chat-meta-text-color);
+    font-size: var(--xh-font-size-small-px);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__item {
+    align-items: center;
+    color: var(--xh-chat-meta-text-color);
+    display: flex;
+    gap: 6px;
+    min-height: 22px;
+
+    &--active {
+      color: var(--xh-chat-text-color);
+      font-weight: 500;
+    }
+
+    &--done .tb-plan-checklist__icon {
+      color: var(--xh-intent-success);
+    }
+
+    &--skipped {
+      text-decoration: line-through;
+    }
+  }
+
+  &__icon {
+    display: flex;
+    flex: none;
+    justify-content: center;
+    width: 14px;
+  }
+}

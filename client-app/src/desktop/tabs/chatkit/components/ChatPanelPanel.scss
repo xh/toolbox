@@ -1,0 +1,26 @@
+// ChatPanel page.
+.tb-chatkit-chat-panel {
+  // The Playground chat fills a fixed box, as a chat fills its parent.
+  &__instance {
+    display: flex;
+    height: 520px;
+    width: 100%;
+    border: var(--xh-border-width-px) solid var(--xh-border-color);
+  }
+
+  // The side panel pattern: app content beside a resizable chat.
+  &__side-host {
+    height: 460px;
+  }
+
+  // The custom layout of the pieces behind ChatPanel.
+  &__custom {
+    height: 460px;
+    background-color: var(--xh-chat-bg);
+  }
+
+  &__custom-footer {
+    flex: none;
+    padding: 0 var(--xh-pad-px) var(--xh-pad-px);
+  }
+}

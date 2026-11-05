@@ -39,6 +39,15 @@ describe('docRouteParams', () => {
         });
     });
 
+    it('routes $CK links to the hoist-chat-kit source, including package READMEs', () => {
+        expect(docRouteParams('$CK/desktop/cmp/chat/README.md#theming')).toEqual({
+            source: 'hoist-chat-kit',
+            docId: 'desktop~cmp~chat~README.md',
+            section: 'theming'
+        });
+        expect(docRouteParams('$CK/core/ChatModel.ts')).toBeNull();
+    });
+
     it('leaves source code, unknown repos and bare tokens to external handling', () => {
         expect(docRouteParams('$HR/cmp/grid/GridModel.ts')).toBeNull();
         expect(docRouteParams('$XX/docs/README.md')).toBeNull();

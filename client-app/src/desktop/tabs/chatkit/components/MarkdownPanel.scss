@@ -1,0 +1,59 @@
+// ChatMarkdown page.
+.tb-chatkit-markdown {
+  &__playground {
+    gap: var(--xh-pad-px);
+    width: 100%;
+  }
+
+  // The rendered markdown, on the chat's own background.
+  &__output {
+    background-color: var(--xh-chat-bg);
+    border: var(--xh-border-width-px) solid var(--xh-border-color);
+    border-radius: var(--xh-border-radius-px);
+    height: 420px;
+    overflow-y: auto;
+    padding: var(--xh-pad-px) var(--xh-pad-double-px);
+
+    img {
+      max-height: 80px;
+    }
+  }
+
+  &__source textarea {
+    font-family: var(--xh-font-family-mono);
+    font-size: var(--xh-font-size-small-px);
+  }
+
+  // The page's own table override.
+  &__table-card {
+    border: var(--xh-border-width-px) solid var(--xh-intent-primary-text-color);
+    border-radius: var(--xh-border-radius-px);
+    margin: var(--xh-pad-px) 0;
+    overflow: hidden;
+
+    table {
+      margin: 0;
+      width: 100%;
+    }
+  }
+
+  &__table-card-header {
+    align-items: center;
+    background-color: var(--xh-intent-primary-trans1);
+    color: var(--xh-intent-primary-text-color);
+    display: flex;
+    font-size: var(--xh-font-size-small-px);
+    font-weight: 600;
+    gap: var(--xh-pad-half-px);
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+  }
+
+  &__long-table {
+    max-height: 480px;
+    overflow-y: auto;
+  }
+
+  &__cited {
+    max-width: 720px;
+  }
+}

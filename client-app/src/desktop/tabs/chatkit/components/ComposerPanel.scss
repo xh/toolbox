@@ -1,0 +1,69 @@
+// ChatComposer page.
+.tb-chatkit-composer {
+  &__instance {
+    width: 100%;
+  }
+
+  // Slot content.
+  &__meter {
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+    white-space: nowrap;
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--xh-pad-half-px);
+  }
+
+  &__chip {
+    align-items: center;
+    background-color: var(--xh-bg-alt);
+    border: var(--xh-border-width-px) solid var(--xh-border-color);
+    border-radius: var(--xh-border-radius-px);
+    display: inline-flex;
+    font-size: var(--xh-font-size-small-px);
+    gap: var(--xh-pad-half-px);
+    padding: 1px var(--xh-pad-half-px);
+  }
+
+  &__mark {
+    color: var(--xh-intent-primary-text-color);
+    font-size: 16px;
+  }
+
+  // The composer over a host of the page's own, beside its notes.
+  &__notes-host {
+    align-items: flex-start;
+    gap: var(--xh-pad-double-px);
+  }
+
+  &__notes-composer {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__notes {
+    flex: none;
+    gap: var(--xh-pad-half-px);
+    max-height: 160px;
+    overflow-y: auto;
+    width: 300px;
+  }
+
+  &__notes-empty {
+    color: var(--xh-text-color-muted);
+  }
+
+  &__note {
+    display: flex;
+    gap: var(--xh-pad-px);
+  }
+
+  &__note-time {
+    color: var(--xh-text-color-muted);
+    flex: none;
+    font-variant-numeric: tabular-nums;
+  }
+}
