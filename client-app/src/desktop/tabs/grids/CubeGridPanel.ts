@@ -57,28 +57,16 @@ export const cubeGridPanel = hoistCmp.factory({
             ],
             options: [
                 wrapperOption({
-                    label: 'Pivot value summary',
-                    propName: 'CubeGridConfig.pivotValueSummary',
+                    label: 'Show pivot summaries',
+                    propName: 'CubeGridConfig.showPivotSummaries',
                     control: select({
                         model: cubeGridModel,
-                        bind: 'pivotValueSummary',
+                        bind: 'showPivotSummaries',
                         options: H_SIDE_OPTIONS,
                         enableFilter: false,
                         width: 110
                     }),
-                    info: "Docked column with each row's total across all pivot values."
-                }),
-                wrapperOption({
-                    label: 'Pivot group summary',
-                    propName: 'CubeGridConfig.pivotGroupSummary',
-                    control: select({
-                        model: cubeGridModel,
-                        bind: 'pivotGroupSummary',
-                        options: H_SIDE_OPTIONS,
-                        enableFilter: false,
-                        width: 110
-                    }),
-                    info: "Summary column inside each parent path's group - needs two pivot dimensions."
+                    info: 'Total columns while a pivot group is expanded - row totals for the region, subtotals per parent group.'
                 }),
                 wrapperOption({
                     label: 'Pivot groups collapsible',
@@ -214,7 +202,7 @@ class CubeGridPanelModel extends HoistModel {
                 {field: 'mktVal', ...mktVal},
                 {field: 'pnl', ...pnl}
             ],
-            pivotGroupSummary: 'right',
+            showPivotSummaries: 'right',
             pivotValueSpecs: {positions, mktVal, pnl},
             // Managed autosize fits the tree column to its fund names, and re-fits whenever a
             // structural change mints new columns.

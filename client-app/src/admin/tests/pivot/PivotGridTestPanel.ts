@@ -66,19 +66,10 @@ const queryBar = hoistCmp.factory<PivotGridTestModel>(() =>
 const displayBar = hoistCmp.factory<PivotGridTestModel>(({model}) => {
     const {cubeGridModel} = model;
     return toolbar(
-        'Pivot value summary',
+        'Pivot summaries',
         select({
             model: cubeGridModel,
-            bind: 'pivotValueSummary',
-            options: SUMMARY_H_OPTIONS,
-            enableFilter: false,
-            enableClear: false,
-            width: 100
-        }),
-        'Pivot group summary',
-        select({
-            model: cubeGridModel,
-            bind: 'pivotGroupSummary',
+            bind: 'showPivotSummaries',
             options: SUMMARY_H_OPTIONS,
             enableFilter: false,
             enableClear: false,

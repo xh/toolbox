@@ -384,7 +384,7 @@ export class PivotPerfModel extends HoistModel {
                     if (pivotDims) {
                         cubeGrid = new CubeGridModel({
                             view,
-                            pivotValueSummary: 'right',
+                            showPivotSummaries: 'right',
                             gridConfig: {autosizeOptions: {mode: 'disabled'}}
                         });
                     } else {

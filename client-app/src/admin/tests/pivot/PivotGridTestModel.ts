@@ -115,7 +115,7 @@ export class PivotGridTestModel extends HoistModel {
             const view = this.cube.createView({query: this.queryConfig(), connect: true}),
                 cubeGridModel = new CubeGridModel({
                     view,
-                    pivotValueSummary: 'right',
+                    showPivotSummaries: 'right',
                     pivotValueSpecs: {
                         pnl: {
                             width: 110,
