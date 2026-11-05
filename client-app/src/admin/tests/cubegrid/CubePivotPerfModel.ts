@@ -3,18 +3,18 @@ import {CubeGridModel} from '@xh/hoist/cmp/cubegrid';
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import type {CubeFieldSpec, PivotSpec, View} from '@xh/hoist/data';
-import {Cube, Store} from '@xh/hoist/data';
+import {Cube} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {wait, waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {throwIf} from '@xh/hoist/utils/js';
-import type {PivotProfile} from './PivotBenchData';
-import {generateLeaves} from './PivotBenchData';
+import type {PivotProfile} from './CubeGridBenchData';
+import {generateLeaves} from './CubeGridBenchData';
 
 /**
  * Comprehensive performance and memory matrix for pivoted `View`s / `CubeGridModel`, with a plain
- * `View` + `GridModel` control at comparable record width.
+ * un-pivoted `CubeGridModel` control at comparable record width.
  *
  * Read the reported numbers with three caveats, all of them earned the hard way:
  *
@@ -102,7 +102,7 @@ export interface PerfResult extends PlainObject {
     id: string;
 }
 
-export class PivotPerfModel extends HoistModel {
+export class CubePivotPerfModel extends HoistModel {
     /** Measure each config twice - data layer alone, then with a GridModel bound. */
     @bindable accessor withGrid = true;
     @bindable accessor withoutGrid = true;
@@ -347,11 +347,7 @@ export class PivotPerfModel extends HoistModel {
         // Hoisted so the `finally` below tears down whatever got built. A config that throws - the
         // 30s mount `waitFor`, most plausibly - must not leak its Cube, or every heap figure
         // measured after it in the session is wrong.
-        let cube: Cube,
-            view: View,
-            cubeGrid: CubeGridModel,
-            controlGrid: GridModel,
-            controlStore: Store;
+        let cube: Cube, view: View, cubeGrid: CubeGridModel;
 
         try {
             const heapBase = await this.sampleHeapAsync();
@@ -375,40 +371,18 @@ export class PivotPerfModel extends HoistModel {
             });
             const heapView = await this.sampleHeapAsync();
 
-            // 3. Grid layer - CubeGridModel mints and loads its own store; the control builds the
-            //    equivalent by hand so the comparison includes the same Store work.
+            // 3. Grid layer - CubeGridModel mints and loads its own store either way. The control
+            //    is the same model with no pivot and a fixed column per measure.
             let gridMs: number = null;
 
             if (withGrid) {
                 gridMs = time(() => {
-                    if (pivotDims) {
-                        cubeGrid = new CubeGridModel({
-                            view,
-                            showPivotSummaries: 'right',
-                            gridConfig: {autosizeOptions: {mode: 'disabled'}}
-                        });
-                    } else {
-                        controlStore = new Store({
-                            idSpec: 'id',
-                            loadTreeData: true,
-                            projectionOnly: true,
-                            fields: [
-                                {name: 'cubeLabel', type: 'string'},
-                                {name: 'cubeDimension', type: 'string'},
-                                ...measures.map(name => ({name, type: 'number' as const}))
-                            ]
-                        });
-                        view.setStores(controlStore);
-                        controlGrid = new GridModel({
-                            store: controlStore,
-                            treeMode: true,
-                            autosizeOptions: {mode: 'disabled'},
-                            columns: [
-                                {field: 'cubeLabel', isTreeColumn: true, width: 200},
-                                ...measures.map(name => ({field: name, width: 100}))
-                            ]
-                        });
-                    }
+                    cubeGrid = new CubeGridModel({
+                        view,
+                        showPivotSummaries: 'right',
+                        columns: pivotDims ? [] : measures.map(name => ({field: name, width: 100})),
+                        gridConfig: {autosizeOptions: {mode: 'disabled'}}
+                    });
                 });
             }
 
@@ -416,7 +390,7 @@ export class PivotPerfModel extends HoistModel {
             // component renders, so without this there are no column defs, row nodes, cells or paint.
             let mountMs: number = null;
             if (withGrid) {
-                const gm = cubeGrid?.gridModel ?? controlGrid;
+                const gm = cubeGrid.gridModel;
                 mountMs = await timeAsync(async () => {
                     runInAction(() => (this.activeGrid = gm));
                     await waitFor(() => gm.agGridModel?.agApi != null, {timeout: 30 * SECONDS});
@@ -430,7 +404,7 @@ export class PivotPerfModel extends HoistModel {
             const shape = {
                 rows: countRows(view),
                 cells: pivotDims ? view.result.cellFields.length : null,
-                cols: withGrid ? (cubeGrid?.gridModel ?? controlGrid).getLeafColumns().length : null
+                cols: withGrid ? cubeGrid.gridModel.getLeafColumns().length : null
             };
 
             // 4. Delta ticks at four magnitudes, median of `reps`. Every pass takes a fresh
@@ -498,7 +472,7 @@ export class PivotPerfModel extends HoistModel {
             // this would be measuring a degraded grid.
             let setColumnsMs: number = null;
             if (withGrid) {
-                const gm = cubeGrid?.gridModel ?? controlGrid;
+                const gm = cubeGrid.gridModel;
                 setColumnsMs = time(() => gm.setColumns(gm.columns.map(toSpec)));
             }
 
@@ -533,7 +507,7 @@ export class PivotPerfModel extends HoistModel {
                 runInAction(() => (this.activeGrid = null));
                 await paint();
             }
-            XH.safeDestroy(cubeGrid, controlGrid, controlStore, view, cube);
+            XH.safeDestroy(cubeGrid, view, cube);
             await this.sampleHeapAsync();
         }
     }

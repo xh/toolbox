@@ -15,7 +15,7 @@ import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 import {castArray, difference, isEmpty, isEqual, uniq} from 'lodash';
-import {generateLeaves, getProfile, tickLeaves} from './PivotBenchData';
+import {generateLeaves, getProfile, tickLeaves} from './CubeGridBenchData';
 import type {PivotCheck, RefAggKind} from './PivotViewCheck';
 import {checkCellStore, checkPivotView, comparePivotViews} from './PivotViewCheck';
 
@@ -300,8 +300,8 @@ const CELL_BAIL_SCENARIO: Scenario = {
  * Two pivot dims so pivot summaries materialize, two value fields so a leaf path carries a group rather
  * than a bare column. Asserts the built column tree, not a rendered grid - the model needs no DOM.
  */
-const PIVOT_GRID_SCENARIO: Scenario = {
-    id: 'pivotGrid',
+const CUBE_GRID_SCENARIO: Scenario = {
+    id: 'cubeGrid',
     label: 'CubeGridModel - columns, summaries, and rebuild gating',
     groupBy: ['fund', 'strategy'],
     pivotBy: ['region', 'sector'],
@@ -310,10 +310,8 @@ const PIVOT_GRID_SCENARIO: Scenario = {
 };
 
 /**
- * Plain `View` regression coverage. The phase 2 `data/cube` edits widened members and renamed the
- * incremental update collector without changing non-pivot behavior - which nothing exercised. The
- * reference accumulator is independent of hoist-react, so passing it proves correctness outright,
- * with no `develop` checkout to diff against.
+ * Plain `View` coverage - the pivot machinery shares the aggregation and incremental update paths
+ * with non-pivoted queries, so those are checked against the same independent reference.
  */
 const PLAIN_SCENARIOS: Scenario[] = [
     {
@@ -475,7 +473,7 @@ export class PivotViewTestModel extends HoistModel {
             await this.runQueryTransitionScenarioAsync();
             await this.runDimTransitionScenarioAsync();
             await this.runCellBailScenarioAsync();
-            await this.runPivotGridScenarioAsync();
+            await this.runCubeGridScenarioAsync();
             for (const scenario of PLAIN_SCENARIOS) {
                 await this.runPlainScenarioAsync(scenario);
             }
@@ -1258,11 +1256,11 @@ export class PivotViewTestModel extends HoistModel {
     }
 
     /**
-     * The rewired `CubeGridModel` against the column tree it builds. No grid is mounted - the model
+     * `CubeGridModel` against the column tree it builds. No grid is mounted - the model
      * needs no DOM, and the structure is the thing under test.
      */
-    private async runPivotGridScenarioAsync() {
-        const scenario = PIVOT_GRID_SCENARIO,
+    private async runCubeGridScenarioAsync() {
+        const scenario = CUBE_GRID_SCENARIO,
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario),
             queryConf = this.buildQueryConf(scenario);

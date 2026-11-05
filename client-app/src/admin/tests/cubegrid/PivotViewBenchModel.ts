@@ -6,8 +6,8 @@ import {Cube} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import type {PivotProfile} from './PivotBenchData';
-import {PROFILES, generateLeaves, tickLeaves} from './PivotBenchData';
+import type {PivotProfile} from './CubeGridBenchData';
+import {PROFILES, generateLeaves, tickLeaves} from './CubeGridBenchData';
 
 /**
  * Benchmark for the {@link View} data layer against the acceptance gates.

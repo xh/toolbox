@@ -21,7 +21,7 @@ export const CubeTestPanel = hoistCmp({
             className,
             item: hframe(
                 panel({
-                    title: 'Grids › Cube Data',
+                    title: 'Cube Perf',
                     icon: Icon.grid(),
                     flex: 1,
                     item: grid({model: model.gridModel}),

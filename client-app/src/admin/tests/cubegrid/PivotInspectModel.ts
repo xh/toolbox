@@ -1,7 +1,7 @@
 import type {PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import type {PivotPath, Query, View} from '@xh/hoist/data';
-import {Cube, Store} from '@xh/hoist/data';
+import type {PivotPath, Query, Store, View} from '@xh/hoist/data';
+import {Cube} from '@xh/hoist/data';
 import {action, bindable, observable, observableRef} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 
@@ -12,9 +12,9 @@ import {isEmpty} from 'lodash';
  * mental arithmetic: on the one-pivot preset, Fund 1 / Strat A reads US 10, EU 20, Total 30, and the
  * value-totals row reads US 160, EU 200, Total 360.
  *
- * `storeJson` is the payload after a real round trip through a `Store` declaring one Field per
- * published `cellFields` entry - i.e. the load path a `CubeGridModel` will use, not a reformatting
- * of `result.rows`.
+ * `storeJson` is the payload after a real round trip through a Store from `View.createStore()`,
+ * which declares one Field per published `cellFields` entry - the load path a `CubeGridModel`
+ * uses, not a reformatting of `result.rows`.
  */
 export class PivotInspectModel extends HoistModel {
     /** 1 pivot dimension (region), or 2 (region then sector) to materialize pivot totals. */
@@ -58,7 +58,7 @@ export class PivotInspectModel extends HoistModel {
     async buildAsync() {
         const {pivotDepth, sparse, includeRoot, includeLeaves} = this;
 
-        XH.safeDestroy(this.view, this.store, this.cube);
+        this.teardown();
         this.tickCount = 0;
 
         const pivotDimensions = pivotDepth === 2 ? ['region', 'sector'] : ['region'],
@@ -84,20 +84,18 @@ export class PivotInspectModel extends HoistModel {
         });
         await this.cube.loadDataAsync(this.leaves);
 
-        // Two passes, because cell field names only exist once a view has run.
-        const probe = this.cube.createView({query});
-        const cellFields = probe.result.cellFields;
-        XH.safeDestroy(probe);
+        this.view = this.cube.createView({query, connect: true});
+        // Not `projectionOnly`, so records are parsed against the declared cell fields rather than
+        // adopting the view's own row objects - the parse is what stage 5 shows.
+        this.store = this.view.createStore({connect: true, projectionOnly: false});
 
-        this.store = new Store({
-            idSpec: 'id',
-            loadTreeData: true,
-            fields: cellFields.map(cf => ({name: cf.name, type: cf.valueField.type}))
-        });
-
-        this.view = this.cube.createView({query, stores: this.store, connect: true});
-
+        const {cellFields} = this.view.result;
         this.publish(`Built: ${this.leaves.length} records, ${cellFields.length} cell fields`);
+    }
+
+    override destroy() {
+        this.teardown();
+        super.destroy();
     }
 
     /** Perturb one record by +100 so an incremental tick can be traced through every stage. */
@@ -146,6 +144,12 @@ export class PivotInspectModel extends HoistModel {
                 ...omitKeys(rec.data, ['id', 'children', '_cubeLeafChildren'])
             }))
         );
+    }
+
+    /** A connected store is the caller's to disconnect before the view goes. */
+    private teardown() {
+        this.view?.disconnectStore(this.store);
+        XH.safeDestroy(this.store, this.view, this.cube);
     }
 
     /** Eight records, values 10..80, so every aggregate is checkable by mental arithmetic. */

@@ -153,8 +153,8 @@ export const PROFILES: PivotProfile[] = [
         optIn: true,
         description:
             'Typical groupings, but pivoting on a near-unique dimension (5,000 distinct values ' +
-            '-> 5,000 pivot paths). Not a target - run this to find where each implementation ' +
-            'falls over, so phase 1 can decide what the framework should do about it.'
+            '-> 5,000 pivot paths). Not a target - run this to find where the pivot layer ' +
+            'falls over.'
     }
 ];
 
