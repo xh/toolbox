@@ -16,6 +16,7 @@ import {WebSocketTestPanel} from './tests/websocket/WebSocketTestPanel';
 import {asyncLoopPanel} from './tests/asyncLoops/AsyncLoopPanel';
 import {columnChooserTestPanel} from './tests/columnChooser/ColumnChooserTestPanel';
 import {dataViewTestPanel} from './tests/dataview/DataViewTestPanel';
+import {formatterParityPanel} from './tests/gridFormatterParity/FormatterParityPanel';
 import {gridScrolling} from './tests/gridScrolling/GridScrolling';
 import {storeColumnFilterPanel} from './tests/columnFilters/store/StoreColumnFilterPanel';
 import {viewColumnFilterPanel} from './tests/columnFilters/view/ViewColumnFilterPanel';
@@ -50,6 +51,7 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'grid', path: '/grid'},
                     {name: 'dataView', path: '/dataView'},
                     {name: 'gridScrolling', path: '/gridScrolling'},
+                    {name: 'gridFormatterParity', path: '/gridFormatterParity'},
                     {name: 'storeColumnFilters', path: '/storeColumnFilters'},
                     {name: 'viewColumnFilters', path: '/viewColumnFilters'},
                     {name: 'columnChooser', path: '/columnChooser'},
@@ -82,6 +84,7 @@ export class AppModel extends HoistAdminAppModel {
             {id: 'grid', title: 'Grid', content: GridTestPanel},
             {id: 'dataView', title: 'DataView', content: dataViewTestPanel},
             {id: 'gridScrolling', content: gridScrolling},
+            {id: 'gridFormatterParity', content: formatterParityPanel},
             {id: 'storeColumnFilters', content: storeColumnFilterPanel},
             {id: 'viewColumnFilters', content: viewColumnFilterPanel},
             {id: 'columnChooser', title: 'Column Chooser', content: columnChooserTestPanel}

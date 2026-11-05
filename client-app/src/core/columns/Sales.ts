@@ -1,19 +1,19 @@
 import {boolCheck} from '@xh/hoist/cmp/grid';
-import {numberRenderer, percentRenderer} from '@xh/hoist/format';
+import {numberTextRenderer, percentTextRenderer} from '@xh/hoist/format';
 import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 
 const unitColOpts: ColumnSpec = {
     headerName: 'Units',
     align: 'right',
     width: 70,
-    renderer: numberRenderer({precision: 0})
+    textRenderer: numberTextRenderer({precision: 0})
 };
 
 const grossColOpts: ColumnSpec = {
     headerName: 'Gross',
     align: 'right',
     width: 100,
-    renderer: numberRenderer({precision: 0})
+    textRenderer: numberTextRenderer({precision: 0})
 };
 
 export const projectedUnitsSoldCol: ColumnSpec = {
@@ -50,7 +50,7 @@ export const commissionRateCol: ColumnSpec = {
     chooserName: 'Commission Rate',
     align: 'right',
     width: 80,
-    renderer: percentRenderer({precision: 0})
+    textRenderer: percentTextRenderer({precision: 0})
 };
 
 export const commissionCol: ColumnSpec = {
@@ -58,7 +58,7 @@ export const commissionCol: ColumnSpec = {
     headerName: 'Commission',
     align: 'right',
     width: 110,
-    renderer: numberRenderer({precision: 0, prefix: '$'})
+    textRenderer: numberTextRenderer({precision: 0, prefix: '$'})
 };
 
 export const retainCol: ColumnSpec = {
