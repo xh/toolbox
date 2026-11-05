@@ -60,10 +60,6 @@ export class CubeGridTestModel extends HoistModel {
     @bindable accessor pivotExpandLevel = -1;
     @bindable accessor sortLevel0: SortChoice = 'view';
     @bindable accessor sortLevel1: SortChoice = 'view';
-    /** Add a fixed column per value field, showing each row's total beside the label column. */
-    @bindable accessor fixedTotalColumns = false;
-    /** `hideable: false` on every measure, so the chooser cannot drop pivot columns. */
-    @bindable accessor lockValueColumns = false;
 
     //------------------------
     // Data
@@ -137,18 +133,6 @@ export class CubeGridTestModel extends HoistModel {
                     if (this.cubeGridModel) this.cubeGridModel.pivotSortBy = sortBy;
                 }
             },
-            {
-                track: () => this.fixedColumns,
-                run: columns => {
-                    if (this.cubeGridModel) this.cubeGridModel.columns = columns;
-                }
-            },
-            {
-                track: () => this.pivotValueSpecs,
-                run: specs => {
-                    if (this.cubeGridModel) this.cubeGridModel.pivotValueSpecs = specs;
-                }
-            },
             // Columns rebuild in their own reaction, so anything reading them right after a query
             // change reads the outgoing set.
             {
@@ -183,13 +167,14 @@ export class CubeGridTestModel extends HoistModel {
             const cubeGridModel = new CubeGridModel({
                 cube: this.cube,
                 query: this.queryConfig(),
-                columns: this.fixedColumns,
-                pivotValueSpecs: this.pivotValueSpecs,
+                columns: FIXED_COLUMNS,
+                pivotValueSpecs: VALUE_SPECS,
                 pivotSortBy: this.pivotSortBy,
                 showPivotSummaries: this.showPivotSummaries,
                 pivotGroupsCollapsible: this.pivotGroupsCollapsible,
                 pivotExpandLevel: this.pivotExpandLevel,
                 gridConfig: {
+                    persistWith: {localStorageKey: 'cubeGridTest'},
                     showSummary: this.showSummary,
                     sizingMode: 'compact',
                     colChooserModel: true,
@@ -238,24 +223,6 @@ export class CubeGridTestModel extends HoistModel {
         return [this.sortLevel0, this.sortLevel1].map((choice, level) =>
             toPivotSort(choice, this.pivotBy[level])
         );
-    }
-
-    private get fixedColumns(): ColumnSpec[] {
-        if (!this.fixedTotalColumns) return [];
-        return this.valueFields.map(field => ({
-            field,
-            headerName: `Total ${field}`,
-            ...VALUE_SPECS[field]
-        }));
-    }
-
-    private get pivotValueSpecs() {
-        const {lockValueColumns} = this,
-            ret = {};
-        for (const [field, spec] of Object.entries(VALUE_SPECS)) {
-            ret[field] = lockValueColumns ? {...spec, hideable: false} : spec;
-        }
-        return ret;
     }
 
     private updateQuery() {
@@ -312,6 +279,17 @@ const VALUE_SPECS: Record<string, ColumnSpec> = {
     mktVal: {width: 120, renderer: numberRenderer({precision: 0})},
     quantity: {width: 100, renderer: numberRenderer({precision: 0})}
 };
+
+/**
+ * Fixed columns, hidden until added through the column chooser - the only region the chooser
+ * manages. A measure's bare name is its row total, whether or not the query pivots it.
+ */
+const FIXED_COLUMNS: ColumnSpec[] = [
+    {field: 'cubeDimension', headerName: 'Dimension', width: 100},
+    {field: 'pnl', headerName: 'Total P&L', ...VALUE_SPECS.pnl},
+    {field: 'mktVal', headerName: 'Total Mkt Val', ...VALUE_SPECS.mktVal},
+    {field: 'quantity', headerName: 'Total Qty', ...VALUE_SPECS.quantity}
+].map(it => ({...it, chooserName: it.headerName as string, hidden: true}));
 
 function toPivotSort(choice: SortChoice, dim: string): PivotSort {
     switch (choice) {

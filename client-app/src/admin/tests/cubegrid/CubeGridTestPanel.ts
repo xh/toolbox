@@ -131,11 +131,6 @@ const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
             enableClear: false,
             width: 115
         }),
-        toolbarSep(),
-        // A fixed column per value field, bound to its bare name - the row total.
-        switchInput({bind: 'fixedTotalColumns', label: 'Fixed totals'}),
-        // `hideable: false` on every measure, so the chooser cannot drop pivot columns.
-        switchInput({bind: 'lockValueColumns', label: 'Lock values'}),
         filler(),
         colChooserButton({gridModel: cubeGridModel, omit: !cubeGridModel})
     );
