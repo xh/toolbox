@@ -1,6 +1,6 @@
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {cubeGrid, CubeGridModel, PIVOT_GROUP_ID} from '@xh/hoist/cmp/cubegrid';
+import {cubeGrid, CubeGridModel} from '@xh/hoist/cmp/cubegrid';
 import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import type {QueryConfig} from '@xh/hoist/data';
@@ -11,7 +11,7 @@ import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, bindableRef, computed} from '@xh/hoist/mobx';
+import {action, bindable, bindableRef} from '@xh/hoist/mobx';
 import {isEmpty, takeRight} from 'lodash';
 import {wrapper, wrapperOption} from '../../common/Wrapper';
 
@@ -87,10 +87,20 @@ export const cubeGridPanel = hoistCmp.factory({
                     info: 'Groups collapse from their headers. Off fixes them open, with summary columns only where asked.'
                 }),
                 wrapperOption({
-                    label: 'Pivot groups collapsed',
-                    propName: 'CubeGridConfig.pivotGroupsCollapsed',
-                    control: switchInput({bind: 'pivotGroupsCollapsed'}),
-                    info: 'The pivot region and each parent pivot group collapsed to its summary.'
+                    label: 'Pivot expand level',
+                    propName: 'CubeGridConfig.pivotExpandLevel',
+                    control: select({
+                        bind: 'pivotExpandLevel',
+                        options: [
+                            {value: -1, label: 'All'},
+                            {value: 0, label: '0 - region'},
+                            {value: 1, label: '1 - top groups'},
+                            {value: 2, label: '2'}
+                        ],
+                        enableFilter: false,
+                        width: 110
+                    }),
+                    info: 'Header level to expand to, as expandLevel for rows. Applied via expandPivotToLevel().'
                 }),
                 wrapperOption({
                     label: 'Summary row',
@@ -167,8 +177,8 @@ class CubeGridPanelModel extends HoistModel {
     /** Measures pivoted into columns, capped at two - each one multiplies the column count. */
     @bindableRef accessor pivotMeasures = ['mktVal', 'pnl'];
 
-    /** Mirrors `CubeGridConfig.pivotGroupsCollapsed`, applied live through the grid's group state. */
-    @bindable accessor pivotGroupsCollapsed = false;
+    /** Mirrors `CubeGridConfig.pivotExpandLevel`, applied live through `expandPivotToLevel()`. */
+    @bindable accessor pivotExpandLevel = -1;
 
     @managed cube: Cube;
     @managed cubeGridModel: CubeGridModel;
@@ -222,9 +232,8 @@ class CubeGridPanelModel extends HoistModel {
                 run: () => this.cubeGridModel.view.updateQuery(this.queryConfig())
             },
             {
-                track: () => [this.pivotGroupsCollapsed, this.pivotGroupIds],
-                equals: 'shallow',
-                run: () => this.applyPivotGroupState()
+                track: () => this.pivotExpandLevel,
+                run: level => this.cubeGridModel.expandPivotToLevel(level)
             }
         );
     }
@@ -233,21 +242,6 @@ class CubeGridPanelModel extends HoistModel {
     @action
     setPivotMeasures(measures: string[]) {
         this.pivotMeasures = takeRight(measures ?? [], 2);
-    }
-
-    /** Group ids of the collapsible pivot groups - the region and every parent path. */
-    @computed
-    get pivotGroupIds(): string[] {
-        const {paths} = this.cubeGridModel.view.result;
-        return isEmpty(paths)
-            ? []
-            : [PIVOT_GROUP_ID, ...paths.filter(it => !isEmpty(it.children)).map(it => it.key)];
-    }
-
-    private applyPivotGroupState() {
-        const {gridModel} = this.cubeGridModel,
-            expanded = !this.pivotGroupsCollapsed;
-        this.pivotGroupIds.forEach(id => gridModel.setColumnGroupExpanded(id, expanded));
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
