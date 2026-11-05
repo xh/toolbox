@@ -81,6 +81,12 @@ export const cubeGridPanel = hoistCmp.factory({
                     info: "Summary column inside each parent path's group - needs two pivot dimensions."
                 }),
                 wrapperOption({
+                    label: 'Pivot groups collapsible',
+                    propName: 'CubeGridConfig.pivotGroupsCollapsible',
+                    control: switchInput({model: cubeGridModel, bind: 'pivotGroupsCollapsible'}),
+                    info: 'Groups collapse from their headers. Off fixes them open, with summary columns only where asked.'
+                }),
+                wrapperOption({
                     label: 'Pivot groups collapsed',
                     propName: 'CubeGridConfig.pivotGroupsCollapsed',
                     control: switchInput({bind: 'pivotGroupsCollapsed'}),
