@@ -13,6 +13,7 @@ export class InputsPageModel extends HoistModel {
 
     // Numbers
     @bindable accessor largeNumber: number = 2_000_000;
+    @bindable accessor liveCommasNumber: number = 1_250_000;
     @bindable accessor percent: number = 0.33;
 
     // Dates

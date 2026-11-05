@@ -3,7 +3,7 @@ import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {numberIs, required} from '@xh/hoist/data';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import type {NumberInputProps} from '@xh/hoist/desktop/cmp/input';
-import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import type {NumericPrecision} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -51,7 +51,13 @@ export const numberInputPanel = hoistCmp.factory({
                 wrapperOption({
                     label: 'Thousands separators',
                     propName: 'NumberInputProps.displayWithCommas',
-                    control: switchInput({bind: 'pgCommas'})
+                    info: "'always' also shows them while typing.",
+                    control: select({
+                        bind: 'pgCommas',
+                        enableFilter: false,
+                        width: 120,
+                        options: ['none', 'whenBlurred', 'always']
+                    })
                 }),
                 wrapperOption({
                     label: 'Shorthand units',
@@ -78,7 +84,7 @@ export const numberInputPanel = hoistCmp.factory({
             playground: demoPlayground({
                 config: fmtDemoConfig<NumberInputProps>('numberInput', {
                     bind: 'value',
-                    displayWithCommas: model.pgCommas || undefined,
+                    displayWithCommas: model.pgCommas === 'none' ? undefined : model.pgCommas,
                     enableShorthandUnits: model.pgShorthand || undefined,
                     precision: model.pgPrecision !== 4 ? model.pgPrecision : undefined,
                     valueLabel: model.pgValueLabel || undefined,
@@ -89,7 +95,7 @@ export const numberInputPanel = hoistCmp.factory({
                 item: numberInput({
                     bind: 'playground',
                     ...ambientProps,
-                    displayWithCommas: model.pgCommas,
+                    displayWithCommas: model.pgCommas === 'none' ? false : model.pgCommas,
                     enableShorthandUnits: model.pgShorthand,
                     precision: model.pgPrecision as NumericPrecision,
                     valueLabel: model.pgValueLabel || null,
@@ -225,7 +231,7 @@ const SEEDS = {
 
 class NumberInputPanelModel extends InputDemoModel {
     // Playground props
-    @bindable accessor pgCommas = true;
+    @bindable accessor pgCommas: 'none' | 'whenBlurred' | 'always' = 'whenBlurred';
     @bindable accessor pgShorthand = true;
     @bindable accessor pgPrecision = 0;
     @bindable accessor pgValueLabel = '';

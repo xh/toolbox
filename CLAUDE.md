@@ -299,12 +299,12 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 ## Tech Stack
 
 - **Frontend**: TypeScript, React 19, MobX, AG Grid, Highcharts, `@xh/hoist` framework
-- **Backend**: Grails 7 (Groovy/Spring Boot), `hoist-core` framework
+- **Backend**: Grails 8 (Groovy/Spring Boot), `hoist-core` framework
 - **JDK**: the JVM version used for local development and CI is set by `majorJavaVersion` in
-  `gradle.properties`; the Gradle toolchain in `build.gradle` reads that value. JDK 25+ is not
-  currently usable - Gradle 8.x caps its compatible JVM at version 24. (Note that `hoist-core`
-  itself is separately pinned to a lower bytecode level so its published JAR remains runnable
-  by older client apps - see `hoist-core` docs for the current minimum.)
+  `gradle.properties`; the Gradle toolchain in `build.gradle` reads that value. Grails 8 requires
+  JDK 21 or later, and the Gradle 9 wrapper it brings runs on JDK 25 directly. (Note that
+  `hoist-core` itself is separately pinned to a lower bytecode level so its published JAR remains
+  runnable by older client apps - see `hoist-core` docs for the current minimum.)
 - **Database**: MySQL (or H2 in-memory for quick local dev via `APP_TOOLBOX_USE_H2=true`)
 - **Client Build**: Rsbuild (Rspack + SWC), configured by `client-app/rsbuild.config.mjs` via
   `configureRsbuild()` from `@xh/hoist-dev-utils`
@@ -357,6 +357,12 @@ it before committing.
 ./gradlew test        # Spock unit tests in src/test/groovy (see hoist-core's docs/testing.md)
 ```
 
+Packaged builds lock every Gradle configuration in `STRICT` mode (see `build.gradle`). After any
+dependency change, including a `hoistCoreVersion` bump, run
+`./gradlew dependencies --write-locks -PrunHoistInline=false` and commit the changed lockfiles.
+Inline builds (`runHoistInline=true`) skip locking, because the local hoist-core checkout decides
+their dependency graph.
+
 ### Local Development
 Run both simultaneously:
 - Terminal 1: `./gradlew bootRun`
@@ -370,7 +376,8 @@ When you drive Toolbox in a browser, the developer's normal setup is the default
 be logged in, or want their own state or the OAuth flow in play. If you need to log in yourself and
 have no session to use, you can run the server on a throwaway H2 database with a temporary admin
 login. Check with the developer first if it is not clear which they want. Never enter a
-developer's own credentials. See
+developer's own credentials. A throwaway server always uses the fixed login `agent@xh.io` /
+`localDevOnly`, never a generated password, so anyone who finds its login prompt can sign in. See
 [Agent-driven sessions](docs/running-locally.md#agent-driven-sessions-with-a-throwaway-database).
 
 ### App URLs during Local Development
@@ -388,7 +395,7 @@ defines an entry point, and its filename (minus the extension) becomes the URL p
 | Mobile app | http://localhost:3000/mobile |
 
 **Example apps**: `/contact`, `/todo`, `/portfolio`, `/news`, `/recalls`, `/fileManager`,
-`/weather` - each at `http://localhost:3000/<name>`.
+`/weather`, `/favicons` - each at `http://localhost:3000/<name>`.
 
 ### Unit Tests
 

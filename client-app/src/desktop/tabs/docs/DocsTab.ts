@@ -91,7 +91,6 @@ const contentPanel = hoistCmp.factory<DocsPanelModel>({
                         content: searchTooltip(),
                         hoverOpenDelay: 500,
                         placement: 'bottom',
-                        popoverClassName: 'tb-docs-tooltip',
                         item: button({
                             icon: Icon.search(),
                             minimal: true,
@@ -191,7 +190,6 @@ const searchPanel = hoistCmp.factory<DocsPanelModel>({
                         content: searchTooltip('Back to document'),
                         hoverOpenDelay: 400,
                         placement: 'bottom',
-                        popoverClassName: 'tb-docs-tooltip',
                         item: button({
                             icon: Icon.arrowLeft(),
                             minimal: true,

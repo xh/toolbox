@@ -10,6 +10,7 @@ import {errorWidget} from '../widgets/ErrorWidget';
 import {gridWidget} from '../widgets/GridWidget';
 import {optionsWidget} from '../widgets/OptionsWidget';
 import {panelWidget} from '../widgets/PanelWidget';
+import {sampleViewSpecs} from '../widgets/SampleWidget';
 import {treeGridWidget} from '../widgets/TreeGridWidget';
 import {wrapper, wrapperAction, wrapperOption} from '../../../common/Wrapper';
 
@@ -179,7 +180,8 @@ class DashContainerPanelModel extends HoistModel {
                 title: 'Error Example',
                 icon: Icon.skull(),
                 content: errorWidget({componentName: 'DashContainer'})
-            }
+            },
+            ...sampleViewSpecs()
         ]
     });
 

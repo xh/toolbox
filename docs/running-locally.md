@@ -48,7 +48,7 @@ Once both are up, open the app in your browser:
 
 Each file in `client-app/src/apps/` defines an entry point whose filename (minus extension) becomes
 the URL path. The standalone example apps are reachable the same way: `/contact`, `/todo`,
-`/portfolio`, `/news`, `/recalls`, `/fileManager`, `/weather`.
+`/portfolio`, `/news`, `/recalls`, `/fileManager`, `/weather`, `/favicons`.
 
 ### Updating to the latest hoist-react snapshot
 
@@ -126,6 +126,13 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
   Either way the sibling `../hoist-core` is used and the pinned `hoistCoreVersion` is ignored. Only
   needed when you are changing or testing hoist-core code.
 
+  Inline builds also skip Gradle dependency locking, because the local checkout decides the
+  dependency graph. If you change a dependency while you work inline, regenerate the lockfiles in
+  packaged mode before you commit:
+  ```
+  ./gradlew dependencies --write-locks -PrunHoistInline=false
+  ```
+
 ### Running multiple instances
 
 To run a second, independent instance alongside the first (e.g. to exercise multi-instance
@@ -156,14 +163,18 @@ local MySQL database untouched. All settings are passed on the command line for 
 
 * **Server** - from the project root:
   ```
-  export AGENT_PASSWORD=$(openssl rand -hex 12)
   APP_TOOLBOX_USE_H2=true \
   APP_TOOLBOX_OAUTH_PROVIDER=NONE \
   APP_TOOLBOX_BOOTSTRAP_ADMIN_USER=agent@xh.io \
-  APP_TOOLBOX_BOOTSTRAP_ADMIN_PASSWORD=$AGENT_PASSWORD \
+  APP_TOOLBOX_BOOTSTRAP_ADMIN_PASSWORD=localDevOnly \
   ./gradlew bootRun
   ```
   Startup logs `Local admin user available as per instanceConfig` once the user is seeded.
+
+  Always use these exact credentials - `agent@xh.io` / `localDevOnly` - and never a generated
+  password. Then the developer, or any other agent that finds the login prompt, can sign in to a
+  throwaway server without tracking down the session that started it. The password guards nothing:
+  the user exists only in an in-memory database on a local machine.
 
 * **Client** - start as usual, with `pnpm startWithHoist` to test local hoist-react changes.
 
@@ -174,7 +185,7 @@ local MySQL database untouched. All settings are passed on the command line for 
   await fetch('/api/xh/login', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: new URLSearchParams({username: 'agent@xh.io', password: '<AGENT_PASSWORD>'})
+      body: new URLSearchParams({username: 'agent@xh.io', password: 'localDevOnly'})
   });
   ```
   Reload the page after a `{"success":true}` response.
