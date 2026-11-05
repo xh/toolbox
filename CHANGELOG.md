@@ -25,7 +25,7 @@
 
 ### Libraries
 
-* @xh/hoist-chat-kit `1.0` - new
+* @xh/hoist-chat-kit `2.0` - new
 
 ## 12.0.0 - 2026-11-02
 

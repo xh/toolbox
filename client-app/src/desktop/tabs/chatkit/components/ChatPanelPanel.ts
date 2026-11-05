@@ -149,12 +149,6 @@ export const chatPanelPanel = hoistCmp.factory({
                             })
                         }),
                         wrapperOption({
-                            label: 'Stop hint',
-                            propName: 'ChatStatusRegionProps.showStopHint',
-                            info: 'The "Esc to stop" in the busy line above the composer.',
-                            control: switchInput({bind: 'showStopHint'})
-                        }),
-                        wrapperOption({
                             label: 'Citation markers',
                             propName: 'ChatPanelProps.citationMarkers',
                             info: 'Renders the reply\'s inline "[1]" as buttons for its sources.',
@@ -285,8 +279,7 @@ export const chatPanelPanel = hoistCmp.factory({
                                         className: 'tb-chatkit-chat-panel__custom-footer',
                                         items: [
                                             chatStatusRegion({
-                                                model: model.customChatModel.composerModel,
-                                                assistantName: 'Analyst'
+                                                model: model.customChatModel.composerModel
                                             }),
                                             chatComposer({
                                                 model: model.customChatModel.composerModel,
@@ -327,7 +320,6 @@ class ChatPanelPanelModel extends HoistModel {
     @bindable accessor showSuggestions = true;
     @bindable accessor placeholder = 'Ask about your portfolio...';
     @bindable accessor composerLayout: 'stacked' | 'inline' = 'stacked';
-    @bindable accessor showStopHint = true;
     @bindable accessor citationMarkers = true;
     @bindable accessor compact = false;
     @bindable accessor reducedMotion = false;
@@ -356,8 +348,7 @@ class ChatPanelPanelModel extends HoistModel {
             messageListProps: {
                 assistantName: this.assistantName,
                 showMessageHeader: this.showMessageHeader
-            },
-            statusRegionProps: {showStopHint: this.showStopHint}
+            }
         };
     }
 
@@ -383,8 +374,7 @@ class ChatPanelPanelModel extends HoistModel {
             messageListProps: rawObject({
                 assistantName: this.assistantName || undefined,
                 showMessageHeader: this.showMessageHeader ? undefined : false
-            }),
-            statusRegionProps: this.showStopHint ? undefined : raw('{showStopHint: false}')
+            })
         });
     }
 

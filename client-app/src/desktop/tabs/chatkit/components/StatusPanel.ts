@@ -47,8 +47,7 @@ export const statusPanel = hoistCmp.factory({
     model: creates(() => StatusPanelModel),
 
     render({model}) {
-        const {status, label, stalledMs, showSpinner, startedAt, endedAt, chatModel, showStopHint} =
-            model;
+        const {status, label, stalledMs, showSpinner, startedAt, endedAt, chatModel} = model;
         return wrapper({
             title: PAGE.title,
             icon: PAGE.icon(),
@@ -58,8 +57,10 @@ export const statusPanel = hoistCmp.factory({
                 'says "No response for 34s". The kit draws every status with one icon, one label and',
                 'one color, from one table, through `ChatStatusCue`. `ChatElapsed` ticks the time.',
                 '',
-                'Above the composer, `ChatStatusRegion` shows one line: the most urgent status of',
-                'the thread, with at most one action - Try Again, Refresh Status, Cancel or Discard.',
+                'Above the composer, `ChatStatusRegion` shows a line only for what stops a send or',
+                "needs the user's action - a failure, a blocked send, offline, a retry countdown or",
+                'a restored draft - with at most one action: Try Again, Refresh Status, Cancel or',
+                'Discard. A reply in progress shows its progress in the reply, not here.',
                 '`getChatReplyStatus()` in `/core/` reads a message into its status, for a layout of',
                 'your own such as a docked header.'
             ],
@@ -142,11 +143,6 @@ export const statusPanel = hoistCmp.factory({
                                 enableFilter: false,
                                 width: 150
                             })
-                        }),
-                        wrapperOption({
-                            label: 'Show "Esc to stop"',
-                            propName: 'ChatStatusRegionProps.showStopHint',
-                            control: switchInput({bind: 'showStopHint'})
                         }),
                         wrapperOption({
                             label: 'Block sending',
@@ -258,16 +254,14 @@ export const statusPanel = hoistCmp.factory({
                         note: 'A custom layout: message list, the region, then the composer. Set the next reply in the rail, then send.',
                         item: demoFrame({
                             label: 'chatStatusRegion()',
-                            info: "The thread's next action, in one line above the composer. Stalls show after 6 seconds here.",
+                            info: 'What stops a send or needs your action, in one line above the composer. A stall shows in the reply after 6 seconds here.',
                             item: vframe({
                                 className: 'tb-chatkit-status__chat',
                                 height: 420,
                                 items: [
                                     chatMessageList({model: chatModel, assistantName: 'Analyst'}),
                                     chatStatusRegion({
-                                        model: chatModel.composerModel,
-                                        assistantName: 'Analyst',
-                                        showStopHint
+                                        model: chatModel.composerModel
                                     }),
                                     chatComposer({
                                         model: chatModel.composerModel,
@@ -336,7 +330,6 @@ class StatusPanelModel extends HoistModel {
     // Status region
     @bindable accessor nextReply: NextReply = 'ok';
     @bindable accessor blockSending = false;
-    @bindable accessor showStopHint = true;
 
     @managed readonly chatModel = new ChatModel({
         transport: new ScriptedChatTransport({
