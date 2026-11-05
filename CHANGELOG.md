@@ -44,6 +44,7 @@
 
 * Admin > Tests > Grid Scrolling now compares a Hoist `Grid` with a bare `AgGridReact` under measured, stepped scrolls, reporting total and worst-step times. Its options cover column virtualization and cell formatting (plain text, formatters or renderers), the two settings that most affect scroll cost.
 * Added Admin > Tests > Grid Formatter Parity, which checks that `Column.textRenderer` and `renderer` cells display the same.
+* Moved every formatted number and date column in the examples and admin tests to `Column.textRenderer`, except the two Grid test columns that keep a tooltip and the Grid Scrolling and Formatter Parity pages that compare both forms on purpose.
 * Enabled Gradle dependency locking - after changing a dependency, run `./gradlew dependencies --write-locks -PrunHoistInline=false` and commit the lockfiles.
 * Updated `User` to hash passwords with hoist-core's `HoistPasswordEncryptor`, a drop-in replacement for jasypt's `BasicPasswordEncryptor` removed in hoist-core v44.
 * Upgraded to Grails 8 and the Gradle 9 wrapper.

@@ -2,7 +2,7 @@ import type {LoadSpec, PlainObject} from '@xh/hoist/core';
 import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {GridModel, localDate, ExcelFormat} from '@xh/hoist/cmp/grid';
-import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {fmtNumberTooltip, millionsTextRenderer, numberTextRenderer} from '@xh/hoist/format';
 
 export class ExternalSortGridPanelModel extends HoistModel {
     @managed gridModel: GridModel;
@@ -77,7 +77,7 @@ export class ExternalSortGridPanelModel extends HoistModel {
                     },
                     width: 150,
                     tooltip: val => fmtNumberTooltip(val),
-                    renderer: millionsRenderer({
+                    textRenderer: millionsTextRenderer({
                         precision: 1,
                         label: true
                     }),
@@ -93,7 +93,7 @@ export class ExternalSortGridPanelModel extends HoistModel {
                     width: 150,
                     absSort: true,
                     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
-                    renderer: numberRenderer({
+                    textRenderer: numberTextRenderer({
                         precision: 0,
                         ledger: true,
                         colorSpec: true
