@@ -1,4 +1,4 @@
-import {numberRenderer} from '@xh/hoist/format';
+import {numberTextRenderer} from '@xh/hoist/format';
 import type {ColumnSpec, ColumnRenderer} from '@xh/hoist/cmp/grid';
 
 const fullNameRenderer: ColumnRenderer = (v, {record}) =>
@@ -49,14 +49,14 @@ export const tenureCol: ColumnSpec = {
     chooserName: 'Tenure (Years)',
     width: 90,
     align: 'right',
-    renderer: numberRenderer({precision: 0, label: ' yrs'})
+    textRenderer: numberTextRenderer({precision: 0, label: ' yrs'})
 };
 
 export const salaryCol: ColumnSpec = {
     field: {name: 'salary', type: 'number'},
     width: 90,
     align: 'right',
-    renderer: numberRenderer({precision: 0, prefix: '$'})
+    textRenderer: numberTextRenderer({precision: 0, prefix: '$'})
 };
 
 export const locationCol: ColumnSpec = {

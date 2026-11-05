@@ -18,6 +18,7 @@
 
 ### New Features
 
+* Added demos for hoist-react's new `Column.formatter`. A Cell Formatting option on the Standard grid switches its trade columns between formatters and renderers. The Number Formats page names the formatter to use in a grid column.
 * Added `StoreFilterField` and `GridFindField` to the desktop `ZoneGrid` demo, and bound the mobile demo's filter to its `ZoneGridModel`. Both search the fields mapped to the grid's zones, using hoist-react's new ZoneGrid support.
 * Added an `IconPicker` demo page to Forms + Inputs, including Toolbox's own custom icons alongside Hoist's built-in set.
 * Updated the desktop and mobile Icons galleries to browse hoist-react's new icon catalog - search now matches aliases and keywords, and custom icons are flagged.
@@ -41,6 +42,9 @@
 
 ### Technical
 
+* Admin > Tests > Grid Scrolling now compares a Hoist `Grid` with a bare `AgGridReact` under measured, stepped scrolls, reporting total and worst-step times. Its options cover column virtualization and cell formatting (plain text, formatters or renderers), the two settings that most affect scroll cost.
+* Added Admin > Tests > Grid Formatter Parity, which checks that `Column.textRenderer` and `renderer` cells display the same.
+* Moved every formatted number and date column in the examples and admin tests to `Column.textRenderer`, except the two Grid test columns that keep a tooltip and the Grid Scrolling and Formatter Parity pages that compare both forms on purpose.
 * Enabled Gradle dependency locking - after changing a dependency, run `./gradlew dependencies --write-locks -PrunHoistInline=false` and commit the lockfiles.
 * Updated `User` to hash passwords with hoist-core's `HoistPasswordEncryptor`, a drop-in replacement for jasypt's `BasicPasswordEncryptor` removed in hoist-core v44.
 * Upgraded to Grails 8 and the Gradle 9 wrapper.
