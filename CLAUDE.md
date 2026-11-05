@@ -357,6 +357,12 @@ it before committing.
 ./gradlew test        # Spock unit tests in src/test/groovy (see hoist-core's docs/testing.md)
 ```
 
+Packaged builds lock every Gradle configuration in `STRICT` mode (see `build.gradle`). After any
+dependency change, including a `hoistCoreVersion` bump, run
+`./gradlew dependencies --write-locks -PrunHoistInline=false` and commit the changed lockfiles.
+Inline builds (`runHoistInline=true`) skip locking, because the local hoist-core checkout decides
+their dependency graph.
+
 ### Local Development
 Run both simultaneously:
 - Terminal 1: `./gradlew bootRun`
