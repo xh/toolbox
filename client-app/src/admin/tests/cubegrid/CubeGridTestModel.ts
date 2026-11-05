@@ -7,7 +7,7 @@ import type {CubeFieldSpec, View} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, bindableRef, observable, observableRef, runInAction} from '@xh/hoist/mobx';
-import {isEmpty, uniq} from 'lodash';
+import {isEmpty, map, uniq} from 'lodash';
 import {generateLeaves, getProfile, tickLeaves} from './CubeGridBenchData';
 
 /** `experimental.maxPatchRatio` applied when record patching is toggled on. */
@@ -48,12 +48,12 @@ export class CubeGridTestModel extends HoistModel {
     @bindable accessor excludeEmptyPivotValues = false;
     @bindable accessor emptyPathLabel = '(empty)';
     /** Null for unlimited. */
-    @bindable accessor maxPivotPaths: number = null;
+    @bindable accessor maxPivotPaths: number = 100;
 
     //------------------------
     // Presentation
     //------------------------
-    @bindable accessor showPivotSummaries: boolean | HSide = 'right';
+    @bindable accessor showPivotSummaries: boolean | HSide = 'left';
     @bindable accessor showSummary: boolean | VSide = false;
     @bindable accessor pivotGroupsCollapsible = true;
     /** Initial level on a rebuild, and pushed via `expandPivotToLevel` when changed. */
@@ -168,7 +168,7 @@ export class CubeGridTestModel extends HoistModel {
                 cube: this.cube,
                 query: this.queryConfig(),
                 columns: FIXED_COLUMNS,
-                pivotValueSpecs: VALUE_SPECS,
+                pivotColumns: map(VALUE_SPECS, (spec, field) => ({field, ...spec})),
                 pivotSortBy: this.pivotSortBy,
                 showPivotSummaries: this.showPivotSummaries,
                 pivotGroupsCollapsible: this.pivotGroupsCollapsible,
@@ -275,7 +275,7 @@ export class CubeGridTestModel extends HoistModel {
 }
 
 const VALUE_SPECS: Record<string, ColumnSpec> = {
-    pnl: {width: 110, renderer: numberRenderer({precision: 0, colorSpec: true})},
+    pnl: {width: 110, absSort: true, renderer: numberRenderer({precision: 0, colorSpec: true})},
     mktVal: {width: 120, renderer: numberRenderer({precision: 0})},
     quantity: {width: 100, renderer: numberRenderer({precision: 0})}
 };

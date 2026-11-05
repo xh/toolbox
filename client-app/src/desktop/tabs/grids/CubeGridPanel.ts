@@ -191,19 +191,33 @@ class CubeGridPanelModel extends HoistModel {
         // The model owns the view it creates here. Pivot columns appear once the cube has data.
         const positions = {headerName: '# Pos', width: 80, align: 'right' as const},
             mktVal = {width: 120, renderer: v => fmtMillions(v, {precision: 2, label: true})},
-            pnl = {width: 110, renderer: v => fmtNumber(v, {precision: 0, colorSpec: true})};
+            pnl = {
+                width: 110,
+                absSort: true,
+                renderer: v => fmtNumber(v, {precision: 0, colorSpec: true})
+            };
+        // One set of specs serves both regions: as fixed columns, shown whether or not the
+        // query pivots, where a measure's bare field is its row total - and as the pivot
+        // columns built for each path to their right.
+        const columns = [
+            {field: 'positions', ...positions},
+            {field: 'mktVal', ...mktVal},
+            {field: 'pnl', ...pnl}
+        ];
         this.cubeGridModel = new CubeGridModel({
             cube: this.cube,
             query: this.queryConfig(),
-            // Fixed columns, shown whether or not the query pivots. A measure's bare field is its
-            // row total, so these double as the totals for the pivot columns to their right.
-            columns: [
-                {field: 'positions', ...positions},
-                {field: 'mktVal', ...mktVal},
-                {field: 'pnl', ...pnl}
-            ],
-            showPivotSummaries: 'right',
-            pivotValueSpecs: {positions, mktVal, pnl},
+            columns,
+            pivotColumns: columns,
+            showPivotSummaries: true,
+            // Bold the P&L total of each region, header and cells, leaving its other summaries
+            // and cells alone - and the `Total` group header above it.
+            pivotColumnSpecFn: ({kind, field}) =>
+                kind === 'total' && field.name === 'pnl'
+                    ? {cellClass: 'tb-cube-grid__bold', headerClass: 'tb-cube-grid__bold'}
+                    : null,
+            pivotColumnGroupSpecFn: ({kind}) =>
+                kind === 'total' ? {headerClass: 'tb-cube-grid__bold'} : null,
             // Managed autosize fits the tree column to its fund names, and re-fits whenever a
             // structural change mints new columns.
             gridConfig: {

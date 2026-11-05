@@ -15,9 +15,9 @@ import {
 } from './CubeGridTestModel';
 
 /**
- * A live CubeGrid with its config surface on three toolbars: the query on top, the presentation
- * below it, and the data on the bottom. The split is the real one - query config lives on the
- * Query, everything else on CubeGridModel.
+ * A live CubeGrid with its config surface on four toolbars: the query shape on top, its options
+ * next, the presentation below them, and the data on the bottom. The split is the real one - query
+ * config lives on the Query, everything else on CubeGridModel.
  */
 export const CubeGridTestPanel = hoistCmp({
     displayName: 'CubeGridTestPanel',
@@ -25,7 +25,7 @@ export const CubeGridTestPanel = hoistCmp({
 
     render({model}) {
         return panel({
-            tbar: fragment(queryBar(), presentationBar()),
+            tbar: fragment(queryBar(), queryOptionsBar(), presentationBar()),
             bbar: dataBar(),
             mask: model.rebuilding,
             item: model.cubeGridModel
@@ -37,39 +37,43 @@ export const CubeGridTestPanel = hoistCmp({
 
 const queryBar = hoistCmp.factory<CubeGridTestModel>(() =>
     toolbar(
-        'Group',
+        span('Group'),
         select({
             bind: 'groupBy',
             options: CubeGridTestModel.GROUP_DIMS,
             enableMulti: true,
             enableClear: false,
-            width: 220
+            width: 300
         }),
-        'Pivot',
+        span('Pivot'),
         select({
             bind: 'pivotBy',
             options: CubeGridTestModel.PIVOT_DIMS,
             enableMulti: true,
             enableClear: false,
-            width: 250
+            width: 280
         }),
-        'Values',
+        span('Values'),
         select({
             bind: 'valueFields',
             options: CubeGridTestModel.VALUE_FIELDS,
             enableMulti: true,
             enableClear: false,
-            width: 230
-        }),
-        toolbarSep(),
+            width: 280
+        })
+    )
+);
+
+const queryOptionsBar = hoistCmp.factory<CubeGridTestModel>(() =>
+    toolbar(
         switchInput({bind: 'includeRoot', label: 'Root'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves'}),
         switchInput({bind: 'omitRedundantNodes', label: 'Omit redundant'}),
         toolbarSep(),
         switchInput({bind: 'excludeEmptyPivotValues', label: 'Drop empties'}),
-        'Empty label',
+        span('Empty label'),
         textInput({bind: 'emptyPathLabel', width: 80}),
-        'Max',
+        span('Max paths'),
         numberInput({bind: 'maxPivotPaths', width: 70, placeholder: 'none', min: 1})
     )
 );
@@ -77,7 +81,7 @@ const queryBar = hoistCmp.factory<CubeGridTestModel>(() =>
 const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
     const {cubeGridModel} = model;
     return toolbar(
-        'Pivot summaries',
+        span('Pivot summaries'),
         select({
             bind: 'showPivotSummaries',
             options: SUMMARY_H_OPTIONS,
@@ -85,7 +89,7 @@ const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
             enableClear: false,
             width: 150
         }),
-        'Summary row',
+        span('Summary row'),
         select({
             bind: 'showSummary',
             options: SUMMARY_V_OPTIONS,
@@ -96,7 +100,7 @@ const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
         toolbarSep(),
         switchInput({bind: 'pivotGroupsCollapsible', label: 'Collapsible'}),
         toolbarSep(),
-        'Expand',
+        span('Expand'),
         select({
             bind: 'pivotExpandLevel',
             options: EXPAND_LEVEL_OPTIONS,
@@ -115,7 +119,7 @@ const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
             onClick: () => cubeGridModel?.collapseAllPivotGroups()
         }),
         toolbarSep(),
-        'Sort L0',
+        span('Sort L0'),
         select({
             bind: 'sortLevel0',
             options: SORT_OPTIONS,
@@ -123,7 +127,7 @@ const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
             enableClear: false,
             width: 115
         }),
-        'L1',
+        span('L1'),
         select({
             bind: 'sortLevel1',
             options: SORT_OPTIONS,
@@ -138,7 +142,7 @@ const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
 
 const dataBar = hoistCmp.factory<CubeGridTestModel>(({model}) =>
     toolbar(
-        'Leaves',
+        span('Leaves'),
         select({
             bind: 'leafCount',
             options: [500, 5000, 35000],
