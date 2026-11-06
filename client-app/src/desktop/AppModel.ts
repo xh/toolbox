@@ -89,6 +89,7 @@ import {inspectorPanel} from './tabs/system/InspectorPanel';
 import {jsxPanel} from './tabs/system/JsxPanel';
 import {markdownPanel} from './tabs/components/general/MarkdownPanel';
 import {numberFormatsPanel} from './tabs/system/formats/NumberFormatsPanel';
+import {pdfViewerPanel} from './tabs/components/general/PdfViewerPanel';
 import {pinPadPanel} from './tabs/components/general/PinPadPanel';
 import {placeholderPanel} from './tabs/components/general/PlaceholderPanel';
 import {relativeTimestampPanel} from './tabs/components/general/relativetimestamp/RelativeTimestampPanel';
@@ -325,6 +326,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'errorMessage', path: '/errorMessage'},
                             {name: 'icons', path: '/icons'},
                             {name: 'markdown', path: '/markdown'},
+                            {name: 'pdfViewer', path: '/pdfViewer'},
                             {name: 'dateRangePicker', path: '/dateRangePicker'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
@@ -600,6 +602,7 @@ export class AppModel extends BaseAppModel {
                             {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
                             {id: 'icons', content: iconsPanel},
                             {id: 'markdown', content: markdownPanel},
+                            {id: 'pdfViewer', title: 'PdfViewer', content: pdfViewerPanel},
                             {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                             {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                             {id: 'timestamp', content: relativeTimestampPanel}
