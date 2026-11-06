@@ -117,7 +117,6 @@ export const statCardPanel = hoistCmp.factory({
                             control: iconPicker({
                                 bind: 'infoIcon',
                                 valueField: 'name',
-                                compact: true,
                                 width: 120
                             })
                         }),
