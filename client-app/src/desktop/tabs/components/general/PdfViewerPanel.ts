@@ -2,7 +2,7 @@ import {div, span} from '@xh/hoist/cmp/layout';
 import type {PdfViewerToolbarSpec} from '@xh/hoist/cmp/pdfviewer';
 import {pdfViewer, PdfViewerModel} from '@xh/hoist/cmp/pdfviewer';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {button, modalToggleButton} from '@xh/hoist/desktop/cmp/button';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -40,7 +40,7 @@ export const pdfViewerPanel = hoistCmp.factory({
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/other/PdfViewerPanel.ts',
+                    url: '$TB/client-app/src/desktop/tabs/components/general/PdfViewerPanel.ts',
                     notes: 'This example.'
                 },
                 {url: '$HR/cmp/pdfviewer/PdfViewer.ts', notes: 'Hoist component.'},
@@ -99,7 +99,6 @@ export const pdfViewerPanel = hoistCmp.factory({
                 icon: Icon.filePdf(),
                 compactHeader: true,
                 modelConfig: {modalSupport: true, collapsible: false, resizable: false},
-                headerItems: [modalToggleButton()],
                 item: pdfViewer({model: model.pdfViewerModel})
             })
         });
