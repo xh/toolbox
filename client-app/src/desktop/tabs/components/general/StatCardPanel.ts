@@ -30,6 +30,7 @@ interface PlaygroundCardProps {
     infoTooltip?: string;
     intent?: Intent;
     accent?: string;
+    size?: StatCardProps['size'];
 }
 
 /**
@@ -51,13 +52,13 @@ const SALES_CARDS: StatCardProps[] = [
     },
     {
         title: 'Avg Order Value',
-        value: fmtLedger(135),
+        value: fmtNumber(135, {precision: 0}),
         subValue: fmtChange(0.055),
         detail: 'Up from 128 last month'
     },
     {
         title: 'Returns',
-        value: fmtLedger(87412),
+        value: fmtNumber(87412, {precision: 0}),
         subValue: fmtChange(0.093, true),
         detail: 'Highest in Outerwear'
     },
@@ -120,6 +121,17 @@ export const statCardPanel = hoistCmp.factory({
                             })
                         }),
                         wrapperOption({
+                            label: 'Size',
+                            propName: 'StatCardProps.size',
+                            control: select({
+                                bind: 'size',
+                                enableFilter: false,
+                                enableClear: true,
+                                width: 120,
+                                options: ['standard', 'large']
+                            })
+                        }),
+                        wrapperOption({
                             label: 'Accent',
                             propName: 'StatCardProps.accent',
                             control: select({
@@ -160,6 +172,23 @@ export const statCardPanel = hoistCmp.factory({
                         title: 'Wrapping',
                         note: 'At 560px, cards wrap into an even grid - no value is cut short.',
                         item: div({style: {width: 560}, item: salesStrip()})
+                    }),
+                    demoSection({
+                        title: 'Large',
+                        note: "size: 'large' for a headline figure, above a standard strip.",
+                        items: [
+                            statCard({
+                                title: 'Net Revenue · This Quarter',
+                                value: fmtMillions(7418250, {precision: 2, label: true}),
+                                subValue: fmtChange(0.061),
+                                detail: 'vs. last quarter, 42 locations',
+                                size: 'large'
+                            }),
+                            statCardStrip({
+                                marginTop: 10,
+                                items: SALES_CARDS.slice(1, 4).map(it => statCard(it))
+                            })
+                        ]
                     }),
                     demoSection({
                         title: 'Sub-value and Units',
@@ -312,10 +341,6 @@ function textOption(label: string, bind: keyof PlaygroundCardProps) {
     });
 }
 
-function fmtLedger(v: number) {
-    return fmtNumber(v, {precision: 0, ledger: true});
-}
-
 /** A change with an up/down glyph, colored by sign - or the reverse where a rise is bad. */
 function fmtChange(v: number, riseIsBad: boolean = false) {
     const colorSpec: NumberFormatOptions['colorSpec'] = riseIsBad
@@ -332,6 +357,7 @@ class StatCardPanelModel extends HoistModel {
     @bindable accessor infoTooltip: string = null;
     @bindable accessor intent: Intent = null;
     @bindable accessor accent: string = null;
+    @bindable accessor size: StatCardProps['size'] = null;
 
     /**
      * Props for the Playground card. Emptied fields resolve to undefined, so the snippet omits
@@ -339,7 +365,7 @@ class StatCardPanelModel extends HoistModel {
      * cannot drift from the instance beside it.
      */
     get cardProps(): PlaygroundCardProps {
-        const {title, value, subValue, detail, infoTooltip, intent, accent} = this;
+        const {title, value, subValue, detail, infoTooltip, intent, accent, size} = this;
         return {
             title,
             value,
@@ -347,7 +373,8 @@ class StatCardPanelModel extends HoistModel {
             detail: detail || undefined,
             infoTooltip: infoTooltip || undefined,
             intent: intent || undefined,
-            accent: accent || undefined
+            accent: accent || undefined,
+            size: size || undefined
         };
     }
 }
