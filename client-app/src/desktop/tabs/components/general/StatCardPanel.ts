@@ -5,7 +5,7 @@ import type {Intent} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {select, textInput} from '@xh/hoist/desktop/cmp/input';
 import type {NumberFormatOptions} from '@xh/hoist/format';
-import {fmtNumber, fmtPercent} from '@xh/hoist/format';
+import {fmtMillions, fmtNumber, fmtPercent} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {
@@ -39,9 +39,9 @@ interface PlaygroundCardProps {
 const SALES_CARDS: StatCardProps[] = [
     {
         title: 'Net Revenue',
-        value: fmtLedger(2483960),
+        value: fmtMillions(2483960, {precision: 2, label: true}),
         subValue: fmtChange(0.042),
-        detail: 'vs. last month, across 42 locations'
+        detail: 'vs. last month, 42 locations'
     },
     {
         title: 'Orders',
@@ -153,25 +153,17 @@ export const statCardPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'In a Strip',
-                        note: 'statCardStrip(...cards) - each card takes an equal share of the width.',
+                        note: 'Each card takes an equal share of the row.',
                         item: salesStrip()
                     }),
                     demoSection({
                         title: 'Wrapping',
-                        note: [
-                            'The same strip at 560px. When cards no longer fit on one row, the',
-                            'strip becomes an even grid sized to its widest card, so no value is',
-                            'cut short. Hover a truncated line for its full text.'
-                        ].join(' '),
+                        note: 'At 560px, cards wrap into an even grid - no value is cut short.',
                         item: div({style: {width: 560}, item: salesStrip()})
                     }),
                     demoSection({
                         title: 'Sub-value and Units',
-                        note: [
-                            "subValue - a change, here from fmtPercent. A unit from fmtNumber's",
-                            '`label` renders smaller than the figure. Operating Costs inverts its',
-                            'colorSpec, as a rise in costs is bad.'
-                        ].join(' '),
+                        note: "subValue for a change, fmtNumber's label for a unit.",
                         item: statCardStrip(
                             statCard({
                                 title: 'Operating Costs · This Quarter',
@@ -189,7 +181,7 @@ export const statCardPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Intent',
-                        note: 'intent - flags a status on the border, as with Card. The value keeps its own color.',
+                        note: 'intent flags a status on the border, as with Card.',
                         item: statCardStrip(
                             statCard({title: 'Overdue Invoices', value: 37, intent: 'warning'}),
                             statCard({
@@ -208,10 +200,7 @@ export const statCardPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Accent',
-                        note: [
-                            'accent - a CSS color marking a category or series, not a status. The',
-                            'second strip sets --xh-stat-card-accent-top/left for a left bar.'
-                        ].join(' '),
+                        note: 'accent marks a category. CSS variables move it to the left.',
                         items: [
                             regionStrip(),
                             div({
@@ -223,7 +212,7 @@ export const statCardPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Clickable',
-                        note: 'onClick - drill into a figure. Cards take focus and respond to Enter and Space.',
+                        note: 'onClick drills into a figure, by mouse or keyboard.',
                         item: statCardStrip(
                             statCard({
                                 title: 'Open Orders',
@@ -242,11 +231,11 @@ export const statCardPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Mixed Widths',
-                        note: 'flex and width on a card weight or fix its share of the strip.',
+                        note: 'flex and width on a card weight or fix its share.',
                         item: statCardStrip(
                             statCard({
                                 title: 'Portfolio Value',
-                                value: fmtLedger(48250000),
+                                value: fmtMillions(48250000, {precision: 2, label: true}),
                                 flex: 2
                             }),
                             statCard({title: 'Positions', value: 312}),
@@ -255,7 +244,7 @@ export const statCardPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Restyled with CSS Variables',
-                        note: 'Uppercase titles, set on a container class.',
+                        note: 'Tinted, borderless cards, set by CSS variables on a container.',
                         item: demoFrame({
                             className: 'tb-stat-card-panel__headline',
                             item: statCardStrip(
@@ -264,11 +253,20 @@ export const statCardPanel = hoistCmp.factory({
                                     value: '82%',
                                     detail: '4,100 of 5,000 pallets'
                                 }),
-                                statCard({title: 'Open Tickets', value: 37}),
+                                statCard({
+                                    title: 'Open Tickets',
+                                    value: 37,
+                                    subValue: fmtNumber(5, {
+                                        precision: 0,
+                                        withSignGlyph: true,
+                                        colorSpec: {pos: 'xh-neg-val', neg: 'xh-pos-val'}
+                                    }),
+                                    detail: 'Since Monday'
+                                }),
                                 statCard({
                                     title: 'Next Restock',
                                     value: '6 days',
-                                    detail: 'Arrives 2026-11-04'
+                                    detail: 'Arrives 2026-11-12'
                                 })
                             )
                         })
@@ -330,7 +328,7 @@ class StatCardPanelModel extends HoistModel {
     @bindable accessor title = 'Net Revenue';
     @bindable accessor value = '€2.48m';
     @bindable accessor subValue = '+4.2%';
-    @bindable accessor detail = 'vs. last month, across 42 locations';
+    @bindable accessor detail = 'vs. last month, 42 locations';
     @bindable accessor infoTooltip: string = null;
     @bindable accessor intent: Intent = null;
     @bindable accessor accent: string = null;
