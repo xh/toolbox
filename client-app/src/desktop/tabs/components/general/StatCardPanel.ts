@@ -364,7 +364,7 @@ class StatCardPanelModel extends HoistModel {
     @bindable accessor value = '€2.48m';
     @bindable accessor subValue = '+4.2%';
     @bindable accessor detail = 'vs. last month, 42 locations';
-    @bindable accessor infoTooltip: string = null;
+    @bindable accessor infoTooltip = 'Net of returns and discounts.';
     /** `Icon` name for `infoIcon`, held apart from `cardProps` as the card and snippet render it differently. */
     @bindable accessor infoIcon: string = null;
     @bindable accessor intent: Intent = null;
