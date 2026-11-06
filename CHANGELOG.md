@@ -14,6 +14,14 @@
 
 ## 13.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added a `PdfViewer` demo page to Components > General, showing hoist-react's new pdf.js-based document viewer with its toolbar options and model state.
+
+### Libraries
+
+* pdfjs-dist `6.5`
+
 ## 12.0.0 - 2026-11-02
 
 ### New Features
