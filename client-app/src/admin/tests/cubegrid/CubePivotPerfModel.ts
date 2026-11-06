@@ -379,9 +379,9 @@ export class CubePivotPerfModel extends HoistModel {
                 gridMs = time(() => {
                     cubeGrid = new CubeGridModel({
                         view,
-                        showPivotSummaries: 'right',
                         columns: pivotDims ? [] : measures.map(name => ({field: name, width: 100})),
-                        gridConfig: {autosizeOptions: {mode: 'disabled'}}
+                        gridConfig: {autosizeOptions: {mode: 'disabled'}},
+                        pivotConfig: {showSummaries: 'right'}
                     });
                 });
             }

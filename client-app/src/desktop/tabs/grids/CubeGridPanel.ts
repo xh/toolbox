@@ -58,10 +58,10 @@ export const cubeGridPanel = hoistCmp.factory({
             options: [
                 wrapperOption({
                     label: 'Show pivot summaries',
-                    propName: 'CubeGridConfig.showPivotSummaries',
+                    propName: 'CubeGridPivotConfig.showSummaries',
                     control: select({
-                        model: cubeGridModel,
-                        bind: 'showPivotSummaries',
+                        model: cubeGridModel.pivotModel,
+                        bind: 'showSummaries',
                         options: H_SIDE_OPTIONS,
                         enableFilter: false,
                         width: 110
@@ -70,13 +70,16 @@ export const cubeGridPanel = hoistCmp.factory({
                 }),
                 wrapperOption({
                     label: 'Pivot groups collapsible',
-                    propName: 'CubeGridConfig.pivotGroupsCollapsible',
-                    control: switchInput({model: cubeGridModel, bind: 'pivotGroupsCollapsible'}),
+                    propName: 'CubeGridPivotConfig.groupsCollapsible',
+                    control: switchInput({
+                        model: cubeGridModel.pivotModel,
+                        bind: 'groupsCollapsible'
+                    }),
                     info: 'Groups collapse from their headers. Off fixes them open, with summary columns only where asked.'
                 }),
                 wrapperOption({
                     label: 'Pivot expand level',
-                    propName: 'CubeGridConfig.pivotExpandLevel',
+                    propName: 'CubeGridPivotConfig.expandLevel',
                     control: select({
                         bind: 'pivotExpandLevel',
                         options: [
@@ -88,7 +91,7 @@ export const cubeGridPanel = hoistCmp.factory({
                         enableFilter: false,
                         width: 110
                     }),
-                    info: 'Header level to expand to, as expandLevel for rows. Applied via expandPivotToLevel().'
+                    info: 'Header level to expand to, as expandLevel for rows. Applied via pivotModel.expandToLevel().'
                 }),
                 wrapperOption({
                     label: 'Summary row',
@@ -165,7 +168,7 @@ class CubeGridPanelModel extends HoistModel {
     /** Measures pivoted into columns, capped at two - each one multiplies the column count. */
     @bindableRef accessor pivotMeasures = ['mktVal', 'pnl'];
 
-    /** Mirrors `CubeGridConfig.pivotExpandLevel`, applied live through `expandPivotToLevel()`. */
+    /** Mirrors `CubeGridPivotConfig.expandLevel`, applied live through `expandToLevel()`. */
     @bindable accessor pivotExpandLevel = -1;
 
     @managed cube: Cube;
@@ -208,15 +211,14 @@ class CubeGridPanelModel extends HoistModel {
             cube: this.cube,
             query: this.queryConfig(),
             columns,
-            pivotColumns: columns,
-            showPivotSummaries: true,
             // Managed autosize fits the tree column to its fund names, and re-fits whenever a
             // structural change mints new columns.
             gridConfig: {
                 showSummary: 'top',
                 sizingMode: 'compact',
                 autosizeOptions: {mode: 'managed'}
-            }
+            },
+            pivotConfig: {columns, showSummaries: true}
         });
 
         // Query config lives on the query - the grid follows without being rebuilt.
@@ -227,7 +229,7 @@ class CubeGridPanelModel extends HoistModel {
             },
             {
                 track: () => this.pivotExpandLevel,
-                run: level => this.cubeGridModel.expandPivotToLevel(level)
+                run: level => this.cubeGridModel.pivotModel.expandToLevel(level)
             }
         );
     }

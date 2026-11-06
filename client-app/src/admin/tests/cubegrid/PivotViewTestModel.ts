@@ -1280,10 +1280,12 @@ export class PivotViewTestModel extends HoistModel {
             const view = cube.createView({query: queryConf, connect: true}),
                 model = new CubeGridModel({
                     view,
-                    showPivotSummaries: true,
-                    // Fixed open, so the column set reflects `showPivotSummaries` alone.
-                    pivotGroupsCollapsible: false,
-                    gridConfig: {showSummary: true}
+                    gridConfig: {showSummary: true},
+                    pivotConfig: {
+                        showSummaries: true,
+                        // Fixed open, so the column set reflects `showSummaries` alone.
+                        groupsCollapsible: false
+                    }
                 }),
                 {gridModel} = model;
 
@@ -1324,32 +1326,32 @@ export class PivotViewTestModel extends HoistModel {
 
             // Turning summaries off must drop exactly the summary cells - the root and every
             // partial path - and nothing else.
-            model.showPivotSummaries = false;
+            model.pivotModel.showSummaries = false;
             const summaries = view.result.cellFields
                 .filter(cf => cf.path.isRoot || !isEmpty(cf.path.children))
                 .map(cf => cf.name);
             this.record(scenario, [
                 boolCheck(
-                    'columns: showPivotSummaries gates exactly the root and partial-path cells',
+                    'columns: showSummaries gates exactly the root and partial-path cells',
                     isEqual([...valueColIds()].sort(), [...difference(names, summaries)].sort()),
                     `${valueColIds().length} columns, expected ${names.length - summaries.length}`
                 )
             ]);
-            model.showPivotSummaries = true;
+            model.pivotModel.showSummaries = true;
 
             // Side placement within the region, and the `true` -> default-side resolution behind it.
             const regionGroupIdAt = (i: number) => {
                 const col = gridModel.getColumnGroup(PIVOT_GROUP_ID).children.at(i);
                 return col instanceof ColumnGroup ? col.groupId : null;
             };
-            model.showPivotSummaries = 'left';
+            model.pivotModel.showSummaries = 'left';
             const leftPlaced = regionGroupIdAt(0);
-            model.showPivotSummaries = true;
+            model.pivotModel.showSummaries = true;
             const rightPlaced = regionGroupIdAt(-1);
 
             this.record(scenario, [
                 boolCheck(
-                    'showPivotSummaries: a side places the Total group, and true resolves to right',
+                    'showSummaries: a side places the Total group, and true resolves to right',
                     leftPlaced === `${PIVOT_GROUP_ID}:total` &&
                         rightPlaced === `${PIVOT_GROUP_ID}:total`,
                     `left put ${leftPlaced} first, true put ${rightPlaced} last`
@@ -1360,24 +1362,24 @@ export class PivotViewTestModel extends HoistModel {
             const pathsBefore = view.result.paths,
                 treeBefore = JSON.stringify(pathsBefore.map(p => p.children.map(c => c.key))),
                 ascOrder = this.topGroupIds(model);
-            model.pivotSortBy = ['desc'];
+            model.pivotModel.sortBy = ['desc'];
             const descOrder = this.topGroupIds(model);
 
             this.record(scenario, [
                 boolCheck(
-                    'pivotSortBy: reorders the top-level column groups',
+                    'sortBy: reorders the top-level column groups',
                     ascOrder.length > 1 && isEqual(descOrder, [...ascOrder].reverse()),
                     `asc ${JSON.stringify(ascOrder)} vs desc ${JSON.stringify(descOrder)}`
                 ),
                 boolCheck(
-                    'pivotSortBy: leaves result.paths untouched',
+                    'sortBy: leaves result.paths untouched',
                     view.result.paths === pathsBefore &&
                         JSON.stringify(pathsBefore.map(p => p.children.map(c => c.key))) ===
                             treeBefore,
                     "display sorting mutated the view's own path tree"
                 )
             ]);
-            model.pivotSortBy = [];
+            model.pivotModel.sortBy = [];
 
             // A values-only tick must not touch columns - `setColumns` resets column state, so a
             // rebuild per tick would discard the user's widths and pinning on every update.

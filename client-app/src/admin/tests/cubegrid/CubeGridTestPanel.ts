@@ -66,7 +66,7 @@ const queryBar = hoistCmp.factory<CubeGridTestModel>(() =>
     )
 );
 
-const queryOptionsBar = hoistCmp.factory<CubeGridTestModel>(() =>
+const queryOptionsBar = hoistCmp.factory<CubeGridTestModel>(({model}) =>
     toolbar(
         switchInput({bind: 'includeRoot', label: 'Root'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves'}),
@@ -76,7 +76,17 @@ const queryOptionsBar = hoistCmp.factory<CubeGridTestModel>(() =>
         span('Empty label'),
         textInput({bind: 'emptyPathLabel', width: 80}),
         span('Max paths'),
-        numberInput({bind: 'maxPivotPaths', width: 70, placeholder: 'none', min: 1})
+        numberInput({bind: 'maxPivotPaths', width: 70, placeholder: 'none', min: 1}),
+        toolbarSep(),
+        switchInput({bind: 'uniformPivotWidths', label: 'Uniform widths'}),
+        span('Header fit max'),
+        numberInput({
+            bind: 'headerFitMaxWidth',
+            width: 60,
+            min: 0,
+            disabled: !model.uniformPivotWidths
+        }),
+        switchInput({bind: 'longPivotLabels', label: 'Long labels'})
     )
 );
 
@@ -123,6 +133,11 @@ const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
         }),
         toolbarSep(),
         switchInput({bind: 'pivotGroupsCollapsible', label: 'Collapsible'}),
+        switchInput({
+            bind: 'pivotCollapsedTotalHeader',
+            label: 'Total header',
+            disabled: !model.pivotGroupsCollapsible
+        }),
         toolbarSep(),
         span('Expand'),
         select({
@@ -134,13 +149,13 @@ const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
         }),
         button({
             icon: Icon.expand(),
-            title: 'expandAllPivotGroups()',
-            onClick: () => cubeGridModel?.expandAllPivotGroups()
+            title: 'pivotModel.expandAll()',
+            onClick: () => cubeGridModel?.pivotModel.expandAll()
         }),
         button({
             icon: Icon.collapse(),
-            title: 'collapseAllPivotGroups()',
-            onClick: () => cubeGridModel?.collapseAllPivotGroups()
+            title: 'pivotModel.collapseAll()',
+            onClick: () => cubeGridModel?.pivotModel.collapseAll()
         }),
         toolbarSep(),
         span('Sort L0'),

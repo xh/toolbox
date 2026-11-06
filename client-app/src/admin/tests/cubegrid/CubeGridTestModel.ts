@@ -1,4 +1,9 @@
-import type {PivotSort} from '@xh/hoist/cmp/cubegrid';
+import type {
+    PivotColumnGroupContext,
+    PivotColumnGroupSpec,
+    PivotColumnSizingOptions,
+    PivotSort
+} from '@xh/hoist/cmp/cubegrid';
 import {CubeGridModel} from '@xh/hoist/cmp/cubegrid';
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import type {ColumnSpec} from '@xh/hoist/cmp/grid';
@@ -60,7 +65,14 @@ export class CubeGridTestModel extends HoistModel {
     @bindable accessor showPivotSummaries: boolean | HSide = 'left';
     @bindable accessor showSummary: boolean | VSide = false;
     @bindable accessor pivotGroupsCollapsible = true;
-    /** Initial level on a rebuild, and pushed via `expandPivotToLevel` when changed. */
+    @bindable accessor pivotCollapsedTotalHeader = true;
+    /** Off sizes each pivot column on its own, as in any grid. */
+    @bindable accessor uniformPivotWidths = true;
+    /** Most a pivot group label can claim. 0 or blank sizes for data alone. */
+    @bindable accessor headerFitMaxWidth: number = 140;
+    /** Lengthens the leaf pivot labels, to see them fitted and truncated. */
+    @bindable accessor longPivotLabels = false;
+    /** Initial level on a rebuild, and pushed via `pivotModel.expandToLevel` when changed. */
     @bindable accessor pivotExpandLevel = -1;
     @bindable accessor sortLevel0: SortChoice = 'view';
     @bindable accessor sortLevel1: SortChoice = 'view';
@@ -120,25 +132,44 @@ export class CubeGridTestModel extends HoistModel {
                 track: () => [
                     this.showPivotSummaries,
                     this.showSummary,
-                    this.pivotGroupsCollapsible
+                    this.pivotGroupsCollapsible,
+                    this.pivotCollapsedTotalHeader
                 ],
                 equals: 'shallow',
                 run: () => {
                     const {cubeGridModel} = this;
                     if (!cubeGridModel) return;
-                    cubeGridModel.showPivotSummaries = this.showPivotSummaries;
+                    const {pivotModel} = cubeGridModel;
+                    pivotModel.showSummaries = this.showPivotSummaries;
                     cubeGridModel.setShowSummary(this.showSummary);
-                    cubeGridModel.pivotGroupsCollapsible = this.pivotGroupsCollapsible;
+                    pivotModel.groupsCollapsible = this.pivotGroupsCollapsible;
+                    pivotModel.collapsedTotalHeader = this.pivotCollapsedTotalHeader;
+                }
+            },
+            {
+                track: () => this.pivotColumnSizing,
+                equals: 'structural',
+                run: sizing => {
+                    if (this.cubeGridModel) this.cubeGridModel.pivotModel.columnSizing = sizing;
+                }
+            },
+            {
+                track: () => this.longPivotLabels,
+                run: () => {
+                    if (this.cubeGridModel) {
+                        this.cubeGridModel.pivotModel.columnGroupSpecFn =
+                            this.pivotColumnGroupSpecFn;
+                    }
                 }
             },
             {
                 track: () => this.pivotExpandLevel,
-                run: level => this.cubeGridModel?.expandPivotToLevel(level)
+                run: level => this.cubeGridModel?.pivotModel.expandToLevel(level)
             },
             {
                 track: () => this.pivotSortBy,
                 run: sortBy => {
-                    if (this.cubeGridModel) this.cubeGridModel.pivotSortBy = sortBy;
+                    if (this.cubeGridModel) this.cubeGridModel.pivotModel.sortBy = sortBy;
                 }
             },
             // Columns rebuild in their own reaction, so anything reading them right after a query
@@ -178,11 +209,6 @@ export class CubeGridTestModel extends HoistModel {
                 cube: this.cube,
                 query: this.queryConfig(),
                 columns: FIXED_COLUMNS,
-                pivotColumns: map(VALUE_SPECS, (spec, field) => ({field, ...spec})),
-                pivotSortBy: this.pivotSortBy,
-                showPivotSummaries: this.showPivotSummaries,
-                pivotGroupsCollapsible: this.pivotGroupsCollapsible,
-                pivotExpandLevel: this.pivotExpandLevel,
                 gridConfig: {
                     persistWith: {localStorageKey: 'cubeGridTest'},
                     showSummary: this.showSummary,
@@ -191,6 +217,16 @@ export class CubeGridTestModel extends HoistModel {
                     colDefaults: {filterable: true},
                     filterModel: columnFilters === 'off' ? false : {bind: columnFilters},
                     autosizeOptions: {mode: 'managed', includeHiddenColumns: false}
+                },
+                pivotConfig: {
+                    columns: map(VALUE_SPECS, (spec, field) => ({field, ...spec})),
+                    sortBy: this.pivotSortBy,
+                    showSummaries: this.showPivotSummaries,
+                    groupsCollapsible: this.pivotGroupsCollapsible,
+                    collapsedTotalHeader: this.pivotCollapsedTotalHeader,
+                    columnSizing: this.pivotColumnSizing,
+                    columnGroupSpecFn: this.pivotColumnGroupSpecFn,
+                    expandLevel: this.pivotExpandLevel
                 }
             });
             const filterChooserModel = new FilterChooserModel({bind: cubeGridModel.view});
@@ -234,6 +270,18 @@ export class CubeGridTestModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
+
+    private get pivotColumnSizing(): boolean | PivotColumnSizingOptions {
+        return this.uniformPivotWidths && {headerFitMaxWidth: this.headerFitMaxWidth ?? 0};
+    }
+
+    private get pivotColumnGroupSpecFn(): (ctx: PivotColumnGroupContext) => PivotColumnGroupSpec {
+        if (!this.longPivotLabels) return null;
+        return ({path, kind}) =>
+            kind === 'path' && isEmpty(path.children)
+                ? {headerName: `${path.label} Strategies Group`}
+                : null;
+    }
 
     private get pivotSortBy(): PivotSort[] {
         return [this.sortLevel0, this.sortLevel1].map((choice, level) =>
