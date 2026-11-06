@@ -16,6 +16,7 @@ import {WebSocketTestPanel} from './tests/websocket/WebSocketTestPanel';
 import {asyncLoopPanel} from './tests/asyncLoops/AsyncLoopPanel';
 import {columnChooserTestPanel} from './tests/columnChooser/ColumnChooserTestPanel';
 import {dataViewTestPanel} from './tests/dataview/DataViewTestPanel';
+import {formatterParityPanel} from './tests/gridFormatterParity/FormatterParityPanel';
 import {gridScrolling} from './tests/gridScrolling/GridScrolling';
 import {storeColumnFilterPanel} from './tests/columnFilters/store/StoreColumnFilterPanel';
 import {viewColumnFilterPanel} from './tests/columnFilters/view/ViewColumnFilterPanel';
@@ -50,6 +51,7 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'email', path: '/email'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
                     {name: 'grid', path: '/grid'},
+                    {name: 'gridFormatterParity', path: '/gridFormatterParity'},
                     {name: 'gridScrolling', path: '/gridScrolling'},
                     {name: 'localDate', path: '/localDate'},
                     {name: 'panelResizing', path: '/panelResizing'},
@@ -84,6 +86,7 @@ export class AppModel extends HoistAdminAppModel {
                         {id: 'email', title: 'Email', content: EmailTestPanel},
                         {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
                         {id: 'grid', title: 'Grid', content: GridTestPanel},
+                        {id: 'gridFormatterParity', content: formatterParityPanel},
                         {id: 'gridScrolling', content: gridScrolling},
                         {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
                         {id: 'panelResizing', content: PanelResizingTestPanel},

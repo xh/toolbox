@@ -2,7 +2,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import type {PersistOptions, PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, persist, TaskObserver} from '@xh/hoist/core';
 import {FieldType} from '@xh/hoist/data';
-import {fmtDateTime, numberRenderer} from '@xh/hoist/format';
+import {fmtDateTime, numberTextRenderer} from '@xh/hoist/format';
 import {action, bindable, observable, observableRef} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -491,7 +491,7 @@ export class GridTestBenchmarkModel extends HoistModel {
                 align: 'right' as const,
                 renderer: v => (v == null ? '—' : (v / 1000000).toFixed(1))
             },
-            msCol = {width: 100, renderer: numberRenderer({precision: 0, label: 'ms'})};
+            msCol = {width: 100, textRenderer: numberTextRenderer({precision: 0, label: 'ms'})};
 
         return new GridModel({
             store: {
@@ -613,7 +613,7 @@ export class GridTestBenchmarkModel extends HoistModel {
                             field: 'bytesPerRecord',
                             headerName: 'Bytes/Rec',
                             width: 100,
-                            renderer: numberRenderer({precision: 0})
+                            textRenderer: numberTextRenderer({precision: 0})
                         }
                     ]
                 },
@@ -633,7 +633,7 @@ export class GridTestBenchmarkModel extends HoistModel {
                         {
                             field: 'records',
                             width: 100,
-                            renderer: numberRenderer({precision: 0})
+                            textRenderer: numberTextRenderer({precision: 0})
                         },
                         {field: 'declaredFields', headerName: 'Fields Decl', width: 100},
                         {field: 'populatedFields', headerName: 'Fields Pop', width: 100},

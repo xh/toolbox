@@ -1,7 +1,7 @@
 import {GridModel, localDate} from '@xh/hoist/cmp/grid';
 import type {LoadSpec} from '@xh/hoist/core';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import {compactDateRenderer} from '@xh/hoist/format';
+import {compactDateTextRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
@@ -75,7 +75,7 @@ export class RecallsPanelModel extends HoistModel {
                 ...localDate,
                 headerName: 'Date',
                 width: 100,
-                renderer: compactDateRenderer()
+                textRenderer: compactDateTextRenderer()
             },
             {
                 field: 'description',

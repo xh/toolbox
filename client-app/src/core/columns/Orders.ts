@@ -1,6 +1,6 @@
 import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 import {dateTime, localDate} from '@xh/hoist/cmp/grid';
-import {fmtDate, fmtNumber, numberRenderer} from '@xh/hoist/format';
+import {fmtDate, fmtNumber, numberTextRenderer} from '@xh/hoist/format';
 
 export const symbolCol: ColumnSpec = {
     field: {
@@ -51,13 +51,13 @@ export const dirCol: ColumnSpec = {
 export const quantityCol: ColumnSpec = {
     field: {name: 'quantity', type: 'number'},
     width: 100,
-    renderer: numberRenderer({precision: 0, ledger: true})
+    textRenderer: numberTextRenderer({precision: 0, ledger: true})
 };
 
 export const priceCol: ColumnSpec = {
     field: {name: 'price', type: 'number'},
     width: 80,
-    renderer: numberRenderer({precision: 2})
+    textRenderer: numberTextRenderer({precision: 2})
 };
 
 export const orderExecTime: ColumnSpec = {

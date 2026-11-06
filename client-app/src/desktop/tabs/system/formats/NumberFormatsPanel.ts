@@ -1,4 +1,4 @@
-import {hbox, input, span} from '@xh/hoist/cmp/layout';
+import {code, fragment, hbox, input, span} from '@xh/hoist/cmp/layout';
 import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {
@@ -9,7 +9,8 @@ import {
     textInput
 } from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
-import {range} from 'lodash';
+import {lowerFirst, range} from 'lodash';
+import type {ReactNode} from 'react';
 import {wrapper, wrapperOption} from '../../../common/Wrapper';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
@@ -34,7 +35,13 @@ export const numberFormatsPanel = hoistCmp.factory({
                 '',
                 'Pick a function and adjust its options at left to see how each value below is',
                 'formatted. All Hoist formatting functions also support the `asHtml` option to',
-                'produce a raw HTML string rather than a React element.'
+                'produce a raw HTML string rather than a React element.',
+                '',
+                'In a grid column, prefer the matching text renderer, such as `numberTextRenderer`',
+                'or `millionsTextRenderer`, as `Column.textRenderer`. It takes the same options, less',
+                'those that need markup, such as `withSignGlyph` or a `colorSpec` with inline',
+                'styles. It returns plain text, which AG Grid writes into the cell with no React',
+                'component, so the grid renders and scrolls faster than with `numberRenderer`.'
             ],
             links: [
                 {
@@ -45,6 +52,11 @@ export const numberFormatsPanel = hoistCmp.factory({
                     url: '$HR/format/README.md',
                     text: 'Formatting docs',
                     notes: 'Number, date, and misc formatting guide.'
+                },
+                {
+                    url: '$HR/format/README.md#formatters-vs-renderers',
+                    text: 'Text renderer factories',
+                    notes: 'Text renderers for grid columns, and the options they take.'
                 },
                 {
                     url: '$HR/format/FormatNumber.ts',
@@ -74,7 +86,8 @@ export const numberFormatsPanel = hoistCmp.factory({
                             'fmtMillions',
                             'fmtBillions'
                         ]
-                    })
+                    }),
+                    info: gridFnInfo(model)
                 }),
                 wrapperOption({
                     omit: model.fnName !== 'fmtQuantity',
@@ -244,6 +257,15 @@ export const numberFormatsPanel = hoistCmp.factory({
         });
     }
 });
+
+// Names the factory to use for the selected function in a grid column: its text renderer, or its
+// renderer when the options set need markup.
+function gridFnInfo(model: NumberFormatsPanelModel): ReactNode {
+    const baseName = lowerFirst(model.fnName.slice(3));
+    return model.needsRenderer
+        ? fragment('In a grid column, use ', code(`${baseName}Renderer`), ' for these options.')
+        : fragment('In a grid column, use ', code(`${baseName}TextRenderer`), '.');
+}
 
 // Custom-value row for the results table: a left-aligned label paired with a right-aligned,
 // commitOnChange numberInput so the prepopulated value reformats live as the user types.

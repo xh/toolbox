@@ -1,6 +1,6 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {dateRenderer} from '@xh/hoist/format';
+import {dateTextRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import type {RestGridConfig} from '@xh/hoist/desktop/cmp/rest';
 import {
@@ -133,7 +133,7 @@ const modelSpec: RestGridConfig = {
         },
         {
             field: 'earningsDate',
-            renderer: dateRenderer(),
+            textRenderer: dateTextRenderer(),
             width: 140,
             excelFormat: ExcelFormat.DATE_FMT
         },

@@ -3,7 +3,7 @@ import {GridModel, time, TreeStyle} from '@xh/hoist/cmp/grid';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberEditor, textEditor} from '@xh/hoist/desktop/cmp/grid';
-import {fmtNumber, numberRenderer} from '@xh/hoist/format';
+import {fmtNumber, numberTextRenderer} from '@xh/hoist/format';
 import {
     action,
     bindable,
@@ -322,7 +322,7 @@ export class CubeTestModel extends HoistModel {
                     width: 130,
                     absSort: true,
                     editor: numberEditor,
-                    renderer: numberRenderer({
+                    textRenderer: numberTextRenderer({
                         precision: 0,
                         ledger: true
                     }),
@@ -333,7 +333,7 @@ export class CubeTestModel extends HoistModel {
                     align: 'right',
                     width: 130,
                     editor: numberEditor,
-                    renderer: numberRenderer({
+                    textRenderer: numberTextRenderer({
                         precision: 4
                     }),
                     hidden: true
@@ -343,7 +343,7 @@ export class CubeTestModel extends HoistModel {
                     align: 'right',
                     width: 130,
                     editor: numberEditor,
-                    renderer: numberRenderer({
+                    textRenderer: numberTextRenderer({
                         precision: 0,
                         ledger: true
                     })
@@ -353,7 +353,7 @@ export class CubeTestModel extends HoistModel {
                     align: 'right',
                     width: 130,
                     editor: numberEditor,
-                    renderer: numberRenderer({
+                    textRenderer: numberTextRenderer({
                         precision: 6
                     })
                 },
@@ -362,7 +362,7 @@ export class CubeTestModel extends HoistModel {
                     align: 'right',
                     width: 130,
                     editor: numberEditor,
-                    renderer: numberRenderer({
+                    textRenderer: numberTextRenderer({
                         precision: 0
                     }),
                     hidden: true
@@ -372,7 +372,7 @@ export class CubeTestModel extends HoistModel {
                     align: 'right',
                     width: 130,
                     editor: numberEditor,
-                    renderer: numberRenderer({
+                    textRenderer: numberTextRenderer({
                         precision: 0
                     }),
                     hidden: true

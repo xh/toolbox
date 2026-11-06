@@ -1,10 +1,12 @@
+import {code, fragment} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
+import {segmentedControl} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {SampleGridModel} from '../../common/grid/SampleGridModel';
 import {gridDisplayActions, gridDisplayOptions} from '../../common/grid/options/GridDisplayOptions';
 import {sampleGrid} from '../../common/grid/SampleGrid';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 
 export const standardGridPanel = hoistCmp.factory({
     model: creates(SampleGridModel),
@@ -21,7 +23,11 @@ export const standardGridPanel = hoistCmp.factory({
                 'the core component, with Hoist layering on a normalized API as well as custom',
                 'integrations for observable row selection, data stores, sorting, filtering, a',
                 'custom column selection UI, server-side exports, enhanced column definitions,',
-                'absolute value sorting, and more.'
+                'absolute value sorting, and more.',
+                '',
+                'The Volume, P&L and Date columns set a `Column.textRenderer`, so AG Grid writes',
+                'their text into plain cells. Switch Cell Formatting to compare them with',
+                'renderers.'
             ],
             links: [
                 {
@@ -40,6 +46,20 @@ export const standardGridPanel = hoistCmp.factory({
                 },
                 {url: '$HR/cmp/grid/columns/Column.ts', notes: 'Hoist class for Column config.'},
                 {
+                    url: '$TB/client-app/src/core/columns/Trades.ts',
+                    notes: 'Trade column specs, with their text renderers and matching renderers.'
+                },
+                {
+                    url: '$HR/cmp/grid/README.md#common-usage-patterns',
+                    text: 'Text renderer docs',
+                    notes: 'Column.textRenderer vs. renderer - see the Text Renderers subsection.'
+                },
+                {
+                    url: '$HR/format/README.md#formatters-vs-renderers',
+                    text: 'Text renderer factories',
+                    notes: 'numberTextRenderer, dateTextRenderer and friends, and the options they take.'
+                },
+                {
                     url: '$HR/data',
                     text: 'Data package',
                     notes: 'Hoist-managed data classes, including Store and StoreRecord.'
@@ -55,7 +75,28 @@ export const standardGridPanel = hoistCmp.factory({
                     notes: 'API documentation and guides for the underlying AG Grid library.'
                 }
             ],
-            options: [...gridDisplayOptions(gridModel), ...gridDisplayActions(gridModel)],
+            options: [
+                ...gridDisplayOptions(gridModel),
+                wrapperOption({
+                    label: 'Cell Formatting',
+                    control: segmentedControl({
+                        model,
+                        bind: 'cellFormatting',
+                        compact: true,
+                        options: [
+                            {value: 'textRenderer', label: 'Text Renderer'},
+                            {value: 'renderer', label: 'Renderer'}
+                        ]
+                    }),
+                    info: fragment(
+                        code('textRenderer'),
+                        ' writes Volume, P&L and Date as plain text. ',
+                        code('renderer'),
+                        ' mounts a React component per cell. The output should look identical.'
+                    )
+                }),
+                ...gridDisplayActions(gridModel)
+            ],
             item: panel({
                 className: 'tb-grid-wrapper-panel',
                 item: sampleGrid()
