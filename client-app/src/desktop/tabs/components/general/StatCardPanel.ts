@@ -159,9 +159,9 @@ export const statCardPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Wrapping',
                         note: [
-                            'The same strip at 560px. Cards wrap to a new row rather than get',
-                            'narrower than their value or --xh-stat-card-min-content-width.',
-                            'Hover a truncated line for its full text.'
+                            'The same strip at 560px. When cards no longer fit on one row, the',
+                            'strip becomes an even grid sized to its widest card, so no value is',
+                            'cut short. Hover a truncated line for its full text.'
                         ].join(' '),
                         item: div({style: {width: 560}, item: salesStrip()})
                     }),
