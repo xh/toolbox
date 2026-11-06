@@ -2,8 +2,9 @@ import {div} from '@xh/hoist/cmp/layout';
 import type {StatCardProps} from '@xh/hoist/cmp/statcard';
 import {statCard, statCardStrip} from '@xh/hoist/cmp/statcard';
 import type {Intent} from '@xh/hoist/core';
-import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {select, textInput} from '@xh/hoist/desktop/cmp/input';
+import type {NumberFormatOptions} from '@xh/hoist/format';
 import {fmtNumber, fmtPercent} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -17,38 +18,52 @@ import {
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import './StatCardPanel.scss';
 
-/** The StatCard props the rail drives. Named so the instance and the snippet share one type. */
-type PlaygroundCardProps = Pick<
-    StatCardProps,
-    'title' | 'value' | 'valueIntent' | 'secondary' | 'detail' | 'infoTooltip' | 'accent'
->;
+/**
+ * The StatCard props the rail drives, as the plain values its inputs produce. Named so the
+ * instance and the snippet share one type.
+ */
+interface PlaygroundCardProps {
+    title: string;
+    value: string;
+    subValue?: string;
+    detail?: string;
+    infoTooltip?: string;
+    intent?: Intent;
+    accent?: string;
+}
 
 /**
- * A sales summary as an app would build it - each value formatted and colored by the caller. Plain
- * `ledger` output, without `forceLedgerAlign`, is a string, so the card can give it a tooltip.
+ * A sales summary as an app would build it - each value and change formatted and colored by the
+ * caller. Returns is a metric where down is good, so its change inverts the `colorSpec`.
  */
 const SALES_CARDS: StatCardProps[] = [
     {
         title: 'Net Revenue',
         value: fmtLedger(2483960),
-        valueIntent: 'success',
-        detail: 'Online and in-store, across 42 locations'
+        subValue: fmtChange(0.042),
+        detail: 'vs. last month, across 42 locations'
     },
-    {title: 'Orders', value: 18375, detail: 'From 9,204 customers'},
+    {
+        title: 'Orders',
+        value: fmtNumber(18375, {precision: 0}),
+        subValue: fmtChange(0.018),
+        detail: 'From 9,204 customers'
+    },
     {
         title: 'Avg Order Value',
         value: fmtLedger(135),
+        subValue: fmtChange(0.055),
         detail: 'Up from 128 last month'
     },
     {
         title: 'Returns',
-        value: fmtLedger(-87412),
-        valueIntent: 'danger',
+        value: fmtLedger(87412),
+        subValue: fmtChange(0.093, true),
         detail: 'Highest in Outerwear'
     },
     {
         title: 'On-Time Shipping',
-        value: fmtPercent(96.4, {precision: 1}),
+        value: fmtPercent(0.964, {precision: 1}),
         infoTooltip: 'Share of orders shipped within two business days of purchase.',
         detail: '661 late, 12 still pending'
     }
@@ -65,12 +80,13 @@ export const statCardPanel = hoistCmp.factory({
             icon: Icon.chartLine(),
             description: [
                 'A `StatCard` calls out a key figure: a caption over a prominent value, with an',
-                'optional secondary label, info tooltip and sub-line. A `StatCardStrip` lays',
-                'several out in a row of equal-width cards.',
+                'optional sub-value, info tooltip and sub-line. A `StatCardStrip` lays several',
+                'out in a row of equal-width cards, wrapping them onto new rows when space is short.',
                 '',
-                'The card is presentation-only. The caller formats the value and chooses its',
-                '`valueIntent` - the card never colors a value based on its sign. Every line',
-                'truncates when space is short and shows its full text in a tooltip.'
+                'The card is presentation-only. The caller formats the value and any change, and',
+                'colors them with `fmtNumber` - the card never colors a value based on its sign.',
+                'The value is never truncated. Other lines truncate when space is short and show',
+                'their full text in a tooltip.'
             ],
             links: [
                 {
@@ -89,20 +105,20 @@ export const statCardPanel = hoistCmp.factory({
                     items: [
                         textOption('Title', 'title'),
                         textOption('Value', 'value'),
+                        textOption('Sub-value', 'subValue'),
+                        textOption('Detail', 'detail'),
+                        textOption('Info tooltip', 'infoTooltip'),
                         wrapperOption({
-                            label: 'Value intent',
-                            propName: 'StatCardProps.valueIntent',
+                            label: 'Intent',
+                            propName: 'StatCardProps.intent',
                             control: select({
-                                bind: 'valueIntent',
+                                bind: 'intent',
                                 enableFilter: false,
                                 enableClear: true,
                                 width: 120,
                                 options: ['primary', 'success', 'warning', 'danger']
                             })
                         }),
-                        textOption('Secondary', 'secondary'),
-                        textOption('Detail', 'detail'),
-                        textOption('Info tooltip', 'infoTooltip'),
                         wrapperOption({
                             label: 'Accent',
                             propName: 'StatCardProps.accent',
@@ -137,83 +153,124 @@ export const statCardPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'In a Strip',
-                        note: 'statCardStrip({cards}) - each card takes an equal share of the width.',
-                        item: statCardStrip({cards: SALES_CARDS})
+                        note: 'statCardStrip(...cards) - each card takes an equal share of the width.',
+                        item: salesStrip()
                     }),
                     demoSection({
-                        title: 'Truncation',
-                        note: 'The same strip at 640px. Hover a truncated line for its full text.',
-                        item: div({
-                            style: {width: 640},
-                            item: statCardStrip({cards: SALES_CARDS})
-                        })
+                        title: 'Wrapping',
+                        note: [
+                            'The same strip at 560px. Cards wrap to a new row rather than get',
+                            'narrower than their value or --xh-stat-card-min-content-width.',
+                            'Hover a truncated line for its full text.'
+                        ].join(' '),
+                        item: div({style: {width: 560}, item: salesStrip()})
                     }),
                     demoSection({
-                        title: 'Secondary Label',
-                        note: 'secondary - gives up its space before the value does.',
-                        item: statCardStrip({
-                            cards: [
-                                {
-                                    title: 'Operating Costs · This Quarter',
-                                    value: '(1.12m)',
-                                    valueIntent: 'danger',
-                                    secondary: 'EUR'
-                                },
-                                {
-                                    title: 'Gross Margin · Year to Date',
-                                    value: '6.87m',
-                                    valueIntent: 'success',
-                                    secondary: 'EUR'
-                                }
-                            ]
-                        })
+                        title: 'Sub-value and Units',
+                        note: [
+                            "subValue - a change, here from fmtPercent. A unit from fmtNumber's",
+                            '`label` renders smaller than the figure. Operating Costs inverts its',
+                            'colorSpec, as a rise in costs is bad.'
+                        ].join(' '),
+                        item: statCardStrip(
+                            statCard({
+                                title: 'Operating Costs · This Quarter',
+                                value: fmtNumber(1.12, {precision: 2, label: 'm EUR'}),
+                                subValue: fmtChange(0.031, true),
+                                detail: 'vs. last quarter'
+                            }),
+                            statCard({
+                                title: 'Gross Margin · Year to Date',
+                                value: fmtNumber(6.87, {precision: 2, label: 'm EUR'}),
+                                subValue: fmtChange(0.012),
+                                detail: 'vs. same period last year'
+                            })
+                        )
+                    }),
+                    demoSection({
+                        title: 'Intent',
+                        note: 'intent - flags a status on the border, as with Card. The value keeps its own color.',
+                        item: statCardStrip(
+                            statCard({title: 'Overdue Invoices', value: 37, intent: 'warning'}),
+                            statCard({
+                                title: 'VaR Limit Used',
+                                value: fmtPercent(1.08, {precision: 0}),
+                                intent: 'danger',
+                                detail: 'Limit breached at 14:20'
+                            }),
+                            statCard({
+                                title: 'Settled Today',
+                                value: fmtNumber(1204, {precision: 0}),
+                                intent: 'success',
+                                detail: 'All trades matched'
+                            })
+                        )
                     }),
                     demoSection({
                         title: 'Accent',
-                        note: 'accent - a raw CSS color marking a category or series, not a judgement.',
-                        item: statCardStrip({
-                            cards: [
-                                {
-                                    title: 'North America',
-                                    value: '$1.24m',
-                                    detail: '18 stores',
-                                    accent: 'var(--xh-blue)'
-                                },
-                                {
-                                    title: 'Europe',
-                                    value: '$836.5k',
-                                    detail: '15 stores',
-                                    accent: 'var(--xh-orange)'
-                                },
-                                {
-                                    title: 'Asia Pacific',
-                                    value: '$407.4k',
-                                    detail: '9 stores',
-                                    accent: 'var(--xh-purple)'
-                                }
-                            ]
-                        })
+                        note: [
+                            'accent - a CSS color marking a category or series, not a status. The',
+                            'second strip sets --xh-stat-card-accent-top/left for a left bar.'
+                        ].join(' '),
+                        items: [
+                            regionStrip(),
+                            div({
+                                className: 'tb-stat-card-panel__left-accent',
+                                style: {marginTop: 10},
+                                item: regionStrip()
+                            })
+                        ]
+                    }),
+                    demoSection({
+                        title: 'Clickable',
+                        note: 'onClick - drill into a figure. Cards take focus and respond to Enter and Space.',
+                        item: statCardStrip(
+                            statCard({
+                                title: 'Open Orders',
+                                value: 412,
+                                detail: 'Click for details',
+                                onClick: () => XH.toast({message: 'Drill into open orders'})
+                            }),
+                            statCard({
+                                title: 'Pending Approvals',
+                                value: 9,
+                                intent: 'warning',
+                                detail: 'Click for details',
+                                onClick: () => XH.toast({message: 'Drill into approvals'})
+                            })
+                        )
+                    }),
+                    demoSection({
+                        title: 'Mixed Widths',
+                        note: 'flex and width on a card weight or fix its share of the strip.',
+                        item: statCardStrip(
+                            statCard({
+                                title: 'Portfolio Value',
+                                value: fmtLedger(48250000),
+                                flex: 2
+                            }),
+                            statCard({title: 'Positions', value: 312}),
+                            statCard({title: 'Status', value: 'Live', flex: 'none', width: 110})
+                        )
                     }),
                     demoSection({
                         title: 'Restyled with CSS Variables',
-                        note: 'Uppercase titles and no strip padding, set on a container class.',
+                        note: 'Uppercase titles, set on a container class.',
                         item: demoFrame({
                             className: 'tb-stat-card-panel__headline',
-                            item: statCardStrip({
-                                cards: [
-                                    {
-                                        title: 'Warehouse Capacity',
-                                        value: '82%',
-                                        detail: '4,100 of 5,000 pallets'
-                                    },
-                                    {title: 'Open Tickets', value: 37, valueIntent: 'warning'},
-                                    {
-                                        title: 'Next Restock',
-                                        value: '6 days',
-                                        detail: 'Arrives 2026-11-04'
-                                    }
-                                ]
-                            })
+                            item: statCardStrip(
+                                statCard({
+                                    title: 'Warehouse Capacity',
+                                    value: '82%',
+                                    detail: '4,100 of 5,000 pallets'
+                                }),
+                                statCard({title: 'Open Tickets', value: 37}),
+                                statCard({
+                                    title: 'Next Restock',
+                                    value: '6 days',
+                                    detail: 'Arrives 2026-11-04'
+                                })
+                            )
                         })
                     })
                 ]
@@ -221,6 +278,33 @@ export const statCardPanel = hoistCmp.factory({
         });
     }
 });
+
+function salesStrip() {
+    return statCardStrip({items: SALES_CARDS.map(it => statCard(it))});
+}
+
+function regionStrip() {
+    return statCardStrip(
+        statCard({
+            title: 'North America',
+            value: '$1.24m',
+            detail: '18 stores',
+            accent: 'var(--xh-blue)'
+        }),
+        statCard({
+            title: 'Europe',
+            value: '$836.5k',
+            detail: '15 stores',
+            accent: 'var(--xh-orange)'
+        }),
+        statCard({
+            title: 'Asia Pacific',
+            value: '$407.4k',
+            detail: '9 stores',
+            accent: 'var(--xh-purple)'
+        })
+    );
+}
 
 function textOption(label: string, bind: keyof PlaygroundCardProps) {
     return wrapperOption({
@@ -230,17 +314,25 @@ function textOption(label: string, bind: keyof PlaygroundCardProps) {
     });
 }
 
-function fmtLedger(v: number): string {
-    return fmtNumber(v, {precision: 0, ledger: true, forceLedgerAlign: false}) as string;
+function fmtLedger(v: number) {
+    return fmtNumber(v, {precision: 0, ledger: true});
+}
+
+/** A change with an up/down glyph, colored by sign - or the reverse where a rise is bad. */
+function fmtChange(v: number, riseIsBad: boolean = false) {
+    const colorSpec: NumberFormatOptions['colorSpec'] = riseIsBad
+        ? {pos: 'xh-neg-val', neg: 'xh-pos-val'}
+        : true;
+    return fmtPercent(v, {precision: 1, withSignGlyph: true, colorSpec});
 }
 
 class StatCardPanelModel extends HoistModel {
     @bindable accessor title = 'Net Revenue';
-    @bindable accessor value = '2,483,960';
-    @bindable accessor valueIntent: Intent = 'success';
-    @bindable accessor secondary = 'EUR';
-    @bindable accessor detail = 'Online and in-store, across 42 locations';
+    @bindable accessor value = '€2.48m';
+    @bindable accessor subValue = '+4.2%';
+    @bindable accessor detail = 'vs. last month, across 42 locations';
     @bindable accessor infoTooltip: string = null;
+    @bindable accessor intent: Intent = null;
     @bindable accessor accent: string = null;
 
     /**
@@ -249,14 +341,14 @@ class StatCardPanelModel extends HoistModel {
      * cannot drift from the instance beside it.
      */
     get cardProps(): PlaygroundCardProps {
-        const {title, value, valueIntent, secondary, detail, infoTooltip, accent} = this;
+        const {title, value, subValue, detail, infoTooltip, intent, accent} = this;
         return {
             title,
             value,
-            valueIntent: valueIntent || undefined,
-            secondary: secondary || undefined,
+            subValue: subValue || undefined,
             detail: detail || undefined,
             infoTooltip: infoTooltip || undefined,
+            intent: intent || undefined,
             accent: accent || undefined
         };
     }
