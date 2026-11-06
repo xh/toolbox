@@ -2,7 +2,13 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {boolCheck, ExcelFormat, GridModel, localDate} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import type {CompoundFilter, FieldFilter} from '@xh/hoist/data';
-import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {
+    fmtNumberTooltip,
+    millionsRenderer,
+    millionsTextRenderer,
+    numberRenderer,
+    numberTextRenderer
+} from '@xh/hoist/format';
 import {computed} from '@xh/hoist/mobx';
 
 export class StoreColumnFilterPanelModel extends HoistModel {
@@ -119,7 +125,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                     field: 'trade_volume',
                     width: 150,
                     tooltip: val => fmtNumberTooltip(val),
-                    renderer: millionsRenderer({
+                    textRenderer: millionsTextRenderer({
                         precision: 1,
                         label: true
                     }),
@@ -130,7 +136,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                     width: 150,
                     absSort: true,
                     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
-                    renderer: numberRenderer({
+                    textRenderer: numberTextRenderer({
                         precision: 0,
                         ledger: true,
                         colorSpec: true

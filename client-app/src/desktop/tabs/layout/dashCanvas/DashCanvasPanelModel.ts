@@ -7,6 +7,7 @@ import {errorWidget} from '../widgets/ErrorWidget';
 import {gridWidget} from '../widgets/GridWidget';
 import {optionsWidget} from '../widgets/OptionsWidget';
 import {panelWidget} from '../widgets/PanelWidget';
+import {sampleViewSpecs} from '../widgets/SampleWidget';
 import {treeGridWidget} from '../widgets/TreeGridWidget';
 
 export class DashCanvasPanelModel extends HoistModel {
@@ -84,7 +85,8 @@ export class DashCanvasPanelModel extends HoistModel {
                     icon: Icon.skull(),
                     unique: true,
                     content: errorWidget({componentName: 'DashCanvas'})
-                }
+                },
+                ...sampleViewSpecs()
             ]
         });
     }

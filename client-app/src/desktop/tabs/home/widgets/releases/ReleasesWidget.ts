@@ -10,6 +10,7 @@ import type {Release} from '../../../../../core/svc/GitHubService';
 import {repoFilterPicker} from '../RepoFilterPicker';
 import './ReleasesWidget.scss';
 import {ReleasesWidgetModel} from './ReleasesWidgetModel';
+import {githubIcon} from '../../../../../core/Icons';
 
 export const releasesWidget = hoistCmp.factory({
     displayName: 'ReleasesWidget',
@@ -21,7 +22,7 @@ export const releasesWidget = hoistCmp.factory({
             return panel({
                 className: 'tb-releases',
                 item: placeholder(
-                    Icon.icon({iconName: 'github', prefix: 'fab'}),
+                    githubIcon(),
                     'GitHub release data unavailable.',
                     'Check the gitHubAccessToken config if running locally.'
                 )

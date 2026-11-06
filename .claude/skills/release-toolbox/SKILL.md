@@ -70,7 +70,11 @@ Three invariants that drive the whole process - keep them in mind:
    on the npm dist-tag `next` between releases; `hoistCoreVersion` (hoist-core) sits on an explicit
    `x.y-SNAPSHOT` in `gradle.properties`. All three pin to a release for the release commit and are
    restored afterward. (dev-utils moved onto `next` alongside hoist-react - earlier revisions of this
-   runbook said it stays on a caret range and never swaps, which is no longer true.)
+   runbook said it stays on a caret range and never swaps, which is no longer true.) Each swap
+   also moves **two lockfiles**: `client-app/pnpm-lock.yaml` for the npm pair and `gradle.lockfile`
+   for hoist-core. A stale `gradle.lockfile` is dangerous. If the lock holds a higher hoist-core
+   than `hoistCoreVersion`, Gradle silently resolves the locked version. A release that pins
+   `45.0-SNAPSHOT` down to `44.0.0` without `--write-locks` builds clean and ships the snapshot.
 
 ## gh is a core tool
 
@@ -144,6 +148,13 @@ classify the situation, and confirm with the developer before changing anything.
   from `pnpm-lock.yaml` or `npm view @xh/hoist-dev-utils dist-tags --json`.
 - `hoistCoreVersion`: `gradle.properties` (e.g. `41.0-SNAPSHOT` -> snap major 41).
 
+**Read both the lockfile and the `next` tag, because they can differ.** The lockfile records the
+snapshot that Toolbox builds and tests against today. The `next` tag points at the newest snapshot.
+The lockfile moves only when someone runs `pnpm update`, so it can fall a major or more behind
+`next`. For example, the lockfile can resolve `89.0.0-SNAPSHOT` while `next` is at
+`91.0.0-SNAPSHOT` and `90.0.0` is already out. Classify against the **lockfile** version, because
+that is the code Toolbox runs on. Note the gap if `next` is ahead.
+
 ### 2. Discover the latest published releases
 
 - **hoist-react** (npm): `npm view @xh/hoist dist-tags --json`. Use the `latest` tag - that is the
@@ -171,6 +182,13 @@ The examples below are hoist-react's; substitute hoist-core's own numbers when c
   `87-SNAP` but latest release is `86.1.0`). Toolbox is dogfooding an unreleased major.
   **Take the latest release of the prior line** (e.g. `86.1.0`) - **but only after confirming
   Toolbox actually runs on it** (next step). Never silently downgrade.
+- **"Locked snapshot is behind the latest release" case** - the lockfile resolves a snapshot
+  *older* than the latest release, for example `89.0.0-SNAPSHOT` against `90.0.0`. **Take the
+  latest release**, but treat it as a **forward upgrade**, not a pin-back. Toolbox gets every
+  breaking change in the releases between, and it has not run on any of them. Read the
+  `Breaking Changes` and upgrade notes for those releases, and grep Toolbox for the affected APIs.
+  Tell the developer that the Phase 3 gates are the first run on this code. Suggest a local smoke
+  test of desktop and mobile.
 
 ### 4. Confirm Toolbox runs on the chosen release (critical in the "still developing" case)
 
@@ -223,6 +241,43 @@ cd client-app && pnpm install
 Both CI and the release build install with `pnpm install --frozen-lockfile`, so **`pnpm-lock.yaml`
 must be committed alongside the `package.json` change**. A lockfile out of sync with the manifest
 fails the release build at the install step, before lint, typecheck, or the build itself run.
+
+Then check for duplicate transitive packages that the swap left behind:
+
+```bash
+cd client-app && pnpm dedupe --check
+```
+
+A move of `@xh/hoist` can leave two copies of a shared dependency, for example `@codemirror/view`
+6.43.14 and 6.43.15. Hoist ships TypeScript sources, so `tsc` then reports type errors *inside
+`node_modules/@xh/hoist`*, such as "Types have separate declarations of a private property". This
+is a lockfile problem, not a Toolbox incompatibility. If `--check` reports changes, review the list
+and run `pnpm dedupe`. The list should be short.
+
+**Then regenerate the Gradle dependency lockfile.** Toolbox locks all Gradle configurations in
+`STRICT` mode (see `build.gradle`). `gradle.lockfile` records the exact hoist-core version and its
+transitive graph. Gradle treats each locked version as a `strictly` constraint. If
+`hoistCoreVersion` moves up without new locks, the build fails. If it moves down, as it does in the
+usual release swap, the build does not fail. Gradle keeps the locked snapshot, and Build Release
+ships it. So never skip this step:
+
+```bash
+./gradlew dependencies --write-locks -PrunHoistInline=false
+```
+
+Always pass `-PrunHoistInline=false`. An inline build takes its graph from the local hoist-core
+checkout, and locking cannot track that graph.
+
+Make sure the lockfile names the release. `grep '^io.xh:hoist-core:' gradle.lockfile` must show
+the release version, not a snapshot. A passing build does not prove this. Build Release's
+`validate` job fails on a mismatch as a backstop, but check here so the release commit is right
+the first time.
+
+Review the `gradle.lockfile` diff. Expect the hoist-core lines to change, and expect transitive
+libraries to move to the versions that the released hoist-core declares. For example, POI and the
+OTel exporter stepped back when 12.0.0 pinned to a prior-line release. Look twice at any change
+that hoist-core does not explain. Then run `./gradlew test -PrunHoistInline=false` to make sure the
+server builds and tests clean against the release.
 
 (Do not run `startWithHoist` / `runHoistInline` - the release must build against the published
 libraries, not local sibling checkouts.)
@@ -316,10 +371,10 @@ proposed version is a valid single increment (e.g. latest `9.0.0` -> valid: `10.
 
 ## Phase 5: Commit on develop
 
-Stage the library swaps, the lockfile, and the finalized CHANGELOG, and commit on `develop`:
+Stage the library swaps, both lockfiles, and the finalized CHANGELOG, and commit on `develop`:
 
 ```bash
-git add gradle.properties client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md
+git add gradle.properties gradle.lockfile client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md
 git commit -m "Toolbox <version> - release against Hoist <core-ver> / hoist-react <hr-ver>"
 ```
 
@@ -438,7 +493,10 @@ Build Release validates the version, builds the tomcat (WAR via `-PxhAppVersion`
 (client) images in parallel, pushes them to ECR with `:<version>` and `:latest` tags, then creates
 the `v<version>` git tag and a GitHub Release. If `validate` fails, read the logs
 (`gh run view <run-id> --log-failed`) - the most common cause is a version that isn't a valid
-single increment, or running from the wrong branch.
+single increment, or running from the wrong branch. `validate` also fails if a Hoist library on
+`master` is not an exact release, or if `gradle.lockfile` does not lock the declared
+`hoistCoreVersion`. The error names the file. Fix it on `develop` (Phases 3 and 5), ff-merge to
+`master` again, and rerun.
 
 ### 3. Watch Deploy Release (auto-triggered)
 
@@ -449,15 +507,27 @@ gh run list --workflow deployRelease.yml --limit 1
 gh run watch <run-id> --exit-status
 ```
 
-It forces a new ECS deployment of `toolbox-prod`. Confirm it completes successfully. (The ECS
-rollout itself - tasks turning healthy - happens on AWS after the action's `update-service` call
-returns; if the developer wants to verify the live app, point them at the prod URL or the AWS
-runbook in `docs/aws-access.md`.)
+It forces a new ECS deployment of `toolbox-prod`. Confirm it completes successfully.
+
+The action finishes when its `update-service` call returns. The ECS rollout comes after that. New
+tasks must pass health checks before the old ones drain, so the old version keeps serving for a
+while. For 12.0.0, the new version went live about six minutes after Deploy Release finished.
+
+Poll the public version endpoint until it reports the released version. This needs no AWS access:
+
+```bash
+curl -s https://toolbox.xh.io/api/xh/version   # want "appVersion":"<version>", appBuild "<sha>_master_..."
+```
+
+Server endpoints sit under `/api/` behind nginx, so `https://toolbox.xh.io/xh/version` returns a
+404. If the endpoint still reports the old version after a long wait, stop and tell the developer.
+A look at the ECS service is a prod read, and it needs their per-command confirmation (see
+`docs/aws-access.md`).
 
 ### 4. Confirm success
 
-Report: Build Release succeeded, the `v<version>` tag + GitHub Release exist, and Deploy Release
-succeeded. **Only proceed to restore once the release is confirmed successful.** If anything
+Report: Build Release succeeded, the `v<version>` tag + GitHub Release exist, Deploy Release
+succeeded, and prod serves the new version. **Only proceed to restore once the release is confirmed successful.** If anything
 failed, stop and work the failure with the developer - do not restore develop over a broken
 release.
 
@@ -513,6 +583,19 @@ package that moved, but read the resolved versions back before committing - `pnp
 ```bash
 cd client-app && pnpm hoistVer && node -p "require('@xh/hoist-dev-utils/package.json').version"
 ```
+
+Then regenerate the Gradle lockfile for the restored hoist-core snap, as in Phase 3:
+
+```bash
+./gradlew dependencies --write-locks -PrunHoistInline=false
+```
+
+To check the result, run `git diff <release-commit>~1 -- gradle.lockfile`. The lockfile should
+match its state before the release, apart from any bumps in hoist-core's own snapshot since then.
+
+Run the Phase 3 gates against the snapshots: `pnpm lint`, `pnpm typecheck`, `pnpm test` and
+`./gradlew test -PrunHoistInline=false`. The `next` tag can point at a newer major than the old
+lockfile did. Anything that fails here also fails CI on `develop` as soon as you push.
 
 #### Why `next`, not a caret range
 
@@ -592,7 +675,7 @@ lands.
 ### 3. Commit and push (ask first)
 
 ```bash
-git add gradle.properties client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md
+git add gradle.properties gradle.lockfile client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md
 git commit -m "Restore Hoist SNAPSHOTs and open <next-major>.0-SNAPSHOT for development"
 ```
 
@@ -614,7 +697,18 @@ gh run list --workflow buildSnapshot.yml --limit 1
 ```
 
 Watch it to success, then confirm the dev app actually loads and reports the new snap for **both**
-client and server. If the developer pushed themselves and you're wrapping up, call this out as an
+client and server. You can check both over public HTTP:
+
+```bash
+curl -s https://toolbox-dev.xh.io/api/xh/version          # server - want "appVersion":"<SNAP>.0-SNAPSHOT"
+for f in $(curl -s https://toolbox-dev.xh.io/app/ | grep -oE 'src="[^"]*\.js"' | sed 's/src="//;s/"//'); do
+  curl -s "https://toolbox-dev.xh.io$f" | grep -oE 'appVersion="[^"]*"'
+done | sort -u                                             # client - want appVersion="<SNAP>.0-SNAPSHOT"
+```
+
+As with prod, the server endpoint reports the old build until the ECS rollout finishes.
+
+If the developer pushed themselves and you're wrapping up, call this out as an
 explicit follow-up rather than declaring the release done.
 
 ---

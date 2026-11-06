@@ -15,6 +15,7 @@ import {when} from '@xh/hoist/mobx';
 import type {ContactService} from './examples/contact/svc/ContactService';
 import type {DocService} from './core/svc/DocService';
 import type {GitHubService} from './core/svc/GitHubService';
+import type {GlyphService} from './examples/favicons/svc/GlyphService';
 import type {PortfolioService} from './core/svc/PortfolioService';
 import type {TaskService} from './examples/todo/TaskService';
 
@@ -24,6 +25,7 @@ declare module '@xh/hoist/core' {
         contactService: ContactService;
         docService: DocService;
         gitHubService: GitHubService;
+        glyphService: GlyphService;
         portfolioService: PortfolioService;
         taskService: TaskService;
     }
@@ -36,6 +38,8 @@ declare module '@xh/hoist/core' {
 //-----------------------------------------------------------------
 // Hoist Configuration
 //-----------------------------------------------------------------
+// Custom icons, registered with Hoist's Icon catalog via Icon.register().
+import './core/Icons';
 
 //-----------------------------------------------------------------
 // ag-Grid -- Import and Register

@@ -30,6 +30,13 @@ Runs automatically on pushes and pull requests to `develop`. Includes three inde
 This workflow does not publish any artifacts. For Docker image builds, see Build Snapshot and
 Build Release below.
 
+## Unit Tests (`unit-tests.yml`)
+
+Runs the client app's Vitest unit specs (`pnpm test`) on pushes and pull requests to `develop`, and
+manually via `workflow_dispatch`. It is a separate workflow so that the README badge and the
+"Unit Tests" PR check show the state of the tests alone. Vitest's built-in GitHub Actions reporter
+writes a summary to the run page and annotates each failing assertion on the PR diff.
+
 ## Build Snapshot (`buildSnapshot.yml`)
 
 Builds snapshot Docker images on every push to `develop` and pushes them to Amazon ECR. Also
@@ -54,7 +61,7 @@ The workflow runs in three stages:
   live in hoist-dev-utils, shared across XH app repos.
 - **build-tomcat** / **build-nginx** (parallel) - build the Grails WAR (via `./gradlew war`, default
   SNAPSHOT version from `gradle.properties`) and the client assets (`pnpm install` +
-  `pnpm update --no-save` + `pnpm lint` + `pnpm typecheck` + `pnpm build`, see
+  `pnpm update --no-save` + `pnpm lint` + `pnpm typecheck` + `pnpm test` + `pnpm build`, see
   [Picking up fresh framework snapshots](#picking-up-fresh-framework-snapshots))
   respectively, and push each to the run's *immutable* `image-tag` in ECR - **not** `:snapshot`.
 - **promote** - runs only after both build jobs succeed, and retags both images to `:snapshot` via a
@@ -79,6 +86,14 @@ keeps firing while the build ships a frozen snapshot. See
 check: if any `@fortawesome/*` package moved past the lockfile, the run emits a warning and a
 job-summary diff. Not fatal, but every build re-downloads those tarballs against the Font Awesome
 Pro bandwidth cap until the refreshed lockfile is committed.
+
+On the server, `gradle.lockfile` pins hoist-core by its version string only, so the build resolves
+each new hoist-core snapshot. The lockfile also pins every transitive dependency as a Gradle
+`strictly` constraint. If a new snapshot bumps a transitive dependency, the build still passes, but
+it quietly keeps the older locked version. For example, the 45.0 snapshot moved json-path to 3.0.0
+while Toolbox builds kept 2.10.0. If the snapshot adds or removes a dependency, the build fails. In
+both cases, run `./gradlew dependencies --write-locks -PrunHoistInline=false` and commit the
+result.
 
 ### Image retention
 
@@ -117,7 +132,10 @@ The workflow proceeds through four jobs:
 
 1. **validate** - runs only from `master`, guarding against an accidental release from `develop` or
    any other branch. Validates the version strictly: semver format, no duplicate tags, and a correct
-   single increment from the latest release tag.
+   single increment from the latest release tag. Also checks that the release ships released Hoist
+   libraries. `@xh/hoist`, `@xh/hoist-dev-utils`, and `hoistCoreVersion` must each be an exact
+   `x.y.z` release, and `gradle.lockfile` must lock that hoist-core version. A missed swap or a
+   stale lock would otherwise build clean and ship a snapshot.
 2. **build-tomcat** - builds the WAR with the release version (`-PxhAppVersion`), pushes a versioned
    image and a `latest` tag to ECR.
 3. **build-nginx** - builds the client app, pushes a versioned image and a `latest` tag to ECR.

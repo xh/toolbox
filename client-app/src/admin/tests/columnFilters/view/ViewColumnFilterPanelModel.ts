@@ -5,7 +5,7 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import type {CompoundFilter, FieldFilter, View} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
-import {numberRenderer} from '@xh/hoist/format';
+import {numberRenderer, numberTextRenderer} from '@xh/hoist/format';
 import {compareStructural, computed} from '@xh/hoist/mobx';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
@@ -233,7 +233,7 @@ const quantityCol: ColumnSpec = {
     align: 'right',
     width: 130,
     absSort: true,
-    renderer: numberRenderer({
+    textRenderer: numberTextRenderer({
         precision: 0,
         ledger: true
     })
@@ -242,7 +242,7 @@ const quantityCol: ColumnSpec = {
 const priceCol: ColumnSpec = {
     align: 'right',
     width: 130,
-    renderer: numberRenderer({
+    textRenderer: numberTextRenderer({
         precision: 4
     })
 };
@@ -250,7 +250,7 @@ const priceCol: ColumnSpec = {
 const commissionCol: ColumnSpec = {
     align: 'right',
     width: 130,
-    renderer: numberRenderer({
+    textRenderer: numberTextRenderer({
         precision: 0,
         ledger: true
     })

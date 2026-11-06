@@ -29,6 +29,14 @@ minimumReleaseAgeExclude:
   - '@xh/*'
   - eslint@10.9.1
 
+# Keep pnpm-lock.yaml a single YAML document. By default pnpm 12 records the pinned pnpm version in
+# a leading lockfile document, and GitHub's dependency graph reads only that first document - so it
+# sees none of our real deps and Dependabot raises no security alerts. With `ignore`, pnpm runs
+# whatever version is installed rather than switching to the `packageManager` pin. CI still installs
+# the pinned version via pnpm/setup. Remove once GitHub parses multi-document lockfiles - see
+# https://github.com/dependabot/dependabot-core/issues/15904.
+pmOnFail: ignore
+
 # Force a single copy of core-js: hoist-react depends on it at a broad `3.x`, so without an
 # override the next minor resolves separately there and the bundle ships two sets of polyfills.
 #
@@ -45,10 +53,13 @@ catalog:
 overrides:
   core-js: 'catalog:'
 
-# Several transitive deps (react-popper, react-onsenui, react-windowed-select, package-template)
+# Several transitive deps (react-popper, react-onsenui, react-windowed-select)
 # still declare react/react-dom peer ranges capped at 18. The app runs React 19 per hoist-react
 # v87 - acknowledge that here rather than surfacing unmet-peer warnings on every install.
+# Vitest's mocker declares an msw 2 peer, but only Vitest's browser mode uses it there. Unit tests
+# run on msw 3, as hoist-react's test kit requires.
 peerDependencyRules:
   allowedVersions:
     react: '19'
     react-dom: '19'
+    '@vitest/mocker>msw': '3'

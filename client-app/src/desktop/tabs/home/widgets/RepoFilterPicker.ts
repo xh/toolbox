@@ -1,7 +1,7 @@
 import type {HoistModel} from '@xh/hoist/core';
 import {hoistCmp} from '@xh/hoist/core';
 import {picker} from '@xh/hoist/desktop/cmp/input';
-import {Icon} from '@xh/hoist/icon';
+import {githubIcon} from '../../../../core/Icons';
 
 /**
  * Contract for the host model backing a {@link repoFilterPicker}, implemented by both the Releases
@@ -31,7 +31,7 @@ export const repoFilterPicker = hoistCmp.factory<RepoFilterModel>({
             enableSelectAll: true,
             displayNoun: 'repo',
             placeholder: 'All repos',
-            buttonProps: {icon: Icon.icon({iconName: 'github', prefix: 'fab'})},
+            buttonProps: {icon: githubIcon()},
             width: 180
         });
     }

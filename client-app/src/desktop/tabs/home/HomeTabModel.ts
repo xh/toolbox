@@ -9,6 +9,7 @@ import {meetXhWidget} from './widgets/meetxh/MeetXhWidget';
 import {releasesWidget} from './widgets/releases/ReleasesWidget';
 import {startHereWidget} from './widgets/StartHereWidget';
 import {welcomeWidget} from './widgets/WelcomeWidget';
+import {githubIcon} from '../../../core/Icons';
 
 export class HomeTabModel extends HoistModel {
     @managed
@@ -47,7 +48,7 @@ export class HomeTabModel extends HoistModel {
                 {
                     id: 'activity',
                     title: 'Hoist Commits',
-                    icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
+                    icon: githubIcon(),
                     content: activityWidget
                 },
                 {

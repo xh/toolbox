@@ -8,10 +8,12 @@ import {
     checkboxButton,
     codeInput,
     dateInput,
+    iconPicker,
     intentInput,
     jsonInput,
     numberInput,
     picker,
+    radioCardInput,
     radioInput,
     segmentedControl,
     select,
@@ -34,6 +36,7 @@ import type {InputCatalogEntry} from './InputCatalog';
 import {INPUT_CATALOG, INPUT_CATEGORIES} from './InputCatalog';
 import {InputDemoModel} from './InputDemoModel';
 import './InputsIndexPanel.scss';
+import {chartThumb} from './RadioCardPreviews';
 
 export const inputsIndexPanel = hoistCmp.factory({
     displayName: 'InputsIndexPanel',
@@ -43,8 +46,8 @@ export const inputsIndexPanel = hoistCmp.factory({
         const {visibleEntries, groupByCategory} = model,
             count = visibleEntries.length;
         return wrapper({
-            title: 'All Inputs',
-            icon: Icon.grip(),
+            title: 'Inputs',
+            icon: Icon.edit(),
             description: [
                 'Every desktop `HoistInput`, live and side by side. Use it to find the right',
                 'control, or to sweep the whole set after a framework change.',
@@ -230,6 +233,17 @@ const TILE_INPUTS: Record<string, (m: InputsIndexModel) => ReactElement> = {
                 button({icon: Icon.chartBar(), text: 'Bar', value: 'bar'})
             ]
         }),
+    // Two cards fit the tile on one row. Shares `chartType` with the ButtonGroupInput tile - its
+    // 'bar' choice leaves no card selected here.
+    RadioCardInput: m =>
+        radioCardInput({
+            bind: 'chartType',
+            disabled: m.disabled,
+            options: [
+                {value: 'linear', label: 'Linear', preview: chartThumb('line')},
+                {value: 'area', label: 'Area', preview: chartThumb('area')}
+            ]
+        }),
     RadioInput: m =>
         radioInput({
             bind: 'side',
@@ -238,6 +252,7 @@ const TILE_INPUTS: Record<string, (m: InputsIndexModel) => ReactElement> = {
             options: ['Buy', 'Sell']
         }),
     IntentInput: m => intentInput({bind: 'intent', disabled: m.disabled, compact: m.compact}),
+    IconPicker: m => iconPicker({bind: 'icon', disabled: m.disabled, width: '100%'}),
     Checkbox: m => checkbox({bind: 'checked', disabled: m.disabled, label: 'enabled'}),
     CheckboxButton: m => checkboxButton({bind: 'checked', disabled: m.disabled, text: 'Enabled'}),
     SwitchInput: m =>
@@ -258,6 +273,7 @@ const SEEDS = {
     chartType: 'area',
     side: 'Buy',
     intent: 'primary' as Intent,
+    icon: 'rocket',
     checked: true
 };
 
@@ -279,6 +295,7 @@ class InputsIndexModel extends InputDemoModel {
     @bindable accessor chartType: string = SEEDS.chartType;
     @bindable accessor side: string = SEEDS.side;
     @bindable accessor intent: Intent = SEEDS.intent;
+    @bindable accessor icon: string = SEEDS.icon;
     @bindable accessor checked: boolean = SEEDS.checked;
 
     get inputSeeds() {

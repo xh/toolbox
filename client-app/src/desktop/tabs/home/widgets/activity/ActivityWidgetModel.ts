@@ -11,6 +11,7 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head, uniq} from 'lodash';
 import type {Commit} from '../../../../../core/svc/GitHubService';
 import type {RepoFilterModel} from '../RepoFilterPicker';
+import {githubIcon} from '../../../../../core/Icons';
 
 export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
     @lookup(DashViewModel)
@@ -52,7 +53,7 @@ export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
         const openUrlAction = {
             text: 'Open on Github',
             tooltip: 'Open on Github',
-            icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
+            icon: githubIcon(),
             displayFn: ({record}) => ({disabled: !record?.data?.url}),
             actionFn: ({record}) => XH.openWindow(record.data.url, 'gitlink')
         };

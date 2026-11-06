@@ -28,7 +28,7 @@ export const manageWidgetsSheet = hoistCmp.factory({
     render({model}) {
         if (!model.isManaging) return null;
 
-        // Portal the sheet to <body> so it (and its dnd content) escapes the Onsen navigator's Swiper
+        // Portal the sheet to <body> so it (and its dnd content) escapes the Hoist navigator's Swiper
         // wrapper, which carries an (identity) CSS transform. That transform is a containing block for
         // the drag clone's position:fixed and would offset the floating row below the finger;
         // rendering at <body> leaves no transformed ancestor, so the in-place clone tracks the

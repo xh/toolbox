@@ -1,21 +1,17 @@
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faIcons} from '@fortawesome/pro-regular-svg-icons';
 import {box, div, placeholder, span} from '@xh/hoist/cmp/layout';
 import type {Intent} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
+import type {IconCatalogEntry} from '@xh/hoist/icon';
 import {Icon} from '@xh/hoist/icon';
 import {select, textInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {bindable, computed} from '@xh/hoist/mobx';
 import {copyToClipboard} from '@xh/hoist/utils/js';
-import {isEmpty, without} from 'lodash';
+import {isEmpty} from 'lodash';
 import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import './IconPage.scss';
-
-// Register a custom icon - not pre-imported by `Icon` - and use it as this example's title icon
-// to demonstrate pulling any glyph from Font Awesome into an app.
-library.add(faIcons);
+import {iconsIcon} from '../../core/Icons';
 
 export const iconPage = hoistCmp.factory({
     model: creates(() => IconPageModel),
@@ -23,16 +19,20 @@ export const iconPage = hoistCmp.factory({
     render({model}) {
         return exampleScreen({
             title: 'Icons',
-            icon: Icon.icon({iconName: 'icons'}),
+            icon: iconsIcon(),
             description: [
-                'Hoist bundles the [Font Awesome](https://fontawesome.com/icons) library and exposes',
-                'a preselected set of glyphs as element factories on the `Icon` constant - covering',
-                'the most common icons plus several finance / trading concepts.',
+                'Hoist builds on [Font Awesome Pro](https://fontawesome.com/icons), a commercial icon',
+                'library. Each app needs its own Font Awesome Pro license, and a license token to',
+                'install the Pro packages. The `Icon` singleton exposes a curated set of Font Awesome',
+                'glyphs as element factories, plus semantic aliases and icons for several finance and',
+                'trading concepts.',
                 '',
-                'Apps are not limited to this set: any Font Awesome glyph can be imported directly and',
-                "registered, as the icon in this example's title bar demonstrates.",
+                'Apps can add any other glyph with `Icon.register()`, which adds it to the icon',
+                'catalog and returns a factory for it. The icon beside the title of this panel is',
+                'registered this way. `Icon.get()` renders any icon in the catalog from its name.',
                 '',
-                'Filter the built-in set below, and tap any icon to copy its factory call.'
+                'Filter the catalog below - built-ins plus Toolbox registrations, badged as app icons -',
+                'and tap any icon to copy the call that renders it.'
             ],
             options: [
                 exampleOption({
@@ -96,27 +96,30 @@ const tbar = hoistCmp.factory<IconPageModel>(({model}) =>
                 bind: 'query',
                 leftIcon: Icon.search(),
                 enableClear: true,
-                placeholder: 'Filter by name...',
+                placeholder: 'Filter by name or keyword...',
                 commitOnChange: true
             })
         }),
-        span({className: 'tb-icon-page__count', item: `${model.iconNames.length}`})
+        span({className: 'tb-icon-page__count', item: `${model.entries.length}`})
     )
 );
 
 const gallery = hoistCmp.factory<IconPageModel>(({model}) => {
-    const {iconNames} = model;
-    if (isEmpty(iconNames)) {
+    const {entries} = model;
+    if (isEmpty(entries)) {
         return placeholder(Icon.search(), `No icons match "${model.query}"`);
     }
     return div({
         className: 'tb-icon-page__gallery',
-        items: iconNames.map(name => iconTile({key: name, name}))
+        items: entries.map(entry => iconTile({key: entry.faName, entry}))
     });
 });
 
-const iconTile = hoistCmp.factory<IconPageModel>(({model, name}) => {
-    const usage = `Icon.${name}()`;
+const iconTile = hoistCmp.factory<IconPageModel>(({model, entry}) => {
+    const {name} = entry,
+        isAppIcon = entry.source === 'app',
+        // Registered names are not typed on `Icon`, so resolve app icons by name.
+        usage = isAppIcon ? `Icon.get('${name}')` : `Icon.${name}()`;
     return div({
         className: 'tb-icon-page__tile',
         onClick: () =>
@@ -126,19 +129,21 @@ const iconTile = hoistCmp.factory<IconPageModel>(({model, name}) => {
         items: [
             div({
                 className: 'tb-icon-page__glyph',
-                item: Icon[name]({
+                item: entry.factory({
                     prefix: model.prefix,
                     size: '2x',
                     intent: model.intent === 'neutral' ? null : model.intent
                 })
             }),
-            div({className: 'tb-icon-page__name', item: name})
+            div({className: 'tb-icon-page__name', item: name}),
+            div({omit: !isAppIcon, className: 'tb-icon-page__badge', item: 'app'})
         ]
     });
 });
 
-function getAllIconNames(): string[] {
-    return without(Object.keys(Icon), 'icon', 'fileIcon', 'placeholder').sort();
+function matches(entry: IconCatalogEntry, query: string): boolean {
+    const {displayName, names, keywords} = entry;
+    return [displayName, ...names, ...keywords].some(it => it.toLowerCase().includes(query));
 }
 
 class IconPageModel extends HoistModel {
@@ -147,9 +152,9 @@ class IconPageModel extends HoistModel {
     @bindable accessor intent: 'neutral' | Intent = 'neutral';
 
     @computed
-    get iconNames(): string[] {
+    get entries(): IconCatalogEntry[] {
         const query = this.query?.trim().toLowerCase(),
-            all = getAllIconNames();
-        return query ? all.filter(name => name.toLowerCase().includes(query)) : all;
+            all = Icon.getCatalog();
+        return query ? all.filter(it => matches(it, query)) : all;
     }
 }

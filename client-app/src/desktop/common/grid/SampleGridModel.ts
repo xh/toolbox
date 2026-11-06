@@ -1,5 +1,5 @@
 import {createRef} from 'react';
-import type {GridConfig} from '@xh/hoist/cmp/grid';
+import type {ColumnOrGroupSpec, ColumnRenderer, ColumnSpec, GridConfig} from '@xh/hoist/cmp/grid';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
@@ -7,20 +7,37 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {observable, runInAction} from '@xh/hoist/mobx';
 import type {StoreRecord} from '@xh/hoist/data';
+import {isEmpty} from 'lodash';
 import './SampleGrid.scss';
 import {activeCol} from '../../../core/columns/General';
 import {cityCol, companyCol} from '../../../core/columns/Demographics';
 import {
     dayOfWeekCol,
     profitLossCol,
+    profitLossRenderer,
     tradeDateCol,
+    tradeDateRenderer,
     tradeVolumeCol,
+    tradeVolumeRenderer,
     winLoseCol
 } from '../../../core/columns/Trades';
 
+/** How the trade columns turn values into cell content - see `SampleGridModel.cellFormatting`. */
+export type CellFormatting = 'textRenderer' | 'renderer';
+
 export class SampleGridModel extends HoistModel {
+    /**
+     * 'textRenderer' to show the Volume, P&L and Date columns as plain text cells, through their
+     * `Column.textRenderer`. 'renderer' to show them through renderers with the same options, as a
+     * React component per cell. Both should look identical. Change it with `setCellFormatting`.
+     */
+    @observable accessor cellFormatting: CellFormatting = 'textRenderer';
+
     panelRef = createRef<HTMLDivElement>();
+
+    private columnAnimationPaused = false;
 
     viewDetailsAction = {
         text: 'View Details',
@@ -180,43 +197,7 @@ export class SampleGridModel extends HoistModel {
                     });
                 }
             },
-            columns: [
-                {field: 'id', hidden: true},
-                {
-                    ...actionCol,
-                    width: calcActionColWidth(2),
-                    actionsShowOnHoverOnly: true,
-                    actions: [this.viewDetailsAction, this.terminateAction],
-                    pinned: 'left'
-                },
-                {
-                    ...companyCol,
-                    headerName: ({gridModel}) => {
-                        let ret = 'Company';
-                        if (gridModel.selectedRecord) {
-                            ret += ` (${gridModel.selectedRecord.data.company})`;
-                        }
-                        return ret;
-                    },
-                    exportName: 'Company',
-                    headerTooltip: 'Select a company & continue'
-                },
-                {...winLoseCol, hidden: true},
-                {
-                    ...cityCol,
-                    tooltip: (val, {record}) => `${record.data.company} is located in ${val}`
-                },
-                {...tradeVolumeCol},
-                {...profitLossCol},
-                {...dayOfWeekCol, hidden: true},
-                {...tradeDateCol},
-                {
-                    ...activeCol,
-                    tooltip: (active, {record}) =>
-                        active ? `${record.data.company} is active` : '',
-                    pinned: 'right'
-                }
-            ],
+            columns: this.createColumns(),
             ...gridConfig
         });
 
@@ -233,12 +214,96 @@ export class SampleGridModel extends HoistModel {
         });
     }
 
+    /**
+     * Switch the trade columns to the given path. Call it outside any action or reaction, so the
+     * grid applies each column change before `swapCellFormatting` hides grouped columns again.
+     */
+    setCellFormatting(value: CellFormatting) {
+        if (value === this.cellFormatting) return;
+        runInAction(() => (this.cellFormatting = value));
+        this.swapCellFormatting();
+    }
+
     override async doLoadAsync(loadSpec) {
         const {trades} = await XH.fetchJson({url: 'trade'}),
             {gridModel} = this;
 
         gridModel.loadData(trades);
         await gridModel.preSelectFirstAsync();
+    }
+
+    private createColumns(): ColumnOrGroupSpec[] {
+        // A renderer wins over a text renderer, so adding one is all it takes to switch paths.
+        const withRenderer = (col: ColumnSpec, renderer: ColumnRenderer): ColumnSpec =>
+            this.cellFormatting === 'renderer' ? {...col, renderer} : {...col};
+
+        return [
+            {field: 'id', hidden: true},
+            {
+                ...actionCol,
+                width: calcActionColWidth(2),
+                actionsShowOnHoverOnly: true,
+                actions: [this.viewDetailsAction, this.terminateAction],
+                pinned: 'left'
+            },
+            {
+                ...companyCol,
+                headerName: ({gridModel}) => {
+                    let ret = 'Company';
+                    if (gridModel.selectedRecord) {
+                        ret += ` (${gridModel.selectedRecord.data.company})`;
+                    }
+                    return ret;
+                },
+                exportName: 'Company',
+                headerTooltip: 'Select a company & continue'
+            },
+            {...winLoseCol, hidden: true},
+            {
+                ...cityCol,
+                tooltip: (val, {record}) => `${record.data.company} is located in ${val}`
+            },
+            withRenderer(tradeVolumeCol, tradeVolumeRenderer),
+            withRenderer(profitLossCol, profitLossRenderer),
+            {...dayOfWeekCol, hidden: true},
+            withRenderer(tradeDateCol, tradeDateRenderer),
+            {
+                ...activeCol,
+                tooltip: (active, {record}) => (active ? `${record.data.company} is active` : ''),
+                pinned: 'right'
+            }
+        ];
+    }
+
+    // Rebuild the columns on the other path, keeping their order, widths and visibility.
+    private swapCellFormatting() {
+        const {gridModel} = this,
+            {agApi, columnState, groupBy} = gridModel,
+            isGrouped = agApi && !isEmpty(groupBy);
+
+        // `setColumns` and `setColumnState` each re-show a column hidden by grouping, and Hoist
+        // hides it again only when `groupBy` changes. So hide it below, in the same event, and
+        // React renders the header once without it. Pause AG Grid's column animation until the
+        // next frame too, or the other columns slide back from where the re-shown column put them.
+        // A second swap in that frame keeps the first pause, so the original setting comes back.
+        if (isGrouped && !this.columnAnimationPaused) {
+            const suppress = agApi.getGridOption('suppressColumnMoveAnimation');
+            this.columnAnimationPaused = true;
+            agApi.setGridOption('suppressColumnMoveAnimation', true);
+            window.requestAnimationFrame(() => {
+                this.columnAnimationPaused = false;
+                if (!agApi.isDestroyed()) {
+                    agApi.setGridOption('suppressColumnMoveAnimation', suppress);
+                }
+            });
+        }
+
+        gridModel.setColumns(this.createColumns());
+        gridModel.setColumnState(columnState);
+
+        if (isGrouped) {
+            agApi.applyColumnState({state: groupBy.map(colId => ({colId, hide: true}))});
+        }
     }
 
     private showInfoToast(rec: StoreRecord) {
@@ -287,5 +352,6 @@ export class SampleGridModel extends HoistModel {
         this.gridModel.showHover = false;
         this.gridModel.showCellFocus = false;
         this.gridModel.emptyText = 'No records found...';
+        this.setCellFormatting('textRenderer');
     }
 }

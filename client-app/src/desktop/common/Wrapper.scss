@@ -60,9 +60,24 @@
       font-family: var(--xh-font-family-mono);
       font-size: 0.85em;
       color: var(--xh-text-color);
+    }
+
+    // Inline code only - code inside a block takes the block's styling below.
+    :not(pre) > code {
       background-color: var(--xh-bg-alt);
       padding: 1px 3px;
       border-radius: 3px;
+    }
+
+    // Code blocks, matching the doc viewer's framed style at a size suited to the rail.
+    pre {
+      background-color: var(--xh-bg-alt);
+      border: 1px solid var(--xh-border-color);
+      border-radius: 4px;
+      padding: var(--xh-pad-half-px) var(--xh-pad-px);
+      margin: 0 0 var(--xh-pad-half-px);
+      overflow-x: auto;
+      line-height: 1.4;
     }
 
     ul,
