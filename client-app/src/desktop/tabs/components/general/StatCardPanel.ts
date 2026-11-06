@@ -3,17 +3,19 @@ import type {StatCardProps} from '@xh/hoist/cmp/statcard';
 import {statCard, statCardStrip} from '@xh/hoist/cmp/statcard';
 import type {Intent} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
-import {select, textInput} from '@xh/hoist/desktop/cmp/input';
+import {iconPicker, select, textInput} from '@xh/hoist/desktop/cmp/input';
 import type {NumberFormatOptions} from '@xh/hoist/format';
 import {fmtMillions, fmtNumber, fmtPercent} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
+import {colorField} from '../../../../core/cmp/ColorField';
 import {
     demoFrame,
     demoPanel,
     demoPlayground,
     demoSection,
-    fmtDemoConfig
+    fmtDemoConfig,
+    raw
 } from '../../../common/Demo';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import './StatCardPanel.scss';
@@ -75,7 +77,7 @@ export const statCardPanel = hoistCmp.factory({
     model: creates(() => StatCardPanelModel),
 
     render({model}) {
-        const {cardProps} = model;
+        const {cardProps, infoIcon} = model;
         return wrapper({
             title: 'StatCard',
             icon: Icon.chartLine(),
@@ -110,6 +112,16 @@ export const statCardPanel = hoistCmp.factory({
                         textOption('Detail', 'detail'),
                         textOption('Info tooltip', 'infoTooltip'),
                         wrapperOption({
+                            label: 'Info icon',
+                            propName: 'StatCardProps.infoIcon',
+                            control: iconPicker({
+                                bind: 'infoIcon',
+                                valueField: 'name',
+                                compact: true,
+                                width: 120
+                            })
+                        }),
+                        wrapperOption({
                             label: 'Intent',
                             propName: 'StatCardProps.intent',
                             control: select({
@@ -134,17 +146,10 @@ export const statCardPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Accent',
                             propName: 'StatCardProps.accent',
-                            control: select({
-                                bind: 'accent',
-                                enableFilter: false,
+                            control: colorField({
+                                value: model.accent,
                                 enableClear: true,
-                                width: 120,
-                                options: [
-                                    {label: 'Blue', value: 'var(--xh-blue)'},
-                                    {label: 'Orange', value: 'var(--xh-orange)'},
-                                    {label: 'Purple', value: 'var(--xh-purple)'},
-                                    {label: 'Green', value: 'var(--xh-green)'}
-                                ]
+                                onChange: v => (model.accent = v)
                             })
                         })
                     ]
@@ -159,8 +164,14 @@ export const statCardPanel = hoistCmp.factory({
                             instanceWidth: 280,
                             showValue: false,
                             caption: 'Clear a field to omit that line.',
-                            config: fmtDemoConfig<StatCardProps>('statCard', cardProps),
-                            item: statCard(cardProps)
+                            config: fmtDemoConfig<StatCardProps>('statCard', {
+                                ...cardProps,
+                                infoIcon: infoIcon ? raw(`Icon.${infoIcon}()`) : undefined
+                            }),
+                            item: statCard({
+                                ...cardProps,
+                                infoIcon: infoIcon ? Icon.get(infoIcon) : undefined
+                            })
                         })
                     }),
                     demoSection({
@@ -355,6 +366,8 @@ class StatCardPanelModel extends HoistModel {
     @bindable accessor subValue = '+4.2%';
     @bindable accessor detail = 'vs. last month, 42 locations';
     @bindable accessor infoTooltip: string = null;
+    /** `Icon` name for `infoIcon`, held apart from `cardProps` as the card and snippet render it differently. */
+    @bindable accessor infoIcon: string = null;
     @bindable accessor intent: Intent = null;
     @bindable accessor accent: string = null;
     @bindable accessor size: StatCardProps['size'] = null;
