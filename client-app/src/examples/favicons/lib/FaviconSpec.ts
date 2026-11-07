@@ -1,6 +1,9 @@
 import type {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 import type {HoistIconPrefix} from '@xh/hoist/icon';
 import {clamp, isFinite, isString} from 'lodash';
+import {normalizeHex} from '../../../core/cmp/ColorField';
+
+export {normalizeHex};
 
 /** Backdrop shape drawn behind the glyph. */
 export type FaviconShape = 'none' | 'square' | 'rounded' | 'circle';
@@ -74,17 +77,6 @@ export const DEFAULT_SPEC: FaviconSpec = Object.freeze({
     padding: DEFAULT_PADDING.rounded,
     appName: 'My App'
 }) as FaviconSpec;
-
-/** Normalize '#?rgb' or '#?rrggbb' (any case) to '#rrggbb' lowercase, or return null if invalid. */
-export function normalizeHex(s: string): string | null {
-    if (!isString(s)) return null;
-    const match = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(s.trim());
-    if (!match) return null;
-
-    let hex = match[1].toLowerCase();
-    if (hex.length === 3) hex = hex.replace(/./g, c => c + c);
-    return '#' + hex;
-}
 
 /**
  * Produce a complete, valid spec from a partial or untrusted one. Missing or invalid fields take
