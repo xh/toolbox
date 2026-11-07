@@ -53,12 +53,12 @@ export interface PerfConfig {
     groupDims: number;
     /** 0 for the plain-View control. */
     pivotDims: number;
-    valueFields: number;
+    measureCount: number;
     /** Widen the record with `m0..mN` measures - the control's whole point. */
     extraMeasures?: number;
 }
 
-const BASE = {leaves: 100000, groupDims: 3, pivotDims: 2, valueFields: 1};
+const BASE = {leaves: 100000, groupDims: 3, pivotDims: 2, measureCount: 1};
 
 function cfg(id: string, label: string, axis: string, over: Partial<PerfConfig> = {}): PerfConfig {
     return {id, label, axis, ...BASE, ...over};
@@ -69,7 +69,7 @@ function cfg(id: string, label: string, axis: string, over: Partial<PerfConfig> 
  * no question the sweeps do not.
  */
 export const PERF_CONFIGS: PerfConfig[] = [
-    cfg('base', 'Baseline: 100k / 3 group / 2 pivot / 1 value', 'Baseline'),
+    cfg('base', 'Baseline: 100k / 3 group / 2 pivot / 1 measure', 'Baseline'),
 
     cfg('leaves25k', '25k leaves', 'Leaf count', {leaves: 25000}),
     cfg('leaves250k', '250k leaves', 'Leaf count', {leaves: 250000}),
@@ -80,7 +80,7 @@ export const PERF_CONFIGS: PerfConfig[] = [
     cfg('pivot1', '1 pivot dim (4 paths)', 'Pivot dims', {pivotDims: 1}),
     cfg('pivot3', '3 pivot dims (72 paths)', 'Pivot dims', {pivotDims: 3}),
 
-    cfg('values3', '3 value fields', 'Value fields', {valueFields: 3}),
+    cfg('measures3', '3 measures', 'Measures', {measureCount: 3}),
 
     cfg(
         'control',
@@ -305,11 +305,11 @@ export class CubePivotPerfModel extends HoistModel {
     }
 
     private async measureAsync(config: PerfConfig, withGrid: boolean): Promise<PerfResult> {
-        const {leaves: leafCount, groupDims, pivotDims, valueFields, extraMeasures} = config,
+        const {leaves: leafCount, groupDims, pivotDims, measureCount, extraMeasures} = config,
             groupBy = GROUP_DIMS.slice(0, groupDims).map(d => d[0]),
             pivotBy = PIVOT_DIMS.slice(0, pivotDims).map(d => d[0]),
             measures = [...BASE_MEASURES, ...range(extraMeasures ?? 0).map(i => `m${i}`)],
-            values = BASE_MEASURES.slice(0, valueFields);
+            values = BASE_MEASURES.slice(0, measureCount);
 
         const profile = {
             id: config.id,
@@ -318,7 +318,7 @@ export class CubePivotPerfModel extends HoistModel {
             dims: Object.fromEntries([...GROUP_DIMS, ...PIVOT_DIMS]),
             groupBy,
             pivotBy,
-            valueFields: values,
+            measures: values,
             extraMeasures,
             description: ''
         } as PivotProfile;
@@ -363,7 +363,7 @@ export class CubePivotPerfModel extends HoistModel {
                     ? cube.createView({
                           query: {
                               ...queryBase,
-                              pivot: {dimensions: pivotBy, valueFields: values, maxPivotPaths: null}
+                              pivot: {dimensions: pivotBy, measures: values, maxPivotPaths: null}
                           },
                           connect: true
                       })
@@ -381,7 +381,7 @@ export class CubePivotPerfModel extends HoistModel {
                         view,
                         columns: pivotDims ? [] : measures.map(name => ({field: name, width: 100})),
                         gridConfig: {autosizeOptions: {mode: 'disabled'}},
-                        pivotConfig: {showSummaries: 'right'}
+                        pivotConfig: {dimensionDefaults: {showSummary: 'right'}}
                     });
                 });
             }
@@ -449,11 +449,11 @@ export class CubePivotPerfModel extends HoistModel {
                 );
                 repivot({dimensions: pivotBy});
 
-                if (valueFields > 1) {
+                if (measureCount > 1) {
                     valueChangeMs = await timeAsync(async () =>
-                        repivot({valueFields: values.slice(0, valueFields - 1)})
+                        repivot({measures: values.slice(0, measureCount - 1)})
                     );
-                    repivot({valueFields: values});
+                    repivot({measures: values});
                 }
 
                 // A brand-new pivot value: re-declares Store fields and rebuilds columns.

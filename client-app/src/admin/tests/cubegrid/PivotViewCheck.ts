@@ -24,7 +24,7 @@ import {isEmpty, isEqual, isNumber} from 'lodash';
 
 const TOLERANCE = 1e-6;
 
-/** Aggregators the reference reproduces. Scenarios declare one per value field. */
+/** Aggregators the reference reproduces. Scenarios declare one per measure. */
 export type RefAggKind = 'SUM' | 'SUM_STRICT' | 'AVG' | 'AVG_STRICT' | 'UNIQUE' | 'CHILD_COUNT';
 
 export interface PivotCheck {
@@ -41,8 +41,8 @@ export interface PivotCheckConfig {
     groupBy: string[];
     /** Empty for a plain, non-pivoted View. */
     pivotBy: string[];
-    valueFields: string[];
-    /** Aggregator per value field. Anything unlisted is taken as SUM. */
+    measures: string[];
+    /** Aggregator per measure. Anything unlisted is taken as SUM. */
     aggregators?: Record<string, RefAggKind>;
     /** Label distinguishing this run, e.g. 'initial' or 'after tick'. */
     label: string;
@@ -90,7 +90,7 @@ function newNode(fieldCount: number): RefNode {
 }
 
 /** Per-node statistics over the raw leaves, sufficient to reproduce every {@link RefAggKind}. */
-function accumulate({leaves, groupBy, pivotBy, valueFields}: PivotCheckConfig) {
+function accumulate({leaves, groupBy, pivotBy, measures}: PivotCheckConfig) {
     const ret = new Map<string, RefNode>(),
         gDepth = groupBy.length,
         pDepth = pivotBy.length;
@@ -108,15 +108,15 @@ function accumulate({leaves, groupBy, pivotBy, valueFields}: PivotCheckConfig) {
 
                 const key = `${gKey}/${pKey}`;
                 let node = ret.get(key);
-                if (!node) ret.set(key, (node = newNode(valueFields.length)));
+                if (!node) ret.set(key, (node = newNode(measures.length)));
 
                 const isFirst = ++node.leaves === 1;
                 if (gChild != null) node.groupChildren.add(gChild);
                 if (pChild != null) node.pivotChildren.add(pChild);
 
-                for (let v = 0; v < valueFields.length; v++) {
+                for (let v = 0; v < measures.length; v++) {
                     const stat = node.stats[v],
-                        raw = leaf[valueFields[v]] ?? null;
+                        raw = leaf[measures[v]] ?? null;
 
                     if (raw == null) {
                         stat.anyNull = true;
@@ -219,7 +219,7 @@ function compareKind(
 interface FlatPath {
     path: PivotPath;
     refKey: string;
-    /** Cell field name per value field, in `valueFields` order. */
+    /** Cell field name per measure, in `measures` order. */
     names: string[];
 }
 
@@ -234,21 +234,21 @@ function pivotResult(view: View): {paths: PivotPath[]; cellFields: PivotCellFiel
  * the result's own `cellFields`, matched by path *identity* - no string keys, so nothing here can
  * disagree with what the view actually published.
  */
-function flattenPaths(view: View, valueFields: string[]): FlatPath[] {
+function flattenPaths(view: View, measures: string[]): FlatPath[] {
     const {paths, cellFields} = pivotResult(view),
         namesByPath = new Map<PivotPath, Map<string, string>>();
 
     cellFields.forEach(cf => {
         let byField = namesByPath.get(cf.path);
         if (!byField) namesByPath.set(cf.path, (byField = new Map()));
-        byField.set(cf.valueField.name, cf.name);
+        byField.set(cf.measure.name, cf.name);
     });
 
     const ret: FlatPath[] = [];
     const walk = (path: PivotPath, prefix: string) => {
         const refKey = encode(prefix, path.value, path.isEmpty),
             byField = namesByPath.get(path);
-        ret.push({path, refKey, names: valueFields.map(f => byField?.get(f))});
+        ret.push({path, refKey, names: measures.map(f => byField?.get(f))});
         path.children.forEach(child => walk(child, refKey));
     };
     paths.forEach(root => walk(root, ''));
@@ -260,14 +260,14 @@ function flattenPaths(view: View, valueFields: string[]): FlatPath[] {
  * its cells against the reference.
  */
 export function checkPivotView(config: PivotCheckConfig): PivotCheck[] {
-    const {view, groupBy, pivotBy, valueFields, aggregators = {}, label} = config,
+    const {view, groupBy, pivotBy, measures, aggregators = {}, label} = config,
         {includeRoot, includeLeaves, bucketSpecFn} = view.query,
         gDepth = groupBy.length,
         pDepth = pivotBy.length,
         pivoted = !isEmpty(pivotBy),
-        kinds: RefAggKind[] = valueFields.map(f => aggregators[f] ?? 'SUM'),
+        kinds: RefAggKind[] = measures.map(f => aggregators[f] ?? 'SUM'),
         ref = accumulate(config),
-        flatPaths = flattenPaths(view, valueFields),
+        flatPaths = flattenPaths(view, measures),
         leavesById = new Map(config.leaves.map(l => [String(l.id), l]));
 
     const rowTotals = mkCheck(`${label}: row totals match the reference`),
@@ -283,7 +283,7 @@ export function checkPivotView(config: PivotCheckConfig): PivotCheck[] {
         // they should carry: their source record's values, and their own pivot column only.
         if (row.cubeRowType === 'leaf') {
             const src = leavesById.get(String(row.cubeLabel));
-            valueFields.forEach(field => {
+            measures.forEach(field => {
                 compare(
                     leafValues,
                     src?.[field] ?? null,
@@ -297,7 +297,7 @@ export function checkPivotView(config: PivotCheckConfig): PivotCheck[] {
             flatPaths.forEach(({path, refKey, names: cellNames}) => {
                 if (path.depth !== pDepth) return;
                 const isOwn = refKey === ownKey;
-                valueFields.forEach((field, v) => {
+                measures.forEach((field, v) => {
                     compare(
                         leafCells,
                         isOwn ? (row[field] ?? null) : null,
@@ -312,7 +312,7 @@ export function checkPivotView(config: PivotCheckConfig): PivotCheck[] {
         // Bucketing inserts a level that applies no group dimension. Assert the bucket partitions its
         // children, then continue the reference walk at the same depth and key.
         if (row.cubeRowType === 'bucket') {
-            valueFields.forEach((field, v) => {
+            measures.forEach((field, v) => {
                 if (kinds[v] !== 'SUM') return;
                 let sum = null;
                 row.children?.forEach(child => {
@@ -334,7 +334,7 @@ export function checkPivotView(config: PivotCheckConfig): PivotCheck[] {
         const myKey = depth === 0 ? gKey : encode(gKey, row[groupBy[depth - 1]]),
             node = ref.get(`${myKey}/`);
 
-        valueFields.forEach((field, v) => {
+        measures.forEach((field, v) => {
             compareKind(
                 rowTotals,
                 kinds[v],
@@ -347,7 +347,7 @@ export function checkPivotView(config: PivotCheckConfig): PivotCheck[] {
         if (pivoted) {
             flatPaths.forEach(({path, refKey, names: cellNames}) => {
                 const cellNode = ref.get(`${myKey}/${refKey}`);
-                valueFields.forEach((field, v) => {
+                measures.forEach((field, v) => {
                     const kind = kinds[v];
                     compareKind(
                         kind === 'CHILD_COUNT' ? childCounts : cells,
@@ -361,7 +361,7 @@ export function checkPivotView(config: PivotCheckConfig): PivotCheck[] {
 
             // The docked Total column must equal the sum of the visible pivot columns. Additive
             // aggregators only - a strict, average, unique or count total is not a sum of its cells.
-            valueFields.forEach((field, v) => {
+            measures.forEach((field, v) => {
                 if (kinds[v] !== 'SUM') return;
                 let sum = null;
                 flatPaths.forEach(({path, names: cellNames}) => {
@@ -409,7 +409,7 @@ export function checkPivotView(config: PivotCheckConfig): PivotCheck[] {
 export function comparePivotViews(
     incremental: View,
     rebuilt: View,
-    valueFields: string[],
+    measures: string[],
     label: string,
     pivoted = true
 ): PivotCheck {
@@ -423,7 +423,7 @@ export function comparePivotViews(
     };
     rebuilt.result.rows.forEach(index);
 
-    const fieldNames = [...valueFields, ...cellFields.map(cf => cf.name)];
+    const fieldNames = [...measures, ...cellFields.map(cf => cf.name)];
 
     const visit = (row: ViewRowData) => {
         const other = byId.get(row.id);
@@ -450,7 +450,7 @@ export interface CellStoreCheckConfig {
     view: View;
     /** Store declaring one Field per `result.cellFields` entry, loaded from the view. */
     store: Store;
-    /** Aggregator per value field, so counts and UNIQUE values compare exactly. */
+    /** Aggregator per measure, so counts and UNIQUE values compare exactly. */
     aggregators?: Record<string, RefAggKind>;
     label: string;
 }
@@ -485,7 +485,7 @@ export function checkCellStore({
         } else {
             cellFields.forEach(cf => {
                 const {name} = cf,
-                    kind = aggregators[cf.valueField.name] ?? 'SUM',
+                    kind = aggregators[cf.measure.name] ?? 'SUM',
                     got = rec.data[name];
 
                 // Own property iff the view projected a value here - cell names are not query

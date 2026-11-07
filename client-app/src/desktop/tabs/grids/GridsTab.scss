@@ -2,3 +2,8 @@
   width: 100%;
   height: 100%;
 }
+
+// Shades the pivot row summary in the CubeGrid demo, as the docked summary row is.
+.tb-cube-grid__row-summary {
+  background-color: var(--xh-grid-total-row-bg);
+}

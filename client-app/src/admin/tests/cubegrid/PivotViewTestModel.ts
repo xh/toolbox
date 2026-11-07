@@ -1,6 +1,6 @@
 import {ColumnGroup, GridModel} from '@xh/hoist/cmp/grid';
 import {CubeGridModel, PIVOT_GROUP_ID} from '@xh/hoist/cmp/cubegrid';
-import type {PlainObject} from '@xh/hoist/core';
+import type {HSide, PlainObject} from '@xh/hoist/core';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import type {
     AggregatorToken,
@@ -24,7 +24,7 @@ interface Scenario {
     label: string;
     groupBy: string[];
     pivotBy: string[];
-    valueFields: string[];
+    measures: string[];
     /** Leaf count - kept small so the suite runs interactively. */
     leaves: number;
     includeRoot?: boolean;
@@ -33,7 +33,7 @@ interface Scenario {
     excludeEmptyPivotValues?: boolean;
     /** Blank out this dimension on every 7th record, exercising the empty path segment. */
     blankDim?: string;
-    /** Aggregator per value field. Anything unlisted is SUM. Also selects the mixed-measure data. */
+    /** Aggregator per measure. Anything unlisted is SUM. Also selects the mixed-measure data. */
     aggregators?: Record<string, RefAggKind>;
     /** Bucket strategy rows by the sign of their aggregate pnl. */
     bucket?: boolean;
@@ -75,7 +75,7 @@ const SCENARIOS: Scenario[] = [
         label: 'One pivot dim, 3 groupings',
         groupBy: ['fund', 'strategy', 'sector'],
         pivotBy: ['region'],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         leaves: 4000
     },
     {
@@ -83,7 +83,7 @@ const SCENARIOS: Scenario[] = [
         label: 'Two pivot dims, 3 measures (pivot summaries)',
         groupBy: ['fund', 'strategy'],
         pivotBy: ['region', 'sector'],
-        valueFields: ['pnl', 'mktVal', 'quantity'],
+        measures: ['pnl', 'mktVal', 'quantity'],
         leaves: 4000
     },
     {
@@ -91,7 +91,7 @@ const SCENARIOS: Scenario[] = [
         label: 'Three pivot dims',
         groupBy: ['fund', 'strategy'],
         pivotBy: ['region', 'sector', 'strategy2'],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         leaves: 4000
     },
     {
@@ -99,7 +99,7 @@ const SCENARIOS: Scenario[] = [
         label: 'Null / blank pivot values',
         groupBy: ['fund', 'strategy'],
         pivotBy: ['region', 'sector'],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         leaves: 3000,
         blankDim: 'region'
     },
@@ -108,7 +108,7 @@ const SCENARIOS: Scenario[] = [
         label: 'excludeEmptyPivotValues filters the group aggregates too',
         groupBy: ['fund', 'strategy'],
         pivotBy: ['region'],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         leaves: 3000,
         blankDim: 'region',
         excludeEmptyPivotValues: true
@@ -118,7 +118,7 @@ const SCENARIOS: Scenario[] = [
         label: 'includeLeaves - leaf drill-down',
         groupBy: ['fund', 'strategy'],
         pivotBy: ['region'],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         leaves: 2000,
         includeLeaves: true
     },
@@ -127,7 +127,7 @@ const SCENARIOS: Scenario[] = [
         label: 'No group dims - a single value-summary row',
         groupBy: [],
         pivotBy: ['region', 'sector'],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         leaves: 2000
     },
     {
@@ -135,7 +135,7 @@ const SCENARIOS: Scenario[] = [
         label: 'Empty pivot dimensions degenerate to a plain View',
         groupBy: ['fund', 'strategy'],
         pivotBy: [],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         leaves: 2000
     },
     // A leaf feeds both its innermost group row and C(G, fullPath); with a single pivot dimension
@@ -145,7 +145,7 @@ const SCENARIOS: Scenario[] = [
         label: 'Mixed aggregators - one pivot dim (leaf two-parent routing)',
         groupBy: ['fund', 'strategy', 'sector'],
         pivotBy: ['region'],
-        valueFields: MIXED_FIELDS,
+        measures: MIXED_FIELDS,
         aggregators: MIXED_AGGS,
         leaves: 3000,
         withStore: true
@@ -157,7 +157,7 @@ const SCENARIOS: Scenario[] = [
         label: 'Mixed aggregators - two pivot dims (cell two-parent routing)',
         groupBy: ['fund', 'strategy'],
         pivotBy: ['region', 'strategy2'],
-        valueFields: MIXED_FIELDS,
+        measures: MIXED_FIELDS,
         aggregators: MIXED_AGGS,
         leaves: 3000
     },
@@ -170,7 +170,7 @@ const SCENARIOS: Scenario[] = [
         label: 'Cells load into a Store - sparse records',
         groupBy: ['fund', 'strategy'],
         pivotBy: ['region'],
-        valueFields: ['pnl', 'tag'],
+        measures: ['pnl', 'tag'],
         aggregators: {tag: 'UNIQUE'},
         leaves: 2000,
         withCellStore: true
@@ -180,7 +180,7 @@ const SCENARIOS: Scenario[] = [
         label: 'Cells load into a Store - dense records',
         groupBy: ['fund', 'strategy'],
         pivotBy: ['region', 'sector'],
-        valueFields: MIXED_FIELDS,
+        measures: MIXED_FIELDS,
         aggregators: MIXED_AGGS,
         leaves: 2000,
         withCellStore: true,
@@ -198,7 +198,7 @@ const FILTER_SCENARIO: Scenario = {
     label: 'Filter transitions - the row cache survives these',
     groupBy: ['fund', 'strategy'],
     pivotBy: ['region'],
-    valueFields: ['pnl'],
+    measures: ['pnl'],
     leaves: 3000
 };
 
@@ -208,7 +208,7 @@ const QUERY_SCENARIO: Scenario = {
     label: 'Query identity and filter augmentation',
     groupBy: ['fund', 'strategy'],
     pivotBy: ['region'],
-    valueFields: ['pnl'],
+    measures: ['pnl'],
     leaves: 2000,
     blankDim: 'region',
     excludeEmptyPivotValues: true
@@ -224,22 +224,21 @@ const STORE_FACTORY_SCENARIO: Scenario = {
     label: 'View.createStore - field sync, connection, record retention',
     groupBy: ['fund', 'strategy', 'sector'],
     pivotBy: ['region'],
-    valueFields: ['pnl', 'tag'],
+    measures: ['pnl', 'tag'],
     aggregators: {tag: 'UNIQUE'},
     leaves: 3000
 };
 
 /**
  * `updateQuery` transitions that move no pivot *path*. `syncPaths` guarded its early-out on path keys
- * alone, so neither of these republished: `valueFields` moves no key at all, and an empty segment's
- * key is a fixed sentinel independent of `emptyPathLabel`.
+ * alone, so this did not republish: `measures` moves no key at all.
  */
 const QUERY_TRANSITION_SCENARIO: Scenario = {
     id: 'queryTransitions',
     label: 'Query transitions that leave every path key unchanged',
     groupBy: ['fund', 'strategy'],
     pivotBy: ['region'],
-    valueFields: ['pnl', 'mktVal'],
+    measures: ['pnl', 'mktVal'],
     leaves: 2000,
     blankDim: 'region'
 };
@@ -259,7 +258,7 @@ const DIM_TRANSITION_SCENARIO: Scenario = {
     label: 'Grouping and pivot dimension transitions',
     groupBy: ['fund', 'strategy', 'sector'],
     pivotBy: ['region'],
-    valueFields: ['pnl', 'mktVal'],
+    measures: ['pnl', 'mktVal'],
     leaves: 2000
 };
 
@@ -291,13 +290,13 @@ const CELL_BAIL_SCENARIO: Scenario = {
     label: 'Cells discarded while leaves stay live',
     groupBy: [],
     pivotBy: ['region'],
-    valueFields: ['pnl'],
+    measures: ['pnl'],
     leaves: 1000,
     includeLeaves: true
 };
 
 /**
- * Two pivot dims so pivot summaries materialize, two value fields so a leaf path carries a group rather
+ * Two pivot dims so pivot summaries materialize, two measures so a leaf path carries a group rather
  * than a bare column. Asserts the built column tree, not a rendered grid - the model needs no DOM.
  */
 const CUBE_GRID_SCENARIO: Scenario = {
@@ -305,7 +304,7 @@ const CUBE_GRID_SCENARIO: Scenario = {
     label: 'CubeGridModel - columns, summaries, and rebuild gating',
     groupBy: ['fund', 'strategy'],
     pivotBy: ['region', 'sector'],
-    valueFields: ['pnl', 'mktVal'],
+    measures: ['pnl', 'mktVal'],
     leaves: 2000
 };
 
@@ -319,7 +318,7 @@ const PLAIN_SCENARIOS: Scenario[] = [
         label: 'Plain View - mixed aggregators, connected Store',
         groupBy: ['fund', 'strategy', 'sector'],
         pivotBy: [],
-        valueFields: MIXED_FIELDS,
+        measures: MIXED_FIELDS,
         aggregators: MIXED_AGGS,
         leaves: 3000,
         withStore: true
@@ -329,7 +328,7 @@ const PLAIN_SCENARIOS: Scenario[] = [
         label: 'Plain View - includeLeaves drill-down',
         groupBy: ['fund', 'strategy'],
         pivotBy: [],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         leaves: 2000,
         includeLeaves: true
     },
@@ -338,7 +337,7 @@ const PLAIN_SCENARIOS: Scenario[] = [
         label: 'Plain View - provideLeaves without tree children',
         groupBy: ['fund', 'strategy'],
         pivotBy: [],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         leaves: 2000,
         provideLeaves: true
     },
@@ -347,7 +346,7 @@ const PLAIN_SCENARIOS: Scenario[] = [
         label: 'Plain View - includeRoot off',
         groupBy: ['fund', 'strategy'],
         pivotBy: [],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         leaves: 2000,
         includeRoot: false
     },
@@ -356,7 +355,7 @@ const PLAIN_SCENARIOS: Scenario[] = [
         label: 'Plain View - bucketSpecFn and its dependent fields',
         groupBy: ['fund', 'strategy'],
         pivotBy: [],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         leaves: 2000,
         bucket: true
     }
@@ -372,7 +371,7 @@ const PLAIN_QUERY_SCENARIO: Scenario = {
     label: 'Plain View - Query.clone and updateQuery',
     groupBy: ['fund', 'strategy'],
     pivotBy: [],
-    valueFields: ['pnl'],
+    measures: ['pnl'],
     leaves: 2000,
     provideLeaves: true,
     bucket: true
@@ -507,7 +506,7 @@ export class PivotViewTestModel extends HoistModel {
     // Implementation
     //------------------------
     private async runScenarioAsync(scenario: Scenario) {
-        const {groupBy, pivotBy, valueFields, aggregators} = scenario,
+        const {groupBy, pivotBy, measures, aggregators} = scenario,
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario),
             queryConf = this.buildQueryConf(scenario);
@@ -524,7 +523,7 @@ export class PivotViewTestModel extends HoistModel {
                 store = this.buildCellStore(probe, scenario);
                 XH.safeDestroy(probe);
             } else if (scenario.withStore) {
-                store = this.buildStore(valueFields);
+                store = this.buildStore(measures);
             }
 
             const view = cube.createView({query: queryConf, stores: store, connect: true});
@@ -541,7 +540,7 @@ export class PivotViewTestModel extends HoistModel {
                         leaves: refLeaves,
                         groupBy,
                         pivotBy,
-                        valueFields,
+                        measures,
                         aggregators,
                         label
                     })
@@ -560,12 +559,7 @@ export class PivotViewTestModel extends HoistModel {
                 this.record(scenario, checkCellStore({view, store, aggregators, label: 'initial'}));
             } else if (store) {
                 this.record(scenario, [
-                    this.checkStore(
-                        view,
-                        store,
-                        valueFields,
-                        'store: initial load matches the view'
-                    )
+                    this.checkStore(view, store, measures, 'store: initial load matches the view')
                 ]);
             }
 
@@ -607,7 +601,7 @@ export class PivotViewTestModel extends HoistModel {
                 );
             } else if (store) {
                 this.record(scenario, [
-                    this.checkStore(view, store, valueFields, 'store: tick pushed the changed rows')
+                    this.checkStore(view, store, measures, 'store: tick pushed the changed rows')
                 ]);
             }
 
@@ -617,7 +611,7 @@ export class PivotViewTestModel extends HoistModel {
                 comparePivotViews(
                     view,
                     rebuilt,
-                    valueFields,
+                    measures,
                     'tick result matches a full rebuild of the same data',
                     !isEmpty(pivotBy)
                 )
@@ -708,7 +702,7 @@ export class PivotViewTestModel extends HoistModel {
      */
     private async runFilterScenarioAsync() {
         const scenario = FILTER_SCENARIO,
-            {groupBy, pivotBy, valueFields} = scenario,
+            {groupBy, pivotBy, measures} = scenario,
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario),
             queryConf = this.buildQueryConf(scenario);
@@ -726,7 +720,7 @@ export class PivotViewTestModel extends HoistModel {
                             leaves: refLeaves,
                             groupBy,
                             pivotBy,
-                            valueFields,
+                            measures,
                             label
                         })
                     );
@@ -746,7 +740,7 @@ export class PivotViewTestModel extends HoistModel {
 
             const rebuilt = cube.createView({query: queryConf});
             this.record(scenario, [
-                comparePivotViews(view, rebuilt, valueFields, 'filter: matches a full rebuild')
+                comparePivotViews(view, rebuilt, measures, 'filter: matches a full rebuild')
             ]);
             XH.safeDestroy(rebuilt);
 
@@ -776,7 +770,7 @@ export class PivotViewTestModel extends HoistModel {
      */
     private async runQueryScenarioAsync() {
         const scenario = QUERY_SCENARIO,
-            {groupBy, pivotBy, valueFields} = scenario,
+            {groupBy, pivotBy, measures} = scenario,
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario);
 
@@ -839,7 +833,7 @@ export class PivotViewTestModel extends HoistModel {
                     ),
                     groupBy,
                     pivotBy,
-                    valueFields,
+                    measures,
                     label: 'query: a bare function filter survives augmentation'
                 })
             );
@@ -863,7 +857,7 @@ export class PivotViewTestModel extends HoistModel {
      */
     private async runStoreFactoryScenarioAsync() {
         const scenario = STORE_FACTORY_SCENARIO,
-            {groupBy, pivotBy, valueFields, aggregators} = scenario,
+            {groupBy, pivotBy, measures, aggregators} = scenario,
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario),
             queryConf = this.buildQueryConf(scenario);
@@ -895,7 +889,7 @@ export class PivotViewTestModel extends HoistModel {
                     leaves,
                     groupBy,
                     pivotBy,
-                    valueFields,
+                    measures,
                     aggregators,
                     label: 'initial'
                 })
@@ -998,7 +992,7 @@ export class PivotViewTestModel extends HoistModel {
      */
     private async runQueryTransitionScenarioAsync() {
         const scenario = QUERY_TRANSITION_SCENARIO,
-            {groupBy, pivotBy, valueFields} = scenario,
+            {groupBy, pivotBy, measures} = scenario,
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario),
             queryConf = this.buildQueryConf(scenario);
@@ -1014,17 +1008,17 @@ export class PivotViewTestModel extends HoistModel {
             const keysBefore = keysOf(),
                 pathKeysBefore = pathKeys();
 
-            // Drop a value field. Every path key holds, so only the cell fields should move.
-            view.updateQuery({pivot: {...view.query.pivot, valueFields: [valueFields[0]]}});
+            // Drop a measure. Every path key holds, so only the cell fields should move.
+            view.updateQuery({pivot: {...view.query.pivot, measures: [measures[0]]}});
 
             this.record(scenario, [
                 boolCheck(
-                    'valueFields change: cell fields drop the removed measure',
+                    'measures change: cell fields drop the removed measure',
                     isEqual(pathKeys(), pathKeysBefore) &&
                         keysOf().length === keysBefore.length / 2 &&
-                        !keysOf().some(name => name.endsWith(valueFields[1])),
+                        !keysOf().some(name => name.endsWith(measures[1])),
                     `cellFields ${keysBefore.length} -> ${keysOf().length}, ` +
-                        `still naming ${valueFields[1]}: ${keysOf().some(n => n.endsWith(valueFields[1]))}`
+                        `still naming ${measures[1]}: ${keysOf().some(n => n.endsWith(measures[1]))}`
                 )
             ]);
             this.record(
@@ -1034,17 +1028,17 @@ export class PivotViewTestModel extends HoistModel {
                     leaves,
                     groupBy,
                     pivotBy,
-                    valueFields: [valueFields[0]],
-                    label: 'after valueFields change'
+                    measures: [measures[0]],
+                    label: 'after measures change'
                 })
             );
 
-            // Restore it. Cells aggregate `valueFields` alone, so a measure the *query* fields already
+            // Restore it. Cells aggregate `measures` alone, so a measure the *query* fields already
             // carried is one no field-gain check can see - a retained cell has simply never computed
             // it, and reports null for every cell of the restored column.
             this.tickMeasures(leaves, 1);
             await cube.updateDataAsync(leaves);
-            view.updateQuery({pivot: {...view.query.pivot, valueFields}});
+            view.updateQuery({pivot: {...view.query.pivot, measures}});
             this.record(
                 scenario,
                 checkPivotView({
@@ -1052,26 +1046,10 @@ export class PivotViewTestModel extends HoistModel {
                     leaves,
                     groupBy,
                     pivotBy,
-                    valueFields,
-                    label: 'after valueFields restored'
+                    measures,
+                    label: 'after measures restored'
                 })
             );
-
-            // Relabel the empty segment. Its key is a fixed sentinel, so no key moves here either.
-            const emptyBefore = view.result.paths.filter(p => p.isEmpty).map(p => p.label);
-            view.updateQuery({pivot: {...view.query.pivot, emptyPathLabel: '(none)'}});
-            const emptyAfter = view.result.paths.filter(p => p.isEmpty).map(p => p.label);
-
-            this.record(scenario, [
-                boolCheck(
-                    'emptyPathLabel change: relabels the empty path segment',
-                    !isEmpty(emptyAfter) &&
-                        emptyAfter.every(l => l === '(none)') &&
-                        !isEqual(emptyAfter, emptyBefore),
-                    `empty labels ${JSON.stringify(emptyBefore)} -> ${JSON.stringify(emptyAfter)}` +
-                        (isEmpty(emptyAfter) ? ' - no empty segment, scenario proves nothing' : '')
-                )
-            ]);
 
             XH.safeDestroy(view);
         } catch (e) {
@@ -1088,14 +1066,14 @@ export class PivotViewTestModel extends HoistModel {
      */
     private async runDimTransitionScenarioAsync() {
         const scenario = DIM_TRANSITION_SCENARIO,
-            {valueFields} = scenario,
+            {measures} = scenario,
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario),
             // Every dimension any transition uses, so no transition gains a query field.
             allDims = uniq(DIM_TRANSITIONS.flatMap(t => [...t.groupBy, ...t.pivotBy])),
             queryConf: QueryConfig = {
                 ...this.buildQueryConf(scenario),
-                fields: uniq([...allDims, ...AGG_FIELDS, ...valueFields])
+                fields: uniq([...allDims, ...AGG_FIELDS, ...measures])
             };
 
         const cube = this.newCube(fields);
@@ -1139,7 +1117,7 @@ export class PivotViewTestModel extends HoistModel {
                         leaves,
                         groupBy,
                         pivotBy,
-                        valueFields,
+                        measures,
                         label: `dims: ${label}`
                     })
                 );
@@ -1149,7 +1127,7 @@ export class PivotViewTestModel extends HoistModel {
                     comparePivotViews(
                         view,
                         rebuilt,
-                        valueFields,
+                        measures,
                         `dims: ${label} matches a full rebuild`,
                         !isEmpty(pivotBy)
                     )
@@ -1185,7 +1163,7 @@ export class PivotViewTestModel extends HoistModel {
      */
     private async runCellBailScenarioAsync() {
         const scenario = CELL_BAIL_SCENARIO,
-            {groupBy, pivotBy, valueFields} = scenario,
+            {groupBy, pivotBy, measures} = scenario,
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario),
             queryConf = this.buildQueryConf(scenario);
@@ -1223,7 +1201,7 @@ export class PivotViewTestModel extends HoistModel {
                 comparePivotViews(
                     view,
                     flat,
-                    valueFields,
+                    measures,
                     'cell bail: ticking with no cells matches a full rebuild',
                     false
                 )
@@ -1242,7 +1220,7 @@ export class PivotViewTestModel extends HoistModel {
                     leaves,
                     groupBy,
                     pivotBy,
-                    valueFields,
+                    measures,
                     label: 'cell bail: cells restored'
                 })
             );
@@ -1282,18 +1260,19 @@ export class PivotViewTestModel extends HoistModel {
                     view,
                     gridConfig: {showSummary: true},
                     pivotConfig: {
-                        showSummaries: true,
-                        // Fixed open, so the column set reflects `showSummaries` alone.
-                        groupsCollapsible: false
+                        // Fixed open, so the column set reflects the dimension `showSummary` alone.
+                        dimensionDefaults: {showSummary: true, collapsible: false}
                     }
                 }),
-                {gridModel} = model;
+                {gridModel} = model,
+                setSummaries = (showSummary: boolean | HSide) =>
+                    (model.pivotModel.dimensionDefaults = {showSummary, collapsible: false});
 
-            // Summary columns bind their cell under a `total>>` colId - strip it to compare.
+            // Summary columns bind their cell under a `summary>>` colId - strip it to compare.
             const valueColIds = () =>
                     gridModel
                         .getLeafColumns()
-                        .map(it => it.colId.replace(/^total>>/, ''))
+                        .map(it => it.colId.replace(/^summary>>/, ''))
                         .filter(id => id !== 'cubeLabel'),
                 cellNames = () => view.result.cellFields.map(cf => cf.name);
 
@@ -1310,10 +1289,10 @@ export class PivotViewTestModel extends HoistModel {
                         `[${difference(ids, names).slice(0, 3)}], missing [${difference(names, ids).slice(0, 3)}]`
                 ),
                 boolCheck(
-                    "columns: row summaries bind the value fields' own names",
-                    view.query.pivot.valueFields.every(f => ids.includes(f.name)),
+                    "columns: row summaries bind the measures' own names",
+                    view.query.pivot.measures.every(f => ids.includes(f.name)),
                     `missing [${difference(
-                        view.query.pivot.valueFields.map(f => f.name),
+                        view.query.pivot.measures.map(f => f.name),
                         ids
                     )}]`
                 ),
@@ -1326,35 +1305,35 @@ export class PivotViewTestModel extends HoistModel {
 
             // Turning summaries off must drop exactly the summary cells - the root and every
             // partial path - and nothing else.
-            model.pivotModel.showSummaries = false;
+            setSummaries(false);
             const summaries = view.result.cellFields
                 .filter(cf => cf.path.isRoot || !isEmpty(cf.path.children))
                 .map(cf => cf.name);
             this.record(scenario, [
                 boolCheck(
-                    'columns: showSummaries gates exactly the root and partial-path cells',
+                    "columns: a dimension's showSummary gates exactly the root and partial-path cells",
                     isEqual([...valueColIds()].sort(), [...difference(names, summaries)].sort()),
                     `${valueColIds().length} columns, expected ${names.length - summaries.length}`
                 )
             ]);
-            model.pivotModel.showSummaries = true;
+            setSummaries(true);
 
             // Side placement within the region, and the `true` -> default-side resolution behind it.
             const regionGroupIdAt = (i: number) => {
                 const col = gridModel.getColumnGroup(PIVOT_GROUP_ID).children.at(i);
                 return col instanceof ColumnGroup ? col.groupId : null;
             };
-            model.pivotModel.showSummaries = 'left';
-            const leftPlaced = regionGroupIdAt(0);
-            model.pivotModel.showSummaries = true;
+            setSummaries('right');
             const rightPlaced = regionGroupIdAt(-1);
+            setSummaries(true);
+            const defaultPlaced = regionGroupIdAt(0);
 
             this.record(scenario, [
                 boolCheck(
-                    'showSummaries: a side places the Total group, and true resolves to right',
-                    leftPlaced === `${PIVOT_GROUP_ID}:total` &&
-                        rightPlaced === `${PIVOT_GROUP_ID}:total`,
-                    `left put ${leftPlaced} first, true put ${rightPlaced} last`
+                    'dimension showSummary: a side places the summary group, and true resolves to left',
+                    rightPlaced === `${PIVOT_GROUP_ID}:summary` &&
+                        defaultPlaced === `${PIVOT_GROUP_ID}:summary`,
+                    `right put ${rightPlaced} last, true put ${defaultPlaced} first`
                 )
             ]);
 
@@ -1362,12 +1341,14 @@ export class PivotViewTestModel extends HoistModel {
             const pathsBefore = view.result.paths,
                 treeBefore = JSON.stringify(pathsBefore.map(p => p.children.map(c => c.key))),
                 ascOrder = this.topGroupIds(model);
-            model.pivotModel.sortBy = ['desc'];
+            model.pivotModel.dimensions = [
+                {field: view.query.pivot.dimensions[0].name, sortBy: 'desc'}
+            ];
             const descOrder = this.topGroupIds(model);
 
             this.record(scenario, [
                 boolCheck(
-                    'sortBy: reorders the top-level column groups',
+                    'sortBy: reorders the top-level column groups by their dimension',
                     ascOrder.length > 1 && isEqual(descOrder, [...ascOrder].reverse()),
                     `asc ${JSON.stringify(ascOrder)} vs desc ${JSON.stringify(descOrder)}`
                 ),
@@ -1379,7 +1360,7 @@ export class PivotViewTestModel extends HoistModel {
                     "display sorting mutated the view's own path tree"
                 )
             ]);
-            model.pivotModel.sortBy = [];
+            model.pivotModel.dimensions = [];
 
             // A values-only tick must not touch columns - `setColumns` resets column state, so a
             // rebuild per tick would discard the user's widths and pinning on every update.
@@ -1431,7 +1412,7 @@ export class PivotViewTestModel extends HoistModel {
     private topGroupIds(model: CubeGridModel): string[] {
         return model.gridModel
             .getColumnGroup(PIVOT_GROUP_ID)
-            .children.filter(it => it instanceof ColumnGroup && !it.groupId.endsWith(':total'))
+            .children.filter(it => it instanceof ColumnGroup && !it.groupId.endsWith(':summary'))
             .map((it: ColumnGroup) => it.groupId);
     }
 
@@ -1440,7 +1421,7 @@ export class PivotViewTestModel extends HoistModel {
      * structural dimension change, and a full rebuild for comparison.
      */
     private async runPlainScenarioAsync(scenario: Scenario) {
-        const {groupBy, valueFields, aggregators, bucket} = scenario,
+        const {groupBy, measures, aggregators, bucket} = scenario,
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario),
             queryConf = this.buildPlainQueryConf(scenario);
@@ -1449,7 +1430,7 @@ export class PivotViewTestModel extends HoistModel {
         await cube.loadDataAsync(leaves);
 
         try {
-            const store = scenario.withStore ? this.buildStore(valueFields) : null,
+            const store = scenario.withStore ? this.buildStore(measures) : null,
                 view = cube.createView({query: queryConf, stores: store, connect: true}),
                 check = (label: string) =>
                     this.record(
@@ -1459,7 +1440,7 @@ export class PivotViewTestModel extends HoistModel {
                             leaves,
                             groupBy,
                             pivotBy: [],
-                            valueFields,
+                            measures,
                             aggregators,
                             label
                         })
@@ -1469,12 +1450,7 @@ export class PivotViewTestModel extends HoistModel {
             this.record(scenario, this.checkLeafExposure(scenario, view, leaves));
             if (store) {
                 this.record(scenario, [
-                    this.checkStore(
-                        view,
-                        store,
-                        valueFields,
-                        'store: initial load matches the view'
-                    )
+                    this.checkStore(view, store, measures, 'store: initial load matches the view')
                 ]);
             }
 
@@ -1499,13 +1475,13 @@ export class PivotViewTestModel extends HoistModel {
             check('after tick');
             if (store) {
                 this.record(scenario, [
-                    this.checkStore(view, store, valueFields, 'store: tick pushed the changed rows')
+                    this.checkStore(view, store, measures, 'store: tick pushed the changed rows')
                 ]);
             }
 
             const rebuilt = cube.createView({query: queryConf});
             this.record(scenario, [
-                comparePivotViews(view, rebuilt, valueFields, 'tick matches a full rebuild', false)
+                comparePivotViews(view, rebuilt, measures, 'tick matches a full rebuild', false)
             ]);
             XH.safeDestroy(rebuilt);
 
@@ -1540,7 +1516,7 @@ export class PivotViewTestModel extends HoistModel {
     /** `Query.clone`, `equals`, and `updateQuery`'s no-op short circuit on a plain Query. */
     private async runPlainQueryScenarioAsync() {
         const scenario = PLAIN_QUERY_SCENARIO,
-            {groupBy, valueFields} = scenario,
+            {groupBy, measures} = scenario,
             leaves = this.buildLeaves(scenario),
             fields = this.buildFields(scenario);
 
@@ -1565,7 +1541,7 @@ export class PivotViewTestModel extends HoistModel {
                         leaves: refLeaves,
                         groupBy,
                         pivotBy: [],
-                        valueFields,
+                        measures,
                         label
                     })
                 );
@@ -1615,13 +1591,7 @@ export class PivotViewTestModel extends HoistModel {
 
             const rebuilt = cube.createView({query: this.buildPlainQueryConf(scenario)});
             this.record(scenario, [
-                comparePivotViews(
-                    view,
-                    rebuilt,
-                    valueFields,
-                    'query: matches a full rebuild',
-                    false
-                )
+                comparePivotViews(view, rebuilt, measures, 'query: matches a full rebuild', false)
             ]);
 
             XH.safeDestroy(view, rebuilt);
@@ -1695,7 +1665,7 @@ export class PivotViewTestModel extends HoistModel {
      */
     private checkCellChildCount(view: View): PivotCheck {
         const names = view.result.cellFields
-                .filter(cf => cf.valueField.name === 'childCount' && cf.path.depth === 1)
+                .filter(cf => cf.measure.name === 'childCount' && cf.path.depth === 1)
                 .map(cf => cf.name),
             check: PivotCheck = {
                 name: 'CHILD_COUNT on a cell differs from its group row',
@@ -1747,7 +1717,7 @@ export class PivotViewTestModel extends HoistModel {
      * A connected Store must hold every value the view published - on the initial load, and after a
      * tick pushes the rows it touched. Cell rows are never published, so only group rows appear.
      */
-    private checkStore(view: View, store: Store, valueFields: string[], name: string): PivotCheck {
+    private checkStore(view: View, store: Store, measures: string[], name: string): PivotCheck {
         const check: PivotCheck = {name, errors: [], checked: 0, maxDrift: 0},
             visit = (row: ViewRowData) => {
                 const rec = store.getById(row.id);
@@ -1756,7 +1726,7 @@ export class PivotViewTestModel extends HoistModel {
                         check.errors.push(`row ${row.id} absent from the connected store`);
                     }
                 } else {
-                    valueFields.forEach(field => {
+                    measures.forEach(field => {
                         check.checked++;
                         const want = row[field] ?? null,
                             got = rec.data[field] ?? null;
@@ -1827,12 +1797,12 @@ export class PivotViewTestModel extends HoistModel {
      * what the reference walk assumes.
      */
     private buildQueryConf(scenario: Scenario): QueryConfig {
-        const {pivotBy, valueFields} = scenario;
+        const {pivotBy, measures} = scenario;
         return {
             ...this.buildPlainQueryConf(scenario),
             pivot: {
                 dimensions: pivotBy,
-                valueFields,
+                measures,
                 excludeEmptyPivotValues: scenario.excludeEmptyPivotValues,
                 maxPivotPaths: null
             }
@@ -1843,14 +1813,14 @@ export class PivotViewTestModel extends HoistModel {
         const {
             groupBy,
             pivotBy,
-            valueFields,
+            measures,
             includeRoot = true,
             includeLeaves = false,
             provideLeaves = false
         } = scenario;
         return {
             dimensions: groupBy,
-            fields: uniq([...groupBy, ...pivotBy, ...AGG_FIELDS, ...valueFields]),
+            fields: uniq([...groupBy, ...pivotBy, ...AGG_FIELDS, ...measures]),
             includeRoot,
             includeLeaves,
             provideLeaves,
@@ -1880,7 +1850,7 @@ export class PivotViewTestModel extends HoistModel {
         const {cellFields} = view.result;
         return new Store({
             idSpec: 'id',
-            fields: cellFields.map(cf => ({name: cf.name, type: cf.valueField.type})),
+            fields: cellFields.map(cf => ({name: cf.name, type: cf.measure.type})),
             experimental: {
                 ...this.experimental,
                 denseRecordThreshold: scenario.denseRecords ? 1 : cellFields.length + 100
@@ -1893,10 +1863,10 @@ export class PivotViewTestModel extends HoistModel {
      * records adopt the view's row data objects, so `checkStore` would compare each row against
      * itself and pass vacuously.
      */
-    private buildStore(valueFields: string[]): Store {
+    private buildStore(measures: string[]): Store {
         return new Store({
             idSpec: 'id',
-            fields: valueFields.map(name => ({name, type: 'auto' as const})),
+            fields: measures.map(name => ({name, type: 'auto' as const})),
             experimental: this.experimental
         });
     }
@@ -1960,7 +1930,7 @@ export class PivotViewTestModel extends HoistModel {
 
     private buildFields(scenario: Scenario): CubeFieldSpec[] {
         const dimNames = uniq([...scenario.groupBy, ...scenario.pivotBy, 'strategy2']),
-            measures = uniq([...AGG_FIELDS, ...scenario.valueFields]).filter(
+            measures = uniq([...AGG_FIELDS, ...scenario.measures]).filter(
                 name => !dimNames.includes(name)
             );
 

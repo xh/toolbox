@@ -111,7 +111,7 @@ export class PivotViewBenchModel extends HoistModel {
     }
 
     private async runOneAsync(profile: PivotProfile) {
-        const {id, label, valueFields} = profile,
+        const {id, label, measures} = profile,
             tickCount = Math.max(1, Math.round((profile.leaves * this.tickPct) / 100));
 
         this.status = `${label}: generating ${profile.leaves} leaves...`;
@@ -137,7 +137,7 @@ export class PivotViewBenchModel extends HoistModel {
 
         const groupRows = countRows(view.result.rows),
             cells = view.diagnostics.pivot?.cells ?? 0,
-            paths = view.result.cellFields.length / valueFields.length;
+            paths = view.result.cellFields.length / measures.length;
 
         this.status = `${label}: ticking ${tickCount} leaves x ${this.tickReps}...`;
         const times: number[] = [];
@@ -203,7 +203,7 @@ export class PivotViewBenchModel extends HoistModel {
                 includeRoot: true,
                 pivot: {
                     dimensions: profile.pivotBy,
-                    valueFields: profile.valueFields,
+                    measures: profile.measures,
                     maxPivotPaths: null
                 }
             },
@@ -220,7 +220,7 @@ function cubeFields(profile: PivotProfile): CubeFieldSpec[] {
             type: 'string' as const,
             isDimension: true
         })),
-        ...profile.valueFields.map(name => ({
+        ...profile.measures.map(name => ({
             name,
             type: 'number' as const,
             aggregator: 'SUM' as const

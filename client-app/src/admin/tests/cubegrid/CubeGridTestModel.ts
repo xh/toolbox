@@ -1,9 +1,4 @@
-import type {
-    PivotColumnGroupContext,
-    PivotColumnGroupSpec,
-    PivotColumnSizingOptions,
-    PivotSort
-} from '@xh/hoist/cmp/cubegrid';
+import type {PivotLinkedSizingOptions, PivotDimensionSpec, PivotSort} from '@xh/hoist/cmp/cubegrid';
 import {CubeGridModel} from '@xh/hoist/cmp/cubegrid';
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import type {ColumnSpec} from '@xh/hoist/cmp/grid';
@@ -50,12 +45,12 @@ export class CubeGridTestModel extends HoistModel {
     //------------------------
     @bindableRef accessor groupBy: string[] = ['fund', 'strategy'];
     @bindableRef accessor pivotBy: string[] = ['regionCore', 'assetClass'];
-    @bindableRef accessor valueFields: string[] = ['pnl'];
+    @bindableRef accessor measures: string[] = ['pnl'];
     @bindable accessor includeRoot = true;
     @bindable accessor includeLeaves = false;
     @bindable accessor omitRedundantNodes = false;
     @bindable accessor excludeEmptyPivotValues = false;
-    @bindable accessor emptyPathLabel = '(empty)';
+    @bindable accessor emptyLabel = '(empty)';
     /** Null for unlimited. */
     @bindable accessor maxPivotPaths: number = 100;
 
@@ -65,9 +60,10 @@ export class CubeGridTestModel extends HoistModel {
     @bindable accessor showPivotSummaries: boolean | HSide = 'left';
     @bindable accessor showSummary: boolean | VSide = false;
     @bindable accessor pivotGroupsCollapsible = true;
-    @bindable accessor pivotCollapsedTotalHeader = true;
+    @bindable accessor pivotShowCollapsedLabel = true;
+    @bindable accessor pivotMeasuresOutermost = false;
     /** Off sizes each pivot column on its own, as in any grid. */
-    @bindable accessor uniformPivotWidths = true;
+    @bindable accessor linkedPivotSizing = true;
     /** Most a pivot group label can claim. 0 or blank sizes for data alone. */
     @bindable accessor headerFitMaxWidth: number = 140;
     /** Lengthens the leaf pivot labels, to see them fitted and truncated. */
@@ -117,12 +113,11 @@ export class CubeGridTestModel extends HoistModel {
                 track: () => [
                     this.groupBy,
                     this.pivotBy,
-                    this.valueFields,
+                    this.measures,
                     this.includeRoot,
                     this.includeLeaves,
                     this.omitRedundantNodes,
                     this.excludeEmptyPivotValues,
-                    this.emptyPathLabel,
                     this.maxPivotPaths
                 ],
                 equals: 'shallow',
@@ -130,36 +125,25 @@ export class CubeGridTestModel extends HoistModel {
             },
             {
                 track: () => [
-                    this.showPivotSummaries,
+                    this.pivotDimensionDefaults,
                     this.showSummary,
-                    this.pivotGroupsCollapsible,
-                    this.pivotCollapsedTotalHeader
+                    this.pivotMeasuresOutermost
                 ],
-                equals: 'shallow',
+                equals: 'structural',
                 run: () => {
                     const {cubeGridModel} = this;
                     if (!cubeGridModel) return;
                     const {pivotModel} = cubeGridModel;
-                    pivotModel.showSummaries = this.showPivotSummaries;
+                    pivotModel.dimensionDefaults = this.pivotDimensionDefaults;
                     cubeGridModel.setShowSummary(this.showSummary);
-                    pivotModel.groupsCollapsible = this.pivotGroupsCollapsible;
-                    pivotModel.collapsedTotalHeader = this.pivotCollapsedTotalHeader;
+                    pivotModel.measuresOutermost = this.pivotMeasuresOutermost;
                 }
             },
             {
-                track: () => this.pivotColumnSizing,
+                track: () => this.pivotLinkedSizing,
                 equals: 'structural',
                 run: sizing => {
-                    if (this.cubeGridModel) this.cubeGridModel.pivotModel.columnSizing = sizing;
-                }
-            },
-            {
-                track: () => this.longPivotLabels,
-                run: () => {
-                    if (this.cubeGridModel) {
-                        this.cubeGridModel.pivotModel.columnGroupSpecFn =
-                            this.pivotColumnGroupSpecFn;
-                    }
+                    if (this.cubeGridModel) this.cubeGridModel.pivotModel.linkedSizing = sizing;
                 }
             },
             {
@@ -167,9 +151,10 @@ export class CubeGridTestModel extends HoistModel {
                 run: level => this.cubeGridModel?.pivotModel.expandToLevel(level)
             },
             {
-                track: () => this.pivotSortBy,
-                run: sortBy => {
-                    if (this.cubeGridModel) this.cubeGridModel.pivotModel.sortBy = sortBy;
+                track: () => this.pivotDimensions,
+                equals: 'structural',
+                run: dimensions => {
+                    if (this.cubeGridModel) this.cubeGridModel.pivotModel.dimensions = dimensions;
                 }
             },
             // Columns rebuild in their own reaction, so anything reading them right after a query
@@ -219,13 +204,11 @@ export class CubeGridTestModel extends HoistModel {
                     autosizeOptions: {mode: 'managed', includeHiddenColumns: false}
                 },
                 pivotConfig: {
-                    columns: map(VALUE_SPECS, (spec, field) => ({field, ...spec})),
-                    sortBy: this.pivotSortBy,
-                    showSummaries: this.showPivotSummaries,
-                    groupsCollapsible: this.pivotGroupsCollapsible,
-                    collapsedTotalHeader: this.pivotCollapsedTotalHeader,
-                    columnSizing: this.pivotColumnSizing,
-                    columnGroupSpecFn: this.pivotColumnGroupSpecFn,
+                    dimensions: this.pivotDimensions,
+                    dimensionDefaults: this.pivotDimensionDefaults,
+                    measures: map(MEASURE_SPECS, (column, field) => ({field, column})),
+                    measuresOutermost: this.pivotMeasuresOutermost,
+                    linkedSizing: this.pivotLinkedSizing,
                     expandLevel: this.pivotExpandLevel
                 }
             });
@@ -271,33 +254,41 @@ export class CubeGridTestModel extends HoistModel {
     // Implementation
     //------------------------
 
-    private get pivotColumnSizing(): boolean | PivotColumnSizingOptions {
-        return this.uniformPivotWidths && {headerFitMaxWidth: this.headerFitMaxWidth ?? 0};
+    private get pivotLinkedSizing(): boolean | PivotLinkedSizingOptions {
+        return this.linkedPivotSizing && {headerFitMaxWidth: this.headerFitMaxWidth ?? 0};
     }
 
-    private get pivotColumnGroupSpecFn(): (ctx: PivotColumnGroupContext) => PivotColumnGroupSpec {
-        if (!this.longPivotLabels) return null;
-        return ({path, kind}) =>
-            kind === 'path' && isEmpty(path.children)
-                ? {headerName: `${path.label} Strategies Group`}
-                : null;
+    private get pivotDimensionDefaults(): Omit<PivotDimensionSpec, 'field'> {
+        return {
+            showSummary: this.showPivotSummaries,
+            collapsible: this.pivotGroupsCollapsible,
+            showCollapsedLabel: this.pivotShowCollapsedLabel,
+            emptyLabel: this.emptyLabel
+        };
     }
 
-    private get pivotSortBy(): PivotSort[] {
-        return [this.sortLevel0, this.sortLevel1].map((choice, level) =>
-            toPivotSort(choice, this.pivotBy[level])
-        );
+    // The panel sorts by level, so each choice goes to the dimension pivoted at that level. Long
+    // labels go to the innermost dimension, whose values head the leaf paths.
+    private get pivotDimensions(): PivotDimensionSpec[] {
+        const {pivotBy, longPivotLabels} = this;
+        return pivotBy.map((field, level) => ({
+            field,
+            sortBy: toPivotSort([this.sortLevel0, this.sortLevel1][level], field),
+            valueRenderer:
+                longPivotLabels && level === pivotBy.length - 1
+                    ? v => `${v} Strategies Group`
+                    : null
+        }));
     }
 
     private updateQuery() {
-        // A pivot rejects an empty `valueFields`, and the toolbar can transiently produce one.
-        if (isEmpty(this.valueFields) || !this.view) return;
+        // A pivot rejects an empty `measures`, and the toolbar can transiently produce one.
+        if (isEmpty(this.measures) || !this.view) return;
         this.view.updateQuery(this.queryConfig());
     }
 
     private queryConfig() {
-        const {groupBy, pivotBy, valueFields, includeRoot, includeLeaves, omitRedundantNodes} =
-            this;
+        const {groupBy, pivotBy, measures, includeRoot, includeLeaves, omitRedundantNodes} = this;
         return {
             dimensions: groupBy,
             includeRoot,
@@ -305,9 +296,8 @@ export class CubeGridTestModel extends HoistModel {
             omitRedundantNodes,
             pivot: {
                 dimensions: pivotBy,
-                valueFields,
+                measures,
                 excludeEmptyPivotValues: this.excludeEmptyPivotValues,
-                emptyPathLabel: this.emptyPathLabel,
                 maxPivotPaths: this.maxPivotPaths
             }
         };
@@ -338,7 +328,7 @@ export class CubeGridTestModel extends HoistModel {
     }
 }
 
-const VALUE_SPECS: Record<string, ColumnSpec> = {
+const MEASURE_SPECS: Record<string, ColumnSpec> = {
     pnl: {width: 110, absSort: true, renderer: numberRenderer({precision: 0, colorSpec: true})},
     mktVal: {width: 120, renderer: numberRenderer({precision: 0})},
     quantity: {width: 100, renderer: numberRenderer({precision: 0})}
@@ -346,7 +336,7 @@ const VALUE_SPECS: Record<string, ColumnSpec> = {
 
 /**
  * Fixed columns, hidden until added through the column chooser - the only region the chooser
- * manages. A measure's bare name is its row total, whether or not the query pivots it. The group
+ * manages. A measure's bare name is its row summary, whether or not the query pivots it. The group
  * dimensions are here to reach a column filter on them.
  */
 const FIXED_COLUMNS: ColumnSpec[] = [
@@ -356,9 +346,9 @@ const FIXED_COLUMNS: ColumnSpec[] = [
         headerName: startCase(field),
         width: 100
     })),
-    {field: 'pnl', headerName: 'Total P&L', ...VALUE_SPECS.pnl},
-    {field: 'mktVal', headerName: 'Total Mkt Val', ...VALUE_SPECS.mktVal},
-    {field: 'quantity', headerName: 'Total Qty', ...VALUE_SPECS.quantity}
+    {field: 'pnl', headerName: 'Total P&L', ...MEASURE_SPECS.pnl},
+    {field: 'mktVal', headerName: 'Total Mkt Val', ...MEASURE_SPECS.mktVal},
+    {field: 'quantity', headerName: 'Total Qty', ...MEASURE_SPECS.quantity}
 ].map(it => ({...it, chooserName: it.headerName as string, hidden: true}));
 
 export const FILTER_OPTIONS: Array<{value: FilterChoice; label: string}> = [

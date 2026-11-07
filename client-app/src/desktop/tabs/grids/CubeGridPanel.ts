@@ -1,7 +1,8 @@
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
+import type {PivotDimensionSpec} from '@xh/hoist/cmp/cubegrid';
 import {cubeGrid, CubeGridModel} from '@xh/hoist/cmp/cubegrid';
-import type {LoadSpec} from '@xh/hoist/core';
+import type {HSide, LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import type {QueryConfig} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
@@ -47,35 +48,40 @@ export const cubeGridPanel = hoistCmp.factory({
                 {url: '$HR/cmp/cubegrid/CubeGrid.ts', notes: 'Hoist component.'},
                 {
                     url: '$HR/cmp/cubegrid/CubeGridModel.ts',
-                    notes: 'Presentation config - fixed columns, summaries, pivot sort, value column specs.'
+                    notes: 'Presentation config - fixed columns, plus pivot dimension and measure settings.'
                 },
                 {url: '$HR/cmp/cubegrid/README.md', notes: 'CubeGrid README.'},
                 {
                     url: '$HR/data/cube/Query.ts',
-                    notes: 'Query spec - `dimensions` plus `pivot.dimensions` and `pivot.valueFields`.'
+                    notes: 'Query spec - `dimensions` plus `pivot.dimensions` and `pivot.measures`.'
                 }
             ],
             options: [
                 wrapperOption({
-                    label: 'Show pivot summaries',
-                    propName: 'CubeGridPivotConfig.showSummaries',
-                    control: select({
+                    label: 'Measures outermost',
+                    propName: 'CubeGridPivotConfig.measuresOutermost',
+                    control: switchInput({
                         model: cubeGridModel.pivotModel,
-                        bind: 'showSummaries',
+                        bind: 'measuresOutermost'
+                    }),
+                    info: 'Puts each measure outermost, with the pivot paths beneath it and its own collapsible summary, to compare one measure across paths.'
+                }),
+                wrapperOption({
+                    label: 'Show pivot summaries',
+                    propName: 'PivotDimensionSpec.showSummary',
+                    control: select({
+                        bind: 'pivotShowSummaries',
                         options: H_SIDE_OPTIONS,
                         enableFilter: false,
                         width: 110
                     }),
-                    info: 'Total columns while a pivot group is expanded - row totals for the region, subtotals per parent group.'
+                    info: "Each dimension's summary while its groups are expanded - the row summary for the first, a summary per parent group for the rest. Set here for every dimension, via dimensionDefaults."
                 }),
                 wrapperOption({
                     label: 'Pivot groups collapsible',
-                    propName: 'CubeGridPivotConfig.groupsCollapsible',
-                    control: switchInput({
-                        model: cubeGridModel.pivotModel,
-                        bind: 'groupsCollapsible'
-                    }),
-                    info: 'Groups collapse from their headers. Off fixes them open, with summary columns only where asked.'
+                    propName: 'PivotDimensionSpec.collapsible',
+                    control: switchInput({bind: 'pivotCollapsible'}),
+                    info: 'Groups collapse from their headers to their summaries. Off fixes them open, with summaries only where asked. Set here for every dimension, via dimensionDefaults.'
                 }),
                 wrapperOption({
                     label: 'Pivot expand level',
@@ -171,6 +177,10 @@ class CubeGridPanelModel extends HoistModel {
     /** Mirrors `CubeGridPivotConfig.expandLevel`, applied live through `expandToLevel()`. */
     @bindable accessor pivotExpandLevel = -1;
 
+    /** Applied to every pivot dimension through `pivotModel.dimensionDefaults`. */
+    @bindable accessor pivotShowSummaries: boolean | HSide = true;
+    @bindable accessor pivotCollapsible = true;
+
     @managed cube: Cube;
     @managed cubeGridModel: CubeGridModel;
 
@@ -200,7 +210,7 @@ class CubeGridPanelModel extends HoistModel {
                 renderer: v => fmtNumber(v, {precision: 0, colorSpec: true})
             };
         // One set of specs serves both regions: as fixed columns, shown whether or not the
-        // query pivots, where a measure's bare field is its row total - and as the pivot
+        // query pivots, where a measure's bare field is its row summary - and as the pivot
         // columns built for each path to their right.
         const columns = [
             {field: 'positions', ...positions},
@@ -218,7 +228,20 @@ class CubeGridPanelModel extends HoistModel {
                 sizingMode: 'compact',
                 autosizeOptions: {mode: 'managed'}
             },
-            pivotConfig: {columns, showSummaries: true}
+            pivotConfig: {
+                // Each dimension's summary names what it aggregates. The row summary is shaded.
+                dimensions: [
+                    {
+                        field: 'region',
+                        summaryLabel: 'All Regions',
+                        summaryClass: 'tb-cube-grid__row-summary'
+                    },
+                    {field: 'sector', summaryLabel: 'All Sectors'},
+                    {field: 'model', summaryLabel: 'All Models'}
+                ],
+                dimensionDefaults: this.pivotDimensionDefaults,
+                measures: columns.map(column => ({field: column.field, column}))
+            }
         });
 
         // Query config lives on the query - the grid follows without being rebuilt.
@@ -230,8 +253,17 @@ class CubeGridPanelModel extends HoistModel {
             {
                 track: () => this.pivotExpandLevel,
                 run: level => this.cubeGridModel.pivotModel.expandToLevel(level)
+            },
+            {
+                track: () => this.pivotDimensionDefaults,
+                equals: 'structural',
+                run: defaults => (this.cubeGridModel.pivotModel.dimensionDefaults = defaults)
             }
         );
+    }
+
+    private get pivotDimensionDefaults(): Omit<PivotDimensionSpec, 'field'> {
+        return {showSummary: this.pivotShowSummaries, collapsible: this.pivotCollapsible};
     }
 
     /** Keeps the most recent picks, so a third choice replaces the oldest. */
@@ -253,7 +285,7 @@ class CubeGridPanelModel extends HoistModel {
             includeRoot: true,
             pivot:
                 pivotBy && !isEmpty(pivotMeasures)
-                    ? {dimensions: pivotBy.split(','), valueFields: pivotMeasures}
+                    ? {dimensions: pivotBy.split(','), measures: pivotMeasures}
                     : null
         };
     }

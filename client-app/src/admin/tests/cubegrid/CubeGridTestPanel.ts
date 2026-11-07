@@ -57,7 +57,7 @@ const queryBar = hoistCmp.factory<CubeGridTestModel>(() =>
         }),
         span('Values'),
         select({
-            bind: 'valueFields',
+            bind: 'measures',
             options: CubeGridTestModel.VALUE_FIELDS,
             enableMulti: true,
             enableClear: false,
@@ -74,17 +74,17 @@ const queryOptionsBar = hoistCmp.factory<CubeGridTestModel>(({model}) =>
         toolbarSep(),
         switchInput({bind: 'excludeEmptyPivotValues', label: 'Drop empties'}),
         span('Empty label'),
-        textInput({bind: 'emptyPathLabel', width: 80}),
+        textInput({bind: 'emptyLabel', width: 80}),
         span('Max paths'),
         numberInput({bind: 'maxPivotPaths', width: 70, placeholder: 'none', min: 1}),
         toolbarSep(),
-        switchInput({bind: 'uniformPivotWidths', label: 'Uniform widths'}),
+        switchInput({bind: 'linkedPivotSizing', label: 'Linked sizing'}),
         span('Header fit max'),
         numberInput({
             bind: 'headerFitMaxWidth',
             width: 60,
             min: 0,
-            disabled: !model.uniformPivotWidths
+            disabled: !model.linkedPivotSizing
         }),
         switchInput({bind: 'longPivotLabels', label: 'Long labels'})
     )
@@ -132,11 +132,12 @@ const presentationBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
             onClick: () => cubeGridModel.gridModel.filterModel.openDialog()
         }),
         toolbarSep(),
+        switchInput({bind: 'pivotMeasuresOutermost', label: 'Measures outermost'}),
         switchInput({bind: 'pivotGroupsCollapsible', label: 'Collapsible'}),
         switchInput({
-            bind: 'pivotCollapsedTotalHeader',
-            label: 'Total header',
-            disabled: !model.pivotGroupsCollapsible
+            bind: 'pivotShowCollapsedLabel',
+            label: 'Collapsed label',
+            disabled: !model.pivotGroupsCollapsible || model.pivotMeasuresOutermost
         }),
         toolbarSep(),
         span('Expand'),

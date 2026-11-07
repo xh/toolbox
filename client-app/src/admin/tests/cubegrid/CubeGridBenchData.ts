@@ -9,7 +9,7 @@ import {throwIf} from '@xh/hoist/utils/js';
  * with 4-8 values being the canonical case), and pivoting gets chosen precisely because that low
  * cardinality makes for an inefficient tree grouping. The cardinality lives in the *groupings*.
  *
- * So these profiles hold pivot paths and value fields near their realistic values and scale the
+ * So these profiles hold pivot paths and measures near their realistic values and scale the
  * group-row count, which is what actually grows. The exception is `pathological`, which pivots on a
  * near-unique dimension to find the cliff.
  */
@@ -48,7 +48,7 @@ export interface PivotProfile {
     /** Pivot dimensions, outermost first. */
     pivotBy: string[];
 
-    valueFields: string[];
+    measures: string[];
 
     /** Extra numeric measures (`m0`..`mN-1`) beyond pnl/mktVal/quantity, to widen the record. */
     extraMeasures?: number;
@@ -81,7 +81,7 @@ export const PROFILES: PivotProfile[] = [
         dims: TYPICAL_DIMS,
         groupBy: ['fund', 'strategy', 'sector'],
         pivotBy: ['region'],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         description:
             'The shape real usage takes: 3 groupings, one low-cardinality pivot, one measure. ' +
             'This is the gate.'
@@ -93,7 +93,7 @@ export const PROFILES: PivotProfile[] = [
         dims: {...TYPICAL_DIMS, tradeId: 0},
         groupBy: ['fund', 'strategy', 'sector', 'tradeId'],
         pivotBy: ['region'],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         description:
             'Typical, plus a unique-per-leaf final grouping for leaf drill-down. A normal ask, so ' +
             'this is a secondary gate.'
@@ -105,7 +105,7 @@ export const PROFILES: PivotProfile[] = [
         dims: HEAVY_DIMS,
         groupBy: ['fund', 'strategy', 'sector'],
         pivotBy: ['regionCore', 'assetClass'],
-        valueFields: ['pnl', 'mktVal', 'quantity'],
+        measures: ['pnl', 'mktVal', 'quantity'],
         description:
             'How bad are things on a large dataset: 100k leaves, 24 pivot paths, 3 measures.'
     },
@@ -116,7 +116,7 @@ export const PROFILES: PivotProfile[] = [
         dims: {...HEAVY_DIMS, tradeId: 0},
         groupBy: ['fund', 'strategy', 'sector', 'tradeId'],
         pivotBy: ['regionCore', 'assetClass'],
-        valueFields: ['pnl', 'mktVal', 'quantity'],
+        measures: ['pnl', 'mktVal', 'quantity'],
         description:
             'Heavy with leaf drill-down. The largest dense-cell count short of pathological.'
     },
@@ -127,7 +127,7 @@ export const PROFILES: PivotProfile[] = [
         dims: WIDE_DIMS,
         groupBy: ['fund', 'strategy', 'sector', 'country', 'desk', 'book'],
         pivotBy: ['regionCore', 'assetClassCore', 'tenor'],
-        valueFields: ['pnl', 'mktVal'],
+        measures: ['pnl', 'mktVal'],
         description:
             'Both dials at their practical ceiling: 6 groupings, 3 pivot dimensions (48 paths). ' +
             'Where the dense cost model should hurt most.'
@@ -139,7 +139,7 @@ export const PROFILES: PivotProfile[] = [
         dims: {...WIDE_DIMS, tradeId: 0},
         groupBy: ['fund', 'strategy', 'sector', 'country', 'desk', 'book', 'tradeId'],
         pivotBy: ['regionCore', 'assetClassCore', 'tenor'],
-        valueFields: ['pnl', 'mktVal'],
+        measures: ['pnl', 'mktVal'],
         description: 'Wide with leaf drill-down.'
     },
     {
@@ -149,7 +149,7 @@ export const PROFILES: PivotProfile[] = [
         dims: {...TYPICAL_DIMS, symbol: 5000},
         groupBy: ['fund', 'strategy', 'sector'],
         pivotBy: ['symbol'],
-        valueFields: ['pnl'],
+        measures: ['pnl'],
         optIn: true,
         description:
             'Typical groupings, but pivoting on a near-unique dimension (5,000 distinct values ' +

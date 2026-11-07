@@ -65,7 +65,7 @@ export class PivotInspectModel extends HoistModel {
             dimensions = pivotDepth === 2 ? ['fund'] : ['fund', 'strategy'],
             query = {
                 dimensions,
-                pivot: {dimensions: pivotDimensions, valueFields: ['pnl']},
+                pivot: {dimensions: pivotDimensions, measures: ['pnl']},
                 includeRoot,
                 includeLeaves
             };
@@ -130,9 +130,9 @@ export class PivotInspectModel extends HoistModel {
             cellFields.map(cf => ({
                 name: cf.name,
                 pathKey: cf.path.isRoot ? '' : cf.path.key,
-                pathLabel: cf.path.isRoot ? '(root - the row total)' : cf.path.label,
-                valueField: cf.valueField.name,
-                type: cf.valueField.type
+                pathValue: cf.path.isRoot ? '(root - the row total)' : cf.path.value,
+                measure: cf.measure.name,
+                type: cf.measure.type
             }))
         );
 
@@ -204,7 +204,7 @@ function json(value: any, replacer?: (key: string, value: any) => any): string {
 /**
  * The resolved query as the View holds it - names rather than `CubeField`s, since each of those
  * references the whole Cube. `dimensions` is the row hierarchy and stays unconcatenated with
- * `pivot.dimensions`; `fields` is the full aggregated set, of which `pivot.valueFields` are the
+ * `pivot.dimensions`; `fields` is the full aggregated set, of which `pivot.measures` are the
  * measures sliced across the pivot axis.
  */
 function querySummary(query: Query): PlainObject {
@@ -212,7 +212,7 @@ function querySummary(query: Query): PlainObject {
     return {
         dimensions: query.dimensions.map(f => f.name),
         pivotDimensions: pivot.dimensions.map(f => f.name),
-        valueFields: pivot.valueFields.map(f => f.name),
+        measures: pivot.measures.map(f => f.name),
         fields: query.fields.map(
             f => `${f.name}${f.aggregator ? ` (${f.aggregator.constructor.name})` : ''}`
         ),
@@ -221,7 +221,6 @@ function querySummary(query: Query): PlainObject {
         includeLeaves: query.includeLeaves,
         provideLeaves: query.provideLeaves,
         omitRedundantNodes: query.omitRedundantNodes,
-        emptyPathLabel: pivot.emptyPathLabel,
         excludeEmptyPivotValues: pivot.excludeEmptyPivotValues,
         maxPivotPaths: pivot.maxPivotPaths,
         hasFilter: query.hasFilter,
@@ -243,7 +242,6 @@ function pathSummary(path: PivotPath): PlainObject {
         depth: path.depth,
         dimension: path.dimension?.name ?? null,
         value: path.value,
-        label: path.label,
         isEmpty: path.isEmpty,
         children: path.children.map(pathSummary)
     };
