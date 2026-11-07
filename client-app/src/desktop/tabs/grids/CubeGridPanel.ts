@@ -229,13 +229,9 @@ class CubeGridPanelModel extends HoistModel {
                 autosizeOptions: {mode: 'managed'}
             },
             pivotConfig: {
-                // Each dimension's summary names what it aggregates. The row summary is shaded.
+                // Each dimension's summary names what it aggregates.
                 dimensions: [
-                    {
-                        field: 'region',
-                        summaryLabel: 'All Regions',
-                        summaryClass: 'tb-cube-grid__row-summary'
-                    },
+                    {field: 'region', summaryLabel: 'All Regions'},
                     {field: 'sector', summaryLabel: 'All Sectors'},
                     {field: 'model', summaryLabel: 'All Models'}
                 ],
