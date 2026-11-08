@@ -8,13 +8,15 @@ import type {CubeFieldSpec, View} from '@xh/hoist/data';
 import {Cube} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, bindableRef, observable, observableRef, runInAction} from '@xh/hoist/mobx';
-import {isEmpty, map, startCase, uniq} from 'lodash';
+import {map, startCase, uniq} from 'lodash';
 import {generateLeaves, getProfile, tickLeaves} from './CubeGridBenchData';
 
 /** `experimental.maxPatchRatio` applied when record patching is toggled on. */
 const PATCH_RATIO = 0.1;
 
-/** Per-level pivot sort, as the toolbar offers it. `custom` is an explicit value order. */
+const LONG_SUFFIX = ' Strategies Group';
+
+/** Per-level pivot sort, as the panel offers it. `custom` is an explicit value order. */
 export type SortChoice = 'view' | 'asc' | 'desc' | 'custom';
 
 /** Column filter target - the view re-aggregates, the store filters the group rows as they are. */
@@ -27,8 +29,8 @@ const CUSTOM_ORDERS: Record<string, string[]> = {
 };
 
 /**
- * A live `CubeGrid` with its whole config surface driven from toolbars - the panel to reach for when
- * a question is "what does this look like", rather than "is this correct".
+ * A live `CubeGrid` with its whole config surface driven from a side panel - the panel to reach for
+ * when a question is "what does this look like", rather than "is this correct".
  *
  * Grouping and pivot dimensions come from disjoint pools, since a pivot rejects a field used as
  * both. The model is built from `cube` + `query` and owns its view, so everything on the query side
@@ -38,7 +40,7 @@ const CUSTOM_ORDERS: Record<string, string[]> = {
 export class CubeGridTestModel extends HoistModel {
     static GROUP_DIMS = ['fund', 'strategy', 'sector'];
     static PIVOT_DIMS = ['regionCore', 'assetClass'];
-    static VALUE_FIELDS = ['pnl', 'mktVal', 'quantity'];
+    static MEASURES = ['pnl', 'mktVal', 'quantity'];
 
     //------------------------
     // Query
@@ -66,8 +68,6 @@ export class CubeGridTestModel extends HoistModel {
     @bindable accessor linkedPivotSizing = true;
     /** Most a pivot group label can claim. 0 or blank sizes for data alone. */
     @bindable accessor headerFitMaxWidth: number = 140;
-    /** Lengthens the leaf pivot labels, to see them fitted and truncated. */
-    @bindable accessor longPivotLabels = false;
     /** Initial level on a rebuild, and pushed via `pivotModel.expandToLevel` when changed. */
     @bindable accessor pivotExpandLevel = -1;
     @bindable accessor sortLevel0: SortChoice = 'view';
@@ -250,6 +250,17 @@ export class CubeGridTestModel extends HoistModel {
         await this.cube.updateDataAsync(this.leaves);
     }
 
+    /** Lengthen the innermost pivot dimension's values, to see leaf labels fitted and truncated. */
+    async lengthenPivotValuesAsync() {
+        const dim = this.pivotBy.at(-1);
+        if (!dim) return;
+
+        this.leaves.forEach(rec => {
+            if (rec[dim] && !rec[dim].endsWith(LONG_SUFFIX)) rec[dim] += LONG_SUFFIX;
+        });
+        await this.cube.updateDataAsync(this.leaves);
+    }
+
     //------------------------
     // Implementation
     //------------------------
@@ -267,24 +278,16 @@ export class CubeGridTestModel extends HoistModel {
         };
     }
 
-    // The panel sorts by level, so each choice goes to the dimension pivoted at that level. Long
-    // labels go to the innermost dimension, whose values head the leaf paths.
+    // The panel sorts by level, so each choice goes to the dimension pivoted at that level.
     private get pivotDimensions(): PivotDimensionSpec[] {
-        const {pivotBy, longPivotLabels} = this;
-        return pivotBy.map((field, level) => ({
+        return this.pivotBy.map((field, level) => ({
             field,
-            sortBy: toPivotSort([this.sortLevel0, this.sortLevel1][level], field),
-            valueRenderer:
-                longPivotLabels && level === pivotBy.length - 1
-                    ? v => `${v} Strategies Group`
-                    : null
+            sortBy: toPivotSort([this.sortLevel0, this.sortLevel1][level], field)
         }));
     }
 
     private updateQuery() {
-        // A pivot rejects an empty `measures`, and the toolbar can transiently produce one.
-        if (isEmpty(this.measures) || !this.view) return;
-        this.view.updateQuery(this.queryConfig());
+        this.view?.updateQuery(this.queryConfig());
     }
 
     private queryConfig() {
@@ -307,7 +310,7 @@ export class CubeGridTestModel extends HoistModel {
         const dims = uniq([...CubeGridTestModel.GROUP_DIMS, ...CubeGridTestModel.PIVOT_DIMS]);
         return [
             ...dims.map(name => ({name, type: 'string' as const, isDimension: true})),
-            ...CubeGridTestModel.VALUE_FIELDS.map(name => ({
+            ...CubeGridTestModel.MEASURES.map(name => ({
                 name,
                 type: 'number' as const,
                 aggregator: 'SUM' as const
@@ -353,8 +356,8 @@ const FIXED_COLUMNS: ColumnSpec[] = [
 
 export const FILTER_OPTIONS: Array<{value: FilterChoice; label: string}> = [
     {value: 'off', label: 'Off'},
-    {value: 'view', label: 'View'},
-    {value: 'store', label: 'Store'}
+    {value: 'view', label: 'Bound to view'},
+    {value: 'store', label: 'Bound to store'}
 ];
 
 function toPivotSort(choice: SortChoice, dim: string): PivotSort {
@@ -369,14 +372,14 @@ function toPivotSort(choice: SortChoice, dim: string): PivotSort {
     }
 }
 
-export const SUMMARY_H_OPTIONS: Array<{value: boolean | HSide; label: string}> = [
+export const SUMMARY_COLUMN_OPTIONS: Array<{value: boolean | HSide; label: string}> = [
     {value: false, label: 'Off'},
     {value: true, label: 'On (default side)'},
     {value: 'left', label: 'Left'},
     {value: 'right', label: 'Right'}
 ];
 
-export const SUMMARY_V_OPTIONS: Array<{value: boolean | VSide; label: string}> = [
+export const SUMMARY_ROW_OPTIONS: Array<{value: boolean | VSide; label: string}> = [
     {value: false, label: 'Off'},
     {value: 'top', label: 'Top'},
     {value: 'bottom', label: 'Bottom'}
@@ -384,14 +387,14 @@ export const SUMMARY_V_OPTIONS: Array<{value: boolean | VSide; label: string}> =
 
 export const SORT_OPTIONS: Array<{value: SortChoice; label: string}> = [
     {value: 'view', label: 'View order'},
-    {value: 'asc', label: 'Asc'},
-    {value: 'desc', label: 'Desc'},
+    {value: 'asc', label: 'Ascending'},
+    {value: 'desc', label: 'Descending'},
     {value: 'custom', label: 'Custom list'}
 ];
 
 export const EXPAND_LEVEL_OPTIONS = [
-    {value: -1, label: 'All'},
-    {value: 0, label: '0 - region collapsed'},
-    {value: 1, label: '1 - top groups'},
-    {value: 2, label: '2'}
+    {value: -1, label: 'All levels'},
+    {value: 0, label: '0 - row summary only'},
+    {value: 1, label: '1 - top-level groups'},
+    {value: 2, label: '2 - second-level groups'}
 ];
