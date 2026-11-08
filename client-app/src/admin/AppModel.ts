@@ -22,7 +22,7 @@ import {storeColumnFilterPanel} from './tests/columnFilters/store/StoreColumnFil
 import {viewColumnFilterPanel} from './tests/columnFilters/view/ViewColumnFilterPanel';
 import {viewManagerTestPanel} from './tests/viewmanager/ViewManagerTestPanel';
 import {CubeGridTestPanel} from './tests/cubegrid/CubeGridTestPanel';
-import {CubePivotPerfPanel} from './tests/cubegrid/CubePivotPerfPanel';
+import {CubePerfMatrixPanel} from './tests/cubegrid/CubePerfMatrixPanel';
 import {PivotInspectPanel} from './tests/cubegrid/PivotInspectPanel';
 import {PivotViewTestPanel} from './tests/cubegrid/PivotViewTestPanel';
 
@@ -57,7 +57,7 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'columnChooser', path: '/columnChooser'},
                     {name: 'cubeGrid', path: '/cubeGrid'},
                     {name: 'cube', path: '/cube'},
-                    {name: 'cubePivotPerf', path: '/cubePivotPerf'},
+                    {name: 'cubePerfMatrix', path: '/cubePerfMatrix'},
                     {name: 'pivotView', path: '/pivotView'},
                     {name: 'pivotInspect', path: '/pivotInspect'},
                     {name: 'email', path: '/email'},
@@ -92,7 +92,7 @@ export class AppModel extends HoistAdminAppModel {
         const cubeTabs: TabConfig[] = [
             {id: 'cubeGrid', title: 'CubeGrid', content: CubeGridTestPanel},
             {id: 'cube', title: 'Cube Perf', content: CubeTestPanel},
-            {id: 'cubePivotPerf', title: 'Cube Pivot Perf', content: CubePivotPerfPanel},
+            {id: 'cubePerfMatrix', title: 'Cube Perf Matrix', content: CubePerfMatrixPanel},
             {id: 'pivotView', title: 'Pivot View', content: PivotViewTestPanel},
             {id: 'pivotInspect', title: 'Pivot Inspect', content: PivotInspectPanel}
         ].map(it => ({...it, group: 'cube'}));

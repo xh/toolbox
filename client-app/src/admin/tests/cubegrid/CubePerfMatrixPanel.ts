@@ -6,11 +6,11 @@ import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {PERF_CONFIGS, CubePivotPerfModel} from './CubePivotPerfModel';
+import {PERF_CONFIGS, CubePerfMatrixModel} from './CubePerfMatrixModel';
 
-export const CubePivotPerfPanel = hoistCmp({
-    displayName: 'CubePivotPerfPanel',
-    model: creates(CubePivotPerfModel),
+export const CubePerfMatrixPanel = hoistCmp({
+    displayName: 'CubePerfMatrixPanel',
+    model: creates(CubePerfMatrixModel),
 
     render({model}) {
         return panel({
@@ -20,7 +20,7 @@ export const CubePivotPerfPanel = hoistCmp({
             item: vframe(
                 // Bind explicitly: a context lookup takes the model's first own GridModel, which is
                 // `activeGrid` once a run sets it - mounting the grid under test in both slots.
-                grid({model: model.gridModel, testId: 'cube-pivot-perf', flex: 1}),
+                grid({model: model.gridModel, testId: 'cube-perf-matrix', flex: 1}),
                 panel({
                     title: 'Grid under test',
                     modelConfig: {side: 'bottom', defaultSize: 260, collapsible: false},
@@ -35,11 +35,11 @@ export const CubePivotPerfPanel = hoistCmp({
  * The grid being measured, genuinely mounted - ag-Grid is only instantiated by a rendered `grid()`,
  * so measuring an unmounted GridModel reports the model layer and calls it the grid layer.
  */
-const harnessGrid = hoistCmp.factory<CubePivotPerfModel>(({model}) =>
+const harnessGrid = hoistCmp.factory<CubePerfMatrixModel>(({model}) =>
     model.activeGrid ? grid({model: model.activeGrid}) : null
 );
 
-const tbar = hoistCmp.factory<CubePivotPerfModel>(({model}) =>
+const tbar = hoistCmp.factory<CubePerfMatrixModel>(({model}) =>
     toolbar(
         button({
             intent: 'primary',
@@ -64,7 +64,7 @@ const tbar = hoistCmp.factory<CubePivotPerfModel>(({model}) =>
     )
 );
 
-const bbar = hoistCmp.factory<CubePivotPerfModel>(({model}) =>
+const bbar = hoistCmp.factory<CubePerfMatrixModel>(({model}) =>
     toolbar(
         span({item: 'Single config:', style: {opacity: 0.7}}),
         ...PERF_CONFIGS.map(c =>

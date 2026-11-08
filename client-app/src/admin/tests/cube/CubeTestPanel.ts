@@ -1,4 +1,4 @@
-import {grid} from '@xh/hoist/cmp/grid';
+import {cubeGrid} from '@xh/hoist/cmp/cubegrid';
 import {filler, fragment, hframe, hspacer} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -6,7 +6,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {CubeTestModel} from './CubeTestModel';
+import {CubeTestModel, PIVOT_MEASURES} from './CubeTestModel';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {diagnosticsPanel} from './DiagnosticsPanel';
 import {colChooserButton, button} from '@xh/hoist/desktop/cmp/button';
@@ -24,7 +24,7 @@ export const CubeTestPanel = hoistCmp({
                     title: 'Cube Perf',
                     icon: Icon.grid(),
                     flex: 1,
-                    item: grid({model: model.gridModel}),
+                    item: cubeGrid({model: model.cubeGridModel}),
                     mask: 'onLoad',
                     tbar: tbar(),
                     bbar: bbar()
@@ -35,7 +35,7 @@ export const CubeTestPanel = hoistCmp({
     }
 });
 
-const tbar = hoistCmp.factory<CubeTestModel>(() => fragment(queryBar(), storeBar()));
+const tbar = hoistCmp.factory<CubeTestModel>(() => fragment(queryBar(), pivotBar(), storeBar()));
 
 const queryBar = hoistCmp.factory<CubeTestModel>(({model}) =>
     toolbar(
@@ -74,10 +74,31 @@ const queryBar = hoistCmp.factory<CubeTestModel>(({model}) =>
     )
 );
 
+const pivotBar = hoistCmp.factory<CubeTestModel>(({model}) =>
+    toolbar(
+        'Pivot by: ',
+        select({
+            bind: 'pivotBy',
+            options: model.pivotDimOptions,
+            placeholder: 'No pivot',
+            enableMulti: true,
+            enableClear: true,
+            width: 300
+        }),
+        hspacer(5),
+        'Measures: ',
+        select({
+            bind: 'pivotMeasures',
+            options: PIVOT_MEASURES,
+            enableMulti: true,
+            enableClear: true,
+            width: 400
+        })
+    )
+);
+
 const storeBar = hoistCmp.factory<CubeTestModel>(() =>
     toolbar(
-        switchInput({bind: 'projectionOnly', label: 'Projection Only', labelSide: 'left'}),
-        toolbarSep(),
         'Patch Ratio: ',
         select({
             bind: 'maxPatchRatio',
@@ -115,6 +136,10 @@ const storeBar = hoistCmp.factory<CubeTestModel>(() =>
     )
 );
 
-const bbar = hoistCmp.factory<CubeTestModel>(() =>
-    toolbar(filler(), storeFilterField(), colChooserButton())
+const bbar = hoistCmp.factory<CubeTestModel>(({model}) =>
+    toolbar(
+        filler(),
+        storeFilterField({gridModel: model.gridModel}),
+        colChooserButton({gridModel: model.gridModel})
+    )
 );

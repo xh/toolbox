@@ -11,9 +11,6 @@ import {bindable, bindableRef, observable, observableRef, runInAction} from '@xh
 import {map, startCase, uniq} from 'lodash';
 import {generateLeaves, getProfile, tickLeaves} from './CubeGridBenchData';
 
-/** `experimental.maxPatchRatio` applied when record patching is toggled on. */
-const PATCH_RATIO = 0.1;
-
 const LONG_SUFFIX = ' Strategies Group';
 
 /** Per-level pivot sort, as the panel offers it. `custom` is an explicit value order. */
@@ -80,9 +77,6 @@ export class CubeGridTestModel extends HoistModel {
     //------------------------
     @bindable accessor leafCount = 5000;
 
-    /** Fixed at Store construction, so flipping it rebuilds the Cube and everything downstream. */
-    @bindable accessor patchRecordSets = false;
-
     @observableRef accessor status = '';
     @observable accessor rebuilding = false;
 
@@ -104,7 +98,7 @@ export class CubeGridTestModel extends HoistModel {
 
         this.addReaction(
             {
-                track: () => [this.leafCount, this.patchRecordSets, this.columnFilters],
+                track: () => [this.leafCount, this.columnFilters],
                 equals: 'shallow',
                 run: () => this.rebuildAsync(),
                 fireImmediately: true
@@ -182,11 +176,10 @@ export class CubeGridTestModel extends HoistModel {
             XH.safeDestroy(prior);
         });
         try {
-            this.leaves = generateLeaves({...getProfile('heavy'), leaves: this.leafCount});
+            this.leaves = this.generateLeaves();
             this.cube = new Cube({
                 fields: this.cubeFields(),
-                idSpec: 'id',
-                store: {experimental: {maxPatchRatio: this.patchRecordSets ? PATCH_RATIO : 0}}
+                idSpec: 'id'
             });
             await this.cube.loadDataAsync(this.leaves);
 
@@ -220,6 +213,13 @@ export class CubeGridTestModel extends HoistModel {
         } finally {
             runInAction(() => (this.rebuilding = false));
         }
+    }
+
+    /** Reload the generated leaves as first built, undoing every update since. */
+    async reloadDataAsync() {
+        this.leaves = this.generateLeaves();
+        this.tickGen = 0;
+        await this.cube.loadDataAsync(this.leaves);
     }
 
     /** Values-only: no dimension moves, so the column structure must hold. */
@@ -264,6 +264,10 @@ export class CubeGridTestModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
+
+    private generateLeaves(): PlainObject[] {
+        return generateLeaves({...getProfile('heavy'), leaves: this.leafCount});
+    }
 
     private get pivotLinkedSizing(): boolean | PivotLinkedSizingOptions {
         return this.linkedPivotSizing && {headerFitMaxWidth: this.headerFitMaxWidth ?? 0};

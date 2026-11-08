@@ -230,14 +230,15 @@ const dataTab = hoistCmp.factory<CubeGridTestModel>(({model}) =>
             'Generated fact rows. Change rebuilds.',
             enumSelect('leafCount', [500, 5000, 35000])
         ),
-        field(
-            'Patch records',
-            'store.experimental.maxPatchRatio. Fixed at Store construction, so a change rebuilds.',
-            switchInput({bind: 'patchRecordSets'})
-        ),
         section('Updates'),
         updateButton({
-            icon: Icon.refresh(),
+            icon: Icon.reset(),
+            text: 'Reload initial data',
+            title: 'Reload the leaves as first generated, undoing every update below.',
+            onClick: () => model.reloadDataAsync()
+        }),
+        updateButton({
+            icon: Icon.bolt(),
             text: 'Tick measures',
             title: 'Perturb 2% of measures - no dimension moves, so columns must hold.',
             onClick: () => model.tickAsync()

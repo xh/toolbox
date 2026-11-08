@@ -102,7 +102,7 @@ export interface PerfResult extends PlainObject {
     id: string;
 }
 
-export class CubePivotPerfModel extends HoistModel {
+export class CubePerfMatrixModel extends HoistModel {
     /** Measure each config twice - data layer alone, then with a GridModel bound. */
     @bindable accessor withGrid = true;
     @bindable accessor withoutGrid = true;
