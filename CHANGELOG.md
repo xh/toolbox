@@ -20,7 +20,8 @@
 
 ### Technical
 
-* Removed the desktop Docs tab - doc links and the Home page "Read the Docs" buttons now open the Hoist Docs viewer. The mobile Docs section is unchanged.
+* Changed the desktop and mobile docs viewers to read docs and search results from the Hoist Docs service, set by the `hoistDocsUrl` config. Search now uses the same ranking as the MCP tools and opens each result at its best-matching section.
+* Added a version picker to the desktop docs viewer, shown when Hoist Docs holds more than one version of a library.
 * Removed the bundled hoist-react and hoist-core MCP servers and the `installHoistCoreTools` Gradle task - agents now use the `hoist-docs` MCP server.
 
 ### Libraries

@@ -57,9 +57,53 @@ beforeAll(async () => {
     hoistCore.route('GET', 'docs/registry', () => ({
         entries,
         sources: {
-            'hoist-react': {label: 'Hoist React', categories: [], mode: 'local'},
-            'hoist-core': {label: 'Hoist Core', categories: [], mode: 'local'}
+            'hoist-react': {
+                label: 'Hoist React',
+                categories: [],
+                version: '91.0',
+                versions: ['91.0', '90.1']
+            },
+            'hoist-core': {label: 'Hoist Core', categories: [], version: '45.0', versions: ['45.0']}
         }
+    }));
+    // A registry request that names versions goes as a form POST, like any request with params.
+    hoistCore.route('POST', 'docs/registry', () => ({
+        entries,
+        sources: {
+            'hoist-react': {
+                label: 'Hoist React',
+                categories: [],
+                version: '90.1',
+                versions: ['91.0', '90.1']
+            },
+            'hoist-core': {label: 'Hoist Core', categories: [], version: '45.0', versions: ['45.0']}
+        }
+    }));
+    // The server ranks results with the Hoist Docs service - see DocsService.groovy.
+    hoistCore.route('POST', 'docs/search', () => ({
+        results: [
+            {
+                source: 'hoist-react',
+                id: 'cmp/grid/README.md',
+                score: 12.5,
+                section: 'Columns',
+                snippet: longLine
+            },
+            {
+                source: 'hoist-react',
+                id: 'gone.md',
+                score: 3,
+                section: 'Intro',
+                snippet: 'Unregistered.'
+            },
+            {
+                source: 'hoist-core',
+                id: 'docs/authentication.md',
+                score: 2.5,
+                section: 'OAuth',
+                snippet: ''
+            }
+        ]
     }));
     // FetchService sends a request with params as a form POST.
     hoistCore.route('POST', 'docs/content', req => ({content: contents[req.form.docId]}));
@@ -92,28 +136,39 @@ describe('fetchContentAsync', () => {
     });
 });
 
-describe('getContentSnippet', () => {
-    it('returns the first matching line, markdown stripped', async () => {
-        await svc().fetchContentAsync('hoist-react', 'docs/README.md');
-        expect(svc().getContentSnippet('hoist-react', 'docs/README.md', ['CORE'])).toBe(
-            'Start with the core package.'
-        );
+describe('searchDocsAsync', () => {
+    it('maps ranked server results onto registry entries, dropping unknown docs', async () => {
+        const results = await svc().searchDocsAsync('grid Tooltip');
+
+        expect(results.map(r => [r.entry.id, r.section])).toEqual([
+            ['cmp/grid/README.md', 'Columns'],
+            ['docs/authentication.md', 'OAuth']
+        ]);
+        expect(results[0].snippet).toBe(longLine);
+        expect(results[1].snippet).toBe(null);
+        expect(results[0].matchedTerms).toEqual(['grid', 'tooltip']);
     });
 
-    it('clips a long line to a 140-character window around the match', async () => {
+    it('returns no results for a blank query, without calling the server', async () => {
+        const before = hoistCore.requestsTo('docs/search').length;
+        expect(await svc().searchDocsAsync('  ')).toEqual([]);
+        expect(hoistCore.requestsTo('docs/search')).toHaveLength(before);
+    });
+});
+
+describe('setVersionAsync', () => {
+    it('reloads the registry at the chosen version and refetches content for it', async () => {
         await svc().fetchContentAsync('hoist-react', 'cmp/grid/README.md');
-        const snippet = svc().getContentSnippet('hoist-react', 'cmp/grid/README.md', ['tooltip']);
-        expect(snippet.startsWith('...')).toBe(true);
-        expect(snippet.endsWith('...')).toBe(true);
-        expect(snippet).toContain('tooltip');
-        expect(snippet.length).toBeLessThanOrEqual(146);
-    });
+        await svc().setVersionAsync('hoist-react', '90.1');
 
-    it('returns null for uncached content or no match', () => {
-        expect(svc().getContentSnippet('hoist-core', 'docs/authentication.md', ['oauth'])).toBe(
-            null
-        );
-        expect(svc().getContentSnippet('hoist-react', 'docs/README.md', ['nowhere'])).toBe(null);
+        expect(svc().sourceInfo['hoist-react'].version).toBe('90.1');
+        await svc().fetchContentAsync('hoist-react', 'cmp/grid/README.md');
+        const contentRequests = hoistCore.requestsTo('docs/content');
+        expect(contentRequests.at(-1).form).toEqual({
+            source: 'hoist-react',
+            docId: 'cmp/grid/README.md',
+            'hoist-react': '90.1'
+        });
     });
 });
 

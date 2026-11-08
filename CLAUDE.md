@@ -200,6 +200,11 @@ documentation and API reference over MCP Streamable HTTP. `.mcp.json` points at
 the old `hoist-core-*` names still work as aliases. Note that Hoist Docs' default dev port (8080)
 matches Toolbox's own server - run one of them on another port when both are needed locally.
 
+The same service backs Toolbox's desktop and mobile docs viewers: the server's `DocsService` calls
+its public `docs/registry`, `docs/content` and `docs/search` API at the `hoistDocsUrl` config. For
+local work, run Hoist Docs with `./gradlew bootRun -Dserver.port=8081` and set
+`APP_TOOLBOX_HOIST_DOCS_URL=http://localhost:8081` in `.env`.
+
 ### GitHub MCP Server (opt-in)
 
 A Docker-based server providing GitHub API tools (issues, PRs, code search, etc.) via the

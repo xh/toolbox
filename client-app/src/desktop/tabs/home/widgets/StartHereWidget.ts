@@ -4,7 +4,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import type {ReactElement} from 'react';
 import './StartHereWidget.scss';
-import {openHoistDocs} from '../../../../core/HoistDocs';
 
 interface StartHereItem {
     icon: ReactElement;
@@ -17,8 +16,8 @@ const ITEMS: StartHereItem[] = [
     {
         icon: Icon.book(),
         title: 'New to Hoist? Start with the docs',
-        blurb: 'Core concepts, components, and patterns - searchable in the Hoist Docs viewer.',
-        onClick: () => openHoistDocs()
+        blurb: 'Core concepts, components, and patterns - searchable right here in Toolbox.',
+        onClick: () => XH.navigate('default.docs')
     },
     {
         icon: Icon.grid(),

@@ -18,7 +18,10 @@ export interface DocCategory {
 export interface DocSourceInfo {
     label: string;
     categories: DocCategory[];
-    mode: string;
+    /** Version of the library whose docs are loaded. */
+    version: string;
+    /** Versions the Hoist Docs service holds, newest first. */
+    versions: string[];
 }
 
 export interface DocSection {

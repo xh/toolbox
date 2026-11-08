@@ -1,15 +1,16 @@
 import type {InitContext} from '@xh/hoist/core';
 import {HoistService, XH} from '@xh/hoist/core';
-import {action, observable, observableRef, runInAction} from '@xh/hoist/mobx';
+import {action, observableRef, runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
-import MiniSearch from 'minisearch';
 import {sameDoc} from '../docs/DocUtils';
 import type {DocCategory, DocEntry, DocSourceInfo} from '../docs/types';
 
 export interface DocSearchResult {
     entry: DocEntry;
     score: number;
-    /** A short content excerpt around the first matched term (mobile search results). */
+    /** Section of the doc that matched best, as a `section` path for the reader. */
+    section?: string;
+    /** A short excerpt from the start of the best-matching section. */
     snippet?: string;
     /** The query terms used, for client-side highlighting. */
     matchedTerms?: string[];
@@ -22,23 +23,26 @@ const RECENT_DOCS_KEY = 'docs.recentDocs',
 /**
  * Service providing access to hoist-react and hoist-core documentation content.
  *
- * Fetches a registry of all doc entries and their content from the server-side
- * DocsService API. Maintains a MiniSearch full-text index for ranked search.
+ * Toolbox's server reads docs from the Hoist Docs service, which holds versioned indexes of each
+ * library and the same ranked search AI agents use over MCP. This service fetches the registry,
+ * content, and search results from that API, at the library versions chosen in
+ * {@link selectedVersions} (newest by default).
  */
 export class DocService extends HoistService {
     override telemetryPrefix = 'toolbox.client.docs';
 
     static instance: DocService;
 
-    @observable accessor indexReady: boolean = false;
     @observableRef accessor registry: DocEntry[] = [];
     @observableRef accessor sourceInfo: Record<string, DocSourceInfo> = {};
+
+    /** Version chosen per source, e.g. `{'hoist-react': '86.2.0'}`. Absent means newest. */
+    @observableRef accessor selectedVersions: Record<string, string> = {};
 
     /** Most-recently-viewed docs (most recent first), persisted locally - drives the mobile landing. */
     @observableRef accessor recentDocs: DocEntry[] = [];
 
     private cache: Map<string, string> = new Map();
-    private index: MiniSearch;
 
     /** All registered documentation entries. */
     get docs(): DocEntry[] {
@@ -112,62 +116,17 @@ export class DocService extends HoistService {
         );
     }
 
-    /**
-     * First content line containing any of the given terms, markdown-stripped and clipped - used as
-     * the matched-line excerpt on mobile search hits. Reads cached content only (populated once the
-     * full-text index has been built); returns null when no content is cached or no line matches.
-     */
-    getContentSnippet(source: string, docId: string, terms: string[]): string | null {
-        const content = this.cache.get(`${source}:${docId}`);
-        if (!content || isEmpty(terms)) return null;
-
-        const lowered = terms.map(t => t.toLowerCase()),
-            lines = this.stripMarkdown(content).split('\n');
-        const hit = lines.find(line => {
-            const lc = line.toLowerCase();
-            return lowered.some(t => lc.includes(t));
-        });
-        if (!hit) return null;
-
-        const trimmed = hit.trim();
-        if (trimmed.length <= 140) return trimmed;
-
-        // Clip a ~140-char window centered on the first match.
-        const idx = lowered.reduce((min, t) => {
-            const i = trimmed.toLowerCase().indexOf(t);
-            return i >= 0 && (min < 0 || i < min) ? i : min;
-        }, -1);
-        const start = Math.max(0, idx - 50),
-            excerpt = trimmed.slice(start, start + 140).trim();
-        return (start > 0 ? '...' : '') + excerpt + '...';
-    }
-
     override async initAsync(ctx: InitContext) {
         await this.loadRegistryAsync();
         this.hydrateRecentDocs();
     }
 
-    /** Restore recently-viewed docs from localStorage, mapping stored ids to live registry entries. */
-    @action
-    private hydrateRecentDocs() {
-        const stored: string[] = XH.localStorageService.get(RECENT_DOCS_KEY, []);
-        this.recentDocs = stored
-            .map(key => {
-                const [source, ...idParts] = key.split(':');
-                return this.getDocEntry(idParts.join(':'), source);
-            })
-            .filter(Boolean);
+    /** Switch one source to another version, reloading the registry and dropping cached content. */
+    async setVersionAsync(source: string, version: string) {
+        runInAction(() => (this.selectedVersions = {...this.selectedVersions, [source]: version}));
+        this.cache.clear();
+        await this.loadRegistryAsync();
     }
-
-    /** Kick off full-text index build. Called lazily on first search request. */
-    ensureIndexBuilt() {
-        if (!this.indexReady && !this._indexBuilding) {
-            this._indexBuilding = true;
-            this.buildIndexAsync();
-        }
-    }
-
-    private _indexBuilding = false;
 
     /**
      * Fetch and return the markdown content for a given doc entry.
@@ -184,7 +143,7 @@ export class DocService extends HoistService {
                 const resp = await XH.fetchJson(
                     {
                         url: 'docs/content',
-                        params: {source, docId}
+                        params: {source, docId, ...this.selectedVersions}
                     },
                     ctx
                 );
@@ -195,51 +154,62 @@ export class DocService extends HoistService {
     }
 
     /**
-     * Search docs by query string. Uses MiniSearch full-text index when ready,
-     * falls back to simple substring matching otherwise.
+     * Search docs by query string, ranked by the Hoist Docs service. Each doc appears once, with
+     * the section that matched best and an excerpt from it.
      */
-    searchDocs(query: string): DocSearchResult[] {
+    async searchDocsAsync(query: string): Promise<DocSearchResult[]> {
         if (!query?.trim()) return [];
-        this.ensureIndexBuilt();
 
-        if (this.indexReady) {
-            const results = this.index.search(query, {
-                boost: {title: 5, keywords: 3, description: 2, content: 1},
-                prefix: term => term.length >= 4,
-                fuzzy: term => (term.length >= 6 ? 0.15 : false),
-                combineWith: 'AND'
-            });
-            return results
-                .map(r => {
-                    const [source, id] = (r.id as string).split(':');
-                    return {
-                        entry: this.getDocEntry(id, source),
-                        score: r.score
-                    };
-                })
-                .filter(r => r.entry != null);
-        }
+        const resp = await this.runner()
+                .span('search')
+                .run(ctx =>
+                    XH.fetchJson(
+                        {url: 'docs/search', params: {query, ...this.selectedVersions}},
+                        ctx
+                    )
+                ),
+            matchedTerms = query
+                .toLowerCase()
+                .split(/\s+/)
+                .filter(t => t.length > 1);
 
-        // Fallback: simple substring matching before index is ready.
-        const terms = query.toLowerCase().split(/\s+/);
-        return this.registry
-            .filter(doc => {
-                const searchable = [doc.title, doc.description, ...doc.keywords]
-                    .join(' ')
-                    .toLowerCase();
-                return terms.every(term => searchable.includes(term));
-            })
-            .map(entry => ({entry, score: 1}));
+        return (resp.results ?? [])
+            .map(r => ({
+                entry: this.getDocEntry(r.id, r.source),
+                score: r.score,
+                section: r.section,
+                snippet: isEmpty(r.snippet) ? null : r.snippet,
+                matchedTerms
+            }))
+            .filter(r => r.entry != null);
     }
 
     //------------------
     // Implementation
     //------------------
+    /** Restore recently-viewed docs from localStorage, mapping stored ids to live registry entries. */
+    @action
+    private hydrateRecentDocs() {
+        const stored: string[] = XH.localStorageService.get(RECENT_DOCS_KEY, []);
+        this.recentDocs = stored
+            .map(key => {
+                const [source, ...idParts] = key.split(':');
+                return this.getDocEntry(idParts.join(':'), source);
+            })
+            .filter(Boolean);
+    }
+
     private async loadRegistryAsync() {
         return this.runner()
             .span('loadRegistry')
             .run(async ctx => {
-                const resp = await XH.fetchJson({url: 'docs/registry'}, ctx);
+                const resp = await XH.fetchJson(
+                    {
+                        url: 'docs/registry',
+                        params: isEmpty(this.selectedVersions) ? null : this.selectedVersions
+                    },
+                    ctx
+                );
                 const sourceCount = Object.keys(resp.sources).length;
 
                 this.logInfo(
@@ -258,54 +228,5 @@ export class DocService extends HoistService {
                     this.sourceInfo = resp.sources;
                 });
             });
-    }
-
-    private async buildIndexAsync() {
-        try {
-            this.logDebug('Building full-text search index...');
-            const entries = this.registry,
-                contents = await Promise.all(
-                    entries.map(entry =>
-                        this.fetchContentAsync(entry.source, entry.id).catch(() => '')
-                    )
-                );
-
-            const index = new MiniSearch({
-                fields: ['title', 'keywords', 'description', 'content'],
-                storeFields: []
-            });
-
-            const documents = entries.map((entry, i) => ({
-                id: `${entry.source}:${entry.id}`,
-                title: entry.title,
-                keywords: entry.keywords.join(' '),
-                description: entry.description,
-                content: this.stripMarkdown(contents[i])
-            }));
-
-            index.addAll(documents);
-            this.index = index;
-            runInAction(() => (this.indexReady = true));
-            this.logInfo(`Search index built: ${documents.length} documents indexed`);
-        } catch (e) {
-            XH.handleException(e, {showAlert: false, logOnServer: false});
-        }
-    }
-
-    /** Strip markdown syntax to produce plain text for indexing. */
-    private stripMarkdown(md: string): string {
-        return md
-            .replace(/```\w*\n([\s\S]*?)```/g, '$1')
-            .replace(/`([^`]*)`/g, '$1')
-            .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
-            .replace(/#{1,6}\s+/g, '')
-            .replace(/[*_~]{1,3}/g, '')
-            .replace(/^\s*[-*+]\s+/gm, '')
-            .replace(/^\s*\d+\.\s+/gm, '')
-            .replace(/^\s*>\s+/gm, '')
-            .replace(/\|/g, ' ')
-            .replace(/---+/g, '')
-            .replace(/\n{2,}/g, '\n')
-            .trim();
     }
 }

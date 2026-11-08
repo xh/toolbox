@@ -1,106 +1,96 @@
 package io.xh.toolbox.docs
 
 import io.xh.hoist.BaseService
-import io.xh.hoist.exception.NotFoundException
+import io.xh.hoist.cache.Cache
+import io.xh.hoist.config.ConfigService
+import io.xh.hoist.http.JSONClient
+import org.apache.hc.client5.http.classic.methods.HttpGet
+import org.apache.hc.core5.net.URIBuilder
 
-import static io.xh.hoist.util.Utils.hoistCoreVersion
-import static io.xh.hoist.util.Utils.hoistReactVersion
-import static io.xh.hoist.util.Utils.isLocalDevelopment
+import static io.xh.hoist.util.DateTimeUtils.MINUTES
+import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
 /**
- * Service providing documentation content from hoist-react and hoist-core to the Toolbox
- * Docs Viewer. Builds a unified {@link DocRegistry} of all available doc entries and serves
- * their markdown content on demand.
+ * Serves hoist-react and hoist-core documentation to the Toolbox docs viewers (desktop and
+ * mobile) by calling the public docs API of the Hoist Docs service (https://github.com/xh/hoist-docs).
+ * Hoist Docs holds the versioned doc indexes and the ranked search that AI agents use over MCP, so
+ * people and agents read the same content.
  *
- * Each source library (hoist-react, hoist-core) is backed by a {@link ContentSource} resolved
- * at init with the following strategy:
+ * The service URL comes from the `hoistDocsUrl` instance config when set (e.g. a local Hoist Docs
+ * server on port 8081), else from the `hoistDocsUrl` soft config.
  *
- *   1. In local development, check for a sibling checkout of the library (e.g. `../hoist-react`)
- *      with a `docs/README.md` file. If found, use a {@link LocalContentSource} that reads
- *      directly from the filesystem — allowing docs to be authored and previewed without
- *      committing or pushing.
- *
- *   2. Otherwise, fall back to a {@link GitHubContentSource} that downloads the library's
- *      tarball from GitHub. For a concrete released version, the corresponding `v{version}` tag
- *      is fetched; for anything else (a SNAPSHOT, a dist-tag such as `next`, or a range) the
- *      `develop` branch is used. The full archive is extracted into memory at init for fast
- *      subsequent reads.
- *
- * Sources that fail to resolve (e.g. missing local checkout and GitHub unreachable) are
- * silently excluded — the viewer will display whichever sources loaded successfully.
- * Calling {@code clearCaches()} rebuilds all sources and the registry from scratch.
+ * Each call accepts the viewer's chosen version per source, as params named for the source
+ * (`hoist-react`, `hoist-core`), passed through to Hoist Docs.
  */
 class DocsService extends BaseService {
 
-    private DocRegistry registry
-    private Map<String, ContentSource> sources
+    static clearCachesConfigs = ['hoistDocsUrl']
 
-    void init() {
-        buildSourcesAndRegistry()
-        super.init()
-    }
+    static final List<String> SOURCES = ['hoist-react', 'hoist-core']
 
-    DocRegistry getRegistry() {
-        return registry
-    }
+    ConfigService configService
 
-    /** Markdown content for a specific doc entry. */
-    String getContent(String source, String docId) {
-        def entry = registry.findEntry(source, docId)
-        if (!entry) throw new NotFoundException("Doc not found: ${source}:${docId}")
+    private JSONClient client = new JSONClient()
 
-        def contentSource = sources[source]
-        if (!contentSource) throw new NotFoundException("Unknown source: ${source}")
+    private Cache<String, Map> registries = createCache(name: 'registries', expireTime: 10 * MINUTES)
+    private Cache<String, String> contents = createCache(name: 'contents', expireTime: 60 * MINUTES)
 
-        def content = contentSource.readFile(entry.id)
-        if (!content) throw new NotFoundException("Content file missing: ${entry.id}")
-
-        logDebug("Served ${source}:${docId} (${entry.id}, ${content.length()} chars) via ${contentSource.sourceLabel}")
-        return content
-    }
-
-    //--------------------------------------------------------------------------
-    // Implementation
-    //--------------------------------------------------------------------------
-    private void buildSourcesAndRegistry() {
-        sources = [
-            'hoist-react': resolveSource('hoist-react', hoistReactVersion),
-            'hoist-core' : resolveSource('hoist-core', hoistCoreVersion)
-        ].findAll { it.value != null }
-        registry = new DocRegistry(sources)
-    }
-
-    private ContentSource resolveSource(String name, String version) {
-        try {
-            if (isLocalDevelopment) {
-                def localDir = new File("../${name}").canonicalFile
-                if (new File(localDir, 'docs/README.md').exists()) {
-                    return new LocalContentSource(localDir.absolutePath)
-                }
-            }
-
-            // `version` is the raw dependency spec from package.json, so it is not guaranteed
-            // to be a released semver - it may be a dist-tag (e.g. `next`) or a range. Anything
-            // that is not a concrete release maps to `develop`, which is what those specs track.
-            def isRelease = version ==~ /^\d+\.\d+\.\d+$/
-            def ref = isRelease ? "v${version}" : 'develop'
-            return new GitHubContentSource("xh/${name}", ref)
-        } catch (Exception e) {
-            logError("Failed to resolve ${name} content source", e)
-            return null
+    /** Registry of all doc entries, with each source's categories and available versions. */
+    Map getRegistry(Map<String, String> versions) {
+        String key = versionKey(versions)
+        def ret = registries.get(key)
+        if (ret == null) {
+            ret = get('docs/registry', versions)
+            registries.put(key, ret)
         }
+        return ret
+    }
+
+    /** Markdown content for a specific doc. */
+    String getContent(String source, String docId, String version) {
+        String key = "${source}:${version ?: ''}:${docId}"
+        def ret = contents.get(key)
+        if (ret == null) {
+            ret = get('docs/content', [source: source, docId: docId, (source): version]).content as String
+            contents.put(key, ret)
+        }
+        return ret
+    }
+
+    /** Ranked docs matching a query, each with its best section and an excerpt. */
+    List<Map> search(String query, Map<String, String> versions) {
+        get('docs/search', versions + [query: query, limit: '25', client: 'toolbox']).results as List<Map>
+    }
+
+    /** Requested version per source, from request params. */
+    static Map<String, String> versionsFrom(Map params) {
+        SOURCES.collectEntries { [it, params[it] as String] }.findAll { it.value } as Map<String, String>
+    }
+
+    String getHoistDocsUrl() {
+        (getInstanceConfig('hoistDocsUrl') ?: configService.getString('hoistDocsUrl')).replaceAll(/\/+$/, '')
+    }
+
+    //------------------------
+    // Implementation
+    //------------------------
+    private Map get(String path, Map params) {
+        def uri = new URIBuilder("${hoistDocsUrl}/${path}")
+        params.each { k, v -> if (v != null) uri.addParameter(k as String, v as String) }
+        return client.executeAsMap(new HttpGet(uri.build()))
+    }
+
+    private static String versionKey(Map<String, String> versions) {
+        SOURCES.collect { "${it}=${versions[it] ?: ''}" }.join('&')
     }
 
     void clearCaches() {
-        buildSourcesAndRegistry()
+        registries.clear()
+        contents.clear()
         super.clearCaches()
     }
 
     Map getAdminStats() {
-        return [
-            sources: sources.collectEntries { name, src -> [name, src.sourceLabel] },
-            entries: registry.entries.size()
-        ]
+        [hoistDocsUrl: hoistDocsUrl, registries: registries.size(), contents: contents.size()]
     }
-
 }

@@ -96,6 +96,13 @@ class BootStrap implements LogSupport {
                 note: 'OAuth config for the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
             ),
             new ConfigSpec(
+                name: 'hoistDocsUrl',
+                valueType: 'string',
+                defaultValue: 'https://docs.xh.io',
+                groupName: 'Toolbox',
+                note: 'Base URL of the Hoist Docs service, whose public docs API backs the Toolbox docs viewers. The hoistDocsUrl instance config overrides it, e.g. for a local Hoist Docs server.'
+            ),
+            new ConfigSpec(
                 name: 'contacts',
                 valueType: 'json',
                 defaultValue: [
@@ -249,8 +256,7 @@ class BootStrap implements LogSupport {
                 valueType: 'json',
                 defaultValue: [
                     hoistReact: 'https://github.com/xh/hoist-react/tree/develop',
-                    toolbox: 'https://github.com/xh/toolbox/tree/develop',
-                    hoistDocs: 'https://docs.xh.io'
+                    toolbox: 'https://github.com/xh/toolbox/tree/develop'
                 ],
                 clientVisible: true,
                 groupName: 'Toolbox'

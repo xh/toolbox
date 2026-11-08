@@ -6,7 +6,6 @@ import {Icon} from '@xh/hoist/icon';
 // @ts-ignore
 import xhHoist from '../../../../core/img/xh+hoist.png';
 import './WelcomeWidget.scss';
-import {openHoistDocs} from '../../../../core/HoistDocs';
 
 export const welcomeWidget = hoistCmp.factory({
     displayName: 'WelcomeWidget',
@@ -44,7 +43,7 @@ export const welcomeWidget = hoistCmp.factory({
                                     icon: Icon.book(),
                                     intent: 'primary',
                                     minimal: false,
-                                    onClick: () => openHoistDocs()
+                                    onClick: () => XH.navigate('default.docs')
                                 }),
                                 button({
                                     text: 'Browse the Source',

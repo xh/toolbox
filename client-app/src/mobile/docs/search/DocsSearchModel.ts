@@ -16,9 +16,9 @@ const RECENT_SEARCHES_KEY = 'docs.recentSearches',
     RECENT_SEARCHES_MAX = 8;
 
 /**
- * Model for the dedicated docs search screen. Runs cross-corpus full-text search via the shared
- * {@link DocService}, enriching each hit with a matched-line snippet, and keeps a persisted list of
- * recent searches for the empty state. Results are grouped by library for display.
+ * Model for the dedicated docs search screen. Runs cross-corpus search via the shared
+ * {@link DocService}, whose hits carry an excerpt of their best-matching section, and keeps a
+ * persisted list of recent searches for the empty state. Results are grouped by library.
  */
 export class DocsSearchModel extends HoistModel {
     @bindable accessor query: string = '';
@@ -31,7 +31,6 @@ export class DocsSearchModel extends HoistModel {
     }
 
     override onLinked() {
-        XH.docService.ensureIndexBuilt();
         this.addReaction({
             track: () => this.query,
             run: () => this.runSearch(),
@@ -76,26 +75,15 @@ export class DocsSearchModel extends HoistModel {
     //------------------
     // Implementation
     //------------------
-    private runSearch() {
+    private async runSearch() {
         const query = this.query?.trim();
         if (!query) {
             runInAction(() => (this.results = []));
             return;
         }
-        const terms = this.queryTerms(query),
-            hits = XH.docService.searchDocs(query).map(r => ({
-                ...r,
-                matchedTerms: terms,
-                snippet: XH.docService.getContentSnippet(r.entry.source, r.entry.id, terms)
-            }));
-        runInAction(() => (this.results = hits));
-    }
-
-    private queryTerms(query: string): string[] {
-        return query
-            .toLowerCase()
-            .split(/\s+/)
-            .filter(t => t.length > 1);
+        const hits = await XH.docService.searchDocsAsync(query).catchDefault();
+        if (query !== this.query?.trim()) return;
+        runInAction(() => (this.results = hits ?? []));
     }
 
     /** Persist the current query as a recent search (most recent first, de-duped, capped). */
