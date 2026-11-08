@@ -1,6 +1,6 @@
 import type {InitContext} from '@xh/hoist/core';
 import {HoistService, XH} from '@xh/hoist/core';
-import {action, observableRef, runInAction} from '@xh/hoist/mobx';
+import {action, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {isEmpty} from 'lodash';
 import {sameDoc} from '../docs/DocUtils';
 import type {DocCategory, DocEntry, DocSourceInfo} from '../docs/types';
@@ -27,6 +27,9 @@ const RECENT_DOCS_KEY = 'docs.recentDocs',
  * library and the same ranked search AI agents use over MCP. This service fetches the registry,
  * content, and search results from that API, at the library versions chosen in
  * {@link selectedVersions} (newest by default).
+ *
+ * If Hoist Docs cannot be reached, the service still installs: it sets {@link unavailable}, which
+ * the viewers show as a gentle message with a retry, and the rest of Toolbox is unaffected.
  */
 export class DocService extends HoistService {
     override telemetryPrefix = 'toolbox.client.docs';
@@ -34,6 +37,9 @@ export class DocService extends HoistService {
     static instance: DocService;
 
     @observableRef accessor registry: DocEntry[] = [];
+
+    /** True when the doc registry could not be loaded - Hoist Docs is down or unreachable. */
+    @observable accessor unavailable: boolean = false;
     @observableRef accessor sourceInfo: Record<string, DocSourceInfo> = {};
 
     /** Version chosen per source, e.g. `{'hoist-react': '86.2.0'}`. Absent means newest. */
@@ -117,15 +123,19 @@ export class DocService extends HoistService {
     }
 
     override async initAsync(ctx: InitContext) {
-        await this.loadRegistryAsync();
-        this.hydrateRecentDocs();
+        await this.tryLoadRegistryAsync();
+    }
+
+    /** Retry loading docs after Hoist Docs was unavailable. */
+    async retryAsync() {
+        await this.tryLoadRegistryAsync();
     }
 
     /** Switch one source to another version, reloading the registry and dropping cached content. */
     async setVersionAsync(source: string, version: string) {
         runInAction(() => (this.selectedVersions = {...this.selectedVersions, [source]: version}));
         this.cache.clear();
-        await this.loadRegistryAsync();
+        await this.tryLoadRegistryAsync();
     }
 
     /**
@@ -187,6 +197,18 @@ export class DocService extends HoistService {
     //------------------
     // Implementation
     //------------------
+    /** Load the registry, recording - rather than throwing - a failure to reach Hoist Docs. */
+    private async tryLoadRegistryAsync() {
+        try {
+            await this.loadRegistryAsync();
+            runInAction(() => (this.unavailable = false));
+            this.hydrateRecentDocs();
+        } catch (e) {
+            this.logWarn('Hoist Docs unavailable - docs viewers will show a retry', e.message);
+            runInAction(() => (this.unavailable = true));
+        }
+    }
+
     /** Restore recently-viewed docs from localStorage, mapping stored ids to live registry entries. */
     @action
     private hydrateRecentDocs() {

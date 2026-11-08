@@ -44,6 +44,9 @@ export class DocsPanelModel extends DocViewModel {
 
     @observable accessor selectedSearchIdx: number = -1;
 
+    /** True when the last search failed to reach Hoist Docs. */
+    @observable accessor searchFailed: boolean = false;
+
     @bindable accessor feedbackMessage: string = '';
 
     constructor() {
@@ -333,9 +336,19 @@ export class DocsPanelModel extends DocViewModel {
     /** Run search via DocService and update results, dropping any that a newer query superseded. */
     private async runSearch(query: string) {
         if (!this.searchMode) return;
-        const results = await XH.docService.searchDocsAsync(query).catchDefault();
+        let results: DocSearchResult[] = [],
+            failed = false;
+        try {
+            results = await XH.docService.searchDocsAsync(query);
+        } catch (e) {
+            this.logWarn('Docs search failed', e.message);
+            failed = true;
+        }
         if (!this.searchMode || query !== this.searchQuery) return;
-        runInAction(() => (this.searchResults = results ?? []));
+        runInAction(() => {
+            this.searchResults = results;
+            this.searchFailed = failed;
+        });
     }
 
     @action

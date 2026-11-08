@@ -1,5 +1,5 @@
 import {HoistModel, XH} from '@xh/hoist/core';
-import {action, bindable, observableRef, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {encodeDocId} from '../../../core/docs/DocUtils';
 import type {DocEntry} from '../../../core/docs/types';
 import type {DocSearchResult} from '../../../core/svc/DocService';
@@ -23,6 +23,9 @@ const RECENT_SEARCHES_KEY = 'docs.recentSearches',
 export class DocsSearchModel extends HoistModel {
     @bindable accessor query: string = '';
     @observableRef accessor results: DocSearchResult[] = [];
+
+    /** True when the last search failed to reach Hoist Docs. */
+    @observable accessor failed: boolean = false;
     @observableRef accessor recentSearches: string[] = [];
 
     constructor() {
@@ -81,9 +84,19 @@ export class DocsSearchModel extends HoistModel {
             runInAction(() => (this.results = []));
             return;
         }
-        const hits = await XH.docService.searchDocsAsync(query).catchDefault();
+        let hits: DocSearchResult[] = [],
+            failed = false;
+        try {
+            hits = await XH.docService.searchDocsAsync(query);
+        } catch (e) {
+            this.logWarn('Docs search failed', e.message);
+            failed = true;
+        }
         if (query !== this.query?.trim()) return;
-        runInAction(() => (this.results = hits ?? []));
+        runInAction(() => {
+            this.results = hits;
+            this.failed = failed;
+        });
     }
 
     /** Persist the current query as a recent search (most recent first, de-duped, capped). */

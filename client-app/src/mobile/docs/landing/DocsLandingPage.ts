@@ -1,8 +1,9 @@
 import {div, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {pluralize} from '@xh/hoist/utils/js';
+import {docsUnavailable} from '../cmp/DocsUnavailable';
 import {DocsLandingModel} from './DocsLandingModel';
 import './DocsLandingPage.scss';
 
@@ -21,7 +22,9 @@ export const docsLandingPage = hoistCmp.factory({
             scrollable: true,
             item: div({
                 className: 'tb-docs-landing__body',
-                items: [introBlurb(), searchTrigger(), corpusCards(), recentSection()]
+                items: XH.docService.unavailable
+                    ? [introBlurb(), docsUnavailable()]
+                    : [introBlurb(), searchTrigger(), corpusCards(), recentSection()]
             })
         });
     }

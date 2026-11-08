@@ -8,6 +8,8 @@ import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import type {ReactNode} from 'react';
 import type {DocSearchResult} from '../../../core/svc/DocService';
+import {SEARCH_UNAVAILABLE_MSG} from '../../../core/docs/DocsUnavailable';
+import {docsUnavailable} from '../cmp/DocsUnavailable';
 import {DocsSearchModel} from './DocsSearchModel';
 import './DocsSearchPage.scss';
 
@@ -36,7 +38,11 @@ export const docsSearchPage = hoistCmp.factory({
                 })
             }),
             scrollable: true,
-            item: model.hasQuery ? results() : recents()
+            item: XH.docService.unavailable
+                ? docsUnavailable()
+                : model.hasQuery
+                  ? results()
+                  : recents()
         });
     }
 });
@@ -88,6 +94,12 @@ const recents = hoistCmp.factory<DocsSearchModel>({
 const results = hoistCmp.factory<DocsSearchModel>({
     render({model}) {
         const {groupedResults} = model;
+        if (model.failed) {
+            return div({
+                className: 'tb-docs-search__empty',
+                items: [Icon.warning({size: '2x'}), span(SEARCH_UNAVAILABLE_MSG)]
+            });
+        }
         if (!groupedResults.length) {
             return div({
                 className: 'tb-docs-search__empty',

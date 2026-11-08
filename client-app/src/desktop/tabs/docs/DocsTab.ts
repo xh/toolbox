@@ -15,6 +15,8 @@ import {pluralize} from '@xh/hoist/utils/js';
 import {useEffect, useRef} from 'react';
 import {docContent} from '../../../core/docs/DocContent';
 import {docVersionPicker} from './DocVersionPicker';
+import {SEARCH_UNAVAILABLE_MSG} from '../../../core/docs/DocsUnavailable';
+import {docsUnavailable} from './DocsUnavailable';
 import {DocsPanelModel} from './DocsPanelModel';
 import './DocsTab.scss';
 
@@ -31,6 +33,7 @@ export const docsTab = hoistCmp.factory<DocsPanelModel>({
     className: 'tb-docs',
 
     render({model, className}) {
+        if (XH.docService.unavailable) return panel({className, item: docsUnavailable()});
         return panel({
             className,
             hotkeys: [
@@ -133,6 +136,8 @@ const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
         if (!hasQuery) {
             return placeholder(Icon.search(), 'Type to search across all documentation content.');
         }
+
+        if (model.searchFailed) return placeholder(Icon.warning(), SEARCH_UNAVAILABLE_MSG);
 
         if (searchResults.length === 0) {
             return searchQuery.trim().length < 3

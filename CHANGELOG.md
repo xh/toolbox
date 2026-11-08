@@ -22,6 +22,7 @@
 
 * Changed the desktop and mobile docs viewers to read docs and search results from the Hoist Docs service, set by the `hoistDocsUrl` config. Search now uses the same ranking as the MCP tools and opens each result at its best-matching section.
 * Added a version picker to the desktop docs viewer, shown when Hoist Docs holds more than one version of a library.
+* Made the docs viewers degrade gently when Hoist Docs is down - Toolbox starts as normal, the viewers show a retry and a link to the docs on GitHub, and the server falls back to the last docs it fetched.
 * Removed the bundled hoist-react and hoist-core MCP servers and the `installHoistCoreTools` Gradle task - agents now use the `hoist-docs` MCP server.
 
 ### Libraries
