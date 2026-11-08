@@ -4,7 +4,7 @@ import {hoistCore, initTestAppAsync, TestAppModel} from '@xh/hoist/test-support'
 import {beforeAll, beforeEach, describe, expect, it} from 'vitest';
 import {resolveDocLink} from '../docs/DocUtils';
 import type {DocEntry} from '../docs/types';
-import {DocService} from './DocService';
+import {DocService, stripMarkdown} from './DocService';
 
 class DocTestModel extends TestAppModel {
     override async initAsync(ctx: InitContext) {
@@ -153,6 +153,22 @@ describe('searchDocsAsync', () => {
         const before = hoistCore.requestsTo('docs/search').length;
         expect(await svc().searchDocsAsync('  ')).toEqual([]);
         expect(hoistCore.requestsTo('docs/search')).toHaveLength(before);
+    });
+});
+
+describe('stripMarkdown', () => {
+    it('reduces markdown to plain text, keeping link and code text', () => {
+        expect(
+            stripMarkdown(
+                '`@persist` and **bold** _em_ [GridModel](cmp/grid/README.md) | `a` | b | ## Head'
+            )
+        ).toBe('@persist and bold em GridModel a b Head');
+    });
+
+    it('leaves snake_case and multiplication alone', () => {
+        expect(stripMarkdown('use persist_with and 2 * 3 * 4')).toBe(
+            'use persist_with and 2 * 3 * 4'
+        );
     });
 });
 

@@ -10,7 +10,7 @@ export interface DocSearchResult {
     score: number;
     /** Section of the doc that matched best, as a `section` path for the reader. */
     section?: string;
-    /** A short excerpt from the start of the best-matching section. */
+    /** A short plain-text excerpt from the start of the best-matching section. */
     snippet?: string;
     /** The query terms used, for client-side highlighting. */
     matchedTerms?: string[];
@@ -178,7 +178,7 @@ export class DocService extends HoistService {
                 entry: this.getDocEntry(r.id, r.source),
                 score: r.score,
                 section: r.section,
-                snippet: isEmpty(r.snippet) ? null : r.snippet,
+                snippet: isEmpty(r.snippet) ? null : stripMarkdown(r.snippet),
                 matchedTerms
             }))
             .filter(r => r.entry != null);
@@ -229,4 +229,21 @@ export class DocService extends HoistService {
                 });
             });
     }
+}
+
+/**
+ * Reduce a markdown excerpt to plain text for display: drops inline code ticks, emphasis, heading
+ * markers, image and link syntax (keeping link text), and table pipes.
+ */
+export function stripMarkdown(md: string): string {
+    return md
+        .replace(/`([^`]*)`/g, '$1')
+        .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+        .replace(/(\*\*|__)(.+?)\1/g, '$2')
+        .replace(/(^|[^\w*])[*_]([^*_\s][^*_]*?)[*_](?=[^\w*]|$)/g, '$1$2')
+        .replace(/~~(.+?)~~/g, '$1')
+        .replace(/(^|\s)#{1,6}\s+/g, '$1')
+        .replace(/\s*\|\s*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 }
