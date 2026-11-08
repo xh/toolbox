@@ -1,14 +1,8 @@
 {
   "mcpServers": {
-    "hoist-react": {
-      "type": "stdio",
-      "command": "bash",
-      "args": [
-        ".claude/start-hoist-react-mcp.sh"
-      ]
-    },
-    "hoist-core": {
-      "command": "./bin/hoist-core-mcp"
+    "hoist-docs": {
+      "type": "http",
+      "url": "${HOIST_DOCS_MCP_URL:-http://localhost:8080/mcp}"
     },
     "github": {
       "command": "bash",

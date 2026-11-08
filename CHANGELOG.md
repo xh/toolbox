@@ -18,6 +18,11 @@
 
 * Added a `PdfViewer` demo page to Components > General, showing hoist-react's new pdf.js-based document viewer with its toolbar options and model state.
 
+### Technical
+
+* Removed the desktop Docs tab - doc links and the Home page "Read the Docs" buttons now open the Hoist Docs viewer. The mobile Docs section is unchanged.
+* Removed the bundled hoist-react and hoist-core MCP servers and the `installHoistCoreTools` Gradle task - agents now use the `hoist-docs` MCP server.
+
 ### Libraries
 
 * pdfjs-dist `6.5`

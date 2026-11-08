@@ -15,7 +15,6 @@ import {runInAction} from '@xh/hoist/mobx';
 import type {ReactElement} from 'react';
 import {isEmpty, isEqual} from 'lodash';
 import {BaseAppModel} from '../BaseAppModel';
-import {DocService} from '../core/svc/DocService';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {gridTreeMapPanel} from './tabs/components/charts/GridTreeMapPanel';
@@ -23,7 +22,6 @@ import {lineChartPanel} from './tabs/components/charts/LineChartPanel';
 import {ohlcChartPanel} from './tabs/components/charts/OHLCChartPanel';
 import {simpleTreeMapPanel} from './tabs/components/charts/SimpleTreeMapPanel';
 import {splitTreeMapPanel} from './tabs/components/charts/SplitTreeMapPanel';
-import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
 import {buttonGroupInputPanel} from './tabs/forms/inputs/ButtonGroupInputPanel';
 import {codeInputsPanel} from './tabs/forms/inputs/CodeInputsPanel';
@@ -117,7 +115,7 @@ export class AppModel extends BaseAppModel {
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
         this.applyFont(XH.getPref('font'));
-        await XH.installServicesAsync([DocService, GitHubService, PortfolioService], ctx);
+        await XH.installServicesAsync([GitHubService, PortfolioService], ctx);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
         this.addReaction({
@@ -359,11 +357,6 @@ export class AppModel extends BaseAppModel {
                             },
                             {name: 'toast', path: '/toast'}
                         ]
-                    },
-                    {
-                        name: 'docs',
-                        path: '/docs',
-                        children: [{name: 'docRef', path: '/:source/:docId?section'}]
                     },
                     {
                         name: 'examples',
@@ -670,7 +663,6 @@ export class AppModel extends BaseAppModel {
                     ]
                 }
             },
-            {id: 'docs', icon: Icon.book(), content: docsTab},
             {id: 'examples', title: 'Example Apps', icon: Icon.boxFull(), content: examplesTab}
         ];
         // Shared by `initialFavorites` and "Restore Defaults" menu item for consistent reset

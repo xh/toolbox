@@ -249,7 +249,8 @@ class BootStrap implements LogSupport {
                 valueType: 'json',
                 defaultValue: [
                     hoistReact: 'https://github.com/xh/hoist-react/tree/develop',
-                    toolbox: 'https://github.com/xh/toolbox/tree/develop'
+                    toolbox: 'https://github.com/xh/toolbox/tree/develop',
+                    hoistDocs: 'https://docs.xh.io'
                 ],
                 clientVisible: true,
                 groupName: 'Toolbox'
