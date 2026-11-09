@@ -61,6 +61,7 @@ import {restGridPanel} from './tabs/grids/RestGridPanel';
 import {standardGridPanel} from './tabs/grids/StandardGridPanel';
 import {treeGridPanel} from './tabs/grids/TreeGridPanel';
 import {treeGridWithCheckboxPanel} from './tabs/grids/TreeGridWithCheckboxPanel';
+import {cubeGridPanel} from './tabs/grids/CubeGridPanel';
 import {zoneGridPanel} from './tabs/grids/ZoneGridPanel';
 import {homeTab} from './tabs/home/HomeTab';
 import {cardPanel} from './tabs/layout/CardPanel';
@@ -277,6 +278,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'inlineEditing', path: '/inlineEditing'},
                             {name: 'columnFiltering', path: '/columnFiltering'},
                             {name: 'externalSort', path: '/externalSort'},
+                            {name: 'cubeGrid', path: '/cubeGrid'},
                             {name: 'zoneGrid', path: '/zoneGrid'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'agGrid', path: '/agGrid'},
@@ -447,6 +449,7 @@ export class AppModel extends BaseAppModel {
                         ].map(it => ({...it, group: 'grid'})),
                         // Components built on or around GridModel, each with its own API.
                         ...[
+                            {id: 'cubeGrid', title: 'Cube Grid', content: cubeGridPanel},
                             {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
                             {id: 'dataview', title: 'DataView', content: dataViewPanel},
                             {id: 'rest', title: 'REST Editor', content: restGridPanel},
