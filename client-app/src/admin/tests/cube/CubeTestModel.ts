@@ -310,13 +310,7 @@ export class CubeTestModel extends HoistModel {
                 sortBy: 'time|desc',
                 emptyText: 'No records found...',
                 enableExport: true,
-                showHover: true,
-                levelLabels: () => {
-                    const {groupingChooserModel} = this;
-                    return groupingChooserModel.value.map(it =>
-                        groupingChooserModel.getDimDisplayName(it)
-                    );
-                }
+                showHover: true
             },
             pivotConfig: {
                 measures: PIVOT_MEASURES.map(field => ({field, column: MEASURE_COLUMNS[field]}))
