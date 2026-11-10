@@ -5,6 +5,7 @@ import {
     encodeDocId,
     extractSections,
     sameDoc,
+    sectionIdForRef,
     slugify
 } from './DocUtils';
 import type {DocEntry} from './types';
@@ -80,5 +81,16 @@ describe('slugify', () => {
         ['snake_case stays', 'snake_case-stays']
     ])('%s -> %s', (text, slug) => {
         expect(slugify(text)).toBe(slug);
+    });
+});
+
+describe('sectionIdForRef', () => {
+    it('maps a Hoist Docs section ref to the slug of its H2', () => {
+        expect(sectionIdForRef('Columns')).toBe('columns');
+        expect(sectionIdForRef('Common Patterns > Grid with ViewManager Persistence')).toBe(
+            'common-patterns'
+        );
+        expect(sectionIdForRef('`persistWith` Options')).toBe('persistwith-options');
+        expect(sectionIdForRef(null)).toBeNull();
     });
 });

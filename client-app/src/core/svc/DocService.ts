@@ -3,13 +3,13 @@ import {HoistService, XH} from '@xh/hoist/core';
 import {action, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {DocsCatalog, type DocsPayload} from '@xh/hoist-docs/docs';
 import {isEmpty} from 'lodash';
-import {sameDoc} from '../docs/DocUtils';
+import {sameDoc, sectionIdForRef} from '../docs/DocUtils';
 import type {DocCategory, DocEntry, DocSourceInfo} from '../docs/types';
 
 export interface DocSearchResult {
     entry: DocEntry;
     score: number;
-    /** Section of the doc that matched best, as a `section` path for the reader. */
+    /** Section of the doc that matched best, as the reader's section id (an H2 slug). */
     section?: string;
     /** A short plain-text excerpt from the start of the best-matching section. */
     snippet?: string;
@@ -158,7 +158,7 @@ export class DocService extends HoistService {
             .map(r => ({
                 entry: this.getDocEntry(r.id, r.source),
                 score: r.score,
-                section: r.section,
+                section: sectionIdForRef(r.section),
                 snippet: isEmpty(r.snippet) ? null : stripMarkdown(r.snippet),
                 matchedTerms
             }))

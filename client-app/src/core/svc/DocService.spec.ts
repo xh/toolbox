@@ -137,7 +137,7 @@ describe('searchDocsAsync', () => {
         const results = await svc().searchDocsAsync('grid Tooltip');
 
         expect(results[0].entry).toBe(entry('cmp/grid/README.md'));
-        expect(results[0].section).toBe('Columns');
+        expect(results[0].section).toBe('columns');
         expect(results[0].snippet).toBe(longLine);
         expect(results[0].matchedTerms).toEqual(['grid', 'tooltip']);
         const keys = results.map(r => `${r.entry.source}:${r.entry.id}`);

@@ -124,6 +124,16 @@ export function extractSections(content: string): DocSection[] {
     return sections;
 }
 
+/**
+ * The reader's section id for a Hoist Docs section ref (`Heading` or `Heading > Subheading`): the
+ * slug of its H2. A doc's intro has its title as ref, which matches no H2, so the reader stays at
+ * the top. Duplicate H2 titles resolve to the first.
+ */
+export function sectionIdForRef(ref: string): string | null {
+    const h2 = ref?.split(' > ')[0];
+    return h2 ? slugify(stripInlineMarkdown(h2)) || null : null;
+}
+
 /** Remove inline markdown formatting (code, bold, italic, links) to get plain text. */
 function stripInlineMarkdown(text: string): string {
     return text

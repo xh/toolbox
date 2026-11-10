@@ -133,14 +133,14 @@ interface ResultRowProps extends HoistProps<DocsSearchModel> {
 
 const resultRow = hoistCmp.factory<ResultRowProps>({
     render({model, result}) {
-        const {entry, snippet, matchedTerms = []} = result,
+        const {entry, section, snippet, matchedTerms = []} = result,
             categoryTitle =
                 XH.docService.getCategories(entry.source).find(c => c.id === entry.category)
                     ?.title ?? entry.category;
 
         return div({
             className: 'tb-docs-search__hit',
-            onClick: () => model.selectResult(entry),
+            onClick: () => model.selectResult(entry, section),
             items: [
                 div({
                     className: 'tb-docs-search__hit-title',

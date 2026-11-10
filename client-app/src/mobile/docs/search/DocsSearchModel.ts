@@ -69,10 +69,15 @@ export class DocsSearchModel extends HoistModel {
         XH.localStorageService.set(RECENT_SEARCHES_KEY, this.recentSearches);
     }
 
-    /** Open a hit in the reader (stacked on search, so back returns to results), recording the term. */
-    selectResult(entry: DocEntry) {
+    /**
+     * Open a hit in the reader at its best-matching section (stacked on search, so back returns to
+     * results), recording the term.
+     */
+    selectResult(entry: DocEntry, section?: string) {
         this.commitRecent();
-        XH.appendRoute('doc', {source: entry.source, docId: encodeDocId(entry.id)});
+        const params: Record<string, string> = {source: entry.source, docId: encodeDocId(entry.id)};
+        if (section) params.section = section;
+        XH.appendRoute('doc', params);
     }
 
     //------------------
