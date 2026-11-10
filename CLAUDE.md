@@ -199,8 +199,8 @@ the published `develop` docs. To serve indexes built locally instead (`pnpm buil
 `pnpm build:core` in a hoist-docs checkout), set `HOIST_DOCS_INDEX_DIR` to that checkout's
 `indexes` folder. Tools: `hoist-search-docs`, `hoist-list-docs`, `hoist-read-doc`,
 `hoist-search-symbols`, `hoist-get-symbol`, `hoist-get-members`, `hoist-ping`. Pass
-`library: "react"` or `library: "core"` to scope a call; the old `hoist-core-*` names still work as
-aliases.
+`library: "react"` or `library: "core"` to scope a call. Built on the MCP TypeScript SDK v2, it
+speaks the 2026-07-28 protocol and the 2025-era handshake older clients use.
 
 The same package backs Toolbox's desktop and mobile docs viewers, in the browser with no server:
 `pnpm docs` (run by `start`, `startWithHoist` and `build`) writes the docs to
