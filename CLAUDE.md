@@ -194,12 +194,13 @@ tools to AI coding agents. Servers must also be listed in `.claude/settings.json
 
 [Hoist Docs](https://github.com/xh/hoist-docs) (`@xh/hoist-docs`, a client-app dev dependency)
 serves hoist-react and hoist-core documentation and API reference. The agent launches it over
-stdio (`.mcp.json`), and it answers for the Hoist versions Toolbox runs - for snapshot versions,
-the published `develop` docs. To serve indexes built locally instead (`pnpm build:react` and
-`pnpm build:core` in a hoist-docs checkout), set `HOIST_DOCS_INDEX_DIR` to that checkout's
-`indexes` folder. Tools: `hoist-search-docs`, `hoist-list-docs`, `hoist-read-doc`,
-`hoist-search-symbols`, `hoist-get-symbol`, `hoist-get-members`, `hoist-ping`. Pass
-`library: "react"` or `library: "core"` to scope a call. Built on the MCP TypeScript SDK v2, it
+stdio (`.mcp.json`), and it answers for exactly the Hoist builds Toolbox runs, snapshots included:
+each library ships its index with itself - `@xh/hoist` inside its npm package, read in place, and
+hoist-core as a `docs-index` Maven artifact beside its jar, fetched for `hoistCoreVersion`. To serve
+indexes built locally instead (`pnpm build:react` and `pnpm build:core` in a hoist-docs checkout),
+set `HOIST_DOCS_INDEX_DIR` to that checkout's `indexes` folder. Tools: `hoist-search-docs`,
+`hoist-list-docs`, `hoist-read-doc`, `hoist-search-symbols`, `hoist-get-symbol`,
+`hoist-get-members`, `hoist-ping`. Pass `library: "react"` or `library: "core"` to scope a call. Built on the MCP TypeScript SDK v2, it
 speaks the 2026-07-28 protocol and the 2025-era handshake older clients use.
 
 The same package backs Toolbox's desktop and mobile docs viewers, in the browser with no server:

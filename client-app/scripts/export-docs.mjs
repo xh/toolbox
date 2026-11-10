@@ -7,8 +7,8 @@
  *   1. Sibling checkouts (`../../hoist-react`, `../../hoist-core`), when present: docs are read
  *      straight from them, so doc edits can be previewed before they are committed. With
  *      `--watch`, the docs are rewritten on every change - reload the viewer to see them.
- *   2. Otherwise, the published docs for the Hoist versions Toolbox runs (its installed
- *      @xh/hoist and `hoistCoreVersion` in gradle.properties), fetched through npm.
+ *   2. Otherwise, the docs of the Hoist builds Toolbox runs: the index inside its installed
+ *      @xh/hoist, and hoist-core's `docs-index` Maven artifact for `hoistCoreVersion`.
  *
  * Never fails the build or dev server: if docs cannot be written, it warns, and the viewers show
  * that docs are unavailable.
