@@ -211,9 +211,9 @@ straight from them, so doc edits can be previewed uncommitted; `pnpm docs:watch`
 every change (reload the viewer to see it). Otherwise the published docs for Toolbox's Hoist
 versions are used.
 
-Until `@xh/hoist-docs` is published to npm, `client-app/package.json` links it from a sibling
-`../hoist-docs` checkout (`link:../../hoist-docs`), which needs `pnpm install && pnpm build` there
-first.
+`client-app/package.json` pins a pre-1.0 `@xh/hoist-docs` until `v1.0.0`. To try unpublished
+changes to the tool, link it from a sibling checkout instead (`link:../../hoist-docs`, after
+`pnpm install && pnpm build` there).
 
 ### GitHub MCP Server (opt-in)
 
