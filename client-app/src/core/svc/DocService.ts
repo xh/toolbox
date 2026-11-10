@@ -1,6 +1,7 @@
 import type {InitContext} from '@xh/hoist/core';
 import {HoistService, XH} from '@xh/hoist/core';
 import {action, observable, observableRef, runInAction} from '@xh/hoist/mobx';
+import {DocsCatalog, type DocsPayload} from '@xh/hoist-docs/docs';
 import {isEmpty} from 'lodash';
 import {sameDoc} from '../docs/DocUtils';
 import type {DocCategory, DocEntry, DocSourceInfo} from '../docs/types';
@@ -16,6 +17,9 @@ export interface DocSearchResult {
     matchedTerms?: string[];
 }
 
+/** Where `pnpm docs` (scripts/export-docs.mjs) writes the docs, served from the client's public files. */
+const DOCS_URL = '/public/hoist-docs';
+
 /** localStorage key + cap for the mobile "recently viewed" docs list. */
 const RECENT_DOCS_KEY = 'docs.recentDocs',
     RECENT_DOCS_MAX = 8;
@@ -23,13 +27,15 @@ const RECENT_DOCS_KEY = 'docs.recentDocs',
 /**
  * Service providing access to hoist-react and hoist-core documentation content.
  *
- * Toolbox's server reads docs from the Hoist Docs service, which holds versioned indexes of each
- * library and the same ranked search AI agents use over MCP. This service fetches the registry,
- * content, and search results from that API, at the library versions chosen in
- * {@link selectedVersions} (newest by default).
+ * Docs come from @xh/hoist-docs, the same source AI agents read over MCP, for the Hoist versions
+ * Toolbox runs. `pnpm docs` writes them into the client's public files at build time (or, during
+ * development, straight from sibling hoist-react and hoist-core checkouts). This service loads
+ * them on init and answers registry, content and ranked search in the browser, with the search
+ * agents get - no server is involved.
  *
- * If Hoist Docs cannot be reached, the service still installs: it sets {@link unavailable}, which
- * the viewers show as a gentle message with a retry, and the rest of Toolbox is unaffected.
+ * If the docs cannot be loaded (e.g. they were not exported), the service still installs: it sets
+ * {@link unavailable}, which the viewers show as a message with a retry, and the rest of Toolbox
+ * is unaffected.
  */
 export class DocService extends HoistService {
     override telemetryPrefix = 'toolbox.client.docs';
@@ -38,17 +44,14 @@ export class DocService extends HoistService {
 
     @observableRef accessor registry: DocEntry[] = [];
 
-    /** True when the doc registry could not be loaded - Hoist Docs is down or unreachable. */
+    /** True when the docs could not be loaded. */
     @observable accessor unavailable: boolean = false;
     @observableRef accessor sourceInfo: Record<string, DocSourceInfo> = {};
-
-    /** Version chosen per source, e.g. `{'hoist-react': '86.2.0'}`. Absent means newest. */
-    @observableRef accessor selectedVersions: Record<string, string> = {};
 
     /** Most-recently-viewed docs (most recent first), persisted locally - drives the mobile landing. */
     @observableRef accessor recentDocs: DocEntry[] = [];
 
-    private cache: Map<string, string> = new Map();
+    private catalog: DocsCatalog = null;
 
     /** All registered documentation entries. */
     get docs(): DocEntry[] {
@@ -123,67 +126,35 @@ export class DocService extends HoistService {
     }
 
     override async initAsync(ctx: InitContext) {
-        await this.tryLoadRegistryAsync();
+        await this.tryLoadAsync();
     }
 
-    /** Retry loading docs after Hoist Docs was unavailable. */
+    /** Retry loading docs after they were unavailable. */
     async retryAsync() {
-        await this.tryLoadRegistryAsync();
+        await this.tryLoadAsync();
     }
 
-    /** Switch one source to another version, reloading the registry and dropping cached content. */
-    async setVersionAsync(source: string, version: string) {
-        runInAction(() => (this.selectedVersions = {...this.selectedVersions, [source]: version}));
-        this.cache.clear();
-        await this.tryLoadRegistryAsync();
-    }
-
-    /**
-     * Fetch and return the markdown content for a given doc entry.
-     * Results are cached after the first fetch.
-     */
+    /** The markdown content for a given doc entry. */
     async fetchContentAsync(source: string, docId: string): Promise<string> {
-        const cacheKey = `${source}:${docId}`;
-        const cached = this.cache.get(cacheKey);
-        if (cached) return cached;
-
-        return this.runner()
-            .span('getContent')
-            .run(async ctx => {
-                const resp = await XH.fetchJson(
-                    {
-                        url: 'docs/content',
-                        params: {source, docId, ...this.selectedVersions}
-                    },
-                    ctx
-                );
-                const content = resp.content;
-                this.cache.set(cacheKey, content);
-                return content;
-            });
+        const content = this.catalog?.content(source, docId);
+        if (content == null) throw XH.exception(`Doc not found: ${source}:${docId}`);
+        return content;
     }
 
     /**
-     * Search docs by query string, ranked by the Hoist Docs service. Each doc appears once, with
-     * the section that matched best and an excerpt from it.
+     * Search docs by query string, with the ranking AI agents get from Hoist Docs. Each doc appears
+     * once, with the section that matched best and an excerpt from it.
      */
     async searchDocsAsync(query: string): Promise<DocSearchResult[]> {
-        if (!query?.trim()) return [];
+        if (!query?.trim() || !this.catalog) return [];
 
-        const resp = await this.runner()
-                .span('search')
-                .run(ctx =>
-                    XH.fetchJson(
-                        {url: 'docs/search', params: {query, ...this.selectedVersions}},
-                        ctx
-                    )
-                ),
-            matchedTerms = query
-                .toLowerCase()
-                .split(/\s+/)
-                .filter(t => t.length > 1);
+        const matchedTerms = query
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(t => t.length > 1);
 
-        return (resp.results ?? [])
+        return this.catalog
+            .search(query, 25)
             .map(r => ({
                 entry: this.getDocEntry(r.id, r.source),
                 score: r.score,
@@ -197,14 +168,14 @@ export class DocService extends HoistService {
     //------------------
     // Implementation
     //------------------
-    /** Load the registry, recording - rather than throwing - a failure to reach Hoist Docs. */
-    private async tryLoadRegistryAsync() {
+    /** Load the docs, recording - rather than throwing - a failure to load them. */
+    private async tryLoadAsync() {
         try {
-            await this.loadRegistryAsync();
+            await this.loadDocsAsync();
             runInAction(() => (this.unavailable = false));
             this.hydrateRecentDocs();
         } catch (e) {
-            this.logWarn('Hoist Docs unavailable - docs viewers will show a retry', e.message);
+            this.logWarn('Docs unavailable - docs viewers will show a retry', e.message);
             runInAction(() => (this.unavailable = true));
         }
     }
@@ -221,33 +192,28 @@ export class DocService extends HoistService {
             .filter(Boolean);
     }
 
-    private async loadRegistryAsync() {
+    private async loadDocsAsync() {
         return this.runner()
-            .span('loadRegistry')
+            .span('loadDocs')
             .run(async ctx => {
-                const resp = await XH.fetchJson(
-                    {
-                        url: 'docs/registry',
-                        params: isEmpty(this.selectedVersions) ? null : this.selectedVersions
-                    },
-                    ctx
-                );
-                const sourceCount = Object.keys(resp.sources).length;
+                const manifest: Array<{file: string}> = await XH.fetchJson(
+                        {url: `${DOCS_URL}/index.json`},
+                        ctx
+                    ),
+                    payloads: DocsPayload[] = await Promise.all(
+                        manifest.map(it => XH.fetchJson({url: `${DOCS_URL}/${it.file}`}, ctx))
+                    ),
+                    catalog = new DocsCatalog(payloads),
+                    {entries, sources} = catalog.registry();
 
                 this.logInfo(
-                    `Loaded registry: ${resp.entries.length} entries from ${sourceCount} sources`
+                    `Loaded docs: ${entries.length} entries from ${Object.keys(sources).length} sources`
                 );
 
+                this.catalog = catalog;
                 runInAction(() => {
-                    this.registry = resp.entries.map(e => ({
-                        id: e.id,
-                        source: e.source,
-                        title: e.title,
-                        category: e.category,
-                        description: e.description,
-                        keywords: e.keywords ?? []
-                    }));
-                    this.sourceInfo = resp.sources;
+                    this.registry = entries;
+                    this.sourceInfo = sources;
                 });
             });
     }

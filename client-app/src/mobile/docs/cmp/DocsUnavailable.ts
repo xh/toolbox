@@ -4,7 +4,7 @@ import {Icon} from '@xh/hoist/icon';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {DOCS_UNAVAILABLE_MSG, githubDocsUrl} from '../../../core/docs/DocsUnavailable';
 
-/** Shown in place of the mobile docs screens while the Hoist Docs service is unavailable. */
+/** Shown in place of the mobile docs screens when the docs could not be loaded. */
 export const docsUnavailable = hoistCmp.factory({
     displayName: 'DocsUnavailable',
 

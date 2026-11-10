@@ -1,13 +1,13 @@
 import {XH} from '@xh/hoist/core';
 
-/** Message shown by the docs viewers while the Hoist Docs service is unavailable. */
+/** Message shown by the docs viewers when the docs could not be loaded. */
 export const DOCS_UNAVAILABLE_MSG =
-    'The Hoist docs are temporarily unavailable. Try again shortly, or read them on GitHub.';
+    'The Hoist docs could not be loaded. Try again, or read them on GitHub.';
 
-/** Message shown in place of search results when a search fails to reach Hoist Docs. */
-export const SEARCH_UNAVAILABLE_MSG = 'Search is unavailable right now - try again shortly.';
+/** Message shown in place of search results when a search fails. */
+export const SEARCH_UNAVAILABLE_MSG = 'Search failed - try again.';
 
-/** The hoist-react docs index on GitHub - a fallback while Hoist Docs is down. */
+/** The hoist-react docs index on GitHub - a fallback when the docs could not be loaded. */
 export function githubDocsUrl(): string {
     const hoistReact =
         XH.getConf('sourceUrls', {})?.hoistReact ??

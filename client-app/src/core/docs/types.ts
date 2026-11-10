@@ -20,7 +20,7 @@ export interface DocSourceInfo {
     categories: DocCategory[];
     /** Version of the library whose docs are loaded. */
     version: string;
-    /** Versions the Hoist Docs service holds, newest first. */
+    /** Versions available - just the one loaded, the version Toolbox runs. */
     versions: string[];
 }
 

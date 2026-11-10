@@ -108,6 +108,9 @@ importers:
       '@xh/hoist-dev-utils':
         specifier: next
         version: 17.0.0-SNAPSHOT.1793653272351(@rspack/core@2.2.9(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)
+      '@xh/hoist-docs':
+        specifier: link:../../hoist-docs
+        version: link:../../hoist-docs
       cross-env:
         specifier: ~10.1.0
         version: 10.1.0

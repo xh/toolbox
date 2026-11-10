@@ -24,7 +24,7 @@ export class DocsSearchModel extends HoistModel {
     @bindable accessor query: string = '';
     @observableRef accessor results: DocSearchResult[] = [];
 
-    /** True when the last search failed to reach Hoist Docs. */
+    /** True when the last search failed. */
     @observable accessor failed: boolean = false;
     @observableRef accessor recentSearches: string[] = [];
 

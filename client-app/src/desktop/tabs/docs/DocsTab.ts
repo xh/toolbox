@@ -14,7 +14,6 @@ import {tooltip} from '@xh/hoist/kit/blueprint';
 import {pluralize} from '@xh/hoist/utils/js';
 import {useEffect, useRef} from 'react';
 import {docContent} from '../../../core/docs/DocContent';
-import {docVersionPicker} from './DocVersionPicker';
 import {SEARCH_UNAVAILABLE_MSG} from '../../../core/docs/DocsUnavailable';
 import {docsUnavailable} from './DocsUnavailable';
 import {DocsPanelModel} from './DocsPanelModel';
@@ -103,7 +102,6 @@ const contentPanel = hoistCmp.factory<DocsPanelModel>({
                     }),
                     breadcrumb(),
                     filler(),
-                    docVersionPicker(),
                     examplesMenu(),
                     toolbarSep(),
                     button({

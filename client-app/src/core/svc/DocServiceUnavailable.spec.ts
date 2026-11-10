@@ -10,54 +10,53 @@ class DocTestModel extends TestAppModel {
     }
 }
 
-// Hoist Docs is down when the app starts. Toolbox's server answers as DocsService does then.
-let hoistDocsUp = false;
+const docsUrl = (file: string) => `${window.location.origin}/public/hoist-docs/${file}`;
+
+// The docs were not exported when the app starts, so their files are missing.
+let exported = false;
 
 beforeAll(async () => {
-    hoistCore.route('GET', 'docs/registry', () =>
-        hoistDocsUp
-            ? {
-                  entries: [
-                      {
-                          id: 'docs/README.md',
-                          source: 'hoist-react',
-                          title: 'Hoist React',
-                          category: 'overview',
-                          description: ''
-                      }
-                  ],
-                  sources: {
-                      'hoist-react': {
-                          label: 'Hoist React',
-                          categories: [],
-                          version: '91.0',
-                          versions: ['91.0']
-                      }
-                  }
-              }
-            : hoistError(400, {
-                  name: 'DataNotAvailableException',
-                  message: 'Hoist Docs is unavailable'
-              })
+    hoistCore.route('GET', docsUrl('index.json'), () =>
+        exported
+            ? [{id: 'react', name: '@xh/hoist', version: '91.0', file: 'react.json'}]
+            : hoistError(404, {name: 'NotFound', message: 'Not found'})
     );
-    hoistCore.route('POST', 'docs/search', () =>
-        hoistError(400, {name: 'DataNotAvailableException', message: 'Hoist Docs is unavailable'})
-    );
+    hoistCore.route('GET', docsUrl('react.json'), () => ({
+        schemaVersion: 1,
+        library: {
+            id: 'react',
+            name: '@xh/hoist',
+            version: '91.0',
+            language: 'typescript',
+            builtAt: ''
+        },
+        docs: {
+            entries: [
+                {
+                    id: 'docs/README.md',
+                    title: 'Hoist React',
+                    mcpCategory: 'index',
+                    viewerCategory: 'overview',
+                    markdown: '# Hoist React'
+                }
+            ]
+        }
+    }));
     await initTestAppAsync({modelClass: DocTestModel});
 });
 
-describe('when Hoist Docs is unavailable', () => {
+describe('when the docs cannot be loaded', () => {
     it('still installs, flagged as unavailable with an empty registry', () => {
         expect(XH.docService.unavailable).toBe(true);
         expect(XH.docService.registry).toEqual([]);
     });
 
-    it('rejects a search, for the viewers to show as a message', async () => {
-        await expect(XH.docService.searchDocsAsync('grid')).rejects.toThrow();
+    it('returns no search results', async () => {
+        expect(await XH.docService.searchDocsAsync('grid')).toEqual([]);
     });
 
-    it('recovers on retry once Hoist Docs is back', async () => {
-        hoistDocsUp = true;
+    it('recovers on retry once the docs are there', async () => {
+        exported = true;
         await XH.docService.retryAsync();
         expect(XH.docService.unavailable).toBe(false);
         expect(XH.docService.registry.map(it => it.id)).toEqual(['docs/README.md']);

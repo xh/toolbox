@@ -44,7 +44,7 @@ export class DocsPanelModel extends DocViewModel {
 
     @observable accessor selectedSearchIdx: number = -1;
 
-    /** True when the last search failed to reach Hoist Docs. */
+    /** True when the last search failed. */
     @observable accessor searchFailed: boolean = false;
 
     @bindable accessor feedbackMessage: string = '';
@@ -56,7 +56,7 @@ export class DocsPanelModel extends DocViewModel {
 
         this.addReaction(
             {
-                // Reload the tree when the registry changes, e.g. after a version switch.
+                // Reload the tree when the registry changes, e.g. after docs load on a retry.
                 track: () => XH.docService.registry,
                 run: () => this.loadNav()
             },

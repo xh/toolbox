@@ -192,18 +192,27 @@ tools to AI coding agents. Servers must also be listed in `.claude/settings.json
 
 ### hoist-docs (enabled by default)
 
-The [Hoist Docs](https://github.com/xh/hoist-docs) service serves hoist-react and hoist-core
-documentation and API reference over MCP Streamable HTTP. `.mcp.json` points at
-`HOIST_DOCS_MCP_URL`, defaulting to `http://localhost:8080/mcp`. Tools: `hoist-search-docs`,
-`hoist-list-docs`, `hoist-read-doc`, `hoist-search-symbols`, `hoist-get-symbol`,
-`hoist-get-members`, `hoist-ping`. Pass `library: "react"` or `library: "core"` to scope a call;
-the old `hoist-core-*` names still work as aliases. Note that Hoist Docs' default dev port (8080)
-matches Toolbox's own server - run one of them on another port when both are needed locally.
+[Hoist Docs](https://github.com/xh/hoist-docs) (`@xh/hoist-docs`, a client-app dev dependency)
+serves hoist-react and hoist-core documentation and API reference. The agent launches it over
+stdio (`.mcp.json`), and it answers for the Hoist versions Toolbox runs - for snapshot versions,
+the published `develop` docs. To serve indexes built locally instead (`pnpm build:react` and
+`pnpm build:core` in a hoist-docs checkout), set `HOIST_DOCS_INDEX_DIR` to that checkout's
+`indexes` folder. Tools: `hoist-search-docs`, `hoist-list-docs`, `hoist-read-doc`,
+`hoist-search-symbols`, `hoist-get-symbol`, `hoist-get-members`, `hoist-ping`. Pass
+`library: "react"` or `library: "core"` to scope a call; the old `hoist-core-*` names still work as
+aliases.
 
-The same service backs Toolbox's desktop and mobile docs viewers: the server's `DocsService` calls
-its public `docs/registry`, `docs/content` and `docs/search` API at the `hoistDocsUrl` config. For
-local work, run Hoist Docs with `./gradlew bootRun -Dserver.port=8081` and set
-`APP_TOOLBOX_HOIST_DOCS_URL=http://localhost:8081` in `.env`.
+The same package backs Toolbox's desktop and mobile docs viewers, in the browser with no server:
+`pnpm docs` (run by `start`, `startWithHoist` and `build`) writes the docs to
+`client-app/public/hoist-docs/`, and `DocService` searches them with `@xh/hoist-docs/docs` - the
+search agents get. With sibling `../hoist-react` and `../hoist-core` checkouts, docs are read
+straight from them, so doc edits can be previewed uncommitted; `pnpm docs:watch` rewrites them on
+every change (reload the viewer to see it). Otherwise the published docs for Toolbox's Hoist
+versions are used.
+
+Until `@xh/hoist-docs` is published to npm, `client-app/package.json` links it from a sibling
+`../hoist-docs` checkout (`link:../../hoist-docs`), which needs `pnpm install && pnpm build` there
+first.
 
 ### GitHub MCP Server (opt-in)
 
