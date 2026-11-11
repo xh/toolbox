@@ -18,6 +18,10 @@
 
 * Added a `PdfViewer` demo page to Components > General, showing hoist-react's new pdf.js-based document viewer with its toolbar options and model state.
 
+### Technical
+
+* Pinned `@rspack/core` to `2.3.0` via a pnpm override - Rspack 2.3.2's minifier breaks classes that reference themselves in static initializers when `keep_classnames` is set (as hoist-dev-utils does), crashing production builds on load. Apps on hoist-dev-utils should apply the same override until a fixed Rspack ships - see xh/hoist-dev-utils#85.
+
 ### Libraries
 
 * pdfjs-dist `6.5`
