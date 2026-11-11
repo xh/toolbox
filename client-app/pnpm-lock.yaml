@@ -112,8 +112,8 @@ importers:
         specifier: next
         version: 17.0.0-SNAPSHOT.1793653272351(@rspack/core@2.2.9(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)
       '@xh/hoist-docs':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: next
+        version: 1.0.0-SNAPSHOT.1794358737200
       cross-env:
         specifier: ~10.1.0
         version: 10.1.0
@@ -1849,8 +1849,8 @@ packages:
     resolution: {integrity: sha512-6QfarETBFz9CJ7ANrwVHwvyjm5N9eqg/7aWmq7qSrZZdBrTd57naia0HEYv45ad3oCh1DVQEIdJA7qNaQ6rUvA==}
     engines: {node: '>=22.15.0'}
 
-  '@xh/hoist-docs@0.0.1':
-    resolution: {integrity: sha512-a31yWZKZq+RvbxILK/8NsREKcxQnnW1aBE/HCO4mpOFnOhT39T80ERXsml71zThEgrtmKsd2qNvYTKVknvPzTA==}
+  '@xh/hoist-docs@1.0.0-SNAPSHOT.1794358737200':
+    resolution: {integrity: sha512-E5J6LUfkqK8cMpNGwJ4eVknvn/3BvlA5AvTs3ZW9jd9NdhPV7gltG+nHzwF5jhc3Sx0oda7sikUB4BiqGfXH/g==}
     engines: {node: '>=24'}
     hasBin: true
 
@@ -6231,7 +6231,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@xh/hoist-docs@0.0.1':
+  '@xh/hoist-docs@1.0.0-SNAPSHOT.1794358737200':
     dependencies:
       '@modelcontextprotocol/server': 2.4.0
       minisearch: 7.2.0

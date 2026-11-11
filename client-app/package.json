@@ -70,7 +70,7 @@
     "@xh/eslint-config": "^8.1.0",
     "@xh/hoist-chat-kit": "next",
     "@xh/hoist-dev-utils": "next",
-    "@xh/hoist-docs": "0.0.1",
+    "@xh/hoist-docs": "next",
     "cross-env": "~10.1.0",
     "eslint": "^10.12.0",
     "eslint-config-prettier": "~10.1.8",
