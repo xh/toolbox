@@ -68,6 +68,7 @@
     "@types/react": "~19.3.0",
     "@types/react-dom": "~19.3.0",
     "@xh/eslint-config": "^8.1.0",
+    "@xh/hoist-chat-kit": "next",
     "@xh/hoist-dev-utils": "next",
     "@xh/hoist-docs": "0.0.1",
     "cross-env": "~10.1.0",

@@ -204,12 +204,13 @@ set `HOIST_DOCS_INDEX_DIR` to that checkout's `indexes` folder. Tools: `hoist-se
 speaks the 2026-07-28 protocol and the 2025-era handshake older clients use.
 
 The same package backs Toolbox's desktop and mobile docs viewers, in the browser with no server:
-`pnpm docs` (run by `start`, `startWithHoist` and `build`) writes the docs to
-`client-app/public/hoist-docs/`, and `DocService` searches them with `@xh/hoist-docs/docs` - the
-search agents get. With sibling `../hoist-react` and `../hoist-core` checkouts, docs are read
-straight from them, so doc edits can be previewed uncommitted; `pnpm docs:watch` rewrites them on
-every change (reload the viewer to see it). Otherwise the published docs for Toolbox's Hoist
-versions are used.
+`pnpm run docs` (run by `start`, `startWithHoist` and `build`) writes the docs of hoist-react,
+hoist-core and hoist-chat-kit to `client-app/public/hoist-docs/`, and `DocService` searches them
+with `@xh/hoist-docs/docs` - the search agents get. Write `pnpm run docs`, not `pnpm docs`: pnpm 12
+has a built-in `docs` command that shadows the script. A library with a sibling checkout
+(`../hoist-react`, `../hoist-core`, `../hoist-chat-kit`) is read straight from it, so doc edits can
+be previewed uncommitted; `pnpm docs:watch` rewrites them on every change (reload the viewer to see
+it). The others come from the builds Toolbox installs.
 
 `client-app/package.json` pins a pre-1.0 `@xh/hoist-docs` until `v1.0.0`. To try unpublished
 changes to the tool, link it from a sibling checkout instead (`link:../../hoist-docs`, after
