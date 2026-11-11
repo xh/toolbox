@@ -9,7 +9,6 @@
     "docs": "node scripts/export-docs.mjs",
     "docs:watch": "node scripts/export-docs.mjs --watch",
     "lint": "pnpm lint:all",
-    "validateDocs": "node scripts/validate-doc-registry.mjs",
     "lint:all": "pnpm lint:code && pnpm lint:styles",
     "lint:code": "eslint .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
