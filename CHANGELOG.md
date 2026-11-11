@@ -24,6 +24,7 @@
 * Added a version picker to the desktop docs viewer, shown when Hoist Docs holds more than one version of a library.
 * Made the docs viewers degrade gently when Hoist Docs is down - Toolbox starts as normal, the viewers show a retry and a link to the docs on GitHub, and the server falls back to the last docs it fetched.
 * Removed the bundled hoist-react and hoist-core MCP servers and the `installHoistCoreTools` Gradle task - agents now use the `hoist-docs` MCP server.
+* Pinned `@rspack/core` to `2.3.0` via a pnpm override - Rspack 2.3.2's minifier breaks classes that reference themselves in static initializers when `keep_classnames` is set (as hoist-dev-utils does), crashing production builds on load. Apps on hoist-dev-utils should apply the same override until a fixed Rspack ships - see xh/hoist-dev-utils#85.
 
 ### Libraries
 

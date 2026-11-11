@@ -13,13 +13,12 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, bindableRef} from '@xh/hoist/mobx';
-import {takeRight} from 'lodash';
-import {wrapper, wrapperOption} from '../../common/Wrapper';
+import {capitalize, takeRight} from 'lodash';
+import {wrapper, wrapperOption, wrapperOptionTabs} from '../../common/Wrapper';
 
 export const cubeGridPanel = hoistCmp.factory({
     model: creates(() => CubeGridPanelModel),
     render({model}) {
-        const {cubeGridModel} = model;
         return wrapper({
             title: 'Cube Grid',
             icon: Icon.gridPanel(),
@@ -46,63 +45,12 @@ export const cubeGridPanel = hoistCmp.factory({
                     notes: 'Query spec, including the pivot.'
                 }
             ],
-            options: [
-                wrapperOption({
-                    label: 'Show pivot summaries',
-                    propName: 'PivotDimensionSpec.showSummary',
-                    control: select({
-                        bind: 'pivotShowSummaries',
-                        options: H_SIDE_OPTIONS,
-                        enableFilter: false,
-                        width: 110
-                    }),
-                    info: 'Where each pivot group shows its summary while expanded.'
-                }),
-                wrapperOption({
-                    label: 'Pivot groups collapsible',
-                    propName: 'PivotDimensionSpec.collapsible',
-                    control: switchInput({bind: 'pivotCollapsible'}),
-                    info: 'Let pivot groups collapse to their summaries.'
-                }),
-                wrapperOption({
-                    label: 'Measures outermost',
-                    propName: 'CubeGridPivotConfig.measuresOutermost',
-                    control: switchInput({
-                        model: cubeGridModel.pivotModel,
-                        bind: 'measuresOutermost'
-                    }),
-                    info: 'With two or more measures, group columns by measure, then pivot value.'
-                }),
-                wrapperOption({
-                    label: 'Linked sizing',
-                    propName: 'CubeGridPivotConfig.linkedSizing',
-                    control: switchInput({model: cubeGridModel.pivotModel, bind: 'linkedSizing'}),
-                    info: "Give all of a measure's pivot columns one shared width."
-                }),
-                wrapperOption({
-                    label: 'Region order',
-                    propName: 'PivotDimensionSpec.sortBy',
-                    control: select({
-                        bind: 'regionSort',
-                        options: SORT_OPTIONS,
-                        enableFilter: false,
-                        width: 110
-                    }),
-                    info: 'Order of the region columns. Custom lists US and EU first, the rest after.'
-                }),
-                wrapperOption({
-                    label: 'Summary row',
-                    propName: 'GridConfig.showSummary',
-                    control: select({
-                        model: cubeGridModel,
-                        bind: 'showSummary',
-                        options: V_SIDE_OPTIONS,
-                        enableFilter: false,
-                        width: 110
-                    }),
-                    info: 'Position of the grand total row.'
-                })
-            ],
+            options: wrapperOptionTabs({
+                tabs: [
+                    {id: 'main', title: 'Main', items: mainOptions(model)},
+                    {id: 'pivot', title: 'Pivoting', items: pivotOptions(model)}
+                ]
+            }),
             item: panel({
                 className: 'tb-grid-wrapper-panel',
                 mask: 'onLoad',
@@ -154,6 +102,128 @@ export const cubeGridPanel = hoistCmp.factory({
     }
 });
 
+function mainOptions(model: CubeGridPanelModel) {
+    const {cubeGridModel} = model,
+        {gridModel} = cubeGridModel;
+    return [
+        wrapperOption({
+            label: 'Summary row',
+            propName: 'GridConfig.showSummary',
+            control: select({
+                model: cubeGridModel,
+                bind: 'showSummary',
+                options: V_SIDE_OPTIONS,
+                enableFilter: false,
+                width: 110
+            }),
+            info: 'Position of the grand total row. Needs includeRoot on the query.'
+        }),
+        wrapperOption({
+            label: 'Sizing mode',
+            propName: 'GridModel.sizingMode',
+            control: select({
+                model: gridModel,
+                bind: 'sizingMode',
+                options: ['tiny', 'compact', 'standard', 'large'],
+                enableFilter: false,
+                width: 110
+            })
+        }),
+        wrapperOption({
+            label: 'Expand rows to',
+            propName: 'GridModel.expandToLevel',
+            control: select({
+                value: gridModel.expandLevel,
+                onChange: v => gridModel.expandToLevel(v),
+                options: levelOptions(model.groupBy),
+                enableFilter: false,
+                width: 110
+            }),
+            info: 'Row level to expand to - the levels are the query dimensions.'
+        })
+    ];
+}
+
+function pivotOptions(model: CubeGridPanelModel) {
+    const {pivotModel} = model.cubeGridModel;
+    return [
+        wrapperOption({
+            label: 'Show pivot summaries',
+            propName: 'PivotDimensionSpec.showSummary',
+            control: select({
+                bind: 'pivotShowSummaries',
+                options: H_SIDE_OPTIONS,
+                enableFilter: false,
+                width: 110
+            }),
+            info: 'Where each pivot group shows its summary while expanded.'
+        }),
+        wrapperOption({
+            label: 'Pivot groups collapsible',
+            propName: 'PivotDimensionSpec.collapsible',
+            control: switchInput({bind: 'pivotCollapsible'}),
+            info: 'Let pivot groups collapse to their summaries.'
+        }),
+        wrapperOption({
+            label: 'Show collapsed label',
+            propName: 'PivotDimensionSpec.showCollapsedLabel',
+            control: switchInput({bind: 'pivotShowCollapsedLabel'}),
+            info: 'Keep the summary label over a collapsed group, or drop it to save a header row.'
+        }),
+        wrapperOption({
+            label: 'Measures outermost',
+            propName: 'CubeGridPivotConfig.measuresOutermost',
+            control: switchInput({model: pivotModel, bind: 'measuresOutermost'}),
+            info: 'With two or more measures, group columns by measure, then pivot value.'
+        }),
+        wrapperOption({
+            label: 'Show root group',
+            propName: 'CubeGridPivotConfig.showRootGroup',
+            control: switchInput({model: pivotModel, bind: 'showRootGroup'}),
+            info: 'Head the pivot columns with a group that collapses to the row summary.'
+        }),
+        wrapperOption({
+            label: 'Linked sizing',
+            propName: 'CubeGridPivotConfig.linkedSizing',
+            control: switchInput({model: pivotModel, bind: 'linkedSizing'}),
+            info: "Give all of a measure's pivot columns one shared width."
+        }),
+        wrapperOption({
+            label: 'Region order',
+            propName: 'PivotDimensionSpec.sortBy',
+            control: select({
+                bind: 'regionSort',
+                options: SORT_OPTIONS,
+                enableFilter: false,
+                width: 110
+            }),
+            info: 'Order of the region columns. Custom lists US and EU first, the rest after.'
+        }),
+        wrapperOption({
+            label: 'Expand pivot to',
+            propName: 'CubeGridPivotModel.expandToLevel',
+            control: select({
+                value: pivotModel.expandLevel,
+                onChange: v => pivotModel.expandToLevel(v),
+                options: levelOptions(model.pivotBy),
+                enableFilter: false,
+                width: 110
+            }),
+            info: 'Pivot header level to expand to, as for rows.'
+        })
+    ];
+}
+
+// Levels for a comma-separated dimension list: collapsed, each dimension's own, and all.
+function levelOptions(dims: string) {
+    const names = dims ? dims.split(',') : [];
+    return [
+        {value: 0, label: 'None'},
+        ...names.slice(0, -1).map((it, idx) => ({value: idx + 1, label: capitalize(it)})),
+        {value: -1, label: 'All'}
+    ];
+}
+
 const gridCmp = hoistCmp.factory<CubeGridPanelModel>(({model}) =>
     cubeGrid({model: model.cubeGridModel})
 );
@@ -168,6 +238,7 @@ class CubeGridPanelModel extends HoistModel {
     /** Applied to every pivot dimension through `pivotModel.dimensionDefaults`. */
     @bindable accessor pivotShowSummaries: boolean | HSide = 'left';
     @bindable accessor pivotCollapsible = true;
+    @bindable accessor pivotShowCollapsedLabel = true;
 
     /** Region's `sortBy` - `custom` is an explicit value order. */
     @bindable accessor regionSort: 'asc' | 'desc' | 'custom' = 'asc';
@@ -273,7 +344,11 @@ class CubeGridPanelModel extends HoistModel {
     }
 
     private get pivotDimensionDefaults(): Omit<PivotDimensionSpec, 'field'> {
-        return {showSummary: this.pivotShowSummaries, collapsible: this.pivotCollapsible};
+        return {
+            showSummary: this.pivotShowSummaries,
+            collapsible: this.pivotCollapsible,
+            showCollapsedLabel: this.pivotShowCollapsedLabel
+        };
     }
 
     /** Keeps the most recent picks, so a third choice replaces the oldest. */
