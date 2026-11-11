@@ -3,7 +3,7 @@
  * Validates that the hoist-react documentation files in the installed @xh/hoist
  * package have corresponding entries in the server-side DocRegistry.
  *
- * The doc registry has moved server-side (DocsService/DocRegistry.groovy).
+ * The doc registry lives in hoist-react's docs/doc-registry.json, served by Hoist Docs.
  * This script performs a lighter-weight check: it scans the installed @xh/hoist
  * package for doc-worthy markdown files and compares against the known set of
  * hoist-react source paths hardcoded in docRegistry.ts's link resolution map.

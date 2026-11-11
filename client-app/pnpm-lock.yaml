@@ -40,10 +40,10 @@ importers:
         version: 1.1.0
       '@xh/hoist':
         specifier: next
-        version: 91.0.0-SNAPSHOT.1793965489491(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
+        version: 91.0.0-SNAPSHOT.1794261201542(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(pdfjs-dist@6.5.438)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
       '@xh/package-template':
         specifier: ~4.0.0
-        version: 4.0.0(@xh/hoist@91.0.0-SNAPSHOT.1793965489491(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 4.0.0(@xh/hoist@91.0.0-SNAPSHOT.1794261201542(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(pdfjs-dist@6.5.438)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       ag-charts-community:
         specifier: ~14.2.0
         version: 14.2.0
@@ -74,9 +74,6 @@ importers:
       lodash:
         specifier: ~4.18.1
         version: 4.18.1
-      minisearch:
-        specifier: ^7.2.0
-        version: 7.2.0
       moment:
         specifier: ~2.31.0
         version: 2.31.0
@@ -108,9 +105,15 @@ importers:
       '@xh/eslint-config':
         specifier: ^8.1.0
         version: 8.1.0(supports-color@10.2.2)
+      '@xh/hoist-chat-kit':
+        specifier: next
+        version: 2.0.0-SNAPSHOT.1793930870434(@xh/hoist@91.0.0-SNAPSHOT.1794261201542(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(pdfjs-dist@6.5.438)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zod@4.6.7)
       '@xh/hoist-dev-utils':
         specifier: next
         version: 17.0.0-SNAPSHOT.1793653272351(@rspack/core@2.2.9(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)
+      '@xh/hoist-docs':
+        specifier: next
+        version: 1.0.0-SNAPSHOT.1794358737200
       cross-env:
         specifier: ~10.1.0
         version: 10.1.0
@@ -153,6 +156,23 @@ importers:
 
 packages:
 
+  '@ag-ui/client@1.0.3':
+    resolution: {integrity: sha512-pqp6hEiO+gjAKIBSA/g8SzPy17XHZhbKZFK3Q4DhZ7bNLR34xNpPfXogP3bSQrzsKh2hmSc9ZYUutTpe/BQBpw==}
+
+  '@ag-ui/core@1.0.3':
+    resolution: {integrity: sha512-HdMdZPOqworKlnzLaNktnbNYgIzOPbzt5ow6J4bPhbmHCdpWpCSZQFgkifQkn1zVHgCK1V+pmKc8xtW6FsQZKA==}
+    peerDependencies:
+      zod: ^3.25.18 || ^4.0.0
+    peerDependenciesMeta:
+      zod:
+        optional: true
+
+  '@ag-ui/encoder@1.0.3':
+    resolution: {integrity: sha512-Uj/znRLejAQ7PWcY/Qio2ucymbJNuiDMKU34aTQV+v0EeB6Up9vj6nHNtH+eAAVSVZADs4/U+8gXVnN0on51ew==}
+
+  '@ag-ui/proto@1.0.3':
+    resolution: {integrity: sha512-L3YVEJN1hCYx3P7Zfrf4e1obA1pwzykkkPZkNHAdcXyUZ05/ezvWCkErnfNoUlER8QCasBwRjKiDjicu3Tt7+g==}
+
   '@asamuzakjp/css-color@7.1.5':
     resolution: {integrity: sha512-jCpAvj8apa7SKHZYogk0rbXB3Kb0hLFrpkWF+Ap+vBA5rirItnpv9NKyAyEuDuFizvl0qwnj6JWR70RGJ0rOlw==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
@@ -164,15 +184,19 @@ packages:
   '@auth0/auth0-auth-js@1.17.0':
     resolution: {integrity: sha512-TweIiSy7EpGdl9ZmZhpK5vd3yJBSj80mhsvBj517f66vzpLAAQjsVtDpZM0fvXNxcBzEhgVAl7OSKWH3yXTDDg==}
 
-  '@auth0/auth0-spa-js@2.29.0':
-    resolution: {integrity: sha512-Y7HUe47kMOgkMJmDWX34HpbXMeyiuPkHBxWistQUstFdDHLEBX3pUE5pwm/fHI5Qb+yLC+Z+lTXop3uX4i0XkA==}
+  '@auth0/auth0-spa-js@2.30.0':
+    resolution: {integrity: sha512-jqsVox2+TiBZf0Zh5h9iITh7W6a/WCGAMLuqniz+PTg2afVggbOBDmieo1zwOp8zQoY3RPguN4l5mvLDmxu7EQ==}
 
-  '@azure/msal-browser@5.27.0':
-    resolution: {integrity: sha512-i2CKKyuCuOZEBZJiAoFK/viYZAP6CRaqqlkeHl3ViteDHOUE/tkI/Slq1cdGnwhkIB+k1OE0g00QGl9O0gAFNQ==}
+  '@azure/msal-browser@5.28.0':
+    resolution: {integrity: sha512-f3yY518Z++x3ZogCbcLK6vnABgpxc8rAKGKtQibcUJKAVU9gamgh5mNAPJIRwduzXQvO2xtHx/gtmPz8iuZ8+w==}
     engines: {node: '>=0.8.0'}
 
-  '@azure/msal-common@16.15.0':
-    resolution: {integrity: sha512-lwdLb1B9Q5nEhPLVIKe78XH5wFMN15fCiDkY7ylPDSWZuWcD93G3jpJajrKhO3CQld8SLKz0sHiOi24mxdvtsg==}
+  '@azure/msal-common@16.16.0':
+    resolution: {integrity: sha512-EZgd8h5nczsdRAQAgXA0A0pC5L/zj43n1jePXvUMgdwXMbH2zhb7b7Hp+Oe7ZOODK/sch2x+soD6FOrtgUbx/w==}
+    engines: {node: '>=0.8.0'}
+
+  '@azure/msal-common@16.16.1':
+    resolution: {integrity: sha512-dSKdL9h/iercb4GumsKFh+wVvLe1ohuDPiviklgnQVHnY2FYNUlbQJ3E1Qd37vkof9CfraK9BQpCW1hoOg0znQ==}
     engines: {node: '>=0.8.0'}
 
   '@babel/code-frame@7.29.7':
@@ -910,6 +934,10 @@ packages:
   '@marijn/find-cluster-break@1.0.4':
     resolution: {integrity: sha512-Wy0V7+SGUjnF9/TkiM1hKVDPj7jKXduPNboMVtHTA8dySMURWqfg/JZ9E2Sq8JgSJmkl7k7Qe9FLeMSrSraWmQ==}
 
+  '@modelcontextprotocol/core@2.4.0':
+    resolution: {integrity: sha512-z8QBKqdfXLPzkLQuG4xp8hrVEMm1PZ1IgxMN2sMbJiFiAKOWXnAzogXn2W4aqIBlP1ea6U5yiqVquvUNM1Cj6Q==}
+    engines: {node: '>=20'}
+
   '@modelcontextprotocol/sdk@1.32.1':
     resolution: {integrity: sha512-2DdE+SJDtzLEEWzY1ZjY7Q+VcPhcV1KisD3zI4u0XZyktsjHum1mwbMI+JaulUBi2OZk+KJAi2uPXzxichPkdw==}
     engines: {node: '>=18'}
@@ -919,6 +947,10 @@ packages:
     peerDependenciesMeta:
       '@cfworker/json-schema':
         optional: true
+
+  '@modelcontextprotocol/server@2.4.0':
+    resolution: {integrity: sha512-rgR9yxSaAJ+bcsi/XroT/S2AfPiIWloXAnrdfYSCms9ivVju0ishu/wW0J21Ho6+ZOR1r7RyeRbjiRuF87ix5Q==}
+    engines: {node: '>=20'}
 
   '@msw/url@0.1.2':
     resolution: {integrity: sha512-DdeBLQxQ+ZrtmwEmaj7GQ7lbzPCgbbbyAqOz/I4ulo68hwBpfdNvQJ5bmihJUkAAKOeCmqCIG3OFZGosqFN4mA==}
@@ -1161,6 +1193,10 @@ packages:
 
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
+
+  '@protobuf-ts/protoc@2.11.1':
+    resolution: {integrity: sha512-mUZJaV0daGO6HUX90o/atzQ6A7bbN2RSuHtdwo8SSF2Qoe3zHwa4IHyCN1evftTeHfLmdz+45qo47sL+5P8nyg==}
+    hasBin: true
 
   '@rolldown/binding-android-arm-eabi@1.2.14':
     resolution: {integrity: sha512-aWR+XKH9+rW7m5fWq/5360J3mHycrx/o6xZM2DQFdJnTMdyP7/WzxPjhtLbVWdKo2y612/4U1bWqb3HQhiF7vg==}
@@ -1590,6 +1626,9 @@ packages:
   '@types/use-sync-external-store@0.0.6':
     resolution: {integrity: sha512-zFDAD+tlpf2r4asuHEj0XH6pY6i0g5NeAHPn+15wk3BV6JA69eERFXC1gyGThDkVa1zCyKr5jox1+2LbV/AMLg==}
 
+  '@types/uuid@10.0.0':
+    resolution: {integrity: sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ==}
+
   '@typescript-eslint/eslint-plugin@8.71.2':
     resolution: {integrity: sha512-K72/pvT7qpm8q3k8G5u93NCSN1RcLxX5h7Gw0bQpbMXviBHeY6Nx1WEwmk9wP+eKTSQ8ecxvcgt/ZX/rB938xQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -1799,18 +1838,31 @@ packages:
   '@xh/eslint-config@8.1.0':
     resolution: {integrity: sha512-RcBbyvh2Gq/yKZzv8pYA9vU/0Cc6839EMBb39NBHZr4ZUXZz978WCzHmZqHXL1X4iS3dk/fDL/1S9xICa+0NTg==}
 
+  '@xh/hoist-chat-kit@2.0.0-SNAPSHOT.1793930870434':
+    resolution: {integrity: sha512-5lzUcjnMouQdB9botYiV8VahEDafK71Xib6dWsUCLuO3kmx0sKBZbPr9LFGgnWCSOGoZePwgIdPNGTuBzN3uBw==}
+    peerDependencies:
+      '@xh/hoist': '>=89.3.1'
+      react: ^19.3.0
+      react-dom: ^19.3.0
+
   '@xh/hoist-dev-utils@17.0.0-SNAPSHOT.1793653272351':
     resolution: {integrity: sha512-6QfarETBFz9CJ7ANrwVHwvyjm5N9eqg/7aWmq7qSrZZdBrTd57naia0HEYv45ad3oCh1DVQEIdJA7qNaQ6rUvA==}
     engines: {node: '>=22.15.0'}
 
-  '@xh/hoist@91.0.0-SNAPSHOT.1793965489491':
-    resolution: {integrity: sha512-yLvo6oANGmA/CTUiOKE5lqLxASZH+lsqmIKnM42LgW85Zsvnbve/vWpZAd9XzSgmeJz0MMoF3+XKG9llGPfzKg==}
+  '@xh/hoist-docs@1.0.0-SNAPSHOT.1794358737200':
+    resolution: {integrity: sha512-E5J6LUfkqK8cMpNGwJ4eVknvn/3BvlA5AvTs3ZW9jd9NdhPV7gltG+nHzwF5jhc3Sx0oda7sikUB4BiqGfXH/g==}
+    engines: {node: '>=24'}
+    hasBin: true
+
+  '@xh/hoist@91.0.0-SNAPSHOT.1794261201542':
+    resolution: {integrity: sha512-0IxAxqy0LYpWKlu4oYuf8xBdllXDxiwIUbM6y5BRLOdREzfup+c8d9PMifQw0K13cM6VHE3AovVQJ89aRL2tSg==}
     hasBin: true
     peerDependencies:
       '@testing-library/dom': ^10.4.2
       '@testing-library/react': ^16.3.3
       jsdom: ^30.1.1
       msw: ^3.0.2
+      pdfjs-dist: ^6.5.0
       react: ^19.3.0
       react-dom: ^19.3.0
       vitest: ^5.0.3
@@ -1822,6 +1874,8 @@ packages:
       jsdom:
         optional: true
       msw:
+        optional: true
+      pdfjs-dist:
         optional: true
       vitest:
         optional: true
@@ -2070,6 +2124,9 @@ packages:
   commander@15.0.0:
     resolution: {integrity: sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg==}
     engines: {node: '>=22.12.0'}
+
+  compare-versions@6.1.1:
+    resolution: {integrity: sha512-4hm4VPpIecmlg59CHXnRDnqGplJFrbLG4aFEl5vl6cK1u76ws3LLvX7ikFnTDl5vo39sjWD6AaDPYodJp/NNHg==}
 
   constant-case@3.0.4:
     resolution: {integrity: sha512-I2hSBi7Vvs7BEuJDr5dDHfzb/Ruj3FyvFyh7KLilAjNQw3Be+xgqUBA2W6scVEcL0hL1dwPRtIqEPVUCKkSsyQ==}
@@ -2385,6 +2442,9 @@ packages:
   fast-glob@3.3.3:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
     engines: {node: '>=8.6.0'}
+
+  fast-json-patch@3.1.1:
+    resolution: {integrity: sha512-vf6IHUX2SBcA+5/+4883dsIjpBTqmfBjmYiWK1savxQmFk4JfBMLa7ynTYOs1Rolp/T1betJxHiGD3g1Mn8lUQ==}
 
   fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
@@ -3379,8 +3439,8 @@ packages:
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
-  react-grid-layout@2.3.0:
-    resolution: {integrity: sha512-4ofzuR/MlYchp+ixDUVBxH6ybaw+JH51M+rpf675ik/++4Dn0Kax/Vf2Gv/7Z++mV1ZC7mY9UV2sRRycjGjKXQ==}
+  react-grid-layout@2.2.4:
+    resolution: {integrity: sha512-Eb57FsgOMYOfsUGrMI1ku/FFR+dPNPrE8qo+3hwZubpqVSy4GO9v52DeX50Tl3JDYAlCypP4rmw7Vrqk/zOIvA==}
     peerDependencies:
       react: '>= 16.3.0'
       react-dom: '>= 16.3.0'
@@ -3533,6 +3593,9 @@ packages:
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
+
+  rxjs@7.8.1:
+    resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
 
   rxjs@7.8.2:
     resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
@@ -3969,8 +4032,8 @@ packages:
   svg-tags@1.0.0:
     resolution: {integrity: sha512-ovssysQTa+luh7A5Weu3Rta6FJlFBBbInjOh722LIt6klpU2/HtdUbszju/G4devcvk8PGt7FCLv5wftu3THUA==}
 
-  swiper@14.3.0:
-    resolution: {integrity: sha512-qw0Xv1+sylM8KCQxWxV2iYAK2G6XjFGPZ/8F1baEsY8DK4A3sTnLx6jUJ0G71rDbVQ05JHMWkcWmJ5NvlxZO0w==}
+  swiper@14.4.0:
+    resolution: {integrity: sha512-6axnAuBsttFJe0gwsM5tT203/Bts0vcI+FwIX6dqFE4pUFVW6qrdRprNFQVxOYMW7V0S6A/KIqJ6JaPpNN2MCw==}
     engines: {node: '>= 4.7.0'}
 
   symbol-observable@1.2.0:
@@ -4132,6 +4195,9 @@ packages:
   until-async@3.0.2:
     resolution: {integrity: sha512-IiSk4HlzAMqTUseHHe3VhIGyuFmN90zMTpD3Z3y8jeQbzLIq500MVM7Jq2vUAnTKAFPJrqwkzr6PoTcPhGcOiw==}
 
+  untruncate-json@0.0.1:
+    resolution: {integrity: sha512-4W9enDK4X1y1s2S/Rz7ysw6kDuMS3VmRjMFg7GZrNO+98OSe+x5Lh7PKYoVjy3lW/1wmhs6HW0lusnQRHgMarA==}
+
   update-browserslist-db@1.3.4:
     resolution: {integrity: sha512-t8wonIOdQyOjtPd2VktlBu6QjTVTks6v8bSi7kd0r2Vll8TK1JYDZtRRdbmCHOAMphkZgrzK+L+vXK4pyZ8t4A==}
     hasBin: true
@@ -4163,6 +4229,10 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  uuid@11.1.1:
+    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
+    hasBin: true
 
   varint@6.0.0:
     resolution: {integrity: sha512-cXEIW6cfr15lFv563k4GuVuW/fiwjknytD37jIOLSdSWuOI6WnO/oKwmP2FQTU2l01LP8/M5TSAJpzUaGe3uWg==}
@@ -4358,6 +4428,9 @@ packages:
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
 
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
   zod@4.6.7:
     resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
@@ -4365,6 +4438,41 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@ag-ui/client@1.0.3':
+    dependencies:
+      '@ag-ui/core': 1.0.3(zod@3.25.76)
+      '@ag-ui/encoder': 1.0.3(zod@3.25.76)
+      '@ag-ui/proto': 1.0.3
+      '@types/uuid': 10.0.0
+      compare-versions: 6.1.1
+      fast-json-patch: 3.1.1
+      rxjs: 7.8.1
+      untruncate-json: 0.0.1
+      uuid: 11.1.1
+      zod: 3.25.76
+
+  '@ag-ui/core@1.0.3(zod@3.25.76)':
+    optionalDependencies:
+      zod: 3.25.76
+
+  '@ag-ui/core@1.0.3(zod@4.6.7)':
+    optionalDependencies:
+      zod: 4.6.7
+
+  '@ag-ui/encoder@1.0.3(zod@3.25.76)':
+    dependencies:
+      '@ag-ui/core': 1.0.3(zod@3.25.76)
+      '@ag-ui/proto': 1.0.3
+    transitivePeerDependencies:
+      - zod
+
+  '@ag-ui/proto@1.0.3':
+    dependencies:
+      '@ag-ui/core': 1.0.3(zod@3.25.76)
+      '@bufbuild/protobuf': 2.16.0
+      '@protobuf-ts/protoc': 2.11.1
+      zod: 3.25.76
 
   '@asamuzakjp/css-color@7.1.5':
     dependencies:
@@ -4386,18 +4494,20 @@ snapshots:
       jose: 6.2.12
       openid-client: 6.8.8
 
-  '@auth0/auth0-spa-js@2.29.0':
+  '@auth0/auth0-spa-js@2.30.0':
     dependencies:
       '@auth0/auth0-auth-js': 1.17.0
       browser-tabs-lock: 1.3.0
       dpop: 2.1.2
       es-cookie: 1.3.2
 
-  '@azure/msal-browser@5.27.0':
+  '@azure/msal-browser@5.28.0':
     dependencies:
-      '@azure/msal-common': 16.15.0
+      '@azure/msal-common': 16.16.0
 
-  '@azure/msal-common@16.15.0': {}
+  '@azure/msal-common@16.16.0': {}
+
+  '@azure/msal-common@16.16.1': {}
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -5288,6 +5398,10 @@ snapshots:
 
   '@marijn/find-cluster-break@1.0.4': {}
 
+  '@modelcontextprotocol/core@2.4.0':
+    dependencies:
+      zod: 4.6.7
+
   '@modelcontextprotocol/sdk@1.32.1(supports-color@10.2.2)(zod@4.6.7)':
     dependencies:
       '@hono/node-server': 2.1.5(hono@4.13.13)
@@ -5309,6 +5423,11 @@ snapshots:
       zod-to-json-schema: 3.25.2(zod@4.6.7)
     transitivePeerDependencies:
       - supports-color
+
+  '@modelcontextprotocol/server@2.4.0':
+    dependencies:
+      '@modelcontextprotocol/core': 2.4.0
+      zod: 4.6.7
 
   '@msw/url@0.1.2': {}
 
@@ -5548,6 +5667,8 @@ snapshots:
       tsyringe: 4.10.0
 
   '@popperjs/core@2.11.8': {}
+
+  '@protobuf-ts/protoc@2.11.1': {}
 
   '@rolldown/binding-android-arm-eabi@1.2.14':
     optional: true
@@ -5880,6 +6001,8 @@ snapshots:
 
   '@types/use-sync-external-store@0.0.6': {}
 
+  '@types/uuid@10.0.0': {}
+
   '@typescript-eslint/eslint-plugin@8.71.2(@typescript-eslint/parser@8.71.2(eslint@10.12.0(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@10.12.0(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
@@ -6074,6 +6197,19 @@ snapshots:
       - jiti
       - supports-color
 
+  ? '@xh/hoist-chat-kit@2.0.0-SNAPSHOT.1793930870434(@xh/hoist@91.0.0-SNAPSHOT.1794261201542(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(pdfjs-dist@6.5.438)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zod@4.6.7)'
+  : dependencies:
+      '@ag-ui/client': 1.0.3
+      '@ag-ui/core': 1.0.3(zod@4.6.7)
+      '@xh/hoist': 91.0.0-SNAPSHOT.1794261201542(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(pdfjs-dist@6.5.438)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
+      classnames: 2.5.1
+      lodash: 4.18.1
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
+      rxjs: 7.8.1
+    transitivePeerDependencies:
+      - zod
+
   '@xh/hoist-dev-utils@17.0.0-SNAPSHOT.1793653272351(@rspack/core@2.2.9(@swc/helpers@0.5.23))(core-js@3.50.0)(supports-color@10.2.2)':
     dependencies:
       '@rsbuild/core': 2.3.0(core-js@3.50.0)
@@ -6095,11 +6231,16 @@ snapshots:
       - jiti
       - supports-color
 
-  '@xh/hoist@91.0.0-SNAPSHOT.1793965489491(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))':
+  '@xh/hoist-docs@1.0.0-SNAPSHOT.1794358737200':
     dependencies:
-      '@auth0/auth0-spa-js': 2.29.0
-      '@azure/msal-browser': 5.27.0
-      '@azure/msal-common': 16.15.0
+      '@modelcontextprotocol/server': 2.4.0
+      minisearch: 7.2.0
+
+  '@xh/hoist@91.0.0-SNAPSHOT.1794261201542(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(pdfjs-dist@6.5.438)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))':
+    dependencies:
+      '@auth0/auth0-spa-js': 2.30.0
+      '@azure/msal-browser': 5.28.0
+      '@azure/msal-common': 16.16.1
       '@blueprintjs/core': 6.21.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@codemirror/commands': 6.11.1
       '@codemirror/language': 6.13.1
@@ -6136,7 +6277,7 @@ snapshots:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
       react-dropzone: 20.1.4(@types/react@19.3.0)(react@19.3.1)
-      react-grid-layout: 2.3.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react-grid-layout: 2.2.4(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react-markdown: 10.1.0(@types/react@19.3.0)(react@19.3.1)(supports-color@10.2.2)
       react-select: 5.10.2(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)
       react-window: 2.5.3(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -6145,7 +6286,7 @@ snapshots:
       router5: 8.0.1
       router5-plugin-browser: 8.0.1(router5@8.0.1)
       sass-material-colors: 0.0.5
-      swiper: 14.3.0
+      swiper: 14.4.0
       ts-morph: 28.0.0
       tsx: 4.23.15
       unified: 11.0.5
@@ -6155,15 +6296,16 @@ snapshots:
       '@testing-library/react': 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       jsdom: 30.1.3(@noble/hashes@1.8.0)
       msw: 3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))
+      pdfjs-dist: 6.5.438
       vitest: 5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - '@types/react'
       - supports-color
 
-  '@xh/package-template@4.0.0(@xh/hoist@91.0.0-SNAPSHOT.1793965489491(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@xh/package-template@4.0.0(@xh/hoist@91.0.0-SNAPSHOT.1794261201542(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(pdfjs-dist@6.5.438)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1))))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@xh/hoist': 91.0.0-SNAPSHOT.1793965489491(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
+      '@xh/hoist': 91.0.0-SNAPSHOT.1794261201542(@testing-library/dom@10.4.2)(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(pdfjs-dist@6.5.438)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(vitest@5.0.5(@types/node@26.6.5)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)(yaml@2.9.1)))
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
 
@@ -6420,6 +6562,8 @@ snapshots:
   comma-separated-tokens@2.0.3: {}
 
   commander@15.0.0: {}
+
+  compare-versions@6.1.1: {}
 
   constant-case@3.0.4:
     dependencies:
@@ -6772,6 +6916,8 @@ snapshots:
       glob-parent: 5.1.2
       merge2: 1.4.1
       micromatch: 4.0.8
+
+  fast-json-patch@3.1.1: {}
 
   fast-json-stable-stringify@2.1.0: {}
 
@@ -7899,7 +8045,7 @@ snapshots:
 
   react-fast-compare@3.2.2: {}
 
-  react-grid-layout@2.3.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
+  react-grid-layout@2.2.4(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       clsx: 2.1.1
       fast-equals: 4.0.3
@@ -8115,6 +8261,10 @@ snapshots:
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
+
+  rxjs@7.8.1:
+    dependencies:
+      tslib: 2.8.1
 
   rxjs@7.8.2:
     dependencies:
@@ -8556,7 +8706,7 @@ snapshots:
 
   svg-tags@1.0.0: {}
 
-  swiper@14.3.0: {}
+  swiper@14.4.0: {}
 
   symbol-observable@1.2.0: {}
 
@@ -8731,6 +8881,8 @@ snapshots:
 
   until-async@3.0.2: {}
 
+  untruncate-json@0.0.1: {}
+
   update-browserslist-db@1.3.4(browserslist@4.29.3):
     dependencies:
       browserslist: 4.29.3
@@ -8760,6 +8912,8 @@ snapshots:
       react: 19.3.1
 
   util-deprecate@1.0.2: {}
+
+  uuid@11.1.1: {}
 
   varint@6.0.0: {}
 
@@ -8892,6 +9046,8 @@ snapshots:
   zod-validation-error@4.0.2(zod@4.6.7):
     dependencies:
       zod: 4.6.7
+
+  zod@3.25.76: {}
 
   zod@4.6.7: {}
 

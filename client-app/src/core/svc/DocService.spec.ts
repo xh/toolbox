@@ -4,7 +4,7 @@ import {hoistCore, initTestAppAsync, TestAppModel} from '@xh/hoist/test-support'
 import {beforeAll, beforeEach, describe, expect, it} from 'vitest';
 import {resolveDocLink} from '../docs/DocUtils';
 import type {DocEntry} from '../docs/types';
-import {DocService} from './DocService';
+import {DocService, stripMarkdown} from './DocService';
 
 class DocTestModel extends TestAppModel {
     override async initAsync(ctx: InitContext) {
@@ -12,41 +12,71 @@ class DocTestModel extends TestAppModel {
     }
 }
 
-// Registry entries as the server's DocsService sends them. `keywords` is optional on the wire.
-const entries = [
-    {
-        id: 'docs/README.md',
-        source: 'hoist-react',
-        title: 'Hoist React',
-        category: 'overview',
-        description: 'Framework overview',
-        keywords: ['intro']
-    },
-    {
-        id: 'cmp/grid/README.md',
-        source: 'hoist-react',
-        title: 'Grid',
-        category: 'components',
-        description: 'Data grids'
-    },
-    {
-        id: 'docs/authentication.md',
-        source: 'hoist-core',
-        title: 'Authentication',
-        category: 'security',
-        description: 'Server auth'
-    }
-];
-
 const longLine =
     'Columns are defined on the GridModel, and each column binds a field from the store to a ' +
     'renderer, with optional sorting, grouping, and a tooltip for the cell value shown.';
 
-const contents: Record<string, string> = {
-    'docs/README.md': '# Hoist React\n\nStart with the **core** package.',
-    'cmp/grid/README.md': `# Grid\n\nIntro line.\n\n${longLine}`,
-    'docs/authentication.md': '# Authentication\n\nOAuth flows.'
-};
+/** A docs entry as `hoist-docs export-docs` writes it. `keywords` may be absent. */
+function doc(
+    id: string,
+    title: string,
+    viewerCategory: string,
+    markdown: string,
+    keywords?: string[]
+) {
+    return {
+        id,
+        title,
+        mcpCategory: 'package',
+        viewerCategory,
+        description: `${title} docs`,
+        ...(keywords ? {keywords} : {}),
+        aliases: [],
+        markdown
+    };
+}
+
+/** A docs payload, the docs part of a Hoist Docs index. */
+function payload(id: string, name: string, version: string, entries: object[]) {
+    return {
+        schemaVersion: 1,
+        library: {
+            id,
+            name,
+            version,
+            language: id === 'react' ? 'typescript' : 'groovy',
+            builtAt: ''
+        },
+        docs: {mcpCategories: [], viewerCategories: [{id: 'overview', title: 'Overview'}], entries}
+    };
+}
+
+const react = payload('react', '@xh/hoist', '91.0', [
+        doc(
+            'docs/README.md',
+            'Hoist React',
+            'overview',
+            '# Hoist React\n\nStart with the **core** package.',
+            ['intro']
+        ),
+        doc(
+            'cmp/grid/README.md',
+            'Grid',
+            'components',
+            `# Grid\n\nIntro line.\n\n## Columns\n\n${longLine}`
+        )
+    ]),
+    core = payload('core', 'io.xh:hoist-core', '45.0', [
+        doc(
+            'docs/authentication.md',
+            'Authentication',
+            'security',
+            '# Authentication\n\n## OAuth\n\nOAuth flows for signing users in with a grid of providers.'
+        )
+    ]);
+
+/** Absolute URL of a docs file, as the browser requests it - served beside the client. */
+const docsUrl = (file: string) => `${window.location.origin}/public/hoist-docs/${file}`;
 
 beforeAll(async () => {
     // A recent-docs entry saved by an earlier session, plus one for a doc no longer registered.
@@ -54,15 +84,12 @@ beforeAll(async () => {
         'toolbox.jdoe.docs.recentDocs',
         JSON.stringify(['hoist-core:docs/authentication.md', 'hoist-react:gone.md'])
     );
-    hoistCore.route('GET', 'docs/registry', () => ({
-        entries,
-        sources: {
-            'hoist-react': {label: 'Hoist React', categories: [], mode: 'local'},
-            'hoist-core': {label: 'Hoist Core', categories: [], mode: 'local'}
-        }
-    }));
-    // FetchService sends a request with params as a form POST.
-    hoistCore.route('POST', 'docs/content', req => ({content: contents[req.form.docId]}));
+    hoistCore.route('GET', docsUrl('index.json'), () => [
+        {id: 'react', name: '@xh/hoist', version: '91.0', file: 'react.json'},
+        {id: 'core', name: 'io.xh:hoist-core', version: '45.0', file: 'core.json'}
+    ]);
+    hoistCore.route('GET', docsUrl('react.json'), () => react);
+    hoistCore.route('GET', docsUrl('core.json'), () => core);
     await initTestAppAsync({modelClass: DocTestModel});
 });
 
@@ -75,45 +102,66 @@ describe('registry', () => {
         expect(entry('docs/README.md').keywords).toEqual(['intro']);
     });
 
+    it('reports each source at the version Toolbox runs', () => {
+        expect(svc().sourceInfo['hoist-react']).toMatchObject({
+            label: 'Hoist React',
+            version: '91.0',
+            versions: ['91.0']
+        });
+        expect(svc().sourceNames).toEqual(['hoist-react', 'hoist-core']);
+    });
+
     it('restores recent docs from local storage, dropping unknown ones', () => {
         expect(svc().recentDocs.map(it => it.id)).toEqual(['docs/authentication.md']);
     });
 });
 
 describe('fetchContentAsync', () => {
-    it('fetches each doc once, then serves it from the cache', async () => {
-        await svc().fetchContentAsync('hoist-react', 'docs/README.md');
-        await svc().fetchContentAsync('hoist-react', 'docs/README.md');
-        expect(hoistCore.requestsTo('docs/content')).toHaveLength(1);
-        expect(hoistCore.requestsTo('docs/content')[0].form).toEqual({
-            source: 'hoist-react',
-            docId: 'docs/README.md'
-        });
+    it('serves content from the loaded docs, with no further requests', async () => {
+        const before = hoistCore.requestsTo(docsUrl('react.json')).length;
+        expect(await svc().fetchContentAsync('hoist-core', 'docs/authentication.md')).toContain(
+            'OAuth flows'
+        );
+        expect(hoistCore.requestsTo(docsUrl('react.json'))).toHaveLength(before);
+    });
+
+    it('rejects an unknown doc', async () => {
+        await expect(svc().fetchContentAsync('hoist-react', 'missing.md')).rejects.toThrow(
+            'Doc not found'
+        );
     });
 });
 
-describe('getContentSnippet', () => {
-    it('returns the first matching line, markdown stripped', async () => {
-        await svc().fetchContentAsync('hoist-react', 'docs/README.md');
-        expect(svc().getContentSnippet('hoist-react', 'docs/README.md', ['CORE'])).toBe(
-            'Start with the core package.'
-        );
+describe('searchDocsAsync', () => {
+    it('ranks docs in the browser, each once under its best section', async () => {
+        const results = await svc().searchDocsAsync('grid Tooltip');
+
+        expect(results[0].entry).toBe(entry('cmp/grid/README.md'));
+        expect(results[0].section).toBe('columns');
+        expect(results[0].snippet).toBe(longLine);
+        expect(results[0].matchedTerms).toEqual(['grid', 'tooltip']);
+        const keys = results.map(r => `${r.entry.source}:${r.entry.id}`);
+        expect(new Set(keys).size).toBe(keys.length);
     });
 
-    it('clips a long line to a 140-character window around the match', async () => {
-        await svc().fetchContentAsync('hoist-react', 'cmp/grid/README.md');
-        const snippet = svc().getContentSnippet('hoist-react', 'cmp/grid/README.md', ['tooltip']);
-        expect(snippet.startsWith('...')).toBe(true);
-        expect(snippet.endsWith('...')).toBe(true);
-        expect(snippet).toContain('tooltip');
-        expect(snippet.length).toBeLessThanOrEqual(146);
+    it('returns no results for a blank query', async () => {
+        expect(await svc().searchDocsAsync('  ')).toEqual([]);
+    });
+});
+
+describe('stripMarkdown', () => {
+    it('reduces markdown to plain text, keeping link and code text', () => {
+        expect(
+            stripMarkdown(
+                '`@persist` and **bold** _em_ [GridModel](cmp/grid/README.md) | `a` | b | ## Head'
+            )
+        ).toBe('@persist and bold em GridModel a b Head');
     });
 
-    it('returns null for uncached content or no match', () => {
-        expect(svc().getContentSnippet('hoist-core', 'docs/authentication.md', ['oauth'])).toBe(
-            null
+    it('leaves snake_case and multiplication alone', () => {
+        expect(stripMarkdown('use persist_with and 2 * 3 * 4')).toBe(
+            'use persist_with and 2 * 3 * 4'
         );
-        expect(svc().getContentSnippet('hoist-react', 'docs/README.md', ['nowhere'])).toBe(null);
     });
 });
 

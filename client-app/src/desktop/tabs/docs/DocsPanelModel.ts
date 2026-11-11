@@ -1,4 +1,5 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {span} from '@xh/hoist/cmp/layout';
 import type {Content} from '@xh/hoist/core';
 import {managed, XH} from '@xh/hoist/core';
 import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
@@ -44,6 +45,9 @@ export class DocsPanelModel extends DocViewModel {
 
     @observable accessor selectedSearchIdx: number = -1;
 
+    /** True when the last search failed. */
+    @observable accessor searchFailed: boolean = false;
+
     @bindable accessor feedbackMessage: string = '';
 
     constructor() {
@@ -52,6 +56,11 @@ export class DocsPanelModel extends DocViewModel {
         this.gridModel = this.createGridModel();
 
         this.addReaction(
+            {
+                // Reload the tree when the registry changes, e.g. after docs load on a retry.
+                track: () => XH.docService.registry,
+                run: () => this.loadNav()
+            },
             {
                 track: () => this.searchQuery,
                 run: query => this.runSearch(query),
@@ -104,7 +113,6 @@ export class DocsPanelModel extends DocViewModel {
         this.searchQuery = '';
         this.searchResults = [];
         this.selectedSearchIdx = -1;
-        XH.docService.ensureIndexBuilt();
     }
 
     /** Exit search mode - returns to normal doc viewing. */
@@ -116,10 +124,10 @@ export class DocsPanelModel extends DocViewModel {
         this.selectedSearchIdx = -1;
     }
 
-    /** Select a search result - navigate to the doc and exit search. */
+    /** Select a search result - navigate to the doc (at its best-matching section) and exit search. */
     @action
-    selectSearchResult(entry: DocEntry) {
-        this.navigateToDoc(entry.id, entry.source);
+    selectSearchResult(entry: DocEntry, section?: string) {
+        this.navigateToDoc(entry.id, entry.source, section);
         this.exitSearchMode();
     }
 
@@ -134,7 +142,7 @@ export class DocsPanelModel extends DocViewModel {
     /** Confirm the currently selected search result, if any. */
     confirmSearchSelection() {
         const result = this.searchResults[this.selectedSearchIdx];
-        if (result) this.selectSearchResult(result.entry);
+        if (result) this.selectSearchResult(result.entry, result.section);
     }
 
     /** Handle keyboard navigation within search results. */
@@ -233,6 +241,7 @@ export class DocsPanelModel extends DocViewModel {
                     {name: 'description', type: 'string'},
                     {name: 'isCategory', type: 'bool'},
                     {name: 'isSource', type: 'bool'},
+                    {name: 'version', type: 'string'},
                     {name: 'icon', type: 'auto'},
                     {name: 'order', type: 'int'}
                 ]
@@ -243,7 +252,19 @@ export class DocsPanelModel extends DocViewModel {
                 {
                     field: 'title',
                     flex: 1,
-                    isTreeColumn: true
+                    isTreeColumn: true,
+                    renderer: (title, {record}) => {
+                        const {version} = record.data;
+                        if (!version) return title;
+                        return span(
+                            title,
+                            span({
+                                className: 'tb-docs__nav-version',
+                                title: version,
+                                item: shortVersion(version)
+                            })
+                        );
+                    }
                 },
                 {
                     field: 'order',
@@ -319,6 +340,7 @@ export class DocsPanelModel extends DocViewModel {
                 description: '',
                 isCategory: false,
                 isSource: true,
+                version: docService.getSourceVersion(sourceName),
                 icon: this.getSourceIcon(sourceName),
                 order: order++,
                 children: catChildren
@@ -326,11 +348,21 @@ export class DocsPanelModel extends DocViewModel {
         });
     }
 
-    /** Run search via DocService and update results. */
-    private runSearch(query: string) {
+    /** Run search via DocService and update results, dropping any that a newer query superseded. */
+    private async runSearch(query: string) {
         if (!this.searchMode) return;
+        let results: DocSearchResult[] = [],
+            failed = false;
+        try {
+            results = await XH.docService.searchDocsAsync(query);
+        } catch (e) {
+            this.logWarn('Docs search failed', e.message);
+            failed = true;
+        }
+        if (!this.searchMode || query !== this.searchQuery) return;
         runInAction(() => {
-            this.searchResults = XH.docService.searchDocs(query);
+            this.searchResults = results;
+            this.searchFailed = failed;
         });
     }
 
@@ -351,4 +383,9 @@ export class DocsPanelModel extends DocViewModel {
     getSourceIcon(sourceName: string) {
         return getSourceIcon(sourceName);
     }
+}
+
+/** `91.0.0-SNAPSHOT.1794261201542` to `91.0.0-SNAPSHOT` - the full build is in the tooltip. */
+function shortVersion(version: string): string {
+    return version.replace(/(-SNAPSHOT)\.\d+$/i, '$1');
 }
