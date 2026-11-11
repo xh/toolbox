@@ -74,6 +74,12 @@ export const cubeGridPanel = hoistCmp.factory({
                     info: 'With two or more measures, group columns by measure, then pivot value.'
                 }),
                 wrapperOption({
+                    label: 'Show root group',
+                    propName: 'CubeGridPivotConfig.showRootGroup',
+                    control: switchInput({model: cubeGridModel.pivotModel, bind: 'showRootGroup'}),
+                    info: 'Head the pivot columns with a group that collapses to the row summary.'
+                }),
+                wrapperOption({
                     label: 'Linked sizing',
                     propName: 'CubeGridPivotConfig.linkedSizing',
                     control: switchInput({model: cubeGridModel.pivotModel, bind: 'linkedSizing'}),
