@@ -1,4 +1,5 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {span} from '@xh/hoist/cmp/layout';
 import type {Content} from '@xh/hoist/core';
 import {managed, XH} from '@xh/hoist/core';
 import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
@@ -240,6 +241,7 @@ export class DocsPanelModel extends DocViewModel {
                     {name: 'description', type: 'string'},
                     {name: 'isCategory', type: 'bool'},
                     {name: 'isSource', type: 'bool'},
+                    {name: 'version', type: 'string'},
                     {name: 'icon', type: 'auto'},
                     {name: 'order', type: 'int'}
                 ]
@@ -250,7 +252,19 @@ export class DocsPanelModel extends DocViewModel {
                 {
                     field: 'title',
                     flex: 1,
-                    isTreeColumn: true
+                    isTreeColumn: true,
+                    renderer: (title, {record}) => {
+                        const {version} = record.data;
+                        if (!version) return title;
+                        return span(
+                            title,
+                            span({
+                                className: 'tb-docs__nav-version',
+                                title: version,
+                                item: shortVersion(version)
+                            })
+                        );
+                    }
                 },
                 {
                     field: 'order',
@@ -326,6 +340,7 @@ export class DocsPanelModel extends DocViewModel {
                 description: '',
                 isCategory: false,
                 isSource: true,
+                version: docService.getSourceVersion(sourceName),
                 icon: this.getSourceIcon(sourceName),
                 order: order++,
                 children: catChildren
@@ -368,4 +383,9 @@ export class DocsPanelModel extends DocViewModel {
     getSourceIcon(sourceName: string) {
         return getSourceIcon(sourceName);
     }
+}
+
+/** `91.0.0-SNAPSHOT.1794261201542` to `91.0.0-SNAPSHOT` - the full build is in the tooltip. */
+function shortVersion(version: string): string {
+    return version.replace(/(-SNAPSHOT)\.\d+$/i, '$1');
 }

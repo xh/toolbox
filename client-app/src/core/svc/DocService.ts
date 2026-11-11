@@ -73,6 +73,11 @@ export class DocService extends HoistService {
         return this.sourceInfo[source]?.label ?? source;
     }
 
+    /** Get the version of a source's docs (e.g. '91.0.0-SNAPSHOT.1794261201542'), or null. */
+    getSourceVersion(source: string): string {
+        return this.sourceInfo[source]?.version ?? null;
+    }
+
     /** Get unique source names present in the registry. */
     get sourceNames(): string[] {
         return [...new Set(this.registry.map(d => d.source))];
