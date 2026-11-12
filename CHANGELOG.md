@@ -17,6 +17,7 @@
 ### New Features
 
 * Added a `PdfViewer` demo page to Components > General, showing hoist-react's new pdf.js-based document viewer with its toolbar options and model state.
+* Added a `StatCard` demo page to Components > General, showing hoist-react's new `StatCard` and `StatCardStrip` components with a live playground for every prop, plus examples of wrapping, sizes, intents, accents, clickable cards and CSS variable styling.
 
 ### Technical
 
