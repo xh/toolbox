@@ -68,11 +68,11 @@ export function toolboxUrl(url: string) {
 const DOCS_ROUTE = 'default.docs.docRef';
 
 /**
- * True if the hosting app registers the in-app docs viewer route - router5's `buildPath`
- * returns null for unknown route names, making it a safe probe.
+ * True if the hosting app registers the in-app docs viewer route. `buildPath` throws for an
+ * unknown route name, so probe the route tree instead, where `getPath` returns null.
  */
 function hasDocsRoute(): boolean {
-    return !!XH.router.buildPath(DOCS_ROUTE, {source: 'hoistReact', docId: 'probe'});
+    return XH.router.rootNode.getPath(DOCS_ROUTE) != null;
 }
 
 function createDefaultText(url: string) {
