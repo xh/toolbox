@@ -92,6 +92,7 @@ import {numberFormatsPanel} from './tabs/system/formats/NumberFormatsPanel';
 import {pdfViewerPanel} from './tabs/components/general/PdfViewerPanel';
 import {pinPadPanel} from './tabs/components/general/PinPadPanel';
 import {placeholderPanel} from './tabs/components/general/PlaceholderPanel';
+import {statCardPanel} from './tabs/components/general/StatCardPanel';
 import {relativeTimestampPanel} from './tabs/components/general/relativetimestamp/RelativeTimestampPanel';
 import {simpleRoutingPanel} from './tabs/system/routing/SimpleRoutingPanel';
 import {bannerPanel} from './tabs/layout/panels/BannerPanel';
@@ -333,7 +334,8 @@ export class AppModel extends BaseAppModel {
                             {name: 'clock', path: '/clock'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'timestamp', path: '/timestamp'},
-                            {name: 'placeholder', path: '/placeholder'}
+                            {name: 'placeholder', path: '/placeholder'},
+                            {name: 'statCard', path: '/statCard'}
                         ]
                     },
                     {
@@ -605,6 +607,7 @@ export class AppModel extends BaseAppModel {
                             {id: 'pdfViewer', title: 'PdfViewer', content: pdfViewerPanel},
                             {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                             {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                            {id: 'statCard', title: 'StatCard', content: statCardPanel},
                             {id: 'timestamp', content: relativeTimestampPanel}
                         ].map(it => ({...it, group: 'general'})),
                         ...[
