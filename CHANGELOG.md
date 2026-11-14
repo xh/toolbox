@@ -18,7 +18,6 @@
 
 * Added a Chat Kit tab to the desktop app - a tour of `@xh/hoist-chat-kit`, XH's new library of chat components for Hoist apps. Component pages put `ChatPanel`, `ChatComposer`, `ChatMessageList`, `ChatMarkdown`, sources and citations, the empty state, feedback, status cues and theming in a playground of their curated props. Scripted conversations show rich content, reasoning and tools, the agent timeline, approvals, agent questions, attachments, errors and stop, and generative UI without a server or a model. Two integrations show the kit wired up: a full `chatWorkspace` over a client-side thread store, and a live Claude chat relayed by the Toolbox server with tools that act on the app.
 * Added the Hoist Chat Kit docs to the Docs tab, served from the installed `@xh/hoist-chat-kit` package or a sibling checkout in local development, and a `$CK` link token that opens them in the viewer.
-* Added a `PdfViewer` demo page to Components > General, showing hoist-react's new pdf.js-based document viewer with its toolbar options and model state.
 
 ### Technical
 
@@ -27,6 +26,25 @@
 ### Libraries
 
 * @xh/hoist-chat-kit `2.0` - new
+
+## 12.1.0 - 2026-11-13
+
+### New Features
+
+* Added a `CubeGrid` demo page to the Grids tab, showing hoist-react's new pivoting `CubeGrid` component spreading measures across pivot dimensions, with tabbed Main and Pivoting options for summaries, collapsing, measure ordering and `showRootGroup`.
+* Added a `PdfViewer` demo page to Components > General, showing hoist-react's new pdf.js-based document viewer with its toolbar options and model state.
+* Added a `StatCard` demo page to Components > General, showing hoist-react's new `StatCard` and `StatCardStrip` components with a live playground for every prop, plus examples of wrapping, sizes, intents, accents, clickable cards and CSS variable styling.
+
+### Technical
+
+* Moved formatted number and date columns across the shared column definitions, grid examples and admin tests to hoist-react's new `Column.textRenderer` for plain-text cells.
+* Added Cube pivoting and `CubeGrid` test pages and benchmarks to Admin > Tests, plus a Grid Formatter Parity test and an expanded Grid Scrolling benchmark comparing a Hoist `Grid` with a bare `AgGridReact`.
+* Pinned `@rspack/core` to `2.3.0` via a pnpm override - Rspack 2.3.2's minifier breaks classes that reference themselves in static initializers when `keep_classnames` is set (as hoist-dev-utils does), crashing production builds on load. Apps on hoist-dev-utils should apply the same override until a fixed Rspack ships - see xh/hoist-dev-utils#85.
+
+### Libraries
+
+* @xh/hoist `90.0 → 90.1`
+* hoist-core `44.0 → 44.1`
 * pdfjs-dist `6.5`
 
 ## 12.0.0 - 2026-11-02

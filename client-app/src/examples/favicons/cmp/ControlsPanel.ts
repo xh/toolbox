@@ -14,7 +14,7 @@ import {FaviconModel} from '../FaviconModel';
 import type {FaviconShape} from '../lib/FaviconSpec';
 import {MAX_PADDING, MAX_RADIUS} from '../lib/FaviconSpec';
 import {FAVICON_PRESETS} from '../lib/Presets';
-import {colorField} from './ColorField';
+import {colorField} from '../../../core/cmp/ColorField';
 
 const SHAPE_OPTIONS: {value: FaviconShape; label: string}[] = [
     {value: 'none', label: 'None'},

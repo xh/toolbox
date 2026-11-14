@@ -52,6 +52,11 @@ catalog:
 
 overrides:
   core-js: 'catalog:'
+  # Rspack 2.3.2's minifier emits invalid static class self-references when `keep_classnames` is set,
+  # as hoist-dev-utils does - e.g. Blueprint's NumericInput throws a TDZ ReferenceError on load. This
+  # must be an app-level override: Rsbuild's own `~2.3.x` range would otherwise resolve 2.3.2.
+  # Remove once a fixed Rspack ships - see https://github.com/xh/hoist-dev-utils/issues/85.
+  '@rspack/core': 2.3.0
 
 # Several transitive deps (react-popper, react-onsenui, react-windowed-select)
 # still declare react/react-dom peer ranges capped at 18. The app runs React 19 per hoist-react

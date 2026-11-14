@@ -1,0 +1,19 @@
+// Restyled through StatCard's CSS variables. A scoped override sets the resolved `--xh-` variables -
+// the unprefixed ones are read at the root.
+.tb-stat-card-panel__headline {
+  --xh-stat-card-bg: var(--xh-bg-alt);
+  --xh-stat-card-border: none;
+  --xh-stat-card-border-radius: 8px;
+  --xh-stat-card-padding: var(--xh-pad-px) calc(var(--xh-pad-px) * 1.5);
+  --xh-stat-card-strip-gap: calc(var(--xh-pad-px) * 1.5);
+  --xh-stat-card-title-letter-spacing: 0.06em;
+  --xh-stat-card-title-text-transform: uppercase;
+  --xh-stat-card-value-font-size: calc(var(--xh-font-size-px) * 2.4);
+  --xh-stat-card-value-font-weight: 300;
+}
+
+// Moves the accent bar from the top edge to the left.
+.tb-stat-card-panel__left-accent {
+  --xh-stat-card-accent-top: 0;
+  --xh-stat-card-accent-left: 4px;
+}
