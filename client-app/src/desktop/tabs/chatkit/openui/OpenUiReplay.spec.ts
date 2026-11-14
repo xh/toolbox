@@ -35,7 +35,8 @@ const TOOL_OUTPUTS = [
     }
 ];
 
-const SLIPS_PROMPT = 'Replay slips a model can make: some the format corrects, some it reports.';
+const SLIPS_PROMPT = 'Replay slips a model can make: some the format corrects, some it reports.',
+    GATE_PROMPT = 'Replay programs that the safety gate refuses, beside one that runs.';
 
 function inspect(prompt: string) {
     const {reply} = OPEN_UI_REPLAY_SCENARIOS.find(it => it.prompt === prompt);
@@ -46,7 +47,9 @@ function inspect(prompt: string) {
 }
 
 describe('OPEN_UI_REPLAY_SCENARIOS', () => {
-    const valid = OPEN_UI_REPLAY_SCENARIOS.filter(it => it.prompt !== SLIPS_PROMPT);
+    const valid = OPEN_UI_REPLAY_SCENARIOS.filter(
+        it => it.prompt !== SLIPS_PROMPT && it.prompt !== GATE_PROMPT
+    );
 
     it.each(valid.map(it => it.prompt))('writes a program that renders in full: %s', prompt => {
         const reports = inspect(prompt);
@@ -72,6 +75,15 @@ describe('OPEN_UI_REPLAY_SCENARIOS', () => {
         expect(report.errors.join(' ')).toContain('elements.margin');
         expect(report.unresolved).toEqual(['direction']);
         expect(report.orphaned).toEqual(['note']);
+    });
+
+    it('holds three programs that the gate refuses with a reason, and one that runs', () => {
+        const reports = inspect(GATE_PROMPT);
+
+        expect(reports.map(it => it.status)).toEqual(['failed', 'failed', 'failed', 'rendered']);
+        expect(reports[0].errors.join(' ')).toContain('circle');
+        expect(reports[1].errors.join(' ')).toContain('@Each');
+        expect(reports[2].errors.join(' ')).toContain('too large');
     });
 
     it('gives each scenario its own prompt, as a message selects one by its text', () => {

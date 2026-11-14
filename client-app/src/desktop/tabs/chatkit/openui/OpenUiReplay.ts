@@ -353,6 +353,49 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
             )
     },
     {
+        prompt: 'Replay programs that the safety gate refuses, beside one that runs.',
+        icon: Icon.shieldCheck(),
+        reply: () =>
+            [
+                'The kit measures each program before it reads it. The first three programs below break a rule, and each shows one message that says why. The last one runs.',
+                '',
+                '**Statements that refer to each other in a circle:**',
+                '',
+                fence(
+                    'root = Stack([first])',
+                    'first = Stack([second])',
+                    'second = Stack([first])'
+                ),
+                '',
+                '**An `@Each` whose variable is not in quotes:**',
+                '',
+                fence(
+                    'root = Stack([list])',
+                    'desks = [{name: "Rates", pnl: 4200000}, {name: "Credit", pnl: -2600000}]',
+                    'list = Stack(@Each(desks, desk, Text(desk.name)))'
+                ),
+                '',
+                '**A chain that doubles with each line, past the size budget:**',
+                '',
+                fence(
+                    'root = Stack([level1, level1])',
+                    ...Array.from(
+                        {length: 17},
+                        (_, idx) => `level${idx + 1} = Stack([level${idx + 2}, level${idx + 2}])`
+                    ),
+                    'level18 = Text("One of 262,144 copies.")'
+                ),
+                '',
+                '**The same `@Each`, with its variable in quotes:**',
+                '',
+                fence(
+                    'root = Stack([cards])',
+                    'desks = [{name: "Rates", pnl: 4200000}, {name: "Credit", pnl: -2600000}, {name: "FX", pnl: 1100000}]',
+                    'cards = Stack(@Each(desks, "desk", Card(desk.name, "Desk", [{label: "P&L", value: desk.pnl, format: "currency", decimals: 0}])), "row")'
+                )
+            ].join('\n')
+    },
+    {
         prompt: 'Replay slips a model can make: some the format corrects, some it reports.',
         icon: Icon.warning(),
         reply: () =>

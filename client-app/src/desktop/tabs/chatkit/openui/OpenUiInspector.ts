@@ -166,7 +166,15 @@ const programReport = hoistCmp.factory<ProgramReportProps>({
                             className: 'tb-openui-program__outcome',
                             items: [
                                 elementTable(elements),
-                                findings('Dropped by the parser', errors, 'danger'),
+                                findings(
+                                    // A program with no element was refused whole, before or
+                                    // by the parser.
+                                    isEmpty(elements)
+                                        ? 'Why the program did not render'
+                                        : 'Dropped by the parser',
+                                    errors,
+                                    'danger'
+                                ),
                                 findings(
                                     'Used but never defined',
                                     unresolved.map(it => `${it}: no statement defines it`),

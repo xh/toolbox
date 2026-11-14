@@ -214,7 +214,8 @@ const PAGE_SPECS: Record<OpenUiLabSource, OpenUiLabPageSpec> = {
             'would, so their programs show real rows. Others cover each display component, nested',
             'layouts, edge cases and text that needs escaping. The interactive ones bind inputs to',
             '`$variables`, read data with `Query()`, send a form, and run button actions. The',
-            'last makes slips a model can make, and the inspector reports each one.',
+            'last two hold programs that the safety gate refuses and slips a model can make, and',
+            'the inspector reports each one.',
             '',
             'Any other message is streamed back as the reply itself. Paste what a live model',
             'wrote, in a fenced `openui-lang` block or as a bare program, to watch it render.'
