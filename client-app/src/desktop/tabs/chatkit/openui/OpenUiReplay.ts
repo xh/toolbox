@@ -207,21 +207,171 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
             )
     },
     {
-        prompt: 'Replay a program with four mistakes a model can make.',
+        prompt: 'Replay an interactive filter: inputs bound to $variables, with no model call.',
+        icon: Icon.filter(),
+        reply: () =>
+            [
+                'Change an input. The text, the metrics and the chart follow, and no message is sent.',
+                '',
+                fence(
+                    'root = Stack([controls, flags, note, kpis, trend])',
+                    '$region = "emea"',
+                    '$net = false',
+                    'controls = Stack([pick, segments], "row")',
+                    'pick = Select("region", [{value: "emea", label: "EMEA"}, {value: "apac", label: "APAC"}, {value: "amer", label: "Americas"}], "Region, as a select", null, null, null, $region)',
+                    'segments = SegmentedControl("regionSegments", [{value: "emea", label: "EMEA"}, {value: "apac", label: "APAC"}, {value: "amer", label: "Americas"}], "Region, as segments", null, $region)',
+                    'flags = Stack([net, netBox], "row")',
+                    'net = Switch("net", "Net of costs, as a switch", $net)',
+                    'netBox = Checkbox("netBox", "Net of costs, as a checkbox", $net)',
+                    'note = Text("Showing **" + ($region == "apac" ? "Asia Pacific" : ($region == "amer" ? "the Americas" : "Europe, the Middle East and Africa")) + "**, " + ($net ? "net of costs." : "gross."))',
+                    'kpis = Metrics([{label: "Revenue", value: ($region == "apac" ? 103000 : ($region == "amer" ? 310000 : 205000)) - ($net ? 40000 : 0), format: "currency", decimals: 0}, {label: "Basis", value: $net ? "Net" : "Gross"}])',
+                    'trend = Chart("Monthly revenue: " + $region, "column", {categories: ["Jan", "Feb", "Mar"]}, {title: "USD", format: "currency", decimals: 0}, [{name: $net ? "Net revenue" : "Revenue", data: $region == "apac" ? [30000, 35000, 38000] : ($region == "amer" ? [95000, 104000, 111000] : [61000, 70000, 74000])}])'
+                )
+            ].join('\n')
+    },
+    {
+        prompt: 'Replay a live query: a select and segments feed a Query, which fills a grid and a chart.',
+        icon: Icon.database(),
+        reply: () =>
+            [
+                'The program reads the positions itself. Change the sector or the sort, and the query runs again. Each call shows under Calls in the inspector.',
+                '',
+                fence(
+                    'root = Stack([controls, totals, table, bars, refresh])',
+                    '$sector = "Technology"',
+                    '$sort = "pnl"',
+                    'positions = Query("query_positions", {groupBy: ["region"], filter: {sector: $sector}, sortBy: $sort, preview: 10}, {summary: {pnl: 0, mktVal: 0, positions: 0}, firstRows: []})',
+                    'controls = Stack([pickSector, pickSort], "row")',
+                    'pickSector = Select("sector", ["All", "Technology", "Energy", "Financials", "Healthcare", "Utilities"], "Sector", null, null, null, $sector)',
+                    'pickSort = SegmentedControl("sort", [{value: "pnl", label: "P&L"}, {value: "mktVal", label: "Market value"}, {value: "positions", label: "Positions"}], "Sort by", null, $sort)',
+                    'totals = Metrics([{label: "P&L", value: positions.summary.pnl, format: "currency", decimals: 0}, {label: "Market value", value: positions.summary.mktVal, format: "currency", decimals: 0}, {label: "Positions", value: positions.summary.positions}])',
+                    'table = Grid($sector + " by region", [{field: "region"}, {field: "pnl", headerName: "P&L", type: "number", format: "currency", decimals: 0}, {field: "mktVal", headerName: "Mkt Value", type: "number", format: "currency", decimals: 0}, {field: "positions", type: "number"}], null, positions.firstRows)',
+                    'bars = Chart("P&L by region", "bar", {categories: positions.firstRows.region}, {format: "currency", decimals: 0}, [{name: "P&L", data: positions.firstRows.pnl}])',
+                    'refresh = Button("Run the query again", @Run(positions))'
+                )
+            ].join('\n')
+    },
+    {
+        prompt: 'Replay the query limits: five programs in one reply, one of them with nine queries.',
+        icon: Icon.stopwatch(),
+        reply: () =>
+            [
+                'Only the first three programs of a reply run queries, and a program with more than eight runs none. The Calls tab shows which calls started.',
+                '',
+                queryProgram('sector'),
+                '',
+                fence(
+                    'root = Stack([lead])',
+                    ...['sector', 'region', 'fund', 'model', 'trader', 'symbol'].map(
+                        (dim, idx) =>
+                            `q${idx + 1} = Query("query_positions", {groupBy: ["${dim}"], limit: ${idx + 1}}, {summary: {positions: 0}})`
+                    ),
+                    'q7 = Query("query_trades", {limit: 7}, {summary: {trades: 0}})',
+                    'q8 = Query("query_trades", {limit: 8}, {summary: {trades: 0}})',
+                    'q9 = Query("query_trades", {limit: 9}, {summary: {trades: 0}})',
+                    'lead = Metrics([{label: "Program 2: nine queries", value: q1.summary.positions + q2.summary.positions + q3.summary.positions + q4.summary.positions + q5.summary.positions + q6.summary.positions + q7.summary.trades + q8.summary.trades + q9.summary.trades}])'
+                ),
+                '',
+                queryProgram('region'),
+                '',
+                queryProgram('fund'),
+                '',
+                queryProgram('trader')
+            ].join('\n')
+    },
+    {
+        prompt: 'Replay a form with every input and its rules, sent with a button.',
+        icon: Icon.edit(),
+        reply: () =>
+            [
+                'Fill the form in. The button checks every field, then sends the values as a message.',
+                '',
+                fence(
+                    'root = Stack([form])',
+                    'form = Form([client, note, quantity, side, tags, settle, flags, send], "New order ticket")',
+                    'client = TextInput("client", "Client", "Client name", {required: true, minLength: 3, maxLength: 30})',
+                    'note = TextArea("note", "Note", "Anything the desk should know?", {maxLength: 60})',
+                    'quantity = NumberInput("quantity", "Quantity", "1 to 1,000", {required: true, min: 1, max: 1000})',
+                    'side = Select("side", [{value: "buy", label: "Buy"}, {value: "sell", label: "Sell"}], "Side", "Pick a side", null, {required: true})',
+                    'tags = Select("tags", ["Urgent", "Hedged", "Block", "Algo"], "Tags", "Any tags", true)',
+                    'settle = DateInput("settle", "Settle date", {required: true, min: "2026-11-01", max: "2026-12-31"})',
+                    'flags = Stack([confirmed, live], "row")',
+                    'confirmed = Checkbox("confirmed", "Client confirmed")',
+                    'live = Switch("live", "Use live prices", true)',
+                    'send = Button("Send ticket", @ToAssistant("Book this order ticket."), "primary")'
+                )
+            ].join('\n')
+    },
+    {
+        prompt: 'Replay buttons and actions: set, reset, a multi-step action, and actions that cannot run.',
+        icon: Icon.bolt(),
+        reply: () =>
+            fence(
+                'root = Stack([status, steps, finish, refused])',
+                '$step = 1',
+                '$name = "draft"',
+                'saved = Mutation("save_region", {name: $name})',
+                'status = Callout("primary", "State", "Step **" + $step + "** of 3. Name: **" + $name + "**.")',
+                'steps = Stack([next, back, reset], "row")',
+                'next = Button("Next step", @Set($step, $step + 1), "primary")',
+                'back = Button("Back", @Set($step, $step - 1))',
+                'reset = Button("Reset", @Reset($step, $name))',
+                'finish = Stack([rename, done], "row")',
+                'rename = TextInput("name", "Name", null, null, $name)',
+                'done = Button("Finish and send", Action([@Set($step, 3), @ToAssistant("Finished at step " + $step, {step: $step, name: $name})]), "success")',
+                'refused = Stack([save, site, twice], "row")',
+                'save = Button("Save, by a mutation", @Run(saved), "danger")',
+                'site = Button("Open a site", @OpenUrl("https://xh.io"))',
+                'twice = Button("Send two messages", Action([@ToAssistant("One"), @ToAssistant("Two")]))'
+            )
+    },
+    {
+        prompt: 'Replay form controls in a row, in a section and in tabs.',
+        icon: Icon.layout(),
+        reply: () =>
+            fence(
+                'root = Stack([inRow, inSection, inTabs])',
+                'inRow = Stack([rowText, rowNumber, rowSelect, rowButton], "row")',
+                'rowText = TextInput("rowText", "Text", "In a row")',
+                'rowNumber = NumberInput("rowNumber", "Number", null, {min: 0, max: 10})',
+                'rowSelect = Select("rowSelect", ["One", "Two", "Three"], "Select")',
+                'rowButton = Button("Go", @ToAssistant("Go"))',
+                'inSection = Section([sectionForm], "Inputs in a section", null, true)',
+                'sectionForm = Form([sectionDate, sectionMulti, sectionPeriod, sectionSubmit], "A form in a section")',
+                'sectionDate = DateInput("sectionDate", "Date", {required: true})',
+                'sectionMulti = Select("sectionMulti", ["Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta"], "Multi select", "Pick any", true)',
+                'sectionPeriod = SegmentedControl("sectionPeriod", ["Day", "Week", "Month"], "Period", null, "Week")',
+                'sectionSubmit = Button("Submit", @ToAssistant("Submit the section form."), "primary")',
+                'inTabs = Tabs([tabOne, tabTwo], ["Inputs", "More inputs"])',
+                'tabOne = Stack([tabNote, tabAgree])',
+                'tabNote = TextArea("tabNote", "Note", "A short note")',
+                'tabAgree = Checkbox("tabAgree", "Agree")',
+                'tabTwo = Stack([tabLive, tabDate, tabSelect])',
+                'tabLive = Switch("tabLive", "Live")',
+                'tabDate = DateInput("tabDate", "Another date")',
+                'tabSelect = Select("tabSelect", ["Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "Black", "White"], "A select at the bottom of the reply")'
+            )
+    },
+    {
+        prompt: 'Replay slips a model can make: some the format corrects, some it reports.',
         icon: Icon.warning(),
         reply: () =>
             [
-                'Each mistake below shows in the inspector.',
+                'Each slip below shows in the inspector.',
                 '',
                 fence(
-                    // Named arguments: the parser reads `direction` as a reference to nothing.
-                    'root = Stack([lead, refresh, margin, trend], direction: "row")',
-                    'lead = Text("Four mistakes: a named argument, an unknown component, a bad value and an unused statement.")',
+                    'root = Stack([lead, row, gauge, margin, card])',
+                    'lead = Text("Five slips: a named argument, an unknown component, a bad value, one action where a list goes, and an unused statement.")',
+                    // Named arguments: the format reports the element, as its arguments would shift.
+                    'row = Stack([one, two], direction: "row")',
+                    'one = Text("One")',
+                    'two = Text("Two")',
                     // A component that the catalog lacks.
-                    'refresh = Button("Refresh", @ToAssistant("Refresh the data"))',
-                    // A value outside the schema of a prop.
+                    'gauge = Gauge("Load", 0.7)',
+                    // A value outside the schema of a prop: the parser drops it.
                     'margin = Metrics([{label: "Margin", value: 0.184, format: "ratio"}])',
-                    'trend = Chart("Trend", "line", {categories: ["Jan", "Feb", "Mar"]}, null, [{name: "Sales", data: [182000, 205000, 231000]}])',
+                    // One action where the prop takes a list: read as a list of one.
+                    'card = Card("Acme Corp", null, [{label: "Exposure", value: 4200000, format: "currency", decimals: 0}], @ToAssistant("Tell me more about Acme Corp."))',
                     // A statement that the root never reaches.
                     'note = Text("No statement uses this one.")'
                 )
@@ -239,6 +389,15 @@ export const OPEN_UI_REPLAY_SUGGESTIONS: ChatSuggestion[] = OPEN_UI_REPLAY_SCENA
 //------------------
 const REVENUE_CHART =
     'Chart("Monthly revenue", "column", {categories: ["Jan", "Feb", "Mar"]}, {title: "USD", format: "currency", decimals: 0}, [{name: "Revenue", data: [182000, 205000, 231000]}])';
+
+/** A small program with one query, which totals the positions by the given dimension. */
+function queryProgram(dim: string): string {
+    return fence(
+        'root = Stack([total])',
+        `q = Query("query_positions", {groupBy: ["${dim}"]}, {summary: {groups: 0, positions: 0}})`,
+        `total = Metrics([{label: "Groups by ${dim}", value: q.summary.groups}, {label: "Positions", value: q.summary.positions}])`
+    );
+}
 
 /** Statements as a fenced program, as the format's prompt asks a model to write one. */
 function fence(...statements: string[]): string {
