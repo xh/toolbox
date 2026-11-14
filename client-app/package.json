@@ -14,11 +14,11 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "testWithHoist": "(cd ../../hoist-react && pnpm install) && pnpm install && XH_INLINE_HOIST=true vitest",
+    "testWithHoist": "(cd ${XH_HOIST_REACT_PATH:-../../hoist-react} && pnpm install) && pnpm install && XH_INLINE_HOIST=true vitest",
     "prepare": "cd .. && husky client-app/.husky",
     "start": "pnpm install && rsbuild dev",
     "startWithIp": "XH_DEV_HOST=$(ipconfig getifaddr en0) pnpm start",
-    "startWithHoist": "(cd ../../hoist-react && pnpm install) && pnpm install && rsbuild dev --env-mode inlineHoist",
+    "startWithHoist": "(cd ${XH_HOIST_REACT_PATH:-../../hoist-react} && pnpm install) && pnpm install && rsbuild dev --env-mode inlineHoist",
     "startWithHoistAndIp": "XH_DEV_HOST=$(ipconfig getifaddr en0) pnpm startWithHoist",
     "startWithHoistSecure": "cross-env XH_DEV_HTTPS=true XH_DEV_HOST=toolbox-local.xh.io pnpm startWithHoist"
   },
