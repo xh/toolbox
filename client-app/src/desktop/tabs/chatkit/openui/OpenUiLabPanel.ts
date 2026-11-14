@@ -199,9 +199,9 @@ const PAGE_SPECS: Record<OpenUiLabSource, OpenUiLabPageSpec> = {
             'format, data tools and inspector as the live page. Use it to check a program again',
             'and again, at no cost and with no role.',
             '',
-            'Each suggestion runs a scripted reply. Two of them call a data tool first, so their',
-            'programs show real rows by reference. The third makes four mistakes a model can',
-            'make, and the inspector reports each one.',
+            'Each suggestion runs a scripted reply. Three of them call the data tools first, as a',
+            'model would, so their programs show real rows. The last makes four mistakes a model',
+            'can make, and the inspector reports each one.',
             '',
             'Any other message is streamed back as the reply itself. Paste what a live model',
             'wrote, in a fenced `openui-lang` block or as a bare program, to watch it render.'

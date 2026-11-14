@@ -2,7 +2,7 @@ import type {ChatSuggestion} from '@xh/hoist-chat-kit/desktop/cmp/chat';
 import {ScriptedChatTransport, textEvents, toolCallEvents} from '@xh/hoist-chat-kit/transport';
 import type {PlainObject} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {isEmpty, last} from 'lodash';
+import {last} from 'lodash';
 import type {ReactElement} from 'react';
 
 /**
@@ -13,10 +13,19 @@ export interface OpenUiReplayScenario {
     /** The message that runs the scenario, offered as a suggestion. */
     prompt: string;
     icon: ReactElement;
-    /** Calls to the lab's data tools, which the chat runs before the reply streams. */
-    toolCalls?: Array<{name: string; input: PlainObject}>;
-    /** The reply text, given the output of each tool call, in order. */
+    /**
+     * Rounds of calls to the lab's data tools, which the chat runs before the reply streams. Each
+     * round is a step of the turn, and gets the output of every call before it, in order.
+     */
+    toolRounds?: Array<(outputs: PlainObject[]) => OpenUiReplayToolCall[]>;
+    /** The reply text, given the output of every tool call, in order. */
     reply: (outputs: PlainObject[]) => string;
+}
+
+/** A scripted call to one of the lab's data tools. */
+export interface OpenUiReplayToolCall {
+    name: string;
+    input: PlainObject;
 }
 
 /**
@@ -35,11 +44,11 @@ export function createOpenUiReplayTransport(): ScriptedChatTransport {
                 scenario = OPEN_UI_REPLAY_SCENARIOS.find(it => it.prompt === text);
             if (!scenario) return textEvents(text);
 
-            const {toolCalls, reply} = scenario;
-            if (stepIndex === 0 && !isEmpty(toolCalls)) {
-                return toolCalls.map(({name, input}) => toolCallEvents(name, input));
-            }
-            return textEvents(reply(last(request.messages).toolCalls.map(it => it.output)));
+            const {toolRounds = [], reply} = scenario,
+                outputs = last(request.messages).toolCalls.map(it => it.output);
+            return stepIndex < toolRounds.length
+                ? toolRounds[stepIndex](outputs).map(({name, input}) => toolCallEvents(name, input))
+                : textEvents(reply(outputs));
         }
     });
 }
@@ -48,7 +57,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
     {
         prompt: 'Replay a portfolio brief over real positions, shown by reference.',
         icon: Icon.portfolio(),
-        toolCalls: [{name: 'query_positions', input: {groupBy: ['sector']}}],
+        toolRounds: [() => [{name: 'query_positions', input: {groupBy: ['sector']}}]],
         reply: ([{artifact, summary}]) =>
             [
                 'Here is the portfolio by sector.',
@@ -69,7 +78,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
     {
         prompt: 'Replay a row of fund cards, each with a follow-up action.',
         icon: Icon.fund(),
-        toolCalls: [{name: 'query_positions', input: {groupBy: ['fund']}}],
+        toolRounds: [() => [{name: 'query_positions', input: {groupBy: ['fund']}}]],
         reply: ([{firstRows}]) => {
             const names = firstRows.map((_, idx) => `fund${idx + 1}`);
             return fence(
@@ -82,6 +91,27 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
                 )
             );
         }
+    },
+    {
+        prompt: 'Replay a price chart of the most profitable symbol, from two rounds of tool calls.',
+        icon: Icon.chartLine(),
+        toolRounds: [
+            () => [{name: 'query_positions', input: {groupBy: ['symbol'], limit: 1}}],
+            ([top]) => [
+                {name: 'get_price_history', input: {symbol: top.firstRows[0].symbol, days: 90}}
+            ]
+        ],
+        reply: ([top, {artifact, summary}]) =>
+            [
+                `**${summary.symbol}** is the most profitable symbol, with a P&L of ${top.firstRows[0].pnl}.`,
+                '',
+                fence(
+                    `root = Stack([stats, close, volume], "column", "medium", "${summary.symbol}: ${summary.from} to ${summary.to}")`,
+                    `stats = Metrics([{label: "Last close", value: ${summary.lastClose}, format: "currency", delta: ${summary.change}, deltaFormat: "percent", deltaLabel: "over the period"}, {label: "High", value: ${summary.high}, format: "currency"}, {label: "Low", value: ${summary.low}, format: "currency"}, {label: "Avg volume", value: ${summary.avgVolume}}])`,
+                    `close = DataChart("Close", "${artifact}", null, null, null, null, null, "line", "day", ["close"])`,
+                    `volume = DataChart("Volume", "${artifact}", null, null, null, null, "thousands", "column", "day", ["volume"])`
+                )
+            ].join('\n')
     },
     {
         prompt: 'Replay a program with four mistakes a model can make.',
