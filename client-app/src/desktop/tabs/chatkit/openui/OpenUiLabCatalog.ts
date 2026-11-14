@@ -70,13 +70,23 @@ export function createOpenUiLabCatalog({
         textFormats: [openUiLangFormat({root: 'stack', bindings: true, queryTools, onToolCall})],
         // With only `openui` here, the chat sends no catalog tools: UI arrives as reply text.
         modes: ['openui'],
-        instructions:
-            'The user explores a sample trading portfolio. Get real figures from a data tool ' +
-            'before you show any. For a fixed view, show the rows of a tool result that you ' +
-            'called by its artifact id, with DataGrid or DataChart. Where the user would want ' +
-            'to change a view, such as its sector or its sort, bind an input to a $variable ' +
-            'and read the data with a Query. A Query result has no artifact to show: read its ' +
-            'summary for Metrics, and its firstRows for a Grid or a Chart, and ask for enough ' +
-            'rows with preview.'
+        instructions: INSTRUCTIONS
     });
 }
+
+//------------------
+// Implementation
+//------------------
+// The generated prompt names two ways to show a tool's data, and does not say when to use which.
+// It also tells the model to make up data where no tool fits. These lines settle both.
+const INSTRUCTIONS = [
+    'The user explores a sample trading portfolio. There are two ways to show its data:',
+    '- For a fixed view, call a data tool yourself first. Its result names its rows as an ' +
+        'artifact. Show them with DataGrid or DataChart by that id, and write its summary ' +
+        'figures into Metrics.',
+    '- For a view that the user should change, such as its sector or its sort, bind an input ' +
+        'to a $variable and read the data in the program with Query. A Query result has no ' +
+        'artifact, so DataGrid and DataChart cannot show it. Read its summary for Metrics and ' +
+        'its firstRows for a Grid or a Chart, and set preview to the number of rows you show.',
+    'Never make up a figure. If no tool has the data, say so in words.'
+].join('\n');

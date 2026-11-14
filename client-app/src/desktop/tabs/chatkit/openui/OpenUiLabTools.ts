@@ -13,6 +13,7 @@ import {
     isEmpty,
     isNil,
     last,
+    mapValues,
     maxBy,
     meanBy,
     minBy,
@@ -237,20 +238,15 @@ export function createOpenUiLabTools(): ChatToolSpec[] {
 }
 
 /**
- * The lab's data tools as the tools a program may call with `Query()`: each tool's name,
- * description and parameters, with the shape of its result, so that a model can write the
- * defaults of a query.
+ * The lab's data tools as the tools a program may call with `Query()`: each tool's name and
+ * parameters, with what a query reads of its result, so that a model can write the defaults of a
+ * query and name the fields of its rows.
  *
  * Every tool here only reads Toolbox's own sample data, changes nothing, and needs no approval.
  * A tool that writes, or that sends its arguments to another party, must not be listed.
  */
 export function toOpenUiQueryTools(tools: ChatToolSpec[]): OpenUiToolSpec[] {
-    return tools.map(({name, description, parameters}) => ({
-        name,
-        description,
-        parameters,
-        returns: RESULT_SCHEMA
-    }));
+    return tools.map(({name, parameters}) => ({name, parameters, ...QUERY_SPECS[name]}));
 }
 
 /** Total raw positions by the given dimensions: a row per group, with its P&L and market value. */
@@ -286,22 +282,6 @@ const PREVIEW_SCHEMA = {
         'feeds a Grid or a Chart reads its rows from firstRows, so ask for as many as it shows.'
 };
 
-/** What every tool returns to the model, and to a `Query()`. */
-const RESULT_SCHEMA = {
-    type: 'object',
-    properties: {
-        artifact: {type: 'string', description: 'Id of the artifact that holds every row.'},
-        columns: {
-            type: 'array',
-            items: {type: 'string'},
-            description: 'Each column as name: type.'
-        },
-        totalRows: {type: 'integer', description: 'Rows in the artifact.'},
-        summary: {type: 'object', description: 'Totals over the whole result.'},
-        firstRows: {type: 'array', items: {type: 'object'}, description: 'The first rows, inline.'}
-    }
-};
-
 const TRADE_COLUMNS: ChatDataColumn[] = [
         {name: 'time', type: 'datetime'},
         {name: 'symbol', type: 'string'},
@@ -326,6 +306,86 @@ const PRICE_COLUMNS: ChatDataColumn[] = [
     {name: 'close', type: 'number', format: 'currency', decimals: 2},
     {name: 'volume', type: 'integer'}
 ];
+
+/**
+ * Each tool as a `Query()` sees it: what it reads, and the summary and the row fields of its
+ * result. A result also names an artifact, but the kit keeps no artifact for a call that a
+ * program makes, so these leave it out.
+ */
+const QUERY_SPECS: Record<string, Pick<OpenUiToolSpec, 'description' | 'returns'>> = {
+    query_positions: {
+        description:
+            'Total the positions of the sample portfolio by one or two dimensions, with ' +
+            'optional filters. Each row of firstRows holds a group: a field per dimension, ' +
+            'with pnl, mktVal and positions.',
+        returns: queryResultSchema(
+            {groups: 'integer', positions: 'integer', pnl: 'number', mktVal: 'number'},
+            {pnl: 'number', mktVal: 'number', positions: 'integer'}
+        )
+    },
+    query_trades: {
+        description:
+            'List trades of the sample portfolio, newest first by default, with optional ' +
+            'filters. Each row of firstRows holds a trade.',
+        returns: queryResultSchema(
+            {trades: 'integer', buys: 'integer', sells: 'integer', grossNotional: 'number'},
+            rowFieldTypes(TRADE_COLUMNS)
+        )
+    },
+    get_price_history: {
+        description:
+            'Get the daily prices of one symbol of the sample portfolio. Each row of firstRows ' +
+            'holds a day, oldest first.',
+        returns: queryResultSchema(
+            {
+                symbol: 'string',
+                from: 'string',
+                to: 'string',
+                firstClose: 'number',
+                lastClose: 'number',
+                change: 'number',
+                high: 'number',
+                low: 'number',
+                avgVolume: 'number'
+            },
+            rowFieldTypes(PRICE_COLUMNS)
+        )
+    }
+};
+
+/** What a `Query()` reads of a result: the fields of its summary and of each of its rows. */
+function queryResultSchema(
+    summaryFields: Record<string, string>,
+    rowFields: Record<string, string>
+): PlainObject {
+    const fields = (types: Record<string, string>) => ({
+        type: 'object',
+        required: Object.keys(types),
+        properties: mapValues(types, type => ({type}))
+    });
+    return {
+        type: 'object',
+        required: ['summary', 'firstRows'],
+        properties: {
+            summary: {...fields(summaryFields), description: 'Totals over the whole result.'},
+            firstRows: {
+                type: 'array',
+                items: fields(rowFields),
+                description: 'The first rows, as many as preview asks for.'
+            }
+        }
+    };
+}
+
+/** The JSON type of each column as firstRows holds it. A date or a time is a string there. */
+function rowFieldTypes(columns: ChatDataColumn[]): Record<string, string> {
+    return Object.fromEntries(
+        columns.map(({name, type}) => [
+            name,
+            type === 'integer' || type === 'number' ? type : 'string'
+        ])
+    );
+}
 
 /** Loads each data set of the sample portfolio once, on first use. */
 class PortfolioData {
