@@ -12,10 +12,14 @@
  * left unbundled/uncompiled when published to npm so it can be processed in one shot and with the
  * same tooling as the app - hence the `extraIncludePaths` entry below. Apps that do NOT make use of
  * such a custom package do NOT need it.
+ *
+ * With `XH_CHAT_KIT_PATH` set, the dev server compiles `@xh/hoist-chat-kit` from that local
+ * checkout in place of the installed package - see scripts/localChatKit.mjs.
  */
 import configureRsbuild, {readCliEnv} from '@xh/hoist-dev-utils/configureRsbuild';
 import {createRequire} from 'node:module';
 import path from 'node:path';
+import {localChatKit} from './scripts/localChatKit.mjs';
 
 const require = createRequire(import.meta.url),
     // Single source of truth for the app version - keep in sync with `xhAppVersion` in
@@ -24,6 +28,9 @@ const require = createRequire(import.meta.url),
     customPkgPath = path.resolve('node_modules/@xh/package-template');
 
 export default ({envMode}) => {
+    const prodBuild = envMode === 'prod',
+        chatKit = prodBuild ? null : localChatKit({log: true});
+
     return configureRsbuild({
         appCode: 'toolbox',
         appName: 'Toolbox',
@@ -34,9 +41,11 @@ export default ({envMode}) => {
         // Use React prod mode, primarily to avoid console warnings for react 18
         reactProdMode: false,
         // Include custom package for transpiling for both packaged and inline use cases.
-        extraIncludePaths: [customPkgPath],
+        extraIncludePaths: chatKit ? [customPkgPath, chatKit.path] : [customPkgPath],
+        extraExcludePaths: chatKit ? [chatKit.nodeModulesPath] : [],
+        resolveAliases: chatKit?.aliases,
         // `rsbuild build --env-mode prod` / `rsbuild dev --env-mode inlineHoist`
-        prodBuild: envMode === 'prod',
+        prodBuild,
         inlineHoist: envMode === 'inlineHoist',
         ...readCliEnv()
     });

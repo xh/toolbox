@@ -11,7 +11,7 @@
     "lint:all": "pnpm lint:code && pnpm lint:styles",
     "lint:code": "eslint .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "node scripts/typecheck.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "testWithHoist": "(cd ../../hoist-react && pnpm install) && pnpm install && XH_INLINE_HOIST=true vitest",
