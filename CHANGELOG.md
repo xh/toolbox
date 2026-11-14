@@ -28,7 +28,7 @@
 ### Libraries
 
 * @xh/hoist-chat-kit `2.0` - new
-* @openuidev/lang-core `1.1` - new
+* @openuidev/lang-core `1.1.0` - new, at the exact version that `@xh/hoist-chat-kit` takes as a peer
 * zod `4.6` - new, and forced across the dependency tree in place of zod 3
 
 ## 12.1.0 - 2026-11-13
