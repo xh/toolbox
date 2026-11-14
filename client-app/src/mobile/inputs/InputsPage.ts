@@ -30,7 +30,7 @@ export const inputsPage = hoistCmp.factory({
             description: [
                 '`HoistInput` gives every editable control a common API - bind any input to observable',
                 'state via the `model` and `bind` props, with consistent change / commit handling',
-                'across the underlying Onsen widgets.',
+                'across every mobile input.',
                 '',
                 'Each card below shows an input with a few of its key props; the Disabled option applies',
                 'to every input at once. See the dedicated `Forms` example for these inputs bound to a',

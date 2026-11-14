@@ -49,7 +49,7 @@ export const dataViewPanel = hoistCmp.factory({
                         target: model
                     }),
                     filler(),
-                    storeFilterField({store: model.dataViewModel.store})
+                    storeFilterField()
                 ],
                 item: dataView()
             })

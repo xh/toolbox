@@ -125,6 +125,13 @@
     gap: var(--xh-spacing-half);
   }
 
+  // Tabbed sets of option rows - a segmented switcher above the active tab's rows.
+  &__option-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-spacing);
+  }
+
   // Labeled sub-group of option rows, for options sections long enough to need scan structure.
   &__option-group {
     display: flex;

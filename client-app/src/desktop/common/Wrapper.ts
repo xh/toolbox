@@ -4,6 +4,7 @@ import type {HoistProps, Intent} from '@xh/hoist/core';
 import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
 import type {ButtonProps} from '@xh/hoist/desktop/cmp/button';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {segmentedControl} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -284,6 +285,47 @@ export const [WrapperOptionGroup, wrapperOptionGroup] =
             });
         }
     });
+
+export interface WrapperOptionTab {
+    id: string;
+    title: string;
+    /** The tab's option rows - typically `wrapperOption` or `wrapperOptionGroup` elements. */
+    items: ReactNode;
+}
+
+interface WrapperOptionTabsProps extends HoistProps {
+    tabs: WrapperOptionTab[];
+}
+
+/**
+ * Tabbed sets of rows within a Wrapper `options` section, for examples with more options than one
+ * list holds comfortably. A segmented control switches between them, and the rail sizes to the
+ * active tab. The selected tab is local, in-memory state.
+ */
+export const [WrapperOptionTabs, wrapperOptionTabs] = hoistCmp.withFactory<WrapperOptionTabsProps>({
+    displayName: 'WrapperOptionTabs',
+    render({tabs}) {
+        const tabsModel = useLocalModel(WrapperOptionTabsModel),
+            active = tabs.find(it => it.id === tabsModel.activeId) ?? tabs[0];
+        return div({
+            className: 'tbox-wrapper__option-tabs',
+            items: [
+                segmentedControl({
+                    value: active.id,
+                    onChange: v => (tabsModel.activeId = v),
+                    options: tabs.map(it => ({value: it.id, label: it.title})),
+                    compact: true,
+                    fill: true
+                }),
+                div({className: 'tbox-wrapper__options-body', item: active.items})
+            ]
+        });
+    }
+});
+
+class WrapperOptionTabsModel extends HoistModel {
+    @bindable accessor activeId: string = null;
+}
 
 /**
  * A full-width, non-minimal action button for a Wrapper `options` section - i.e. a demo *trigger*

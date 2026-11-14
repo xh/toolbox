@@ -1,6 +1,6 @@
 import type {ColumnOrGroupSpec, ColumnSpec} from '@xh/hoist/cmp/grid';
 import type {PlainObject} from '@xh/hoist/core';
-import {dateRenderer, numberRenderer} from '@xh/hoist/format';
+import {dateTextRenderer, numberTextRenderer} from '@xh/hoist/format';
 import {cloneDeep} from 'lodash';
 
 export type GridSize = 'small' | 'medium' | 'large';
@@ -101,7 +101,7 @@ export function collectChooserGroups(columns: ColumnOrGroupSpec[]): string[] {
 type Tier = GridSize;
 const TIER_RANK: Record<Tier, number> = {small: 0, medium: 1, large: 2};
 
-/** Value/format family for a leaf - drives field type, renderer, alignment and width. */
+/** Value/format family for a leaf - drives field type, text renderer, alignment and width. */
 type Kind = 'text' | 'int' | 'price' | 'amount' | 'pct' | 'ratio' | 'date';
 
 interface LeafDef {
@@ -363,7 +363,7 @@ function toColumnSpec(node: Node): ColumnOrGroupSpec {
             };
         if (chooserName) spec.chooserName = chooserName;
         if (fmt.align) spec.align = fmt.align;
-        if (fmt.renderer) spec.renderer = fmt.renderer;
+        if (fmt.textRenderer) spec.textRenderer = fmt.textRenderer;
         if (node.hidden) spec.hidden = true;
         return spec;
     }
@@ -384,37 +384,42 @@ interface KindFormat {
     fieldType: 'string' | 'int' | 'number' | 'date';
     width: number;
     align?: 'left' | 'right';
-    renderer?: ColumnSpec['renderer'];
+    textRenderer?: ColumnSpec['textRenderer'];
 }
 
 const KIND_FORMAT: Record<Kind, KindFormat> = {
     text: {fieldType: 'string', width: 140},
-    int: {fieldType: 'int', width: 110, align: 'right', renderer: numberRenderer({precision: 0})},
+    int: {
+        fieldType: 'int',
+        width: 110,
+        align: 'right',
+        textRenderer: numberTextRenderer({precision: 0})
+    },
     price: {
         fieldType: 'number',
         width: 100,
         align: 'right',
-        renderer: numberRenderer({precision: 2})
+        textRenderer: numberTextRenderer({precision: 2})
     },
     amount: {
         fieldType: 'number',
         width: 130,
         align: 'right',
-        renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+        textRenderer: numberTextRenderer({precision: 0, ledger: true, colorSpec: true})
     },
     pct: {
         fieldType: 'number',
         width: 90,
         align: 'right',
-        renderer: numberRenderer({precision: 2, label: '%', colorSpec: true})
+        textRenderer: numberTextRenderer({precision: 2, label: '%', colorSpec: true})
     },
     ratio: {
         fieldType: 'number',
         width: 100,
         align: 'right',
-        renderer: numberRenderer({precision: 4})
+        textRenderer: numberTextRenderer({precision: 4})
     },
-    date: {fieldType: 'date', width: 110, align: 'left', renderer: dateRenderer()}
+    date: {fieldType: 'date', width: 110, align: 'left', textRenderer: dateTextRenderer()}
 };
 
 const ROW_COUNT = 50;

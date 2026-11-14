@@ -124,6 +124,9 @@ export class PanelResizingTestModel extends HoistModel {
         p(
             'Panels that specify a minSize should not be resizable smaller than that specified size.'
         ),
-        p('Panels that specify a maxSize should not be resizable larger than that specified size.')
+        p('Panels that specify a maxSize should not be resizable larger than that specified size.'),
+        p(
+            'The left-most panel has no title or icon. When collapsed it shows a thin clickable strip in place of a header. Click the strip to expand it.'
+        )
     ];
 }

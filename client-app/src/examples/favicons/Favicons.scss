@@ -88,48 +88,6 @@
   }
 }
 
-.tb-color-field {
-  &__label {
-    display: block;
-    margin-bottom: 2px;
-    font-size: var(--xh-font-size-small);
-    color: var(--xh-text-color-muted);
-  }
-
-  &__inputs {
-    align-items: center;
-    gap: 4px;
-  }
-
-  &__swatch {
-    flex: none;
-    width: 30px;
-    height: 24px;
-    padding: 0;
-    border: none;
-    background: none;
-    cursor: pointer;
-
-    &::-webkit-color-swatch-wrapper {
-      padding: 0;
-    }
-
-    &::-webkit-color-swatch {
-      border: var(--xh-border-solid);
-      border-radius: 4px;
-    }
-
-    &::-moz-color-swatch {
-      border: var(--xh-border-solid);
-      border-radius: 4px;
-    }
-  }
-
-  &__hex input {
-    font-family: var(--tb-fav-mono);
-  }
-}
-
 //------------------
 // Previews
 //------------------

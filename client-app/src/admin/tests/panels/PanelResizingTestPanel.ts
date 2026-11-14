@@ -64,13 +64,10 @@ export const PanelResizingTestPanel = hoistCmp({
                     className: 'xh-border-top',
                     items: [
                         panel({
-                            title: 'Left Panel 1',
-                            icon: Icon.disabled(),
                             model: model.leftPanel1Model,
-                            compactHeader: true,
                             item: box({
                                 className: 'xh-pad',
-                                item: 'Collapsible Left'
+                                item: 'Collapsible Left (no title or icon - collapses to a bare strip)'
                             })
                         }),
                         panel({

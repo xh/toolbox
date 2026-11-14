@@ -12,10 +12,33 @@
   3. Plain ASCII punctuation only. Use " - " for in-sentence breaks, never an em dash.
 -->
 
-## 12.0-SNAPSHOT - unreleased
+## 13.0-SNAPSHOT - unreleased
+
+## 12.1.0 - 2026-11-13
 
 ### New Features
 
+* Added a `CubeGrid` demo page to the Grids tab, showing hoist-react's new pivoting `CubeGrid` component spreading measures across pivot dimensions, with tabbed Main and Pivoting options for summaries, collapsing, measure ordering and `showRootGroup`.
+* Added a `PdfViewer` demo page to Components > General, showing hoist-react's new pdf.js-based document viewer with its toolbar options and model state.
+* Added a `StatCard` demo page to Components > General, showing hoist-react's new `StatCard` and `StatCardStrip` components with a live playground for every prop, plus examples of wrapping, sizes, intents, accents, clickable cards and CSS variable styling.
+
+### Technical
+
+* Moved formatted number and date columns across the shared column definitions, grid examples and admin tests to hoist-react's new `Column.textRenderer` for plain-text cells.
+* Added Cube pivoting and `CubeGrid` test pages and benchmarks to Admin > Tests, plus a Grid Formatter Parity test and an expanded Grid Scrolling benchmark comparing a Hoist `Grid` with a bare `AgGridReact`.
+* Pinned `@rspack/core` to `2.3.0` via a pnpm override - Rspack 2.3.2's minifier breaks classes that reference themselves in static initializers when `keep_classnames` is set (as hoist-dev-utils does), crashing production builds on load. Apps on hoist-dev-utils should apply the same override until a fixed Rspack ships - see xh/hoist-dev-utils#85.
+
+### Libraries
+
+* @xh/hoist `90.0 → 90.1`
+* hoist-core `44.0 → 44.1`
+* pdfjs-dist `6.5`
+
+## 12.0.0 - 2026-11-02
+
+### New Features
+
+* Added demos for hoist-react's new `Column.formatter`. A Cell Formatting option on the Standard grid switches its trade columns between formatters and renderers. The Number Formats page names the formatter to use in a grid column.
 * Added `StoreFilterField` and `GridFindField` to the desktop `ZoneGrid` demo, and bound the mobile demo's filter to its `ZoneGridModel`. Both search the fields mapped to the grid's zones, using hoist-react's new ZoneGrid support.
 * Added an `IconPicker` demo page to Forms + Inputs, including Toolbox's own custom icons alongside Hoist's built-in set.
 * Updated the desktop and mobile Icons galleries to browse hoist-react's new icon catalog - search now matches aliases and keywords, and custom icons are flagged.
@@ -25,20 +48,31 @@
 * Renamed the App Notifications demo to Updates & Idle and App Banners to Banners, and removed the Forms > Other Controls overview page - its controls now live under Components > Choosers & Pickers.
 * Added Favicon Designer example app - a client-only tool that builds a Hoist app's favicon set from any Font Awesome Pro glyph, with custom colors, backdrop shapes and padding, live browser-tab and home-screen previews, shareable design URLs, and a one-click zip of `favicon.svg` plus the PNGs `configureRsbuild()` picks up.
 * Added sample widgets in nested groups to the `DashCanvas` and `DashContainer` demos, to show a slash-delimited `groupName` nesting the add view menus and the `DashCanvasWidgetChooser`.
+* Added a `RadioCardInput` demo page to Forms + Inputs, and an App Options demo page.
+* Updated the desktop `NumberInput` playground and mobile inputs page to demo `displayWithCommas: 'always'`.
+* Updated demos for hoist-react v90 - the Format Numbers page now describes `Intl.NumberFormat`, the `DateInput` AM/PM example is replaced ahead of the removal of `timePickerProps`, and the Admin Panel Sizing test includes an untitled collapsible panel.
 
 ### Bug Fixes
 
 * Fixed the doc viewer giving the third and later repeats of an H2 heading the same section id, which sent deep links to the wrong section.
 * Fixed the GitHub `Commit` type, which named the server's `changedFiles` field `changeFiles`.
+* Fixed the error page rendering every status message - nginx served pre-compressed copies that bypassed SSI.
+* Fixed the mobile Form page field set styles, which targeted classes `FormFieldSet` never renders.
+* Fixed a database with no GitHub access token logging 401 errors and failing the GitHub monitor - the integration is now treated as disabled and the monitor reports INACTIVE.
 
 ### Technical
 
+* Admin > Tests > Grid Scrolling now compares a Hoist `Grid` with a bare `AgGridReact` under measured, stepped scrolls, reporting total and worst-step times. Its options cover column virtualization and cell formatting (plain text, formatters or renderers), the two settings that most affect scroll cost.
+* Added Admin > Tests > Grid Formatter Parity, which checks that `Column.textRenderer` and `renderer` cells display the same.
+* Moved every formatted number and date column in the examples and admin tests to `Column.textRenderer`, except the two Grid test columns that keep a tooltip and the Grid Scrolling and Formatter Parity pages that compare both forms on purpose.
 * Enabled Gradle dependency locking - after changing a dependency, run `./gradlew dependencies --write-locks -PrunHoistInline=false` and commit the lockfiles.
 * Updated `User` to hash passwords with hoist-core's `HoistPasswordEncryptor`, a drop-in replacement for jasypt's `BasicPasswordEncryptor` removed in hoist-core v44.
 * Upgraded to Grails 8 and the Gradle 9 wrapper.
 * Moved to Java 25 for builds, CI and the deployed Tomcat 11 container (`xhio/xh-tomcat:next-tc11-jdk25`). Grails 8 requires Java 21+ and Tomcat 11.
 * Reworked the `hoistCoreCli` configuration to resolve the active hoist-core version via `withDependencies`, deferring it to task execution. Resolving `runtimeClasspath` at configuration time under the Grails/Spring Boot plugin locks `developmentOnly` before its `afterEvaluate` hook can populate it.
 * Added Vitest unit tests for app models and services, run against hoist-react's fake hoist-core via `@xh/hoist/test-support` and the `configureVitest()` preset from hoist-dev-utils. Specs sit beside their source as `*.spec.ts`, and CI, snapshot and release builds now run `pnpm test`.
+* Added Spock unit tests for server code via hoist-core's new `hoist-core-test` library, run with `./gradlew test`.
+* Passed the auth context to the OAuth client's `initAsync()`, so the `xh.client.auth` span records the auth method.
 * Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
 * Added a `clusterMemberCount` status monitor that fails when an instance sees fewer cluster members than expected - catching tasks that are down or have failed to join the cluster.
 * Updated the Custom Package demo to `@xh/package-template` 4.0, now written in TypeScript for Hoist 88 and React 19. Its panel adds a click counter backed by a TC39-decorated model from the package.
@@ -46,10 +80,13 @@
 
 ### Libraries
 
+* @xh/hoist `88.0 → 90.0`
+* @xh/hoist-dev-utils `16.0 → 16.2`
+* hoist-core `42.0 → 44.0`
 * typescript `5.9 → 7.0`
 * @xh/package-template `3.0 → 4.0`
-* Grails `7.2.2 → 8.0.0`
-* Gradle `8.14.5 → 9.8.0`
+* Grails `7.2 → 8.0`
+* Gradle `8.14 → 9.8`
 * Java `21 → 25`
 
 ## 11.0.0 - 2026-09-29

@@ -39,9 +39,13 @@ configurations {
 }
 
 // After changing a dependency, run: ./gradlew dependencies --write-locks -PrunHoistInline=false
-dependencyLocking {
-    lockAllConfigurations()
-    lockMode = LockMode.STRICT
+// Locking applies to packaged builds only. An inline build takes its transitive graph from the
+// local hoist-core checkout, which the lock state cannot track.
+if (!parseBoolean(runHoistInline)) {
+    dependencyLocking {
+        lockAllConfigurations()
+        lockMode = LockMode.STRICT
+    }
 }
 
 springBoot {
