@@ -8,9 +8,22 @@ describe('createOpenUiLabCatalog', () => {
 
     it('teaches the model a signature for every component, with the stack as the root', () => {
         const {instructions} = catalog;
-        ['Stack', 'Text', 'Metrics', 'Grid', 'Chart', 'Card', 'DataGrid', 'DataChart'].forEach(
-            name => expect(instructions).toContain(`${name}(`)
-        );
+        [
+            'Stack',
+            'Tabs',
+            'Section',
+            'Divider',
+            'Text',
+            'Callout',
+            'Badges',
+            'Metrics',
+            'Grid',
+            'Chart',
+            'Treemap',
+            'Card',
+            'DataGrid',
+            'DataChart'
+        ].forEach(name => expect(instructions).toContain(`${name}(`));
         expect(instructions).toContain('root = Stack(');
     });
 

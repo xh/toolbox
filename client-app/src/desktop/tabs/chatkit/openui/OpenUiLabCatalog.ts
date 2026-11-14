@@ -1,10 +1,16 @@
 import {
+    chatUiBadgesSpec,
+    chatUiCalloutSpec,
     chatUiCardSpec,
     chatUiChartSpec,
+    chatUiDividerSpec,
     chatUiGridSpec,
     chatUiMetricsSpec,
+    chatUiSectionSpec,
     chatUiStackSpec,
-    chatUiTextSpec
+    chatUiTabsSpec,
+    chatUiTextSpec,
+    chatUiTreeMapSpec
 } from '@xh/hoist-chat-kit/desktop/cmp/genui';
 import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import type {OpenUiLangFormatOptions} from '@xh/hoist-chat-kit/genui/openui';
@@ -29,11 +35,18 @@ export function createOpenUiLabCatalog(): ChatUiCatalog {
         components: [
             // Layout. The stack is the root of every program.
             chatUiStackSpec(),
+            chatUiTabsSpec(),
+            chatUiSectionSpec(),
+            chatUiDividerSpec(),
+            // Words and labels.
             chatUiTextSpec(),
+            chatUiCalloutSpec(),
+            chatUiBadgesSpec(),
             // Values that the model writes into the program.
             chatUiMetricsSpec({maxItems: 6}),
             chatUiGridSpec({maxRows: 50}),
             chatUiChartSpec(),
+            chatUiTreeMapSpec(),
             chatUiCardSpec(),
             // Rows that a tool produced, named by artifact id.
             chatUiGridSpec({name: 'dataGrid', byReference: true}),
