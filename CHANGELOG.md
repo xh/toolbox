@@ -18,14 +18,18 @@
 
 * Added a Chat Kit tab to the desktop app - a tour of `@xh/hoist-chat-kit`, XH's new library of chat components for Hoist apps. Component pages put `ChatPanel`, `ChatComposer`, `ChatMessageList`, `ChatMarkdown`, sources and citations, the empty state, feedback, status cues and theming in a playground of their curated props. Scripted conversations show rich content, reasoning and tools, the agent timeline, approvals, agent questions, attachments, errors and stop, and generative UI without a server or a model. Two integrations show the kit wired up: a full `chatWorkspace` over a client-side thread store, and a live Claude chat relayed by the Toolbox server with tools that act on the app.
 * Added the Hoist Chat Kit docs to the Docs tab, served from the installed `@xh/hoist-chat-kit` package or a sibling checkout in local development, and a `$CK` link token that opens them in the viewer.
+* Added an OpenUI Lab to the Chat Kit tab - a testbed where a model answers in OpenUI Lang and `@xh/hoist-chat-kit` renders each program with Hoist components as it streams. A live page asks Claude through the Toolbox server, with tools that read the sample portfolio and show large results by reference. A replay page streams scripted or pasted programs with no model. An inspector beside each chat shows the prompt, each program of the latest reply, and what rendered, fell back or was dropped.
 
 ### Technical
 
 * Added `LlmService` and a `/llm/stream` endpoint that relay the Anthropic Messages API as a token stream for the Chat Kit tab's Live Model demo. Access needs the new `TOOLBOX_LLM_USER` role, with a per-user hourly limit that `TOOLBOX_LLM_UNLIMITED` lifts, and every call tracked in category `LLM`. Configure with the new `llmApiKey` config and the typed `llmConfig` JSON config.
+* Added an `XH_CHAT_KIT_PATH` switch that runs the dev server, the unit tests and `pnpm typecheck` against a local checkout of `@xh/hoist-chat-kit`. It is unset by default, and production builds ignore it. See `docs/running-locally.md`.
 
 ### Libraries
 
 * @xh/hoist-chat-kit `2.0` - new
+* @openuidev/lang-core `1.1` - new
+* zod `4.6` - new, and forced across the dependency tree in place of zod 3
 
 ## 12.1.0 - 2026-11-13
 
