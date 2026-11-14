@@ -1,8 +1,8 @@
 .tb-meet-xh {
   &__spotlight {
     flex: 1;
-    padding: var(--xh-pad-double-px);
-    gap: var(--xh-pad-double-px);
+    padding: var(--xh-spacing-double);
+    gap: var(--xh-spacing-double);
     overflow: hidden;
     animation: tb-meet-xh-fade 0.5s ease;
   }
@@ -18,30 +18,30 @@
   &__details {
     flex: 1;
     min-width: 0;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
     overflow: hidden;
   }
 
   &__name {
     font-weight: 600;
-    font-size: var(--xh-font-size-large-px);
+    font-size: var(--xh-font-size-large);
   }
 
   &__location {
     color: var(--xh-text-color-muted);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
   }
 
   &__tags {
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
     flex-wrap: wrap;
   }
 
   &__tag {
     background-color: var(--xh-bg-alt);
     border-radius: 10px;
-    padding: 0 var(--xh-pad-px);
-    font-size: var(--xh-font-size-small-px);
+    padding: 0 var(--xh-spacing);
+    font-size: var(--xh-font-size-small);
   }
 
   &__bio {
@@ -58,13 +58,13 @@
 
   &__fallback {
     flex: 1;
-    padding: var(--xh-pad-double-px);
+    padding: var(--xh-spacing-double);
   }
 
   &__avatars {
     flex: none;
-    padding: var(--xh-pad-px) var(--xh-pad-double-px);
-    gap: var(--xh-pad-half-px);
+    padding: var(--xh-spacing) var(--xh-spacing-double);
+    gap: var(--xh-spacing-half);
     flex-wrap: wrap;
     border-top: var(--xh-border-solid);
 

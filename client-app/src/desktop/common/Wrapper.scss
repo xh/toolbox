@@ -41,16 +41,16 @@
 
   &__rail-body {
     overflow: auto;
-    padding: var(--xh-pad-px);
+    padding: var(--xh-spacing);
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     line-height: 1.5;
   }
 
   &__intro {
     p {
-      margin: 0 0 var(--xh-pad-half-px);
+      margin: 0 0 var(--xh-spacing-half);
       &:last-child {
         margin: 0;
       }
@@ -74,15 +74,15 @@
       background-color: var(--xh-bg-alt);
       border: 1px solid var(--xh-border-color);
       border-radius: 4px;
-      padding: var(--xh-pad-half-px) var(--xh-pad-px);
-      margin: 0 0 var(--xh-pad-half-px);
+      padding: var(--xh-spacing-half) var(--xh-spacing);
+      margin: 0 0 var(--xh-spacing-half);
       overflow-x: auto;
       line-height: 1.4;
     }
 
     ul,
     ol {
-      margin: var(--xh-pad-half-px) 0;
+      margin: var(--xh-spacing-half) 0;
       padding-left: 1.4em;
     }
 
@@ -100,12 +100,12 @@
   &__resources {
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
   }
 
   &__resources-label,
   &__options-label {
-    margin-bottom: var(--xh-pad-half-px);
+    margin-bottom: var(--xh-spacing-half);
     text-transform: uppercase;
     font-size: 0.7rem;
     font-weight: 500;
@@ -122,14 +122,14 @@
   &__options-body {
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
   }
 
   // Tabbed sets of option rows - a segmented switcher above the active tab's rows.
   &__option-tabs {
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
   }
 
   // Labeled sub-group of option rows, for options sections long enough to need scan structure.
@@ -138,15 +138,15 @@
     flex-direction: column;
 
     & + & {
-      margin-top: var(--xh-pad-px);
+      margin-top: var(--xh-spacing);
     }
   }
 
   &__option-group-label {
     display: flex;
     align-items: center;
-    gap: var(--xh-pad-half-px);
-    margin-bottom: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
+    margin-bottom: var(--xh-spacing-half);
     padding-bottom: 2px;
     border-bottom: 1px solid var(--xh-border-color);
     font-size: 0.8em;
@@ -160,7 +160,7 @@
 
   // Scope note under the group label - which of the two option scopes this group is.
   &__option-group-info {
-    margin: -3px 0 var(--xh-pad-half-px);
+    margin: -3px 0 var(--xh-spacing-half);
     color: var(--xh-text-color-muted);
     font-size: 0.85em;
     line-height: 1.35;
@@ -175,7 +175,7 @@
   &__option-group-body {
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
   }
 
   &__option {
@@ -187,7 +187,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     min-height: 26px;
   }
 
@@ -265,7 +265,7 @@
 
   &__resource {
     display: flex;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
     align-items: baseline;
 
     .xh-icon {
@@ -305,7 +305,7 @@
     flex: none;
     width: 36px;
     align-items: center;
-    padding-top: var(--xh-pad-half-px);
+    padding-top: var(--xh-spacing-half);
     border: var(--xh-border-solid);
     border-radius: 8px;
     box-shadow: var(--tbox-card-shadow);
@@ -313,7 +313,7 @@
   }
 
   &__rail-collapsed-hint {
-    margin-top: var(--xh-pad-half-px);
+    margin-top: var(--xh-spacing-half);
     color: var(--xh-text-color-muted);
   }
 }

@@ -1,6 +1,6 @@
 .tb-inputs-page {
   &__row {
-    padding: var(--xh-pad-px) 0;
+    padding: var(--xh-spacing) 0;
     border-bottom: var(--xh-border-solid);
 
     &:last-child {
@@ -9,17 +9,17 @@
   }
 
   &__label {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     color: var(--xh-text-color);
   }
 
   &__info {
     margin-top: 2px;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
   &__control {
-    margin-top: var(--xh-pad-half-px);
+    margin-top: var(--xh-spacing-half);
   }
 }

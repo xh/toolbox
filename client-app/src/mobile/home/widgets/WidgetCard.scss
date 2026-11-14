@@ -13,8 +13,8 @@
   &__header {
     flex: none;
     align-items: center;
-    gap: var(--xh-pad-half-px);
-    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+    gap: var(--xh-spacing-half);
+    padding: var(--xh-spacing-half) var(--xh-spacing);
     cursor: pointer;
     user-select: none;
     // A faint backing tint so the header reads as a distinct title bar from the body.
@@ -30,11 +30,11 @@
   &__header-icon {
     flex: none;
     color: var(--xh-text-color-muted);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
   }
 
   &__header-title {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     font-weight: 500;
     text-transform: uppercase;
     color: var(--xh-text-color-muted);
@@ -43,13 +43,13 @@
   &__header-chevron {
     flex: none;
     color: var(--xh-text-color-muted);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
   }
 
   //------------------------
   // Body
   //------------------------
   &__body {
-    padding: var(--xh-pad-px);
+    padding: var(--xh-spacing);
   }
 }

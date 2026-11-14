@@ -106,7 +106,7 @@ export const basicPanel = hoistCmp.factory({
                 ],
                 scrollable: true,
                 contentBoxProps: {
-                    padding: 'var(--xh-pad-px)',
+                    padding: 'var(--xh-spacing)',
                     style: {fontSize: `${model.textScale}em`}
                 },
                 items: [...model.demoText.map(it => p(it)), aComponentThatCanThrowInRender()],

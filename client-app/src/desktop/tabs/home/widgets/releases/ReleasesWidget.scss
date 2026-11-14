@@ -1,7 +1,7 @@
 .tb-releases {
   &__list {
-    padding: var(--xh-pad-px);
-    gap: var(--xh-pad-px);
+    padding: var(--xh-spacing);
+    gap: var(--xh-spacing);
   }
 
   &__card {
@@ -9,8 +9,8 @@
     --tb-release-card-bg: var(--xh-bg);
 
     border: var(--xh-border-solid);
-    border-radius: var(--xh-border-radius-px);
-    padding: var(--xh-pad-px);
+    border-radius: var(--xh-border-radius);
+    padding: var(--xh-spacing);
     cursor: pointer;
     background-color: var(--tb-release-card-bg);
     transition: background-color 0.15s ease;
@@ -22,7 +22,7 @@
 
   &__card-header {
     align-items: center;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
   }
 
   &__repo {
@@ -54,11 +54,11 @@
   }
 
   &__card-body {
-    margin-top: var(--xh-pad-half-px);
+    margin-top: var(--xh-spacing-half);
     max-height: 80px;
     overflow: hidden;
     position: relative;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
 
     // Fade out clamped content, tracking the card's hover background.
@@ -73,12 +73,12 @@
     h2,
     h3 {
       font-size: 1em;
-      margin: 0 0 var(--xh-pad-half-px);
+      margin: 0 0 var(--xh-spacing-half);
     }
 
     ul {
       margin: 0;
-      padding-left: var(--xh-pad-double-px);
+      padding-left: var(--xh-spacing-double);
     }
   }
 }

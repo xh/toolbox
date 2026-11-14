@@ -1,29 +1,29 @@
 .tb-feedback {
   &__inner {
     align-items: stretch;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
 
     &--thanks {
       align-items: center;
       text-align: center;
-      gap: var(--xh-pad-px);
-      padding: var(--xh-pad-px) 0;
+      gap: var(--xh-spacing);
+      padding: var(--xh-spacing) 0;
     }
   }
 
   &__question {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     font-weight: 500;
     color: var(--xh-text-color);
   }
 
   &__sub {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
   }
 
   &__ratings {
     justify-content: space-around;
-    margin-top: var(--xh-pad-px);
+    margin-top: var(--xh-spacing);
 
     .xh-button {
       color: var(--xh-orange);
@@ -32,7 +32,7 @@
 
   &__actions {
     align-items: center;
-    gap: var(--xh-pad-half-px);
-    margin-top: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
+    margin-top: var(--xh-spacing-half);
   }
 }

@@ -9,8 +9,8 @@
 
   &__crumb {
     align-items: center;
-    gap: var(--xh-pad-half-px);
-    font-size: var(--xh-font-size-small-px);
+    gap: var(--xh-spacing-half);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
@@ -23,11 +23,11 @@
   //------------------------
   &__title-bar {
     align-items: center;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
   }
 
   &__title-text {
-    font-size: var(--xh-font-size-large-px);
+    font-size: var(--xh-font-size-large);
     color: var(--xh-text-color);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -38,7 +38,7 @@
   // Footer pager (prev / next within category)
   //------------------------
   &__pager {
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
   }
 
   &__pager-btn {
@@ -48,7 +48,7 @@
 
   &__pager-label {
     align-items: center;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
     overflow: hidden;
   }
 
