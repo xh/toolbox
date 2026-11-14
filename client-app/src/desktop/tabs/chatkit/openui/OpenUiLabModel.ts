@@ -1,22 +1,32 @@
-import type {ChatMessage} from '@xh/hoist-chat-kit/core';
+import type {ChatMessage, ChatToolSpec} from '@xh/hoist-chat-kit/core';
 import {ChatModel} from '@xh/hoist-chat-kit/core';
 import type {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
+import type {OpenUiToolCall} from '@xh/hoist-chat-kit/genui/openui';
 import {AnthropicCodec, HoistChatTransport} from '@xh/hoist-chat-kit/transport';
 import {HoistModel, managed} from '@xh/hoist/core';
-import {observableRef} from '@xh/hoist/mobx';
+import {action, observableRef} from '@xh/hoist/mobx';
 import {findLast} from 'lodash';
-import {createOpenUiLabCatalog, OPEN_UI_FORMAT_OPTIONS} from './OpenUiLabCatalog';
-import {createOpenUiLabTools} from './OpenUiLabTools';
+import {createOpenUiLabCatalog} from './OpenUiLabCatalog';
+import {createOpenUiLabTools, toOpenUiQueryTools} from './OpenUiLabTools';
 import type {OpenUiProgramReport} from './OpenUiProgramReport';
-import {OpenUiProgramInspector} from './OpenUiProgramReport';
+import {inspectOpenUiMessage} from './OpenUiProgramReport';
 import {createOpenUiReplayTransport} from './OpenUiReplay';
 
 /** Where a lab page gets its replies. */
 export type OpenUiLabSource = 'live' | 'replay';
 
+/** One call that a program made to a data tool with `Query()`, for the inspector's call log. */
+export interface OpenUiLabToolCall extends OpenUiToolCall {
+    /** Position of the call in the log, from 1. */
+    index: number;
+    /** Epoch millis when the call started. */
+    at: number;
+}
+
 /**
- * The model of an OpenUI Lab page: a chat whose replies hold OpenUI Lang, and the reports on each
- * program of its latest reply, for the inspector.
+ * The model of an OpenUI Lab page: a chat whose replies hold OpenUI Lang, and what the inspector
+ * shows of them - a report on each program of the latest reply, and a log of the tool calls that
+ * programs made.
  *
  * A `live` page asks Claude through the Toolbox server relay. A `replay` page streams scripted
  * replies, and any text the user sends, with no model. Both use the same catalog and data tools.
@@ -24,7 +34,16 @@ export type OpenUiLabSource = 'live' | 'replay';
 export class OpenUiLabModel extends HoistModel {
     readonly source: OpenUiLabSource;
 
-    readonly catalog: ChatUiCatalog = createOpenUiLabCatalog();
+    /**
+     * The data tools. The model calls them in a reply, and a program calls them with `Query()`,
+     * so the catalog lists them as query tools. All three only read sample data.
+     */
+    readonly tools: ChatToolSpec[] = createOpenUiLabTools();
+
+    readonly catalog: ChatUiCatalog = createOpenUiLabCatalog({
+        queryTools: toOpenUiQueryTools(this.tools),
+        onToolCall: call => this.logToolCall(call)
+    });
 
     /**
      * The system prompt of the live page: the app's own text, then the catalog's OpenUI Lang
@@ -40,7 +59,11 @@ export class OpenUiLabModel extends HoistModel {
     /** A report per OpenUI Lang program of the inspected reply. */
     @observableRef accessor reports: OpenUiProgramReport[] = [];
 
-    private readonly inspector = new OpenUiProgramInspector(this.catalog, OPEN_UI_FORMAT_OPTIONS);
+    /**
+     * Each `Query()` call that a program of this chat started, oldest first. Such a call is not
+     * part of the chat's history, so this log is its only trace.
+     */
+    @observableRef accessor toolCalls: OpenUiLabToolCall[] = [];
 
     constructor(source: OpenUiLabSource) {
         super();
@@ -53,7 +76,7 @@ export class OpenUiLabModel extends HoistModel {
                           codec: new AnthropicCodec({system: this.systemPrompt, cacheControl: true})
                       })
                     : createOpenUiReplayTransport(),
-            tools: createOpenUiLabTools(),
+            tools: this.tools,
             catalog: this.catalog,
             // Each step of a live reply is a model call, and counts toward the server's per-user
             // rate limit. A reply that calls data tools takes a step per round of calls, then
@@ -61,16 +84,39 @@ export class OpenUiLabModel extends HoistModel {
             maxSteps: 6
         });
 
-        // The chat replaces a streaming message on every chunk. Each report parses its program
-        // from the start, so follow the stream at a short delay.
+        // The chat replaces a streaming message on every chunk, so follow the stream at a short
+        // delay.
         this.addReaction({
             track: () => findLast(this.chatModel.messages, it => it.isAssistant) ?? null,
             run: message => {
                 this.inspectedMessage = message;
-                this.reports = this.inspector.inspectMessage(message);
+                this.reports = inspectOpenUiMessage(this.catalog, message);
             },
             debounce: 150
         });
+
+        // A cleared chat starts its log again.
+        this.addReaction({
+            track: () => this.chatModel.isEmpty,
+            run: isEmpty => {
+                if (isEmpty) this.toolCalls = [];
+            }
+        });
+    }
+
+    /** Empty the inspector's call log. */
+    @action
+    clearToolCalls() {
+        this.toolCalls = [];
+    }
+
+    //------------------
+    // Implementation
+    //------------------
+    @action
+    private logToolCall(call: OpenUiToolCall) {
+        const {toolCalls} = this;
+        this.toolCalls = [...toolCalls, {...call, index: toolCalls.length + 1, at: Date.now()}];
     }
 }
 

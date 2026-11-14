@@ -19,10 +19,11 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses} from '@xh/hoist/core';
 import {clipboardButton} from '@xh/hoist/desktop/cmp/clipboard';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {fmtNumber} from '@xh/hoist/format';
+import {fmtNumber, fmtTime} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {pluralize} from '@xh/hoist/utils/js';
@@ -42,6 +43,7 @@ class OpenUiInspectorModel extends HoistModel {
     @managed readonly tabModel = new TabContainerModel({
         tabs: [
             {id: 'programs', title: 'Programs', icon: Icon.code(), content: programsTab},
+            {id: 'calls', title: 'Calls', icon: Icon.transaction(), content: callsTab},
             {id: 'prompt', title: 'Prompt', icon: Icon.terminal(), content: promptTab},
             {id: 'reply', title: 'Reply Text', icon: Icon.fileText(), content: replyTab}
         ]
@@ -67,8 +69,8 @@ class OpenUiInspectorModel extends HoistModel {
 
 /**
  * The inspector beside the lab's chat. It shows the mechanism behind a reply: each OpenUI Lang
- * program with what became of it, the prompt that taught the model the language, and the reply's
- * text as written.
+ * program with what became of it, the tool calls that programs made with `Query()`, the prompt
+ * that taught the model the language, and the reply's text as written.
  */
 export const openUiInspector = hoistCmp.factory({
     displayName: 'OpenUiInspector',
@@ -198,7 +200,7 @@ function elementTable(elements: OpenUiElementReport[]) {
         items: [
             thead(tr(th('Element'), th('Component'), th('Outcome'))),
             tbody(
-                elements.map(({id, component, isPartial, errors}) =>
+                elements.map(({id, component, isPartial, readsState, errors}) =>
                     tr({
                         key: id,
                         className: classNames(
@@ -211,7 +213,9 @@ function elementTable(elements: OpenUiElementReport[]) {
                                 isEmpty(errors)
                                     ? isPartial
                                         ? 'Streaming'
-                                        : 'Rendered'
+                                        : readsState
+                                          ? 'Reads state'
+                                          : 'Rendered'
                                     : ul(errors.map((it, idx) => li({key: idx, item: it})))
                             )
                         ]
@@ -239,6 +243,90 @@ const STATUS_LABELS: Record<OpenUiProgramStatus, string> = {
     renderedWithIssues: 'Rendered with issues',
     failed: 'Failed'
 };
+
+//------------------
+// Calls tab
+//------------------
+const callsTab = hoistCmp.factory<HoistProps<OpenUiLabModel>>({
+    displayName: 'OpenUiCallsTab',
+    model: uses(OpenUiLabModel),
+
+    render({model}) {
+        const {toolCalls, chatModel} = model,
+            replyIds = chatModel.messages.filter(it => it.isAssistant).map(it => it.id);
+
+        return panel({
+            tbar: toolbar({
+                compact: true,
+                items: [
+                    span({
+                        className: 'tb-openui-inspector__meta',
+                        item: `${pluralize('call', toolCalls.length, true)} by Query()`
+                    }),
+                    filler(),
+                    button({
+                        text: 'Clear',
+                        icon: Icon.reset(),
+                        disabled: isEmpty(toolCalls),
+                        onClick: () => model.clearToolCalls()
+                    })
+                ]
+            }),
+            item: isEmpty(toolCalls)
+                ? placeholder(
+                      Icon.transaction(),
+                      'Each tool call that a program makes with Query() shows here. The chat ' +
+                          'keeps no other record of one.'
+                  )
+                : div({
+                      className: 'tb-openui-inspector__scroll',
+                      items: [
+                          table({
+                              className: 'tb-openui-elements',
+                              items: [
+                                  thead(
+                                      tr(
+                                          th('#'),
+                                          th('Time'),
+                                          th('Reply'),
+                                          th('Tool'),
+                                          th('Arguments')
+                                      )
+                                  ),
+                                  tbody(
+                                      toolCalls.map(({index, at, toolName, args, messageId}) =>
+                                          tr({
+                                              key: index,
+                                              items: [
+                                                  td(index),
+                                                  td(fmtTime(at, {fmt: 'HH:mm:ss'})),
+                                                  td(replyLabel(replyIds, messageId)),
+                                                  td(code(toolName)),
+                                                  td(code(JSON.stringify(args)))
+                                              ]
+                                          })
+                                      )
+                                  )
+                              ]
+                          }),
+                          div({className: 'tb-openui-inspector__note', item: CALL_LIMITS_NOTE})
+                      ]
+                  })
+        });
+    }
+});
+
+/** Which reply of the chat made a call: its position among the replies, from 1. */
+function replyLabel(replyIds: string[], messageId: string): string {
+    const idx = replyIds.indexOf(messageId);
+    return idx < 0 ? 'Gone' : `${idx + 1} of ${replyIds.length}`;
+}
+
+const CALL_LIMITS_NOTE =
+    'The kit runs a query when its program completes, and again when a $variable in its ' +
+    'arguments changes. A program with more than 8 queries runs none. Only the first 3 ' +
+    'programs of a reply run queries. A program in an older reply waits until the user acts ' +
+    'in it. All programs of a chat together start at most 60 calls a minute.';
 
 //------------------
 // Prompt tab

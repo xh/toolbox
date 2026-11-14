@@ -126,7 +126,7 @@ const CATALOG_SNIPPET = [
     '```ts',
     'new ChatUiCatalog({',
     '  components: [chatUiStackSpec(), ...],',
-    "  textFormats: [openUiLangFormat({root: 'stack'})],",
+    "  textFormats: [openUiLangFormat({root: 'stack', bindings: true, queryTools})],",
     "  modes: ['openui']",
     '})',
     '```'
@@ -142,7 +142,7 @@ const PAGE_SPECS: Record<OpenUiLabSource, OpenUiLabPageSpec> = {
             'A live model writes UI in **OpenUI Lang**, the streaming UI language of Thesys',
             'OpenUI, and the kit renders each program with Hoist components. The lab has no',
             'OpenUI components: its catalog holds only the layout, text, metrics, grid, chart,',
-            'treemap and card components of the kit.',
+            'treemap, card and form components of the kit.',
             '',
             ...CATALOG_SNIPPET,
             '',
@@ -151,9 +151,12 @@ const PAGE_SPECS: Record<OpenUiLabSource, OpenUiLabPageSpec> = {
             'and keep their rows in the browser as artifacts, which a `DataGrid` or `DataChart`',
             'shows by id.',
             '',
-            'The inspector shows the prompt the model received, and each program of the latest',
-            'reply beside what became of it: the elements that rendered, the ones that fell back,',
-            'and what the parser dropped.',
+            'A program runs with state. An input can bind a `$variable`, an expression can read',
+            'it, and a `Query()` can read the data tools again when it changes, with no new reply.',
+            'A program cannot change data.',
+            '',
+            'The inspector shows each program of the latest reply beside what became of it, the',
+            'tool calls that programs made, and the prompt the model received.',
             '',
             'Access needs the `TOOLBOX_LLM_USER` role. Each model call counts toward the hourly',
             'limit of the server relay, and a reply that calls tools makes several.'
@@ -172,6 +175,10 @@ const PAGE_SPECS: Record<OpenUiLabSource, OpenUiLabPageSpec> = {
                 icon: Icon.portfolio()
             },
             {
+                text: 'Let me explore P&L by region for a sector I pick, with the sector and the sort as inputs.',
+                icon: Icon.filter()
+            },
+            {
                 text: 'Compare the funds side by side, with a card per fund and a follow-up action on each.',
                 icon: Icon.fund()
             },
@@ -186,6 +193,10 @@ const PAGE_SPECS: Record<OpenUiLabSource, OpenUiLabPageSpec> = {
             {
                 text: 'Show the 200 most recent Technology trades, and tell me what stands out.',
                 icon: Icon.transaction()
+            },
+            {
+                text: 'Give me an order ticket form for a new trade, and book it when I submit.',
+                icon: Icon.edit()
             }
         ]
     },
@@ -201,8 +212,9 @@ const PAGE_SPECS: Record<OpenUiLabSource, OpenUiLabPageSpec> = {
             '',
             'Each suggestion runs a scripted reply. Some call the data tools first, as a model',
             'would, so their programs show real rows. Others cover each display component, nested',
-            'layouts, edge cases and text that needs escaping. The last makes four mistakes a',
-            'model can make, and the inspector reports each one.',
+            'layouts, edge cases and text that needs escaping. The interactive ones bind inputs to',
+            '`$variables`, read data with `Query()`, send a form, and run button actions. The',
+            'last makes slips a model can make, and the inspector reports each one.',
             '',
             'Any other message is streamed back as the reply itself. Paste what a live model',
             'wrote, in a fenced `openui-lang` block or as a bare program, to watch it render.'
