@@ -2,8 +2,7 @@ import type {ChatMessage, ChatTextPart} from '@xh/hoist-chat-kit/core';
 import type {ChatUiCatalog, ChatUiElement, ChatUiTextSegment} from '@xh/hoist-chat-kit/genui';
 import type {OpenUiDocumentSegment} from '@xh/hoist-chat-kit/genui/openui';
 import {isOpenUiDocumentSegment} from '@xh/hoist-chat-kit/genui/openui';
-import type {PlainObject} from '@xh/hoist/core';
-import {isArray, isEmpty, isPlainObject, isString} from 'lodash';
+import {isEmpty} from 'lodash';
 
 /**
  * How one OpenUI Lang program of a reply fared.
@@ -25,9 +24,9 @@ export interface OpenUiElementReport {
     /** True while its statement still streams. */
     isPartial: boolean;
     /**
-     * True for an element with a prop that the program computes: from a `$variable`, a query
+     * True for an element with a prop that the state computes: from a `$variable`, a query
      * result or another expression. The kit evaluates such a prop as the program renders, so this
-     * report cannot check it.
+     * report does not check the element's props.
      */
     readsState: boolean;
     /** Why it renders as a fallback. Empty for an element that renders. */
@@ -60,9 +59,8 @@ export interface OpenUiProgramReport {
  * that the root does not reach. This adds the catalog's own check of each element.
  *
  * A program that runs with state gives a document that the kit resolves as it renders. The
- * segment holds that document before any evaluation: a computed prop is absent, or holds the
- * parser's expression in place of a value. So this checks only the props a program wrote as
- * plain values, and marks an element with computed props as one that reads state.
+ * segment holds no final value for a prop that the state computes, and lists the elements with
+ * such a prop. This marks each of them as one that reads state, and does not check its props.
  */
 export function inspectOpenUiMessage(
     catalog: ChatUiCatalog,
@@ -110,11 +108,17 @@ function inspectProgram(
     index: number
 ): OpenUiProgramReport {
     const {source, isPartial, document, elementErrors = {}, openui} = segment,
-        {errors, unresolved, orphaned} = openui,
-        hasState = document.state != null,
+        {errors, unresolved, orphaned, computed} = openui,
         repaired = catalog.repairDocument({...document, isPartial}),
         elements = Object.entries(repaired.elements ?? {}).map(([id, element]) =>
-            inspectElement(catalog, id, element, isPartial, hasState, elementErrors[id])
+            inspectElement(
+                catalog,
+                id,
+                element,
+                isPartial,
+                computed.includes(id),
+                elementErrors[id]
+            )
         ),
         failed = elements.filter(it => !isEmpty(it.errors)).length,
         hasIssues = failed > 0 || [errors, unresolved, orphaned].some(it => !isEmpty(it));
@@ -141,36 +145,17 @@ function inspectElement(
     id: string,
     element: ChatUiElement,
     isProgramPartial: boolean,
-    hasState: boolean,
+    readsState: boolean,
     parserErrors: string[] = []
 ): OpenUiElementReport {
     const {component, props} = element,
         // In a partial program, the format marks each complete element `isPartial: false`.
         isPartial = isProgramPartial && element.isPartial !== false,
-        base = {id, component, isPartial};
+        base = {id, component, isPartial, readsState};
 
-    // A stand-in for a statement that the parser refused has no props of its own to check.
-    if (!isEmpty(parserErrors)) return {...base, readsState: false, errors: parserErrors};
-
-    const problems = catalog.validate(component, props ?? {}, {isPartial});
-    if (!hasState) return {...base, readsState: false, errors: problems};
-
-    // Before the kit evaluates a program with state, a computed prop is either absent, which
-    // reads as a missing required prop, or holds the parser's expression, an object. Neither is
-    // a mistake of the program. The parser reports a required argument that is truly missing.
-    const holdsExpression = hasExpression(props),
-        errors = problems.filter(
-            it => !REQUIRED_RE.test(it) && !(holdsExpression && GOT_OBJECT_RE.test(it))
-        );
-    return {...base, readsState: errors.length < problems.length, errors};
-}
-
-const REQUIRED_RE = /: required$/,
-    GOT_OBJECT_RE = /, got object$/;
-
-/** True if a value holds an expression of lang-core's parser: an object with a kind in `k`. */
-function hasExpression(value: unknown): boolean {
-    if (isArray(value)) return value.some(hasExpression);
-    if (!isPlainObject(value)) return false;
-    return isString((value as PlainObject).k) || Object.values(value).some(hasExpression);
+    // A stand-in for a statement that the parser refused has no props of its own to check, and
+    // an element that reads state has no final props until the kit evaluates them.
+    if (!isEmpty(parserErrors)) return {...base, errors: parserErrors};
+    if (readsState) return {...base, errors: []};
+    return {...base, errors: catalog.validate(component, props ?? {}, {isPartial})};
 }
