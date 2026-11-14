@@ -42,6 +42,7 @@
     "@fortawesome/pro-thin-svg-icons": "^7.3.1",
     "@ibm/plex-mono": "^2.5.0",
     "@ibm/plex-sans": "^1.1.0",
+    "@openuidev/lang-core": "^1.1.0",
     "@xh/hoist": "next",
     "@xh/hoist-chat-kit": "next",
     "@xh/package-template": "~4.0.0",
@@ -59,7 +60,8 @@
     "moment": "~2.31.0",
     "pdfjs-dist": "^6.3.289",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.2",

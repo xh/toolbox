@@ -5,9 +5,11 @@
 # in CI. esbuild is allowed so its platform binary install is guaranteed for build tooling. The
 # rest are declined: the @ibm/plex packages ship static font files, browser-tabs-lock (via
 # auth0-spa-js) ships prebuilt dist, and core-js's postinstall only prints a funding message.
+# @openuidev/lang-core's postinstall only sends install telemetry.
 allowBuilds:
   '@ibm/plex-mono': false
   '@ibm/plex-sans': false
+  '@openuidev/lang-core': false
   '@parcel/watcher': false
   browser-tabs-lock: false
   core-js: false
@@ -47,11 +49,18 @@ pmOnFail: ignore
 #     specifier, so any divergence makes `pnpm update` emit a lockfile that
 #     `pnpm install --frozen-lockfile` rejects (ERR_PNPM_OUTDATED_LOCKFILE). It only shows up in
 #     CI - a local install with node_modules present skips the check and says "Already up to date".
+#
+# Force zod 4 the same way. @xh/hoist-chat-kit's @ag-ui dependencies declare zod 3, and every
+# zod 3.x carries GHSA-mrhx-c7xc-m3w5 (memory exhaustion while validating oversized collections),
+# fixed in 4.6.6. They import the `zod/v4` entry point, which zod 4 serves unchanged. The kit
+# applies the same override to its own install. Drop it once an @ag-ui release accepts zod 4.
 catalog:
   core-js: ~3.50.0
+  zod: ^4.6.6
 
 overrides:
   core-js: 'catalog:'
+  zod: 'catalog:'
   # Rspack 2.3.2's minifier emits invalid static class self-references when `keep_classnames` is set,
   # as hoist-dev-utils does - e.g. Blueprint's NumericInput throws a TDZ ReferenceError on load. This
   # must be an app-level override: Rsbuild's own `~2.3.x` range would otherwise resolve 2.3.2.
