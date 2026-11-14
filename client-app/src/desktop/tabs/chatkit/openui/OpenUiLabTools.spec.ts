@@ -128,7 +128,24 @@ describe('query_positions', () => {
 
     it('offers the dimension values of the portfolio as filter choices', () => {
         const {filter} = tools.find(it => it.name === 'query_positions').parameters.properties;
-        expect(filter.properties.sector.enum).toEqual(['Energy', 'Technology']);
+        expect(filter.properties.sector.enum).toEqual(['Energy', 'Technology', 'All']);
+    });
+
+    it('takes All as no filter, so a query can bind a select that has an All option', async () => {
+        const {output} = await runAsync('query_positions', {
+            groupBy: ['symbol'],
+            filter: {sector: 'All', region: 'US'}
+        });
+
+        expect(output.summary.positions).toBe(3);
+    });
+
+    it('returns as many rows inline as a query asks for', async () => {
+        const few = await runAsync('query_positions', {groupBy: ['symbol'], preview: 2}),
+            all = await runAsync('query_positions', {groupBy: ['symbol'], preview: 50});
+
+        expect(few.output.firstRows).toHaveLength(2);
+        expect(all.output.firstRows).toHaveLength(3);
     });
 });
 

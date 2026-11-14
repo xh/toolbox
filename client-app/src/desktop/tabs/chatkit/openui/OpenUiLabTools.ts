@@ -1,6 +1,7 @@
 import type {ChatToolSpec} from '@xh/hoist-chat-kit/core';
 import {chatToolResult} from '@xh/hoist-chat-kit/core';
 import type {ChatArtifact, ChatDataColumn} from '@xh/hoist-chat-kit/genui';
+import type {OpenUiToolSpec} from '@xh/hoist-chat-kit/genui/openui';
 import type {PlainObject} from '@xh/hoist/core';
 import {XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
@@ -10,6 +11,7 @@ import {
     first,
     groupBy,
     isEmpty,
+    isNil,
     last,
     maxBy,
     meanBy,
@@ -71,11 +73,19 @@ export function createOpenUiLabTools(): ChatToolSpec[] {
                         minimum: 1,
                         maximum: MAX_ROWS,
                         description: `Most groups to return, after sorting. Default ${MAX_ROWS}.`
-                    }
+                    },
+                    preview: PREVIEW_SCHEMA
                 }
             },
             summary: ({input}) => (input?.groupBy ? `by ${input.groupBy.join(', ')}` : null),
-            execute: async ({groupBy: dims, filter, sortBy = 'pnl', sortDir = 'desc', limit}) => {
+            execute: async ({
+                groupBy: dims,
+                filter,
+                sortBy = 'pnl',
+                sortDir = 'desc',
+                limit,
+                preview
+            }) => {
                 const positions = applyDimFilter(await data.getPositionsAsync(), filter),
                     groups = totalPositions(positions, dims),
                     rows = take(orderBy(groups, sortBy, sortDir), limit ?? MAX_ROWS),
@@ -96,12 +106,16 @@ export function createOpenUiLabTools(): ChatToolSpec[] {
                         totalRows: rows.length
                     };
 
-                return toResult(artifact, {
-                    groups: groups.length,
-                    positions: positions.length,
-                    pnl: sumBy(positions, 'pnl'),
-                    mktVal: sumBy(positions, 'mktVal')
-                });
+                return toResult(
+                    artifact,
+                    {
+                        groups: groups.length,
+                        positions: positions.length,
+                        pnl: sumBy(positions, 'pnl'),
+                        mktVal: sumBy(positions, 'mktVal')
+                    },
+                    take(rows, preview ?? PREVIEW_ROWS)
+                );
             }
         },
         {
@@ -128,11 +142,12 @@ export function createOpenUiLabTools(): ChatToolSpec[] {
                         minimum: 1,
                         maximum: MAX_ROWS,
                         description: `Most trades to return, after sorting. Default ${MAX_ROWS}.`
-                    }
+                    },
+                    preview: PREVIEW_SCHEMA
                 }
             },
             summary: ({input}) => describeFilter(input?.filter),
-            execute: async ({filter, sortBy = 'time', sortDir = 'desc', limit}) => {
+            execute: async ({filter, sortBy = 'time', sortDir = 'desc', limit, preview}) => {
                 const trades = applyDimFilter(await data.getTradesAsync(), filter),
                     rows = take(orderBy(trades, sortBy, sortDir), limit ?? MAX_ROWS).map(it =>
                         pick(it, TRADE_FIELDS)
@@ -157,7 +172,7 @@ export function createOpenUiLabTools(): ChatToolSpec[] {
                         )
                     },
                     // Times as the model reads them, not as the artifact holds them.
-                    take(rows, PREVIEW_ROWS).map(it => ({
+                    take(rows, preview ?? PREVIEW_ROWS).map(it => ({
                         ...it,
                         time: new Date(it.time).toISOString()
                     }))
@@ -183,11 +198,12 @@ export function createOpenUiLabTools(): ChatToolSpec[] {
                         minimum: 2,
                         maximum: MAX_ROWS,
                         description: 'Keep the most recent N trading days. Default all.'
-                    }
+                    },
+                    preview: PREVIEW_SCHEMA
                 }
             },
             summary: ({input}) => input?.symbol ?? null,
-            execute: async ({symbol, days}) => {
+            execute: async ({symbol, days, preview}) => {
                 const prices = takeRight(await data.getPricesAsync(symbol), days ?? MAX_ROWS),
                     firstClose = first(prices).close,
                     lastClose = last(prices).close,
@@ -213,11 +229,28 @@ export function createOpenUiLabTools(): ChatToolSpec[] {
                         avgVolume: round(meanBy(prices, 'volume'), 0)
                     },
                     // Dates as the model reads them, not as the artifact holds them.
-                    take(prices, PREVIEW_ROWS)
+                    takeRight(prices, preview ?? PREVIEW_ROWS)
                 );
             }
         }
     ];
+}
+
+/**
+ * The lab's data tools as the tools a program may call with `Query()`: each tool's name,
+ * description and parameters, with the shape of its result, so that a model can write the
+ * defaults of a query.
+ *
+ * Every tool here only reads Toolbox's own sample data, changes nothing, and needs no approval.
+ * A tool that writes, or that sends its arguments to another party, must not be listed.
+ */
+export function toOpenUiQueryTools(tools: ChatToolSpec[]): OpenUiToolSpec[] {
+    return tools.map(({name, description, parameters}) => ({
+        name,
+        description,
+        parameters,
+        returns: RESULT_SCHEMA
+    }));
 }
 
 /** Total raw positions by the given dimensions: a row per group, with its P&L and market value. */
@@ -237,8 +270,37 @@ export function totalPositions(
 //------------------
 // Implementation
 //------------------
+/** The filter value that keeps every row of a dimension. */
+const NO_FILTER = 'All';
+
 const MAX_ROWS = 500,
-    PREVIEW_ROWS = 5;
+    PREVIEW_ROWS = 5,
+    MAX_PREVIEW_ROWS = 50;
+
+const PREVIEW_SCHEMA = {
+    type: 'integer',
+    minimum: 1,
+    maximum: MAX_PREVIEW_ROWS,
+    description:
+        `How many rows to return inline, as firstRows. Default ${PREVIEW_ROWS}. A Query that ` +
+        'feeds a Grid or a Chart reads its rows from firstRows, so ask for as many as it shows.'
+};
+
+/** What every tool returns to the model, and to a `Query()`. */
+const RESULT_SCHEMA = {
+    type: 'object',
+    properties: {
+        artifact: {type: 'string', description: 'Id of the artifact that holds every row.'},
+        columns: {
+            type: 'array',
+            items: {type: 'string'},
+            description: 'Each column as name: type.'
+        },
+        totalRows: {type: 'integer', description: 'Rows in the artifact.'},
+        summary: {type: 'object', description: 'Totals over the whole result.'},
+        firstRows: {type: 'array', items: {type: 'object'}, description: 'The first rows, inline.'}
+    }
+};
 
 const TRADE_COLUMNS: ChatDataColumn[] = [
         {name: 'time', type: 'datetime'},
@@ -296,33 +358,37 @@ class PortfolioData {
 
 /** A filter on the dimensions of positions and trades: an exact value for each one given. */
 function dimFilterSchema(extraProperties: PlainObject = {}): PlainObject {
+    // 'All' is no filter on that dimension, so that a Query can bind a select with an All option.
     const {lookups} = XH.portfolioService,
-        withValues = (values: string[]) => (isEmpty(values) ? {} : {enum: values});
+        dim = (values: string[]) => ({
+            type: 'string',
+            ...(isEmpty(values) ? {} : {enum: [...values, NO_FILTER]})
+        });
     return {
         type: 'object',
         additionalProperties: false,
-        description: 'Keep only the rows that match every value given.',
+        description: `Keep only the rows that match every value given. "${NO_FILTER}" is no filter.`,
         properties: {
             symbol: {type: 'string', maxLength: 12},
-            sector: {type: 'string', ...withValues(lookups?.sectors)},
-            region: {type: 'string', ...withValues(lookups?.regions)},
-            fund: {type: 'string', ...withValues(lookups?.funds)},
-            model: {type: 'string', ...withValues(lookups?.models)},
-            trader: {type: 'string', ...withValues(lookups?.traders)},
+            sector: dim(lookups?.sectors),
+            region: dim(lookups?.regions),
+            fund: dim(lookups?.funds),
+            model: dim(lookups?.models),
+            trader: dim(lookups?.traders),
             ...extraProperties
         }
     };
 }
 
 function applyDimFilter<T extends PlainObject>(rows: T[], filter: PlainObject): T[] {
-    const conditions = Object.entries(pickBy(filter, it => it != null));
+    const conditions = Object.entries(pickBy(filter, it => !isNil(it) && it !== NO_FILTER));
     return isEmpty(conditions)
         ? rows
         : rows.filter(row => conditions.every(([field, value]) => row[field] === value));
 }
 
 function describeFilter(filter: PlainObject): string {
-    const values = Object.values(pickBy(filter, it => it != null));
+    const values = Object.values(pickBy(filter, it => !isNil(it) && it !== NO_FILTER));
     return isEmpty(values) ? 'all trades' : values.join(', ');
 }
 
