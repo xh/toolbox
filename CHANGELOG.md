@@ -14,6 +14,10 @@
 
 ## 13.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Migrated app CSS variable overrides and reads to hoist-react v91's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
+
 ## 12.1.0 - 2026-11-13
 
 ### New Features
@@ -76,7 +80,6 @@
 * Moved type checking to TypeScript 7, the native port of the TypeScript compiler, in step with `@xh/hoist` 89 - type checks now run much faster.
 * Added a `clusterMemberCount` status monitor that fails when an instance sees fewer cluster members than expected - catching tasks that are down or have failed to join the cluster.
 * Updated the Custom Package demo to `@xh/package-template` 4.0, now written in TypeScript for Hoist 88 and React 19. Its panel adds a click counter backed by a TC39-decorated model from the package.
-* Migrated app CSS variable overrides and reads to hoist-react v90's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
 
 ### Libraries
 
