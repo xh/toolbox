@@ -1,0 +1,157 @@
+// The OpenUI Lab: a chat beside an inspector. Both fill the Wrapper's demo region.
+.tb-openui-lab {
+  // The demo region centers its children. Stretch, so the lab takes the full width.
+  align-self: stretch;
+  min-height: 0;
+  min-width: 0;
+}
+
+.tb-openui-inspector {
+  &__scroll {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--xh-pad-px);
+    overflow-y: auto;
+    padding: var(--xh-pad-px);
+  }
+
+  &__meta {
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+    margin-right: var(--xh-pad-px);
+  }
+}
+
+// Program source, the prompt and the reply text, as written.
+.tb-openui-code {
+  background-color: var(--xh-bg-alt);
+  font-family: var(--xh-font-family-mono);
+  font-size: var(--xh-font-size-small-px);
+  line-height: 1.5;
+  margin: 0;
+  overflow: auto;
+  padding: var(--xh-pad-px);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+
+  &--fill {
+    flex: 1;
+  }
+}
+
+// One program of a reply: its source beside what became of it.
+.tb-openui-program {
+  border: var(--xh-border-width-px) solid var(--xh-border-color);
+  border-radius: var(--xh-border-radius-px);
+  flex: none;
+
+  &__header {
+    align-items: center;
+    border-bottom: var(--xh-border-width-px) solid var(--xh-border-color);
+    display: flex;
+    gap: var(--xh-pad-px);
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+  }
+
+  &__title {
+    font-weight: 600;
+  }
+
+  &__counts {
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-px);
+  }
+
+  // Source and outcome sit side by side where the inspector is wide, and stack where it is not.
+  &__body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  &__body .tb-openui-code {
+    max-height: 420px;
+  }
+
+  &__outcome {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-pad-px);
+    max-height: 420px;
+    overflow-y: auto;
+    padding: var(--xh-pad-px);
+  }
+}
+
+.tb-openui-pill {
+  border-radius: 10px;
+  font-size: var(--xh-font-size-small-px);
+  padding: 1px var(--xh-pad-px);
+
+  &--streaming {
+    background-color: color-mix(in srgb, var(--xh-intent-primary) 20%, transparent);
+  }
+
+  &--rendered {
+    background-color: color-mix(in srgb, var(--xh-intent-success) 25%, transparent);
+  }
+
+  &--renderedWithIssues {
+    background-color: color-mix(in srgb, var(--xh-intent-warning) 30%, transparent);
+  }
+
+  &--failed {
+    background-color: color-mix(in srgb, var(--xh-intent-danger) 25%, transparent);
+  }
+}
+
+.tb-openui-elements {
+  border-collapse: collapse;
+  font-size: var(--xh-font-size-small-px);
+  width: 100%;
+
+  th,
+  td {
+    border-bottom: var(--xh-border-width-px) solid var(--xh-border-color);
+    padding: 2px var(--xh-pad-half-px);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    color: var(--xh-text-color-muted);
+    font-weight: 600;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: var(--xh-pad-double-px);
+  }
+
+  &__row--failed td {
+    background-color: color-mix(in srgb, var(--xh-intent-danger) 10%, transparent);
+  }
+}
+
+.tb-openui-findings {
+  border-left: 3px solid var(--xh-border-color);
+  font-size: var(--xh-font-size-small-px);
+  padding-left: var(--xh-pad-px);
+
+  &--danger {
+    border-left-color: var(--xh-intent-danger);
+  }
+
+  &--warning {
+    border-left-color: var(--xh-intent-warning);
+  }
+
+  &__title {
+    font-weight: 600;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: var(--xh-pad-double-px);
+  }
+}

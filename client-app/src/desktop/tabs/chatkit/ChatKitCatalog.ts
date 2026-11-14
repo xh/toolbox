@@ -2,7 +2,7 @@ import {Icon} from '@xh/hoist/icon';
 import type {ReactElement} from 'react';
 
 /** The groups of the Chat Kit tab's switcher, in order. */
-export type ChatKitGroup = 'overview' | 'components' | 'conversations' | 'integrations';
+export type ChatKitGroup = 'overview' | 'components' | 'conversations' | 'integrations' | 'openui';
 
 export const CHAT_KIT_GROUPS: Array<{key: ChatKitGroup; title: string; info: string}> = [
     {key: 'overview', title: 'Overview', info: 'What the kit is, and where to start.'},
@@ -20,6 +20,11 @@ export const CHAT_KIT_GROUPS: Array<{key: ChatKitGroup; title: string; info: str
         key: 'integrations',
         title: 'Integrations',
         info: 'The kit wired into a backend: a thread store, and a live model behind the Toolbox server.'
+    },
+    {
+        key: 'openui',
+        title: 'OpenUI Lab',
+        info: 'A testbed for OpenUI Lang: a live model writes UI programs, drawn with Hoist components.'
     }
 ];
 
@@ -189,6 +194,24 @@ export const CHAT_KIT_PAGES: ChatKitPage[] = [
         group: 'integrations',
         description: 'Claude, relayed by the Toolbox server, with tools that act on this app.',
         icon: () => Icon.bolt()
+    },
+
+    // OpenUI Lab
+    {
+        id: 'openUiLive',
+        title: 'Live Programs',
+        group: 'openui',
+        description:
+            'Claude answers in OpenUI Lang over real sample data, with each program inspected.',
+        icon: () => Icon.experiment()
+    },
+    {
+        id: 'openUiReplay',
+        title: 'Program Replay',
+        group: 'openui',
+        description:
+            'Scripted and pasted OpenUI Lang, streamed through the same catalog with no model.',
+        icon: () => Icon.playCircle()
     }
 ];
 

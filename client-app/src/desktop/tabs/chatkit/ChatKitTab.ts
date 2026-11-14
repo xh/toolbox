@@ -22,6 +22,7 @@ import {richContentPanel} from './conversations/richContentDemo';
 import {timelinePanel} from './conversations/timelineDemo';
 import {liveModelPanel} from './integrations/LiveModelPanel';
 import {workspacePanel} from './integrations/WorkspacePanel';
+import {openUiLivePanel, openUiReplayPanel} from './openui/OpenUiLabPanel';
 import {overviewPanel} from './OverviewPanel';
 
 /** The page components, by catalog id. Every catalog page needs an entry here. */
@@ -45,7 +46,9 @@ const PAGE_CONTENT: Record<string, ElementFactory> = {
     errors: errorsPanel,
     genUi: genUiPanel,
     workspace: workspacePanel,
-    liveModel: liveModelPanel
+    liveModel: liveModelPanel,
+    openUiLive: openUiLivePanel,
+    openUiReplay: openUiReplayPanel
 };
 
 /** The top-level Chat Kit tab for the desktop app, with one page per catalog entry. */

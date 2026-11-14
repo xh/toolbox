@@ -1,0 +1,291 @@
+import type {ChatTextPart} from '@xh/hoist-chat-kit/core';
+import {
+    code,
+    div,
+    filler,
+    li,
+    placeholder,
+    pre,
+    span,
+    table,
+    tbody,
+    td,
+    th,
+    thead,
+    tr,
+    ul
+} from '@xh/hoist/cmp/layout';
+import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
+import type {HoistProps} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup, managed, uses} from '@xh/hoist/core';
+import {clipboardButton} from '@xh/hoist/desktop/cmp/clipboard';
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {fmtNumber} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
+import {bindable} from '@xh/hoist/mobx';
+import {pluralize} from '@xh/hoist/utils/js';
+import classNames from 'classnames';
+import {isEmpty} from 'lodash';
+import {OpenUiLabModel} from './OpenUiLabModel';
+import type {
+    OpenUiElementReport,
+    OpenUiProgramReport,
+    OpenUiProgramStatus
+} from './OpenUiProgramReport';
+
+/** The model of the inspector: its tabs and display options. The lab's model holds the data. */
+class OpenUiInspectorModel extends HoistModel {
+    @lookup(OpenUiLabModel) labModel: OpenUiLabModel;
+
+    @managed readonly tabModel = new TabContainerModel({
+        tabs: [
+            {id: 'programs', title: 'Programs', icon: Icon.code(), content: programsTab},
+            {id: 'prompt', title: 'Prompt', icon: Icon.terminal(), content: promptTab},
+            {id: 'reply', title: 'Reply Text', icon: Icon.fileText(), content: replyTab}
+        ]
+    });
+
+    /** True to show the whole system prompt, not only the catalog's OpenUI Lang section. */
+    @bindable accessor showWholePrompt = false;
+
+    /** The prompt text on show. */
+    get promptText(): string {
+        const {labModel, showWholePrompt} = this;
+        return showWholePrompt ? labModel.systemPrompt : labModel.catalog.instructions;
+    }
+
+    /** The text parts of the inspected reply, as the model wrote them. */
+    get replyText(): string {
+        return (this.labModel.inspectedMessage?.parts ?? [])
+            .filter(it => it.type === 'text')
+            .map(it => (it as ChatTextPart).text)
+            .join('\n\n');
+    }
+}
+
+/**
+ * The inspector beside the lab's chat. It shows the mechanism behind a reply: each OpenUI Lang
+ * program with what became of it, the prompt that taught the model the language, and the reply's
+ * text as written.
+ */
+export const openUiInspector = hoistCmp.factory({
+    displayName: 'OpenUiInspector',
+    model: creates(OpenUiInspectorModel),
+
+    render({model}) {
+        return panel({
+            className: 'tb-openui-inspector',
+            title: 'Inspector',
+            icon: Icon.magnifyingGlass(),
+            compactHeader: true,
+            modelConfig: {side: 'right', defaultSize: '45%', minSize: 320},
+            item: tabContainer({model: model.tabModel})
+        });
+    }
+});
+
+//------------------
+// Programs tab
+//------------------
+const programsTab = hoistCmp.factory<HoistProps<OpenUiLabModel>>({
+    displayName: 'OpenUiProgramsTab',
+    model: uses(OpenUiLabModel),
+
+    render({model}) {
+        const {reports, inspectedMessage} = model;
+        if (!inspectedMessage) {
+            return placeholder(
+                Icon.code(),
+                'Ask for a UI. Each OpenUI Lang program of the latest reply shows here.'
+            );
+        }
+        if (isEmpty(reports)) {
+            return placeholder(
+                Icon.code(),
+                inspectedMessage.isStreaming
+                    ? 'Waiting for a program...'
+                    : 'The latest reply holds no OpenUI Lang program.'
+            );
+        }
+        return div({
+            className: 'tb-openui-inspector__scroll',
+            items: reports.map(report => programReport({key: report.index, report}))
+        });
+    }
+});
+
+interface ProgramReportProps extends HoistProps {
+    report: OpenUiProgramReport;
+}
+
+const programReport = hoistCmp.factory<ProgramReportProps>({
+    displayName: 'OpenUiProgramReport',
+    model: false,
+
+    render({report}) {
+        const {index, source, status, elements, errors, unresolved, orphaned} = report,
+            fallbacks = elements.filter(it => !isEmpty(it.errors)).length;
+
+        return div({
+            className: 'tb-openui-program',
+            items: [
+                div({
+                    className: 'tb-openui-program__header',
+                    items: [
+                        span({className: 'tb-openui-program__title', item: `Program ${index}`}),
+                        statusPill(status),
+                        span({
+                            className: 'tb-openui-program__counts',
+                            item: [
+                                pluralize('element', elements.length, true),
+                                fallbacks ? pluralize('fallback', fallbacks, true) : null,
+                                `${fmtNumber(source.length, {precision: 0})} chars`
+                            ]
+                                .filter(Boolean)
+                                .join(' · ')
+                        }),
+                        filler(),
+                        clipboardButton({
+                            getCopyText: () => source,
+                            text: null,
+                            minimal: true,
+                            title: 'Copy the program',
+                            successMessage: 'Program copied.'
+                        })
+                    ]
+                }),
+                div({
+                    className: 'tb-openui-program__body',
+                    items: [
+                        pre({className: 'tb-openui-code', item: source}),
+                        div({
+                            className: 'tb-openui-program__outcome',
+                            items: [
+                                elementTable(elements),
+                                findings('Dropped by the parser', errors, 'danger'),
+                                findings(
+                                    'Used but never defined',
+                                    unresolved.map(it => `${it}: no statement defines it`),
+                                    'warning'
+                                ),
+                                findings(
+                                    'Defined but not reached from root',
+                                    orphaned.map(it => `${it}: no statement uses it`),
+                                    'warning'
+                                )
+                            ]
+                        })
+                    ]
+                })
+            ]
+        });
+    }
+});
+
+function statusPill(status: OpenUiProgramStatus) {
+    return span({
+        className: `tb-openui-pill tb-openui-pill--${status}`,
+        item: STATUS_LABELS[status]
+    });
+}
+
+function elementTable(elements: OpenUiElementReport[]) {
+    if (isEmpty(elements)) return null;
+    return table({
+        className: 'tb-openui-elements',
+        items: [
+            thead(tr(th('Element'), th('Component'), th('Outcome'))),
+            tbody(
+                elements.map(({id, component, isPartial, errors}) =>
+                    tr({
+                        key: id,
+                        className: classNames(
+                            !isEmpty(errors) && 'tb-openui-elements__row--failed'
+                        ),
+                        items: [
+                            td(code(id)),
+                            td(component),
+                            td(
+                                isEmpty(errors)
+                                    ? isPartial
+                                        ? 'Streaming'
+                                        : 'Rendered'
+                                    : ul(errors.map((it, idx) => li({key: idx, item: it})))
+                            )
+                        ]
+                    })
+                )
+            )
+        ]
+    });
+}
+
+function findings(title: string, messages: string[], intent: 'danger' | 'warning') {
+    if (isEmpty(messages)) return null;
+    return div({
+        className: `tb-openui-findings tb-openui-findings--${intent}`,
+        items: [
+            div({className: 'tb-openui-findings__title', item: title}),
+            ul(messages.map((it, idx) => li({key: idx, item: it})))
+        ]
+    });
+}
+
+const STATUS_LABELS: Record<OpenUiProgramStatus, string> = {
+    streaming: 'Streaming',
+    rendered: 'Rendered',
+    renderedWithIssues: 'Rendered with issues',
+    failed: 'Failed'
+};
+
+//------------------
+// Prompt tab
+//------------------
+const promptTab = hoistCmp.factory<HoistProps<OpenUiInspectorModel>>({
+    displayName: 'OpenUiPromptTab',
+    model: uses(OpenUiInspectorModel),
+
+    render({model}) {
+        const {promptText} = model;
+        return panel({
+            tbar: toolbar({
+                compact: true,
+                items: [
+                    switchInput({
+                        bind: 'showWholePrompt',
+                        label: 'Whole system prompt',
+                        labelSide: 'right'
+                    }),
+                    filler(),
+                    span({
+                        className: 'tb-openui-inspector__meta',
+                        item: `${fmtNumber(promptText.length, {precision: 0})} chars`
+                    }),
+                    clipboardButton({
+                        getCopyText: () => promptText,
+                        text: 'Copy',
+                        successMessage: 'Prompt copied.'
+                    })
+                ]
+            }),
+            item: pre({className: 'tb-openui-code tb-openui-code--fill', item: promptText})
+        });
+    }
+});
+
+//------------------
+// Reply text tab
+//------------------
+const replyTab = hoistCmp.factory<HoistProps<OpenUiInspectorModel>>({
+    displayName: 'OpenUiReplyTab',
+    model: uses(OpenUiInspectorModel),
+
+    render({model}) {
+        const {replyText} = model;
+        return replyText
+            ? pre({className: 'tb-openui-code tb-openui-code--fill', item: replyText})
+            : placeholder(Icon.fileText(), 'The text of the latest reply shows here, as written.');
+    }
+});
