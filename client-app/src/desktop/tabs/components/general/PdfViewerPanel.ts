@@ -1,6 +1,6 @@
-import {div, span} from '@xh/hoist/cmp/layout';
 import type {PdfViewerToolbarSpec} from '@xh/hoist/cmp/pdfviewer';
 import {pdfViewer, PdfViewerModel} from '@xh/hoist/cmp/pdfviewer';
+import {statCard, statCardStrip} from '@xh/hoist/cmp/statcard';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
@@ -8,8 +8,8 @@ import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, observableRef} from '@xh/hoist/mobx';
-import {isNumber} from 'lodash';
 import {wrapper, wrapperOption} from '../../../common/Wrapper';
+import './PdfViewerPanel.scss';
 
 const SAMPLE_URL = '/public/pdf/hoist-grid-guide.pdf';
 
@@ -71,7 +71,9 @@ export const pdfViewerPanel = hoistCmp.factory({
                 }),
                 fileChooser({
                     model: model.fileChooserModel,
-                    height: 80,
+                    // The chooser draws no chrome of its own - give it an edge.
+                    className: 'tb-pdf-viewer-panel__chooser xh-border',
+                    height: 160,
                     omit: model.sourceType !== 'file'
                 }),
                 wrapperOption({
@@ -89,36 +91,61 @@ export const pdfViewerPanel = hoistCmp.factory({
                             {value: 'none', label: 'None'}
                         ]
                     })
-                }),
-                stateReadout()
+                })
             ],
             item: panel({
                 title: 'Document',
-                width: 900,
+                width: '100%',
+                maxWidth: 900,
                 height: '100%',
                 icon: Icon.filePdf(),
                 compactHeader: true,
                 modelConfig: {modalSupport: true, collapsible: false, resizable: false},
-                item: pdfViewer({model: model.pdfViewerModel})
+                items: [pdfViewer({model: model.pdfViewerModel, flex: 1}), viewerStateStrip()]
             })
         });
     }
 });
 
-/** Live view of observable model state - bindable from any custom control. */
-const stateReadout = hoistCmp.factory<PdfViewerPanelModel>(({model}) => {
-    const {pageNumber, pageCount, scale, currentScale, rotation, hasDocument} =
-        model.pdfViewerModel;
-    if (!hasDocument) return null;
+/** Live view of observable `PdfViewerModel` state - bindable from any custom control. */
+const viewerStateStrip = hoistCmp.factory<PdfViewerPanelModel>(({model}) => {
+    const {
+        pageNumber,
+        pageCount,
+        currentScale,
+        rotation,
+        findQuery,
+        findMatchNumber,
+        findMatchCount,
+        isFinding,
+        hasDocument
+    } = model.pdfViewerModel;
 
-    const scaleLabel = isNumber(scale) ? '' : ` (${scale})`;
-    return div({
-        className: 'xh-pad-half',
+    return statCardStrip({
+        className: 'xh-border-top',
+        padding: 10,
         items: [
-            div(`Page ${pageNumber} of ${pageCount}`),
-            div(`Zoom ${Math.round(currentScale * 100)}%${scaleLabel}`),
-            div(`Rotation ${rotation}°`),
-            span({className: 'xh-text-color-muted', item: 'Read from PdfViewerModel.'})
+            statCard({
+                title: 'Page',
+                value: hasDocument ? `${pageNumber} of ${pageCount}` : '-'
+            }),
+            statCard({
+                title: 'Zoom',
+                value: hasDocument ? `${Math.round(currentScale * 100)}%` : '-'
+            }),
+            statCard({
+                title: 'Rotation',
+                value: hasDocument ? `${rotation}°` : '-'
+            }),
+            statCard({
+                title: findQuery ? `Find "${findQuery}"` : 'Find',
+                value:
+                    !hasDocument || !findQuery
+                        ? '-'
+                        : isFinding
+                          ? 'Searching...'
+                          : `${findMatchNumber} of ${findMatchCount}`
+            })
         ]
     });
 });

@@ -1,0 +1,8 @@
+// Interim override until hoist-react exposes CSS vars for these.
+.tb-pdf-viewer-panel__chooser {
+  border-radius: var(--xh-border-radius-px);
+
+  .xh-placeholder > .xh-icon:first-child {
+    font-size: 2.5em;
+  }
+}
