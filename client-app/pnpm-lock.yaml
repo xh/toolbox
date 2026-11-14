@@ -41,7 +41,7 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       '@openuidev/lang-core':
-        specifier: ^1.1.0
+        specifier: ~1.1.0
         version: 1.1.1(@modelcontextprotocol/sdk@1.32.1(supports-color@10.2.2)(zod@4.6.7))(zod@4.6.7)
       '@xh/hoist':
         specifier: next
