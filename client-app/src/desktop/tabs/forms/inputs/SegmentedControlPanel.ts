@@ -137,6 +137,17 @@ export const segmentedControlPanel = hoistCmp.factory({
                     })
                 }),
                 demoRow({
+                    label: 'Wraps when narrow',
+                    info: 'wrap: true, with a width of 170px',
+                    item: segmentedControl({
+                        bind: 'iconText',
+                        ...ambientProps,
+                        wrap: true,
+                        width: 170,
+                        options: SC_OPTIONS
+                    })
+                }),
+                demoRow({
                     label: 'Empty state',
                     info: 'No value set - dividers appear until a choice is made',
                     item: segmentedControl({

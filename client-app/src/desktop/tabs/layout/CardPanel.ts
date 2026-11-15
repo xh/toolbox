@@ -1,8 +1,10 @@
+import {badge} from '@xh/hoist/cmp/badge';
 import type {CardProps} from '@xh/hoist/cmp/card';
 import {card} from '@xh/hoist/cmp/card';
-import {p, placeholder} from '@xh/hoist/cmp/layout';
+import {filler, hbox, p, placeholder, span} from '@xh/hoist/cmp/layout';
 import type {Intent} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {intentInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon, xhLogo} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -41,8 +43,9 @@ export const cardPanel = hoistCmp.factory({
                 'A `Card` is a bordered container for grouping related content. It renders as a',
                 'fieldset with a legend header, and arranges its children vertically by default.',
                 '',
-                'Cards support titles, icons, intent-based styling and collapsibility. Inner layout',
-                'is customized through `contentBoxProps`, and collapse behavior through',
+                'Cards support titles, icons, intent-based styling and collapsibility. A header can',
+                'hold a `subtitle` and `headerItems`, and a `footer` sits under the content. Inner',
+                'layout is customized through `contentBoxProps`, and collapse behavior through',
                 '`modelConfig`.'
             ],
             links: [
@@ -163,6 +166,54 @@ export const cardPanel = hoistCmp.factory({
                                                 xhLogo({width: 120}),
                                                 p('Without a title the legend header is omitted.')
                                             ]
+                                        })
+                                    })
+                                ]
+                            }),
+                            demoGrid({
+                                columns: 2,
+                                items: [
+                                    demoRow({
+                                        label: 'Subtitle, header items and footer',
+                                        info: 'subtitle, headerItems and footer',
+                                        item: card({
+                                            title: 'Open Orders',
+                                            subtitle: '3 of 12',
+                                            icon: Icon.inbox(),
+                                            width: '100%',
+                                            headerItems: [
+                                                badge({item: 'Live', intent: 'success'}),
+                                                button({icon: Icon.refresh(), minimal: true})
+                                            ],
+                                            footer: hbox({
+                                                alignItems: 'center',
+                                                items: [
+                                                    span('Updated 09:30'),
+                                                    filler(),
+                                                    button({text: 'View all', minimal: true})
+                                                ]
+                                            }),
+                                            items: [
+                                                p('With header items, the header spans the card.'),
+                                                p(
+                                                    'The footer sits under the content, after a rule.'
+                                                )
+                                            ]
+                                        })
+                                    }),
+                                    demoRow({
+                                        label: 'Collapsible, with an intent',
+                                        info: 'The footer hides while the card is collapsed',
+                                        item: card({
+                                            title: 'Limit Breaches',
+                                            subtitle: 'since the open',
+                                            icon: Icon.warning(),
+                                            intent: 'warning',
+                                            width: '100%',
+                                            modelConfig: {collapsible: true},
+                                            headerItems: [badge({item: '2', intent: 'warning'})],
+                                            footer: 'Two breaches need a sign-off today.',
+                                            item: p('Click the header to collapse this card.')
                                         })
                                     })
                                 ]

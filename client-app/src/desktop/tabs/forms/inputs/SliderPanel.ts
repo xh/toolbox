@@ -113,10 +113,11 @@ export const sliderPanel = hoistCmp.factory({
             variants: [
                 demoRow({
                     label: 'Range',
-                    info: 'Two-element value, labelRenderer with $ and thousands',
+                    info: 'Two-element value, labelRenderer with $ and thousands, an ariaLabel per handle',
                     item: slider({
                         bind: 'range',
                         ...ambientProps,
+                        ariaLabel: ['Lowest salary', 'Highest salary'],
                         min: 50000,
                         max: 150000,
                         labelStepSize: 50000,
@@ -134,10 +135,11 @@ export const sliderPanel = hoistCmp.factory({
                 }),
                 demoRow({
                     label: 'No labels',
-                    info: 'labelRenderer: false',
+                    info: "labelRenderer: false, ariaLabel: 'Volume'",
                     item: slider({
                         bind: 'noLabels',
                         ...ambientProps,
+                        ariaLabel: 'Volume',
                         min: 0,
                         max: 100,
                         labelRenderer: false,
