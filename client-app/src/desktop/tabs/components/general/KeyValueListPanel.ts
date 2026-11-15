@@ -129,7 +129,11 @@ export const keyValueListPanel = hoistCmp.factory({
                                 entries: raw('positionEntries'),
                                 ...listProps
                             }),
-                            item: keyValueList({entries: positionEntries, ...listProps})
+                            item: keyValueList({
+                                entries: positionEntries,
+                                ...listProps,
+                                width: '100%'
+                            })
                         })
                     }),
                     demoSection({

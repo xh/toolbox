@@ -186,6 +186,7 @@ export const cardPanel = hoistCmp.factory({
                                                 button({icon: Icon.refresh(), minimal: true})
                                             ],
                                             footer: hbox({
+                                                flex: 1,
                                                 alignItems: 'center',
                                                 items: [
                                                     span('Updated 09:30'),
