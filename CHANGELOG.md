@@ -33,6 +33,7 @@
 * Migrated element specs from the legacy `item` / `items` keys to the standard React `children` key, using hoist-react's v91 codemod.
 * Granted `TOOLBOX_LLM_USER` to the local development bootstrap admin, so an agent on a throwaway H2 database can test the Live Model demo. The hourly limit still applies, and deployed instances are unaffected. This is a stopgap until hoist-core grants the bootstrap admin the roles that inherit from its admin roles.
 * Added an `XH_CHAT_KIT_PATH` switch that runs the dev server, the unit tests and `pnpm typecheck` against a local checkout of `@xh/hoist-chat-kit`. It is unset by default, and production builds ignore it. See `docs/running-locally.md`.
+* Added support in `pnpm typecheck` for `XH_HOIST_REACT_PATH`, which checks the app against a local checkout of hoist-react in place of the installed package. It is unset by default. See `docs/running-locally.md`.
 
 ### Libraries
 

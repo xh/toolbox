@@ -102,6 +102,10 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
   published library (code that uses unreleased APIs looks fine locally but breaks the release
   build), which is exactly the gap the commented-out default closes.
 
+  To point `pnpm typecheck` and the pre-commit hook at a checkout with no edit to a tracked file,
+  set `XH_HOIST_REACT_PATH` - see
+  [Type-checking against a local hoist-react checkout](#type-checking-against-a-local-hoist-react-checkout).
+
   **Build-time options** - the client builds with Rsbuild (Rspack + SWC) through hoist-dev-utils'
   `configureRsbuild()`, configured by `rsbuild.config.mjs`. Rsbuild has no `--env key=value`
   flag: build options arrive as `XH_*` environment variables (see `readCliEnv()` in
@@ -131,9 +135,14 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
   * `XH_HOIST_REACT_PATH` - the hoist-react checkout used by `startWithHoist` and `testWithHoist`.
   * `XH_HOIST_CORE_PATH` - the hoist-core checkout used when `runHoistInline` is on.
 
-  Unset, each falls back to the sibling default. Both are ignored unless inline mode is on. Use
-  absolute paths - the client build rejects a relative one. Set them in the shell (or let `xh-server` set them), not in
-  `client-app/.env.local` - Rsbuild loads that file too late for the `cd` in the pnpm scripts.
+  Unset, each falls back to the sibling default. The dev server and the unit tests ignore both
+  unless inline mode is on. Use absolute paths - the client build rejects a relative one. For an
+  inline run, set them in the shell, or let `xh-server` set them. Rsbuild loads
+  `client-app/.env.local` too late for the `cd` in the pnpm scripts, so a value there reaches the
+  build but not the install step before it.
+
+  `pnpm typecheck` also reads `XH_HOIST_REACT_PATH`, with or without inline mode - see
+  [Type-checking against a local hoist-react checkout](#type-checking-against-a-local-hoist-react-checkout).
 
   Inline builds also skip Gradle dependency locking, because the local checkout decides the
   dependency graph. If you change a dependency while you work inline, regenerate the lockfiles in
@@ -182,6 +191,42 @@ Two things to know:
 * **The OpenUI Lab needs a kit with OpenUI Lang.** Its pages import
   `@xh/hoist-chat-kit/genui/openui`. Until a published kit snapshot holds that package, Toolbox
   builds only with the variable set to a checkout that has it.
+
+### Type-checking against a local hoist-react checkout
+
+`pnpm typecheck` checks against the installed `@xh/hoist` by default, as CI does. Inline mode does
+not change that. `pnpm startWithHoist` compiles a hoist-react checkout, but `tsc` still reads the
+installed package. Code that uses a Hoist API found only in the checkout runs in the browser and
+fails the type-check, and the pre-commit hook with it.
+
+The `XH_HOIST_REACT_PATH` variable points the type-check at the checkout. It is unset by default.
+Set it to the checkout's absolute path, in the shell or in a gitignored `client-app/.env.local`:
+
+```
+XH_HOIST_REACT_PATH=/Users/you/dev/hoist-react
+```
+
+This is the variable that inline mode reads to find its checkout:
+
+| Command | With `XH_HOIST_REACT_PATH` set |
+|---------|--------------------------------|
+| `pnpm typecheck` | Checks against the checkout, through a generated tsconfig, and logs `@xh/hoist LOCAL at <path>` |
+| `pnpm startWithHoist` | Compiles the checkout in place of the sibling `../../hoist-react`. A value in the shell wins over `.env.local` |
+| `pnpm testWithHoist` | Runs the specs against the checkout. It reads the shell only, not `.env.local` |
+| `pnpm start`, `pnpm test`, `pnpm build` | Ignore it. They use the installed Hoist |
+
+`scripts/localHoistReact.mjs` holds the logic. The check compiles the checkout's TypeScript source,
+so the checkout needs `pnpm install` but no build. With `XH_CHAT_KIT_PATH` also set, the kit
+checkout resolves `@xh/hoist` to the Hoist checkout too.
+
+Three things to know:
+
+* **A local check can pass on code the published Hoist does not support.** CI checks against the
+  installed package. Run `XH_HOIST_REACT_PATH= pnpm typecheck` for the check that CI runs.
+* **`xh-server` starts the client the same way.** It sets the variable in the shell for an inline
+  start, and that value wins over `.env.local`. A normal start ignores the variable.
+* **Your IDE does not read the variable.** To resolve `@xh/hoist` against a checkout in the IDE,
+  uncomment the `paths` block in `tsconfig.json`, and do not commit that change.
 
 ### Running multiple instances
 
