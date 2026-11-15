@@ -2,7 +2,7 @@ import type {ChatMessage, ChatTextPart} from '@xh/hoist-chat-kit/core';
 import type {ChatUiCatalog, ChatUiElement, ChatUiTextSegment} from '@xh/hoist-chat-kit/genui';
 import type {OpenUiDocumentSegment} from '@xh/hoist-chat-kit/genui/openui';
 import {isOpenUiDocumentSegment} from '@xh/hoist-chat-kit/genui/openui';
-import {isEmpty} from 'lodash';
+import {isArray, isEmpty, isPlainObject, isString, mapValues, omitBy} from 'lodash';
 
 /**
  * How one OpenUI Lang program of a reply fared.
@@ -26,7 +26,7 @@ export interface OpenUiElementReport {
     /**
      * True for an element with a prop that the state computes: from a `$variable`, a query
      * result or another expression. The kit evaluates such a prop as the program renders, so this
-     * report does not check the element's props.
+     * report checks only the element's plain values.
      */
     readsState: boolean;
     /** Why it renders as a fallback. Empty for an element that renders. */
@@ -60,7 +60,7 @@ export interface OpenUiProgramReport {
  *
  * A program that runs with state gives a document that the kit resolves as it renders. The
  * segment holds no final value for a prop that the state computes, and lists the elements with
- * such a prop. This marks each of them as one that reads state, and does not check its props.
+ * such a prop. This marks each of them as one that reads state, and checks its plain values only.
  */
 export function inspectOpenUiMessage(
     catalog: ChatUiCatalog,
@@ -153,9 +153,27 @@ function inspectElement(
         isPartial = isProgramPartial && element.isPartial !== false,
         base = {id, component, isPartial, readsState};
 
-    // A stand-in for a statement that the parser refused has no props of its own to check, and
-    // an element that reads state has no final props until the kit evaluates them.
+    // A stand-in for a statement that the parser refused has no props of its own to check.
     if (!isEmpty(parserErrors)) return {...base, errors: parserErrors};
-    if (readsState) return {...base, errors: []};
-    return {...base, errors: catalog.validate(component, props ?? {}, {isPartial})};
+    if (!readsState)
+        return {...base, errors: catalog.validate(component, props ?? {}, {isPartial})};
+
+    // An element that reads state has no final value for a computed prop until the kit evaluates
+    // it. Check the rest: a list over its limit or a wrong plain value fails at render too. A
+    // computed prop is missing from the props, so skip the check that a required prop is there.
+    const errors = catalog.validate(component, withoutExpressions(props ?? {}), {isPartial});
+    return {...base, errors: errors.filter(it => !it.endsWith(': required'))};
+}
+
+/** The props with each value that the state computes left out, at any depth. */
+function withoutExpressions(value: unknown): any {
+    if (isArray(value)) return value.filter(it => !isExpression(it)).map(withoutExpressions);
+    if (!isPlainObject(value)) return value;
+    return mapValues(omitBy(value as object, isExpression), withoutExpressions);
+}
+
+/** True for an expression node of lang-core, such as `{k: 'StateRef', n: '$limit'}`. */
+function isExpression(value: unknown): boolean {
+    const kind = isPlainObject(value) ? (value as {k?: unknown}).k : null;
+    return isString(kind) && /^[A-Z]/.test(kind);
 }
