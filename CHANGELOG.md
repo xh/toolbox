@@ -28,6 +28,7 @@
 * Migrated app CSS variable overrides and reads to hoist-react v91's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
 * Added `LlmService` and a `/llm/stream` endpoint that relay the Anthropic Messages API as a token stream for the Chat Kit tab's Live Model demo. Access needs the new `TOOLBOX_LLM_USER` role, with a per-user hourly limit that `TOOLBOX_LLM_UNLIMITED` lifts, and every call tracked in category `LLM`. Configure with the new `llmApiKey` config and the typed `llmConfig` JSON config.
 * Migrated element specs from the legacy `item` / `items` keys to the standard React `children` key, using hoist-react's v91 codemod.
+* Granted `TOOLBOX_LLM_USER` to the local development bootstrap admin, so an agent on a throwaway H2 database can test the Live Model demo. The hourly limit still applies, and deployed instances are unaffected. This is a stopgap until hoist-core grants the bootstrap admin the roles that inherit from its admin roles.
 
 ### Libraries
 
