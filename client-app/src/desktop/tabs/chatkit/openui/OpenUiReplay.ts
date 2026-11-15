@@ -303,6 +303,33 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
             ].join('\n')
     },
     {
+        prompt: 'Replay a radio group, a slider and a range slider, each bound to a $variable.',
+        icon: Icon.options(),
+        reply: () =>
+            [
+                'Pick a choice or drag a handle. The line under each group reads the values back, and no message is sent until the button.',
+                '',
+                fence(
+                    'root = Stack([form, echo, inRow, rowEcho])',
+                    '$priority = "normal"',
+                    '$risk = 4',
+                    '$band = [25, 75]',
+                    '$share = 0.25',
+                    '$lots = 5',
+                    'form = Form([priority, risk, band, send], "Order limits")',
+                    'priority = RadioGroup("priority", [{value: "low", label: "Low"}, {value: "normal", label: "Normal"}, {value: "high", label: "High"}, {value: "urgent", label: "Urgent, with a long label that wraps in a narrow chat"}], "Priority", {required: true}, $priority)',
+                    'risk = Slider("risk", 0, 10, "Risk level", 1, null, null, $risk)',
+                    'band = Slider("band", 0, 100, "Price band, as a range", 5, "currency", true, $band)',
+                    'send = Button("Send limits", @ToAssistant("Apply these order limits."), "primary")',
+                    'echo = Text("Priority **" + $priority + "**, risk **" + $risk + "** of 10, band **" + $band[0] + "** to **" + $band[1] + "**.")',
+                    'inRow = Stack([share, lots], "row")',
+                    'share = Slider("share", 0, 1, "Share, as a percent", 0.05, "percent", null, $share)',
+                    'lots = RadioGroup("lots", [1, 5, 10, 25], "Lot size, from numbers", null, $lots)',
+                    'rowEcho = Text("Share **" + $share + "**, lot size **" + $lots + "**.")'
+                )
+            ].join('\n')
+    },
+    {
         prompt: 'Replay buttons and actions: set, reset, a multi-step action, and actions that cannot run.',
         icon: Icon.bolt(),
         reply: () =>
