@@ -156,7 +156,7 @@ const PAGE_SPECS: Record<OpenUiLabSource, OpenUiLabPageSpec> = {
             'A program cannot change data.',
             '',
             'The inspector shows each program of the latest reply beside what became of it, the',
-            'tool calls that programs made, and the prompt the model received.',
+            'tool calls of the model and of its programs, and the prompt the model received.',
             '',
             'Access needs the `TOOLBOX_LLM_USER` role. Each model call counts toward the hourly',
             'limit of the server relay, and a reply that calls tools makes several.'

@@ -15,18 +15,20 @@ import {createOpenUiReplayTransport} from './OpenUiReplay';
 /** Where a lab page gets its replies. */
 export type OpenUiLabSource = 'live' | 'replay';
 
-/** One call that a program made to a data tool with `Query()`, for the inspector's call log. */
+/** One call to a data tool, for the inspector's call log. */
 export interface OpenUiLabToolCall extends OpenUiToolCall {
     /** Position of the call in the log, from 1. */
     index: number;
-    /** Epoch millis when the call started. */
+    /** Epoch millis when the lab first saw the call. */
     at: number;
+    /** Who made the call: the model in a reply, or a program with `Query()`. */
+    by: 'model' | 'program';
 }
 
 /**
  * The model of an OpenUI Lab page: a chat whose replies hold OpenUI Lang, and what the inspector
  * shows of them - a report on each program of the latest reply, and a log of the tool calls that
- * programs made.
+ * the model and its programs made.
  *
  * A `live` page asks Claude through the Toolbox server relay. A `replay` page streams scripted
  * replies, and any text the user sends, with no model. Both use the same catalog and data tools.
@@ -42,7 +44,7 @@ export class OpenUiLabModel extends HoistModel {
 
     readonly catalog: ChatUiCatalog = createOpenUiLabCatalog({
         queryTools: toOpenUiQueryTools(this.tools),
-        onToolCall: call => this.logToolCall(call)
+        onToolCall: call => this.logToolCall(call, 'program')
     });
 
     /**
@@ -60,10 +62,14 @@ export class OpenUiLabModel extends HoistModel {
     @observableRef accessor reports: OpenUiProgramReport[] = [];
 
     /**
-     * Each `Query()` call that a program of this chat started, oldest first. Such a call is not
-     * part of the chat's history, so this log is its only trace.
+     * Each call to a data tool in this chat, oldest first: those the model made in a reply, and
+     * those a program started with `Query()`. A `Query()` call is not part of the chat's history,
+     * so this log is its only trace.
      */
     @observableRef accessor toolCalls: OpenUiLabToolCall[] = [];
+
+    // Keys of the model's calls already in the log, so that each shows once.
+    private readonly loggedModelCalls = new Set<string>();
 
     constructor(source: OpenUiLabSource) {
         super();
@@ -95,11 +101,19 @@ export class OpenUiLabModel extends HoistModel {
             debounce: 150
         });
 
+        // The model's own calls are parts of its replies. Log each once its arguments are complete.
+        this.addReaction({
+            track: () => this.chatModel.messages,
+            run: messages => this.logModelCalls(messages)
+        });
+
         // A cleared chat starts its log again.
         this.addReaction({
             track: () => this.chatModel.isEmpty,
             run: isEmpty => {
-                if (isEmpty) this.toolCalls = [];
+                if (!isEmpty) return;
+                this.toolCalls = [];
+                this.loggedModelCalls.clear();
             }
         });
     }
@@ -114,9 +128,21 @@ export class OpenUiLabModel extends HoistModel {
     // Implementation
     //------------------
     @action
-    private logToolCall(call: OpenUiToolCall) {
+    private logToolCall(call: OpenUiToolCall, by: OpenUiLabToolCall['by']) {
         const {toolCalls} = this;
-        this.toolCalls = [...toolCalls, {...call, index: toolCalls.length + 1, at: Date.now()}];
+        this.toolCalls = [...toolCalls, {...call, by, index: toolCalls.length + 1, at: Date.now()}];
+    }
+
+    private logModelCalls(messages: ChatMessage[]) {
+        const {loggedModelCalls} = this;
+        messages.forEach(message =>
+            message.toolCalls.forEach(({id, toolName, input, state}) => {
+                const key = `${message.id}:${id}`;
+                if (state === 'input-streaming' || loggedModelCalls.has(key)) return;
+                loggedModelCalls.add(key);
+                this.logToolCall({toolName, args: input ?? {}, messageId: message.id}, 'model');
+            })
+        );
     }
 }
 

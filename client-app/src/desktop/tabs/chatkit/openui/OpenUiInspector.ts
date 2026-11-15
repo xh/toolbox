@@ -28,7 +28,7 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {pluralize} from '@xh/hoist/utils/js';
 import classNames from 'classnames';
-import {isEmpty} from 'lodash';
+import {isEmpty, partition} from 'lodash';
 import {OpenUiLabModel} from './OpenUiLabModel';
 import type {
     OpenUiElementReport,
@@ -69,7 +69,7 @@ class OpenUiInspectorModel extends HoistModel {
 
 /**
  * The inspector beside the lab's chat. It shows the mechanism behind a reply: each OpenUI Lang
- * program with what became of it, the tool calls that programs made with `Query()`, the prompt
+ * program with what became of it, the tool calls of the model and of its programs, the prompt
  * that taught the model the language, and the reply's text as written.
  */
 export const openUiInspector = hoistCmp.factory({
@@ -261,7 +261,8 @@ const callsTab = hoistCmp.factory<HoistProps<OpenUiLabModel>>({
 
     render({model}) {
         const {toolCalls, chatModel} = model,
-            replyIds = chatModel.messages.filter(it => it.isAssistant).map(it => it.id);
+            replyIds = chatModel.messages.filter(it => it.isAssistant).map(it => it.id),
+            [byProgram, byModel] = partition(toolCalls, it => it.by === 'program');
 
         return panel({
             tbar: toolbar({
@@ -269,7 +270,7 @@ const callsTab = hoistCmp.factory<HoistProps<OpenUiLabModel>>({
                 items: [
                     span({
                         className: 'tb-openui-inspector__meta',
-                        item: `${pluralize('call', toolCalls.length, true)} by Query()`
+                        item: `${byModel.length} by the model · ${byProgram.length} by Query()`
                     }),
                     filler(),
                     button({
@@ -283,8 +284,8 @@ const callsTab = hoistCmp.factory<HoistProps<OpenUiLabModel>>({
             item: isEmpty(toolCalls)
                 ? placeholder(
                       Icon.transaction(),
-                      'Each tool call that a program makes with Query() shows here. The chat ' +
-                          'keeps no other record of one.'
+                      'Each call to a data tool shows here: those the model makes in a reply, ' +
+                          'and those a program makes with Query().'
                   )
                 : div({
                       className: 'tb-openui-inspector__scroll',
@@ -297,18 +298,20 @@ const callsTab = hoistCmp.factory<HoistProps<OpenUiLabModel>>({
                                           th('#'),
                                           th('Time'),
                                           th('Reply'),
+                                          th('By'),
                                           th('Tool'),
                                           th('Arguments')
                                       )
                                   ),
                                   tbody(
-                                      toolCalls.map(({index, at, toolName, args, messageId}) =>
+                                      toolCalls.map(({index, at, by, toolName, args, messageId}) =>
                                           tr({
                                               key: index,
                                               items: [
                                                   td(index),
                                                   td(fmtTime(at, {fmt: 'HH:mm:ss'})),
                                                   td(replyLabel(replyIds, messageId)),
+                                                  td(by === 'model' ? 'Model' : 'Query()'),
                                                   td(code(toolName)),
                                                   td(code(JSON.stringify(args)))
                                               ]
@@ -331,6 +334,8 @@ function replyLabel(replyIds: string[], messageId: string): string {
 }
 
 const CALL_LIMITS_NOTE =
+    'The model calls a tool before it writes its reply, and the chat shows that call in the ' +
+    'reply. A Query() call shows only here, as the chat keeps no record of one. ' +
     'The kit runs a query when its program completes, and again when a $variable in its ' +
     'arguments changes. A program with more than 8 queries runs none. Only the first 3 ' +
     'programs of a reply run queries. A program in an older reply waits until the user acts ' +
