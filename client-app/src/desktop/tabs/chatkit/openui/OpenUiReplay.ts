@@ -130,6 +130,102 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
             )
     },
     {
+        prompt: 'Replay a position detail: key values, a labeled divider and the steps of an order.',
+        icon: Icon.detail(),
+        toolRounds: [
+            () => [{name: 'query_positions', input: {groupBy: ['symbol'], limit: 1}}],
+            ([top]) => [
+                {
+                    name: 'get_price_history',
+                    input: {symbol: top.firstRows[0].symbol, days: 90}
+                }
+            ]
+        ],
+        reply: ([top, {summary}]) => {
+            const {symbol, pnl, mktVal, positions} = top.firstRows[0];
+            return [
+                `**${symbol}** is the most profitable symbol. Here is its detail.`,
+                '',
+                fence(
+                    `root = Stack([facts, split, lifecycle], "column", "medium", "${symbol}: position detail")`,
+                    `facts = KeyValues([{label: "Symbol", value: "${symbol}"}, {label: "Positions", value: ${positions}}, {label: "Market value", value: ${mktVal}, format: "currency", decimals: 0}, {label: "P&L", value: ${pnl}, format: "currency", decimals: 0, intent: "${intentOf(pnl)}"}, {label: "Last close", value: ${summary.lastClose}, format: "currency"}, {label: "Change, 90 days", value: ${summary.change}, format: "percent", decimals: 1, intent: "${intentOf(summary.change)}"}, {label: "High", value: ${summary.high}, format: "currency"}, {label: "Low", value: ${summary.low}, format: "currency"}, {label: "Hedged", value: true}, {label: "Approver"}], 2)`,
+                    'split = Divider("Latest order")',
+                    'lifecycle = Steps([{title: "Received", detail: "09:30:02", description: "Order accepted from the desk."}, {title: "Validated", detail: "09:30:03", description: "Limits and restrictions checked."}, {title: "Routed", detail: "09:30:05", description: "Sent to the broker."}, {title: "Filled", description: "Waiting for the last fills."}, {title: "Settled", description: "Two days after the trade date."}], 3)'
+                )
+            ].join('\n');
+        }
+    },
+    {
+        prompt: 'Replay a risk view: sector exposure against a limit, and metrics with trends.',
+        icon: Icon.shield(),
+        toolRounds: [
+            () => [
+                {name: 'query_positions', input: {groupBy: ['sector'], sortBy: 'mktVal'}},
+                {name: 'query_positions', input: {groupBy: ['symbol'], limit: 1}}
+            ],
+            ([, top]) => [
+                {
+                    name: 'get_price_history',
+                    input: {symbol: top.firstRows[0].symbol, days: 30, preview: 30}
+                }
+            ]
+        ],
+        reply: ([sectors, top, prices]) => {
+            const rows = sectors.firstRows.map(({sector, mktVal}) => ({
+                    sector,
+                    exposure: Math.round(Math.abs(mktVal))
+                })),
+                // A limit that the largest sector breaks, and a warning level under it.
+                limit = Math.round(Math.max(...rows.map(it => it.exposure)) * 0.9),
+                warnAt = Math.round(limit * 0.8),
+                closes = (prices.firstRows ?? []).map(it => it.close),
+                {symbol} = top.firstRows[0];
+            return [
+                'Exposure by sector against one limit, with the warning level marked on each bar.',
+                '',
+                fence(
+                    'root = Stack([kpis, split, bars], "column", "medium", "Risk view")',
+                    `kpis = Metrics([{label: "Gross exposure", value: ${Math.round(Math.abs(sectors.summary.mktVal))}, format: "currency", decimals: 0}, {label: "P&L", value: ${sectors.summary.pnl}, format: "currency", decimals: 0, intent: "${intentOf(sectors.summary.pnl)}"}, {label: "${symbol} close", value: ${prices.summary.lastClose}, format: "currency", delta: ${prices.summary.change}, deltaFormat: "percent", deltaLabel: "30 days", trend: [${closes.join(', ')}]}])`,
+                    `split = Divider("Exposure against a limit of ${limit}")`,
+                    `bars = Progress([${rows
+                        .map(
+                            ({sector, exposure}) =>
+                                `{label: "${sector}", value: ${exposure}, max: ${limit}, format: "currency", intent: "${exposure > limit ? 'danger' : exposure > warnAt ? 'warning' : 'success'}", target: ${warnAt}}`
+                        )
+                        .join(', ')}])`
+                )
+            ].join('\n');
+        }
+    },
+    {
+        prompt: 'Replay everything new: key values, lists, progress bars, steps, dividers and trends.',
+        icon: Icon.gift(),
+        reply: () =>
+            [
+                'Each new component, with made-up values, for a quick look.',
+                '',
+                fence(
+                    'root = Stack([kpis, plain, order, labeled, lists, limits, bars, flow, checklist, inRow])',
+                    'kpis = Metrics([{label: "Revenue", value: 2483960, format: "currency", decimals: 0, delta: 0.042, deltaFormat: "percent", deltaLabel: "vs. last month", trend: [101, 103, 102, 106, 109, 107, 113, 111, 116, 118]}, {label: "Orders", value: 18375, trend: [310, 342, 298, 365, 401, 388, 420, 395, 441, 467]}, {label: "Returns", value: 87412, delta: 0.093, deltaFormat: "percent", deltaLabel: "vs. last month", invert: true, trend: [118, 116, 117, 112, 113, 108, 109, 104, 105, 101]}, {label: "On time", value: 0.964, format: "percent", decimals: 1}])',
+                    'plain = Divider()',
+                    'order = Section([facts], "Order 48211", null, null, null, "Filled at 09:30")',
+                    'facts = KeyValues([{label: "Client", value: "Winter Star"}, {label: "Side", value: "Buy", intent: "primary"}, {label: "Quantity", value: 12500}, {label: "Price", value: 141.8, format: "currency"}, {label: "Notional", value: 1772500, format: "currency", decimals: 0}, {label: "Slippage", value: -0.0012, format: "percent", decimals: 2, intent: "danger"}, {label: "Confirmed", value: true}, {label: "Approver"}, {label: "Settlement instructions to the custodian", value: "Deliver against payment to the account of record, on the second business day after the trade date."}], 2)',
+                    'labeled = Divider("Alerts and a ranking")',
+                    'lists = Stack([alerts, ranking], "row")',
+                    'alerts = List([{title: "Margin call on the Winter Star fund", description: "Collateral fell below the required level. Post 1.2m by end of day.", detail: "2 min ago", intent: "danger"}, {title: "Trade 48211 awaits approval", description: "A block trade above the desk limit.", detail: "Pending", intent: "warning"}, {title: "Prices loaded", detail: "09:30", intent: "success"}, {title: "Report archive is read-only today"}])',
+                    'ranking = List([{title: "Oak Mount", description: "3804 positions", detail: "2,007.4m"}, {title: "Winter Star", description: "3780 positions", detail: "1,999.0m"}, {title: "Black Crescent", description: "3749 positions", detail: "1,981.8m"}], true)',
+                    'limits = Divider("Limits and progress")',
+                    'bars = Progress([{label: "Technology", value: 412, max: 500, format: "currency", intent: "warning", target: 450}, {label: "Energy", value: 180, max: 500, format: "currency", intent: "success", target: 450}, {label: "Financials", value: 530, max: 500, format: "currency", intent: "danger", target: 450}, {label: "Import", value: 0.62, max: 1, format: "percent"}, {label: "A long label for the share of orders that shipped on time", value: 7, max: 12}])',
+                    'flow = Steps([{title: "Received", detail: "09:30:02"}, {title: "Validated", detail: "09:30:03"}, {title: "Routed", description: "Sent to the broker."}, {title: "Filled"}, {title: "Settled"}], 2)',
+                    'checklist = Steps([{title: "Positions loaded", status: "complete"}, {title: "Prices loaded", status: "warning", description: "14 symbols use the prior close."}, {title: "Limits checked", status: "error", description: "The limits service did not answer."}, {title: "Report sent", status: "pending"}], null, "vertical")',
+                    'inRow = Stack([left, between, right], "row")',
+                    'left = Text("Left of a divider in a row.")',
+                    'between = Divider()',
+                    'right = Text("Right of it.")'
+                )
+            ].join('\n')
+    },
+    {
         prompt: 'Replay each display component on its own: callouts, badges, a divider, a section, tabs, a treemap and metrics.',
         icon: Icon.layout(),
         reply: () =>
@@ -467,6 +563,11 @@ function queryProgram(dim: string): string {
         `q = Query("query_positions", {groupBy: ["${dim}"]}, {summary: {groups: 0, positions: 0}})`,
         `total = Metrics([{label: "Groups by ${dim}", value: q.summary.groups}, {label: "Positions", value: q.summary.positions}])`
     );
+}
+
+/** The intent that colors a signed figure. */
+function intentOf(value: number): string {
+    return value < 0 ? 'danger' : 'success';
 }
 
 /** Statements as a fenced program, as the format's prompt asks a model to write one. */

@@ -2,25 +2,40 @@
 // valid, so that anything odd on screen is the kit's doing. These check each program against
 // the lab's catalog.
 import {ChatMessage} from '@xh/hoist-chat-kit/core';
+import type {PlainObject} from '@xh/hoist/core';
 import {describe, expect, it} from 'vitest';
 import {createOpenUiLabCatalog} from './OpenUiLabCatalog';
 import {inspectOpenUiMessage} from './OpenUiProgramReport';
+import type {OpenUiReplayScenario} from './OpenUiReplay';
 import {OPEN_UI_REPLAY_SCENARIOS} from './OpenUiReplay';
 
 const catalog = createOpenUiLabCatalog();
 
-// What the data tools return, in the shape each scenario reads: a first call that totals
-// positions, then a price history.
-const TOOL_OUTPUTS = [
-    {
+// What the data tools return, in the shape each scenario reads: totals of positions with their
+// first rows, and a price history.
+const POSITIONS = {
         artifact: 'positions-1',
         summary: {groups: 2, positions: 4, pnl: -230, mktVal: 5700},
         firstRows: [
-            {symbol: 'AAA', fund: 'Oak Mount', pnl: 60, mktVal: 1500, positions: 2},
-            {symbol: 'BBB', fund: 'Red River', pnl: -290, mktVal: -4200, positions: 2}
+            {
+                symbol: 'AAA',
+                fund: 'Oak Mount',
+                sector: 'Energy',
+                pnl: 60,
+                mktVal: 1500,
+                positions: 2
+            },
+            {
+                symbol: 'BBB',
+                fund: 'Red River',
+                sector: 'Technology',
+                pnl: -290,
+                mktVal: -4200,
+                positions: 2
+            }
         ]
     },
-    {
+    PRICES = {
         artifact: 'prices-2',
         summary: {
             symbol: 'AAA',
@@ -31,19 +46,34 @@ const TOOL_OUTPUTS = [
             high: 16,
             low: 9,
             avgVolume: 2000
-        }
-    }
-];
+        },
+        firstRows: [
+            {day: '2026-01-05', close: 10},
+            {day: '2026-01-06', close: 12},
+            {day: '2026-01-07', close: 15}
+        ]
+    };
 
 const SLIPS_PROMPT = 'Replay slips a model can make: some the format corrects, some it reports.',
     GATE_PROMPT = 'Replay programs that the safety gate refuses, beside one that runs.';
 
 function inspect(prompt: string) {
-    const {reply} = OPEN_UI_REPLAY_SCENARIOS.find(it => it.prompt === prompt);
+    const scenario = OPEN_UI_REPLAY_SCENARIOS.find(it => it.prompt === prompt);
     return inspectOpenUiMessage(
         catalog,
-        new ChatMessage({role: 'assistant', content: reply(TOOL_OUTPUTS)})
+        new ChatMessage({role: 'assistant', content: scenario.reply(toolOutputs(scenario))})
     );
+}
+
+// Runs the rounds of a scenario as the chat does: each round gets the output of every call
+// before it, and each call gives the output of its tool.
+function toolOutputs({toolRounds = []}: OpenUiReplayScenario): PlainObject[] {
+    const outputs: PlainObject[] = [];
+    toolRounds.forEach(round => {
+        const calls = round(outputs);
+        calls.forEach(({name}) => outputs.push(name === 'get_price_history' ? PRICES : POSITIONS));
+    });
+    return outputs;
 }
 
 describe('OPEN_UI_REPLAY_SCENARIOS', () => {
