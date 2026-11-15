@@ -33,7 +33,7 @@ export const stepsPanel = hoistCmp.factory({
     model: creates(() => StepsPanelModel),
 
     render({model}) {
-        const {playgroundSteps, current, orientation, clickable, wizardStep} = model;
+        const {playgroundSteps, current, orientation, minStepWidth, clickable, wizardStep} = model;
         return wrapper({
             title: 'Steps',
             icon: Icon.treeList(),
@@ -79,6 +79,12 @@ export const stepsPanel = hoistCmp.factory({
                             })
                         }),
                         wrapperOption({
+                            label: 'Min step width',
+                            propName: 'StepsProps.minStepWidth',
+                            info: 'Empty for 96. Above 124 the row shows as vertical. 0 keeps the row.',
+                            control: numberInput({bind: 'minStepWidth', min: 0, width: 70})
+                        }),
+                        wrapperOption({
                             label: 'Third step status',
                             propName: 'StepSpec.status',
                             info: 'A status on a step wins over current.',
@@ -122,6 +128,7 @@ export const stepsPanel = hoistCmp.factory({
                                 steps: raw('orderSteps'),
                                 current: current ?? undefined,
                                 orientation: orientation ?? undefined,
+                                minStepWidth: minStepWidth ?? undefined,
                                 onStepClick: clickable
                                     ? raw('(step, index) => model.setCurrent(index)')
                                     : undefined
@@ -130,6 +137,7 @@ export const stepsPanel = hoistCmp.factory({
                                 steps: playgroundSteps,
                                 current,
                                 orientation,
+                                minStepWidth,
                                 onStepClick: clickable ? (step, idx) => (model.current = idx) : null
                             })
                         })
@@ -213,20 +221,28 @@ export const stepsPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Narrow',
-                        note: 'The same five steps at 340px. Text wraps and the row gets taller.',
+                        note: 'Five steps at 340px. A row too narrow for its steps shows as vertical.',
                         item: demoGrid({
                             columns: 2,
                             items: [
-                                div({
-                                    style: {width: 340},
-                                    item: steps({steps: ORDER_STEPS, current: 3})
+                                demoFrame({
+                                    label: 'Default',
+                                    info: 'minStepWidth: 96',
+                                    item: div({
+                                        style: {width: 340},
+                                        item: steps({steps: ORDER_STEPS, current: 3})
+                                    })
                                 }),
-                                div({
-                                    style: {width: 340},
-                                    item: steps({
-                                        steps: ORDER_STEPS,
-                                        current: 3,
-                                        orientation: 'vertical'
+                                demoFrame({
+                                    label: 'Kept as a row',
+                                    info: 'minStepWidth: 0 - words break',
+                                    item: div({
+                                        style: {width: 340},
+                                        item: steps({
+                                            steps: ORDER_STEPS,
+                                            current: 3,
+                                            minStepWidth: 0
+                                        })
                                     })
                                 })
                             ]
@@ -286,6 +302,7 @@ const STATUSES: StepStatus[] = ['pending', 'current', 'complete', 'warning', 'er
 class StepsPanelModel extends HoistModel {
     @bindable accessor current: number = 2;
     @bindable accessor orientation: StepsProps['orientation'] = null;
+    @bindable accessor minStepWidth: number = null;
     @bindable accessor thirdStatus: StepStatus = null;
     @bindable accessor showDescriptions = true;
     @bindable accessor showDetails = true;
