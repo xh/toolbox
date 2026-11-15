@@ -85,6 +85,8 @@ import {dateFormatsPanel} from './tabs/system/formats/DateFormatsPanel';
 import {errorMessagePanel} from './tabs/components/general/ErrorMessagePanel';
 import {exceptionHandlerPanel} from './tabs/system/exceptions/ExceptionHandlerPanel';
 import {iconsPanel} from './tabs/components/general/IconsPanel';
+import {itemListPanel} from './tabs/components/general/ItemListPanel';
+import {keyValueListPanel} from './tabs/components/general/KeyValueListPanel';
 import {inspectorPanel} from './tabs/system/InspectorPanel';
 import {jsxPanel} from './tabs/system/JsxPanel';
 import {markdownPanel} from './tabs/components/general/MarkdownPanel';
@@ -92,7 +94,11 @@ import {numberFormatsPanel} from './tabs/system/formats/NumberFormatsPanel';
 import {pdfViewerPanel} from './tabs/components/general/PdfViewerPanel';
 import {pinPadPanel} from './tabs/components/general/PinPadPanel';
 import {placeholderPanel} from './tabs/components/general/PlaceholderPanel';
+import {progressBarPanel} from './tabs/components/general/ProgressBarPanel';
+import {separatorPanel} from './tabs/components/general/SeparatorPanel';
+import {sparklinePanel} from './tabs/components/general/SparklinePanel';
 import {statCardPanel} from './tabs/components/general/StatCardPanel';
+import {stepsPanel} from './tabs/components/general/StepsPanel';
 import {relativeTimestampPanel} from './tabs/components/general/relativetimestamp/RelativeTimestampPanel';
 import {simpleRoutingPanel} from './tabs/system/routing/SimpleRoutingPanel';
 import {bannerPanel} from './tabs/layout/panels/BannerPanel';
@@ -335,7 +341,13 @@ export class AppModel extends BaseAppModel {
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'placeholder', path: '/placeholder'},
-                            {name: 'statCard', path: '/statCard'}
+                            {name: 'statCard', path: '/statCard'},
+                            {name: 'progressBar', path: '/progressBar'},
+                            {name: 'itemList', path: '/itemList'},
+                            {name: 'keyValueList', path: '/keyValueList'},
+                            {name: 'separator', path: '/separator'},
+                            {name: 'sparkline', path: '/sparkline'},
+                            {name: 'steps', path: '/steps'}
                         ]
                     },
                     {
@@ -603,11 +615,21 @@ export class AppModel extends BaseAppModel {
                             {id: 'clock', content: clockPanel},
                             {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
                             {id: 'icons', content: iconsPanel},
+                            {id: 'itemList', title: 'ItemList', content: itemListPanel},
+                            {
+                                id: 'keyValueList',
+                                title: 'KeyValueList',
+                                content: keyValueListPanel
+                            },
                             {id: 'markdown', content: markdownPanel},
                             {id: 'pdfViewer', title: 'PdfViewer', content: pdfViewerPanel},
                             {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                             {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                            {id: 'progressBar', title: 'ProgressBar', content: progressBarPanel},
+                            {id: 'separator', content: separatorPanel},
+                            {id: 'sparkline', content: sparklinePanel},
                             {id: 'statCard', title: 'StatCard', content: statCardPanel},
+                            {id: 'steps', content: stepsPanel},
                             {id: 'timestamp', content: relativeTimestampPanel}
                         ].map(it => ({...it, group: 'general'})),
                         ...[

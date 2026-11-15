@@ -1,0 +1,41 @@
+// A column or a row with a gap, which spaces each separator from its neighbors.
+.tb-separator-panel__stack {
+  gap: var(--xh-pad-px);
+}
+
+.tb-separator-panel__block {
+  padding: var(--xh-pad-px);
+  border-radius: var(--xh-border-radius-px);
+  background: var(--xh-bg-alt);
+}
+
+.tb-separator-panel__figure {
+  gap: 2px;
+
+  > span:first-child {
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small-em);
+  }
+
+  > span:last-child {
+    font-size: var(--xh-font-size-large-em);
+  }
+}
+
+.tb-separator-panel__narrow {
+  width: 220px;
+}
+
+// Spaced and restyled through Separator's CSS variables. A scoped override sets the resolved
+// `--xh-` variables - the unprefixed ones are read at the root.
+.tb-separator-panel__spaced {
+  --xh-separator-margin: 16px 0;
+}
+
+.tb-separator-panel__restyled {
+  --xh-separator-color: var(--xh-intent-primary);
+  --xh-separator-width: 3px;
+  --xh-separator-label-color: var(--xh-text-color);
+  --xh-separator-label-font-size: var(--xh-font-size-large-em);
+  --xh-separator-label-gap: calc(var(--xh-pad-px) * 2);
+}
