@@ -38,9 +38,10 @@ export const progressBarPanel = hoistCmp.factory({
                 'A `ProgressBar` shows a value against a maximum: the progress of a task, or usage',
                 'against a limit. With no value it is indeterminate, for work of unknown length.',
                 '',
-                'The bar is presentation-only. It fills the width of its container, shows a label',
-                'and a figure above the track, and can mark a `target` on it. The caller formats',
-                'the figure. By default it is the value as a whole percent of the range.'
+                'The bar is presentation-only. It fills the width of a block or a column, shows a',
+                'label and a figure above the track, and can mark a `target` on it. In a row, give',
+                'it a `flex` or a `width`. The caller formats the figure. By default it is the',
+                'value as a whole percent of the range.'
             ],
             links: [
                 {
@@ -127,7 +128,7 @@ export const progressBarPanel = hoistCmp.factory({
                             showValue: false,
                             caption: 'A value outside the range draws an empty or a full bar.',
                             config: fmtDemoConfig<ProgressBarProps>('progressBar', barProps),
-                            item: progressBar(barProps)
+                            item: progressBar({...barProps, width: '100%'})
                         })
                     }),
                     demoSection({
@@ -204,17 +205,23 @@ export const progressBarPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'In a Row',
-                        note: 'Three bars share a row of 420px. A long label truncates.',
+                        note: 'Three bars share a row of 420px with flex: 1. A long label wraps.',
                         item: hbox({
                             width: 420,
                             style: {gap: 'var(--xh-pad-double-px)'},
                             items: [
-                                progressBar({label: 'CPU', value: 34}),
-                                progressBar({label: 'Memory', value: 71, intent: 'warning'}),
+                                progressBar({label: 'CPU', value: 34, flex: 1}),
+                                progressBar({
+                                    label: 'Memory',
+                                    value: 71,
+                                    intent: 'warning',
+                                    flex: 1
+                                }),
                                 progressBar({
                                     label: 'Disk on the shared reporting volume',
                                     value: 93,
-                                    intent: 'danger'
+                                    intent: 'danger',
+                                    flex: 1
                                 })
                             ]
                         })
