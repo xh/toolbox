@@ -2,10 +2,12 @@ import static java.lang.Boolean.parseBoolean
 
 rootProject.name = 'toolbox'
 
-// Composite build setup for compiling hoist-core locally
+// Composite build setup for compiling hoist-core locally. Set XH_HOIST_CORE_PATH (absolute path)
+// to use a checkout other than ../hoist-core, e.g. a git worktree.
 if (parseBoolean(runHoistInline)) {
-    println "${xhAppName}: running with Hoist Core INLINE...."
-    includeBuild '../hoist-core'
+    def hoistCorePath = System.getenv('XH_HOIST_CORE_PATH') ?: '../hoist-core'
+    println "${xhAppName}: running with Hoist Core INLINE from ${hoistCorePath}...."
+    includeBuild hoistCorePath
 } else {
     println "${xhAppName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
 }
