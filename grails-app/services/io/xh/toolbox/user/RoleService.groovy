@@ -4,6 +4,10 @@ import io.xh.hoist.directory.DirectoryService
 import io.xh.hoist.role.provided.DefaultRoleService
 import io.xh.hoist.role.provided.RoleSpec
 
+import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
+import static io.xh.hoist.util.Utils.isLocalDevelopment
+import static io.xh.hoist.util.Utils.isProduction
+
 /**
  * Toolbox leverages Hoist's built-in, database-backed Role management and its associated Admin Console UI.
  *
@@ -13,6 +17,33 @@ import io.xh.hoist.role.provided.RoleSpec
 class RoleService extends DefaultRoleService {
 
     MockDirectoryService mockDirectoryService
+
+    private String bootstrapAdminUser = null
+
+    /**
+     * Note the local bootstrap admin, with the same local development guard that Hoist applies
+     * when it grants that user its admin roles.
+     */
+    void init() {
+        super.init()
+        if (isLocalDevelopment && !isProduction) {
+            bootstrapAdminUser = getInstanceConfig('bootstrapAdminUser')?.toLowerCase()
+        }
+    }
+
+    /**
+     * Give the local bootstrap admin TOOLBOX_LLM_USER, so an agent on a throwaway database can
+     * test the Live Model demo. Hoist grants that user its admin roles by name, so it gets no role
+     * that lists HOIST_ADMIN as a member. The hourly limit on model calls still applies.
+     */
+    @Override
+    Set<String> getRolesForUser(String username) {
+        def ret = super.getRolesForUser(username)
+        if (bootstrapAdminUser && bootstrapAdminUser == username.toLowerCase()) {
+            ret += 'TOOLBOX_LLM_USER'
+        }
+        ret
+    }
 
     /**
      * Use a real directory service when one is enabled - in particular EntraIdService against the
