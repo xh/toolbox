@@ -288,6 +288,13 @@ local MySQL database untouched. All settings are passed on the command line for 
 The database starts empty and is discarded when the server stops. Bootstrap recreates required
 configs with defaults, so features that depend on stored data or configured secrets may not work.
 
+The agent login can use the LLM relay behind the Chat Kit tab's Live Model demo and the OpenUI
+Lab's live page. In local development, `RoleService` grants the bootstrap admin
+`TOOLBOX_LLM_USER`. The relay also needs `APP_TOOLBOX_LLM_API_KEY` in `.env`. Each live reply
+makes several paid model calls with that key, and each call counts toward the hourly limit in
+`llmConfig` (20 by default). Send only the requests a task needs, and prefer the replay page,
+which calls no model.
+
 ## On-device mobile testing over a LAN IP
 
 To load Toolbox on a physical device (e.g. to verify mobile-specific behavior, native inputs, or
