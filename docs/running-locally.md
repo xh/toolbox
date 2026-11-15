@@ -211,8 +211,8 @@ This is the variable that inline mode reads to find its checkout:
 | Command | With `XH_HOIST_REACT_PATH` set |
 |---------|--------------------------------|
 | `pnpm typecheck` | Checks against the checkout, through a generated tsconfig, and logs `@xh/hoist LOCAL at <path>` |
-| `pnpm startWithHoist` | Compiles the checkout in place of the sibling `../../hoist-react`. A value in the shell wins over `.env.local` |
-| `pnpm testWithHoist` | Runs the specs against the checkout. It reads the shell only, not `.env.local` |
+| `pnpm startWithHoist`, `pnpm testWithHoist` | Use the checkout in place of the sibling `../../hoist-react`. A value in the shell wins over `.env.local`. The install step of each script reads the shell only |
+| `XH_INLINE_HOIST=true pnpm test` | Runs the specs once against the checkout, with no install step |
 | `pnpm start`, `pnpm test`, `pnpm build` | Ignore it. They use the installed Hoist |
 
 `scripts/localHoistReact.mjs` holds the logic. The check compiles the checkout's TypeScript source,

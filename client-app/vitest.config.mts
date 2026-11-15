@@ -8,7 +8,8 @@
  * "Unit Tests in an App" section of hoist-react's `docs/unit-testing.md`.
  *
  * `pnpm testWithHoist` runs the specs against a sibling hoist-react checkout, as `startWithHoist`
- * does for the dev server.
+ * does for the dev server. This inline mode is on when `XH_INLINE_HOIST` is 'true'. It uses the
+ * checkout that `XH_HOIST_REACT_PATH` names, in the environment or in `client-app/.env.local`.
  *
  * With `XH_CHAT_KIT_PATH` set, the specs run against that local checkout of `@xh/hoist-chat-kit`,
  * as the dev server does - see scripts/localChatKit.mjs.
@@ -18,11 +19,22 @@ import {createRequire} from 'node:module';
 import path from 'node:path';
 import {defineConfig, mergeConfig} from 'vitest/config';
 import {localChatKit} from './scripts/localChatKit.mjs';
+import {readLocalVar} from './scripts/localEnv.mjs';
 
 const require = createRequire(import.meta.url),
     pkg = require('./package.json'),
     customPkgPath = path.resolve('node_modules/@xh/package-template'),
-    chatKit = localChatKit();
+    chatKit = localChatKit(),
+    inlineHoist = process.env.XH_INLINE_HOIST === 'true',
+    hoistReactPath = readLocalVar('XH_HOIST_REACT_PATH');
+
+// The preset reads the checkout for inline mode from the environment only.
+if (inlineHoist && hoistReactPath) process.env.XH_HOIST_REACT_PATH = hoistReactPath;
+
+// The kit aliases `@xh/hoist` to the installed copy. In inline mode that alias would win over the
+// preset's own, and the kit would load a second Hoist beside the checkout.
+const {'@xh/hoist': installedHoist, ...kitOnlyAliases} = chatKit?.aliases ?? {},
+    resolveAliases = inlineHoist ? kitOnlyAliases : chatKit?.aliases;
 
 const config = configureVitest({
     appCode: 'toolbox',
@@ -31,7 +43,7 @@ const config = configureVitest({
     // Compile the custom package as the build does - see rsbuild.config.mjs.
     extraIncludePaths: chatKit ? [customPkgPath, chatKit.path] : [customPkgPath],
     extraExcludePaths: chatKit ? [chatKit.nodeModulesPath] : [],
-    resolveAliases: chatKit?.aliases,
+    resolveAliases,
     setupFiles: ['./src/test-support/setup.ts']
 });
 
