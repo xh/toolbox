@@ -8,13 +8,11 @@
  * the installed package. See "Running against a local Hoist Chat Kit checkout" in
  * docs/running-locally.md.
  */
-import {existsSync, readFileSync, realpathSync} from 'node:fs';
-import {dirname, join, resolve} from 'node:path';
-import {fileURLToPath} from 'node:url';
-import {parseEnv} from 'node:util';
+import {existsSync, realpathSync} from 'node:fs';
+import {join, resolve} from 'node:path';
+import {CLIENT_APP, readJson, readLocalVar} from './localEnv.mjs';
 
-const CLIENT_APP = resolve(dirname(fileURLToPath(import.meta.url)), '..'),
-    KIT_NAME = '@xh/hoist-chat-kit';
+const KIT_NAME = '@xh/hoist-chat-kit';
 
 /**
  * The local kit checkout to run against, or null to use the installed package.
@@ -25,7 +23,7 @@ const CLIENT_APP = resolve(dirname(fileURLToPath(import.meta.url)), '..'),
  *      node_modules, which the app must not compile.
  */
 export function localChatKit({log = false} = {}) {
-    const raw = process.env.XH_CHAT_KIT_PATH ?? readEnvLocal().XH_CHAT_KIT_PATH;
+    const raw = readLocalVar('XH_CHAT_KIT_PATH');
     if (!raw) return null;
 
     const kitPath = resolve(CLIENT_APP, raw),
@@ -61,13 +59,4 @@ function sharedPackageAliases(kitPkgPath) {
         if (existsSync(appCopy)) ret[name] = appCopy;
     });
     return ret;
-}
-
-function readEnvLocal() {
-    const file = join(CLIENT_APP, '.env.local');
-    return existsSync(file) ? parseEnv(readFileSync(file, 'utf8')) : {};
-}
-
-function readJson(file) {
-    return JSON.parse(readFileSync(file, 'utf8'));
 }
