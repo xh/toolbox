@@ -96,5 +96,6 @@ const INSTRUCTIONS = [
         'to a $variable and read the data in the program with Query. A Query result has no ' +
         'artifact, so DataGrid and DataChart cannot show it. Read its summary for Metrics and ' +
         'its firstRows for a Grid or a Chart, and set preview to the number of rows you show.',
-    'Never make up a figure. If no tool has the data, say so in words.'
+    'Never make up a figure, a status, a history or a trend, and never show one series as ' +
+        'another. If no tool has the data, leave it out and say in words what is missing.'
 ].join('\n');
