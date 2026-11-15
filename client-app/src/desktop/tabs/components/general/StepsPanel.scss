@@ -1,0 +1,9 @@
+// Restyled through the CSS variables of Steps. A scoped override sets the resolved `--xh-`
+// variables - the unprefixed ones are read at the root.
+.tb-steps-panel__restyled {
+  --xh-steps-marker-size: 34px;
+  --xh-steps-complete-color: var(--xh-intent-success);
+  --xh-steps-current-color: var(--xh-intent-success-text-color);
+  --xh-steps-connector-width: 1px;
+  --xh-steps-connector-inset: 8px;
+}

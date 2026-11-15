@@ -1,0 +1,30 @@
+// Frames of set widths, side by side, wrapping when the page is narrow.
+.tb-key-value-list-panel__widths {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--xh-pad-double-px);
+}
+
+// Frames at the width of a narrow detail panel.
+.tb-key-value-list-panel__narrow {
+  width: 460px;
+}
+
+.tb-key-value-list-panel__slim {
+  width: 340px;
+}
+
+// Restyled through KeyValueList's CSS variables. A scoped override sets the resolved `--xh-`
+// variables - the unprefixed ones are read at the root.
+.tb-key-value-list-panel__restyled {
+  --xh-key-value-list-label-font-size: var(--xh-font-size-small-em);
+  --xh-key-value-list-label-gap: calc(var(--xh-pad-px) * 3);
+  --xh-key-value-list-value-font-weight: 600;
+  --xh-key-value-list-row-gap: var(--xh-pad-px);
+
+  .xh-key-value-list__label {
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+}

@@ -1,0 +1,51 @@
+// Sparklines side by side, each over a small caption.
+.tb-sparkline-panel__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--xh-pad-double-px);
+}
+
+.tb-sparkline-panel__labeled {
+  display: flex;
+  flex-direction: column;
+  gap: var(--xh-pad-half-px);
+  color: var(--xh-text-color-muted);
+  font-size: var(--xh-font-size-small-em);
+}
+
+.tb-sparkline-panel__grid {
+  display: flex;
+  height: 300px;
+  border: var(--xh-border-solid);
+}
+
+// A label beside each sparkline, in a column.
+.tb-sparkline-panel__scale-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--xh-pad-half-px);
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: var(--xh-pad-px);
+
+    > span {
+      width: 60px;
+    }
+  }
+}
+
+// Any CSS color: every shape draws in the `color` of the component.
+.tb-sparkline-panel__orange {
+  color: var(--xh-orange);
+}
+
+// Restyled through the CSS variables of Sparkline. A scoped override sets the resolved `--xh-`
+// variables - the unprefixed ones are read at the root.
+.tb-sparkline-panel__restyled {
+  --xh-sparkline-line-width: 3px;
+  --xh-sparkline-dot-size: 9px;
+  --xh-sparkline-area-opacity: 0.35;
+  --xh-sparkline-padding: 6px;
+}
