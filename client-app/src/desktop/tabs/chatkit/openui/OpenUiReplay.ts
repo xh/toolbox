@@ -174,10 +174,11 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
             ]
         ],
         reply: ([sectors, top, prices]) => {
-            const rows = sectors.firstRows.map(({sector, mktVal}) => ({
-                    sector,
-                    exposure: Math.round(Math.abs(mktVal))
-                })),
+            // The largest exposures first. A progress component holds at most eight bars.
+            const rows = sectors.firstRows
+                    .map(({sector, mktVal}) => ({sector, exposure: Math.round(Math.abs(mktVal))}))
+                    .sort((a, b) => b.exposure - a.exposure)
+                    .slice(0, MAX_BARS),
                 // A limit that the largest sector breaks, and a warning level under it.
                 limit = Math.round(Math.max(...rows.map(it => it.exposure)) * 0.9),
                 warnAt = Math.round(limit * 0.8),
@@ -567,6 +568,9 @@ function queryProgram(dim: string): string {
         `total = Metrics([{label: "Groups by ${dim}", value: q.summary.groups}, {label: "Positions", value: q.summary.positions}])`
     );
 }
+
+// Most bars that the kit's progress spec takes.
+const MAX_BARS = 8;
 
 /** The intent that colors a signed figure. */
 function intentOf(value: number): string {

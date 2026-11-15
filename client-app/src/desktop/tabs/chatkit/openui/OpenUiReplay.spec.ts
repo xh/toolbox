@@ -16,24 +16,15 @@ const catalog = createOpenUiLabCatalog();
 const POSITIONS = {
         artifact: 'positions-1',
         summary: {groups: 2, positions: 4, pnl: -230, mktVal: 5700},
-        firstRows: [
-            {
-                symbol: 'AAA',
-                fund: 'Oak Mount',
-                sector: 'Energy',
-                pnl: 60,
-                mktVal: 1500,
-                positions: 2
-            },
-            {
-                symbol: 'BBB',
-                fund: 'Red River',
-                sector: 'Technology',
-                pnl: -290,
-                mktVal: -4200,
-                positions: 2
-            }
-        ]
+        // More rows than any component takes, so a scenario must cap what it shows.
+        firstRows: Array.from({length: 10}, (_, idx) => ({
+            symbol: `SYM${idx}`,
+            fund: `Fund ${idx}`,
+            sector: `Sector ${idx}`,
+            pnl: idx % 2 ? -290 - idx : 60 + idx,
+            mktVal: idx % 2 ? -4200 - idx : 1500 + idx,
+            positions: 2 + idx
+        }))
     },
     PRICES = {
         artifact: 'prices-2',
