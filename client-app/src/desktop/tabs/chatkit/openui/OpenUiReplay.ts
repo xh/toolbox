@@ -160,7 +160,10 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
         icon: Icon.shield(),
         toolRounds: [
             () => [
-                {name: 'query_positions', input: {groupBy: ['sector'], sortBy: 'mktVal'}},
+                {
+                    name: 'query_positions',
+                    input: {groupBy: ['sector'], sortBy: 'mktVal', preview: 10}
+                },
                 {name: 'query_positions', input: {groupBy: ['symbol'], limit: 1}}
             ],
             ([, top]) => [
@@ -178,7 +181,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
                 // A limit that the largest sector breaks, and a warning level under it.
                 limit = Math.round(Math.max(...rows.map(it => it.exposure)) * 0.9),
                 warnAt = Math.round(limit * 0.8),
-                closes = (prices.firstRows ?? []).map(it => it.close),
+                closes = (prices.firstRows ?? []).map(it => Math.round(it.close * 100) / 100),
                 {symbol} = top.firstRows[0];
             return [
                 'Exposure by sector against one limit, with the warning level marked on each bar.',
@@ -186,7 +189,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
                 fence(
                     'root = Stack([kpis, split, bars], "column", "medium", "Risk view")',
                     `kpis = Metrics([{label: "Gross exposure", value: ${Math.round(Math.abs(sectors.summary.mktVal))}, format: "currency", decimals: 0}, {label: "P&L", value: ${sectors.summary.pnl}, format: "currency", decimals: 0, intent: "${intentOf(sectors.summary.pnl)}"}, {label: "${symbol} close", value: ${prices.summary.lastClose}, format: "currency", delta: ${prices.summary.change}, deltaFormat: "percent", deltaLabel: "30 days", trend: [${closes.join(', ')}]}])`,
-                    `split = Divider("Exposure against a limit of ${limit}")`,
+                    `split = Divider("Exposure against a limit of ${(limit / 1e6).toFixed(1)}M")`,
                     `bars = Progress([${rows
                         .map(
                             ({sector, exposure}) =>
