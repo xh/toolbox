@@ -2,7 +2,7 @@
 .tb-progress-bar-panel__shares {
   display: flex;
   flex-direction: column;
-  gap: var(--xh-pad-px);
+  gap: var(--xh-spacing);
   max-width: 520px;
 }
 
@@ -12,11 +12,11 @@
   --xh-progress-bar-height: 18px;
   --xh-progress-bar-border-radius: 2px;
   --xh-progress-bar-target-width: 3px;
-  --xh-progress-bar-target-color: var(--xh-orange);
+  --xh-progress-bar-target-bg: var(--xh-orange);
 }
 
 .tb-progress-bar-panel__thin {
   --xh-progress-bar-height: 3px;
   --xh-progress-bar-gap: 2px;
-  --xh-progress-bar-font-size: var(--xh-font-size-small-em);
+  --xh-progress-bar-font-size: var(--xh-font-size-small-relative);
 }

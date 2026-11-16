@@ -89,10 +89,10 @@ export const itemListPanel = hoistCmp.factory({
                     intent: 'primary',
                     items: [
                         wrapperOption({
-                            label: 'Ordered',
-                            propName: 'ItemListProps.ordered',
+                            label: 'Numbered',
+                            propName: 'ItemListProps.numbered',
                             info: 'Numbers replace the icons.',
-                            control: switchInput({bind: 'ordered'})
+                            control: switchInput({bind: 'numbered'})
                         }),
                         wrapperOption({
                             label: 'Dividers',
@@ -112,7 +112,7 @@ export const itemListPanel = hoistCmp.factory({
                         }),
                         wrapperOption({
                             label: 'Clickable',
-                            propName: 'ItemListProps.onEntryClick',
+                            propName: 'ItemListEntry.onClick',
                             control: switchInput({bind: 'clickable'})
                         }),
                         wrapperOption({
@@ -154,38 +154,36 @@ export const itemListPanel = hoistCmp.factory({
                             showValue: false,
                             caption: 'Four alerts in a 440px box.',
                             config: fmtDemoConfig<ItemListProps>('itemList', {
-                                entries: raw('alerts'),
+                                entries: clickable
+                                    ? raw(
+                                          'alerts.map(it => ({...it, onClick: () => model.openAlert(it)}))'
+                                      )
+                                    : raw('alerts'),
                                 ...listProps,
-                                emptyText: 'No open alerts',
-                                onEntryClick: clickable
-                                    ? raw('(entry, index) => model.openAlert(alerts[index])')
-                                    : undefined
+                                emptyText: 'No open alerts'
                             }),
                             item: itemList({
                                 entries: playgroundEntries,
                                 ...listProps,
-                                emptyText: 'No open alerts',
-                                onEntryClick: clickable
-                                    ? ({title}) => XH.toast({message: `Clicked: ${title}`})
-                                    : null
+                                emptyText: 'No open alerts'
                             })
                         })
                     }),
                     demoSection({
                         title: 'Ranking',
-                        note: 'ordered numbers the entries. The five largest funds by market value.',
+                        note: 'numbered puts a number on each entry. The five largest funds by market value.',
                         item: demoGrid({
                             columns: 2,
                             items: [
                                 demoFrame({
-                                    label: 'ordered',
-                                    item: itemList({ordered: true, entries: topFunds})
+                                    label: 'numbered',
+                                    item: itemList({numbered: true, entries: topFunds})
                                 }),
                                 demoFrame({
-                                    label: 'ordered, compact, dividers',
+                                    label: 'numbered, compact, dividers',
                                     info: 'An intent colors the number',
                                     item: itemList({
-                                        ordered: true,
+                                        numbered: true,
                                         size: 'compact',
                                         dividers: true,
                                         entries: topFunds.map((it, idx) => ({
@@ -227,14 +225,12 @@ export const itemListPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Clickable',
-                        note: 'onEntryClick makes each entry a button. A disabled entry is left out.',
+                        note: 'An onClick makes an entry clickable. A disabled entry is dimmed and takes no click.',
                         item: demoFrame({
                             className: 'tb-item-list-panel__narrow',
                             item: itemList({
                                 dividers: true,
-                                onEntryClick: ({title}, idx) =>
-                                    XH.toast({message: `Entry ${idx}: ${title}`}),
-                                entries: [
+                                entries: withToastOnClick([
                                     {
                                         title: 'Daily P&L report',
                                         description: 'P&L by fund and by trader.',
@@ -253,7 +249,7 @@ export const itemListPanel = hoistCmp.factory({
                                         icon: Icon.shield(),
                                         disabled: true
                                     }
-                                ]
+                                ])
                             })
                         })
                     }),
@@ -270,7 +266,7 @@ export const itemListPanel = hoistCmp.factory({
                                 demoFrame({
                                     className: 'tb-item-list-panel__slim',
                                     item: itemList({
-                                        ordered: true,
+                                        numbered: true,
                                         entries: [
                                             {
                                                 title: 'ORD-2026-11-14-000000000000000000487213',
@@ -328,8 +324,16 @@ function withoutText({title, icon, intent}: ItemListEntry): ItemListEntry {
     return {title, icon, intent};
 }
 
+/** The entries, each with an onClick that toasts its title. */
+function withToastOnClick(entries: ItemListEntry[]): ItemListEntry[] {
+    return entries.map(it => ({
+        ...it,
+        onClick: () => XH.toast({message: `Clicked: ${it.title}`})
+    }));
+}
+
 class ItemListPanelModel extends HoistModel {
-    @bindable accessor ordered = false;
+    @bindable accessor numbered = false;
     @bindable accessor dividers = true;
     @bindable accessor size: ItemListProps['size'] = null;
     @bindable accessor clickable = false;
@@ -347,9 +351,9 @@ class ItemListPanelModel extends HoistModel {
      * from the list beside it.
      */
     get listProps(): PlaygroundListProps {
-        const {ordered, dividers, size} = this;
+        const {numbered, dividers, size} = this;
         return {
-            ordered: ordered || undefined,
+            numbered: numbered || undefined,
             dividers: dividers || undefined,
             size: size ?? undefined
         };
@@ -357,15 +361,16 @@ class ItemListPanelModel extends HoistModel {
 
     /** The alerts as the rail sets them. */
     get playgroundEntries(): ItemListEntry[] {
-        const {empty, showIcons, showDescriptions, showDetails, showIntents} = this;
+        const {empty, clickable, showIcons, showDescriptions, showDetails, showIntents} = this;
         if (empty) return [];
-        return ALERTS.map(({title, description, icon, intent, detail}) => ({
+        const ret = ALERTS.map(({title, description, icon, intent, detail}) => ({
             title,
             description: showDescriptions ? description : undefined,
             icon: showIcons ? icon : undefined,
             intent: showIntents ? intent : undefined,
             detail: showDetails ? detail : undefined
         }));
+        return clickable ? withToastOnClick(ret) : ret;
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
@@ -387,7 +392,7 @@ class ItemListPanelModel extends HoistModel {
 
 /** The ItemList props the rail drives, as the plain values its inputs produce. */
 interface PlaygroundListProps {
-    ordered?: boolean;
+    numbered?: boolean;
     dividers?: boolean;
     size?: ItemListProps['size'];
 }

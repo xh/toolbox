@@ -36,7 +36,7 @@ export const progressBarPanel = hoistCmp.factory({
             icon: Icon.bars(),
             description: [
                 'A `ProgressBar` shows a value against a maximum: the progress of a task, or usage',
-                'against a limit. With no value it is indeterminate, for work of unknown length.',
+                'against a limit. Set `indeterminate` for work of unknown length.',
                 '',
                 'The bar is presentation-only. It fills the width of a block or a column, shows a',
                 'label and a figure above the track, and can mark a `target` on it. In a row, give',
@@ -60,7 +60,8 @@ export const progressBarPanel = hoistCmp.factory({
                     items: [
                         wrapperOption({
                             label: 'Indeterminate',
-                            info: 'Omits the value.',
+                            propName: 'ProgressBarProps.indeterminate',
+                            info: 'Ignores the value.',
                             control: switchInput({bind: 'indeterminate'})
                         }),
                         wrapperOption({
@@ -90,19 +91,19 @@ export const progressBarPanel = hoistCmp.factory({
                             control: textInput({bind: 'label', width: 160, commitOnChange: true})
                         }),
                         wrapperOption({
-                            label: 'Value label',
-                            propName: 'ProgressBarProps.valueLabel',
+                            label: 'Value text',
+                            propName: 'ProgressBarProps.valueText',
                             info: 'Empty for the default percent.',
                             control: textInput({
-                                bind: 'valueLabel',
+                                bind: 'valueText',
                                 width: 160,
                                 commitOnChange: true
                             })
                         }),
                         wrapperOption({
-                            label: 'Show value label',
-                            propName: 'ProgressBarProps.showValueLabel',
-                            control: switchInput({bind: 'showValueLabel'})
+                            label: 'Show value',
+                            propName: 'ProgressBarProps.showValue',
+                            control: switchInput({bind: 'showValue'})
                         }),
                         wrapperOption({
                             label: 'Intent',
@@ -156,14 +157,14 @@ export const progressBarPanel = hoistCmp.factory({
                                     label: 'Sales against quota',
                                     value: 68,
                                     target: 80,
-                                    valueLabel: '68 of 100 units, quota 80'
+                                    valueText: '68 of 100 units, quota 80'
                                 }),
                                 progressBar({
                                     label: 'Quota passed',
                                     value: 91,
                                     target: 80,
                                     intent: 'success',
-                                    valueLabel: '91 of 100 units, quota 80'
+                                    valueText: '91 of 100 units, quota 80'
                                 }),
                                 progressBar({
                                     label: 'Target at the end',
@@ -175,29 +176,36 @@ export const progressBarPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Indeterminate',
-                        note: 'No value. The fill slides along the track.',
+                        note: 'indeterminate: true. The fill slides along the track.',
                         item: demoGrid({
                             items: [
-                                progressBar({label: 'Loading positions'}),
-                                progressBar({label: 'Reconciling', intent: 'warning'}),
-                                progressBar({domAttrs: {'aria-label': 'Loading'}})
+                                progressBar({label: 'Loading positions', indeterminate: true}),
+                                progressBar({
+                                    label: 'Reconciling',
+                                    intent: 'warning',
+                                    indeterminate: true
+                                }),
+                                progressBar({
+                                    indeterminate: true,
+                                    domAttrs: {'aria-label': 'Loading'}
+                                })
                             ]
                         })
                     }),
                     demoSection({
                         title: 'Bar Only',
-                        note: 'showValueLabel: false, and a bar with no label.',
+                        note: 'showValue: false, and a bar with no label.',
                         item: demoGrid({
                             items: [
                                 progressBar({
                                     label: 'Upload',
                                     value: 35,
-                                    showValueLabel: false
+                                    showValue: false
                                 }),
                                 progressBar({value: 60, domAttrs: {'aria-label': 'Upload'}}),
                                 progressBar({
                                     value: 60,
-                                    showValueLabel: false,
+                                    showValue: false,
                                     domAttrs: {'aria-label': 'Upload'}
                                 })
                             ]
@@ -208,7 +216,7 @@ export const progressBarPanel = hoistCmp.factory({
                         note: 'Three bars share a row of 420px with flex: 1. A long label wraps.',
                         item: hbox({
                             width: 420,
-                            style: {gap: 'var(--xh-pad-double-px)'},
+                            style: {gap: 'var(--xh-spacing-double)'},
                             items: [
                                 progressBar({label: 'CPU', value: 34, flex: 1}),
                                 progressBar({
@@ -252,7 +260,7 @@ export const progressBarPanel = hoistCmp.factory({
                                         value: 7,
                                         max: 12,
                                         target: 9,
-                                        valueLabel: '7 of 12'
+                                        valueText: '7 of 12'
                                     })
                                 }),
                                 demoFrame({
@@ -283,7 +291,7 @@ function sectorShares(shares: SectorShare[]) {
                 label: sector,
                 value: mktVal,
                 max: total,
-                valueLabel: span(
+                valueText: span(
                     fmtMillions(mktVal, {precision: 1, label: true}),
                     ', ',
                     fmtPercent(mktVal / total, {precision: 0})
@@ -302,7 +310,7 @@ function usageBar(label: string, used: number, limit: number) {
         value: used,
         max: limit,
         intent,
-        valueLabel: `${fmtNumber(used, {precision: 0})} of ${fmtNumber(limit, {precision: 0})} GB`
+        valueText: `${fmtNumber(used, {precision: 0})} of ${fmtNumber(limit, {precision: 0})} GB`
     });
 }
 
@@ -312,8 +320,8 @@ class ProgressBarPanelModel extends HoistModel {
     @bindable accessor max = 100;
     @bindable accessor target: number = null;
     @bindable accessor label = 'Import';
-    @bindable accessor valueLabel: string = null;
-    @bindable accessor showValueLabel = true;
+    @bindable accessor valueText: string = null;
+    @bindable accessor showValue = true;
     @bindable accessor intent: Intent = null;
 
     @observableRef accessor sectorShares: SectorShare[] = [];
@@ -324,14 +332,15 @@ class ProgressBarPanelModel extends HoistModel {
      * the bar beside it.
      */
     get barProps(): PlaygroundBarProps {
-        const {indeterminate, value, max, target, label, valueLabel, showValueLabel, intent} = this;
+        const {indeterminate, value, max, target, label, valueText, showValue, intent} = this;
         return {
+            indeterminate: indeterminate || undefined,
             value: indeterminate ? undefined : (value ?? 0),
             max: max === 100 || max == null ? undefined : max,
             target: target ?? undefined,
             label: label || undefined,
-            valueLabel: valueLabel || undefined,
-            showValueLabel: showValueLabel ? undefined : false,
+            valueText: valueText || undefined,
+            showValue: showValue ? undefined : false,
             intent: intent || undefined
         };
     }
@@ -350,11 +359,12 @@ class ProgressBarPanelModel extends HoistModel {
 
 /** The ProgressBar props the rail drives, as the plain values its inputs produce. */
 interface PlaygroundBarProps {
+    indeterminate?: boolean;
     value?: number;
     max?: number;
     target?: number;
     label?: string;
-    valueLabel?: string;
-    showValueLabel?: boolean;
+    valueText?: string;
+    showValue?: boolean;
     intent?: Intent;
 }

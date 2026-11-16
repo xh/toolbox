@@ -10,8 +10,8 @@
 // Restyled through ItemList's CSS variables. A scoped override sets the resolved `--xh-`
 // variables - the unprefixed ones are read at the root.
 .tb-item-list-panel__restyled {
-  --xh-item-list-entry-padding: var(--xh-pad-px) 0;
-  --xh-item-list-entry-gap: calc(var(--xh-pad-px) * 1.5);
+  --xh-item-list-entry-padding: var(--xh-spacing) 0;
+  --xh-item-list-entry-gap: calc(var(--xh-spacing) * 1.5);
   --xh-item-list-title-font-weight: 700;
   --xh-item-list-accent-width: 6px;
 }

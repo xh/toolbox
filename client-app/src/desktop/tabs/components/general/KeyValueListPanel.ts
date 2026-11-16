@@ -59,10 +59,10 @@ export const keyValueListPanel = hoistCmp.factory({
                     intent: 'primary',
                     items: [
                         wrapperOption({
-                            label: 'Label position',
-                            propName: 'KeyValueListProps.labelPosition',
+                            label: 'Label side',
+                            propName: 'KeyValueListProps.labelSide',
                             control: select({
-                                bind: 'labelPosition',
+                                bind: 'labelSide',
                                 enableFilter: false,
                                 enableClear: true,
                                 width: 110,
@@ -78,7 +78,7 @@ export const keyValueListPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Min column width',
                             propName: 'KeyValueListProps.minColumnWidth',
-                            info: 'Used when columns is empty.',
+                            info: 'Default 240, or 160 with labels on top.',
                             control: numberInput({
                                 bind: 'minColumnWidth',
                                 min: 80,
@@ -138,7 +138,7 @@ export const keyValueListPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Fits the Width',
-                        note: 'One list at 280, 460 and 760px. Columns are at least 300px wide.',
+                        note: 'One list at 280, 460 and 760px. Columns are at least 240px wide.',
                         item: div({
                             className: 'tb-key-value-list-panel__widths',
                             items: [280, 460, 760].map(width =>
@@ -155,9 +155,9 @@ export const keyValueListPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Label on Top',
-                        note: "labelPosition: 'top' stacks each label above its value.",
+                        note: "labelSide: 'top' stacks each label above its value.",
                         item: demoFrame({
-                            item: keyValueList({entries: positionEntries, labelPosition: 'top'})
+                            item: keyValueList({entries: positionEntries, labelSide: 'top'})
                         })
                     }),
                     demoSection({
@@ -172,11 +172,11 @@ export const keyValueListPanel = hoistCmp.factory({
                                 }),
                                 demoFrame({
                                     label: 'columns: 3',
-                                    info: "with labelPosition: 'top'",
+                                    info: "with labelSide: 'top'",
                                     item: keyValueList({
                                         entries: positionEntries,
                                         columns: 3,
-                                        labelPosition: 'top'
+                                        labelSide: 'top'
                                     })
                                 })
                             ]
@@ -304,7 +304,7 @@ export const keyValueListPanel = hoistCmp.factory({
 });
 
 class KeyValueListPanelModel extends HoistModel {
-    @bindable accessor labelPosition: KeyValueListProps['labelPosition'] = null;
+    @bindable accessor labelSide: KeyValueListProps['labelSide'] = null;
     @bindable accessor columns: number = null;
     @bindable accessor minColumnWidth: number = null;
     @bindable accessor size: KeyValueListProps['size'] = null;
@@ -319,9 +319,9 @@ class KeyValueListPanelModel extends HoistModel {
      * cannot drift from the list beside it.
      */
     get listProps(): PlaygroundListProps {
-        const {labelPosition, columns, minColumnWidth, size, dividers, emptyText} = this;
+        const {labelSide, columns, minColumnWidth, size, dividers, emptyText} = this;
         return {
-            labelPosition: labelPosition ?? undefined,
+            labelSide: labelSide ?? undefined,
             columns: columns ?? undefined,
             minColumnWidth: minColumnWidth ?? undefined,
             size: size ?? undefined,
@@ -363,7 +363,7 @@ class KeyValueListPanelModel extends HoistModel {
 
 /** The KeyValueList props the rail drives, as the plain values its inputs produce. */
 interface PlaygroundListProps {
-    labelPosition?: KeyValueListProps['labelPosition'];
+    labelSide?: KeyValueListProps['labelSide'];
     columns?: number;
     minColumnWidth?: number;
     size?: KeyValueListProps['size'];

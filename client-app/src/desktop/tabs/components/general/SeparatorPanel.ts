@@ -2,7 +2,7 @@ import type {SeparatorProps} from '@xh/hoist/cmp/layout';
 import {div, hbox, separator, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {select, textInput} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {
@@ -22,7 +22,7 @@ export const separatorPanel = hoistCmp.factory({
 
     render({model}) {
         const {sepProps} = model,
-            vertical = sepProps.orientation === 'vertical';
+            {vertical} = sepProps;
         return wrapper({
             title: 'Separator',
             icon: Icon.ellipsisHorizontal(),
@@ -51,15 +51,9 @@ export const separatorPanel = hoistCmp.factory({
                     intent: 'primary',
                     items: [
                         wrapperOption({
-                            label: 'Orientation',
-                            propName: 'SeparatorProps.orientation',
-                            control: select({
-                                bind: 'orientation',
-                                enableFilter: false,
-                                enableClear: true,
-                                width: 130,
-                                options: ['horizontal', 'vertical']
-                            })
+                            label: 'Vertical',
+                            propName: 'SeparatorProps.vertical',
+                            control: switchInput({bind: 'vertical'})
                         }),
                         wrapperOption({
                             label: 'Label',
@@ -136,9 +130,9 @@ export const separatorPanel = hoistCmp.factory({
                                         className: 'tb-separator-panel__stack',
                                         items: [
                                             figure('P&L', '+1.24m'),
-                                            separator({orientation: 'vertical'}),
+                                            separator({vertical: true}),
                                             figure('Market value', '48.25m'),
-                                            separator({orientation: 'vertical'}),
+                                            separator({vertical: true}),
                                             figure('Positions', '312')
                                         ]
                                     })
@@ -151,7 +145,7 @@ export const separatorPanel = hoistCmp.factory({
                                         items: [
                                             button({text: 'Approve', intent: 'success'}),
                                             button({text: 'Reject', intent: 'danger'}),
-                                            separator({orientation: 'vertical'}),
+                                            separator({vertical: true}),
                                             button({text: 'Export'}),
                                             button({text: 'Close'})
                                         ]
@@ -246,7 +240,7 @@ function figure(label: string, value: string) {
 }
 
 class SeparatorPanelModel extends HoistModel {
-    @bindable accessor orientation: SeparatorProps['orientation'] = null;
+    @bindable accessor vertical = false;
     @bindable accessor label = 'Orders';
     @bindable accessor labelPosition: SeparatorProps['labelPosition'] = null;
 
@@ -256,9 +250,9 @@ class SeparatorPanelModel extends HoistModel {
      * from the separator beside it.
      */
     get sepProps(): PlaygroundSeparatorProps {
-        const {orientation, label, labelPosition} = this;
+        const {vertical, label, labelPosition} = this;
         return {
-            orientation: orientation ?? undefined,
+            vertical: vertical || undefined,
             label: label || undefined,
             labelPosition: labelPosition ?? undefined
         };
@@ -267,7 +261,7 @@ class SeparatorPanelModel extends HoistModel {
 
 /** The Separator props the rail drives, as the plain values its inputs produce. */
 interface PlaygroundSeparatorProps {
-    orientation?: SeparatorProps['orientation'];
+    vertical?: boolean;
     label?: string;
     labelPosition?: SeparatorProps['labelPosition'];
 }

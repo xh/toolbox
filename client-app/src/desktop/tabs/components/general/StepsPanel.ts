@@ -33,7 +33,7 @@ export const stepsPanel = hoistCmp.factory({
     model: creates(() => StepsPanelModel),
 
     render({model}) {
-        const {playgroundSteps, current, orientation, minStepWidth, clickable, wizardStep} = model;
+        const {playgroundSteps, current, vertical, minStepWidth, clickable, wizardStep} = model;
         return wrapper({
             title: 'Steps',
             icon: Icon.treeList(),
@@ -68,15 +68,9 @@ export const stepsPanel = hoistCmp.factory({
                             control: numberInput({bind: 'current', min: 0, max: 5, width: 70})
                         }),
                         wrapperOption({
-                            label: 'Orientation',
-                            propName: 'StepsProps.orientation',
-                            control: select({
-                                bind: 'orientation',
-                                enableFilter: false,
-                                enableClear: true,
-                                width: 130,
-                                options: ['horizontal', 'vertical']
-                            })
+                            label: 'Vertical',
+                            propName: 'StepsProps.vertical',
+                            control: switchInput({bind: 'vertical'})
                         }),
                         wrapperOption({
                             label: 'Min step width',
@@ -127,7 +121,7 @@ export const stepsPanel = hoistCmp.factory({
                             config: fmtDemoConfig<StepsProps>('steps', {
                                 steps: raw('orderSteps'),
                                 current: current ?? undefined,
-                                orientation: orientation ?? undefined,
+                                vertical: vertical || undefined,
                                 minStepWidth: minStepWidth ?? undefined,
                                 onStepClick: clickable
                                     ? raw('(step, index) => model.setCurrent(index)')
@@ -136,7 +130,7 @@ export const stepsPanel = hoistCmp.factory({
                             item: steps({
                                 steps: playgroundSteps,
                                 current,
-                                orientation,
+                                vertical,
                                 minStepWidth,
                                 onStepClick: clickable ? (step, idx) => (model.current = idx) : null
                             })
@@ -160,7 +154,7 @@ export const stepsPanel = hoistCmp.factory({
                                     label: 'Timeline',
                                     info: 'current: 3',
                                     item: steps({
-                                        orientation: 'vertical',
+                                        vertical: true,
                                         current: 3,
                                         steps: ORDER_STEPS.map(it => ({
                                             ...it,
@@ -175,7 +169,7 @@ export const stepsPanel = hoistCmp.factory({
                                     label: 'Checklist',
                                     info: 'A status on each step, no current',
                                     item: steps({
-                                        orientation: 'vertical',
+                                        vertical: true,
                                         steps: [
                                             {title: 'Positions loaded', status: 'complete'},
                                             {
@@ -301,7 +295,7 @@ const STATUSES: StepStatus[] = ['pending', 'current', 'complete', 'warning', 'er
 
 class StepsPanelModel extends HoistModel {
     @bindable accessor current: number = 2;
-    @bindable accessor orientation: StepsProps['orientation'] = null;
+    @bindable accessor vertical = false;
     @bindable accessor minStepWidth: number = null;
     @bindable accessor thirdStatus: StepStatus = null;
     @bindable accessor showDescriptions = true;
