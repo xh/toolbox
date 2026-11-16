@@ -14,6 +14,10 @@
 
 ## 13.0-SNAPSHOT - unreleased
 
+### Libraries
+
+* ag-grid `36.2 → 36.3`
+
 ## 12.1.0 - 2026-11-13
 
 ### New Features
