@@ -14,6 +14,16 @@
 
 ## 13.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added a `KeyValueList` demo page to Components > General, showing hoist-react's new display-only list of labeled values, with a playground, columns that fit the width, labels on the left or on top, the compact size, dividers, intents and long text.
+* Added an `ItemList` demo page to Components > General, showing hoist-react's new short list of entries, with a playground, numbered rankings, icon and intent markers, clickable entries, narrow widths and the empty text.
+* Added a `ProgressBar` demo page to Components > General, showing hoist-react's new bar for a value against a maximum, with a playground, shares of a total from the sample portfolio, intents, a target marker, the indeterminate state and odd data.
+* Added a `Separator` demo page to Components > General, showing hoist-react's new rule between content, horizontal and vertical, with a label at the start, the center or the end.
+* Added a `Sparkline` demo page to Components > General, showing hoist-react's new inline trend chart, with a playground, its three types, colors, markers, bars, sizing, and its use in a `StatCard` and in a grid column over the sample price history.
+* Added a `Steps` demo page to Components > General, showing hoist-react's new sequence of steps, with a playground, horizontal and vertical layouts, each status, custom icons, the vertical fallback of a narrow row set by `minStepWidth`, and clickable steps.
+* Updated the `Card` demo page to show the new `subtitle`, `headerItems` and `footer` props, the `SegmentedControl` page to show `wrap`, and the `Slider` page to show `ariaLabel`.
+
 ## 12.1.0 - 2026-11-13
 
 ### New Features
