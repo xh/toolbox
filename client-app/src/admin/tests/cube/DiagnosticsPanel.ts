@@ -30,10 +30,10 @@ export const diagnosticsPanel = hoistCmp.factory({
                 minSize: 360,
                 defaultCollapsed: false
             },
-            items: [
+            children: [
                 div({
                     className: 'tb-cube-diagnostics',
-                    items: [
+                    children: [
                         timeSection('Total', loadTimesModel.total, asOf, 'tb-diag-section--total'),
                         timeSection('Fetch', loadTimesModel.fetch, asOf),
                         diagSection(
@@ -78,12 +78,12 @@ export const diagnosticsPanel = hoistCmp.factory({
                     className: 'tb-cube-diagnostics__memory',
                     height: 110,
                     omit: model.memoryChartModel.empty,
-                    items: [
+                    children: [
                         chart({model: model.memoryChartModel, flex: 1}),
                         span({
                             className: 'tb-cube-diagnostics__heap',
                             omit: model.heapMB == null,
-                            item: `${model.heapMB} MB`
+                            children: `${model.heapMB} MB`
                         })
                     ]
                 })
@@ -113,7 +113,7 @@ export const diagnosticsPanel = hoistCmp.factory({
                     title: model.gcAvailable
                         ? "Chart the GC'd JS heap after each load, at most once per 10s"
                         : 'Relaunch Chrome with --js-flags=--expose-gc --enable-precise-memory-info to enable',
-                    item: switchInput({
+                    children: switchInput({
                         bind: 'monitorMemory',
                         label: 'Memory',
                         disabled: !model.gcAvailable
@@ -171,8 +171,8 @@ function section(title: string, rows: any[], className: string = null) {
     const items = compact(rows);
     return vbox({
         className: `tb-diag-section${className ? ` ${className}` : ''}`,
-        items: [
-            div({className: 'tb-diag-section__title', item: title}),
+        children: [
+            div({className: 'tb-diag-section__title', children: title}),
             ...(isEmpty(items) ? [emptyRow('-')] : items)
         ]
     });
@@ -181,35 +181,35 @@ function section(title: string, rows: any[], className: string = null) {
 function tagRow(tag: string, took: number, isLatest: boolean) {
     return hbox({
         className: `tb-diag-row${isLatest ? ' tb-diag-row--latest' : ''} tb-diag-row__head`,
-        items: [
-            span({className: 'tb-diag-row__tag', item: tag}),
+        children: [
+            span({className: 'tb-diag-row__tag', children: tag}),
             filler(),
-            span({className: 'tb-diag-row__elapsed', item: ms(took)})
+            span({className: 'tb-diag-row__elapsed', children: ms(took)})
         ]
     });
 }
 
 function emptyRow(text: string) {
-    return div({className: 'tb-diag-row tb-diag-row--empty', item: text});
+    return div({className: 'tb-diag-row tb-diag-row--empty', children: text});
 }
 
 function opRow(kind: string, stats: PlainObject, isLatest: boolean) {
     const {last, count, elapsed} = stats;
     return vbox({
         className: `tb-diag-row${isLatest ? ' tb-diag-row--latest' : ''}`,
-        items: [
+        children: [
             hbox({
                 className: 'tb-diag-row__head',
-                items: [
-                    span({className: 'tb-diag-row__kind', item: kind}),
-                    span({className: 'tb-diag-row__type', item: last.type}),
+                children: [
+                    span({className: 'tb-diag-row__kind', children: kind}),
+                    span({className: 'tb-diag-row__type', children: last.type}),
                     filler(),
-                    span({className: 'tb-diag-row__elapsed', item: ms(last.elapsed)})
+                    span({className: 'tb-diag-row__elapsed', children: ms(last.elapsed)})
                 ]
             }),
             hbox({
                 className: 'tb-diag-row__detail',
-                items: [
+                children: [
                     span(opDetail(last)),
                     filler(),
                     span(`n=${count} · avg ${ms(elapsed / count)}`)

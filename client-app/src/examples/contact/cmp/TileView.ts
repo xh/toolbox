@@ -12,7 +12,7 @@ export const tileView = hoistCmp.factory<DirectoryPanelModel>({
             minTileHeight: 150,
             maxTileWidth: 200,
             minTileWidth: 150,
-            items: model.records.map(record => tile({record}))
+            children: model.records.map(record => tile({record}))
         });
     }
 });
@@ -25,15 +25,15 @@ const tile = hoistCmp.factory<DirectoryPanelModel>(({model, record}) => {
     return vbox({
         style: {backgroundImage: `url(${profilePicture})`},
         className: `tb-contact-tile ${isSelected ? 'tb-contact-tile--selected' : ''}`,
-        items: [
+        children: [
             div({
                 className: 'tb-contact-tile__bar',
-                items: [
+                children: [
                     favoriteButton({record}),
                     filler(),
                     span({
                         className: 'tb-contact-tile__name',
-                        item: name
+                        children: name
                     })
                 ]
             })

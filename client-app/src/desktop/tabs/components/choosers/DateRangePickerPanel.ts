@@ -79,7 +79,7 @@ export const dateRangePickerPanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Drives the Playground instance. The variants use their own models.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Style as input',
                             propName: 'DateRangePickerProps.styleButtonAsInput',
@@ -113,7 +113,7 @@ export const dateRangePickerPanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Set on the DateRangePickerModel rather than the element.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Tabs',
                             propName: 'DateRangePickerConfig.tabs',
@@ -157,7 +157,7 @@ export const dateRangePickerPanel = hoistCmp.factory({
                             control: vbox({
                                 gap: 6,
                                 alignItems: 'flex-start',
-                                items: [
+                                children: [
                                     select({
                                         bind: 'anchorMode',
                                         enableFilter: false,
@@ -222,13 +222,13 @@ export const dateRangePickerPanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tb-drp-panel',
-                items: [
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 400,
                             // The applied selection is the first row of Model Values below, so a
                             // value readout here would duplicate it - and its fixed column was
@@ -243,7 +243,7 @@ export const dateRangePickerPanel = hoistCmp.factory({
                                 footerNote: model.showFooterNote ? undefined : null,
                                 intent: model.intent || undefined
                             }),
-                            item: dateRangePicker({
+                            children: dateRangePicker({
                                 model: model.pickerModel,
                                 styleButtonAsInput: model.styleButtonAsInput,
                                 showRange: model.showRange,
@@ -257,19 +257,19 @@ export const dateRangePickerPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Model Values',
                         note: 'Everything the model derives from the applied selection.',
-                        item: modelValues()
+                        children: modelValues()
                     }),
                     demoSection({
                         title: 'Variants',
                         note: 'Each uses its own model and configuration.',
-                        items: [variantNarrow(), variantMonth(), variantFiscal()]
+                        children: [variantNarrow(), variantMonth(), variantFiscal()]
                     }),
                     demoSection({
                         title: 'In a Toolbar',
                         note: 'Alongside the controls it usually sits with.',
-                        items: [
-                            demoToolbar({items: toolbarItems(model)}),
-                            demoToolbar({compact: true, items: toolbarItems(model)})
+                        children: [
+                            demoToolbar({children: toolbarItems(model)}),
+                            demoToolbar({compact: true, children: toolbarItems(model)})
                         ]
                     })
                 ]
@@ -296,11 +296,11 @@ const modelValues = hoistCmp.factory<DateRangePickerPanelModel>(({model}) => {
         ];
     return demoGrid({
         columns: 2,
-        items: rows.map(([label, value]) =>
+        children: rows.map(([label, value]) =>
             demoRow({
                 key: label,
                 label,
-                item: code({className: 'tb-drp-panel__value', item: value})
+                children: code({className: 'tb-drp-panel__value', children: value})
             })
         )
     });
@@ -335,10 +335,10 @@ const variantNarrow = hoistCmp.factory<DateRangePickerPanelModel>(({model}) =>
     demoRow({
         label: 'Stretched into a narrow host',
         info: 'flex: 1 - the trigger measures its width and drops the dates when they no longer fit.',
-        item: box({
+        children: box({
             className: 'tb-drp-panel__narrow-host',
             width: 200,
-            item: dateRangePicker({model: model.pickerModel, flex: 1, testId: 'drp-narrow'})
+            children: dateRangePicker({model: model.pickerModel, flex: 1, testId: 'drp-narrow'})
         })
     })
 );
@@ -347,7 +347,7 @@ const variantMonth = hoistCmp.factory<DateRangePickerPanelModel>(({model}) =>
     demoRow({
         label: 'Single tab - months and years only',
         info: "tabs: ['period'] - no rail, and the popover shrinks to fit.",
-        item: dateRangePicker({model: model.monthPickerModel, testId: 'drp-month'})
+        children: dateRangePicker({model: model.monthPickerModel, testId: 'drp-month'})
     })
 );
 
@@ -355,7 +355,7 @@ const variantFiscal = hoistCmp.factory<DateRangePickerPanelModel>(({model}) =>
     demoRow({
         label: 'App-defined presets, outlined trigger',
         info: 'A fiscal-year preset alongside built-ins, presets + custom tabs, styleButtonAsInput: false.',
-        item: dateRangePicker({
+        children: dateRangePicker({
             model: model.fiscalPickerModel,
             styleButtonAsInput: false,
             buttonProps: {icon: Icon.chartLine()},

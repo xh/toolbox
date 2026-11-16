@@ -88,7 +88,7 @@ export const textInputPanel = hoistCmp.factory({
                     width: '100%'
                 }),
                 value: model.playground,
-                item: textInput({
+                children: textInput({
                     bind: 'playground',
                     ...ambientProps,
                     leftIcon: model.pgLeftIcon ? Icon.mail() : null,
@@ -102,7 +102,7 @@ export const textInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Default',
                     info: 'No props beyond bind',
-                    item: textInput({
+                    children: textInput({
                         bind: 'plain',
                         ...ambientProps,
                         placeholder: 'Enter text...',
@@ -112,7 +112,7 @@ export const textInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Password',
                     info: 'type: password, selectOnFocus',
-                    item: textInput({
+                    children: textInput({
                         bind: 'password',
                         ...ambientProps,
                         type: 'password',
@@ -123,17 +123,17 @@ export const textInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Left element',
                     info: 'leftElement - wider than an icon, the padding tracks its width',
-                    item: textInput({
+                    children: textInput({
                         bind: 'url',
                         ...ambientProps,
-                        leftElement: span({className: 'tbox-demo-affix', item: 'https://'}),
+                        leftElement: span({className: 'tbox-demo-affix', children: 'https://'}),
                         width: '100%'
                     })
                 }),
                 demoRow({
                     label: 'Right element',
                     info: 'rightElement - an action button inside the input',
-                    item: textInput({
+                    children: textInput({
                         bind: 'search',
                         ...ambientProps,
                         placeholder: 'Search...',
@@ -144,7 +144,7 @@ export const textInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: textInput({
+                    children: textInput({
                         bind: 'email',
                         ...ambientProps,
                         disabled: true,
@@ -154,14 +154,14 @@ export const textInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Invalid',
                     info: 'Bound to a failing FormField rule',
-                    item: form({
+                    children: form({
                         model: model.formModel,
-                        item: formField({
+                        children: formField({
                             field: 'invalidEmail',
                             label: null,
                             minimal: true,
                             ...formFieldProps,
-                            item: textInput()
+                            children: textInput()
                         })
                     })
                 })
@@ -184,27 +184,27 @@ export const textInputPanel = hoistCmp.factory({
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'email',
                                 ...formFieldProps,
-                                item: textInput({leftIcon: Icon.mail(), enableClear: true})
+                                children: textInput({leftIcon: Icon.mail(), enableClear: true})
                             })
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'inlineEmail',
                                 inline: true,
                                 ...formFieldProps,
-                                item: textInput()
+                                children: textInput()
                             })
                         })
                     })

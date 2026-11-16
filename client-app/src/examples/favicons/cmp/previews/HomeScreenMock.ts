@@ -38,7 +38,7 @@ export const homeScreenMock = hoistCmp.factory({
                     item: div({
                         className: 'tb-fav-home__glyph',
                         style: {background: app.bg},
-                        item: app.icon
+                        children: app.icon
                     })
                 })
             );
@@ -60,15 +60,15 @@ export const homeScreenMock = hoistCmp.factory({
             compactHeader: true,
             className: 'tb-fav-home',
             contentBoxProps: {alignItems: 'center', justifyContent: 'center'},
-            items: [
+            children: [
                 div({
                     className: 'tb-fav-home__phone',
-                    items: [
+                    children: [
                         div({
                             className: 'tb-fav-home__status',
-                            items: [span('9:41'), span('●●● ▴')]
+                            children: [span('9:41'), span('●●● ▴')]
                         }),
-                        div({className: 'tb-fav-home__grid', items: tiles})
+                        div({className: 'tb-fav-home__grid', children: tiles})
                     ]
                 })
             ]
@@ -90,9 +90,9 @@ function appTile({
     return div({
         key,
         className: `tb-fav-home__app${isOurs ? ' tb-fav-home__app--ours' : ''}`,
-        items: [
-            div({className: 'tb-fav-home__tile', item}),
-            div({className: 'tb-fav-home__name', item: name})
+        children: [
+            div({className: 'tb-fav-home__tile', children: item}),
+            div({className: 'tb-fav-home__name', children: name})
         ]
     });
 }

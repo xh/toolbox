@@ -19,7 +19,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
 
     render({model, ...props}) {
         return panel({
-            item: grid(),
+            children: grid(),
             ref: model.panelRef,
             tbar: [
                 refreshButton({target: model}),

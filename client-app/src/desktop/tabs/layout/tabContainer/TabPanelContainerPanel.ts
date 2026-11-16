@@ -53,11 +53,11 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                     notes: 'Hoist tab model - created by TabContainerModel in its ctor from provided configs.'
                 }
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-layout-tabs',
                 height: '60vh',
                 width: '90%',
-                item: tabContainer({switcher: {orientation: 'top', enableOverflow: true}})
+                children: tabContainer({switcher: {orientation: 'top', enableOverflow: true}})
             })
         });
     }

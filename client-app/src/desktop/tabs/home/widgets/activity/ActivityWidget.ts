@@ -18,7 +18,7 @@ export const activityWidget = hoistCmp.factory({
 
     render() {
         return panel({
-            item: grid(),
+            children: grid(),
             bbar: bbar(),
             mask: 'onLoad'
         });
@@ -29,7 +29,7 @@ const bbar = hoistCmp.factory({
     render() {
         return toolbar({
             compact: true,
-            items: [
+            children: [
                 repoFilterPicker(),
                 toolbarSep(),
                 segmentedControl({

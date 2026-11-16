@@ -61,13 +61,14 @@ export const dashContainerPanel = hoistCmp.factory({
                     onClick: () => model.resetState()
                 })
             ],
-            item: panel({
+            children: panel({
                 width: '100%',
                 height: '100%',
-                item: model.renderDashboard
+                children: model.renderDashboard
                     ? dashContainer()
                     : frame({
-                          item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
+                          children:
+                              'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                           padding: 10
                       })
             }),

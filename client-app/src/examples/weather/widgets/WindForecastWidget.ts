@@ -10,7 +10,7 @@ export const windForecastWidget = hoistCmp.factory({
 
     render() {
         return panel({
-            item: chart()
+            children: chart()
         });
     }
 });

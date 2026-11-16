@@ -63,7 +63,7 @@ export const toastPanel = hoistCmp.factory({
                 icon: Icon.experiment(),
                 intent: 'primary',
                 info: 'Drives the Playground toast.',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Message',
                         propName: 'ToastSpec.message',
@@ -102,13 +102,13 @@ export const toastPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tbox-popups',
-                items: [
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 260,
                             showValue: false,
                             caption: 'Click to show a toast with the current options.',
@@ -119,7 +119,7 @@ export const toastPanel = hoistCmp.factory({
                                 timeout: pgTimeout === DEFAULT_TIMEOUT ? undefined : pgTimeout,
                                 position: pgPosition === DEFAULT_POSITION ? undefined : pgPosition
                             }),
-                            item: button({
+                            children: button({
                                 ...popBtn(Icon.toast({intent: 'warning'})),
                                 text: 'Show toast',
                                 onClick: () =>
@@ -136,13 +136,13 @@ export const toastPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Variants',
                         note: 'Each sets its own props.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 3,
-                            items: [
+                            children: [
                                 demoRow({
                                     label: 'With action',
                                     info: 'actionButtonProps renders a button within the toast',
-                                    item: button({
+                                    children: button({
                                         ...popBtn(Icon.toast({intent: 'warning'})),
                                         text: 'Toast with action',
                                         onClick: () =>
@@ -160,10 +160,10 @@ export const toastPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Shortcuts',
                                     info: 'Preset intent and icon for the common outcomes',
-                                    item: hbox({
+                                    children: hbox({
                                         gap: 6,
                                         flexWrap: 'wrap',
-                                        items: [
+                                        children: [
                                             button({
                                                 ...popBtn(Icon.checkCircle({intent: 'success'})),
                                                 text: 'successToast',
@@ -187,10 +187,10 @@ export const toastPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Anchored',
                                     info: 'containerRef positions the toast against a given element rather than the document edge',
-                                    item: box({
+                                    children: box({
                                         ref: anchorRef,
                                         className: 'tbox-popups__anchor',
-                                        item: button({
+                                        children: button({
                                             ...popBtn(Icon.toast({intent: 'warning'})),
                                             text: 'Toast in this box',
                                             onClick: () =>

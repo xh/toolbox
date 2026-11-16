@@ -58,12 +58,12 @@ export const tradeVolumeCol: ColumnSpec = {
         isHighVolume(volume)
             ? vbox({
                   className: 'xh-grid-tooltip-frame',
-                  items: [
+                  children: [
                       fmtNumberTooltip(volume),
                       hbox({
                           className: 'tb-flag-tooltip__note',
                           alignItems: 'center',
-                          items: [
+                          children: [
                               Icon.warning({intent: 'warning'}),
                               'Unusually high volume - review before trading.'
                           ]

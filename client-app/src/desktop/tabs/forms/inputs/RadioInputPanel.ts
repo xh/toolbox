@@ -92,7 +92,7 @@ export const radioInputPanel = hoistCmp.factory({
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
-                item: radioInput({
+                children: radioInput({
                     bind: 'playground',
                     ...ambientProps,
                     inline: model.pgInline,
@@ -104,17 +104,17 @@ export const radioInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Stacked with a disabled option',
                     info: 'options include {disabled: true}',
-                    item: radioInput({bind: 'stacked', ...ambientProps, options: ASSET_CLASSES})
+                    children: radioInput({bind: 'stacked', ...ambientProps, options: ASSET_CLASSES})
                 }),
                 demoRow({
                     label: 'Object options',
                     info: '{label, value} objects',
-                    item: radioInput({bind: 'orderType', ...ambientProps, options: ORDER_TYPES})
+                    children: radioInput({bind: 'orderType', ...ambientProps, options: ORDER_TYPES})
                 }),
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: radioInput({
+                    children: radioInput({
                         bind: 'disabledClass',
                         ...ambientProps,
                         disabled: true,
@@ -124,13 +124,13 @@ export const radioInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Invalid',
                     info: 'Bound to a failing FormField rule',
-                    item: form({
+                    children: form({
                         model: model.formModel,
-                        item: formField({
+                        children: formField({
                             field: 'invalidSide',
                             label: null,
                             minimal: true,
-                            item: radioInput({inline: true, options: SIDES})
+                            children: radioInput({inline: true, options: SIDES})
                         })
                     })
                 })
@@ -145,25 +145,25 @@ export const radioInputPanel = hoistCmp.factory({
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'assetClass',
-                                item: radioInput({options: ASSET_CLASSES})
+                                children: radioInput({options: ASSET_CLASSES})
                             })
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'side',
                                 inline: true,
-                                item: radioInput({inline: true, options: SIDES})
+                                children: radioInput({inline: true, options: SIDES})
                             })
                         })
                     })

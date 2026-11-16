@@ -129,9 +129,9 @@ export const docContent = hoistCmp.factory<DocViewModel>({
             className: XH.isMobileApp ? `${className} tb-doc-content--mobile` : className,
             ref: scrollRef,
             onClick: handleLinkClick,
-            item: div({
+            children: div({
                 className: 'tb-doc-content__inner',
-                item: markdown({content, lineBreaks: false})
+                children: markdown({content, lineBreaks: false})
             })
         });
     }

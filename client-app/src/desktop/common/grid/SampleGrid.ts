@@ -49,7 +49,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
             return panel({
                 ref: model.panelRef,
                 mask: omitMask ? null : 'onLoad',
-                item: grid(),
+                children: grid(),
                 ...props
             });
         }
@@ -58,10 +58,10 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
             ref: model.panelRef,
             mask: omitMask ? null : 'onLoad',
             ...props,
-            item: vframe(
+            children: vframe(
                 grid(),
                 hbox({
-                    items: [Icon.info(), selText],
+                    children: [Icon.info(), selText],
                     className: 'tb-sample-grid__selbar'
                 })
             ),

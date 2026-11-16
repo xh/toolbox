@@ -67,7 +67,7 @@ export const treeGridPage = hoistCmp.factory({
                     notes: 'Tree grids & grouping'
                 }
             ],
-            item: panel({
+            children: panel({
                 mask: 'onLoad',
                 tbar: [
                     groupingChooser({maxWidth: 250}),
@@ -76,7 +76,7 @@ export const treeGridPage = hoistCmp.factory({
                     colAutosizeButton(),
                     colChooserButton()
                 ],
-                item: grid()
+                children: grid()
             })
         });
     }

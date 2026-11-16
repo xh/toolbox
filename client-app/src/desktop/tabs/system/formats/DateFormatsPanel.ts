@@ -90,7 +90,7 @@ export const dateFormatsPanel = hoistCmp.factory({
                     info: 'Show the full date on hover.'
                 })
             ],
-            item: resultsPanel({
+            children: resultsPanel({
                 tryItInput: dateInput({timePrecision: 'minute', textAlign: 'right'})
             })
         });

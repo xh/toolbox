@@ -39,7 +39,7 @@ export const dataViewPanel = hoistCmp.factory({
                     notes: 'Hoist model for configuring and interacting with DataViews.'
                 }
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-dataview-panel',
                 width: 600,
                 height: '50vh',
@@ -51,7 +51,7 @@ export const dataViewPanel = hoistCmp.factory({
                     filler(),
                     storeFilterField()
                 ],
-                item: dataView()
+                children: dataView()
             })
         });
     }

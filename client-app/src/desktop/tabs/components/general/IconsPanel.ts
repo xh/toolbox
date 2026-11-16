@@ -105,10 +105,10 @@ export const iconsPanel = hoistCmp.factory({
                     })
                 })
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-icons-panel',
                 tbar: tbar(),
-                item: gallery()
+                children: gallery()
             })
         });
     }
@@ -138,7 +138,7 @@ const gallery = hoistCmp.factory<IconsPanelModel>(({model}) => {
     }
     return div({
         className: 'tb-icons-gallery',
-        items: entries.map(entry => iconTile({key: entry.faName, entry}))
+        children: entries.map(entry => iconTile({key: entry.faName, entry}))
     });
 });
 
@@ -154,17 +154,17 @@ const iconTile = hoistCmp.factory<IconsPanelModel>(({model, entry}) => {
             copyToClipboard(usage)
                 .then(() => XH.successToast(`Copied ${usage}`))
                 .catch(() => XH.warningToast(`Could not copy ${usage}`)),
-        items: [
+        children: [
             div({
                 className: 'tb-icons-tile__glyph',
-                item: entry.factory({
+                children: entry.factory({
                     prefix: model.prefix,
                     size: '2x',
                     intent: model.intent === 'neutral' ? null : model.intent
                 })
             }),
-            div({className: 'tb-icons-tile__name', item: name}),
-            div({omit: !isAppIcon, className: 'tb-icons-tile__badge', item: 'app'})
+            div({className: 'tb-icons-tile__name', children: name}),
+            div({omit: !isAppIcon, className: 'tb-icons-tile__badge', children: 'app'})
         ]
     });
 });

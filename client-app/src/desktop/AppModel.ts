@@ -154,7 +154,7 @@ export class AppModel extends BaseAppModel {
                 },
                 formField: {
                     label: 'Font',
-                    item: radioCardInput({
+                    children: radioCardInput({
                         options: [
                             {
                                 value: 'IBM Plex Sans',
@@ -178,7 +178,7 @@ export class AppModel extends BaseAppModel {
                 formField: {
                     label: 'Profile pic menu',
                     info: 'Render the App Menu button using your profile pic',
-                    item: switchInput()
+                    children: switchInput()
                 }
             }
         ];
@@ -203,9 +203,9 @@ export class AppModel extends BaseAppModel {
                     : 'Inter, system-ui, sans-serif',
                 fontFeatureSettings: isPlex ? "'zero', 'ss01'" : 'normal'
             },
-            items: [
-                box({className: 'tbox-font-swatch__big', item: 'Aa'}),
-                box({className: 'tbox-font-swatch__small', item: '0123'})
+            children: [
+                box({className: 'tbox-font-swatch__big', children: 'Aa'}),
+                box({className: 'tbox-font-swatch__small', children: '0123'})
             ]
         });
     }

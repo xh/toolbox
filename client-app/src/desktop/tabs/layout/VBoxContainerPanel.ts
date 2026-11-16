@@ -26,15 +26,15 @@ export const vboxContainerPanel = hoistCmp.factory(() =>
             },
             {url: '$HR/cmp/layout/Box.ts', notes: 'The Box component and its layout props.'}
         ],
-        item: panel({
+        children: panel({
             height: 400,
             width: 700,
-            item: vbox({
+            children: vbox({
                 flex: 1,
-                items: [
-                    renderBox({flex: 1, item: 'flex: 1'}),
-                    renderBox({height: 50, item: 'height: 50'}),
-                    renderBox({flex: 2, item: 'flex: 2'})
+                children: [
+                    renderBox({flex: 1, children: 'flex: 1'}),
+                    renderBox({height: 50, children: 'height: 50'}),
+                    renderBox({flex: 2, children: 'flex: 2'})
                 ]
             })
         })

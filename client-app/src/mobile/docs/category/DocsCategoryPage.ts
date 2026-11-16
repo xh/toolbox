@@ -20,15 +20,15 @@ export const docsCategoryPage = hoistCmp.factory({
         return panel({
             className: 'tb-docs-list',
             scrollable: true,
-            item: div({
-                items: [
+            children: div({
+                children: [
                     div({
                         className: 'tb-docs-list__header',
-                        items: [
-                            div({className: 'tb-docs-list__header-title', item: title}),
+                        children: [
+                            div({className: 'tb-docs-list__header-title', children: title}),
                             div({
                                 className: 'tb-docs-list__header-sub',
-                                item: pluralize('document', docs.length, true)
+                                children: pluralize('document', docs.length, true)
                             })
                         ]
                     }),

@@ -20,17 +20,18 @@ export const meetXhWidget = hoistCmp.factory({
         if (!c) {
             return div({
                 className: 'tb-meet-xh__fallback',
-                item: 'Extremely Heavy is a boutique consultancy of experienced enterprise developers - and we are always happy to talk.'
+                children:
+                    'Extremely Heavy is a boutique consultancy of experienced enterprise developers - and we are always happy to talk.'
             });
         }
 
         return div({
             className: 'tb-meet-xh',
-            items: [
+            children: [
                 hbox({
                     className: 'tb-meet-xh__spotlight',
                     key: c.id,
-                    items: [
+                    children: [
                         img({
                             className: 'tb-meet-xh__photo',
                             src: model.profilePicUrl(c),
@@ -38,13 +39,13 @@ export const meetXhWidget = hoistCmp.factory({
                         }),
                         vbox({
                             className: 'tb-meet-xh__details',
-                            items: [
-                                div({className: 'tb-meet-xh__name', item: c.name}),
-                                div({className: 'tb-meet-xh__location', item: c.location}),
+                            children: [
+                                div({className: 'tb-meet-xh__name', children: c.name}),
+                                div({className: 'tb-meet-xh__location', children: c.location}),
                                 hbox({
                                     className: 'tb-meet-xh__tags',
-                                    items: (c.tags ?? []).map(t =>
-                                        span({className: 'tb-meet-xh__tag', item: t, key: t})
+                                    children: (c.tags ?? []).map(t =>
+                                        span({className: 'tb-meet-xh__tag', children: t, key: t})
                                     )
                                 })
                             ]
@@ -57,10 +58,10 @@ export const meetXhWidget = hoistCmp.factory({
                         })
                     ]
                 }),
-                div({className: 'tb-meet-xh__bio', item: c.bio?.split('\n')[0]}),
+                div({className: 'tb-meet-xh__bio', children: c.bio?.split('\n')[0]}),
                 hbox({
                     className: 'tb-meet-xh__ctas',
-                    items: [
+                    children: [
                         button({
                             text: 'info@xh.io',
                             icon: Icon.mail(),

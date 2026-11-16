@@ -14,7 +14,7 @@ export const gridDetailPage = hoistCmp.factory({
         const row = (title, value, renderer?) =>
             div({
                 className: 'tb-detail-row',
-                items: [div(title), div(renderer && !isNil(value) ? renderer(value) : value)]
+                children: [div(title), div(renderer && !isNil(value) ? renderer(value) : value)]
             });
 
         return panel({
@@ -22,7 +22,7 @@ export const gridDetailPage = hoistCmp.factory({
             mask: 'onLoad',
             icon: Icon.fund(),
             className: 'tb-detail-page',
-            items: [
+            children: [
                 row('ID', record?.id),
                 row('Company', record?.company),
                 row('City', record?.city),

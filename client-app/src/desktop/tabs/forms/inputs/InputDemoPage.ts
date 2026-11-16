@@ -66,11 +66,11 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Drives the Playground instance.',
-                    items: playgroundOptions
+                    children: playgroundOptions
                 }),
                 wrapperOptionGroup({
                     label: 'All inputs on the page',
-                    items: [
+                    children: [
                         wrapperOption({
                             omit: !supportsCompact,
                             label: 'Compact',
@@ -96,33 +96,33 @@ export const inputDemoPage = hoistCmp.factory<InputDemoPageProps>({
                     onClick: () => model.resetInputs()
                 })
             ],
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tb-input-demo',
-                items: [
+                children: [
                     demoSection({
                         omit: !playground,
                         title: 'Playground',
                         intent: 'primary',
-                        item: playground
+                        children: playground
                     }),
                     demoSection({
                         omit: isEmpty(variants),
                         title: 'Variants',
                         note: 'Each sets its own props.',
-                        item: demoGrid({columns: 3, items: variants})
+                        children: demoGrid({columns: 3, children: variants})
                     }),
                     demoSection({
                         omit: !toolbarItems,
                         title: 'In a Toolbar',
                         note: 'Alongside the controls it usually sits with.',
-                        items: toolbarItems
+                        children: toolbarItems
                             ? [
-                                  demoToolbar({items: toolbarItems(false)}),
-                                  demoToolbar({compact: true, items: toolbarItems(true)})
+                                  demoToolbar({children: toolbarItems(false)}),
+                                  demoToolbar({compact: true, children: toolbarItems(true)})
                               ]
                             : null
                     }),
-                    demoSection({omit: !form, title: 'In a Form', item: form})
+                    demoSection({omit: !form, title: 'In a Form', children: form})
                 ]
             })
         });

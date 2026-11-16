@@ -97,7 +97,7 @@ export const sliderPanel = hoistCmp.factory({
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
-                item: slider({
+                children: slider({
                     bind: 'playground',
                     ...ambientProps,
                     min: 0,
@@ -114,7 +114,7 @@ export const sliderPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Range',
                     info: 'Two-element value, labelRenderer with $ and thousands',
-                    item: slider({
+                    children: slider({
                         bind: 'range',
                         ...ambientProps,
                         min: 50000,
@@ -135,7 +135,7 @@ export const sliderPanel = hoistCmp.factory({
                 demoRow({
                     label: 'No labels',
                     info: 'labelRenderer: false',
-                    item: slider({
+                    children: slider({
                         bind: 'noLabels',
                         ...ambientProps,
                         min: 0,
@@ -147,7 +147,7 @@ export const sliderPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Fine steps',
                     info: 'stepSize: 0.1, labelStepSize: 1, min 0 max 5',
-                    item: slider({
+                    children: slider({
                         bind: 'fineSteps',
                         ...ambientProps,
                         min: 0,
@@ -160,7 +160,7 @@ export const sliderPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: slider({
+                    children: slider({
                         bind: 'disabledSlider',
                         ...ambientProps,
                         disabled: true,
@@ -173,14 +173,14 @@ export const sliderPanel = hoistCmp.factory({
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'confidence',
-                                item: slider({
+                                children: slider({
                                     min: 0,
                                     max: 100,
                                     labelStepSize: 25,
@@ -191,12 +191,12 @@ export const sliderPanel = hoistCmp.factory({
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'allocation',
                                 inline: true,
-                                item: slider({
+                                children: slider({
                                     min: 0,
                                     max: 100,
                                     labelStepSize: 25,

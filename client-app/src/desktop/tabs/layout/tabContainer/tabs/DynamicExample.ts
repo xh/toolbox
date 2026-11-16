@@ -34,7 +34,7 @@ export const dynamicExample = hoistCmp.factory({
                     disabled: isEmpty(model.dynamicModel.tabs)
                 })
             ],
-            item: tabContainer({
+            children: tabContainer({
                 model: model.dynamicModel,
                 switcher: {
                     orientation: 'top',

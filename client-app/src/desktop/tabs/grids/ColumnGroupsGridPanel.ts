@@ -62,9 +62,9 @@ export const columnGroupsGridPanel = hoistCmp.factory({
                 label: 'Sales in millions',
                 control: switchInput({model, bind: 'inMillions'})
             }),
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel',
-                item: sampleColumnGroupsGrid()
+                children: sampleColumnGroupsGrid()
             })
         });
     }

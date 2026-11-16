@@ -93,7 +93,7 @@ export const textAreaPanel = hoistCmp.factory({
                     width: '100%'
                 }),
                 value: model.playground,
-                item: textArea({
+                children: textArea({
                     bind: 'playground',
                     ...ambientProps,
                     placeholder: pgPlaceholder,
@@ -107,20 +107,20 @@ export const textAreaPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Default',
                     info: 'height: 100 by default',
-                    item: textArea({bind: 'plain', ...ambientProps, width: '100%'})
+                    children: textArea({bind: 'plain', ...ambientProps, width: '100%'})
                 }),
                 demoRow({
                     label: 'Taller',
                     info: 'height: 160',
-                    item: textArea({bind: 'notes', ...ambientProps, height: 160, width: '100%'})
+                    children: textArea({bind: 'notes', ...ambientProps, height: 160, width: '100%'})
                 }),
                 demoRow({
                     label: 'Flexing',
                     info: 'flex: 1 inside a 160px-tall vbox',
-                    item: vbox({
+                    children: vbox({
                         height: 160,
                         width: '100%',
-                        item: textArea({
+                        children: textArea({
                             bind: 'flexed',
                             ...ambientProps,
                             flex: 1,
@@ -131,7 +131,7 @@ export const textAreaPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Spell check',
                     info: 'spellCheck: true',
-                    item: textArea({
+                    children: textArea({
                         bind: 'spelling',
                         ...ambientProps,
                         spellCheck: true,
@@ -141,7 +141,7 @@ export const textAreaPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: textArea({
+                    children: textArea({
                         bind: 'locked',
                         ...ambientProps,
                         disabled: true,
@@ -151,41 +151,41 @@ export const textAreaPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Invalid',
                     info: 'Bound to a failing FormField rule',
-                    item: form({
+                    children: form({
                         model: model.formModel,
-                        item: formField({
+                        children: formField({
                             field: 'invalidNotes',
                             label: null,
                             minimal: true,
                             ...formFieldProps,
-                            item: textArea({width: '100%'})
+                            children: textArea({width: '100%'})
                         })
                     })
                 })
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required and length rules satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'notes',
                                 ...formFieldProps,
-                                item: textArea({width: '100%'})
+                                children: textArea({width: '100%'})
                             })
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'inlineNotes',
                                 inline: true,
                                 ...formFieldProps,
-                                item: textArea({width: '100%'})
+                                children: textArea({width: '100%'})
                             })
                         })
                     })

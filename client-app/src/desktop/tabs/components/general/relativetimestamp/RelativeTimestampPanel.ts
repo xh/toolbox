@@ -75,7 +75,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Sets the Playground target.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Target',
                             propName: 'RelativeTimestampProps.timestamp',
@@ -89,7 +89,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                         }),
                         buttonGroup({
                             className: 'tb-rel-ts__presets',
-                            items: [
+                            children: [
                                 button({
                                     text: '-90 days',
                                     onClick: () => model.setOffset(-90 * DAYS)
@@ -104,7 +104,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                 }),
                 wrapperOptionGroup({
                     label: 'All timestamps on the page',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Allow Future',
                             propName: 'RelativeTimestampOptions.allowFuture',
@@ -197,12 +197,12 @@ export const relativeTimestampPanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 300,
                             value: model.timestamp,
                             caption: 'Your chosen target, relative to now.',
@@ -214,24 +214,24 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                 // disagree with the instance.
                                 relativeTo: relativeToSnippet(options.relativeTo)
                             }),
-                            item: box({
+                            children: box({
                                 className: 'tb-rel-ts__value',
-                                item: relativeTimestamp({bind: 'timestamp', ...options})
+                                children: relativeTimestamp({bind: 'timestamp', ...options})
                             })
                         })
                     }),
                     demoSection({
                         title: 'Across Targets',
                         note: 'Fixed offsets from now, from seconds to days.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 3,
-                            items: [
+                            children: [
                                 ...TARGETS.map(({label, info, offset}) =>
                                     demoRow({
                                         key: label,
                                         label,
                                         info,
-                                        item: relativeTimestamp({
+                                        children: relativeTimestamp({
                                             timestamp: new Date(Date.now() + offset),
                                             ...options
                                         })
@@ -241,7 +241,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                     key: 'Empty',
                                     label: 'Empty',
                                     info: 'A null timestamp falls back to emptyResult',
-                                    item: relativeTimestamp({timestamp: null, ...options})
+                                    children: relativeTimestamp({timestamp: null, ...options})
                                 })
                             ]
                         })

@@ -18,7 +18,7 @@ export const treeGridDetailPage = hoistCmp.factory<TreeGridDetailPageModel>({
             title: renderPageTitle(position),
             icon: Icon.portfolio(),
             className: 'tb-detail-page',
-            item: lastLoadException
+            children: lastLoadException
                 ? errorMessage({error: lastLoadException})
                 : renderPosition(position),
             mask: 'onLoad'
@@ -54,7 +54,7 @@ function renderPosition(position: Position) {
 function renderRow(title, value, renderer?) {
     return div({
         className: 'tb-detail-row',
-        items: [div(title), div(renderer ? renderer(value) : value)]
+        children: [div(title), div(renderer ? renderer(value) : value)]
     });
 }
 

@@ -13,10 +13,10 @@ export const precipForecastWidget = hoistCmp.factory({
 
     render({model}) {
         return panel({
-            item: model.hasData
+            children: model.hasData
                 ? chart()
                 : placeholder({
-                      items: [Icon.sun(), 'No precipitation expected in the forecast period']
+                      children: [Icon.sun(), 'No precipitation expected in the forecast period']
                   })
         });
     }

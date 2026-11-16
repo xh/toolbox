@@ -21,7 +21,7 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                         justifyContent: 'center',
                         style: {backgroundColor: 'var(--xh-intent-primary-trans1)'}
                     },
-                    item: xhLogo({maxWidth: '60%', maxHeight: '80%'})
+                    children: xhLogo({maxWidth: '60%', maxHeight: '80%'})
                 })
             );
         }
@@ -111,18 +111,18 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                     onClick: () => model.reset()
                 })
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-tileframe',
                 height: '60vh',
                 width: '90%',
-                item: tileFrame({
+                children: tileFrame({
                     desiredRatio: model.desiredRatio,
                     spacing: model.spacing,
                     minTileWidth: model.minTileWidth,
                     maxTileWidth: model.maxTileWidth,
                     minTileHeight: model.minTileHeight,
                     maxTileHeight: model.maxTileHeight,
-                    items: tiles
+                    children: tiles
                 })
             })
         });

@@ -42,7 +42,7 @@ export const AppComponent = hoistCmp({
                 ],
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
-            item: dashCanvas({model: weatherDashModel.dashCanvasModel}),
+            children: dashCanvas({model: weatherDashModel.dashCanvasModel}),
             className: 'weather-app'
         });
     }

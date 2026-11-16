@@ -32,8 +32,8 @@ export const gridTestBenchmarkDialog = hoistCmp.factory({
             isOpen: true,
             canOutsideClickClose: false,
             onClose: () => model.close(),
-            item: panel({
-                items: [
+            children: panel({
+                children: [
                     intro(),
                     tbar(),
                     suspectBanner(),
@@ -53,7 +53,7 @@ export const gridTestBenchmarkDialog = hoistCmp.factory({
 const intro = hoistCmp.factory<GridTestBenchmarkModel>(() =>
     div({
         className: 'tb-benchmark-intro',
-        items: [
+        children: [
             div(
                 'Measures the heap and load-time cost of the dataset and Store flags currently ' +
                     'configured on the Grid test panel. Each iteration settles the heap, records ' +
@@ -64,7 +64,7 @@ const intro = hoistCmp.factory<GridTestBenchmarkModel>(() =>
             ),
             div({
                 className: 'tb-benchmark-intro__scenarios',
-                items: [
+                children: [
                     ...scenarioRow(
                         'Cold load',
                         'Clear the grid, then measure a fresh load - the baseline cost of standing up the dataset.'
@@ -86,8 +86,8 @@ const intro = hoistCmp.factory<GridTestBenchmarkModel>(() =>
 
 function scenarioRow(name: string, desc: string) {
     return [
-        div({className: 'tb-benchmark-intro__scenario-name', item: name}),
-        div({className: 'tb-benchmark-intro__scenario-desc', item: desc})
+        div({className: 'tb-benchmark-intro__scenario-name', children: name}),
+        div({className: 'tb-benchmark-intro__scenario-desc', children: desc})
     ];
 }
 
@@ -96,7 +96,7 @@ const gcStatus = hoistCmp.factory<GridTestBenchmarkModel>(({model}) => {
     if (!model.hasHeapApi) {
         return div({
             className: 'tb-benchmark-intro__gc',
-            items: [
+            children: [
                 Icon.warning({intent: 'danger'}),
                 span(
                     'This browser does not report performance.memory - heap deltas will be ' +
@@ -109,7 +109,7 @@ const gcStatus = hoistCmp.factory<GridTestBenchmarkModel>(({model}) => {
     if (model.hasRealGc) {
         return div({
             className: 'tb-benchmark-intro__gc',
-            items: [
+            children: [
                 Icon.checkCircle({intent: 'success'}),
                 span(
                     'Real GC available via window.gc - heap deltas are measured from a forced collection.'
@@ -120,7 +120,7 @@ const gcStatus = hoistCmp.factory<GridTestBenchmarkModel>(({model}) => {
 
     return div({
         className: 'tb-benchmark-intro__gc',
-        items: [
+        children: [
             Icon.warning({intent: 'warning'}),
             span(
                 'No window.gc - the heap is settled with allocation pressure only, so deltas are approximate. For reliable numbers, relaunch Chrome with:'
@@ -155,7 +155,7 @@ const tbar = hoistCmp.factory<GridTestBenchmarkModel>(({model}) =>
         }),
         tooltip({
             content: 'Iterations per run - results are reported as a min/median/max spread.',
-            item: numberInput({
+            children: numberInput({
                 bind: 'iterations',
                 min: 1,
                 max: 20,
@@ -170,7 +170,7 @@ const tbar = hoistCmp.factory<GridTestBenchmarkModel>(({model}) =>
             onClick: () => model.runBenchmark()
         }),
         toolbarSep(),
-        span({item: model.status ?? '', className: 'xh-text-color-accent'}),
+        span({children: model.status ?? '', className: 'xh-text-color-accent'}),
         filler(),
         button({
             text: 'Clear Results',
@@ -190,10 +190,10 @@ const bbar = hoistCmp.factory<GridTestBenchmarkModel>(({model}) => {
         vm = parent.viewManagerModel,
         config = vm.view.name + (vm.isValueDirty ? ' *' : '');
     return toolbar({
-        items: [
+        children: [
             filler(),
             span({
-                item:
+                children:
                     `Next run: "${config}" • ${parent.recordCount.toLocaleString()} records` +
                     ` • ${parent.useStreaming ? 'streaming' : 'JSON'} load`,
                 className: 'xh-text-color-muted'
@@ -213,6 +213,6 @@ const suspectBanner = hoistCmp.factory<GridTestBenchmarkModel>(({model}) =>
         alignItems: 'center',
         padding: 5,
         style: {background: 'var(--xh-intent-warning-trans1)'},
-        items: [Icon.warning({intent: 'warning'}), hspacer(5), span(model.warning)]
+        children: [Icon.warning({intent: 'warning'}), hspacer(5), span(model.warning)]
     })
 );

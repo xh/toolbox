@@ -135,7 +135,7 @@ export const selectPanel = hoistCmp.factory({
                     width: '100%'
                 }),
                 value: model.playground,
-                item: select({
+                children: select({
                     bind: 'playground',
                     ...ambientProps,
                     options: usStates,
@@ -151,7 +151,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Simple options',
                     info: 'Primitive string options, enableClear',
-                    item: select({
+                    children: select({
                         bind: 'simpleOption',
                         ...ambientProps,
                         options: ['Small', 'Medium', 'Large', 'X-Large'],
@@ -163,7 +163,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Custom fields',
                     info: 'labelField + valueField on plain objects',
-                    item: select({
+                    children: select({
                         bind: 'restaurant',
                         ...ambientProps,
                         options: [
@@ -184,7 +184,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Async query',
                     info: 'queryFn with server-side customer search',
-                    item: select({
+                    children: select({
                         bind: 'asyncValue',
                         ...ambientProps,
                         valueField: 'id',
@@ -200,7 +200,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Creatable',
                     info: 'enableCreate - type a new entry',
-                    item: select({
+                    children: select({
                         bind: 'creatableValue',
                         ...ambientProps,
                         options: restaurants,
@@ -213,7 +213,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Grouped options',
                     info: 'Nested option groups',
-                    item: select({
+                    children: select({
                         bind: 'groupedValue',
                         ...ambientProps,
                         options: DESSERTS,
@@ -225,7 +225,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Custom renderer',
                     info: 'optionRenderer with status dots',
-                    item: select({
+                    children: select({
                         bind: 'statusOption',
                         ...ambientProps,
                         options: STATUS_OPTIONS,
@@ -235,15 +235,15 @@ export const selectPanel = hoistCmp.factory({
                             hbox({
                                 alignItems: 'center',
                                 flex: 1,
-                                items: [
+                                children: [
                                     statusDot(opt.color),
                                     vbox({
                                         flex: 1,
-                                        items: [
+                                        children: [
                                             span(opt.label),
                                             span({
                                                 className: 'xh-text-color-muted xh-font-size-small',
-                                                item: opt.description
+                                                children: opt.description
                                             })
                                         ]
                                     })
@@ -255,7 +255,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Large list (windowed)',
                     info: 'enableWindowed - 2,000 items virtualized',
-                    item: select({
+                    children: select({
                         bind: 'bigValue',
                         ...ambientProps,
                         options: LARGE_OPTIONS,
@@ -268,7 +268,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Search style',
                     info: 'hideDropdownIndicator, leftIcon',
-                    item: select({
+                    children: select({
                         bind: 'searchStyle',
                         ...ambientProps,
                         options: restaurants,
@@ -282,7 +282,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Tooltips (multi)',
                     info: 'enableTooltips on multi-select',
-                    item: select({
+                    children: select({
                         bind: 'tooltipMulti',
                         ...ambientProps,
                         options: usStates,
@@ -296,7 +296,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Menu on top',
                     info: "menuPlacement: 'top'",
-                    item: select({
+                    children: select({
                         bind: 'menuTop',
                         ...ambientProps,
                         options: usStates,
@@ -309,7 +309,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Wide menu',
                     info: 'menuWidth: 350 - dropdown wider than input',
-                    item: select({
+                    children: select({
                         bind: 'wideMenu',
                         ...ambientProps,
                         options: restaurants,
@@ -322,7 +322,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Open on focus',
                     info: 'openMenuOnFocus: true',
-                    item: select({
+                    children: select({
                         bind: 'openOnFocus',
                         ...ambientProps,
                         options: ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo'],
@@ -335,7 +335,7 @@ export const selectPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true with pre-set value',
-                    item: select({
+                    children: select({
                         bind: 'disabledState',
                         ...ambientProps,
                         options: usStates,
@@ -367,25 +367,25 @@ export const selectPanel = hoistCmp.factory({
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'state',
-                                item: select({options: usStates, enableClear: true})
+                                children: select({options: usStates, enableClear: true})
                             })
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'states',
                                 inline: true,
-                                item: select({options: usStates, enableMulti: true})
+                                children: select({options: usStates, enableMulti: true})
                             })
                         })
                     })
@@ -413,9 +413,9 @@ const statusDot = (color: string) =>
 const customerOption = hoistCmp.factory(({opt}) =>
     hbox({
         className: 'xh-pad-half xh-border-bottom',
-        items: [
+        children: [
             box({
-                item: isUndefined(opt.isActive)
+                children: isUndefined(opt.isActive)
                     ? Icon.magic({className: 'xh-grey'})
                     : opt.isActive
                       ? Icon.checkCircle({className: 'xh-green'})
@@ -428,7 +428,7 @@ const customerOption = hoistCmp.factory(({opt}) =>
                 div({
                     omit: !opt.city || !opt.id,
                     className: 'xh-text-color-muted xh-font-size-small',
-                    item: `${opt.city} · ID: ${opt.id}`
+                    children: `${opt.city} · ID: ${opt.id}`
                 })
             )
         ],

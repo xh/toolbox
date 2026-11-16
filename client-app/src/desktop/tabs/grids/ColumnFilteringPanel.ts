@@ -70,10 +70,10 @@ export const columnFilteringPanel = hoistCmp.factory({
                     onClick: () => filterModel.openDialog()
                 })
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel tb-column-filtering-panel',
                 tbar: tbar(),
-                item: grid()
+                children: grid()
             })
         });
     }
