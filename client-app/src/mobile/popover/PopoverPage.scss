@@ -1,9 +1,9 @@
 // Short context line under each card title (mirrors the Popups example).
 .tb-overlay-card {
   &__subtitle {
-    padding-bottom: var(--xh-pad-px);
+    padding-bottom: var(--xh-spacing);
     color: var(--xh-text-color-muted);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
   }
 }
 
@@ -37,7 +37,7 @@
   line-height: 1.5;
 
   p {
-    margin: 0 0 var(--xh-pad-px);
+    margin: 0 0 var(--xh-spacing);
 
     &:last-child {
       margin-bottom: 0;

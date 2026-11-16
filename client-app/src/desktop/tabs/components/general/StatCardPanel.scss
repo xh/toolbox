@@ -4,11 +4,11 @@
   --xh-stat-card-bg: var(--xh-bg-alt);
   --xh-stat-card-border: none;
   --xh-stat-card-border-radius: 8px;
-  --xh-stat-card-padding: var(--xh-pad-px) calc(var(--xh-pad-px) * 1.5);
-  --xh-stat-card-strip-gap: calc(var(--xh-pad-px) * 1.5);
+  --xh-stat-card-padding: var(--xh-spacing) calc(var(--xh-spacing) * 1.5);
+  --xh-stat-card-strip-gap: calc(var(--xh-spacing) * 1.5);
   --xh-stat-card-title-letter-spacing: 0.06em;
   --xh-stat-card-title-text-transform: uppercase;
-  --xh-stat-card-value-font-size: calc(var(--xh-font-size-px) * 2.4);
+  --xh-stat-card-value-font-size: calc(var(--xh-font-size) * 2.4);
   --xh-stat-card-value-font-weight: 300;
 }
 

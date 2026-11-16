@@ -1,16 +1,16 @@
 .tb-start-here {
   &__items {
-    padding: var(--xh-pad-px);
-    gap: var(--xh-pad-half-px);
+    padding: var(--xh-spacing);
+    gap: var(--xh-spacing-half);
   }
 
   &__item {
     display: flex;
     align-items: center;
-    gap: var(--xh-pad-px);
-    padding: var(--xh-pad-px);
+    gap: var(--xh-spacing);
+    padding: var(--xh-spacing);
     border: var(--xh-border-solid);
-    border-radius: var(--xh-border-radius-px);
+    border-radius: var(--xh-border-radius);
     cursor: pointer;
     transition: background-color 0.15s ease;
 
@@ -23,7 +23,7 @@
     flex: none;
     width: 32px;
     text-align: center;
-    font-size: var(--xh-font-size-large-px);
+    font-size: var(--xh-font-size-large);
     color: var(--xh-intent-primary);
   }
 
@@ -38,7 +38,7 @@
 
   &__item-blurb {
     color: var(--xh-text-color-muted);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
   }
 
   &__item-caret {

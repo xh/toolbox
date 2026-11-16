@@ -14,6 +14,10 @@
 
 ## 13.0-SNAPSHOT - unreleased
 
+### Technical
+
+* Migrated app CSS variable overrides and reads to hoist-react v91's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
+
 ### Libraries
 
 * ag-grid `36.2 → 36.3`
