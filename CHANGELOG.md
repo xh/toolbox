@@ -21,11 +21,13 @@
 
 ### Technical
 
+* Migrated app CSS variable overrides and reads to hoist-react v91's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
 * Added `LlmService` and a `/llm/stream` endpoint that relay the Anthropic Messages API as a token stream for the Chat Kit tab's Live Model demo. Access needs the new `TOOLBOX_LLM_USER` role, with a per-user hourly limit that `TOOLBOX_LLM_UNLIMITED` lifts, and every call tracked in category `LLM`. Configure with the new `llmApiKey` config and the typed `llmConfig` JSON config.
 
 ### Libraries
 
 * @xh/hoist-chat-kit `2.0` - new
+* ag-grid `36.2 → 36.3`
 
 ## 12.1.0 - 2026-11-13
 

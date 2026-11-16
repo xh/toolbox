@@ -5,15 +5,15 @@
   flex-direction: column;
 
   &__empty {
-    padding: var(--xh-pad-half-px) 0;
+    padding: var(--xh-spacing-half) 0;
     color: var(--xh-text-color-muted);
     font-style: italic;
   }
 
   &__row {
     align-items: center;
-    gap: var(--xh-pad-px);
-    padding: var(--xh-pad-px) 0;
+    gap: var(--xh-spacing);
+    padding: var(--xh-spacing) 0;
     border-bottom: var(--xh-border-solid);
     cursor: pointer;
 
@@ -31,8 +31,8 @@
     flex: none;
     align-self: center;
     padding: 2px 8px;
-    border-radius: var(--xh-border-radius-px);
-    font-size: var(--xh-font-size-small-px);
+    border-radius: var(--xh-border-radius);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-gray-light);
 
     &--hoist-react {
@@ -58,14 +58,14 @@
     font-family: var(--xh-font-family-mono);
     // Mono renders chunkier than the surrounding sans, so drop to the small size to keep the version
     // in scale with the repo chip and the relative date sharing its row.
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color);
     white-space: nowrap;
   }
 
   &__date {
     flex: none;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
     white-space: nowrap;
   }
@@ -77,12 +77,12 @@
     flex-direction: column;
     align-items: stretch;
     // A little breathing room between the subject and its metadata line.
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
   }
 
   &__row-title {
     min-width: 0;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color);
     // Keep long commit subjects to a single line within the card.
     overflow: hidden;
@@ -95,9 +95,9 @@
   &__row-sub {
     display: flex;
     align-items: center;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
     min-width: 0;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
     overflow: hidden;
     white-space: nowrap;

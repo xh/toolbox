@@ -29,7 +29,7 @@
   background: var(--xh-bg-alt);
   color: var(--xh-text-color-muted);
   font-family: var(--tb-fav-mono);
-  font-size: var(--xh-font-size-small-px);
+  font-size: var(--xh-font-size-small);
   white-space: nowrap;
 }
 
@@ -49,7 +49,7 @@
   }
 
   &__row-label {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
@@ -64,7 +64,7 @@
   }
 
   &__hint {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
     line-height: 1.35;
   }
@@ -75,7 +75,7 @@
 
   &__credit {
     padding-left: 6px;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
 
     a {
@@ -106,7 +106,7 @@
   // Preview tiles are Hoist panels, restyled as minimal outlined tiles by overriding Panel's
   // `--xh-panel-*` CSS vars on this container - the panels within inherit them. A transparent header
   // in the body text color lets each tile read as a single surface.
-  --xh-panel-border-width-px: 1px;
+  --xh-panel-border-width: 1px;
   --xh-panel-title-bg: transparent;
   --xh-panel-title-text-color: var(--xh-text-color);
 
@@ -191,7 +191,7 @@
 
   &__label {
     font-family: var(--tb-fav-mono);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 }
@@ -381,7 +381,7 @@
     border-radius: 4px;
     background: var(--xh-bg-alt);
     font-family: var(--tb-fav-mono);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
   }
 
   &__editor {

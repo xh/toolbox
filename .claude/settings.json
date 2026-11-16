@@ -81,7 +81,8 @@
       "source": {
         "source": "github",
         "repo": "xh/hoist-ai"
-      }
+      },
+      "autoUpdate": true
     }
   },
   "attribution": {

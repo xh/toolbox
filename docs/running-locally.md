@@ -126,6 +126,15 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
   Either way the sibling `../hoist-core` is used and the pinned `hoistCoreVersion` is ignored. Only
   needed when you are changing or testing hoist-core code.
 
+* **Inline checkouts outside the sibling default** - to run inline against a different checkout,
+  such as a git worktree, set its absolute path in the shell environment:
+  * `XH_HOIST_REACT_PATH` - the hoist-react checkout used by `startWithHoist` and `testWithHoist`.
+  * `XH_HOIST_CORE_PATH` - the hoist-core checkout used when `runHoistInline` is on.
+
+  Unset, each falls back to the sibling default. Both are ignored unless inline mode is on. Use
+  absolute paths - the client build rejects a relative one. Set them in the shell (or let `xh-server` set them), not in
+  `client-app/.env.local` - Rsbuild loads that file too late for the `cd` in the pnpm scripts.
+
   Inline builds also skip Gradle dependency locking, because the local checkout decides the
   dependency graph. If you change a dependency while you work inline, regenerate the lockfiles in
   packaged mode before you commit:
