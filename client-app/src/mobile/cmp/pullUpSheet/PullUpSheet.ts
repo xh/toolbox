@@ -20,7 +20,7 @@ export interface PullUpSheetProps extends HoistProps {
 
     /**
      * Optional content pinned to the bottom of the panel, below the scrolling body (e.g. an action).
-     * The expanded body itself is passed via `item`/`items` and read from the inherited `children`.
+     * The expanded body itself is passed as `children`.
      */
     footerItem?: ReactNode;
 }

@@ -30,7 +30,7 @@ export interface DemoPanelProps extends HoistProps {
 
 /**
  * The body of a demo page: a scrollable panel filling the demo region, holding stacked sections.
- * Pass `demoSection` elements as `item`/`items`.
+ * Pass `demoSection` elements as `children`.
  *
  * Every demo page needs the same panel here, so this keeps the sizing and scroll behavior in one
  * place - notably the horizontal scroll the sections rely on when the window is too narrow.
@@ -94,7 +94,7 @@ export interface DemoRowProps extends HoistProps {
     info?: ReactNode;
 }
 
-/** A labeled instance: label / info / the control itself, stacked. Pass the control as `item`. */
+/** A labeled instance: label / info / the control itself, stacked. Pass the control as `children`. */
 export const [DemoRow, demoRow] = hoistCmp.withFactory<DemoRowProps>({
     displayName: 'DemoRow',
     className: 'tbox-demo-row',

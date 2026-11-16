@@ -49,8 +49,8 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
             return panel({
                 ref: model.panelRef,
                 mask: omitMask ? null : 'onLoad',
-                children: grid(),
-                ...props
+                ...props,
+                children: grid()
             });
         }
 

@@ -247,7 +247,7 @@ interface WrapperOptionGroupProps extends HoistProps {
 /**
  * A labeled sub-group of rows within a Wrapper `options` section, for examples with enough
  * options that a flat list would be hard to scan. Pass the option rows (typically `wrapperOption`
- * elements) via `item`/`items`, which render as the group's children.
+ * elements) as `children`.
  *
  * Every rail option belongs to one of two scopes, which the group's `label` names:
  * - *Ambient* options are orthogonal to what any single instance demonstrates (compact, disabled,

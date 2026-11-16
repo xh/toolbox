@@ -173,7 +173,7 @@ const shapeCard = hoistCmp.factory({
                     ? fieldRow({
                           label: 'Corner radius',
                           value: `${model.radius}%`,
-                          item: rangeSlider({
+                          children: rangeSlider({
                               model,
                               bind: 'radius',
                               max: MAX_RADIUS,
@@ -184,7 +184,7 @@ const shapeCard = hoistCmp.factory({
                 fieldRow({
                     label: 'Padding',
                     value: `${model.padding}%`,
-                    item: rangeSlider({
+                    children: rangeSlider({
                         model,
                         bind: 'padding',
                         max: MAX_PADDING,
@@ -204,7 +204,7 @@ const appCard = hoistCmp.factory({
             children: [
                 fieldRow({
                     label: 'App name',
-                    item: textInput({
+                    children: textInput({
                         model,
                         bind: 'appName',
                         commitOnChange: true,
@@ -236,7 +236,15 @@ function controlCard(props: ElementSpec<CardProps>) {
  * A labelled input row. Sliders pass their current value to show beside the label, rather than
  * over the tick labels.
  */
-function fieldRow({label, value, item}: {label: string; value?: string; item: ReactElement}) {
+function fieldRow({
+    label,
+    value,
+    children
+}: {
+    label: string;
+    value?: string;
+    children: ReactElement;
+}) {
     return vbox({
         gap: 2,
         overflow: 'visible',
@@ -252,7 +260,7 @@ function fieldRow({label, value, item}: {label: string; value?: string; item: Re
                         : null
                 ]
             }),
-            item
+            children
         ]
     });
 }

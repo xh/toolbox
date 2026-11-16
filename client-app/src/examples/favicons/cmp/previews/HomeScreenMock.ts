@@ -35,7 +35,7 @@ export const homeScreenMock = hoistCmp.factory({
                 appTile({
                     key: app.name,
                     name: app.name,
-                    item: div({
+                    children: div({
                         className: 'tb-fav-home__glyph',
                         style: {background: app.bg},
                         children: app.icon
@@ -50,7 +50,7 @@ export const homeScreenMock = hoistCmp.factory({
                 key: 'ours',
                 name: appName,
                 isOurs: true,
-                item: img({src: appleSvgDataUrl, alt: `${appName} home screen icon`})
+                children: img({src: appleSvgDataUrl, alt: `${appName} home screen icon`})
             })
         );
 
@@ -79,19 +79,19 @@ export const homeScreenMock = hoistCmp.factory({
 function appTile({
     key,
     name,
-    item,
+    children,
     isOurs = false
 }: {
     key: string;
     name: string;
-    item: ReactElement;
+    children: ReactElement;
     isOurs?: boolean;
 }) {
     return div({
         key,
         className: `tb-fav-home__app${isOurs ? ' tb-fav-home__app--ours' : ''}`,
         children: [
-            div({className: 'tb-fav-home__tile', children: item}),
+            div({className: 'tb-fav-home__tile', children}),
             div({className: 'tb-fav-home__name', children: name})
         ]
     });
