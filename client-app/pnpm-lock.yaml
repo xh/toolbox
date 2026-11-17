@@ -114,7 +114,7 @@ importers:
         version: 8.1.0(supports-color@10.2.2)
       '@xh/hoist-dev-utils':
         specifier: next
-        version: 17.0.0-SNAPSHOT.1794677272122(@rspack/core@2.3.0(@swc/helpers@0.5.24))(core-js@3.50.0)(supports-color@10.2.2)
+        version: 17.0.0-SNAPSHOT.1794875305377(@rspack/core@2.3.0(@swc/helpers@0.5.24))(core-js@3.50.0)(supports-color@10.2.2)
       cross-env:
         specifier: ~10.1.0
         version: 10.1.0
@@ -1772,8 +1772,8 @@ packages:
       react: ^19.3.0
       react-dom: ^19.3.0
 
-  '@xh/hoist-dev-utils@17.0.0-SNAPSHOT.1794677272122':
-    resolution: {integrity: sha512-cuX1n5r3UetbJzoYahNyqW8c/dgFx1CC6Q4T6IuzPu6/ilJ2i1hrA2/lvo+G2Hja0yXO2cPmMneX+/pNcRFBrQ==}
+  '@xh/hoist-dev-utils@17.0.0-SNAPSHOT.1794875305377':
+    resolution: {integrity: sha512-zjzTJrTZ6YoXKBP3iSNDtSzOVZOr62hrYpvGgTfRM8s5NygsQq8RUZ97VlZo8pLAvRFRvXSnXtbWnRb5u+8TWw==}
     engines: {node: '>=22.15.0'}
 
   '@xh/hoist@91.0.0-SNAPSHOT.1794872218732':
@@ -5959,7 +5959,7 @@ snapshots:
       rxjs: 7.8.1
       zod: 4.6.7
 
-  '@xh/hoist-dev-utils@17.0.0-SNAPSHOT.1794677272122(@rspack/core@2.3.0(@swc/helpers@0.5.24))(core-js@3.50.0)(supports-color@10.2.2)':
+  '@xh/hoist-dev-utils@17.0.0-SNAPSHOT.1794875305377(@rspack/core@2.3.0(@swc/helpers@0.5.24))(core-js@3.50.0)(supports-color@10.2.2)':
     dependencies:
       '@rsbuild/core': 2.3.2(core-js@3.50.0)
       '@rsbuild/plugin-basic-ssl': 2.0.0(@rsbuild/core@2.3.2(core-js@3.50.0))
@@ -5972,6 +5972,7 @@ snapshots:
       changelog-parser: 4.1.0
       lodash: 4.18.1
       sass-embedded: 1.108.2
+      semver: 7.8.6
       type-fest: 5.10.0
     transitivePeerDependencies:
       - '@module-federation/runtime-tools'
