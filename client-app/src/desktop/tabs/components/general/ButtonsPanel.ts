@@ -67,7 +67,7 @@ export const buttonsPanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Drives the Playground instance.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Text',
                             propName: 'ButtonProps.text',
@@ -101,7 +101,7 @@ export const buttonsPanel = hoistCmp.factory({
                 }),
                 wrapperOptionGroup({
                     label: 'All buttons on the page',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Disabled',
                             propName: 'ButtonProps.disabled',
@@ -116,12 +116,12 @@ export const buttonsPanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 260,
                             showValue: false,
                             config: fmtDemoConfig<ButtonProps>('button', {
@@ -131,7 +131,7 @@ export const buttonsPanel = hoistCmp.factory({
                                 ...styleSnippetProps(pgStyle),
                                 ...ambientSnippetProps
                             }),
-                            item: button({
+                            children: button({
                                 ...ambientProps,
                                 ...STYLE_PROPS[pgStyle],
                                 text: model.pgText,
@@ -144,12 +144,12 @@ export const buttonsPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Variants',
                         note: 'Each sets its own props.',
-                        items: [
+                        children: [
                             // The three looks lead the section at full width: each spans every
                             // intent, so they read as rows to compare top to bottom.
                             demoGrid({
                                 columns: 1,
-                                items: [
+                                children: [
                                     intentRow(model, 'minimal', 'The Hoist default'),
                                     intentRow(model, 'standard', 'minimal: false'),
                                     intentRow(model, 'outlined', 'outlined: true')
@@ -157,11 +157,11 @@ export const buttonsPanel = hoistCmp.factory({
                             }),
                             demoGrid({
                                 columns: 3,
-                                items: [
+                                children: [
                                     demoRow({
                                         label: 'Content shapes',
                                         info: 'text, icon, both, and rightIcon',
-                                        item: buttonRow(
+                                        children: buttonRow(
                                             button({...ambientProps, text: 'Text'}),
                                             button({
                                                 ...ambientProps,
@@ -183,7 +183,7 @@ export const buttonsPanel = hoistCmp.factory({
                                     demoRow({
                                         label: 'Active',
                                         info: 'active: true - a pressed-in toggle, in each style',
-                                        item: buttonRow(
+                                        children: buttonRow(
                                             button({
                                                 ...ambientProps,
                                                 active: true,
@@ -206,8 +206,8 @@ export const buttonsPanel = hoistCmp.factory({
                                     demoRow({
                                         label: 'In a ButtonGroup',
                                         info: 'buttonGroup joins adjacent buttons - see ButtonGroupInput to bind one as a value',
-                                        item: buttonGroup({
-                                            items: [
+                                        children: buttonGroup({
+                                            children: [
                                                 button({
                                                     ...ambientProps,
                                                     icon: Icon.chartLine(),
@@ -233,9 +233,9 @@ export const buttonsPanel = hoistCmp.factory({
                     demoSection({
                         title: 'In a Toolbar',
                         note: 'Alongside the controls they usually sit with.',
-                        items: [
-                            demoToolbar({items: toolbarItems(model)}),
-                            demoToolbar({compact: true, items: toolbarItems(model)})
+                        children: [
+                            demoToolbar({children: toolbarItems(model)}),
+                            demoToolbar({compact: true, children: toolbarItems(model)})
                         ]
                     })
                 ]
@@ -254,7 +254,7 @@ function intentRow(model: ButtonsModel, style: ButtonStyle, info: string) {
     return demoRow({
         label: STYLE_LABELS[style],
         info,
-        item: buttonRow(
+        children: buttonRow(
             button({...ambientProps, ...styleProps, text: 'None'}),
             ...INTENTS.map(intent =>
                 button({...ambientProps, ...styleProps, intent, text: capitalize(intent)})
@@ -271,7 +271,7 @@ const STYLE_LABELS: Record<ButtonStyle, string> = {
 
 /** Buttons wrap within a variant card rather than overflow it. */
 function buttonRow(...items: ReactNode[]) {
-    return hbox({gap: 6, alignItems: 'center', flexWrap: 'wrap', items});
+    return hbox({gap: 6, alignItems: 'center', flexWrap: 'wrap', children: items});
 }
 
 /** Snippet entries for the chosen style - only the props that differ from the defaults. */
@@ -293,7 +293,7 @@ function toolbarItems(model: ButtonsModel): ReactNode[] {
         button({...ambientProps, icon: Icon.edit(), text: 'Edit', intent: 'primary'}),
         toolbarSep(),
         buttonGroup({
-            items: [
+            children: [
                 button({...ambientProps, icon: Icon.chartLine(), tooltip: 'Linear'}),
                 button({...ambientProps, icon: Icon.chartBar(), tooltip: 'Bar'})
             ]

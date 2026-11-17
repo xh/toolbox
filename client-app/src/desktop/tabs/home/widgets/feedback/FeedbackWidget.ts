@@ -14,7 +14,7 @@ export const feedbackWidget = hoistCmp.factory({
     render({model}) {
         const {rating, commentSent} = model;
         const body = !rating ? ratingPrompt() : !commentSent ? commentPrompt() : thanks();
-        return panel({className: 'tb-feedback', item: body});
+        return panel({className: 'tb-feedback', children: body});
     }
 });
 
@@ -22,15 +22,15 @@ const ratingPrompt = hoistCmp.factory<FeedbackWidgetModel>({
     render({model}) {
         return vbox({
             className: 'tb-feedback__inner',
-            items: [
-                div({className: 'tb-feedback__question', item: 'Enjoying Hoist?'}),
+            children: [
+                div({className: 'tb-feedback__question', children: 'Enjoying Hoist?'}),
                 div({
                     className: 'tb-feedback__sub',
-                    item: 'One click - painless, and read by the team.'
+                    children: 'One click - painless, and read by the team.'
                 }),
                 hbox({
                     className: 'tb-feedback__ratings',
-                    items: [
+                    children: [
                         button({
                             icon: faceFrownIcon({size: '2x'}),
                             tooltip: 'Not really',
@@ -58,10 +58,10 @@ const commentPrompt = hoistCmp.factory<FeedbackWidgetModel>({
         const negative = model.rating !== 'positive';
         return vbox({
             className: 'tb-feedback__inner',
-            items: [
+            children: [
                 div({
                     className: 'tb-feedback__question',
-                    item: negative
+                    children: negative
                         ? 'Sorry to hear it - what could be better?'
                         : 'Thanks! Anything to add?'
                 }),
@@ -77,7 +77,7 @@ const commentPrompt = hoistCmp.factory<FeedbackWidgetModel>({
                 }),
                 hbox({
                     className: 'tb-feedback__actions',
-                    items: [
+                    children: [
                         filler(),
                         button({text: 'Skip', onClick: () => model.skipComment()}),
                         button({
@@ -98,9 +98,9 @@ const thanks = hoistCmp.factory<FeedbackWidgetModel>({
     render({model}) {
         return vbox({
             className: 'tb-feedback__inner tb-feedback__inner--thanks',
-            items: [
+            children: [
                 Icon.checkCircle({size: '2x', intent: 'success'}),
-                div({className: 'tb-feedback__question', item: 'Thanks for your feedback!'}),
+                div({className: 'tb-feedback__question', children: 'Thanks for your feedback!'}),
                 button({text: 'Update your rating', minimal: true, onClick: () => model.reset()})
             ]
         });

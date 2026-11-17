@@ -111,7 +111,7 @@ export class PanelResizingTestModel extends HoistModel {
     explanation = [
         h3({
             className: 'xh-text-color-accent',
-            item: 'Use this Page to Test the Panel Drag Bars'
+            children: 'Use this Page to Test the Panel Drag Bars'
         }),
         p(
             'The vertical and horizontal drag bars on the surrounding panels should be draggable (hold mouse down on bar and drag) and dragging a bar should resize its panel.'

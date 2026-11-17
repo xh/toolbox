@@ -17,14 +17,14 @@ export const CubePerfMatrixPanel = hoistCmp({
             tbar: tbar(),
             bbar: bbar(),
             mask: model.running ? 'onLoad' : null,
-            item: vframe(
+            children: vframe(
                 // Bind explicitly: a context lookup takes the model's first own GridModel, which is
                 // `activeGrid` once a run sets it - mounting the grid under test in both slots.
                 grid({model: model.gridModel, testId: 'cube-perf-matrix', flex: 1}),
                 panel({
                     title: 'Grid under test',
                     modelConfig: {side: 'bottom', defaultSize: 260, collapsible: false},
-                    item: harnessGrid()
+                    children: harnessGrid()
                 })
             )
         });
@@ -57,16 +57,17 @@ const tbar = hoistCmp.factory<CubePerfMatrixModel>(({model}) =>
         filler(),
         span({
             omit: model.heapAvailable,
-            item: 'Heap unavailable - relaunch with --enable-precise-memory-info --js-flags=--expose-gc',
+            children:
+                'Heap unavailable - relaunch with --enable-precise-memory-info --js-flags=--expose-gc',
             style: {color: 'var(--xh-intent-warning)'}
         }),
-        span({omit: !model.status, item: model.status, style: {opacity: 0.8}})
+        span({omit: !model.status, children: model.status, style: {opacity: 0.8}})
     )
 );
 
 const bbar = hoistCmp.factory<CubePerfMatrixModel>(({model}) =>
     toolbar(
-        span({item: 'Single config:', style: {opacity: 0.7}}),
+        span({children: 'Single config:', style: {opacity: 0.7}}),
         ...PERF_CONFIGS.map(c =>
             button({
                 text: c.id,

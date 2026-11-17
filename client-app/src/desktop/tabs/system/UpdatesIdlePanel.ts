@@ -40,9 +40,9 @@ export const appNotificationsPanel = hoistCmp.factory(() =>
                 notes: 'Panel shown when an idle session is suspended.'
             }
         ],
-        item: box({
+        children: box({
             className: 'tb-updates-idle',
-            items: [bannerTile(), idleServiceTile()]
+            children: [bannerTile(), idleServiceTile()]
         })
     })
 );
@@ -51,7 +51,7 @@ const bannerTile = hoistCmp.factory(() =>
     panel({
         title: 'App Update',
         icon: Icon.rocket(),
-        items: [
+        children: [
             p(
                 `In the event of an app update, users may continue to browse or complete 
                 actions on their current app version without being interrupted by a sudden 
@@ -82,7 +82,7 @@ const idleServiceTile = hoistCmp.factory(() =>
     panel({
         title: 'Idle Detection',
         icon: Icon.moon(),
-        items: [
+        children: [
             p(`
                 After a period of inactivity, apps can enter "sleep mode", suspending 
                 background requests and prompting the user to reload the app to resume.

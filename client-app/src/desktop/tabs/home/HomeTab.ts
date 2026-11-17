@@ -9,7 +9,7 @@ export const homeTab = hoistCmp.factory({
     render() {
         return frame({
             className: 'tb-home xh-tiled-bg',
-            item: dashCanvas()
+            children: dashCanvas()
         });
     }
 });

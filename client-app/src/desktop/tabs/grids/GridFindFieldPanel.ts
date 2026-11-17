@@ -52,7 +52,7 @@ export const gridFindFieldPanel = hoistCmp.factory({
                 label: 'Playground only - props',
                 icon: Icon.experiment(),
                 intent: 'primary',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Match mode',
                         propName: 'GridFindFieldProps.matchMode',
@@ -76,12 +76,12 @@ export const gridFindFieldPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             showValue: false,
                             caption: 'Try "boston", then press Enter to step through matches.',
                             config: fmtDemoConfig<GridFindFieldProps>('gridFindField', {
@@ -91,7 +91,7 @@ export const gridFindFieldPanel = hoistCmp.factory({
                                 queryBuffer:
                                     model.queryBuffer === 200 ? undefined : model.queryBuffer
                             }),
-                            item: gridFindField({
+                            children: gridFindField({
                                 gridModel: model.gridModel,
                                 matchMode: model.matchMode,
                                 queryBuffer: model.queryBuffer,
@@ -102,7 +102,7 @@ export const gridFindFieldPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Searched Grid',
                         note: 'Every field on this page searches this grid.',
-                        item: tradesGridFrame({
+                        children: tradesGridFrame({
                             gridModel: model.gridModel,
                             label: 'gridModel: gridModel',
                             info: 'Matches are selected - the row count stays the same.',
@@ -111,10 +111,10 @@ export const gridFindFieldPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Variants',
-                        item: demoRow({
+                        children: demoRow({
                             label: 'Company names only',
                             info: "includeFields: ['company'] - a city name finds nothing here.",
-                            item: gridFindField({
+                            children: gridFindField({
                                 gridModel: model.gridModel,
                                 includeFields: ['company'],
                                 width: 260
@@ -123,9 +123,9 @@ export const gridFindFieldPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'In a Toolbar',
-                        items: [
-                            demoToolbar({items: toolbarItems(model.gridModel)}),
-                            demoToolbar({compact: true, items: toolbarItems(model.gridModel)})
+                        children: [
+                            demoToolbar({children: toolbarItems(model.gridModel)}),
+                            demoToolbar({compact: true, children: toolbarItems(model.gridModel)})
                         ]
                     })
                 ]

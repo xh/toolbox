@@ -68,13 +68,13 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
             // Scroll rather than clip when the rail plus the demo region's floor exceed the
             // viewport - hframe clips by default, which would hide the demo entirely.
             overflowX: 'auto',
-            items: [
+            children: [
                 hasRailContent
                     ? railModel.collapsed
                         ? collapsedRail({railModel})
                         : infoRail({title, icon, intro, options, links, railModel})
                     : null,
-                vframe({className: 'tbox-wrapper__demo', items: children})
+                vframe({className: 'tbox-wrapper__demo', children})
             ]
         });
     }
@@ -109,12 +109,12 @@ const infoRail = hoistCmp.factory<InfoRailProps>({
                     onClick: () => (railModel.collapsed = true)
                 })
             ],
-            item: div({
+            children: div({
                 className: 'tbox-wrapper__rail-body',
-                items: [
+                children: [
                     div({
                         className: 'tbox-wrapper__intro',
-                        item: markdown({content: intro, lineBreaks: false}),
+                        children: markdown({content: intro, lineBreaks: false}),
                         omit: !hasIntro
                     }),
                     div({
@@ -145,9 +145,9 @@ const optionsSection = hoistCmp.factory<OptionsSectionProps>({
         if (isEmpty(options)) return null;
         return div({
             className: 'tbox-wrapper__options',
-            items: [
-                div({className: 'tbox-wrapper__options-label', item: 'Options'}),
-                div({className: 'tbox-wrapper__options-body', item: options})
+            children: [
+                div({className: 'tbox-wrapper__options-label', children: 'Options'}),
+                div({className: 'tbox-wrapper__options-body', children: options})
             ]
         });
     }
@@ -195,32 +195,32 @@ export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOption
             className: 'tbox-wrapper__option',
             // Native tooltip with the full property name - useful when the revealed pill ellipsizes.
             title: propName,
-            items: [
+            children: [
                 div({
                     className: classNames(
                         'tbox-wrapper__option-row',
                         alignTop && 'tbox-wrapper__option-row--top'
                     ),
-                    items: [
+                    children: [
                         div({
                             className: 'tbox-wrapper__option-label',
-                            items: propName
+                            children: propName
                                 ? [
                                       span({
                                           className: 'tbox-wrapper__option-label-text',
-                                          item: label
+                                          children: label
                                       }),
                                       code({
                                           className: 'tbox-wrapper__option-prop',
-                                          item: propName
+                                          children: propName
                                       })
                                   ]
                                 : label
                         }),
-                        div({className: 'tbox-wrapper__option-control', item: control})
+                        div({className: 'tbox-wrapper__option-control', children: control})
                     ]
                 }),
-                div({className: 'tbox-wrapper__option-info', item: info, omit: !info})
+                div({className: 'tbox-wrapper__option-info', children: info, omit: !info})
             ]
         });
     }
@@ -247,7 +247,7 @@ interface WrapperOptionGroupProps extends HoistProps {
 /**
  * A labeled sub-group of rows within a Wrapper `options` section, for examples with enough
  * options that a flat list would be hard to scan. Pass the option rows (typically `wrapperOption`
- * elements) via `item`/`items`, which render as the group's children.
+ * elements) as `children`.
  *
  * Every rail option belongs to one of two scopes, which the group's `label` names:
  * - *Ambient* options are orthogonal to what any single instance demonstrates (compact, disabled,
@@ -270,17 +270,17 @@ export const [WrapperOptionGroup, wrapperOptionGroup] =
                     'tbox-wrapper__option-group',
                     intent && `tbox-wrapper__option-group--${intent}`
                 ),
-                items: [
+                children: [
                     div({
                         className: 'tbox-wrapper__option-group-label',
-                        items: [icon, span(label)]
+                        children: [icon, span(label)]
                     }),
                     div({
                         className: 'tbox-wrapper__option-group-info',
-                        item: info,
+                        children: info,
                         omit: !info
                     }),
-                    div({className: 'tbox-wrapper__option-group-body', item: children})
+                    div({className: 'tbox-wrapper__option-group-body', children})
                 ]
             });
         }
@@ -309,7 +309,7 @@ export const [WrapperOptionTabs, wrapperOptionTabs] = hoistCmp.withFactory<Wrapp
             active = tabs.find(it => it.id === tabsModel.activeId) ?? tabs[0];
         return div({
             className: 'tbox-wrapper__option-tabs',
-            items: [
+            children: [
                 segmentedControl({
                     value: active.id,
                     onChange: v => (tabsModel.activeId = v),
@@ -317,7 +317,7 @@ export const [WrapperOptionTabs, wrapperOptionTabs] = hoistCmp.withFactory<Wrapp
                     compact: true,
                     fill: true
                 }),
-                div({className: 'tbox-wrapper__options-body', item: active.items})
+                div({className: 'tbox-wrapper__options-body', children: active.items})
             ]
         });
     }
@@ -354,20 +354,20 @@ const resources = hoistCmp.factory<ResourcesProps>({
         );
         return div({
             className: 'tbox-wrapper__resources',
-            items: [
-                div({className: 'tbox-wrapper__resources-label', item: 'Resources'}),
+            children: [
+                div({className: 'tbox-wrapper__resources-label', children: 'Resources'}),
                 ...sortedLinks.map(link =>
                     div({
                         className: 'tbox-wrapper__resource',
-                        items: [
+                        children: [
                             linkIcon(link.url),
                             div({
                                 className: 'tbox-wrapper__resource-text',
-                                items: [
+                                children: [
                                     toolboxLink(link),
                                     div({
                                         className: 'tbox-wrapper__resource-note',
-                                        item: link.notes,
+                                        children: link.notes,
                                         omit: !link.notes
                                     })
                                 ]
@@ -387,7 +387,7 @@ const collapsedRail = hoistCmp.factory<{railModel: WrapperRailModel} & HoistProp
             className: 'tbox-wrapper__rail-collapsed',
             title: 'Show info panel',
             onClick: expand,
-            items: [
+            children: [
                 button({icon: Icon.chevronRight(), title: 'Show info panel', onClick: expand}),
                 Icon.info({className: 'tbox-wrapper__rail-collapsed-hint'})
             ]

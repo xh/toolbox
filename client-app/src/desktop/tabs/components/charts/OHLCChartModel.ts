@@ -153,7 +153,7 @@ export class OHLCChartModel extends HoistModel {
             icon: Icon.json(),
             actionFn: (menuItemEvent, {point}) => {
                 const message = div({
-                    items: point
+                    children: point
                         ? [
                               'Custom chart menu items have access to the clicked point in the series.',
                               div(`X: ${fmtDate(point.x)}`),

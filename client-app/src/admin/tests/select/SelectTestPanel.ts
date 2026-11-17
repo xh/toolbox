@@ -18,9 +18,9 @@ export const SelectTestPanel = hoistCmp({
         return panel({
             title: 'Select tests',
             className: 'tb-select-test-panel',
-            item: div({
+            children: div({
                 className: 'tb-select-test-panel__inner',
-                items: [
+                children: [
                     example({
                         name: 'Select',
                         bind: 'selectValue',
@@ -168,7 +168,7 @@ export const SelectTestPanel = hoistCmp({
 const blockTimes = hoistCmp.factory<SelectTestModel>(({model}) =>
     hbox({
         alignItems: 'center',
-        items: [
+        children: [
             label(
                 isEmpty(model.blockTimes)
                     ? 'blocked: --'
@@ -188,7 +188,7 @@ const example = hoistCmp.factory<SelectTestModel>(
     ({model, name, bind, selectProps, extraItems = []}) =>
         div({
             className: 'tb-select-test-panel__example',
-            items: [
+            children: [
                 p(name),
                 label('value: ' + JSON.stringify(model[bind])),
                 select({...selectProps, bind}),
@@ -202,9 +202,9 @@ const example = hoistCmp.factory<SelectTestModel>(
 const customerOption = hoistCmp.factory(({opt}) =>
     hbox({
         className: 'xh-pad-half xh-border-bottom',
-        items: [
+        children: [
             box({
-                item: isUndefined(opt.isActive)
+                children: isUndefined(opt.isActive)
                     ? Icon.magic({className: 'xh-grey'})
                     : opt.isActive
                       ? Icon.checkCircle({className: 'xh-green'})
@@ -217,7 +217,7 @@ const customerOption = hoistCmp.factory(({opt}) =>
                 div({
                     omit: !opt.city || !opt.id,
                     className: 'xh-text-color-muted xh-font-size-small',
-                    item: `${opt.city} · ID: ${opt.id}`
+                    children: `${opt.city} · ID: ${opt.id}`
                 })
             )
         ],

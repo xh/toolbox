@@ -62,7 +62,7 @@ export const bannersPanel = hoistCmp.factory({
                 icon: Icon.experiment(),
                 intent: 'primary',
                 info: 'Drives the Playground banner.',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Message',
                         propName: 'BannerSpec.message',
@@ -86,13 +86,13 @@ export const bannersPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tbox-popups',
-                items: [
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 260,
                             showValue: false,
                             caption: 'Show replaces any banner already up in the default category.',
@@ -102,9 +102,9 @@ export const bannersPanel = hoistCmp.factory({
                                 intent: pgIntent || undefined,
                                 enableClose: pgEnableClose ? undefined : false
                             }),
-                            item: hbox({
+                            children: hbox({
                                 gap: 6,
-                                items: [
+                                children: [
                                     button({
                                         ...popBtn(Icon.flag({intent: 'primary'})),
                                         text: 'Show banner',
@@ -129,13 +129,13 @@ export const bannersPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Variants',
                         note: 'Each sets its own props.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 3,
-                            items: [
+                            children: [
                                 demoRow({
                                     label: 'With action',
                                     info: 'actionButtonProps renders a button within the banner',
-                                    item: button({
+                                    children: button({
                                         ...popBtn(Icon.flag({intent: 'primary'})),
                                         text: 'Banner with action',
                                         onClick: () =>
@@ -157,10 +157,10 @@ export const bannersPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Categories',
                                     info: 'Each category holds one banner - showing another replaces it, and hideBanner(category) removes it',
-                                    item: hbox({
+                                    children: hbox({
                                         gap: 6,
                                         flexWrap: 'wrap',
-                                        items: [
+                                        children: [
                                             button({
                                                 ...popBtn(Icon.warning({intent: 'warning'})),
                                                 text: 'Show maintenance',
@@ -184,7 +184,7 @@ export const bannersPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Callbacks',
                                     info: 'onClick fires when the banner body is clicked, onClose when the user closes it',
-                                    item: button({
+                                    children: button({
                                         ...popBtn(Icon.flag({intent: 'primary'})),
                                         text: 'Banner with callbacks',
                                         onClick: () =>

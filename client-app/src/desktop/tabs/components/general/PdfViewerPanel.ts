@@ -93,7 +93,7 @@ export const pdfViewerPanel = hoistCmp.factory({
                     })
                 })
             ],
-            item: panel({
+            children: panel({
                 title: 'Document',
                 width: '100%',
                 maxWidth: 900,
@@ -101,7 +101,7 @@ export const pdfViewerPanel = hoistCmp.factory({
                 icon: Icon.filePdf(),
                 compactHeader: true,
                 modelConfig: {modalSupport: true, collapsible: false, resizable: false},
-                items: [pdfViewer({model: model.pdfViewerModel, flex: 1}), viewerStateStrip()]
+                children: [pdfViewer({model: model.pdfViewerModel, flex: 1}), viewerStateStrip()]
             })
         });
     }
@@ -124,7 +124,7 @@ const viewerStateStrip = hoistCmp.factory<PdfViewerPanelModel>(({model}) => {
     return statCardStrip({
         className: 'xh-border-top',
         padding: 10,
-        items: [
+        children: [
             statCard({
                 title: 'Page',
                 value: hasDocument ? `${pageNumber} of ${pageCount}` : '-'

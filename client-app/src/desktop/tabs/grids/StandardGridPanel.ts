@@ -97,9 +97,9 @@ export const standardGridPanel = hoistCmp.factory({
                 }),
                 ...gridDisplayActions(gridModel)
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel',
-                item: sampleGrid()
+                children: sampleGrid()
             })
         });
     }

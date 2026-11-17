@@ -68,7 +68,7 @@ export const intentInputPanel = hoistCmp.factory({
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
-                item: intentInput({
+                children: intentInput({
                     bind: 'playground',
                     ...ambientProps,
                     showNames: model.pgShowNames,
@@ -79,12 +79,12 @@ export const intentInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Swatches only',
                     info: 'The default',
-                    item: intentInput({bind: 'plain', ...ambientProps})
+                    children: intentInput({bind: 'plain', ...ambientProps})
                 }),
                 demoRow({
                     label: 'Named',
                     info: 'showNames: true',
-                    item: intentInput({
+                    children: intentInput({
                         bind: 'named',
                         ...ambientProps,
                         showNames: true
@@ -93,7 +93,7 @@ export const intentInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Subset',
                     info: "intents: ['primary', 'danger']",
-                    item: intentInput({
+                    children: intentInput({
                         bind: 'subset',
                         ...ambientProps,
                         intents: ['primary', 'danger']
@@ -102,7 +102,7 @@ export const intentInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true, showNames: true',
-                    item: intentInput({
+                    children: intentInput({
                         bind: 'disabledIntent',
                         ...ambientProps,
                         disabled: true,
@@ -112,13 +112,13 @@ export const intentInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Invalid',
                     info: 'Bound to a failing FormField rule',
-                    item: form({
+                    children: form({
                         model: model.formModel,
-                        item: formField({
+                        children: formField({
                             field: 'invalidIntent',
                             label: null,
                             minimal: true,
-                            item: intentInput({enableClear: true})
+                            children: intentInput({enableClear: true})
                         })
                     })
                 })
@@ -135,22 +135,22 @@ export const intentInputPanel = hoistCmp.factory({
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({field: 'intent', item: intentInput()})
+                            children: formField({field: 'intent', children: intentInput()})
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'badgeIntent',
                                 inline: true,
-                                item: intentInput({enableClear: true})
+                                children: intentInput({enableClear: true})
                             })
                         })
                     })

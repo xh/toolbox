@@ -19,11 +19,11 @@ export const previewsPanel = hoistCmp.factory({
             className,
             flex: 1,
             scrollable: true,
-            item: div({
+            children: div({
                 className: 'tb-favicons__grid-wrap',
-                item: div({
+                children: div({
                     className: 'tb-favicons__grid',
-                    items: [
+                    children: [
                         heroPreview(),
                         browserTabMock(),
                         homeScreenMock(),

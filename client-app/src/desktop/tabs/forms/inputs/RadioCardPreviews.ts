@@ -16,7 +16,7 @@ export function chartThumb(shape: ChartShape): ReactElement {
         viewBox: '0 0 64 40',
         width: 64,
         height: 40,
-        items: chartMarks(shape)
+        children: chartMarks(shape)
     });
 }
 
@@ -67,7 +67,7 @@ export function layoutThumb(layout: PanelLayout): ReactElement {
     const paneCount = {single: 1, split: 2, sidebar: 2, grid: 4}[layout];
     return div({
         className: `tb-rc-layout tb-rc-layout--${layout}`,
-        items: Array.from({length: paneCount}, (_, i) =>
+        children: Array.from({length: paneCount}, (_, i) =>
             div({key: i, className: 'tb-rc-layout__pane'})
         )
     });

@@ -17,13 +17,13 @@ export const optionsWidget = hoistCmp.factory({
     model: creates(() => OptionsWidgetModel),
     render({model}) {
         return panel({
-            item: vbox({
+            children: vbox({
                 padding: 10,
-                items: [
+                children: [
                     segmentedControl({model, bind: 'value', outlined: true, options: OPTIONS}),
                     div({
                         className: 'xh-pad',
-                        item: `A stateful SegmentedControl. "${model.value}" is selected.`
+                        children: `A stateful SegmentedControl. "${model.value}" is selected.`
                     })
                 ]
             })

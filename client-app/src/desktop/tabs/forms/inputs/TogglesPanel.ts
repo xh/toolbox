@@ -112,10 +112,10 @@ export const togglesPanel = hoistCmp.factory({
                     })
                 ].join('\n\n'),
                 value: model.playground,
-                item: hbox({
+                children: hbox({
                     gap: 20,
                     alignItems: 'center',
-                    items: [
+                    children: [
                         checkbox({
                             bind: 'playground',
                             ...ambientProps,
@@ -141,7 +141,7 @@ export const togglesPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Indeterminate',
                     info: 'Checkbox with displayUnsetState and a null value',
-                    item: checkbox({
+                    children: checkbox({
                         bind: 'indeterminate',
                         ...ambientProps,
                         displayUnsetState: true
@@ -150,9 +150,9 @@ export const togglesPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Stacked pair',
                     info: 'inline: false',
-                    item: vbox({
+                    children: vbox({
                         gap: 12,
-                        items: [
+                        children: [
                             checkbox({bind: 'a', ...ambientProps, inline: false, label: 'A'}),
                             checkbox({bind: 'b', ...ambientProps, inline: false, label: 'B'})
                         ]
@@ -161,7 +161,7 @@ export const togglesPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Switch, label left',
                     info: "labelSide: 'left'",
-                    item: switchInput({
+                    children: switchInput({
                         bind: 'switchLeft',
                         ...ambientProps,
                         labelSide: 'left',
@@ -171,7 +171,7 @@ export const togglesPanel = hoistCmp.factory({
                 demoRow({
                     label: 'CheckboxButton icons',
                     info: "checkedIcon, uncheckedIcon, iconSide: 'right'",
-                    item: checkboxButton({
+                    children: checkboxButton({
                         bind: 'customIcons',
                         ...ambientProps,
                         checkedIcon: Icon.eye(),
@@ -183,10 +183,10 @@ export const togglesPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: hbox({
+                    children: hbox({
                         gap: 20,
                         alignItems: 'center',
-                        items: [
+                        children: [
                             checkbox({
                                 bind: 'disabledDemo',
                                 ...ambientProps,
@@ -211,13 +211,13 @@ export const togglesPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Invalid',
                     info: 'Bound to a rule requiring true',
-                    item: form({
+                    children: form({
                         model: model.formModel,
-                        item: formField({
+                        children: formField({
                             field: 'invalidTerms',
                             label: null,
                             minimal: true,
-                            item: checkbox({label: 'Accept terms'})
+                            children: checkbox({label: 'Accept terms'})
                         })
                     })
                 })
@@ -236,19 +236,23 @@ export const togglesPanel = hoistCmp.factory({
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({field: 'notify', item: checkbox()})
+                            children: formField({field: 'notify', children: checkbox()})
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({field: 'terms', inline: true, item: switchInput()})
+                            children: formField({
+                                field: 'terms',
+                                inline: true,
+                                children: switchInput()
+                            })
                         })
                     })
                 ]

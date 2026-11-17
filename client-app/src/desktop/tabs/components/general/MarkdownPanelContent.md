@@ -36,7 +36,7 @@ import {markdown} from '@xh/hoist/cmp/markdown';
 
 const myPanel = hoistCmp.factory(() =>
     panel({
-        item: markdown({content: myMarkdownString, lineBreaks: false})
+        children: markdown({content: myMarkdownString, lineBreaks: false})
     })
 );
 ```

@@ -59,7 +59,7 @@ export const progressBarPanel = hoistCmp.factory({
                     info: 'Drives the Playground bar.',
                     icon: Icon.experiment(),
                     intent: 'primary',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Indeterminate',
                             propName: 'ProgressBarProps.indeterminate',
@@ -121,30 +121,30 @@ export const progressBarPanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 320,
                             showValue: false,
                             caption: 'A value outside the range draws an empty or a full bar.',
                             config: fmtDemoConfig<ProgressBarProps>('progressBar', barConfig),
-                            item: progressBar({...barProps, width: '100%'})
+                            children: progressBar({...barProps, width: '100%'})
                         })
                     }),
                     demoSection({
                         title: 'Share of a Total',
                         note: 'Gross market value by sector of the sample portfolio.',
-                        item: sectorShares(model.sectorShares)
+                        children: sectorShares(model.sectorShares)
                     }),
                     demoSection({
                         title: 'Intent',
                         note: 'Intent from a threshold. The figure takes the raw value, past max.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 2,
-                            items: [
+                            children: [
                                 usageBar('Archive volume', 212, 500),
                                 usageBar('Data volume', 388, 500),
                                 usageBar('Log volume', 471, 500),
@@ -155,8 +155,8 @@ export const progressBarPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Target',
                         note: 'target marks a goal or a limit on the track.',
-                        item: demoGrid({
-                            items: [
+                        children: demoGrid({
+                            children: [
                                 progressBar({
                                     label: 'Sales against quota',
                                     value: 68,
@@ -181,8 +181,8 @@ export const progressBarPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Indeterminate',
                         note: 'indeterminate: true. The fill slides along the track.',
-                        item: demoGrid({
-                            items: [
+                        children: demoGrid({
+                            children: [
                                 progressBar({label: 'Loading positions', indeterminate: true}),
                                 progressBar({
                                     label: 'Reconciling',
@@ -199,8 +199,8 @@ export const progressBarPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Bar Only',
                         note: 'valueRenderer: false, and a bar with no label.',
-                        item: demoGrid({
-                            items: [
+                        children: demoGrid({
+                            children: [
                                 progressBar({
                                     label: 'Upload',
                                     value: 35,
@@ -218,10 +218,10 @@ export const progressBarPanel = hoistCmp.factory({
                     demoSection({
                         title: 'In a Row',
                         note: 'Three bars share a row of 420px with flex: 1. A long label wraps.',
-                        item: hbox({
+                        children: hbox({
                             width: 420,
                             style: {gap: 'var(--xh-spacing-double)'},
-                            items: [
+                            children: [
                                 progressBar({label: 'CPU', value: 34, flex: 1}),
                                 progressBar({
                                     label: 'Memory',
@@ -241,9 +241,9 @@ export const progressBarPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Odd Data',
                         note: 'The bar never fails. It draws an empty or a full bar.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 4,
-                            items: [
+                            children: [
                                 progressBar({label: 'value: 140', value: 140}),
                                 progressBar({label: 'value: -5', value: -5}),
                                 progressBar({label: 'value: NaN', value: NaN}),
@@ -254,12 +254,12 @@ export const progressBarPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Restyled with CSS Variables',
                         note: 'A tall, square bar and a thin one, set on a container.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 2,
-                            items: [
+                            children: [
                                 demoFrame({
                                     className: 'tb-progress-bar-panel__tall',
-                                    item: progressBar({
+                                    children: progressBar({
                                         label: 'Batch 7 of 12',
                                         value: 7,
                                         max: 12,
@@ -269,7 +269,7 @@ export const progressBarPanel = hoistCmp.factory({
                                 }),
                                 demoFrame({
                                     className: 'tb-progress-bar-panel__thin',
-                                    item: progressBar({
+                                    children: progressBar({
                                         label: 'Sync',
                                         value: 82,
                                         intent: 'success'
@@ -289,7 +289,7 @@ function sectorShares(shares: SectorShare[]) {
     const total = sumBy(shares, 'mktVal');
     return div({
         className: 'tb-progress-bar-panel__shares',
-        items: shares.map(({sector, mktVal}) =>
+        children: shares.map(({sector, mktVal}) =>
             progressBar({
                 key: sector,
                 label: sector,

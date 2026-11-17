@@ -68,30 +68,30 @@ export const panelSizingPanel = hoistCmp.factory({
                     onClick: () => model.setCollapsedAll(true)
                 })
             ],
-            item: panel({
+            children: panel({
                 title: 'Panel Sizing',
                 icon: Icon.window(),
                 modelConfig: {modalSupport: true, collapsible: false, resizable: false},
                 height: '60vh',
                 width: '90%',
-                items: [
+                children: [
                     hbox({
                         flex: 1,
                         className: 'xh-border-top',
-                        items: [
+                        children: [
                             panel({
                                 title: 'Left Panel',
                                 icon: Icon.arrowToLeft(),
                                 model: model.leftPanelModel,
                                 compactHeader: true,
-                                item: box({
+                                children: box({
                                     className: 'xh-pad',
-                                    item: 'Collapsible Left'
+                                    children: 'Collapsible Left'
                                 })
                             }),
                             panel({
-                                item: box({
-                                    items: loremIpsum,
+                                children: box({
+                                    children: loremIpsum,
                                     padding: '0 6 6 6',
                                     display: 'block',
                                     overflowY: 'auto'
@@ -102,9 +102,9 @@ export const panelSizingPanel = hoistCmp.factory({
                                 icon: Icon.arrowToRight(),
                                 model: model.rightPanelModel,
                                 compactHeader: true,
-                                item: box({
+                                children: box({
                                     className: 'xh-pad',
-                                    item: 'Collapsible Right with minSize and maxSize'
+                                    children: 'Collapsible Right with minSize and maxSize'
                                 })
                             })
                         ]
@@ -114,9 +114,9 @@ export const panelSizingPanel = hoistCmp.factory({
                         icon: Icon.arrowToBottom(),
                         model: model.bottomPanelModel,
                         compactHeader: true,
-                        item: box({
+                        children: box({
                             padding: 10,
-                            item: p(
+                            children: p(
                                 'Collapsible Bottom with minSize and maxSize. I have ',
                                 strong('modalSupport'),
                                 ' too! (See what happens when you make me a modal within a modal.)'
@@ -144,7 +144,7 @@ export const panelSizingPanel = hoistCmp.factory({
 const loremIpsum = [
     h3({
         className: 'xh-text-color-accent',
-        item: 'Some old-fashioned text content'
+        children: 'Some old-fashioned text content'
     }),
     p(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.)'

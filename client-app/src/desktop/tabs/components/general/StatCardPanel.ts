@@ -105,7 +105,7 @@ export const statCardPanel = hoistCmp.factory({
                     info: 'Drives the Playground card.',
                     icon: Icon.experiment(),
                     intent: 'primary',
-                    items: [
+                    children: [
                         textOption('Title', 'title'),
                         textOption('Value', 'value'),
                         textOption('Sub-value', 'subValue'),
@@ -154,12 +154,12 @@ export const statCardPanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 280,
                             showValue: false,
                             caption: 'Clear a field to omit that line.',
@@ -167,7 +167,7 @@ export const statCardPanel = hoistCmp.factory({
                                 ...cardProps,
                                 infoIcon: infoIcon ? raw(`Icon.${infoIcon}()`) : undefined
                             }),
-                            item: statCard({
+                            children: statCard({
                                 ...cardProps,
                                 infoIcon: infoIcon ? Icon.get(infoIcon) : undefined
                             })
@@ -176,17 +176,17 @@ export const statCardPanel = hoistCmp.factory({
                     demoSection({
                         title: 'In a Strip',
                         note: 'Each card takes an equal share of the row.',
-                        item: salesStrip()
+                        children: salesStrip()
                     }),
                     demoSection({
                         title: 'Wrapping',
                         note: 'At 560px, cards wrap into an even grid - no value is cut short.',
-                        item: div({style: {width: 560}, item: salesStrip()})
+                        children: div({style: {width: 560}, children: salesStrip()})
                     }),
                     demoSection({
                         title: 'Large',
                         note: "size: 'large' for a headline figure, above a standard strip.",
-                        items: [
+                        children: [
                             statCard({
                                 title: 'Net Revenue · This Quarter',
                                 value: fmtMillions(7418250, {precision: 2, label: true}),
@@ -196,14 +196,14 @@ export const statCardPanel = hoistCmp.factory({
                             }),
                             statCardStrip({
                                 marginTop: 10,
-                                items: SALES_CARDS.slice(1, 4).map(it => statCard(it))
+                                children: SALES_CARDS.slice(1, 4).map(it => statCard(it))
                             })
                         ]
                     }),
                     demoSection({
                         title: 'Sub-value and Units',
                         note: "subValue for a change, fmtNumber's label for a unit.",
-                        item: statCardStrip(
+                        children: statCardStrip(
                             statCard({
                                 title: 'Operating Costs · This Quarter',
                                 value: fmtNumber(1.12, {precision: 2, label: 'm EUR'}),
@@ -221,7 +221,7 @@ export const statCardPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Intent',
                         note: 'intent flags a status on the border, as with Card.',
-                        item: statCardStrip(
+                        children: statCardStrip(
                             statCard({title: 'Overdue Invoices', value: 37, intent: 'warning'}),
                             statCard({
                                 title: 'VaR Limit Used',
@@ -240,19 +240,19 @@ export const statCardPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Accent',
                         note: 'accent marks a category. CSS variables move it to the left.',
-                        items: [
+                        children: [
                             regionStrip(),
                             div({
                                 className: 'tb-stat-card-panel__left-accent',
                                 style: {marginTop: 10},
-                                item: regionStrip()
+                                children: regionStrip()
                             })
                         ]
                     }),
                     demoSection({
                         title: 'Clickable',
                         note: 'onClick drills into a figure, by mouse or keyboard.',
-                        item: statCardStrip(
+                        children: statCardStrip(
                             statCard({
                                 title: 'Open Orders',
                                 value: 412,
@@ -271,7 +271,7 @@ export const statCardPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Mixed Widths',
                         note: 'flex and width on a card weight or fix its share.',
-                        item: statCardStrip(
+                        children: statCardStrip(
                             statCard({
                                 title: 'Portfolio Value',
                                 value: fmtMillions(48250000, {precision: 2, label: true}),
@@ -284,9 +284,9 @@ export const statCardPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Restyled with CSS Variables',
                         note: 'Tinted, borderless cards, set by CSS variables on a container.',
-                        item: demoFrame({
+                        children: demoFrame({
                             className: 'tb-stat-card-panel__headline',
-                            item: statCardStrip(
+                            children: statCardStrip(
                                 statCard({
                                     title: 'Warehouse Capacity',
                                     value: '82%',
@@ -317,7 +317,7 @@ export const statCardPanel = hoistCmp.factory({
 });
 
 function salesStrip() {
-    return statCardStrip({items: SALES_CARDS.map(it => statCard(it))});
+    return statCardStrip({children: SALES_CARDS.map(it => statCard(it))});
 }
 
 function regionStrip() {

@@ -21,10 +21,10 @@ export const gridScrolling = hoistCmp.factory({
         return panel({
             tbar: tbar(),
             // Keyed so both grids remount when Apply rebuilds them - see `gridGeneration`.
-            item: hframe(
+            children: hframe(
                 panel({
                     flex: 1,
-                    item: grid({
+                    children: grid({
                         key: model.gridGeneration,
                         ref: model.hoistGridRef
                     }),
@@ -32,10 +32,10 @@ export const gridScrolling = hoistCmp.factory({
                 }),
                 panel({
                     flex: 1,
-                    item: div({
+                    children: div({
                         ref: model.agGridRef,
                         style: {flex: 1},
-                        item: createElement(AgGridReact, {
+                        children: createElement(AgGridReact, {
                             key: model.gridGeneration,
                             rowData: model.rowData,
                             columnDefs: model.agColumnDefs,
@@ -56,17 +56,17 @@ const tbar = hoistCmp.factory(() =>
     toolbar({
         // Items that do not fit move into a menu, so a narrow window can still reach them.
         enableOverflowMenu: true,
-        items: [
+        children: [
             form({
                 fieldDefaults: {
                     commitOnChange: true,
                     minimal: true,
                     requiredIndicator: null
                 },
-                items: [
+                children: [
                     formField({
                         field: 'rowCount',
-                        item: numberInput({
+                        children: numberInput({
                             displayWithCommas: true,
                             enableShorthandUnits: true,
                             min: 0,
@@ -75,15 +75,15 @@ const tbar = hoistCmp.factory(() =>
                     }),
                     formField({
                         field: 'colCount',
-                        item: numberInput({min: 1, width: 80})
+                        children: numberInput({min: 1, width: 80})
                     }),
                     formField({
                         field: 'isColVirtualizationEnabled',
-                        item: checkbox()
+                        children: checkbox()
                     }),
                     formField({
                         field: 'cellFormatting',
-                        item: select({
+                        children: select({
                             width: 110,
                             enableFilter: false,
                             hideSelectedOptionCheck: true,
@@ -104,7 +104,7 @@ const tbar = hoistCmp.factory(() =>
             hbox({
                 alignItems: 'center',
                 gap: true,
-                items: [
+                children: [
                     span('Scroll Factor'),
                     numberInput({bind: 'scrollFactor', min: 1, width: 50})
                 ]
@@ -139,7 +139,7 @@ const scrollBar = hoistCmp.factory<ScrollTargetProps>(({model, grid}) =>
         }),
         span({
             className: 'xh-text-color-muted',
-            item: formatResult(model.scrollResults[grid])
+            children: formatResult(model.scrollResults[grid])
         })
     )
 );

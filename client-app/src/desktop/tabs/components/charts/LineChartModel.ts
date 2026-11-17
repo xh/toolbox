@@ -143,7 +143,7 @@ export class LineChartModel extends HoistModel {
             actionFn: (menuItemEvent, {point, points}) => {
                 const otherPtsCount = points.length - 1,
                     message = div({
-                        items: point
+                        children: point
                             ? [
                                   'Custom chart menu items have access to the clicked point(s) in the series.',
                                   div(`${point.series.name}: (${fmtDate(point.x)}, ${point.y})`),

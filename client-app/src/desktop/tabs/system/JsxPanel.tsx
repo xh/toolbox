@@ -41,17 +41,17 @@ export const jsxPanel = hoistCmp.factory(() =>
                 notes: 'elemFactory() and related helpers for the Hoist factory syntax.'
             }
         ],
-        item: panel({
+        children: panel({
             className: 'tb-jsx-panel',
             contentBoxProps: {flexDirection: 'row', padding: true, gap: true},
-            items: [
+            children: [
                 panel({
                     flex: 1,
                     className: 'tb-jsx-example',
                     title: 'Using Factories',
                     icon: Icon.factory({prefix: 'fas'}),
                     compactHeader: true,
-                    item: renderCode(getElemExample(), 'js')
+                    children: renderCode(getElemExample(), 'js')
                 }),
                 panel({
                     flex: 1,
@@ -59,7 +59,7 @@ export const jsxPanel = hoistCmp.factory(() =>
                     title: 'Using JSX',
                     icon: Icon.code(),
                     compactHeader: true,
-                    item: renderCode(getJsxExample(), 'jsx')
+                    children: renderCode(getJsxExample(), 'jsx')
                 })
             ]
         })
@@ -87,9 +87,9 @@ render() {
     return hframe({
         ...this.props,
         className: 'xh-log-viewer',
-        items: [
+        children: [
             panel({
-                item: grid({model: files}),
+                children: grid({model: files}),
                 bbar: toolbar(
                     ...buttonCfgs.map(props => button(props)),
                     deleteButton({

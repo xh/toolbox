@@ -17,7 +17,7 @@ export const treeGridWidget = hoistCmp.factory({
         return panel({
             model: panelModel,
             ...(panelModel.isModal ? modalOpts : {}),
-            item: sampleTreeGrid({modelConfig: {includeCheckboxes: false}})
+            children: sampleTreeGrid({modelConfig: {includeCheckboxes: false}})
         });
     }
 });

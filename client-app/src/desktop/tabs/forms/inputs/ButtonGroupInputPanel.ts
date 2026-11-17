@@ -101,37 +101,37 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                     enableMulti: model.pgMulti || undefined,
                     enableClear: model.pgEnableClear || undefined,
                     intent: model.pgIntent || undefined,
-                    items: raw('chartButtons()'),
+                    children: raw('chartButtons()'),
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
-                item: buttonGroupInput({
+                children: buttonGroupInput({
                     bind: 'playground',
                     ...ambientProps,
                     outlined: model.pgOutlined,
                     enableMulti: model.pgMulti,
                     enableClear: model.pgEnableClear || undefined,
                     intent: model.pgIntent ?? undefined,
-                    items: chartButtons()
+                    children: chartButtons()
                 })
             }),
             variants: [
                 demoRow({
                     label: 'Icon and text',
                     info: 'No props beyond bind',
-                    item: buttonGroupInput({
+                    children: buttonGroupInput({
                         bind: 'plain',
                         ...ambientProps,
-                        items: chartButtons()
+                        children: chartButtons()
                     })
                 }),
                 demoRow({
                     label: 'Icons only',
                     info: 'Buttons with icon and title, no text',
-                    item: buttonGroupInput({
+                    children: buttonGroupInput({
                         bind: 'iconsOnly',
                         ...ambientProps,
-                        items: [
+                        children: [
                             button({icon: Icon.chartLine(), title: 'Linear', value: 'linear'}),
                             button({icon: Icon.chartArea(), title: 'Area', value: 'area'}),
                             button({icon: Icon.chartBar(), title: 'Bar', value: 'bar'})
@@ -141,10 +141,10 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Text only',
                     info: 'Buttons with text, no icons',
-                    item: buttonGroupInput({
+                    children: buttonGroupInput({
                         bind: 'textOnly',
                         ...ambientProps,
-                        items: [
+                        children: [
                             button({text: 'Linear', value: 'linear'}),
                             button({text: 'Area', value: 'area'}),
                             button({text: 'Bar', value: 'bar'})
@@ -154,69 +154,69 @@ export const buttonGroupInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Outlined primary',
                     info: "outlined: true, intent: 'primary'",
-                    item: buttonGroupInput({
+                    children: buttonGroupInput({
                         bind: 'outlinedPrimary',
                         ...ambientProps,
                         outlined: true,
                         intent: 'primary',
-                        items: chartButtons()
+                        children: chartButtons()
                     })
                 }),
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: buttonGroupInput({
+                    children: buttonGroupInput({
                         bind: 'disabledChart',
                         ...ambientProps,
                         disabled: true,
-                        items: chartButtons()
+                        children: chartButtons()
                     })
                 }),
                 demoRow({
                     label: 'Invalid',
                     info: 'Bound to a failing FormField rule',
-                    item: form({
+                    children: form({
                         model: model.formModel,
-                        item: formField({
+                        children: formField({
                             field: 'invalidChart',
                             label: null,
                             minimal: true,
-                            item: buttonGroupInput({items: chartButtons()})
+                            children: buttonGroupInput({children: chartButtons()})
                         })
                     })
                 })
             ],
             toolbarItems: () => [
-                buttonGroupInput({bind: 'tbarChart', ...ambientProps, items: chartButtons()}),
+                buttonGroupInput({bind: 'tbarChart', ...ambientProps, children: chartButtons()}),
                 toolbarSep(),
                 buttonGroupInput({
                     bind: 'tbarView',
                     ...ambientProps,
                     outlined: true,
-                    items: viewButtons()
+                    children: viewButtons()
                 })
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'chartType',
-                                item: buttonGroupInput({items: chartButtons()})
+                                children: buttonGroupInput({children: chartButtons()})
                             })
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'view',
                                 inline: true,
-                                item: buttonGroupInput({items: viewButtons()})
+                                children: buttonGroupInput({children: viewButtons()})
                             })
                         })
                     })

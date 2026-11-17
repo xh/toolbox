@@ -45,7 +45,7 @@ export const tabStateExample = hoistCmp.factory({
                     labelSide: 'left'
                 })
             ],
-            item: tabContainer({model: model.stateTabModel})
+            children: tabContainer({model: model.stateTabModel})
         });
     }
 });
@@ -72,7 +72,7 @@ class TabStateExampleModel extends HoistModel {
             ? hbox(
                   'Things ',
                   badge({
-                      item: 'New',
+                      children: 'New',
                       intent: 'primary',
                       compact: true,
                       style: {

@@ -35,11 +35,11 @@ export const controlsPanel = hoistCmp.factory({
             width: 320,
             flex: 'none',
             scrollable: true,
-            item: vbox({
+            children: vbox({
                 flex: 'none',
                 gap: 8,
                 padding: 8,
-                items: [presetsCard(), iconCard(), colorsCard(), shapeCard(), appCard()]
+                children: [presetsCard(), iconCard(), colorsCard(), shapeCard(), appCard()]
             }),
             bbar: [
                 fontAwesomeCredit(),
@@ -64,11 +64,11 @@ const presetsCard = hoistCmp.factory({
         const {presetThumbs, activePresetIdx} = model;
         return controlCard({
             title: 'Presets',
-            items: [
+            children: [
                 hbox({
                     justifyContent: 'space-between',
                     overflow: 'visible',
-                    items: FAVICON_PRESETS.map((p, idx) =>
+                    children: FAVICON_PRESETS.map((p, idx) =>
                         button({
                             key: p.name,
                             className: 'tb-favicons-controls__preset',
@@ -98,7 +98,7 @@ const iconCard = hoistCmp.factory({
     render({model}) {
         return controlCard({
             title: 'Icon',
-            items: [
+            children: [
                 iconPicker({
                     value: model.pickerValue,
                     onChange: v => model.setIconFromPicker(v),
@@ -127,11 +127,11 @@ const colorsCard = hoistCmp.factory({
     render({model}) {
         return controlCard({
             title: 'Colors',
-            items: [
+            children: [
                 hbox({
                     alignItems: 'flex-end',
                     justifyContent: 'space-between',
-                    items: [
+                    children: [
                         colorField({
                             label: 'Glyph',
                             value: model.fgColor,
@@ -161,7 +161,7 @@ const shapeCard = hoistCmp.factory({
     render({model}) {
         return controlCard({
             title: 'Shape',
-            items: [
+            children: [
                 segmentedControl({
                     value: model.shape,
                     onChange: v => model.setShape(v),
@@ -173,7 +173,7 @@ const shapeCard = hoistCmp.factory({
                     ? fieldRow({
                           label: 'Corner radius',
                           value: `${model.radius}%`,
-                          item: rangeSlider({
+                          children: rangeSlider({
                               model,
                               bind: 'radius',
                               max: MAX_RADIUS,
@@ -184,7 +184,7 @@ const shapeCard = hoistCmp.factory({
                 fieldRow({
                     label: 'Padding',
                     value: `${model.padding}%`,
-                    item: rangeSlider({
+                    children: rangeSlider({
                         model,
                         bind: 'padding',
                         max: MAX_PADDING,
@@ -201,10 +201,10 @@ const appCard = hoistCmp.factory({
     render({model}) {
         return controlCard({
             title: 'App',
-            items: [
+            children: [
                 fieldRow({
                     label: 'App name',
-                    item: textInput({
+                    children: textInput({
                         model,
                         bind: 'appName',
                         commitOnChange: true,
@@ -214,7 +214,7 @@ const appCard = hoistCmp.factory({
                 }),
                 hint([
                     'Labels the previews and names the download - ',
-                    span({className: 'tb-favicons-controls__nowrap', item: model.zipFileName})
+                    span({className: 'tb-favicons-controls__nowrap', children: model.zipFileName})
                 ])
             ]
         });
@@ -236,21 +236,31 @@ function controlCard(props: ElementSpec<CardProps>) {
  * A labelled input row. Sliders pass their current value to show beside the label, rather than
  * over the tick labels.
  */
-function fieldRow({label, value, item}: {label: string; value?: string; item: ReactElement}) {
+function fieldRow({
+    label,
+    value,
+    children
+}: {
+    label: string;
+    value?: string;
+    children: ReactElement;
+}) {
     return vbox({
         gap: 2,
         overflow: 'visible',
-        items: [
+        children: [
             hbox({
                 className: 'tb-favicons-controls__row-label',
                 alignItems: 'baseline',
-                items: [
+                children: [
                     span(label),
                     filler(),
-                    value ? span({className: 'tb-favicons-controls__row-value', item: value}) : null
+                    value
+                        ? span({className: 'tb-favicons-controls__row-value', children: value})
+                        : null
                 ]
             }),
-            item
+            children
         ]
     });
 }
@@ -266,23 +276,23 @@ function fontAwesomeCredit() {
         className: 'tb-favicons-controls__credit',
         alignItems: 'center',
         gap: 6,
-        items: [
+        children: [
             a({
                 href: 'https://fontawesome.com/icons',
                 target: '_blank',
                 rel: 'noopener noreferrer',
-                item: 'Icons via Font Awesome Pro'
+                children: 'Icons via Font Awesome Pro'
             }),
             tooltip({
                 content:
                     'These glyphs come from Font Awesome Pro. Apps need their own Pro license to use them.',
                 placement: 'top',
-                item: Icon.info()
+                children: Icon.info()
             })
         ]
     });
 }
 
 function hint(content: ReactNode) {
-    return div({className: 'tb-favicons-controls__hint', item: content});
+    return div({className: 'tb-favicons-controls__hint', children: content});
 }

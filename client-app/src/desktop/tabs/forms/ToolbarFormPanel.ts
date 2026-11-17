@@ -68,27 +68,27 @@ export const toolbarFormPanel = hoistCmp.factory({
                 info: 'Toolbars and the FormFields inside them shrink together.',
                 control: switchInput({model, bind: 'compact'})
             }),
-            item: vbox({
+            children: vbox({
                 className: 'tb-toolbar-form',
-                items: [
+                children: [
                     form({
                         model: topFormModel,
                         fieldDefaults: {minimal: true, label: null},
-                        item: toolbar({
+                        children: toolbar({
                             compact: model.compact,
-                            items: [
+                            children: [
                                 groupLabel('Text, Number & Date'),
                                 '-',
                                 formField({
                                     field: 'text1',
                                     flex: 1,
                                     commitOnChange: true,
-                                    item: textInput({placeholder: 'Enter text...'})
+                                    children: textInput({placeholder: 'Enter text...'})
                                 }),
                                 formField({
                                     field: 'number1',
                                     width: 120,
-                                    item: numberInput({
+                                    children: numberInput({
                                         enableShorthandUnits: true,
                                         displayWithCommas: true,
                                         selectOnFocus: true
@@ -97,7 +97,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                                 formField({
                                     field: 'date1',
                                     width: 140,
-                                    item: dateInput({
+                                    children: dateInput({
                                         valueType: 'localDate',
                                         placeholder: 'YYYY-MM-DD',
                                         enableClear: true
@@ -109,14 +109,14 @@ export const toolbarFormPanel = hoistCmp.factory({
                     form({
                         model: topFormModel,
                         fieldDefaults: {minimal: true, label: null},
-                        item: toolbar({
+                        children: toolbar({
                             compact: model.compact,
-                            items: [
+                            children: [
                                 groupLabel('Buttons & Toggles'),
                                 '-',
                                 formField({
                                     field: 'buttonGroup1',
-                                    item: buttonGroupInput(
+                                    children: buttonGroupInput(
                                         button({
                                             icon: Icon.gear(),
                                             text: 'Option 1',
@@ -131,7 +131,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                                 }),
                                 formField({
                                     field: 'buttonGroup1',
-                                    item: segmentedControl({
+                                    children: segmentedControl({
                                         compact: model.compact,
                                         options: [
                                             {
@@ -148,24 +148,30 @@ export const toolbarFormPanel = hoistCmp.factory({
                                     })
                                 }),
                                 '-',
-                                formField({field: 'bool1', item: checkbox({label: 'enabled'})}),
-                                formField({field: 'bool1', item: switchInput({label: 'enabled'})}),
-                                formField({field: 'bool1', item: checkboxButton({text: 'Active'})})
+                                formField({field: 'bool1', children: checkbox({label: 'enabled'})}),
+                                formField({
+                                    field: 'bool1',
+                                    children: switchInput({label: 'enabled'})
+                                }),
+                                formField({
+                                    field: 'bool1',
+                                    children: checkboxButton({text: 'Active'})
+                                })
                             ]
                         })
                     }),
                     form({
                         model: bottomFormModel,
                         fieldDefaults: {minimal: true, label: null},
-                        item: toolbar({
+                        children: toolbar({
                             compact: model.compact,
-                            items: [
+                            children: [
                                 groupLabel('Selection'),
                                 '-',
                                 formField({
                                     field: 'option1',
                                     width: 150,
-                                    item: select({
+                                    children: select({
                                         options: usStates,
                                         enableFilter: false,
                                         placeholder: 'Select a state...'
@@ -174,7 +180,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                                 formField({
                                     field: 'option2',
                                     flex: 1,
-                                    item: select({
+                                    children: select({
                                         options: usStates,
                                         enableClear: false,
                                         enableMulti: true,
@@ -183,7 +189,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                                 }),
                                 formField({
                                     field: 'option2',
-                                    item: picker({
+                                    children: picker({
                                         compact: model.compact,
                                         options: usStates,
                                         enableMulti: true,
@@ -199,14 +205,14 @@ export const toolbarFormPanel = hoistCmp.factory({
                     form({
                         model: bottomFormModel,
                         fieldDefaults: {minimal: true, label: null},
-                        item: toolbar({
+                        children: toolbar({
                             compact: model.compact,
-                            items: [
+                            children: [
                                 groupLabel('Side'),
                                 '-',
                                 formField({
                                     field: 'option3',
-                                    item: radioInput({
+                                    children: radioInput({
                                         inline: true,
                                         options: [
                                             'Buy',
@@ -220,7 +226,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                     }),
                     toolbar({
                         compact: model.compact,
-                        items: [
+                        children: [
                             filler(),
                             button({
                                 text: 'Reset',

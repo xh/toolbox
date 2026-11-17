@@ -49,11 +49,11 @@ export const simpleTreeMapPanel = hoistCmp.factory({
                     })
                 })
             ],
-            item: panel({
+            children: panel({
                 height: '60vh',
                 width: '90%',
                 mask: 'onLoad',
-                item: treeMap()
+                children: treeMap()
             }),
             links: [
                 {
