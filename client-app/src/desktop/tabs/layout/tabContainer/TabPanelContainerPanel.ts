@@ -4,6 +4,7 @@ import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../../common/Wrapper';
+import {chatStreamExample} from './tabs/ChatStreamExample';
 import {customExample} from './tabs/CustomExample';
 import {dynamicExample} from './tabs/DynamicExample';
 import {errorExample} from './tabs/ErrorExample';
@@ -107,6 +108,11 @@ class TabPanelContainerPanelModel extends HoistModel {
                 id: 'dynamic',
                 title: 'Dynamic',
                 content: dynamicExample()
+            },
+            {
+                id: 'chat',
+                title: 'Chat Stream',
+                content: chatStreamExample()
             },
             {
                 id: 'routing',

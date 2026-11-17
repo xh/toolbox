@@ -251,6 +251,7 @@ export class AppModel extends BaseAppModel {
                                     {name: 'custom', path: '/custom', children: simpleTabRoutes()},
                                     {name: 'state', path: '/state', children: simpleTabRoutes()},
                                     {name: 'dynamic', path: '/dynamic'},
+                                    {name: 'chat', path: '/chat'},
                                     {
                                         name: 'routing',
                                         path: '/routing',
