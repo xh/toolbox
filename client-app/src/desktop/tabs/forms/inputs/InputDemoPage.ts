@@ -26,7 +26,7 @@ export interface InputDemoPageProps extends HoistProps<InputDemoModel> {
     variants?: ReactElement[];
     /**
      * Items for the two demo toolbars, built per density. Omit entirely for inputs that are not
-     * supported in toolbars (TextArea, JsonInput, CodeInput, Slider).
+     * supported in toolbars (TextArea, JsonInput, CodeInput).
      */
     toolbarItems?: (compact: boolean) => ReactNode[];
     /** In a Form section body - typically two `demoFrame` cards in a `demoGrid({columns: 2})`. */
