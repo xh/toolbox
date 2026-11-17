@@ -9,7 +9,8 @@ import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtMillions, fmtNumber, fmtPercent, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, bindableRef} from '@xh/hoist/mobx';
-import {first, last, map, min, take, takeRight} from 'lodash';
+import {first, isFinite, last, map, max, min, take, takeRight} from 'lodash';
+import type {ReactElement, ReactNode} from 'react';
 import {
     demoFrame,
     demoGrid,
@@ -121,7 +122,7 @@ export const sparklinePanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Tooltip',
                             propName: 'SparklineProps.tooltip',
-                            info: 'A function of the data.',
+                            info: 'A function of the data, returning an element.',
                             control: switchInput({bind: 'tooltip'})
                         }),
                         wrapperOption({
@@ -145,7 +146,7 @@ export const sparklinePanel = hoistCmp.factory({
                                 data: raw('data'),
                                 ...lineProps,
                                 markers: markers?.length ? raw(fmtMarkers(markers)) : undefined,
-                                tooltip: tooltip ? raw(TOOLTIP_CODE) : undefined,
+                                tooltip: tooltip ? raw('trendTip') : undefined,
                                 width: stretch ? '100%' : undefined,
                                 height: stretch ? 60 : undefined
                             }),
@@ -153,7 +154,7 @@ export const sparklinePanel = hoistCmp.factory({
                                 data: model.data,
                                 ...lineProps,
                                 markers,
-                                tooltip: tooltip ? tooltipFn : undefined,
+                                tooltip: tooltip ? trendTip : undefined,
                                 width: stretch ? '100%' : undefined,
                                 height: stretch ? 60 : undefined
                             })
@@ -384,7 +385,7 @@ export const sparklinePanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'In a Grid Column',
-                        note: 'The same 30 closing prices in Hoist and AG Grid sparklines. Hover an AG Grid cell for a tooltip per point. Each row scales to itself.',
+                        note: 'The same 30 closing prices in Hoist and AG Grid sparklines. Hover a cell for a tooltip - one per sparkline in Hoist, one per point in AG Grid. Each row scales to itself.',
                         item: div({
                             className: 'tb-sparkline-panel__grid',
                             item: grid()
@@ -457,9 +458,40 @@ export const sparklinePanel = hoistCmp.factory({
 
 const MID = {width: 160, height: 40};
 
-/** The Playground tooltip, and the code the snippet shows for it. */
-const tooltipFn = (data: number[]) => `Last: ${last(data)}`,
-    TOOLTIP_CODE = 'data => `Last: ${last(data)}`';
+/**
+ * Tooltip for a sparkline in the Playground and the grid: the first and last values, the change
+ * between them, and the range. Null for a series with no values, so no tooltip shows.
+ */
+function trendTip(data: number[], title?: string): ReactElement {
+    const values = (data ?? []).filter(it => isFinite(it));
+    if (!values.length) return null;
+
+    const start = first(values),
+        end = last(values),
+        change = start ? (end - start) / Math.abs(start) : null;
+    return div({
+        className: 'tb-sparkline-tip',
+        items: [
+            title ? div({className: 'tb-sparkline-tip__title', item: title}) : null,
+            ...tipRow('First', fmtNumber(start)),
+            ...tipRow('Last', fmtNumber(end)),
+            ...tipRow(
+                'Change',
+                change == null
+                    ? '-'
+                    : fmtPercent(change, {precision: 1, colorSpec: true, withSignGlyph: true})
+            ),
+            ...tipRow('Range', span(fmtNumber(min(values)), ' to ', fmtNumber(max(values))))
+        ]
+    });
+}
+
+function tipRow(label: string, value: ReactNode) {
+    return [
+        span({key: label, item: label}),
+        span({key: `${label}-value`, className: 'tb-sparkline-tip__value', item: value})
+    ];
+}
 
 function fmtMarkers(markers: SparklineMarker[]): string {
     return `[${markers.map(it => `'${it}'`).join(', ')}]`;
@@ -545,7 +577,13 @@ class SparklinePanelModel extends HoistModel {
                 autosizable: false,
                 sortable: false,
                 excludeFromExport: true,
-                renderer: values => sparkline({data: values, width: '100%', colorByTrend: true})
+                renderer: (values, {record}) =>
+                    sparkline({
+                        data: values,
+                        width: '100%',
+                        colorByTrend: true,
+                        tooltip: data => trendTip(data, record.data.symbol)
+                    })
             },
             {
                 ...closingPriceSparklineCol,
