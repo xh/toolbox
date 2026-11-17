@@ -88,7 +88,7 @@ export const workspacePanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Drives the workspace and its thread list.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Show notice',
                             propName: 'ChatWorkspaceProps.notice',
@@ -133,9 +133,9 @@ export const workspacePanel = hoistCmp.factory({
                     onClick: () => model.resetAsync()
                 })
             ],
-            item: frame({
+            children: frame({
                 className: 'tb-chatkit-workspace',
-                item: chatWorkspace({
+                children: chatWorkspace({
                     model: workspaceModel,
                     testId: 'chatkit-workspace',
                     notice: model.showNotice
@@ -331,10 +331,10 @@ const documentViewer = hoistCmp.factory<DocumentViewerProps>({
         if (!doc) return null;
         return div({
             className: 'tb-chatkit-workspace__doc',
-            items: [
+            children: [
                 div({
                     className: 'tb-chatkit-workspace__doc-meta',
-                    item: `${doc.fileName} - page ${doc.page} of ${doc.pageCount}`
+                    children: `${doc.fileName} - page ${doc.page} of ${doc.pageCount}`
                 }),
                 ...doc.paragraphs.map((text, idx) =>
                     div({
@@ -343,7 +343,7 @@ const documentViewer = hoistCmp.factory<DocumentViewerProps>({
                             'tb-chatkit-workspace__doc-para',
                             text === passage && 'tb-chatkit-workspace__doc-para--cited'
                         ),
-                        item: chatMarkdown({content: text})
+                        children: chatMarkdown({content: text})
                     })
                 )
             ]
@@ -362,13 +362,13 @@ const sourceLibrary = hoistCmp.factory({
     render() {
         return div({
             className: 'tb-chatkit-workspace__library',
-            items: [
+            children: [
                 div(
                     'The sources the assistant can search. Pick some for the next question with the Sources chip in the composer.'
                 ),
                 ul(
                     SOURCE_OPTIONS.map(({id, name, icon}) =>
-                        li({key: id, items: [icon, span(name)]})
+                        li({key: id, children: [icon, span(name)]})
                     )
                 )
             ]

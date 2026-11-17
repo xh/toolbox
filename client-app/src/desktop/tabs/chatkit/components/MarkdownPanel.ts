@@ -78,7 +78,7 @@ export const markdownPanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Drives the Playground markdown. The other sections set their own props.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Line breaks',
                             propName: 'ChatMarkdownProps.lineBreaks',
@@ -133,13 +133,13 @@ export const markdownPanel = hoistCmp.factory({
                     onClick: () => (model.content = SAMPLE)
                 })
             ],
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tb-chatkit-markdown',
-                items: [
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 560,
                             caption: 'Edit the markdown below, or stream it from the rail.',
                             config: model.configSnippet,
@@ -147,12 +147,12 @@ export const markdownPanel = hoistCmp.factory({
                                 isStreaming,
                                 length: model.shownContent.length
                             },
-                            item: vbox({
+                            children: vbox({
                                 className: 'tb-chatkit-markdown__playground',
-                                items: [
+                                children: [
                                     div({
                                         className: 'tb-chatkit-markdown__output',
-                                        item: chatMarkdown({
+                                        children: chatMarkdown({
                                             content: model.shownContent,
                                             isStreaming,
                                             lineBreaks: model.lineBreaks,
@@ -178,13 +178,13 @@ export const markdownPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Code blocks',
                         note: 'chatCodeBlock - the card the chat renders for fenced code.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 2,
-                            items: [
+                            children: [
                                 demoFrame({
                                     label: 'Short',
                                     info: "language: 'typescript'",
-                                    item: chatCodeBlock({
+                                    children: chatCodeBlock({
                                         content: SHORT_CODE,
                                         language: 'typescript'
                                     })
@@ -192,17 +192,20 @@ export const markdownPanel = hoistCmp.factory({
                                 demoFrame({
                                     label: 'No language',
                                     info: "No language prop - the header reads 'text'",
-                                    item: chatCodeBlock({content: SHELL_CODE})
+                                    children: chatCodeBlock({content: SHELL_CODE})
                                 }),
                                 demoFrame({
                                     label: 'Over 20 lines',
                                     info: 'A finished block shows its first 20 lines, with a button for the rest',
-                                    item: chatCodeBlock({content: LONG_CODE, language: 'groovy'})
+                                    children: chatCodeBlock({
+                                        content: LONG_CODE,
+                                        language: 'groovy'
+                                    })
                                 }),
                                 demoFrame({
                                     label: 'Streaming',
                                     info: 'isStreaming: true - shows in full until the block ends',
-                                    item: chatCodeBlock({
+                                    children: chatCodeBlock({
                                         content: LONG_CODE,
                                         language: 'groovy',
                                         isStreaming: true
@@ -214,12 +217,12 @@ export const markdownPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Long tables',
                         note: 'components: CHAT_MARKDOWN_COMPONENTS',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: `A table of ${LONG_TABLE_ROWS} rows`,
                             info: 'Over ChatKit.defaults.markdownTableMaxRows (100), a table renders as a card with Show All.',
-                            item: div({
+                            children: div({
                                 className: 'tb-chatkit-markdown__long-table',
-                                item: chatMarkdown({
+                                children: chatMarkdown({
                                     content: LONG_TABLE,
                                     components: CHAT_MARKDOWN_COMPONENTS
                                 })
@@ -229,12 +232,12 @@ export const markdownPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Citations',
                         note: 'citations: {sources} - "[1]" and "[2, 3]" in the text become buttons.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'Three sources',
                             info: 'Hover a marker for its source, or click it to open the page. "[4]" cites no source, so it stays as written.',
-                            item: div({
+                            children: div({
                                 className: 'tb-chatkit-markdown__cited',
-                                item: chatMarkdown({content: CITED_TEXT, citations: CITATIONS})
+                                children: chatMarkdown({content: CITED_TEXT, citations: CITATIONS})
                             })
                         })
                     })
@@ -343,12 +346,12 @@ function ownImages(src: string): boolean {
 function cardTable({children}: {children?: ReactNode}) {
     return div({
         className: 'tb-chatkit-markdown__table-card',
-        items: [
+        children: [
             div({
                 className: 'tb-chatkit-markdown__table-card-header',
-                items: [Icon.table(), span('Table')]
+                children: [Icon.table(), span('Table')]
             }),
-            table({items: children})
+            table({children})
         ]
     });
 }

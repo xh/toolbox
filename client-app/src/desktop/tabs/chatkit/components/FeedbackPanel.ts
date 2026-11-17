@@ -83,7 +83,7 @@ export const feedbackPanel = hoistCmp.factory({
                 icon: Icon.experiment(),
                 intent: 'primary',
                 info: 'Drives the Playground host. The chat below has a feedback config of its own.',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Allow comment',
                         propName: 'ChatFeedbackSettings.allowComment',
@@ -141,25 +141,25 @@ export const feedbackPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 460,
                             caption:
                                 'Saves take 600ms. Try a thumbs down, then switch thumbs or clear the rating.',
                             config: model.snippet,
                             value: model.getFeedback(reply),
-                            item: vbox({
+                            children: vbox({
                                 className: 'tb-chatkit-feedback__reply',
-                                items: [
+                                children: [
                                     chatMarkdown({content: model.replyText}),
                                     chatFeedbackControls({
                                         message: reply,
                                         host: model,
-                                        items: [chatCopyButton({getCopyText: () => reply.text})]
+                                        children: [chatCopyButton({getCopyText: () => reply.text})]
                                     })
                                 ]
                             })
@@ -168,12 +168,12 @@ export const feedbackPanel = hoistCmp.factory({
                     demoSection({
                         title: 'In a reply',
                         note: 'chatPanel over a ChatModel with a feedback config.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'feedback: {submitAsync, requireComment: true, clearable: false}',
                             info: 'Thumbs show at once on the loaded history. A thumbs down needs a comment, and a rating cannot be cleared.',
-                            item: box({
+                            children: box({
                                 height: 560,
-                                item: chatPanel({
+                                children: chatPanel({
                                     model: model.chatModel,
                                     flex: 1,
                                     citationMarkers: true,
@@ -290,7 +290,7 @@ class FeedbackPanelModel extends HoistModel implements ChatFeedbackHost {
         const controls = fmtDemoConfig<ChatFeedbackControlsProps>('chatFeedbackControls', {
                 message: raw('message'),
                 host: raw('feedbackHost'),
-                items: raw('[chatCopyButton({getCopyText: () => message.text})]')
+                children: raw('[chatCopyButton({getCopyText: () => message.text})]')
             }),
             settings = omitBy(
                 {

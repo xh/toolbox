@@ -96,7 +96,7 @@ export const messageListPanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Drives the Playground list over its transcript.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Assistant name',
                             propName: 'ChatMessageListProps.assistantName',
@@ -144,12 +144,12 @@ export const messageListPanel = hoistCmp.factory({
                     onClick: () => model.resetLiveChat()
                 })
             ],
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 600,
                             showValue: false,
                             caption: 'A read-only transcript. Hover a reply for its action bar.',
@@ -164,11 +164,11 @@ export const messageListPanel = hoistCmp.factory({
                                     : undefined,
                                 allowImages: allowImages || undefined
                             }),
-                            item: box({
+                            children: box({
                                 className: 'tb-chatkit-message-list__frame',
                                 height: 480,
                                 width: '100%',
-                                item: chatMessageList({
+                                children: chatMessageList({
                                     host: transcript,
                                     assistantName,
                                     showMessageHeader,
@@ -184,12 +184,12 @@ export const messageListPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Live ChatModel',
                         note: 'The same messages as initialMessages of a ChatModel.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'chatMessageList({model: chatModel})',
                             info: 'Edit, Regenerate and the thumbs show only for a ChatModel. Regenerate the last reply, or edit a question.',
-                            item: box({
+                            children: box({
                                 height: 480,
-                                item: chatMessageList({
+                                children: chatMessageList({
                                     model: model.chatModel,
                                     assistantName: 'Research Assistant',
                                     citationMarkers: true,
@@ -201,10 +201,10 @@ export const messageListPanel = hoistCmp.factory({
                     demoSection({
                         title: 'One message',
                         note: 'chatMessageView, for a list of your own.',
-                        item: demoRow({
+                        children: demoRow({
                             label: 'A reply with reasoning, a tool call and a table',
                             info: 'chatMessageView({message, host: transcript}) - the tool call takes its title, icon and summary from getToolSpec.',
-                            item: chatMessageView({
+                            children: chatMessageView({
                                 message: transcript.messages[1],
                                 host: transcript,
                                 assistantName: 'Research Assistant'
@@ -307,7 +307,7 @@ class MessageListPanelModel extends HoistModel {
     };
 
     renderHeaderItems = (): ReactNode[] => [
-        span({key: 'model', className: 'tb-chatkit-message-list__badge', item: 'analyst-large'})
+        span({key: 'model', className: 'tb-chatkit-message-list__badge', children: 'analyst-large'})
     ];
 
     resetLiveChat() {

@@ -101,13 +101,13 @@ const orderTicket = hoistCmp.factory<OrderTicketProps>({
             isFilled = state === 'output-available';
         return div({
             className,
-            items: [
+            children: [
                 div({
                     className: 'tb-order-ticket__headline',
-                    items: [
+                    children: [
                         span({
                             className: `tb-order-ticket__side tb-order-ticket__side--${side.toLowerCase()}`,
-                            item: side
+                            children: side
                         }),
                         span(`${fmtShares(quantity)} ${symbol}`)
                     ]
@@ -132,7 +132,7 @@ const orderTicket = hoistCmp.factory<OrderTicketProps>({
 function ticketField(label: string, value: ReactNode) {
     return div({
         className: 'tb-order-ticket__field',
-        items: [span({className: 'tb-order-ticket__label', item: label}), span(value)]
+        children: [span({className: 'tb-order-ticket__label', children: label}), span(value)]
     });
 }
 

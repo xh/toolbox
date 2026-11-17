@@ -80,7 +80,7 @@ export const emptyStatePanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Drives the Playground chat. The other sections set their own props.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Title',
                             propName: 'ChatPanelProps.emptyStateProps.title',
@@ -148,13 +148,13 @@ export const emptyStatePanel = hoistCmp.factory({
                     onClick: () => model.clearAll()
                 })
             ],
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tb-chatkit-empty',
-                items: [
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 560,
                             caption:
                                 'Click a suggestion to fill the composer. Send to leave the empty state.',
@@ -163,9 +163,9 @@ export const emptyStatePanel = hoistCmp.factory({
                                 draft: chatModel.composerModel.text,
                                 messages: chatModel.messages.length
                             },
-                            item: div({
+                            children: div({
                                 className: 'tb-chatkit-empty__instance',
-                                item: chatPanel({
+                                children: chatPanel({
                                     key: `playground-${model.mountKey}`,
                                     model: chatModel,
                                     flex: 1,
@@ -182,12 +182,12 @@ export const emptyStatePanel = hoistCmp.factory({
                     demoSection({
                         title: 'ChatEmptyState on its own',
                         note: 'chatEmptyState with a composerModel - for a layout of your own.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'Empty state over a composer',
                             info: "A click fills the composer under it. The composer sends to a host of the page's own, which shows a toast.",
-                            item: vbox({
+                            children: vbox({
                                 className: 'tb-chatkit-empty__standalone',
-                                items: [
+                                children: [
                                     chatEmptyState({
                                         icon: Icon.search(),
                                         title: 'Ask the research desk',
@@ -206,12 +206,12 @@ export const emptyStatePanel = hoistCmp.factory({
                     demoSection({
                         title: 'ChatSuggestions with onSelect',
                         note: 'onSelect replaces the fill - this one shows a toast and fills nothing.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'Suggestions on their own',
                             info: 'chatSuggestions({suggestions, onSelect})',
-                            item: div({
+                            children: div({
                                 className: 'tb-chatkit-empty__suggestions',
-                                item: chatSuggestions({
+                                children: chatSuggestions({
                                     suggestions: SUGGESTIONS.slice(0, 3),
                                     onSelect: onSuggestionSelect
                                 })
@@ -221,13 +221,13 @@ export const emptyStatePanel = hoistCmp.factory({
                     demoSection({
                         title: 'Custom emptyState',
                         note: 'emptyState replaces the default. The composer stays at the bottom.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'Content of your own',
                             info: 'chatPanel({emptyState: templateGallery()}) - each tile fills the composer',
-                            item: div({
+                            children: div({
                                 className:
                                     'tb-chatkit-empty__instance tb-chatkit-empty__instance--custom',
-                                item: chatPanel({
+                                children: chatPanel({
                                     model: model.customChatModel,
                                     flex: 1,
                                     title: 'Report builder',
@@ -253,11 +253,11 @@ function templateGallery({chatModel}: {chatModel: ChatModel}): ReactNode {
     const {composerModel} = chatModel;
     return div({
         className: 'tb-chatkit-empty__gallery',
-        items: [
-            div({className: 'tb-chatkit-empty__gallery-title', item: 'Start from a template'}),
+        children: [
+            div({className: 'tb-chatkit-empty__gallery-title', children: 'Start from a template'}),
             div({
                 className: 'tb-chatkit-empty__gallery-tiles',
-                items: TEMPLATES.map(it =>
+                children: TEMPLATES.map(it =>
                     button({
                         key: it.title,
                         className: 'tb-chatkit-empty__tile',
@@ -317,10 +317,10 @@ class EmptyStatePanelModel extends HoistModel {
             icon: this.showIcon ? undefined : null,
             header: this.showHeader ? productMark() : null,
             belowComposer: this.showBelowComposer
-                ? span({className: 'tb-chatkit-empty__note', item: HELP_LINE})
+                ? span({className: 'tb-chatkit-empty__note', children: HELP_LINE})
                 : null,
             footer: this.showFooter
-                ? span({className: 'tb-chatkit-empty__note', item: FOOTER_LINE})
+                ? span({className: 'tb-chatkit-empty__note', children: FOOTER_LINE})
                 : null
         };
     }
@@ -384,7 +384,7 @@ const HELP_LINE = 'Shift+Enter starts a new line.',
 function productMark() {
     return div({
         className: 'tb-chatkit-empty__mark',
-        items: [Icon.chartLine(), span('Ledger Assistant')]
+        children: [Icon.chartLine(), span('Ledger Assistant')]
     });
 }
 

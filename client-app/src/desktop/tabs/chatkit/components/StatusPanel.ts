@@ -89,7 +89,7 @@ export const statusPanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Drives the Playground cue.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Status',
                             propName: 'ChatStatusCueProps.status',
@@ -133,7 +133,7 @@ export const statusPanel = hoistCmp.factory({
                 wrapperOptionGroup({
                     label: 'Status region',
                     info: 'Drives the chat in the Status region section.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Next reply',
                             info: 'How the scripted backend answers the next message.',
@@ -159,13 +159,13 @@ export const statusPanel = hoistCmp.factory({
                     onClick: () => chatModel.clear()
                 })
             ],
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tb-chatkit-status',
-                items: [
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             caption: 'One status at a time, as a reply header would show it.',
                             showValue: false,
                             config: fmtDemoConfig<ChatStatusCueProps>('chatStatusCue', {
@@ -174,9 +174,9 @@ export const statusPanel = hoistCmp.factory({
                                 stalledMs: status === 'stalled' ? stalledMs : undefined,
                                 showSpinner: showSpinner ? undefined : false
                             }),
-                            item: div({
+                            children: div({
                                 className: 'tb-chatkit-status__cue',
-                                item: chatStatusCue({
+                                children: chatStatusCue({
                                     status,
                                     label: label || undefined,
                                     stalledMs,
@@ -188,19 +188,19 @@ export const statusPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Every status',
                         note: 'The idle status renders nothing - a finished reply shows no cue.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 4,
-                            items: STATUSES.map(it =>
+                            children: STATUSES.map(it =>
                                 demoRow({
                                     key: it,
                                     label: it,
-                                    item: div({
+                                    children: div({
                                         className: 'tb-chatkit-status__cue',
-                                        item:
+                                        children:
                                             it === 'idle'
                                                 ? span({
                                                       className: 'tb-chatkit-status__none',
-                                                      item: 'Renders nothing'
+                                                      children: 'Renders nothing'
                                                   })
                                                 : chatStatusCue({status: it, stalledMs: 34_000})
                                     })
@@ -211,20 +211,20 @@ export const statusPanel = hoistCmp.factory({
                     demoSection({
                         title: 'ChatElapsed',
                         note: 'Ticks each second from startedAt until endedAt is set.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'chatElapsed({startedAt, endedAt})',
                             info: 'Whole seconds from 1s, as 6s or 1m 02s.',
-                            item: hbox({
+                            children: hbox({
                                 className: 'tb-chatkit-status__elapsed',
                                 alignItems: 'center',
-                                items: [
+                                children: [
                                     div({
                                         className: 'tb-chatkit-status__cue',
-                                        item: startedAt
+                                        children: startedAt
                                             ? chatElapsed({startedAt, endedAt})
                                             : span({
                                                   className: 'tb-chatkit-status__none',
-                                                  item: 'Not started'
+                                                  children: 'Not started'
                                               })
                                     }),
                                     button({
@@ -252,13 +252,13 @@ export const statusPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Status region',
                         note: 'A custom layout: message list, the region, then the composer. Set the next reply in the rail, then send.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'chatStatusRegion()',
                             info: 'What stops a send or needs your action, in one line above the composer. A stall shows in the reply after 6 seconds here.',
-                            item: vframe({
+                            children: vframe({
                                 className: 'tb-chatkit-status__chat',
                                 height: 420,
-                                items: [
+                                children: [
                                     chatMessageList({model: chatModel, assistantName: 'Analyst'}),
                                     chatStatusRegion({
                                         model: chatModel.composerModel
@@ -274,7 +274,7 @@ export const statusPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Read a status yourself',
                         note: 'For a header or a dock of your own.',
-                        item: demoFrame({
+                        children: demoFrame({
                             info: span(
                                 code('getChatReplyStatus({message, lastActivityAt, stallAfterMs})'),
                                 ' reads the clock at each call. Nothing observable changes while a reply is quiet, so render again each second to show a stall.'

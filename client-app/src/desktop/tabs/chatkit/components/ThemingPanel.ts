@@ -67,7 +67,7 @@ export const themingPanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: "Set on the preview's container. The snippet shows the override for body.xh-app.",
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Turn gap',
                             propName: '--xh-chat-turn-gap',
@@ -146,7 +146,7 @@ export const themingPanel = hoistCmp.factory({
                 wrapperOptionGroup({
                     label: 'Classes',
                     info: "Added to the preview's container.",
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Compact density',
                             propName: 'xh-chat--compact',
@@ -170,26 +170,26 @@ export const themingPanel = hoistCmp.factory({
                     onClick: () => model.reset()
                 })
             ],
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tb-chatkit-theming',
-                items: [
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 620,
                             showValue: false,
                             caption:
                                 'The same conversation, with the variables from the rail. Send a message to see the live cues.',
                             config: scss,
-                            item: div({
+                            children: div({
                                 className: classNames(
                                     'tb-chatkit-theming__preview',
                                     compact && 'xh-chat--compact',
                                     reducedMotion && 'xh-chat--reduced-motion'
                                 ),
                                 style: cssVars as CSSProperties,
-                                item: chatPanel({
+                                children: chatPanel({
                                     model: chatModel,
                                     title: 'Analyst',
                                     icon: Icon.ai(),
@@ -204,7 +204,7 @@ export const themingPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Main variables',
                         note: "Defaults come from Hoist's own theme variables. See vars.scss for every group.",
-                        item: variableTable()
+                        children: variableTable()
                     })
                 ]
             })
@@ -374,11 +374,11 @@ const VARIABLES: Array<[group: string, name: string, def: string]> = [
 function variableTable() {
     return table({
         className: 'tb-chatkit-theming__table',
-        items: [
+        children: [
             thead(tr(th('Group'), th('Variable'), th('Default'))),
             tbody(
                 VARIABLES.map(([group, name, def], idx) =>
-                    tr({key: idx, items: [td(group), td(code(name)), td(def)]})
+                    tr({key: idx, children: [td(group), td(code(name)), td(def)]})
                 )
             )
         ]

@@ -170,21 +170,21 @@ const planChecklist = hoistCmp.factory<PlanChecklistProps>({
             position = activeIdx >= 0 ? activeIdx + 1 : items.filter(isDone).length;
         return div({
             className,
-            items: [
+            children: [
                 div({
                     className: 'tb-plan-checklist__head',
-                    item: `Plan · ${position} of ${items.length}`
+                    children: `Plan · ${position} of ${items.length}`
                 }),
                 ul({
                     className: 'tb-plan-checklist__list',
-                    items: items.map((it, idx) =>
+                    children: items.map((it, idx) =>
                         li({
                             key: idx,
                             className: `tb-plan-checklist__item tb-plan-checklist__item--${it.status}`,
-                            items: [
+                            children: [
                                 span({
                                     className: 'tb-plan-checklist__icon',
-                                    item: STATUS_ICONS[it.status]?.() ?? Icon.circle()
+                                    children: STATUS_ICONS[it.status]?.() ?? Icon.circle()
                                 }),
                                 span(it.title)
                             ]

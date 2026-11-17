@@ -88,7 +88,7 @@ export const composerPanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Drives the Playground composer. The other sections use their own models.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Placeholder',
                             propName: 'ChatComposerProps.placeholder',
@@ -183,13 +183,13 @@ export const composerPanel = hoistCmp.factory({
                     onClick: () => model.clearAll()
                 })
             ],
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tb-chatkit-composer',
-                items: [
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 560,
                             caption:
                                 'Type and press Enter. Send becomes Stop while the reply runs. Open the pills to change the run options.',
@@ -203,9 +203,9 @@ export const composerPanel = hoistCmp.factory({
                                     : (chatModel.lastMessage?.text ?? null),
                                 runOptions: chatModel.runOptions
                             },
-                            item: div({
+                            children: div({
                                 className: 'tb-chatkit-composer__instance',
-                                item: chatComposer({
+                                children: chatComposer({
                                     model: composerModel,
                                     ...model.playgroundProps
                                 })
@@ -215,15 +215,15 @@ export const composerPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Without a ChatModel',
                         note: "A ChatComposerModel over a ChatComposerHost of the page's own.",
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'Notes',
                             info: 'The host saves each sent message as a note. No Stop, drafts or status region.',
-                            item: hframe({
+                            children: hframe({
                                 className: 'tb-chatkit-composer__notes-host',
-                                items: [
+                                children: [
                                     div({
                                         className: 'tb-chatkit-composer__notes-composer',
-                                        item: chatComposer({
+                                        children: chatComposer({
                                             model: model.notesModel.composerModel,
                                             placeholder: 'Add a note...',
                                             maxRows: 4
@@ -237,7 +237,7 @@ export const composerPanel = hoistCmp.factory({
                     demoSection({
                         title: 'In a toolbar',
                         note: "layout: 'inline' - a one-row composer beside other controls.",
-                        item: demoToolbar({items: toolbarItems(model.toolbarChatModel)})
+                        children: demoToolbar({children: toolbarItems(model.toolbarChatModel)})
                     })
                 ]
             })
@@ -437,16 +437,16 @@ const notesList = hoistCmp.factory<HoistProps<NotesModel>>({
         const {notes} = model;
         return vbox({
             className: 'tb-chatkit-composer__notes',
-            items: isEmpty(notes)
-                ? span({className: 'tb-chatkit-composer__notes-empty', item: 'No notes yet.'})
+            children: isEmpty(notes)
+                ? span({className: 'tb-chatkit-composer__notes-empty', children: 'No notes yet.'})
                 : notes.map(it =>
                       div({
                           key: it.id,
                           className: 'tb-chatkit-composer__note',
-                          items: [
+                          children: [
                               span({
                                   className: 'tb-chatkit-composer__note-time',
-                                  item: fmtTime(it.time)
+                                  children: fmtTime(it.time)
                               }),
                               span(it.text)
                           ]
@@ -460,18 +460,21 @@ const notesList = hoistCmp.factory<HoistProps<NotesModel>>({
 // Slot content and script
 //------------------------------------------------------------------
 function contextMeter() {
-    return span({className: 'tb-chatkit-composer__meter', item: '12% of context'});
+    return span({className: 'tb-chatkit-composer__meter', children: '12% of context'});
 }
 
 function contextChips() {
     return div({
         className: 'tb-chatkit-composer__chips',
-        items: [
+        children: [
             span({
                 className: 'tb-chatkit-composer__chip',
-                items: [Icon.portfolio(), 'Rates book']
+                children: [Icon.portfolio(), 'Rates book']
             }),
-            span({className: 'tb-chatkit-composer__chip', items: [Icon.table(), 'Positions grid']})
+            span({
+                className: 'tb-chatkit-composer__chip',
+                children: [Icon.table(), 'Positions grid']
+            })
         ]
     });
 }

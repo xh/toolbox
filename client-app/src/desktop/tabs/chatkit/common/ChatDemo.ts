@@ -181,7 +181,7 @@ export const chatDemoPage = hoistCmp.factory<HoistProps<ChatDemoModel>>({
                 wrapperOptionGroup({
                     label: 'Display',
                     info: 'How the chat renders. The conversation itself comes from the script.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Assistant name',
                             propName: 'ChatMessageListProps.assistantName',
@@ -220,7 +220,7 @@ export const chatDemoPage = hoistCmp.factory<HoistProps<ChatDemoModel>>({
                     onClick: () => chatModel.clear()
                 })
             ],
-            item: chatPanel({
+            children: chatPanel({
                 model: chatModel,
                 className: classNames(
                     'tb-chatkit-demo',

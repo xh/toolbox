@@ -141,7 +141,7 @@ export const liveModelPanel = hoistCmp.factory({
                 ? [
                       wrapperOptionGroup({
                           label: 'Chat',
-                          items: [
+                          children: [
                               wrapperOption({
                                   label: 'Assistant name',
                                   propName: 'ChatMessageListProps.assistantName',
@@ -170,7 +170,7 @@ export const liveModelPanel = hoistCmp.factory({
                       })
                   ]
                 : null,
-            item: hasAccess
+            children: hasAccess
                 ? chatPanel({
                       model: chatModel,
                       className: 'tb-chatkit-demo',

@@ -85,7 +85,7 @@ export const sourcesPanel = hoistCmp.factory({
                 icon: Icon.experiment(),
                 intent: 'primary',
                 info: 'Drives the Playground list. The other sections use the defaults.',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Compact',
                         propName: 'ChatSourcesProps.compact',
@@ -144,12 +144,12 @@ export const sourcesPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 460,
                             caption:
                                 'Click a title to open it, or elsewhere on a row for its excerpt.',
@@ -164,7 +164,7 @@ export const sourcesPanel = hoistCmp.factory({
                                 onSourceClick: CLICK_MODE_SNIPPETS[clickMode]
                             }),
                             value: model.lastOpened,
-                            item: chatSources({
+                            children: chatSources({
                                 // Remount on a flip: a list the user opened or closed keeps its state.
                                 key: `sources-${startCollapsed}`,
                                 sources: SOURCES,
@@ -181,10 +181,10 @@ export const sourcesPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Citation markers in text',
                         note: 'chatMarkdown with citations - the same seven sources.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'citations: {sources, onClick}',
                             info: 'Four or more numbers collapse to one marker. [4] cites no source, so it stays as written.',
-                            item: chatMarkdown({
+                            children: chatMarkdown({
                                 content: CITED_TEXT,
                                 citations: model.citations
                             })
@@ -193,12 +193,12 @@ export const sourcesPanel = hoistCmp.factory({
                     demoSection({
                         title: 'In a reply',
                         note: 'chatMessageList over a transcript, with citationMarkers: true.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'The markers and the sources list share numbers',
                             info: 'Hover a marker for its card. Hover a row to light up its markers.',
-                            item: box({
+                            children: box({
                                 height: 440,
-                                item: chatMessageList({
+                                children: chatMessageList({
                                     host: model.transcript,
                                     assistantName: 'Research Assistant',
                                     citationMarkers: true,

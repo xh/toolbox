@@ -46,22 +46,22 @@ export const overviewPanel = hoistCmp.factory({
                     notes: 'Published as TypeScript and SCSS source, like Hoist itself.'
                 }
             ],
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tb-chatkit-overview',
-                items: [
+                children: [
                     demoSection({
                         title: 'What you get',
-                        item: ul({
+                        children: ul({
                             className: 'tb-chatkit-overview__features',
-                            items: FEATURES.map(({icon, title, text}) =>
+                            children: FEATURES.map(({icon, title, text}) =>
                                 li({
                                     key: title,
                                     className: 'tb-chatkit-overview__feature',
-                                    items: [
+                                    children: [
                                         icon,
                                         div({
                                             className: 'tb-chatkit-overview__feature-text',
-                                            items: [strong(title), text]
+                                            children: [strong(title), text]
                                         })
                                     ]
                                 })
@@ -71,10 +71,10 @@ export const overviewPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Quick start',
                         note: 'A ChatModel with a transport and a tool, rendered by chatPanel.',
-                        items: [
+                        children: [
                             p({
                                 className: 'tb-chatkit-overview__prose',
-                                items: [
+                                children: [
                                     'Run ',
                                     code('pnpm add @xh/hoist-chat-kit'),
                                     ', then add it to ',
@@ -84,9 +84,10 @@ export const overviewPanel = hoistCmp.factory({
                             }),
                             p({
                                 className: 'tb-chatkit-overview__prose',
-                                item: 'The build then transpiles the kit along with the app. A minimal chat looks like this:'
+                                children:
+                                    'The build then transpiles the kit along with the app. A minimal chat looks like this:'
                             }),
-                            pre({className: 'tb-chatkit-overview__code', item: QUICK_START})
+                            pre({className: 'tb-chatkit-overview__code', children: QUICK_START})
                         ]
                     }),
                     ...CHAT_KIT_GROUPS.filter(it => it.key !== 'overview').map(group =>
@@ -94,7 +95,7 @@ export const overviewPanel = hoistCmp.factory({
                             key: group.key,
                             title: group.title,
                             note: group.info,
-                            item: gallery({group: group.key})
+                            children: gallery({group: group.key})
                         })
                     )
                 ]
@@ -110,11 +111,11 @@ interface GalleryProps extends HoistProps {
 const gallery = hoistCmp.factory<GalleryProps>(({group}) =>
     demoGallery({
         minTileWidth: 260,
-        items: CHAT_KIT_PAGES.filter(it => it.group === group).map(page =>
+        children: CHAT_KIT_PAGES.filter(it => it.group === group).map(page =>
             demoGalleryTile({
                 key: page.id,
                 title: span(
-                    span({className: 'tb-chatkit-overview__tile-icon', item: page.icon()}),
+                    span({className: 'tb-chatkit-overview__tile-icon', children: page.icon()}),
                     page.title
                 ),
                 description: page.description,

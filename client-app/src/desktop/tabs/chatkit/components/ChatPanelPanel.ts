@@ -81,7 +81,7 @@ export const chatPanelPanel = hoistCmp.factory({
                     icon: Icon.experiment(),
                     intent: 'primary',
                     info: 'Drives the Playground chat. The other sections use their own models.',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Title',
                             propName: 'ChatPanelProps.title',
@@ -188,13 +188,13 @@ export const chatPanelPanel = hoistCmp.factory({
                     onClick: () => model.clearAll()
                 })
             ],
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tb-chatkit-chat-panel',
-                items: [
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 560,
                             caption:
                                 'Send a message, or load the sample conversation, to see the message list options.',
@@ -204,9 +204,9 @@ export const chatPanelPanel = hoistCmp.factory({
                                 isBusy: chatModel.isBusy,
                                 messages: chatModel.messages.length
                             },
-                            item: div({
+                            children: div({
                                 className: 'tb-chatkit-chat-panel__instance',
-                                item: chatPanel({
+                                children: chatPanel({
                                     model: chatModel,
                                     ...model.playgroundProps,
                                     flex: 1
@@ -217,12 +217,12 @@ export const chatPanelPanel = hoistCmp.factory({
                     demoSection({
                         title: 'In a resizable side panel',
                         note: 'A Hoist panel with a PanelModel holds the chat. Drag its edge, or collapse it.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'Side panel',
                             info: "panel({modelConfig: {side: 'right', defaultSize: 420, minSize: 320}}), at compact density",
-                            item: hframe({
+                            children: hframe({
                                 className: 'tb-chatkit-chat-panel__side-host',
-                                items: [
+                                children: [
                                     placeholder(
                                         Icon.window(),
                                         'App content - a grid, a chart or a form.'
@@ -234,7 +234,7 @@ export const chatPanelPanel = hoistCmp.factory({
                                             minSize: 320
                                         },
                                         className: 'xh-chat--compact',
-                                        item: chatPanel({
+                                        children: chatPanel({
                                             model: model.sideChatModel,
                                             flex: 1,
                                             title: 'Assistant',
@@ -254,15 +254,15 @@ export const chatPanelPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Custom layout',
                         note: 'chatMessageList, chatStatusRegion and chatComposer, composed directly.',
-                        item: demoFrame({
+                        children: demoFrame({
                             label: 'Custom layout',
                             info: 'vframe of the pieces behind ChatPanel, under a toolbar of its own',
-                            item: vframe({
+                            children: vframe({
                                 className: 'tb-chatkit-chat-panel__custom',
-                                items: [
+                                children: [
                                     toolbar({
                                         compact: true,
-                                        items: [
+                                        children: [
                                             Icon.ai(),
                                             span('Research desk'),
                                             filler(),
@@ -277,7 +277,7 @@ export const chatPanelPanel = hoistCmp.factory({
                                     }),
                                     div({
                                         className: 'tb-chatkit-chat-panel__custom-footer',
-                                        items: [
+                                        children: [
                                             chatStatusRegion({
                                                 model: model.customChatModel.composerModel
                                             }),
