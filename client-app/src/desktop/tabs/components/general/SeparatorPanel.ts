@@ -30,9 +30,9 @@ export const separatorPanel = hoistCmp.factory({
                 'A `Separator` is a rule that divides content, with an optional label.',
                 '',
                 'A horizontal separator spans the width of its container and divides content',
-                'above from content below. A vertical one divides the items of a row, takes the',
-                'height of that row and shows no label. The separator has no outer margin: space it',
-                'with a `gap` on its container, a `margin` layout prop, or the',
+                'above from content below. A vertical one divides the items of a row and takes the',
+                'height of that row. Either can show a label. The separator has no outer margin:',
+                'space it with a `gap` on its container, a `margin` layout prop, or the',
                 '`--xh-separator-margin` variable.'
             ],
             links: [
@@ -58,7 +58,6 @@ export const separatorPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Label',
                             propName: 'SeparatorProps.label',
-                            info: 'Horizontal only.',
                             control: textInput({bind: 'label', width: 130, commitOnChange: true})
                         }),
                         wrapperOption({
@@ -122,7 +121,7 @@ export const separatorPanel = hoistCmp.factory({
                         title: 'Vertical',
                         note: 'In a row, the rule takes the height of the row.',
                         item: demoGrid({
-                            columns: 2,
+                            columns: 3,
                             items: [
                                 demoFrame({
                                     label: 'Between figures',
@@ -148,6 +147,18 @@ export const separatorPanel = hoistCmp.factory({
                                             separator({vertical: true}),
                                             button({text: 'Export'}),
                                             button({text: 'Close'})
+                                        ]
+                                    })
+                                }),
+                                demoFrame({
+                                    label: 'With a label',
+                                    info: "label: 'or'",
+                                    item: hbox({
+                                        className: 'tb-separator-panel__stack',
+                                        items: [
+                                            block('Upload a file'),
+                                            separator({vertical: true, label: 'or'}),
+                                            block('Paste rows')
                                         ]
                                     })
                                 })
