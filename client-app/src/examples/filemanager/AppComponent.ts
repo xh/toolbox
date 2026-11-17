@@ -18,11 +18,11 @@ export const AppComponent = hoistCmp({
                 hideRefreshButton: true,
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
-            item: vframe({
+            children: vframe({
                 className: 'xh-tiled-bg',
                 justifyContent: 'center',
                 alignItems: 'center',
-                item: fileManager()
+                children: fileManager()
             })
         });
     }

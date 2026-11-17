@@ -16,18 +16,18 @@ export const newsPanelItem = hoistCmp.factory({
 
         return hbox({
             className: 'news-item',
-            items: [
+            children: [
                 vbox({
                     className: 'news-item__body',
-                    items: [
-                        div({className: 'news-item__meta', item: meta}),
-                        div({className: 'news-item__title', item: title}),
-                        div({className: 'news-item__desc', item: text})
+                    children: [
+                        div({className: 'news-item__meta', children: meta}),
+                        div({className: 'news-item__title', children: title}),
+                        div({className: 'news-item__desc', children: text})
                     ]
                 }),
                 div({
                     className: 'news-item__media',
-                    item: img({
+                    children: img({
                         src: imageUrl || stockPhoto,
                         alt: '',
                         loading: 'lazy',

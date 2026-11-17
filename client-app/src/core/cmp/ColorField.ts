@@ -30,11 +30,11 @@ export const colorField = hoistCmp.factory<ColorFieldProps>({
     render({label: text, value, onChange, enableClear, className}) {
         return div({
             className,
-            items: [
-                label({omit: !text, className: 'tb-color-field__label', item: text}),
+            children: [
+                label({omit: !text, className: 'tb-color-field__label', children: text}),
                 hbox({
                     className: 'tb-color-field__inputs',
-                    items: [
+                    children: [
                         input({
                             type: 'color',
                             className: classNames(

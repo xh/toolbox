@@ -19,9 +19,9 @@ export const docsLandingPage = hoistCmp.factory({
         return panel({
             className: 'tb-docs-landing',
             scrollable: true,
-            item: div({
+            children: div({
                 className: 'tb-docs-landing__body',
-                items: [introBlurb(), searchTrigger(), corpusCards(), recentSection()]
+                children: [introBlurb(), searchTrigger(), corpusCards(), recentSection()]
             })
         });
     }
@@ -33,9 +33,9 @@ const searchTrigger = hoistCmp.factory<DocsLandingModel>({
         return hbox({
             className: 'tb-docs-landing__search',
             onClick: () => model.openSearch(),
-            items: [
+            children: [
                 Icon.search({className: 'tb-docs-landing__search-icon'}),
-                span({className: 'tb-docs-landing__search-text', item: 'Search the docs'})
+                span({className: 'tb-docs-landing__search-text', children: 'Search the docs'})
             ]
         });
     }
@@ -44,7 +44,8 @@ const searchTrigger = hoistCmp.factory<DocsLandingModel>({
 const introBlurb = hoistCmp.factory(() =>
     div({
         className: 'tb-docs-landing__intro',
-        item: 'Browse the Hoist documentation. Pick a library to start, or search across all of them.'
+        children:
+            'Browse the Hoist documentation. Pick a library to start, or search across all of them.'
     })
 );
 
@@ -52,26 +53,29 @@ const corpusCards = hoistCmp.factory<DocsLandingModel>({
     render({model}) {
         return div({
             className: 'tb-docs-landing__cards',
-            items: [
-                div({className: 'tb-docs-landing__section-title', item: 'Choose a library'}),
+            children: [
+                div({className: 'tb-docs-landing__section-title', children: 'Choose a library'}),
                 ...model.corpora.map(c =>
                     hbox({
                         key: c.source,
                         className: 'tb-docs-landing__card',
                         onClick: () => model.openCorpus(c.source),
-                        items: [
-                            div({className: 'tb-docs-landing__card-icon', item: c.icon}),
+                        children: [
+                            div({className: 'tb-docs-landing__card-icon', children: c.icon}),
                             vbox({
                                 className: 'tb-docs-landing__card-text',
-                                items: [
-                                    div({className: 'tb-docs-landing__card-label', item: c.label}),
+                                children: [
+                                    div({
+                                        className: 'tb-docs-landing__card-label',
+                                        children: c.label
+                                    }),
                                     div({
                                         className: 'tb-docs-landing__card-tagline',
-                                        item: c.tagline
+                                        children: c.tagline
                                     }),
                                     div({
                                         className: 'tb-docs-landing__card-count',
-                                        item: pluralize('doc', c.docCount, true)
+                                        children: pluralize('doc', c.docCount, true)
                                     })
                                 ]
                             }),
@@ -91,25 +95,25 @@ const recentSection = hoistCmp.factory<DocsLandingModel>({
         if (!recentDocs.length) return null;
         return div({
             className: 'tb-docs-landing__recent',
-            items: [
-                div({className: 'tb-docs-landing__section-title', item: 'Jump back in'}),
+            children: [
+                div({className: 'tb-docs-landing__section-title', children: 'Jump back in'}),
                 ...recentDocs.map(entry =>
                     hbox({
                         key: `${entry.source}:${entry.id}`,
                         className: 'tb-docs-landing__recent-row',
                         onClick: () => model.openRecent(entry),
-                        items: [
+                        children: [
                             Icon.clock({className: 'tb-docs-landing__recent-icon'}),
                             vbox({
                                 className: 'tb-docs-landing__recent-text',
-                                items: [
+                                children: [
                                     div({
                                         className: 'tb-docs-landing__recent-title',
-                                        item: entry.title
+                                        children: entry.title
                                     }),
                                     div({
                                         className: 'tb-docs-landing__recent-src',
-                                        item: model.getSourceLabel(entry.source)
+                                        children: model.getSourceLabel(entry.source)
                                     })
                                 ]
                             }),

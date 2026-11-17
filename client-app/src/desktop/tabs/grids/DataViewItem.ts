@@ -13,18 +13,18 @@ export const dataViewItem = hoistCmp.factory({
 
         return vframe({
             className: 'tb-dataview-item',
-            items: [
+            children: [
                 div({
                     className: 'tb-dataview-item__name',
-                    item: name
+                    children: name
                 }),
                 div({
                     className: 'tb-dataview-item__city',
-                    item: city
+                    children: city
                 }),
                 div({
                     className: 'tb-dataview-item__value',
-                    item: fmtNumber(value, {
+                    children: fmtNumber(value, {
                         withSignGlyph: true,
                         colorSpec: true,
                         precision: 2

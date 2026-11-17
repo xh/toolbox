@@ -20,13 +20,13 @@ export const recallsPanel = hoistCmp.factory({
         return vframe(
             panel({
                 tbar: tbar(),
-                item: grid(),
+                children: grid(),
                 mask: 'onLoad'
             }),
             panel({
                 title: currentRecord?.data.brandName ?? 'Drug Details',
                 icon: Icon.detail(),
-                item: currentRecord
+                children: currentRecord
                     ? detailsPanel()
                     : placeholder('Select a drug above to view its details.'),
                 className: 'tb-recalls-detail-panel',
@@ -50,7 +50,7 @@ const tbar = hoistCmp.factory(() => {
 
     return toolbar({
         style: {backgroundColor: 'transparent'},
-        items: [
+        children: [
             textInput({
                 bind: 'searchQuery',
                 placeholder: 'Keyword Search',
@@ -64,7 +64,7 @@ const tbar = hoistCmp.factory(() => {
                 bind: 'groupBy',
                 enableClear: true,
                 outlined: true,
-                items: [
+                children: [
                     button({text: 'Class', value: 'classification'}),
                     button({text: 'Brand Name', value: 'brandName'}),
                     button({text: 'Status', value: 'status'}),
@@ -82,7 +82,7 @@ const tbar = hoistCmp.factory(() => {
                     XH.alert({
                         message: p(
                             aboutBlurb,
-                            a({href: fdaWebsite, item: fdaWebsite, target: '_blank'})
+                            a({href: fdaWebsite, children: fdaWebsite, target: '_blank'})
                         )
                     })
             }),

@@ -11,7 +11,7 @@ export const detailsPanel = hoistCmp.factory({
 
         return div({
             className: 'recalls-detail-wrapper',
-            item: table(
+            children: table(
                 tbody(
                     tr(th('Brand Name'), td(`${currentRecord.data.brandName}`)),
                     tr(th('Generic Name'), td(`${currentRecord.data.genericName}`)),

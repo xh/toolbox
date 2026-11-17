@@ -50,11 +50,11 @@ export const zoneGridPanel = hoistCmp.factory({
                     notes: 'Hoist model for configuring and interacting with Zone Grids, including persistence.'
                 }
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-zone-grid-panel',
                 width: 600,
                 height: '50vh',
-                item: zoneGrid(),
+                children: zoneGrid(),
                 tbar: [
                     span('Group by:'),
                     select({

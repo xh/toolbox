@@ -11,7 +11,7 @@ export const conditionsSummaryWidget = hoistCmp.factory({
 
     render() {
         return panel({
-            item: grid()
+            children: grid()
         });
     }
 });

@@ -81,10 +81,10 @@ export const maskPanel = hoistCmp.factory({
                     onClick: () => model.refreshAsync()
                 })
             ],
-            item: panel({
+            children: panel({
                 height: '60vh',
                 width: '90%',
-                item: sampleGrid({omitGridTools: true, omitMask: true}),
+                children: sampleGrid({omitGridTools: true, omitMask: true}),
                 mask: mask({
                     spinner: model.spinner,
                     inline: model.inline,

@@ -196,12 +196,12 @@ export const columnChooserPanel = hoistCmp.factory({
                     control: numberInput({model, bind: 'libraryWidth', width: 90, min: 100})
                 })
             ],
-            item: panel({
+            children: panel({
                 title: 'Grids › Column Chooser',
                 icon: Icon.gridPanel(),
                 className: 'tb-grid-wrapper-panel',
                 // In docked mode the grid renders the chooser beside itself - no manual embed.
-                item: grid({model: model.gridModel}),
+                children: grid({model: model.gridModel}),
                 bbar: [
                     storeFilterField({gridModel: model.gridModel}),
                     filler(),

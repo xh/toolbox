@@ -114,7 +114,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
-                item: segmentedControl({
+                children: segmentedControl({
                     bind: 'playground',
                     ...ambientProps,
                     fill: model.pgFill,
@@ -130,7 +130,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Icon and text',
                     info: 'Default options with icons',
-                    item: segmentedControl({
+                    children: segmentedControl({
                         bind: 'iconText',
                         ...ambientProps,
                         options: SC_OPTIONS
@@ -139,7 +139,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Empty state',
                     info: 'No value set - dividers appear until a choice is made',
-                    item: segmentedControl({
+                    children: segmentedControl({
                         bind: 'emptyState',
                         ...ambientProps,
                         options: SC_OPTIONS
@@ -148,7 +148,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Per-option intents',
                     info: 'Each option carries its own intent',
-                    item: segmentedControl({
+                    children: segmentedControl({
                         bind: 'perOptionIntent',
                         ...ambientProps,
                         options: INTENT_OPTIONS
@@ -157,7 +157,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Content-sized segments',
                     info: 'equalSegmentWidths: false',
-                    item: segmentedControl({
+                    children: segmentedControl({
                         bind: 'contentSized',
                         ...ambientProps,
                         equalSegmentWidths: false,
@@ -167,7 +167,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Primitive options',
                     info: "options: ['Low', 'Medium', 'High']",
-                    item: segmentedControl({
+                    children: segmentedControl({
                         bind: 'primitiveOptions',
                         ...ambientProps,
                         options: ['Low', 'Medium', 'High']
@@ -176,7 +176,7 @@ export const segmentedControlPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: segmentedControl({
+                    children: segmentedControl({
                         bind: 'disabledExample',
                         ...ambientProps,
                         disabled: true,
@@ -203,25 +203,25 @@ export const segmentedControlPanel = hoistCmp.factory({
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'role',
-                                item: segmentedControl({fill: false, options: SC_OPTIONS})
+                                children: segmentedControl({fill: false, options: SC_OPTIONS})
                             })
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'level',
                                 inline: true,
-                                item: segmentedControl({
+                                children: segmentedControl({
                                     fill: false,
                                     options: ['Low', 'Medium', 'High']
                                 })

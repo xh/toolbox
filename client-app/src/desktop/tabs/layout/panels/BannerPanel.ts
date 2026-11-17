@@ -61,7 +61,7 @@ export const bannerPanel = hoistCmp.factory({
                 icon: Icon.experiment(),
                 intent: 'primary',
                 info: 'Drives the Playground panel.',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Show banner',
                         control: switchInput({bind: 'showBanner'}),
@@ -129,32 +129,32 @@ export const bannerPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 420,
                             showValue: false,
                             caption: 'Banners sit between the toolbars and the content.',
                             config: model.configText,
-                            item: panel({
+                            children: panel({
                                 width: 420,
                                 height: 280,
                                 banner: [model.bannerSpec, model.secondBannerSpec],
                                 tbar: toolbar({
                                     compact: true,
-                                    items: [
+                                    children: [
                                         storeFilterField({gridModel: model.gridModel}),
                                         filler(),
                                         refreshButton({onClick: () => model.refreshAsync()})
                                     ]
                                 }),
-                                item: grid({model: model.gridModel}),
+                                children: grid({model: model.gridModel}),
                                 bbar: toolbar({
                                     compact: true,
-                                    items: [
+                                    children: [
                                         filler(),
                                         gridCountLabel({
                                             gridModel: model.gridModel,
@@ -169,16 +169,16 @@ export const bannerPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Variants',
                         note: 'Rendered in place via banner().',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 2,
-                            items: [
+                            children: [
                                 demoRow({
                                     label: 'Intents',
                                     info: 'Tinted background, with a default icon per intent',
-                                    item: vbox({
+                                    children: vbox({
                                         flex: 1,
                                         gap: 6,
-                                        items: [
+                                        children: [
                                             banner({
                                                 intent: 'primary',
                                                 message: 'A new report is available.'
@@ -205,10 +205,10 @@ export const bannerPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Options',
                                     info: 'filled, compact, actionButtonProps, onClose',
-                                    item: vbox({
+                                    children: vbox({
                                         flex: 1,
                                         gap: 6,
-                                        items: [
+                                        children: [
                                             banner({
                                                 intent: 'warning',
                                                 filled: true,
@@ -325,7 +325,7 @@ class BannerPanelModel extends HoistModel {
             });
         // Reformat the bare `({...})` call as a `banner` spec nested within a `panel()` call.
         const body = spec.slice(1, -1).replace(/\n/g, '\n    ');
-        return `panel({\n    banner: ${body},\n    tbar: [...],\n    item: grid()\n})`;
+        return `panel({\n    banner: ${body},\n    tbar: [...],\n    children: grid()\n})`;
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {

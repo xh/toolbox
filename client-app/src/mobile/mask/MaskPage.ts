@@ -40,11 +40,11 @@ export const maskPage = hoistCmp.factory({
                 {url: '$TB/client-app/src/mobile/mask/MaskPage.ts', notes: 'This example.'},
                 {url: '$HR/cmp/mask/Mask.ts', text: 'Mask source'}
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-page',
-                item: vframe({
+                children: vframe({
                     className: 'tb-mask-page__stage',
-                    items: [
+                    children: [
                         p(
                             'This content sits behind the mask. While masked, it is dimmed and cannot be interacted with.'
                         ),

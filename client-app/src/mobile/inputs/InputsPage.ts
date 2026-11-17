@@ -56,10 +56,10 @@ export const inputsPage = hoistCmp.factory({
                     notes: 'The full set of mobile Hoist input components.'
                 }
             ],
-            item: panel({
+            children: panel({
                 scrollable: true,
                 className: 'tb-page tb-inputs-page',
-                items: [textCard(), numbersCard(), dateCard(), choicesCard(), togglesCard()]
+                children: [textCard(), numbersCard(), dateCard(), choicesCard(), togglesCard()]
             })
         });
     }
@@ -206,7 +206,7 @@ const choicesCard = hoistCmp.factory<InputsPageModel>(({model}) =>
                 disabled: model.disabled,
                 outlined: true,
                 intent: 'primary',
-                items: bgButtons()
+                children: bgButtons()
             })
         })
     ])
@@ -255,7 +255,7 @@ const bgButtons = () => [
 function card(title: ReactNode, items: ReactNode[]): ReactElement {
     return div({
         className: 'tb-card',
-        items: [div({className: 'tb-card__title', item: title}), ...items]
+        children: [div({className: 'tb-card__title', children: title}), ...items]
     });
 }
 
@@ -268,10 +268,10 @@ interface DemoRowSpec {
 function demoRow({label, info, control}: DemoRowSpec): ReactElement {
     return vbox({
         className: 'tb-inputs-page__row',
-        items: [
-            span({className: 'tb-inputs-page__label', item: label}),
-            info ? span({className: 'tb-inputs-page__info', item: info}) : null,
-            div({className: 'tb-inputs-page__control', item: control})
+        children: [
+            span({className: 'tb-inputs-page__label', children: label}),
+            info ? span({className: 'tb-inputs-page__info', children: info}) : null,
+            div({className: 'tb-inputs-page__control', children: control})
         ]
     });
 }

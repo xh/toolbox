@@ -18,9 +18,9 @@ export const selectTestPage = hoistCmp.factory({
     render({model}) {
         return panel({
             scrollable: true,
-            item: vbox({
+            children: vbox({
                 className: 'xh-pad',
-                items: [
+                children: [
                     p(
                         'Type one character for a large result, then a second for a 2-option result.'
                     ),
@@ -39,7 +39,7 @@ export const selectTestPage = hoistCmp.factory({
                     }),
                     div({
                         className: 'xh-text-color-muted xh-font-size-small',
-                        item: 'value: ' + JSON.stringify(model.value)
+                        children: 'value: ' + JSON.stringify(model.value)
                     }),
                     blockTimes()
                 ]
@@ -52,7 +52,7 @@ export const selectTestPage = hoistCmp.factory({
 const blockTimes = hoistCmp.factory<SelectTestPageModel>(({model}) =>
     hbox({
         alignItems: 'center',
-        items: [
+        children: [
             label(
                 isEmpty(model.blockTimes)
                     ? 'blocked: --'

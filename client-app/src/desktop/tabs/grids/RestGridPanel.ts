@@ -47,9 +47,9 @@ export const restGridPanel = hoistCmp.factory({
                     notes: 'Hoist model defining the store, columns, editors, and actions.'
                 }
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel',
-                item: restGrid({modelConfig: modelSpec})
+                children: restGrid({modelConfig: modelSpec})
             })
         });
     }
@@ -145,11 +145,11 @@ const modelSpec: RestGridConfig = {
     editors: [
         {field: 'name'},
         {field: 'type'},
-        {field: 'employees', formField: {item: numberInput({displayWithCommas: true})}},
-        {field: 'isActive', formField: {item: switchInput()}},
+        {field: 'employees', formField: {children: numberInput({displayWithCommas: true})}},
+        {field: 'isActive', formField: {children: switchInput()}},
         {field: 'cfg'},
         {field: 'earningsDate'},
-        {field: 'note', formField: {item: textArea()}},
+        {field: 'note', formField: {children: textArea()}},
         {field: 'lastUpdated'},
         {field: 'lastUpdatedBy'}
     ],

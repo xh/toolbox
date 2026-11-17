@@ -19,10 +19,10 @@ export const directoryPanel = hoistCmp.factory({
         return panel({
             className: 'tb-directory-panel',
             mask: 'onLoad',
-            item: hframe(
+            children: hframe(
                 panel({
                     tbar: tbar(),
-                    item: model.displayMode === 'grid' ? grid() : tileView(),
+                    children: model.displayMode === 'grid' ? grid() : tileView(),
                     bbar: bbar()
                 }),
                 detailsPanel({
@@ -38,7 +38,7 @@ const tbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
 
     return toolbar({
         className: 'tb-directory-panel__tbar',
-        items: [
+        children: [
             storeFilterField({
                 leftIcon: Icon.search(),
                 width: 200
@@ -67,7 +67,7 @@ const tbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
                 bind: 'displayMode',
                 outlined: true,
                 intent: 'primary',
-                items: [
+                children: [
                     button({
                         text: 'Details',
                         icon: Icon.list(),

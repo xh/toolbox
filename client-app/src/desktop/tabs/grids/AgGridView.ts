@@ -68,11 +68,11 @@ export const agGridView = hoistCmp.factory({
                         agGridModel.setState(XH.localStorageService.get('agGridWrapperState'))
                 })
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel',
                 width: '100%',
                 mask: 'onLoad',
-                item: agGrid({
+                children: agGrid({
                     model: agGridModel,
                     columnDefs,
                     rowData: [],

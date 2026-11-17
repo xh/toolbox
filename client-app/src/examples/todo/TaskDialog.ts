@@ -23,16 +23,16 @@ export const taskDialog = hoistCmp.factory({
             isOpen: model.isOpen,
             onClose: () => model.close(),
             usePortal: false,
-            item: formPanel()
+            children: formPanel()
         });
     }
 });
 
 const formPanel = hoistCmp.factory(() =>
     panel({
-        item: form(
+        children: form(
             vbox({
-                items: [description(), dueDate()],
+                children: [description(), dueDate()],
                 className: 'todo-form'
             })
         ),
@@ -43,7 +43,7 @@ const formPanel = hoistCmp.factory(() =>
 const description = hoistCmp.factory(() =>
     formField({
         field: 'description',
-        item: textArea({
+        children: textArea({
             autoFocus: true,
             commitOnChange: true
         })
@@ -56,7 +56,7 @@ const dueDate = hoistCmp.factory(() =>
             field: 'dueDate',
             flex: 1,
             inline: false,
-            item: dateInput({
+            children: dateInput({
                 valueType: 'localDate',
                 enableClear: true
             })

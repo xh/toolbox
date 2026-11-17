@@ -19,12 +19,12 @@ export const CubeTestPanel = hoistCmp({
     render({className, model}) {
         return panel({
             className,
-            item: hframe(
+            children: hframe(
                 panel({
                     title: 'Cube Perf',
                     icon: Icon.grid(),
                     flex: 1,
-                    item: cubeGrid({model: model.cubeGridModel}),
+                    children: cubeGrid({model: model.cubeGridModel}),
                     mask: 'onLoad',
                     tbar: tbar(),
                     bbar: bbar()

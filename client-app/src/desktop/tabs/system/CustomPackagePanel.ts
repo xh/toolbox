@@ -32,6 +32,6 @@ export const customPackagePanel = hoistCmp.factory(() =>
                 notes: 'Rsbuild config for Toolbox, with special handling for our custom package.'
             }
         ],
-        item: customPanel({width: 700})
+        children: customPanel({width: 700})
     })
 );

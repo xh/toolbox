@@ -77,7 +77,7 @@ export const inputsIndexPanel = hoistCmp.factory({
             ],
             options: wrapperOptionGroup({
                 label: 'All inputs on the page',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Compact',
                         info: 'Where the input supports it.',
@@ -95,7 +95,7 @@ export const inputsIndexPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tb-inputs-index',
                 tbar: toolbar(
                     textInput({
@@ -119,17 +119,17 @@ export const inputsIndexPanel = hoistCmp.factory({
                     filler(),
                     span({
                         className: 'tb-inputs-index__count',
-                        item: pluralize('input', count, true)
+                        children: pluralize('input', count, true)
                     })
                 ),
-                items: groupByCategory
+                children: groupByCategory
                     ? INPUT_CATEGORIES.map(category => {
                           const entries = visibleEntries.filter(it => it.category === category);
                           return demoSection({
                               key: category,
                               omit: !entries.length,
                               title: category,
-                              item: gallery({entries})
+                              children: gallery({entries})
                           });
                       })
                     : gallery({entries: sortBy(visibleEntries, 'name')})
@@ -145,14 +145,14 @@ interface GalleryProps extends HoistProps<InputsIndexModel> {
 const gallery = hoistCmp.factory<GalleryProps>(({model, entries}) =>
     demoGallery({
         minTileWidth: model.showInputs ? 240 : 180,
-        items: entries.map(entry =>
+        children: entries.map(entry =>
             demoGalleryTile({
                 key: entry.name,
                 title: entry.name,
                 description: entry.description,
                 showInstance: model.showInputs,
                 onClick: () => XH.navigate(entry.route),
-                item: TILE_INPUTS[entry.name](model)
+                children: TILE_INPUTS[entry.name](model)
             })
         )
     })
@@ -227,7 +227,7 @@ const TILE_INPUTS: Record<string, (m: InputsIndexModel) => ReactElement> = {
         buttonGroupInput({
             bind: 'chartType',
             disabled: m.disabled,
-            items: [
+            children: [
                 button({icon: Icon.chartLine(), text: 'Linear', value: 'linear'}),
                 button({icon: Icon.chartArea(), text: 'Area', value: 'area'}),
                 button({icon: Icon.chartBar(), text: 'Bar', value: 'bar'})

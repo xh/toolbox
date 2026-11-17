@@ -35,26 +35,26 @@ export const widgetCard = hoistCmp.factory<WidgetCardProps>({
     render({title, icon, collapsed, onToggleCollapsed, children}) {
         return div({
             className: classNames('tb-widget-card', collapsed && 'tb-widget-card--collapsed'),
-            items: [
+            children: [
                 hbox({
                     className: 'tb-widget-card__header',
                     onClick: onToggleCollapsed,
-                    items: [
-                        div({className: 'tb-widget-card__header-icon', item: icon}),
-                        div({className: 'tb-widget-card__header-title', item: title}),
+                    children: [
+                        div({className: 'tb-widget-card__header-icon', children: icon}),
+                        div({className: 'tb-widget-card__header-title', children: title}),
                         filler(),
                         div({
                             className: 'tb-widget-card__header-chevron',
                             // Mirror the tree-grid disclosure pattern: collapsed points right (>),
                             // expanded points down (v).
-                            item: collapsed ? Icon.chevronRight() : Icon.chevronDown()
+                            children: collapsed ? Icon.chevronRight() : Icon.chevronDown()
                         })
                     ]
                 }),
                 div({
                     className: 'tb-widget-card__body',
                     omit: collapsed,
-                    item: children
+                    children
                 })
             ]
         });

@@ -414,7 +414,7 @@ const widget = hoistCmp.factory({
         return frame({
             padding: 10,
             className: 'xh-border-solid xh-bg-alt',
-            items: children
+            children
         });
     }
 });
@@ -425,6 +425,6 @@ const widget = hoistCmp.factory({
 const testTab = txt => {
     return div({
         className: 'xh-pad',
-        item: txt
+        children: txt
     });
 };

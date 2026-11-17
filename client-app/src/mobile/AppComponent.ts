@@ -64,7 +64,7 @@ export const AppComponent = hoistCmp({
                     renderWithUserProfile
                 }
             }),
-            items: [navigator(), navBlade({model: model.navBladeModel})]
+            children: [navigator(), navBlade({model: model.navBladeModel})]
         });
     }
 });

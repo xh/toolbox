@@ -131,7 +131,7 @@ export const iconPickerPanel = hoistCmp.factory({
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
-                item: iconPicker({
+                children: iconPicker({
                     bind: 'playground',
                     ...ambientProps,
                     showName: model.pgShowName,
@@ -145,10 +145,10 @@ export const iconPickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Rendered back',
                     info: 'Icon.get(value) - the persisted FA name round-trips',
-                    item: hbox({
+                    children: hbox({
                         alignItems: 'center',
                         gap: 12,
-                        items: [
+                        children: [
                             iconPicker({bind: 'roundTrip', ...ambientProps}),
                             span(model.roundTrip ? Icon.get(model.roundTrip, {size: '2x'}) : null)
                         ]
@@ -157,10 +157,10 @@ export const iconPickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Semantic names',
                     info: "valueField: 'name' - stores the app's own icon names",
-                    item: hbox({
+                    children: hbox({
                         alignItems: 'center',
                         gap: 12,
-                        items: [
+                        children: [
                             iconPicker({
                                 bind: 'ruleIcon',
                                 ...ambientProps,
@@ -168,19 +168,22 @@ export const iconPickerPanel = hoistCmp.factory({
                                 icons: RULE_ICONS,
                                 columns: 3
                             }),
-                            span({className: 'xh-font-family-mono', item: `'${model.ruleIcon}'`})
+                            span({
+                                className: 'xh-font-family-mono',
+                                children: `'${model.ruleIcon}'`
+                            })
                         ]
                     })
                 }),
                 demoRow({
                     label: 'Icon only',
                     info: 'showName: false',
-                    item: iconPicker({bind: 'iconOnly', ...ambientProps, showName: false})
+                    children: iconPicker({bind: 'iconOnly', ...ambientProps, showName: false})
                 }),
                 demoRow({
                     label: 'Subset',
                     info: 'icons: [...] - custom and built-in, by name',
-                    item: iconPicker({
+                    children: iconPicker({
                         bind: 'subset',
                         ...ambientProps,
                         icons: CURATED_ICONS,
@@ -190,7 +193,7 @@ export const iconPickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'No filter',
                     info: 'enableFilter: false - arrow keys work on open',
-                    item: iconPicker({
+                    children: iconPicker({
                         bind: 'noFilter',
                         ...ambientProps,
                         icons: CURATED_ICONS,
@@ -201,7 +204,7 @@ export const iconPickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Solid weight',
                     info: "prefix: 'fas' - regular-only custom icons fall back",
-                    item: iconPicker({
+                    children: iconPicker({
                         bind: 'solid',
                         ...ambientProps,
                         icons: CURATED_ICONS,
@@ -212,7 +215,7 @@ export const iconPickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Button trigger',
                     info: 'styleButtonAsInput: false',
-                    item: iconPicker({
+                    children: iconPicker({
                         bind: 'buttonTrigger',
                         ...ambientProps,
                         styleButtonAsInput: false
@@ -221,7 +224,7 @@ export const iconPickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Minimal popover',
                     info: 'popoverMinimal: true',
-                    item: iconPicker({
+                    children: iconPicker({
                         bind: 'minimalPopover',
                         ...ambientProps,
                         popoverMinimal: true
@@ -230,18 +233,18 @@ export const iconPickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: iconPicker({bind: 'disabledIcon', ...ambientProps, disabled: true})
+                    children: iconPicker({bind: 'disabledIcon', ...ambientProps, disabled: true})
                 }),
                 demoRow({
                     label: 'Invalid',
                     info: 'Bound to a failing FormField rule',
-                    item: form({
+                    children: form({
                         model: model.formModel,
-                        item: formField({
+                        children: formField({
                             field: 'invalidIcon',
                             label: null,
                             minimal: true,
-                            item: iconPicker()
+                            children: iconPicker()
                         })
                     })
                 })
@@ -258,22 +261,22 @@ export const iconPickerPanel = hoistCmp.factory({
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({field: 'icon', item: iconPicker({width: 220})})
+                            children: formField({field: 'icon', children: iconPicker({width: 220})})
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'categoryIcon',
                                 inline: true,
-                                item: iconPicker()
+                                children: iconPicker()
                             })
                         })
                     })

@@ -61,10 +61,10 @@ export const tradesGridFrame = hoistCmp.factory<TradesGridFrameProps>(
         demoFrame({
             label,
             info,
-            item: panel({
+            children: panel({
                 height: 320,
                 mask,
-                item: grid({model: gridModel}),
+                children: grid({model: gridModel}),
                 bbar: [filler(), gridCountLabel({gridModel, unit: 'trade'})]
             })
         })

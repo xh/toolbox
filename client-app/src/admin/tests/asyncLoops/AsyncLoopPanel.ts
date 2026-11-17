@@ -26,7 +26,7 @@ export const asyncLoopPanel = hoistCmp.factory({
             title: 'Run to process x iterations of random work while attempting to interact with the grid',
             icon: Icon.refresh(),
             tbar: tbar(),
-            item: sampleGrid({omitGridTools: true})
+            children: sampleGrid({omitGridTools: true})
         });
     }
 });
@@ -36,7 +36,7 @@ const tbar = hoistCmp.factory<AsyncLoopPanelModel>(({model}) => {
         {isPending} = loadObserver;
 
     return toolbar({
-        items: [
+        children: [
             span('Iterations:'),
             numberInput({
                 bind: 'iterations',

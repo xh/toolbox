@@ -21,14 +21,14 @@ export const navBlade = hoistCmp.factory({
     render({model}) {
         return div({
             className: classNames('tb-nav-blade', model.isOpen && 'tb-nav-blade--open'),
-            items: [
+            children: [
                 div({
                     className: 'tb-nav-blade__scrim',
                     onClick: () => (model.isOpen = false)
                 }),
                 div({
                     className: 'tb-nav-blade__drawer',
-                    items: [bladeHeader(), bladeNav({model}), bladeFooter({model})]
+                    children: [bladeHeader(), bladeNav({model}), bladeFooter({model})]
                 })
             ]
         });
@@ -39,15 +39,15 @@ const bladeHeader = hoistCmp.factory({
     render() {
         return hbox({
             className: 'tb-nav-blade__header',
-            items: [
+            children: [
                 Icon.boxFull({prefix: 'fal', size: '2x', className: 'tb-nav-blade__logo'}),
                 vbox({
                     className: 'tb-nav-blade__header-text',
-                    items: [
-                        div({className: 'tb-nav-blade__title', item: 'Toolbox Mobile'}),
+                    children: [
+                        div({className: 'tb-nav-blade__title', children: 'Toolbox Mobile'}),
                         div({
                             className: 'tb-nav-blade__subtitle',
-                            item: `v${XH.getEnv('clientVersion')} · ${XH.getEnv('appEnvironment')}`
+                            children: `v${XH.getEnv('clientVersion')} · ${XH.getEnv('appEnvironment')}`
                         })
                     ]
                 })
@@ -61,7 +61,7 @@ const bladeNav = hoistCmp.factory<NavBladeModel>({
     render({model}) {
         return div({
             className: 'tb-nav-blade__nav',
-            items: [
+            children: [
                 navRow({
                     icon: Icon.home(),
                     text: 'Home',
@@ -93,7 +93,7 @@ const navGroup = hoistCmp.factory<NavGroupProps>({
         const expanded = model.isGroupExpanded(group.id);
         return div({
             className: 'tb-nav-blade__group',
-            items: [
+            children: [
                 navRow({
                     icon: group.icon,
                     text: group.text,
@@ -103,7 +103,7 @@ const navGroup = hoistCmp.factory<NavGroupProps>({
                 div({
                     className: 'tb-nav-blade__sub-items',
                     omit: !expanded,
-                    items: group.items.map(item =>
+                    children: group.items.map(item =>
                         navRow({
                             text: item.text,
                             isSubItem: true,
@@ -135,11 +135,11 @@ const navRow = hoistCmp.factory<NavRowProps>({
                 active && 'tb-nav-blade__row--active'
             ),
             onClick,
-            items: [
-                icon ? div({className: 'tb-nav-blade__row-icon', item: icon}) : null,
-                span({className: 'tb-nav-blade__row-text', item: text}),
+            children: [
+                icon ? div({className: 'tb-nav-blade__row-icon', children: icon}) : null,
+                span({className: 'tb-nav-blade__row-text', children: text}),
                 filler(),
-                chevron ? div({className: 'tb-nav-blade__row-chevron', item: chevron}) : null
+                chevron ? div({className: 'tb-nav-blade__row-chevron', children: chevron}) : null
             ]
         });
     }
@@ -150,7 +150,7 @@ const bladeFooter = hoistCmp.factory<NavBladeModel>({
     render({model}) {
         return hbox({
             className: 'tb-nav-blade__footer',
-            items: [
+            children: [
                 button({
                     className: 'tb-nav-blade__footer-btn',
                     icon: XH.darkTheme ? Icon.sun() : Icon.moon(),

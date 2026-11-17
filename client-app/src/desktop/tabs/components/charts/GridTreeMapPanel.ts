@@ -52,15 +52,15 @@ export const gridTreeMapPanel = hoistCmp.factory({
                     info: 'Group tiny nodes into one cluster.'
                 })
             ],
-            item: panel({
+            children: panel({
                 height: '100%',
                 width: '100%',
                 mask: 'onLoad',
                 tbar: tbar(),
-                items: hframe(
+                children: hframe(
                     panel({
                         modelConfig: {defaultSize: 480, side: 'left'},
-                        item: grid()
+                        children: grid()
                     }),
                     treeMap()
                 )

@@ -48,19 +48,19 @@ export const formatterParityPanel = hoistCmp.factory({
                 filler(),
                 span({
                     className: 'xh-text-color-muted',
-                    item: `${PARITY_CASES.length} cases x ${gridModel.store.count} rows`
+                    children: `${PARITY_CASES.length} cases x ${gridModel.store.count} rows`
                 })
             ],
             banner: resultBanner(model),
-            items: [
-                div({className: 'xh-pad xh-border-bottom', item: INTRO}),
+            children: [
+                div({className: 'xh-pad xh-border-bottom', children: INTRO}),
                 grid({model: gridModel, ref: model.gridRef}),
                 panel({
                     title: 'Differences',
                     icon: Icon.warning(),
                     compactHeader: true,
                     modelConfig: {side: 'bottom', defaultSize: 220},
-                    item: grid({model: diffGridModel}),
+                    children: grid({model: diffGridModel}),
                     omit: !result?.failedPairCount
                 })
             ]

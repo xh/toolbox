@@ -131,7 +131,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                     control: hbox({
                         alignItems: 'center',
                         gap: 4,
-                        items: [
+                        children: [
                             colorInput({bind: 'positiveColor', title: 'Positive'}),
                             colorInput({bind: 'negativeColor', title: 'Negative'}),
                             colorInput({bind: 'neutralColor', title: 'Neutral'})
@@ -251,7 +251,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                     info: 'Custom return for 0 values.'
                 })
             ],
-            item: resultsPanel({
+            children: resultsPanel({
                 tryItInput: customValueInput()
             })
         });
@@ -277,8 +277,8 @@ const customValueInput = hoistCmp.factory<HoistProps<NumberFormatsPanelModel> & 
             justifyContent: 'space-between',
             gap: 8,
             width: '100%',
-            items: [
-                span({className: 'tbox-formats-tab__custom-label', item: 'Custom value:'}),
+            children: [
+                span({className: 'tbox-formats-tab__custom-label', children: 'Custom value:'}),
                 numberInput({
                     bind,
                     commitOnChange: true,

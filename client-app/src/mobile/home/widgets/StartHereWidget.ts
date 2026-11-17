@@ -47,18 +47,18 @@ export const startHereWidget = hoistCmp.factory({
     render() {
         return div({
             className: 'tb-start-here',
-            items: ITEMS.map(it =>
+            children: ITEMS.map(it =>
                 div({
                     className: 'tb-start-here__item',
                     key: it.title,
                     onClick: it.onClick,
-                    items: [
-                        div({className: 'tb-start-here__item-icon', item: it.icon}),
+                    children: [
+                        div({className: 'tb-start-here__item-icon', children: it.icon}),
                         div({
                             className: 'tb-start-here__item-text',
-                            items: [
-                                div({className: 'tb-start-here__item-title', item: it.title}),
-                                div({className: 'tb-start-here__item-blurb', item: it.blurb})
+                            children: [
+                                div({className: 'tb-start-here__item-title', children: it.title}),
+                                div({className: 'tb-start-here__item-blurb', children: it.blurb})
                             ]
                         }),
                         Icon.chevronRight({className: 'tb-start-here__item-caret'})

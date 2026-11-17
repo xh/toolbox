@@ -94,7 +94,7 @@ export const formPanel = hoistCmp.factory({
                     control: switchInput({model: formModel, bind: 'disabled'})
                 })
             ],
-            item: panel({
+            children: panel({
                 className,
                 // Flex within a range rather than pinning to 950, which clipped once the demo
                 // region was narrower than that. The floor keeps the fields legible; below it the
@@ -103,7 +103,7 @@ export const formPanel = hoistCmp.factory({
                 maxWidth: 950,
                 minWidth: 360,
                 height: 575,
-                item: formContent()
+                children: formContent()
             })
         });
     }
@@ -113,26 +113,26 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
     panel({
         scrollable: true,
         contentBoxProps: {padding: true, gap: true},
-        item: form({
+        children: form({
             fieldDefaults: {
                 inline: model.inline,
                 minimal: model.minimal,
                 commitOnChange: model.commitOnChange,
                 readonlyRenderer: v =>
-                    isNil(v) ? span({item: 'N/A', className: 'xh-text-color-muted'}) : `${v}`
+                    isNil(v) ? span({children: 'N/A', className: 'xh-text-color-muted'}) : `${v}`
             },
-            items: [
+            children: [
                 formFieldSet({
                     icon: Icon.user(),
                     title: 'Candidate',
                     contentBoxProps: {flexDirection: 'row', flexWrap: 'wrap', gap: true},
-                    items: [
+                    children: [
                         formFieldSet({
-                            items: [firstAndLastNames(), fullName(), email(), region(), tags()],
+                            children: [firstAndLastNames(), fullName(), email(), region(), tags()],
                             flex: '1 1 300px'
                         }),
                         formFieldSet({
-                            items: [
+                            children: [
                                 startAndEndDate(),
                                 reasonForLeaving(),
                                 managerAndYearsExperience(),
@@ -146,7 +146,7 @@ const formContent = hoistCmp.factory<FormPanelModel>(({model}) =>
                     modelConfig: {collapsible: true},
                     icon: Icon.phone(),
                     title: span('References ', badge(model.formModel.values.references.length)),
-                    item: references()
+                    children: references()
                 })
             ]
         }),
@@ -158,16 +158,16 @@ const firstAndLastNames = hoistCmp.factory<FormPanelModel>(({model}) => {
     const flex = model.inline ? null : 1;
     return box({
         flexDirection: model.inline ? 'column' : 'row',
-        items: [
+        children: [
             formField({
                 field: 'firstName',
                 flex,
-                item: textInput()
+                children: textInput()
             }),
             formField({
                 field: 'lastName',
                 flex,
-                item: textInput()
+                children: textInput()
             })
         ]
     });
@@ -179,7 +179,7 @@ const fullName = hoistCmp.factory(() => formField({field: 'fullName'}));
 const email = hoistCmp.factory(() =>
     formField({
         field: 'email',
-        item: textInput({
+        children: textInput({
             placeholder: 'user@company.com',
             leftIcon: Icon.mail(),
             enableClear: true
@@ -190,7 +190,7 @@ const email = hoistCmp.factory(() =>
 const region = hoistCmp.factory(() =>
     formField({
         field: 'region',
-        item: select({
+        children: select({
             options: ['California', 'London', 'Montreal', 'New York']
         })
     })
@@ -199,7 +199,7 @@ const region = hoistCmp.factory(() =>
 const tags = hoistCmp.factory(() =>
     formField({
         field: 'tags',
-        item: select({
+        children: select({
             enableMulti: true,
             enableCreate: true
         })
@@ -213,11 +213,11 @@ const startAndEndDate = hoistCmp.factory<FormPanelModel>(({model}) => {
             : {};
     return box({
         flexDirection: model.inline ? 'column' : 'row',
-        items: [
+        children: [
             formField({
                 field: 'startDate',
                 flex,
-                item: dateInput({
+                children: dateInput({
                     valueType: 'localDate',
                     width: 150,
                     ...dateFormatProps
@@ -226,7 +226,7 @@ const startAndEndDate = hoistCmp.factory<FormPanelModel>(({model}) => {
             formField({
                 field: 'endDate',
                 flex,
-                item: dateInput({
+                children: dateInput({
                     valueType: 'localDate',
                     width: 150,
                     enableClear: true,
@@ -240,7 +240,7 @@ const startAndEndDate = hoistCmp.factory<FormPanelModel>(({model}) => {
 const reasonForLeaving = hoistCmp.factory(() =>
     formField({
         field: 'reasonForLeaving',
-        item: select({
+        children: select({
             options: ['New Job', 'Retirement', 'Terminated', 'Other']
         })
     })
@@ -249,18 +249,18 @@ const reasonForLeaving = hoistCmp.factory(() =>
 const managerAndYearsExperience = hoistCmp.factory<FormPanelModel>(({model}) => {
     return box({
         flexDirection: model.inline ? 'column' : 'row',
-        items: [
+        children: [
             formField({
                 field: 'isManager',
                 label: 'Manager?',
                 width: 100,
                 flex: 'none',
-                item: checkbox(),
+                children: checkbox(),
                 readonlyRenderer: v => (v ? 'Yes' : 'No')
             }),
             formField({
                 field: 'yearsExperience',
-                item: numberInput({width: 50})
+                children: numberInput({width: 50})
             })
         ]
     });
@@ -269,7 +269,7 @@ const managerAndYearsExperience = hoistCmp.factory<FormPanelModel>(({model}) => 
 const notes = hoistCmp.factory(() =>
     formField({
         field: 'notes',
-        item: textArea({height: 100})
+        children: textArea({height: 100})
     })
 );
 
@@ -281,23 +281,23 @@ const references = hoistCmp.factory<FormPanelModel>(({model}) => {
             form({
                 model: refModel,
                 fieldDefaults: {label: null},
-                item: hbox({
+                children: hbox({
                     className: 'tb-form-panel__reference-row',
-                    items: [
+                    children: [
                         formField({
                             field: 'name',
                             flex: 1,
-                            item: textInput({placeholder: 'Full name'})
+                            children: textInput({placeholder: 'Full name'})
                         }),
                         formField({
                             field: 'email',
                             flex: 1,
-                            item: textInput({placeholder: 'Email'})
+                            children: textInput({placeholder: 'Email'})
                         }),
                         formField({
                             field: 'relationship',
                             flex: 1,
-                            item: select({
+                            children: select({
                                 options: [
                                     {value: 'professional', label: 'Professional Contact'},
                                     {value: 'personal', label: 'Personal Contact'}
@@ -319,7 +319,7 @@ const references = hoistCmp.factory<FormPanelModel>(({model}) => {
 
     return vbox({
         className: 'tb-form-panel__references',
-        items: [
+        children: [
             ...rows,
             button({
                 icon: Icon.add(),

@@ -48,7 +48,7 @@ export const [ToolboxLink, toolboxLink] = hoistCmp.withFactory<ToolboxLinkProps>
             if (docRef.section) params.section = docRef.section;
             return a({
                 href: XH.router.buildPath(DOCS_ROUTE, params),
-                item: linkText,
+                children: linkText,
                 onClick: e => {
                     e.preventDefault();
                     XH.navigate(DOCS_ROUTE, params);
@@ -58,7 +58,7 @@ export const [ToolboxLink, toolboxLink] = hoistCmp.withFactory<ToolboxLinkProps>
 
         return a({
             href: toolboxUrl(url),
-            item: linkText,
+            children: linkText,
             target: '_blank'
         });
     }

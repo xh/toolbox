@@ -15,7 +15,9 @@ export const detailPanel = hoistCmp.factory({
             model: panelModel,
             collapsedTitle: 'Position Details',
             collapsedIcon: Icon.detail(),
-            item: positionId ? dashContainer() : placeholder('Select a position to view details.')
+            children: positionId
+                ? dashContainer()
+                : placeholder('Select a position to view details.')
         });
     }
 });

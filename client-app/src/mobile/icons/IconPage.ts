@@ -78,10 +78,10 @@ export const iconPage = hoistCmp.factory({
                     notes: 'The underlying glyph library - opens browser.'
                 }
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-icon-page',
                 tbar: tbar(),
-                item: gallery()
+                children: gallery()
             })
         });
     }
@@ -91,7 +91,7 @@ const tbar = hoistCmp.factory<IconPageModel>(({model}) =>
     toolbar(
         box({
             flex: 1,
-            item: textInput({
+            children: textInput({
                 model,
                 bind: 'query',
                 leftIcon: Icon.search(),
@@ -100,7 +100,7 @@ const tbar = hoistCmp.factory<IconPageModel>(({model}) =>
                 commitOnChange: true
             })
         }),
-        span({className: 'tb-icon-page__count', item: `${model.entries.length}`})
+        span({className: 'tb-icon-page__count', children: `${model.entries.length}`})
     )
 );
 
@@ -111,7 +111,7 @@ const gallery = hoistCmp.factory<IconPageModel>(({model}) => {
     }
     return div({
         className: 'tb-icon-page__gallery',
-        items: entries.map(entry => iconTile({key: entry.faName, entry}))
+        children: entries.map(entry => iconTile({key: entry.faName, entry}))
     });
 });
 
@@ -126,17 +126,17 @@ const iconTile = hoistCmp.factory<IconPageModel>(({model, entry}) => {
             copyToClipboard(usage)
                 .then(() => XH.successToast(`Copied ${usage}`))
                 .catch(() => XH.warningToast(`Could not copy ${usage}`)),
-        items: [
+        children: [
             div({
                 className: 'tb-icon-page__glyph',
-                item: entry.factory({
+                children: entry.factory({
                     prefix: model.prefix,
                     size: '2x',
                     intent: model.intent === 'neutral' ? null : model.intent
                 })
             }),
-            div({className: 'tb-icon-page__name', item: name}),
-            div({omit: !isAppIcon, className: 'tb-icon-page__badge', item: 'app'})
+            div({className: 'tb-icon-page__name', children: name}),
+            div({omit: !isAppIcon, className: 'tb-icon-page__badge', children: 'app'})
         ]
     });
 });

@@ -26,12 +26,12 @@ export const hboxPage = hoistCmp.factory({
                 },
                 {url: '$HR/cmp/layout/Box.ts', notes: 'The Box component and its layout props.'}
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-containers-page',
-                item: hbox(
-                    box({...defaults, flex: 1, item: 'flex: 1'}),
-                    box({...defaults, width: 80, item: 'width: 80'}),
-                    box({...defaults, flex: 2, item: 'flex: 2'})
+                children: hbox(
+                    box({...defaults, flex: 1, children: 'flex: 1'}),
+                    box({...defaults, width: 80, children: 'width: 80'}),
+                    box({...defaults, flex: 2, children: 'flex: 2'})
                 )
             })
         });

@@ -36,17 +36,17 @@ export const placeholderPanel = hoistCmp.factory({
                 },
                 {url: '$HR/cmp/layout/Placeholder.ts', notes: 'Hoist component.'}
             ],
-            item: panel({
+            children: panel({
                 width: 700,
                 height: '50%',
                 mask: 'onLoad',
                 contentBoxProps: {flexDirection: 'row'},
-                items: [
-                    box({width: 300, flex: 'none', item: grid(), className: 'xh-border-right'}),
+                children: [
+                    box({width: 300, flex: 'none', children: grid(), className: 'xh-border-right'}),
                     selectedRecord
                         ? detailPanel()
                         : placeholder({
-                              items: [
+                              children: [
                                   Icon.detail(),
                                   p('Select a record to view details.'),
                                   p('(This is a placeholder)')
@@ -63,9 +63,9 @@ const detailPanel = hoistCmp.factory<PlaceholderPanelModel>(({model}) => {
         {selectedRecord} = gridModel;
 
     return panel({
-        item: frame({
+        children: frame({
             className: 'xh-pad',
-            item: `Details about ${selectedRecord.data.company}...`
+            children: `Details about ${selectedRecord.data.company}...`
         }),
         bbar: [
             filler(),
