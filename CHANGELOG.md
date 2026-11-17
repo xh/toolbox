@@ -14,6 +14,11 @@
 
 ## 13.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added a `ProgressBar` demo page to Components > General, showing hoist-react's new bar for a value against a maximum, with a playground, shares of a total from the sample portfolio, intents, a target marker, the indeterminate state and odd data.
+* Added a `Separator` demo page to Components > General, showing hoist-react's new rule between content, horizontal and vertical, with a label at the start, the center or the end.
+
 ### Technical
 
 * Migrated app CSS variable overrides and reads to hoist-react v91's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
