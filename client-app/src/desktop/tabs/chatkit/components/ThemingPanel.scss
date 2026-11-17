@@ -4,8 +4,8 @@
     width: 100%;
 
     > .xh-panel {
-      border: var(--xh-border-width-px) solid var(--xh-border-color);
-      border-radius: var(--xh-border-radius-px);
+      border: var(--xh-border-width) solid var(--xh-border-color);
+      border-radius: var(--xh-border-radius);
       flex: 1;
       overflow: hidden;
     }
@@ -13,13 +13,13 @@
 
   &__table {
     border-collapse: collapse;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     width: 100%;
 
     th,
     td {
-      border-bottom: var(--xh-border-width-px) solid var(--xh-border-color);
-      padding: 4px var(--xh-pad-px);
+      border-bottom: var(--xh-border-width) solid var(--xh-border-color);
+      padding: 4px var(--xh-spacing);
       text-align: left;
       vertical-align: top;
     }

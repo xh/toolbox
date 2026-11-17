@@ -1,18 +1,18 @@
 // ChatMarkdown page.
 .tb-chatkit-markdown {
   &__playground {
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     width: 100%;
   }
 
   // The rendered markdown, on the chat's own background.
   &__output {
     background-color: var(--xh-chat-bg);
-    border: var(--xh-border-width-px) solid var(--xh-border-color);
-    border-radius: var(--xh-border-radius-px);
+    border: var(--xh-border-width) solid var(--xh-border-color);
+    border-radius: var(--xh-border-radius);
     height: 420px;
     overflow-y: auto;
-    padding: var(--xh-pad-px) var(--xh-pad-double-px);
+    padding: var(--xh-spacing) var(--xh-spacing-double);
 
     img {
       max-height: 80px;
@@ -21,14 +21,14 @@
 
   &__source textarea {
     font-family: var(--xh-font-family-mono);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
   }
 
   // The page's own table override.
   &__table-card {
-    border: var(--xh-border-width-px) solid var(--xh-intent-primary-text-color);
-    border-radius: var(--xh-border-radius-px);
-    margin: var(--xh-pad-px) 0;
+    border: var(--xh-border-width) solid var(--xh-intent-primary-text-color);
+    border-radius: var(--xh-border-radius);
+    margin: var(--xh-spacing) 0;
     overflow: hidden;
 
     table {
@@ -42,10 +42,10 @@
     background-color: var(--xh-intent-primary-trans1);
     color: var(--xh-intent-primary-text-color);
     display: flex;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     font-weight: 600;
-    gap: var(--xh-pad-half-px);
-    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+    gap: var(--xh-spacing-half);
+    padding: var(--xh-spacing-half) var(--xh-spacing);
   }
 
   &__long-table {

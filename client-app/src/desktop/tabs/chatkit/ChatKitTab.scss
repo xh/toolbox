@@ -14,7 +14,7 @@
 
   &__features {
     display: grid;
-    gap: var(--xh-pad-px) var(--xh-pad-double-px);
+    gap: var(--xh-spacing) var(--xh-spacing-double);
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     list-style: none;
     margin: 0;
@@ -23,7 +23,7 @@
 
   &__feature {
     display: flex;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     line-height: 1.45;
 
     svg {
@@ -39,20 +39,20 @@
 
   &__code {
     background-color: var(--xh-bg-alt);
-    border: var(--xh-border-width-px) solid var(--xh-border-color);
-    border-radius: var(--xh-border-radius-px);
+    border: var(--xh-border-width) solid var(--xh-border-color);
+    border-radius: var(--xh-border-radius);
     font-family: var(--xh-font-family-mono);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     line-height: 1.5;
     margin: 0;
     overflow-x: auto;
-    padding: var(--xh-pad-px) var(--xh-pad-double-px);
+    padding: var(--xh-spacing) var(--xh-spacing-double);
     white-space: pre;
   }
 
   &__tile-icon {
     color: var(--xh-text-color-muted);
-    margin-right: var(--xh-pad-half-px);
+    margin-right: var(--xh-spacing-half);
   }
 }
 
@@ -60,16 +60,16 @@
 .tb-order-ticket {
   display: flex;
   flex-direction: column;
-  gap: var(--xh-pad-half-px);
+  gap: var(--xh-spacing-half);
   max-width: 320px;
 
   &__headline {
     align-items: baseline;
     display: flex;
-    font-size: var(--xh-font-size-large-px);
+    font-size: var(--xh-font-size-large);
     font-weight: 600;
-    gap: var(--xh-pad-px);
-    margin-bottom: var(--xh-pad-half-px);
+    gap: var(--xh-spacing);
+    margin-bottom: var(--xh-spacing-half);
   }
 
   &__side--buy {
@@ -82,7 +82,7 @@
 
   &__field {
     display: flex;
-    gap: var(--xh-pad-double-px);
+    gap: var(--xh-spacing-double);
     justify-content: space-between;
   }
 
@@ -93,17 +93,17 @@
 
 // The inline plan in the Agent Timeline demo.
 .tb-plan-checklist {
-  border: var(--xh-border-width-px) solid var(--xh-border-color);
-  border-radius: var(--xh-border-radius-px);
+  border: var(--xh-border-width) solid var(--xh-border-color);
+  border-radius: var(--xh-border-radius);
   display: flex;
   flex-direction: column;
   gap: 2px;
   max-width: 420px;
-  padding: var(--xh-pad-half-px) var(--xh-pad-px);
+  padding: var(--xh-spacing-half) var(--xh-spacing);
 
   &__head {
     color: var(--xh-chat-meta-text-color);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;

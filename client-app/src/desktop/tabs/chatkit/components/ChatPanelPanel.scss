@@ -5,7 +5,7 @@
     display: flex;
     height: 520px;
     width: 100%;
-    border: var(--xh-border-width-px) solid var(--xh-border-color);
+    border: var(--xh-border-width) solid var(--xh-border-color);
   }
 
   // The side panel pattern: app content beside a resizable chat.
@@ -21,6 +21,6 @@
 
   &__custom-footer {
     flex: none;
-    padding: 0 var(--xh-pad-px) var(--xh-pad-px);
+    padding: 0 var(--xh-spacing) var(--xh-spacing);
   }
 }

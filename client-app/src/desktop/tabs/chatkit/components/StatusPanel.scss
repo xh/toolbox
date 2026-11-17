@@ -11,17 +11,17 @@
   }
 
   &__elapsed {
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
 
     .tb-chatkit-status__cue {
-      font-size: var(--xh-font-size-large-px);
+      font-size: var(--xh-font-size-large);
       min-width: 90px;
     }
   }
 
   &__chat {
-    border: var(--xh-border-width-px) solid var(--xh-border-color);
-    border-radius: var(--xh-border-radius-px);
-    padding-bottom: var(--xh-pad-px);
+    border: var(--xh-border-width) solid var(--xh-border-color);
+    border-radius: var(--xh-border-radius);
+    padding-bottom: var(--xh-spacing);
   }
 }

@@ -7,25 +7,25 @@
   // Slot content.
   &__meter {
     color: var(--xh-text-color-muted);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     white-space: nowrap;
   }
 
   &__chips {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
   }
 
   &__chip {
     align-items: center;
     background-color: var(--xh-bg-alt);
-    border: var(--xh-border-width-px) solid var(--xh-border-color);
-    border-radius: var(--xh-border-radius-px);
+    border: var(--xh-border-width) solid var(--xh-border-color);
+    border-radius: var(--xh-border-radius);
     display: inline-flex;
-    font-size: var(--xh-font-size-small-px);
-    gap: var(--xh-pad-half-px);
-    padding: 1px var(--xh-pad-half-px);
+    font-size: var(--xh-font-size-small);
+    gap: var(--xh-spacing-half);
+    padding: 1px var(--xh-spacing-half);
   }
 
   &__mark {
@@ -36,7 +36,7 @@
   // The composer over a host of the page's own, beside its notes.
   &__notes-host {
     align-items: flex-start;
-    gap: var(--xh-pad-double-px);
+    gap: var(--xh-spacing-double);
   }
 
   &__notes-composer {
@@ -46,7 +46,7 @@
 
   &__notes {
     flex: none;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
     max-height: 160px;
     overflow-y: auto;
     width: 300px;
@@ -58,7 +58,7 @@
 
   &__note {
     display: flex;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
   }
 
   &__note-time {
