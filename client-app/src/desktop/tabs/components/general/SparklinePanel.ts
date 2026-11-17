@@ -21,7 +21,7 @@ import {
     fmtDemoConfig,
     raw
 } from '../../../common/Demo';
-import {closingPriceSparklineCol} from '../../../../core/columns/Orders';
+import {closingPriceAgSparklineCol} from '../../../../core/columns/Orders';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import './SparklinePanel.scss';
 
@@ -586,7 +586,7 @@ class SparklinePanelModel extends HoistModel {
                     })
             },
             {
-                ...closingPriceSparklineCol,
+                ...closingPriceAgSparklineCol,
                 headerName: 'AG Grid, 30 days',
                 width: 150,
                 excludeFromExport: true
