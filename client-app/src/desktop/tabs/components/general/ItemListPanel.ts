@@ -55,14 +55,14 @@ export const itemListPanel = hoistCmp.factory({
     model: creates(() => ItemListPanelModel),
 
     render({model}) {
-        const {listProps, playgroundEntries, clickable, topFunds} = model;
+        const {listProps, playgroundEntries, playgroundEntriesCode, topFunds} = model;
         return wrapper({
             title: 'ItemList',
             icon: Icon.list(),
             description: [
-                'An `ItemList` is a short, static list of entries, each with a title and an',
-                'optional description, leading icon and trailing detail: a handful of alerts,',
-                'recent activity, the results of a search.',
+                'An `ItemList` shows a short, static list of entries. Each entry has a title, and',
+                'can add a description, a leading icon and a trailing detail. Use it for a few',
+                'alerts, recent activity or search results.',
                 '',
                 'The list is presentation-only. It takes a plain array, with no model and no',
                 'Store, and renders every entry. Use a `DataView` for a long list, or for',
@@ -154,11 +154,7 @@ export const itemListPanel = hoistCmp.factory({
                             showValue: false,
                             caption: 'Four alerts in a 440px box.',
                             config: fmtDemoConfig<ItemListProps>('itemList', {
-                                entries: clickable
-                                    ? raw(
-                                          'alerts.map(it => ({...it, onClick: () => model.openAlert(it)}))'
-                                      )
-                                    : raw('alerts'),
+                                entries: raw(playgroundEntriesCode),
                                 ...listProps,
                                 emptyText: 'No open alerts'
                             }),
@@ -371,6 +367,23 @@ class ItemListPanelModel extends HoistModel {
             detail: showDetails ? detail : undefined
         }));
         return clickable ? withToastOnClick(ret) : ret;
+    }
+
+    /** The code for `playgroundEntries`, for the snippet. Drops the fields the rail turns off. */
+    get playgroundEntriesCode(): string {
+        const {empty, clickable, showIcons, showDescriptions, showDetails, showIntents} = this;
+        if (empty) return '[]';
+
+        const omitted = [
+                !showIcons && 'icon',
+                !showDescriptions && 'description',
+                !showDetails && 'detail',
+                !showIntents && 'intent'
+            ].filter(Boolean),
+            param = omitted.length ? `({${omitted.join(', ')}, ...it})` : 'it',
+            body = clickable ? '({...it, onClick: () => model.openAlert(it)})' : 'it';
+
+        return param === 'it' && body === 'it' ? 'alerts' : `alerts.map(${param} => ${body})`;
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
