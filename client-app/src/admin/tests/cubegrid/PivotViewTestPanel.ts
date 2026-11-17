@@ -21,7 +21,7 @@ export const PivotViewTestPanel = hoistCmp({
                 icon: Icon.checkCircle(),
                 flex: 1,
                 tbar: checkTbar(),
-                item: grid({testId: 'pivot-view-checks'})
+                children: grid({testId: 'pivot-view-checks'})
             }),
             benchPanel()
         );
@@ -50,7 +50,7 @@ const checkTbar = hoistCmp.factory<PivotViewTestModel>(({model}) =>
         filler(),
         span({
             omit: !model.checkCount,
-            item: model.failureCount
+            children: model.failureCount
                 ? `${model.failureCount} of ${model.checkCount} checks FAILED`
                 : `All ${model.checkCount} checks passed`,
             style: {
@@ -70,7 +70,7 @@ const benchPanel = hoistCmp.factory({
             icon: Icon.chartLine(),
             modelConfig: {side: 'bottom', defaultSize: 320, collapsible: true, resizable: true},
             tbar: benchTbar(),
-            item: grid({testId: 'pivot-view-bench'}),
+            children: grid({testId: 'pivot-view-bench'}),
             mask: model.running
         });
     }
@@ -99,6 +99,6 @@ const benchTbar = hoistCmp.factory<PivotViewBenchModel>(({model}) =>
         numberInput({bind: 'tickPct', width: 60, min: 0.1, max: 100, stepSize: 0.5}),
         'Reps:',
         numberInput({bind: 'tickReps', width: 55, min: 1, max: 25}),
-        span({omit: !model.status, item: model.status, style: {marginLeft: 10}})
+        span({omit: !model.status, children: model.status, style: {marginLeft: 10}})
     )
 );

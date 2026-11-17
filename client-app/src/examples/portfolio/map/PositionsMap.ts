@@ -8,7 +8,7 @@ export const positionsMap = hoistCmp.factory({
 
     render({model}) {
         return panel({
-            item: splitTreeMap()
+            children: splitTreeMap()
         });
     }
 });

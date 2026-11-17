@@ -28,20 +28,20 @@ export const docsListRow = hoistCmp.factory<DocsListRowProps>({
         return hbox({
             className: 'tb-docs-list__row',
             onClick,
-            items: [
-                div({className: 'tb-docs-list__row-icon', item: icon}),
+            children: [
+                div({className: 'tb-docs-list__row-icon', children: icon}),
                 vbox({
                     className: 'tb-docs-list__row-text',
-                    items: [
-                        div({className: 'tb-docs-list__row-title', item: title}),
+                    children: [
+                        div({className: 'tb-docs-list__row-title', children: title}),
                         subtitle
-                            ? div({className: 'tb-docs-list__row-subtitle', item: subtitle})
+                            ? div({className: 'tb-docs-list__row-subtitle', children: subtitle})
                             : null
                     ]
                 }),
                 filler(),
                 count != null
-                    ? span({className: 'tb-docs-list__row-count', item: `${count}`})
+                    ? span({className: 'tb-docs-list__row-count', children: `${count}`})
                     : null,
                 Icon.chevronRight({className: 'tb-docs-list__row-chevron'})
             ]

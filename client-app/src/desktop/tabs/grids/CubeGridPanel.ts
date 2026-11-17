@@ -51,10 +51,10 @@ export const cubeGridPanel = hoistCmp.factory({
                     {id: 'pivot', title: 'Pivoting', items: pivotOptions(model)}
                 ]
             }),
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel',
                 mask: 'onLoad',
-                item: gridCmp(),
+                children: gridCmp(),
                 tbar: [
                     span('Group by:'),
                     select({

@@ -34,7 +34,7 @@ const ALERTS: ItemListEntry[] = [
         description: 'A block trade above the desk limit.',
         icon: Icon.clock(),
         intent: 'warning',
-        detail: badge({item: 'Pending', intent: 'warning'})
+        detail: badge({children: 'Pending', intent: 'warning'})
     },
     {
         title: 'Prices loaded',
@@ -87,7 +87,7 @@ export const itemListPanel = hoistCmp.factory({
                     info: 'Drives the Playground list.',
                     icon: Icon.experiment(),
                     intent: 'primary',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Numbered',
                             propName: 'ItemListProps.numbered',
@@ -144,12 +144,12 @@ export const itemListPanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 440,
                             showValue: false,
                             caption: 'Four alerts in a 440px box.',
@@ -158,7 +158,7 @@ export const itemListPanel = hoistCmp.factory({
                                 ...listProps,
                                 emptyText: 'No open alerts'
                             }),
-                            item: itemList({
+                            children: itemList({
                                 entries: playgroundEntries,
                                 ...listProps,
                                 emptyText: 'No open alerts'
@@ -168,17 +168,17 @@ export const itemListPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Ranking',
                         note: 'numbered puts a number on each entry. The five largest funds by market value.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 2,
-                            items: [
+                            children: [
                                 demoFrame({
                                     label: 'numbered',
-                                    item: itemList({numbered: true, entries: topFunds})
+                                    children: itemList({numbered: true, entries: topFunds})
                                 }),
                                 demoFrame({
                                     label: 'numbered, compact, dividers',
                                     info: 'An intent colors the number',
-                                    item: itemList({
+                                    children: itemList({
                                         numbered: true,
                                         size: 'compact',
                                         dividers: true,
@@ -194,16 +194,16 @@ export const itemListPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Markers',
                         note: 'Icons, an intent bar where no entry has an icon, and plain text.',
-                        item: demoGrid({
-                            items: [
+                        children: demoGrid({
+                            children: [
                                 demoFrame({
                                     label: 'Icons and intents',
-                                    item: itemList({entries: ALERTS.map(withoutText)})
+                                    children: itemList({entries: ALERTS.map(withoutText)})
                                 }),
                                 demoFrame({
                                     label: 'Intents, no icons',
                                     info: 'A thin colored bar',
-                                    item: itemList({
+                                    children: itemList({
                                         entries: ALERTS.map(it => ({
                                             ...withoutText(it),
                                             icon: null
@@ -212,7 +212,7 @@ export const itemListPanel = hoistCmp.factory({
                                 }),
                                 demoFrame({
                                     label: 'Titles only',
-                                    item: itemList({
+                                    children: itemList({
                                         entries: ALERTS.map(({title}) => ({title}))
                                     })
                                 })
@@ -222,9 +222,9 @@ export const itemListPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Clickable',
                         note: 'An onClick makes an entry clickable. A disabled entry is dimmed and takes no click.',
-                        item: demoFrame({
+                        children: demoFrame({
                             className: 'tb-item-list-panel__narrow',
-                            item: itemList({
+                            children: itemList({
                                 dividers: true,
                                 entries: withToastOnClick([
                                     {
@@ -252,16 +252,16 @@ export const itemListPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Narrow and Long Text',
                         note: 'At 240px. Titles and descriptions wrap beside the detail.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 2,
-                            items: [
+                            children: [
                                 demoFrame({
                                     className: 'tb-item-list-panel__slim',
-                                    item: itemList({entries: ALERTS, dividers: true})
+                                    children: itemList({entries: ALERTS, dividers: true})
                                 }),
                                 demoFrame({
                                     className: 'tb-item-list-panel__slim',
-                                    item: itemList({
+                                    children: itemList({
                                         numbered: true,
                                         entries: [
                                             {
@@ -283,16 +283,16 @@ export const itemListPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Empty',
                         note: 'emptyText shows in place of a list with no entries.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 2,
-                            items: [
+                            children: [
                                 demoFrame({
                                     label: 'No entries',
-                                    item: itemList({entries: [], emptyText: 'No open alerts'})
+                                    children: itemList({entries: [], emptyText: 'No open alerts'})
                                 }),
                                 demoFrame({
                                     label: 'Every entry omitted',
-                                    item: itemList({
+                                    children: itemList({
                                         entries: [{title: 'Hidden', omit: true}, null],
                                         emptyText: 'Nothing to show'
                                     })
@@ -303,9 +303,9 @@ export const itemListPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Restyled with CSS Variables',
                         note: 'Wide spacing, a bold title and a wide intent bar.',
-                        item: demoFrame({
+                        children: demoFrame({
                             className: 'tb-item-list-panel__restyled tb-item-list-panel__narrow',
-                            item: itemList({
+                            children: itemList({
                                 entries: ALERTS.map(it => ({...it, icon: null}))
                             })
                         })

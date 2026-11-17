@@ -69,10 +69,10 @@ export const gridPage = hoistCmp.factory({
                     notes: 'Underlying library - opens browser'
                 }
             ],
-            item: panel({
+            children: panel({
                 mask: 'onLoad',
                 tbar: [storeFilterField(), filler(), colAutosizeButton(), colChooserButton()],
-                item: grid()
+                children: grid()
             })
         });
     }

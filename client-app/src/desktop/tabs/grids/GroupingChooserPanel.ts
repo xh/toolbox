@@ -56,7 +56,7 @@ export const groupingChooserPanel = hoistCmp.factory({
                 icon: Icon.experiment(),
                 intent: 'primary',
                 info: 'Drives the Playground instance. The variant uses its own model.',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Style as input',
                         propName: 'GroupingChooserProps.styleButtonAsInput',
@@ -75,12 +75,12 @@ export const groupingChooserPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             caption: 'Open the popover to add, remove, and drag dimensions.',
                             config: fmtDemoConfig<GroupingChooserProps>('groupingChooser', {
                                 model: raw('groupingChooserModel'),
@@ -91,7 +91,7 @@ export const groupingChooserPanel = hoistCmp.factory({
                                         : model.favoritesSide
                             }),
                             value: model.groupingChooserModel.value,
-                            item: groupingChooser({
+                            children: groupingChooser({
                                 model: model.groupingChooserModel,
                                 styleButtonAsInput: model.styleButtonAsInput,
                                 favoritesSide: model.favoritesSide
@@ -101,7 +101,7 @@ export const groupingChooserPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Bound to a Grid',
                         note: 'Same model as the Playground.',
-                        item: tradesGridFrame({
+                        children: tradesGridFrame({
                             gridModel: model.gridModel,
                             label: 'bind: gridModel',
                             info: "Each change to the chooser calls the grid's setGroupBy().",
@@ -111,10 +111,10 @@ export const groupingChooserPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Variants',
                         note: 'Uses its own model.',
-                        item: demoRow({
+                        children: demoRow({
                             label: 'Unbound, max depth 2, with favorites, outlined',
                             info: 'maxDepth: 2, initialFavorites, styleButtonAsInput: false.',
-                            item: groupingChooser({
+                            children: groupingChooser({
                                 model: model.variantModel,
                                 styleButtonAsInput: false
                             })
@@ -123,9 +123,9 @@ export const groupingChooserPanel = hoistCmp.factory({
                     demoSection({
                         title: 'In a Toolbar',
                         note: 'Bound to the Playground model, so the grid above follows.',
-                        items: [
-                            demoToolbar({items: toolbarItems(model)}),
-                            demoToolbar({compact: true, items: toolbarItems(model)})
+                        children: [
+                            demoToolbar({children: toolbarItems(model)}),
+                            demoToolbar({compact: true, children: toolbarItems(model)})
                         ]
                     })
                 ]

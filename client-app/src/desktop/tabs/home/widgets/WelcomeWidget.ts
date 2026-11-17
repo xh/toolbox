@@ -10,20 +10,20 @@ import './WelcomeWidget.scss';
 export const welcomeWidget = hoistCmp.factory({
     displayName: 'WelcomeWidget',
     render() {
-        const link = (txt: string, url: string) => a({href: url, target: '_blank', item: txt});
+        const link = (txt: string, url: string) => a({href: url, target: '_blank', children: txt});
         return panel({
             className: 'tb-welcome-widget',
-            item: hframe(
+            children: hframe(
                 div({
                     className: 'tb-welcome-widget__logo',
-                    item: img({src: xhHoist, alt: 'XH + Hoist'})
+                    children: img({src: xhHoist, alt: 'XH + Hoist'})
                 }),
                 div({
                     className: 'tb-welcome-widget__content',
-                    items: [
+                    children: [
                         div({
                             className: 'tb-welcome-widget__headline',
-                            item: 'Build serious web apps.'
+                            children: 'Build serious web apps.'
                         }),
                         p(
                             'Hoist is ',
@@ -37,7 +37,7 @@ export const welcomeWidget = hoistCmp.factory({
                         ),
                         hbox({
                             className: 'tb-welcome-widget__ctas',
-                            items: [
+                            children: [
                                 button({
                                     text: 'Read the Docs',
                                     icon: Icon.book(),

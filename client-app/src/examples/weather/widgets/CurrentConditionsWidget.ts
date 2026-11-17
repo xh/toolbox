@@ -21,11 +21,11 @@ export const currentConditionsWidget = hoistCmp.factory({
             className: 'weather-current-conditions',
             alignItems: 'center',
             flex: 1,
-            items: [
+            children: [
                 chart({className: 'weather-current-conditions__gauge'}),
                 hbox({
                     className: 'weather-current-conditions__details',
-                    items: [
+                    children: [
                         iconCode
                             ? img({
                                   className: 'weather-current-conditions__icon',
@@ -35,13 +35,14 @@ export const currentConditionsWidget = hoistCmp.factory({
                             : null,
                         vbox({
                             className: 'weather-current-conditions__text',
-                            items: [
+                            children: [
                                 div({
                                     className: 'weather-current-conditions__description',
-                                    item: description.charAt(0).toUpperCase() + description.slice(1)
+                                    children:
+                                        description.charAt(0).toUpperCase() + description.slice(1)
                                 }),
                                 div({
-                                    item: [
+                                    children: [
                                         feelsLike != null
                                             ? `Feels like ${Math.round(feelsLike)}°F`
                                             : null,

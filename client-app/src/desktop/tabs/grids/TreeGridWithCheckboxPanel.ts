@@ -39,9 +39,9 @@ export const treeGridWithCheckboxPanel = hoistCmp.factory({
                 }
             ],
             options: [expandCollapseButton({gridModel})],
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel',
-                item: sampleTreeGrid()
+                children: sampleTreeGrid()
             })
         });
     }

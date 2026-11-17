@@ -20,14 +20,14 @@ export const resultsPanel = hoistCmp.factory<DateFormatsPanelModel | NumberForma
             minWidth: 500,
             maxHeight: '100%',
             className: 'tbox-formats-tab__panel',
-            item: div({
+            children: div({
                 className: 'tbox-formats-tab__results',
-                item: table(
+                children: table(
                     tbody(
                         ...model.testResults.map(({formattedData, result}) => {
                             return tr(
-                                td({className: 'inputColumn', item: formattedData}),
-                                td({className: 'outputColumn', item: result})
+                                td({className: 'inputColumn', children: formattedData}),
+                                td({className: 'outputColumn', children: result})
                             );
                         }),
                         tr(td(tryItElem), td(model.tryItResult))

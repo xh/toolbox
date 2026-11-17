@@ -48,7 +48,7 @@ export const dataViewPage = hoistCmp.factory({
                     notes: 'Renderer & store config.'
                 }
             ],
-            item: panel({mask: 'onLoad', item: dataView()})
+            children: panel({mask: 'onLoad', children: dataView()})
         });
     }
 });

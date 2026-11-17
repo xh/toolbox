@@ -6,7 +6,7 @@ import {Icon} from '@xh/hoist/icon';
 export const panelWidget = hoistCmp.factory({
     render() {
         return panel({
-            item: placeholder(Icon.window(), p('Just a simple panel.'))
+            children: placeholder(Icon.window(), p('Just a simple panel.'))
         });
     }
 });

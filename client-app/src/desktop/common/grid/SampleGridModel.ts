@@ -167,15 +167,15 @@ export class SampleGridModel extends HoistModel {
                     const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                     return vbox({
                         className: 'tb-sample-grid-tooltip',
-                        items: [
-                            div({className: 'company', item: company}),
+                        children: [
+                            div({className: 'company', children: company}),
                             hbox({
                                 className: 'city-and-date tooltip-row',
-                                items: [city, filler(), fmtDate(trade_date)]
+                                children: [city, filler(), fmtDate(trade_date)]
                             }),
                             hbox({
                                 className: 'tooltip-row',
-                                items: [
+                                children: [
                                     'P&L',
                                     filler(),
                                     fmtNumber(profit_loss, {
@@ -187,7 +187,7 @@ export class SampleGridModel extends HoistModel {
                             }),
                             hbox({
                                 className: 'tooltip-row',
-                                items: [
+                                children: [
                                     'Volume',
                                     filler(),
                                     fmtMillions(trade_volume, {precision: 1, label: true})

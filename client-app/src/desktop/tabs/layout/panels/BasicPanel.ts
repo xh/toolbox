@@ -59,7 +59,7 @@ export const basicPanel = hoistCmp.factory({
                     info: 'Add a right-click context menu.'
                 })
             ],
-            item: panel({
+            children: panel({
                 title: 'Basic Panel',
                 icon: Icon.window(),
                 height: '60vh',
@@ -109,7 +109,7 @@ export const basicPanel = hoistCmp.factory({
                     padding: 'var(--xh-spacing)',
                     style: {fontSize: `${model.textScale}em`}
                 },
-                items: [...model.demoText.map(it => p(it)), aComponentThatCanThrowInRender()],
+                children: [...model.demoText.map(it => p(it)), aComponentThatCanThrowInRender()],
                 bbar: [
                     button({
                         text: 'Simulate an Exception',

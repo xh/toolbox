@@ -60,7 +60,7 @@ export const leftRightChooserPanel = hoistCmp.factory({
                     ]
                 })
             }),
-            item: panel({
+            children: panel({
                 width: 700,
                 height: 400,
                 tbar: [
@@ -68,7 +68,7 @@ export const leftRightChooserPanel = hoistCmp.factory({
                         matchMode: model.matchMode
                     })
                 ],
-                item: leftRightChooser({
+                children: leftRightChooser({
                     flex: 1
                 })
             })

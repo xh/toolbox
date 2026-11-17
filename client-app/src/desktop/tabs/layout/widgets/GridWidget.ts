@@ -28,7 +28,7 @@ export const gridWidget = hoistCmp.factory({
         return panel({
             model: panelModel,
             ...(panelModel.isModal ? modalOpts : {}),
-            item: grid()
+            children: grid()
         });
     }
 });

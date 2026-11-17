@@ -17,7 +17,7 @@ const BASE_ROUTE = `${EXAMPLE_ROUTE}.routing`;
 export const routingExample = hoistCmp.factory(() =>
     panel({
         className: 'tb-layout-tabs__child',
-        item: tabContainer({
+        children: tabContainer({
             modelConfig: {
                 route: BASE_ROUTE,
                 tabs: [
@@ -49,10 +49,10 @@ const routedItemPanel = hoistCmp.factory({
             justifyContent: 'center',
             className: 'xh-pad',
             gap: true,
-            items: [
+            children: [
                 div({
                     style: {maxWidth: 500},
-                    items: [
+                    children: [
                         p(
                             'The selection is synced with an ',
                             code('item'),
