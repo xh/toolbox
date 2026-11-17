@@ -1,6 +1,6 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {div, span} from '@xh/hoist/cmp/layout';
-import type {SparklineMarker, SparklineProps} from '@xh/hoist/cmp/sparkline';
+import type {SparklineColorBy, SparklineMarker, SparklineProps} from '@xh/hoist/cmp/sparkline';
 import {sparkline} from '@xh/hoist/cmp/sparkline';
 import {statCard, statCardStrip} from '@xh/hoist/cmp/statcard';
 import type {Intent, LoadSpec} from '@xh/hoist/core';
@@ -28,6 +28,7 @@ import './SparklinePanel.scss';
 const UP = [101, 103, 102, 106, 109, 107, 113, 111, 116, 118],
     DOWN = [118, 116, 117, 112, 113, 108, 109, 104, 105, 101],
     DAILY_PNL = [12, 18, -6, 9, -14, -3, 21, 7, -9, 15, 4, -11],
+    RUNNING_PNL = [4, 9, 6, -2, -8, -5, 3, 11, 7, -3, -6, 2, 8],
     ORDERS_BY_DAY = [310, 342, 298, 365, 401, 388, 420, 395, 441, 467, 452, 498, 510, 487];
 
 export const sparklinePanel = hoistCmp.factory({
@@ -99,8 +100,16 @@ export const sparklinePanel = hoistCmp.factory({
                                 options: ['primary', 'success', 'warning', 'danger']
                             })
                         }),
-                        switchOption('Color by trend', 'colorByTrend'),
-                        switchOption('Color negative', 'colorNegative'),
+                        wrapperOption({
+                            label: 'Color by',
+                            propName: 'SparklineProps.colorBy',
+                            control: select({
+                                bind: 'colorBy',
+                                enableFilter: false,
+                                width: 110,
+                                options: ['intent', 'trend', 'sign']
+                            })
+                        }),
                         wrapperOption({
                             label: 'Markers',
                             propName: 'SparklineProps.markers',
@@ -195,8 +204,8 @@ export const sparklinePanel = hoistCmp.factory({
                                     intent =>
                                         labeled(intent, sparkline({data: UP, intent, type: 'area'}))
                                 ),
-                                labeled('trend up', sparkline({data: UP, colorByTrend: true})),
-                                labeled('trend down', sparkline({data: DOWN, colorByTrend: true})),
+                                labeled('trend up', sparkline({data: UP, colorBy: 'trend'})),
+                                labeled('trend down', sparkline({data: DOWN, colorBy: 'trend'})),
                                 labeled(
                                     'CSS color',
                                     sparkline({
@@ -222,11 +231,11 @@ export const sparklinePanel = hoistCmp.factory({
                                     sparkline({data: DOWN, markers: ['min', 'max'], ...MID})
                                 ),
                                 labeled(
-                                    'all four, by trend',
+                                    "all four, colorBy: 'trend'",
                                     sparkline({
                                         data: UP,
                                         markers: ['first', 'last', 'min', 'max'],
-                                        colorByTrend: true,
+                                        colorBy: 'trend',
                                         type: 'area',
                                         ...MID
                                     })
@@ -249,11 +258,11 @@ export const sparklinePanel = hoistCmp.factory({
                             className: 'tb-sparkline-panel__row',
                             children: [
                                 labeled(
-                                    'colorNegative, baseline: 0',
+                                    "colorBy: 'sign', baseline: 0",
                                     sparkline({
                                         data: DAILY_PNL,
                                         type: 'bar',
-                                        colorNegative: true,
+                                        colorBy: 'sign',
                                         baseline: 0,
                                         ...MID
                                     })
@@ -272,7 +281,7 @@ export const sparklinePanel = hoistCmp.factory({
                                         data: UP,
                                         type: 'bar',
                                         baseline: 108,
-                                        colorNegative: true,
+                                        colorBy: 'sign',
                                         ...MID
                                     })
                                 ),
@@ -290,13 +299,60 @@ export const sparklinePanel = hoistCmp.factory({
                         })
                     }),
                     demoSection({
+                        title: 'Profit and Loss',
+                        note: "colorBy: 'sign' on a line or area: the parts above and below zero or the baseline in the value colors, with an area filled to that line.",
+                        children: div({
+                            className: 'tb-sparkline-panel__row',
+                            children: [
+                                labeled(
+                                    'area',
+                                    sparkline({
+                                        data: RUNNING_PNL,
+                                        type: 'area',
+                                        colorBy: 'sign',
+                                        baseline: 0,
+                                        ...MID
+                                    })
+                                ),
+                                labeled(
+                                    'line',
+                                    sparkline({
+                                        data: RUNNING_PNL,
+                                        colorBy: 'sign',
+                                        baseline: 0,
+                                        ...MID
+                                    })
+                                ),
+                                labeled(
+                                    'area, no baseline line',
+                                    sparkline({
+                                        data: RUNNING_PNL,
+                                        type: 'area',
+                                        colorBy: 'sign',
+                                        ...MID
+                                    })
+                                ),
+                                labeled(
+                                    'area, baseline: 108',
+                                    sparkline({
+                                        data: UP,
+                                        type: 'area',
+                                        colorBy: 'sign',
+                                        baseline: 108,
+                                        ...MID
+                                    })
+                                )
+                            ]
+                        })
+                    }),
+                    demoSection({
                         title: 'Sizing',
                         note: "Inline in text, and stretched with width: '100%'.",
                         children: [
                             div({
                                 children: [
                                     'Volume rose through the week ',
-                                    sparkline({data: UP, colorByTrend: true, markers: ['last']}),
+                                    sparkline({data: UP, colorBy: 'trend', markers: ['last']}),
                                     ' and closed at a high.'
                                 ]
                             }),
@@ -319,7 +375,7 @@ export const sparklinePanel = hoistCmp.factory({
                                         children: sparkline({
                                             data: DAILY_PNL,
                                             type: 'bar',
-                                            colorNegative: true,
+                                            colorBy: 'sign',
                                             baseline: 0,
                                             width: '100%',
                                             height: 60
@@ -354,7 +410,7 @@ export const sparklinePanel = hoistCmp.factory({
                                 detail: sparkline({
                                     data: DAILY_PNL,
                                     type: 'bar',
-                                    colorNegative: true,
+                                    colorBy: 'sign',
                                     baseline: 0,
                                     width: '100%',
                                     height: 32
@@ -365,7 +421,7 @@ export const sparklinePanel = hoistCmp.factory({
                                 value: fmtMillions(2483960, {precision: 2, label: true}),
                                 subValue: sparkline({
                                     data: UP,
-                                    colorByTrend: true,
+                                    colorBy: 'trend',
                                     markers: ['last']
                                 }),
                                 detail: 'vs. last month, 42 locations'
@@ -376,7 +432,7 @@ export const sparklinePanel = hoistCmp.factory({
                                 subValue: fmtPercent(-0.093, {precision: 1, withSignGlyph: true}),
                                 detail: sparkline({
                                     data: DOWN,
-                                    colorByTrend: true,
+                                    colorBy: 'trend',
                                     width: '100%',
                                     markers: ['min', 'max']
                                 })
@@ -437,7 +493,7 @@ export const sparklinePanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Restyled with CSS Variables',
-                        note: 'A thick line, large dots and a strong area fill.',
+                        note: 'A thick line, large dots and a strong area fill in a color of its own.',
                         children: demoFrame({
                             className: 'tb-sparkline-panel__restyled',
                             children: sparkline({
@@ -505,14 +561,6 @@ function labeled(label: string, item: ReturnType<typeof sparkline>) {
     });
 }
 
-function switchOption(label: string, bind: keyof SparklinePanelModel & string) {
-    return wrapperOption({
-        label,
-        propName: `SparklineProps.${bind}`,
-        control: switchInput({bind})
-    });
-}
-
 /** Three series of different ranges, each on its own scale or on the one given. */
 function scaleRows(scale: Pick<SparklineProps, 'min' | 'max'> = {}) {
     const rows: Array<[string, number[]]> = [
@@ -538,8 +586,7 @@ class SparklinePanelModel extends HoistModel {
     @bindable accessor type: SparklineProps['type'] = null;
     @bindable accessor series: 'up' | 'down' | 'pnl' = 'up';
     @bindable accessor intent: Intent = null;
-    @bindable accessor colorByTrend = false;
-    @bindable accessor colorNegative = false;
+    @bindable accessor colorBy: SparklineColorBy = 'intent';
     @bindableRef accessor markers: SparklineMarker[] = [];
     @bindable accessor baseline: number = null;
     @bindable accessor tooltip = false;
@@ -581,7 +628,7 @@ class SparklinePanelModel extends HoistModel {
                     sparkline({
                         data: values,
                         width: '100%',
-                        colorByTrend: true,
+                        colorBy: 'trend',
                         tooltip: data => trendTip(data, record.data.symbol)
                     })
             },
@@ -635,12 +682,11 @@ class SparklinePanelModel extends HoistModel {
      * the code shown cannot drift from the sparkline beside it.
      */
     get lineProps(): PlaygroundLineProps {
-        const {type, intent, colorByTrend, colorNegative, baseline} = this;
+        const {type, intent, colorBy, baseline} = this;
         return {
             type: type ?? undefined,
             intent: intent ?? undefined,
-            colorByTrend: colorByTrend || undefined,
-            colorNegative: colorNegative || undefined,
+            colorBy: colorBy !== 'intent' ? colorBy : undefined,
             baseline: baseline ?? undefined
         };
     }
@@ -672,7 +718,6 @@ class SparklinePanelModel extends HoistModel {
 interface PlaygroundLineProps {
     type?: SparklineProps['type'];
     intent?: Intent;
-    colorByTrend?: boolean;
-    colorNegative?: boolean;
+    colorBy?: SparklineColorBy;
     baseline?: number;
 }

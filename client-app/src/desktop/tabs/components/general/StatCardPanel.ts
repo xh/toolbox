@@ -257,7 +257,7 @@ export const statCardPanel = hoistCmp.factory({
                                 value: fmtNumber(last(HOURLY_ORDERS), {precision: 0}),
                                 subValue: sparkline({
                                     data: HOURLY_ORDERS,
-                                    colorByTrend: true,
+                                    colorBy: 'trend',
                                     markers: ['last']
                                 }),
                                 detail: 'By hour, since 08:00'
@@ -272,7 +272,7 @@ export const statCardPanel = hoistCmp.factory({
                                 detail: sparkline({
                                     data: DAILY_PNL,
                                     type: 'bar',
-                                    colorNegative: true,
+                                    colorBy: 'sign',
                                     baseline: 0,
                                     width: '100%',
                                     height: 32

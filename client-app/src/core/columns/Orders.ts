@@ -101,7 +101,7 @@ export const closingPriceSparklineCol: ColumnSpec = {
         sparkline({
             data: map(series, 1),
             width: '100%',
-            colorByTrend: true,
+            colorBy: 'trend',
             tooltip: () => closingPriceTip(series)
         })
 };
