@@ -97,6 +97,7 @@ export const themingPanel = hoistCmp.factory({
                                 min: 400,
                                 max: 1200,
                                 stepSize: 40,
+                                majorStepSize: 200,
                                 width: 80
                             })
                         }),
