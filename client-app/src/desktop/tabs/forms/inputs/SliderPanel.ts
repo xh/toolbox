@@ -1,8 +1,10 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
+import type {Intent} from '@xh/hoist/core';
 import {creates, hoistCmp, managed} from '@xh/hoist/core';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import type {SliderProps} from '@xh/hoist/desktop/cmp/input';
-import {numberInput, slider, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {intentInput, numberInput, slider, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtThousands} from '@xh/hoist/format';
 import {bindable, bindableRef} from '@xh/hoist/mobx';
 import {demoFrame, demoGrid, demoPlayground, demoRow, fmtDemoConfig} from '../../../common/Demo';
@@ -78,6 +80,11 @@ export const sliderPanel = hoistCmp.factory({
                     control: switchInput({bind: 'pgTrackFill'})
                 }),
                 wrapperOption({
+                    label: 'Intent',
+                    propName: 'SliderProps.intent',
+                    control: intentInput({bind: 'pgIntent'})
+                }),
+                wrapperOption({
                     label: 'Vertical',
                     propName: 'SliderProps.vertical',
                     control: switchInput({bind: 'pgVertical'})
@@ -91,6 +98,7 @@ export const sliderPanel = hoistCmp.factory({
                     labelStepSize,
                     stepSize,
                     showTrackFill: model.pgTrackFill ? undefined : false,
+                    intent: model.pgIntent === 'primary' ? undefined : model.pgIntent,
                     vertical: model.pgVertical || undefined,
                     width: model.pgVertical ? undefined : '100%',
                     height: model.pgVertical ? 160 : undefined,
@@ -105,6 +113,7 @@ export const sliderPanel = hoistCmp.factory({
                     labelStepSize,
                     stepSize,
                     showTrackFill: model.pgTrackFill,
+                    intent: model.pgIntent,
                     vertical: model.pgVertical,
                     width: model.pgVertical ? undefined : '100%',
                     height: model.pgVertical ? 160 : null
@@ -171,6 +180,26 @@ export const sliderPanel = hoistCmp.factory({
                     })
                 })
             ],
+            toolbarItems: () => [
+                slider({
+                    bind: 'tbarLabeled',
+                    ...ambientProps,
+                    min: 0,
+                    max: 100,
+                    labelStepSize: 50,
+                    width: 160
+                }),
+                toolbarSep(),
+                slider({
+                    bind: 'tbarUnlabeled',
+                    ...ambientProps,
+                    min: 0,
+                    max: 100,
+                    labelRenderer: false,
+                    width: 160
+                }),
+                numberInput({bind: 'tbarUnlabeled', ...ambientProps, min: 0, max: 100, width: 60})
+            ],
             form: demoGrid({
                 columns: 2,
                 items: [
@@ -216,7 +245,9 @@ const SEEDS = {
     range: [62000, 134000],
     noLabels: 30,
     fineSteps: 2.5,
-    disabledSlider: 70
+    disabledSlider: 70,
+    tbarLabeled: 40,
+    tbarUnlabeled: 60
 };
 
 class SliderPanelModel extends InputDemoModel {
@@ -224,6 +255,7 @@ class SliderPanelModel extends InputDemoModel {
     @bindable accessor pgLabelStep = DEFAULT_LABEL_STEP;
     @bindable accessor pgStep = DEFAULT_STEP;
     @bindable accessor pgTrackFill = true;
+    @bindable accessor pgIntent: Intent = 'primary';
     @bindable accessor pgVertical = false;
 
     // Inputs
@@ -232,6 +264,8 @@ class SliderPanelModel extends InputDemoModel {
     @bindable accessor noLabels: number = SEEDS.noLabels;
     @bindable accessor fineSteps: number = SEEDS.fineSteps;
     @bindable accessor disabledSlider: number = SEEDS.disabledSlider;
+    @bindable accessor tbarLabeled: number = SEEDS.tbarLabeled;
+    @bindable accessor tbarUnlabeled: number = SEEDS.tbarUnlabeled;
 
     @managed
     override formModel = new FormModel({
