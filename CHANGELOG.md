@@ -14,6 +14,10 @@
 
 ## 13.0-SNAPSHOT - unreleased
 
+### New Features
+
+* Added a `Sparkline` demo page to Components > General, showing hoist-react's new inline trend chart, with a playground, its three types, colors, markers, bars, sizing, and its use in a `StatCard` and in a grid column over the sample price history.
+
 ### Technical
 
 * Migrated app CSS variable overrides and reads to hoist-react v91's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
