@@ -49,7 +49,7 @@ export const separatorPanel = hoistCmp.factory({
                     info: 'Drives the Playground separator.',
                     icon: Icon.experiment(),
                     intent: 'primary',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Vertical',
                             propName: 'SeparatorProps.vertical',
@@ -74,32 +74,32 @@ export const separatorPanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 360,
                             showValue: false,
                             caption: vertical
                                 ? 'Between the items of a row.'
                                 : 'Between two blocks of a column.',
                             config: fmtDemoConfig<SeparatorProps>('separator', sepProps),
-                            item: (vertical ? hbox : vbox)({
+                            children: (vertical ? hbox : vbox)({
                                 className: 'tb-separator-panel__stack',
                                 width: '100%',
-                                items: [block('Positions'), separator(sepProps), block('Orders')]
+                                children: [block('Positions'), separator(sepProps), block('Orders')]
                             })
                         })
                     }),
                     demoSection({
                         title: 'Horizontal',
                         note: 'Plain, and with a label at the start, the center and the end.',
-                        item: demoFrame({
-                            item: vbox({
+                        children: demoFrame({
+                            children: vbox({
                                 className: 'tb-separator-panel__stack',
-                                items: [
+                                children: [
                                     span('A plain rule'),
                                     separator(),
                                     span("labelPosition: 'start'"),
@@ -120,14 +120,14 @@ export const separatorPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Vertical',
                         note: 'In a row, the rule takes the height of the row.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 3,
-                            items: [
+                            children: [
                                 demoFrame({
                                     label: 'Between figures',
-                                    item: hbox({
+                                    children: hbox({
                                         className: 'tb-separator-panel__stack',
-                                        items: [
+                                        children: [
                                             figure('P&L', '+1.24m'),
                                             separator({vertical: true}),
                                             figure('Market value', '48.25m'),
@@ -138,10 +138,10 @@ export const separatorPanel = hoistCmp.factory({
                                 }),
                                 demoFrame({
                                     label: 'Between actions',
-                                    item: hbox({
+                                    children: hbox({
                                         className: 'tb-separator-panel__stack',
                                         alignItems: 'center',
-                                        items: [
+                                        children: [
                                             button({text: 'Approve', intent: 'success'}),
                                             button({text: 'Reject', intent: 'danger'}),
                                             separator({vertical: true}),
@@ -153,9 +153,9 @@ export const separatorPanel = hoistCmp.factory({
                                 demoFrame({
                                     label: 'With a label',
                                     info: "label: 'or'",
-                                    item: hbox({
+                                    children: hbox({
                                         className: 'tb-separator-panel__stack',
-                                        items: [
+                                        children: [
                                             block('Upload a file'),
                                             separator({vertical: true, label: 'or'}),
                                             block('Paste rows')
@@ -168,16 +168,16 @@ export const separatorPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Spacing',
                         note: 'No margin by default. A gap, a margin prop or a CSS variable adds it.',
-                        item: demoGrid({
-                            items: [
+                        children: demoGrid({
+                            children: [
                                 demoFrame({
                                     label: 'No spacing',
-                                    item: vbox(block('Above'), separator(), block('Below'))
+                                    children: vbox(block('Above'), separator(), block('Below'))
                                 }),
                                 demoFrame({
                                     label: 'margin layout prop',
                                     info: "margin: '16px 0'",
-                                    item: vbox(
+                                    children: vbox(
                                         block('Above'),
                                         separator({margin: '16px 0'}),
                                         block('Below')
@@ -187,7 +187,7 @@ export const separatorPanel = hoistCmp.factory({
                                     label: 'CSS variable',
                                     info: '--xh-separator-margin',
                                     className: 'tb-separator-panel__spaced',
-                                    item: vbox(
+                                    children: vbox(
                                         block('Above'),
                                         separator({label: 'Then'}),
                                         block('Below')
@@ -199,12 +199,12 @@ export const separatorPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Narrow',
                         note: 'At 220px, with a short label and a long one that wraps.',
-                        item: div({
+                        children: div({
                             className: 'tb-separator-panel__narrow',
-                            item: demoFrame({
-                                item: vbox({
+                            children: demoFrame({
+                                children: vbox({
                                     className: 'tb-separator-panel__stack',
-                                    items: [
+                                    children: [
                                         separator({label: 'Short'}),
                                         separator({
                                             label: 'Settlement instructions for the custodian',
@@ -221,11 +221,11 @@ export const separatorPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Restyled with CSS Variables',
                         note: 'A thick rule in the primary color, with a larger label.',
-                        item: demoFrame({
+                        children: demoFrame({
                             className: 'tb-separator-panel__restyled',
-                            item: vbox({
+                            children: vbox({
                                 className: 'tb-separator-panel__stack',
-                                items: [
+                                children: [
                                     separator({label: 'Section One', labelPosition: 'start'}),
                                     block('Content'),
                                     separator()
@@ -240,13 +240,13 @@ export const separatorPanel = hoistCmp.factory({
 });
 
 function block(text: string) {
-    return div({className: 'tb-separator-panel__block', item: text});
+    return div({className: 'tb-separator-panel__block', children: text});
 }
 
 function figure(label: string, value: string) {
     return vbox({
         className: 'tb-separator-panel__figure',
-        items: [span(label), span(value)]
+        children: [span(label), span(value)]
     });
 }
 
