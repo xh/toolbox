@@ -25,3 +25,20 @@ html {
   gap: var(--xh-spacing-half);
   margin-top: var(--xh-spacing-half);
 }
+
+// The closing price tooltip of the portfolio Orders grid: a title over label and value pairs.
+.tb-closing-price-tip {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: var(--xh-spacing-double);
+  row-gap: var(--xh-spacing-half);
+
+  &__value {
+    text-align: right;
+  }
+
+  &__title {
+    grid-column: 1 / -1;
+    font-weight: 600;
+  }
+}
