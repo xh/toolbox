@@ -1,6 +1,6 @@
 ---
 name: release-toolbox
-description: Cut a versioned production release of Toolbox - swap Hoist libraries from their working SNAPSHOTs to the latest official releases (hoist-core + @xh/hoist), finalize the CHANGELOG, commit on develop, ff-merge develop into master, trigger and watch the Build Release + Deploy Release GitHub Actions through to a successful prod deploy, then restore develop to its working-SNAPSHOT state. Use this skill whenever the developer wants to release Toolbox, cut a new Toolbox version, do a Toolbox prod release, ship a versioned build, or asks "let's release" / "release a new version" in this repo - even if they don't name every step. This is the authoritative runbook for the Toolbox release process; do not improvise the steps from memory.
+description: Cut a versioned production release of Toolbox - swap Hoist libraries from their working SNAPSHOTs to the latest official releases (hoist-core, @xh/hoist, @xh/hoist-dev-utils, @xh/hoist-chat-kit), finalize the CHANGELOG, commit on develop, ff-merge develop into master, trigger and watch the Build Release + Deploy Release GitHub Actions through to a successful prod deploy, then restore develop to its working-SNAPSHOT state. Use this skill whenever the developer wants to release Toolbox, cut a new Toolbox version, do a Toolbox prod release, ship a versioned build, or asks "let's release" / "release a new version" in this repo - even if they don't name every step. This is the authoritative runbook for the Toolbox release process; do not improvise the steps from memory.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, mcp__hoist-react__hoist-search-docs, mcp__hoist-react__hoist-read-doc
 ---
 
@@ -13,9 +13,10 @@ confirmation gate - **never push, merge, or trigger a build without the develope
 ## Mental model - read this first
 
 Toolbox is XH's canary app: `develop` is kept on **working SNAPSHOT** versions of the Hoist
-libraries so we dogfood unreleased framework changes. For hoist-react that is expressed as the bare
-npm dist-tag `"@xh/hoist": "next"` rather than a pinned version or range (see Phase 9 for why); for
-hoist-core, as an explicit `x.y-SNAPSHOT` in `gradle.properties`. But we **ship** Toolbox against
+libraries so we dogfood unreleased framework changes. For the npm packages (hoist-react,
+hoist-dev-utils and hoist-chat-kit) that is expressed as the bare npm dist-tag `"next"` rather than
+a pinned version or range (see Phase 9 for why); for hoist-core, as an explicit `x.y-SNAPSHOT` in
+`gradle.properties`. But we **ship** Toolbox against
 the latest **official, versioned** Hoist releases. A release is therefore a brief, deliberate excursion from
 SNAPSHOTs to releases and back:
 
@@ -66,13 +67,11 @@ Three invariants that drive the whole process - keep them in mind:
    until a major moves the number. Release builds are unaffected either way - `buildRelease.yml`
    passes `XH_APP_VERSION`, which overrides whatever the config resolves.
 
-3. **Three libraries swap, not two.** `@xh/hoist` (hoist-react) and `@xh/hoist-dev-utils` both sit
-   on the npm dist-tag `next` between releases; `hoistCoreVersion` (hoist-core) sits on an explicit
-   `x.y-SNAPSHOT` in `gradle.properties`. All three pin to a release for the release commit and are
-   restored afterward. (dev-utils moved onto `next` alongside hoist-react - earlier revisions of this
-   runbook said it stays on a caret range and never swaps, which is no longer true.) Each swap
-   also moves **two lockfiles**: `client-app/pnpm-lock.yaml` for the npm pair and `gradle.lockfile`
-   for hoist-core. A stale `gradle.lockfile` is dangerous. If the lock holds a higher hoist-core
+3. **Four libraries swap.** `@xh/hoist` (hoist-react), `@xh/hoist-dev-utils` and
+   `@xh/hoist-chat-kit` all sit on the npm dist-tag `next` between releases; `hoistCoreVersion`
+   (hoist-core) sits on an explicit `x.y-SNAPSHOT` in `gradle.properties`. All four pin to a release
+   for the release commit and are restored afterward. Each swap also moves **two lockfiles**:
+   `client-app/pnpm-lock.yaml` for the npm packages and `gradle.lockfile` for hoist-core. A stale `gradle.lockfile` is dangerous. If the lock holds a higher hoist-core
    than `hoistCoreVersion`, Gradle silently resolves the locked version. A release that pins
    `45.0-SNAPSHOT` down to `44.0.0` without `--write-locks` builds clean and ships the snapshot.
 
@@ -144,8 +143,8 @@ classify the situation, and confirm with the developer before changing anything.
   the `version:` field (e.g. `87.0.0-SNAPSHOT.1786485357526` -> snap major 87). Equivalently,
   `npm view @xh/hoist dist-tags --json` and read the `next` tag. See "Why `next`, not a caret
   range" in Phase 9 for the background.
-- `@xh/hoist-dev-utils`: same story - the spec is the `next` dist-tag, so read the resolved version
-  from `pnpm-lock.yaml` or `npm view @xh/hoist-dev-utils dist-tags --json`.
+- `@xh/hoist-dev-utils` and `@xh/hoist-chat-kit`: same story - each spec is the `next` dist-tag,
+  so read the resolved version from `pnpm-lock.yaml` or `npm view <pkg> dist-tags --json`.
 - `hoistCoreVersion`: `gradle.properties` (e.g. `41.0-SNAPSHOT` -> snap major 41).
 
 **Read both the lockfile and the `next` tag, because they can differ.** The lockfile records the
@@ -163,14 +162,17 @@ that is the code Toolbox runs on. Note the gap if `next` is ahead.
   Phase 9; the two uses are unrelated - here you want `latest`.)
 - **hoist-dev-utils** (npm): `npm view @xh/hoist-dev-utils dist-tags --json`, again reading
   `latest`. It versions on its own line, independent of hoist-react.
+- **hoist-chat-kit** (npm): `npm view @xh/hoist-chat-kit dist-tags --json`, again reading
+  `latest`. It also versions on its own line, but it declares a peer range on `@xh/hoist`. See the
+  chat-kit check in step 4.
 - **hoist-core** (Maven Central): `curl -s https://repo1.maven.org/maven2/io/xh/hoist-core/maven-metadata.xml`
   and read the `<release>` element - the newest non-SNAPSHOT version. (SNAPSHOTs live in a separate
   repo and won't appear here.)
 
 ### 3. Classify each library against its snap major
 
-Classify the two libraries **independently**: hoist-react and hoist-core version separately, on
-their own release schedules, and can land in different cases in the same release. For each,
+Classify hoist-react, hoist-core and hoist-chat-kit **independently**: each versions separately,
+on its own release schedule, and can land in a different case in the same release. For each,
 compare that library's latest release to that library's current snap major (snap = next-major).
 The examples below are hoist-react's; substitute hoist-core's own numbers when classifying it.
 
@@ -209,13 +211,29 @@ way, two possibilities when it's incompatible:
 - This should wait for the matching Hoist release, or
 - Ship the release directly from `master` instead of `develop` (see the note in Phase 3).
 
+**Chat-kit must match the chosen hoist-react release.** Each kit release declares a peer range on
+`@xh/hoist`. Check that the kit release you plan to take accepts the hoist-react release you plan
+to take:
+
+```bash
+npm view @xh/hoist-chat-kit@<kit-ver> peerDependencies
+```
+
+If it does not, look for an older kit release whose peer range does, and confirm Toolbox runs on
+it. A kit major often moves with a Hoist major (for example, the v91 CSS variable renames). In the
+"still developing" case, `latest` can be a kit line built for the prior Hoist major, while Toolbox
+on `develop` uses kit APIs from the newer snapshot. Phase 3's typecheck and a look at the Chat Kit
+tab are the real test. If no kit release fits, the release should wait for one, as with
+hoist-react.
+
 In the clean cases (matching release exists, or no breaking-change adaptation), proceed.
 
 ### 5. Propose and confirm
 
 State the proposed target versions plainly and **always confirm with the developer** before
-applying - e.g. "Proposing hoist-core `40.1.0` and @xh/hoist `86.1.0` (both 'still developing the
-next major' - latest releases of the current lines; Toolbox looks compatible). OK?" Wait for go.
+applying - e.g. "Proposing hoist-core `40.1.0`, @xh/hoist `86.1.0`, @xh/hoist-dev-utils `15.0.0` and
+@xh/hoist-chat-kit `2.1.0` (core and react 'still developing the next major'; the kit release peers on
+`@xh/hoist` 86; Toolbox looks compatible). OK?" Wait for go.
 
 ---
 
@@ -229,8 +247,9 @@ Once the developer confirms the targets, edit the two files:
   version alone - the spec-rewriting described in Phase 9 only affects prerelease versions.)
 - **`gradle.properties`**: set `hoistCoreVersion` to the **full semver** release (e.g.
   `hoistCoreVersion=40.1.0`).
-- **`client-app/package.json`**: pin `@xh/hoist-dev-utils` the same way - it is also on the `next`
-  dist-tag, so replace it with its **exact** latest release (e.g. `"@xh/hoist-dev-utils": "15.0.0"`).
+- **`client-app/package.json`**: pin `@xh/hoist-dev-utils` and `@xh/hoist-chat-kit` the same way.
+  Both are also on the `next` dist-tag, so replace each with its **exact** release (e.g.
+  `"@xh/hoist-dev-utils": "15.0.0"`, `"@xh/hoist-chat-kit": "2.1.0"`).
 
 Then refresh the client lockfile so the build is reproducible:
 
@@ -289,6 +308,10 @@ This is the authoritative confirmation of the Phase 2.4 assessment - run it, don
 ```bash
 cd client-app && pnpm lint && pnpm typecheck
 ```
+
+Also open the Chat Kit tab in a local build against the pinned packages (not `--inline-package`).
+Kit styling breaks silently when the kit and Hoist disagree on CSS variables, and typecheck cannot
+see that.
 
 `pnpm typecheck` (`tsc --noEmit`) **type-checks Toolbox against the `@xh/hoist` you just
 installed** - the same check CI and the release build run, and a gate distinct from `pnpm lint`
@@ -494,7 +517,8 @@ Build Release validates the version, builds the tomcat (WAR via `-PxhAppVersion`
 the `v<version>` git tag and a GitHub Release. If `validate` fails, read the logs
 (`gh run view <run-id> --log-failed`) - the most common cause is a version that isn't a valid
 single increment, or running from the wrong branch. `validate` also fails if a Hoist library on
-`master` is not an exact release, or if `gradle.lockfile` does not lock the declared
+`master` (`@xh/hoist`, `@xh/hoist-dev-utils` or `@xh/hoist-chat-kit`) is not an exact release, or
+if `gradle.lockfile` does not lock the declared
 `hoistCoreVersion`. The error names the file. Fix it on `develop` (Phases 3 and 5), ff-merge to
 `master` again, and rerun.
 
@@ -546,15 +570,15 @@ git checkout develop
 
 ### 1. Restore the Hoist libraries to SNAPSHOTs
 
-Reset all three libraries. They restore differently - hoist-react and hoist-dev-utils by dist-tag,
-hoist-core by explicit version:
+Reset all four libraries. They restore differently - the npm packages by dist-tag, hoist-core by
+explicit version:
 
-**hoist-react + hoist-dev-utils** - always restore both `client-app/package.json` specs to the bare
-dist-tag, in every case:
+**hoist-react, hoist-dev-utils and hoist-chat-kit** - always restore all three
+`client-app/package.json` specs to the bare dist-tag, in every case:
 
 ```json
 {
-  "dependencies": {"@xh/hoist": "next"},
+  "dependencies": {"@xh/hoist": "next", "@xh/hoist-chat-kit": "next"},
   "devDependencies": {"@xh/hoist-dev-utils": "next"}
 }
 ```
@@ -578,10 +602,10 @@ advances independently of hoist-react's; the examples below are all hoist-core v
 
 Then `cd client-app && pnpm install` to update the lockfile. It prints a version delta for each
 package that moved, but read the resolved versions back before committing - `pnpm hoistVer` covers
-`@xh/hoist` only, so check dev-utils explicitly:
+`@xh/hoist` only, so check dev-utils and chat-kit explicitly:
 
 ```bash
-cd client-app && pnpm hoistVer && node -p "require('@xh/hoist-dev-utils/package.json').version"
+cd client-app && pnpm hoistVer && for p in @xh/hoist-dev-utils @xh/hoist-chat-kit; do node -p "require('$p/package.json').version"; done
 ```
 
 Then regenerate the Gradle lockfile for the restored hoist-core snap, as in Phase 3:
