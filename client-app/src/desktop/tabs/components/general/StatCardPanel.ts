@@ -231,7 +231,7 @@ export const statCardPanel = hoistCmp.factory({
                     demoSection({
                         title: 'With a Sparkline',
                         note: 'A Sparkline as the detail under a figure, or as the subValue beside it.',
-                        item: statCardStrip(
+                        children: statCardStrip(
                             statCard({
                                 title: 'Net Revenue · 12 Weeks',
                                 value: fmtMillions(last(WEEKLY_REVENUE), {

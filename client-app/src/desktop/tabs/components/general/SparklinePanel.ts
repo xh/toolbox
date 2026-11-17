@@ -66,7 +66,7 @@ export const sparklinePanel = hoistCmp.factory({
                     info: 'Drives the Playground sparkline.',
                     icon: Icon.experiment(),
                     intent: 'primary',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Type',
                             propName: 'SparklineProps.type',
@@ -133,12 +133,12 @@ export const sparklinePanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 300,
                             showValue: false,
                             caption: 'At its default size of 80 by 24 pixels, unless stretched.',
@@ -150,7 +150,7 @@ export const sparklinePanel = hoistCmp.factory({
                                 width: stretch ? '100%' : undefined,
                                 height: stretch ? 60 : undefined
                             }),
-                            item: sparkline({
+                            children: sparkline({
                                 data: model.data,
                                 ...lineProps,
                                 markers,
@@ -163,16 +163,16 @@ export const sparklinePanel = hoistCmp.factory({
                     demoSection({
                         title: 'Types',
                         note: 'At the default size, and at 200 by 48.',
-                        item: demoGrid({
-                            items: (['line', 'area', 'bar'] as const).map(type =>
+                        children: demoGrid({
+                            children: (['line', 'area', 'bar'] as const).map(type =>
                                 demoRow({
                                     key: type,
                                     label: type,
-                                    items: [
+                                    children: [
                                         sparkline({data: UP, type}),
                                         div({
                                             style: {marginTop: 8},
-                                            item: sparkline({
+                                            children: sparkline({
                                                 data: UP,
                                                 type,
                                                 width: 200,
@@ -187,9 +187,9 @@ export const sparklinePanel = hoistCmp.factory({
                     demoSection({
                         title: 'Color',
                         note: 'The neutral default, each intent, the trend, and a CSS color.',
-                        item: div({
+                        children: div({
                             className: 'tb-sparkline-panel__row',
-                            items: [
+                            children: [
                                 labeled('default', sparkline({data: UP})),
                                 ...(['primary', 'success', 'warning', 'danger'] as Intent[]).map(
                                     intent =>
@@ -210,9 +210,9 @@ export const sparklinePanel = hoistCmp.factory({
                     demoSection({
                         title: 'Marks',
                         note: 'markers and a baseline, at 160 by 40.',
-                        item: div({
+                        children: div({
                             className: 'tb-sparkline-panel__row',
-                            items: [
+                            children: [
                                 labeled(
                                     "markers: ['last']",
                                     sparkline({data: UP, markers: ['last'], ...MID})
@@ -245,9 +245,9 @@ export const sparklinePanel = hoistCmp.factory({
                     demoSection({
                         title: 'Bars',
                         note: 'Bars grow from zero, or from a baseline.',
-                        item: div({
+                        children: div({
                             className: 'tb-sparkline-panel__row',
-                            items: [
+                            children: [
                                 labeled(
                                     'colorNegative, baseline: 0',
                                     sparkline({
@@ -292,9 +292,9 @@ export const sparklinePanel = hoistCmp.factory({
                     demoSection({
                         title: 'Sizing',
                         note: "Inline in text, and stretched with width: '100%'.",
-                        items: [
+                        children: [
                             div({
-                                items: [
+                                children: [
                                     'Volume rose through the week ',
                                     sparkline({data: UP, colorByTrend: true, markers: ['last']}),
                                     ' and closed at a high.'
@@ -302,11 +302,11 @@ export const sparklinePanel = hoistCmp.factory({
                             }),
                             demoGrid({
                                 columns: 2,
-                                items: [
+                                children: [
                                     demoFrame({
                                         label: 'Stretched line',
                                         info: "width: '100%', height: 60",
-                                        item: sparkline({
+                                        children: sparkline({
                                             data: model.longSeries,
                                             width: '100%',
                                             height: 60,
@@ -316,7 +316,7 @@ export const sparklinePanel = hoistCmp.factory({
                                     demoFrame({
                                         label: 'Stretched bars',
                                         info: "width: '100%', height: 60",
-                                        item: sparkline({
+                                        children: sparkline({
                                             data: DAILY_PNL,
                                             type: 'bar',
                                             colorNegative: true,
@@ -332,7 +332,7 @@ export const sparklinePanel = hoistCmp.factory({
                     demoSection({
                         title: 'In a StatCard',
                         note: 'As the detail under a figure, and as the subValue beside it.',
-                        item: statCardStrip(
+                        children: statCardStrip(
                             statCard({
                                 title: 'Orders',
                                 value: fmtNumber(last(ORDERS_BY_DAY), {precision: 0}),
@@ -386,26 +386,26 @@ export const sparklinePanel = hoistCmp.factory({
                     demoSection({
                         title: 'In a Grid Column',
                         note: 'The same 30 closing prices in Hoist and AG Grid sparklines. Hover a cell for a tooltip - one per sparkline in Hoist, one per point in AG Grid. Each row scales to itself.',
-                        item: div({
+                        children: div({
                             className: 'tb-sparkline-panel__grid',
-                            item: grid()
+                            children: grid()
                         })
                     }),
                     demoSection({
                         title: 'One Scale',
                         note: 'min and max put several sparklines on one scale.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 2,
-                            items: [
+                            children: [
                                 demoFrame({
                                     label: 'Own scale',
                                     info: 'Each looks the same height',
-                                    item: scaleRows()
+                                    children: scaleRows()
                                 }),
                                 demoFrame({
                                     label: 'Shared scale',
                                     info: 'min: 0, max: 120',
-                                    item: scaleRows({min: 0, max: 120})
+                                    children: scaleRows({min: 0, max: 120})
                                 })
                             ]
                         })
@@ -413,9 +413,9 @@ export const sparklinePanel = hoistCmp.factory({
                     demoSection({
                         title: 'Gaps and Partial Data',
                         note: 'A sparkline never fails on odd data.',
-                        item: div({
+                        children: div({
                             className: 'tb-sparkline-panel__row',
-                            items: [
+                            children: [
                                 labeled(
                                     'gaps',
                                     sparkline({data: [3, 5, null, null, 6, 8, NaN, 7, 9], ...MID})
@@ -438,9 +438,9 @@ export const sparklinePanel = hoistCmp.factory({
                     demoSection({
                         title: 'Restyled with CSS Variables',
                         note: 'A thick line, large dots and a strong area fill.',
-                        item: demoFrame({
+                        children: demoFrame({
                             className: 'tb-sparkline-panel__restyled',
-                            item: sparkline({
+                            children: sparkline({
                                 data: UP,
                                 type: 'area',
                                 intent: 'primary',
@@ -471,8 +471,8 @@ function trendTip(data: number[], title?: string): ReactElement {
         change = start ? (end - start) / Math.abs(start) : null;
     return div({
         className: 'tb-sparkline-tip',
-        items: [
-            title ? div({className: 'tb-sparkline-tip__title', item: title}) : null,
+        children: [
+            title ? div({className: 'tb-sparkline-tip__title', children: title}) : null,
             ...tipRow('First', fmtNumber(start)),
             ...tipRow('Last', fmtNumber(end)),
             ...tipRow(
@@ -488,8 +488,8 @@ function trendTip(data: number[], title?: string): ReactElement {
 
 function tipRow(label: string, value: ReactNode) {
     return [
-        span({key: label, item: label}),
-        span({key: `${label}-value`, className: 'tb-sparkline-tip__value', item: value})
+        span({key: label, children: label}),
+        span({key: `${label}-value`, className: 'tb-sparkline-tip__value', children: value})
     ];
 }
 
@@ -501,7 +501,7 @@ function labeled(label: string, item: ReturnType<typeof sparkline>) {
     return div({
         key: label,
         className: 'tb-sparkline-panel__labeled',
-        items: [item, span(label)]
+        children: [item, span(label)]
     });
 }
 
@@ -522,10 +522,10 @@ function scaleRows(scale: Pick<SparklineProps, 'min' | 'max'> = {}) {
     ];
     return div({
         className: 'tb-sparkline-panel__scale-rows',
-        items: rows.map(([label, values]) =>
+        children: rows.map(([label, values]) =>
             div({
                 key: label,
-                items: [
+                children: [
                     span(label),
                     sparkline({data: values, type: 'area', width: 200, height: 48, ...scale})
                 ]

@@ -145,10 +145,10 @@ function closingPriceTip(series: Array<[Date, number]>): ReactElement {
         [endDate, end] = last(series);
     return div({
         className: 'tb-closing-price-tip',
-        items: [
+        children: [
             div({
                 className: 'tb-closing-price-tip__title',
-                items: [fmtDate(startDate, 'MMM D'), ' to ', fmtDate(endDate, 'MMM D')]
+                children: [fmtDate(startDate, 'MMM D'), ' to ', fmtDate(endDate, 'MMM D')]
             }),
             span('First'),
             tipValue(fmtNumber(start, {precision: 2})),
@@ -167,5 +167,5 @@ function closingPriceTip(series: Array<[Date, number]>): ReactElement {
 }
 
 function tipValue(value: ReactNode): ReactElement {
-    return span({className: 'tb-closing-price-tip__value', item: value});
+    return span({className: 'tb-closing-price-tip__value', children: value});
 }
