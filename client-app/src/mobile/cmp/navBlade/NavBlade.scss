@@ -53,9 +53,9 @@
   &__header {
     flex: none;
     align-items: center;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     height: 64px;
-    padding: 0 var(--xh-pad-px);
+    padding: 0 var(--xh-spacing);
     background: var(--xh-bg-alt);
     border-bottom: var(--xh-border-solid);
   }
@@ -70,13 +70,13 @@
   }
 
   &__title {
-    font-size: var(--xh-font-size-large-px);
+    font-size: var(--xh-font-size-large);
     font-weight: 600;
     color: var(--xh-text-color);
   }
 
   &__subtitle {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
@@ -86,7 +86,7 @@
   &__nav {
     flex: 1;
     overflow-y: auto;
-    padding: var(--xh-pad-half-px);
+    padding: var(--xh-spacing-half);
   }
 
   &__sub-items {
@@ -96,16 +96,16 @@
   // Hairline separating the top-level destinations (Home, Docs) from the example groups.
   &__rule {
     height: 0;
-    margin: var(--xh-pad-half-px) var(--xh-pad-px);
+    margin: var(--xh-spacing-half) var(--xh-spacing);
     border-top: var(--xh-border-solid);
   }
 
   &__row {
     align-items: center;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     height: 44px;
-    padding: 0 var(--xh-pad-px);
-    border-radius: var(--xh-border-radius-px);
+    padding: 0 var(--xh-spacing);
+    border-radius: var(--xh-border-radius);
     color: var(--xh-text-color);
     cursor: pointer;
     user-select: none;
@@ -137,12 +137,12 @@
   }
 
   &__row-text {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
   }
 
   &__row-chevron {
     flex: none;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
@@ -152,10 +152,10 @@
   &__footer {
     flex: none;
     align-items: center;
-    gap: var(--xh-pad-half-px);
-    padding: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
+    padding: var(--xh-spacing-half);
     // Keep the footer clear of the iOS home indicator / safe area in standalone (PWA) mode.
-    padding-bottom: calc(var(--xh-pad-half-px) + var(--xh-pad-safe-bottom, 0px));
+    padding-bottom: calc(var(--xh-spacing-half) + var(--xh-safe-area-inset-bottom, 0px));
     border-top: var(--xh-border-solid);
   }
 
