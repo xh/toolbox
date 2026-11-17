@@ -12,7 +12,7 @@ export const chartsPanel = hoistCmp.factory({
 
     render({model}) {
         return panel({
-            item: model.symbol
+            children: model.symbol
                 ? tabContainer({
                       modelConfig: {
                           persistWith: {

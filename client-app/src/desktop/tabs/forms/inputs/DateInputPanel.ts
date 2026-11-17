@@ -102,7 +102,7 @@ export const dateInputPanel = hoistCmp.factory({
                     width: '100%'
                 }),
                 value: model.playground,
-                item: dateInput({
+                children: dateInput({
                     bind: 'playground',
                     ...ambientProps,
                     enableClear: model.pgEnableClear,
@@ -116,7 +116,7 @@ export const dateInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Min and max date',
                     info: 'minDate, maxDate, enableClear',
-                    item: dateInput({
+                    children: dateInput({
                         bind: 'minMax',
                         ...ambientProps,
                         minDate: moment().subtract(5, 'weeks').toDate(),
@@ -129,7 +129,7 @@ export const dateInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'LocalDate valued',
                     info: "valueType: 'localDate'",
-                    item: dateInput({
+                    children: dateInput({
                         bind: 'localDate',
                         ...ambientProps,
                         valueType: 'localDate',
@@ -139,7 +139,7 @@ export const dateInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Time to the second',
                     info: "timePrecision: 'second'",
-                    item: dateInput({
+                    children: dateInput({
                         bind: 'dateTime',
                         ...ambientProps,
                         timePrecision: 'second',
@@ -149,7 +149,7 @@ export const dateInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Custom format',
                     info: "formatString: 'MM/DD/YYYY'",
-                    item: dateInput({
+                    children: dateInput({
                         bind: 'customFormat',
                         ...ambientProps,
                         formatString: 'MM/DD/YYYY',
@@ -159,7 +159,7 @@ export const dateInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: dateInput({
+                    children: dateInput({
                         bind: 'disabledDate',
                         ...ambientProps,
                         disabled: true,
@@ -169,14 +169,14 @@ export const dateInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Invalid',
                     info: 'Bound to a failing FormField rule',
-                    item: form({
+                    children: form({
                         model: model.formModel,
-                        item: formField({
+                        children: formField({
                             field: 'invalidDate',
                             label: null,
                             minimal: true,
                             ...formFieldProps,
-                            item: dateInput()
+                            children: dateInput()
                         })
                     })
                 })
@@ -195,27 +195,27 @@ export const dateInputPanel = hoistCmp.factory({
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'startDate',
                                 ...formFieldProps,
-                                item: dateInput({valueType: 'localDate'})
+                                children: dateInput({valueType: 'localDate'})
                             })
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'endDate',
                                 inline: true,
                                 ...formFieldProps,
-                                item: dateInput()
+                                children: dateInput()
                             })
                         })
                     })

@@ -35,37 +35,40 @@ export const browserTabMock = hoistCmp.factory({
                   }
                 : null,
             contentBoxProps: {justifyContent: 'center'},
-            items: ['light', 'dark'].map(theme =>
+            children: ['light', 'dark'].map(theme =>
                 div({
                     key: theme,
                     className: `tb-fav-tabs__browser tb-fav-tabs__browser--${theme}`,
-                    items: [
+                    children: [
                         div({
                             className: 'tb-fav-tabs__strip',
-                            items: [
+                            children: [
                                 div({
                                     className: 'tb-fav-tabs__tab tb-fav-tabs__tab--active',
-                                    items: [
+                                    children: [
                                         img({src: svgDataUrl, width: 16, height: 16, alt: ''}),
-                                        span({className: 'tb-fav-tabs__title', item: appName}),
-                                        span({className: 'tb-fav-tabs__close', item: '×'})
+                                        span({className: 'tb-fav-tabs__title', children: appName}),
+                                        span({className: 'tb-fav-tabs__close', children: '×'})
                                     ]
                                 }),
                                 div({
                                     className: 'tb-fav-tabs__tab',
-                                    items: [
+                                    children: [
                                         Icon.browser({className: 'tb-fav-tabs__other-icon'}),
-                                        span({className: 'tb-fav-tabs__title', item: 'New Tab'}),
-                                        span({className: 'tb-fav-tabs__close', item: '×'})
+                                        span({
+                                            className: 'tb-fav-tabs__title',
+                                            children: 'New Tab'
+                                        }),
+                                        span({className: 'tb-fav-tabs__close', children: '×'})
                                     ]
                                 })
                             ]
                         }),
                         div({
                             className: 'tb-fav-tabs__toolbar',
-                            item: div({
+                            children: div({
                                 className: 'tb-fav-tabs__address',
-                                item: 'your-app.example.com'
+                                children: 'your-app.example.com'
                             })
                         })
                     ]

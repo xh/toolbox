@@ -108,7 +108,7 @@ export const codeInputsPanel = hoistCmp.factory({
                     width: '100%'
                 }),
                 value: model.playground,
-                item: jsonInput({
+                children: jsonInput({
                     bind: 'playground',
                     ...ambientProps,
                     autoFormat: pgAutoFormat,
@@ -124,17 +124,17 @@ export const codeInputsPanel = hoistCmp.factory({
                 demoRow({
                     label: 'JsonInput',
                     info: 'Default - JSON linting and formatting',
-                    item: jsonInput({bind: 'json', ...ambientProps, height: 140, width: '100%'})
+                    children: jsonInput({bind: 'json', ...ambientProps, height: 140, width: '100%'})
                 }),
                 demoRow({
                     label: 'CodeInput',
                     info: 'Base editor, no language mode',
-                    item: codeInput({bind: 'code', ...ambientProps, height: 140, width: '100%'})
+                    children: codeInput({bind: 'code', ...ambientProps, height: 140, width: '100%'})
                 }),
                 demoRow({
                     label: 'Read-only',
                     info: 'readonly: true',
-                    item: codeInput({
+                    children: codeInput({
                         bind: 'readonlyCode',
                         ...ambientProps,
                         readonly: true,
@@ -145,7 +145,7 @@ export const codeInputsPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Line styles',
                     info: 'lineStyles highlighting line 2',
-                    item: codeInput({
+                    children: codeInput({
                         bind: 'styledCode',
                         ...ambientProps,
                         lineStyles: [{lines: [2], className: 'xh-intent-warning'}],
@@ -156,7 +156,7 @@ export const codeInputsPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Autocomplete',
                     info: 'extensions: [autocompletion(...)] - Ctrl-Space or type to complete',
-                    item: codeInput({
+                    children: codeInput({
                         bind: 'sql',
                         ...ambientProps,
                         language: 'sql',
@@ -170,7 +170,7 @@ export const codeInputsPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: jsonInput({
+                    children: jsonInput({
                         bind: 'disabledJson',
                         ...ambientProps,
                         disabled: true,
@@ -181,41 +181,41 @@ export const codeInputsPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Invalid',
                     info: 'isValidJson rule with malformed JSON',
-                    item: form({
+                    children: form({
                         model: model.formModel,
-                        item: formField({
+                        children: formField({
                             field: 'invalidJson',
                             label: null,
                             minimal: true,
                             ...formFieldProps,
-                            item: jsonInput({height: 140, width: '100%'})
+                            children: jsonInput({height: 140, width: '100%'})
                         })
                     })
                 })
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, isValidJson rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'config',
                                 ...formFieldProps,
-                                item: jsonInput({height: 120, width: '100%'})
+                                children: jsonInput({height: 120, width: '100%'})
                             })
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'overrides',
                                 inline: true,
                                 ...formFieldProps,
-                                item: jsonInput({height: 120, width: '100%'})
+                                children: jsonInput({height: 120, width: '100%'})
                             })
                         })
                     })

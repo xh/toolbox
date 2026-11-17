@@ -30,7 +30,7 @@ export const columnChooserTestPanel = hoistCmp.factory({
                 span('Columns'),
                 buttonGroupInput({
                     bind: 'size',
-                    items: [
+                    children: [
                         button({text: 'Small', value: 'small'}),
                         button({text: 'Medium', value: 'medium'}),
                         button({text: 'Large', value: 'large'})
@@ -40,7 +40,7 @@ export const columnChooserTestPanel = hoistCmp.factory({
                 span('Chooser'),
                 buttonGroupInput({
                     bind: 'chooserMode',
-                    items: [
+                    children: [
                         button({text: 'Modal', value: 'modal'}),
                         button({text: 'Docked', value: 'docked'})
                     ]
@@ -59,10 +59,10 @@ export const columnChooserTestPanel = hoistCmp.factory({
                 colChooserButton({gridModel: model.gridModel, text: 'Choose Columns'}),
                 exportButton({gridModel: model.gridModel})
             ],
-            items: [
+            children: [
                 hframe(
                     // With `mode: 'docked'`, Grid renders the chooser to the right of the grid.
-                    panel({flex: 1, item: grid({model: model.gridModel})}),
+                    panel({flex: 1, children: grid({model: model.gridModel})}),
                     panel({
                         title: 'Column State',
                         icon: Icon.json(),
@@ -72,7 +72,7 @@ export const columnChooserTestPanel = hoistCmp.factory({
                             collapsible: true,
                             resizable: true
                         },
-                        item: jsonInput({
+                        children: jsonInput({
                             value: model.columnStateJson,
                             readonly: true,
                             language: 'json',

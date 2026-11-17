@@ -95,10 +95,10 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     onClick: () => model.refreshAsync()
                 })
             ],
-            item: panel({
+            children: panel({
                 height: '60vh',
                 width: '90%',
-                item: sampleGrid({omitGridTools: true, omitMask: true}),
+                children: sampleGrid({omitGridTools: true, omitMask: true}),
                 loadingIndicator: loadingIndicator({
                     spinner: model.spinner,
                     corner: model.corner,

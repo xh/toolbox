@@ -45,11 +45,11 @@ export const externalSortGridPanel = hoistCmp.factory({
                 }
             ],
             // Grid display options intentionally omitted here - not relevant to the sort demo.
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel tb-external-sort-panel',
                 mask: 'onLoad',
                 tbar: tbar(),
-                item: grid()
+                children: grid()
             })
         });
     }

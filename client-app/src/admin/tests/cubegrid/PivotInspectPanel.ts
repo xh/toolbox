@@ -29,25 +29,25 @@ export const PivotInspectPanel = hoistCmp({
     render({model}) {
         return panel({
             tbar: tbar(),
-            item: vframe(
+            children: vframe(
                 hframe(
                     panel({
                         title: '1. Query, as the view resolved it',
                         icon: Icon.filter(),
                         width: 360,
-                        item: jsonInput({value: model.queryJson, ...SIDE_BY_SIDE_JSON_PROPS})
+                        children: jsonInput({value: model.queryJson, ...SIDE_BY_SIDE_JSON_PROPS})
                     }),
                     panel({
                         title: '2. Raw records loaded into the Cube',
                         icon: Icon.database(),
                         width: 360,
-                        item: jsonInput({value: model.rawJson, ...SIDE_BY_SIDE_JSON_PROPS})
+                        children: jsonInput({value: model.rawJson, ...SIDE_BY_SIDE_JSON_PROPS})
                     }),
                     panel({
                         title: '3. result.rows - published row data, verbatim',
                         icon: Icon.json(),
                         flex: 1,
-                        item: jsonInput({value: model.rowsJson, ...SIDE_BY_SIDE_JSON_PROPS})
+                        children: jsonInput({value: model.rowsJson, ...SIDE_BY_SIDE_JSON_PROPS})
                     })
                 ),
                 panel({
@@ -59,7 +59,7 @@ export const PivotInspectPanel = hoistCmp({
                         collapsible: true,
                         resizable: true
                     },
-                    item: hframe(
+                    children: hframe(
                         jsonInput({value: model.pathsJson, ...SIDE_BY_SIDE_JSON_PROPS}),
                         jsonInput({value: model.cellFieldsJson, ...SIDE_BY_SIDE_JSON_PROPS})
                     )
@@ -73,7 +73,7 @@ export const PivotInspectPanel = hoistCmp({
                         collapsible: true,
                         resizable: true
                     },
-                    item: jsonInput({value: model.storeJson, ...JSON_PROPS})
+                    children: jsonInput({value: model.storeJson, ...JSON_PROPS})
                 })
             ),
             bbar: bbar()
@@ -113,14 +113,14 @@ const tbar = hoistCmp.factory<PivotInspectModel>(({model}) =>
         switchInput({label: 'includeRoot', bind: 'includeRoot'}),
         switchInput({label: 'includeLeaves', bind: 'includeLeaves'}),
         filler(),
-        span({item: model.status, style: {fontWeight: 600}})
+        span({children: model.status, style: {fontWeight: 600}})
     )
 );
 
 const bbar = hoistCmp.factory<PivotInspectModel>(() =>
     toolbar(
         span({
-            item:
+            children:
                 'Values are 10, 20, ... 80 so every aggregate is checkable by hand. On the 1-dim ' +
                 'preset: Fund 1 / Strat A reads US 10, EU 20, TOTAL 30, and the totals row reads ' +
                 'US 160, EU 200, TOTAL 360.',

@@ -19,30 +19,30 @@ export const sizeStrip = hoistCmp.factory({
             compactHeader: true,
             className: 'tb-fav-sizes',
             contentBoxProps: {justifyContent: 'center'},
-            item: hbox({
+            children: hbox({
                 flexWrap: 'wrap',
                 alignItems: 'flex-end',
                 justifyContent: 'center',
                 gap: 16,
                 overflow: 'visible',
-                items: SIZES.map(size =>
+                children: SIZES.map(size =>
                     // Overflow stays visible so the frame's outline is not clipped.
                     vbox({
                         key: size,
                         alignItems: 'center',
                         gap: 4,
                         overflow: 'visible',
-                        items: [
+                        children: [
                             div({
                                 className: 'tb-fav-sizes__frame tb-fav-checkerboard',
-                                item: img({
+                                children: img({
                                     src: svgDataUrl,
                                     alt: `${size}px preview`,
                                     width: size,
                                     height: size
                                 })
                             }),
-                            div({className: 'tb-fav-sizes__label', item: `${size}`})
+                            div({className: 'tb-fav-sizes__label', children: `${size}`})
                         ]
                     })
                 )

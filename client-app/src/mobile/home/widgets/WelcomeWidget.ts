@@ -13,15 +13,18 @@ export const welcomeWidget = hoistCmp.factory({
     render() {
         return div({
             className: 'tb-welcome-widget',
-            items: [
-                div({className: 'tb-welcome-widget__headline', item: 'Build serious web apps.'}),
+            children: [
+                div({
+                    className: 'tb-welcome-widget__headline',
+                    children: 'Build serious web apps.'
+                }),
                 p(
                     "Hoist is Extremely Heavy's full-stack toolkit for data-dense enterprise apps. ",
                     'Toolbox is the live reference - every demo here is real Hoist code.'
                 ),
                 hbox({
                     className: 'tb-welcome-widget__ctas',
-                    items: [
+                    children: [
                         button({
                             className: 'tb-welcome-widget__read-docs',
                             text: 'Read the Docs',

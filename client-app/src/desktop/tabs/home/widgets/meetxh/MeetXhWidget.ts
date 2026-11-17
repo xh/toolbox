@@ -16,18 +16,19 @@ export const meetXhWidget = hoistCmp.factory({
 
         return panel({
             className: 'tb-meet-xh',
-            items: [
+            children: [
                 spotlightContact
                     ? spotlight()
                     : div({
                           className: 'tb-meet-xh__fallback',
-                          item: 'Extremely Heavy is a boutique consultancy of experienced enterprise developers - and we are always happy to talk.'
+                          children:
+                              'Extremely Heavy is a boutique consultancy of experienced enterprise developers - and we are always happy to talk.'
                       }),
                 contacts.length > 1 ? avatarRow() : null
             ],
             bbar: toolbar({
                 compact: true,
-                items: [
+                children: [
                     button({
                         text: 'Open Contacts example app',
                         icon: Icon.openExternal(),
@@ -57,20 +58,20 @@ const spotlight = hoistCmp.factory<MeetXhWidgetModel>({
             className: 'tb-meet-xh__spotlight',
             // Re-key per contact to retrigger the fade-in animation on rotation.
             key: c.id,
-            items: [
+            children: [
                 img({className: 'tb-meet-xh__photo', src: model.profilePicUrl(c), alt: c.name}),
                 vbox({
                     className: 'tb-meet-xh__details',
-                    items: [
-                        div({className: 'tb-meet-xh__name', item: c.name}),
-                        div({className: 'tb-meet-xh__location', item: c.location}),
+                    children: [
+                        div({className: 'tb-meet-xh__name', children: c.name}),
+                        div({className: 'tb-meet-xh__location', children: c.location}),
                         hbox({
                             className: 'tb-meet-xh__tags',
-                            items: (c.tags ?? []).map(t =>
-                                span({className: 'tb-meet-xh__tag', item: t, key: t})
+                            children: (c.tags ?? []).map(t =>
+                                span({className: 'tb-meet-xh__tag', children: t, key: t})
                             )
                         }),
-                        div({className: 'tb-meet-xh__bio', item: c.bio?.split('\n')[0]})
+                        div({className: 'tb-meet-xh__bio', children: c.bio?.split('\n')[0]})
                     ]
                 }),
                 button({
@@ -88,7 +89,7 @@ const avatarRow = hoistCmp.factory<MeetXhWidgetModel>({
     render({model}) {
         return hbox({
             className: 'tb-meet-xh__avatars',
-            items: model.contacts
+            children: model.contacts
                 .filter(it => it.id !== model.spotlightId)
                 .map(c =>
                     tooltip({
@@ -98,7 +99,7 @@ const avatarRow = hoistCmp.factory<MeetXhWidgetModel>({
                         // Click goes on the tooltip's target wrapper - Blueprint renders the
                         // wrapped child with pointer-events: none, so the img can't take it.
                         targetProps: {onClick: () => model.spotlight(c.id)},
-                        item: img({
+                        children: img({
                             className: 'tb-meet-xh__avatar',
                             src: model.profilePicUrl(c),
                             alt: c.name

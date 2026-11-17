@@ -64,15 +64,15 @@ export const appOptionsPanel = hoistCmp.factory({
                     notes: "Toolbox's own getAppOptions(), including a custom Font option."
                 }
             ],
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Options dialog',
                         note: 'The real dialog for this app.',
-                        item: demoFrame({
+                        children: demoFrame({
                             info: 'Changes made in the dialog apply to the app and are saved to your preferences.',
                             // Row wrapper sizes the button to its content.
-                            item: hbox(
+                            children: hbox(
                                 button({
                                     icon: Icon.options(),
                                     text: 'Open Options dialog',
@@ -86,14 +86,14 @@ export const appOptionsPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Built-in presets',
                         note: 'Bound to local fields here - nothing is applied or saved.',
-                        item: form({
+                        children: form({
                             model: formModel,
                             // Responsive tiles - two columns when there's room, one when narrow.
                             // The 440px floor clears the widest preset, the four-mode
                             // SegmentedControl.
-                            item: demoGallery({
+                            children: demoGallery({
                                 minTileWidth: 440,
-                                items: [
+                                children: [
                                     presetFrame({
                                         label: 'themeAppOption()',
                                         info: 'Default - preview cards',
@@ -139,14 +139,17 @@ export const appOptionsPanel = hoistCmp.factory({
                         note: 'Any input works - here a RadioCardInput.',
                         // Narrow instance and no value pane, so the band fits a ~700px panel -
                         // the bound value is shown in the caption instead.
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 300,
                             showValue: false,
                             caption: `Rendered from the spec at right, value '${formModel.values.chartType}'. Toolbox's Font option uses the same pattern.`,
                             config: CUSTOM_SNIPPET,
-                            item: form({
+                            children: form({
                                 model: formModel,
-                                item: formField({field: 'chartType', ...CUSTOM_OPTION.formField})
+                                children: formField({
+                                    field: 'chartType',
+                                    ...CUSTOM_OPTION.formField
+                                })
                             })
                         })
                     })
@@ -176,7 +179,7 @@ function presetFrame({
         key: field,
         label,
         info: omitted ? `${info} - omitted in this app` : info,
-        item: omitted ? null : formField({...spec.formField, field})
+        children: omitted ? null : formField({...spec.formField, field})
     });
 }
 
@@ -190,7 +193,7 @@ const CUSTOM_OPTION: AppOptionSpec = {
     refreshRequired: false,
     formField: {
         label: 'Chart type',
-        item: radioCardInput({
+        children: radioCardInput({
             options: CHART_SHAPES.map(v => ({
                 value: v,
                 label: startCase(v),
@@ -206,7 +209,7 @@ const CUSTOM_SNIPPET = `{
     refreshRequired: false,
     formField: {
         label: 'Chart type',
-        item: radioCardInput({
+        children: radioCardInput({
             options: ['line', 'area', 'bar'].map(v => ({
                 value: v,
                 label: startCase(v),

@@ -46,7 +46,7 @@ export const WebSocketTestPanel = hoistCmp({
                     onClick: () => model.unsubscribeClusterAsync()
                 })
             ],
-            item: grid()
+            children: grid()
         });
     }
 });

@@ -28,10 +28,10 @@ export const popupsPage = hoistCmp.factory({
                     notes: 'XH.alert / confirm / prompt / message / toast.'
                 }
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-page xh-tiled-bg',
                 scrollable: true,
-                items: [
+                children: [
                     renderCard('Alert', 'Single-button acknowledgement', () => {
                         XH.alert({
                             title: 'Alert',
@@ -97,9 +97,9 @@ export const popupsPage = hoistCmp.factory({
 function renderCard(title, subtitle, onClick) {
     return div({
         className: 'tb-card tb-popups-card',
-        items: [
-            div({className: 'tb-card__title', item: title}),
-            div({className: 'tb-popups-card__subtitle', item: subtitle}),
+        children: [
+            div({className: 'tb-card__title', children: title}),
+            div({className: 'tb-popups-card__subtitle', children: subtitle}),
             button({
                 text: `Show ${title}`,
                 onClick

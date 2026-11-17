@@ -30,12 +30,12 @@ export const ohlcChartPanel = hoistCmp.factory({
                 'Highcharts as an application dependency.'
             ],
             options: chartDisplayOptions(model),
-            item: panel({
+            children: panel({
                 height: '60vh',
                 width: '90%',
                 mask: 'onLoad',
                 tbar: tbar(),
-                item: chart({aspectRatio: model.aspectRatio})
+                children: chart({aspectRatio: model.aspectRatio})
             }),
             links: [
                 {

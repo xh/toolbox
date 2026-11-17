@@ -45,13 +45,13 @@ export const inspectorPanel = hoistCmp.factory({
                     notes: 'Inspector UI components.'
                 }
             ],
-            item: panel({
+            children: panel({
                 width: 700,
                 height: 250,
                 style: {textAlign: 'center'},
-                items: [
+                children: [
                     vframe({
-                        items: [
+                        children: [
                             p(
                                 'Inspector can be activated via the little ',
                                 Icon.search(),

@@ -25,9 +25,9 @@ export const newsPanel = hoistCmp.factory({
             // Lay the list + detail side-by-side by making the Panel's own content frame a row,
             // rather than nesting them in an explicit hframe.
             contentBoxProps: {flexDirection: 'row'},
-            items: [
+            children: [
                 panel({
-                    item: dataView({
+                    children: dataView({
                         // Allow standard OS-level selection of text within the DataView.
                         // Works along with AppSpec config `showBrowserContextMenu: true` in news.ts.
                         agOptions: {enableCellTextSelection: true}
@@ -82,7 +82,7 @@ const newsDetailPanel = hoistCmp.factory<NewsPanelModel>({
                 resizable: true,
                 collapsible: true
             },
-            item: record
+            children: record
                 ? newsDetail({record})
                 : placeholder(Icon.detail(), 'Select a story to read more.')
         });
@@ -97,10 +97,10 @@ const newsDetail = hoistCmp.factory<NewsPanelModel>({
 
         return vframe({
             className: 'tb-news-detail',
-            items: [
+            children: [
                 div({
                     className: 'tb-news-detail__hero',
-                    item: img({
+                    children: img({
                         src: imageUrl || stockPhoto,
                         alt: '',
                         onError: e => {
@@ -112,13 +112,13 @@ const newsDetail = hoistCmp.factory<NewsPanelModel>({
                 }),
                 div({
                     className: 'tb-news-detail__content',
-                    items: [
-                        div({className: 'tb-news-detail__meta', item: meta}),
-                        div({className: 'tb-news-detail__title', item: title}),
-                        div({className: 'tb-news-detail__body', item: text}),
+                    children: [
+                        div({className: 'tb-news-detail__meta', children: meta}),
+                        div({className: 'tb-news-detail__title', children: title}),
+                        div({className: 'tb-news-detail__body', children: text}),
                         div({
                             className: 'tb-news-detail__actions',
-                            item: button({
+                            children: button({
                                 text: 'Open original article',
                                 icon: Icon.openExternal(),
                                 intent: 'primary',

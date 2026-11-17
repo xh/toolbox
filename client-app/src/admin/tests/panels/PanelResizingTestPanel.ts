@@ -23,15 +23,15 @@ export const PanelResizingTestPanel = hoistCmp({
                     value: model.resizeWhileDragging
                 })
             ),
-            items: [
+            children: [
                 panel({
                     title: 'Top Panel 1',
                     icon: Icon.arrowToBottom(),
                     model: model.topPanel1Model,
                     compactHeader: true,
-                    item: box({
+                    children: box({
                         padding: 10,
-                        item: `Collapsible Top (minSize: ${model.topPanel1Model.minSize}px)`
+                        children: `Collapsible Top (minSize: ${model.topPanel1Model.minSize}px)`
                     }),
                     headerItems: [
                         relativeTimestamp({
@@ -51,9 +51,9 @@ export const PanelResizingTestPanel = hoistCmp({
                     icon: Icon.arrowToBottom(),
                     model: model.topPanel2Model,
                     compactHeader: true,
-                    item: box({
+                    children: box({
                         padding: 10,
-                        item: `Collapsible Top (
+                        children: `Collapsible Top (
                           maxSize: ${model.topPanel2Model.maxSize}px,
                           persistWith: {localStorageKey: 'adminPanelSizing', path: 'topPanel2'}
                           )`
@@ -62,12 +62,13 @@ export const PanelResizingTestPanel = hoistCmp({
                 hbox({
                     flex: 1,
                     className: 'xh-border-top',
-                    items: [
+                    children: [
                         panel({
                             model: model.leftPanel1Model,
-                            item: box({
+                            children: box({
                                 className: 'xh-pad',
-                                item: 'Collapsible Left (no title or icon - collapses to a bare strip)'
+                                children:
+                                    'Collapsible Left (no title or icon - collapses to a bare strip)'
                             })
                         }),
                         panel({
@@ -75,14 +76,14 @@ export const PanelResizingTestPanel = hoistCmp({
                             icon: Icon.arrowToLeft(),
                             model: model.leftPanel2Model,
                             compactHeader: true,
-                            item: box({
+                            children: box({
                                 className: 'xh-pad',
-                                item: `Collapsible Left (minSize: ${model.leftPanel2Model.minSize}px)`
+                                children: `Collapsible Left (minSize: ${model.leftPanel2Model.minSize}px)`
                             })
                         }),
                         panel({
-                            item: box({
-                                items: model.explanation,
+                            children: box({
+                                children: model.explanation,
                                 padding: '0 6 6 6',
                                 display: 'block',
                                 overflowY: 'auto'
@@ -106,9 +107,9 @@ export const PanelResizingTestPanel = hoistCmp({
                             icon: Icon.arrowToRight(),
                             model: model.rightPanel2Model,
                             compactHeader: true,
-                            item: box({
+                            children: box({
                                 className: 'xh-pad',
-                                item: `Collapsible Right (defaultSize: ${model.rightPanel2Model.defaultSize})`
+                                children: `Collapsible Right (defaultSize: ${model.rightPanel2Model.defaultSize})`
                             })
                         }),
                         panel({
@@ -116,9 +117,9 @@ export const PanelResizingTestPanel = hoistCmp({
                             icon: Icon.disabled(),
                             model: model.rightPanel1Model,
                             compactHeader: true,
-                            item: box({
+                            children: box({
                                 className: 'xh-pad',
-                                item: `Collapsible Right (minSize: ${model.rightPanel1Model.minSize}px)`
+                                children: `Collapsible Right (minSize: ${model.rightPanel1Model.minSize}px)`
                             })
                         })
                     ]
@@ -128,9 +129,9 @@ export const PanelResizingTestPanel = hoistCmp({
                     icon: Icon.arrowToBottom(),
                     model: model.bottomPanel2Model,
                     compactHeader: true,
-                    item: box({
+                    children: box({
                         padding: 10,
-                        item: `Collapsible Bottom (
+                        children: `Collapsible Bottom (
                           defaultSize: ${model.bottomPanel2Model.defaultSize},
                           minSize: ${model.bottomPanel2Model.minSize}px,
                           maxSize: ${model.bottomPanel2Model.maxSize}px,
@@ -143,9 +144,9 @@ export const PanelResizingTestPanel = hoistCmp({
                     icon: Icon.arrowToBottom(),
                     model: model.bottomPanel1Model,
                     compactHeader: true,
-                    item: box({
+                    children: box({
                         padding: 10,
-                        item: 'Collapsible Bottom'
+                        children: 'Collapsible Bottom'
                     })
                 })
             ]

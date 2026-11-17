@@ -23,7 +23,7 @@ export const viewColumnFilterPanel = hoistCmp.factory({
                 icon: Icon.filter(),
                 title: 'Column Filter Test Grid',
                 tbar: tbar(),
-                item: grid(),
+                children: grid(),
                 bbar: bbar()
             }),
             filterJsonPanel()
@@ -59,7 +59,7 @@ const filterJsonPanel = hoistCmp.factory(() =>
         },
         icon: Icon.code(),
         title: 'Filter as JSON',
-        item: jsonInput({
+        children: jsonInput({
             flex: 1,
             width: '100%',
             readonly: true,

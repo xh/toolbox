@@ -9,11 +9,11 @@ import type {FetchApiTestModel} from './FetchApiTestModel';
 export const individualBtns = hoistCmp.factory<FetchApiTestModel>(({model}) =>
     vframe({
         style: {overflowY: 'scroll'},
-        items: codes.map(it =>
+        children: codes.map(it =>
             hframe({
                 className: 'http-status-code-frame',
                 overflow: 'unset',
-                items: [
+                children: [
                     button({
                         flexGrow: 1,
                         className: 'http-status-code-button',
@@ -35,7 +35,7 @@ export const individualBtns = hoistCmp.factory<FetchApiTestModel>(({model}) =>
 export const codeGroupBtns = hoistCmp.factory<FetchApiTestModel>(({model}) =>
     vframe({
         style: {overflowY: 'scroll'},
-        items: codes
+        children: codes
             .filter(it => !(it.code % 100))
             .map(it =>
                 button({
@@ -51,7 +51,7 @@ export const codeGroupBtns = hoistCmp.factory<FetchApiTestModel>(({model}) =>
 export const fetchServiceFeatures = hoistCmp.factory<FetchApiTestModel>(({model}) =>
     vframe({
         style: {overflowY: 'scroll'},
-        items: [
+        children: [
             button({
                 className: 'fetchservice-feature-button',
                 text: `Aborted`,

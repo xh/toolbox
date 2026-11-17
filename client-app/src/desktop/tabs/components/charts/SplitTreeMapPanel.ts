@@ -61,15 +61,15 @@ export const splitTreeMapPanel = hoistCmp.factory({
                 }),
                 ...treeMapDisplayOptions(model.splitTreeMapModel)
             ],
-            item: panel({
+            children: panel({
                 height: '100%',
                 width: '100%',
                 mask: 'onLoad',
                 tbar: tbar(),
-                items: hframe(
+                children: hframe(
                     panel({
                         modelConfig: {defaultSize: 480, side: 'left'},
-                        item: grid()
+                        children: grid()
                     }),
                     splitTreeMap()
                 )

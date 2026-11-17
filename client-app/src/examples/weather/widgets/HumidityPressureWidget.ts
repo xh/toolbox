@@ -10,7 +10,7 @@ export const humidityPressureWidget = hoistCmp.factory({
 
     render() {
         return panel({
-            item: chart()
+            children: chart()
         });
     }
 });

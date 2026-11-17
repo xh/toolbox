@@ -58,15 +58,15 @@ export const exampleScreen = hoistCmp.factory<ExampleScreenProps>({
 
         return panel({
             className: 'tb-example-screen',
-            item: vframe({
+            children: vframe({
                 className: 'tb-example-screen__frame',
-                items: [
-                    div({className: 'tb-example-screen__demo', item: children}),
+                children: [
+                    div({className: 'tb-example-screen__demo', children}),
                     pullUpSheet({
                         isExpanded: model.isExpanded,
                         onExpandedChange: v => (model.isExpanded = v),
                         peekItem: peekBar({title, icon, optionsCount}),
-                        item: sheetBody({model, description, options, links})
+                        children: sheetBody({model, description, options, links})
                     })
                 ]
             })
@@ -79,15 +79,15 @@ const peekBar = hoistCmp.factory({
     render({title, icon, optionsCount}) {
         return hbox({
             className: 'tb-example-screen__peek',
-            items: [
-                icon ? div({className: 'tb-example-screen__peek-icon', item: icon}) : null,
+            children: [
+                icon ? div({className: 'tb-example-screen__peek-icon', children: icon}) : null,
                 vbox({
                     className: 'tb-example-screen__peek-text',
-                    items: [
-                        div({className: 'tb-example-screen__peek-title', item: title}),
+                    children: [
+                        div({className: 'tb-example-screen__peek-title', children: title}),
                         div({
                             className: 'tb-example-screen__peek-hint',
-                            item: 'Info, options & resources'
+                            children: 'Info, options & resources'
                         })
                     ]
                 }),
@@ -95,7 +95,7 @@ const peekBar = hoistCmp.factory({
                 hbox({
                     className: 'tb-example-screen__count',
                     omit: !optionsCount,
-                    items: [
+                    children: [
                         Icon.options({className: 'tb-example-screen__count-icon'}),
                         `${optionsCount}`
                     ]
@@ -122,7 +122,7 @@ function sheetBody({model, description, options, links}: SheetBodyArgs): ReactEl
         hasResources = !isEmpty(links);
     return vbox({
         className: 'tb-example-screen__sheet-body',
-        items: [
+        children: [
             segmentedControl({
                 className: 'tb-example-screen__segments',
                 model,
@@ -150,7 +150,7 @@ function segmentContent({model, description, options, links}: SegmentContentArgs
         case 'info':
             return infoSegment({description});
         case 'options':
-            return div({className: 'tb-example-screen__options', item: options});
+            return div({className: 'tb-example-screen__options', children: options});
         case 'resources':
             return resourcesSegment({links});
         default:
@@ -163,13 +163,13 @@ const infoSegment = hoistCmp.factory({
         if (isEmpty(description)) {
             return div({
                 className: 'tb-example-screen__empty',
-                item: 'No description for this example.'
+                children: 'No description for this example.'
             });
         }
         const intro = isArray(description) ? description.join('\n') : description;
         return div({
             className: 'tb-example-screen__info',
-            item: markdown({content: intro, lineBreaks: false})
+            children: markdown({content: intro, lineBreaks: false})
         });
     }
 });
@@ -192,16 +192,16 @@ export const exampleOption = hoistCmp.factory<ExampleOptionProps>({
     render({label, control, info}) {
         return div({
             className: 'tb-example-screen__option',
-            items: [
+            children: [
                 hbox({
                     className: 'tb-example-screen__option-row',
-                    items: [
-                        span({className: 'tb-example-screen__option-label', item: label}),
+                    children: [
+                        span({className: 'tb-example-screen__option-label', children: label}),
                         filler(),
-                        div({className: 'tb-example-screen__option-control', item: control})
+                        div({className: 'tb-example-screen__option-control', children: control})
                     ]
                 }),
-                div({className: 'tb-example-screen__option-info', item: info, omit: !info})
+                div({className: 'tb-example-screen__option-info', children: info, omit: !info})
             ]
         });
     }
@@ -220,7 +220,7 @@ const resourcesSegment = hoistCmp.factory({
         if (isEmpty(links)) {
             return div({
                 className: 'tb-example-screen__empty',
-                item: 'No resources for this example.'
+                children: 'No resources for this example.'
             });
         }
         const sorted = [...links].sort(
@@ -228,25 +228,25 @@ const resourcesSegment = hoistCmp.factory({
         );
         return div({
             className: 'tb-example-screen__resources',
-            items: sorted.map(link =>
+            children: sorted.map(link =>
                 hbox({
                     className: 'tb-example-screen__resource',
                     onClick: () => openResource(link.url),
-                    items: [
+                    children: [
                         div({
                             className: 'tb-example-screen__resource-icon',
-                            item: linkIcon(link.url)
+                            children: linkIcon(link.url)
                         }),
                         vbox({
                             className: 'tb-example-screen__resource-text',
-                            items: [
+                            children: [
                                 div({
                                     className: 'tb-example-screen__resource-link',
-                                    item: link.text || defaultLinkText(link.url)
+                                    children: link.text || defaultLinkText(link.url)
                                 }),
                                 div({
                                     className: 'tb-example-screen__resource-note',
-                                    item: link.notes,
+                                    children: link.notes,
                                     omit: !link.notes
                                 })
                             ]
