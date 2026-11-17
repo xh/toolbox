@@ -1,4 +1,5 @@
-import {div} from '@xh/hoist/cmp/layout';
+import {div, span} from '@xh/hoist/cmp/layout';
+import {sparkline} from '@xh/hoist/cmp/sparkline';
 import type {StatCardProps} from '@xh/hoist/cmp/statcard';
 import {statCard, statCardStrip} from '@xh/hoist/cmp/statcard';
 import type {Intent} from '@xh/hoist/core';
@@ -8,6 +9,7 @@ import type {NumberFormatOptions} from '@xh/hoist/format';
 import {fmtMillions, fmtNumber, fmtPercent} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
+import {first, last} from 'lodash';
 import {colorField} from '../../../../core/cmp/ColorField';
 import {
     demoFrame,
@@ -71,6 +73,14 @@ const SALES_CARDS: StatCardProps[] = [
         detail: '661 late, 12 still pending'
     }
 ];
+
+/** Series for the sparklines in the "With a Sparkline" section. */
+const WEEKLY_REVENUE = [
+        2110450, 2154200, 2098730, 2187610, 2243980, 2219340, 2301870, 2289500, 2356120, 2398740,
+        2384330, 2483960
+    ],
+    HOURLY_ORDERS = [84, 132, 171, 158, 196, 224, 203, 241, 236, 268],
+    DAILY_PNL = [12, 18, -6, 9, -14, -3, 21, 7, -9, 15, 4, -11];
 
 export const statCardPanel = hoistCmp.factory({
     displayName: 'StatCardPanel',
@@ -219,6 +229,58 @@ export const statCardPanel = hoistCmp.factory({
                         )
                     }),
                     demoSection({
+                        title: 'With a Sparkline',
+                        note: 'A Sparkline as the detail under a figure, or as the subValue beside it.',
+                        item: statCardStrip(
+                            statCard({
+                                title: 'Net Revenue · 12 Weeks',
+                                value: fmtMillions(last(WEEKLY_REVENUE), {
+                                    precision: 2,
+                                    label: true
+                                }),
+                                subValue: fmtChange(0.042),
+                                detail: sparkline({
+                                    data: WEEKLY_REVENUE,
+                                    type: 'area',
+                                    intent: 'primary',
+                                    width: '100%',
+                                    tooltip: data =>
+                                        span(
+                                            fmtMillions(first(data), {precision: 2, label: true}),
+                                            ' to ',
+                                            fmtMillions(last(data), {precision: 2, label: true})
+                                        )
+                                })
+                            }),
+                            statCard({
+                                title: 'Orders · Today',
+                                value: fmtNumber(last(HOURLY_ORDERS), {precision: 0}),
+                                subValue: sparkline({
+                                    data: HOURLY_ORDERS,
+                                    colorByTrend: true,
+                                    markers: ['last']
+                                }),
+                                detail: 'By hour, since 08:00'
+                            }),
+                            statCard({
+                                title: 'Daily P&L',
+                                value: fmtNumber(last(DAILY_PNL), {
+                                    precision: 0,
+                                    label: 'k',
+                                    colorSpec: true
+                                }),
+                                detail: sparkline({
+                                    data: DAILY_PNL,
+                                    type: 'bar',
+                                    colorNegative: true,
+                                    baseline: 0,
+                                    width: '100%',
+                                    height: 32
+                                })
+                            })
+                        )
+                    }),
+                    demoSection({
                         title: 'Intent',
                         note: 'intent flags a status on the border, as with Card.',
                         item: statCardStrip(
@@ -363,7 +425,7 @@ class StatCardPanelModel extends HoistModel {
     @bindable accessor title = 'Net Revenue';
     @bindable accessor value = '€2.48m';
     @bindable accessor subValue = '+4.2%';
-    @bindable accessor detail = 'vs. last month, 42 locations';
+    @bindable accessor detail = 'vs. last month';
     @bindable accessor infoTooltip = 'Net of returns and discounts.';
     /** `Icon` name for `infoIcon`, held apart from `cardProps` as the card and snippet render it differently. */
     @bindable accessor infoIcon: string = null;
