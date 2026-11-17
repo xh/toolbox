@@ -20,6 +20,7 @@ import {
     fmtDemoConfig,
     raw
 } from '../../../common/Demo';
+import {closingPriceSparklineCol} from '../../../../core/columns/Orders';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import './SparklinePanel.scss';
 
@@ -371,7 +372,7 @@ export const sparklinePanel = hoistCmp.factory({
                             statCard({
                                 title: 'Returns',
                                 value: fmtNumber(87412, {precision: 0}),
-                                subValue: fmtPercent(0.093, {precision: 1, withSignGlyph: true}),
+                                subValue: fmtPercent(-0.093, {precision: 1, withSignGlyph: true}),
                                 detail: sparkline({
                                     data: DOWN,
                                     colorByTrend: true,
@@ -383,7 +384,7 @@ export const sparklinePanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'In a Grid Column',
-                        note: 'Closing prices of the sample portfolio. Each row scales to itself.',
+                        note: 'The same 30 closing prices in Hoist and AG Grid sparklines. Hover an AG Grid cell for a tooltip per point. Each row scales to itself.',
                         item: div({
                             className: 'tb-sparkline-panel__grid',
                             item: grid()
@@ -539,12 +540,18 @@ class SparklinePanelModel extends HoistModel {
             },
             {
                 field: 'history',
-                headerName: 'Trend, 30 days',
+                headerName: 'Hoist, 30 days',
                 width: 150,
                 autosizable: false,
                 sortable: false,
                 excludeFromExport: true,
                 renderer: values => sparkline({data: values, width: '100%', colorByTrend: true})
+            },
+            {
+                ...closingPriceSparklineCol,
+                headerName: 'AG Grid, 30 days',
+                width: 150,
+                excludeFromExport: true
             },
             {
                 field: 'volumeBars',
@@ -612,6 +619,7 @@ class SparklinePanelModel extends HoistModel {
                     last: last(month),
                     change: ((last(month) - first(month)) / first(month)) * 100,
                     history: month,
+                    closingPrices: takeRight(series, 30),
                     volumeBars: takeRight(prices, 12),
                     year: takeRight(prices, 250)
                 };
