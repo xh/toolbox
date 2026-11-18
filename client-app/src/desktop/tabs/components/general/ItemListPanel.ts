@@ -184,7 +184,7 @@ export const itemListPanel = hoistCmp.factory({
                                         dividers: true,
                                         entries: topFunds.map((it, idx) => ({
                                             ...it,
-                                            intent: idx === 0 ? 'success' : null
+                                            intent: idx === 0 ? ('success' as const) : null
                                         }))
                                     })
                                 })
