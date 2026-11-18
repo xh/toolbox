@@ -362,7 +362,7 @@ export const keyValueListPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Long Text and Empty Values',
-                        note: 'Labels and values wrap. A blank value shows nullDisplay, and a boolean shows Yes or No.',
+                        note: 'Labels and values wrap. A blank value shows nullDisplay.',
                         children: demoGrid({
                             columns: 2,
                             children: [
@@ -397,7 +397,6 @@ export const keyValueListPanel = hoistCmp.factory({
                                             {label: 'Approver', value: null},
                                             {label: 'Note', value: '   '},
                                             {label: 'Zero', value: 0},
-                                            {label: 'Confirmed', value: false},
                                             {label: 'Left out', value: 'Hidden', omit: true},
                                             null
                                         ]
