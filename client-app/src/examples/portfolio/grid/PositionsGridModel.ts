@@ -4,12 +4,13 @@ import {bindable} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
 import {mktValCol, pnlCol} from '../../../core/columns/Positions';
 import {nameCol} from '../../../core/columns/General';
+import type {Position} from '../../../core/svc/PortfolioService';
 import type {PortfolioModel} from '../PortfolioModel';
 
 export class PositionsGridModel extends HoistModel {
     override xhName = 'positionsGrid';
     readonly parentModel: PortfolioModel;
-    @managed gridModel: GridModel;
+    @managed gridModel: GridModel<Position>;
 
     @bindable accessor loadTimestamp: number;
 
@@ -26,7 +27,7 @@ export class PositionsGridModel extends HoistModel {
         this.parentModel = parentModel;
         this.persistWith = this.parentModel.persistWith;
 
-        this.gridModel = new GridModel({
+        this.gridModel = new GridModel<Position>({
             xhName: this.childXhName('grid'),
             persistWith: {...this.persistWith, path: 'portfolioGrid'},
             expandLevel: 1,

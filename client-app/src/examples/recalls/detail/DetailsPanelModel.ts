@@ -1,9 +1,10 @@
 import {HoistModel} from '@xh/hoist/core';
 import {bindableRef} from '@xh/hoist/mobx';
 import type {StoreRecord} from '@xh/hoist/data';
+import type {Recall} from '../RecallsPanelModel';
 
 export class DetailsPanelModel extends HoistModel {
-    @bindableRef accessor currentRecord: StoreRecord;
+    @bindableRef accessor currentRecord: StoreRecord<Recall>;
 
     get classificationDetails() {
         const {classification} = this.currentRecord.data;
