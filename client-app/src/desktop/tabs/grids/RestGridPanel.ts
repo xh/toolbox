@@ -1,6 +1,6 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {dateRenderer} from '@xh/hoist/format';
+import {dateTextRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import type {RestGridConfig} from '@xh/hoist/desktop/cmp/rest';
 import {
@@ -47,9 +47,9 @@ export const restGridPanel = hoistCmp.factory({
                     notes: 'Hoist model defining the store, columns, editors, and actions.'
                 }
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel',
-                item: restGrid({modelConfig: modelSpec})
+                children: restGrid({modelConfig: modelSpec})
             })
         });
     }
@@ -133,7 +133,7 @@ const modelSpec: RestGridConfig = {
         },
         {
             field: 'earningsDate',
-            renderer: dateRenderer(),
+            textRenderer: dateTextRenderer(),
             width: 140,
             excelFormat: ExcelFormat.DATE_FMT
         },
@@ -145,11 +145,11 @@ const modelSpec: RestGridConfig = {
     editors: [
         {field: 'name'},
         {field: 'type'},
-        {field: 'employees', formField: {item: numberInput({displayWithCommas: true})}},
-        {field: 'isActive', formField: {item: switchInput()}},
+        {field: 'employees', formField: {children: numberInput({displayWithCommas: true})}},
+        {field: 'isActive', formField: {children: switchInput()}},
         {field: 'cfg'},
         {field: 'earningsDate'},
-        {field: 'note', formField: {item: textArea()}},
+        {field: 'note', formField: {children: textArea()}},
         {field: 'lastUpdated'},
         {field: 'lastUpdatedBy'}
     ],

@@ -1,16 +1,17 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {GridModel, time, TreeStyle} from '@xh/hoist/cmp/grid';
+import {CubeGridModel} from '@xh/hoist/cmp/cubegrid';
+import type {ColumnSpec, GridModel} from '@xh/hoist/cmp/grid';
+import {time, TreeStyle} from '@xh/hoist/cmp/grid';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberEditor, textEditor} from '@xh/hoist/desktop/cmp/grid';
-import {fmtNumber, numberRenderer} from '@xh/hoist/format';
+import {fmtNumber, numberTextRenderer} from '@xh/hoist/format';
 import {
     action,
     bindable,
     bindableRef,
     compareStructural,
     observable,
-    observableRef,
     runInAction
 } from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
@@ -23,8 +24,7 @@ import type {QueryConfig, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
     @managed cubeModel: CubeModel;
-    @managed @observableRef accessor gridModel: GridModel;
-    @managed @observableRef accessor view: View;
+    @managed cubeGridModel: CubeGridModel;
     @managed groupingChooserModel: GroupingChooserModel;
     @managed loadTimesModel: LoadTimesModel;
 
@@ -35,7 +35,9 @@ export class CubeTestModel extends HoistModel {
     @bindable accessor updateFreq = -1;
     @bindable accessor updateCount = 5;
 
-    @bindable accessor projectionOnly = true;
+    /** Pivot dimensions - any also grouped on are left out of the query, as a pivot rejects them. */
+    @bindableRef accessor pivotBy: string[] = [];
+    @bindableRef accessor pivotMeasures: string[] = ['commission'];
 
     /** Grid experimental sort flags, applied live for A/B tuning. */
     @bindable accessor deferredSortFactor = 4;
@@ -77,18 +79,13 @@ export class CubeTestModel extends HoistModel {
             persistWith: {prefKey: 'cubeTestUserDims'}
         });
 
-        this.buildGridAndView();
+        this.cubeGridModel = this.createCubeGridModel();
+        this.applyMaxPatchRatio(this.maxPatchRatio);
 
         this.addReaction({
             track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
             equals: compareStructural
-        });
-
-        // Reconstruct the Store in the new mode, for A/B comparison.
-        this.addReaction({
-            track: () => this.projectionOnly,
-            run: () => this.buildGridAndView()
         });
 
         // Applied live to the existing Stores - the ratio is read on each operation.
@@ -105,7 +102,7 @@ export class CubeTestModel extends HoistModel {
 
         // Re-apply on selection change, and when a rebuild installs fresh diagnostics objects.
         this.addReaction({
-            track: () => [this.logStages, this.cubeModel.cube, this.view, this.gridModel],
+            track: () => [this.logStages, this.cubeModel.cube],
             run: () => this.syncDiagnosticsLogging()
         });
 
@@ -120,6 +117,22 @@ export class CubeTestModel extends HoistModel {
                 run: on => on && this.sampleMemoryAsync(false)
             }
         );
+    }
+
+    get gridModel(): GridModel {
+        return this.cubeGridModel.gridModel;
+    }
+
+    get view(): View {
+        return this.cubeGridModel.view;
+    }
+
+    /** Dimensions offered for pivoting - those not already grouped on. */
+    get pivotDimOptions(): string[] {
+        const grouped = this.groupingChooserModel.value;
+        return this.cubeModel.cube.dimensions
+            .map(it => it.name)
+            .filter(it => !grouped.includes(it));
     }
 
     /** Keyed by the values offered in the logging picker. */
@@ -157,19 +170,7 @@ export class CubeTestModel extends HoistModel {
 
     private applyMaxPatchRatio(ratio: number) {
         this.cubeModel.cube.store.experimental.maxPatchRatio = ratio;
-        this.gridModel.store.experimental.maxPatchRatio = ratio;
-    }
-
-    // The View's connect-time fullUpdate repopulates the fresh Store, so needs no explicit reload.
-    private buildGridAndView() {
-        XH.safeDestroy(this.view);
-        XH.safeDestroy(this.gridModel);
-        this.gridModel = this.createGridModel();
-        this.view = this.cubeModel.cube.createView({
-            query: this.getQuery(),
-            stores: this.gridModel.store,
-            connect: true
-        });
+        this.cubeGridModel.store.experimental.maxPatchRatio = ratio;
     }
 
     // Each sample runs a full synchronous GC so the chart tracks live heap rather than
@@ -216,14 +217,18 @@ export class CubeTestModel extends HoistModel {
     }
 
     private getQuery(): QueryConfig {
-        const {fields, groupingChooserModel, fundFilter, includeLeaves} = this,
+        const {fields, groupingChooserModel, fundFilter, includeLeaves, pivotMeasures} = this,
             dimensions = groupingChooserModel.value,
+            pivot = {
+                dimensions: this.pivotBy.filter(it => !dimensions.includes(it)),
+                measures: pivotMeasures
+            },
             filter = !isEmpty(fundFilter)
                 ? ({field: 'fund', op: '=', value: fundFilter} as const)
                 : null,
             includeRoot = this.showSummary;
 
-        return {fields, dimensions, filter, includeLeaves, includeRoot};
+        return {fields, dimensions, filter, includeLeaves, includeRoot, pivot};
     }
 
     clear() {
@@ -236,16 +241,15 @@ export class CubeTestModel extends HoistModel {
 
     private async executeQueryAsync() {
         const LTM = this.loadTimesModel,
-            {gridModel, loadObserver, showSummary} = this;
+            {cubeGridModel, loadObserver, showSummary} = this;
 
         // Query is initialized with empty dims and is triggering an initial run we don't need.
         if (!this.getQuery().dimensions.length) return;
 
         return wait()
             .then(async () => {
-                const {store} = gridModel;
-                gridModel.showSummary = showSummary;
-                store.setLoadRootAsSummary(showSummary);
+                // The Store's summary row follows the query's `includeRoot`.
+                cubeGridModel.setShowSummary(showSummary);
 
                 await LTM.withLoadTime('Query changed', async () => {
                     this.view.updateQuery(this.getQuery());
@@ -254,136 +258,39 @@ export class CubeTestModel extends HoistModel {
             .linkTo(loadObserver);
     }
 
-    private createGridModel() {
-        return new GridModel({
-            treeMode: true,
-            treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
-            showSummary: this.showSummary,
-            store: {
-                loadRootAsSummary: this.showSummary,
-                projectionOnly: this.projectionOnly,
-                experimental: {maxPatchRatio: this.maxPatchRatio},
-                fields: [{name: 'cubeDimension', type: 'string'}]
-            },
-            experimental: {
-                deferredSortFactor: this.deferredSortFactor,
-                deltaSortRatio: this.deltaSortRatio
-            },
-            sortBy: 'time|desc',
-            emptyText: 'No records found...',
-            colChooserModel: true,
-            enableExport: true,
-            rowBorders: true,
-            showHover: true,
-            levelLabels: () => {
-                const {groupingChooserModel} = this;
-                return groupingChooserModel.value.map(it =>
-                    groupingChooserModel.getDimDisplayName(it)
-                );
-            },
-            // Edits route through the Cube - Store.modifyRecords throws under projectionOnly.
-            colDefaults: {
+    private createCubeGridModel() {
+        const {cube} = this.cubeModel,
+            // Edits route through the Cube, as the CubeGridModel's Store is projection-only.
+            // Set per fixed column, as colDefaults would reach the pivot cells too.
+            editable = (editor): Partial<ColumnSpec> => ({
+                editor,
                 editable: ({record}) => !record.data.cubeDimension, // Only editable if leaf node
                 setValueFn: ({value, record, field}) => {
                     const data = {id: record.data.cubeLabel};
                     data[field] = value;
-                    this.cubeModel.cube.modifyRecordsAsync(data);
+                    cube.modifyRecordsAsync(data);
                 }
-            },
+            });
+
+        return new CubeGridModel({
+            cube,
+            query: this.getQuery(),
             columns: [
-                {
-                    field: 'id',
-                    headerName: 'ID',
-                    width: 40,
-                    hidden: true,
-                    editable: false
-                },
-                {
-                    field: 'cubeLabel',
-                    headerName: 'Name',
-                    minWidth: 180,
-                    isTreeColumn: true,
-                    editable: false
-                },
-                {
-                    field: 'fund',
-                    editor: textEditor,
-                    width: 130
-                },
-                {
-                    field: 'trader',
-                    editor: textEditor,
-                    width: 130
-                },
-                {
-                    field: 'quantity',
-                    headerName: 'Qty',
-                    align: 'right',
-                    width: 130,
-                    absSort: true,
-                    editor: numberEditor,
-                    renderer: numberRenderer({
-                        precision: 0,
-                        ledger: true
-                    }),
-                    hidden: true
-                },
-                {
-                    field: 'price',
-                    align: 'right',
-                    width: 130,
-                    editor: numberEditor,
-                    renderer: numberRenderer({
-                        precision: 4
-                    }),
-                    hidden: true
-                },
-                {
-                    field: 'commission',
-                    align: 'right',
-                    width: 130,
-                    editor: numberEditor,
-                    renderer: numberRenderer({
-                        precision: 0,
-                        ledger: true
-                    })
-                },
-                {
-                    field: 'pctCommission',
-                    align: 'right',
-                    width: 130,
-                    editor: numberEditor,
-                    renderer: numberRenderer({
-                        precision: 6
-                    })
-                },
-                {
-                    field: 'maxConfidence',
-                    align: 'right',
-                    width: 130,
-                    editor: numberEditor,
-                    renderer: numberRenderer({
-                        precision: 0
-                    }),
-                    hidden: true
-                },
-                {
-                    field: 'minConfidence',
-                    align: 'right',
-                    width: 130,
-                    editor: numberEditor,
-                    renderer: numberRenderer({
-                        precision: 0
-                    }),
-                    hidden: true
-                },
+                {field: 'id', headerName: 'ID', width: 40, hidden: true},
+                {field: 'cubeLabel', headerName: 'Name', minWidth: 180, isTreeColumn: true},
+                {field: 'fund', width: 130, ...editable(textEditor)},
+                {field: 'trader', width: 130, ...editable(textEditor)},
+                ...PIVOT_MEASURES.map(field => ({
+                    field,
+                    ...MEASURE_COLUMNS[field],
+                    ...editable(numberEditor)
+                })),
                 {
                     field: 'commission',
                     colId: 'commissionComplex',
                     headerName: 'Comm (complex)',
                     align: 'right',
                     width: 150,
-                    editable: false,
                     rendererIsComplex: true,
                     renderer: v =>
                         fragment(
@@ -391,12 +298,72 @@ export class CubeTestModel extends HoistModel {
                             v >= 0 ? ' ▲' : ' ▼'
                         )
                 },
-                {
-                    field: 'time',
-                    editable: false,
-                    ...time
-                }
-            ]
+                {field: 'time', ...time}
+            ],
+            gridConfig: {
+                treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
+                showSummary: this.showSummary,
+                experimental: {
+                    deferredSortFactor: this.deferredSortFactor,
+                    deltaSortRatio: this.deltaSortRatio
+                },
+                sortBy: 'time|desc',
+                emptyText: 'No records found...',
+                enableExport: true,
+                showHover: true
+            },
+            pivotConfig: {
+                measures: PIVOT_MEASURES.map(field => ({field, column: MEASURE_COLUMNS[field]}))
+            }
         });
     }
 }
+
+/** Measures offered for pivoting - every aggregated field but `time`, in fixed-column order. */
+export const PIVOT_MEASURES = [
+    'quantity',
+    'price',
+    'commission',
+    'pctCommission',
+    'maxConfidence',
+    'minConfidence'
+];
+
+/** Column config shared by each measure's fixed column and its pivot cells. */
+const MEASURE_COLUMNS: Record<string, ColumnSpec> = {
+    quantity: {
+        align: 'right',
+        width: 130,
+        absSort: true,
+        textRenderer: numberTextRenderer({precision: 0, ledger: true}),
+        hidden: true
+    },
+    price: {
+        align: 'right',
+        width: 130,
+        textRenderer: numberTextRenderer({precision: 4}),
+        hidden: true
+    },
+    commission: {
+        align: 'right',
+        width: 130,
+        textRenderer: numberTextRenderer({precision: 0, ledger: true})
+    },
+    pctCommission: {
+        align: 'right',
+        width: 130,
+        textRenderer: numberTextRenderer({precision: 6})
+    },
+    maxConfidence: {
+        align: 'right',
+        width: 130,
+        textRenderer: numberTextRenderer({precision: 0}),
+        hidden: true
+    },
+    minConfidence: {
+        align: 'right',
+        width: 130,
+        textRenderer: numberTextRenderer({precision: 0}),
+        hidden: true
+    }
+};

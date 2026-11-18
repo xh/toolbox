@@ -105,24 +105,24 @@ export const addColumnDialog = hoistCmp.factory<AddColumnDialogModel>({
             isOpen: model.isOpen,
             onClose: () => model.close(),
             usePortal: false,
-            item: formContents()
+            children: formContents()
         });
     }
 });
 
 const formContents = hoistCmp.factory<AddColumnDialogModel>(({model}) =>
     panel({
-        item: form({
+        children: form({
             model: model.formModel,
             fieldDefaults: {minimal: true, inline: false},
-            item: vbox({
+            children: vbox({
                 className: 'xh-pad',
-                items: [
-                    formField({field: 'chooserName', item: textInput({autoFocus: true})}),
-                    formField({field: 'chooserDescription', item: textArea({height: 60})}),
+                children: [
+                    formField({field: 'chooserName', children: textInput({autoFocus: true})}),
+                    formField({field: 'chooserDescription', children: textArea({height: 60})}),
                     formField({
                         field: 'type',
-                        item: select({
+                        children: select({
                             options: [
                                 {value: 'string', label: 'String'},
                                 {value: 'number', label: 'Number'},
@@ -132,7 +132,7 @@ const formContents = hoistCmp.factory<AddColumnDialogModel>(({model}) =>
                     }),
                     formField({
                         field: 'group',
-                        item: select({
+                        children: select({
                             options: model.host.groupOptions,
                             enableCreate: true,
                             placeholder: '(top level)'
@@ -140,7 +140,7 @@ const formContents = hoistCmp.factory<AddColumnDialogModel>(({model}) =>
                     }),
                     formField({
                         field: 'chooserGroup',
-                        item: select({
+                        children: select({
                             options: model.host.chooserGroupIds,
                             enableCreate: true,
                             enableClear: true,
@@ -149,7 +149,7 @@ const formContents = hoistCmp.factory<AddColumnDialogModel>(({model}) =>
                     }),
                     formField({
                         field: 'pinned',
-                        item: select({
+                        children: select({
                             enableClear: true,
                             options: [
                                 {value: 'left', label: 'Left'},
@@ -157,10 +157,10 @@ const formContents = hoistCmp.factory<AddColumnDialogModel>(({model}) =>
                             ]
                         })
                     }),
-                    formField({field: 'hidden', item: switchInput()}),
-                    formField({field: 'hideable', item: switchInput()}),
-                    formField({field: 'movable', item: switchInput()}),
-                    formField({field: 'excludeFromChooser', item: switchInput()})
+                    formField({field: 'hidden', children: switchInput()}),
+                    formField({field: 'hideable', children: switchInput()}),
+                    formField({field: 'movable', children: switchInput()}),
+                    formField({field: 'excludeFromChooser', children: switchInput()})
                 ]
             })
         }),

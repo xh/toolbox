@@ -33,7 +33,7 @@ export const customExample = hoistCmp.factory({
                     bind: 'activeTabId',
                     outlined: true,
                     intent: 'primary',
-                    items: tabOptions.map(o =>
+                    children: tabOptions.map(o =>
                         button({value: o.value, icon: o.icon, text: o.label})
                     )
                 }),
@@ -45,7 +45,7 @@ export const customExample = hoistCmp.factory({
                     width: 140
                 })
             ],
-            item: tabContainer({model: detachedTabModel, switcher: false}),
+            children: tabContainer({model: detachedTabModel, switcher: false}),
             bbar: [
                 Icon.infoCircle(),
                 span(

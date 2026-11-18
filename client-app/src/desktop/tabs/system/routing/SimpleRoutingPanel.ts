@@ -50,8 +50,8 @@ export const simpleRoutingPanel = hoistCmp.factory({
                     notes: 'Model managing the application route state.'
                 }
             ],
-            item: panel({
-                item: grid(),
+            children: panel({
+                children: grid(),
                 height: 500,
                 width: 700
             })

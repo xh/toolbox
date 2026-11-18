@@ -59,7 +59,7 @@ export const clockPanel = hoistCmp.factory({
             options: [
                 wrapperOptionGroup({
                     label: 'All clocks on the page',
-                    items: [
+                    children: [
                         wrapperOption({
                             label: 'Format',
                             propName: 'ClockProps.format',
@@ -95,30 +95,30 @@ export const clockPanel = hoistCmp.factory({
                     ]
                 })
             ],
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 200,
                             showValue: false,
                             caption: 'No timezone set, so browser local time.',
                             config: fmtDemoConfig<ClockProps>('clock', clockProps),
-                            item: clock(clockProps)
+                            children: clock(clockProps)
                         })
                     }),
                     demoSection({
                         title: 'World Clocks',
                         note: 'One clock per timezone, each fetching its offset from the server.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 5,
-                            items: ZONES.map(({label, timezone, info}) =>
+                            children: ZONES.map(({label, timezone, info}) =>
                                 demoRow({
                                     key: label,
                                     label,
                                     info,
-                                    item: clock({...clockProps, timezone})
+                                    children: clock({...clockProps, timezone})
                                 })
                             )
                         })

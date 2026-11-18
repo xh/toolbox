@@ -148,7 +148,6 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
 
     render({model, ...props}) {
         return panel({
-            item: grid(),
             ref: model.panelRef,
             mask: 'onLoad',
             tbar: [
@@ -161,7 +160,8 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
                 colChooserButton(),
                 exportButton()
             ],
-            ...props
+            ...props,
+            children: grid()
         });
     }
 });

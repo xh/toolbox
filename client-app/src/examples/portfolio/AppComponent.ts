@@ -31,7 +31,7 @@ export const AppComponent = hoistCmp({
                     appBarSeparator()
                 ]
             }),
-            item: portfolioPanel()
+            children: portfolioPanel()
         });
     }
 });

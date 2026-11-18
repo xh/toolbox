@@ -25,15 +25,15 @@
 
   &__comp {
     > .xh-panel__inner > .xh-vframe {
-      padding: var(--xh-pad-px);
+      padding: var(--xh-spacing);
     }
 
     border: var(--xh-border-solid);
     flex: none !important;
-    margin: var(--xh-pad-double-px) var(--xh-pad-double-px) 0 var(--xh-pad-double-px);
+    margin: var(--xh-spacing-double) var(--xh-spacing-double) 0 var(--xh-spacing-double);
 
     &:last-child {
-      margin-bottom: var(--xh-pad-double-px);
+      margin-bottom: var(--xh-spacing-double);
     }
   }
 }

@@ -67,9 +67,9 @@ export const treeGridPanel = hoistCmp.factory({
                 expandCollapseButton({gridModel}),
                 ...gridDisplayActions(gridModel)
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel',
-                item: sampleTreeGrid()
+                children: sampleTreeGrid()
             })
         });
     }

@@ -70,7 +70,7 @@ export const messagesPanel = hoistCmp.factory({
                 icon: Icon.experiment(),
                 intent: 'primary',
                 info: 'Drives the Playground message.',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Title',
                         propName: 'MessageSpec.title',
@@ -142,14 +142,14 @@ export const messagesPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
+            children: demoPanel({
                 className: 'tbox-popups',
                 ref: divRef,
-                items: [
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 260,
                             showValue: false,
                             caption: 'Click to show a message with the current options.',
@@ -167,7 +167,7 @@ export const messagesPanel = hoistCmp.factory({
                                 dismissable: pgDismissable ? undefined : false,
                                 cancelOnDismiss: pgCancelOnDismiss ? undefined : false
                             }),
-                            item: button({
+                            children: button({
                                 ...popBtn(Icon.comment({intent: 'primary'})),
                                 text: 'Show message',
                                 onClick: () => XH.message(model.pgSpec).then(responseToast)
@@ -177,13 +177,13 @@ export const messagesPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Variants',
                         note: 'Each sets its own props.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 3,
-                            items: [
+                            children: [
                                 demoRow({
                                     label: 'Alert',
                                     info: 'XH.alert() - one button, resolves true when acknowledged',
-                                    item: button({
+                                    children: button({
                                         ...popBtn(Icon.warning({intent: 'danger'})),
                                         text: 'Alert',
                                         onClick: () =>
@@ -197,7 +197,7 @@ export const messagesPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Confirm',
                                     info: 'XH.confirm() - OK and Cancel, resolves true or false',
-                                    item: button({
+                                    children: button({
                                         ...popBtn(Icon.questionCircle({intent: 'primary'})),
                                         text: 'Confirm',
                                         onClick: () =>
@@ -211,7 +211,7 @@ export const messagesPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Prompt',
                                     info: 'XH.prompt() - collects a value, resolves to it or false on cancel',
-                                    item: button({
+                                    children: button({
                                         ...popBtn(Icon.edit({intent: 'primary'})),
                                         text: 'Prompt',
                                         onClick: () =>
@@ -224,7 +224,7 @@ export const messagesPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Prompt with validation',
                                     info: 'input.item swaps in a textArea, input.rules validate before confirming',
-                                    item: button({
+                                    children: button({
                                         ...popBtn(Icon.edit({intent: 'primary'})),
                                         text: 'Send a message',
                                         onClick: () =>
@@ -252,7 +252,7 @@ export const messagesPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Custom buttons',
                                     info: 'confirmProps, cancelProps and cancelAlign style the buttons',
-                                    item: button({
+                                    children: button({
                                         ...popBtn(Icon.questionCircle({intent: 'primary'})),
                                         text: 'Custom buttons',
                                         onClick: () =>
@@ -276,7 +276,7 @@ export const messagesPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Callbacks',
                                     info: 'onConfirm and onCancel fire alongside the resolved Promise',
-                                    item: button({
+                                    children: button({
                                         ...popBtn(Icon.comment({intent: 'success'})),
                                         text: 'Callbacks',
                                         onClick: () =>
@@ -306,13 +306,13 @@ export const messagesPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Suppress',
                         note: 'Include a "Don\'t show this again" checkbox.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 3,
-                            items: [
+                            children: [
                                 demoRow({
                                     label: 'Suppress 1 min, this tab',
                                     info: 'Session storage, 1 minute expiry',
-                                    item: button({
+                                    children: button({
                                         ...popBtn(Icon.clock({intent: 'warning'})),
                                         text: 'Open delayed data',
                                         onClick: () =>
@@ -329,7 +329,7 @@ export const messagesPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Suppress forever',
                                     info: 'Local storage, no expiry',
-                                    item: button({
+                                    children: button({
                                         ...popBtn(Icon.info({intent: 'primary'})),
                                         text: 'Show tip',
                                         onClick: () =>
@@ -346,7 +346,7 @@ export const messagesPanel = hoistCmp.factory({
                                 hbox({
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    item: button({
+                                    children: button({
                                         icon: Icon.reset(),
                                         text: 'Clear suppress state',
                                         onClick: () => model.clearSuppressState()

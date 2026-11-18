@@ -15,7 +15,8 @@ export const explodingPanel = hoistCmp.factory({
             padding: 10,
             maxWidth: 500,
             margin: '0 auto',
-            items: [
+            ...props,
+            children: [
                 p(
                     'If the button below is clicked too many times, this component will throw an exception during rendering.'
                 ),
@@ -30,8 +31,7 @@ export const explodingPanel = hoistCmp.factory({
                 }),
                 p(`You have clicked me ${model.clicks} times...`),
                 p(`I was last (re)mounted at ${fmtDate(model.mounted, {fmt: 'hh:mm:ss'})}`)
-            ],
-            ...props
+            ]
         });
     }
 });

@@ -30,10 +30,10 @@ export const buttonPage = hoistCmp.factory({
                 {url: '$TB/client-app/src/mobile/buttons/ButtonPage.ts', notes: 'This example.'},
                 {url: '$HR/mobile/cmp/button/Button.ts', text: 'Button source'}
             ],
-            item: panel({
+            children: panel({
                 scrollable: true,
                 className: 'tb-page tb-button-page xh-tiled-bg',
-                items: [
+                children: [
                     buttonPanel(),
                     buttonPanel({intent: 'primary'}),
                     buttonPanel({intent: 'success'}),
@@ -52,14 +52,14 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
             'tb-card tb-button-page__panel',
             toolbar ? 'tb-button-page__panel--toolbar' : null
         ),
-        items: [
+        children: [
             div({
                 className: 'tb-card__title',
-                item: `Intent: ${intent ?? 'none (default)'}`
+                children: `Intent: ${intent ?? 'none (default)'}`
             }),
             hbox({
                 className: 'tb-button-page__row',
-                items: [
+                children: [
                     button({
                         text: 'Default',
                         intent,
@@ -83,7 +83,7 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
             }),
             hbox({
                 className: 'tb-button-page__row',
-                items: [
+                children: [
                     button({
                         text: 'Minimal',
                         minimal: true,
@@ -110,7 +110,7 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
             }),
             hbox({
                 className: 'tb-button-page__row',
-                items: [
+                children: [
                     button({
                         text: 'Outlined',
                         outlined: true,
@@ -137,11 +137,11 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
             }),
             hbox({
                 className: 'tb-button-page__row',
-                item: buttonGroupInput({
+                children: buttonGroupInput({
                     bind: 'activeButton',
                     intent,
                     disabled,
-                    items: [
+                    children: [
                         button({text: 'v1', icon: Icon.checkCircle(), value: 'v1'}),
                         button({text: 'v2', icon: Icon.xCircle(), value: 'v2'}),
                         button({text: 'v3', icon: Icon.users(), value: 'v3'})
@@ -150,12 +150,12 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
             }),
             hbox({
                 className: 'tb-button-page__row',
-                item: buttonGroupInput({
+                children: buttonGroupInput({
                     bind: 'activeButton',
                     minimal: true,
                     intent,
                     disabled,
-                    items: [
+                    children: [
                         button({text: 'v1', icon: Icon.checkCircle(), value: 'v1'}),
                         button({text: 'v2', icon: Icon.xCircle(), value: 'v2'}),
                         button({text: 'v3', icon: Icon.users(), value: 'v3'})
@@ -164,12 +164,12 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
             }),
             hbox({
                 className: 'tb-button-page__row',
-                item: buttonGroupInput({
+                children: buttonGroupInput({
                     bind: 'activeButton',
                     outlined: true,
                     intent,
                     disabled,
-                    items: [
+                    children: [
                         button({text: 'v1', icon: Icon.checkCircle(), value: 'v1'}),
                         button({text: 'v2', icon: Icon.xCircle(), value: 'v2'}),
                         button({text: 'v3', icon: Icon.users(), value: 'v3'})

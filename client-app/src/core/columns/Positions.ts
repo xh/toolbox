@@ -1,4 +1,4 @@
-import {millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
+import {millionsTextRenderer, numberTextRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import type {ColumnSpec} from '@xh/hoist/cmp/grid';
 
 export const mktValCol: ColumnSpec = {
@@ -10,7 +10,7 @@ export const mktValCol: ColumnSpec = {
     absSort: true,
     agOptions: {aggFunc: 'sum'},
     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
-    renderer: millionsRenderer({
+    textRenderer: millionsTextRenderer({
         precision: 3,
         ledger: true
     })
@@ -24,7 +24,7 @@ export const pnlCol: ColumnSpec = {
     absSort: true,
     agOptions: {aggFunc: 'sum'},
     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
-    renderer: numberRenderer({
+    textRenderer: numberTextRenderer({
         precision: 0,
         ledger: true,
         colorSpec: true

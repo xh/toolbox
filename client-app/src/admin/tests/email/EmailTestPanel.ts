@@ -24,31 +24,31 @@ const sendForm = hoistCmp.factory<EmailTestModel>(({model}) =>
         compactHeader: true,
         width: 480,
         mask: model.sendTask,
-        item: form({
+        children: form({
             fieldDefaults: {inline: true, minimal: true, labelWidth: 110},
-            item: div({
+            children: div({
                 className: 'xh-pad',
-                items: [
-                    formField({field: 'to', item: textInput()}),
-                    formField({field: 'cc', item: textInput()}),
-                    formField({field: 'bcc', item: textInput()}),
+                children: [
+                    formField({field: 'to', children: textInput()}),
+                    formField({field: 'cc', children: textInput()}),
+                    formField({field: 'bcc', children: textInput()}),
                     formField({
                         field: 'from',
-                        item: textInput({placeholder: 'xhEmailDefaultSender'})
+                        children: textInput({placeholder: 'xhEmailDefaultSender'})
                     }),
-                    formField({field: 'subject', item: textInput()}),
+                    formField({field: 'subject', children: textInput()}),
                     formField({
                         field: 'bodyType',
-                        item: select({
+                        children: select({
                             options: ['html', 'text'],
                             enableFilter: false,
                             width: 120
                         })
                     }),
-                    formField({field: 'body', item: textArea({height: 90})}),
+                    formField({field: 'body', children: textArea({height: 90})}),
                     formField({
                         field: 'attachmentType',
-                        item: select({
+                        children: select({
                             options: [
                                 {label: 'None', value: null},
                                 {label: 'byte[]', value: 'bytes'},
@@ -60,8 +60,8 @@ const sendForm = hoistCmp.factory<EmailTestModel>(({model}) =>
                             width: 200
                         })
                     }),
-                    formField({field: 'markImportant', item: switchInput()}),
-                    formField({field: 'async', item: switchInput()})
+                    formField({field: 'markImportant', children: switchInput()}),
+                    formField({field: 'async', children: switchInput()})
                 ]
             })
         }),
@@ -85,7 +85,7 @@ const sendResult = hoistCmp.factory<EmailTestModel>(({model}) => {
         icon: sendResult ? (sendResult.success ? Icon.check() : Icon.warning()) : Icon.info(),
         compactHeader: true,
         flex: 1,
-        item: jsonOutput({value: sendResult, placeholder: 'No email sent yet.'})
+        children: jsonOutput({value: sendResult, placeholder: 'No email sent yet.'})
     });
 });
 
@@ -105,7 +105,7 @@ const parseAddresses = hoistCmp.factory<EmailTestModel>(({model}) =>
                 onClick: () => model.parseAddressesAsync()
             })
         ],
-        item: jsonOutput({
+        children: jsonOutput({
             value: model.parseResult,
             placeholder: 'Blank entries should be dropped and "none" (any case) should return null.'
         })
@@ -127,7 +127,7 @@ const configs = hoistCmp.factory<EmailTestModel>(({model}) =>
                 onClick: () => model.refreshAsync()
             })
         ],
-        item: jsonOutput({value: model.configs, placeholder: 'Loading...'})
+        children: jsonOutput({value: model.configs, placeholder: 'Loading...'})
     })
 );
 
@@ -135,6 +135,6 @@ const jsonOutput = hoistCmp.factory(({value, placeholder}) =>
     pre({
         className: 'xh-pad',
         style: {margin: 0, overflow: 'auto', fontSize: 12},
-        item: value ? JSON.stringify(value, null, 2) : placeholder
+        children: value ? JSON.stringify(value, null, 2) : placeholder
     })
 );

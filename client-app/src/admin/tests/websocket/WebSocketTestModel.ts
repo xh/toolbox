@@ -1,6 +1,6 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {dateRenderer} from '@xh/hoist/format';
+import {dateTextRenderer} from '@xh/hoist/format';
 import {bindable} from '@xh/hoist/mobx';
 import type {WebSocketSubscription} from '@xh/hoist/svc';
 
@@ -17,7 +17,7 @@ export class WebSocketTestModel extends HoistModel {
             emptyText: 'No updates received',
             columns: [
                 {field: 'id', headerName: 'ID', width: 120},
-                {field: 'timestamp', width: 200, renderer: dateRenderer({fmt: 'h:mm:ssa'})}
+                {field: 'timestamp', width: 200, textRenderer: dateTextRenderer({fmt: 'h:mm:ssa'})}
             ]
         });
 
@@ -33,6 +33,7 @@ export class WebSocketTestModel extends HoistModel {
     async subscribeLocalAsync() {
         await XH.fetchJson({
             url: 'mockUpdates/subscribeLocal',
+            method: 'POST',
             params: {channelKey: XH.webSocketService.channelKey}
         });
 
@@ -43,6 +44,7 @@ export class WebSocketTestModel extends HoistModel {
     async unsubscribeLocalAsync() {
         await XH.fetchJson({
             url: 'mockUpdates/unsubscribeLocal',
+            method: 'POST',
             params: {channelKey: XH.webSocketService.channelKey}
         });
 
@@ -56,6 +58,7 @@ export class WebSocketTestModel extends HoistModel {
     async subscribeClusterAsync() {
         await XH.fetchJson({
             url: 'mockUpdates/subscribeCluster',
+            method: 'POST',
             params: {channelKey: XH.webSocketService.channelKey}
         });
 
@@ -66,6 +69,7 @@ export class WebSocketTestModel extends HoistModel {
     async unsubscribeClusterAsync() {
         await XH.fetchJson({
             url: 'mockUpdates/unsubscribeCluster',
+            method: 'POST',
             params: {channelKey: XH.webSocketService.channelKey}
         });
 

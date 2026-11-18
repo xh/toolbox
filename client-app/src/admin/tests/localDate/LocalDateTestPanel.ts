@@ -19,7 +19,7 @@ export const LocalDateTestPanel = hoistCmp({
 
         return panel({
             className: 'local-date-test-panel xh-tiled-bg',
-            items
+            children: items
         });
     }
 });
@@ -48,14 +48,14 @@ function renderTestResult(test) {
 
     return tr({
         key: title,
-        items: [
+        children: [
             td(title),
             td(input),
             td(expected),
             td(output),
             td({
                 style: {textAlign: 'center'},
-                item: result
+                children: result
                     ? Icon.check({className: 'xh-green'})
                     : Icon.cross({className: 'xh-red'})
             }),

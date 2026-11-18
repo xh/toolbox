@@ -75,12 +75,12 @@ export const GridTestPanel = hoistCmp({
                 autosizeOptions(model),
                 actions(model)
             ],
-            items: [
+            children: [
                 panel({
                     width: '100%',
                     height: '100%',
                     mask: model.loadTask,
-                    item: model.hasLoadedOnce
+                    children: model.hasLoadedOnce
                         ? grid({
                               agOptions: {
                                   columnMenu: 'legacy', // support for ag native filtering test
@@ -153,7 +153,7 @@ export const GridTestPanel = hoistCmp({
 const datasetOptions = (model: GridTestModel) =>
     wrapperOptionGroup({
         label: 'Dataset',
-        items: [
+        children: [
             wrapperOption({
                 label: 'Record count',
                 control: numberInput({
@@ -250,7 +250,7 @@ const datasetOptions = (model: GridTestModel) =>
 const loadingOptions = (model: GridTestModel) =>
     wrapperOptionGroup({
         label: 'Loading',
-        items: [
+        children: [
             wrapperOption({
                 label: 'Stream (NDJSON)',
                 info: 'Load incrementally via Store.loadDataAsync(), without buffering the complete raw dataset. Flat data only - off uses the conventional JSON endpoint.',
@@ -284,7 +284,7 @@ const loadingOptions = (model: GridTestModel) =>
 const recordDataOptions = (model: GridTestModel) =>
     wrapperOptionGroup({
         label: 'Record Data',
-        items: [
+        children: [
             wrapperOption({
                 label: 'Projection only',
                 propName: 'StoreConfig.projectionOnly',
@@ -329,7 +329,7 @@ const recordDataOptions = (model: GridTestModel) =>
 const gridOptions = (model: GridTestModel) =>
     wrapperOptionGroup({
         label: 'Grid',
-        items: [
+        children: [
             wrapperOption({
                 label: 'Restrict selection',
                 info: 'Disallow selecting rows with Day P&L < 0, via agOptions isRowSelectable.',
@@ -363,7 +363,7 @@ const gridOptions = (model: GridTestModel) =>
 const autosizeOptions = (model: GridTestModel) =>
     wrapperOptionGroup({
         label: 'Autosize',
-        items: [
+        children: [
             wrapperOption({
                 label: 'Mode',
                 propName: 'GridAutosizeOptions.mode',
@@ -408,7 +408,7 @@ const autosizeOptions = (model: GridTestModel) =>
 const actions = (model: GridTestModel) =>
     wrapperOptionGroup({
         label: 'Actions',
-        items: [
+        children: [
             wrapperAction({
                 text: 'Scroll to Selection',
                 icon: Icon.crosshairs(),
@@ -434,7 +434,7 @@ function valueMixOption(opt: SelectOption) {
     return vbox(
         span(opt.label),
         span({
-            item: (opt as any).desc,
+            children: (opt as any).desc,
             style: {fontSize: '0.85em', color: 'var(--xh-text-color-muted)', whiteSpace: 'normal'}
         })
     );

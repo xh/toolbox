@@ -44,7 +44,7 @@ export const [ToolboxLink, toolboxLink] = hoistCmp.withFactory<ToolboxLinkProps>
             if (docRef.section) params.section = docRef.section;
             return a({
                 href: XH.router.buildPath(DOCS_ROUTE, params),
-                item: linkText,
+                children: linkText,
                 onClick: e => {
                     e.preventDefault();
                     XH.navigate(DOCS_ROUTE, params);
@@ -54,7 +54,7 @@ export const [ToolboxLink, toolboxLink] = hoistCmp.withFactory<ToolboxLinkProps>
 
         return a({
             href: toolboxUrl(url),
-            item: linkText,
+            children: linkText,
             target: '_blank'
         });
     }
@@ -68,11 +68,11 @@ export function toolboxUrl(url: string) {
 const DOCS_ROUTE = 'default.docs.docRef';
 
 /**
- * True if the hosting app registers the in-app docs viewer route - router5's `buildPath`
- * returns null for unknown route names, making it a safe probe.
+ * True if the hosting app registers the in-app docs viewer route. `buildPath` throws for an
+ * unknown route name, so probe the route tree instead, where `getPath` returns null.
  */
 function hasDocsRoute(): boolean {
-    return !!XH.router.buildPath(DOCS_ROUTE, {source: 'hoistReact', docId: 'probe'});
+    return XH.router.rootNode.getPath(DOCS_ROUTE) != null;
 }
 
 function createDefaultText(url: string) {

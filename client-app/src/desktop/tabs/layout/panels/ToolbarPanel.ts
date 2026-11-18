@@ -41,13 +41,13 @@ export const toolbarPanel = hoistCmp.factory({
                 propName: 'ToolbarProps.compact',
                 control: switchInput({model, bind: 'compact'})
             }),
-            item: panel({
+            children: panel({
                 title: 'Panel with Toolbars',
                 icon: Icon.window(),
                 height: '60vh',
                 width: '90%',
                 tbar: topBar(),
-                item: hframe(leftBar(), placeholder(xhLogo({width: 200})), rightBar()),
+                children: hframe(leftBar(), placeholder(xhLogo({width: 200})), rightBar()),
                 bbar: bottomBar()
             })
         });
@@ -58,7 +58,7 @@ const topBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
     toolbar({
         compact: model.compact,
         enableOverflowMenu: true,
-        items: [
+        children: [
             button({
                 icon: Icon.add(),
                 text: 'New',
@@ -116,7 +116,7 @@ const leftBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
     toolbar({
         compact: model.compact,
         vertical: true,
-        items: [
+        children: [
             filler(),
             button({icon: Icon.contact()}),
             button({icon: Icon.comment()}),
@@ -134,14 +134,14 @@ const rightBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
     toolbar({
         compact: model.compact,
         vertical: true,
-        items: [button({icon: Icon.contact()})]
+        children: [button({icon: Icon.contact()})]
     })
 );
 
 const bottomBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
     toolbar({
         compact: model.compact,
-        items: [
+        children: [
             segmentedControl({
                 bind: 'visible',
                 fill: false,
@@ -152,7 +152,7 @@ const bottomBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
                 ]
             }),
             span({
-                item: 'Now you see me...',
+                children: 'Now you see me...',
                 omit: !model.visible
             }),
             filler(),

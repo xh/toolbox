@@ -18,7 +18,7 @@ export const AppComponent = hoistCmp({
                 icon: Icon.news({size: '2x', prefix: 'fal'}),
                 leftItems: [
                     a({
-                        item: 'powered by NewsAPI.org',
+                        children: 'powered by NewsAPI.org',
                         href: 'https://newsapi.org/',
                         target: '_blank'
                     })
@@ -33,7 +33,7 @@ export const AppComponent = hoistCmp({
                 ],
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
-            item: newsPanel()
+            children: newsPanel()
         });
     }
 });

@@ -61,6 +61,7 @@ import {restGridPanel} from './tabs/grids/RestGridPanel';
 import {standardGridPanel} from './tabs/grids/StandardGridPanel';
 import {treeGridPanel} from './tabs/grids/TreeGridPanel';
 import {treeGridWithCheckboxPanel} from './tabs/grids/TreeGridWithCheckboxPanel';
+import {cubeGridPanel} from './tabs/grids/CubeGridPanel';
 import {zoneGridPanel} from './tabs/grids/ZoneGridPanel';
 import {homeTab} from './tabs/home/HomeTab';
 import {cardPanel} from './tabs/layout/CardPanel';
@@ -88,8 +89,13 @@ import {inspectorPanel} from './tabs/system/InspectorPanel';
 import {jsxPanel} from './tabs/system/JsxPanel';
 import {markdownPanel} from './tabs/components/general/MarkdownPanel';
 import {numberFormatsPanel} from './tabs/system/formats/NumberFormatsPanel';
+import {pdfViewerPanel} from './tabs/components/general/PdfViewerPanel';
 import {pinPadPanel} from './tabs/components/general/PinPadPanel';
 import {placeholderPanel} from './tabs/components/general/PlaceholderPanel';
+import {progressBarPanel} from './tabs/components/general/ProgressBarPanel';
+import {separatorPanel} from './tabs/components/general/SeparatorPanel';
+import {sparklinePanel} from './tabs/components/general/SparklinePanel';
+import {statCardPanel} from './tabs/components/general/StatCardPanel';
 import {relativeTimestampPanel} from './tabs/components/general/relativetimestamp/RelativeTimestampPanel';
 import {simpleRoutingPanel} from './tabs/system/routing/SimpleRoutingPanel';
 import {bannerPanel} from './tabs/layout/panels/BannerPanel';
@@ -151,7 +157,7 @@ export class AppModel extends BaseAppModel {
                 },
                 formField: {
                     label: 'Font',
-                    item: radioCardInput({
+                    children: radioCardInput({
                         options: [
                             {
                                 value: 'IBM Plex Sans',
@@ -175,7 +181,7 @@ export class AppModel extends BaseAppModel {
                 formField: {
                     label: 'Profile pic menu',
                     info: 'Render the App Menu button using your profile pic',
-                    item: switchInput()
+                    children: switchInput()
                 }
             }
         ];
@@ -200,9 +206,9 @@ export class AppModel extends BaseAppModel {
                     : 'Inter, system-ui, sans-serif',
                 fontFeatureSettings: isPlex ? "'zero', 'ss01'" : 'normal'
             },
-            items: [
-                box({className: 'tbox-font-swatch__big', item: 'Aa'}),
-                box({className: 'tbox-font-swatch__small', item: '0123'})
+            children: [
+                box({className: 'tbox-font-swatch__big', children: 'Aa'}),
+                box({className: 'tbox-font-swatch__small', children: '0123'})
             ]
         });
     }
@@ -276,6 +282,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'inlineEditing', path: '/inlineEditing'},
                             {name: 'columnFiltering', path: '/columnFiltering'},
                             {name: 'externalSort', path: '/externalSort'},
+                            {name: 'cubeGrid', path: '/cubeGrid'},
                             {name: 'zoneGrid', path: '/zoneGrid'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'agGrid', path: '/agGrid'},
@@ -323,13 +330,18 @@ export class AppModel extends BaseAppModel {
                             {name: 'errorMessage', path: '/errorMessage'},
                             {name: 'icons', path: '/icons'},
                             {name: 'markdown', path: '/markdown'},
+                            {name: 'pdfViewer', path: '/pdfViewer'},
                             {name: 'dateRangePicker', path: '/dateRangePicker'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'clock', path: '/clock'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'timestamp', path: '/timestamp'},
-                            {name: 'placeholder', path: '/placeholder'}
+                            {name: 'placeholder', path: '/placeholder'},
+                            {name: 'statCard', path: '/statCard'},
+                            {name: 'progressBar', path: '/progressBar'},
+                            {name: 'separator', path: '/separator'},
+                            {name: 'sparkline', path: '/sparkline'}
                         ]
                     },
                     {
@@ -445,6 +457,7 @@ export class AppModel extends BaseAppModel {
                         ].map(it => ({...it, group: 'grid'})),
                         // Components built on or around GridModel, each with its own API.
                         ...[
+                            {id: 'cubeGrid', title: 'Cube Grid', content: cubeGridPanel},
                             {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
                             {id: 'dataview', title: 'DataView', content: dataViewPanel},
                             {id: 'rest', title: 'REST Editor', content: restGridPanel},
@@ -597,8 +610,13 @@ export class AppModel extends BaseAppModel {
                             {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
                             {id: 'icons', content: iconsPanel},
                             {id: 'markdown', content: markdownPanel},
+                            {id: 'pdfViewer', title: 'PdfViewer', content: pdfViewerPanel},
                             {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                             {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                            {id: 'progressBar', title: 'ProgressBar', content: progressBarPanel},
+                            {id: 'separator', content: separatorPanel},
+                            {id: 'sparkline', content: sparklinePanel},
+                            {id: 'statCard', title: 'StatCard', content: statCardPanel},
                             {id: 'timestamp', content: relativeTimestampPanel}
                         ].map(it => ({...it, group: 'general'})),
                         ...[

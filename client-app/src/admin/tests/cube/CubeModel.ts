@@ -95,7 +95,12 @@ export class CubeModel extends HoistModel {
                 {name: 'trader', isDimension: true},
                 {name: 'dir', displayName: 'Direction', isDimension: true},
 
-                {name: 'quantity', aggregator: 'SUM', canAggregateFn: isInstrument},
+                {
+                    name: 'quantity',
+                    shortDisplayName: 'Qty',
+                    aggregator: 'SUM',
+                    canAggregateFn: isInstrument
+                },
                 {
                     name: 'price',
                     aggregator: new WeightedAverageAggregator('quantity'),

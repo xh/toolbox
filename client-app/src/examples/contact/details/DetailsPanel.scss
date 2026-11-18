@@ -1,7 +1,7 @@
 .tb-contact-details-panel {
   --xh-form-field-label-text-transform: uppercase;
   --xh-form-field-label-font-size: 0.8em;
-  --xh-form-field-label-color: var(--xh-text-color-muted);
+  --xh-form-field-label-text-color: var(--xh-text-color-muted);
 
   // Sync header height with DirectoryPanel toolbar.
   .xh-panel-header {
@@ -15,12 +15,12 @@
     img {
       display: table-cell;
       height: 250px;
-      margin: var(--xh-pad-px) auto;
+      margin: var(--xh-spacing) auto;
     }
 
     .xh-form-field {
       margin: 0;
-      padding: var(--xh-pad-half-px) var(--xh-pad-px);
+      padding: var(--xh-spacing-half) var(--xh-spacing);
 
       &:first-of-type {
         border-top: var(--xh-border-solid);

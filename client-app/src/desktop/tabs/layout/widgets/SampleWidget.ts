@@ -34,20 +34,16 @@ export function sampleViewSpecs(): DashViewSpec[] {
 }
 
 const SAMPLE_GROUPS: [groupName: string, icon: ReactElement, titles: string[]][] = [
-    ['Markets/Equities', Icon.chartLine(), ['Equities Overview']],
-    ['Markets/Equities/US', Icon.chartLine(), ['S&P 500', 'Nasdaq Composite', 'Dow Jones']],
-    ['Markets/Equities/Europe', Icon.chartLine(), ['FTSE 100', 'DAX', 'CAC 40']],
-    ['Markets/Equities/Asia', Icon.chartLine(), ['Nikkei 225', 'Hang Seng']],
+    ['Markets', Icon.chartLine(), ['Markets Overview']],
+    ['Markets/Equities', Icon.chartLine(), ['S&P 500', 'FTSE 100', 'Nikkei 225']],
     ['Markets/Rates', Icon.chartArea(), ['Treasury Curve', 'Swap Spreads']],
-    ['Markets/Rates/Futures', Icon.chartBar(), ['SOFR Futures', 'Bund Futures']],
+    ['Markets/Rates', Icon.chartBar(), ['SOFR Futures']],
     ['Markets/FX', Icon.dollarSign(), ['G10 Majors', 'EM Currencies']],
-    ['Markets/Commodities/Energy', Icon.bolt(), ['Crude Oil', 'Natural Gas']],
-    ['Markets/Commodities/Metals/Precious', Icon.gauge(), ['Gold', 'Silver', 'Platinum']],
-    ['Markets/Commodities/Metals/Base', Icon.gauge(), ['Copper', 'Aluminum']],
+    ['Markets/Commodities', Icon.bolt(), ['Crude Oil', 'Natural Gas']],
+    ['Markets/Commodities', Icon.gauge(), ['Gold', 'Copper']],
     ['Risk', Icon.shield(), ['VaR Summary', 'Stress Tests']],
     ['Risk/Limits', Icon.lock(), ['Desk Limits', 'Counterparty Limits']],
-    ['Risk/Limits/Breaches', Icon.warning(), ['Open Breaches', 'Breach History']],
+    ['Risk/Limits', Icon.warning(), ['Open Breaches']],
     ['Reports/Daily', Icon.fileText(), ['P&L Summary', 'Trade Blotter']],
-    ['Reports/Monthly', Icon.calendar(), ['Monthly Summary']],
-    ['Reports/Monthly/By Region', Icon.globe(), ['Americas', 'EMEA', 'APAC']]
+    ['Reports/Monthly', Icon.calendar(), ['Monthly Summary', 'Regional Summary']]
 ];

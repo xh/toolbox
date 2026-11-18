@@ -30,7 +30,7 @@ export const chartWidget = hoistCmp.factory({
         return panel({
             model: panelModel,
             ...(panelModel.isModal ? modalOpts : {}),
-            item: chart({model: model.chartModel})
+            children: chart({model: model.chartModel})
         });
     }
 });

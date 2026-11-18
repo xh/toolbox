@@ -46,7 +46,7 @@ Hoist applications are built around three artifact types:
 **Element factories over JSX.** Hoist uses element factory functions, not JSX:
 ```typescript
 // ✅ Hoist style
-panel({title: 'Users', items: [grid(), button({text: 'Refresh'})]})
+panel({title: 'Users', children: [grid(), button({text: 'Refresh'})]})
 
 // ❌ Not used in Hoist
 <Panel title="Users"><Grid /><Button text="Refresh" /></Panel>
@@ -57,7 +57,7 @@ panel({title: 'Users', items: [grid(), button({text: 'Refresh'})]})
 export const userList = hoistCmp.factory({
     model: creates(UserListModel),  // Component creates and owns this model
     render({model}) {
-        return panel({title: 'Users', item: grid()});
+        return panel({title: 'Users', children: grid()});
     }
 });
 ```
@@ -356,6 +356,12 @@ it before committing.
 ./gradlew console     # Grails interactive console
 ./gradlew test        # Spock unit tests in src/test/groovy (see hoist-core's docs/testing.md)
 ```
+
+Packaged builds lock every Gradle configuration in `STRICT` mode (see `build.gradle`). After any
+dependency change, including a `hoistCoreVersion` bump, run
+`./gradlew dependencies --write-locks -PrunHoistInline=false` and commit the changed lockfiles.
+Inline builds (`runHoistInline=true`) skip locking, because the local hoist-core checkout decides
+their dependency graph.
 
 ### Local Development
 Run both simultaneously:

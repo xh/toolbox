@@ -29,7 +29,7 @@
   background: var(--xh-bg-alt);
   color: var(--xh-text-color-muted);
   font-family: var(--tb-fav-mono);
-  font-size: var(--xh-font-size-small-px);
+  font-size: var(--xh-font-size-small);
   white-space: nowrap;
 }
 
@@ -49,7 +49,7 @@
   }
 
   &__row-label {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
@@ -64,7 +64,7 @@
   }
 
   &__hint {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
     line-height: 1.35;
   }
@@ -75,7 +75,7 @@
 
   &__credit {
     padding-left: 6px;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
 
     a {
@@ -85,48 +85,6 @@
         color: var(--xh-text-color);
       }
     }
-  }
-}
-
-.tb-color-field {
-  &__label {
-    display: block;
-    margin-bottom: 2px;
-    font-size: var(--xh-font-size-small-px);
-    color: var(--xh-text-color-muted);
-  }
-
-  &__inputs {
-    align-items: center;
-    gap: 4px;
-  }
-
-  &__swatch {
-    flex: none;
-    width: 30px;
-    height: 24px;
-    padding: 0;
-    border: none;
-    background: none;
-    cursor: pointer;
-
-    &::-webkit-color-swatch-wrapper {
-      padding: 0;
-    }
-
-    &::-webkit-color-swatch {
-      border: var(--xh-border-solid);
-      border-radius: 4px;
-    }
-
-    &::-moz-color-swatch {
-      border: var(--xh-border-solid);
-      border-radius: 4px;
-    }
-  }
-
-  &__hex input {
-    font-family: var(--tb-fav-mono);
   }
 }
 
@@ -148,7 +106,7 @@
   // Preview tiles are Hoist panels, restyled as minimal outlined tiles by overriding Panel's
   // `--xh-panel-*` CSS vars on this container - the panels within inherit them. A transparent header
   // in the body text color lets each tile read as a single surface.
-  --xh-panel-border-width-px: 1px;
+  --xh-panel-border-width: 1px;
   --xh-panel-title-bg: transparent;
   --xh-panel-title-text-color: var(--xh-text-color);
 
@@ -233,7 +191,7 @@
 
   &__label {
     font-family: var(--tb-fav-mono);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 }
@@ -423,7 +381,7 @@
     border-radius: 4px;
     background: var(--xh-bg-alt);
     font-family: var(--tb-fav-mono);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
   }
 
   &__editor {

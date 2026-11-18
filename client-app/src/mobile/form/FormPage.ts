@@ -89,7 +89,7 @@ export const formPage = hoistCmp.factory({
                     notes: 'Binds an input to a FormModel field, with label and validation display.'
                 }
             ],
-            item: formDemo()
+            children: formDemo()
         });
     }
 });
@@ -99,23 +99,23 @@ const formDemo = hoistCmp.factory<FormPageModel>(({model}) => {
     return panel({
         scrollable: true,
         className: `tb-form-page tb-form-page--${density}`,
-        item: form({
+        children: form({
             fieldDefaults: {
                 minimal,
                 commitOnChange,
                 requiredIndicator: requiredMarkers ? '*' : ''
             },
-            items: vbox(
+            children: vbox(
                 formFieldSet({
                     title: 'Candidate Details',
                     modelConfig: {collapsible: true},
-                    items: [
-                        formField({field: 'firstName', item: textInput({enableClear: true})}),
-                        formField({field: 'lastName', item: textInput({enableClear: true})}),
+                    children: [
+                        formField({field: 'firstName', children: textInput({enableClear: true})}),
+                        formField({field: 'lastName', children: textInput({enableClear: true})}),
                         formField({field: 'fullName'}),
                         formField({
                             field: 'email',
-                            item: textInput({
+                            children: textInput({
                                 leftIcon: Icon.mail(),
                                 enableClear: true,
                                 placeholder: 'user@company.com'
@@ -123,7 +123,7 @@ const formDemo = hoistCmp.factory<FormPageModel>(({model}) => {
                         }),
                         formField({
                             field: 'region',
-                            item: select({
+                            children: select({
                                 placeholder: 'Select a region...',
                                 options: model.regionOptions
                             })
@@ -134,41 +134,41 @@ const formDemo = hoistCmp.factory<FormPageModel>(({model}) => {
                     className: 'xh-margin-top',
                     title: 'Employment',
                     modelConfig: {collapsible: true},
-                    items: [
+                    children: [
                         formField({
                             field: 'startDate',
-                            item: dateInput({
+                            children: dateInput({
                                 valueType: 'localDate',
                                 maxDate: LocalDate.today()
                             })
                         }),
                         formField({
                             field: 'endDate',
-                            item: dateInput({valueType: 'localDate', enableClear: true})
+                            children: dateInput({valueType: 'localDate', enableClear: true})
                         }),
                         formField({
                             field: 'reasonForLeaving',
-                            item: select({
+                            children: select({
                                 placeholder: 'Select a reason...',
                                 options: model.reasonOptions
                             })
                         }),
-                        formField({field: 'isManager', item: switchInput()}),
+                        formField({field: 'isManager', children: switchInput()}),
                         formField({
                             field: 'yearsExperience',
-                            item: numberInput({min: 0, max: 100})
+                            children: numberInput({min: 0, max: 100})
                         }),
-                        formField({field: 'notes', item: textArea()})
+                        formField({field: 'notes', children: textArea()})
                     ]
                 }),
                 formFieldSet({
                     className: 'xh-margin-top',
                     title: 'Field Set 3',
                     modelConfig: {collapsible: true},
-                    items: [
+                    children: [
                         formField({
                             field: 'employeeId',
-                            item: select({
+                            children: select({
                                 placeholder: 'Select an employee...',
                                 options: model.selectableEmployees,
                                 generateOptionFn: id => {

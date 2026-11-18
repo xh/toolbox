@@ -28,11 +28,11 @@
   src: url('~@ibm/plex-sans/fonts/complete/woff2/IBMPlexSans-Bold.woff2') format('woff2');
 }
 
-// `--xh-font-family` reads `--font-family`, cascading the app font to buttons, grids, and charts.
+// Overriding `--xh-font-family` cascades the app font to buttons, grids, and charts.
 // `zero`/`ss01` enable IBM Plex's slashed zero and single-story letterforms.
 body.xh-app.tbox-font--plex {
-  --font-family: 'IBM Plex Sans', system-ui, sans-serif;
-  --font-feature-settings: 'tnum', 'zero', 'ss01';
+  --xh-font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  --xh-font-feature-settings: 'tnum', 'zero', 'ss01';
 }
 
 // Font-choice card previews (see AppModel.fontSwatch): a type specimen rendered in each candidate
@@ -77,7 +77,7 @@ code.tb-code-link {
   img {
     height: 25px;
     display: block;
-    margin-left: var(--xh-pad-px);
+    margin-left: var(--xh-spacing);
   }
 }
 

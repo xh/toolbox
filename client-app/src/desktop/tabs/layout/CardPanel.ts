@@ -61,7 +61,7 @@ export const cardPanel = hoistCmp.factory({
                 icon: Icon.experiment(),
                 intent: 'primary',
                 info: 'Drives the Playground instance.',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Title',
                         propName: 'CardProps.title',
@@ -93,12 +93,12 @@ export const cardPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 360,
                             showValue: false,
                             caption: 'Toggling Collapsible re-creates the card.',
@@ -111,11 +111,11 @@ export const cardPanel = hoistCmp.factory({
                                           `{collapsible: true${pgDefaultCollapsed ? ', defaultCollapsed: true' : ''}}`
                                       )
                                     : undefined,
-                                item: raw("p('...')")
+                                children: raw("p('...')")
                             }),
                             // Keyed on the collapse config, which CardModel reads once on
                             // construction - without this the card keeps its first setting.
-                            item: card({
+                            children: card({
                                 key: `${pgCollapsible}-${pgDefaultCollapsed}`,
                                 title: pgTitle,
                                 icon: pgIcon ? Icon.bookmark() : undefined,
@@ -124,25 +124,25 @@ export const cardPanel = hoistCmp.factory({
                                     collapsible: pgCollapsible,
                                     defaultCollapsed: pgDefaultCollapsed
                                 },
-                                item: p('Grouped content sits inside the card body.')
+                                children: p('Grouped content sits inside the card body.')
                             })
                         })
                     }),
                     demoSection({
                         title: 'Variants',
                         note: 'Each sets its own props.',
-                        items: [
+                        children: [
                             demoGrid({
                                 columns: 2,
-                                items: [
+                                children: [
                                     demoRow({
                                         label: 'Title and icon',
                                         info: 'The common case',
-                                        item: card({
+                                        children: card({
                                             title: 'Basic Card',
                                             icon: Icon.bookmark(),
                                             width: '100%',
-                                            items: [
+                                            children: [
                                                 p('A basic card with a title and icon.'),
                                                 p('Children are arranged vertically by default.')
                                             ]
@@ -151,7 +151,7 @@ export const cardPanel = hoistCmp.factory({
                                     demoRow({
                                         label: 'Untitled, custom inner layout',
                                         info: 'No title; contentBoxProps sets a row layout and padding',
-                                        item: card({
+                                        children: card({
                                             width: '100%',
                                             contentBoxProps: {
                                                 padding: 10,
@@ -159,7 +159,7 @@ export const cardPanel = hoistCmp.factory({
                                                 flexDirection: 'row',
                                                 alignItems: 'center'
                                             },
-                                            items: [
+                                            children: [
                                                 xhLogo({width: 120}),
                                                 p('Without a title the legend header is omitted.')
                                             ]
@@ -170,45 +170,48 @@ export const cardPanel = hoistCmp.factory({
                             demoRow({
                                 label: 'Intents',
                                 info: 'intent colors the inline header and border',
-                                item: demoGrid({
+                                children: demoGrid({
                                     columns: 4,
-                                    items: INTENTS.map(intent =>
+                                    children: INTENTS.map(intent =>
                                         card({
                                             key: intent,
                                             title: capitalize(intent),
                                             icon: INTENT_ICONS[intent](),
                                             intent,
-                                            item: p(`${capitalize(intent)} intent.`)
+                                            children: p(`${capitalize(intent)} intent.`)
                                         })
                                     )
                                 })
                             }),
                             demoGrid({
                                 columns: 2,
-                                items: [
+                                children: [
                                     demoRow({
                                         label: 'Collapsible',
                                         info: 'modelConfig: {collapsible: true}',
-                                        item: card({
+                                        children: card({
                                             title: 'Collapsible Card',
                                             width: '100%',
                                             modelConfig: {collapsible: true},
-                                            item: p('Click the header to toggle this card.')
+                                            children: p('Click the header to toggle this card.')
                                         })
                                     }),
                                     demoRow({
                                         label: 'Starts collapsed',
                                         info: 'modelConfig adds defaultCollapsed: true',
-                                        item: card({
+                                        children: card({
                                             title: 'Default Collapsed',
                                             width: '100%',
                                             modelConfig: {
                                                 collapsible: true,
                                                 defaultCollapsed: true
                                             },
-                                            item: placeholder({
+                                            children: placeholder({
                                                 minHeight: 80,
-                                                items: [Icon.thumbsUp(), 'You expanded the card!']
+                                                children: [
+                                                    Icon.thumbsUp(),
+                                                    'You expanded the card!'
+                                                ]
                                             })
                                         })
                                     })

@@ -63,10 +63,10 @@ export const zoneGridPage = hoistCmp.factory({
                     notes: 'Underlying grid features.'
                 }
             ],
-            item: panel({
+            children: panel({
                 mask: 'onLoad',
                 tbar: [storeFilterField({gridModel: zoneGridModel}), filler(), zoneMapperButton()],
-                item: zoneGrid()
+                children: zoneGrid()
             })
         });
     }
