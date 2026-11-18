@@ -41,16 +41,16 @@
 
   &__rail-body {
     overflow: auto;
-    padding: var(--xh-pad-px);
+    padding: var(--xh-spacing);
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     line-height: 1.5;
   }
 
   &__intro {
     p {
-      margin: 0 0 var(--xh-pad-half-px);
+      margin: 0 0 var(--xh-spacing-half);
       &:last-child {
         margin: 0;
       }
@@ -60,14 +60,29 @@
       font-family: var(--xh-font-family-mono);
       font-size: 0.85em;
       color: var(--xh-text-color);
+    }
+
+    // Inline code only - code inside a block takes the block's styling below.
+    :not(pre) > code {
       background-color: var(--xh-bg-alt);
       padding: 1px 3px;
       border-radius: 3px;
     }
 
+    // Code blocks, matching the doc viewer's framed style at a size suited to the rail.
+    pre {
+      background-color: var(--xh-bg-alt);
+      border: 1px solid var(--xh-border-color);
+      border-radius: 4px;
+      padding: var(--xh-spacing-half) var(--xh-spacing);
+      margin: 0 0 var(--xh-spacing-half);
+      overflow-x: auto;
+      line-height: 1.4;
+    }
+
     ul,
     ol {
-      margin: var(--xh-pad-half-px) 0;
+      margin: var(--xh-spacing-half) 0;
       padding-left: 1.4em;
     }
 
@@ -85,12 +100,12 @@
   &__resources {
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
   }
 
   &__resources-label,
   &__options-label {
-    margin-bottom: var(--xh-pad-half-px);
+    margin-bottom: var(--xh-spacing-half);
     text-transform: uppercase;
     font-size: 0.7rem;
     font-weight: 500;
@@ -107,7 +122,60 @@
   &__options-body {
     display: flex;
     flex-direction: column;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
+  }
+
+  // Tabbed sets of option rows - a segmented switcher above the active tab's rows.
+  &__option-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-spacing);
+  }
+
+  // Labeled sub-group of option rows, for options sections long enough to need scan structure.
+  &__option-group {
+    display: flex;
+    flex-direction: column;
+
+    & + & {
+      margin-top: var(--xh-spacing);
+    }
+  }
+
+  &__option-group-label {
+    display: flex;
+    align-items: center;
+    gap: var(--xh-spacing-half);
+    margin-bottom: var(--xh-spacing-half);
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--xh-border-color);
+    font-size: 0.8em;
+    font-weight: 600;
+    color: var(--xh-text-color-muted);
+
+    .xh-icon {
+      font-size: 0.9em;
+    }
+  }
+
+  // Scope note under the group label - which of the two option scopes this group is.
+  &__option-group-info {
+    margin: -3px 0 var(--xh-spacing-half);
+    color: var(--xh-text-color-muted);
+    font-size: 0.85em;
+    line-height: 1.35;
+  }
+
+  // Intent-colored group (the Playground group) - label and underline follow the intent.
+  &__option-group--primary &__option-group-label {
+    color: var(--xh-intent-primary-text-color);
+    border-bottom-color: var(--xh-intent-primary-text-color);
+  }
+
+  &__option-group-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xh-spacing-half);
   }
 
   &__option {
@@ -119,8 +187,19 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     min-height: 26px;
+  }
+
+  // Label centered against the first of a stack of inputs, rather than the whole stack.
+  &__option-row--top {
+    align-items: flex-start;
+
+    .tbox-wrapper__option-label {
+      display: grid;
+      align-items: center;
+      min-height: 30px;
+    }
   }
 
   &__option-label {
@@ -186,7 +265,7 @@
 
   &__resource {
     display: flex;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
     align-items: baseline;
 
     .xh-icon {
@@ -206,7 +285,9 @@
   // intrinsically-sized demos. No extra padding of its own; spacing comes from .tbox-wrapper.
   &__demo {
     flex: 1;
-    min-width: 0;
+    // The rail is `flex: none`, so this region absorbs every bit of narrowing and would
+    // otherwise collapse to a sliver. Hold a floor and let .tbox-wrapper scroll instead.
+    min-width: 420px;
     justify-content: center;
     align-items: center;
 
@@ -224,7 +305,7 @@
     flex: none;
     width: 36px;
     align-items: center;
-    padding-top: var(--xh-pad-half-px);
+    padding-top: var(--xh-spacing-half);
     border: var(--xh-border-solid);
     border-radius: 8px;
     box-shadow: var(--tbox-card-shadow);
@@ -232,7 +313,7 @@
   }
 
   &__rail-collapsed-hint {
-    margin-top: var(--xh-pad-half-px);
+    margin-top: var(--xh-spacing-half);
     color: var(--xh-text-color-muted);
   }
 }

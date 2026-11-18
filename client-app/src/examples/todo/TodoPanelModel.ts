@@ -1,15 +1,18 @@
-import {CellContext, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
-import {HoistModel, LoadSpec, managed, persist, SizingMode, XH} from '@xh/hoist/core';
+import type {CellContext} from '@xh/hoist/cmp/grid';
+import {GridModel, localDate} from '@xh/hoist/cmp/grid';
+import {HoistModel, managed, persist, SizingMode, XH} from '@xh/hoist/core';
+import type {LoadSpec} from '@xh/hoist/core';
 import {RecordAction} from '@xh/hoist/data';
 import type {DueDateGroup, Task} from './TaskService';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {span} from '@xh/hoist/cmp/layout';
 import {fmtCompactDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {every, isEmpty} from 'lodash';
-import {createRef, ReactNode} from 'react';
+import type {ReactNode} from 'react';
+import {createRef} from 'react';
 import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
 
@@ -21,11 +24,11 @@ export class TodoPanelModel extends HoistModel {
 
     @bindable
     @persist
-    showCompleted = false;
+    accessor showCompleted = false;
 
     @bindable
     @persist
-    showGroups = true;
+    accessor showGroups = true;
 
     @managed
     gridModel: GridModel<Task>;
@@ -90,7 +93,6 @@ export class TodoPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.gridModel = this.createGridModel();
 
@@ -254,7 +256,7 @@ export class TodoPanelModel extends HoistModel {
                 },
                 {
                     field: 'dueDate',
-                    ...localDateCol,
+                    ...localDate,
                     width: 140,
                     rendererIsComplex: true,
                     renderer: (v, context) => this.dueDateRenderer(v, context)
@@ -280,7 +282,7 @@ export class TodoPanelModel extends HoistModel {
                 distantFmt: 'MMM DD YYYY'
             });
 
-        return overdue ? span({className: 'xh-intent-warning', item: dateStr}) : dateStr;
+        return overdue ? span({className: 'xh-intent-warning', children: dateStr}) : dateStr;
     }
 }
 

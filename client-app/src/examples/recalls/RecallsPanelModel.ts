@@ -1,9 +1,11 @@
-import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
-import {HoistModel, LoadSpec, managed, persist, XH} from '@xh/hoist/core';
-import {compactDateRenderer} from '@xh/hoist/format';
+import {GridModel, localDate} from '@xh/hoist/cmp/grid';
+import type {LoadSpec} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {compactDateTextRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {LocalDate, ONE_SECOND} from '@xh/hoist/utils/datetime';
+import {bindable} from '@xh/hoist/mobx';
+import type {LocalDate} from '@xh/hoist/utils/datetime';
+import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {uniqBy} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
@@ -25,12 +27,11 @@ export class RecallsPanelModel extends HoistModel {
 
     override persistWith = PERSIST_APP;
 
-    @bindable
-    searchQuery: string = '';
+    @bindable accessor searchQuery: string = '';
 
     @bindable
     @persist
-    groupBy: string = null;
+    accessor groupBy: string = null;
 
     @managed
     detailsPanelModel = new DetailsPanelModel();
@@ -84,10 +85,10 @@ export class RecallsPanelModel extends HoistModel {
             },
             {
                 field: 'recallDate',
-                ...localDateCol,
+                ...localDate,
                 headerName: 'Date',
                 width: 100,
-                renderer: compactDateRenderer()
+                textRenderer: compactDateTextRenderer()
             },
             {
                 field: 'description',
@@ -104,7 +105,6 @@ export class RecallsPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         const {gridModel} = this;
         this.addReaction({

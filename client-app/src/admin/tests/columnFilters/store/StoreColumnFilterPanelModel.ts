@@ -1,9 +1,15 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
-import {boolCheckCol, ExcelFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {boolCheck, ExcelFormat, GridModel, localDate} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {CompoundFilter, FieldFilter} from '@xh/hoist/data';
-import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {computed, makeObservable} from '@xh/hoist/mobx';
+import type {CompoundFilter, FieldFilter} from '@xh/hoist/data';
+import {
+    fmtNumberTooltip,
+    millionsRenderer,
+    millionsTextRenderer,
+    numberRenderer,
+    numberTextRenderer
+} from '@xh/hoist/format';
+import {computed} from '@xh/hoist/mobx';
 
 export class StoreColumnFilterPanelModel extends HoistModel {
     @managed gridModel: GridModel;
@@ -16,7 +22,6 @@ export class StoreColumnFilterPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.gridModel = this.createGridModel();
         this.filterChooserModel = this.createFilterChooserModel();
@@ -86,7 +91,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                 },
                 {
                     field: 'active',
-                    ...boolCheckCol,
+                    ...boolCheck,
                     headerName: '',
                     chooserName: 'Active Status',
                     tooltip: (active, {record}) =>
@@ -120,7 +125,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                     field: 'trade_volume',
                     width: 150,
                     tooltip: val => fmtNumberTooltip(val),
-                    renderer: millionsRenderer({
+                    textRenderer: millionsTextRenderer({
                         precision: 1,
                         label: true
                     }),
@@ -131,7 +136,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                     width: 150,
                     absSort: true,
                     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
-                    renderer: numberRenderer({
+                    textRenderer: numberTextRenderer({
                         precision: 0,
                         ledger: true,
                         colorSpec: true
@@ -140,7 +145,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                 },
                 {
                     field: 'trade_date',
-                    ...localDateCol,
+                    ...localDate,
                     width: 150
                 }
             ]

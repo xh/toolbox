@@ -1,6 +1,6 @@
-import {SplitTreeMapModel, TreeMapModel} from '@xh/hoist/cmp/treemap';
+import type {SplitTreeMapModel, TreeMapModel} from '@xh/hoist/cmp/treemap';
 import {select} from '@xh/hoist/desktop/cmp/input';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {wrapperOption} from '../Wrapper';
 
 /**

@@ -1,0 +1,16 @@
+.tb-updates-idle {
+  > .xh-panel {
+    border: var(--xh-border-solid);
+    margin: var(--xh-spacing-double);
+    width: 325px;
+    height: 325px;
+
+    p {
+      margin: var(--xh-spacing);
+    }
+
+    button {
+      padding: var(--xh-spacing);
+    }
+  }
+}

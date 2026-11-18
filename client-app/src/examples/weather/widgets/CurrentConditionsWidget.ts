@@ -1,15 +1,14 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {div, hbox, img, vbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {makeObservable} from '@xh/hoist/mobx';
-import {CurrentWeatherResponse} from '../Types';
-import {AppModel} from '../AppModel';
+import {creates, hoistCmp, HoistModel, lookup, managed} from '@xh/hoist/core';
+import type {CurrentWeatherResponse} from '../Types';
+import type {WeatherDashModel} from '../WeatherDashModel';
 
 export const currentConditionsWidget = hoistCmp.factory({
     model: creates(() => CurrentConditionsModel),
 
     render({model}) {
-        const {currentWeather} = AppModel.instance.weatherDashModel;
+        const {currentWeather} = model.dashModel;
         if (!currentWeather) return null;
 
         const description = currentWeather.weather?.[0]?.description ?? '',
@@ -22,11 +21,11 @@ export const currentConditionsWidget = hoistCmp.factory({
             className: 'weather-current-conditions',
             alignItems: 'center',
             flex: 1,
-            items: [
+            children: [
                 chart({className: 'weather-current-conditions__gauge'}),
                 hbox({
                     className: 'weather-current-conditions__details',
-                    items: [
+                    children: [
                         iconCode
                             ? img({
                                   className: 'weather-current-conditions__icon',
@@ -36,13 +35,14 @@ export const currentConditionsWidget = hoistCmp.factory({
                             : null,
                         vbox({
                             className: 'weather-current-conditions__text',
-                            items: [
+                            children: [
                                 div({
                                     className: 'weather-current-conditions__description',
-                                    item: description.charAt(0).toUpperCase() + description.slice(1)
+                                    children:
+                                        description.charAt(0).toUpperCase() + description.slice(1)
                                 }),
                                 div({
-                                    item: [
+                                    children: [
                                         feelsLike != null
                                             ? `Feels like ${Math.round(feelsLike)}°F`
                                             : null,
@@ -62,18 +62,15 @@ export const currentConditionsWidget = hoistCmp.factory({
 });
 
 class CurrentConditionsModel extends HoistModel {
-    @managed chartModel: ChartModel;
+    @lookup((m: WeatherDashModel) => !!m.isWeatherDashModel) dashModel: WeatherDashModel;
 
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @managed chartModel: ChartModel;
 
     override onLinked() {
         this.chartModel = this.createChartModel();
 
         this.addReaction({
-            track: () => AppModel.instance.weatherDashModel.currentWeather,
+            track: () => this.dashModel.currentWeather,
             run: data => this.updateChart(data),
             fireImmediately: true
         });

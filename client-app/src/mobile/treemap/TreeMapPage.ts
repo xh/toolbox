@@ -72,9 +72,9 @@ export const treeMapPage = hoistCmp.factory({
                     notes: 'Underlying treemap series config.'
                 }
             ],
-            item: panel({
+            children: panel({
                 mask: 'onLoad',
-                item: model.type === 'treeMap' ? treeMap() : splitTreeMap()
+                children: model.type === 'treeMap' ? treeMap() : splitTreeMap()
             })
         });
     }

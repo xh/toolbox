@@ -1,13 +1,15 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {Content, managed, XH} from '@xh/hoist/core';
+import type {Content} from '@xh/hoist/core';
+import {managed, XH} from '@xh/hoist/core';
 import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {DocViewModel} from '../../../core/docs/DocViewModel';
 import {getCategoryIcon, getSourceIcon} from '../../../core/docs/DocIcons';
-import {DocEntry, DocExampleLink, getDocExamples} from './docRegistry';
-import {DocSearchResult} from '../../../core/svc/DocService';
+import type {DocEntry, DocExampleLink} from './docRegistry';
+import {getDocExamples} from './docRegistry';
+import type {DocSearchResult} from '../../../core/svc/DocService';
 
 /**
  * Primary model for the Docs viewer tab.
@@ -34,24 +36,18 @@ export class DocsPanelModel extends DocViewModel {
         persistWith: {localStorageKey: 'docsApp.navPanel'}
     });
 
-    @bindable
-    searchQuery: string = '';
+    @bindable accessor searchQuery: string = '';
 
-    @observable
-    searchMode: boolean = false;
+    @observable accessor searchMode: boolean = false;
 
-    @observable.ref
-    searchResults: DocSearchResult[] = [];
+    @observableRef accessor searchResults: DocSearchResult[] = [];
 
-    @observable
-    selectedSearchIdx: number = -1;
+    @observable accessor selectedSearchIdx: number = -1;
 
-    @bindable
-    feedbackMessage: string = '';
+    @bindable accessor feedbackMessage: string = '';
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.gridModel = this.createGridModel();
 
@@ -108,7 +104,7 @@ export class DocsPanelModel extends DocViewModel {
         this.searchQuery = '';
         this.searchResults = [];
         this.selectedSearchIdx = -1;
-        this.docService.ensureIndexBuilt();
+        XH.docService.ensureIndexBuilt();
     }
 
     /** Exit search mode - returns to normal doc viewing. */
@@ -263,8 +259,8 @@ export class DocsPanelModel extends DocViewModel {
         this.gridModel.loadData(this.buildTreeData());
 
         const ref = this.docRefFromRoute(XH.routerState.params),
-            registry = this.docService.registry,
-            fromRoute = ref && this.docService.getDocEntry(ref.docId, ref.source),
+            registry = XH.docService.registry,
+            fromRoute = ref && XH.docService.getDocEntry(ref.docId, ref.source),
             initialDoc = fromRoute || registry[0];
         if (initialDoc) {
             this.navigateToDoc(initialDoc.id, initialDoc.source, fromRoute ? ref.section : null);
@@ -285,7 +281,7 @@ export class DocsPanelModel extends DocViewModel {
      */
     private buildTreeData(): any[] {
         let order = 0;
-        const {docService} = this;
+        const {docService} = XH;
 
         return docService.sourceNames.map(sourceName => {
             const sourceLabel = docService.getSourceLabel(sourceName);
@@ -334,7 +330,7 @@ export class DocsPanelModel extends DocViewModel {
     private runSearch(query: string) {
         if (!this.searchMode) return;
         runInAction(() => {
-            this.searchResults = this.docService.searchDocs(query);
+            this.searchResults = XH.docService.searchDocs(query);
         });
     }
 

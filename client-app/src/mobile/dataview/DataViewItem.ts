@@ -14,15 +14,15 @@ export const dataViewItem = hoistCmp.factory({
         return vbox(
             div({
                 className: 'dataview-item--name',
-                item: name
+                children: name
             }),
             div({
                 className: 'dataview-item--city',
-                item: city
+                children: city
             }),
             div({
                 className: 'dataview-item--value',
-                item: fmtNumber(value, {
+                children: fmtNumber(value, {
                     withSignGlyph: true,
                     colorSpec: true,
                     precision: 2

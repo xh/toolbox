@@ -1,16 +1,16 @@
-import {XH, HoistModel, managed, LoadSpec, PlainObject} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {GridModel, localDateCol, ExcelFormat} from '@xh/hoist/cmp/grid';
-import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import type {LoadSpec, PlainObject} from '@xh/hoist/core';
+import {XH, HoistModel, managed} from '@xh/hoist/core';
+import {bindable, bindableRef} from '@xh/hoist/mobx';
+import {GridModel, localDate, ExcelFormat} from '@xh/hoist/cmp/grid';
+import {fmtNumberTooltip, millionsTextRenderer, numberTextRenderer} from '@xh/hoist/format';
 
 export class ExternalSortGridPanelModel extends HoistModel {
     @managed gridModel: GridModel;
-    @bindable.ref trades: PlainObject[];
-    @bindable maxRows: number = null;
+    @bindableRef accessor trades: PlainObject[];
+    @bindable accessor maxRows: number = null;
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.gridModel = this.createGridModel();
 
@@ -77,7 +77,7 @@ export class ExternalSortGridPanelModel extends HoistModel {
                     },
                     width: 150,
                     tooltip: val => fmtNumberTooltip(val),
-                    renderer: millionsRenderer({
+                    textRenderer: millionsTextRenderer({
                         precision: 1,
                         label: true
                     }),
@@ -93,7 +93,7 @@ export class ExternalSortGridPanelModel extends HoistModel {
                     width: 150,
                     absSort: true,
                     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
-                    renderer: numberRenderer({
+                    textRenderer: numberTextRenderer({
                         precision: 0,
                         ledger: true,
                         colorSpec: true
@@ -107,7 +107,7 @@ export class ExternalSortGridPanelModel extends HoistModel {
                         displayName: 'Date',
                         description: 'Date of last trade (including related derivatives)'
                     },
-                    ...localDateCol,
+                    ...localDate,
                     width: 150
                 }
             ]

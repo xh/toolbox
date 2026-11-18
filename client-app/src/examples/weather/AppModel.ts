@@ -1,5 +1,5 @@
-import {InitContext, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
+import type {InitContext, LoadSpec} from '@xh/hoist/core';
+import {managed} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
     themeAppOption,
@@ -7,26 +7,25 @@ import {
 } from '@xh/hoist/desktop/cmp/appOption';
 import {BaseAppModel} from '../../BaseAppModel';
 import {WeatherDashModel} from './WeatherDashModel';
+import {initialState, viewSpecs} from './widgets/viewSpecs';
+import {viewManagers} from './viewManagers';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
     @managed weatherDashModel: WeatherDashModel;
-    @managed weatherViewManager: ViewManagerModel;
 
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
 
-        this.weatherViewManager = await ViewManagerModel.createAsync(
-            {
-                type: 'weatherDashboard',
-                typeDisplayName: 'Layout',
-                enableDefault: true,
-                manageGlobal: XH.getUser().isHoistAdmin
-            },
-            ctx
-        );
+        // Awaited here, in initAsync, so that saved layouts are loaded and the desired option
+        // preselected before WeatherDashModel builds its DashCanvas.
+        await viewManagers.initAsync(ctx);
 
-        this.weatherDashModel = new WeatherDashModel(this.weatherViewManager);
+        this.weatherDashModel = new WeatherDashModel({
+            viewManagerModel: viewManagers.weatherDashboard,
+            viewSpecs,
+            initialState
+        });
         this.loadAsync(ctx);
     }
 

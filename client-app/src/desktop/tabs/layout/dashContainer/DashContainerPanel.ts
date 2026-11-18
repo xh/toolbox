@@ -1,19 +1,18 @@
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
-import {
-    optionsWidget,
-    chartWidget,
-    gridWidget,
-    panelWidget,
-    treeGridWidget,
-    errorWidget
-} from '../widgets';
-import {wrapper, wrapperAction, wrapperOption} from '../../../common';
+import {chartWidget} from '../widgets/ChartWidget';
+import {errorWidget} from '../widgets/ErrorWidget';
+import {gridWidget} from '../widgets/GridWidget';
+import {optionsWidget} from '../widgets/OptionsWidget';
+import {panelWidget} from '../widgets/PanelWidget';
+import {sampleViewSpecs} from '../widgets/SampleWidget';
+import {treeGridWidget} from '../widgets/TreeGridWidget';
+import {wrapper, wrapperAction, wrapperOption} from '../../../common/Wrapper';
 
 export const dashContainerPanel = hoistCmp.factory({
     model: creates(() => DashContainerPanelModel),
@@ -62,13 +61,14 @@ export const dashContainerPanel = hoistCmp.factory({
                     onClick: () => model.resetState()
                 })
             ],
-            item: panel({
+            children: panel({
                 width: '100%',
                 height: '100%',
-                item: model.renderDashboard
+                children: model.renderDashboard
                     ? dashContainer()
                     : frame({
-                          item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
+                          children:
+                              'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                           padding: 10
                       })
             }),
@@ -104,7 +104,7 @@ export const dashContainerPanel = hoistCmp.factory({
 });
 
 class DashContainerPanelModel extends HoistModel {
-    @bindable renderDashboard = true;
+    @bindable accessor renderDashboard = true;
 
     @managed
     dashContainerModel = new DashContainerModel({
@@ -181,14 +181,10 @@ class DashContainerPanelModel extends HoistModel {
                 title: 'Error Example',
                 icon: Icon.skull(),
                 content: errorWidget({componentName: 'DashContainer'})
-            }
+            },
+            ...sampleViewSpecs()
         ]
     });
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 
     resetState() {
         this.dashContainerModel

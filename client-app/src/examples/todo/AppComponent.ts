@@ -20,7 +20,7 @@ export const AppComponent = hoistCmp({
             className: 'xh-tiled-bg',
             alignItems: 'center',
             justifyContent: 'center',
-            item: panel({
+            children: panel({
                 className: 'tbox-todoapp',
                 // `flex: none` (inline, via prop) keeps the card at its managed size rather than
                 // growing to fill the frame - so the width/height in App.scss are honored.
@@ -32,7 +32,7 @@ export const AppComponent = hoistCmp({
                     hideWhatsNewButton: true,
                     rightItems: [themeToggleButton()]
                 }),
-                item: todoPanel()
+                children: todoPanel()
             })
         });
     }

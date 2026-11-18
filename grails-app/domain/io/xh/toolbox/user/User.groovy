@@ -1,12 +1,12 @@
 package io.xh.toolbox.user
 
+import io.xh.hoist.security.HoistPasswordEncryptor
 import io.xh.hoist.user.HoistUser
-import org.jasypt.util.password.BasicPasswordEncryptor
 
 
 class User implements HoistUser {
 
-    private static encryptor = new BasicPasswordEncryptor()
+    private static encryptor = new HoistPasswordEncryptor()
 
     // Email captured and stored as username.
     String email
@@ -21,7 +21,7 @@ class User implements HoistUser {
 
     static constraints = {
         email blank: false, unique: true, email: true, validator: {
-            return validateUsername(it) ?: 'toolbox.user.custom.validation.fail.message'
+            return User.validateUsername(it) ?: 'toolbox.user.custom.validation.fail.message'
         }
         name blank: false
         password nullable: true

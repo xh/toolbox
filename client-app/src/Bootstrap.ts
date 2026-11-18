@@ -12,16 +12,20 @@
 import {XH} from '@xh/hoist/core';
 import {when} from '@xh/hoist/mobx';
 
-import {ContactService} from './examples/contact/svc/ContactService';
-import {GitHubService} from './core/svc/GitHubService';
-import {PortfolioService} from './core/svc/PortfolioService';
-import {TaskService} from './examples/todo/TaskService';
+import type {ContactService} from './examples/contact/svc/ContactService';
+import type {DocService} from './core/svc/DocService';
+import type {GitHubService} from './core/svc/GitHubService';
+import type {GlyphService} from './examples/favicons/svc/GlyphService';
+import type {PortfolioService} from './core/svc/PortfolioService';
+import type {TaskService} from './examples/todo/TaskService';
 
 declare module '@xh/hoist/core' {
     // Merge interface with XHApi class to include injected services.
     export interface XHApi {
         contactService: ContactService;
+        docService: DocService;
         gitHubService: GitHubService;
+        glyphService: GlyphService;
         portfolioService: PortfolioService;
         taskService: TaskService;
     }
@@ -34,6 +38,8 @@ declare module '@xh/hoist/core' {
 //-----------------------------------------------------------------
 // Hoist Configuration
 //-----------------------------------------------------------------
+// Custom icons, registered with Hoist's Icon catalog via Icon.register().
+import './core/Icons';
 
 //-----------------------------------------------------------------
 // ag-Grid -- Import and Register
@@ -42,11 +48,9 @@ declare module '@xh/hoist/core' {
 // you must provide your own license
 //-----------------------------------------------------------------
 import {installAgGrid} from '@xh/hoist/kit/ag-grid';
-import {ModuleRegistry, provideGlobalGridOptions} from 'ag-grid-community';
+import {ModuleRegistry} from 'ag-grid-community';
 import {LicenseManager} from 'ag-grid-enterprise';
 import {AgGridReact} from 'ag-grid-react';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-balham.css';
 
 // 1) Standard community modules - required for all Hoist Apps.
 import {
@@ -59,6 +63,7 @@ import {
     RenderApiModule,
     RowApiModule,
     RowAutoHeightModule,
+    RowDragModule,
     RowSelectionModule,
     RowStyleModule,
     ScrollApiModule,
@@ -76,6 +81,7 @@ ModuleRegistry.registerModules([
     RenderApiModule,
     RowApiModule,
     RowAutoHeightModule,
+    RowDragModule,
     RowSelectionModule,
     RowStyleModule,
     ScrollApiModule,
@@ -120,7 +126,14 @@ ModuleRegistry.registerModules([
     TextFilterModule
 ]);
 
-provideGlobalGridOptions({theme: 'legacy'});
+// 4) Development only - turns AG Grid's terse numeric error codes into full console messages, with
+// its on-grid overlay left off. Gated on the build-time `xhIsDevelopmentMode` constant (not
+// `XH.isDevelopmentMode`, a runtime read), so the call drops out of prod builds.
+import {enableDevValidations} from 'ag-grid-community';
+if (xhIsDevelopmentMode) {
+    enableDevValidations({showOverlayOn: [], throwOn: [], suppress: []});
+}
+
 installAgGrid(AgGridReact as any, ClientSideRowModelModule.version);
 
 when(

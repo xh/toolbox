@@ -20,12 +20,12 @@ export const homePage = hoistCmp.factory({
     render({model}) {
         return panel({
             className: 'tb-home',
-            item: div({
+            children: div({
                 className: 'tb-home__frame',
-                items: [
+                children: [
                     div({
                         className: 'tb-home__stack xh-tiled-bg',
-                        item: isEmpty(model.dashboardWidgets) ? emptyState() : stack({model})
+                        children: isEmpty(model.dashboardWidgets) ? emptyState() : stack({model})
                     }),
                     manageWidgetsSheet()
                 ]
@@ -37,14 +37,14 @@ export const homePage = hoistCmp.factory({
 const stack = hoistCmp.factory<HomeModel>(({model}) =>
     div({
         className: 'tb-home__cards',
-        items: model.dashboardWidgets.map(w =>
+        children: model.dashboardWidgets.map(w =>
             widgetCard({
                 key: w.id,
                 title: w.title,
                 icon: w.icon,
                 collapsed: model.isCollapsed(w.id),
                 onToggleCollapsed: () => model.toggleCollapsed(w.id),
-                item: w.content()
+                children: w.content()
             })
         )
     })
@@ -53,12 +53,12 @@ const stack = hoistCmp.factory<HomeModel>(({model}) =>
 const emptyState = hoistCmp.factory(() =>
     vbox({
         className: 'tb-home__empty',
-        items: [
+        children: [
             Icon.gridLarge({size: '3x'}),
             p('Your home is empty.'),
             p({
                 className: 'tb-home__empty-hint',
-                items: ['Tap ', Icon.edit(), ' in the app bar to add widgets.']
+                children: ['Tap ', Icon.edit(), ' in the app bar to add widgets.']
             })
         ]
     })

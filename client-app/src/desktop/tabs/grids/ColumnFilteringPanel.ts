@@ -7,7 +7,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {ColumnFilteringPanelModel} from './ColumnFilteringPanelModel';
-import {wrapper, wrapperAction, wrapperOption} from '../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../common/Wrapper';
 
 export const columnFilteringPanel = hoistCmp.factory({
     model: creates(ColumnFilteringPanelModel),
@@ -70,10 +70,10 @@ export const columnFilteringPanel = hoistCmp.factory({
                     onClick: () => filterModel.openDialog()
                 })
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel tb-column-filtering-panel',
                 tbar: tbar(),
-                item: grid()
+                children: grid()
             })
         });
     }

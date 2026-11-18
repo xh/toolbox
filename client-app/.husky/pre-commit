@@ -1,7 +1,8 @@
 cd client-app
-yarn run lint-staged
+pnpm exec lint-staged
 
-# Only run TypeScript compiler if TS/JS/TSX/JSX files or package files are staged
-if git diff --cached --name-only --diff-filter=ACMRD | grep -qE '\.(ts|tsx|js|jsx)$|package\.json$|package-lock\.json$|yarn\.lock$|tsconfig.*\.json$'; then
-  yarn lint:types
+# Only type-check if TS/JS/TSX/JSX files or package files are staged. Type-checking is a separate
+# concern from linting, not a lint rule - lint-staged above runs eslint/prettier only.
+if git diff --cached --name-only --diff-filter=ACMRD | grep -qE '\.(ts|tsx|js|jsx)$|package\.json$|pnpm-(lock|workspace)\.yaml$|tsconfig.*\.json$'; then
+  pnpm typecheck
 fi

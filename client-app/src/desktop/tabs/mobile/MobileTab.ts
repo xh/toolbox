@@ -3,10 +3,10 @@ import {div, hbox, img, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {SECONDS} from '@xh/hoist/utils/datetime';
-import {ReactElement} from 'react';
-import {wrapper, wrapperAction} from '../../common';
+import type {ReactElement} from 'react';
+import {wrapper, wrapperAction} from '../../common/Wrapper';
 // @ts-ignore
 import mobileImageDocs from './MobileImageDocs.png';
 // @ts-ignore
@@ -95,15 +95,10 @@ const FEATURES: MobileFeature[] = [
 
 /** Tracks which screen of the feature tour is active. */
 class MobileTabModel extends HoistModel {
-    @bindable selectedIdx = 0;
+    @bindable accessor selectedIdx = 0;
 
     get selected(): MobileFeature {
         return FEATURES[this.selectedIdx];
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 }
 
@@ -115,9 +110,8 @@ export const mobileTab = hoistCmp.factory({
             icon: Icon.mobile(),
             description: [
                 'Mobile apps share many of the same components and logic as their desktop',
-                'counterparts, with some mobile-specific Hoist components that are supported by',
-                'the open-source framework [Onsen](https://onsen.io) to improve the native mobile',
-                'UI experience.',
+                'counterparts, with a set of mobile-specific Hoist components built for touch,',
+                'including swipeable page navigation, pull-to-refresh, and touch-friendly inputs.',
                 '',
                 'Explore the mobile-web version of Toolbox on your device at',
                 '[toolbox.xh.io/mobile](https://toolbox.xh.io/mobile).'
@@ -141,11 +135,6 @@ export const mobileTab = hoistCmp.factory({
                     url: '$HR/mobile',
                     text: 'Mobile package',
                     notes: 'Mobile-specific Hoist components.'
-                },
-                {
-                    url: 'https://onsen.io',
-                    text: 'Onsen UI',
-                    notes: 'The underlying mobile UI framework.'
                 }
             ],
             options: [
@@ -169,7 +158,7 @@ export const mobileTab = hoistCmp.factory({
                     onClick: () => XH.openWindow('/mobile')
                 })
             ],
-            item: featureTour()
+            children: featureTour()
         });
     }
 });
@@ -185,13 +174,13 @@ const featureTour = hoistCmp.factory<MobileTabModel>({
         const {darkTheme} = XH;
         return panel({
             className: 'tb-tour-panel',
-            item: hbox({
+            children: hbox({
                 className: 'tb-tour',
-                items: [
+                children: [
                     vbox({
                         className: 'tb-tour__nav',
-                        items: [
-                            div({className: 'tb-tour__nav-label', item: 'Select a Feature'}),
+                        children: [
+                            div({className: 'tb-tour__nav-label', children: 'Select a Feature'}),
                             ...FEATURES.map((f, idx) => featureCard(f, idx, model))
                         ]
                     }),
@@ -201,7 +190,7 @@ const featureTour = hoistCmp.factory<MobileTabModel>({
                         className: darkTheme
                             ? 'tb-mobile tb-tour__stage'
                             : 'tb-mobile tb-tour__stage tb-mobile--light',
-                        item: phoneFrame(model, darkTheme)
+                        children: phoneFrame(model, darkTheme)
                     })
                 ]
             })
@@ -224,13 +213,13 @@ function featureCard(f: MobileFeature, idx: number, model: MobileTabModel): Reac
                 select();
             }
         },
-        items: [
-            div({className: 'tb-tour__chip', item: f.icon}),
+        children: [
+            div({className: 'tb-tour__chip', children: f.icon}),
             div({
                 className: 'tb-tour__card-main',
-                items: [
-                    div({className: 'tb-tour__card-label', item: f.label}),
-                    div({className: 'tb-tour__card-text', item: active ? f.body : f.tagline})
+                children: [
+                    div({className: 'tb-tour__card-label', children: f.label}),
+                    div({className: 'tb-tour__card-text', children: active ? f.body : f.tagline})
                 ]
             }),
             Icon.chevronRight({className: 'tb-tour__card-chev'})
@@ -256,13 +245,13 @@ function featureCard(f: MobileFeature, idx: number, model: MobileTabModel): Reac
 function phoneFrame(model: MobileTabModel, darkTheme: boolean): ReactElement {
     return div({
         className: 'tb-mobile__device',
-        items: [
+        children: [
             statusBar(),
             div({
                 className: 'tb-mobile__screen',
-                item: div({
+                children: div({
                     className: 'tb-mobile__shots',
-                    items: FEATURES.map((f, idx) =>
+                    children: FEATURES.map((f, idx) =>
                         img({
                             key: f.key,
                             className:
@@ -287,21 +276,21 @@ function phoneFrame(model: MobileTabModel, darkTheme: boolean): ReactElement {
 function statusBar() {
     return div({
         className: 'tb-mobile__statusbar',
-        items: [
+        children: [
             // Real system time via Hoist's `clock`, styled to match. iOS-style `h:mm`, ticking
             // every few seconds (the minutes display only needs a coarse refresh).
             clock({className: 'tb-mobile__clock', format: 'h:mm', updateInterval: 5 * SECONDS}),
             div({
                 className: 'tb-mobile__status-right',
-                items: [
+                children: [
                     div({
                         className: 'tb-mobile__signal',
-                        items: [0, 1, 2, 3].map(i => div({key: i, className: 'tb-mobile__bar'}))
+                        children: [0, 1, 2, 3].map(i => div({key: i, className: 'tb-mobile__bar'}))
                     }),
-                    span({className: 'tb-mobile__carrier', item: 'XH mobile'}),
+                    span({className: 'tb-mobile__carrier', children: 'XH mobile'}),
                     div({
                         className: 'tb-mobile__battery',
-                        item: div({className: 'tb-mobile__battery-fill'})
+                        children: div({className: 'tb-mobile__battery-fill'})
                     })
                 ]
             })

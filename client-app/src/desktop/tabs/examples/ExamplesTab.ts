@@ -15,9 +15,9 @@ export const examplesTab = hoistCmp.factory({
     render({model}) {
         return panel({
             className: 'tb-examples',
-            items: [
+            children: [
                 hframe({
-                    items: [
+                    children: [
                         sideBar({
                             omit: !model.leftPanelModel.collapsed
                         }),
@@ -37,7 +37,7 @@ const activeAppDisplay = hoistCmp.factory<ExamplesTabModel>({
 
         return frame({
             className: 'tb-examples__app-frame xh-tiled-bg',
-            item: iframe({
+            children: iframe({
                 height: '100%',
                 width: '100%',
                 className: 'app-frame',
@@ -52,9 +52,9 @@ const appTileBar = hoistCmp.factory<ExamplesTabModel>(({model}) => {
 
     return panel({
         model: leftPanelModel,
-        items: div({
+        children: div({
             className: 'tb-examples__app-tile-container',
-            items: model.examples.map(app => appTile({app}))
+            children: model.examples.map(app => appTile({app}))
         }),
         bbar: [
             filler(),
@@ -73,14 +73,14 @@ const appTile = hoistCmp.factory<ExamplesTabModel>(({app, model}) => {
         title: app.title,
         icon: app.icon,
         compactHeader: true,
-        items: div({
+        children: div({
             className: 'tb-examples__app-tile__contents',
-            items: app.text
+            children: app.text
         }),
         bbar: toolbar({
             omit: !isActive,
             compact: true,
-            items: [
+            children: [
                 filler(),
                 button({
                     text: 'Source',
@@ -105,7 +105,7 @@ const appTile = hoistCmp.factory<ExamplesTabModel>(({app, model}) => {
 const sideBar = hoistCmp.factory<ExamplesTabModel>(({model}) => {
     return toolbar({
         className: 'tb-examples__app-toolbar',
-        items: [
+        children: [
             ...model.examples.map(app => {
                 const isActive = model.activeAppConfig === app;
                 return button({

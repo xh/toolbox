@@ -1,5 +1,5 @@
 import {creates, hoistCmp, HoistModel, lookup, managed} from '@xh/hoist/core';
-import {sampleTreeGrid} from '../../../common';
+import {sampleTreeGrid} from '../../../common/grid/SampleTreeGrid';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {DashCanvasViewModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {modalToggleButton} from '@xh/hoist/desktop/cmp/button';
@@ -17,7 +17,7 @@ export const treeGridWidget = hoistCmp.factory({
         return panel({
             model: panelModel,
             ...(panelModel.isModal ? modalOpts : {}),
-            item: sampleTreeGrid({modelConfig: {includeCheckboxes: false}})
+            children: sampleTreeGrid({modelConfig: {includeCheckboxes: false}})
         });
     }
 });

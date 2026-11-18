@@ -12,9 +12,11 @@ export const ordersGrid = hoistCmp.factory({
         const {positionId, loadObserver} = model;
 
         return panel({
-            item: grid(),
+            children: grid(),
             bbar: [
                 filterChooser({
+                    popover: true,
+                    menuPlacement: 'top',
                     placeholder: 'Filter orders...',
                     enableClear: true,
                     flex: 1

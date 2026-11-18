@@ -7,7 +7,7 @@ export const welcomeMsg = hoistCmp.factory(({multiline}) => {
     const user = XH.getUser();
     return div({
         className: `tb-welcome-message ${multiline ? 'tb-welcome-message--multiline' : ''}`,
-        items: [
+        children: [
             profilePic({user, className: 'xh-margin-right'}),
             `Welcome, `,
             multiline ? br() : null,

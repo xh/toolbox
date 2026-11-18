@@ -5,7 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import './MaskPage.scss';
@@ -40,11 +40,11 @@ export const maskPage = hoistCmp.factory({
                 {url: '$TB/client-app/src/mobile/mask/MaskPage.ts', notes: 'This example.'},
                 {url: '$HR/cmp/mask/Mask.ts', text: 'Mask source'}
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-page',
-                item: vframe({
+                children: vframe({
                     className: 'tb-mask-page__stage',
-                    items: [
+                    children: [
                         p(
                             'This content sits behind the mask. While masked, it is dimmed and cannot be interacted with.'
                         ),
@@ -67,14 +67,9 @@ export const maskPage = hoistCmp.factory({
 });
 
 class MaskPageModel extends HoistModel {
-    @bindable masked: boolean = false;
-    @bindable spinner: boolean = true;
-    @bindable showMessage: boolean = true;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor masked: boolean = false;
+    @bindable accessor spinner: boolean = true;
+    @bindable accessor showMessage: boolean = true;
 
     maskForAWhile() {
         this.masked = true;

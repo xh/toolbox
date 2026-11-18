@@ -2,7 +2,7 @@ import {hoistCmp} from '@xh/hoist/core';
 import {box, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../common';
+import {wrapper} from '../../common/Wrapper';
 
 export const vboxContainerPanel = hoistCmp.factory(() =>
     wrapper({
@@ -26,15 +26,15 @@ export const vboxContainerPanel = hoistCmp.factory(() =>
             },
             {url: '$HR/cmp/layout/Box.ts', notes: 'The Box component and its layout props.'}
         ],
-        item: panel({
+        children: panel({
             height: 400,
             width: 700,
-            item: vbox({
+            children: vbox({
                 flex: 1,
-                items: [
-                    renderBox({flex: 1, item: 'flex: 1'}),
-                    renderBox({height: 50, item: 'height: 50'}),
-                    renderBox({flex: 2, item: 'flex: 2'})
+                children: [
+                    renderBox({flex: 1, children: 'flex: 1'}),
+                    renderBox({height: 50, children: 'height: 50'}),
+                    renderBox({flex: 2, children: 'flex: 2'})
                 ]
             })
         })

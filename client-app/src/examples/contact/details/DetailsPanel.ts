@@ -31,7 +31,7 @@ export const detailsPanel = hoistCmp.factory({
             title,
             icon,
             className,
-            item: currentRecord
+            children: currentRecord
                 ? contactProfile()
                 : placeholder(Icon.userCircle(), 'Select a contact to view their details.'),
             bbar: bbar()
@@ -43,14 +43,14 @@ const contactProfile = hoistCmp.factory({
     render() {
         return div({
             className: 'tb-contact-details-panel__inner',
-            items: [
+            children: [
                 picture(),
                 form({
                     fieldDefaults: {
                         inline: true,
                         labelWidth: 100
                     },
-                    items: [
+                    children: [
                         textField({field: 'name'}),
                         textField({field: 'email'}),
                         textField({field: 'location'}),
@@ -93,7 +93,7 @@ const textField = hoistCmp.factory(({field}) =>
     formField({
         field,
         readonlyRenderer: val => val ?? '-',
-        item: textInput()
+        children: textInput()
     })
 );
 
@@ -101,7 +101,7 @@ const bioField = hoistCmp.factory(() =>
     formField({
         field: 'bio',
         label: null,
-        item: textArea({minHeight: 250}),
+        children: textArea({minHeight: 250}),
         readonlyRenderer: val => {
             return val ? div(val.split('\n').map(v => p(v))) : '-';
         }
@@ -111,7 +111,7 @@ const bioField = hoistCmp.factory(() =>
 const tagsField = hoistCmp.factory<DetailsPanelModel>(({model}) =>
     formField({
         field: 'tags',
-        item: select({
+        children: select({
             enableCreate: true,
             enableMulti: true,
             options: model.directoryPanelModel.tagList
@@ -121,7 +121,7 @@ const tagsField = hoistCmp.factory<DetailsPanelModel>(({model}) =>
                 ? 'None (yet)'
                 : box({
                       flexWrap: 'wrap',
-                      items: tags.map(tag => div({className: 'tb-contact-tag', item: tag}))
+                      children: tags.map(tag => div({className: 'tb-contact-tag', children: tag}))
                   });
         }
     })

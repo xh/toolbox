@@ -1,0 +1,14 @@
+// Relative Timestamp demo: the Playground instance is the page's hero, so it reads large.
+.tb-rel-ts__value {
+  font-size: 2.4em;
+  font-weight: 600;
+}
+
+// Full-width row of quick-set timestamp presets in the info rail.
+.tb-rel-ts__presets {
+  width: 100%;
+
+  .xh-button {
+    flex: 1;
+  }
+}

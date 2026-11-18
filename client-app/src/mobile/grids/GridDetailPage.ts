@@ -4,7 +4,7 @@ import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {find, isNil} from 'lodash';
-import {makeObservable, computed, observable} from '@xh/hoist/mobx';
+import {computed, observableRef} from '@xh/hoist/mobx';
 
 export const gridDetailPage = hoistCmp.factory({
     model: creates(() => GridDetailPageModel),
@@ -14,7 +14,7 @@ export const gridDetailPage = hoistCmp.factory({
         const row = (title, value, renderer?) =>
             div({
                 className: 'tb-detail-row',
-                items: [div(title), div(renderer && !isNil(value) ? renderer(value) : value)]
+                children: [div(title), div(renderer && !isNil(value) ? renderer(value) : value)]
             });
 
         return panel({
@@ -22,7 +22,7 @@ export const gridDetailPage = hoistCmp.factory({
             mask: 'onLoad',
             icon: Icon.fund(),
             className: 'tb-detail-page',
-            items: [
+            children: [
                 row('ID', record?.id),
                 row('Company', record?.company),
                 row('City', record?.city),
@@ -38,18 +38,13 @@ export const gridDetailPage = hoistCmp.factory({
 });
 
 class GridDetailPageModel extends HoistModel {
-    @observable.ref customers = null;
+    @observableRef accessor customers = null;
 
     @computed
     get record() {
         const {id} = this.componentProps,
             {customers} = this;
         return customers && id ? find(customers, {id: parseInt(id)}) : null;
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     override async doLoadAsync() {

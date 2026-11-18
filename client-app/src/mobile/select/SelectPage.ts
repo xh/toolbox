@@ -3,7 +3,7 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {ReactElement, ReactNode} from 'react';
+import type {ReactElement, ReactNode} from 'react';
 import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import './SelectPage.scss';
 import {SelectPageModel} from './SelectPageModel';
@@ -37,10 +37,10 @@ export const selectPage = hoistCmp.factory({
                     notes: 'Mobile Select component and its props.'
                 }
             ],
-            item: panel({
+            children: panel({
                 scrollable: true,
                 className: 'tb-page tb-select-page',
-                items: [basicCard(), filterCard(), asyncCard(), creatableCard()]
+                children: [basicCard(), filterCard(), asyncCard(), creatableCard()]
             })
         });
     }
@@ -119,7 +119,7 @@ const creatableCard = hoistCmp.factory<SelectPageModel>(({model}) =>
 function card(title: ReactNode, items: ReactNode[]): ReactElement {
     return div({
         className: 'tb-card',
-        items: [div({className: 'tb-card__title', item: title}), ...items]
+        children: [div({className: 'tb-card__title', children: title}), ...items]
     });
 }
 
@@ -132,10 +132,10 @@ interface DemoRowSpec {
 function demoRow({label, info, control}: DemoRowSpec): ReactElement {
     return vbox({
         className: 'tb-select-page__row',
-        items: [
-            span({className: 'tb-select-page__label', item: label}),
-            info ? span({className: 'tb-select-page__info', item: info}) : null,
-            div({className: 'tb-select-page__control', item: control})
+        children: [
+            span({className: 'tb-select-page__label', children: label}),
+            info ? span({className: 'tb-select-page__info', children: info}) : null,
+            div({className: 'tb-select-page__control', children: control})
         ]
     });
 }

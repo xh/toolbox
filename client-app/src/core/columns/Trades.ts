@@ -1,6 +1,22 @@
-import {ExcelFormat, localDateCol, tags} from '@xh/hoist/cmp/grid';
-import {dateRenderer, millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
-import {ColumnSpec} from '@xh/hoist/cmp/grid';
+import {ExcelFormat, localDate, tags} from '@xh/hoist/cmp/grid';
+import {hbox, vbox} from '@xh/hoist/cmp/layout';
+import {
+    dateTextRenderer,
+    dateRenderer,
+    fmtNumberTooltip,
+    millionsTextRenderer,
+    millionsRenderer,
+    numberTextRenderer,
+    numberRenderer
+} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
+import type {ColumnRenderer, ColumnSpec} from '@xh/hoist/cmp/grid';
+import type {NumberTextRendererOptions} from '@xh/hoist/format';
+
+// Format options for the P&L and Volume columns, shared by their text renderers and the matching
+// renderers below.
+export const PNL_FORMAT: NumberTextRendererOptions = {precision: 0, ledger: true, colorSpec: true},
+    VOLUME_FORMAT: NumberTextRendererOptions = {precision: 1, label: true};
 
 export const profitLossCol: ColumnSpec = {
     field: {
@@ -13,11 +29,7 @@ export const profitLossCol: ColumnSpec = {
     align: 'right',
     absSort: true,
     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
-    renderer: numberRenderer({
-        precision: 0,
-        ledger: true,
-        colorSpec: true
-    }),
+    textRenderer: numberTextRenderer(PNL_FORMAT),
     excelFormat: ExcelFormat.LEDGER_COLOR
 };
 
@@ -25,6 +37,11 @@ export const winLoseCol: ColumnSpec = {
     field: {name: 'winLose', type: 'string'},
     excludeFromChooser: true
 };
+
+// Demos Column.cellFlag - flags unusually high volume without disturbing the cell's contents.
+// A single predicate drives both the flag and its tooltip, so the two cannot drift apart.
+const HIGH_VOLUME = 9000000000,
+    isHighVolume = (volume: number) => volume >= HIGH_VOLUME;
 
 export const tradeVolumeCol: ColumnSpec = {
     field: {
@@ -35,19 +52,32 @@ export const tradeVolumeCol: ColumnSpec = {
     },
     width: 110,
     align: 'right',
-    tooltip: val => fmtNumberTooltip(val),
-    renderer: millionsRenderer({
-        precision: 1,
-        label: true
-    }),
-    cellClassRules: {
-        'tb-sample-grid__high-volume-cell': ({value}) => value >= 9000000000
-    },
+    // Explains the flag. Hoist frames only string tooltips, so this custom element tooltip opts
+    // into the standard frame with `xh-grid-tooltip-frame`.
+    tooltip: volume =>
+        isHighVolume(volume)
+            ? vbox({
+                  className: 'xh-grid-tooltip-frame',
+                  children: [
+                      fmtNumberTooltip(volume),
+                      hbox({
+                          className: 'tb-flag-tooltip__note',
+                          alignItems: 'center',
+                          children: [
+                              Icon.warning({intent: 'warning'}),
+                              'Unusually high volume - review before trading.'
+                          ]
+                      })
+                  ]
+              })
+            : fmtNumberTooltip(volume),
+    textRenderer: millionsTextRenderer(VOLUME_FORMAT),
+    cellFlag: volume => (isHighVolume(volume) ? 'warning' : null),
     excelFormat: ExcelFormat.NUM_DELIMITED
 };
 
 export const tradeDateCol: ColumnSpec = {
-    ...localDateCol,
+    ...localDate,
     field: {
         name: 'trade_date',
         type: 'localDate',
@@ -55,6 +85,13 @@ export const tradeDateCol: ColumnSpec = {
         description: 'Date of last trade (including related derivatives)'
     }
 };
+
+// Renderers with the same options as the text renderers on the trade columns above. A renderer
+// wins over a text renderer, so `{...profitLossCol, renderer: profitLossRenderer}` gives the column a React
+// component per cell in place of plain text. The Standard grid demo switches between the two.
+export const profitLossRenderer: ColumnRenderer = numberRenderer(PNL_FORMAT),
+    tradeVolumeRenderer: ColumnRenderer = millionsRenderer(VOLUME_FORMAT),
+    tradeDateRenderer: ColumnRenderer = dateRenderer();
 
 export const tagsCol: ColumnSpec = {
     ...tags,
@@ -70,11 +107,14 @@ export const tagsCol: ColumnSpec = {
 export const dayOfWeekCol: ColumnSpec = {
     field: {
         name: 'trade_date',
-        type: 'localDate'
+        type: 'localDate',
+        // The grid's store takes this field from the first column that uses it, which can be this
+        // one. Name it as `tradeDateCol` does, so this column's own displayName does not leak.
+        displayName: 'Date'
     },
     colId: 'dayOfWeek',
     displayName: 'Day of Week',
     chooserDescription: 'Used for testing storeFilterField matching on rendered dates.',
     width: 130,
-    renderer: dateRenderer({fmt: 'dddd'})
+    textRenderer: dateTextRenderer({fmt: 'dddd'})
 };

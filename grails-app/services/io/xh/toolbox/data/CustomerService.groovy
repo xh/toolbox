@@ -11,12 +11,21 @@ class CustomerService extends BaseService {
         allCustomers = loadCustomersFromFile()
     }
 
-    List<Map> queryCustomers(String query) {
-        if (!query) return allCustomers
+    Map getCustomer(Long id) {
+        if (!id) return null
+
+        return allCustomers.find { it.id == id }
+    }
+
+    List<Map> queryCustomers(String query, Boolean activeOnly = false) {
+        if (!query) {
+            return allCustomers.findAll { !activeOnly || it.isActive }
+        }
 
         def q = query.toUpperCase()
         return allCustomers.findAll {
-            it.company.toUpperCase().startsWith(q) || it.city.toUpperCase().startsWith(q)
+            (it.company.toUpperCase().startsWith(q) || it.city.toUpperCase().startsWith(q)) &&
+                (!activeOnly || it.isActive)
         }
     }
 

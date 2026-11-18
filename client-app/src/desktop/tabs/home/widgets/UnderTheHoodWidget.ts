@@ -12,7 +12,7 @@ export const underTheHoodWidget = hoistCmp.factory({
         const get = (str: string) => XH.environmentService.get(str),
             startupTime = get('startupTime'),
             row = (label: string, data) => {
-                data = data || span({item: 'Not available', className: 'xh-text-color-muted'});
+                data = data || span({children: 'Not available', className: 'xh-text-color-muted'});
                 return tr(th(label), td(data));
             };
 
@@ -26,12 +26,12 @@ export const underTheHoodWidget = hoistCmp.factory({
 
         return panel({
             className: 'tb-under-the-hood',
-            item: div({
+            children: div({
                 className: 'tb-under-the-hood__inner',
-                items: [
+                children: [
                     h2(Icon.info(), 'Deployment'),
                     table({
-                        item: tbody(
+                        children: tbody(
                             row('Version', `${get('appVersion')} (build ${get('appBuild')})`),
                             row('Environment', get('appEnvironment')),
                             startupTime
@@ -44,7 +44,7 @@ export const underTheHoodWidget = hoistCmp.factory({
                     }),
                     h2(Icon.server(), 'Server Stack'),
                     table({
-                        item: tbody(
+                        children: tbody(
                             row('Hoist Core', get('hoistCoreVersion')),
                             row('Grails', get('grailsVersion')),
                             row('Java', get('javaVersion'))
@@ -52,7 +52,7 @@ export const underTheHoodWidget = hoistCmp.factory({
                     }),
                     h2(Icon.window(), 'Client Stack'),
                     table({
-                        item: tbody(
+                        children: tbody(
                             row('Hoist React', hrVersion),
                             row('React', get('reactVersion')),
                             row('AG Grid', get('agGridVersion')),

@@ -1,38 +1,38 @@
 .tb-feedback {
   &__inner {
     flex: 1;
-    padding: var(--xh-pad-double-px);
-    gap: var(--xh-pad-px);
+    padding: var(--xh-spacing-double);
+    gap: var(--xh-spacing);
     align-items: center;
     justify-content: center;
     text-align: center;
 
     &--thanks {
-      gap: var(--xh-pad-double-px);
+      gap: var(--xh-spacing-double);
     }
   }
 
   &__question {
     font-weight: 600;
-    font-size: var(--xh-font-size-large-px);
+    font-size: var(--xh-font-size-large);
   }
 
   &__sub {
     color: var(--xh-text-color-muted);
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
   }
 
   &__ratings {
-    gap: var(--xh-pad-double-px);
-    margin-top: var(--xh-pad-px);
+    gap: var(--xh-spacing-double);
+    margin-top: var(--xh-spacing);
 
     .xh-button {
-      padding: var(--xh-pad-px) var(--xh-pad-double-px);
+      padding: var(--xh-spacing) var(--xh-spacing-double);
     }
   }
 
   &__actions {
     width: 100%;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
   }
 }

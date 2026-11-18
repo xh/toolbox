@@ -20,15 +20,15 @@ export const fileManager = hoistCmp.factory({
             mask: 'onLoad',
             width: 700,
             height: 500,
-            item: fileChooser({
-                item: grid(),
+            children: fileChooser({
+                children: grid(),
                 emptyDisplay: vframe({
                     className: 'xh-pad',
                     style: {
                         justifyContent: 'center',
                         alignItems: 'center'
                     },
-                    items: [
+                    children: [
                         p('Drag-and-drop new files here to queue for upload.'),
                         p('(Note that not all file types will be accepted.)')
                     ]

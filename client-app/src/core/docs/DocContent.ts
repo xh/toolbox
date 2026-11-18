@@ -3,7 +3,8 @@ import {markdown} from '@xh/hoist/cmp/markdown';
 import {hoistCmp, uses, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {copyToClipboard} from '@xh/hoist/utils/js';
-import React, {useCallback, useEffect, useRef} from 'react';
+import type React from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 import {DocViewModel} from './DocViewModel';
 import './DocContent.scss';
 
@@ -128,9 +129,9 @@ export const docContent = hoistCmp.factory<DocViewModel>({
             className: XH.isMobileApp ? `${className} tb-doc-content--mobile` : className,
             ref: scrollRef,
             onClick: handleLinkClick,
-            item: div({
+            children: div({
                 className: 'tb-doc-content__inner',
-                item: markdown({content, lineBreaks: false})
+                children: markdown({content, lineBreaks: false})
             })
         });
     }

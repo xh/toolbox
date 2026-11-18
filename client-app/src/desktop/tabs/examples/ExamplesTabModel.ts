@@ -1,8 +1,9 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {makeObservable, bindable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {p, strong} from '@xh/hoist/cmp/layout';
+import {iconsIcon} from '../../../core/Icons';
 
 export class ExamplesTabModel extends HoistModel {
     @managed
@@ -13,7 +14,7 @@ export class ExamplesTabModel extends HoistModel {
         side: 'left'
     });
 
-    @bindable activeApp: string = 'Portfolio';
+    @bindable accessor activeApp: string = 'Portfolio';
 
     get activeAppConfig() {
         return this.examples.find(it => it.title === this.activeApp);
@@ -56,6 +57,18 @@ export class ExamplesTabModel extends HoistModel {
                 p('Meet the Extremely Heavy team.'),
                 p(
                     'This demo of an employee directory app features multiple views of data within a Hoist Store, search + filter controls, and lightweight server-side persistence leveraging AppConfig.'
+                )
+            ]
+        },
+        {
+            title: 'Favicon Designer',
+            icon: iconsIcon(),
+            path: 'favicons',
+            srcPath: 'favicons',
+            text: [
+                p('Mint a complete favicon set for your next Hoist app in seconds.'),
+                p(
+                    'Pick any Font Awesome Pro glyph, style it with colors, a backdrop shape and padding, preview it live in browser tabs and on a home screen, then download a zip ready to drop into client-app/public.'
                 )
             ]
         },
@@ -113,9 +126,4 @@ export class ExamplesTabModel extends HoistModel {
             ]
         }
     ];
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
 }

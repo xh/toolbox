@@ -1,13 +1,13 @@
 .dataview-item {
   .xh-vbox {
     flex: 1;
-    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+    padding: var(--xh-spacing-half) var(--xh-spacing);
   }
 
   &--name,
   &--city,
   &--value {
-    padding: 0 0 var(--xh-pad-half-px);
+    padding: 0 0 var(--xh-spacing-half);
     width: calc(100% - 60px);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -15,14 +15,14 @@
   }
 
   &--name {
-    font-size: var(--xh-font-size-large-px);
-    line-height: calc(var(--xh-font-size-large) * 1.1px);
+    font-size: var(--xh-font-size-large);
+    line-height: calc(var(--xh-font-size-large) * 1.1);
   }
 
   &--city,
   &--value {
-    font-size: var(--xh-font-size-small-px);
-    line-height: calc(var(--xh-font-size-small) * 1.1px);
+    font-size: var(--xh-font-size-small);
+    line-height: calc(var(--xh-font-size-small) * 1.1);
   }
 
   svg {

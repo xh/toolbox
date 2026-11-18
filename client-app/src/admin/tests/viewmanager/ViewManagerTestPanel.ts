@@ -14,7 +14,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {Icon} from '@xh/hoist/icon';
 import {get, isEqual} from 'lodash';
-import {sampleGrid} from '../../../desktop/common';
+import {sampleGrid} from '../../../desktop/common/grid/SampleGrid';
 import {ViewManagerTestModel} from './ViewManagerTestModel';
 import './ViewManagerTest.scss';
 
@@ -26,8 +26,8 @@ export const viewManagerTestPanel = hoistCmp.factory({
     render({className}) {
         return panel({
             className,
-            item: hframe({
-                items: [
+            children: hframe({
+                children: [
                     panel({
                         title: 'Model Config + Props',
                         icon: Icon.gears(),
@@ -36,7 +36,7 @@ export const viewManagerTestPanel = hoistCmp.factory({
                             side: 'left',
                             defaultSize: 500
                         },
-                        items: [
+                        children: [
                             modelConfigForm(),
                             hframe(modelValueDisplay(), modelValueDisplay({showPendingValue: true}))
                         ]
@@ -54,9 +54,9 @@ const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
             {isValid} = configFormModel;
         return panel({
             flex: 'none',
-            item: form({
+            children: form({
                 fieldDefaults: {commitOnChange: true, minimal: true, inline: true, labelWidth: 160},
-                item: tabContainer({
+                children: tabContainer({
                     modelConfig: {
                         tabs: [
                             {id: 'modelConfig', content: modelConfig()},
@@ -67,7 +67,7 @@ const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
             }),
             bbar: toolbar({
                 compact: true,
-                items: [
+                children: [
                     filler(),
                     button({
                         text: 'Rebuild View Manager Model',
@@ -87,24 +87,24 @@ const cmpProps = hoistCmp.factory({
     render() {
         return vframe({
             className: 'xh-pad tb-vm-test__model-conf',
-            items: [
+            children: [
                 formField({
                     field: 'showSaveButton',
-                    item: select({
+                    children: select({
                         options: ['always', 'never', 'whenDirty'],
                         enableFilter: false
                     })
                 }),
                 formField({
                     field: 'showRevertButton',
-                    item: select({
+                    children: select({
                         options: ['always', 'never', 'whenDirty'],
                         enableFilter: false
                     })
                 }),
                 formField({
                     field: 'buttonSide',
-                    item: select({
+                    children: select({
                         options: ['left', 'right'],
                         enableFilter: false
                     })
@@ -112,7 +112,7 @@ const cmpProps = hoistCmp.factory({
                 hbox(
                     formField({
                         field: 'customMenuButtonProps',
-                        item: switchInput()
+                        children: switchInput()
                     })
                 )
             ]
@@ -124,52 +124,52 @@ const modelConfig = hoistCmp.factory({
     render() {
         return vframe({
             className: 'xh-pad tb-vm-test__model-conf',
-            items: [
+            children: [
                 formField({
                     field: 'type',
-                    item: textInput()
+                    children: textInput()
                 }),
                 formField({
                     field: 'instance',
-                    item: textInput()
+                    children: textInput()
                 }),
                 formField({
                     field: 'typeDisplayName',
-                    item: textInput({enableClear: true})
+                    children: textInput({enableClear: true})
                 }),
                 formField({
                     field: 'globalDisplayName',
-                    item: textInput({enableClear: true})
+                    children: textInput({enableClear: true})
                 }),
                 formField({
                     field: 'initialViewName',
-                    item: textInput({enableClear: true})
+                    children: textInput({enableClear: true})
                 }),
                 hbox(
                     vbox(
                         formField({
                             field: 'enableAutoSave',
-                            item: switchInput()
+                            children: switchInput()
                         }),
                         formField({
                             field: 'enableDefault',
-                            item: switchInput()
+                            children: switchInput()
                         })
                     ),
                     vbox(
                         formField({
                             field: 'enableGlobal',
-                            item: switchInput()
+                            children: switchInput()
                         }),
                         formField({
                             field: 'enableSharing',
-                            item: switchInput()
+                            children: switchInput()
                         })
                     ),
                     vbox(
                         formField({
                             field: 'manageGlobal',
-                            item: switchInput()
+                            children: switchInput()
                         })
                     )
                 )
@@ -190,18 +190,18 @@ const modelValueDisplay = hoistCmp.factory<ViewManagerTestModel>({
             headerItems: [
                 badge({
                     intent: 'danger',
-                    item: 'Dirty',
+                    children: 'Dirty',
                     omit: !showPendingValue || !model.viewManagerModel?.isValueDirty
                 }),
                 badge({
                     intent: 'success',
-                    item: 'Clean',
+                    children: 'Clean',
                     omit: !showPendingValue || model.viewManagerModel?.isValueDirty
                 }),
                 hspacer()
             ],
             flex: 1,
-            item: jsonInput({
+            children: jsonInput({
                 flex: 1,
                 width: '100%',
                 readonly: true,
@@ -235,14 +235,14 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                     buttonSide
                 })
             ],
-            item: div({
+            children: div({
                 style: {overflowY: 'auto'},
-                items: [
+                children: [
                     persistedComp({
                         title: 'Model Property via markPersist()',
                         icon: Icon.boxFull(),
                         persistPath: 'stringValue',
-                        item: textInput({
+                        children: textInput({
                             bind: 'stringValue',
                             commitOnChange: true,
                             model: model.persistedPropertyModel,
@@ -253,33 +253,33 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                         title: 'Grouping Chooser',
                         icon: Icon.treeList(),
                         persistPath: 'groupingChooser',
-                        item: groupingChooser()
+                        children: groupingChooser()
                     }),
                     persistedComp({
                         title: 'Filter Chooser (favorites persisted to localStorage)',
                         icon: Icon.filter(),
                         persistPath: 'filterChooser',
-                        item: filterChooser()
+                        children: filterChooser()
                     }),
                     persistedComp({
                         title: 'Tab Container',
                         icon: Icon.folder(),
                         persistPath: 'tabContainer',
-                        item: tabContainer()
+                        children: tabContainer()
                     }),
                     persistedComp({
                         title: 'Panel Sizing',
                         icon: Icon.arrowsLeftRight(),
                         persistPath: 'panel',
-                        item: hbox({
+                        children: hbox({
                             className: 'xh-border',
                             height: 60,
-                            items: [
+                            children: [
                                 panel({
-                                    item: placeholder('Primary Panel')
+                                    children: placeholder('Primary Panel')
                                 }),
                                 panel({
-                                    item: placeholder('Secondary Panel'),
+                                    children: placeholder('Secondary Panel'),
                                     model: model.panelModel
                                 })
                             ]
@@ -289,15 +289,15 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                         title: 'Panel Sizing (defaultSize as percentage)',
                         icon: Icon.arrowsLeftRight(),
                         persistPath: 'panelPct',
-                        item: hbox({
+                        children: hbox({
                             className: 'xh-border',
                             height: 60,
-                            items: [
+                            children: [
                                 panel({
-                                    item: placeholder('Primary Panel')
+                                    children: placeholder('Primary Panel')
                                 }),
                                 panel({
-                                    item: placeholder('Secondary Panel'),
+                                    children: placeholder('Secondary Panel'),
                                     model: model.panelPctModel
                                 })
                             ]
@@ -308,21 +308,21 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                         icon: Icon.gridPanel(),
                         persistPath: 'grid',
                         minHeight: 250,
-                        item: sampleGrid({omitGridTools: true})
+                        children: sampleGrid({omitGridTools: true})
                     }),
                     persistedComp({
                         title: 'Dash Canvas',
                         icon: Icon.layout(),
                         persistPath: 'dashCanvas',
                         minHeight: 250,
-                        item: dashCanvas()
+                        children: dashCanvas()
                     }),
                     persistedComp({
                         title: 'Dash Container',
                         icon: Icon.layout(),
                         persistPath: 'dashContainer',
                         minHeight: 500,
-                        item: dashContainer()
+                        children: dashContainer()
                     })
                 ]
             })
@@ -351,22 +351,22 @@ const persistedComp = hoistCmp.factory({
             headerItems: [
                 badge({
                     intent: 'primary',
-                    item: 'Default State',
+                    children: 'Default State',
                     omit: !atDefault
                 }),
                 badge({
                     intent: 'warning',
-                    item: 'Custom State',
+                    children: 'Custom State',
                     omit: atDefault
                 }),
                 badge({
                     intent: 'danger',
-                    item: 'Dirty',
+                    children: 'Dirty',
                     omit: !dirty
                 }),
                 badge({
                     intent: 'success',
-                    item: 'Clean',
+                    children: 'Clean',
                     omit: dirty
                 }),
                 button({
@@ -379,7 +379,7 @@ const persistedComp = hoistCmp.factory({
                 hspacer()
             ],
             className: 'tb-vm-test__comp',
-            items: children
+            children
         });
     }
 });

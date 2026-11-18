@@ -1,8 +1,8 @@
-import {ChartModel} from '@xh/hoist/cmp/chart';
-import {HoistModel} from '@xh/hoist/core';
+import type {ChartModel} from '@xh/hoist/cmp/chart';
+import type {HoistModel} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {wrapperAction, wrapperOption} from '../Wrapper';
 
 /**

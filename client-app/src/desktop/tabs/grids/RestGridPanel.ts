@@ -1,18 +1,19 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {dateRenderer} from '@xh/hoist/format';
+import {dateTextRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import type {RestGridConfig} from '@xh/hoist/desktop/cmp/rest';
 import {
     addAction,
     cloneAction,
     deleteAction,
     editAction,
     restGrid,
-    RestGridConfig,
     viewAction
 } from '@xh/hoist/desktop/cmp/rest';
-import {boolCheckCol, ExcelFormat, numberCol} from '@xh/hoist/cmp/grid';
-import {wrapper} from '../../common';
+import * as Col from '@xh/hoist/cmp/grid/columns';
+import {ExcelFormat} from '@xh/hoist/cmp/grid';
+import {wrapper} from '../../common/Wrapper';
 import {numberInput, switchInput, textArea} from '@xh/hoist/desktop/cmp/input';
 
 export const restGridPanel = hoistCmp.factory({
@@ -46,9 +47,9 @@ export const restGridPanel = hoistCmp.factory({
                     notes: 'Hoist model defining the store, columns, editors, and actions.'
                 }
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-grid-wrapper-panel',
-                item: restGrid({modelConfig: modelSpec})
+                children: restGrid({modelConfig: modelSpec})
             })
         });
     }
@@ -122,17 +123,17 @@ const modelSpec: RestGridConfig = {
         },
         {
             field: 'employees',
-            ...numberCol,
+            ...Col.number,
             width: 120
         },
         {
             field: 'isActive',
-            ...boolCheckCol,
+            ...Col.boolCheck,
             width: 100
         },
         {
             field: 'earningsDate',
-            renderer: dateRenderer(),
+            textRenderer: dateTextRenderer(),
             width: 140,
             excelFormat: ExcelFormat.DATE_FMT
         },
@@ -144,11 +145,11 @@ const modelSpec: RestGridConfig = {
     editors: [
         {field: 'name'},
         {field: 'type'},
-        {field: 'employees', formField: {item: numberInput({displayWithCommas: true})}},
-        {field: 'isActive', formField: {item: switchInput()}},
+        {field: 'employees', formField: {children: numberInput({displayWithCommas: true})}},
+        {field: 'isActive', formField: {children: switchInput()}},
         {field: 'cfg'},
         {field: 'earningsDate'},
-        {field: 'note', formField: {item: textArea()}},
+        {field: 'note', formField: {children: textArea()}},
         {field: 'lastUpdated'},
         {field: 'lastUpdatedBy'}
     ],

@@ -11,19 +11,18 @@ import {
     validEmail
 } from '@xh/hoist/data';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {filter, isEmpty} from 'lodash';
 
 export class FormPanelModel extends HoistModel {
-    @managed
     validateTask = TaskObserver.trackLast();
 
     // For meta controls below example.
-    @bindable inline: boolean = false;
-    @bindable minimal: boolean = false;
-    @bindable commitOnChange: boolean = true;
-    @bindable usDateFormat: boolean = false;
+    @bindable accessor inline: boolean = false;
+    @bindable accessor minimal: boolean = false;
+    @bindable accessor commitOnChange: boolean = true;
+    @bindable accessor usDateFormat: boolean = false;
 
     @managed
     formModel = new FormModel({
@@ -143,7 +142,6 @@ export class FormPanelModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
 
         const {formModel} = this;
         this.addReaction(

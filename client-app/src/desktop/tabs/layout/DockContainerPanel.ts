@@ -3,8 +3,9 @@ import {box, br, frame, p, placeholder} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {DockContainerModel, dockContainer} from '@xh/hoist/desktop/cmp/dock';
-import {sampleGrid, wrapper, wrapperAction} from '../../common';
-import {errorWidget} from './widgets';
+import {sampleGrid} from '../../common/grid/SampleGrid';
+import {wrapper, wrapperAction} from '../../common/Wrapper';
+import {errorWidget} from './widgets/ErrorWidget';
 
 export const dockContainerPanel = hoistCmp.factory({
     model: creates(() => DockContainerPanelModel),
@@ -99,15 +100,15 @@ export const dockContainerPanel = hoistCmp.factory({
                     onClick: () => model.addNewDockedView(true, false)
                 })
             ],
-            item: panel({
+            children: panel({
                 height: '60vh',
                 width: '90%',
-                item: frame({
+                children: frame({
                     position: 'relative',
-                    items: [
+                    children: [
                         placeholder({
                             flex: 1,
-                            items: [
+                            children: [
                                 Icon.gridPanel(),
                                 p(
                                     viewCount
@@ -163,7 +164,7 @@ class DockContainerPanelModel extends HoistModel {
             allowClose,
             content: () =>
                 panel({
-                    item: box({items: textItems, padding: 10})
+                    children: box({children: textItems, padding: 10})
                 })
         });
     }

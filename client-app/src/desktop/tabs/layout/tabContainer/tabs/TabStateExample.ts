@@ -4,9 +4,9 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {find} from 'lodash';
-import {createContainerModelConfig} from './SimpleExample';
+import {createContainerModelConfig, EXAMPLE_ROUTE} from './SimpleExample';
 
 export const tabStateExample = hoistCmp.factory({
     model: creates(() => TabStateExampleModel),
@@ -45,21 +45,19 @@ export const tabStateExample = hoistCmp.factory({
                     labelSide: 'left'
                 })
             ],
-            item: tabContainer({model: model.stateTabModel})
+            children: tabContainer({model: model.stateTabModel})
         });
     }
 });
 
 class TabStateExampleModel extends HoistModel {
-    @bindable
-    showBadge = true;
+    @bindable accessor showBadge = true;
 
     @managed
-    stateTabModel = new TabContainerModel(createContainerModelConfig());
+    stateTabModel = new TabContainerModel(createContainerModelConfig(`${EXAMPLE_ROUTE}.state`));
 
     constructor() {
         super();
-        makeObservable(this);
 
         this.addReaction({
             track: () => this.showBadge,
@@ -74,7 +72,7 @@ class TabStateExampleModel extends HoistModel {
             ? hbox(
                   'Things ',
                   badge({
-                      item: 'New',
+                      children: 'New',
                       intent: 'primary',
                       compact: true,
                       style: {

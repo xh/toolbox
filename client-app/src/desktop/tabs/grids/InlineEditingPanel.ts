@@ -7,7 +7,7 @@ import {segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper, wrapperOption} from '../../common';
+import {wrapper, wrapperOption} from '../../common/Wrapper';
 import './InlineEditingPanel.scss';
 import {InlineEditingPanelModel} from './InlineEditingPanelModel';
 import classNames from 'classnames';
@@ -82,6 +82,7 @@ export const inlineEditingPanel = hoistCmp.factory({
                     control: segmentedControl({
                         model,
                         bind: 'clicksToEdit',
+                        compact: true,
                         options: [
                             {value: 2, label: '2 clicks'},
                             {value: 1, label: '1 click'},
@@ -90,7 +91,7 @@ export const inlineEditingPanel = hoistCmp.factory({
                     })
                 })
             ],
-            item: panel({
+            children: panel({
                 className: classNames(
                     model.isModal ? '' : 'tb-grid-wrapper-panel',
                     'tb-inline-editing-panel',
@@ -102,7 +103,7 @@ export const inlineEditingPanel = hoistCmp.factory({
                  * with showIsPopup=true when opened from within a GridModel in dialog.
                  * {@see https://github.com/xh/hoist-react/issues/4061}
                  */
-                item: grid({agOptions: {popupParent: null}}),
+                children: grid({agOptions: {popupParent: null}}),
                 bbar: bbar(),
                 model: model.panelModel
             })
@@ -146,7 +147,7 @@ const storeDirtyIndicator = hoistCmp.factory<InlineEditingPanelModel>(({model}) 
     return hbox({
         className: isModified ? 'xh-intent-warning' : 'xh-intent-success',
         alignItems: 'center',
-        items: [
+        children: [
             isModified ? Icon.circle() : Icon.checkCircle(),
             hspacer(5),
             'Store ' + (isModified ? 'Dirty' : 'Clean')
@@ -184,7 +185,7 @@ const storeValidIndicator = hoistCmp.factory<InlineEditingPanelModel>(({model}) 
     return hbox({
         className,
         alignItems: 'center',
-        items: [icon, hspacer(5), label]
+        children: [icon, hspacer(5), label]
     });
 });
 

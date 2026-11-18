@@ -4,7 +4,7 @@ import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {exampleOption, exampleScreen} from '../cmp/example/ExampleScreen';
 import './BadgePage.scss';
 
@@ -31,10 +31,10 @@ export const badgePage = hoistCmp.factory({
                 {url: '$TB/client-app/src/mobile/badge/BadgePage.ts', notes: 'This example.'},
                 {url: '$HR/cmp/badge/Badge.ts', text: 'Badge source'}
             ],
-            item: panel({
+            children: panel({
                 scrollable: true,
                 className: 'tb-page tb-badge-page',
-                items: [intentsCard(), contextCard()]
+                children: [intentsCard(), contextCard()]
             })
         });
     }
@@ -44,16 +44,16 @@ const intentsCard = hoistCmp.factory<BadgePageModel>(({model}) => {
     const {compact} = model;
     return div({
         className: 'tb-card',
-        items: [
-            div({className: 'tb-card__title', item: 'Intents'}),
+        children: [
+            div({className: 'tb-card__title', children: 'Intents'}),
             hbox({
                 className: 'tb-badge-page__row',
-                items: [
-                    badge({compact, item: 'Default'}),
-                    badge({compact, intent: 'primary', item: 'Primary'}),
-                    badge({compact, intent: 'success', item: 'Success'}),
-                    badge({compact, intent: 'warning', item: 'Warning'}),
-                    badge({compact, intent: 'danger', item: 'Danger'})
+                children: [
+                    badge({compact, children: 'Default'}),
+                    badge({compact, intent: 'primary', children: 'Primary'}),
+                    badge({compact, intent: 'success', children: 'Success'}),
+                    badge({compact, intent: 'warning', children: 'Warning'}),
+                    badge({compact, intent: 'danger', children: 'Danger'})
                 ]
             })
         ]
@@ -64,29 +64,28 @@ const contextCard = hoistCmp.factory<BadgePageModel>(({model}) => {
     const {compact} = model;
     return div({
         className: 'tb-card',
-        items: [
-            div({className: 'tb-card__title', item: 'In context'}),
+        children: [
+            div({className: 'tb-card__title', children: 'In context'}),
             hbox({
                 className: 'tb-badge-page__context',
-                items: [
+                children: [
                     Icon.comment(),
                     span('Messages'),
-                    badge({compact, intent: 'primary', item: '12'})
+                    badge({compact, intent: 'primary', children: '12'})
                 ]
             }),
             hbox({
                 className: 'tb-badge-page__context',
-                items: [Icon.skull(), span('Errors'), badge({compact, intent: 'danger', item: '3'})]
+                children: [
+                    Icon.skull(),
+                    span('Errors'),
+                    badge({compact, intent: 'danger', children: '3'})
+                ]
             })
         ]
     });
 });
 
 class BadgePageModel extends HoistModel {
-    @bindable compact: boolean = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor compact: boolean = false;
 }

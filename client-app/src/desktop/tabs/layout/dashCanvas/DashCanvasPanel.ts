@@ -5,7 +5,7 @@ import {dashCanvasWidgetChooser} from '@xh/hoist/desktop/cmp/dash/canvas/widgetc
 import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper, wrapperAction, wrapperOption} from '../../../common';
+import {wrapper, wrapperAction, wrapperOption} from '../../../common/Wrapper';
 import {DashCanvasPanelModel} from './DashCanvasPanelModel';
 import './DashCanvasPanel.scss';
 
@@ -112,24 +112,25 @@ export const dashCanvasPanel = hoistCmp.factory({
                     onClick: () => model.resetState()
                 })
             ],
-            item: panel({
+            children: panel({
                 className: 'dash-canvas-droppable-demo',
                 width: '100%',
                 height: '100%',
-                item: hframe(
+                children: hframe(
                     model.renderDashboard
                         ? dashCanvas({
                               omit: !dashCanvasModel // model is not created until async load of symbols completes
                           })
                         : frame({
-                              item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
+                              children:
+                                  'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                               padding: 10
                           }),
                     box({
                         omit: !model.showWidgetChooser || !model.renderDashboard,
                         width: 310,
                         style: {borderLeft: '1px solid var(--xh-border-color)'},
-                        item: dashCanvasWidgetChooser({
+                        children: dashCanvasWidgetChooser({
                             dashCanvasModel
                         })
                     })

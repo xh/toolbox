@@ -1,12 +1,12 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {fileExtCol, GridModel} from '@xh/hoist/cmp/grid';
+import {fileExt, GridModel} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {computed, makeObservable} from '@xh/hoist/mobx';
+import {computed} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {filesize} from 'filesize';
 import {filter, find, pull} from 'lodash';
-import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
+import type {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 import {downloadBlob} from '@xh/hoist/utils/js';
 
 export class FileManagerModel extends HoistModel {
@@ -47,7 +47,7 @@ export class FileManagerModel extends HoistModel {
             {
                 colId: 'icon',
                 field: 'name',
-                ...fileExtCol
+                ...fileExt
             },
             {field: 'name', flex: 1},
             {
@@ -105,7 +105,6 @@ export class FileManagerModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.addReaction({
             track: () => this.chooserModel.files,
             run: this.syncWithChooser
@@ -178,11 +177,10 @@ export class FileManagerModel extends HoistModel {
             .run(async ctx => {
                 const sel = this.gridModel.selectedRecord,
                     {name} = sel.data,
-                    response = await XH.fetch({
-                        url: 'fileManager/download',
-                        params: {filename: name},
-                        span: ctx.span
-                    });
+                    response = await XH.fetch(
+                        {url: 'fileManager/download', params: {filename: name}},
+                        {span: ctx.span}
+                    );
                 const blob = await response.blob();
                 downloadBlob(blob, name);
                 XH.toast({

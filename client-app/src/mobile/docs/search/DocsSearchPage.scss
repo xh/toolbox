@@ -1,6 +1,6 @@
 .tb-docs-search {
   &__bar {
-    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+    padding: var(--xh-spacing-half) var(--xh-spacing);
   }
 
   // Let the search field fill the toolbar width rather than sitting narrow at the left.
@@ -16,8 +16,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--xh-pad-px);
-    padding: calc(var(--xh-pad-px) * 3) var(--xh-pad-px);
+    gap: var(--xh-spacing);
+    padding: calc(var(--xh-spacing) * 3) var(--xh-spacing);
     color: var(--xh-text-color-muted);
     text-align: center;
   }
@@ -28,9 +28,9 @@
   &__group-header {
     display: flex;
     align-items: center;
-    gap: var(--xh-pad-half-px);
-    padding: var(--xh-pad-px) var(--xh-pad-px) var(--xh-pad-half-px);
-    font-size: var(--xh-font-size-small-px);
+    gap: var(--xh-spacing-half);
+    padding: var(--xh-spacing) var(--xh-spacing) var(--xh-spacing-half);
+    font-size: var(--xh-font-size-small);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -42,9 +42,9 @@
   //------------------------
   &__recent-row {
     align-items: center;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
     height: 48px;
-    padding: 0 var(--xh-pad-px);
+    padding: 0 var(--xh-spacing);
     border-bottom: var(--xh-border-solid);
     cursor: pointer;
 
@@ -59,13 +59,13 @@
   }
 
   &__recent-term {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     color: var(--xh-text-color);
   }
 
   &__recent-remove {
     flex: none;
-    padding: var(--xh-pad-half-px);
+    padding: var(--xh-spacing-half);
     color: var(--xh-text-color-muted);
     cursor: pointer;
   }
@@ -74,7 +74,7 @@
   // Results
   //------------------------
   &__hit {
-    padding: var(--xh-pad-px);
+    padding: var(--xh-spacing);
     border-bottom: var(--xh-border-solid);
     cursor: pointer;
 
@@ -84,27 +84,27 @@
   }
 
   &__hit-title {
-    font-size: var(--xh-font-size-px);
+    font-size: var(--xh-font-size);
     font-weight: 600;
     color: var(--xh-text-color);
   }
 
   &__hit-crumb {
     align-items: center;
-    gap: var(--xh-pad-half-px);
+    gap: var(--xh-spacing-half);
     margin-top: 2px;
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
   }
 
   &__hit-crumb-sep {
-    font-size: var(--xh-font-size-small-px);
+    font-size: var(--xh-font-size-small);
     opacity: 0.6;
   }
 
   &__hit-snippet {
-    margin-top: var(--xh-pad-half-px);
-    font-size: var(--xh-font-size-small-px);
+    margin-top: var(--xh-spacing-half);
+    font-size: var(--xh-font-size-small);
     color: var(--xh-text-color-muted);
     line-height: 1.4;
   }

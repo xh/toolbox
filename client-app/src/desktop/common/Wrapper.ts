@@ -1,13 +1,18 @@
 import {code, div, hframe, span, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
-import {hoistCmp, HoistModel, HoistProps, useLocalModel} from '@xh/hoist/core';
-import {button, ButtonProps} from '@xh/hoist/desktop/cmp/button';
+import type {HoistProps, Intent} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
+import type {ButtonProps} from '@xh/hoist/desktop/cmp/button';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {segmentedControl} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {isArray, isEmpty} from 'lodash';
-import {ReactElement, ReactNode} from 'react';
-import {toolboxLink, ToolboxLinkProps} from '../../core/cmp/ToolboxLink';
+import classNames from 'classnames';
+import type {ReactElement, ReactNode} from 'react';
+import type {ToolboxLinkProps} from '../../core/cmp/ToolboxLink';
+import {toolboxLink} from '../../core/cmp/ToolboxLink';
 import './Wrapper.scss';
 
 export interface WrapperProps extends HoistProps {
@@ -60,13 +65,16 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
             hasRailContent = !!title || !!intro || !isEmpty(options) || !isEmpty(links);
         return hframe({
             className,
-            items: [
+            // Scroll rather than clip when the rail plus the demo region's floor exceed the
+            // viewport - hframe clips by default, which would hide the demo entirely.
+            overflowX: 'auto',
+            children: [
                 hasRailContent
                     ? railModel.collapsed
                         ? collapsedRail({railModel})
                         : infoRail({title, icon, intro, options, links, railModel})
                     : null,
-                vframe({className: 'tbox-wrapper__demo', items: children})
+                vframe({className: 'tbox-wrapper__demo', children})
             ]
         });
     }
@@ -74,12 +82,7 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
 
 /** Per-tab, in-memory collapse state for the info rail (intentionally not persisted or shared). */
 class WrapperRailModel extends HoistModel {
-    @bindable collapsed = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor collapsed = false;
 }
 
 interface InfoRailProps extends Omit<WrapperProps, 'description'> {
@@ -106,12 +109,12 @@ const infoRail = hoistCmp.factory<InfoRailProps>({
                     onClick: () => (railModel.collapsed = true)
                 })
             ],
-            item: div({
+            children: div({
                 className: 'tbox-wrapper__rail-body',
-                items: [
+                children: [
                     div({
                         className: 'tbox-wrapper__intro',
-                        item: markdown({content: intro, lineBreaks: false}),
+                        children: markdown({content: intro, lineBreaks: false}),
                         omit: !hasIntro
                     }),
                     div({
@@ -142,9 +145,9 @@ const optionsSection = hoistCmp.factory<OptionsSectionProps>({
         if (isEmpty(options)) return null;
         return div({
             className: 'tbox-wrapper__options',
-            items: [
-                div({className: 'tbox-wrapper__options-label', item: 'Options'}),
-                div({className: 'tbox-wrapper__options-body', item: options})
+            children: [
+                div({className: 'tbox-wrapper__options-label', children: 'Options'}),
+                div({className: 'tbox-wrapper__options-body', children: options})
             ]
         });
     }
@@ -172,6 +175,11 @@ interface WrapperOptionProps extends HoistProps {
      * Use to describe what the option does or why a developer might reach for it.
      */
     info?: ReactNode;
+    /**
+     * True to align the label with the top of the control rather than its vertical center - for a
+     * control that stacks several inputs, so the label sits beside the first of them.
+     */
+    alignTop?: boolean;
 }
 
 /**
@@ -182,38 +190,142 @@ interface WrapperOptionProps extends HoistProps {
  */
 export const [WrapperOption, wrapperOption] = hoistCmp.withFactory<WrapperOptionProps>({
     displayName: 'WrapperOption',
-    render({label, control, propName, info}) {
+    render({label, control, propName, info, alignTop}) {
         return div({
             className: 'tbox-wrapper__option',
             // Native tooltip with the full property name - useful when the revealed pill ellipsizes.
             title: propName,
-            items: [
+            children: [
                 div({
-                    className: 'tbox-wrapper__option-row',
-                    items: [
+                    className: classNames(
+                        'tbox-wrapper__option-row',
+                        alignTop && 'tbox-wrapper__option-row--top'
+                    ),
+                    children: [
                         div({
                             className: 'tbox-wrapper__option-label',
-                            items: propName
+                            children: propName
                                 ? [
                                       span({
                                           className: 'tbox-wrapper__option-label-text',
-                                          item: label
+                                          children: label
                                       }),
                                       code({
                                           className: 'tbox-wrapper__option-prop',
-                                          item: propName
+                                          children: propName
                                       })
                                   ]
                                 : label
                         }),
-                        div({className: 'tbox-wrapper__option-control', item: control})
+                        div({className: 'tbox-wrapper__option-control', children: control})
                     ]
                 }),
-                div({className: 'tbox-wrapper__option-info', item: info, omit: !info})
+                div({className: 'tbox-wrapper__option-info', children: info, omit: !info})
             ]
         });
     }
 });
+
+interface WrapperOptionGroupProps extends HoistProps {
+    /** Short sub-heading rendered above this group's option rows. */
+    label: ReactNode;
+    /**
+     * One-line note on the group's scope, rendered muted below the label. State which of the two
+     * option scopes the group is (see the `WrapperOptionGroup` docs), e.g. "Applies to every
+     * input on the page." or "Drives the Playground instance."
+     */
+    info?: ReactNode;
+    /** Optional glyph shown before the label. */
+    icon?: ReactElement;
+    /**
+     * Intent to color the label and its underline - use `'primary'` for a group tied to a specific
+     * region of the demo (the Playground), leaving ambient groups in the default muted treatment.
+     */
+    intent?: Intent;
+}
+
+/**
+ * A labeled sub-group of rows within a Wrapper `options` section, for examples with enough
+ * options that a flat list would be hard to scan. Pass the option rows (typically `wrapperOption`
+ * elements) as `children`.
+ *
+ * Every rail option belongs to one of two scopes, which the group's `label` names:
+ * - *Ambient* options are orthogonal to what any single instance demonstrates (compact, disabled,
+ *   commit-on-change, theme). They apply to everything on the page, so a QA sweep is one click.
+ *   The label alone carries them, e.g. "All inputs on the page".
+ * - *Playground* options are the curated props of the component itself and drive one dedicated
+ *   instance only. Mark that group with `intent: 'primary'`, `Icon.experiment()` and an `info`
+ *   line naming the instance it drives.
+ *
+ * A prop appears in the rail or as a static variant card, never both. Rail switches are a curated
+ * subset, not a prop table - a prop earns a switch only if flipping it produces a visible change
+ * or an easily appreciated behavior; the rest belongs in the docs link.
+ */
+export const [WrapperOptionGroup, wrapperOptionGroup] =
+    hoistCmp.withFactory<WrapperOptionGroupProps>({
+        displayName: 'WrapperOptionGroup',
+        render({label, info, icon, intent, children}) {
+            return div({
+                className: classNames(
+                    'tbox-wrapper__option-group',
+                    intent && `tbox-wrapper__option-group--${intent}`
+                ),
+                children: [
+                    div({
+                        className: 'tbox-wrapper__option-group-label',
+                        children: [icon, span(label)]
+                    }),
+                    div({
+                        className: 'tbox-wrapper__option-group-info',
+                        children: info,
+                        omit: !info
+                    }),
+                    div({className: 'tbox-wrapper__option-group-body', children})
+                ]
+            });
+        }
+    });
+
+export interface WrapperOptionTab {
+    id: string;
+    title: string;
+    /** The tab's option rows - typically `wrapperOption` or `wrapperOptionGroup` elements. */
+    items: ReactNode;
+}
+
+interface WrapperOptionTabsProps extends HoistProps {
+    tabs: WrapperOptionTab[];
+}
+
+/**
+ * Tabbed sets of rows within a Wrapper `options` section, for examples with more options than one
+ * list holds comfortably. A segmented control switches between them, and the rail sizes to the
+ * active tab. The selected tab is local, in-memory state.
+ */
+export const [WrapperOptionTabs, wrapperOptionTabs] = hoistCmp.withFactory<WrapperOptionTabsProps>({
+    displayName: 'WrapperOptionTabs',
+    render({tabs}) {
+        const tabsModel = useLocalModel(WrapperOptionTabsModel),
+            active = tabs.find(it => it.id === tabsModel.activeId) ?? tabs[0];
+        return div({
+            className: 'tbox-wrapper__option-tabs',
+            children: [
+                segmentedControl({
+                    value: active.id,
+                    onChange: v => (tabsModel.activeId = v),
+                    options: tabs.map(it => ({value: it.id, label: it.title})),
+                    compact: true,
+                    fill: true
+                }),
+                div({className: 'tbox-wrapper__options-body', children: active.items})
+            ]
+        });
+    }
+});
+
+class WrapperOptionTabsModel extends HoistModel {
+    @bindable accessor activeId: string = null;
+}
 
 /**
  * A full-width, non-minimal action button for a Wrapper `options` section - i.e. a demo *trigger*
@@ -242,20 +354,20 @@ const resources = hoistCmp.factory<ResourcesProps>({
         );
         return div({
             className: 'tbox-wrapper__resources',
-            items: [
-                div({className: 'tbox-wrapper__resources-label', item: 'Resources'}),
+            children: [
+                div({className: 'tbox-wrapper__resources-label', children: 'Resources'}),
                 ...sortedLinks.map(link =>
                     div({
                         className: 'tbox-wrapper__resource',
-                        items: [
+                        children: [
                             linkIcon(link.url),
                             div({
                                 className: 'tbox-wrapper__resource-text',
-                                items: [
+                                children: [
                                     toolboxLink(link),
                                     div({
                                         className: 'tbox-wrapper__resource-note',
-                                        item: link.notes,
+                                        children: link.notes,
                                         omit: !link.notes
                                     })
                                 ]
@@ -275,7 +387,7 @@ const collapsedRail = hoistCmp.factory<{railModel: WrapperRailModel} & HoistProp
             className: 'tbox-wrapper__rail-collapsed',
             title: 'Show info panel',
             onClick: expand,
-            items: [
+            children: [
                 button({icon: Icon.chevronRight(), title: 'Show info panel', onClick: expand}),
                 Icon.info({className: 'tbox-wrapper__rail-collapsed-hint'})
             ]

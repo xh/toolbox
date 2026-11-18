@@ -1,13 +1,9 @@
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faGithub} from '@fortawesome/free-brands-svg-icons';
-import {HoistService, InitContext, LoadSpec, XH} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
-import {computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import type {InitContext, LoadSpec} from '@xh/hoist/core';
+import {HoistService, XH} from '@xh/hoist/core';
+import {computed, observableRef, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {forOwn, sortBy} from 'lodash';
-
-// Register the GitHub brand icon for use across commit/release widgets and toasts.
-library.add(faGithub);
+import {githubIcon} from '../Icons';
 
 export interface RepoCommitHistory {
     repo: string;
@@ -29,7 +25,7 @@ export interface Commit {
     isRelease: boolean;
     messageHeadline: string;
     messageBody: string;
-    changeFiles: number;
+    changedFiles: number;
     additions: number;
     deletions: number;
     url: string;
@@ -51,10 +47,10 @@ export class GitHubService extends HoistService {
     static instance: GitHubService;
 
     /** Loaded commits histories, keyed by repoName. */
-    @observable.ref commitHistories: Record<string, RepoCommitHistory> = {};
+    @observableRef accessor commitHistories: Record<string, RepoCommitHistory> = {};
 
     /** Loaded published releases, keyed by repoName. */
-    @observable.ref releasesByRepo: Record<string, Release[]> = {};
+    @observableRef accessor releasesByRepo: Record<string, Release[]> = {};
 
     /** Loaded array of commits across all repositories. */
     @computed
@@ -70,11 +66,6 @@ export class GitHubService extends HoistService {
         const ret = [];
         forOwn(this.releasesByRepo, v => ret.push(...v));
         return sortBy(ret, it => -it.publishedAt);
-    }
-
-    constructor() {
-        super();
-        makeObservable(this);
     }
 
     override async initAsync(ctx: InitContext) {
@@ -129,7 +120,7 @@ export class GitHubService extends HoistService {
                 if (priorCommitCount && newCommitCount > priorCommitCount) {
                     XH.toast({
                         message: 'New Hoist commit detected!',
-                        icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
+                        icon: githubIcon(),
                         intent: 'primary'
                     });
                 }

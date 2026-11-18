@@ -1,5 +1,5 @@
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -15,7 +15,8 @@ export const explodingPanel = hoistCmp.factory({
             padding: 10,
             maxWidth: 500,
             margin: '0 auto',
-            items: [
+            ...props,
+            children: [
                 p(
                     'If the button below is clicked too many times, this component will throw an exception during rendering.'
                 ),
@@ -30,19 +31,17 @@ export const explodingPanel = hoistCmp.factory({
                 }),
                 p(`You have clicked me ${model.clicks} times...`),
                 p(`I was last (re)mounted at ${fmtDate(model.mounted, {fmt: 'hh:mm:ss'})}`)
-            ],
-            ...props
+            ]
         });
     }
 });
 
 class ErrorExampleModel extends HoistModel {
-    @bindable clicks = 0;
+    @bindable accessor clicks = 0;
     mounted = null;
 
     constructor() {
         super();
-        makeObservable(this);
         this.mounted = new Date();
     }
 }

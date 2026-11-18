@@ -1,7 +1,8 @@
 import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
-import {Release} from '../../../core/svc/GitHubService';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
+import type {Release} from '../../../core/svc/GitHubService';
 import './GitHubWidget.scss';
 
 /**
@@ -18,13 +19,13 @@ export const releasesWidget = hoistCmp.factory({
         if (!latest.length) {
             return div({
                 className: 'tb-github-widget__empty',
-                item: 'GitHub release data unavailable.'
+                children: 'GitHub release data unavailable.'
             });
         }
 
         return div({
             className: 'tb-github-widget',
-            items: latest.map(it => releaseRow({release: it, key: it.id}))
+            children: latest.map(it => releaseRow({release: it, key: it.id}))
         });
     }
 });
@@ -48,13 +49,16 @@ const releaseRow = hoistCmp.factory<HoistProps & {release: Release}>(({release})
     return hbox({
         className: 'tb-github-widget__row tb-github-widget__row--inline',
         onClick: () => XH.openWindow(url, 'gitlink'),
-        items: [
-            span({className: `tb-github-widget__repo tb-github-widget__repo--${repo}`, item: repo}),
-            span({className: 'tb-github-widget__tag', item: tagName}),
+        children: [
+            span({
+                className: `tb-github-widget__repo tb-github-widget__repo--${repo}`,
+                children: repo
+            }),
+            span({className: 'tb-github-widget__tag', children: tagName}),
             filler(),
             span({
                 className: 'tb-github-widget__date',
-                item: relativeTimestamp({timestamp: publishedAt, short: false})
+                children: relativeTimestamp({timestamp: publishedAt, short: false})
             })
         ]
     });

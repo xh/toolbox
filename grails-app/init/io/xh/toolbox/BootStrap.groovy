@@ -1,6 +1,7 @@
 package io.xh.toolbox
 
 import grails.gorm.transactions.Transactional
+import io.xh.hoist.config.AppConfig
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.log.LogSupport
 import io.xh.hoist.pref.PrefService
@@ -24,7 +25,7 @@ class BootStrap implements LogSupport {
     PrefService prefService
     TraceService traceService
 
-    def init = {servletContext ->
+    def init = {
         logStartupMsg()
 
         traceService.withSpan(name: 'toolbox.server.appLoad', caller: this) {
@@ -89,12 +90,7 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'auth0Config',
                 valueType: 'json',
-                defaultValue: [
-                    clientId: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
-                    domain: 'login.xh.io',
-                    authZeroClientOptions: [useCookiesForTransactions: false],
-                    reloginEnabled: true
-                ],
+                defaultValue: [:],
                 typedClass: Auth0Config,
                 groupName: 'Auth',
                 note: 'OAuth config for the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
@@ -139,13 +135,7 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'entraIdConfig',
                 valueType: 'json',
-                defaultValue: [
-                    clientId: '5d933976-8fe4-40fc-bc13-b9d239a2efe5',
-                    tenantId: '51759969-dc12-46ec-a1e9-2532084dc881',
-                    enableTelemetry: true,
-                    reloginEnabled: true,
-                    msalClientOptions: [:]
-                ],
+                defaultValue: [:],
                 typedClass: EntraIdConfig,
                 groupName: 'Auth',
                 note: 'OAuth config for the Toolbox app registered at our Azure Entra ID tenant. For testing Entra ID as an alternate OAuth provider.'
@@ -160,7 +150,7 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'gitHubAccessToken',
                 valueType: 'string',
-                defaultValue: 'realTokenGoesHere',
+                defaultValue: AppConfig.NONE,
                 groupName: 'GitHub Integration',
                 note: 'Personal access token with minimal scopes required to query public repos and commits.'
             ),
@@ -236,14 +226,7 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'portfolioConfigs',
                 valueType: 'json',
-                defaultValue: [
-                    instrumentCount: 500,
-                    orderCount: 20000,
-                    updateIntervalSecs: 5,
-                    updatePctInstruments: 20,
-                    updatePctPriceRange: 0.025,
-                    pushUpdatesIntervalSecs: 5
-                ],
+                defaultValue: [:],
                 typedClass: PortfolioConfig,
                 groupName: 'Toolbox - Example Apps'
             ),
@@ -256,15 +239,7 @@ class BootStrap implements LogSupport {
             new ConfigSpec(
                 name: 'slackAlertConfig',
                 valueType: 'json',
-                defaultValue: [
-                    enabled: false,
-                    oauthToken: null,
-                    channel: null,
-                    feedbackChannel: null,
-                    monitorAlertsEnabled: false,
-                    clientErrorsEnabled: false,
-                    feedbackEnabled: false
-                ],
+                defaultValue: [:],
                 typedClass: SlackAlertConfig,
                 groupName: 'Slack Integration',
                 note: 'Slack bot token + target channels for monitor alerts, client-error reports, and user feedback. All disabled by default; set enabled plus the specific per-type flag(s) and channel(s) to post.'
@@ -322,7 +297,7 @@ class BootStrap implements LogSupport {
             new PreferenceSpec(
                 name: 'contactAppState',
                 type: 'json',
-                defaultValue: [],
+                defaultValue: [:],
                 groupName: 'Toolbox - Example Apps',
                 notes: 'Holds favorites, grid state, and displayMode prefs for the XH Contact example app.'
             ),
@@ -361,8 +336,9 @@ class BootStrap implements LogSupport {
             new PreferenceSpec(
                 name: 'cubeTestUserDims',
                 type: 'json',
-                defaultValue: [],
-                groupName: 'Toolbox'
+                defaultValue: [:],
+                groupName: 'Toolbox',
+                notes: 'Persisted GroupingChooser state (value + favorites) for the Cube test panel.'
             ),
             new PreferenceSpec(
                 name: 'mobileHomeWidgets',

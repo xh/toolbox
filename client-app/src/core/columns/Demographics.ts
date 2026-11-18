@@ -1,5 +1,5 @@
-import {numberRenderer} from '@xh/hoist/format';
-import {ColumnSpec, ColumnRenderer} from '@xh/hoist/cmp/grid';
+import {numberTextRenderer} from '@xh/hoist/format';
+import type {ColumnSpec, ColumnRenderer} from '@xh/hoist/cmp/grid';
 
 const fullNameRenderer: ColumnRenderer = (v, {record}) =>
     record ? `${record.data.firstName} ${record.data.lastName}` : '';
@@ -43,11 +43,20 @@ export const stateCol: ColumnSpec = {
     width: 120
 };
 
+export const tenureCol: ColumnSpec = {
+    field: {name: 'tenure', type: 'int'},
+    headerName: 'Tenure',
+    chooserName: 'Tenure (Years)',
+    width: 90,
+    align: 'right',
+    textRenderer: numberTextRenderer({precision: 0, label: ' yrs'})
+};
+
 export const salaryCol: ColumnSpec = {
     field: {name: 'salary', type: 'number'},
     width: 90,
     align: 'right',
-    renderer: numberRenderer({precision: 0, prefix: '$'})
+    textRenderer: numberTextRenderer({precision: 0, prefix: '$'})
 };
 
 export const locationCol: ColumnSpec = {

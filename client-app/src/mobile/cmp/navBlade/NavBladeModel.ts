@@ -1,8 +1,9 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
-import {ReactElement} from 'react';
-import {DocService} from '../../../core/svc/DocService';
+import {action, bindable, observableRef} from '@xh/hoist/mobx';
+import type {ReactElement} from 'react';
+import {isEmpty} from 'lodash';
+import {mobileTests} from '../../tests/TestsCatalog';
 
 /** A single navigable leaf within the blade - maps to a fully-qualified app route. */
 export interface NavBladeItem {
@@ -41,10 +42,10 @@ const BLANK_TITLE = ' ';
  * shared `@xh/hoist/mobile` kit.
  */
 export class NavBladeModel extends HoistModel {
-    @bindable isOpen = false;
+    @bindable accessor isOpen = false;
 
     /** Ids of the groups currently expanded in place. */
-    @observable.ref expandedIds: string[] = [];
+    @observableRef accessor expandedIds: string[] = [];
 
     get homeRoute(): string {
         return HOME_ROUTE;
@@ -54,66 +55,80 @@ export class NavBladeModel extends HoistModel {
         return DOCS_ROUTE;
     }
 
-    readonly groups: NavBladeGroup[] = [
-        {
-            id: 'gridsAndData',
-            text: 'Grids & Data',
-            icon: Icon.grid(),
-            items: [
-                {text: 'Grid', route: 'default.grid'},
-                {text: 'TreeGrid', route: 'default.treeGrid'},
-                {text: 'ZoneGrid', route: 'default.zoneGrid'},
-                {text: 'DataView', route: 'default.dataView'}
-            ]
-        },
-        {
-            id: 'charts',
-            text: 'Charts',
-            icon: Icon.chartLine(),
-            items: [
-                {text: 'Chart', route: 'default.chart'},
-                {text: 'TreeMap', route: 'default.treeMap'}
-            ]
-        },
-        {
-            id: 'forms',
-            text: 'Forms',
-            icon: Icon.edit(),
-            items: [
-                {text: 'Form', route: 'default.form'},
-                {text: 'Inputs', route: 'default.inputs'},
-                {text: 'Select', route: 'default.select'}
-            ]
-        },
-        {
-            id: 'layout',
-            text: 'Layout',
-            icon: Icon.layout(),
-            items: [
-                {text: 'Containers', route: 'default.containers'},
-                {text: 'Panel', route: 'default.panel'},
-                {text: 'Tabs', route: 'default.tabs'}
-            ]
-        },
-        {
-            id: 'components',
-            text: 'Components',
-            icon: Icon.cube(),
-            items: [
-                {text: 'Badges', route: 'default.badges'},
-                {text: 'Buttons', route: 'default.buttons'},
-                {text: 'Icons', route: 'default.icons'},
-                {text: 'Mask', route: 'default.mask'},
-                {text: 'PinPad', route: 'default.pinPad'},
-                {text: 'Popover', route: 'default.popover'},
-                {text: 'Popups', route: 'default.popups'}
-            ]
-        }
-    ];
+    /** Example groups, plus a Tests group for users with access to the test harnesses. */
+    get groups(): NavBladeGroup[] {
+        const testSpecs = mobileTests(),
+            mobileTestNavBladeGroup = isEmpty(testSpecs)
+                ? [
+                      {
+                          id: 'tests',
+                          text: 'Tests',
+                          icon: Icon.stopwatch(),
+                          items: testSpecs.map(it => ({text: it.title, route: `default.${it.id}`}))
+                      }
+                  ]
+                : [];
+        return [
+            {
+                id: 'gridsAndData',
+                text: 'Grids & Data',
+                icon: Icon.grid(),
+                items: [
+                    {text: 'Grid', route: 'default.grid'},
+                    {text: 'TreeGrid', route: 'default.treeGrid'},
+                    {text: 'ZoneGrid', route: 'default.zoneGrid'},
+                    {text: 'DataView', route: 'default.dataView'}
+                ]
+            },
+            {
+                id: 'charts',
+                text: 'Charts',
+                icon: Icon.chartLine(),
+                items: [
+                    {text: 'Chart', route: 'default.chart'},
+                    {text: 'TreeMap', route: 'default.treeMap'}
+                ]
+            },
+            {
+                id: 'forms',
+                text: 'Forms',
+                icon: Icon.edit(),
+                items: [
+                    {text: 'Form', route: 'default.form'},
+                    {text: 'Inputs', route: 'default.inputs'},
+                    {text: 'Select', route: 'default.select'}
+                ]
+            },
+            {
+                id: 'layout',
+                text: 'Layout',
+                icon: Icon.layout(),
+                items: [
+                    {text: 'Containers', route: 'default.containers'},
+                    {text: 'Panel', route: 'default.panel'},
+                    {text: 'Tabs', route: 'default.tabs'}
+                ]
+            },
+            {
+                id: 'components',
+                text: 'Components',
+                icon: Icon.cube(),
+                items: [
+                    {text: 'Badges', route: 'default.badges'},
+                    {text: 'Buttons', route: 'default.buttons'},
+                    {text: 'Icons', route: 'default.icons'},
+                    {text: 'Mask', route: 'default.mask'},
+                    {text: 'PinPad', route: 'default.pinPad'},
+                    {text: 'Popover', route: 'default.popover'},
+                    {text: 'Popups', route: 'default.popups'}
+                ]
+            },
+            ...mobileTestNavBladeGroup
+        ];
+    }
 
     constructor() {
         super();
-        makeObservable(this);
 
         // Dismiss the blade on any route change - covers browser back/forward and any navigation
         // that originates outside the blade (mirrors how Hoist's built-in dialogs self-dismiss).
@@ -198,7 +213,7 @@ export class NavBladeModel extends HoistModel {
      */
     get backLabel(): string {
         const {name, params} = XH.routerState,
-            docService = DocService.instance;
+            docService = XH.docService;
         switch (name) {
             case 'default.docs.corpus':
             case 'default.docs.search':

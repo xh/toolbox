@@ -1,14 +1,16 @@
 import {markdown} from '@xh/hoist/cmp/markdown';
 import {div, filler, hbox, placeholder, span} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {creates, hoistCmp, HoistProps, XH} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {Release} from '../../../../../core/svc/GitHubService';
+import type {Release} from '../../../../../core/svc/GitHubService';
 import {repoFilterPicker} from '../RepoFilterPicker';
 import './ReleasesWidget.scss';
 import {ReleasesWidgetModel} from './ReleasesWidgetModel';
+import {githubIcon} from '../../../../../core/Icons';
 
 export const releasesWidget = hoistCmp.factory({
     displayName: 'ReleasesWidget',
@@ -19,8 +21,8 @@ export const releasesWidget = hoistCmp.factory({
         if (!allReleases.length) {
             return panel({
                 className: 'tb-releases',
-                item: placeholder(
-                    Icon.icon({iconName: 'github', prefix: 'fab'}),
+                children: placeholder(
+                    githubIcon(),
                     'GitHub release data unavailable.',
                     'Check the gitHubAccessToken config if running locally.'
                 )
@@ -33,12 +35,12 @@ export const releasesWidget = hoistCmp.factory({
             // Make the panel's own (scrolling) content box the flex column for our cards,
             // avoiding an extra wrapper layer.
             contentBoxProps: {display: 'flex', className: 'tb-releases__list'},
-            items: releases.length
+            children: releases.length
                 ? releases.map(it => releaseCard({release: it, key: it.id}))
                 : placeholder(Icon.tag(), 'No releases for the selected repos.'),
             bbar: toolbar({
                 compact: true,
-                items: [repoFilterPicker(), filler()]
+                children: [repoFilterPicker(), filler()]
             })
         });
     }
@@ -58,12 +60,15 @@ const releaseCard = hoistCmp.factory<HoistProps & ReleaseCardProps>(({release}) 
     return div({
         className: 'tb-releases__card',
         onClick: () => XH.openWindow(url, 'gitlink'),
-        items: [
+        children: [
             hbox({
                 className: 'tb-releases__card-header',
-                items: [
-                    span({className: `tb-releases__repo tb-releases__repo--${repo}`, item: repo}),
-                    span({className: 'tb-releases__tag', item: tagName}),
+                children: [
+                    span({
+                        className: `tb-releases__repo tb-releases__repo--${repo}`,
+                        children: repo
+                    }),
+                    span({className: 'tb-releases__tag', children: tagName}),
                     filler(),
                     relativeTimestamp({timestamp: publishedAt})
                 ]
@@ -71,7 +76,7 @@ const releaseCard = hoistCmp.factory<HoistProps & ReleaseCardProps>(({release}) 
             notes
                 ? div({
                       className: 'tb-releases__card-body',
-                      item: markdown({content: notes})
+                      children: markdown({content: notes})
                   })
                 : null
         ]

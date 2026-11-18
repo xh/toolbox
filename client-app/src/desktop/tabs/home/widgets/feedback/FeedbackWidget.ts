@@ -1,5 +1,3 @@
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faFaceFrown, faFaceMeh, faFaceSmile} from '@fortawesome/pro-regular-svg-icons';
 import {div, filler, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -8,8 +6,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import './FeedbackWidget.scss';
 import {FeedbackWidgetModel} from './FeedbackWidgetModel';
-
-library.add(faFaceFrown, faFaceMeh, faFaceSmile);
+import {faceFrownIcon, faceMehIcon, faceSmileIcon} from '../../../../../core/Icons';
 
 export const feedbackWidget = hoistCmp.factory({
     displayName: 'FeedbackWidget',
@@ -17,7 +14,7 @@ export const feedbackWidget = hoistCmp.factory({
     render({model}) {
         const {rating, commentSent} = model;
         const body = !rating ? ratingPrompt() : !commentSent ? commentPrompt() : thanks();
-        return panel({className: 'tb-feedback', item: body});
+        return panel({className: 'tb-feedback', children: body});
     }
 });
 
@@ -25,27 +22,27 @@ const ratingPrompt = hoistCmp.factory<FeedbackWidgetModel>({
     render({model}) {
         return vbox({
             className: 'tb-feedback__inner',
-            items: [
-                div({className: 'tb-feedback__question', item: 'Enjoying Hoist?'}),
+            children: [
+                div({className: 'tb-feedback__question', children: 'Enjoying Hoist?'}),
                 div({
                     className: 'tb-feedback__sub',
-                    item: 'One click - painless, and read by the team.'
+                    children: 'One click - painless, and read by the team.'
                 }),
                 hbox({
                     className: 'tb-feedback__ratings',
-                    items: [
+                    children: [
                         button({
-                            icon: Icon.icon({iconName: 'face-frown', size: '2x'}),
+                            icon: faceFrownIcon({size: '2x'}),
                             tooltip: 'Not really',
                             onClick: () => model.setRating('negative')
                         }),
                         button({
-                            icon: Icon.icon({iconName: 'face-meh', size: '2x'}),
+                            icon: faceMehIcon({size: '2x'}),
                             tooltip: "It's OK",
                             onClick: () => model.setRating('neutral')
                         }),
                         button({
-                            icon: Icon.icon({iconName: 'face-smile', size: '2x'}),
+                            icon: faceSmileIcon({size: '2x'}),
                             tooltip: 'Yes!',
                             onClick: () => model.setRating('positive')
                         })
@@ -61,10 +58,10 @@ const commentPrompt = hoistCmp.factory<FeedbackWidgetModel>({
         const negative = model.rating !== 'positive';
         return vbox({
             className: 'tb-feedback__inner',
-            items: [
+            children: [
                 div({
                     className: 'tb-feedback__question',
-                    item: negative
+                    children: negative
                         ? 'Sorry to hear it - what could be better?'
                         : 'Thanks! Anything to add?'
                 }),
@@ -80,7 +77,7 @@ const commentPrompt = hoistCmp.factory<FeedbackWidgetModel>({
                 }),
                 hbox({
                     className: 'tb-feedback__actions',
-                    items: [
+                    children: [
                         filler(),
                         button({text: 'Skip', onClick: () => model.skipComment()}),
                         button({
@@ -101,9 +98,9 @@ const thanks = hoistCmp.factory<FeedbackWidgetModel>({
     render({model}) {
         return vbox({
             className: 'tb-feedback__inner tb-feedback__inner--thanks',
-            items: [
+            children: [
                 Icon.checkCircle({size: '2x', intent: 'success'}),
-                div({className: 'tb-feedback__question', item: 'Thanks for your feedback!'}),
+                div({className: 'tb-feedback__question', children: 'Thanks for your feedback!'}),
                 button({text: 'Update your rating', minimal: true, onClick: () => model.reset()})
             ]
         });

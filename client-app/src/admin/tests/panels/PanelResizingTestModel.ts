@@ -1,19 +1,19 @@
 import {HoistModel} from '@xh/hoist/core';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable, observableRef} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {h3, li, ol, p} from '@xh/hoist/cmp/layout';
 
 export class PanelResizingTestModel extends HoistModel {
-    @observable resizeWhileDragging = false;
+    @observable accessor resizeWhileDragging = false;
 
-    @observable.ref topPanel1Model: PanelModel;
-    @observable.ref topPanel2Model: PanelModel;
-    @observable.ref leftPanel1Model: PanelModel;
-    @observable.ref leftPanel2Model: PanelModel;
-    @observable.ref rightPanel1Model: PanelModel;
-    @observable.ref rightPanel2Model: PanelModel;
-    @observable.ref bottomPanel1Model: PanelModel;
-    @observable.ref bottomPanel2Model: PanelModel;
+    @observableRef accessor topPanel1Model: PanelModel;
+    @observableRef accessor topPanel2Model: PanelModel;
+    @observableRef accessor leftPanel1Model: PanelModel;
+    @observableRef accessor leftPanel2Model: PanelModel;
+    @observableRef accessor rightPanel1Model: PanelModel;
+    @observableRef accessor rightPanel2Model: PanelModel;
+    @observableRef accessor bottomPanel1Model: PanelModel;
+    @observableRef accessor bottomPanel2Model: PanelModel;
 
     resizablePanelNames = [
         'topPanel1Model',
@@ -28,7 +28,6 @@ export class PanelResizingTestModel extends HoistModel {
 
     constructor() {
         super();
-        makeObservable(this);
         this.setPanelModels();
     }
 
@@ -112,7 +111,7 @@ export class PanelResizingTestModel extends HoistModel {
     explanation = [
         h3({
             className: 'xh-text-color-accent',
-            item: 'Use this Page to Test the Panel Drag Bars'
+            children: 'Use this Page to Test the Panel Drag Bars'
         }),
         p(
             'The vertical and horizontal drag bars on the surrounding panels should be draggable (hold mouse down on bar and drag) and dragging a bar should resize its panel.'
@@ -125,6 +124,9 @@ export class PanelResizingTestModel extends HoistModel {
         p(
             'Panels that specify a minSize should not be resizable smaller than that specified size.'
         ),
-        p('Panels that specify a maxSize should not be resizable larger than that specified size.')
+        p('Panels that specify a maxSize should not be resizable larger than that specified size.'),
+        p(
+            'The left-most panel has no title or icon. When collapsed it shows a thin clickable strip in place of a header. Click the strip to expand it.'
+        )
     ];
 }

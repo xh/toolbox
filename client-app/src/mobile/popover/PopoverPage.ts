@@ -1,6 +1,7 @@
-import {hoistCmp, HoistModel, creates, Intent, XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {ReactElement} from 'react';
+import type {Intent} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, creates, XH} from '@xh/hoist/core';
+import {bindable} from '@xh/hoist/mobx';
+import type {ReactElement} from 'react';
 import {div, filler, p, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {popover} from '@xh/hoist/mobile/cmp/popover';
@@ -61,9 +62,9 @@ export const popoverPage = hoistCmp.factory({
                 {url: '$HR/mobile/cmp/popover/Popover.ts', text: 'Popover source'},
                 {url: '$HR/mobile/cmp/dialog/Dialog.ts', text: 'Dialog source'}
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-page xh-tiled-bg',
-                items: [
+                children: [
                     filler(),
                     overlayCard({
                         title: 'Popover',
@@ -76,7 +77,7 @@ export const popoverPage = hoistCmp.factory({
                             onInteraction: next => (model.menuOpen = next),
                             position: model.position,
                             backdrop: model.backdrop,
-                            item: button({
+                            children: button({
                                 text: 'Actions',
                                 icon: Icon.ellipsisVertical(),
                                 width: MENU_WIDTH
@@ -105,9 +106,9 @@ const overlayCard = hoistCmp.factory({
     render({title, subtitle, trigger}) {
         return div({
             className: 'tb-card tb-overlay-card',
-            items: [
-                div({className: 'tb-card__title', item: title}),
-                div({className: 'tb-overlay-card__subtitle', item: subtitle}),
+            children: [
+                div({className: 'tb-card__title', children: title}),
+                div({className: 'tb-overlay-card__subtitle', children: subtitle}),
                 trigger
             ]
         });
@@ -127,7 +128,7 @@ const actionsMenu = hoistCmp.factory<PopoverPageModel>({
         return vbox({
             className: 'tb-popover-menu',
             width: MENU_WIDTH,
-            items: [
+            children: [
                 action(Icon.edit(), 'Edit'),
                 action(Icon.copy(), 'Duplicate'),
                 action(Icon.delete(), 'Delete', 'danger')
@@ -145,7 +146,7 @@ const editDialog = hoistCmp.factory<PopoverPageModel>({
             onCancel: () => (model.dialogOpen = false),
             content: div({
                 className: 'tb-overlay-dialog',
-                items: [
+                children: [
                     p(
                         'Unlike a popover, a Dialog is a modal overlay - it sits centered over a backdrop and blocks interaction with the rest of the screen until dismissed.'
                     ),
@@ -175,15 +176,10 @@ const editDialog = hoistCmp.factory<PopoverPageModel>({
  * modal Dialog.
  */
 class PopoverPageModel extends HoistModel {
-    @bindable position: PopoverPosition = 'bottom';
-    @bindable backdrop: boolean = false;
-    @bindable menuOpen: boolean = false;
-    @bindable dialogOpen: boolean = false;
-
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @bindable accessor position: PopoverPosition = 'bottom';
+    @bindable accessor backdrop: boolean = false;
+    @bindable accessor menuOpen: boolean = false;
+    @bindable accessor dialogOpen: boolean = false;
 
     chooseAction(label: string) {
         this.menuOpen = false;

@@ -1,12 +1,13 @@
-import {ElementFactory} from '@xh/hoist/core';
+import type {ElementFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {commitsWidget} from './CommitsWidget';
 import {feedbackWidget} from './FeedbackWidget';
 import {meetXhWidget} from './MeetXhWidget';
 import {releasesWidget} from './ReleasesWidget';
 import {startHereWidget} from './StartHereWidget';
 import {welcomeWidget} from './WelcomeWidget';
+import {githubIcon} from '../../../core/Icons';
 
 /** Definition of a single mobile home-dashboard widget. */
 export interface WidgetSpec {
@@ -31,7 +32,7 @@ export const WIDGETS: WidgetSpec[] = [
     {
         id: 'commits',
         title: 'Recent Commits',
-        icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
+        icon: githubIcon(),
         content: commitsWidget
     },
     {id: 'meetXh', title: 'Meet XH', icon: Icon.users(), content: meetXhWidget},

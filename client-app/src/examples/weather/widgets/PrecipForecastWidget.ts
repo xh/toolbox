@@ -1,41 +1,38 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {placeholder} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {ForecastResponse} from '../Types';
-import {AppModel} from '../AppModel';
+import {bindable} from '@xh/hoist/mobx';
+import type {ForecastResponse} from '../Types';
+import type {WeatherDashModel} from '../WeatherDashModel';
 
 export const precipForecastWidget = hoistCmp.factory({
     model: creates(() => PrecipForecastModel),
 
     render({model}) {
         return panel({
-            item: model.hasData
+            children: model.hasData
                 ? chart()
                 : placeholder({
-                      items: [Icon.sun(), 'No precipitation expected in the forecast period']
+                      children: [Icon.sun(), 'No precipitation expected in the forecast period']
                   })
         });
     }
 });
 
 class PrecipForecastModel extends HoistModel {
-    @managed chartModel: ChartModel;
-    @bindable hasData: boolean = false;
+    @lookup((m: WeatherDashModel) => !!m.isWeatherDashModel) dashModel: WeatherDashModel;
 
-    constructor() {
-        super();
-        makeObservable(this);
-    }
+    @managed chartModel: ChartModel;
+    @bindable accessor hasData: boolean = false;
 
     override onLinked() {
         this.chartModel = this.createChartModel();
 
         this.addReaction({
-            track: () => AppModel.instance.weatherDashModel.forecast,
+            track: () => this.dashModel.forecast,
             run: data => this.updateChart(data),
             fireImmediately: true
         });

@@ -1,16 +1,17 @@
 import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistProps, uses} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {dragDropContext, draggable, droppable} from '@xh/hoist/kit/react-beautiful-dnd';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import classNames from 'classnames';
 import {isEmpty} from 'lodash';
-import {ReactElement} from 'react';
+import type {ReactElement} from 'react';
 import {createPortal} from 'react-dom';
 import {pullUpSheet} from '../cmp/pullUpSheet/PullUpSheet';
 import {HomeModel} from './HomeModel';
-import {WidgetSpec} from './widgets/WidgetCatalog';
+import type {WidgetSpec} from './widgets/WidgetCatalog';
 import './ManageWidgetsSheet.scss';
 
 /**
@@ -27,7 +28,7 @@ export const manageWidgetsSheet = hoistCmp.factory({
     render({model}) {
         if (!model.isManaging) return null;
 
-        // Portal the sheet to <body> so it (and its dnd content) escapes the Onsen navigator's Swiper
+        // Portal the sheet to <body> so it (and its dnd content) escapes the Hoist navigator's Swiper
         // wrapper, which carries an (identity) CSS transform. That transform is a containing block for
         // the drag clone's position:fixed and would offset the floating row below the finger;
         // rendering at <body> leaves no transformed ancestor, so the in-place clone tracks the
@@ -38,7 +39,7 @@ export const manageWidgetsSheet = hoistCmp.factory({
                 isExpanded: true,
                 onExpandedChange: v => (model.isManaging = v),
                 peekItem: header(),
-                item: sheetBody(),
+                children: sheetBody(),
                 footerItem: resetFooter()
             }),
             document.body
@@ -52,8 +53,8 @@ export const manageWidgetsSheet = hoistCmp.factory({
 const header = hoistCmp.factory<HomeModel>(({model}) =>
     hbox({
         className: 'tb-manage-widgets__header',
-        items: [
-            span({className: 'tb-manage-widgets__title', item: 'Manage widgets'}),
+        children: [
+            span({className: 'tb-manage-widgets__title', children: 'Manage widgets'}),
             filler(),
             button({
                 className: 'tb-manage-widgets__done',
@@ -71,16 +72,16 @@ const resetFooter = hoistCmp.factory<HomeModel>(({model}) =>
     div({
         className: 'tb-manage-widgets__reset',
         onClick: () => model.restoreDefaults(),
-        items: [Icon.reset(), span('Reset to default layout')]
+        children: [Icon.reset(), span('Reset to default layout')]
     })
 );
 
 const sheetBody = hoistCmp.factory<HomeModel>(({model}) =>
     div({
         className: 'tb-manage-widgets__body',
-        item: dragDropContext({
+        children: dragDropContext({
             onDragEnd: model.onDragEnd,
-            items: [
+            children: [
                 group({
                     droppableId: 'home',
                     label: 'On your home',
@@ -109,17 +110,17 @@ const group = hoistCmp.factory<GroupProps>(({droppableId, label, widgets, emptyT
     const onHome = droppableId === 'home';
     return div({
         className: 'tb-manage-widgets__group',
-        items: [
-            div({className: 'tb-manage-widgets__group-label', item: label}),
+        children: [
+            div({className: 'tb-manage-widgets__group-label', children: label}),
             droppable({
                 droppableId,
                 children: dndProps =>
                     div({
                         className: 'tb-manage-widgets__list',
                         ref: dndProps.innerRef,
-                        items: [
+                        children: [
                             isEmpty(widgets)
-                                ? div({className: 'tb-manage-widgets__empty', item: emptyText})
+                                ? div({className: 'tb-manage-widgets__empty', children: emptyText})
                                 : widgets.map((w, idx) => widgetRow({key: w.id, w, idx, onHome})),
                             dndProps.placeholder
                         ]
@@ -160,15 +161,15 @@ function rowContent(
         ),
         ref: dndProps.innerRef,
         ...dndProps.draggableProps,
-        items: [
+        children: [
             // Drag handle owns the drag gesture, so the toggle stays independently tappable.
             div({
                 className: 'tb-manage-widgets__grip',
                 ...dndProps.dragHandleProps,
-                item: Icon.grip({prefix: 'fas'})
+                children: Icon.grip({prefix: 'fas'})
             }),
-            div({className: 'tb-manage-widgets__row-icon', item: w.icon}),
-            span({className: 'tb-manage-widgets__row-title', item: w.title}),
+            div({className: 'tb-manage-widgets__row-icon', children: w.icon}),
+            span({className: 'tb-manage-widgets__row-title', children: w.title}),
             filler(),
             switchInput({
                 value: onHome,
