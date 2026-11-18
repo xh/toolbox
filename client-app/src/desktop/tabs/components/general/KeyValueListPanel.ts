@@ -164,10 +164,10 @@ export const keyValueListPanel = hoistCmp.factory({
                             control: switchInput({bind: 'dividers'})
                         }),
                         wrapperOption({
-                            label: 'Empty text',
-                            propName: 'KeyValueListProps.emptyText',
+                            label: 'Null display',
+                            propName: 'KeyValueListProps.nullDisplay',
                             control: textInput({
-                                bind: 'emptyText',
+                                bind: 'nullDisplay',
                                 width: 110,
                                 commitOnChange: true
                             })
@@ -362,7 +362,7 @@ export const keyValueListPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Long Text and Empty Values',
-                        note: 'Labels and values wrap. A blank value shows emptyText.',
+                        note: 'Labels and values wrap. A blank value shows nullDisplay, and a boolean shows Yes or No.',
                         children: demoGrid({
                             columns: 2,
                             children: [
@@ -387,16 +387,17 @@ export const keyValueListPanel = hoistCmp.factory({
                                 }),
                                 demoFrame({
                                     label: 'Empty values',
-                                    info: "emptyText: 'Not set'",
+                                    info: "nullDisplay: 'Not set'",
                                     className: 'tb-key-value-list-panel__slim',
                                     children: keyValueList({
                                         columns: 1,
-                                        emptyText: 'Not set',
+                                        nullDisplay: 'Not set',
                                         entries: [
                                             {label: 'Trader', value: 'Freda Klecko'},
                                             {label: 'Approver', value: null},
                                             {label: 'Note', value: '   '},
                                             {label: 'Zero', value: 0},
+                                            {label: 'Confirmed', value: false},
                                             {label: 'Left out', value: 'Hidden', omit: true},
                                             null
                                         ]
@@ -451,7 +452,7 @@ class KeyValueListPanelModel extends HoistModel {
     @bindable accessor minColumnWidth: number = null;
     @bindable accessor size: KeyValueListProps['size'] = null;
     @bindable accessor dividers = false;
-    @bindable accessor emptyText: string = null;
+    @bindable accessor nullDisplay: string = null;
 
     @observableRef accessor position: PricedRawPosition = null;
 
@@ -469,7 +470,7 @@ class KeyValueListPanelModel extends HoistModel {
             minColumnWidth,
             size,
             dividers,
-            emptyText
+            nullDisplay
         } = this;
         return {
             labelSide: labelSide ?? undefined,
@@ -479,7 +480,7 @@ class KeyValueListPanelModel extends HoistModel {
             minColumnWidth: minColumnWidth ?? undefined,
             size: size ?? undefined,
             dividers: dividers || undefined,
-            emptyText: emptyText || undefined
+            nullDisplay: nullDisplay || undefined
         };
     }
 
@@ -523,5 +524,5 @@ interface PlaygroundListProps {
     minColumnWidth?: number;
     size?: KeyValueListProps['size'];
     dividers?: boolean;
-    emptyText?: string;
+    nullDisplay?: string;
 }
