@@ -1,0 +1,66 @@
+// A column or a row with a gap, which spaces each callout from its neighbors.
+.tb-callout-panel__stack,
+.tb-callout-panel__form {
+  gap: var(--xh-spacing);
+}
+
+.tb-callout-panel__row {
+  gap: var(--xh-spacing);
+  align-items: flex-start;
+}
+
+// Fixed-width frames, which wrap to a new line in a narrow window.
+.tb-callout-panel__widths {
+  flex-wrap: wrap;
+}
+
+.tb-callout-panel__measure {
+  width: 100%;
+  outline: 1px dashed var(--xh-border-color);
+  outline-offset: 2px;
+}
+
+.tb-callout-panel__grid {
+  height: 180px;
+  display: flex;
+}
+
+.tb-callout-panel__block {
+  flex: none;
+  width: 160px;
+  padding: var(--xh-spacing);
+  border-radius: var(--xh-border-radius);
+  background: var(--xh-bg-alt);
+}
+
+.tb-callout-panel__kv {
+  justify-content: space-between;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--xh-border-color);
+
+  > span:first-child {
+    color: var(--xh-text-color-muted);
+  }
+}
+
+.tb-callout-panel__stream {
+  max-width: 520px;
+  min-height: 24px;
+}
+
+.tb-callout-panel__caption {
+  color: var(--xh-text-color-muted);
+  font-size: var(--xh-font-size-small-relative);
+}
+
+// Restyled through Callout's CSS variables, set on a container.
+.tb-callout-panel__flat {
+  --xh-callout-accent-width: 0;
+  --xh-callout-border-radius: 0;
+  --xh-callout-padding: var(--xh-spacing-half) var(--xh-spacing);
+}
+
+// Each callout at its natural height, not stretched to the tallest in its row.
+.tb-callout-panel__gallery {
+  align-items: start;
+}

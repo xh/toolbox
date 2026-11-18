@@ -16,6 +16,7 @@
 
 ### New Features
 
+* Added a `Callout` demo page to Components > General, showing hoist-react's new note set off within content, with a playground that sets the container width, each intent with and without a title, custom and hidden icons, callouts in a form, a detail panel and above a grid, a markdown body, long-URL wrapping and a body that streams in.
 * Added a `ProgressBar` demo page to Components > General, showing hoist-react's new bar for a value against a maximum, with a playground, shares of a total from the sample portfolio, intents, a target marker, the indeterminate state and odd data.
 * Added a `Separator` demo page to Components > General, showing hoist-react's new rule between content, horizontal and vertical, with a label at the start, the center or the end.
 * Added a `Sparkline` demo page to Components > General, showing hoist-react's new inline trend chart, with a playground, its three types, colors, markers, bars, sizing, and its use in a `StatCard` and in a grid column over the sample price history.
