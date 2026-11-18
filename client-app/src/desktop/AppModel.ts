@@ -79,6 +79,7 @@ import {bannersPanel} from './tabs/system/dialogs/BannersPanel';
 import {messagesPanel} from './tabs/system/dialogs/MessagesPanel';
 import {toastPanel} from './tabs/system/dialogs/ToastPanel';
 import {buttonsPanel} from './tabs/components/general/ButtonsPanel';
+import {calloutPanel} from './tabs/components/general/CalloutPanel';
 import {clockPanel} from './tabs/components/general/ClockPanel';
 import {customPackagePanel} from './tabs/system/CustomPackagePanel';
 import {dateFormatsPanel} from './tabs/system/formats/DateFormatsPanel';
@@ -341,7 +342,8 @@ export class AppModel extends BaseAppModel {
                             {name: 'statCard', path: '/statCard'},
                             {name: 'progressBar', path: '/progressBar'},
                             {name: 'separator', path: '/separator'},
-                            {name: 'sparkline', path: '/sparkline'}
+                            {name: 'sparkline', path: '/sparkline'},
+                            {name: 'callout', path: '/callout'}
                         ]
                     },
                     {
@@ -606,6 +608,7 @@ export class AppModel extends BaseAppModel {
                     tabs: [
                         ...[
                             {id: 'buttons', content: buttonsPanel},
+                            {id: 'callout', content: calloutPanel},
                             {id: 'clock', content: clockPanel},
                             {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
                             {id: 'icons', content: iconsPanel},
