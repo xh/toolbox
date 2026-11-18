@@ -39,7 +39,7 @@ export const dayPnlCol: ColumnSpec = {
     width: 120,
     absSort: true,
     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
-    renderer: numberRenderer({
+    textRenderer: numberTextRenderer({
         precision: 0,
         ledger: true,
         colorSpec: true
@@ -76,5 +76,5 @@ export const commissionCol: ColumnSpec = {
     align: 'right',
     width: 120,
     tooltip: val => fmtNumberTooltip(val),
-    renderer: numberRenderer({precision: 0})
+    textRenderer: numberTextRenderer({precision: 0})
 };
