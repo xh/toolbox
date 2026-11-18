@@ -33,6 +33,7 @@ export class WebSocketTestModel extends HoistModel {
     async subscribeLocalAsync() {
         await XH.fetchJson({
             url: 'mockUpdates/subscribeLocal',
+            method: 'POST',
             params: {channelKey: XH.webSocketService.channelKey}
         });
 
@@ -43,6 +44,7 @@ export class WebSocketTestModel extends HoistModel {
     async unsubscribeLocalAsync() {
         await XH.fetchJson({
             url: 'mockUpdates/unsubscribeLocal',
+            method: 'POST',
             params: {channelKey: XH.webSocketService.channelKey}
         });
 
@@ -56,6 +58,7 @@ export class WebSocketTestModel extends HoistModel {
     async subscribeClusterAsync() {
         await XH.fetchJson({
             url: 'mockUpdates/subscribeCluster',
+            method: 'POST',
             params: {channelKey: XH.webSocketService.channelKey}
         });
 
@@ -66,6 +69,7 @@ export class WebSocketTestModel extends HoistModel {
     async unsubscribeClusterAsync() {
         await XH.fetchJson({
             url: 'mockUpdates/unsubscribeCluster',
+            method: 'POST',
             params: {channelKey: XH.webSocketService.channelKey}
         });
 
