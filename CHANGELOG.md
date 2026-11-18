@@ -20,6 +20,7 @@
 * Added a `Separator` demo page to Components > General, showing hoist-react's new rule between content, horizontal and vertical, with a label at the start, the center or the end.
 * Added a `Sparkline` demo page to Components > General, showing hoist-react's new inline trend chart, with a playground, its three types, colors, markers, bars, sizing, and its use in a `StatCard` and in a grid column over the sample price history.
 * Switched the 30-day close column in the Portfolio example's Orders grid from the AG Grid sparkline to Hoist's `Sparkline`, with a tooltip showing the dates covered, the first and last close and the change.
+* Added Day P&L, Long, Short, Cost Basis and Commission columns to the desktop and mobile tree grid demos and the Portfolio example, rolled up on the server from the existing portfolio data. The tree column is now pinned left on mobile and in Portfolio.
 
 ### Technical
 
@@ -68,7 +69,6 @@
 * Added a `RadioCardInput` demo page to Forms + Inputs, and an App Options demo page.
 * Updated the desktop `NumberInput` playground and mobile inputs page to demo `displayWithCommas: 'always'`.
 * Updated demos for hoist-react v90 - the Format Numbers page now describes `Intl.NumberFormat`, the `DateInput` AM/PM example is replaced ahead of the removal of `timePickerProps`, and the Admin Panel Sizing test includes an untitled collapsible panel.
-* Added Day P&L, Long, Short, Cost Basis and Commission columns to the desktop and mobile tree grid demos and the Portfolio example, rolled up on the server from the existing portfolio data. The tree column is now pinned left on mobile and in Portfolio.
 
 ### Bug Fixes
 
