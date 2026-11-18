@@ -264,7 +264,7 @@ class ColumnChooserPanelModel extends HoistModel {
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.installGridModel();
-                this.loadAsync().catchDefault();
+                this.loadAsync();
             }
         });
     }

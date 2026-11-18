@@ -137,7 +137,7 @@ class ColumnChooserTestModel extends HoistModel implements AddColumnHost {
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
-                this.loadAsync().catchDefault();
+                this.loadAsync();
             }
         });
     }
