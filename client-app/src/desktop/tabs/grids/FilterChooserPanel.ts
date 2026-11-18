@@ -62,7 +62,7 @@ export const filterChooserPanel = hoistCmp.factory({
                 icon: Icon.experiment(),
                 intent: 'primary',
                 info: 'Drives the Playground instance. The other sections use their own models.',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Enable clear',
                         propName: 'FilterChooserProps.enableClear',
@@ -81,12 +81,12 @@ export const filterChooserPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 420,
                             caption: 'Type a field name or a value - try "boston" or "p&l > 0".',
                             config: fmtDemoConfig<FilterChooserProps>('filterChooser', {
@@ -96,7 +96,7 @@ export const filterChooserPanel = hoistCmp.factory({
                                 leftIcon: model.showLeftIcon ? undefined : null
                             }),
                             value: model.filterChooserModel.value?.toJSON() ?? null,
-                            item: filterChooser({
+                            children: filterChooser({
                                 model: model.filterChooserModel,
                                 enableClear: model.enableClear,
                                 displayCount: model.displayCount,
@@ -108,7 +108,7 @@ export const filterChooserPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Bound to a Grid',
                         note: "Same model as the Playground, bound to the grid's store.",
-                        item: tradesGridFrame({
+                        children: tradesGridFrame({
                             gridModel: model.gridModel,
                             label: 'bind: gridModel.store',
                             info: 'Column header filters show up as tags in the Playground, and vice versa.',
@@ -118,10 +118,10 @@ export const filterChooserPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Variants',
                         note: 'Each uses its own model.',
-                        item: demoRow({
+                        children: demoRow({
                             label: 'Unbound, with an initial value and favorites',
                             info: 'valueSource: store, no bind - read the value and apply it yourself. Click the star to open favorites.',
-                            item: filterChooser({
+                            children: filterChooser({
                                 model: model.favoritesModel,
                                 width: 420
                             })
@@ -130,11 +130,11 @@ export const filterChooserPanel = hoistCmp.factory({
                     demoSection({
                         title: 'In a Toolbar',
                         note: 'flex: 1 - fills the space beside the other controls.',
-                        items: [
-                            demoToolbar({items: toolbarItems(model.toolbarModel)}),
+                        children: [
+                            demoToolbar({children: toolbarItems(model.toolbarModel)}),
                             demoToolbar({
                                 compact: true,
-                                items: toolbarItems(model.compactToolbarModel)
+                                children: toolbarItems(model.compactToolbarModel)
                             })
                         ]
                     })

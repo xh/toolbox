@@ -13,7 +13,7 @@ export const FetchApiTestPanel = hoistCmp({
     render({model}) {
         return hbox({
             flex: 1,
-            items: [
+            children: [
                 panel({
                     title: 'Send Request with Status Code',
                     className: 'xh-border-right',
@@ -38,13 +38,13 @@ export const FetchApiTestPanel = hoistCmp({
                             label: 'CIDs'
                         })
                     ],
-                    item: tabContainer()
+                    children: tabContainer()
                 }),
                 panel({
                     title: 'Outcome',
                     className: 'xh-border-left',
-                    item: vframe({
-                        item: jsonInput({
+                    children: vframe({
+                        children: jsonInput({
                             flex: 1,
                             width: '100%',
                             value: model.outcome

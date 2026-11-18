@@ -100,15 +100,15 @@ export const dockContainerPanel = hoistCmp.factory({
                     onClick: () => model.addNewDockedView(true, false)
                 })
             ],
-            item: panel({
+            children: panel({
                 height: '60vh',
                 width: '90%',
-                item: frame({
+                children: frame({
                     position: 'relative',
-                    items: [
+                    children: [
                         placeholder({
                             flex: 1,
-                            items: [
+                            children: [
                                 Icon.gridPanel(),
                                 p(
                                     viewCount
@@ -164,7 +164,7 @@ class DockContainerPanelModel extends HoistModel {
             allowClose,
             content: () =>
                 panel({
-                    item: box({items: textItems, padding: 10})
+                    children: box({children: textItems, padding: 10})
                 })
         });
     }

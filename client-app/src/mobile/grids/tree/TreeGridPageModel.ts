@@ -2,7 +2,15 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/mobile/cmp/grouping';
 import {isEmpty} from 'lodash';
-import {mktValCol, pnlCol} from '../../../core/columns/Positions';
+import {
+    commissionCol,
+    costCol,
+    dayPnlCol,
+    longMktValCol,
+    mktValCol,
+    pnlCol,
+    shortMktValCol
+} from '../../../core/columns/Positions';
 import {nameCol} from '../../../core/columns/General';
 
 export class TreeGridPageModel extends HoistModel {
@@ -41,10 +49,16 @@ export class TreeGridPageModel extends HoistModel {
             {
                 ...nameCol,
                 isTreeColumn: true,
+                pinned: true,
                 width: 150
             },
             {...mktValCol},
-            {...pnlCol}
+            {...pnlCol},
+            {...dayPnlCol},
+            {...longMktValCol},
+            {...shortMktValCol},
+            {...costCol},
+            {...commissionCol}
         ]
     });
 

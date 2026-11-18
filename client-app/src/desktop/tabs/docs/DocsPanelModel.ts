@@ -261,7 +261,7 @@ export class DocsPanelModel extends DocViewModel {
                             span({
                                 className: 'tb-docs__nav-version',
                                 title: version,
-                                item: shortVersion(version)
+                                children: shortVersion(version)
                             })
                         );
                     }

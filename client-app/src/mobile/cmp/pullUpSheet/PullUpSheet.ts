@@ -20,7 +20,7 @@ export interface PullUpSheetProps extends HoistProps {
 
     /**
      * Optional content pinned to the bottom of the panel, below the scrolling body (e.g. an action).
-     * The expanded body itself is passed via `item`/`items` and read from the inherited `children`.
+     * The expanded body itself is passed as `children`.
      */
     footerItem?: ReactNode;
 }
@@ -70,26 +70,29 @@ export const pullUpSheet = hoistCmp.factory<PullUpSheetProps>({
                 isExpanded && 'tb-pull-up-sheet--expanded',
                 className
             ),
-            items: [
+            children: [
                 div({
                     className: 'tb-pull-up-sheet__scrim',
                     onClick: () => onExpandedChange(false)
                 }),
                 div({
                     className: 'tb-pull-up-sheet__panel',
-                    items: [
+                    children: [
                         div({
                             className: 'tb-pull-up-sheet__peek',
                             onPointerDown,
                             onPointerUp,
-                            items: [
+                            children: [
                                 div({className: 'tb-pull-up-sheet__grabber'}),
-                                div({className: 'tb-pull-up-sheet__peek-content', item: peekItem})
+                                div({
+                                    className: 'tb-pull-up-sheet__peek-content',
+                                    children: peekItem
+                                })
                             ]
                         }),
-                        div({className: 'tb-pull-up-sheet__body', item: children}),
+                        div({className: 'tb-pull-up-sheet__body', children}),
                         footerItem
-                            ? div({className: 'tb-pull-up-sheet__footer', item: footerItem})
+                            ? div({className: 'tb-pull-up-sheet__footer', children: footerItem})
                             : null
                     ]
                 })

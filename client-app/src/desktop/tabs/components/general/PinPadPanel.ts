@@ -38,11 +38,11 @@ export const pinPadPanel = hoistCmp.factory({
                     notes: 'Hoist component model - primary API and configuration point for pin pads.'
                 }
             ],
-            item: panel({
+            children: panel({
                 width: 380,
                 height: 500,
                 className: 'tb-pinpad-container',
-                item: !model.loggedIn ? pinPad() : secretPlans(),
+                children: !model.loggedIn ? pinPad() : secretPlans(),
                 bbar: [
                     button({
                         text: 'Reset',
@@ -58,7 +58,7 @@ export const pinPadPanel = hoistCmp.factory({
 const secretPlans = hoistCmp.factory(() =>
     panel({
         className: 'tb-pinpad-container__secrets',
-        items: [
+        children: [
             h3('Secret plans'),
             p(
                 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.'

@@ -18,7 +18,7 @@ export const treeGridDetailPage = hoistCmp.factory<TreeGridDetailPageModel>({
             title: renderPageTitle(position),
             icon: Icon.portfolio(),
             className: 'tb-detail-page',
-            item: lastLoadException
+            children: lastLoadException
                 ? errorMessage({error: lastLoadException})
                 : renderPosition(position),
             mask: 'onLoad'
@@ -42,19 +42,23 @@ function renderPosition(position: Position) {
             return renderRow(capitalize(parts[0]), parts[1]);
         }),
 
-        renderRow('Market Value', position.mktVal, numberRenderer({precision: 0, ledger: true})),
-        renderRow(
-            'P&L',
-            position.pnl,
-            numberRenderer({precision: 0, ledger: true, colorSpec: true})
-        )
+        renderRow('Market Value', position.mktVal, mktValRenderer),
+        renderRow('Long', position.longMktVal, mktValRenderer),
+        renderRow('Short', position.shortMktVal, mktValRenderer),
+        renderRow('P&L', position.pnl, pnlRenderer),
+        renderRow('Day P&L', position.dayPnl, pnlRenderer),
+        renderRow('Cost Basis', position.cost, mktValRenderer),
+        renderRow('Commission', position.commission, numberRenderer({precision: 0}))
     );
 }
+
+const mktValRenderer = numberRenderer({precision: 0, ledger: true}),
+    pnlRenderer = numberRenderer({precision: 0, ledger: true, colorSpec: true});
 
 function renderRow(title, value, renderer?) {
     return div({
         className: 'tb-detail-row',
-        items: [div(title), div(renderer ? renderer(value) : value)]
+        children: [div(title), div(renderer ? renderer(value) : value)]
     });
 }
 

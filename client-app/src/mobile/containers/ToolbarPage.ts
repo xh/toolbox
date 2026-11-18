@@ -27,9 +27,9 @@ export const toolbarPage = hoistCmp.factory({
                 },
                 {url: '$HR/mobile/cmp/toolbar/Toolbar.ts', text: 'Toolbar source'}
             ],
-            item: panel({
+            children: panel({
                 className: 'tb-toolbar-page',
-                items: [
+                children: [
                     toolbar(
                         button({
                             icon: Icon.add(),
@@ -51,7 +51,7 @@ export const toolbarPage = hoistCmp.factory({
                     hframe(
                         toolbar({
                             vertical: true,
-                            items: [
+                            children: [
                                 filler(),
                                 button({icon: Icon.contact(), minimal: true}),
                                 button({icon: Icon.comment(), minimal: true}),
@@ -65,11 +65,11 @@ export const toolbarPage = hoistCmp.factory({
                         }),
                         frame({
                             padding: 10,
-                            item: 'Help, I am surrounded by toolbars!'
+                            children: 'Help, I am surrounded by toolbars!'
                         }),
                         toolbar({
                             vertical: true,
-                            items: [button({icon: Icon.contact()})]
+                            children: [button({icon: Icon.contact()})]
                         })
                     ),
                     toolbar(

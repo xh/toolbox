@@ -33,7 +33,7 @@ export const CubeGridTestPanel = hoistCmp({
             panel({
                 bbar: bottomBar(),
                 mask: model.rebuilding,
-                item: model.cubeGridModel
+                children: model.cubeGridModel
                     ? cubeGrid({model: model.cubeGridModel, testId: 'cube-grid'})
                     : null
             }),
@@ -42,7 +42,7 @@ export const CubeGridTestPanel = hoistCmp({
                 icon: Icon.gears(),
                 compactHeader: true,
                 modelConfig: {side: 'right', defaultSize: 320, resizable: true, collapsible: true},
-                item: tabContainer({
+                children: tabContainer({
                     modelConfig: {
                         tabs: [
                             {id: 'query', content: queryTab},
@@ -162,7 +162,7 @@ const gridPivotTab = hoistCmp.factory<CubeGridTestModel>(({model}) => {
         ),
         hbox({
             marginTop: 4,
-            items: [
+            children: [
                 button({
                     icon: Icon.expand(),
                     text: 'Expand all',
@@ -200,7 +200,7 @@ const gridCoreTab = hoistCmp.factory<CubeGridTestModel>(({model}) => {
         ),
         hbox({
             marginTop: 4,
-            items: [
+            children: [
                 button({
                     icon: Icon.filter(),
                     text: 'Filter dialog',
@@ -269,7 +269,7 @@ const bottomBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
     return toolbar(
         span({
             omit: !filterChooserModel,
-            item: 'View filter',
+            children: 'View filter',
             title: 'FilterChooserModel bound to the view'
         }),
         filterChooser({
@@ -280,7 +280,7 @@ const bottomBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
         }),
         filler({omit: !!filterChooserModel}),
         toolbarSep(),
-        span({item: model.status, style: {opacity: 0.8}})
+        span({children: model.status, style: {opacity: 0.8}})
     );
 });
 
@@ -288,14 +288,14 @@ const bottomBar = hoistCmp.factory<CubeGridTestModel>(({model}) => {
 // Layout helpers
 //------------------------
 function tabBody(...items: ReactNode[]) {
-    return vbox({className: 'xh-pad', flex: 1, overflowY: 'auto', items});
+    return vbox({className: 'xh-pad', flex: 1, overflowY: 'auto', children: items});
 }
 
 function section(title: string) {
     return div({
         className: 'xh-bold xh-text-color-muted xh-font-size-small',
         style: {margin: '12px 0 6px', textTransform: 'uppercase'},
-        item: title
+        children: title
     });
 }
 
@@ -305,7 +305,7 @@ function field(label: string, configKey: string, input: ReactElement) {
         alignItems: 'center',
         minHeight: 28,
         marginBottom: 4,
-        items: [box({width: 115, flex: 'none', title: configKey, item: label}), input]
+        children: [box({width: 115, flex: 'none', title: configKey, children: label}), input]
     });
 }
 

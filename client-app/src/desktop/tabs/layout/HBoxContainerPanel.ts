@@ -26,13 +26,13 @@ export const hboxContainerPanel = hoistCmp.factory(() =>
             },
             {url: '$HR/cmp/layout/Box.ts', notes: 'The Box component and its layout props.'}
         ],
-        item: panel({
+        children: panel({
             height: 400,
             width: 700,
-            item: hbox(
-                renderBox({flex: 1, item: 'flex: 1'}),
-                renderBox({width: 100, item: 'width: 100'}),
-                renderBox({flex: 2, item: 'flex: 2'})
+            children: hbox(
+                renderBox({flex: 1, children: 'flex: 1'}),
+                renderBox({width: 100, children: 'width: 100'}),
+                renderBox({flex: 2, children: 'flex: 2'})
             )
         })
     })

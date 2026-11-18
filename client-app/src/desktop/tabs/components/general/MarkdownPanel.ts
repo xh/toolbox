@@ -55,17 +55,17 @@ export const markdownPanel = hoistCmp.factory({
                 label: 'Custom styles',
                 control: switchInput({model, bind: 'useCustomStyles'})
             }),
-            item: panel({
+            children: panel({
                 className: 'tb-markdown-panel',
                 contentBoxProps: {flexDirection: 'row', padding: true, gap: true},
-                items: [
+                children: [
                     panel({
                         title: 'Source Text',
                         icon: Icon.edit(),
                         compactHeader: true,
                         flex: 2,
                         minWidth: 0,
-                        item: codeInput({
+                        children: codeInput({
                             bind: 'content',
                             commitOnChange: true,
                             width: '100%',
@@ -86,7 +86,7 @@ export const markdownPanel = hoistCmp.factory({
                         },
                         scrollable: true,
                         contentBoxProps: {padding: '10px 20px'},
-                        item: markdown({content: model.content, lineBreaks: false})
+                        children: markdown({content: model.content, lineBreaks: false})
                     })
                 ]
             })

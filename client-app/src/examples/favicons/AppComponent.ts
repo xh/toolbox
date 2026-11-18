@@ -45,7 +45,10 @@ export const AppComponent = hoistCmp({
                 ]
             }),
             mask: faviconModel.downloadTask,
-            item: hframe(controlsPanel({model: faviconModel}), previewsPanel({model: faviconModel}))
+            children: hframe(
+                controlsPanel({model: faviconModel}),
+                previewsPanel({model: faviconModel})
+            )
         });
     }
 });

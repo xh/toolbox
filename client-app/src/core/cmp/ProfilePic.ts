@@ -10,7 +10,7 @@ export const profilePic = hoistCmp.factory<HoistProps & {user: HoistUser}>({
         return div({
             className,
             // referrerPolicy prop necessary for some Google profile pics.
-            item: user.profilePicUrl
+            children: user.profilePicUrl
                 ? img({src: user.profilePicUrl, referrerPolicy: 'no-referrer'})
                 : XH.getUserInitials()
         });

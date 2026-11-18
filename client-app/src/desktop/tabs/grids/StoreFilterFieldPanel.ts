@@ -42,7 +42,7 @@ export const storeFilterFieldPanel = hoistCmp.factory({
                 label: 'Playground only - props',
                 icon: Icon.experiment(),
                 intent: 'primary',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Match mode',
                         propName: 'StoreFilterFieldProps.matchMode',
@@ -66,12 +66,12 @@ export const storeFilterFieldPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             showValue: false,
                             caption: 'Try a company or city - "bos", "san fr".',
                             config: fmtDemoConfig<StoreFilterFieldProps>('storeFilterField', {
@@ -81,7 +81,7 @@ export const storeFilterFieldPanel = hoistCmp.factory({
                                 filterBuffer:
                                     model.filterBuffer === 200 ? undefined : model.filterBuffer
                             }),
-                            item: storeFilterField({
+                            children: storeFilterField({
                                 gridModel: model.gridModel,
                                 matchMode: model.matchMode,
                                 filterBuffer: model.filterBuffer,
@@ -92,7 +92,7 @@ export const storeFilterFieldPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Filtered Grid',
                         note: 'Filtered by the Playground field.',
-                        item: tradesGridFrame({
+                        children: tradesGridFrame({
                             gridModel: model.gridModel,
                             label: 'gridModel: gridModel',
                             info: 'Searches the visible columns - hide one from the column menu and it stops matching.',

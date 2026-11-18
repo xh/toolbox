@@ -146,7 +146,7 @@ export const pickerPanel = hoistCmp.factory({
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
-                item: picker({
+                children: picker({
                     bind: 'playground',
                     ...ambientProps,
                     options: usStates,
@@ -164,7 +164,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
-                    item: picker({
+                    children: picker({
                         bind: 'singleState',
                         ...ambientProps,
                         disabled: true,
@@ -176,7 +176,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Minimal popover',
                     info: 'popoverMinimal: true - no arrow or border',
-                    item: picker({
+                    children: picker({
                         bind: 'minimalPopoverState',
                         ...ambientProps,
                         options: usStates,
@@ -188,7 +188,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Custom fields',
                     info: 'labelField + valueField on plain objects',
-                    item: picker({
+                    children: picker({
                         bind: 'restaurant',
                         ...ambientProps,
                         options: [
@@ -208,7 +208,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Badge count',
                     info: 'buttonTextRenderer with Hoist Badge',
-                    item: picker({
+                    children: picker({
                         bind: 'badgeStates',
                         ...ambientProps,
                         options: usStates,
@@ -221,13 +221,13 @@ export const pickerPanel = hoistCmp.factory({
                             if (!selected.length) return 'Filters...';
                             return hbox({
                                 alignItems: 'center',
-                                items: [
+                                children: [
                                     span('Filters'),
                                     badge({
                                         compact: true,
                                         intent: 'primary',
                                         className: 'tb-picker-panel__badge',
-                                        item: selected.length
+                                        children: selected.length
                                     })
                                 ]
                             });
@@ -237,7 +237,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Custom renderers',
                     info: 'optionRenderer with two-line rows',
-                    item: picker({
+                    children: picker({
                         bind: 'statusOption',
                         ...ambientProps,
                         options: STATUS_OPTIONS,
@@ -249,22 +249,22 @@ export const pickerPanel = hoistCmp.factory({
                             const opt = selected[0] as any;
                             return hbox({
                                 alignItems: 'center',
-                                items: [statusDot(opt.color), span(opt.label)]
+                                children: [statusDot(opt.color), span(opt.label)]
                             });
                         },
                         optionRenderer: (opt, isSelected) =>
                             hbox({
                                 alignItems: 'center',
                                 flex: 1,
-                                items: [
+                                children: [
                                     statusDot((opt as any).color),
                                     vbox({
                                         flex: 1,
-                                        items: [
+                                        children: [
                                             span(opt.label),
                                             span({
                                                 className: 'xh-text-color-muted xh-font-size-small',
-                                                item: (opt as any).description
+                                                children: (opt as any).description
                                             })
                                         ]
                                     }),
@@ -276,7 +276,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Popover width + stripes',
                     info: 'popoverWidth, stripeRows, rowBorders',
-                    item: picker({
+                    children: picker({
                         bind: 'wideState',
                         ...ambientProps,
                         options: usStates,
@@ -293,7 +293,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Button trigger',
                     info: 'styleButtonAsInput: false - an outlined button instead of input styling',
-                    item: picker({
+                    children: picker({
                         bind: 'buttonTrigger',
                         ...ambientProps,
                         options: usStates,
@@ -305,7 +305,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Large list (virtual)',
                     info: '500 options - virtualized via react-window',
-                    item: picker({
+                    children: picker({
                         bind: 'largeListValues',
                         ...ambientProps,
                         options: LARGE_OPTIONS,
@@ -320,7 +320,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Primary',
                     info: 'intent: primary',
-                    item: picker({
+                    children: picker({
                         bind: 'intentPrimary',
                         ...ambientProps,
                         options: usStates,
@@ -332,7 +332,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Success',
                     info: 'intent: success',
-                    item: picker({
+                    children: picker({
                         bind: 'intentSuccess',
                         ...ambientProps,
                         options: usStates,
@@ -344,7 +344,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Warning',
                     info: 'intent: warning',
-                    item: picker({
+                    children: picker({
                         bind: 'intentWarning',
                         ...ambientProps,
                         options: usStates,
@@ -356,7 +356,7 @@ export const pickerPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Danger',
                     info: 'intent: danger',
-                    item: picker({
+                    children: picker({
                         bind: 'intentDanger',
                         ...ambientProps,
                         options: usStates,
@@ -391,25 +391,25 @@ export const pickerPanel = hoistCmp.factory({
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'state',
-                                item: picker({options: usStates})
+                                children: picker({options: usStates})
                             })
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'states',
                                 inline: true,
-                                item: picker({
+                                children: picker({
                                     options: usStates,
                                     enableMulti: true,
                                     displayNoun: 'state'

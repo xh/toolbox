@@ -40,7 +40,7 @@ export const pinPadPage = hoistCmp.factory({
                     notes: 'Hoist component model - primary API and configuration point for pin pads.'
                 }
             ],
-            item: !model.loggedIn ? pinPad() : secretPlans()
+            children: !model.loggedIn ? pinPad() : secretPlans()
         });
     }
 });
@@ -49,7 +49,7 @@ const secretPlans = hoistCmp.factory(() =>
     panel({
         className: 'tb-page pinpad-page-secrets',
         title: 'Secret plans',
-        items: [
+        children: [
             p(
                 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.'
             ),

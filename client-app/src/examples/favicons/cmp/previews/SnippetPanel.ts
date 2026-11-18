@@ -29,12 +29,12 @@ export const snippetPanel = hoistCmp.factory({
                     successMessage: 'SVG markup copied to clipboard.'
                 })
             ],
-            items: [
+            children: [
                 step(1, [
                     span('Unzip into'),
-                    span({items: [code('client-app/public'), ':']}),
+                    span({children: [code('client-app/public'), ':']}),
                     ...FAVICON_FILE_NAMES.map(name =>
-                        span({key: name, className: 'tb-fav-chip', item: name})
+                        span({key: name, className: 'tb-fav-chip', children: name})
                     )
                 ]),
                 step(2, [
@@ -63,10 +63,10 @@ function step(num: number, items: ReactNode[]) {
         flexWrap: 'wrap',
         alignItems: 'center',
         gap: '4px 6px',
-        items: [badge({intent: 'primary', marginLeft: 0, item: num}), ...items]
+        children: [badge({intent: 'primary', marginLeft: 0, children: num}), ...items]
     });
 }
 
 function code(text: string) {
-    return span({className: 'tb-fav-snippet__code', item: text});
+    return span({className: 'tb-fav-snippet__code', children: text});
 }

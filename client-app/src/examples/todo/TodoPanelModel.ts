@@ -270,7 +270,7 @@ export class TodoPanelModel extends HoistModel {
                 distantFmt: 'MMM DD YYYY'
             });
 
-        return overdue ? span({className: 'xh-intent-warning', item: dateStr}) : dateStr;
+        return overdue ? span({className: 'xh-intent-warning', children: dateStr}) : dateStr;
     }
 }
 

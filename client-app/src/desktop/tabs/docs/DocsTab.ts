@@ -32,7 +32,7 @@ export const docsTab = hoistCmp.factory<DocsPanelModel>({
     className: 'tb-docs',
 
     render({model, className}) {
-        if (XH.docService.unavailable) return panel({className, item: docsUnavailable()});
+        if (XH.docService.unavailable) return panel({className, children: docsUnavailable()});
         return panel({
             className,
             hotkeys: [
@@ -44,7 +44,7 @@ export const docsTab = hoistCmp.factory<DocsPanelModel>({
                     onKeyDown: () => model.toggleSearchMode()
                 }
             ],
-            items: [
+            children: [
                 hframe(navPanel(), contentPanel()),
                 dockContainer({model: model.dockContainerModel})
             ]
@@ -64,7 +64,7 @@ const navPanel = hoistCmp.factory<DocsPanelModel>({
             collapsedTitle: 'Documentation',
             compactHeader: true,
             className: 'tb-docs__nav',
-            item: grid({model: gridModel})
+            children: grid({model: gridModel})
         });
     }
 });
@@ -81,7 +81,7 @@ const contentPanel = hoistCmp.factory<DocsPanelModel>({
         if (!activeDoc) {
             return panel({
                 className: 'tb-docs__content',
-                item: placeholder(Icon.book(), 'Select a document to view.')
+                children: placeholder(Icon.book(), 'Select a document to view.')
             });
         }
 
@@ -89,12 +89,12 @@ const contentPanel = hoistCmp.factory<DocsPanelModel>({
             className: 'tb-docs__content',
             tbar: toolbar({
                 className: 'tb-docs__content-toolbar',
-                items: [
+                children: [
                     tooltip({
                         content: searchTooltip(),
                         hoverOpenDelay: 500,
                         placement: 'bottom',
-                        item: button({
+                        children: button({
                             icon: Icon.search(),
                             minimal: true,
                             onClick: () => model.enterSearchMode()
@@ -112,7 +112,7 @@ const contentPanel = hoistCmp.factory<DocsPanelModel>({
                     })
                 ]
             }),
-            item: docContent(),
+            children: docContent(),
             mask: 'onLoad'
         });
     }
@@ -147,7 +147,7 @@ const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
 
         return div({
             className: 'tb-docs__search-results',
-            items: searchResults.map((r, idx) =>
+            children: searchResults.map((r, idx) =>
                 div({
                     key: `${r.entry.source}:${r.entry.id}`,
                     ref: idx === selectedSearchIdx ? selectedRef : undefined,
@@ -155,17 +155,17 @@ const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
                         'tb-docs__search-result' +
                         (idx === selectedSearchIdx ? ' tb-docs__search-result--selected' : ''),
                     onClick: () => model.selectSearchResult(r.entry, r.section),
-                    items: [
+                    children: [
                         div({
                             className: 'tb-docs__search-result-header',
-                            items: [
+                            children: [
                                 span({
                                     className: 'tb-docs__search-result-title',
-                                    item: r.entry.title
+                                    children: r.entry.title
                                 }),
-                                badge({item: docService.getSourceLabel(r.entry.source)}),
+                                badge({children: docService.getSourceLabel(r.entry.source)}),
                                 badge({
-                                    item:
+                                    children:
                                         docService
                                             .getCategories(r.entry.source)
                                             .find(c => c.id === r.entry.category)?.title ??
@@ -175,7 +175,7 @@ const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
                         }),
                         div({
                             className: 'tb-docs__search-result-desc',
-                            item: r.entry.description
+                            children: r.entry.description
                         })
                     ]
                 })
@@ -190,12 +190,12 @@ const searchPanel = hoistCmp.factory<DocsPanelModel>({
             className: 'tb-docs__content',
             tbar: toolbar({
                 className: 'tb-docs__content-toolbar',
-                items: [
+                children: [
                     tooltip({
                         content: searchTooltip('Back to document'),
                         hoverOpenDelay: 400,
                         placement: 'bottom',
-                        item: button({
+                        children: button({
                             icon: Icon.arrowLeft(),
                             minimal: true,
                             onClick: () => model.exitSearchMode()
@@ -213,7 +213,7 @@ const searchPanel = hoistCmp.factory<DocsPanelModel>({
                     })
                 ]
             }),
-            item: searchResultsBody()
+            children: searchResultsBody()
         });
     }
 });
@@ -235,13 +235,13 @@ const breadcrumb = hoistCmp.factory<DocsPanelModel>({
 
         return div({
             className: 'tb-docs__breadcrumb',
-            items: [
+            children: [
                 // Source label (non-interactive)
                 span({
                     className: 'tb-docs__breadcrumb-source',
-                    item: sourceLabel
+                    children: sourceLabel
                 }),
-                span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()}),
+                span({className: 'tb-docs__breadcrumb-sep', children: Icon.chevronRight()}),
                 // Category dropdown - scoped to the active source's categories
                 menuButton({
                     className: 'tb-docs__breadcrumb-btn',
@@ -255,7 +255,7 @@ const breadcrumb = hoistCmp.factory<DocsPanelModel>({
                         actionFn: () => model.navigateToCategory(activeSource, cat.id)
                     }))
                 }),
-                span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()}),
+                span({className: 'tb-docs__breadcrumb-sep', children: Icon.chevronRight()}),
                 // Doc dropdown
                 menuButton({
                     className: 'tb-docs__breadcrumb-btn',
@@ -268,7 +268,7 @@ const breadcrumb = hoistCmp.factory<DocsPanelModel>({
                     }))
                 }),
                 sections.length > 0
-                    ? span({className: 'tb-docs__breadcrumb-sep', item: Icon.chevronRight()})
+                    ? span({className: 'tb-docs__breadcrumb-sep', children: Icon.chevronRight()})
                     : null,
                 sections.length > 0
                     ? menuButton({
@@ -350,10 +350,10 @@ const feedbackPanel = hoistCmp.factory<DocsPanelModel>({
             className: 'tb-docs__feedback',
             tbar: toolbar({
                 compact: true,
-                items: [
-                    span({item: activeDoc?.title ?? 'No document selected'}),
+                children: [
+                    span({children: activeDoc?.title ?? 'No document selected'}),
                     span({
-                        items: [
+                        children: [
                             Icon.chevronRight({className: 'xh-text-color-muted'}),
                             ` ${sectionTitle}`
                         ],
@@ -362,7 +362,7 @@ const feedbackPanel = hoistCmp.factory<DocsPanelModel>({
                 ]
             }),
             contentBoxProps: {padding: true},
-            item: textArea({
+            children: textArea({
                 bind: 'feedbackMessage',
                 placeholder: 'Describe the issue or suggestion...',
                 width: '100%',
@@ -397,15 +397,15 @@ const feedbackPanel = hoistCmp.factory<DocsPanelModel>({
 function searchTooltip(label: string = 'Search documentation') {
     return hbox({
         alignItems: 'center',
-        items: [
+        children: [
             label,
             hspacer(),
             span({
                 className: 'bp6-key-combo',
                 style: {display: 'inline-flex'},
-                items: [
-                    span({className: 'bp6-key', item: 'Shift'}),
-                    span({className: 'bp6-key', item: 'S'})
+                children: [
+                    span({className: 'bp6-key', children: 'Shift'}),
+                    span({className: 'bp6-key', children: 'S'})
                 ]
             })
         ]

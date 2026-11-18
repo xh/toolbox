@@ -12,7 +12,7 @@ export const ohlcChart = hoistCmp.factory({
     render({model}) {
         const {lastLoadException} = model;
         return panel({
-            item: lastLoadException ? errorMessage({error: model.lastLoadException}) : chart(),
+            children: lastLoadException ? errorMessage({error: model.lastLoadException}) : chart(),
             mask: 'onLoad'
         });
     }

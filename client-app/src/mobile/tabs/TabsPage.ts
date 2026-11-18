@@ -42,8 +42,8 @@ export const tabsPage = hoistCmp.factory({
                     notes: 'TabContainer & TabContainerModel guide.'
                 }
             ],
-            item: panel({
-                item: tabContainer({
+            children: panel({
+                children: tabContainer({
                     model: model.tabContainerModel,
                     switcher: {orientation: model.orientation}
                 })
@@ -52,7 +52,7 @@ export const tabsPage = hoistCmp.factory({
     }
 });
 
-const tabContent = (body: string) => div({className: 'tb-tabs-page__content', item: p(body)});
+const tabContent = (body: string) => div({className: 'tb-tabs-page__content', children: p(body)});
 
 const overviewTab = hoistCmp.factory(() =>
     tabContent(

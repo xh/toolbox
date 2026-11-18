@@ -16,18 +16,44 @@
 
 ### New Features
 
-* Added a `PdfViewer` demo page to Components > General, showing hoist-react's new pdf.js-based document viewer with its toolbar options and model state.
+* Added a `ProgressBar` demo page to Components > General, showing hoist-react's new bar for a value against a maximum, with a playground, shares of a total from the sample portfolio, intents, a target marker, the indeterminate state and odd data.
+* Added a `Separator` demo page to Components > General, showing hoist-react's new rule between content, horizontal and vertical, with a label at the start, the center or the end.
+* Added a `Sparkline` demo page to Components > General, showing hoist-react's new inline trend chart, with a playground, its three types, colors, markers, bars, sizing, and its use in a `StatCard` and in a grid column over the sample price history.
+* Switched the 30-day close column in the Portfolio example's Orders grid from the AG Grid sparkline to Hoist's `Sparkline`, with a tooltip showing the dates covered, the first and last close and the change.
+* Added Day P&L, Long, Short, Cost Basis and Commission columns to the desktop and mobile tree grid demos and the Portfolio example, rolled up on the server from the existing portfolio data. The tree column is now pinned left on mobile and in Portfolio.
 
 ### Technical
 
-* Changed the desktop and mobile docs viewers to read docs and search results from the Hoist Docs service, set by the `hoistDocsUrl` config. Search now uses the same ranking as the MCP tools and opens each result at its best-matching section.
-* Added a version picker to the desktop docs viewer, shown when Hoist Docs holds more than one version of a library.
-* Made the docs viewers degrade gently when Hoist Docs is down - Toolbox starts as normal, the viewers show a retry and a link to the docs on GitHub, and the server falls back to the last docs it fetched.
+* Changed the desktop and mobile docs viewers to read docs straight from `@xh/hoist-docs` in the browser, for the Hoist versions Toolbox runs, exported by `pnpm docs` at build time. Search now uses the same ranking as the MCP tools and opens each result at its best-matching section.
+* Removed the server-side `DocsService` and `DocsController`, including the GitHub download of docs at startup.
+* Made the docs viewers degrade gently when the docs cannot be loaded - they show a message with a retry, and the rest of Toolbox is unaffected.
 * Removed the bundled hoist-react and hoist-core MCP servers and the `installHoistCoreTools` Gradle task - agents now use the `hoist-docs` MCP server.
+* Migrated app CSS variable overrides and reads to hoist-react v91's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
+* Migrated element specs from the legacy `item` / `items` keys to the standard React `children` key, using hoist-react's v91 codemod.
+
+### Libraries
+
+* ag-grid `36.2 → 36.3`
+* Gradle `9.8 → 9.9`
+
+## 12.1.0 - 2026-11-13
+
+### New Features
+
+* Added a `CubeGrid` demo page to the Grids tab, showing hoist-react's new pivoting `CubeGrid` component spreading measures across pivot dimensions, with tabbed Main and Pivoting options for summaries, collapsing, measure ordering and `showRootGroup`.
+* Added a `PdfViewer` demo page to Components > General, showing hoist-react's new pdf.js-based document viewer with its toolbar options and model state.
+* Added a `StatCard` demo page to Components > General, showing hoist-react's new `StatCard` and `StatCardStrip` components with a live playground for every prop, plus examples of wrapping, sizes, intents, accents, clickable cards and CSS variable styling.
+
+### Technical
+
+* Moved formatted number and date columns across the shared column definitions, grid examples and admin tests to hoist-react's new `Column.textRenderer` for plain-text cells.
+* Added Cube pivoting and `CubeGrid` test pages and benchmarks to Admin > Tests, plus a Grid Formatter Parity test and an expanded Grid Scrolling benchmark comparing a Hoist `Grid` with a bare `AgGridReact`.
 * Pinned `@rspack/core` to `2.3.0` via a pnpm override - Rspack 2.3.2's minifier breaks classes that reference themselves in static initializers when `keep_classnames` is set (as hoist-dev-utils does), crashing production builds on load. Apps on hoist-dev-utils should apply the same override until a fixed Rspack ships - see xh/hoist-dev-utils#85.
 
 ### Libraries
 
+* @xh/hoist `90.0 → 90.1`
+* hoist-core `44.0 → 44.1`
 * pdfjs-dist `6.5`
 
 ## 12.0.0 - 2026-11-02

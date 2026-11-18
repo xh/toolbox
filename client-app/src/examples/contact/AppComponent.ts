@@ -16,7 +16,7 @@ export const AppComponent = hoistCmp({
                 icon: Icon.contact({size: '2x', prefix: 'fal'}),
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
-            item: directoryPanel()
+            children: directoryPanel()
         });
     }
 });

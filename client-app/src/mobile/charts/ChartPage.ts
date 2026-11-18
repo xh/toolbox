@@ -42,7 +42,7 @@ export const chartPage = hoistCmp.factory({
                     notes: 'Reference for the chart config object.'
                 }
             ],
-            item: panel({mask: 'onLoad', item: chart()})
+            children: panel({mask: 'onLoad', children: chart()})
         });
     }
 });

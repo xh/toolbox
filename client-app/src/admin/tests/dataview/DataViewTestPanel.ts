@@ -14,7 +14,7 @@ export const dataViewTestPanel = hoistCmp.factory({
         return panel({
             title: 'Data View',
             className: 'tb-data-view-test',
-            items: [dataView({model: dataViewModel})],
+            children: [dataView({model: dataViewModel})],
             bbar: [
                 label('itemHeight'),
                 slider({

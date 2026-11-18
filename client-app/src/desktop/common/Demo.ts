@@ -30,7 +30,7 @@ export interface DemoPanelProps extends HoistProps {
 
 /**
  * The body of a demo page: a scrollable panel filling the demo region, holding stacked sections.
- * Pass `demoSection` elements as `item`/`items`.
+ * Pass `demoSection` elements as `children`.
  *
  * Every demo page needs the same panel here, so this keeps the sizing and scroll behavior in one
  * place - notably the horizontal scroll the sections rely on when the window is too narrow.
@@ -45,7 +45,7 @@ export const [DemoPanel, demoPanel] = hoistCmp.withFactory<DemoPanelProps>({
             height: '100%',
             scrollable: true,
             tbar,
-            item: vbox({className: 'tbox-demo-body', items: children})
+            children: vbox({className: 'tbox-demo-body', children})
         });
     }
 });
@@ -69,16 +69,16 @@ export const [DemoSection, demoSection] = hoistCmp.withFactory<DemoSectionProps>
     render({className, title, note, intent, children}) {
         return div({
             className: classNames(className, intent && `tbox-demo-section--${intent}`),
-            items: [
+            children: [
                 div({
                     className: 'tbox-demo-section__header',
-                    items: [
-                        span({className: 'tbox-demo-section__title', item: title}),
+                    children: [
+                        span({className: 'tbox-demo-section__title', children: title}),
                         div({className: 'tbox-demo-section__rule'}),
-                        span({className: 'tbox-demo-section__note', item: note, omit: !note})
+                        span({className: 'tbox-demo-section__note', children: note, omit: !note})
                     ]
                 }),
-                div({className: 'tbox-demo-section__body', items: children})
+                div({className: 'tbox-demo-section__body', children})
             ]
         });
     }
@@ -94,17 +94,17 @@ export interface DemoRowProps extends HoistProps {
     info?: ReactNode;
 }
 
-/** A labeled instance: label / info / the control itself, stacked. Pass the control as `item`. */
+/** A labeled instance: label / info / the control itself, stacked. Pass the control as `children`. */
 export const [DemoRow, demoRow] = hoistCmp.withFactory<DemoRowProps>({
     displayName: 'DemoRow',
     className: 'tbox-demo-row',
     render({className, label, info, children}) {
         return vbox({
             className,
-            items: [
-                span({className: 'tbox-demo-row__label', item: label}),
-                span({className: 'tbox-demo-row__info', item: info, omit: !info}),
-                div({className: 'tbox-demo-row__control', items: children})
+            children: [
+                span({className: 'tbox-demo-row__label', children: label}),
+                span({className: 'tbox-demo-row__info', children: info, omit: !info}),
+                div({className: 'tbox-demo-row__control', children})
             ]
         });
     }
@@ -145,36 +145,36 @@ export const [DemoPlayground, demoPlayground] = hoistCmp.withFactory<DemoPlaygro
     }) {
         return hbox({
             className,
-            items: [
+            children: [
                 vbox({
                     className: 'tbox-demo-playground__instance',
                     width: instanceWidth,
-                    items: [
-                        div({className: 'tbox-demo-playground__instance-body', items: children}),
-                        span({className: 'tbox-demo-playground__caption', item: caption})
+                    children: [
+                        div({className: 'tbox-demo-playground__instance-body', children}),
+                        span({className: 'tbox-demo-playground__caption', children: caption})
                     ]
                 }),
                 vbox({
                     className: 'tbox-demo-playground__config',
-                    items: [
+                    children: [
                         span({
                             className: 'tbox-demo-playground__config-label',
-                            item: 'Current config'
+                            children: 'Current config'
                         }),
-                        pre({className: 'tbox-demo-playground__code', item: config})
+                        pre({className: 'tbox-demo-playground__code', children: config})
                     ]
                 }),
                 vbox({
                     className: 'tbox-demo-playground__value',
                     omit: !showValue,
-                    items: [
+                    children: [
                         span({
                             className: 'tbox-demo-playground__config-label',
-                            item: 'Current value'
+                            children: 'Current value'
                         }),
                         pre({
                             className: 'tbox-demo-playground__code',
-                            item: fmtDemoValue(value)
+                            children: fmtDemoValue(value)
                         })
                     ]
                 })
@@ -203,21 +203,29 @@ export const [DemoFrame, demoFrame] = hoistCmp.withFactory<DemoFrameProps>({
         const hasCaption = !isNil(label) || !isNil(info) || !isNil(chip);
         return div({
             className,
-            items: [
+            children: [
                 div({
                     className: 'tbox-demo-frame__caption',
                     omit: !hasCaption,
-                    items: [
+                    children: [
                         span({
                             className: 'tbox-demo-frame__label',
-                            item: label,
+                            children: label,
                             omit: isNil(label)
                         }),
-                        span({className: 'tbox-demo-frame__info', item: info, omit: isNil(info)}),
-                        span({className: 'tbox-demo-frame__chip', item: chip, omit: isNil(chip)})
+                        span({
+                            className: 'tbox-demo-frame__info',
+                            children: info,
+                            omit: isNil(info)
+                        }),
+                        span({
+                            className: 'tbox-demo-frame__chip',
+                            children: chip,
+                            omit: isNil(chip)
+                        })
                     ]
                 }),
-                div({className: 'tbox-demo-frame__body', items: children})
+                div({className: 'tbox-demo-frame__body', children})
             ]
         });
     }
@@ -242,8 +250,8 @@ export const [DemoToolbar, demoToolbar] = hoistCmp.withFactory<DemoToolbarProps>
             info: compact
                 ? 'compact: true - smaller type and controls throughout'
                 : 'Default toolbar height, 30px controls',
-            chip: `${readCssVar(compact ? '--xh-tbar-compact-min-size' : '--xh-tbar-min-size')}px`,
-            item: toolbar({compact, items: children})
+            chip: readCssVar(compact ? '--xh-toolbar-compact-min-size' : '--xh-toolbar-min-size'),
+            children: toolbar({compact, children})
         });
     }
 });
@@ -261,7 +269,7 @@ export const [DemoGrid, demoGrid] = hoistCmp.withFactory<DemoGridProps>({
         return div({
             className,
             style: {gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`},
-            items: children
+            children
         });
     }
 });
@@ -291,7 +299,7 @@ export const [DemoGallery, demoGallery] = hoistCmp.withFactory<DemoGalleryProps>
                     ? `repeat(${columns}, minmax(0, 1fr))`
                     : `repeat(auto-fill, minmax(${minTileWidth}px, 1fr))`
             },
-            items: children
+            children
         });
     }
 });
@@ -322,14 +330,14 @@ export const [DemoGalleryTile, demoGalleryTile] = hoistCmp.withFactory<DemoGalle
                 !showInstance && 'tbox-demo-gallery-tile--compact'
             ),
             onClick,
-            items: [
+            children: [
                 div({
                     className: 'tbox-demo-gallery-tile__name',
-                    items: [span(title), Icon.arrowRight({omit: !onClick})]
+                    children: [span(title), Icon.arrowRight({omit: !onClick})]
                 }),
                 div({
                     className: 'tbox-demo-gallery-tile__description',
-                    item: description,
+                    children: description,
                     omit: !showInstance || !description
                 }),
                 div({
@@ -338,7 +346,7 @@ export const [DemoGalleryTile, demoGalleryTile] = hoistCmp.withFactory<DemoGalle
                     // Keep the live instance usable: swallow clicks (including those bubbling from
                     // popover portals via the React tree) so they do not navigate.
                     onClick: e => e.stopPropagation(),
-                    items: children
+                    children
                 })
             ]
         });

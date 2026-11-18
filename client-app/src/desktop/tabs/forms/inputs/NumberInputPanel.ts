@@ -92,7 +92,7 @@ export const numberInputPanel = hoistCmp.factory({
                     width: '100%'
                 }),
                 value: model.playground,
-                item: numberInput({
+                children: numberInput({
                     bind: 'playground',
                     ...ambientProps,
                     displayWithCommas: model.pgCommas === 'none' ? false : model.pgCommas,
@@ -106,7 +106,7 @@ export const numberInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Step sizes',
                     info: 'stepSize: 1000, majorStepSize: 100000, minorStepSize: 100',
-                    item: numberInput({
+                    children: numberInput({
                         bind: 'stepSizes',
                         ...ambientProps,
                         stepSize: 1000,
@@ -118,7 +118,7 @@ export const numberInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Scale factor',
                     info: "scaleFactor: 100, valueLabel: '%'",
-                    item: numberInput({
+                    children: numberInput({
                         bind: 'percent',
                         ...ambientProps,
                         scaleFactor: 100,
@@ -129,7 +129,7 @@ export const numberInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Left icon',
                     info: 'leftIcon: Icon.dollarSign(), displayWithCommas',
-                    item: numberInput({
+                    children: numberInput({
                         bind: 'dollarAmount',
                         ...ambientProps,
                         leftIcon: Icon.dollarSign(),
@@ -140,7 +140,7 @@ export const numberInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Min and max',
                     info: 'min: 0, max: 100',
-                    item: numberInput({
+                    children: numberInput({
                         bind: 'bounded',
                         ...ambientProps,
                         min: 0,
@@ -151,7 +151,7 @@ export const numberInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Disabled',
                     info: 'disabled: true, displayWithCommas',
-                    item: numberInput({
+                    children: numberInput({
                         bind: 'disabledAmount',
                         ...ambientProps,
                         disabled: true,
@@ -162,14 +162,14 @@ export const numberInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Invalid',
                     info: 'Bound to a failing FormField rule',
-                    item: form({
+                    children: form({
                         model: model.formModel,
-                        item: formField({
+                        children: formField({
                             field: 'invalidAmount',
                             label: null,
                             minimal: true,
                             ...formFieldProps,
-                            item: numberInput()
+                            children: numberInput()
                         })
                     })
                 })
@@ -188,27 +188,27 @@ export const numberInputPanel = hoistCmp.factory({
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'quantity',
                                 ...formFieldProps,
-                                item: numberInput({displayWithCommas: true})
+                                children: numberInput({displayWithCommas: true})
                             })
                         })
                     }),
                     demoFrame({
                         info: 'Inline label, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'amount',
                                 inline: true,
                                 ...formFieldProps,
-                                item: numberInput()
+                                children: numberInput()
                             })
                         })
                     })

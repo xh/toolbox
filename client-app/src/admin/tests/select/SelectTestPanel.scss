@@ -4,22 +4,22 @@
   }
 
   &__example {
-    padding-bottom: var(--xh-pad-px);
+    padding-bottom: var(--xh-spacing);
 
     p {
       background-color: var(--xh-bg-alt);
       border-bottom: var(--xh-border-solid);
       font-family: var(--xh-font-family-mono);
-      font-size: var(--xh-font-size-small-px);
+      font-size: var(--xh-font-size-small);
       padding: 4px 8px;
     }
 
     label {
-      margin: var(--xh-pad-px);
+      margin: var(--xh-spacing);
     }
 
     .xh-input {
-      margin: var(--xh-pad-px);
+      margin: var(--xh-spacing);
     }
   }
 }

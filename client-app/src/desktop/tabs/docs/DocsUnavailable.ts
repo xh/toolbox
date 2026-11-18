@@ -15,7 +15,7 @@ export const docsUnavailable = hoistCmp.factory({
             justifyContent: 'center',
             gap: 12,
             className: 'xh-text-color-muted',
-            items: [
+            children: [
                 Icon.book({size: '3x'}),
                 span(DOCS_UNAVAILABLE_MSG),
                 button({

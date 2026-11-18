@@ -45,7 +45,7 @@ Hoist applications are built around three artifact types:
 **Element factories over JSX.** Hoist uses element factory functions, not JSX:
 ```typescript
 // ✅ Hoist style
-panel({title: 'Users', items: [grid(), button({text: 'Refresh'})]})
+panel({title: 'Users', children: [grid(), button({text: 'Refresh'})]})
 
 // ❌ Not used in Hoist
 <Panel title="Users"><Grid /><Button text="Refresh" /></Panel>
@@ -56,7 +56,7 @@ panel({title: 'Users', items: [grid(), button({text: 'Refresh'})]})
 export const userList = hoistCmp.factory({
     model: creates(UserListModel),  // Component creates and owns this model
     render({model}) {
-        return panel({title: 'Users', item: grid()});
+        return panel({title: 'Users', children: grid()});
     }
 });
 ```

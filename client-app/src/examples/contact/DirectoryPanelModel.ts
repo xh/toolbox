@@ -187,10 +187,10 @@ export class DirectoryPanelModel extends HoistModel {
 
         return hbox({
             className: 'tb-contact-tag-container',
-            items: v.map(tag =>
+            children: v.map(tag =>
                 div({
                     className: 'tb-contact-tag',
-                    item: tag,
+                    children: tag,
                     onClick: () => this.toggleTag(tag)
                 })
             )

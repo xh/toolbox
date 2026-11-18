@@ -28,7 +28,7 @@ export const docsSearchPage = hoistCmp.factory({
             className: 'tb-docs-search',
             tbar: toolbar({
                 className: 'tb-docs-search__bar',
-                item: textInput({
+                children: textInput({
                     className: 'tb-docs-search__input',
                     bind: 'query',
                     commitOnChange: true,
@@ -38,7 +38,7 @@ export const docsSearchPage = hoistCmp.factory({
                 })
             }),
             scrollable: true,
-            item: XH.docService.unavailable
+            children: XH.docService.unavailable
                 ? docsUnavailable()
                 : model.hasQuery
                   ? results()
@@ -56,21 +56,21 @@ const recents = hoistCmp.factory<DocsSearchModel>({
         if (!recentSearches.length) {
             return div({
                 className: 'tb-docs-search__empty',
-                items: [Icon.search({size: '2x'}), span('Search across both libraries.')]
+                children: [Icon.search({size: '2x'}), span('Search across both libraries.')]
             });
         }
         return div({
             className: 'tb-docs-search__recents',
-            items: [
-                div({className: 'tb-docs-search__group-header', item: 'Recent searches'}),
+            children: [
+                div({className: 'tb-docs-search__group-header', children: 'Recent searches'}),
                 ...recentSearches.map(term =>
                     hbox({
                         key: term,
                         className: 'tb-docs-search__recent-row',
                         onClick: () => model.runRecent(term),
-                        items: [
+                        children: [
                             Icon.clock({className: 'tb-docs-search__recent-icon'}),
-                            span({className: 'tb-docs-search__recent-term', item: term}),
+                            span({className: 'tb-docs-search__recent-term', children: term}),
                             filler(),
                             div({
                                 className: 'tb-docs-search__recent-remove',
@@ -78,7 +78,7 @@ const recents = hoistCmp.factory<DocsSearchModel>({
                                     e.stopPropagation();
                                     model.removeRecent(term);
                                 },
-                                item: Icon.x()
+                                children: Icon.x()
                             })
                         ]
                     })
@@ -97,25 +97,25 @@ const results = hoistCmp.factory<DocsSearchModel>({
         if (model.failed) {
             return div({
                 className: 'tb-docs-search__empty',
-                items: [Icon.warning({size: '2x'}), span(SEARCH_UNAVAILABLE_MSG)]
+                children: [Icon.warning({size: '2x'}), span(SEARCH_UNAVAILABLE_MSG)]
             });
         }
         if (!groupedResults.length) {
             return div({
                 className: 'tb-docs-search__empty',
-                items: [Icon.search({size: '2x'}), span('No matching docs.')]
+                children: [Icon.search({size: '2x'}), span('No matching docs.')]
             });
         }
         return div({
             className: 'tb-docs-search__results',
-            items: groupedResults.map(g =>
+            children: groupedResults.map(g =>
                 div({
                     key: g.source,
                     className: 'tb-docs-search__group',
-                    items: [
+                    children: [
                         div({
                             className: 'tb-docs-search__group-header',
-                            items: [span(g.label), badge({item: g.results.length})]
+                            children: [span(g.label), badge({children: g.results.length})]
                         }),
                         ...g.results.map(r =>
                             resultRow({key: `${r.entry.source}:${r.entry.id}`, result: r})
@@ -141,14 +141,14 @@ const resultRow = hoistCmp.factory<ResultRowProps>({
         return div({
             className: 'tb-docs-search__hit',
             onClick: () => model.selectResult(entry, section),
-            items: [
+            children: [
                 div({
                     className: 'tb-docs-search__hit-title',
-                    items: highlight(entry.title, matchedTerms)
+                    children: highlight(entry.title, matchedTerms)
                 }),
                 hbox({
                     className: 'tb-docs-search__hit-crumb',
-                    items: [
+                    children: [
                         span(categoryTitle),
                         Icon.chevronRight({className: 'tb-docs-search__hit-crumb-sep'}),
                         span(entry.title)
@@ -157,7 +157,7 @@ const resultRow = hoistCmp.factory<ResultRowProps>({
                 snippet
                     ? div({
                           className: 'tb-docs-search__hit-snippet',
-                          items: highlight(snippet, matchedTerms)
+                          children: highlight(snippet, matchedTerms)
                       })
                     : null
             ]
@@ -177,6 +177,6 @@ function highlight(text: string, terms: string[]): ReactNode[] {
     return text
         .split(re)
         .map((part, i) =>
-            i % 2 === 1 ? span({key: i, className: 'tb-docs-search__hl', item: part}) : part
+            i % 2 === 1 ? span({key: i, className: 'tb-docs-search__hl', children: part}) : part
         );
 }

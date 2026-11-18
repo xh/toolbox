@@ -106,7 +106,7 @@ export const exceptionHandlerPanel = hoistCmp.factory({
                     })
                 })
             ],
-            item: buttonContainer()
+            children: buttonContainer()
         });
     }
 });
@@ -116,14 +116,17 @@ const buttonContainer = hoistCmp.factory(() =>
         // Sized to match the sibling Error Message demo card.
         width: 700,
         height: 350,
-        item: vframe({
+        children: vframe({
             margin: 10,
-            items: [
+            children: [
                 vframe({
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: 15,
-                    items: [exceptionButton({type: 'standard'}), exceptionButton({type: 'routine'})]
+                    children: [
+                        exceptionButton({type: 'standard'}),
+                        exceptionButton({type: 'routine'})
+                    ]
                 }),
                 div(
                     'Open your developer console to see how Hoist is logging and tracking exceptions when clicking ' +

@@ -16,7 +16,7 @@ export const AppComponent = hoistCmp({
                 icon: Icon.health({size: '2x', prefix: 'fal'}),
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
-            item: recallsPanel()
+            children: recallsPanel()
         });
     }
 });

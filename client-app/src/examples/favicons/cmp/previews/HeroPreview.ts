@@ -19,10 +19,10 @@ export const heroPreview = hoistCmp.factory({
             compactHeader: true,
             className: 'tb-fav-hero',
             contentBoxProps: {alignItems: 'center', justifyContent: 'center'},
-            items: [
+            children: [
                 div({
                     className: 'tb-fav-hero__stage tb-fav-checkerboard',
-                    item: img({
+                    children: img({
                         className: 'tb-fav-hero__img',
                         src: svgDataUrl,
                         alt: `Favicon preview - ${spec.iconName}`
@@ -32,11 +32,11 @@ export const heroPreview = hoistCmp.factory({
                     flexWrap: 'wrap',
                     justifyContent: 'center',
                     gap: 6,
-                    items: [
-                        span({className: 'tb-fav-chip', item: '512 x 512'}),
+                    children: [
+                        span({className: 'tb-fav-chip', children: '512 x 512'}),
                         span({
                             className: 'tb-fav-chip',
-                            item: `${startCase(spec.iconName)} - ${PREFIX_LABELS[spec.prefix]}`
+                            children: `${startCase(spec.iconName)} - ${PREFIX_LABELS[spec.prefix]}`
                         })
                     ]
                 })

@@ -11,7 +11,7 @@ export const docsUnavailable = hoistCmp.factory({
     render() {
         return div({
             className: 'tb-docs-search__empty',
-            items: [
+            children: [
                 Icon.book({size: '2x'}),
                 span(DOCS_UNAVAILABLE_MSG),
                 button({

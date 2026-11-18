@@ -28,7 +28,7 @@ export const docsPage = hoistCmp.factory({
             title: breadcrumb(),
             mask: 'onLoad',
             tbar: titleBar(),
-            item: docContent({model}),
+            children: docContent({model}),
             bbar: pagerBar()
         });
     }
@@ -41,7 +41,7 @@ const pagerBar = hoistCmp.factory<DocsPageModel>({
         if (!prevDoc && !nextDoc) return null;
         return toolbar({
             className: 'tb-docs-page__pager',
-            items: [
+            children: [
                 button({
                     className: 'tb-docs-page__pager-btn',
                     minimal: true,
@@ -49,9 +49,9 @@ const pagerBar = hoistCmp.factory<DocsPageModel>({
                     onClick: () => model.navigatePrev(),
                     text: hbox({
                         className: 'tb-docs-page__pager-label',
-                        items: [
+                        children: [
                             Icon.chevronLeft(),
-                            span({className: 'tb-docs-page__pager-title', item: prevDoc?.title})
+                            span({className: 'tb-docs-page__pager-title', children: prevDoc?.title})
                         ]
                     })
                 }),
@@ -63,8 +63,11 @@ const pagerBar = hoistCmp.factory<DocsPageModel>({
                     onClick: () => model.navigateNext(),
                     text: hbox({
                         className: 'tb-docs-page__pager-label',
-                        items: [
-                            span({className: 'tb-docs-page__pager-title', item: nextDoc?.title}),
+                        children: [
+                            span({
+                                className: 'tb-docs-page__pager-title',
+                                children: nextDoc?.title
+                            }),
                             Icon.chevronRight()
                         ]
                     })
@@ -82,13 +85,13 @@ const breadcrumb = hoistCmp.factory<DocsPageModel>({
         const sourceLabel = XH.docService.getSourceLabel(activeSource);
         return hbox({
             className: 'tb-docs-page__crumb',
-            items: [
-                span({className: 'tb-docs-page__crumb-src', item: sourceLabel}),
+            children: [
+                span({className: 'tb-docs-page__crumb-src', children: sourceLabel}),
                 activeCategory
-                    ? span({className: 'tb-docs-page__crumb-sep', item: Icon.chevronRight()})
+                    ? span({className: 'tb-docs-page__crumb-sep', children: Icon.chevronRight()})
                     : null,
                 activeCategory
-                    ? span({className: 'tb-docs-page__crumb-cat', item: activeCategory.title})
+                    ? span({className: 'tb-docs-page__crumb-cat', children: activeCategory.title})
                     : null
             ]
         });
@@ -101,8 +104,8 @@ const titleBar = hoistCmp.factory<DocsPageModel>({
         const {activeDoc, sections} = model;
         return toolbar({
             className: 'tb-docs-page__title-bar',
-            items: [
-                span({className: 'tb-docs-page__title-text', item: activeDoc?.title ?? 'Docs'}),
+            children: [
+                span({className: 'tb-docs-page__title-text', children: activeDoc?.title ?? 'Docs'}),
                 filler(),
                 onThisPageButton({omit: !sections.length})
             ]

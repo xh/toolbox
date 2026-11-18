@@ -86,7 +86,7 @@ export const fileChooserPanel = hoistCmp.factory({
                 icon: Icon.experiment(),
                 intent: 'primary',
                 info: 'Drives the Playground instance. The single-file choosers use their own models.',
-                items: [
+                children: [
                     wrapperOption({
                         label: 'Accept',
                         propName: 'FileChooserConfig.accept',
@@ -158,12 +158,12 @@ export const fileChooserPanel = hoistCmp.factory({
                     })
                 ]
             }),
-            item: demoPanel({
-                items: [
+            children: demoPanel({
+                children: [
                     demoSection({
                         title: 'Playground',
                         intent: 'primary',
-                        item: demoPlayground({
+                        children: demoPlayground({
                             instanceWidth: 440,
                             // The chooser lists its own files and the footer shows the count, so
                             // the standard value readout would be redundant here - and dropping it
@@ -185,19 +185,19 @@ export const fileChooserPanel = hoistCmp.factory({
                                     className: 'xh-border xh-bg'
                                 })
                             ].join('\n\n'),
-                            item: configChooser()
+                            children: configChooser()
                         })
                     }),
                     demoSection({
                         title: 'Single-File Choosers',
                         note: 'The compact single-file mode, for space-constrained layouts.',
-                        item: demoGrid({
+                        children: demoGrid({
                             columns: 2,
-                            items: [
+                            children: [
                                 demoRow({
                                     label: 'Default',
                                     info: 'maxFiles: 1, no other configuration',
-                                    item: fileChooser({
+                                    children: fileChooser({
                                         model: model.basicChooserModel,
                                         height: 220,
                                         width: '100%'
@@ -206,7 +206,7 @@ export const fileChooserPanel = hoistCmp.factory({
                                 demoRow({
                                     label: 'Custom image preview',
                                     info: 'fileDisplay renders the selected image in place',
-                                    item: fileChooser({
+                                    children: fileChooser({
                                         model: model.imageChooserModel,
                                         fileDisplay: imagePreview,
                                         height: 220,
@@ -232,7 +232,7 @@ const configChooser = hoistCmp.factory<FileChooserPanelModel>({
         const {chooserModel, disabled, placement} = model;
         return vbox({
             width: '100%',
-            items: [
+            children: [
                 fileChooser({
                     model: chooserModel,
                     dropTargetPlacement: placement,
@@ -244,7 +244,7 @@ const configChooser = hoistCmp.factory<FileChooserPanelModel>({
                     width: '100%'
                 }),
                 toolbar({
-                    items: [
+                    children: [
                         button({
                             disabled,
                             outlined: true,
@@ -277,10 +277,10 @@ const imagePreview = hoistCmp.factory({
     render({model}) {
         const {objectUrl, chooserModel} = model;
         return panel({
-            item: box({
+            children: box({
                 flex: 1,
                 minHeight: 0,
-                item: img({
+                children: img({
                     src: objectUrl,
                     omit: !objectUrl,
                     // Fill the available area (scaling up small images), preserving aspect ratio.
@@ -288,7 +288,7 @@ const imagePreview = hoistCmp.factory({
                 })
             }),
             bbar: toolbar({
-                items: [
+                children: [
                     'Drop or click to replace.',
                     filler(),
                     button({

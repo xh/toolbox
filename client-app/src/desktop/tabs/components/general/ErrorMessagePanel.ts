@@ -36,10 +36,10 @@ export const errorMessagePanel = hoistCmp.factory({
                 },
                 {url: '$HR/cmp/error/ErrorMessage.ts', notes: 'Hoist component.'}
             ],
-            item: panel({
+            children: panel({
                 width: 700,
                 height: 350,
-                items: [
+                children: [
                     errorMessage({
                         error,
                         title: 'Something went wrong:',
@@ -50,7 +50,7 @@ export const errorMessagePanel = hoistCmp.factory({
                     }),
                     vframe({
                         omit: !!error,
-                        items: [
+                        children: [
                             'Everything is OK right now, but....',
                             button({
                                 text: 'Simulate an Error',

@@ -100,7 +100,7 @@ export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
                     pinned: true,
                     align: 'right',
                     renderer: v =>
-                        span({className: `tb-activity-repo tb-activity-repo--${v}`, item: v})
+                        span({className: `tb-activity-repo tb-activity-repo--${v}`, children: v})
                 },
                 {
                     field: 'messageHeadline',
@@ -131,15 +131,15 @@ export class ActivityWidgetModel extends HoistModel implements RepoFilterModel {
                         const {additions, deletions} = record.data;
                         return div({
                             className: 'tb-activity-deltas',
-                            items: [
+                            children: [
                                 div({
                                     className: 'tb-activity-deltas--additions',
-                                    item: `+${additions}`
+                                    children: `+${additions}`
                                 }),
-                                div({className: 'tb-activity-deltas--sep', item: '|'}),
+                                div({className: 'tb-activity-deltas--sep', children: '|'}),
                                 div({
                                     className: 'tb-activity-deltas--deletions',
-                                    item: `-${deletions}`
+                                    children: `-${deletions}`
                                 })
                             ]
                         });

@@ -2,13 +2,13 @@
   &__row {
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--xh-pad-px);
+    gap: var(--xh-spacing);
   }
 
   &__context {
     align-items: center;
-    gap: var(--xh-pad-half-px);
-    padding: var(--xh-pad-half-px) 0;
+    gap: var(--xh-spacing-half);
+    padding: var(--xh-spacing-half) 0;
 
     & + & {
       border-top: var(--xh-border-solid);

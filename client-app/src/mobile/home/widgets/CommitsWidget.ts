@@ -20,13 +20,13 @@ export const commitsWidget = hoistCmp.factory({
         if (!commits.length) {
             return div({
                 className: 'tb-github-widget__empty',
-                item: 'GitHub commit data unavailable.'
+                children: 'GitHub commit data unavailable.'
             });
         }
 
         return div({
             className: 'tb-github-widget',
-            items: commits.slice(0, MAX_ROWS).map(it => commitRow({commit: it, key: it.id}))
+            children: commits.slice(0, MAX_ROWS).map(it => commitRow({commit: it, key: it.id}))
         });
     }
 });
@@ -36,23 +36,23 @@ const commitRow = hoistCmp.factory<HoistProps & {commit: Commit}>(({commit}) => 
     return vbox({
         className: 'tb-github-widget__row tb-github-widget__row--commit',
         onClick: () => XH.openWindow(url, 'gitlink'),
-        items: [
+        children: [
             // Line 1: repo chip badge on the left, author + recency pushed to the right.
             div({
                 className: 'tb-github-widget__row-sub',
-                items: [
+                children: [
                     span({
                         className: `tb-github-widget__repo tb-github-widget__repo--${repo}`,
-                        item: repo
+                        children: repo
                     }),
                     filler(),
                     span(authorName),
-                    span({className: 'tb-github-widget__row-dot', item: '·'}),
+                    span({className: 'tb-github-widget__row-dot', children: '·'}),
                     relativeTimestamp({timestamp: committedDate, short: false})
                 ]
             }),
             // Line 2: commit subject, full width and left-aligned across every row (single line).
-            div({className: 'tb-github-widget__row-title', item: messageHeadline})
+            div({className: 'tb-github-widget__row-title', children: messageHeadline})
         ]
     });
 });

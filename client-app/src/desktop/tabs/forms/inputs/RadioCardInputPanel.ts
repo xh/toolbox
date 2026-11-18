@@ -172,7 +172,7 @@ export const radioCardInputPanel = hoistCmp.factory({
                     ...ambientSnippetProps
                 }),
                 value: model.playground,
-                item: radioCardInput({
+                children: radioCardInput({
                     bind: 'playground',
                     ...ambientProps,
                     cardWidth: model.pgCardWidth ?? undefined,
@@ -187,7 +187,7 @@ export const radioCardInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Chart type',
                     info: 'SVG thumbnails as previews',
-                    item: radioCardInput({
+                    children: radioCardInput({
                         bind: 'chartType',
                         ...ambientProps,
                         options: chartOptions()
@@ -196,7 +196,7 @@ export const radioCardInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Layout picker',
                     info: 'Wireframe previews',
-                    item: radioCardInput({
+                    children: radioCardInput({
                         bind: 'layout',
                         ...ambientProps,
                         options: layoutOptions()
@@ -205,7 +205,7 @@ export const radioCardInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Icon previews',
                     info: "Icon previews, plus a 'None' card with value: null",
-                    item: radioCardInput({
+                    children: radioCardInput({
                         bind: 'notify',
                         ...ambientProps,
                         options: notifyOptions()
@@ -214,7 +214,7 @@ export const radioCardInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Text only',
                     info: 'No preview, cardWidth: 140 for equal cards - one option disabled',
-                    item: radioCardInput({
+                    children: radioCardInput({
                         bind: 'plan',
                         ...ambientProps,
                         cardWidth: 140,
@@ -224,7 +224,7 @@ export const radioCardInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Primitive options',
                     info: "options: ['Daily', 'Weekly', 'Monthly']",
-                    item: radioCardInput({
+                    children: radioCardInput({
                         bind: 'frequency',
                         ...ambientProps,
                         options: ['Daily', 'Weekly', 'Monthly']
@@ -233,37 +233,37 @@ export const radioCardInputPanel = hoistCmp.factory({
                 demoRow({
                     label: 'Invalid',
                     info: 'Bound to a failing FormField rule',
-                    item: form({
+                    children: form({
                         model: model.formModel,
-                        item: formField({
+                        children: formField({
                             field: 'invalidLayout',
                             label: null,
                             minimal: true,
-                            item: radioCardInput({options: layoutOptions()})
+                            children: radioCardInput({options: layoutOptions()})
                         })
                     })
                 })
             ],
             form: demoGrid({
                 columns: 2,
-                items: [
+                children: [
                     demoFrame({
                         info: 'FormField, label above, required rule satisfied',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'chartType',
-                                item: radioCardInput({options: chartOptions()})
+                                children: radioCardInput({options: chartOptions()})
                             })
                         })
                     }),
                     demoFrame({
                         info: 'Label above, validation message below the field',
-                        item: form({
+                        children: form({
                             model: model.formModel,
-                            item: formField({
+                            children: formField({
                                 field: 'plan',
-                                item: radioCardInput({cardWidth: 140, options: PLAN_OPTIONS})
+                                children: radioCardInput({cardWidth: 140, options: PLAN_OPTIONS})
                             })
                         })
                     })
