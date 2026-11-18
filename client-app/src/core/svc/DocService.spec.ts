@@ -61,8 +61,7 @@ beforeAll(async () => {
             'hoist-core': {label: 'Hoist Core', categories: [], mode: 'local'}
         }
     }));
-    // FetchService sends a request with params as a form POST.
-    hoistCore.route('POST', 'docs/content', req => ({content: contents[req.form.docId]}));
+    hoistCore.route('GET', 'docs/content', req => ({content: contents[req.query.docId]}));
     await initTestAppAsync({modelClass: DocTestModel});
 });
 
@@ -85,7 +84,7 @@ describe('fetchContentAsync', () => {
         await svc().fetchContentAsync('hoist-react', 'docs/README.md');
         await svc().fetchContentAsync('hoist-react', 'docs/README.md');
         expect(hoistCore.requestsTo('docs/content')).toHaveLength(1);
-        expect(hoistCore.requestsTo('docs/content')[0].form).toEqual({
+        expect(hoistCore.requestsTo('docs/content')[0].query).toEqual({
             source: 'hoist-react',
             docId: 'docs/README.md'
         });

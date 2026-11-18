@@ -20,6 +20,8 @@
 * Added the Hoist Chat Kit docs to the Docs tab, served from the installed `@xh/hoist-chat-kit` package or a sibling checkout in local development, and a `$CK` link token that opens them in the viewer.
 * Added a `ProgressBar` demo page to Components > General, showing hoist-react's new bar for a value against a maximum, with a playground, shares of a total from the sample portfolio, intents, a target marker, the indeterminate state and odd data.
 * Added a `Separator` demo page to Components > General, showing hoist-react's new rule between content, horizontal and vertical, with a label at the start, the center or the end.
+* Added a `Sparkline` demo page to Components > General, showing hoist-react's new inline trend chart, with a playground, its three types, colors, markers, bars, sizing, and its use in a `StatCard` and in a grid column over the sample price history.
+* Switched the 30-day close column in the Portfolio example's Orders grid from the AG Grid sparkline to Hoist's `Sparkline`, with a tooltip showing the dates covered, the first and last close and the change.
 
 ### Technical
 

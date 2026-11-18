@@ -95,6 +95,7 @@ import {pinPadPanel} from './tabs/components/general/PinPadPanel';
 import {placeholderPanel} from './tabs/components/general/PlaceholderPanel';
 import {progressBarPanel} from './tabs/components/general/ProgressBarPanel';
 import {separatorPanel} from './tabs/components/general/SeparatorPanel';
+import {sparklinePanel} from './tabs/components/general/SparklinePanel';
 import {statCardPanel} from './tabs/components/general/StatCardPanel';
 import {relativeTimestampPanel} from './tabs/components/general/relativetimestamp/RelativeTimestampPanel';
 import {simpleRoutingPanel} from './tabs/system/routing/SimpleRoutingPanel';
@@ -340,7 +341,8 @@ export class AppModel extends BaseAppModel {
                             {name: 'placeholder', path: '/placeholder'},
                             {name: 'statCard', path: '/statCard'},
                             {name: 'progressBar', path: '/progressBar'},
-                            {name: 'separator', path: '/separator'}
+                            {name: 'separator', path: '/separator'},
+                            {name: 'sparkline', path: '/sparkline'}
                         ]
                     },
                     {
@@ -615,6 +617,7 @@ export class AppModel extends BaseAppModel {
                             {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                             {id: 'progressBar', title: 'ProgressBar', content: progressBarPanel},
                             {id: 'separator', content: separatorPanel},
+                            {id: 'sparkline', content: sparklinePanel},
                             {id: 'statCard', title: 'StatCard', content: statCardPanel},
                             {id: 'timestamp', content: relativeTimestampPanel}
                         ].map(it => ({...it, group: 'general'})),
