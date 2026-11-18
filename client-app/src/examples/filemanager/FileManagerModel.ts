@@ -143,6 +143,7 @@ export class FileManagerModel extends HoistModel {
                             return XH.fetchJson(
                                 {
                                     url: 'fileManager/delete',
+                                    method: 'POST',
                                     params: {filename: it.name}
                                 },
                                 ctx

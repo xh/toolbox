@@ -20,6 +20,9 @@
 * Added an `ItemList` demo page to Components > General, showing hoist-react's new short list of entries, with a playground, numbered rankings, icon and intent markers, clickable entries, narrow widths and the empty text.
 * Added a `ProgressBar` demo page to Components > General, showing hoist-react's new bar for a value against a maximum, with a playground, shares of a total from the sample portfolio, intents, a target marker, the indeterminate state and odd data.
 * Added a `Separator` demo page to Components > General, showing hoist-react's new rule between content, horizontal and vertical, with a label at the start, the center or the end.
+* Added a `Sparkline` demo page to Components > General, showing hoist-react's new inline trend chart, with a playground, its three types, colors, markers, bars, sizing, and its use in a `StatCard` and in a grid column over the sample price history.
+* Switched the 30-day close column in the Portfolio example's Orders grid from the AG Grid sparkline to Hoist's `Sparkline`, with a tooltip showing the dates covered, the first and last close and the change.
+* Added Day P&L, Long, Short, Cost Basis and Commission columns to the desktop and mobile tree grid demos and the Portfolio example, rolled up on the server from the existing portfolio data. The tree column is now pinned left on mobile and in Portfolio.
 
 ### Technical
 
@@ -29,6 +32,7 @@
 ### Libraries
 
 * ag-grid `36.2 → 36.3`
+* Gradle `9.8 → 9.9`
 
 ## 12.1.0 - 2026-11-13
 
