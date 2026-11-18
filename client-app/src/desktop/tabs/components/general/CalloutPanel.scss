@@ -43,16 +43,6 @@
   }
 }
 
-.tb-callout-panel__stream {
-  max-width: 520px;
-  min-height: 24px;
-}
-
-.tb-callout-panel__caption {
-  color: var(--xh-text-color-muted);
-  font-size: var(--xh-font-size-small-relative);
-}
-
 // Restyled through Callout's CSS variables, set on a container.
 .tb-callout-panel__flat {
   --xh-callout-accent-width: 0;

@@ -6,9 +6,10 @@ import {div, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {markdown} from '@xh/hoist/cmp/markdown';
 import type {Intent} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
+    iconPicker,
+    intentInput,
     numberInput,
     segmentedControl,
     select,
@@ -19,8 +20,7 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, runInAction} from '@xh/hoist/mobx';
-import {wait} from '@xh/hoist/promise';
+import {bindable} from '@xh/hoist/mobx';
 import {
     demoFrame,
     demoGrid,
@@ -33,8 +33,6 @@ import {
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import './CalloutPanel.scss';
 
-type IconMode = 'default' | 'custom' | 'none';
-
 const INTENTS: Intent[] = [null, 'primary', 'success', 'warning', 'danger'],
     LONG_URL =
         'https://reports.example.com/exports/positions/2026-11-18/rates-desk/eod-snapshot-final-v3-reconciled.csv',
@@ -42,12 +40,7 @@ const INTENTS: Intent[] = [null, 'primary', 'success', 'warning', 'danger'],
     RICH_BODY = [
         'Two of five regions failed to load: **APAC** and **LATAM**. Figures for those regions show the last good snapshot, from 07:45.',
         'Totals below are partial. [Retry the load](#retry) or see the [status page](https://status.example.com) for details.'
-    ].join('\n\n'),
-    STREAM_TEXT = [
-        'Gross exposure rose 4.2% overnight, driven by the Rates desk.',
-        'Two positions are over their single-name limit: ACME 5Y and GLOBEX 10Y.',
-        'The desk has been notified and a reduction plan is due by noon.'
-    ].join(' ');
+    ].join('\n\n');
 
 export const calloutPanel = hoistCmp.factory({
     displayName: 'CalloutPanel',
@@ -92,28 +85,34 @@ export const calloutPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Intent',
                             propName: 'CalloutProps.intent',
-                            info: 'Empty for a neutral callout.',
-                            control: select({
-                                bind: 'intent',
-                                enableFilter: false,
-                                enableClear: true,
-                                width: 120,
-                                options: ['primary', 'success', 'warning', 'danger']
-                            })
+                            info: 'Clear for a neutral callout.',
+                            control: intentInput({bind: 'intent', enableClear: true})
                         }),
                         wrapperOption({
                             label: 'Icon',
                             propName: 'CalloutProps.icon',
-                            info: 'Default is the intent icon. Neutral has none.',
+                            info: 'Clear for the intent icon. Neutral has none.',
+                            control: iconPicker({
+                                bind: 'iconName',
+                                valueField: 'name',
+                                enableClear: true,
+                                disabled: model.hideIcon,
+                                width: 120
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Hide icon',
+                            info: 'icon: null',
+                            control: switchInput({bind: 'hideIcon'})
+                        }),
+                        wrapperOption({
+                            label: 'Size',
+                            propName: 'CalloutProps.size',
                             control: segmentedControl({
-                                bind: 'iconMode',
+                                bind: 'size',
                                 fill: false,
                                 compact: true,
-                                options: [
-                                    {value: 'default', label: 'Default'},
-                                    {value: 'custom', label: 'Clock'},
-                                    {value: 'none', label: 'False'}
-                                ]
+                                options: ['standard', 'compact']
                             })
                         }),
                         wrapperOption({
@@ -206,8 +205,27 @@ export const calloutPanel = hoistCmp.factory({
                         })
                     }),
                     demoSection({
+                        title: 'Sizes',
+                        note: "size: 'compact' for a dense form, dialog or side panel.",
+                        children: demoGrid({
+                            className: 'tb-callout-panel__gallery',
+                            columns: 2,
+                            children: (['standard', 'compact'] as const).map(size =>
+                                demoFrame({
+                                    key: size,
+                                    label: size === 'compact' ? 'Compact' : 'Standard',
+                                    info: size === 'compact' ? "size: 'compact'" : 'Default',
+                                    children: vbox({
+                                        className: 'tb-callout-panel__stack',
+                                        children: sizeSamples(size)
+                                    })
+                                })
+                            )
+                        })
+                    }),
+                    demoSection({
                         title: 'Icons',
-                        note: 'A custom icon, icon: false, and an icon on a neutral callout.',
+                        note: 'A custom icon, icon: null, and an icon on a neutral callout.',
                         children: demoGrid({
                             className: 'tb-callout-panel__gallery',
                             columns: 3,
@@ -220,9 +238,9 @@ export const calloutPanel = hoistCmp.factory({
                                 }),
                                 callout({
                                     intent: 'warning',
-                                    icon: false,
+                                    icon: null,
                                     title: 'No icon',
-                                    children: 'icon: false. Color is the only signal here.'
+                                    children: 'icon: null. Color is the only signal here.'
                                 }),
                                 callout({
                                     icon: Icon.clock(),
@@ -248,7 +266,7 @@ export const calloutPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'In a Form',
-                        note: 'A caveat at the top of a form, and a summary in a detail panel.',
+                        note: 'Compact callouts in a dense form, and standard ones in a detail panel.',
                         children: demoGrid({
                             columns: 2,
                             children: [orderForm({model: model.formModel}), tradeDetail()]
@@ -338,11 +356,6 @@ export const calloutPanel = hoistCmp.factory({
                         })
                     }),
                     demoSection({
-                        title: 'Streaming',
-                        note: 'The body grows over time from a title-only start, as in Chat Kit.',
-                        children: streamingDemo()
-                    }),
-                    demoSection({
                         title: 'Restyled with CSS Variables',
                         note: 'No accent bar and tighter padding, set on a container.',
                         children: demoGrid({
@@ -378,6 +391,7 @@ const orderForm = hoistCmp.factory<FormModel>({
     render({model}) {
         return demoFrame({
             label: 'New order',
+            info: "size: 'compact'",
             children: form({
                 model,
                 fieldDefaults: {commitOnChange: true},
@@ -386,6 +400,7 @@ const orderForm = hoistCmp.factory<FormModel>({
                     children: [
                         callout({
                             intent: 'primary',
+                            size: 'compact',
                             children:
                                 'Orders placed after 16:00 ET are queued for the next trading day.'
                         }),
@@ -400,6 +415,7 @@ const orderForm = hoistCmp.factory<FormModel>({
                         }),
                         callout({
                             intent: 'warning',
+                            size: 'compact',
                             title: 'Large order',
                             omit: (model.values.quantity ?? 0) < 100_000,
                             children: 'Orders of 100,000 or more need desk-head approval.'
@@ -448,49 +464,31 @@ const tradeDetail = hoistCmp.factory({
     }
 });
 
-const streamingDemo = hoistCmp.factory<CalloutPanelModel>({
-    displayName: 'CalloutStreamingDemo',
-    render({model}) {
-        const {streamedBody, isStreaming} = model;
-        return vbox({
-            className: 'tb-callout-panel__stack',
-            children: [
-                hbox({
-                    className: 'tb-callout-panel__row',
-                    children: [
-                        button({
-                            text: isStreaming ? 'Streaming...' : 'Stream',
-                            icon: Icon.play(),
-                            intent: 'primary',
-                            outlined: true,
-                            disabled: isStreaming,
-                            onClick: () => model.startStream()
-                        }),
-                        button({
-                            text: 'Reset',
-                            icon: Icon.reset(),
-                            outlined: true,
-                            onClick: () => model.resetStream()
-                        }),
-                        switchInput({bind: 'streamTitle', label: 'With title'})
-                    ]
-                }),
-                div({
-                    className: 'tb-callout-panel__stream',
-                    children: callout({
-                        intent: 'warning',
-                        title: model.streamTitle ? 'Overnight risk summary' : null,
-                        children: streamedBody
-                    })
-                }),
-                span({
-                    className: 'tb-callout-panel__caption',
-                    children: `Body length ${streamedBody.length} of ${STREAM_TEXT.length}.`
-                })
-            ]
-        });
-    }
-});
+/** The same callouts at one size, for the Sizes section. */
+function sizeSamples(size: CalloutProps['size']) {
+    return [
+        callout({
+            size,
+            intent: 'primary',
+            title: 'Note',
+            children: 'Prices are delayed 15 minutes.'
+        }),
+        callout({size, intent: 'primary', children: 'Prices are delayed 15 minutes.'}),
+        callout({
+            size,
+            intent: 'warning',
+            title: 'Stale data',
+            children: 'Positions are from yesterday’s close. Today’s load is running late.'
+        }),
+        callout({
+            size,
+            intent: 'danger',
+            children:
+                'VaR is 12% over its limit on the Rates desk. Reduce exposure before the close.'
+        }),
+        callout({size, icon: Icon.clock(), children: 'Positions as of the close of business.'})
+    ];
+}
 
 /** A string as a single-quoted JS literal, for the Playground snippet. */
 function quote(v: string): string {
@@ -529,15 +527,14 @@ function intentBody(intent: Intent): string {
 
 class CalloutPanelModel extends HoistModel {
     @bindable accessor intent: Intent = 'warning';
-    @bindable accessor iconMode: IconMode = 'default';
+    /** `Icon` name for `icon`. Null for the default icon of the intent. */
+    @bindable accessor iconName: string = null;
+    @bindable accessor hideIcon = false;
     @bindable accessor title = 'Stale data';
     @bindable accessor body = 'Positions are from yesterday’s close. Today’s load is running late.';
     @bindable accessor useMarkdown = false;
+    @bindable accessor size: CalloutProps['size'] = 'standard';
     @bindable accessor containerWidth = 360;
-
-    @bindable accessor streamTitle = true;
-    @bindable accessor streamedBody = '';
-    @bindable accessor isStreaming = false;
 
     @managed formModel = new FormModel({
         fields: [
@@ -563,9 +560,6 @@ class CalloutPanelModel extends HoistModel {
         ]
     });
 
-    /** Incremented to cancel a stream in progress. */
-    private streamRun = 0;
-
     constructor() {
         super();
         this.gridModel.loadData([
@@ -579,15 +573,11 @@ class CalloutPanelModel extends HoistModel {
 
     /** Props for the Playground snippet. Options at their default resolve to undefined. */
     get calloutConfig() {
-        const {intent, iconMode, title, body, useMarkdown} = this;
+        const {intent, iconName, hideIcon, size, title, body, useMarkdown} = this;
         return {
             intent: intent || undefined,
-            icon:
-                iconMode === 'custom'
-                    ? raw('Icon.clock()')
-                    : iconMode === 'none'
-                      ? false
-                      : undefined,
+            icon: hideIcon ? null : iconName ? raw(`Icon.${iconName}()`) : undefined,
+            size: size === 'compact' ? size : undefined,
             title: title || undefined,
             children: body
                 ? useMarkdown
@@ -599,42 +589,13 @@ class CalloutPanelModel extends HoistModel {
 
     /** Props for the Playground callout. */
     get calloutProps(): CalloutProps {
-        const {intent, iconMode, title, body, useMarkdown} = this;
+        const {intent, iconName, hideIcon, size, title, body, useMarkdown} = this;
         return {
             intent,
-            icon: iconMode === 'custom' ? Icon.clock() : iconMode === 'none' ? false : undefined,
+            icon: hideIcon ? null : iconName ? Icon.get(iconName) : undefined,
+            size,
             title,
             children: useMarkdown && body ? markdown({content: body}) : body
         };
-    }
-
-    async startStream() {
-        const run = ++this.streamRun;
-        runInAction(() => {
-            this.streamedBody = '';
-            this.isStreaming = true;
-        });
-        // Grow a few characters at a time, like a token stream.
-        while (this.streamedBody.length < STREAM_TEXT.length) {
-            await wait(50);
-            if (run !== this.streamRun) return;
-            runInAction(() => {
-                const len = this.streamedBody.length + 2 + Math.floor(Math.random() * 6);
-                this.streamedBody = STREAM_TEXT.slice(0, len);
-            });
-        }
-        runInAction(() => (this.isStreaming = false));
-    }
-
-    @action
-    resetStream() {
-        this.streamRun++;
-        this.isStreaming = false;
-        this.streamedBody = '';
-    }
-
-    override destroy() {
-        this.streamRun++;
-        super.destroy();
     }
 }
