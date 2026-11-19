@@ -109,9 +109,30 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         !service.isLive(service.parseRequest(dataset: 'orders', params: [asOf: D2.toString()]), ds)
     }
 
-    def 'the catalog is served as stored'() {
+    def 'the catalog merges the portfolio and weather catalogs'() {
         expect:
-        service.catalogJson.label == 'Portfolio'
-        service.catalogJson.datasets.keySet() as List == ['positions', 'orders', 'prices', 'hypotheticalPortfolio']
+        service.catalogJson.label == 'Toolbox'
+        service.catalogJson.datasets.keySet() as List == ['positions', 'orders', 'prices', 'hypotheticalPortfolio', 'weather', 'currentWeather']
+    }
+
+    def 'weather datasets serve seeded rows, never live'() {
+        given:
+        useAppTimeZone('UTC')
+
+        when:
+        def forecast = service.getRows(service.parseRequest(
+            dataset: 'weather', params: [city: 'Oslo', units: 'metric'], fields: ['time', 'day', 'temp', 'conditions']
+        ))
+        def current = service.getRows(service.parseRequest(
+            dataset: 'currentWeather', params: [city: 'Oslo', units: 'imperial'], fields: ['city', 'temp']
+        ))
+
+        then:
+        forecast.size() == 40
+        forecast[0].keySet() as List == ['id', 'time', 'day', 'temp', 'conditions']
+        forecast[0].id == "Oslo|${forecast[0].time}"
+        current.size() == 1
+        current[0].keySet() as List == ['id', 'city', 'temp']
+        !service.isLive(service.parseRequest(dataset: 'weather', params: [city: 'Oslo', units: 'metric']))
     }
 }

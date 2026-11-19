@@ -4,6 +4,7 @@ import io.xh.hoist.BaseService
 import io.xh.toolbox.portfolio.PortfolioConfig
 import io.xh.toolbox.portfolio.PortfolioDatasets
 
+import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
 
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
@@ -35,9 +36,9 @@ class BlueprintSubscriptionService extends BaseService {
         if (!channelKey || !topic) throw new BlueprintRequestException('Subscribe requires channelKey and topic')
 
         BlueprintRequest req = blueprintDataService.parseRequest(spec)
-        PortfolioDatasets ds = blueprintDataService.currentDatasets()
+        PortfolioDatasets ds = blueprintDataService.isPortfolioDataset(req.dataset) ? blueprintDataService.currentDatasets() : null
         List<Map> rows = blueprintDataService.getRows(req, ds)
-        def session = new BlueprintSession(channelKey, topic, req, rows, ds.now)
+        def session = new BlueprintSession(channelKey, topic, req, rows, ds?.now ?: Instant.now())
         sessions[session.id] = session
         return rows
     }
