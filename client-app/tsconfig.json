@@ -25,9 +25,10 @@
     // Uncomment ONLY while actively developing hoist-react inline (`pnpm startWithHoist`) and you
     // need Toolbox to see local type-signature changes. Re-comment before committing - do not
     // commit it enabled.
-    // "paths": {
-    //   "@xh/hoist/*": ["../../hoist-react/*"]
-    // }
+    "paths": {
+      "@xh/hoist/*": ["../../hoist-react/*"],
+      "@xh/hoist-chat-kit/*": ["../../hoist-chat-kit/*"]
+    }
   },
   // Reference hoist-react as a composite build.
   // Allows for distinct tsconfig options in hoist-react vs. this application.
