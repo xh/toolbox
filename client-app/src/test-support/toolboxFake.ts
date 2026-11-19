@@ -31,7 +31,8 @@ export function installToolboxFake(core: FakeHoistCore) {
         // The server default is four setup tasks due today. Specs seed their own tasks.
         todoTasks: pref('json', []),
         cubeTestUserDims: pref('json', {}),
-        mobileHomeWidgets: pref('json', {})
+        mobileHomeWidgets: pref('json', {}),
+        blueprintsFund: pref('string', 'Oak Mount')
     });
 }
 
