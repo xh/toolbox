@@ -260,6 +260,9 @@ class WorkspacePanelModel extends HoistModel {
             runOptions: {sourceIds: ALL_SOURCE_IDS},
             onTurnComplete: message => {
                 const failed = message.status === 'error';
+                // A turn that failed before its run started never reached the backend, so it
+                // stores nothing. Saving it would list a new thread the backend does not have.
+                if (failed && !message.metadata.runStarted) return;
                 this.store.saveThread({
                     id: chatModel.threadId,
                     messages: chatModel.getMessageSpecs(),
