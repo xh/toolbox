@@ -10,6 +10,7 @@ import {architectPanel} from './ArchitectPanel';
 import {BlueprintsPanelModel, SCENARIOS} from './BlueprintsPanelModel';
 import './Blueprints.scss';
 import {inspectorPanel} from './InspectorPanel';
+import {referencePanel} from './ReferencePanel';
 
 /** A blueprint rendered beside its JSON harness, the Architect and its inspector. */
 export const blueprintsPanel = hoistCmp.factory({
@@ -44,6 +45,12 @@ const sidePanel = hoistCmp.factory<BlueprintsPanelModel>({
                                   title: 'Architect',
                                   icon: Icon.ai(),
                                   content: architectPanel
+                              },
+                              {
+                                  id: 'reference',
+                                  title: 'Reference',
+                                  icon: Icon.book(),
+                                  content: referencePanel
                               }
                           ]
                       }
