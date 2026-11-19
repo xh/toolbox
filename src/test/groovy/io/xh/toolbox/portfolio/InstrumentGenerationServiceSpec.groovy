@@ -55,5 +55,12 @@ class InstrumentGenerationServiceSpec extends Specification implements ServiceUn
         all.values().every { (it.cusip != null) == (it.country == 'United States' && it.type in [Equity, Bond]) }
         all.values().findAll { it.cusip }.every { it.isin == InstrumentGenerationService.withIsinCheck('US' + it.cusip) }
         byType[FX].every { it.isin == null && it.symbol == "${it.ccy}USD" }
+
+        and: 'names follow from the issuer, or the pair for FX'
+        byType[Equity].every { it.name == it.issuer }
+        byType[Bond].every { it.name ==~ /${java.util.regex.Pattern.quote(it.issuer)} [\d.]+% \d{4}/ }
+        byType[Option].every { it.name.startsWith(all[it.underlying].issuer) && it.name ==~ /.* [A-Z]{3}\d\d (Call|Put)/ }
+        byType[Future].every { it.name.startsWith(all[it.underlying].issuer) && it.name.endsWith(' Future') }
+        byType[FX].every { it.name == "${it.ccy}/USD" }
     }
 }

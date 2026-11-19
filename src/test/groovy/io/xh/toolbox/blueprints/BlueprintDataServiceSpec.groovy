@@ -154,6 +154,16 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         [holdings: [[symbol: 'AAA', weight: 0.5], [symbol: 'AAA', weight: 0.5]]] || "Symbol 'AAA' appears more than once in portfolio"
     }
 
+    def 'symbols list every priceable instrument with its name and sector, by symbol'() {
+        expect:
+        datasets().symbols() == [
+            [symbol: 'AAA', name: 'AAA Inc', sector: 'Technology'],
+            [symbol: 'AAA 5.0 2030', name: 'AAA Inc 5.0% 2030', sector: 'Technology'],
+            [symbol: 'AAA MAR26 C', name: 'AAA Inc MAR26 Call', sector: 'Technology']
+        ]
+        datasets().symbols()*.symbol.every { rows(dataset: 'hypotheticalPortfolio', params: [asOf: D4.toString(), portfolio: [holdings: [[symbol: it, weight: 1]]]], fields: ['mktVal']).size() == 1 }
+    }
+
     def 'an unknown fund is an error'() {
         when:
         service.parseRequest(dataset: 'positions', params: [asOf: D4.toString(), fund: 'Nope'])

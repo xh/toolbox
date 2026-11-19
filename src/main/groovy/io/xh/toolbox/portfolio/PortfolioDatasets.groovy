@@ -145,6 +145,13 @@ class PortfolioDatasets {
             }
     }
 
+    /** Every instrument, which hypotheticalPortfolio can price, as {symbol, name, sector}, by symbol. */
+    List<Map> symbols() {
+        portfolio.instruments.values()
+            .sort { it.symbol }
+            .collect { [symbol: it.symbol, name: it.name, sector: it.sector] }
+    }
+
     /** Each fund with its AUM for the live day: the prior-close NAV that pctNav weighs positions against. */
     List<Map> funds() {
         Map<String, Double> navs = navsByFund(positions(liveDay))

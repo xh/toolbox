@@ -17,11 +17,11 @@ class PortfolioFixture {
 
     static final Instant NOON_D4 = Instant.parse('2026-01-05T17:00:00Z')
 
-    static final Instrument eq = new Instrument(symbol: 'AAA', type: Equity, sector: 'Technology', industry: 'Software',
+    static final Instrument eq = new Instrument(symbol: 'AAA', name: 'AAA Inc', type: Equity, sector: 'Technology', industry: 'Software',
         region: 'US', country: 'United States', ccy: 'USD', issuer: 'AAA Inc', isin: 'US0000000001', beta: 1.2)
-    static final Instrument opt = new Instrument(symbol: 'AAA MAR26 C', type: Option, sector: 'Technology', underlying: 'AAA',
+    static final Instrument opt = new Instrument(symbol: 'AAA MAR26 C', name: 'AAA Inc MAR26 Call', type: Option, sector: 'Technology', underlying: 'AAA',
         beta: 1.2, deltaRatio: 0.5, gammaRatio: 0.05, vegaRatio: 0.002, thetaRatio: 0.0005)
-    static final Instrument bond = new Instrument(symbol: 'AAA 5.0 2030', type: Bond, sector: 'Technology', issuer: 'AAA Inc',
+    static final Instrument bond = new Instrument(symbol: 'AAA 5.0 2030', name: 'AAA Inc 5.0% 2030', type: Bond, sector: 'Technology', issuer: 'AAA Inc',
         beta: 0.1, coupon: 0.05, duration: 4)
 
     static Portfolio portfolio() {

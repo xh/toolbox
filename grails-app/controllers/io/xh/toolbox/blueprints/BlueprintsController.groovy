@@ -17,6 +17,10 @@ class BlueprintsController extends BaseController {
         renderJSON(blueprintDataService.funds)
     }
 
+    def symbols() {
+        renderJSON(blueprintDataService.symbols)
+    }
+
     def data() {
         def req = blueprintDataService.parseRequest(parseRequestJSON())
         renderJSON(blueprintDataService.query(req))
