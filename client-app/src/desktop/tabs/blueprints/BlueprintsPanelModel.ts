@@ -6,6 +6,7 @@ import {
     chatUiTextSpec
 } from '@xh/hoist-chat-kit/desktop/cmp/genui';
 import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
+import {addToBlueprint} from '@xh/hoist-chat-kit/genui/architect';
 import {HoistModel, XH} from '@xh/hoist/core';
 import type {LoadSpec, PlainObject} from '@xh/hoist/core';
 import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
@@ -99,7 +100,8 @@ export class BlueprintsPanelModel extends HoistModel {
                 answers: {
                     registry: blueprintModel.registry,
                     dataCatalog: blueprintModel.catalog,
-                    dataProvider: blueprintModel.dataProvider
+                    dataProvider: blueprintModel.dataProvider,
+                    addToHost: addToBlueprint(blueprintModel)
                 }
             });
         });

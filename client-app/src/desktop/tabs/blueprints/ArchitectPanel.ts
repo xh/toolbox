@@ -91,7 +91,7 @@ export class ArchitectModel extends HoistModel {
                     })
                 }),
                 catalog,
-                tools: architectChatTools(blueprintModel, {answerRegistry: catalog.registry}),
+                tools: architectChatTools(blueprintModel, {catalog}),
                 contextProviders: [blueprintContextProvider(blueprintModel)],
                 // Each step is a model call, and counts toward the server's per-user `llmRateLimit`.
                 maxSteps: 12,
