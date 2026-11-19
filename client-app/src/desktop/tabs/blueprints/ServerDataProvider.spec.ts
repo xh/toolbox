@@ -13,7 +13,9 @@ const req: BlueprintDataRequest = {
     groupBy: [['sector', 'symbol']]
 };
 
-const snapshot = [{id: 'a', mktVal: 1}];
+const snapshot = [{id: 'a', mktVal: 1}],
+    totals = [{dims: {}, values: {var95: 10}}],
+    bySector = [{dims: {sector: 'Energy'}, values: {var95: 4}}];
 
 let push: (msg: WebSocketMessage) => void,
     releaseSnapshot: () => void,
@@ -23,6 +25,7 @@ beforeAll(async () => {
     await initTestAppAsync();
     hoistCore.route('POST', 'blueprints/data', () => ({rows: snapshot}));
     hoistCore.route('POST', 'blueprints/unsubscribe', () => undefined);
+    hoistCore.route('POST', 'blueprints/aggregates', () => ({aggregates: bySector}));
 });
 
 beforeEach(() => {
@@ -34,12 +37,13 @@ beforeEach(() => {
     vi.spyOn(XH.webSocketService, 'unsubscribe').mockImplementation(() => {});
     hoistCore.route('POST', 'blueprints/subscribe', async () => {
         await new Promise<void>(resolve => (releaseSnapshot = resolve));
-        return {rows: snapshot};
+        return {rows: snapshot, aggregates: totals};
     });
 });
 
 const subscribeRequests = () => hoistCore.requestsTo('blueprints/subscribe'),
-    unsubscribeRequests = () => hoistCore.requestsTo('blueprints/unsubscribe');
+    unsubscribeRequests = () => hoistCore.requestsTo('blueprints/unsubscribe'),
+    aggregatesRequests = () => hoistCore.requestsTo('blueprints/aggregates');
 
 describe('ServerDataProvider', () => {
     it('loads rows with the request as the body', async () => {
@@ -65,7 +69,7 @@ describe('ServerDataProvider', () => {
         push({topic: json.topic, data: {remove: ['a']}});
 
         expect(updates).toEqual([
-            {replace: snapshot},
+            {replace: snapshot, aggregates: totals},
             {update: [{id: 'a', mktVal: 2}]},
             {remove: ['a']}
         ]);
@@ -87,5 +91,33 @@ describe('ServerDataProvider', () => {
         await wait(10);
         expect(updates).toEqual([]);
         expect(unsubscribeRequests().at(-1).json).toMatchObject({topic});
+    });
+
+    it('loads more grouping sets into the live subscription once it is set up', async () => {
+        provider.subscribe(req, () => {});
+        await wait(10);
+        const {topic, channelKey} = subscribeRequests().at(-1).json,
+            more = {...req, groupBy: [['sector']]};
+
+        const loading = provider.loadAggregatesAsync(more);
+        await wait(10);
+        expect(aggregatesRequests().filter(r => r.json.topic === topic)).toHaveLength(0);
+
+        releaseSnapshot();
+        expect(await loading).toEqual({aggregates: bySector});
+        expect(aggregatesRequests().at(-1).json).toEqual({...more, channelKey, topic});
+    });
+
+    it('loads grouping sets without a subscription, and once it has ended', async () => {
+        await provider.loadAggregatesAsync({...req, groupBy: [['sector']]});
+        expect(aggregatesRequests().at(-1).json).toEqual({...req, groupBy: [['sector']]});
+
+        const unsubscribe = provider.subscribe(req, () => {});
+        await wait(10);
+        releaseSnapshot();
+        await wait(10);
+        unsubscribe();
+        await provider.loadAggregatesAsync({...req, groupBy: [['symbol']]});
+        expect(aggregatesRequests().at(-1).json).toEqual({...req, groupBy: [['symbol']]});
     });
 });
