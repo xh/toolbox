@@ -1,14 +1,15 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {code, div, filler, hbox, hspacer, span} from '@xh/hoist/cmp/layout';
+import {tooltip} from '@xh/hoist/cmp/popover';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {clipboardButton} from '@xh/hoist/desktop/cmp/clipboard';
+import {dialog} from '@xh/hoist/desktop/cmp/dialog';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {Icon} from '@xh/hoist/icon';
-import {dialog, tooltip} from '@xh/hoist/kit/blueprint';
 import {GridTestBenchmarkModel} from './GridTestBenchmarkModel';
 import './GridTestBenchmarkDialog.scss';
 

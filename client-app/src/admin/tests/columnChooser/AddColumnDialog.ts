@@ -4,13 +4,13 @@ import {filler, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistModel, managed, uses} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {dialog} from '@xh/hoist/desktop/cmp/dialog';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {select, switchInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {dialog} from '@xh/hoist/kit/blueprint';
 import {action, observable} from '@xh/hoist/mobx';
 import type {GroupOption} from './generateColumns';
 
@@ -104,7 +104,6 @@ export const addColumnDialog = hoistCmp.factory<AddColumnDialogModel>({
             style: {width: 460},
             isOpen: model.isOpen,
             onClose: () => model.close(),
-            usePortal: false,
             children: formContents()
         });
     }
