@@ -144,7 +144,9 @@ export class RegistryModel extends HoistModel {
             kind = entry.kind === 'presentation' ? 'widget' : entry.kind,
             name = entry.kind === 'presentation' ? entry.widget : entry.name;
         try {
-            const out = tool.run({kind, names: [name]}, this.blueprintModel as ArchitectTarget);
+            const out = tool.run({kind, names: [name]}, this.blueprintModel as ArchitectTarget, {
+                answerRegistry: this.answerRegistry
+            });
             return JSON.stringify(out, null, 2);
         } catch (e) {
             return `describe_registry failed: ${e.message}`;
