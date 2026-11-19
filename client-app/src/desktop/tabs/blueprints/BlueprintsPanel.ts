@@ -29,7 +29,7 @@ const harnessPanel = hoistCmp.factory<BlueprintsPanelModel>({
             title: 'Blueprint JSON',
             icon: Icon.json(),
             compactHeader: true,
-            modelConfig: {side: 'left', defaultSize: 480},
+            modelConfig: {side: 'left', defaultSize: 400},
             tbar: [
                 select({bind: 'scenario', options: SCENARIOS, width: 220}),
                 filler(),
