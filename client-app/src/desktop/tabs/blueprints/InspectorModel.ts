@@ -32,12 +32,35 @@ export class InspectorModel extends HoistModel {
         ]
     });
 
+    @managed historyGridModel = new GridModel({
+        store: {idSpec: 'version'},
+        sortBy: 'version|desc',
+        emptyText: 'No edits',
+        columns: [
+            {field: 'version', headerName: 'Ver', width: 60},
+            {field: 'author', width: 80},
+            {field: 'ops', flex: 1, minWidth: 200, tooltip: true}
+        ]
+    });
+
     override onLinked() {
         const {blueprintModel} = this.panelModel;
         this.addReaction(
             {
                 track: () => blueprintModel.variables.map(v => [v, v.value, v.isSet]),
                 run: () => this.variablesGridModel.loadData(blueprintModel.variables.map(toRow)),
+                fireImmediately: true
+            },
+            {
+                track: () => blueprintModel.history,
+                run: history =>
+                    this.historyGridModel.loadData(
+                        history.map(({version, author, ops}) => ({
+                            version,
+                            author,
+                            ops: JSON.stringify(ops)
+                        }))
+                    ),
                 fireImmediately: true
             },
             {

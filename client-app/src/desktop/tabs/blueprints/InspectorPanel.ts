@@ -27,6 +27,12 @@ export const inspectorPanel = hoistCmp.factory({
                     compactHeader: true,
                     flex: 1,
                     item: grid({model: model.issuesGridModel})
+                }),
+                panel({
+                    title: 'History',
+                    compactHeader: true,
+                    flex: 1,
+                    item: grid({model: model.historyGridModel})
                 })
             ]
         });
