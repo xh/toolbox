@@ -229,7 +229,7 @@
                     "aggregator": "server",
                     "renderer": {"name": "bar", "max": 0.1},
                     "category": "Exposure",
-                    "guidance": "Weight of the position in its fund. Meaningful within one fund."
+                    "guidance": "Weight of the position as a percent of its fund's NAV at the prior close. Meaningful within one fund."
                 },
                 {"name": "pnlDay", "label": "Day P&L", "type": "number", "kind": "pnl", "category": "P&L"},
                 {"name": "pnlMtd", "label": "MTD P&L", "type": "number", "kind": "pnl", "category": "P&L"},

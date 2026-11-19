@@ -145,7 +145,7 @@ class PortfolioDatasets {
             }
     }
 
-    /** Each fund with its AUM at the live day: the NAV that pctNav weighs positions against. */
+    /** Each fund with its AUM for the live day: the prior-close NAV that pctNav weighs positions against. */
     List<Map> funds() {
         Map<String, Double> navs = navsByFund(positions(liveDay))
         return Lookups.FUNDS.collect { [name: it, aum: Math.round(navs[it] ?: 0d)] }
@@ -211,11 +211,15 @@ class PortfolioDatasets {
         return nav ? rows.sum(0L) { it.mktVal as long } / nav : null
     }
 
-    /** NAV of each fund in a set of position rows: half the fund's gross market value. */
+    /**
+     * NAV of each fund in a set of position rows: half the fund's gross market value at the prior
+     * close, so it holds through the day. A fund with no prior close has none.
+     */
     static Map<String, Double> navsByFund(List<Map> rows) {
         rows
             .groupBy { it.fund }
-            .collectEntries { fund, fundRows -> [fund, fundRows.sum { Math.abs(it.mktVal as long) } / 2d] }
+            .collectEntries { fund, fundRows -> [fund, fundRows.sum { Math.abs(it.priorCloseMktVal as long) } / 2d] }
+            .findAll { fund, nav -> nav }
     }
 
     //------------------------
@@ -245,6 +249,8 @@ class PortfolioDatasets {
             Double basePx = priceOn(inst.symbol, baseDays[i])
             basePx == null ? 0L : Math.round(h.qty[i + 1] * basePx * inst.multiplier) - h.cost[i + 1]
         }
+        Double priorPx = priceOn(inst.symbol, baseDays[0])
+        ret.priorCloseMktVal = priorPx == null ? 0L : Math.round(h.qty[Holding.PREV] * priorPx * inst.multiplier)
         ret.pnlDay = pnl - basePnls[0]
         ret.pnlMtd = pnl - basePnls[1]
         ret.pnlYtd = pnl - basePnls[2]
@@ -340,7 +346,7 @@ class PortfolioDatasets {
     private static void addPctNav(List<Map> rows) {
         Map<String, Double> navs = navsByFund(rows)
         rows.each { row ->
-            double nav = navs[row.fund]
+            Double nav = navs[row.fund]
             row.pctNav = nav ? (row.mktVal as long) / nav : null
         }
     }

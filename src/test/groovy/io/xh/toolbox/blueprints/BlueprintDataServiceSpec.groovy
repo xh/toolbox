@@ -57,7 +57,7 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         byDims[[:]].keySet() as List == ['var95', 'pctNav', 'ret']
         byDims[[:]].var95 == ds.groupVar(leaves, D4, PortfolioDatasets.Z95)
         byDims[[fund: F1]].pctNav == PortfolioDatasets.groupPctNav(leaves.findAll { it.fund == F1 }, navs)
-        byDims[[fund: F1]].pctNav == 2d
+        byDims[[fund: F1]].pctNav == 121600 / 59000d
         byDims[[fund: F2, symbol: opt.symbol]].ret == ds.groupReturn([bySymbol(leaves, opt.symbol)], D1, D4)
         Math.abs(byDims[[fund: F1, symbol: 'AAA']].var95 - bySymbol(leaves, 'AAA').var95) <= 1
     }
@@ -78,7 +78,7 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         def total = aggs.find { it.dims == [:] }
 
         then:
-        total.values.pctNav == 24400 / 62200d
+        total.values.pctNav == 24400 / 60200d
         total.values.var95 == ds.groupVar(leaves.findAll { it.instrumentType != 'Bond' }, D4, PortfolioDatasets.Z95)
         aggs*.dims.toSet() == [[:], [underlying: null], [underlying: 'AAA']] as Set
     }
