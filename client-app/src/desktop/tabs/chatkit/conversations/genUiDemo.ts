@@ -48,10 +48,14 @@ const DEMO: ChatDemoSpec = {
     intro:
         'The model answers with live Hoist components: KPI tiles, a grid of 30 positions that ' +
         'fills in as it streams, a performance chart and a card whose buttons ask follow-ups.',
-    suggestions: [{text: 'How is the Tech book doing?'}, {text: 'Give me a portfolio review'}],
+    suggestions: [
+        {text: 'How is the Tech book doing?'},
+        {text: 'Give me a portfolio review'},
+        {text: 'Show an answer with a broken element'}
+    ],
     createChatConfig: () => ({
         transport: new ScriptedChatTransport({delayMs: 14, respond: createResponse}),
-        catalog: createCatalog()
+        catalog: createCatalog({withDocuments: true})
     })
 };
 
@@ -60,8 +64,8 @@ export const genUiPanel = chatDemoPanel(DEMO);
 //------------------
 // Implementation
 //------------------
-// The card's follow-up prompts ask about NVDA or sectors, and get the drill-down. Any other
-// message gets the review.
+// The card's follow-up prompts ask about NVDA or sectors, and get the drill-down. A broken
+// element shows its fallback while the rest of the answer streams. Any other message gets the review.
 function createResponse(request: ChatRunRequest, {stepIndex, userMessage}: ScriptedRequestContext) {
     const isReview = !/nvda|sector/i.test(userMessage?.text);
     if (stepIndex > 0) {
@@ -74,6 +78,7 @@ function createResponse(request: ChatRunRequest, {stepIndex, userMessage}: Scrip
             )
         ];
     }
+    if (/broken/i.test(userMessage?.text)) return createBrokenElement();
     return isReview ? createReview() : createDrillDown();
 }
 
@@ -94,6 +99,26 @@ function createReview() {
         toolCallEvents('show_chart', createPerformanceChart(), {chunkSize: 24}),
         textEvents("NVDA is today's biggest detractor:"),
         toolCallEvents('show_card', createNvdaCard())
+    ];
+}
+
+// `bad` is complete but invalid, so it shows its fallback at once, while the grid streams in below.
+function createBrokenElement() {
+    return [
+        scriptedDelay(300),
+        textEvents('Here is an answer where one element is malformed. The rest still renders:'),
+        toolCallEvents(
+            'show_ui',
+            {
+                root: 'top',
+                elements: {
+                    top: {component: 'stack', props: {}, children: ['bad', 'grid']},
+                    bad: {component: 'text', props: {text: 42}, isPartial: false},
+                    grid: {component: 'grid', props: createPositionsGrid()}
+                }
+            },
+            {chunkSize: 24}
+        )
     ];
 }
 

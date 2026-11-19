@@ -3,20 +3,29 @@ import {
     chatUiCardSpec,
     chatUiChartSpec,
     chatUiGridSpec,
-    chatUiStatCardsSpec
+    chatUiStackSpec,
+    chatUiStatCardsSpec,
+    chatUiTextSpec
 } from '@xh/hoist-chat-kit/desktop/cmp/genui';
 
 /**
  * The generative UI catalog for the Chat Kit demos: the kit's four built-in components, which the
  * model shows by calling `show_stat_cards`, `show_grid`, `show_chart` and `show_card`.
+ *
+ * @param withDocuments - also offer `show_ui` documents, which lay out several components, with
+ *      `stack` and `text` to arrange them.
  */
-export function createCatalog(): ChatUiCatalog {
+export function createCatalog({
+    withDocuments = false
+}: {withDocuments?: boolean} = {}): ChatUiCatalog {
     return new ChatUiCatalog({
+        modes: withDocuments ? ['tools', 'document'] : ['tools'],
         components: [
             chatUiStatCardsSpec(),
             chatUiGridSpec({maxRows: 50}),
             chatUiChartSpec(),
-            chatUiCardSpec()
+            chatUiCardSpec(),
+            ...(withDocuments ? [chatUiStackSpec(), chatUiTextSpec()] : [])
         ],
         instructions:
             'The user is a portfolio manager. Lead with stat cards for headline numbers, use ' +
