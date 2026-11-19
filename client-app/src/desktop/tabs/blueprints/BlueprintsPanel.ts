@@ -1,4 +1,5 @@
-import {filler, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
+import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
+import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {jsonInput, select} from '@xh/hoist/desktop/cmp/input';
@@ -12,13 +13,10 @@ export const blueprintsPanel = hoistCmp.factory({
     displayName: 'BlueprintsPanel',
     model: creates(BlueprintsPanelModel),
 
-    render() {
+    render({model}) {
         return hframe(
             harnessPanel(),
-            panel({
-                flex: 1,
-                item: placeholder('The blueprint renders here once the widgets land.')
-            }),
+            panel({flex: 1, item: blueprintView({model: model.blueprintModel})}),
             inspectorPanel()
         );
     }
