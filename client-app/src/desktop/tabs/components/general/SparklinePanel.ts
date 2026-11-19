@@ -5,7 +5,7 @@ import {sparkline} from '@xh/hoist/cmp/sparkline';
 import {statCard, statCardStrip} from '@xh/hoist/cmp/statcard';
 import type {Intent, LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {intentInput, numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {fmtMillions, fmtNumber, fmtPercent, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, bindableRef} from '@xh/hoist/mobx';
@@ -92,13 +92,7 @@ export const sparklinePanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Intent',
                             propName: 'SparklineProps.intent',
-                            control: select({
-                                bind: 'intent',
-                                enableFilter: false,
-                                enableClear: true,
-                                width: 110,
-                                options: ['primary', 'success', 'warning', 'danger']
-                            })
+                            control: intentInput({bind: 'intent', enableClear: true})
                         }),
                         wrapperOption({
                             label: 'Color by',
