@@ -2,7 +2,7 @@ import type {
     ChatUiCardSpecProps,
     ChatUiChartSpecProps,
     ChatUiGridSpecProps,
-    ChatUiMetricsSpecProps
+    ChatUiStatCardsSpecProps
 } from '@xh/hoist-chat-kit/desktop/cmp/genui';
 import {
     ScriptedChatTransport,
@@ -18,9 +18,9 @@ import {chatDemoPanel, KIT_LINKS} from '../common/ChatDemo';
 import {createCatalog} from './catalog';
 
 /**
- * Generative UI: the model shows Hoist components inline in its reply - a metrics row, a grid of
- * positions that fills in row by row, a line chart and a card with follow-up actions - through
- * a ChatUiCatalog of the kit's built-in components.
+ * Generative UI: the model shows Hoist components inline in its reply - a row of stat cards, a
+ * grid of positions that fills in row by row, a line chart and a card with follow-up actions -
+ * through a ChatUiCatalog of the kit's built-in components.
  */
 const DEMO: ChatDemoSpec = {
     pageId: 'genUi',
@@ -38,7 +38,7 @@ const DEMO: ChatDemoSpec = {
     ],
     kitApi: [
         'ChatUiCatalog',
-        'chatUiMetricsSpec',
+        'chatUiStatCardsSpec',
         'chatUiGridSpec',
         'chatUiChartSpec',
         'chatUiCardSpec'
@@ -81,7 +81,7 @@ function createReview() {
     return [
         scriptedDelay(500),
         textEvents("Here's where the **Tech book** stands at the close:"),
-        toolCallEvents('show_metrics', createMetrics()),
+        toolCallEvents('show_stat_cards', createStatCards()),
         textEvents(
             'The book is down on the day, almost all of it in semiconductors. Here are the ' +
                 '30 positions, largest first:'
@@ -110,12 +110,12 @@ function createDrillDown() {
     ];
 }
 
-function createMetrics(): ChatUiMetricsSpecProps {
+function createStatCards(): ChatUiStatCardsSpecProps {
     const rows = getPositionRows(),
         nav = sumBy(rows, 'marketValue'),
         dayPnl = sumBy(rows, 'dayPnl');
     return {
-        metrics: [
+        cards: [
             {
                 label: 'Net asset value',
                 value: nav,
