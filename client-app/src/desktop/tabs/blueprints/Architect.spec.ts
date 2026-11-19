@@ -23,7 +23,9 @@ beforeAll(async () => {
     model = new BlueprintModel({
         catalog,
         registry: createToolboxRegistry(),
-        dataProvider: new FakeBlueprintDataProvider({catalog})
+        dataProvider: new FakeBlueprintDataProvider({catalog}),
+        mode: 'design',
+        access: 'write'
     });
     model.setBlueprint(p1 as Blueprint);
     tools = Object.fromEntries(architectChatTools(model).map(it => [it.name, it]));

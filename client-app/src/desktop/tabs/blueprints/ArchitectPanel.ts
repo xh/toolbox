@@ -27,8 +27,7 @@ export class ArchitectModel extends HoistModel {
     }
 
     override onLinked() {
-        const {blueprintModel} = this.panelModel,
-            mode = () => blueprintModel.mode;
+        const {blueprintModel} = this.panelModel;
         runInAction(() => {
             this.chatModel = this.markManaged(
                 new ChatModel({
@@ -39,8 +38,8 @@ export class ArchitectModel extends HoistModel {
                             cacheControl: true
                         })
                     }),
-                    tools: architectChatTools(blueprintModel, {mode}),
-                    contextProviders: [blueprintContextProvider(blueprintModel, {mode})],
+                    tools: architectChatTools(blueprintModel),
+                    contextProviders: [blueprintContextProvider(blueprintModel)],
                     // Each step is a model call, and counts toward the server's per-user `llmRateLimit`.
                     maxSteps: 12
                 })

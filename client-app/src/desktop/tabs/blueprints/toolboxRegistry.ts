@@ -56,7 +56,15 @@ export const publishToPmPackAction: ActionSpec = {
     name: 'publishToPmPack',
     app: true,
     sideEffects: true,
-    params: {fund: 'fund', asOf: 'localDate'},
+    params: {
+        type: 'object',
+        required: ['asOf'],
+        additionalProperties: false,
+        properties: {
+            fund: {type: 'string', description: 'A fund name. Leave out to publish for all funds.'},
+            asOf: {type: 'string', description: 'The report date, as YYYY-MM-DD.'}
+        }
+    },
     guidance: 'Publishes a report to the PM pack. Always asks the user to confirm.',
     describe: ({fund, asOf}) => `Publish the report for ${fund ?? 'all funds'}, ${asOf}`,
     run: ({fund, asOf}) => {

@@ -48,7 +48,7 @@ const modeToggle = hoistCmp.factory<InspectorModel>(({model}) => {
         marginRight: 8,
         item: buttonGroupInput({
             value: panelModel.blueprintModel.mode,
-            onChange: mode => panelModel.setMode(mode),
+            onChange: mode => panelModel.blueprintModel.setMode(mode),
             minimal: true,
             items: [button({text: 'Design', value: 'design'}), button({text: 'Run', value: 'run'})]
         })

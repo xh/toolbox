@@ -1,8 +1,4 @@
-import type {
-    BlueprintDataProvider,
-    BlueprintIssue,
-    BlueprintMode
-} from '@xh/hoist-chat-kit/blueprint';
+import type {BlueprintDataProvider, BlueprintIssue} from '@xh/hoist-chat-kit/blueprint';
 import {BlueprintModel, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
 import {HoistModel, XH} from '@xh/hoist/core';
 import type {LoadSpec, PlainObject} from '@xh/hoist/core';
@@ -11,11 +7,13 @@ import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
 import p1 from './scenarios/p1-one-grid.json';
 import p2 from './scenarios/p2-linked-dashboard.json';
+import p3 from './scenarios/p3-morning-report.json';
 import p5 from './scenarios/p5-risk-report.json';
 
 export const SCENARIOS: {value: string; label: string; blueprint: PlainObject}[] = [
     {value: 'p1', label: 'P1. One grid', blueprint: p1},
     {value: 'p2', label: 'P2. A linked dashboard', blueprint: p2},
+    {value: 'p3', label: 'P3. A morning report', blueprint: p3},
     {value: 'p5', label: 'P5. A risk and stress report', blueprint: p5}
 ];
 
@@ -74,18 +72,14 @@ export class BlueprintsPanelModel extends HoistModel {
                 new BlueprintModel({
                     catalog,
                     registry: createToolboxRegistry(),
-                    dataProvider: this.createProvider(catalog)
+                    dataProvider: this.createProvider(catalog),
+                    // The harness is a design surface: widget changes are edits.
+                    mode: 'design',
+                    access: 'write'
                 })
             );
-            // The harness is a design surface: widget changes are edits.
-            this.blueprintModel.mode = 'design';
         });
         this.loadScenario(this.scenario);
-    }
-
-    @action
-    setMode(mode: BlueprintMode) {
-        this.blueprintModel.mode = mode;
     }
 
     @action
