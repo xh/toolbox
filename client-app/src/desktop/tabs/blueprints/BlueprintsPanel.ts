@@ -1,9 +1,10 @@
 import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid} from '@xh/hoist/cmp/grid';
-import {hbox, hframe, placeholder} from '@xh/hoist/cmp/layout';
+import {hbox, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import type {HoistProps} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {segmentedControl} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import type {ReactElement} from 'react';
@@ -140,6 +141,23 @@ const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
             title: selected?.name ?? 'No blueprint',
             icon: Icon.layout(),
             compactHeader: true,
+            headerItems: blueprintModel.blueprint
+                ? [
+                      span({
+                          className: 'tb-blueprints__version',
+                          item: `v${blueprintModel.version}`
+                      }),
+                      segmentedControl({
+                          value: blueprintModel.mode,
+                          onChange: mode => blueprintModel.setMode(mode),
+                          compact: true,
+                          options: [
+                              {value: 'design', label: 'Design', icon: Icon.edit()},
+                              {value: 'run', label: 'Run', icon: Icon.play()}
+                          ]
+                      })
+                  ]
+                : [],
             item: blueprintModel.blueprint
                 ? blueprintView({model: blueprintModel})
                 : placeholder(Icon.layout(), emptyText(model))
