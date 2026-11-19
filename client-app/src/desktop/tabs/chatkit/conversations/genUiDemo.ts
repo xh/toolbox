@@ -51,7 +51,8 @@ const DEMO: ChatDemoSpec = {
     suggestions: [
         {text: 'How is the Tech book doing?'},
         {text: 'Give me a portfolio review'},
-        {text: 'Show an answer with a broken element'}
+        {text: 'Show an answer with a broken element'},
+        {text: "Show the fills for today's NVDA orders"}
     ],
     createChatConfig: () => ({
         transport: new ScriptedChatTransport({delayMs: 14, respond: createResponse}),
@@ -79,6 +80,7 @@ function createResponse(request: ChatRunRequest, {stepIndex, userMessage}: Scrip
         ];
     }
     if (/broken/i.test(userMessage?.text)) return createBrokenElement();
+    if (/fills/i.test(userMessage?.text)) return createFills();
     return isReview ? createReview() : createDrillDown();
 }
 
@@ -99,6 +101,15 @@ function createReview() {
         toolCallEvents('show_chart', createPerformanceChart(), {chunkSize: 24}),
         textEvents("NVDA is today's biggest detractor:"),
         toolCallEvents('show_card', createNvdaCard())
+    ];
+}
+
+// Fills share their order's `id`, which Hoist's Store reserves for unique record IDs.
+function createFills() {
+    return [
+        scriptedDelay(300),
+        textEvents('Three NVDA orders filled in six pieces today:'),
+        toolCallEvents('show_grid', FILLS_GRID)
     ];
 }
 
@@ -319,6 +330,25 @@ function createNvdaCard(): ChatUiCardSpecProps {
         ]
     };
 }
+
+const FILLS_GRID: ChatUiGridSpecProps = {
+    title: 'NVDA - fills today',
+    columns: [
+        {field: 'id'},
+        {field: 'time', headerName: 'Time'},
+        {field: 'side', headerName: 'Side'},
+        {field: 'quantity', headerName: 'Qty', type: 'number', decimals: 0},
+        {field: 'price', headerName: 'Price', type: 'number', format: 'currency'}
+    ],
+    rows: [
+        {id: 'ORD-101', time: '09:31', side: 'BUY', quantity: 400, price: 117.9},
+        {id: 'ORD-101', time: '09:34', side: 'BUY', quantity: 350, price: 118.05},
+        {id: 'ORD-101', time: '09:40', side: 'BUY', quantity: 250, price: 118.2},
+        {id: 'ORD-102', time: '11:02', side: 'SELL', quantity: 600, price: 119.35},
+        {id: 'ORD-102', time: '11:15', side: 'SELL', quantity: 400, price: 119.1},
+        {id: 'ORD-103', time: '14:48', side: 'BUY', quantity: 500, price: 118.42}
+    ]
+};
 
 const TRADES_GRID: ChatUiGridSpecProps = {
     title: 'NVDA - recent trades',
