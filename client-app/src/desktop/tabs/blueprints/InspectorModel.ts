@@ -1,6 +1,7 @@
 import type {BlueprintIssue, BlueprintVariable} from '@xh/hoist-chat-kit/blueprint';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
 import {BlueprintsPanelModel} from './BlueprintsPanelModel';
 
 /** Shows the blueprint's variables, with their writers and current values, and its issues. */
@@ -11,6 +12,16 @@ export class InspectorModel extends HoistModel {
         store: {idSpec: 'name'},
         sortBy: 'name',
         colDefaults: {filterable: true},
+        contextMenu: [
+            {
+                text: 'Reset to default',
+                icon: Icon.reset(),
+                recordsRequired: 1,
+                displayFn: ({record}) => ({disabled: !record?.data.isSet}),
+                actionFn: ({record}) =>
+                    this.panelModel.blueprintModel.resetVariable(record.id as string)
+            }
+        ],
         columns: [
             {field: 'name', width: 100},
             {field: 'type', width: 80},
