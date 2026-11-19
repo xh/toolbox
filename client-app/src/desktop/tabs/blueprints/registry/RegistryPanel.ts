@@ -46,7 +46,7 @@ export const registryPanel = hoistCmp.factory({
             ],
             item: hframe(
                 panel({
-                    modelConfig: {side: 'left', defaultSize: 220},
+                    modelConfig: {side: 'left', defaultSize: 320},
                     tbar: [
                         storeFilterField({
                             gridModel: model.listGridModel,

@@ -1,35 +1,74 @@
 import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
+import type {TabConfig, TabSwitcherConfig} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp} from '@xh/hoist/core';
+import type {HoistProps} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {jsonInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {SIDE_TAB_SWITCHER} from '../../common/SideTabSwitcher';
 import {architectPanel} from './ArchitectPanel';
 import {BlueprintsPanelModel, SCENARIOS} from './BlueprintsPanelModel';
 import './Blueprints.scss';
 import {inspectorPanel} from './InspectorPanel';
-import {referencePanel} from './ReferencePanel';
+import {catalogPanel} from './catalog/CatalogPanel';
+import {registryPanel} from './registry/RegistryPanel';
 
-/** A blueprint rendered beside its JSON harness, the Architect and its inspector. */
-export const blueprintsPanel = hoistCmp.factory({
+/**
+ * Hoist Blueprints: a blueprint beside its JSON harness, the Architect and its inspector, plus the
+ * Data Catalog and registries it is built from, each a full page.
+ */
+export function blueprintsTab(switcher: TabSwitcherConfig): TabConfig {
+    return {id: 'blueprints', icon: Icon.layout(), content: () => blueprintsPanel({switcher})};
+}
+
+interface BlueprintsPanelProps extends HoistProps<BlueprintsPanelModel> {
+    switcher: TabSwitcherConfig;
+}
+
+const blueprintsPanel = hoistCmp.factory<BlueprintsPanelProps>({
     displayName: 'BlueprintsPanel',
     model: creates(BlueprintsPanelModel),
 
-    render({model}) {
-        const {blueprintModel} = model;
-        return hframe(
-            sidePanel(),
-            panel({
-                flex: 1,
-                mask: 'onLoad',
-                item: blueprintModel ? blueprintView({model: blueprintModel}) : null
-            }),
-            blueprintModel ? inspectorPanel() : null
-        );
+    render({switcher}) {
+        return tabContainer({
+            switcher: SIDE_TAB_SWITCHER,
+            modelConfig: {
+                route: 'default.blueprints',
+                switcher,
+                tabs: [
+                    {id: 'architect', icon: Icon.ai(), content: architectTab},
+                    {id: 'catalog', icon: Icon.database(), content: catalogTab},
+                    {id: 'registry', icon: Icon.list(), content: registryTab}
+                ]
+            }
+        });
     }
 });
+
+const architectTab = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
+    const {blueprintModel} = model;
+    return hframe(
+        sidePanel(),
+        panel({
+            flex: 1,
+            mask: 'onLoad',
+            item: blueprintModel ? blueprintView({model: blueprintModel}) : null
+        }),
+        blueprintModel ? inspectorPanel() : null
+    );
+});
+
+// The catalog and registries load with the blueprint model.
+const catalogTab = hoistCmp.factory<BlueprintsPanelModel>(({model}) =>
+    panel({mask: 'onLoad', item: model.blueprintModel ? catalogPanel() : null})
+);
+
+const registryTab = hoistCmp.factory<BlueprintsPanelModel>(({model}) =>
+    panel({mask: 'onLoad', item: model.blueprintModel ? registryPanel() : null})
+);
 
 const sidePanel = hoistCmp.factory<BlueprintsPanelModel>({
     render({model}) {
@@ -45,12 +84,6 @@ const sidePanel = hoistCmp.factory<BlueprintsPanelModel>({
                                   title: 'Architect',
                                   icon: Icon.ai(),
                                   content: architectPanel
-                              },
-                              {
-                                  id: 'reference',
-                                  title: 'Reference',
-                                  icon: Icon.book(),
-                                  content: referencePanel
                               }
                           ]
                       }

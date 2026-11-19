@@ -13,6 +13,7 @@ import xhLogo from '../core/img/xh-toolbox-logo.png';
 import '../core/Toolbox.scss';
 import './App.scss';
 import {AppModel} from './AppModel';
+import {SIDE_TAB_SWITCHER} from './common/SideTabSwitcher';
 import {moduleMenuItems} from './ModuleMenu';
 
 export const AppComponent = hoistCmp({
@@ -54,9 +55,7 @@ export const AppComponent = hoistCmp({
             ],
             children: tabContainer({
                 switcher: false,
-                childContainerProps: {
-                    switcher: {orientation: 'left', className: 'tb-switcher', animate: true}
-                }
+                childContainerProps: {switcher: SIDE_TAB_SWITCHER}
             }),
             mask: 'onLoad'
         });
