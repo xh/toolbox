@@ -1,0 +1,11 @@
+.tb-ticker {
+  font-family: var(--xh-font-family-mono);
+
+  &__root {
+    font-weight: 600;
+  }
+
+  &__detail {
+    color: var(--xh-text-color-muted);
+  }
+}

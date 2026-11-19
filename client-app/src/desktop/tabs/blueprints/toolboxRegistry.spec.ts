@@ -2,9 +2,11 @@ import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
 import {BlueprintRegistry, DataCatalog, validateBlueprint} from '@xh/hoist-chat-kit/blueprint';
 import {XH} from '@xh/hoist/core';
 import {initTestAppAsync} from '@xh/hoist/test-support';
+import type {ReactElement} from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
 import {beforeAll, describe, expect, it} from 'vitest';
 import catalogJson from './catalog/catalog.json';
-import {createToolboxRegistry, userFundResolver} from './toolboxRegistry';
+import {createToolboxRegistry, tickerRenderer, userFundResolver} from './toolboxRegistry';
 
 const catalog = new DataCatalog(catalogJson);
 
@@ -46,5 +48,20 @@ describe('Toolbox blueprint registry', () => {
         XH.setPref('blueprintsFund', 'Red River');
         expect(userFundResolver.resolve({})).toBe('Red River');
         XH.prefService.unset('blueprintsFund');
+    });
+});
+
+describe('ticker renderer', () => {
+    const draw = (value: string) =>
+        renderToStaticMarkup(tickerRenderer.render(value, null) as ReactElement);
+
+    it('emphasizes the root ticker and mutes any contract detail', () => {
+        expect(draw('ZDVTT FUT SEP27')).toBe(
+            '<span class="tb-ticker"><span class="tb-ticker__root">ZDVTT</span>' +
+                '<span class="tb-ticker__detail"> FUT SEP27</span></span>'
+        );
+        expect(draw('AAPL')).toBe(
+            '<span class="tb-ticker"><span class="tb-ticker__root">AAPL</span></span>'
+        );
     });
 });

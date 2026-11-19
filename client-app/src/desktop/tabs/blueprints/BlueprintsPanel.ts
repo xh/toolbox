@@ -6,6 +6,7 @@ import {jsonInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {BlueprintsPanelModel, SCENARIOS} from './BlueprintsPanelModel';
+import './Blueprints.scss';
 import {inspectorPanel} from './InspectorPanel';
 
 /** A blueprint rendered beside its JSON harness and its inspector. */
