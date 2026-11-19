@@ -38,6 +38,23 @@ class WeatherServiceSpec extends Specification implements ServiceUnitTest<Weathe
         e.message.contains('weatherApiKey')
     }
 
+    def 'the service is configured only with a real API key'() {
+        expect:
+        !service.configured
+
+        when:
+        testConfigService.set('weatherApiKey', 'UNCONFIGURED')
+
+        then:
+        !service.configured
+
+        when:
+        testConfigService.set('weatherApiKey', 'abc')
+
+        then:
+        service.configured
+    }
+
     def 'admin stats expose the key config'() {
         given:
         testConfigService.set('weatherApiKey', 'abc')

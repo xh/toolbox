@@ -15,6 +15,8 @@ class WeatherService extends BaseService {
 
     static clearCachesConfigs = ['weatherApiKey']
 
+    private static final String UNCONFIGURED = 'UNCONFIGURED'
+
     ConfigService configService
 
     private Cache<String, Map> _currentWeatherCache = createCache(
@@ -24,21 +26,28 @@ class WeatherService extends BaseService {
         name: 'forecast', expireTime: 30 * MINUTES
     )
 
-    Map getCurrentWeather(String city) {
-        _currentWeatherCache.getOrCreate(city) { loadCurrentWeather(city) }
+    /** @param units - OpenWeatherMap's 'imperial' or 'metric'. */
+    Map getCurrentWeather(String city, String units = 'imperial') {
+        _currentWeatherCache.getOrCreate("$city|$units".toString()) { loadCurrentWeather(city, units) }
     }
 
-    Map getForecast(String city) {
-        _forecastCache.getOrCreate(city) { loadForecast(city) }
+    /** @param units - OpenWeatherMap's 'imperial' or 'metric'. */
+    Map getForecast(String city, String units = 'imperial') {
+        _forecastCache.getOrCreate("$city|$units".toString()) { loadForecast(city, units) }
+    }
+
+    /** True if an OpenWeatherMap API key is configured. */
+    boolean isConfigured() {
+        configService.getString('weatherApiKey', UNCONFIGURED) != UNCONFIGURED
     }
 
     //------------------------
     // Implementation
     //------------------------
-    private Map loadCurrentWeather(String city) {
+    private Map loadCurrentWeather(String city, String units) {
         def apiKey = getApiKey(),
             encodedCity = URLEncoder.encode(city, 'UTF-8'),
-            url = "https://api.openweathermap.org/data/2.5/weather?q=${encodedCity}&appid=${apiKey}&units=imperial"
+            url = "https://api.openweathermap.org/data/2.5/weather?q=${encodedCity}&appid=${apiKey}&units=${units}"
 
         span('getCurrent')
             .logDebug("Loading forecast for $city")
@@ -47,10 +56,10 @@ class WeatherService extends BaseService {
             }
       }
 
-    private Map loadForecast(String city) {
+    private Map loadForecast(String city, String units) {
         def apiKey = getApiKey(),
             encodedCity = URLEncoder.encode(city, 'UTF-8'),
-            url = "https://api.openweathermap.org/data/2.5/forecast?q=${encodedCity}&appid=${apiKey}&units=imperial"
+            url = "https://api.openweathermap.org/data/2.5/forecast?q=${encodedCity}&appid=${apiKey}&units=${units}"
 
         span('getForecast')
             .logDebug("Loading forecast for $city")
@@ -61,7 +70,7 @@ class WeatherService extends BaseService {
 
     private String getApiKey() {
         def key = configService.getString('weatherApiKey')
-        if (key == 'UNCONFIGURED') {
+        if (key == UNCONFIGURED) {
             throw new DataNotAvailableException(
                 'Weather API key not configured. Set the "weatherApiKey" config in the Admin console ' +
                 'with a valid OpenWeatherMap API key (https://openweathermap.org/api).'

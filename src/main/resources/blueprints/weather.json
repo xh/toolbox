@@ -43,7 +43,7 @@
             "label": "Conditions",
             "type": "string",
             "kind": "condition",
-            "guidance": "The main condition: Clear, Clouds, Rain, Drizzle, Thunderstorm, Snow or Mist. Shows as an icon with its name."
+            "guidance": "The main condition, usually Clear, Clouds, Rain, Drizzle, Thunderstorm, Snow or Mist. The provider can also report others, such as Haze, Fog or Smoke. Shows as an icon with its name."
         },
         {
             "name": "iconCode",

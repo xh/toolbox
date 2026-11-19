@@ -1,6 +1,7 @@
 package io.xh.toolbox.blueprints
 
 import grails.testing.services.ServiceUnitTest
+import io.xh.toolbox.weather.OpenWeatherRowsSpec
 import io.xh.hoist.test.HoistUnitTest
 import spock.lang.Specification
 
@@ -109,15 +110,43 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         !service.isLive(service.parseRequest(dataset: 'orders', params: [asOf: D2.toString()]), ds)
     }
 
+    def 'weather datasets map OpenWeatherMap data, in the requested units, when an API key is set'() {
+        given:
+        useAppTimeZone('UTC')
+        List calls = []
+        service.weatherService = [
+            configured       : true,
+            getForecast      : { String city, String units -> calls << ['forecast', city, units]; OpenWeatherRowsSpec.FORECAST },
+            getCurrentWeather: { String city, String units -> calls << ['current', city, units]; OpenWeatherRowsSpec.CURRENT }
+        ]
+
+        when:
+        def forecast = service.getRows(service.parseRequest(
+            dataset: 'weather', params: [city: 'London', units: 'metric'], fields: ['day', 'temp', 'precipProbability']
+        ))
+        def current = service.getRows(service.parseRequest(
+            dataset: 'currentWeather', params: [city: 'London', units: 'imperial'], fields: ['conditions']
+        ))
+
+        then:
+        calls == [['forecast', 'London', 'metric'], ['current', 'London', 'imperial']]
+        forecast == [
+            [id: 'London|1795057200000', day: '2026-11-19', temp: 7.42, precipProbability: 0.62],
+            [id: 'London|1795068000000', day: '2026-11-19', temp: 6.1, precipProbability: 0]
+        ]
+        current == [[id: 'London', conditions: 'Clouds']]
+    }
+
     def 'the catalog merges the portfolio and weather catalogs'() {
         expect:
         service.catalogJson.label == 'Toolbox'
         service.catalogJson.datasets.keySet() as List == ['positions', 'orders', 'prices', 'hypotheticalPortfolio', 'weather', 'currentWeather']
     }
 
-    def 'weather datasets serve seeded rows, never live'() {
+    def 'weather datasets serve seeded rows without an API key, never live'() {
         given:
         useAppTimeZone('UTC')
+        service.weatherService = [configured: false]
 
         when:
         def forecast = service.getRows(service.parseRequest(
