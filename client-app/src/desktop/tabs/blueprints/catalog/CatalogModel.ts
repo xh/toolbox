@@ -1,4 +1,11 @@
-import type {DataCatalog, DatasetDef, FieldDef} from '@xh/hoist-chat-kit/blueprint';
+import type {
+    DataCatalog,
+    DatasetDef,
+    FieldDef,
+    FieldUse,
+    FieldUsages
+} from '@xh/hoist-chat-kit/blueprint';
+import {fieldUsages, resolveFormat} from '@xh/hoist-chat-kit/blueprint';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
@@ -6,8 +13,7 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, computed} from '@xh/hoist/mobx';
 import {castArray, groupBy, isEmpty, isString} from 'lodash';
 import {BlueprintsPanelModel} from '../BlueprintsPanelModel';
-import type {FieldUse, FieldUsages} from './catalogFields';
-import {describeFormat, describeSpec, findFieldUsages, resolveFieldFormat} from './catalogFields';
+import {describeFormat, describeSpec} from './catalogFields';
 
 export type CatalogView = 'datasets' | 'kinds' | 'formats';
 
@@ -107,7 +113,7 @@ export class CatalogModel extends HoistModel {
 
     @computed
     get usages(): FieldUsages {
-        return findFieldUsages(this.panelModel.blueprintModel.blueprint, this.catalog);
+        return fieldUsages(this.panelModel.blueprintModel.blueprint, this.catalog);
     }
 
     @computed
@@ -221,7 +227,7 @@ export function fieldTree(ds: DatasetDef, catalog: DataCatalog, uses: Record<str
 
 function fieldRow(f: FieldDef, catalog: DataCatalog) {
     const formatName = isString(f.format) ? f.format : null,
-        opts = describeFormat(resolveFieldFormat(f, catalog));
+        opts = describeFormat(formatOf(f, catalog));
     return {
         id: `field:${f.name}`,
         name: f.name,
@@ -268,7 +274,7 @@ function kindRows(catalog: DataCatalog) {
         base: k.base,
         format: [
             describeSpec(k.format),
-            describeFormat(resolveFieldFormat({name, type: 'number', kind: name}, catalog))
+            describeFormat(formatOf({name, type: 'number', kind: name}, catalog))
         ]
             .filter(Boolean)
             .join(': '),
@@ -288,6 +294,11 @@ function formatRows(catalog: DataCatalog) {
                 .map(([n]) => n)
                 .join(', ') || null
     }));
+}
+
+/** A field's format as the catalog resolves it, before any blueprint or widget changes it. */
+export function formatOf(field: FieldDef, catalog: DataCatalog): PlainObject {
+    return resolveFormat(field, [], {catalog, blueprint: null});
 }
 
 function pathsOf(uses: FieldUse[]): string {

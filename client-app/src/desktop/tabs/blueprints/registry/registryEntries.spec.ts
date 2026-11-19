@@ -1,5 +1,5 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
-import {DataCatalog} from '@xh/hoist-chat-kit/blueprint';
+import {DataCatalog, registryUsages} from '@xh/hoist-chat-kit/blueprint';
 import {chatUiStackSpec, chatUiTextSpec} from '@xh/hoist-chat-kit/desktop/cmp/genui';
 import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {describe, expect, it} from 'vitest';
@@ -7,7 +7,7 @@ import catalogJson from '../../../../test-support/blueprintsCatalog.json';
 import p3 from '../scenarios/p3-morning-report.json';
 import w2 from '../scenarios/w2-two-cities.json';
 import {createToolboxRegistry} from '../toolboxRegistry';
-import {findRegistryUsages, registryEntries} from './registryEntries';
+import {registryEntries} from './registryEntries';
 
 const catalog = new DataCatalog(catalogJson as any),
     dashboard = createToolboxRegistry(),
@@ -52,7 +52,7 @@ describe('registry origins', () => {
 });
 
 describe('registry used marks', () => {
-    const usages = findRegistryUsages(p3 as Blueprint, dashboard, catalog);
+    const usages = registryUsages(p3 as Blueprint, dashboard, catalog);
 
     it('marks the widgets each element is', () => {
         expect(usages['widget:statCardStrip']).toEqual(['/elements/headline/component']);
@@ -85,7 +85,7 @@ describe('registry used marks', () => {
 
     it('marks a renderer through the fields that use it', () => {
         expect(usages['renderer:ticker']).toContain('positions.symbol');
-        const weather = findRegistryUsages(w2 as Blueprint, dashboard, catalog);
+        const weather = registryUsages(w2 as Blueprint, dashboard, catalog);
         expect(weather['renderer:weatherIcon']).toEqual(
             expect.arrayContaining(['weather.conditions', 'currentWeather.conditions'])
         );
@@ -102,7 +102,7 @@ describe('registry used marks', () => {
                 }
             }
         };
-        expect(findRegistryUsages(bp, answers, catalog)['presentation:chart.card']).toEqual([
+        expect(registryUsages(bp, answers, catalog)['presentation:chart.card']).toEqual([
             '/elements/c/config/presentation'
         ]);
     });

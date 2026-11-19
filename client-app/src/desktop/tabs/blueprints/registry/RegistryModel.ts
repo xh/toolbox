@@ -1,5 +1,5 @@
 import type {BlueprintRegistry, FieldDef} from '@xh/hoist-chat-kit/blueprint';
-import {ARCHITECT_TOOLS, architectPrompt} from '@xh/hoist-chat-kit/blueprint';
+import {ARCHITECT_TOOLS, architectPrompt, registryUsages} from '@xh/hoist-chat-kit/blueprint';
 import type {ArchitectTarget} from '@xh/hoist-chat-kit/blueprint';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
@@ -8,9 +8,9 @@ import {bindable, computed} from '@xh/hoist/mobx';
 import {isEmpty, isString} from 'lodash';
 import type {ReactNode} from 'react';
 import {BlueprintsPanelModel} from '../BlueprintsPanelModel';
-import {resolveFieldFormat} from '../catalog/catalogFields';
+import {formatOf} from '../catalog/CatalogModel';
 import type {RegistryEntry, RegistryOrigin} from './registryEntries';
-import {findRegistryUsages, registryEntries, sampleParams, schemaRows} from './registryEntries';
+import {registryEntries, sampleParams, schemaRows} from './registryEntries';
 
 export type RegistryContext = 'dashboard' | 'answer';
 
@@ -99,7 +99,7 @@ export class RegistryModel extends HoistModel {
     @computed
     get usages(): Record<string, string[]> {
         const {blueprint, catalog} = this.blueprintModel;
-        return findRegistryUsages(blueprint, this.registry, catalog);
+        return registryUsages(blueprint, this.registry, catalog);
     }
 
     get selected(): RegistryEntry {
@@ -224,7 +224,7 @@ export class RegistryModel extends HoistModel {
             return spec.render(value, {
                 field,
                 config,
-                format: resolveFieldFormat(field, this.blueprintModel.catalog),
+                format: formatOf(field, this.blueprintModel.catalog),
                 isAggregate: false,
                 formatValue: (v: unknown) => (v == null ? '' : String(v))
             });

@@ -1,35 +1,36 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
-import {DataCatalog} from '@xh/hoist-chat-kit/blueprint';
+import {DataCatalog, fieldUsages} from '@xh/hoist-chat-kit/blueprint';
 import {describe, expect, it} from 'vitest';
 import catalogJson from '../../../../test-support/blueprintsCatalog.json';
 import p3 from '../scenarios/p3-morning-report.json';
 import w2 from '../scenarios/w2-two-cities.json';
-import {describeFormat, findFieldUsages, resolveFieldFormat} from './catalogFields';
+import {formatOf} from './CatalogModel';
+import {describeFormat} from './catalogFields';
 
 const catalog = new DataCatalog(catalogJson as any),
     field = (dataset: string, name: string) => catalog.getDataset(dataset).fields[name],
-    usedNames = (usages: ReturnType<typeof findFieldUsages>, dataset: string) =>
+    usedNames = (usages: ReturnType<typeof fieldUsages>, dataset: string) =>
         Object.keys(usages[dataset] ?? {}).sort();
 
 describe('field resolution', () => {
     it('resolves a format through the kind', () => {
-        expect(resolveFieldFormat(field('positions', 'pnlDay'), catalog)).toEqual({
+        expect(formatOf(field('positions', 'pnlDay'), catalog)).toEqual({
             precision: 0,
             ledger: true,
             colorSpec: true,
             tooltip: true
         });
-        expect(resolveFieldFormat(field('positions', 'mktVal'), catalog)).toEqual({
+        expect(formatOf(field('positions', 'mktVal'), catalog)).toEqual({
             scale: 'millions',
             precision: 1,
             ledger: true
         });
-        expect(resolveFieldFormat(field('positions', 'pctNav'), catalog)).toEqual({precision: 2});
+        expect(formatOf(field('positions', 'pctNav'), catalog)).toEqual({precision: 2});
     });
 
     it('starts from the built-in default of the base kind', () => {
-        expect(resolveFieldFormat(field('positions', 'dv01'), catalog)).toEqual({precision: 2});
-        expect(resolveFieldFormat(field('positions', 'quantity'), catalog)).toEqual({
+        expect(formatOf(field('positions', 'dv01'), catalog)).toEqual({precision: 2});
+        expect(formatOf(field('positions', 'quantity'), catalog)).toEqual({
             precision: 0
         });
     });
@@ -50,8 +51,8 @@ describe('field resolution', () => {
             }
         });
         const f = (name: string) => small.getDataset('ds').fields[name];
-        expect(resolveFieldFormat(f('a'), small)).toEqual({precision: 0, ledger: true});
-        expect(resolveFieldFormat(f('b'), small)).toEqual({precision: 2, ledger: true});
+        expect(formatOf(f('a'), small)).toEqual({precision: 0, ledger: true});
+        expect(formatOf(f('b'), small)).toEqual({precision: 2, ledger: true});
         expect(f('a').aggregator).toBe('SUM');
         expect(f('c').aggregator).toBe('MAX');
     });
@@ -71,7 +72,7 @@ describe('field resolution', () => {
 });
 
 describe('used-field marks', () => {
-    const usages = findFieldUsages(p3 as Blueprint, catalog);
+    const usages = fieldUsages(p3 as Blueprint, catalog);
 
     it("marks each widget's fields on its source's dataset", () => {
         expect(usedNames(usages, 'positions')).toEqual(
@@ -129,7 +130,7 @@ describe('used-field marks', () => {
     });
 
     it('marks fields across sources over the same dataset', () => {
-        const weather = findFieldUsages(w2 as Blueprint, catalog);
+        const weather = fieldUsages(w2 as Blueprint, catalog);
         expect(usedNames(weather, 'currentWeather')).toEqual([
             'conditions',
             'feelsLike',
@@ -151,6 +152,6 @@ describe('used-field marks', () => {
     });
 
     it('marks nothing for an empty blueprint', () => {
-        expect(findFieldUsages(null, catalog)).toEqual({});
+        expect(fieldUsages(null, catalog)).toEqual({});
     });
 });

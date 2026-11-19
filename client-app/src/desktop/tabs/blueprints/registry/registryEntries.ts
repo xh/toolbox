@@ -1,9 +1,7 @@
-import type {Blueprint, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
 import {BlueprintRegistry} from '@xh/hoist-chat-kit/blueprint';
 import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import type {PlainObject} from '@xh/hoist/core';
-import {isArray, isPlainObject, isString, uniq} from 'lodash';
-import {findFieldUsages} from '../catalog/catalogFields';
+import {isPlainObject, isString} from 'lodash';
 
 export type RegistryKind =
     'widget' | 'variableType' | 'resolver' | 'action' | 'renderer' | 'presentation';
@@ -65,62 +63,6 @@ export function registryEntries(
             );
         });
     });
-    return ret;
-}
-
-/**
- * Where the blueprint uses each registry entry, by entry ID: the elements of each widget and the
- * presentations they draw with, the variable types and resolvers of its variables, the actions of
- * its buttons, and the renderers its configs name or its fields render with.
- */
-export function findRegistryUsages(
-    blueprint: Blueprint,
-    registry: BlueprintRegistry,
-    catalog: DataCatalog
-): Record<string, string[]> {
-    const ret: Record<string, string[]> = {};
-    if (!blueprint) return ret;
-    const mark = (id: string, path: string) => (ret[id] ??= []).push(path);
-
-    Object.entries(blueprint.elements ?? {}).forEach(([id, el]) => {
-        mark(`widget:${el.component}`, `/elements/${id}/component`);
-        const presentation = el.config?.presentation;
-        if (isString(presentation) && presentation !== 'panel') {
-            mark(
-                `presentation:${el.component}.${presentation}`,
-                `/elements/${id}/config/presentation`
-            );
-        }
-    });
-    Object.entries(blueprint.variables ?? {}).forEach(([name, decl]) => {
-        const type = decl.type?.replace(/\[]$/, '');
-        if (registry.variableTypes[type]) mark(`variableType:${type}`, `/variables/${name}/type`);
-    });
-    walk(blueprint, '', (key, value, path) => {
-        if (key === 'resolver' && isString(value)) mark(`resolver:${value}`, path);
-        if (key === 'renderer') {
-            const name = isString(value) ? value : (value as PlainObject)?.name;
-            if (isString(name)) mark(`renderer:${name}`, path);
-        }
-        if (key === 'action') {
-            [value].flat().forEach((a, i) => {
-                const at = isArray(value) ? `${path}/${i}/type` : `${path}/type`;
-                if (isString((a as PlainObject)?.type))
-                    mark(`action:${(a as PlainObject).type}`, at);
-            });
-        }
-    });
-
-    // A renderer each used field renders with, through its kind or its own spec.
-    Object.entries(findFieldUsages(blueprint, catalog)).forEach(([ds, fields]) => {
-        Object.keys(fields).forEach(f => {
-            const spec = catalog.getDataset(ds)?.fields[f]?.renderer,
-                name = isString(spec) ? spec : (spec as PlainObject)?.name;
-            if (isString(name)) mark(`renderer:${name}`, `${ds}.${f}`);
-        });
-    });
-
-    Object.keys(ret).forEach(id => (ret[id] = uniq(ret[id])));
     return ret;
 }
 
@@ -247,13 +189,4 @@ function sampleValue(name: string, s: PlainObject): unknown {
         default:
             return name;
     }
-}
-
-function walk(o: unknown, path: string, fn: (key: string, value: unknown, path: string) => void) {
-    if (isArray(o)) return o.forEach((v, i) => walk(v, `${path}/${i}`, fn));
-    if (!isPlainObject(o)) return;
-    Object.entries(o as PlainObject).forEach(([k, v]) => {
-        fn(k, v, `${path}/${k}`);
-        walk(v, `${path}/${k}`, fn);
-    });
 }
