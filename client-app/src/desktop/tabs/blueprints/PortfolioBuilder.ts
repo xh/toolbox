@@ -1,4 +1,8 @@
-import type {BlueprintWidgetConfig, WidgetSpec} from '@xh/hoist-chat-kit/blueprint';
+import type {
+    BlueprintSchema,
+    BlueprintWidgetConfig,
+    WidgetSpec
+} from '@xh/hoist-chat-kit/blueprint';
 import {BlueprintWidgetModel} from '@xh/hoist-chat-kit/blueprint';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, span} from '@xh/hoist/cmp/layout';
@@ -24,6 +28,16 @@ export interface Portfolio {
     holdings: Holding[];
 }
 
+export interface PortfolioBuilderConfig {
+    maxHoldings?: number;
+}
+
+const CONFIG_SCHEMA = {
+    type: 'object',
+    additionalProperties: false,
+    properties: {maxHoldings: {type: 'integer', minimum: 1, maximum: 500}}
+} as const satisfies BlueprintSchema;
+
 export interface InstrumentOption {
     symbol: string;
     name: string;
@@ -35,7 +49,7 @@ export interface InstrumentOption {
  * the `portfolio` variable whose `setBy` names it. Each add, remove or weight edit sets the
  * variable. An empty portfolio sets it to null.
  */
-export class PortfolioBuilderModel extends BlueprintWidgetModel {
+export class PortfolioBuilderModel extends BlueprintWidgetModel<PortfolioBuilderConfig> {
     @observableRef accessor instruments: InstrumentOption[] = [];
 
     @managed gridModel = new GridModel({
@@ -196,11 +210,7 @@ export const portfolioBuilderSpec: WidgetSpec = {
     guidance:
         'An app widget where a user builds a portfolio from tickers and weights. Its value is a ' +
         'portfolio variable.',
-    config: {
-        type: 'object',
-        additionalProperties: false,
-        properties: {maxHoldings: {type: 'integer', minimum: 1, maximum: 500}}
-    },
+    config: CONFIG_SCHEMA,
     value: {type: 'portfolio'},
     size: {default: {w: 4, h: 8}},
     example: {component: 'portfolioBuilder', config: {maxHoldings: 50}},
