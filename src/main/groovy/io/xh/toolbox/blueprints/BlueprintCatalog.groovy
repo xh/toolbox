@@ -104,13 +104,44 @@ class BlueprintCatalog {
             }
         }
 
+        List<Map> serverColumns = fields
+            .findAll { isServerField(fieldDefs[it]) }
+            .collect { [name: it, field: it, params: [:]] }
+        serverColumns += instances
+            .findAll { isServerField(fieldDefs[it.field]) }
+            .collect { [name: it.name, field: it.field, params: it.params] }
+
         return new BlueprintRequest(
             dataset: dataset,
             params: params,
             fields: fields,
             instances: instances,
-            filter: filter
+            filter: filter,
+            groupBy: parseGroupBy(spec.groupBy, fieldDefs, dataset),
+            serverColumns: serverColumns
         )
+    }
+
+    /** True for a field that rolls up on the server, itself or through its kind. */
+    boolean isServerField(Map fd) {
+        (fd.aggregator ?: json.kinds?.get(fd.kind)?.aggregator) == 'server'
+    }
+
+    /**
+     * Grouping sets, each a sorted list of the dataset's dimensions, `[]` for the grand total.
+     * @throws BlueprintRequestException naming each problem found.
+     */
+    List<List<String>> parseGroupBy(Object spec, Map<String, Map> fieldDefs, String dataset) {
+        if (spec == null) return []
+        if (!(spec instanceof List) || !spec.every { it instanceof List }) {
+            fail("groupBy must be a list of grouping sets, each a list of dimensions, got '$spec'")
+        }
+        return (spec as List<List>).collect { List set ->
+            set.each { dim ->
+                if (!fieldDefs[dim]?.isDimension) fail("groupBy names '$dim', which is not a dimension of dataset '$dataset'")
+            }
+            (set as List<String>).sort(false)
+        }.unique()
     }
 
     //------------------------

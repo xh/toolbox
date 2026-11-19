@@ -1,6 +1,7 @@
 package io.xh.toolbox.blueprints
 
 import grails.testing.services.ServiceUnitTest
+import io.xh.toolbox.portfolio.PortfolioDatasets
 import io.xh.toolbox.weather.OpenWeatherRowsSpec
 import io.xh.hoist.test.HoistUnitTest
 import spock.lang.Specification
@@ -8,6 +9,8 @@ import spock.lang.Specification
 import static io.xh.toolbox.portfolio.PortfolioFixture.*
 
 class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<BlueprintDataService>, HoistUnitTest {
+
+    private static Map bySymbol(List<Map> rows, String symbol) { rows.find { it.symbol == symbol } }
 
     private List<Map> rows(Map spec) {
         service.getRows(service.parseRequest(spec), datasets())
@@ -30,6 +33,66 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         aaa.mktVal == 21600
         Math.abs(aaa.ret - 0.2) < 1e-9
         aaa.down10 == -2592
+    }
+
+    def 'server fields roll up per grouping set and for the total, named by request column'() {
+        given:
+        def ds = datasets()
+        def leaves = ds.positions(D4)
+        def navs = PortfolioDatasets.navsByFund(leaves)
+
+        when:
+        def result = service.query(service.parseRequest(
+            dataset: 'positions',
+            params : [asOf: D4.toString()],
+            fields : ['fund', 'symbol', 'mktVal', 'var95', 'pctNav', [name: 'ret', field: 'return', params: [start: D1.toString(), end: D4.toString()]]],
+            groupBy: [[], ['fund'], ['fund', 'symbol']]
+        ), ds)
+        def byDims = result.aggregates.collectEntries { [it.dims, it.values] }
+
+        then:
+        result.rows.size() == 3
+        result.aggregates.size() == 1 + 2 + 3
+        byDims.keySet() == [[:], [fund: F1], [fund: F2], [fund: F1, symbol: 'AAA'], [fund: F1, symbol: bond.symbol], [fund: F2, symbol: opt.symbol]] as Set
+        byDims[[:]].keySet() as List == ['var95', 'pctNav', 'ret']
+        byDims[[:]].var95 == ds.groupVar(leaves, D4, PortfolioDatasets.Z95)
+        byDims[[fund: F1]].pctNav == PortfolioDatasets.groupPctNav(leaves.findAll { it.fund == F1 }, navs)
+        byDims[[fund: F1]].pctNav == 2d
+        byDims[[fund: F2, symbol: opt.symbol]].ret == ds.groupReturn([bySymbol(leaves, opt.symbol)], D1, D4)
+        Math.abs(byDims[[fund: F1, symbol: 'AAA']].var95 - bySymbol(leaves, 'AAA').var95) <= 1
+    }
+
+    def 'aggregates cover the filtered leaves, keep fund NAVs whole, and give empty dimensions as null'() {
+        given:
+        def ds = datasets()
+        def leaves = ds.positions(D4)
+
+        when:
+        def aggs = service.query(service.parseRequest(
+            dataset: 'positions',
+            params : [asOf: D4.toString()],
+            fields : ['var95', 'pctNav'],
+            groupBy: [[], ['underlying']],
+            filter : [field: 'instrumentType', op: '!=', value: 'Bond']
+        ), ds).aggregates
+        def total = aggs.find { it.dims == [:] }
+
+        then:
+        total.values.pctNav == 24400 / 62200d
+        total.values.var95 == ds.groupVar(leaves.findAll { it.instrumentType != 'Bond' }, D4, PortfolioDatasets.Z95)
+        aggs*.dims.toSet() == [[:], [underlying: null], [underlying: 'AAA']] as Set
+    }
+
+    def 'aggregates are sent only for a server field and a grouping set'() {
+        given:
+        def ds = datasets()
+        def base = [dataset: 'positions', params: [asOf: D4.toString()]]
+
+        expect:
+        service.query(service.parseRequest(base + [fields: ['mktVal'], groupBy: [[]]]), ds).aggregates == null
+        service.query(service.parseRequest(base + [fields: ['var95'], groupBy: []]), ds).aggregates == null
+        service.query(service.parseRequest(base + [fields: ['var95']]), ds).formatForJSON().keySet() == ['rows'] as Set
+        service.query(service.parseRequest(base + [fields: ['var95'], groupBy: [[]]]), ds).formatForJSON().keySet() == ['rows', 'aggregates'] as Set
     }
 
     def 'the source filter applies on the server, including to field instances'() {
