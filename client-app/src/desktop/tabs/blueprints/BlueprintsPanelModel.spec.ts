@@ -69,4 +69,15 @@ describe('Blueprints JSON harness', () => {
         model.scenario = value;
         expect(model.hasErrors).toBe(false);
     });
+
+    it('shows the blueprint as it now stands', () => {
+        model.scenario = 'p1';
+        const {version} = model.blueprintModel;
+        model.blueprintModel.applyEdit({
+            base: version,
+            ops: [{op: 'set', path: '/elements/posGrid/config/groupBy', value: ['region']}]
+        });
+        model.showCurrent();
+        expect(JSON.parse(model.draft).elements.posGrid.config.groupBy).toEqual(['region']);
+    });
 });

@@ -60,6 +60,12 @@ const harnessPanel = hoistCmp.factory<BlueprintsPanelModel>({
                 select({bind: 'scenario', options: SCENARIOS, width: 220}),
                 filler(),
                 button({
+                    text: 'Current',
+                    icon: Icon.refresh(),
+                    tooltip: 'Show the blueprint as it now stands, after any edits',
+                    onClick: () => model.showCurrent()
+                }),
+                button({
                     text: 'Apply',
                     icon: Icon.check(),
                     intent: 'primary',

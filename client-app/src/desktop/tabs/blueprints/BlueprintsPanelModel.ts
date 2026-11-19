@@ -86,6 +86,15 @@ export class BlueprintsPanelModel extends HoistModel {
         this.loadScenario(this.scenario);
     }
 
+    /** Show the blueprint as it now stands, after any edits, in the editor. */
+    @action
+    showCurrent() {
+        const {blueprint} = this.blueprintModel ?? {};
+        this.draft = blueprint ? JSON.stringify(blueprint, null, 4) : '';
+        this.parseError = null;
+        this.applyIssues = [];
+    }
+
     @action
     apply() {
         if (!this.blueprintModel) return;

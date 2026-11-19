@@ -21,7 +21,7 @@
             "type": "string[]",
             "label": "Group by",
             "setBy": {"element": "groupChooser"},
-            "default": {"value": ["strategy", "trader"]}
+            "default": {"value": ["strategy", "trader", "symbol"]}
         },
         "pnlFilter": {"type": "filter", "setBy": "action"},
         "selection": {"type": "filter", "setBy": {"element": "posGrid", "output": "selection"}},
@@ -71,7 +71,7 @@
                                 "config": {
                                     "columnState": [
                                         "grossExposure", "netExposure", "betaAdjExposure", "beta", "var95",
-                                        "pctNav", "retYtd"
+                                        "pctNav", "retYtd", "delta", "vega"
                                     ]
                                 }
                             }
@@ -136,7 +136,7 @@
                 {"id": "priceChart", "x": 8, "y": 1, "w": 4, "h": 9}
             ]
         },
-        "groupChooser": {"component": "groupingChooser", "config": {"dimensions": ["fund", "strategy", "trader", "sector", "region"]}},
+        "groupChooser": {"component": "groupingChooser", "config": {"dimensions": ["fund", "strategy", "trader", "sector", "region", "symbol"]}},
         "pnlButtons": {
             "component": "buttonGroup",
             "config": {
