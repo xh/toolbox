@@ -90,7 +90,7 @@ const benchTbar = hoistCmp.factory<PivotViewBenchModel>(({model}) =>
             button({
                 text: profile.label,
                 disabled: model.running,
-                title: profile.description,
+                tooltip: profile.description,
                 onClick: () => model.runProfileAsync(profile.id)
             })
         ),

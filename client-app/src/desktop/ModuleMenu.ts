@@ -35,7 +35,7 @@ export function moduleMenuItems(appModel: AppModel): MenuItem[] {
                 me.rightElement = button({
                     className: 'tb-module-menu-item__favorite-button',
                     icon: Icon.favorite({prefix: isFavorite ? 'fas' : 'fal'}),
-                    title: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
+                    tooltip: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
                     minimal: true,
                     onClick: () => switcherModel.toggleTabFavorite(tab.id)
                 });

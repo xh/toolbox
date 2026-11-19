@@ -75,7 +75,7 @@ const tbar = hoistCmp.factory(() => {
             gridCountLabel({unit: 'latest recall'}),
             toolbarSep(),
             button({
-                title: 'About the API',
+                tooltip: 'About the API',
                 text: 'About',
                 icon: Icon.questionCircle(),
                 onClick: () =>

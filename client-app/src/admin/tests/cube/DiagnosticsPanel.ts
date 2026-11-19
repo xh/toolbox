@@ -120,7 +120,7 @@ export const diagnosticsPanel = hoistCmp.factory({
                     })
                 }),
                 button({
-                    title: 'Reset all counts and run times',
+                    tooltip: 'Reset all counts and run times',
                     icon: Icon.reset({className: 'xh-red'}),
                     onClick: () => model.resetDiagnostics()
                 })

@@ -166,7 +166,7 @@ const gridPivotTab = hoistCmp.factory<CubeGridTestModel>(({model}) => {
                 button({
                     icon: Icon.expand(),
                     text: 'Expand all',
-                    title: 'pivotModel.expandAll()',
+                    tooltip: 'pivotModel.expandAll()',
                     outlined: true,
                     onClick: () => cubeGridModel?.pivotModel.expandAll()
                 }),
@@ -174,7 +174,7 @@ const gridPivotTab = hoistCmp.factory<CubeGridTestModel>(({model}) => {
                 button({
                     icon: Icon.collapse(),
                     text: 'Collapse all',
-                    title: 'pivotModel.collapseAll()',
+                    tooltip: 'pivotModel.collapseAll()',
                     outlined: true,
                     onClick: () => cubeGridModel?.pivotModel.collapseAll()
                 })
@@ -204,7 +204,7 @@ const gridCoreTab = hoistCmp.factory<CubeGridTestModel>(({model}) => {
                 button({
                     icon: Icon.filter(),
                     text: 'Filter dialog',
-                    title: 'filterModel.openDialog()',
+                    tooltip: 'filterModel.openDialog()',
                     outlined: true,
                     disabled: !cubeGridModel?.gridModel.filterModel,
                     onClick: () => cubeGridModel.gridModel.filterModel.openDialog()
@@ -213,7 +213,7 @@ const gridCoreTab = hoistCmp.factory<CubeGridTestModel>(({model}) => {
                 colChooserButton({
                     gridModel: cubeGridModel?.gridModel,
                     text: 'Choose columns',
-                    title: 'Fixed columns only - pivot columns are not chooser-managed.',
+                    tooltip: 'Fixed columns only - pivot columns are not chooser-managed.',
                     outlined: true,
                     disabled: !cubeGridModel
                 })
@@ -234,31 +234,31 @@ const dataTab = hoistCmp.factory<CubeGridTestModel>(({model}) =>
         updateButton({
             icon: Icon.reset(),
             text: 'Reload initial data',
-            title: 'Reload the leaves as first generated, undoing every update below.',
+            tooltip: 'Reload the leaves as first generated, undoing every update below.',
             onClick: () => model.reloadDataAsync()
         }),
         updateButton({
             icon: Icon.bolt(),
             text: 'Tick measures',
-            title: 'Perturb 2% of measures - no dimension moves, so columns must hold.',
+            tooltip: 'Perturb 2% of measures - no dimension moves, so columns must hold.',
             onClick: () => model.tickAsync()
         }),
         updateButton({
             icon: Icon.add(),
             text: 'Add pivot value',
-            title: 'Structural - the new value must mint its own cell fields and columns.',
+            tooltip: 'Structural - the new value must mint its own cell fields and columns.',
             onClick: () => model.addPivotValueAsync()
         }),
         updateButton({
             icon: Icon.questionCircle(),
             text: 'Blank pivot values',
-            title: 'Null and blank pivot values form their own labelled path segment.',
+            tooltip: 'Null and blank pivot values form their own labelled path segment.',
             onClick: () => model.blankPivotValuesAsync()
         }),
         updateButton({
             icon: Icon.arrowsLeftRight(),
             text: 'Lengthen pivot values',
-            title: 'Long innermost values, to see leaf labels fitted and truncated.',
+            tooltip: 'Long innermost values, to see leaf labels fitted and truncated.',
             onClick: () => model.lengthenPivotValuesAsync()
         })
     )
