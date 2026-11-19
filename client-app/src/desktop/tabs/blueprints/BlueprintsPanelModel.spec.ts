@@ -25,6 +25,7 @@ describe('Blueprints JSON harness', () => {
     it('builds its model from the server catalog', () => {
         expect(catalogRequests).toBe(1);
         expect(model.blueprintModel.catalog).toBeInstanceOf(DataCatalog);
+        expect(model.blueprintModel.mode).toBe('design');
     });
 
     it('applies the first scenario once the catalog loads', () => {

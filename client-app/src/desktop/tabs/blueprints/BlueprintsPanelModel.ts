@@ -1,4 +1,8 @@
-import type {BlueprintDataProvider, BlueprintIssue} from '@xh/hoist-chat-kit/blueprint';
+import type {
+    BlueprintDataProvider,
+    BlueprintIssue,
+    BlueprintMode
+} from '@xh/hoist-chat-kit/blueprint';
 import {BlueprintModel, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
 import {HoistModel, XH} from '@xh/hoist/core';
 import type {LoadSpec, PlainObject} from '@xh/hoist/core';
@@ -73,8 +77,15 @@ export class BlueprintsPanelModel extends HoistModel {
                     dataProvider: this.createProvider(catalog)
                 })
             );
+            // The harness is a design surface: widget changes are edits.
+            this.blueprintModel.mode = 'design';
         });
         this.loadScenario(this.scenario);
+    }
+
+    @action
+    setMode(mode: BlueprintMode) {
+        this.blueprintModel.mode = mode;
     }
 
     @action
