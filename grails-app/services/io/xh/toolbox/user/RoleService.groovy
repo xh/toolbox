@@ -22,8 +22,8 @@ class RoleService extends DefaultRoleService {
     // bootstrap admin the roles that inherit from its admin roles. DefaultRoleService adds those
     // admin roles by name only, after inheritance has been resolved, so the bootstrap admin gets no
     // role that lists HOIST_ADMIN as a member. This patches one Toolbox role and is not a long-term
-    // fix.
-    private String bootstrapAdminUser = null
+    // fix. Named apart from DefaultRoleService.bootstrapAdminUser, which this would otherwise shadow.
+    private String llmBootstrapUser = null
 
     /**
      * Note the local bootstrap admin, with the same local development guard that Hoist applies
@@ -32,7 +32,7 @@ class RoleService extends DefaultRoleService {
     void init() {
         super.init()
         if (isLocalDevelopment && !isProduction) {
-            bootstrapAdminUser = getInstanceConfig('bootstrapAdminUser')?.toLowerCase()
+            llmBootstrapUser = getInstanceConfig('bootstrapAdminUser')?.toLowerCase()
         }
     }
 
@@ -41,12 +41,12 @@ class RoleService extends DefaultRoleService {
      * test the Live Model demo. Hoist grants that user its admin roles by name, so it gets no role
      * that lists HOIST_ADMIN as a member. The hourly limit on model calls still applies.
      *
-     * TEMPORARY - see the note on bootstrapAdminUser above.
+     * TEMPORARY - see the note on llmBootstrapUser above.
      */
     @Override
     Set<String> getRolesForUser(String username) {
         def ret = super.getRolesForUser(username)
-        if (bootstrapAdminUser && bootstrapAdminUser == username.toLowerCase()) {
+        if (llmBootstrapUser && llmBootstrapUser == username.toLowerCase()) {
             ret += 'TOOLBOX_LLM_USER'
         }
         ret
