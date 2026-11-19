@@ -172,6 +172,7 @@
             "params": {
                 "shock": {
                     "type": "number",
+                    "kind": "fraction",
                     "required": true,
                     "description": "An equity shock as a fraction, such as -0.1 for minus 10 percent."
                 }
