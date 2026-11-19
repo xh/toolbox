@@ -34,7 +34,7 @@
 
 ### Libraries
 
-* @xh/hoist-chat-kit `2.0` - new
+* @xh/hoist-chat-kit `3.0` - new
 * ag-grid `36.2 → 36.3`
 * Gradle `9.8 → 9.9`
 
