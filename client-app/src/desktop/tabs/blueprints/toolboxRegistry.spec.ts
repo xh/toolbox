@@ -3,10 +3,10 @@ import {BlueprintRegistry, DataCatalog, validateBlueprint} from '@xh/hoist-chat-
 import {XH} from '@xh/hoist/core';
 import {initTestAppAsync} from '@xh/hoist/test-support';
 import {beforeAll, describe, expect, it} from 'vitest';
-import portfolioCatalog from './catalog/portfolio.json';
+import catalogJson from './catalog/catalog.json';
 import {createToolboxRegistry, userFundResolver} from './toolboxRegistry';
 
-const catalog = new DataCatalog(portfolioCatalog);
+const catalog = new DataCatalog(catalogJson);
 
 const fundGrid: Blueprint = {
     variables: {

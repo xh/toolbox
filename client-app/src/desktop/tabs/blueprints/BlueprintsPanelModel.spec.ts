@@ -2,7 +2,7 @@ import {DataCatalog, FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/bluepri
 import {initTestAppAsync} from '@xh/hoist/test-support';
 import {afterAll, beforeAll, describe, expect, it} from 'vitest';
 import {BlueprintsPanelModel} from './BlueprintsPanelModel';
-import portfolioCatalog from './catalog/portfolio.json';
+import catalogJson from './catalog/catalog.json';
 import p1 from './scenarios/p1-one-grid.json';
 import p2 from './scenarios/p2-linked-dashboard.json';
 
@@ -10,7 +10,7 @@ let model: BlueprintsPanelModel;
 
 beforeAll(async () => {
     await initTestAppAsync();
-    const catalog = new DataCatalog(portfolioCatalog);
+    const catalog = new DataCatalog(catalogJson);
     model = new BlueprintsPanelModel(new FakeBlueprintDataProvider({catalog}));
 });
 

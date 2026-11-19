@@ -3,7 +3,7 @@ import {BlueprintModel, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
 import {HoistModel, managed} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
 import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
-import portfolioCatalog from './catalog/portfolio.json';
+import catalogJson from './catalog/catalog.json';
 import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
 import p1 from './scenarios/p1-one-grid.json';
@@ -45,7 +45,7 @@ export class BlueprintsPanelModel extends HoistModel {
         super();
 
         this.blueprintModel = new BlueprintModel({
-            catalog: new DataCatalog(portfolioCatalog),
+            catalog: new DataCatalog(catalogJson),
             registry: createToolboxRegistry(),
             dataProvider
         });
