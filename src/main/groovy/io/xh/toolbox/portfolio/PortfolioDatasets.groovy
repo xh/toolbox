@@ -1,5 +1,6 @@
 package io.xh.toolbox.portfolio
 
+import groovy.transform.CompileStatic
 import java.time.Instant
 import java.time.LocalDate
 
@@ -16,6 +17,8 @@ import static io.xh.toolbox.portfolio.InstrumentType.Option
 class PortfolioDatasets {
 
     static final int VOL_WINDOW = 60
+    static final double Z95 = 1.645, Z99 = 2.326
+    static final double FALLBACK_VOL = 0.02
     static final double HYPOTHETICAL_NOTIONAL = 100_000_000
 
     final Portfolio portfolio
@@ -23,7 +26,9 @@ class PortfolioDatasets {
     final Instant now
 
     private final Map<LocalDate, Integer> dayIndex
-    private final Map<String, Double> volCache = [:]
+    private final Map<LocalDate, Map<String, double[]>> returnsCache = [:]
+    // A group's P&L deviation, shared by its VaR at each confidence. Keyed by the group's row list.
+    private final Map<List<Map>, Double> groupPnlStdev = new IdentityHashMap()
 
     PortfolioDatasets(Portfolio portfolio, Map<String, MarketPrice> currentPrices, Instant now) {
         this.portfolio = portfolio
@@ -169,6 +174,51 @@ class PortfolioDatasets {
     }
 
     //------------------------
+    // Group values for measures that roll up on the server
+    //------------------------
+    /**
+     * One-day VaR of a group of position rows: z times the standard deviation of the group's
+     * daily P&L over the trailing window, from each row's net exposure and its returns. For a
+     * single row this is the row's own VaR.
+     */
+    Long groupVar(List<Map> rows, LocalDate asOf, double z) {
+        LocalDate day = resolveDay(asOf)
+        if (!day || !rows) return null
+        Double sd = groupPnlStdev.computeIfAbsent(rows) { pnlStdev(rows, day) }
+        return Math.round(z * sd)
+    }
+
+    /** Return over [start, end] of a group: its P&L over the window per unit of gross value at the start. */
+    Double groupReturn(List<Map> rows, LocalDate start, LocalDate end) {
+        LocalDate startDay = resolveDay(start), endDay = resolveDay(end)
+        double pnl = 0, gross = 0
+        Map<String, List<Double>> pxs = [:]
+        rows.each { row ->
+            String symbol = row.symbol
+            List<Double> px = pxs.computeIfAbsent(symbol) { [priceOn(symbol, startDay), priceOn(symbol, endDay)] }
+            Double pxStart = px[0], pxEnd = px[1]
+            if (!pxStart || pxEnd == null) return
+            double units = (row.quantity as double) * portfolio.instruments[symbol].multiplier
+            pnl += units * (pxEnd - pxStart)
+            gross += Math.abs(units * pxStart)
+        }
+        return gross ? pnl / gross : null
+    }
+
+    /** Weight of a group against the combined NAV of the funds its rows belong to. */
+    static Double groupPctNav(List<Map> rows, Map<String, Double> navs) {
+        double nav = (rows*.fund.unique().sum { navs[it] ?: 0d } ?: 0d) as double
+        return nav ? rows.sum(0L) { it.mktVal as long } / nav : null
+    }
+
+    /** NAV of each fund in a set of position rows: half the fund's gross market value. */
+    static Map<String, Double> navsByFund(List<Map> rows) {
+        rows
+            .groupBy { it.fund }
+            .collectEntries { fund, fundRows -> [fund, fundRows.sum { Math.abs(it.mktVal as long) } / 2d] }
+    }
+
+    //------------------------
     // Implementation
     //------------------------
     // Orders through the live day's current time, in time order.
@@ -244,8 +294,8 @@ class PortfolioDatasets {
             dv01           : isBond ? Math.round(mktVal * inst.duration * 0.0001) : null,
             yield          : isBond && px ? (inst.coupon * 100 / px).round(5) : null,
             beta           : inst.beta,
-            var95          : Math.round(Math.abs(netExposure) * dailyVol * 1.645),
-            var99          : Math.round(Math.abs(netExposure) * dailyVol * 2.326)
+            var95          : Math.round(Math.abs(netExposure) * dailyVol * Z95),
+            var99          : Math.round(Math.abs(netExposure) * dailyVol * Z99)
         ]
     }
 
@@ -287,13 +337,6 @@ class PortfolioDatasets {
         ]
     }
 
-    // NAV is half the fund's gross market value.
-    private static Map<String, Double> navsByFund(List<Map> rows) {
-        rows
-            .groupBy { it.fund }
-            .collectEntries { fund, fundRows -> [fund, fundRows.sum { Math.abs(it.mktVal as long) } / 2d] }
-    }
-
     private static void addPctNav(List<Map> rows) {
         Map<String, Double> navs = navsByFund(rows)
         rows.each { row ->
@@ -304,14 +347,51 @@ class PortfolioDatasets {
 
     // Standard deviation of daily log returns over the trailing window ending on day.
     private double vol(String symbol, LocalDate day) {
-        volCache.computeIfAbsent("$symbol|$day".toString()) {
+        double[] rets = returns(symbol, day)
+        return rets.length < 2 ? FALLBACK_VOL : stdev(rets)
+    }
+
+    // Standard deviation of a group's daily P&L over the trailing window ending on day.
+    @CompileStatic
+    private double pnlStdev(List<Map> rows, LocalDate day) {
+        double[] pnl = null
+        double gross = 0
+        for (Map row : rows) {
+            double exposure = (row.get('netExposure') as Number).doubleValue()
+            gross += Math.abs(exposure)
+            double[] rets = returns(volSymbol(row), day)
+            if (rets.length < 2) continue
+            if (pnl == null) pnl = new double[rets.length]
+            for (int i = 0; i < rets.length; i++) pnl[i] += exposure * rets[i]
+        }
+        return pnl == null ? FALLBACK_VOL * gross : stdev(pnl)
+    }
+
+    // Daily log returns over the trailing window ending on day. The same length for every symbol.
+    private double[] returns(String symbol, LocalDate day) {
+        returnsCache.computeIfAbsent(day) { [:] }.computeIfAbsent(symbol) {
             List<MarketPrice> series = portfolio.historicalPrices[symbol]
             int end = dayIndex[day], start = Math.max(1, end - VOL_WINDOW + 1)
-            if (!series || end < 2) return 0.02d
-            List<Double> rets = (start..end).collect { Math.log(series[it].close / series[it - 1].close) }
-            double mean = rets.sum() / rets.size()
-            return Math.sqrt(rets.sum { (it - mean) ** 2 } / (rets.size() - 1))
+            if (!series || end < 2) return new double[0]
+            double[] ret = new double[end - start + 1]
+            for (int i = start; i <= end; i++) ret[i - start] = Math.log(series[i].close / series[i - 1].close)
+            return ret
         }
+    }
+
+    @CompileStatic
+    private static double stdev(double[] vals) {
+        double mean = 0
+        for (double v : vals) mean += v
+        mean /= vals.length
+        double sq = 0
+        for (double v : vals) sq += (v - mean) * (v - mean)
+        return Math.sqrt(sq / (vals.length - 1))
+    }
+
+    @CompileStatic
+    private static String volSymbol(Map row) {
+        (row.get('instrumentType') == Option.name() ? row.get('underlying') : row.get('symbol')) as String
     }
 
     private static class Holding {

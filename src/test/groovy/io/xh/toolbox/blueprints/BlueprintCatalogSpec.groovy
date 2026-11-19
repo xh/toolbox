@@ -93,6 +93,40 @@ class BlueprintCatalogSpec extends Specification {
         e.message == "Parameter 'units' of dataset 'weather' must be one of imperial, metric, got 'kelvin'"
     }
 
+    def 'groupBy holds sorted, distinct sets of dimensions, and server columns are marked'() {
+        when:
+        def req = catalog.parseRequest(
+            dataset: 'positions',
+            params: [asOf: '2026-11-18'],
+            fields: ['sector', 'mktVal', 'var95', 'pctNav',
+                     [name: 'retYtd', field: 'return', params: [start: '2026-01-01', end: '2026-11-18']],
+                     [name: 'down10', field: 'shockedPnl', params: [shock: -0.1]]],
+            groupBy: [[], ['sector', 'fund'], ['fund', 'sector'], ['fund']]
+        )
+
+        then:
+        req.groupBy == [[], ['fund', 'sector'], ['fund']]
+        req.serverColumns*.name == ['var95', 'pctNav', 'retYtd']
+        req.serverColumns*.field == ['var95', 'pctNav', 'return']
+        req.serverColumns[2].params.start == LocalDate.of(2026, 1, 1)
+        catalog.parseRequest(dataset: 'orders', params: [asOf: '2026-11-18'], fields: ['dir']).groupBy == []
+    }
+
+    def 'groupBy may name only dimensions: #problem'() {
+        when:
+        catalog.parseRequest(dataset: 'positions', params: [asOf: '2026-11-18'], fields: ['var95'], groupBy: groupBy)
+
+        then:
+        def e = thrown(BlueprintRequestException)
+        e.message.startsWith(message)
+
+        where:
+        problem         | groupBy              || message
+        'a measure'     | [['mktVal']]         || "groupBy names 'mktVal', which is not a dimension of dataset 'positions'"
+        'unknown field' | [['fund', 'colour']] || "groupBy names 'colour', which is not a dimension of dataset 'positions'"
+        'not sets'      | ['fund']             || 'groupBy must be a list of grouping sets'
+    }
+
     def 'an optional param may be empty'() {
         expect:
         catalog.parseRequest(dataset: 'orders', params: [asOf: '2026-11-18', fund: ''], fields: ['dir']).params.fund == null

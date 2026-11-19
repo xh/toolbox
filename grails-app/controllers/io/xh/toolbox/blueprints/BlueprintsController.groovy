@@ -19,12 +19,17 @@ class BlueprintsController extends BaseController {
 
     def data() {
         def req = blueprintDataService.parseRequest(parseRequestJSON())
-        renderJSON(rows: blueprintDataService.getRows(req))
+        renderJSON(blueprintDataService.query(req))
     }
 
     def subscribe() {
         Map body = parseRequestJSON()
-        renderJSON(rows: blueprintSubscriptionService.subscribe(body, body.channelKey, body.topic))
+        renderJSON(blueprintSubscriptionService.subscribe(body, body.channelKey, body.topic))
+    }
+
+    def aggregates() {
+        Map body = parseRequestJSON()
+        renderJSON(aggregates: blueprintSubscriptionService.aggregates(body, body.channelKey, body.topic))
     }
 
     def unsubscribe() {

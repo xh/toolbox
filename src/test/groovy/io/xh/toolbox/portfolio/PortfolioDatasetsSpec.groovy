@@ -201,6 +201,49 @@ class PortfolioDatasetsSpec extends Specification {
         ds.returnFor([symbol: 'AAA', quantity: 10], LocalDate.of(2020, 1, 1), D3) == null
     }
 
+    def "group VaR comes from the group's combined P&L, and equals a lone row's own VaR"() {
+        given:
+        def ds = datasets()
+        def rows = ds.positions(D4)
+        def aaa = bySymbol(rows, 'AAA'), o = bySymbol(rows, opt.symbol)
+
+        expect: 'one row reproduces its leaf value'
+        Math.abs(ds.groupVar([aaa], D4, PortfolioDatasets.Z95) - aaa.var95) <= 1
+        Math.abs(ds.groupVar([o], D4, PortfolioDatasets.Z99) - o.var99) <= 1
+
+        and: 'the option moves with its underlying, so the two add up'
+        Math.abs(ds.groupVar([aaa, o], D4, PortfolioDatasets.Z95) - (aaa.var95 + o.var95)) <= 2
+
+        and: 'offsetting exposures to one instrument cancel, which a sum of leaves would miss'
+        ds.groupVar([[symbol: 'AAA', instrumentType: 'Equity', netExposure: 1000], [symbol: 'AAA', instrumentType: 'Equity', netExposure: -1000]], D4, PortfolioDatasets.Z95) == 0
+        ds.groupVar([], D4, PortfolioDatasets.Z95) == null
+    }
+
+    def 'group return is window P&L per unit of gross value at the start'() {
+        given:
+        def ds = datasets()
+        def rows = ds.positions(D4)
+        def aaa = bySymbol(rows, 'AAA'), o = bySymbol(rows, opt.symbol)
+
+        expect:
+        near(ds.groupReturn([aaa], D1, D3), ds.returnFor(aaa, D1, D3))
+        near(ds.groupReturn([aaa, o], D1, D4), (160 * 35 + 2 * 100 * 4) / (160 * 100 + 2 * 100 * 10d))
+        ds.groupReturn([aaa], LocalDate.of(2020, 1, 1), D3) == null
+    }
+
+    def 'group pctNav weighs a group against the NAV of the funds it holds'() {
+        given:
+        def rows = datasets().positions(D4)
+        def navs = PortfolioDatasets.navsByFund(rows)
+        def aaa = bySymbol(rows, 'AAA'), o = bySymbol(rows, opt.symbol), b = bySymbol(rows, bond.symbol)
+
+        expect:
+        navs == [(F1): 60800d, (F2): 1400d]
+        PortfolioDatasets.groupPctNav([aaa], navs) == aaa.pctNav
+        PortfolioDatasets.groupPctNav([aaa, b], navs) == 2d
+        PortfolioDatasets.groupPctNav([aaa, o], navs) == 24400 / 62200d
+    }
+
     def 'shocked P&L is beta-adjusted, with convexity on options'() {
         given:
         def ds = datasets()

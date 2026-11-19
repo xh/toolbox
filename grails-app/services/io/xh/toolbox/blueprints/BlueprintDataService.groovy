@@ -52,6 +52,14 @@ class BlueprintDataService extends BaseService {
         shockedPnl: { PortfolioDatasets ds, Map row, Map p -> ds.shockedPnlFor(row, p.shock as double) }
     ]
 
+    // Group values of the measures that roll up on the server, by catalog field.
+    private static final Map<String, Closure> SERVER_AGGREGATORS = [
+        var95   : { PortfolioDatasets ds, List<Map> rows, Map ctx, Map p -> ds.groupVar(rows, ctx.asOf, PortfolioDatasets.Z95) },
+        var99   : { PortfolioDatasets ds, List<Map> rows, Map ctx, Map p -> ds.groupVar(rows, ctx.asOf, PortfolioDatasets.Z99) },
+        pctNav  : { PortfolioDatasets ds, List<Map> rows, Map ctx, Map p -> PortfolioDatasets.groupPctNav(rows, ctx.navs) },
+        'return': { PortfolioDatasets ds, List<Map> rows, Map ctx, Map p -> ds.groupReturn(rows, p.start, p.end) }
+    ]
+
     Map getCatalogJson() {
         catalog.json
     }
@@ -83,12 +91,17 @@ class BlueprintDataService extends BaseService {
         DATASETS.containsKey(dataset)
     }
 
-    /** Rows for a request. Portfolio datasets compute from ds, or from the current portfolio. */
-    List<Map> getRows(BlueprintRequest req, PortfolioDatasets ds = null) {
+    /**
+     * Rows for a request, and its server aggregates for the given grouping sets. Portfolio
+     * datasets compute from ds, or from the current portfolio.
+     */
+    BlueprintResult query(BlueprintRequest req, PortfolioDatasets ds = null, List<List<String>> sets = req.groupBy) {
         List<Map> rows
+        Map<String, Double> navs = [:]
         if (isPortfolioDataset(req.dataset)) {
             ds = ds ?: currentDatasets()
             rows = DATASETS[req.dataset](ds, req.params)
+            if (req.dataset == 'positions') navs = PortfolioDatasets.navsByFund(rows)
         } else {
             rows = weatherRows(req.dataset, req.params.city as String, req.params.units as String)
         }
@@ -101,7 +114,14 @@ class BlueprintDataService extends BaseService {
         if (req.filter) rows = rows.findAll(req.filter.testFn)
 
         List<String> keep = ['id'] + req.fields + req.instances*.name
-        return rows.collect { row -> keep.collectEntries { [it, row[it]] } }
+        return new BlueprintResult(
+            rows: rows.collect { row -> keep.collectEntries { [it, row[it]] } },
+            aggregates: req.serverColumns && sets ? aggregates(req, ds, rows, navs, sets) : null
+        )
+    }
+
+    List<Map> getRows(BlueprintRequest req, PortfolioDatasets ds = null) {
+        query(req, ds).rows
     }
 
     /** True if a request's rows can still change. */
@@ -112,6 +132,28 @@ class BlueprintDataService extends BaseService {
     //------------------------
     // Implementation
     //------------------------
+    // One {dims, values} per group of each set, over the request's filtered leaves.
+    private List<Map> aggregates(
+        BlueprintRequest req,
+        PortfolioDatasets ds,
+        List<Map> leaves,
+        Map<String, Double> navs,
+        List<List<String>> sets
+    ) {
+        Map ctx = [asOf: req.params.asOf, navs: navs]
+        return sets.collectMany { List<String> dims ->
+            Map<List, List<Map>> groups = dims ? leaves.groupBy { row -> dims.collect { row[it] } } : [([]): leaves]
+            groups.collect { List key, List<Map> rows ->
+                [
+                    dims  : [dims, key].transpose().collectEntries(),
+                    values: req.serverColumns.collectEntries { col ->
+                        [col.name, SERVER_AGGREGATORS[col.field](ds, rows, ctx, col.params)]
+                    }
+                ]
+            }
+        }
+    }
+
     private List<Map> weatherRows(String dataset, String city, String units) {
         boolean forecast = dataset == 'weather'
         if (weatherService.configured) {

@@ -9,6 +9,10 @@ class BlueprintRequest {
     List<String> fields
     List<FieldInstance> instances
     Filter filter
+    /** Grouping sets that need server values, each a sorted list of dimensions. */
+    List<List<String>> groupBy = []
+    /** Requested columns that roll up on the server, each as {name, field, params}. */
+    List<Map> serverColumns = []
 }
 
 /** A parameterized catalog field, requested under its own name. */

@@ -35,7 +35,7 @@ class BlueprintSubscriptionServiceSpec extends Specification implements ServiceU
 
     def 'subscribe returns the first rows, then pushes only what changes'() {
         when:
-        def rows = service.subscribe(positions(D4.toString()), 'ch', 'live')
+        def rows = service.subscribe(positions(D4.toString()), 'ch', 'live').rows
         service.pushUpdates()
 
         then:
@@ -50,6 +50,40 @@ class BlueprintSubscriptionServiceSpec extends Specification implements ServiceU
         pushes.size() == 1
         pushes[0][0..1] == ['ch', 'live']
         pushes[0][2] == [add: [], update: [[id: "$F1|Credit|Core|T|M|AAA", symbol: 'AAA', price: 140d]], remove: []]
+    }
+
+    def 'pushes carry the changed aggregates of the subscribed and added sets'() {
+        given:
+        def spec = [dataset: 'positions', params: [asOf: D4.toString()], fields: ['symbol', 'var95'], groupBy: [[]]]
+
+        when:
+        def first = service.subscribe(spec, 'ch', 'agg')
+
+        then:
+        first.aggregates*.dims == [[:]]
+
+        when: 'a set is added through the aggregates endpoint'
+        def added = service.aggregates(spec + [groupBy: [['fund']]], 'ch', 'agg')
+
+        then:
+        added*.dims.toSet() == [[fund: F1], [fund: F2]] as Set
+
+        when: 'the underlying of both F1 equity and F2 option moves'
+        prices[eq.symbol] = new MarketPrice(day: D4, close: 270)
+        service.pushUpdates()
+        Map push = pushes[0][2] as Map
+
+        then:
+        pushes.size() == 1
+        push.update*.symbol.toSet() == ['AAA', opt.symbol] as Set
+        push.aggregates*.dims.toSet() == [[:], [fund: F1], [fund: F2]] as Set
+    }
+
+    def 'the aggregates endpoint answers without a subscription, and ignores an unknown one'() {
+        expect:
+        service.aggregates([dataset: 'positions', params: [asOf: D4.toString()], fields: ['var95'], groupBy: [[]]])*.dims == [[:]]
+        service.aggregates([dataset: 'positions', params: [asOf: D4.toString()], fields: ['var95'], groupBy: [[]]], 'ch', 'nope').size() == 1
+        service.aggregates([dataset: 'positions', params: [asOf: D4.toString()], fields: ['mktVal'], groupBy: [[]]]) == []
     }
 
     def 'a historical subscription never pushes'() {
