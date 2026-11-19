@@ -65,7 +65,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
                 fence(
                     'root = Stack([lead, totals, charts, table], "column", "medium", "Portfolio by sector")',
                     `lead = Text("P&L and market value, totaled over **${summary.positions} positions**.")`,
-                    `totals = Metrics([{label: "P&L", value: ${summary.pnl}, format: "currency", decimals: 0}, {label: "Market value", value: ${summary.mktVal}, format: "currency", decimals: 0}, {label: "Sectors", value: ${summary.groups}}])`,
+                    `totals = StatCards([{label: "P&L", value: ${summary.pnl}, format: "currency", decimals: 0}, {label: "Market value", value: ${summary.mktVal}, format: "currency", decimals: 0}, {label: "Sectors", value: ${summary.groups}}])`,
                     'charts = Stack([pnlChart, valueChart], "row")',
                     `pnlChart = DataChart("P&L by sector", "${artifact}", null, "pnl|desc", null, null, "millions", "column", "sector", ["pnl"], null, null, true)`,
                     `valueChart = DataChart("Market value by sector", "${artifact}", null, "mktVal|desc", null, null, "millions", "bar", "sector", ["mktVal"])`,
@@ -107,7 +107,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
                 '',
                 fence(
                     `root = Stack([stats, close, volume], "column", "medium", "${summary.symbol}: ${summary.from} to ${summary.to}")`,
-                    `stats = Metrics([{label: "Last close", value: ${summary.lastClose}, format: "currency", delta: ${summary.change}, deltaFormat: "percent", deltaLabel: "over the period"}, {label: "High", value: ${summary.high}, format: "currency"}, {label: "Low", value: ${summary.low}, format: "currency"}, {label: "Avg volume", value: ${summary.avgVolume}}])`,
+                    `stats = StatCards([{label: "Last close", value: ${summary.lastClose}, format: "currency", delta: ${summary.change}, deltaFormat: "percent", deltaLabel: "over the period"}, {label: "High", value: ${summary.high}, format: "currency"}, {label: "Low", value: ${summary.low}, format: "currency"}, {label: "Avg volume", value: ${summary.avgVolume}}])`,
                     `close = DataChart("Close", "${artifact}", null, null, null, null, null, "line", "day", ["close"])`,
                     `volume = DataChart("Volume", "${artifact}", null, null, null, null, "thousands", "column", "day", ["volume"])`
                 )
@@ -130,7 +130,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
             )
     },
     {
-        prompt: 'Replay each display component on its own: callouts, badges, a divider, a section, tabs, a treemap and metrics.',
+        prompt: 'Replay each display component on its own: callouts, badges, a separator, a section, tabs, a treemap and stat cards.',
         icon: Icon.layout(),
         reply: () =>
             fence(
@@ -140,16 +140,16 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
                 'warn = Callout("warning", "Limit breach", "VaR is **12% over** its limit on the Rates desk.")',
                 'bad = Callout("danger", null, "The price feed is down. This callout has no title.")',
                 'plain = Callout("none", "Neutral", "The none intent has no icon and no tint.")',
-                'rule1 = Divider()',
+                'rule1 = Separator()',
                 'tags = Badges([{label: "Tier 1", intent: "success"}, {label: "USD"}, {label: "Watchlist", intent: "warning"}, {label: "Breach", intent: "danger"}, {label: "Rates", intent: "primary"}, {label: "A neutral badge with a longer label"}, {label: "Emerging Markets"}, {label: "Hedged", intent: "success"}, {label: "Illiquid", intent: "warning"}, {label: "Restricted", intent: "danger"}, {label: "Model: Beckett", intent: "primary"}, {label: "Reviewed"}])',
-                'rule2 = Divider()',
+                'rule2 = Separator()',
                 'group = Section([groupText], "A section", "primary", true)',
                 'groupText = Text("A bordered group under a title. Click the title to collapse it.")',
                 'views = Tabs([first, second], ["First tab", "Second tab"])',
                 'first = Text("The content of the first tab.")',
                 'second = Text("The second tab is taller.\\n\\nIt has a second paragraph, so the tabs grow when it shows.\\n\\nAnd a third.")',
                 'map = Treemap("Exposure by desk", [{label: "Rates", value: 4200000, heat: 0.012}, {label: "Credit", value: 2600000, heat: -0.008}, {label: "FX", value: 1100000}, {label: "Equities", value: 1900000, heat: 0.031}, {label: "Commodities", value: 700000, heat: -0.022}], "currency", 0, "Day change", "percent")',
-                'kpis = Metrics([{label: "Revenue", value: 1250000, format: "currency", decimals: 0, delta: 0.042, deltaFormat: "percent", deltaLabel: "vs Q2"}, {label: "Costs", value: 830000, format: "currency", decimals: 0, delta: 0.08, deltaFormat: "percent", deltaLabel: "vs Q2", invert: true}, {label: "Margin", value: 0.184, format: "percent", delta: -0.012, deltaLabel: "vs Q2"}, {label: "Open issues", value: 7, intent: "warning"}, {label: "Breaches", value: 2, intent: "danger"}])'
+                'kpis = StatCards([{label: "Revenue", value: 1250000, format: "currency", decimals: 0, delta: 0.042, deltaFormat: "percent", deltaLabel: "vs Q2"}, {label: "Costs", value: 830000, format: "currency", decimals: 0, delta: 0.08, deltaFormat: "percent", deltaLabel: "vs Q2", invert: true}, {label: "Margin", value: 0.184, format: "percent", delta: -0.012, deltaLabel: "vs Q2"}, {label: "Open issues", value: 7, intent: "warning"}, {label: "Breaches", value: 2, intent: "danger"}])'
             )
     },
     {
@@ -167,8 +167,8 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
                 'side = Tabs([summary, detail], ["Summary", "Detail"])',
                 'summary = Text("Tabs in a row stack share the width with their siblings.")',
                 'detail = Chart("A chart in a later tab", "line", {categories: ["Jan", "Feb", "Mar"]}, null, [{name: "Margin", data: [0.16, 0.17, 0.184]}])',
-                'rule = Divider()',
-                'facts = Metrics([{label: "Revenue", value: 618000, format: "currency", decimals: 0}, {label: "Margin", value: 0.184, format: "percent"}])',
+                'rule = Separator()',
+                'facts = StatCards([{label: "Revenue", value: 618000, format: "currency", decimals: 0}, {label: "Margin", value: 0.184, format: "percent"}])',
                 'hidden = Section([late], "Starts collapsed, with a chart inside", "warning", true, true)',
                 `late = ${REVENUE_CHART}`,
                 'more = Section([moreText], "A second collapsed section", null, true, true)',
@@ -211,7 +211,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
         icon: Icon.filter(),
         reply: () =>
             [
-                'Change an input. The text, the metrics and the chart follow, and no message is sent.',
+                'Change an input. The text, the stat cards and the chart follow, and no message is sent.',
                 '',
                 fence(
                     'root = Stack([controls, flags, note, kpis, trend])',
@@ -224,7 +224,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
                     'net = Switch("net", "Net of costs, as a switch", $net)',
                     'netBox = Checkbox("netBox", "Net of costs, as a checkbox", $net)',
                     'note = Text("Showing **" + ($region == "apac" ? "Asia Pacific" : ($region == "amer" ? "the Americas" : "Europe, the Middle East and Africa")) + "**, " + ($net ? "net of costs." : "gross."))',
-                    'kpis = Metrics([{label: "Revenue", value: ($region == "apac" ? 103000 : ($region == "amer" ? 310000 : 205000)) - ($net ? 40000 : 0), format: "currency", decimals: 0}, {label: "Basis", value: $net ? "Net" : "Gross"}])',
+                    'kpis = StatCards([{label: "Revenue", value: ($region == "apac" ? 103000 : ($region == "amer" ? 310000 : 205000)) - ($net ? 40000 : 0), format: "currency", decimals: 0}, {label: "Basis", value: $net ? "Net" : "Gross"}])',
                     'trend = Chart("Monthly revenue: " + $region, "column", {categories: ["Jan", "Feb", "Mar"]}, {title: "USD", format: "currency", decimals: 0}, [{name: $net ? "Net revenue" : "Revenue", data: $region == "apac" ? [30000, 35000, 38000] : ($region == "amer" ? [95000, 104000, 111000] : [61000, 70000, 74000])}])'
                 )
             ].join('\n')
@@ -244,7 +244,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
                     'controls = Stack([pickSector, pickSort], "row")',
                     'pickSector = Select("sector", ["All", "Technology", "Energy", "Financials", "Healthcare", "Utilities"], "Sector", null, null, null, $sector)',
                     'pickSort = SegmentedControl("sort", [{value: "pnl", label: "P&L"}, {value: "mktVal", label: "Market value"}, {value: "positions", label: "Positions"}], "Sort by", null, $sort)',
-                    'totals = Metrics([{label: "P&L", value: positions.summary.pnl, format: "currency", decimals: 0}, {label: "Market value", value: positions.summary.mktVal, format: "currency", decimals: 0}, {label: "Positions", value: positions.summary.positions}])',
+                    'totals = StatCards([{label: "P&L", value: positions.summary.pnl, format: "currency", decimals: 0}, {label: "Market value", value: positions.summary.mktVal, format: "currency", decimals: 0}, {label: "Positions", value: positions.summary.positions}])',
                     'table = Grid($sector + " by region", [{field: "region"}, {field: "pnl", headerName: "P&L", type: "number", format: "currency", decimals: 0}, {field: "mktVal", headerName: "Mkt Value", type: "number", format: "currency", decimals: 0}, {field: "positions", type: "number"}], null, positions.firstRows)',
                     'bars = Chart("P&L by region", "bar", {categories: positions.firstRows.region}, {format: "currency", decimals: 0}, [{name: "P&L", data: positions.firstRows.pnl}])',
                     'refresh = Button("Run the query again", @Run(positions))'
@@ -269,7 +269,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
                     'q7 = Query("query_trades", {limit: 7}, {summary: {trades: 0}})',
                     'q8 = Query("query_trades", {limit: 8}, {summary: {trades: 0}})',
                     'q9 = Query("query_trades", {limit: 9}, {summary: {trades: 0}})',
-                    'lead = Metrics([{label: "Program 2: nine queries", value: q1.summary.positions + q2.summary.positions + q3.summary.positions + q4.summary.positions + q5.summary.positions + q6.summary.positions + q7.summary.trades + q8.summary.trades + q9.summary.trades}])'
+                    'lead = StatCards([{label: "Program 2: nine queries", value: q1.summary.positions + q2.summary.positions + q3.summary.positions + q4.summary.positions + q5.summary.positions + q6.summary.positions + q7.summary.trades + q8.summary.trades + q9.summary.trades}])'
                 ),
                 '',
                 queryProgram('region'),
@@ -412,7 +412,7 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
                     // A component that the catalog lacks.
                     'gauge = Gauge("Load", 0.7)',
                     // A value outside the schema of a prop: the parser drops it.
-                    'margin = Metrics([{label: "Margin", value: 0.184, format: "ratio"}])',
+                    'margin = StatCards([{label: "Margin", value: 0.184, format: "ratio"}])',
                     // One action where the prop takes a list: read as a list of one.
                     'card = Card("Acme Corp", null, [{label: "Exposure", value: 4200000, format: "currency", decimals: 0}], @ToAssistant("Tell me more about Acme Corp."))',
                     // A statement that the root never reaches.
@@ -438,7 +438,7 @@ function queryProgram(dim: string): string {
     return fence(
         'root = Stack([total])',
         `q = Query("query_positions", {groupBy: ["${dim}"]}, {summary: {groups: 0, positions: 0}})`,
-        `total = Metrics([{label: "Groups by ${dim}", value: q.summary.groups}, {label: "Positions", value: q.summary.positions}])`
+        `total = StatCards([{label: "Groups by ${dim}", value: q.summary.groups}, {label: "Positions", value: q.summary.positions}])`
     );
 }
 

@@ -3,10 +3,10 @@ import {
     chatUiCalloutSpec,
     chatUiCardSpec,
     chatUiChartSpec,
-    chatUiDividerSpec,
+    chatUiSeparatorSpec,
     chatUiGridSpec,
     chatUiInputSpecs,
-    chatUiMetricsSpec,
+    chatUiStatCardsSpec,
     chatUiSectionSpec,
     chatUiStackSpec,
     chatUiTabsSpec,
@@ -50,13 +50,13 @@ export function createOpenUiLabCatalog({
             chatUiStackSpec(),
             chatUiTabsSpec(),
             chatUiSectionSpec(),
-            chatUiDividerSpec(),
+            chatUiSeparatorSpec(),
             // Words and labels.
             chatUiTextSpec(),
             chatUiCalloutSpec(),
             chatUiBadgesSpec(),
             // Values that the model writes into the program.
-            chatUiMetricsSpec({maxItems: 6}),
+            chatUiStatCardsSpec({maxItems: 6}),
             chatUiGridSpec({maxRows: 50}),
             chatUiChartSpec(),
             chatUiTreeMapSpec(),
@@ -83,10 +83,10 @@ const INSTRUCTIONS = [
     'The user explores a sample trading portfolio. There are two ways to show its data:',
     '- For a fixed view, call a data tool yourself first. Its result names its rows as an ' +
         'artifact. Show them with DataGrid or DataChart by that id, and write its summary ' +
-        'figures into Metrics.',
+        'figures into StatCards.',
     '- For a view that the user should change, such as its sector or its sort, bind an input ' +
         'to a $variable and read the data in the program with Query. A Query result has no ' +
-        'artifact, so DataGrid and DataChart cannot show it. Read its summary for Metrics and ' +
+        'artifact, so DataGrid and DataChart cannot show it. Read its summary for StatCards and ' +
         'its firstRows for a Grid or a Chart, and set preview to the number of rows you show.',
     'Never make up a figure, a status, a history or a trend, and never show one series as ' +
         'another. If no tool has the data, leave it out and say in words what is missing.'

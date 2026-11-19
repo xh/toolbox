@@ -53,7 +53,7 @@ export const KIT_LINKS = {
     genuiCmps: {
         url: '$CK/desktop/cmp/genui/README.md',
         text: 'Built-in generative UI components',
-        notes: 'The grid, chart, metrics and card specs.'
+        notes: 'The grid, chart, stat cards and card specs.'
     },
     markdown: {
         url: '$CK/cmp/markdown/README.md',

@@ -23,7 +23,7 @@ describe('inspectOpenUiMessage', () => {
         const program = [
                 'root = Stack([lead, kpis])',
                 'lead = Text("Q3 at a glance.")',
-                'kpis = Metrics([{label: "Revenue", value: 1250000, format: "currency"}])'
+                'kpis = StatCards([{label: "Revenue", value: 1250000, format: "currency"}])'
             ].join('\n'),
             [report] = inspect(reply(`Here it is.\n\n${fenced(program)}`));
 
@@ -31,7 +31,7 @@ describe('inspectOpenUiMessage', () => {
         expect(report.elements).toEqual([
             {id: 'root', component: 'stack', isPartial: false, readsState: false, errors: []},
             {id: 'lead', component: 'text', isPartial: false, readsState: false, errors: []},
-            {id: 'kpis', component: 'metrics', isPartial: false, readsState: false, errors: []}
+            {id: 'kpis', component: 'statCards', isPartial: false, readsState: false, errors: []}
         ]);
     });
 
@@ -128,25 +128,23 @@ describe('inspectOpenUiMessage', () => {
     });
 
     it('reports an element that reads state and fails the check as failed', () => {
-        // Shaped as a live model wrote one: a slider sets a limit, and the bars read it. The
-        // radio group reads state too, and has more options than the catalog allows.
-        const program = [
-                'root = Stack([intro, slider, bars, wrong])',
+        // Both stat card strips read a limit from state. The second holds more cards than the
+        // lab's catalog allows.
+        const card = (label: string) => `{label: "${label}", value: $limit}`,
+            program = [
+                'root = Stack([intro, kpis, wrong])',
                 '$limit = 50',
                 'intro = Text("Set a limit.")',
-                'slider = Slider("limit", 0, 100, "Limit", 5, "number", false, $limit)',
-                'bars = Progress([{label: "Energy", value: 40, max: $limit}])',
-                '$side = "a"',
-                'wrong = RadioGroup("side", ["a", "b", "c", "d", "e", "f", "g", "h", "i"], "Side", null, $side)'
+                `kpis = StatCards([${card('Limit')}])`,
+                `wrong = StatCards([${['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(card).join(', ')}])`
             ].join('\n'),
             [report] = inspect(reply(fenced(program))),
             byId = (id: string) => report.elements.find(it => it.id === id);
 
         expect(report.status).toBe('renderedWithIssues');
         expect(byId('wrong').readsState).toBe(true);
-        expect(byId('wrong').errors.join(' ')).toContain('at most 8');
-        expect(byId('slider')).toMatchObject({readsState: true, errors: []});
-        expect(byId('bars')).toMatchObject({readsState: true, errors: []});
+        expect(byId('wrong').errors.join(' ')).toContain('at most 6');
+        expect(byId('kpis')).toMatchObject({readsState: true, errors: []});
     });
 
     it('reports a fenced program with no root as failed', () => {

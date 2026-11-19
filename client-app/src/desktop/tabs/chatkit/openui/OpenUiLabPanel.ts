@@ -141,7 +141,7 @@ const PAGE_SPECS: Record<OpenUiLabSource, OpenUiLabPageSpec> = {
         description: [
             'A live model writes UI in **OpenUI Lang**, the streaming UI language of Thesys',
             'OpenUI, and the kit renders each program with Hoist components. The lab has no',
-            'OpenUI components: its catalog holds only the layout, text, metrics, grid, chart,',
+            'OpenUI components: its catalog holds only the layout, text, stat cards, grid, chart,',
             'treemap, card and form components of the kit.',
             '',
             ...CATALOG_SNIPPET,

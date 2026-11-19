@@ -17,7 +17,7 @@ import {createCatalog} from '../conversations/catalog';
 /**
  * A live conversation with Claude, relayed by the Toolbox server's `llm/stream` endpoint. The
  * model gets tools that act on Toolbox itself - the theme, navigation, a toast and app info - and
- * optionally the generative UI catalog, so it can answer with grids, charts, metrics and cards.
+ * optionally the generative UI catalog, so it can answer with grids, charts, stat cards and cards.
  */
 class LiveModelPanelModel extends HoistModel {
     /** The chat. Recreated when an option that its config reads changes. */
@@ -150,7 +150,7 @@ export const liveModelPanel = hoistCmp.factory({
                               wrapperOption({
                                   label: 'Generative UI catalog',
                                   propName: 'ChatModelConfig.catalog',
-                                  info: 'Gives the model the grid, chart, metrics and card. Starts a new chat.',
+                                  info: 'Gives the model the grid, chart, stat cards and card. Starts a new chat.',
                                   control: switchInput({bind: 'useCatalog'})
                               }),
                               wrapperOption({
