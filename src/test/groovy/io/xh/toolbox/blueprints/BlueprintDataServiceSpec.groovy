@@ -49,6 +49,21 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         ]
     }
 
+    def 'prices serve one symbol over a window, and an unknown symbol is an error'() {
+        expect:
+        rows(dataset: 'prices', params: [symbol: 'AAA', start: D3.toString(), end: D4.toString()], fields: ['day', 'close']) == [
+            [id: "AAA|$D3".toString(), day: D3.toString(), close: 120d],
+            [id: "AAA|$D4".toString(), day: D4.toString(), close: 135d]
+        ]
+
+        when:
+        rows(dataset: 'prices', params: [symbol: 'ZZZ', start: D3.toString(), end: D4.toString()], fields: ['close'])
+
+        then:
+        def e = thrown(BlueprintRequestException)
+        e.message == "Unknown symbol 'ZZZ'"
+    }
+
     def 'an unknown fund is an error'() {
         when:
         service.parseRequest(dataset: 'positions', params: [asOf: D4.toString(), fund: 'Nope'])

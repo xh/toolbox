@@ -137,6 +137,23 @@ class PortfolioDatasetsSpec extends Specification {
         o.assetClass == 'Equity' && o.instrumentType == 'Option'
     }
 
+    def 'prices are one row per trading day in the window, the live day at current prices'() {
+        given:
+        def ds = datasets()
+
+        when:
+        def rows = ds.prices('AAA', D2, LocalDate.of(2026, 2, 1))
+
+        then:
+        rows*.day == [D2, D3, D4]*.toString()
+        rows*.close == [110d, 120d, 135d]
+        rows[0].id == "AAA|$D2"
+        ds.prices('AAA', D1, D1)*.close == [100d]
+        ds.prices('AAA', D3, D2) == []
+        ds.isLivePrices(D1, D4)
+        !ds.isLivePrices(D1, D3)
+    }
+
     def 'return is the price return over the window, signed by direction'() {
         given:
         def ds = datasets()

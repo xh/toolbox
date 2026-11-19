@@ -22,12 +22,17 @@ class BlueprintDataService extends BaseService {
 
     private static final Map<String, Closure<List<Map>>> DATASETS = [
         positions: { PortfolioDatasets ds, Map p -> ds.positions(p.asOf, p.fund) },
-        orders   : { PortfolioDatasets ds, Map p -> ds.orders(p.asOf, p.fund) }
+        orders   : { PortfolioDatasets ds, Map p -> ds.orders(p.asOf, p.fund) },
+        prices   : { PortfolioDatasets ds, Map p ->
+            if (!ds.portfolio.instruments[p.symbol]) throw new BlueprintRequestException("Unknown symbol '${p.symbol}'")
+            ds.prices(p.symbol, p.start, p.end)
+        }
     ]
 
     private static final Map<String, Closure<Boolean>> LIVE = [
         positions: { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) },
-        orders   : { PortfolioDatasets ds, Map p -> ds.isLiveOrders(p.asOf) }
+        orders   : { PortfolioDatasets ds, Map p -> ds.isLiveOrders(p.asOf) },
+        prices   : { PortfolioDatasets ds, Map p -> ds.isLivePrices(p.start, p.end) }
     ]
 
     private static final Map<String, Closure> PARAM_FIELDS = [

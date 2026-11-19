@@ -51,6 +51,10 @@ class PortfolioDatasets {
         asOf == liveDay
     }
 
+    boolean isLivePrices(LocalDate start, LocalDate end) {
+        start <= liveDay && end >= liveDay
+    }
+
     /** Close on a trading day, or the current price on the live day. Null for a null day. */
     Double priceOn(String symbol, LocalDate day) {
         if (day == null) return null
@@ -95,6 +99,25 @@ class PortfolioDatasets {
         liveOrders(asOf)
             .findAll { it.day == asOf && (!fund || it.fund == fund) }
             .collect { orderRow(it) }
+    }
+
+    /** One row per trading day in [start, end] for a symbol, with the live day at current prices. */
+    List<Map> prices(String symbol, LocalDate start, LocalDate end) {
+        (portfolio.historicalPrices[symbol] ?: [])
+            .findAll { it.day >= start && it.day <= end }
+            .collect { MarketPrice hist ->
+                MarketPrice p = hist.day == liveDay && currentPrices[symbol] ? currentPrices[symbol] : hist
+                [
+                    id    : "$symbol|${hist.day}".toString(),
+                    symbol: symbol,
+                    day   : hist.day.toString(),
+                    open  : p.open,
+                    high  : p.high,
+                    low   : p.low,
+                    close : p.close,
+                    volume: p.volume
+                ]
+            }
     }
 
     /** Each fund with its AUM at the live day: the NAV that pctNav weighs positions against. */
