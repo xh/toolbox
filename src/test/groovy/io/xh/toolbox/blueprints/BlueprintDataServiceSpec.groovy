@@ -64,6 +64,32 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         e.message == "Unknown symbol 'ZZZ'"
     }
 
+    def 'a hypothetical portfolio takes {holdings: [{symbol, weight}]}'() {
+        expect:
+        rows(dataset: 'hypotheticalPortfolio',
+             params: [asOf: D4.toString(), portfolio: [holdings: [[symbol: 'AAA', weight: 0.6], [symbol: bond.symbol, weight: 0.4]]]],
+             fields: ['symbol', 'weight', 'mktVal', [name: 'down10', field: 'shockedPnl', params: [shock: -0.1]]]) == [
+            [id: 'AAA', symbol: 'AAA', weight: 0.6d, mktVal: 60_000_000, down10: -7_200_000],
+            [id: bond.symbol, symbol: bond.symbol, weight: 0.4d, mktVal: 40_000_000, down10: -400_000]
+        ]
+    }
+
+    def 'a malformed portfolio is an error that names the problem'() {
+        when:
+        rows(dataset: 'hypotheticalPortfolio', params: [asOf: D4.toString(), portfolio: portfolio], fields: ['mktVal'])
+
+        then:
+        def e = thrown(BlueprintRequestException)
+        e.message.startsWith(message)
+
+        where:
+        portfolio                                                             || message
+        [[symbol: 'AAA', weight: 1]]                                          || "Parameter 'portfolio' must be {holdings: [{symbol, weight}]}"
+        [holdings: [[symbol: 'ZZZ', weight: 1]]]                              || "Unknown symbol 'ZZZ' in portfolio"
+        [holdings: [[symbol: 'AAA', weight: '50%']]]                          || "Holding 'AAA' needs a numeric weight, got '50%'"
+        [holdings: [[symbol: 'AAA', weight: 0.5], [symbol: 'AAA', weight: 0.5]]] || "Symbol 'AAA' appears more than once in portfolio"
+    }
+
     def 'an unknown fund is an error'() {
         when:
         service.parseRequest(dataset: 'positions', params: [asOf: D4.toString(), fund: 'Nope'])

@@ -16,6 +16,7 @@ import static io.xh.toolbox.portfolio.InstrumentType.Option
 class PortfolioDatasets {
 
     static final int VOL_WINDOW = 60
+    static final double HYPOTHETICAL_NOTIONAL = 100_000_000
 
     final Portfolio portfolio
     final Map<String, MarketPrice> currentPrices
@@ -101,6 +102,25 @@ class PortfolioDatasets {
             .collect { orderRow(it) }
     }
 
+    /**
+     * One row per holding of a hypothetical portfolio at the close of asOf, sized as weight times
+     * {@link #HYPOTHETICAL_NOTIONAL}. Holdings are [symbol, weight] pairs of known symbols.
+     */
+    List<Map> hypotheticalPortfolio(List<List> holdings, LocalDate asOf) {
+        LocalDate day = resolveDay(asOf)
+        if (!day) return []
+
+        return holdings.collect { String symbol, Number weight ->
+            Instrument inst = portfolio.instruments[symbol]
+            double mktVal = weight * HYPOTHETICAL_NOTIONAL,
+                qty = mktVal / (priceOn(symbol, day) * inst.multiplier)
+            Map row = [id: symbol, *: holdingFields(inst, qty, day)]
+            row.mktVal = Math.round(mktVal)
+            row.weight = weight.doubleValue()
+            return row
+        }
+    }
+
     /** One row per trading day in [start, end] for a symbol, with the live day at current prices. */
     List<Map> prices(String symbol, LocalDate start, LocalDate end) {
         (portfolio.historicalPrices[symbol] ?: [])
@@ -160,17 +180,33 @@ class PortfolioDatasets {
 
     private Map positionRow(Holding h, LocalDate day, List<LocalDate> baseDays) {
         Instrument inst = h.order.instrument
+        Map ret = [
+            id      : h.id,
+            fund    : h.order.fund,
+            strategy: h.order.strategy,
+            book    : h.order.book,
+            trader  : h.order.trader,
+            model   : h.order.model,
+            *       : holdingFields(inst, h.qty[Holding.END], day)
+        ]
+
+        long pnl = (ret.mktVal as long) - h.cost[Holding.END]
+        List<Long> basePnls = (0..2).collect { int i ->
+            Double basePx = priceOn(inst.symbol, baseDays[i])
+            basePx == null ? 0L : Math.round(h.qty[i + 1] * basePx * inst.multiplier) - h.cost[i + 1]
+        }
+        ret.pnlDay = pnl - basePnls[0]
+        ret.pnlMtd = pnl - basePnls[1]
+        ret.pnlYtd = pnl - basePnls[2]
+        return ret
+    }
+
+    // Instrument, exposure and risk fields for a quantity held at the close of day.
+    private Map holdingFields(Instrument inst, double qty, LocalDate day) {
         String symbol = inst.symbol
         int mult = inst.multiplier
-        double px = priceOn(symbol, day) ?: 0d,
-            qty = h.qty[Holding.END]
-
+        double px = priceOn(symbol, day) ?: 0d
         long mktVal = Math.round(qty * px * mult)
-        long pnl = mktVal - h.cost[Holding.END]
-        List<Long> basePnls = (0..2).collect { int i ->
-            Double basePx = priceOn(symbol, baseDays[i])
-            basePx == null ? 0L : Math.round(h.qty[i + 1] * basePx * mult) - h.cost[i + 1]
-        }
 
         Long delta = null, gamma = null, vega = null, theta = null
         double netExposure = mktVal,
@@ -192,23 +228,14 @@ class PortfolioDatasets {
         double dailyVol = vol(volSymbol, day)
 
         return [
-            id             : h.id,
-            fund           : h.order.fund,
-            strategy       : h.order.strategy,
-            book           : h.order.book,
-            trader         : h.order.trader,
-            model          : h.order.model,
             *              : instrumentFields(inst),
-            quantity       : qty as long,
+            quantity       : Math.round(qty),
             price          : px,
             mktVal         : mktVal,
             notional       : Math.round(notional),
             grossExposure  : Math.round(Math.abs(netExposure)),
             netExposure    : Math.round(netExposure),
             betaAdjExposure: Math.round(netExposure * inst.beta),
-            pnlDay         : pnl - basePnls[0],
-            pnlMtd         : pnl - basePnls[1],
-            pnlYtd         : pnl - basePnls[2],
             delta          : delta,
             gamma          : gamma,
             vega           : vega,
