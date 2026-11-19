@@ -1,9 +1,10 @@
-import type {BlueprintIssue} from '@xh/hoist-chat-kit/blueprint';
-import {BlueprintModel, DataCatalog, FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint';
+import type {BlueprintDataProvider, BlueprintIssue} from '@xh/hoist-chat-kit/blueprint';
+import {BlueprintModel, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
 import {HoistModel, managed} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
 import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
 import portfolioCatalog from './catalog/portfolio.json';
+import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
 import p1 from './scenarios/p1-one-grid.json';
 import p2 from './scenarios/p2-linked-dashboard.json';
@@ -40,14 +41,13 @@ export class BlueprintsPanelModel extends HoistModel {
         return this.hasErrors ? this.applyIssues : this.blueprintModel.issues;
     }
 
-    constructor() {
+    constructor(dataProvider: BlueprintDataProvider = new ServerDataProvider()) {
         super();
 
-        const catalog = new DataCatalog(portfolioCatalog);
         this.blueprintModel = new BlueprintModel({
-            catalog,
+            catalog: new DataCatalog(portfolioCatalog),
             registry: createToolboxRegistry(),
-            dataProvider: new FakeBlueprintDataProvider({catalog})
+            dataProvider
         });
 
         this.addReaction({
