@@ -51,7 +51,6 @@
     "ag-grid-enterprise": "~36.3.0",
     "ag-grid-react": "~36.3.0",
     "classnames": "~2.5.1",
-    "core-js": "~3.50.0",
     "fflate": "~0.8.3",
     "filesize": "~11.0.32",
     "highcharts": "~12.6.2",
@@ -61,7 +60,7 @@
     "pdfjs-dist": "^6.5.438",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "zod": "^4.6.6"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.2",

@@ -18,11 +18,13 @@
 
 * Added a Chat Kit tab to the desktop app - a tour of `@xh/hoist-chat-kit`, XH's new library of chat components for Hoist apps. Component pages put `ChatPanel`, `ChatComposer`, `ChatMessageList`, `ChatMarkdown`, sources and citations, the empty state, feedback, status cues and theming in a playground of their curated props. Scripted conversations show rich content, reasoning and tools, the agent timeline, approvals, agent questions, attachments, errors and stop, and generative UI without a server or a model. Two integrations show the kit wired up: a full `chatWorkspace` over a client-side thread store, and a live Claude chat relayed by the Toolbox server with tools that act on the app.
 * Added the Hoist Chat Kit docs to the Docs tab, served from the installed `@xh/hoist-chat-kit` package or a sibling checkout in local development, and a `$CK` link token that opens them in the viewer.
+* Added a `Callout` demo page to Components > General, showing hoist-react's new note set off within content, with a playground that sets the container width, each intent with and without a title, standard and compact sizes, custom and hidden icons, callouts in a form, a detail panel and above a grid, a markdown body and long-URL wrapping.
 * Added a `ProgressBar` demo page to Components > General, showing hoist-react's new bar for a value against a maximum, with a playground, shares of a total from the sample portfolio, intents, a target marker, the indeterminate state and odd data.
 * Added a `Separator` demo page to Components > General, showing hoist-react's new rule between content, horizontal and vertical, with a label at the start, the center or the end.
 * Added a `Sparkline` demo page to Components > General, showing hoist-react's new inline trend chart, with a playground, its three types, colors, markers, bars, sizing, and its use in a `StatCard` and in a grid column over the sample price history.
 * Switched the 30-day close column in the Portfolio example's Orders grid from the AG Grid sparkline to Hoist's `Sparkline`, with a tooltip showing the dates covered, the first and last close and the change.
 * Added an OpenUI Lab to the Chat Kit tab - a testbed where a model answers in OpenUI Lang and `@xh/hoist-chat-kit` renders each program with Hoist components as it streams. A live page asks Claude through the Toolbox server, with tools that read the sample portfolio and show large results by reference. A replay page streams scripted or pasted programs with no model. Programs run with state: inputs bind `$variables`, `Query()` reads the data tools again when one changes, forms send their values as a message, and a program cannot change data. An inspector beside each chat shows the prompt, each program of the latest reply with what rendered, fell back or was dropped, and a log of the tool calls that programs made.
+* Added Day P&L, Long, Short, Cost Basis and Commission columns to the desktop and mobile tree grid demos and the Portfolio example, rolled up on the server from the existing portfolio data. The tree column is now pinned left on mobile and in Portfolio.
 
 ### Technical
 
@@ -38,6 +40,7 @@
 * ag-grid `36.2 → 36.3`
 * @openuidev/lang-core `1.1.0` - new, at the exact version that `@xh/hoist-chat-kit` takes as a peer
 * zod `4.6` - new, and forced across the dependency tree in place of zod 3
+* Gradle `9.8 → 9.9`
 
 ## 12.1.0 - 2026-11-13
 
