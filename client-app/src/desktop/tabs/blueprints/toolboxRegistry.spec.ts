@@ -6,7 +6,12 @@ import type {ReactElement} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {beforeAll, describe, expect, it} from 'vitest';
 import catalogJson from '../../../test-support/blueprintsCatalog.json';
-import {createToolboxRegistry, tickerRenderer, userFundResolver} from './toolboxRegistry';
+import {
+    createToolboxRegistry,
+    publishToPmPackAction,
+    tickerRenderer,
+    userFundResolver
+} from './toolboxRegistry';
 import {weatherIconRenderer} from './WeatherIcon';
 
 const catalog = new DataCatalog(catalogJson);
@@ -82,5 +87,17 @@ describe('weatherIcon renderer', () => {
     it('draws a condition it does not know with a general icon', () => {
         expect(draw('Haze')).toContain('data-icon="cloud-sun"');
         expect(draw('Haze')).toContain('<span>Haze</span>');
+    });
+});
+
+describe('publishToPmPack action', () => {
+    it('asks first, and describes the fund and date it publishes', () => {
+        expect(createToolboxRegistry().actions.publishToPmPack.sideEffects).toBe(true);
+        expect(publishToPmPackAction.describe({fund: 'Oak Mount', asOf: '2026-11-18'})).toBe(
+            'Publish the report for Oak Mount, 2026-11-18'
+        );
+        expect(publishToPmPackAction.describe({fund: null, asOf: '2026-11-18'})).toBe(
+            'Publish the report for all funds, 2026-11-18'
+        );
     });
 });
