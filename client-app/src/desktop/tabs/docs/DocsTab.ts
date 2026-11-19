@@ -2,7 +2,7 @@ import {badge} from '@xh/hoist/cmp/badge';
 import {clipboardMenuItem} from '@xh/hoist/cmp/clipboard';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hbox, hframe, hspacer, placeholder, span} from '@xh/hoist/cmp/layout';
-import {tooltip} from '@xh/hoist/cmp/popover';
+import {tooltip} from '@xh/hoist/cmp/tooltip';
 import {creates, hoistCmp, uses, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dockContainer} from '@xh/hoist/desktop/cmp/dock';

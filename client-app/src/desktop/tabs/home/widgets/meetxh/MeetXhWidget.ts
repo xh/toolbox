@@ -1,5 +1,5 @@
 import {div, filler, hbox, img, span, vbox} from '@xh/hoist/cmp/layout';
-import {tooltip} from '@xh/hoist/cmp/popover';
+import {tooltip} from '@xh/hoist/cmp/tooltip';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';

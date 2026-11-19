@@ -27,7 +27,7 @@
 
 * Migrated app CSS variable overrides and reads to hoist-react v91's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
 * Migrated element specs from the legacy `item` / `items` keys to the standard React `children` key, using hoist-react's v91 codemod.
-* Removed all imports from `@xh/hoist/kit/blueprint` ahead of hoist-react dropping Blueprint - dialogs and tooltips now use Hoist's own `dialog` and `tooltip`, the app menu's module items are `MenuItem` configs with the favorite star as their `rightElement`, and mobile popovers import from `@xh/hoist/cmp/popover`.
+* Removed all imports from `@xh/hoist/kit/blueprint` ahead of hoist-react dropping Blueprint - dialogs and tooltips now use Hoist's own `dialog` and `tooltip` (from the new `@xh/hoist/cmp/tooltip`), the app menu's module items are `MenuItem` configs with the favorite star as their `rightElement`, and mobile popovers import from `@xh/hoist/cmp/popover`.
 
 ### Libraries
 

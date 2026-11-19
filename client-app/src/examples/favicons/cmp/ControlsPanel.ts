@@ -1,7 +1,7 @@
 import type {CardProps} from '@xh/hoist/cmp/card';
 import {card} from '@xh/hoist/cmp/card';
 import {a, div, filler, hbox, img, span, vbox} from '@xh/hoist/cmp/layout';
-import {tooltip} from '@xh/hoist/cmp/popover';
+import {tooltip} from '@xh/hoist/cmp/tooltip';
 import type {ReactElement, ReactNode} from 'react';
 import type {ElementSpec} from '@xh/hoist/core';
 import {hoistCmp, uses, XH} from '@xh/hoist/core';

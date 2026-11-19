@@ -1,6 +1,6 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {code, div, filler, hbox, hspacer, span} from '@xh/hoist/cmp/layout';
-import {tooltip} from '@xh/hoist/cmp/popover';
+import {tooltip} from '@xh/hoist/cmp/tooltip';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {clipboardButton} from '@xh/hoist/desktop/cmp/clipboard';
