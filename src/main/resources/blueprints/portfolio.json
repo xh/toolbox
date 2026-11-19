@@ -376,7 +376,14 @@
             "label": "Hypothetical Portfolio",
             "description": "Positions and risk for a portfolio the user builds.",
             "guidance": "The position fields, priced for a portfolio of tickers and weights. Use it to stress or compare a hypothetical portfolio.",
-            "params": {"portfolio": {"type": "portfolio", "required": true}, "asOf": {"type": "localDate", "required": true}},
+            "params": {
+                "portfolio": {
+                    "type": "portfolio",
+                    "required": true,
+                    "description": "A portfolio: {\"holdings\": [{\"symbol\": \"AAPL\", \"weight\": 0.5}]}, with weights as fractions. The server prices it against a notional of 100,000,000 USD."
+                },
+                "asOf": {"type": "localDate", "required": true}
+            },
             "fields": [
                 "assetClass", "instrumentType", "sector", "industry", "region", "country", "ccy", "symbol",
                 "price", "mktVal",

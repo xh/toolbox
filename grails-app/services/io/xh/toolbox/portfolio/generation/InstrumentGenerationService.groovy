@@ -5,8 +5,7 @@ import io.xh.toolbox.portfolio.Instrument
 import io.xh.toolbox.portfolio.InstrumentType
 import io.xh.toolbox.portfolio.PortfolioConfig
 
-import java.time.LocalDate
-
+import static io.xh.hoist.util.DateTimeUtils.appDay
 import static io.xh.toolbox.portfolio.InstrumentType.*
 import static io.xh.toolbox.portfolio.Lookups.*
 import static io.xh.toolbox.portfolio.Utils.randDouble
@@ -108,7 +107,7 @@ class InstrumentGenerationService extends BaseService {
             country: eq.country,
             ccy: eq.ccy
         )
-        int year = LocalDate.now().year
+        int year = appDay().year
 
         switch (type) {
             case Option:

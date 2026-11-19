@@ -2,6 +2,7 @@ package io.xh.toolbox.blueprints
 
 import io.xh.hoist.BaseService
 import io.xh.hoist.json.JSONParser
+import io.xh.hoist.json.JSONSerializer
 import io.xh.toolbox.portfolio.PortfolioDatasets
 
 import java.time.Instant
@@ -22,12 +23,19 @@ class BlueprintDataService extends BaseService {
 
     private static final Map<String, Closure<List<Map>>> DATASETS = [
         positions: { PortfolioDatasets ds, Map p -> ds.positions(p.asOf, p.fund) },
-        orders   : { PortfolioDatasets ds, Map p -> ds.orders(p.asOf, p.fund) }
+        orders   : { PortfolioDatasets ds, Map p -> ds.orders(p.asOf, p.fund) },
+        prices   : { PortfolioDatasets ds, Map p ->
+            if (!ds.portfolio.instruments[p.symbol]) throw new BlueprintRequestException("Unknown symbol '${p.symbol}'")
+            ds.prices(p.symbol, p.start, p.end)
+        },
+        hypotheticalPortfolio: { PortfolioDatasets ds, Map p -> ds.hypotheticalPortfolio(parseHoldings(ds, p.portfolio), p.asOf) }
     ]
 
     private static final Map<String, Closure<Boolean>> LIVE = [
         positions: { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) },
-        orders   : { PortfolioDatasets ds, Map p -> ds.isLiveOrders(p.asOf) }
+        orders   : { PortfolioDatasets ds, Map p -> ds.isLiveOrders(p.asOf) },
+        prices   : { PortfolioDatasets ds, Map p -> ds.isLivePrices(p.start, p.end) },
+        hypotheticalPortfolio: { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) }
     ]
 
     private static final Map<String, Closure> PARAM_FIELDS = [
@@ -78,5 +86,25 @@ class BlueprintDataService extends BaseService {
     /** True if a request's rows can still change. */
     boolean isLive(BlueprintRequest req, PortfolioDatasets ds = currentDatasets()) {
         LIVE[req.dataset](ds, req.params)
+    }
+
+    //------------------------
+    // Implementation
+    //------------------------
+    // A portfolio param, {holdings: [{symbol, weight}]}, as [symbol, weight] pairs.
+    private static List<List> parseHoldings(PortfolioDatasets ds, Object portfolio) {
+        def holdings = portfolio instanceof Map ? portfolio.holdings : null
+        if (!(holdings instanceof List) || !holdings.every { it instanceof Map }) {
+            throw new BlueprintRequestException("Parameter 'portfolio' must be {holdings: [{symbol, weight}]}, got ${JSONSerializer.serialize(portfolio)}")
+        }
+
+        Set<String> seen = []
+        return (holdings as List<Map>).collect { Map h ->
+            String symbol = h.symbol
+            if (!ds.portfolio.instruments[symbol]) throw new BlueprintRequestException("Unknown symbol '$symbol' in portfolio")
+            if (!(h.weight instanceof Number)) throw new BlueprintRequestException("Holding '$symbol' needs a numeric weight, got '${h.weight}'")
+            if (!seen.add(symbol)) throw new BlueprintRequestException("Symbol '$symbol' appears more than once in portfolio")
+            [symbol, h.weight]
+        }
     }
 }

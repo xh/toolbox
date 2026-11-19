@@ -10,6 +10,7 @@ import java.time.*
 
 import static io.xh.toolbox.portfolio.Utils.*
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
+import static io.xh.hoist.util.DateTimeUtils.appDay
 
 
 /**
@@ -63,7 +64,7 @@ class PortfolioService extends BaseService {
 
     /** Closing price history for the given symbols, looking back the specified number of days. */
     Map<LocalDate, Double> getClosingPriceHistory(List<String> symbols, int daysBack) {
-        def startDate = LocalDate.now().minusDays(daysBack),
+        def startDate = appDay().minusDays(daysBack),
             historicalPrices = portfolio.historicalPrices
 
         return symbols
@@ -99,7 +100,7 @@ class PortfolioService extends BaseService {
     private void updateData(boolean force = false) {
         // 1) Populate/update main data, if needed, to initialize or roll day
         def portfolio = _portfolio.get(),
-            today = LocalDate.now()
+            today = appDay()
         if (portfolio?.day != today || force) {
             def newData = generatePortfolio()
             def newPrices = newData.historicalPrices.collectEntries { symbol, prices -> [symbol, prices.last()]}
@@ -136,7 +137,7 @@ class PortfolioService extends BaseService {
             .counter('generation.count')
             .logInfo('Generating Portfolio')
             .run {
-                def day = LocalDate.now(),
+                def day = appDay(),
                     instruments = instrumentGenerationService.generateInstruments(),
                     historicalPrices = historicalPriceGenerationService.generateHistoricalPrices(instruments, day),
                     orders = orderGenerationService.generateOrders(instruments, historicalPrices),
