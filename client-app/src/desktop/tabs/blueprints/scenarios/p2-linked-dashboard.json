@@ -1,72 +1,67 @@
 {
-  "schema": {
-    "blueprint": 1,
-    "widgets": {"dashCanvas": 1, "statCardStrip": 1, "cubeGrid": 1, "chart": 1},
-    "resolvers": {"today": 1}
-  },
-  "variables": {
-    "asOf": {
-      "type": "localDate",
-      "label": "As of",
-      "setBy": "prompt",
-      "default": {"resolver": "today"}
+    "schema": {
+        "blueprint": 1,
+        "widgets": {"dashCanvas": 1, "statCardStrip": 1, "cubeGrid": 1, "chart": 1},
+        "resolvers": {"today": 1}
     },
-    "selection": {"type": "filter", "setBy": {"element": "posGrid", "output": "selection"}}
-  },
-  "sources": {
-    "positions": {"dataset": "positions", "params": {"asOf": {"$var": "asOf"}}},
-    "orders": {"dataset": "orders", "params": {"asOf": {"$var": "asOf"}}}
-  },
-  "root": "dashboard",
-  "elements": {
-    "dashboard": {
-      "component": "dashCanvas",
-      "children": [
-        {"id": "headline", "x": 0, "y": 0, "w": 12, "h": 2},
-        {"id": "posGrid", "x": 0, "y": 2, "w": 8, "h": 7},
-        {"id": "sectorChart", "x": 8, "y": 2, "w": 4, "h": 7},
-        {"id": "ordersGrid", "x": 0, "y": 9, "w": 12, "h": 5}
-      ]
+    "variables": {
+        "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "today"}},
+        "selection": {"type": "filter", "setBy": {"element": "posGrid", "output": "selection"}}
     },
-    "headline": {
-      "component": "statCardStrip",
-      "config": {
-        "source": "positions",
-        "cards": [
-          {"field": "grossExposure"},
-          {"field": "netExposure"},
-          {"field": "pnlDay"},
-          {"agg": "count", "label": "Positions"}
-        ]
-      }
+    "sources": {
+        "positions": {"dataset": "positions", "params": {"asOf": {"$var": "asOf"}}},
+        "orders": {"dataset": "orders", "params": {"asOf": {"$var": "asOf"}}}
     },
-    "posGrid": {
-      "component": "cubeGrid",
-      "config": {
-        "source": "positions",
-        "groupBy": ["strategy", "trader"],
-        "columnState": ["mktVal", "pnlDay", "grossExposure", "netExposure"]
-      }
-    },
-    "sectorChart": {
-      "component": "chart",
-      "config": {
-        "source": "positions",
-        "title": "Day P&L by Sector",
-        "type": "column",
-        "x": "sector",
-        "y": ["pnlDay"],
-        "filter": {"$var": "selection"}
-      }
-    },
-    "ordersGrid": {
-      "component": "cubeGrid",
-      "config": {
-        "source": "orders",
-        "columnState": ["time", "symbol", "dir", "quantity", "price", "mktVal", "trader"],
-        "sortBy": "time|desc",
-        "filter": {"$var": "selection"}
-      }
+    "root": "dashboard",
+    "elements": {
+        "dashboard": {
+            "component": "dashCanvas",
+            "children": [
+                {"id": "headline", "x": 0, "y": 0, "w": 12, "h": 2},
+                {"id": "posGrid", "x": 0, "y": 2, "w": 8, "h": 7},
+                {"id": "sectorChart", "x": 8, "y": 2, "w": 4, "h": 7},
+                {"id": "ordersGrid", "x": 0, "y": 9, "w": 12, "h": 5}
+            ]
+        },
+        "headline": {
+            "component": "statCardStrip",
+            "config": {
+                "source": "positions",
+                "cards": [
+                    {"field": "grossExposure"},
+                    {"field": "netExposure"},
+                    {"field": "pnlDay"},
+                    {"agg": "count", "label": "Positions"}
+                ]
+            }
+        },
+        "posGrid": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "positions",
+                "groupBy": ["strategy", "trader"],
+                "columnState": ["mktVal", "pnlDay", "grossExposure", "netExposure"]
+            }
+        },
+        "sectorChart": {
+            "component": "chart",
+            "config": {
+                "source": "positions",
+                "title": "Day P&L by Sector",
+                "type": "column",
+                "x": "sector",
+                "y": ["pnlDay"],
+                "filter": {"$var": "selection"}
+            }
+        },
+        "ordersGrid": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "orders",
+                "columnState": ["time", "symbol", "dir", "quantity", "price", "mktVal", "trader"],
+                "sortBy": "time|desc",
+                "filter": {"$var": "selection"}
+            }
+        }
     }
-  }
 }

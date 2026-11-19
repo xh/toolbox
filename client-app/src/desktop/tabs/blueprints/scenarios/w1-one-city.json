@@ -1,57 +1,48 @@
 {
-  "schema": {"blueprint": 1, "widgets": {"dashCanvas": 1, "statCardStrip": 1, "chart": 1}},
-  "variables": {
-    "city": {
-      "type": "string",
-      "label": "City",
-      "setBy": "prompt",
-      "default": {"value": "London"},
-      "options": {"values": ["Chicago", "London", "New York", "Paris", "Sydney", "Tokyo"]}
+    "schema": {"blueprint": 1, "widgets": {"dashCanvas": 1, "statCardStrip": 1, "chart": 1}},
+    "variables": {
+        "city": {
+            "type": "string",
+            "label": "City",
+            "setBy": "prompt",
+            "default": {"value": "London"},
+            "options": {"values": ["Chicago", "London", "New York", "Paris", "Sydney", "Tokyo"]}
+        },
+        "units": {"type": "string", "label": "Units", "default": {"value": "metric"}}
     },
-    "units": {"type": "string", "label": "Units", "default": {"value": "metric"}}
-  },
-  "sources": {
-    "current": {
-      "dataset": "currentWeather",
-      "params": {"city": {"$var": "city"}, "units": {"$var": "units"}}
+    "sources": {
+        "current": {"dataset": "currentWeather", "params": {"city": {"$var": "city"}, "units": {"$var": "units"}}},
+        "forecast": {"dataset": "weather", "params": {"city": {"$var": "city"}, "units": {"$var": "units"}}}
     },
-    "forecast": {
-      "dataset": "weather",
-      "params": {"city": {"$var": "city"}, "units": {"$var": "units"}}
+    "root": "dashboard",
+    "elements": {
+        "dashboard": {
+            "component": "dashCanvas",
+            "children": [{"id": "now", "x": 0, "y": 0, "w": 12, "h": 2}, {"id": "tempChart", "x": 0, "y": 2, "w": 12, "h": 6}]
+        },
+        "now": {
+            "component": "statCardStrip",
+            "config": {
+                "source": "current",
+                "title": {"$var": "city"},
+                "cards": [
+                    {"field": "conditions"},
+                    {"field": "temp"},
+                    {"field": "feelsLike"},
+                    {"field": "humidity"},
+                    {"field": "windSpeed"}
+                ]
+            }
+        },
+        "tempChart": {
+            "component": "chart",
+            "config": {
+                "source": "forecast",
+                "title": "Temperature (°C)",
+                "type": "line",
+                "x": "time",
+                "y": ["temp", "feelsLike"]
+            }
+        }
     }
-  },
-  "root": "dashboard",
-  "elements": {
-    "dashboard": {
-      "component": "dashCanvas",
-      "children": [
-        {"id": "now", "x": 0, "y": 0, "w": 12, "h": 2},
-        {"id": "tempChart", "x": 0, "y": 2, "w": 12, "h": 6}
-      ]
-    },
-    "now": {
-      "component": "statCardStrip",
-      "config": {
-        "source": "current",
-        "title": {"$var": "city"},
-        "cards": [
-          {"field": "conditions"},
-          {"field": "temp"},
-          {"field": "feelsLike"},
-          {"field": "humidity"},
-          {"field": "windSpeed"}
-        ]
-      }
-    },
-    "tempChart": {
-      "component": "chart",
-      "config": {
-        "source": "forecast",
-        "title": "Temperature (°C)",
-        "type": "line",
-        "x": "time",
-        "y": ["temp", "feelsLike"]
-      }
-    }
-  }
 }

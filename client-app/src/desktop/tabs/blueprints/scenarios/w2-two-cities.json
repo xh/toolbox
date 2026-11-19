@@ -1,196 +1,132 @@
 {
-  "schema": {
-    "blueprint": 1,
-    "widgets": {
-      "dashCanvas": 1,
-      "buttonGroupInput": 1,
-      "statCardStrip": 1,
-      "chart": 1,
-      "cubeGrid": 1
+    "schema": {
+        "blueprint": 1,
+        "widgets": {"dashCanvas": 1, "buttonGroupInput": 1, "statCardStrip": 1, "chart": 1, "cubeGrid": 1}
+    },
+    "variables": {
+        "cityA": {
+            "type": "string",
+            "label": "City A",
+            "setBy": "prompt",
+            "default": {"value": "New York"},
+            "options": {"values": ["Chicago", "London", "New York", "Paris", "Sydney", "Tokyo"]}
+        },
+        "cityB": {
+            "type": "string",
+            "label": "City B",
+            "setBy": "prompt",
+            "default": {"value": "London"},
+            "options": {"values": ["Chicago", "London", "New York", "Paris", "Sydney", "Tokyo"]}
+        },
+        "units": {"type": "string", "label": "Units", "setBy": {"element": "unitsToggle"}, "default": {"value": "imperial"}}
+    },
+    "sources": {
+        "currentA": {"dataset": "currentWeather", "params": {"city": {"$var": "cityA"}, "units": {"$var": "units"}}},
+        "forecastA": {"dataset": "weather", "params": {"city": {"$var": "cityA"}, "units": {"$var": "units"}}},
+        "currentB": {"dataset": "currentWeather", "params": {"city": {"$var": "cityB"}, "units": {"$var": "units"}}},
+        "forecastB": {"dataset": "weather", "params": {"city": {"$var": "cityB"}, "units": {"$var": "units"}}}
+    },
+    "root": "dashboard",
+    "elements": {
+        "dashboard": {
+            "component": "dashCanvas",
+            "children": [
+                {"id": "unitsToggle", "x": 0, "y": 0, "w": 3, "h": 1},
+                {"id": "nowA", "x": 0, "y": 1, "w": 6, "h": 2},
+                {"id": "tempChartA", "x": 0, "y": 3, "w": 6, "h": 4},
+                {"id": "precipChartA", "x": 0, "y": 7, "w": 6, "h": 4},
+                {"id": "windChartA", "x": 0, "y": 11, "w": 6, "h": 4},
+                {"id": "forecastGridA", "x": 0, "y": 15, "w": 6, "h": 6},
+                {"id": "nowB", "x": 6, "y": 1, "w": 6, "h": 2},
+                {"id": "tempChartB", "x": 6, "y": 3, "w": 6, "h": 4},
+                {"id": "precipChartB", "x": 6, "y": 7, "w": 6, "h": 4},
+                {"id": "windChartB", "x": 6, "y": 11, "w": 6, "h": 4},
+                {"id": "forecastGridB", "x": 6, "y": 15, "w": 6, "h": 6}
+            ]
+        },
+        "unitsToggle": {
+            "component": "buttonGroupInput",
+            "config": {
+                "options": [{"value": "imperial", "label": "°F"}, {"value": "metric", "label": "°C"}]
+            }
+        },
+        "nowA": {
+            "component": "statCardStrip",
+            "config": {
+                "source": "currentA",
+                "title": {"$var": "cityA"},
+                "cards": [
+                    {"field": "conditions"},
+                    {"field": "temp"},
+                    {"field": "feelsLike"},
+                    {"field": "humidity"},
+                    {"field": "windSpeed"}
+                ]
+            }
+        },
+        "tempChartA": {
+            "component": "chart",
+            "config": {"source": "forecastA", "title": "Temperature", "type": "line", "x": "time", "y": ["temp", "feelsLike"]}
+        },
+        "precipChartA": {
+            "component": "chart",
+            "config": {
+                "source": "forecastA",
+                "title": "Chance of Rain",
+                "type": "column",
+                "x": "time",
+                "y": ["precipProbability"]
+            }
+        },
+        "windChartA": {
+            "component": "chart",
+            "config": {"source": "forecastA", "title": "Wind", "type": "line", "x": "time", "y": ["windSpeed", "windGust"]}
+        },
+        "forecastGridA": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "forecastA",
+                "columnState": ["time", "conditions", "temp", "precipProbability", "precipVolume", "windSpeed"]
+            }
+        },
+        "nowB": {
+            "component": "statCardStrip",
+            "config": {
+                "source": "currentB",
+                "title": {"$var": "cityB"},
+                "cards": [
+                    {"field": "conditions"},
+                    {"field": "temp"},
+                    {"field": "feelsLike"},
+                    {"field": "humidity"},
+                    {"field": "windSpeed"}
+                ]
+            }
+        },
+        "tempChartB": {
+            "component": "chart",
+            "config": {"source": "forecastB", "title": "Temperature", "type": "line", "x": "time", "y": ["temp", "feelsLike"]}
+        },
+        "precipChartB": {
+            "component": "chart",
+            "config": {
+                "source": "forecastB",
+                "title": "Chance of Rain",
+                "type": "column",
+                "x": "time",
+                "y": ["precipProbability"]
+            }
+        },
+        "windChartB": {
+            "component": "chart",
+            "config": {"source": "forecastB", "title": "Wind", "type": "line", "x": "time", "y": ["windSpeed", "windGust"]}
+        },
+        "forecastGridB": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "forecastB",
+                "columnState": ["time", "conditions", "temp", "precipProbability", "precipVolume", "windSpeed"]
+            }
+        }
     }
-  },
-  "variables": {
-    "cityA": {
-      "type": "string",
-      "label": "City A",
-      "setBy": "prompt",
-      "default": {"value": "New York"},
-      "options": {"values": ["Chicago", "London", "New York", "Paris", "Sydney", "Tokyo"]}
-    },
-    "cityB": {
-      "type": "string",
-      "label": "City B",
-      "setBy": "prompt",
-      "default": {"value": "London"},
-      "options": {"values": ["Chicago", "London", "New York", "Paris", "Sydney", "Tokyo"]}
-    },
-    "units": {
-      "type": "string",
-      "label": "Units",
-      "setBy": {"element": "unitsToggle"},
-      "default": {"value": "imperial"}
-    }
-  },
-  "sources": {
-    "currentA": {
-      "dataset": "currentWeather",
-      "params": {"city": {"$var": "cityA"}, "units": {"$var": "units"}}
-    },
-    "forecastA": {
-      "dataset": "weather",
-      "params": {"city": {"$var": "cityA"}, "units": {"$var": "units"}}
-    },
-    "currentB": {
-      "dataset": "currentWeather",
-      "params": {"city": {"$var": "cityB"}, "units": {"$var": "units"}}
-    },
-    "forecastB": {
-      "dataset": "weather",
-      "params": {"city": {"$var": "cityB"}, "units": {"$var": "units"}}
-    }
-  },
-  "root": "dashboard",
-  "elements": {
-    "dashboard": {
-      "component": "dashCanvas",
-      "children": [
-        {"id": "unitsToggle", "x": 0, "y": 0, "w": 3, "h": 1},
-        {"id": "nowA", "x": 0, "y": 1, "w": 6, "h": 2},
-        {"id": "tempChartA", "x": 0, "y": 3, "w": 6, "h": 4},
-        {"id": "precipChartA", "x": 0, "y": 7, "w": 6, "h": 4},
-        {"id": "windChartA", "x": 0, "y": 11, "w": 6, "h": 4},
-        {"id": "forecastGridA", "x": 0, "y": 15, "w": 6, "h": 6},
-        {"id": "nowB", "x": 6, "y": 1, "w": 6, "h": 2},
-        {"id": "tempChartB", "x": 6, "y": 3, "w": 6, "h": 4},
-        {"id": "precipChartB", "x": 6, "y": 7, "w": 6, "h": 4},
-        {"id": "windChartB", "x": 6, "y": 11, "w": 6, "h": 4},
-        {"id": "forecastGridB", "x": 6, "y": 15, "w": 6, "h": 6}
-      ]
-    },
-    "unitsToggle": {
-      "component": "buttonGroupInput",
-      "config": {
-        "options": [
-          {"value": "imperial", "label": "°F"},
-          {"value": "metric", "label": "°C"}
-        ]
-      }
-    },
-    "nowA": {
-      "component": "statCardStrip",
-      "config": {
-        "source": "currentA",
-        "title": {"$var": "cityA"},
-        "cards": [
-          {"field": "conditions"},
-          {"field": "temp"},
-          {"field": "feelsLike"},
-          {"field": "humidity"},
-          {"field": "windSpeed"}
-        ]
-      }
-    },
-    "tempChartA": {
-      "component": "chart",
-      "config": {
-        "source": "forecastA",
-        "title": "Temperature",
-        "type": "line",
-        "x": "time",
-        "y": ["temp", "feelsLike"]
-      }
-    },
-    "precipChartA": {
-      "component": "chart",
-      "config": {
-        "source": "forecastA",
-        "title": "Chance of Rain",
-        "type": "column",
-        "x": "time",
-        "y": ["precipProbability"]
-      }
-    },
-    "windChartA": {
-      "component": "chart",
-      "config": {
-        "source": "forecastA",
-        "title": "Wind",
-        "type": "line",
-        "x": "time",
-        "y": ["windSpeed", "windGust"]
-      }
-    },
-    "forecastGridA": {
-      "component": "cubeGrid",
-      "config": {
-        "source": "forecastA",
-        "columnState": [
-          "time",
-          "conditions",
-          "temp",
-          "precipProbability",
-          "precipVolume",
-          "windSpeed"
-        ]
-      }
-    },
-    "nowB": {
-      "component": "statCardStrip",
-      "config": {
-        "source": "currentB",
-        "title": {"$var": "cityB"},
-        "cards": [
-          {"field": "conditions"},
-          {"field": "temp"},
-          {"field": "feelsLike"},
-          {"field": "humidity"},
-          {"field": "windSpeed"}
-        ]
-      }
-    },
-    "tempChartB": {
-      "component": "chart",
-      "config": {
-        "source": "forecastB",
-        "title": "Temperature",
-        "type": "line",
-        "x": "time",
-        "y": ["temp", "feelsLike"]
-      }
-    },
-    "precipChartB": {
-      "component": "chart",
-      "config": {
-        "source": "forecastB",
-        "title": "Chance of Rain",
-        "type": "column",
-        "x": "time",
-        "y": ["precipProbability"]
-      }
-    },
-    "windChartB": {
-      "component": "chart",
-      "config": {
-        "source": "forecastB",
-        "title": "Wind",
-        "type": "line",
-        "x": "time",
-        "y": ["windSpeed", "windGust"]
-      }
-    },
-    "forecastGridB": {
-      "component": "cubeGrid",
-      "config": {
-        "source": "forecastB",
-        "columnState": [
-          "time",
-          "conditions",
-          "temp",
-          "precipProbability",
-          "precipVolume",
-          "windSpeed"
-        ]
-      }
-    }
-  }
 }

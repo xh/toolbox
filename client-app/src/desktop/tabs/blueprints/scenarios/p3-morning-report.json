@@ -1,262 +1,188 @@
 {
-  "schema": {
-    "blueprint": 1,
-    "widgets": {
-      "tabContainer": 1,
-      "dashCanvas": 1,
-      "statCardStrip": 1,
-      "chart": 1,
-      "groupingChooser": 1,
-      "buttonGroup": 1,
-      "cubeGrid": 1
-    },
-    "variableTypes": {"fund": 1},
-    "resolvers": {"userFund": 1, "previousBusinessDay": 1, "dateOffset": 1, "yearStart": 1}
-  },
-  "formats": {
-    "mv": {"precision": 0, "ledger": true},
-    "greek": {"scale": "thousands", "precision": 0, "ledger": true}
-  },
-  "variables": {
-    "fund": {
-      "type": "fund",
-      "label": "Fund",
-      "setBy": "prompt",
-      "default": {"resolver": "userFund"}
-    },
-    "asOf": {
-      "type": "localDate",
-      "label": "As of",
-      "setBy": "prompt",
-      "default": {"resolver": "previousBusinessDay"}
-    },
-    "grouping": {
-      "type": "string[]",
-      "label": "Group by",
-      "setBy": {"element": "groupChooser"},
-      "default": {"value": ["strategy", "trader", "symbol"]}
-    },
-    "pnlFilter": {"type": "filter", "setBy": "action"},
-    "selection": {"type": "filter", "setBy": {"element": "posGrid", "output": "selection"}},
-    "symbol": {
-      "type": "string",
-      "setBy": {"element": "posGrid", "output": "selected", "field": "symbol"}
-    },
-    "priceStart": {
-      "type": "localDate",
-      "setBy": "resolver",
-      "compute": {"resolver": "dateOffset", "args": {"from": {"$var": "asOf"}, "months": -3}}
-    },
-    "yearStart": {
-      "type": "localDate",
-      "setBy": "resolver",
-      "compute": {"resolver": "yearStart", "args": {"from": {"$var": "asOf"}}}
-    }
-  },
-  "sources": {
-    "positions": {
-      "dataset": "positions",
-      "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "fund"}},
-      "fields": {
-        "retYtd": {
-          "field": "return",
-          "params": {"start": {"$var": "yearStart"}, "end": {"$var": "asOf"}}
-        }
-      }
-    },
-    "orders": {"dataset": "orders", "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "fund"}}},
-    "prices": {
-      "dataset": "prices",
-      "params": {
-        "symbol": {"$var": "symbol"},
-        "start": {"$var": "priceStart"},
-        "end": {"$var": "asOf"}
-      }
-    }
-  },
-  "presets": {
-    "posViews": {
-      "label": "Columns",
-      "controls": [{"path": "/elements/posGrid/config/columnState"}],
-      "default": "pnl",
-      "items": {
-        "pnl": {
-          "label": "P&L view",
-          "set": {
-            "elements": {
-              "posGrid": {"config": {"columnState": ["mktVal", "pnlDay", "pnlMtd", "pnlYtd"]}}
-            }
-          }
+    "schema": {
+        "blueprint": 1,
+        "widgets": {
+            "tabContainer": 1,
+            "dashCanvas": 1,
+            "statCardStrip": 1,
+            "chart": 1,
+            "groupingChooser": 1,
+            "buttonGroup": 1,
+            "cubeGrid": 1
         },
-        "risk": {
-          "label": "Risk view",
-          "set": {
-            "elements": {
-              "posGrid": {
-                "config": {
-                  "columnState": [
-                    "grossExposure",
-                    "netExposure",
-                    "betaAdjExposure",
-                    "beta",
-                    "var95",
-                    "pctNav",
-                    "retYtd",
-                    "delta",
-                    "vega"
-                  ]
-                }
-              }
-            }
-          }
+        "variableTypes": {"fund": 1},
+        "resolvers": {"userFund": 1, "previousBusinessDay": 1, "dateOffset": 1, "yearStart": 1}
+    },
+    "formats": {"mv": {"precision": 0, "ledger": true}, "greek": {"scale": "thousands", "precision": 0, "ledger": true}},
+    "variables": {
+        "fund": {"type": "fund", "label": "Fund", "setBy": "prompt", "default": {"resolver": "userFund"}},
+        "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "previousBusinessDay"}},
+        "grouping": {
+            "type": "string[]",
+            "label": "Group by",
+            "setBy": {"element": "groupChooser"},
+            "default": {"value": ["strategy", "trader", "symbol"]}
+        },
+        "pnlFilter": {"type": "filter", "setBy": "action"},
+        "selection": {"type": "filter", "setBy": {"element": "posGrid", "output": "selection"}},
+        "symbol": {"type": "string", "setBy": {"element": "posGrid", "output": "selected", "field": "symbol"}},
+        "priceStart": {
+            "type": "localDate",
+            "setBy": "resolver",
+            "compute": {"resolver": "dateOffset", "args": {"from": {"$var": "asOf"}, "months": -3}}
+        },
+        "yearStart": {
+            "type": "localDate",
+            "setBy": "resolver",
+            "compute": {"resolver": "yearStart", "args": {"from": {"$var": "asOf"}}}
         }
-      }
+    },
+    "sources": {
+        "positions": {
+            "dataset": "positions",
+            "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "fund"}},
+            "fields": {
+                "retYtd": {"field": "return", "params": {"start": {"$var": "yearStart"}, "end": {"$var": "asOf"}}}
+            }
+        },
+        "orders": {"dataset": "orders", "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "fund"}}},
+        "prices": {
+            "dataset": "prices",
+            "params": {"symbol": {"$var": "symbol"}, "start": {"$var": "priceStart"}, "end": {"$var": "asOf"}}
+        }
+    },
+    "presets": {
+        "posViews": {
+            "label": "Columns",
+            "controls": [{"path": "/elements/posGrid/config/columnState"}],
+            "default": "pnl",
+            "items": {
+                "pnl": {
+                    "label": "P&L view",
+                    "set": {
+                        "elements": {"posGrid": {"config": {"columnState": ["mktVal", "pnlDay", "pnlMtd", "pnlYtd"]}}}
+                    }
+                },
+                "risk": {
+                    "label": "Risk view",
+                    "set": {
+                        "elements": {
+                            "posGrid": {
+                                "config": {
+                                    "columnState": [
+                                        "grossExposure", "netExposure", "betaAdjExposure", "beta", "var95",
+                                        "pctNav", "retYtd", "delta", "vega"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "root": "tabs",
+    "elements": {
+        "tabs": {
+            "component": "tabContainer",
+            "children": [
+                {"id": "overview", "title": "Overview"},
+                {"id": "positions", "title": "Positions"},
+                {"id": "orders", "title": "Orders"}
+            ]
+        },
+        "overview": {
+            "component": "dashCanvas",
+            "children": [
+                {"id": "reportActions", "x": 0, "y": 0, "w": 12, "h": 1},
+                {"id": "headline", "x": 0, "y": 1, "w": 12, "h": 2},
+                {"id": "sectorChart", "x": 0, "y": 3, "w": 6, "h": 6},
+                {"id": "regionChart", "x": 6, "y": 3, "w": 6, "h": 6}
+            ]
+        },
+        "reportActions": {
+            "component": "buttonGroup",
+            "config": {
+                "buttons": [
+                    {
+                        "label": "Publish to PM pack",
+                        "icon": "share",
+                        "action": {"type": "publishToPmPack", "fund": {"$var": "fund"}, "asOf": {"$var": "asOf"}}
+                    }
+                ]
+            }
+        },
+        "headline": {
+            "component": "statCardStrip",
+            "config": {
+                "source": "positions",
+                "cards": [{"field": "mktVal"}, {"field": "pnlDay"}, {"field": "pnlMtd"}, {"field": "pnlYtd"}]
+            }
+        },
+        "sectorChart": {
+            "component": "chart",
+            "config": {"source": "positions", "title": "Day P&L by Sector", "type": "column", "x": "sector", "y": ["pnlDay"]}
+        },
+        "regionChart": {
+            "component": "chart",
+            "config": {"source": "positions", "title": "Day P&L by Region", "type": "column", "x": "region", "y": ["pnlDay"]}
+        },
+        "positions": {
+            "component": "dashCanvas",
+            "children": [
+                {"id": "groupChooser", "x": 0, "y": 0, "w": 4, "h": 1},
+                {"id": "pnlButtons", "x": 4, "y": 0, "w": 4, "h": 1},
+                {"id": "posGrid", "x": 0, "y": 1, "w": 8, "h": 9},
+                {"id": "priceChart", "x": 8, "y": 1, "w": 4, "h": 9}
+            ]
+        },
+        "groupChooser": {"component": "groupingChooser", "config": {"dimensions": ["fund", "strategy", "trader", "sector", "region", "symbol"]}},
+        "pnlButtons": {
+            "component": "buttonGroup",
+            "config": {
+                "buttons": [
+                    {
+                        "label": "Winners",
+                        "action": {
+                            "type": "setVariable",
+                            "variable": "pnlFilter",
+                            "value": {"field": "pnlDay", "op": ">", "value": 0}
+                        }
+                    },
+                    {
+                        "label": "Losers",
+                        "action": {
+                            "type": "setVariable",
+                            "variable": "pnlFilter",
+                            "value": {"field": "pnlDay", "op": "<", "value": 0}
+                        }
+                    },
+                    {"label": "All", "action": {"type": "resetVariable", "variable": "pnlFilter"}}
+                ]
+            }
+        },
+        "posGrid": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "positions",
+                "groupBy": {"$var": "grouping"},
+                "sortBy": "pnlDay|desc",
+                "filter": {"$var": "pnlFilter"}
+            }
+        },
+        "priceChart": {
+            "component": "chart",
+            "config": {"source": "prices", "title": "Price, Last Three Months", "type": "line", "x": "day", "y": ["close"]}
+        },
+        "orders": {"component": "dashCanvas", "children": [{"id": "ordersGrid", "x": 0, "y": 0, "w": 12, "h": 10}]},
+        "ordersGrid": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "orders",
+                "columnState": ["time", "symbol", "dir", "quantity", "price", "mktVal", "commission", "trader"],
+                "sortBy": "time|desc",
+                "filter": {"$var": "selection"}
+            }
+        }
     }
-  },
-  "root": "tabs",
-  "elements": {
-    "tabs": {
-      "component": "tabContainer",
-      "children": [
-        {"id": "overview", "title": "Overview"},
-        {"id": "positions", "title": "Positions"},
-        {"id": "orders", "title": "Orders"}
-      ]
-    },
-    "overview": {
-      "component": "dashCanvas",
-      "children": [
-        {"id": "reportActions", "x": 0, "y": 0, "w": 12, "h": 1},
-        {"id": "headline", "x": 0, "y": 1, "w": 12, "h": 2},
-        {"id": "sectorChart", "x": 0, "y": 3, "w": 6, "h": 6},
-        {"id": "regionChart", "x": 6, "y": 3, "w": 6, "h": 6}
-      ]
-    },
-    "reportActions": {
-      "component": "buttonGroup",
-      "config": {
-        "buttons": [
-          {
-            "label": "Publish to PM pack",
-            "icon": "share",
-            "action": {
-              "type": "publishToPmPack",
-              "fund": {"$var": "fund"},
-              "asOf": {"$var": "asOf"}
-            }
-          }
-        ]
-      }
-    },
-    "headline": {
-      "component": "statCardStrip",
-      "config": {
-        "source": "positions",
-        "cards": [
-          {"field": "mktVal"},
-          {"field": "pnlDay"},
-          {"field": "pnlMtd"},
-          {"field": "pnlYtd"}
-        ]
-      }
-    },
-    "sectorChart": {
-      "component": "chart",
-      "config": {
-        "source": "positions",
-        "title": "Day P&L by Sector",
-        "type": "column",
-        "x": "sector",
-        "y": ["pnlDay"]
-      }
-    },
-    "regionChart": {
-      "component": "chart",
-      "config": {
-        "source": "positions",
-        "title": "Day P&L by Region",
-        "type": "column",
-        "x": "region",
-        "y": ["pnlDay"]
-      }
-    },
-    "positions": {
-      "component": "dashCanvas",
-      "children": [
-        {"id": "groupChooser", "x": 0, "y": 0, "w": 4, "h": 1},
-        {"id": "pnlButtons", "x": 4, "y": 0, "w": 4, "h": 1},
-        {"id": "posGrid", "x": 0, "y": 1, "w": 8, "h": 9},
-        {"id": "priceChart", "x": 8, "y": 1, "w": 4, "h": 9}
-      ]
-    },
-    "groupChooser": {
-      "component": "groupingChooser",
-      "config": {"dimensions": ["fund", "strategy", "trader", "sector", "region", "symbol"]}
-    },
-    "pnlButtons": {
-      "component": "buttonGroup",
-      "config": {
-        "buttons": [
-          {
-            "label": "Winners",
-            "action": {
-              "type": "setVariable",
-              "variable": "pnlFilter",
-              "value": {"field": "pnlDay", "op": ">", "value": 0}
-            }
-          },
-          {
-            "label": "Losers",
-            "action": {
-              "type": "setVariable",
-              "variable": "pnlFilter",
-              "value": {"field": "pnlDay", "op": "<", "value": 0}
-            }
-          },
-          {"label": "All", "action": {"type": "resetVariable", "variable": "pnlFilter"}}
-        ]
-      }
-    },
-    "posGrid": {
-      "component": "cubeGrid",
-      "config": {
-        "source": "positions",
-        "groupBy": {"$var": "grouping"},
-        "sortBy": "pnlDay|desc",
-        "filter": {"$var": "pnlFilter"}
-      }
-    },
-    "priceChart": {
-      "component": "chart",
-      "config": {
-        "source": "prices",
-        "title": "Price, Last Three Months",
-        "type": "line",
-        "x": "day",
-        "y": ["close"]
-      }
-    },
-    "orders": {
-      "component": "dashCanvas",
-      "children": [{"id": "ordersGrid", "x": 0, "y": 0, "w": 12, "h": 10}]
-    },
-    "ordersGrid": {
-      "component": "cubeGrid",
-      "config": {
-        "source": "orders",
-        "columnState": [
-          "time",
-          "symbol",
-          "dir",
-          "quantity",
-          "price",
-          "mktVal",
-          "commission",
-          "trader"
-        ],
-        "sortBy": "time|desc",
-        "filter": {"$var": "selection"}
-      }
-    }
-  }
 }
