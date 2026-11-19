@@ -58,10 +58,13 @@ export const publishToPmPackAction: ActionSpec = {
     sideEffects: true,
     params: {
         type: 'object',
-        required: ['asOf'],
+        required: ['fund', 'asOf'],
         additionalProperties: false,
         properties: {
-            fund: {type: 'string', description: 'A fund name. Leave out to publish for all funds.'},
+            fund: {
+                type: ['string', 'null'],
+                description: 'A fund name, or null to publish for all funds.'
+            },
             asOf: {type: 'string', description: 'The report date, as YYYY-MM-DD.'}
         }
     },
