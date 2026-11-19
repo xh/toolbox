@@ -1,0 +1,14 @@
+{
+    "schema": {"blueprint": 1, "widgets": {"cubeGrid": 1}, "resolvers": {"today": 1}},
+    "variables": {
+        "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "today"}}
+    },
+    "sources": {"positions": {"dataset": "positions", "params": {"asOf": {"$var": "asOf"}}}},
+    "root": "posGrid",
+    "elements": {
+        "posGrid": {
+            "component": "cubeGrid",
+            "config": {"source": "positions", "groupBy": ["sector", "symbol"], "columnState": ["mktVal", "pnlDay"]}
+        }
+    }
+}
