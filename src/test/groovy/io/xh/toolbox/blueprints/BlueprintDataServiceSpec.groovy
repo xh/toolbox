@@ -57,7 +57,7 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         byDims[[:]].keySet() as List == ['var95', 'pctNav', 'ret']
         byDims[[:]].var95 == ds.groupVar(leaves, D4, PortfolioDatasets.Z95)
         byDims[[fund: F1]].pctNav == PortfolioDatasets.groupPctNav(leaves.findAll { it.fund == F1 }, navs)
-        byDims[[fund: F1]].pctNav == 2d
+        byDims[[fund: F1]].pctNav == 121600 / 59000d
         byDims[[fund: F2, symbol: opt.symbol]].ret == ds.groupReturn([bySymbol(leaves, opt.symbol)], D1, D4)
         Math.abs(byDims[[fund: F1, symbol: 'AAA']].var95 - bySymbol(leaves, 'AAA').var95) <= 1
     }
@@ -78,7 +78,7 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         def total = aggs.find { it.dims == [:] }
 
         then:
-        total.values.pctNav == 24400 / 62200d
+        total.values.pctNav == 24400 / 60200d
         total.values.var95 == ds.groupVar(leaves.findAll { it.instrumentType != 'Bond' }, D4, PortfolioDatasets.Z95)
         aggs*.dims.toSet() == [[:], [underlying: null], [underlying: 'AAA']] as Set
     }
@@ -152,6 +152,16 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         [holdings: [[symbol: 'ZZZ', weight: 1]]]                              || "Unknown symbol 'ZZZ' in portfolio"
         [holdings: [[symbol: 'AAA', weight: '50%']]]                          || "Holding 'AAA' needs a numeric weight, got '50%'"
         [holdings: [[symbol: 'AAA', weight: 0.5], [symbol: 'AAA', weight: 0.5]]] || "Symbol 'AAA' appears more than once in portfolio"
+    }
+
+    def 'symbols list every priceable instrument with its name and sector, by symbol'() {
+        expect:
+        datasets().symbols() == [
+            [symbol: 'AAA', name: 'AAA Inc', sector: 'Technology'],
+            [symbol: 'AAA 5.0 2030', name: 'AAA Inc 5.0% 2030', sector: 'Technology'],
+            [symbol: 'AAA MAR26 C', name: 'AAA Inc MAR26 Call', sector: 'Technology']
+        ]
+        datasets().symbols()*.symbol.every { rows(dataset: 'hypotheticalPortfolio', params: [asOf: D4.toString(), portfolio: [holdings: [[symbol: it, weight: 1]]]], fields: ['mktVal']).size() == 1 }
     }
 
     def 'an unknown fund is an error'() {

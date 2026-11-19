@@ -86,6 +86,19 @@ class BlueprintSubscriptionServiceSpec extends Specification implements ServiceU
         service.aggregates([dataset: 'positions', params: [asOf: D4.toString()], fields: ['mktVal'], groupBy: [[]]]) == []
     }
 
+    def 'with pctNav requested, a price move pushes only the rows it moved'() {
+        given:
+        service.subscribe([dataset: 'positions', params: [asOf: D4.toString()], fields: ['symbol', 'mktVal', 'pctNav']], 'ch', 'nav')
+
+        when:
+        prices[bond.symbol] = new MarketPrice(day: D4, close: 101)
+        service.pushUpdates()
+
+        then:
+        pushes.size() == 1
+        (pushes[0][2] as Map).update*.symbol == [bond.symbol]
+    }
+
     def 'a historical subscription never pushes'() {
         when:
         service.subscribe(positions(D3.toString()), 'ch', 'past')

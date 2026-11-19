@@ -4,6 +4,7 @@ import io.xh.hoist.json.JSONFormatCached
 
 class Instrument extends JSONFormatCached {
     String symbol
+    String name
     InstrumentType type
     String sector
     String industry
@@ -35,6 +36,7 @@ class Instrument extends JSONFormatCached {
     Map formatForJSON() {
         return [
             symbol        : symbol,
+            name          : name,
             assetClass    : assetClass,
             instrumentType: instrumentType,
             sector        : sector,

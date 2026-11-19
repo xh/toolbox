@@ -79,13 +79,32 @@ class PortfolioDatasetsSpec extends Specification {
         b.delta == null
     }
 
-    def 'pctNav weighs each position against half its fund gross'() {
+    def 'pctNav weighs each position against half its fund gross at the prior close'() {
         when:
         def rows = datasets().positions(D4)
 
+        then: 'D3 holdings at D3 closes: F1 holds 150 AAA at 120 and the bond, F2 the option at 12'
+        bySymbol(rows, 'AAA').pctNav == 21600 / 59000d
+        bySymbol(rows, opt.symbol).pctNav == 2800 / 1200d
+    }
+
+    def "a live price move changes only the moved rows' pctNav"() {
+        given:
+        def ds = datasets()
+        ds.currentPrices[eq.symbol] = new MarketPrice(day: D4, close: 200)
+
+        when:
+        def before = datasets().positions(D4)
+        def after = ds.positions(D4)
+
         then:
-        bySymbol(rows, 'AAA').pctNav == 21600 / 60800d
-        bySymbol(rows, opt.symbol).pctNav == 2
+        bySymbol(after, bond.symbol).pctNav == bySymbol(before, bond.symbol).pctNav
+        bySymbol(after, 'AAA').pctNav == 32000 / 59000d
+    }
+
+    def 'a fund has no NAV before its first prior close'() {
+        expect:
+        datasets().positions(D1)*.pctNav == [null]
     }
 
     def 'funds carry the AUM that pctNav weighs against'() {
@@ -94,8 +113,8 @@ class PortfolioDatasetsSpec extends Specification {
 
         then:
         funds*.name == Lookups.FUNDS
-        funds.find { it.name == F1 }.aum == 60800
-        funds.find { it.name == F2 }.aum == 1400
+        funds.find { it.name == F1 }.aum == 59000
+        funds.find { it.name == F2 }.aum == 1200
         funds.find { it.name == 'Hudson Bay' }.aum == 0
     }
 
@@ -238,10 +257,10 @@ class PortfolioDatasetsSpec extends Specification {
         def aaa = bySymbol(rows, 'AAA'), o = bySymbol(rows, opt.symbol), b = bySymbol(rows, bond.symbol)
 
         expect:
-        navs == [(F1): 60800d, (F2): 1400d]
+        navs == [(F1): 59000d, (F2): 1200d]
         PortfolioDatasets.groupPctNav([aaa], navs) == aaa.pctNav
-        PortfolioDatasets.groupPctNav([aaa, b], navs) == 2d
-        PortfolioDatasets.groupPctNav([aaa, o], navs) == 24400 / 62200d
+        PortfolioDatasets.groupPctNav([aaa, b], navs) == 121600 / 59000d
+        PortfolioDatasets.groupPctNav([aaa, o], navs) == 24400 / 60200d
     }
 
     def 'shocked P&L is beta-adjusted, with convexity on options'() {

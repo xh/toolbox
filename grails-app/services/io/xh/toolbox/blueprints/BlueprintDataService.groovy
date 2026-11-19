@@ -69,6 +69,11 @@ class BlueprintDataService extends BaseService {
         currentDatasets().funds()
     }
 
+    /** Every symbol hypotheticalPortfolio can price, as {symbol, name, sector}, by symbol. */
+    List<Map> getSymbols() {
+        currentDatasets().symbols()
+    }
+
     /** Check a request spec against the catalog. */
     BlueprintRequest parseRequest(Map spec) {
         BlueprintRequest ret = catalog.parseRequest(spec)

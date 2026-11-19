@@ -78,6 +78,7 @@ class InstrumentGenerationService extends BaseService {
     //------------------------
     private Instrument generateEquity() {
         String symbol = generateTicker(),
+            issuer = "$symbol ${sample(ISSUER_SUFFIXES)}",
             sector = sample(SECTORS),
             region = sample(REGIONS)
         List<String> countryCcy = sample(COUNTRIES[region])
@@ -91,7 +92,8 @@ class InstrumentGenerationService extends BaseService {
             region: region,
             country: countryCcy[0],
             ccy: countryCcy[1],
-            issuer: "$symbol ${sample(ISSUER_SUFFIXES)}",
+            name: issuer,
+            issuer: issuer,
             cusip: cusip,
             isin: generateIsin(countryCcy[0], cusip),
             beta: randDouble(0.5, 1.8).round(2)
@@ -112,8 +114,10 @@ class InstrumentGenerationService extends BaseService {
         switch (type) {
             case Option:
                 boolean isCall = randInt(0, 2) == 1
+                String expiry = "${sample(MONTHS)}${(year + randInt(0, 2)) % 100}"
                 ret.with {
-                    symbol = "${eq.symbol} ${sample(MONTHS)}${(year + randInt(0, 2)) % 100} ${isCall ? 'C' : 'P'}"
+                    symbol = "${eq.symbol} $expiry ${isCall ? 'C' : 'P'}"
+                    name = "${eq.issuer} $expiry ${isCall ? 'Call' : 'Put'}"
                     underlying = eq.symbol
                     beta = eq.beta
                     deltaRatio = randDouble(0.2, 0.9).round(3) * (isCall ? 1 : -1)
@@ -124,7 +128,9 @@ class InstrumentGenerationService extends BaseService {
                 break
             case Future:
                 ret.with {
-                    symbol = "${eq.symbol} FUT ${sample(MONTHS)}${(year + randInt(0, 2)) % 100}"
+                    String expiry = "${sample(MONTHS)}${(year + randInt(0, 2)) % 100}"
+                    symbol = "${eq.symbol} FUT $expiry"
+                    name = "${eq.issuer} $expiry Future"
                     underlying = eq.symbol
                     beta = eq.beta
                 }
@@ -135,6 +141,7 @@ class InstrumentGenerationService extends BaseService {
                 String bondCusip = eq.cusip ? withCusipCheck(eq.cusip.take(6) + randomAlnum(2)) : null
                 ret.with {
                     symbol = "${eq.symbol} ${(cpn * 100).round(3)} ${year + years}"
+                    name = "${eq.issuer} ${(cpn * 100).round(3)}% ${year + years}"
                     issuer = eq.issuer
                     cusip = bondCusip
                     isin = generateIsin(eq.country, bondCusip)
@@ -157,6 +164,7 @@ class InstrumentGenerationService extends BaseService {
         return byCcy.collect { ccy, regionCountry ->
             new Instrument(
                 symbol: "${ccy}USD",
+                name: "$ccy/USD",
                 type: FX,
                 sector: 'Other',
                 industry: 'Currencies',
