@@ -8,6 +8,7 @@
         "price": {"precision": 2},
         "greek": {"precision": 0, "ledger": true},
         "pct": {"precision": 2},
+        "shock": {"precision": "auto", "withPlusSign": true},
         "years": {"precision": 2, "label": "y"},
         "ratio": {"precision": 2},
         "qty": {"precision": 0}
@@ -20,6 +21,7 @@
         "greek": {"base": "currency:USD", "format": "greek", "aggregator": "SUM"},
         "price": {"base": "currency:USD", "format": "price", "aggregator": "UNIQUE"},
         "weight": {"base": "fraction", "format": "pct"},
+        "shock": {"base": "fraction", "format": "shock"},
         "years": {"base": "number", "format": "years"},
         "ratio": {"base": "number", "format": "ratio"},
         "ticker": {"base": "string", "renderer": "ticker"},
@@ -172,7 +174,7 @@
             "params": {
                 "shock": {
                     "type": "number",
-                    "kind": "fraction",
+                    "kind": "shock",
                     "required": true,
                     "description": "An equity shock as a fraction, such as -0.1 for minus 10 percent."
                 }
