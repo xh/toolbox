@@ -1,10 +1,10 @@
 import {div, filler, hbox, img, span, vbox} from '@xh/hoist/cmp/layout';
+import {tooltip} from '@xh/hoist/cmp/popover';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {tooltip} from '@xh/hoist/kit/blueprint';
 import './MeetXhWidget.scss';
 import {MeetXhWidgetModel} from './MeetXhWidgetModel';
 
@@ -95,14 +95,12 @@ const avatarRow = hoistCmp.factory<MeetXhWidgetModel>({
                     tooltip({
                         key: c.id,
                         content: c.name,
-                        placement: 'top',
-                        // Click goes on the tooltip's target wrapper - Blueprint renders the
-                        // wrapped child with pointer-events: none, so the img can't take it.
-                        targetProps: {onClick: () => model.spotlight(c.id)},
+                        position: 'top',
                         children: img({
                             className: 'tb-meet-xh__avatar',
                             src: model.profilePicUrl(c),
-                            alt: c.name
+                            alt: c.name,
+                            onClick: () => model.spotlight(c.id)
                         })
                     })
                 )

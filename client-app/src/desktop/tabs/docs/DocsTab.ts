@@ -2,6 +2,7 @@ import {badge} from '@xh/hoist/cmp/badge';
 import {clipboardMenuItem} from '@xh/hoist/cmp/clipboard';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hbox, hframe, hspacer, placeholder, span} from '@xh/hoist/cmp/layout';
+import {tooltip} from '@xh/hoist/cmp/popover';
 import {creates, hoistCmp, uses, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dockContainer} from '@xh/hoist/desktop/cmp/dock';
@@ -10,7 +11,6 @@ import {menuButton} from '@xh/hoist/desktop/cmp/menu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {tooltip} from '@xh/hoist/kit/blueprint';
 import {pluralize} from '@xh/hoist/utils/js';
 import {useEffect, useRef} from 'react';
 import {docContent} from '../../../core/docs/DocContent';
@@ -90,7 +90,7 @@ const contentPanel = hoistCmp.factory<DocsPanelModel>({
                     tooltip({
                         content: searchTooltip(),
                         hoverOpenDelay: 500,
-                        placement: 'bottom',
+                        position: 'bottom',
                         children: button({
                             icon: Icon.search(),
                             minimal: true,
@@ -189,7 +189,7 @@ const searchPanel = hoistCmp.factory<DocsPanelModel>({
                     tooltip({
                         content: searchTooltip('Back to document'),
                         hoverOpenDelay: 400,
-                        placement: 'bottom',
+                        position: 'bottom',
                         children: button({
                             icon: Icon.arrowLeft(),
                             minimal: true,

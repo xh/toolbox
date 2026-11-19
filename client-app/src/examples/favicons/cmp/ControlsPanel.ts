@@ -1,6 +1,7 @@
 import type {CardProps} from '@xh/hoist/cmp/card';
 import {card} from '@xh/hoist/cmp/card';
 import {a, div, filler, hbox, img, span, vbox} from '@xh/hoist/cmp/layout';
+import {tooltip} from '@xh/hoist/cmp/popover';
 import type {ReactElement, ReactNode} from 'react';
 import type {ElementSpec} from '@xh/hoist/core';
 import {hoistCmp, uses, XH} from '@xh/hoist/core';
@@ -9,7 +10,6 @@ import type {SliderProps} from '@xh/hoist/desktop/cmp/input';
 import {iconPicker, segmentedControl, slider, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {tooltip} from '@xh/hoist/kit/blueprint';
 import {FaviconModel} from '../FaviconModel';
 import type {FaviconShape} from '../lib/FaviconSpec';
 import {MAX_PADDING, MAX_RADIUS} from '../lib/FaviconSpec';
@@ -286,7 +286,7 @@ function fontAwesomeCredit() {
             tooltip({
                 content:
                     'These glyphs come from Font Awesome Pro. Apps need their own Pro license to use them.',
-                placement: 'top',
+                position: 'top',
                 children: Icon.info()
             })
         ]
