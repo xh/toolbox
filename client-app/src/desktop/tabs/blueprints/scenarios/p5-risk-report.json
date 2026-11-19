@@ -1,0 +1,116 @@
+{
+    "schema": {
+        "blueprint": 1,
+        "widgets": {"tabContainer": 1, "dashCanvas": 1, "cubeGrid": 1, "chart": 1, "portfolioBuilder": 1},
+        "variableTypes": {"portfolio": 1},
+        "resolvers": {"previousBusinessDay": 1}
+    },
+    "variables": {
+        "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "previousBusinessDay"}},
+        "portfolio": {
+            "type": "portfolio",
+            "label": "Hypothetical portfolio",
+            "setBy": {"element": "portfolioBuilder"}
+        }
+    },
+    "sources": {
+        "positions": {
+            "dataset": "positions",
+            "params": {"asOf": {"$var": "asOf"}},
+            "fields": {
+                "shockDown10": {"field": "shockedPnl", "params": {"shock": -0.1}},
+                "shockDown5": {"field": "shockedPnl", "params": {"shock": -0.05}},
+                "shockUp5": {"field": "shockedPnl", "params": {"shock": 0.05}},
+                "shockUp10": {"field": "shockedPnl", "params": {"shock": 0.1}}
+            }
+        },
+        "hypothetical": {
+            "dataset": "hypotheticalPortfolio",
+            "params": {"portfolio": {"$var": "portfolio"}, "asOf": {"$var": "asOf"}},
+            "fields": {
+                "shockDown10": {"field": "shockedPnl", "params": {"shock": -0.1}},
+                "shockDown5": {"field": "shockedPnl", "params": {"shock": -0.05}},
+                "shockUp5": {"field": "shockedPnl", "params": {"shock": 0.05}},
+                "shockUp10": {"field": "shockedPnl", "params": {"shock": 0.1}}
+            }
+        }
+    },
+    "root": "tabs",
+    "elements": {
+        "tabs": {
+            "component": "tabContainer",
+            "children": [
+                {"id": "risk", "title": "Risk"},
+                {"id": "options", "title": "Options"},
+                {"id": "bonds", "title": "Bonds"},
+                {"id": "hypothetical", "title": "Hypothetical"}
+            ]
+        },
+        "risk": {
+            "component": "dashCanvas",
+            "children": [
+                {"id": "riskGrid", "x": 0, "y": 0, "w": 12, "h": 7},
+                {"id": "shockChart", "x": 0, "y": 7, "w": 12, "h": 5}
+            ]
+        },
+        "riskGrid": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "positions",
+                "groupBy": ["fund", "strategy"],
+                "columnState": ["var95", "var99", "betaAdjExposure", "shockDown10", "shockDown5", "shockUp5", "shockUp10"]
+            }
+        },
+        "shockChart": {
+            "component": "chart",
+            "config": {
+                "source": "positions",
+                "title": "Shocked P&L by Fund",
+                "type": "column",
+                "x": "fund",
+                "y": ["shockDown10", "shockDown5", "shockUp5", "shockUp10"]
+            }
+        },
+        "options": {"component": "dashCanvas", "children": [{"id": "optionsGrid", "x": 0, "y": 0, "w": 12, "h": 10}]},
+        "optionsGrid": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "positions",
+                "filter": {"field": "instrumentType", "op": "=", "value": "Option"},
+                "groupBy": ["underlying"],
+                "columnState": [
+                    {"field": "delta", "format": {"name": "greek", "scale": "thousands"}},
+                    {"field": "gamma", "format": {"name": "greek", "scale": "thousands"}},
+                    {"field": "vega", "format": {"name": "greek", "scale": "thousands"}},
+                    {"field": "theta", "format": {"name": "greek", "scale": "thousands"}}
+                ]
+            }
+        },
+        "bonds": {"component": "dashCanvas", "children": [{"id": "bondsGrid", "x": 0, "y": 0, "w": 12, "h": 10}]},
+        "bondsGrid": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "positions",
+                "filter": {"field": "instrumentType", "op": "=", "value": "Bond"},
+                "groupBy": ["issuer"],
+                "columnState": ["mktVal", "duration", "dv01", "yield"]
+            }
+        },
+        "hypothetical": {
+            "component": "dashCanvas",
+            "children": [
+                {"id": "portfolioBuilder", "x": 0, "y": 0, "w": 4, "h": 10},
+                {"id": "hypoGrid", "x": 4, "y": 0, "w": 8, "h": 10}
+            ]
+        },
+        "portfolioBuilder": {"component": "portfolioBuilder", "config": {"maxHoldings": 50}},
+        "hypoGrid": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "hypothetical",
+                "groupBy": ["sector", "symbol"],
+                "columnState": ["weight", "var95", "shockDown10", "shockDown5", "shockUp5", "shockUp10"]
+            }
+        }
+    }
+}

@@ -1,7 +1,7 @@
 import {DataCatalog, FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {afterAll, beforeAll, describe, expect, it} from 'vitest';
-import {BlueprintsPanelModel} from './BlueprintsPanelModel';
+import {BlueprintsPanelModel, SCENARIOS} from './BlueprintsPanelModel';
 import p1 from './scenarios/p1-one-grid.json';
 import p2 from './scenarios/p2-linked-dashboard.json';
 
@@ -62,5 +62,10 @@ describe('Blueprints JSON harness', () => {
         expect(JSON.parse(model.draft)).toEqual(p2);
         expect(model.blueprintModel.blueprint).toEqual(p2);
         expect(model.issues.filter(it => it.severity === 'error')).toEqual([]);
+    });
+
+    it.each(SCENARIOS.map(it => [it.label, it.value]))('applies %s with no errors', (_, value) => {
+        model.scenario = value;
+        expect(model.hasErrors).toBe(false);
     });
 });

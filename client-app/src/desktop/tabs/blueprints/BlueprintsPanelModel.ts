@@ -7,10 +7,12 @@ import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
 import p1 from './scenarios/p1-one-grid.json';
 import p2 from './scenarios/p2-linked-dashboard.json';
+import p5 from './scenarios/p5-risk-report.json';
 
 export const SCENARIOS: {value: string; label: string; blueprint: PlainObject}[] = [
     {value: 'p1', label: 'P1. One grid', blueprint: p1},
-    {value: 'p2', label: 'P2. A linked dashboard', blueprint: p2}
+    {value: 'p2', label: 'P2. A linked dashboard', blueprint: p2},
+    {value: 'p5', label: 'P5. A risk and stress report', blueprint: p5}
 ];
 
 /**
