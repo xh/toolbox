@@ -11,7 +11,7 @@ import io.xh.hoist.config.TypedConfigMap
 class LlmConfig extends TypedConfigMap {
 
     /** Anthropic model ID used for every call. */
-    String model = 'claude-sonnet-4-6'
+    String model = 'claude-sonnet-5-5'
 
     /** Max output tokens per model call. */
     Integer maxTokens = 8192
@@ -29,14 +29,16 @@ class LlmConfig extends TypedConfigMap {
     Integer maxStreams = 20
 
     /**
-     * Other Anthropic Messages API params sent with every call, e.g. `{"temperature": 0.5}` or
-     * `{"thinking": {"type": "enabled", "budget_tokens": 4000}}`. The client cannot set these.
+     * Other Anthropic Messages API params sent with every call, e.g.
+     * `{"output_config": {"effort": "medium"}}` or
+     * `{"thinking": {"type": "adaptive", "display": "summarized"}}`. The client cannot set these.
+     * Sonnet 5.5 rejects sampling params, `budget_tokens` and disabled thinking.
      */
     Map requestParams = [:]
 
     /**
      * Anthropic server tool definitions added to every call, e.g.
-     * `[{"type": "web_search_20250305", "name": "web_search", "max_uses": 3}]`. Server tools cost
+     * `[{"type": "web_search_20260209", "name": "web_search", "max_uses": 3}]`. Server tools cost
      * extra, so the relay rejects any the client sends.
      */
     List<Map> serverTools = []
