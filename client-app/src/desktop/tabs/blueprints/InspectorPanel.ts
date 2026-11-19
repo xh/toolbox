@@ -13,6 +13,7 @@ export const inspectorPanel = hoistCmp.factory({
             title: 'Inspector',
             icon: Icon.search(),
             compactHeader: true,
+            headerItems: [`Version ${model.panelModel.blueprintModel.version}`],
             modelConfig: {side: 'right', defaultSize: 600},
             items: [
                 panel({
