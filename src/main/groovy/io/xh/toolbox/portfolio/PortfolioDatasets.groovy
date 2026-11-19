@@ -97,6 +97,12 @@ class PortfolioDatasets {
             .collect { orderRow(it) }
     }
 
+    /** Each fund with its AUM at the live day: the NAV that pctNav weighs positions against. */
+    List<Map> funds() {
+        Map<String, Double> navs = navsByFund(positions(liveDay))
+        return Lookups.FUNDS.collect { [name: it, aum: Math.round(navs[it] ?: 0d)] }
+    }
+
     //------------------------
     // Parameterized fields
     //------------------------
@@ -231,11 +237,15 @@ class PortfolioDatasets {
         ]
     }
 
-    // Weight in the fund, against a NAV of half the fund's gross market value.
-    private static void addPctNav(List<Map> rows) {
-        Map<String, Double> navs = rows
+    // NAV is half the fund's gross market value.
+    private static Map<String, Double> navsByFund(List<Map> rows) {
+        rows
             .groupBy { it.fund }
             .collectEntries { fund, fundRows -> [fund, fundRows.sum { Math.abs(it.mktVal as long) } / 2d] }
+    }
+
+    private static void addPctNav(List<Map> rows) {
+        Map<String, Double> navs = navsByFund(rows)
         rows.each { row ->
             double nav = navs[row.fund]
             row.pctNav = nav ? (row.mktVal as long) / nav : null

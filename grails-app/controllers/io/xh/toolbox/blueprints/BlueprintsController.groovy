@@ -13,6 +13,10 @@ class BlueprintsController extends BaseController {
         renderJSON(blueprintDataService.catalogJson)
     }
 
+    def funds() {
+        renderJSON(blueprintDataService.funds)
+    }
+
     def data() {
         def req = blueprintDataService.parseRequest(parseRequestJSON())
         renderJSON(rows: blueprintDataService.getRows(req))

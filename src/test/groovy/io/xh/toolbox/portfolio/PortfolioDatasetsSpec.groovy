@@ -75,6 +75,17 @@ class PortfolioDatasetsSpec extends Specification {
         bySymbol(rows, opt.symbol).pctNav == 2
     }
 
+    def 'funds carry the AUM that pctNav weighs against'() {
+        when:
+        def funds = datasets().funds()
+
+        then:
+        funds*.name == Lookups.FUNDS
+        funds.find { it.name == F1 }.aum == 60800
+        funds.find { it.name == F2 }.aum == 1400
+        funds.find { it.name == 'Hudson Bay' }.aum == 0
+    }
+
     def 'asOf changes the data, and resolves to the last trading day on or before it'() {
         given:
         def ds = datasets()

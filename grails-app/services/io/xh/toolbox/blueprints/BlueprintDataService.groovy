@@ -39,6 +39,11 @@ class BlueprintDataService extends BaseService {
         catalog.json
     }
 
+    /** Each fund as {name, aum}, with AUM in USD. */
+    List<Map> getFunds() {
+        currentDatasets().funds()
+    }
+
     /** Check a request spec against the catalog. */
     BlueprintRequest parseRequest(Map spec) {
         BlueprintRequest ret = catalog.parseRequest(spec)
