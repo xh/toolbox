@@ -23,7 +23,7 @@ import {lineChartPanel} from './tabs/components/charts/LineChartPanel';
 import {ohlcChartPanel} from './tabs/components/charts/OHLCChartPanel';
 import {simpleTreeMapPanel} from './tabs/components/charts/SimpleTreeMapPanel';
 import {splitTreeMapPanel} from './tabs/components/charts/SplitTreeMapPanel';
-import {blueprintsTab} from './tabs/blueprints/BlueprintsPanel';
+import {blueprintsPanel} from './tabs/blueprints/BlueprintsPanel';
 import {chatKitRoutes, chatKitTab} from './tabs/chatkit/ChatKitTab';
 import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
@@ -373,15 +373,7 @@ export class AppModel extends BaseAppModel {
                         ]
                     },
                     chatKitRoutes(),
-                    {
-                        name: 'blueprints',
-                        path: '/blueprints',
-                        children: [
-                            {name: 'architect', path: '/architect'},
-                            {name: 'catalog', path: '/catalog'},
-                            {name: 'registry', path: '/registry'}
-                        ]
-                    },
+                    {name: 'blueprints', path: '/blueprints'},
                     {
                         name: 'docs',
                         path: '/docs',
@@ -698,7 +690,7 @@ export class AppModel extends BaseAppModel {
                 }
             },
             chatKitTab(switcher),
-            blueprintsTab(switcher),
+            {id: 'blueprints', icon: Icon.layout(), content: blueprintsPanel},
             {id: 'docs', icon: Icon.book(), content: docsTab},
             {id: 'examples', title: 'Example Apps', icon: Icon.boxFull(), content: examplesTab}
         ];

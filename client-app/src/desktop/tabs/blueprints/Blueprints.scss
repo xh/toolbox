@@ -43,3 +43,15 @@
     padding: var(--xh-spacing);
   }
 }
+
+.tb-blueprints {
+  &__list {
+    flex: none;
+    border: var(--xh-border-solid);
+    border-radius: 4px;
+  }
+
+  &__list-actions {
+    gap: var(--xh-spacing-half);
+  }
+}

@@ -46,6 +46,9 @@ export interface WrapperProps extends HoistProps {
      */
     options?: ReactNode;
 
+    /** Caption above the `options` section. Default 'Options'. Null for none. */
+    optionsLabel?: ReactNode;
+
     /**
      * Links to display for this tab, pointing either to relevant source code within XH
      * repos or to external sites. Provided as objects with `url` and optional `text` / `notes`.
@@ -57,7 +60,7 @@ export interface WrapperProps extends HoistProps {
 export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
     displayName: 'Wrapper',
     className: 'tbox-wrapper',
-    render({className, title, icon, description, options, links, children}) {
+    render({className, title, icon, description, options, optionsLabel, links, children}) {
         const railModel = useLocalModel(WrapperRailModel),
             intro = isArray(description) ? description.join('\n') : description,
             // Omit the info rail entirely when there is nothing to show in it, so the demo simply
@@ -72,7 +75,7 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
                 hasRailContent
                     ? railModel.collapsed
                         ? collapsedRail({railModel})
-                        : infoRail({title, icon, intro, options, links, railModel})
+                        : infoRail({title, icon, intro, options, optionsLabel, links, railModel})
                     : null,
                 vframe({className: 'tbox-wrapper__demo', children})
             ]
@@ -92,7 +95,7 @@ interface InfoRailProps extends Omit<WrapperProps, 'description'> {
 }
 
 const infoRail = hoistCmp.factory<InfoRailProps>({
-    render({title, icon, intro, options, links, railModel}) {
+    render({title, icon, intro, options, optionsLabel, links, railModel}) {
         const hasIntro = !!intro,
             hasOptions = !isEmpty(options),
             hasLinks = !isEmpty(links);
@@ -121,7 +124,7 @@ const infoRail = hoistCmp.factory<InfoRailProps>({
                         className: 'tbox-wrapper__divider',
                         omit: !(hasIntro && hasOptions)
                     }),
-                    optionsSection({options}),
+                    optionsSection({options, optionsLabel}),
                     div({
                         className: 'tbox-wrapper__divider',
                         omit: !((hasIntro || hasOptions) && hasLinks)
@@ -135,10 +138,11 @@ const infoRail = hoistCmp.factory<InfoRailProps>({
 
 interface OptionsSectionProps extends HoistProps {
     options?: ReactNode;
+    optionsLabel?: ReactNode;
 }
 
 const optionsSection = hoistCmp.factory<OptionsSectionProps>({
-    render({options}) {
+    render({options, optionsLabel = 'Options'}) {
         // `isEmpty` treats undefined and `[]` as empty but a React element (a non-empty object) or
         // a non-empty array as present - which is exactly the "has renderable content" test we want
         // for the element/array values examples pass here.
@@ -146,7 +150,11 @@ const optionsSection = hoistCmp.factory<OptionsSectionProps>({
         return div({
             className: 'tbox-wrapper__options',
             children: [
-                div({className: 'tbox-wrapper__options-label', children: 'Options'}),
+                div({
+                    className: 'tbox-wrapper__options-label',
+                    children: optionsLabel,
+                    omit: optionsLabel == null
+                }),
                 div({className: 'tbox-wrapper__options-body', children: options})
             ]
         });

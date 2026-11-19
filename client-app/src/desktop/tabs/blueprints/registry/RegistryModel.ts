@@ -233,7 +233,7 @@ export class RegistryModel extends HoistModel {
         }
     }
 
-    /** Load the selected widget's example into an empty blueprint. */
+    /** Add the selected widget's example to the library as a new blueprint, and open it. */
     loadExample() {
         const entry = this.selected,
             example = entry?.spec.example;
@@ -260,8 +260,7 @@ export class RegistryModel extends HoistModel {
                 }
             };
         }
-        this.panelModel.draft = JSON.stringify(bp, null, 4);
-        this.panelModel.apply();
+        this.panelModel.addBlueprint(`Example - ${entry.label ?? entry.name}`, bp);
     }
 
     override onLinked() {

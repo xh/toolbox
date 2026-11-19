@@ -154,7 +154,7 @@ const detailView = hoistCmp.factory<RegistryModel>(({model}) => {
                           height: 220,
                           headerItems: [
                               button({
-                                  text: 'Load into an empty blueprint',
+                                  text: 'Add as a new blueprint',
                                   icon: Icon.add(),
                                   minimal: true,
                                   onClick: () => model.loadExample()
