@@ -15,10 +15,15 @@ export const blueprintsPanel = hoistCmp.factory({
     model: creates(BlueprintsPanelModel),
 
     render({model}) {
+        const {blueprintModel} = model;
         return hframe(
             harnessPanel(),
-            panel({flex: 1, item: blueprintView({model: model.blueprintModel})}),
-            inspectorPanel()
+            panel({
+                flex: 1,
+                mask: 'onLoad',
+                item: blueprintModel ? blueprintView({model: blueprintModel}) : null
+            }),
+            blueprintModel ? inspectorPanel() : null
         );
     }
 });

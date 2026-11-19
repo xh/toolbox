@@ -1,9 +1,8 @@
 import type {BlueprintDataProvider, BlueprintIssue} from '@xh/hoist-chat-kit/blueprint';
 import {BlueprintModel, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
-import {HoistModel, managed} from '@xh/hoist/core';
-import type {PlainObject} from '@xh/hoist/core';
-import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
-import catalogJson from './catalog/catalog.json';
+import {HoistModel, XH} from '@xh/hoist/core';
+import type {LoadSpec, PlainObject} from '@xh/hoist/core';
+import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
 import p1 from './scenarios/p1-one-grid.json';
@@ -16,7 +15,8 @@ export const SCENARIOS: {value: string; label: string; blueprint: PlainObject}[]
 
 /**
  * The JSON harness: applies a pasted blueprint to a {@link BlueprintModel}, which keeps the last
- * valid blueprint rendered when a new one has errors.
+ * valid blueprint rendered when a new one has errors. Builds the model once the server's Data
+ * Catalog loads.
  */
 export class BlueprintsPanelModel extends HoistModel {
     @bindable accessor scenario: string = SCENARIOS[0].value;
@@ -28,7 +28,10 @@ export class BlueprintsPanelModel extends HoistModel {
     /** Issues from the last apply. Errors mean the blueprint on screen is an older one. */
     @observableRef accessor applyIssues: BlueprintIssue[] = [];
 
-    @managed blueprintModel: BlueprintModel;
+    /** Null until the catalog loads. */
+    @observableRef accessor blueprintModel: BlueprintModel = null;
+
+    private createProvider: (catalog: DataCatalog) => BlueprintDataProvider;
 
     @computed
     get hasErrors(): boolean {
@@ -38,27 +41,43 @@ export class BlueprintsPanelModel extends HoistModel {
     /** The rejected draft's issues after a failed apply, else the rendered blueprint's. */
     @computed
     get issues(): BlueprintIssue[] {
-        return this.hasErrors ? this.applyIssues : this.blueprintModel.issues;
+        return this.hasErrors ? this.applyIssues : (this.blueprintModel?.issues ?? []);
     }
 
-    constructor(dataProvider: BlueprintDataProvider = new ServerDataProvider()) {
+    constructor(
+        createProvider: (catalog: DataCatalog) => BlueprintDataProvider = () =>
+            new ServerDataProvider()
+    ) {
         super();
-
-        this.blueprintModel = new BlueprintModel({
-            catalog: new DataCatalog(catalogJson),
-            registry: createToolboxRegistry(),
-            dataProvider
-        });
-
+        this.createProvider = createProvider;
         this.addReaction({
             track: () => this.scenario,
-            run: scenario => this.loadScenario(scenario),
-            fireImmediately: true
+            run: scenario => this.loadScenario(scenario)
         });
+    }
+
+    override async doLoadAsync(loadSpec: LoadSpec) {
+        if (this.blueprintModel) return this.blueprintModel.loadAsync(loadSpec);
+
+        const json = await XH.fetchJson({url: 'blueprints/catalog'}, {loadSpec});
+        if (loadSpec.isStale) return;
+
+        const catalog = new DataCatalog(json);
+        runInAction(() => {
+            this.blueprintModel = this.markManaged(
+                new BlueprintModel({
+                    catalog,
+                    registry: createToolboxRegistry(),
+                    dataProvider: this.createProvider(catalog)
+                })
+            );
+        });
+        this.loadScenario(this.scenario);
     }
 
     @action
     apply() {
+        if (!this.blueprintModel) return;
         let bp: PlainObject;
         try {
             bp = JSON.parse(this.draft);

@@ -1,17 +1,17 @@
 import {DataCatalog, FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint';
-import {initTestAppAsync} from '@xh/hoist/test-support';
+import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {afterAll, beforeAll, describe, expect, it} from 'vitest';
 import {BlueprintsPanelModel} from './BlueprintsPanelModel';
-import catalogJson from './catalog/catalog.json';
 import p1 from './scenarios/p1-one-grid.json';
 import p2 from './scenarios/p2-linked-dashboard.json';
 
-let model: BlueprintsPanelModel;
+let model: BlueprintsPanelModel, catalogRequests: number;
 
 beforeAll(async () => {
     await initTestAppAsync();
-    const catalog = new DataCatalog(catalogJson);
-    model = new BlueprintsPanelModel(new FakeBlueprintDataProvider({catalog}));
+    model = new BlueprintsPanelModel(catalog => new FakeBlueprintDataProvider({catalog}));
+    await model.loadAsync();
+    catalogRequests = hoistCore.requestsTo('blueprints/catalog').length;
 });
 
 afterAll(() => model.destroy());
@@ -22,7 +22,12 @@ const applyJson = (json: unknown) => {
 };
 
 describe('Blueprints JSON harness', () => {
-    it('applies the first scenario on start', () => {
+    it('builds its model from the server catalog', () => {
+        expect(catalogRequests).toBe(1);
+        expect(model.blueprintModel.catalog).toBeInstanceOf(DataCatalog);
+    });
+
+    it('applies the first scenario once the catalog loads', () => {
         expect(model.blueprintModel.blueprint).toEqual(p1);
         expect(model.hasErrors).toBe(false);
     });

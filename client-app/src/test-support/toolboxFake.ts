@@ -1,4 +1,5 @@
 import type {FakeHoistCore, PrefSpec} from '@xh/hoist/test-support';
+import blueprintsCatalog from './blueprintsCatalog.json';
 
 /**
  * Seed the fake hoist-core with Toolbox's own server state, so a spec boots against what the
@@ -34,6 +35,8 @@ export function installToolboxFake(core: FakeHoistCore) {
         mobileHomeWidgets: pref('json', {}),
         blueprintsFund: pref('string', 'Oak Mount')
     });
+
+    core.route('GET', 'blueprints/catalog', () => blueprintsCatalog);
 }
 
 /** A pref the user has not set, at its server default. */
