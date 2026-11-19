@@ -14,6 +14,7 @@ import static io.xh.toolbox.portfolio.Utils.randDouble
 import static io.xh.toolbox.portfolio.Utils.randInt
 import static io.xh.toolbox.portfolio.Utils.sample
 import static io.xh.toolbox.portfolio.Lookups.*
+import static io.xh.toolbox.portfolio.InstrumentType.FX
 
 /**
  * Generates a randomized set of mock {@link Order} objects distributed across the provided
@@ -45,6 +46,7 @@ class OrderGenerationService extends BaseService {
 
                 for (int i = 0; i < orderCount; i++) {
                     def symbol = sample(symbols),
+                        instrument = instruments[symbol],
                         fund = sample(FUNDS),
                         model = sample(MODELS),
                         trader = sample(TRADERS),
@@ -52,23 +54,27 @@ class OrderGenerationService extends BaseService {
 
                     MarketPrice mktData = sample(historicalPrices[symbol])
                     Instant time = mktData.day.atTime(LocalTime.of(randInt(9, 16), randInt(0, 59))).toInstant(EST)
-                    long quantity = randInt(300, 10001) * (dir == 'Sell' ? -1 : 1)
-                    double price = randDouble(mktData.low, mktData.high).round(2)
-                    long cost = Math.round(quantity * price)
+                    long quantity = randInt(instrument.type.minOrderQty, instrument.type.maxOrderQty + 1) * (dir == 'Sell' ? -1 : 1)
+                    double price = randDouble(mktData.low, mktData.high).round(instrument.type == FX ? 4 : 2)
+                    long cost = Math.round(quantity * price * instrument.multiplier)
 
                     ret << new Order(
                             id: "order-${i}",
-                            instrument: instruments[symbol],
+                            instrument: instrument,
+                            day: mktData.day,
                             dir: dir,
                             quantity: quantity,
                             price: price,
                             cost: cost,
+                            mktVal: cost,
                             time: time,
                             model: model,
                             fund: fund,
                             trader: trader,
+                            strategy: TRADER_STRATEGIES[trader],
+                            book: sample(BOOKS),
                             commission: Math.abs(cost * 0.0002),
-                            confidence: randInt(0, 1001)
+                            confidence: randInt(0, 101)
                     )
                 }
 

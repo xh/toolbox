@@ -146,6 +146,7 @@ class PortfolioService extends BaseService {
                     day: day,
                     instruments: instruments,
                     historicalPrices: historicalPrices,
+                    tradingDays: historicalPrices.values().first()*.day,
                     orders: orders,
                     rawPositions: rawPositions
                 )

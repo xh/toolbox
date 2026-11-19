@@ -9,6 +9,7 @@ import io.xh.hoist.telemetry.trace.TraceService
 import io.xh.hoist.config.ConfigSpec
 import io.xh.hoist.pref.PreferenceSpec
 import io.xh.toolbox.llm.LlmConfig
+import io.xh.toolbox.portfolio.Lookups
 import io.xh.toolbox.portfolio.PortfolioConfig
 import io.xh.toolbox.security.Auth0Config
 import io.xh.toolbox.security.EntraIdConfig
@@ -309,6 +310,13 @@ class BootStrap implements LogSupport {
                 defaultValue: 'IBM Plex Sans',
                 groupName: 'Toolbox',
                 notes: 'App UI font, toggled via the in-app Options dialog. Either "IBM Plex Sans" or "Inter".'
+            ),
+            new PreferenceSpec(
+                name: 'blueprintsFund',
+                type: 'string',
+                defaultValue: Lookups.FUNDS.first(),
+                groupName: 'Toolbox - Blueprints',
+                notes: "The user's own fund, which Blueprints' userFund resolver reads."
             ),
             new PreferenceSpec(
                 name: 'contactAppState',
