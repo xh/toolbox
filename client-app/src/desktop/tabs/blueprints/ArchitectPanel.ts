@@ -5,6 +5,12 @@ import {
 } from '@xh/hoist-chat-kit/blueprint';
 import {ChatModel} from '@xh/hoist-chat-kit/core';
 import {chatClearButton, chatPanel} from '@xh/hoist-chat-kit/desktop/cmp/chat';
+import {
+    chatUiCalloutSpec,
+    chatUiStackSpec,
+    chatUiTextSpec
+} from '@xh/hoist-chat-kit/desktop/cmp/genui';
+import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {AnthropicCodec, HoistChatTransport} from '@xh/hoist-chat-kit/transport';
 import {placeholder} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, lookup, XH} from '@xh/hoist/core';
@@ -14,7 +20,8 @@ import {BlueprintsPanelModel} from './BlueprintsPanelModel';
 
 /**
  * The Architect: a chat with Claude, relayed by Toolbox's `llm/stream`, that edits the blueprint
- * through chat kit's Architect tools, run in the browser against the panel's `BlueprintModel`.
+ * through chat kit's Architect tools, run in the browser against the panel's `BlueprintModel`, and
+ * answers questions with blueprints of their own through `show_ui`.
  */
 export class ArchitectModel extends HoistModel {
     @lookup(BlueprintsPanelModel) panelModel: BlueprintsPanelModel;
@@ -27,17 +34,32 @@ export class ArchitectModel extends HoistModel {
     }
 
     override onLinked() {
-        const {blueprintModel} = this.panelModel;
+        const {blueprintModel} = this.panelModel,
+            catalog = new ChatUiCatalog({
+                // Text and layout around the blueprint widgets of an answer.
+                components: [chatUiStackSpec(), chatUiTextSpec(), chatUiCalloutSpec()],
+                modes: ['document'],
+                answers: {
+                    registry: blueprintModel.registry,
+                    dataCatalog: blueprintModel.catalog,
+                    dataProvider: blueprintModel.dataProvider
+                }
+            });
         runInAction(() => {
             this.chatModel = this.markManaged(
                 new ChatModel({
                     transport: new HoistChatTransport({
                         url: 'llm/stream',
                         codec: new AnthropicCodec({
-                            system: architectPrompt(blueprintModel),
+                            system: architectPrompt({
+                                catalogs: blueprintModel.catalogs,
+                                registry: catalog.registry,
+                                withAnswers: true
+                            }),
                             cacheControl: true
                         })
                     }),
+                    catalog,
                     tools: architectChatTools(blueprintModel),
                     contextProviders: [blueprintContextProvider(blueprintModel)],
                     // Each step is a model call, and counts toward the server's per-user `llmRateLimit`.
