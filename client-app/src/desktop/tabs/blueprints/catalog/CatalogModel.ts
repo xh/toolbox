@@ -14,6 +14,7 @@ import {bindable, computed} from '@xh/hoist/mobx';
 import {castArray, groupBy, isEmpty, isString} from 'lodash';
 import {BlueprintsPanelModel} from '../BlueprintsPanelModel';
 import {describeFormat, describeSpec} from './catalogFields';
+import {markdownCol} from '../markdown';
 
 export type CatalogView = 'datasets' | 'kinds' | 'formats';
 
@@ -36,7 +37,7 @@ export class CatalogModel extends HoistModel {
             {field: 'name', width: 150},
             {field: 'label', width: 130},
             {field: 'fieldCount', headerName: 'Fields', width: 60, align: 'right'},
-            {field: 'description', flex: 1, minWidth: 200, tooltip: true}
+            markdownCol({field: 'description', flex: 1, minWidth: 200})
         ]
     });
 
@@ -49,7 +50,7 @@ export class CatalogModel extends HoistModel {
             {field: 'required', headerName: 'Req', width: 50, align: 'center'},
             {field: 'kind', width: 80},
             {field: 'options', width: 140, tooltip: true},
-            {field: 'description', flex: 1, minWidth: 160, tooltip: true}
+            markdownCol({field: 'description', flex: 1, minWidth: 160})
         ]
     });
 
@@ -71,7 +72,7 @@ export class CatalogModel extends HoistModel {
             {field: 'params', width: 180, tooltip: true},
             {field: 'renderer', width: 130, tooltip: true},
             {field: 'deprecated', width: 110},
-            {field: 'guidance', flex: 1, minWidth: 260, tooltip: true}
+            markdownCol({field: 'guidance', flex: 1, minWidth: 260})
         ]
     });
 

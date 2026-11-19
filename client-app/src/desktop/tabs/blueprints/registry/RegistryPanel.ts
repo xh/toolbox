@@ -4,11 +4,12 @@ import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, codeInput, jsonInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, jsonInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {isEmpty} from 'lodash';
 import type {ReactNode} from 'react';
+import {md} from '../markdown';
 import {RegistryModel} from './RegistryModel';
 
 /** The dashboard and answer registries: every entry by kind and origin, and its details. */
@@ -70,13 +71,8 @@ const architectView = hoistCmp.factory<RegistryModel>(({model}) =>
                 title: 'System prompt index (architectPrompt)',
                 compactHeader: true,
                 flex: 1,
-                item: codeInput({
-                    value: model.architectIndex,
-                    readonly: true,
-                    enableSearch: true,
-                    flex: 1,
-                    width: '100%'
-                })
+                scrollable: true,
+                item: div({className: 'tb-registry__prompt', item: md(model.architectIndex)})
             }),
             panel({
                 title: 'describe_registry, for the selected entry',
@@ -103,7 +99,7 @@ const detailView = hoistCmp.factory<RegistryModel>(({model}) => {
             ['Origin', entry.origin],
             ['Used by this blueprint', usedAt.length ? usedAt.join('\n') : 'No']
         ],
-        guidance: Row = ['Guidance', spec.guidance],
+        guidance: Row = ['Guidance', md(spec.guidance)],
         allowed: Row = [
             'Allowed in',
             [
@@ -122,17 +118,19 @@ const detailView = hoistCmp.factory<RegistryModel>(({model}) => {
                 ['Label', spec.label],
                 ['Category', spec.category],
                 ['Terms', spec.terms?.join(', ')],
-                ['Description', spec.description],
+                ['Description', md(spec.description)],
                 guidance,
                 ['Value type', spec.value?.type],
                 [
                     'Outputs',
-                    spec.outputs
-                        ?.map(
-                            (o: PlainObject) =>
-                                `${o.name}: ${o.type}${o.description ? ` - ${o.description}` : ''}`
-                        )
-                        .join('\n')
+                    md(
+                        spec.outputs
+                            ?.map(
+                                (o: PlainObject) =>
+                                    `- \`${o.name}\`: ${o.type}${o.description ? ` - ${o.description}` : ''}`
+                            )
+                            .join('\n')
+                    )
                 ],
                 ['Preset paths', spec.presetPaths?.join(', ')],
                 ['Children', spec.children ? (spec.children.accepts?.join(', ') ?? 'any') : null],

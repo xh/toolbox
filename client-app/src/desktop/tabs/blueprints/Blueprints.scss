@@ -65,3 +65,30 @@
 .tb-inspector__default {
   color: var(--xh-text-color-muted);
 }
+
+.tb-registry__prompt {
+  padding: var(--xh-spacing);
+}
+
+.tb-registry__value .tb-markdown {
+  white-space: normal;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.tb-markdown-cell .tb-markdown {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  > * {
+    display: inline;
+    margin: 0;
+  }
+}

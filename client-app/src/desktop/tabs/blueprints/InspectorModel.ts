@@ -6,6 +6,7 @@ import {Icon} from '@xh/hoist/icon';
 import {action} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
 import {BlueprintsPanelModel} from './BlueprintsPanelModel';
+import {markdownCol} from './markdown';
 
 /** The open blueprint's variables, validation issues and edit history. */
 export class InspectorModel extends HoistModel {
@@ -80,9 +81,7 @@ export class InspectorModel extends HoistModel {
                     v === 'architect' ? Icon.ai({title: 'Architect'}) : Icon.user({title: v})
             },
             {
-                field: 'description',
-                flex: 1,
-                minWidth: 160,
+                ...markdownCol({field: 'description', flex: 1, minWidth: 160}),
                 tooltip: (v, {record}) => record.data.ops
             },
             {field: 'ops', hidden: true}
