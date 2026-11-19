@@ -16,7 +16,7 @@ import {ScriptedChatTransport, textEvents, toolCallEvents} from '@xh/hoist-chat-
 import type {ScriptedResponse} from '@xh/hoist-chat-kit/transport';
 import type {PlainObject} from '@xh/hoist/core';
 import {initTestAppAsync} from '@xh/hoist/test-support';
-import {afterAll, beforeAll, beforeEach, describe, expect, it, onTestFinished, vi} from 'vitest';
+import {beforeAll, beforeEach, describe, expect, it, onTestFinished, vi} from 'vitest';
 import catalogJson from '../../../test-support/blueprintsCatalog.json';
 import p1 from './scenarios/p1-one-grid.json';
 import {createToolboxRegistry} from './toolboxRegistry';
@@ -42,13 +42,7 @@ const TABS = {
  * design mode for one turn and asks the Architect, whose `read_answer` gives the answer as written.
  */
 describe('adding an answer to the host', () => {
-    // The "Add to dashboard" button is on the answer path, which this toggle turns on.
-    const wasAnswerBlueprints = ChatUiCatalog.answerBlueprints;
-    beforeAll(async () => {
-        ChatUiCatalog.answerBlueprints = true;
-        await initTestAppAsync();
-    });
-    afterAll(() => (ChatUiCatalog.answerBlueprints = wasAnswerBlueprints));
+    beforeAll(() => initTestAppAsync());
 
     // jsdom has no layout, and so no ResizeObserver or element scrolling.
     beforeEach(() => {
