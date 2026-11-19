@@ -1,15 +1,17 @@
 import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {filler, hframe, span} from '@xh/hoist/cmp/layout';
+import {tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {jsonInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {architectPanel} from './ArchitectPanel';
 import {BlueprintsPanelModel, SCENARIOS} from './BlueprintsPanelModel';
 import './Blueprints.scss';
 import {inspectorPanel} from './InspectorPanel';
 
-/** A blueprint rendered beside its JSON harness and its inspector. */
+/** A blueprint rendered beside its JSON harness, the Architect and its inspector. */
 export const blueprintsPanel = hoistCmp.factory({
     displayName: 'BlueprintsPanel',
     model: creates(BlueprintsPanelModel),
@@ -17,7 +19,7 @@ export const blueprintsPanel = hoistCmp.factory({
     render({model}) {
         const {blueprintModel} = model;
         return hframe(
-            harnessPanel(),
+            sidePanel(),
             panel({
                 flex: 1,
                 mask: 'onLoad',
@@ -28,13 +30,32 @@ export const blueprintsPanel = hoistCmp.factory({
     }
 });
 
+const sidePanel = hoistCmp.factory<BlueprintsPanelModel>({
+    render({model}) {
+        return panel({
+            modelConfig: {side: 'left', defaultSize: 400},
+            item: model.blueprintModel
+                ? tabContainer({
+                      modelConfig: {
+                          tabs: [
+                              {id: 'json', title: 'JSON', icon: Icon.json(), content: harnessPanel},
+                              {
+                                  id: 'architect',
+                                  title: 'Architect',
+                                  icon: Icon.ai(),
+                                  content: architectPanel
+                              }
+                          ]
+                      }
+                  })
+                : null
+        });
+    }
+});
+
 const harnessPanel = hoistCmp.factory<BlueprintsPanelModel>({
     render({model}) {
         return panel({
-            title: 'Blueprint JSON',
-            icon: Icon.json(),
-            compactHeader: true,
-            modelConfig: {side: 'left', defaultSize: 400},
             tbar: [
                 select({bind: 'scenario', options: SCENARIOS, width: 220}),
                 filler(),
