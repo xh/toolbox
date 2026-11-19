@@ -1,6 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
-import type {KeyValueEntry, KeyValueListProps} from '@xh/hoist/cmp/keyvaluelist';
-import {keyValueList} from '@xh/hoist/cmp/keyvaluelist';
+import type {KeyValueEntry, KeyValueDisplayProps} from '@xh/hoist/cmp/keyvaluedisplay';
+import {keyValueDisplay} from '@xh/hoist/cmp/keyvaluedisplay';
 import {a, div} from '@xh/hoist/cmp/layout';
 import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
@@ -20,7 +20,7 @@ import {
     raw
 } from '../../../common/Demo';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
-import './KeyValueListPanel.scss';
+import './KeyValueDisplayPanel.scss';
 
 /** A P&L statement for one fund, with figures of different widths. */
 const SUMMARY: KeyValueEntry[] = [
@@ -53,22 +53,22 @@ const LONG_WORDS: KeyValueEntry[] = [
     {label: 'Account', value: 'ACCT00000044719028553100499128730021'},
     {
         label: 'Docs',
-        value: 'https://github.com/xh/hoist-react/blob/develop/cmp/keyvaluelist/README.md'
+        value: 'https://github.com/xh/hoist-react/blob/develop/cmp/keyvaluedisplay/README.md'
     },
     {label: 'Side', value: 'Buy'}
 ];
 
-export const keyValueListPanel = hoistCmp.factory({
-    displayName: 'KeyValueListPanel',
-    model: creates(() => KeyValueListPanelModel),
+export const keyValueDisplayPanel = hoistCmp.factory({
+    displayName: 'KeyValueDisplayPanel',
+    model: creates(() => KeyValueDisplayPanelModel),
 
     render({model}) {
         const {listProps, positionEntries} = model;
         return wrapper({
-            title: 'KeyValueList',
+            title: 'KeyValueDisplay',
             icon: Icon.list(),
             description: [
-                'A `KeyValueList` is a display-only list of labeled values, such as the fields of',
+                'A `KeyValueDisplay` is a display-only list of labeled values, such as the fields of',
                 'a record in a detail panel.',
                 '',
                 'The caller formats each value. The list fills the',
@@ -78,12 +78,12 @@ export const keyValueListPanel = hoistCmp.factory({
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/components/general/KeyValueListPanel.ts',
+                    url: '$TB/client-app/src/desktop/tabs/components/general/KeyValueDisplayPanel.ts',
                     notes: 'This example.'
                 },
-                {url: '$HR/cmp/keyvaluelist/KeyValueList.ts', notes: 'Hoist component.'},
+                {url: '$HR/cmp/keyvaluedisplay/KeyValueDisplay.ts', notes: 'Hoist component.'},
                 {
-                    url: '$HR/cmp/keyvaluelist/KeyValueList.scss',
+                    url: '$HR/cmp/keyvaluedisplay/KeyValueDisplay.scss',
                     notes: 'Styles and CSS variables.'
                 }
             ],
@@ -96,7 +96,7 @@ export const keyValueListPanel = hoistCmp.factory({
                     children: [
                         wrapperOption({
                             label: 'Label side',
-                            propName: 'KeyValueListProps.labelSide',
+                            propName: 'KeyValueDisplayProps.labelSide',
                             control: select({
                                 bind: 'labelSide',
                                 enableFilter: false,
@@ -107,7 +107,7 @@ export const keyValueListPanel = hoistCmp.factory({
                         }),
                         wrapperOption({
                             label: 'Label align',
-                            propName: 'KeyValueListProps.labelAlign',
+                            propName: 'KeyValueDisplayProps.labelAlign',
                             info: 'With labels on the left only.',
                             control: select({
                                 bind: 'labelAlign',
@@ -119,7 +119,7 @@ export const keyValueListPanel = hoistCmp.factory({
                         }),
                         wrapperOption({
                             label: 'Value align',
-                            propName: 'KeyValueListProps.valueAlign',
+                            propName: 'KeyValueDisplayProps.valueAlign',
                             info: 'With labels on the left only.',
                             control: select({
                                 bind: 'valueAlign',
@@ -131,13 +131,13 @@ export const keyValueListPanel = hoistCmp.factory({
                         }),
                         wrapperOption({
                             label: 'Columns',
-                            propName: 'KeyValueListProps.columns',
+                            propName: 'KeyValueDisplayProps.columns',
                             info: 'Empty to fit the width.',
                             control: numberInput({bind: 'columns', min: 1, max: 6, width: 70})
                         }),
                         wrapperOption({
                             label: 'Min column width',
-                            propName: 'KeyValueListProps.minColumnWidth',
+                            propName: 'KeyValueDisplayProps.minColumnWidth',
                             info: 'Default 240, or 160 with labels on top.',
                             control: numberInput({
                                 bind: 'minColumnWidth',
@@ -149,7 +149,7 @@ export const keyValueListPanel = hoistCmp.factory({
                         }),
                         wrapperOption({
                             label: 'Size',
-                            propName: 'KeyValueListProps.size',
+                            propName: 'KeyValueDisplayProps.size',
                             control: select({
                                 bind: 'size',
                                 enableFilter: false,
@@ -160,12 +160,12 @@ export const keyValueListPanel = hoistCmp.factory({
                         }),
                         wrapperOption({
                             label: 'Dividers',
-                            propName: 'KeyValueListProps.dividers',
+                            propName: 'KeyValueDisplayProps.dividers',
                             control: switchInput({bind: 'dividers'})
                         }),
                         wrapperOption({
                             label: 'Null display',
-                            propName: 'KeyValueListProps.nullDisplay',
+                            propName: 'KeyValueDisplayProps.nullDisplay',
                             control: textInput({
                                 bind: 'nullDisplay',
                                 width: 110,
@@ -185,11 +185,11 @@ export const keyValueListPanel = hoistCmp.factory({
                             showValue: false,
                             caption:
                                 'The largest position of the sample portfolio, in a 640px box.',
-                            config: fmtDemoConfig<KeyValueListProps>('keyValueList', {
+                            config: fmtDemoConfig<KeyValueDisplayProps>('keyValueDisplay', {
                                 entries: raw('positionEntries'),
                                 ...listProps
                             }),
-                            children: keyValueList({
+                            children: keyValueDisplay({
                                 entries: positionEntries,
                                 ...listProps,
                                 width: '100%'
@@ -200,14 +200,14 @@ export const keyValueListPanel = hoistCmp.factory({
                         title: 'Fits the Width',
                         note: 'One list at 280, 560 and 840px. Columns are at least 240px wide, so one, two and three fit.',
                         children: div({
-                            className: 'tb-key-value-list-panel__widths',
+                            className: 'tb-key-value-display-panel__widths',
                             children: [280, 560, 840].map(width =>
                                 div({
                                     key: width,
                                     style: {width},
                                     children: demoFrame({
                                         chip: `${width}px`,
-                                        children: keyValueList({entries: positionEntries})
+                                        children: keyValueDisplay({entries: positionEntries})
                                     })
                                 })
                             )
@@ -217,7 +217,7 @@ export const keyValueListPanel = hoistCmp.factory({
                         title: 'Label on Top',
                         note: "labelSide: 'top' stacks each label above its value.",
                         children: demoFrame({
-                            children: keyValueList({entries: positionEntries, labelSide: 'top'})
+                            children: keyValueDisplay({entries: positionEntries, labelSide: 'top'})
                         })
                     }),
                     demoSection({
@@ -228,12 +228,15 @@ export const keyValueListPanel = hoistCmp.factory({
                             children: [
                                 demoFrame({
                                     label: 'columns: 2',
-                                    children: keyValueList({entries: positionEntries, columns: 2})
+                                    children: keyValueDisplay({
+                                        entries: positionEntries,
+                                        columns: 2
+                                    })
                                 }),
                                 demoFrame({
                                     label: 'columns: 3',
                                     info: "with labelSide: 'top'",
-                                    children: keyValueList({
+                                    children: keyValueDisplay({
                                         entries: positionEntries,
                                         columns: 3,
                                         labelSide: 'top'
@@ -249,7 +252,7 @@ export const keyValueListPanel = hoistCmp.factory({
                             children: [
                                 demoFrame({
                                     label: 'compact',
-                                    children: keyValueList({
+                                    children: keyValueDisplay({
                                         entries: positionEntries,
                                         columns: 1,
                                         size: 'compact'
@@ -257,7 +260,7 @@ export const keyValueListPanel = hoistCmp.factory({
                                 }),
                                 demoFrame({
                                     label: 'dividers',
-                                    children: keyValueList({
+                                    children: keyValueDisplay({
                                         entries: positionEntries,
                                         columns: 1,
                                         dividers: true
@@ -265,7 +268,7 @@ export const keyValueListPanel = hoistCmp.factory({
                                 }),
                                 demoFrame({
                                     label: 'compact, dividers',
-                                    children: keyValueList({
+                                    children: keyValueDisplay({
                                         entries: positionEntries,
                                         columns: 1,
                                         size: 'compact',
@@ -283,7 +286,7 @@ export const keyValueListPanel = hoistCmp.factory({
                             children: [
                                 demoFrame({
                                     label: "labelAlign: 'right'",
-                                    children: keyValueList({
+                                    children: keyValueDisplay({
                                         entries: positionEntries,
                                         columns: 1,
                                         labelAlign: 'right'
@@ -292,7 +295,7 @@ export const keyValueListPanel = hoistCmp.factory({
                                 demoFrame({
                                     label: "valueAlign: 'right'",
                                     info: 'and labelAlign',
-                                    children: keyValueList({
+                                    children: keyValueDisplay({
                                         entries: positionEntries,
                                         columns: 1,
                                         labelAlign: 'right',
@@ -311,8 +314,8 @@ export const keyValueListPanel = hoistCmp.factory({
                                 demoFrame({
                                     label: 'One column',
                                     info: 'with dividers',
-                                    className: 'tb-key-value-list-panel__narrow',
-                                    children: keyValueList({
+                                    className: 'tb-key-value-display-panel__narrow',
+                                    children: keyValueDisplay({
                                         entries: SUMMARY,
                                         columns: 1,
                                         valueAlign: 'right',
@@ -322,7 +325,7 @@ export const keyValueListPanel = hoistCmp.factory({
                                 demoFrame({
                                     label: 'columns: 2',
                                     info: 'with dividers',
-                                    children: keyValueList({
+                                    children: keyValueDisplay({
                                         entries: SUMMARY,
                                         columns: 2,
                                         valueAlign: 'right',
@@ -336,8 +339,8 @@ export const keyValueListPanel = hoistCmp.factory({
                         title: 'Intent and Elements',
                         note: 'intent colors a value. A value can be any element.',
                         children: demoFrame({
-                            className: 'tb-key-value-list-panel__narrow',
-                            children: keyValueList({
+                            className: 'tb-key-value-display-panel__narrow',
+                            children: keyValueDisplay({
                                 columns: 1,
                                 entries: [
                                     {label: 'Status', value: 'Settled', intent: 'success'},
@@ -369,8 +372,8 @@ export const keyValueListPanel = hoistCmp.factory({
                                 demoFrame({
                                     label: 'Wrapping',
                                     info: 'at 340px',
-                                    className: 'tb-key-value-list-panel__slim',
-                                    children: keyValueList({
+                                    className: 'tb-key-value-display-panel__slim',
+                                    children: keyValueDisplay({
                                         columns: 1,
                                         entries: [
                                             {
@@ -388,8 +391,8 @@ export const keyValueListPanel = hoistCmp.factory({
                                 demoFrame({
                                     label: 'Empty values',
                                     info: "nullDisplay: 'Not set'",
-                                    className: 'tb-key-value-list-panel__slim',
-                                    children: keyValueList({
+                                    className: 'tb-key-value-display-panel__slim',
+                                    children: keyValueDisplay({
                                         columns: 1,
                                         nullDisplay: 'Not set',
                                         entries: [
@@ -412,13 +415,13 @@ export const keyValueListPanel = hoistCmp.factory({
                             children: [
                                 demoFrame({
                                     label: "labelSide: 'left'",
-                                    className: 'tb-key-value-list-panel__resizable',
-                                    children: keyValueList({columns: 1, entries: LONG_WORDS})
+                                    className: 'tb-key-value-display-panel__resizable',
+                                    children: keyValueDisplay({columns: 1, entries: LONG_WORDS})
                                 }),
                                 demoFrame({
                                     label: "labelSide: 'top'",
-                                    className: 'tb-key-value-list-panel__resizable',
-                                    children: keyValueList({
+                                    className: 'tb-key-value-display-panel__resizable',
+                                    children: keyValueDisplay({
                                         columns: 1,
                                         labelSide: 'top',
                                         entries: LONG_WORDS
@@ -432,8 +435,8 @@ export const keyValueListPanel = hoistCmp.factory({
                         note: 'Bold values, small uppercase labels and a wider label gap.',
                         children: demoFrame({
                             className:
-                                'tb-key-value-list-panel__restyled tb-key-value-list-panel__narrow',
-                            children: keyValueList({entries: positionEntries, columns: 1})
+                                'tb-key-value-display-panel__restyled tb-key-value-display-panel__narrow',
+                            children: keyValueDisplay({entries: positionEntries, columns: 1})
                         })
                     })
                 ]
@@ -442,13 +445,13 @@ export const keyValueListPanel = hoistCmp.factory({
     }
 });
 
-class KeyValueListPanelModel extends HoistModel {
-    @bindable accessor labelSide: KeyValueListProps['labelSide'] = null;
-    @bindable accessor labelAlign: KeyValueListProps['labelAlign'] = null;
-    @bindable accessor valueAlign: KeyValueListProps['valueAlign'] = null;
+class KeyValueDisplayPanelModel extends HoistModel {
+    @bindable accessor labelSide: KeyValueDisplayProps['labelSide'] = null;
+    @bindable accessor labelAlign: KeyValueDisplayProps['labelAlign'] = null;
+    @bindable accessor valueAlign: KeyValueDisplayProps['valueAlign'] = null;
     @bindable accessor columns: number = null;
     @bindable accessor minColumnWidth: number = null;
-    @bindable accessor size: KeyValueListProps['size'] = null;
+    @bindable accessor size: KeyValueDisplayProps['size'] = null;
     @bindable accessor dividers = false;
     @bindable accessor nullDisplay: string = null;
 
@@ -513,14 +516,14 @@ class KeyValueListPanelModel extends HoistModel {
     }
 }
 
-/** The KeyValueList props the rail drives, as the plain values its inputs produce. */
+/** The KeyValueDisplay props the rail drives, as the plain values its inputs produce. */
 interface PlaygroundListProps {
-    labelSide?: KeyValueListProps['labelSide'];
-    labelAlign?: KeyValueListProps['labelAlign'];
-    valueAlign?: KeyValueListProps['valueAlign'];
+    labelSide?: KeyValueDisplayProps['labelSide'];
+    labelAlign?: KeyValueDisplayProps['labelAlign'];
+    valueAlign?: KeyValueDisplayProps['valueAlign'];
     columns?: number;
     minColumnWidth?: number;
-    size?: KeyValueListProps['size'];
+    size?: KeyValueDisplayProps['size'];
     dividers?: boolean;
     nullDisplay?: string;
 }

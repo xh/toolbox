@@ -1,0 +1,39 @@
+// Frames of set widths, side by side, wrapping when the page is narrow.
+.tb-key-value-display-panel__widths {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--xh-spacing-double);
+}
+
+// Frames at the width of a narrow detail panel.
+.tb-key-value-display-panel__narrow {
+  width: 460px;
+}
+
+.tb-key-value-display-panel__slim {
+  width: 340px;
+}
+
+// A frame the user can resize from its corner, to watch long words wrap.
+.tb-key-value-display-panel__resizable {
+  min-width: 160px;
+  max-width: 100%;
+  width: 340px;
+  overflow: auto;
+  resize: horizontal;
+}
+
+// Restyled through KeyValueDisplay's CSS variables. A scoped override sets the resolved `--xh-`
+// variables - the unprefixed ones are read at the root.
+.tb-key-value-display-panel__restyled {
+  --xh-key-value-display-label-font-size: var(--xh-font-size-small-relative);
+  --xh-key-value-display-label-gap: calc(var(--xh-spacing) * 3);
+  --xh-key-value-display-value-font-weight: 600;
+  --xh-key-value-display-row-gap: var(--xh-spacing);
+
+  .xh-key-value-display__label {
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+}

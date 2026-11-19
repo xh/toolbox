@@ -1,6 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
-import type {ItemListEntry, ItemListProps} from '@xh/hoist/cmp/itemlist';
-import {itemList} from '@xh/hoist/cmp/itemlist';
+import type {ListDisplayEntry, ListDisplayProps} from '@xh/hoist/cmp/listdisplay';
+import {listDisplay} from '@xh/hoist/cmp/listdisplay';
 import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -18,10 +18,10 @@ import {
     raw
 } from '../../../common/Demo';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
-import './ItemListPanel.scss';
+import './ListDisplayPanel.scss';
 
 /** Open alerts, as an app would list them. */
-const ALERTS: ItemListEntry[] = [
+const ALERTS: ListDisplayEntry[] = [
     {
         title: 'Margin call on the Winter Star fund',
         description: 'Collateral fell below the required level. Post 1.2m by end of day.',
@@ -50,17 +50,17 @@ const ALERTS: ItemListEntry[] = [
     }
 ];
 
-export const itemListPanel = hoistCmp.factory({
-    displayName: 'ItemListPanel',
-    model: creates(() => ItemListPanelModel),
+export const listDisplayPanel = hoistCmp.factory({
+    displayName: 'ListDisplayPanel',
+    model: creates(() => ListDisplayPanelModel),
 
     render({model}) {
         const {listProps, playgroundEntries, playgroundEntriesCode, topFunds} = model;
         return wrapper({
-            title: 'ItemList',
+            title: 'ListDisplay',
             icon: Icon.list(),
             description: [
-                'An `ItemList` shows a short, static list of entries. Each entry has a title, and',
+                'A `ListDisplay` shows a short, static list of entries. Each entry has a title, and',
                 'can add a description, a leading icon and a trailing detail. Use it for a few',
                 'alerts, recent activity or search results.',
                 '',
@@ -70,16 +70,16 @@ export const itemListPanel = hoistCmp.factory({
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/components/general/ItemListPanel.ts',
+                    url: '$TB/client-app/src/desktop/tabs/components/general/ListDisplayPanel.ts',
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/cmp/README.md#itemlist-itemlist',
-                    text: 'ItemList docs',
+                    url: '$HR/cmp/README.md#listdisplay-listdisplay',
+                    text: 'ListDisplay docs',
                     notes: 'Props, and when to use a DataView.'
                 },
-                {url: '$HR/cmp/itemlist/ItemList.ts', notes: 'Hoist component.'},
-                {url: '$HR/cmp/itemlist/ItemList.scss', notes: 'Styles and CSS variables.'}
+                {url: '$HR/cmp/listdisplay/ListDisplay.ts', notes: 'Hoist component.'},
+                {url: '$HR/cmp/listdisplay/ListDisplay.scss', notes: 'Styles and CSS variables.'}
             ],
             options: [
                 wrapperOptionGroup({
@@ -90,18 +90,18 @@ export const itemListPanel = hoistCmp.factory({
                     children: [
                         wrapperOption({
                             label: 'Numbered',
-                            propName: 'ItemListProps.numbered',
+                            propName: 'ListDisplayProps.numbered',
                             info: 'Numbers replace the icons.',
                             control: switchInput({bind: 'numbered'})
                         }),
                         wrapperOption({
                             label: 'Dividers',
-                            propName: 'ItemListProps.dividers',
+                            propName: 'ListDisplayProps.dividers',
                             control: switchInput({bind: 'dividers'})
                         }),
                         wrapperOption({
                             label: 'Size',
-                            propName: 'ItemListProps.size',
+                            propName: 'ListDisplayProps.size',
                             control: select({
                                 bind: 'size',
                                 enableFilter: false,
@@ -112,32 +112,32 @@ export const itemListPanel = hoistCmp.factory({
                         }),
                         wrapperOption({
                             label: 'Clickable',
-                            propName: 'ItemListEntry.onClick',
+                            propName: 'ListDisplayEntry.onClick',
                             control: switchInput({bind: 'clickable'})
                         }),
                         wrapperOption({
                             label: 'Icons',
-                            propName: 'ItemListEntry.icon',
+                            propName: 'ListDisplayEntry.icon',
                             control: switchInput({bind: 'showIcons'})
                         }),
                         wrapperOption({
                             label: 'Descriptions',
-                            propName: 'ItemListEntry.description',
+                            propName: 'ListDisplayEntry.description',
                             control: switchInput({bind: 'showDescriptions'})
                         }),
                         wrapperOption({
                             label: 'Details',
-                            propName: 'ItemListEntry.detail',
+                            propName: 'ListDisplayEntry.detail',
                             control: switchInput({bind: 'showDetails'})
                         }),
                         wrapperOption({
                             label: 'Intents',
-                            propName: 'ItemListEntry.intent',
+                            propName: 'ListDisplayEntry.intent',
                             control: switchInput({bind: 'showIntents'})
                         }),
                         wrapperOption({
                             label: 'Empty',
-                            propName: 'ItemListProps.emptyText',
+                            propName: 'ListDisplayProps.emptyText',
                             info: 'No entries, to show emptyText.',
                             control: switchInput({bind: 'empty'})
                         })
@@ -153,12 +153,12 @@ export const itemListPanel = hoistCmp.factory({
                             instanceWidth: 440,
                             showValue: false,
                             caption: 'Four alerts in a 440px box.',
-                            config: fmtDemoConfig<ItemListProps>('itemList', {
+                            config: fmtDemoConfig<ListDisplayProps>('listDisplay', {
                                 entries: raw(playgroundEntriesCode),
                                 ...listProps,
                                 emptyText: 'No open alerts'
                             }),
-                            children: itemList({
+                            children: listDisplay({
                                 entries: playgroundEntries,
                                 ...listProps,
                                 emptyText: 'No open alerts'
@@ -173,12 +173,12 @@ export const itemListPanel = hoistCmp.factory({
                             children: [
                                 demoFrame({
                                     label: 'numbered',
-                                    children: itemList({numbered: true, entries: topFunds})
+                                    children: listDisplay({numbered: true, entries: topFunds})
                                 }),
                                 demoFrame({
                                     label: 'numbered, compact, dividers',
                                     info: 'An intent colors the number',
-                                    children: itemList({
+                                    children: listDisplay({
                                         numbered: true,
                                         size: 'compact',
                                         dividers: true,
@@ -198,12 +198,12 @@ export const itemListPanel = hoistCmp.factory({
                             children: [
                                 demoFrame({
                                     label: 'Icons and intents',
-                                    children: itemList({entries: ALERTS.map(withoutText)})
+                                    children: listDisplay({entries: ALERTS.map(withoutText)})
                                 }),
                                 demoFrame({
                                     label: 'Intents, no icons',
                                     info: 'A thin colored bar',
-                                    children: itemList({
+                                    children: listDisplay({
                                         entries: ALERTS.map(it => ({
                                             ...withoutText(it),
                                             icon: null
@@ -212,7 +212,7 @@ export const itemListPanel = hoistCmp.factory({
                                 }),
                                 demoFrame({
                                     label: 'Titles only',
-                                    children: itemList({
+                                    children: listDisplay({
                                         entries: ALERTS.map(({title}) => ({title}))
                                     })
                                 })
@@ -223,8 +223,8 @@ export const itemListPanel = hoistCmp.factory({
                         title: 'Clickable',
                         note: 'An onClick makes an entry clickable. A disabled entry is dimmed and takes no click.',
                         children: demoFrame({
-                            className: 'tb-item-list-panel__narrow',
-                            children: itemList({
+                            className: 'tb-list-display-panel__narrow',
+                            children: listDisplay({
                                 dividers: true,
                                 entries: withToastOnClick([
                                     {
@@ -256,12 +256,12 @@ export const itemListPanel = hoistCmp.factory({
                             columns: 2,
                             children: [
                                 demoFrame({
-                                    className: 'tb-item-list-panel__slim',
-                                    children: itemList({entries: ALERTS, dividers: true})
+                                    className: 'tb-list-display-panel__slim',
+                                    children: listDisplay({entries: ALERTS, dividers: true})
                                 }),
                                 demoFrame({
-                                    className: 'tb-item-list-panel__slim',
-                                    children: itemList({
+                                    className: 'tb-list-display-panel__slim',
+                                    children: listDisplay({
                                         numbered: true,
                                         entries: [
                                             {
@@ -288,11 +288,14 @@ export const itemListPanel = hoistCmp.factory({
                             children: [
                                 demoFrame({
                                     label: 'No entries',
-                                    children: itemList({entries: [], emptyText: 'No open alerts'})
+                                    children: listDisplay({
+                                        entries: [],
+                                        emptyText: 'No open alerts'
+                                    })
                                 }),
                                 demoFrame({
                                     label: 'Every entry omitted',
-                                    children: itemList({
+                                    children: listDisplay({
                                         entries: [{title: 'Hidden', omit: true}, null],
                                         emptyText: 'Nothing to show'
                                     })
@@ -304,8 +307,9 @@ export const itemListPanel = hoistCmp.factory({
                         title: 'Restyled with CSS Variables',
                         note: 'Wide spacing, a bold title and a wide intent bar.',
                         children: demoFrame({
-                            className: 'tb-item-list-panel__restyled tb-item-list-panel__narrow',
-                            children: itemList({
+                            className:
+                                'tb-list-display-panel__restyled tb-list-display-panel__narrow',
+                            children: listDisplay({
                                 entries: ALERTS.map(it => ({...it, icon: null}))
                             })
                         })
@@ -316,22 +320,22 @@ export const itemListPanel = hoistCmp.factory({
     }
 });
 
-function withoutText({title, icon, intent}: ItemListEntry): ItemListEntry {
+function withoutText({title, icon, intent}: ListDisplayEntry): ListDisplayEntry {
     return {title, icon, intent};
 }
 
 /** The entries, each with an onClick that toasts its title. */
-function withToastOnClick(entries: ItemListEntry[]): ItemListEntry[] {
+function withToastOnClick(entries: ListDisplayEntry[]): ListDisplayEntry[] {
     return entries.map(it => ({
         ...it,
         onClick: () => XH.toast({message: `Clicked: ${it.title}`})
     }));
 }
 
-class ItemListPanelModel extends HoistModel {
+class ListDisplayPanelModel extends HoistModel {
     @bindable accessor numbered = false;
     @bindable accessor dividers = true;
-    @bindable accessor size: ItemListProps['size'] = null;
+    @bindable accessor size: ListDisplayProps['size'] = null;
     @bindable accessor clickable = false;
     @bindable accessor showIcons = true;
     @bindable accessor showDescriptions = true;
@@ -339,7 +343,7 @@ class ItemListPanelModel extends HoistModel {
     @bindable accessor showIntents = true;
     @bindable accessor empty = false;
 
-    @observableRef accessor topFunds: ItemListEntry[] = [];
+    @observableRef accessor topFunds: ListDisplayEntry[] = [];
 
     /**
      * Props for the Playground list, less its entries. Options left off resolve to undefined, so
@@ -356,7 +360,7 @@ class ItemListPanelModel extends HoistModel {
     }
 
     /** The alerts as the rail sets them. */
-    get playgroundEntries(): ItemListEntry[] {
+    get playgroundEntries(): ListDisplayEntry[] {
         const {empty, clickable, showIcons, showDescriptions, showDetails, showIntents} = this;
         if (empty) return [];
         const ret = ALERTS.map(({title, description, icon, intent, detail}) => ({
@@ -403,9 +407,9 @@ class ItemListPanelModel extends HoistModel {
     }
 }
 
-/** The ItemList props the rail drives, as the plain values its inputs produce. */
+/** The ListDisplay props the rail drives, as the plain values its inputs produce. */
 interface PlaygroundListProps {
     numbered?: boolean;
     dividers?: boolean;
-    size?: ItemListProps['size'];
+    size?: ListDisplayProps['size'];
 }
