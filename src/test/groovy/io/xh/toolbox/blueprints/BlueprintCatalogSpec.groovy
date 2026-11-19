@@ -43,6 +43,56 @@ class BlueprintCatalogSpec extends Specification {
         req.filter.allFields == ['retYtd']
     }
 
+    def 'catalogs merge into one, and a shared name fails loudly'() {
+        given:
+        def weather = JSONParser.parseObject(getClass().getResourceAsStream('/blueprints/weather.json'))
+
+        when:
+        def merged = BlueprintCatalog.merge('Toolbox', [catalog.json, weather])
+
+        then:
+        merged.json.label == 'Toolbox'
+        merged.datasets.keySet() as List == ['positions', 'orders', 'prices', 'hypotheticalPortfolio', 'weather', 'currentWeather']
+        merged.fieldsFor('weather').temp.kind == 'temperature'
+        merged.fieldsFor('positions').mktVal.kind == 'marketValue'
+        merged.json.kinds.keySet().containsAll(['pnl', 'temperature'])
+
+        when:
+        BlueprintCatalog.merge('X', [catalog.json, [version: 1, fields: [[name: 'sector', type: 'string']]]])
+
+        then:
+        def e = thrown(IllegalStateException)
+        e.message == "Catalogs both define fields 'sector'"
+
+        when:
+        BlueprintCatalog.merge('X', [catalog.json, [version: 1, kinds: [pnl: [base: 'number']]]])
+
+        then:
+        e = thrown(IllegalStateException)
+        e.message == "Catalogs both define kinds 'pnl'"
+
+        when:
+        BlueprintCatalog.merge('X', [catalog.json, [version: 2]])
+
+        then:
+        thrown(IllegalStateException)
+    }
+
+    def 'a param with options must take one of them'() {
+        given:
+        def weather = new BlueprintCatalog(JSONParser.parseObject(getClass().getResourceAsStream('/blueprints/weather.json')))
+
+        expect:
+        weather.parseRequest(dataset: 'weather', params: [city: 'Oslo', units: 'metric'], fields: ['temp']).params.units == 'metric'
+
+        when:
+        weather.parseRequest(dataset: 'weather', params: [city: 'Oslo', units: 'kelvin'], fields: ['temp'])
+
+        then:
+        def e = thrown(BlueprintRequestException)
+        e.message == "Parameter 'units' of dataset 'weather' must be one of imperial, metric, got 'kelvin'"
+    }
+
     def 'an optional param may be empty'() {
         expect:
         catalog.parseRequest(dataset: 'orders', params: [asOf: '2026-11-18', fund: ''], fields: ['dir']).params.fund == null

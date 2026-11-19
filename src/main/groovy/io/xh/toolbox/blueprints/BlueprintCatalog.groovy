@@ -17,6 +17,35 @@ class BlueprintCatalog {
         this.json = json
     }
 
+    /**
+     * Merge catalogs into one, as for an app's single Data Catalog.
+     * @throws IllegalStateException if they share a format, kind, field or dataset name, or differ in version.
+     */
+    static BlueprintCatalog merge(String label, List<Map> catalogs) {
+        Set versions = catalogs*.version as Set
+        if (versions.size() > 1) throw new IllegalStateException("Cannot merge catalogs of versions $versions")
+
+        Map ret = [version: versions.first(), label: label]
+        ['formats', 'kinds', 'datasets'].each { String section ->
+            ret[section] = mergeUnique(section, catalogs.collect { (it[section] ?: [:]) as Map })
+        }
+        List<Map> fields = catalogs.collectMany { (it.fields ?: []) as List<Map> }
+        Map byName = mergeUnique('fields', fields.collect { [(it.name): it] })
+        ret.fields = byName.values() as List
+        return new BlueprintCatalog(ret)
+    }
+
+    private static Map mergeUnique(String section, List<Map> maps) {
+        Map ret = [:]
+        maps.each { m ->
+            m.each { k, v ->
+                if (ret.containsKey(k)) throw new IllegalStateException("Catalogs both define $section '$k'")
+                ret[k] = v
+            }
+        }
+        return ret
+    }
+
     Map<String, Map> getDatasets() {
         json.datasets as Map<String, Map>
     }
@@ -112,6 +141,10 @@ class BlueprintCatalog {
         return defs.collectEntries { String name, Map fd ->
             def val = parseValue(values[name], fd.type as String, "Parameter '$name' of $owner")
             if (val == null && fd.required) fail("$owner requires parameter '$name'".capitalize())
+            List allowed = fd.options?.values as List
+            if (val != null && allowed && !(val in allowed)) {
+                fail("Parameter '$name' of $owner must be one of ${allowed.join(', ')}, got '$val'")
+            }
             [name, val]
         }
     }

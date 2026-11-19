@@ -4,22 +4,31 @@ import io.xh.hoist.BaseService
 import io.xh.hoist.json.JSONParser
 import io.xh.hoist.json.JSONSerializer
 import io.xh.toolbox.portfolio.PortfolioDatasets
+import io.xh.toolbox.weather.WeatherDatasets
 
 import java.time.Instant
 
+import static io.xh.hoist.util.DateTimeUtils.appZoneId
 import static io.xh.toolbox.portfolio.Lookups.FUNDS
 
 /**
- * Serves the portfolio Data Catalog and answers Blueprints data requests against it, from the
- * simulated portfolio. Rows hold the requested fields plus a stable `id`.
+ * Serves Toolbox's Data Catalog, which merges the portfolio and weather catalogs, and answers
+ * Blueprints data requests against it from the simulated portfolio and seeded weather. Rows hold
+ * the requested fields plus a stable `id`.
  */
 class BlueprintDataService extends BaseService {
 
     def portfolioService
 
-    private BlueprintCatalog catalog = new BlueprintCatalog(
-        JSONParser.parseObject(getClass().getResourceAsStream('/blueprints/portfolio.json'))
+    private BlueprintCatalog catalog = BlueprintCatalog.merge(
+        'Toolbox',
+        ['portfolio', 'weather'].collect { JSONParser.parseObject(getClass().getResourceAsStream("/blueprints/${it}.json")) }
     )
+
+    private static final Map<String, Closure<List<Map>>> WEATHER_DATASETS = [
+        weather       : { WeatherDatasets w, Map p, Instant now -> w.forecast(p.city, p.units, now) },
+        currentWeather: { WeatherDatasets w, Map p, Instant now -> [w.current(p.city, p.units, now)] }
+    ]
 
     private static final Map<String, Closure<List<Map>>> DATASETS = [
         positions: { PortfolioDatasets ds, Map p -> ds.positions(p.asOf, p.fund) },
@@ -55,7 +64,7 @@ class BlueprintDataService extends BaseService {
     /** Check a request spec against the catalog. */
     BlueprintRequest parseRequest(Map spec) {
         BlueprintRequest ret = catalog.parseRequest(spec)
-        if (!DATASETS[ret.dataset]) throw new BlueprintRequestException("Dataset '${ret.dataset}' is not available yet")
+        if (!DATASETS[ret.dataset] && !WEATHER_DATASETS[ret.dataset]) throw new BlueprintRequestException("Dataset '${ret.dataset}' is not available yet")
 
         def fund = ret.params.fund
         if (fund && !(fund in FUNDS)) {
@@ -69,8 +78,20 @@ class BlueprintDataService extends BaseService {
         new PortfolioDatasets(portfolioService.portfolio, portfolioService.currentPrices, Instant.now())
     }
 
-    List<Map> getRows(BlueprintRequest req, PortfolioDatasets ds = currentDatasets()) {
-        List<Map> rows = DATASETS[req.dataset](ds, req.params)
+    /** True for datasets computed from the portfolio, which need a {@link PortfolioDatasets}. */
+    boolean isPortfolioDataset(String dataset) {
+        DATASETS.containsKey(dataset)
+    }
+
+    /** Rows for a request. Portfolio datasets compute from ds, or from the current portfolio. */
+    List<Map> getRows(BlueprintRequest req, PortfolioDatasets ds = null) {
+        List<Map> rows
+        if (isPortfolioDataset(req.dataset)) {
+            ds = ds ?: currentDatasets()
+            rows = DATASETS[req.dataset](ds, req.params)
+        } else {
+            rows = WEATHER_DATASETS[req.dataset](new WeatherDatasets(appZoneId), req.params, Instant.now())
+        }
 
         req.instances.each { inst ->
             Closure fn = PARAM_FIELDS[inst.field]
@@ -84,8 +105,8 @@ class BlueprintDataService extends BaseService {
     }
 
     /** True if a request's rows can still change. */
-    boolean isLive(BlueprintRequest req, PortfolioDatasets ds = currentDatasets()) {
-        LIVE[req.dataset](ds, req.params)
+    boolean isLive(BlueprintRequest req, PortfolioDatasets ds = null) {
+        isPortfolioDataset(req.dataset) && LIVE[req.dataset](ds ?: currentDatasets(), req.params)
     }
 
     //------------------------

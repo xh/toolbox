@@ -1,0 +1,87 @@
+{
+    "version": 1,
+    "label": "Weather",
+    "formats": {
+        "temp": {"precision": 0, "label": "°"},
+        "speed": {"precision": 0},
+        "pressure": {"precision": 0, "label": " hPa"},
+        "percentPoints": {"precision": 0, "label": "%"},
+        "chance": {"precision": 0},
+        "rain": {"precision": 1, "label": " mm"}
+    },
+    "kinds": {
+        "temperature": {"base": "number", "format": "temp", "aggregator": "AVG"},
+        "speed": {"base": "number", "format": "speed", "aggregator": "AVG"},
+        "pressure": {"base": "number", "format": "pressure", "aggregator": "AVG"},
+        "percentPoints": {"base": "number", "format": "percentPoints", "aggregator": "AVG"},
+        "chance": {"base": "fraction", "format": "chance", "aggregator": "MAX"},
+        "rain": {"base": "number", "format": "rain", "aggregator": "SUM"},
+        "condition": {"base": "string", "renderer": "weatherIcon", "aggregator": "UNIQUE"}
+    },
+    "fields": [
+        {"name": "city", "label": "City", "type": "string", "isDimension": true},
+        {
+            "name": "temp",
+            "label": "Temperature",
+            "type": "number",
+            "kind": "temperature",
+            "guidance": "In Fahrenheit or Celsius, as the units parameter sets. Say which in titles."
+        },
+        {"name": "feelsLike", "label": "Feels Like", "type": "number", "kind": "temperature"},
+        {"name": "humidity", "label": "Humidity", "type": "number", "kind": "percentPoints"},
+        {"name": "pressure", "label": "Pressure", "type": "number", "kind": "pressure"},
+        {
+            "name": "windSpeed",
+            "label": "Wind",
+            "type": "number",
+            "kind": "speed",
+            "guidance": "In miles per hour or meters per second, as the units parameter sets."
+        },
+        {"name": "windGust", "label": "Gusts", "type": "number", "kind": "speed", "aggregator": "MAX"},
+        {
+            "name": "conditions",
+            "label": "Conditions",
+            "type": "string",
+            "kind": "condition",
+            "guidance": "The main condition: Clear, Clouds, Rain, Drizzle, Thunderstorm, Snow or Mist. Shows as an icon with its name."
+        },
+        {
+            "name": "iconCode",
+            "label": "Icon Code",
+            "type": "string",
+            "aggregator": "UNIQUE",
+            "guidance": "The provider's icon code, such as 01d or 01n. The weatherIcon renderer reads it to choose a day or night icon. Do not show it as a column."
+        }
+    ],
+    "datasets": {
+        "weather": {
+            "label": "Forecast",
+            "description": "The forecast for one city, for the next five days.",
+            "guidance": "One row per three-hour step. Chart a field against time for a trend. Group by day for a daily summary.",
+            "params": {
+                "city": {"type": "string", "required": true},
+                "units": {"type": "string", "required": true, "options": {"values": ["imperial", "metric"]}}
+            },
+            "fields": [
+                "city", "temp", "feelsLike", "humidity", "pressure", "windSpeed", "windGust", "conditions",
+                "iconCode",
+                {"name": "time", "label": "Time", "type": "date", "format": {"date": "dateTime"}},
+                {"name": "day", "label": "Day", "type": "localDate", "isDimension": true, "format": {"date": "date"}},
+                {"name": "tempMin", "label": "Low", "type": "number", "kind": "temperature", "aggregator": "MIN"},
+                {"name": "tempMax", "label": "High", "type": "number", "kind": "temperature", "aggregator": "MAX"},
+                {"name": "precipProbability", "label": "Chance of Rain", "type": "number", "kind": "chance"},
+                {"name": "precipVolume", "label": "Rain", "type": "number", "kind": "rain"}
+            ]
+        },
+        "currentWeather": {
+            "label": "Current Conditions",
+            "description": "The weather in one city now.",
+            "guidance": "One row. Use for stat cards of the current conditions.",
+            "params": {
+                "city": {"type": "string", "required": true},
+                "units": {"type": "string", "required": true, "options": {"values": ["imperial", "metric"]}}
+            },
+            "fields": ["city", "temp", "feelsLike", "humidity", "pressure", "windSpeed", "windGust", "conditions", "iconCode"]
+        }
+    }
+}
