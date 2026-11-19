@@ -20,7 +20,12 @@ const fundGrid: Blueprint = {
         }
     },
     root: 'grid',
-    elements: {grid: {component: 'cubeGrid', config: {source: 'positions', groupBy: ['sector']}}}
+    elements: {
+        grid: {
+            component: 'cubeGrid',
+            config: {source: 'positions', groupBy: ['sector'], columnState: ['mktVal']}
+        }
+    }
 };
 
 const codes = (registry: BlueprintRegistry) =>
