@@ -13,3 +13,33 @@
 .tb-weather-icon {
   gap: var(--xh-spacing-half);
 }
+
+.tb-registry {
+  &__empty {
+    padding: var(--xh-spacing);
+    color: var(--xh-text-color-muted);
+  }
+
+  &__detail .xh-panel__content {
+    gap: var(--xh-spacing);
+  }
+
+  &__props {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: var(--xh-spacing-half) var(--xh-spacing);
+    padding: var(--xh-spacing);
+  }
+
+  &__label {
+    color: var(--xh-text-color-muted);
+  }
+
+  &__value {
+    white-space: pre-wrap;
+  }
+
+  &__sample-body {
+    padding: var(--xh-spacing);
+  }
+}

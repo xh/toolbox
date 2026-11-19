@@ -5,12 +5,6 @@ import {
 } from '@xh/hoist-chat-kit/blueprint';
 import {ChatModel} from '@xh/hoist-chat-kit/core';
 import {chatPanel} from '@xh/hoist-chat-kit/desktop/cmp/chat';
-import {
-    chatUiCalloutSpec,
-    chatUiStackSpec,
-    chatUiTextSpec
-} from '@xh/hoist-chat-kit/desktop/cmp/genui';
-import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {ChatThreadsModel} from '@xh/hoist-chat-kit/threads';
 import {AnthropicCodec, HoistChatTransport} from '@xh/hoist-chat-kit/transport';
 import {placeholder} from '@xh/hoist/cmp/layout';
@@ -66,22 +60,11 @@ export class ArchitectModel extends HoistModel {
     }
 
     override onLinked() {
-        const {blueprintModel} = this.panelModel,
-            catalog = new ChatUiCatalog({
-                // Text and layout around the blueprint widgets of an answer.
-                components: [chatUiStackSpec(), chatUiTextSpec(), chatUiCalloutSpec()],
-                modes: ['document'],
-                answers: {
-                    registry: blueprintModel.registry,
-                    dataCatalog: blueprintModel.catalog,
-                    dataProvider: blueprintModel.dataProvider
-                }
-            });
         runInAction(() => {
             this.threadsModel = this.markManaged(
                 new ChatThreadsModel({
                     store: this.store,
-                    createChatModel: ({threadId}) => this.createChatModel(threadId, catalog)
+                    createChatModel: ({threadId}) => this.createChatModel(threadId)
                 })
             );
         });
@@ -90,8 +73,8 @@ export class ArchitectModel extends HoistModel {
     //------------------
     // Implementation
     //------------------
-    private createChatModel(threadId: string, catalog: ChatUiCatalog): ChatModel {
-        const {blueprintModel} = this.panelModel,
+    private createChatModel(threadId: string): ChatModel {
+        const {blueprintModel, answerCatalog: catalog} = this.panelModel,
             save = () =>
                 this.store.saveThread({
                     id: chatModel.threadId,

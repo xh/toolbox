@@ -1,5 +1,11 @@
 import type {BlueprintDataProvider, BlueprintIssue} from '@xh/hoist-chat-kit/blueprint';
 import {BlueprintModel, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
+import {
+    chatUiCalloutSpec,
+    chatUiStackSpec,
+    chatUiTextSpec
+} from '@xh/hoist-chat-kit/desktop/cmp/genui';
+import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {HoistModel, XH} from '@xh/hoist/core';
 import type {LoadSpec, PlainObject} from '@xh/hoist/core';
 import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
@@ -39,6 +45,9 @@ export class BlueprintsPanelModel extends HoistModel {
 
     /** Null until the catalog loads. */
     @observableRef accessor blueprintModel: BlueprintModel = null;
+
+    /** The Architect's answers: text and layout around the blueprint's own widgets and data. */
+    @observableRef accessor answerCatalog: ChatUiCatalog = null;
 
     private createProvider: (catalog: DataCatalog) => BlueprintDataProvider;
 
@@ -83,6 +92,16 @@ export class BlueprintsPanelModel extends HoistModel {
                     access: 'write'
                 })
             );
+            const {blueprintModel} = this;
+            this.answerCatalog = new ChatUiCatalog({
+                components: [chatUiStackSpec(), chatUiTextSpec(), chatUiCalloutSpec()],
+                modes: ['document'],
+                answers: {
+                    registry: blueprintModel.registry,
+                    dataCatalog: blueprintModel.catalog,
+                    dataProvider: blueprintModel.dataProvider
+                }
+            });
         });
         this.loadScenario(this.scenario);
     }
