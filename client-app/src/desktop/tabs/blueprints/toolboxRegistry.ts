@@ -1,6 +1,7 @@
 import {BlueprintRegistry} from '@xh/hoist-chat-kit/blueprint';
 import type {ResolverSpec, VariableTypeSpec} from '@xh/hoist-chat-kit/blueprint';
 import {XH} from '@xh/hoist/core';
+import {fundInput} from './FundInput';
 
 export const fundType: VariableTypeSpec = {
     name: 'fund',
@@ -8,7 +9,8 @@ export const fundType: VariableTypeSpec = {
     matches: 'string',
     guidance:
         "A fund's identifier, which in Toolbox is its name, such as 'Oak Mount'. Its prompt " +
-        "input shows each fund's name and AUM, and supplies its own choices."
+        "input shows each fund's name and AUM, and supplies its own choices.",
+    input: props => fundInput(props)
 };
 
 export const userFundResolver: ResolverSpec = {
