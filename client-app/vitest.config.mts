@@ -9,22 +9,36 @@
  *
  * `pnpm testWithHoist` runs the specs against a sibling hoist-react checkout, as `startWithHoist`
  * does for the dev server.
+ *
+ * With `XH_CHAT_KIT_PATH` set, the specs run against that local checkout of `@xh/hoist-chat-kit`,
+ * as the dev server does - see scripts/localChatKit.mjs.
  */
 import configureVitest from '@xh/hoist-dev-utils/configureVitest';
 import {createRequire} from 'node:module';
 import path from 'node:path';
-import {defineConfig} from 'vitest/config';
+import {defineConfig, mergeConfig} from 'vitest/config';
+import {localChatKit} from './scripts/localChatKit.mjs';
 
 const require = createRequire(import.meta.url),
-    pkg = require('./package.json');
+    pkg = require('./package.json'),
+    customPkgPath = path.resolve('node_modules/@xh/package-template'),
+    chatKit = localChatKit();
+
+const config = configureVitest({
+    appCode: 'toolbox',
+    appName: 'Toolbox',
+    appVersion: pkg.version,
+    // Compile the custom package as the build does - see rsbuild.config.mjs.
+    extraIncludePaths: chatKit ? [customPkgPath, chatKit.path] : [customPkgPath],
+    extraExcludePaths: chatKit ? [chatKit.nodeModulesPath] : [],
+    resolveAliases: chatKit?.aliases,
+    setupFiles: ['./src/test-support/setup.ts']
+});
 
 export default defineConfig(
-    configureVitest({
-        appCode: 'toolbox',
-        appName: 'Toolbox',
-        appVersion: pkg.version,
-        // Compile the custom package as the build does - see rsbuild.config.mjs.
-        extraIncludePaths: [path.resolve('node_modules/@xh/package-template')],
-        setupFiles: ['./src/test-support/setup.ts']
-    })
+    chatKit
+        ? // Vite serves files outside the root only from allowed dirs. Setting this replaces the
+          // default, so the root is listed again.
+          mergeConfig(config, {server: {fs: {allow: [config.root, chatKit.path]}}})
+        : config
 );

@@ -142,6 +142,47 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
   ./gradlew dependencies --write-locks -PrunHoistInline=false
   ```
 
+### Running against a local Hoist Chat Kit checkout
+
+The Chat Kit tab is built on `@xh/hoist-chat-kit`, which Toolbox installs from npm at the `next`
+dist-tag. The kit ships as TypeScript and SCSS source, so Toolbox can compile a local checkout
+of it in place of the installed package. Use this to try kit changes in a real app before the kit
+publishes them.
+
+The switch is the `XH_CHAT_KIT_PATH` variable. It is unset by default. Set it to the checkout's
+folder, as an absolute path or a path relative to `client-app/`, in a gitignored
+`client-app/.env.local`:
+
+```
+XH_CHAT_KIT_PATH=../../hoist-chat-kit
+```
+
+Run `pnpm install` in the kit checkout first. Its own node_modules supply the packages that only
+the kit uses. Then start the client as usual. The dev server, the unit tests and the type-check
+all read the variable:
+
+| Command | With `XH_CHAT_KIT_PATH` set |
+|---------|------------------------------|
+| `pnpm start`, `pnpm startWithHoist` | Compiles the kit from the checkout, and logs `@xh/hoist-chat-kit LOCAL at <path>` |
+| `pnpm test` | Runs the specs against the checkout |
+| `pnpm typecheck` | Checks against the checkout, through a generated tsconfig |
+| `pnpm build` | Ignores it. A production build always uses the installed kit |
+
+`scripts/localChatKit.mjs` holds the logic. It aliases `@xh/hoist-chat-kit` to the checkout. It
+also aliases each package that the kit and the app both declare, such as `@xh/hoist` and `react`,
+to the app's copy. A file in the checkout would otherwise load a second copy from the checkout's
+own node_modules, which breaks Hoist at runtime.
+
+Two things to know:
+
+* **A local check can pass on code the published kit does not support.** The pre-commit hook runs
+  `pnpm typecheck`, so with the variable set it checks against the checkout. CI checks against
+  the installed kit. Run `XH_CHAT_KIT_PATH= pnpm typecheck` and `XH_CHAT_KIT_PATH= pnpm test` for
+  the checks that CI runs.
+* **The OpenUI Lab needs a kit with OpenUI Lang.** Its pages import
+  `@xh/hoist-chat-kit/genui/openui`. Until a published kit snapshot holds that package, Toolbox
+  builds only with the variable set to a checkout that has it.
+
 ### Running multiple instances
 
 To run a second, independent instance alongside the first (e.g. to exercise multi-instance

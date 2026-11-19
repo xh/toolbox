@@ -22,6 +22,7 @@
 * Added a `Separator` demo page to Components > General, showing hoist-react's new rule between content, horizontal and vertical, with a label at the start, the center or the end.
 * Added a `Sparkline` demo page to Components > General, showing hoist-react's new inline trend chart, with a playground, its three types, colors, markers, bars, sizing, and its use in a `StatCard` and in a grid column over the sample price history.
 * Switched the 30-day close column in the Portfolio example's Orders grid from the AG Grid sparkline to Hoist's `Sparkline`, with a tooltip showing the dates covered, the first and last close and the change.
+* Added an OpenUI Lab to the Chat Kit tab - a testbed where a model answers in OpenUI Lang and `@xh/hoist-chat-kit` renders each program with Hoist components as it streams. A live page asks Claude through the Toolbox server, with tools that read the sample portfolio and show large results by reference. A replay page streams scripted or pasted programs with no model. Programs run with state: inputs bind `$variables`, `Query()` reads the data tools again when one changes, forms send their values as a message, and a program cannot change data. An inspector beside each chat shows the prompt, each program of the latest reply with what rendered, fell back or was dropped, and a log of the tool calls that programs made.
 
 ### Technical
 
@@ -29,11 +30,14 @@
 * Added `LlmService` and a `/llm/stream` endpoint that relay the Anthropic Messages API as a token stream for the Chat Kit tab's Live Model demo. Access needs the new `TOOLBOX_LLM_USER` role, with a per-user hourly limit that `TOOLBOX_LLM_UNLIMITED` lifts, and every call tracked in category `LLM`. Configure with the new `llmApiKey` config and the typed `llmConfig` JSON config.
 * Migrated element specs from the legacy `item` / `items` keys to the standard React `children` key, using hoist-react's v91 codemod.
 * Granted `TOOLBOX_LLM_USER` to the local development bootstrap admin, so an agent on a throwaway H2 database can test the Live Model demo. The hourly limit still applies, and deployed instances are unaffected. This is a stopgap until hoist-core grants the bootstrap admin the roles that inherit from its admin roles.
+* Added an `XH_CHAT_KIT_PATH` switch that runs the dev server, the unit tests and `pnpm typecheck` against a local checkout of `@xh/hoist-chat-kit`. It is unset by default, and production builds ignore it. See `docs/running-locally.md`.
 
 ### Libraries
 
 * @xh/hoist-chat-kit `2.0` - new
 * ag-grid `36.2 → 36.3`
+* @openuidev/lang-core `1.1.0` - new, at the exact version that `@xh/hoist-chat-kit` takes as a peer
+* zod `4.6` - new, and forced across the dependency tree in place of zod 3
 
 ## 12.1.0 - 2026-11-13
 
