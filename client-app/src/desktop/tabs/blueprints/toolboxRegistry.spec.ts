@@ -7,6 +7,7 @@ import {renderToStaticMarkup} from 'react-dom/server';
 import {beforeAll, describe, expect, it} from 'vitest';
 import catalogJson from '../../../test-support/blueprintsCatalog.json';
 import {createToolboxRegistry, tickerRenderer, userFundResolver} from './toolboxRegistry';
+import {weatherIconRenderer} from './WeatherIcon';
 
 const catalog = new DataCatalog(catalogJson);
 
@@ -63,5 +64,23 @@ describe('ticker renderer', () => {
         expect(draw('AAPL')).toBe(
             '<span class="tb-ticker"><span class="tb-ticker__root">AAPL</span></span>'
         );
+    });
+});
+
+describe('weatherIcon renderer', () => {
+    const draw = (value: string) =>
+        renderToStaticMarkup(
+            weatherIconRenderer.render(value, {formatValue: v => v} as any) as ReactElement
+        );
+
+    it('draws a known condition with its own icon, and its name', () => {
+        expect(draw('Rain')).toContain('data-icon="cloud-rain"');
+        expect(draw('Rain')).toContain('<span>Rain</span>');
+        expect(draw('Clear')).toContain('data-icon="sun"');
+    });
+
+    it('draws a condition it does not know with a general icon', () => {
+        expect(draw('Haze')).toContain('data-icon="cloud-sun"');
+        expect(draw('Haze')).toContain('<span>Haze</span>');
     });
 });

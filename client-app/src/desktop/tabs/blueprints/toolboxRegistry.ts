@@ -4,6 +4,7 @@ import {XH} from '@xh/hoist/core';
 import {fundInput} from './FundInput';
 import {portfolioBuilderSpec} from './PortfolioBuilder';
 import {renderTicker} from './Ticker';
+import {weatherIconRenderer} from './WeatherIcon';
 
 export const fundType: VariableTypeSpec = {
     name: 'fund',
@@ -48,6 +49,6 @@ export function createToolboxRegistry(): BlueprintRegistry {
         widgets: [portfolioBuilderSpec],
         variableTypes: [fundType, portfolioType],
         resolvers: [userFundResolver],
-        renderers: [tickerRenderer]
+        renderers: [tickerRenderer, weatherIconRenderer]
     });
 }
