@@ -65,10 +65,13 @@ describe('Blueprints JSON harness', () => {
         expect(model.issues.filter(it => it.severity === 'error')).toEqual([]);
     });
 
-    it.each(SCENARIOS.map(it => [it.label, it.value]))('applies %s with no errors', (_, value) => {
-        model.scenario = value;
-        expect(model.hasErrors).toBe(false);
-    });
+    it.each(SCENARIOS.filter(it => it.blueprint).map(it => [it.label, it.value]))(
+        'applies %s with no errors',
+        (_, value) => {
+            model.scenario = value;
+            expect(model.hasErrors).toBe(false);
+        }
+    );
 
     it('shows the blueprint as it now stands', () => {
         model.scenario = 'p1';
@@ -79,5 +82,14 @@ describe('Blueprints JSON harness', () => {
         });
         model.showCurrent();
         expect(JSON.parse(model.draft).elements.posGrid.config.groupBy).toEqual(['region']);
+    });
+
+    it('clears the blueprint when Empty is picked', () => {
+        model.scenario = 'empty';
+        expect(model.blueprintModel.blueprint).toBeNull();
+        expect(model.blueprintModel.version).toBe(0);
+        expect(model.draft).toBe('');
+        model.scenario = 'p1';
+        expect(model.blueprintModel.version).toBe(1);
     });
 });

@@ -13,6 +13,7 @@ import w1 from './scenarios/w1-one-city.json';
 import w2 from './scenarios/w2-two-cities.json';
 
 export const SCENARIOS: {value: string; label: string; blueprint: PlainObject}[] = [
+    {value: 'empty', label: 'Empty', blueprint: null},
     {value: 'p1', label: 'P1. One grid', blueprint: p1},
     {value: 'p2', label: 'P2. A linked dashboard', blueprint: p2},
     {value: 'p3', label: 'P3. A morning report', blueprint: p3},
@@ -27,7 +28,7 @@ export const SCENARIOS: {value: string; label: string; blueprint: PlainObject}[]
  * Catalog loads.
  */
 export class BlueprintsPanelModel extends HoistModel {
-    @bindable accessor scenario: string = SCENARIOS[0].value;
+    @bindable accessor scenario: string = 'p1';
     @bindable accessor draft: string = '';
 
     /** Why the draft is not JSON, if it isn't. */
@@ -115,6 +116,13 @@ export class BlueprintsPanelModel extends HoistModel {
     @action
     private loadScenario(scenario: string) {
         const {blueprint} = SCENARIOS.find(it => it.value === scenario);
+        if (!blueprint) {
+            this.blueprintModel?.clear();
+            this.draft = '';
+            this.parseError = null;
+            this.applyIssues = [];
+            return;
+        }
         this.draft = JSON.stringify(blueprint, null, 4);
         this.apply();
     }
