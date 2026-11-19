@@ -1,7 +1,7 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import type {KeyValueEntry, KeyValueDisplayProps} from '@xh/hoist/cmp/keyvaluedisplay';
 import {keyValueDisplay} from '@xh/hoist/cmp/keyvaluedisplay';
-import {a, div} from '@xh/hoist/cmp/layout';
+import {a, div, span} from '@xh/hoist/cmp/layout';
 import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
@@ -46,6 +46,14 @@ const SUMMARY: KeyValueEntry[] = [
     }
 ];
 
+/** The totals at the foot of a trade confirmation. */
+const TOTALS: KeyValueEntry[] = [
+    {label: 'Gross amount', value: fmtNumber(1_248_000, {precision: 2})},
+    {label: 'Commission', value: fmtNumber(624, {precision: 2})},
+    {label: 'Fees', value: fmtNumber(81.5, {precision: 2})},
+    {label: 'Net amount', value: fmtNumber(1_248_705.5, {precision: 2})}
+];
+
 /** Labels and values with long unbroken words, among normal ones. */
 const LONG_WORDS: KeyValueEntry[] = [
     {label: 'Symbol', value: 'XZ'},
@@ -73,8 +81,8 @@ export const keyValueDisplayPanel = hoistCmp.factory({
                 '',
                 'The caller formats each value. The list fills the',
                 'width of its container and fits as many columns as that width allows, or a set',
-                'number of `columns`. Long labels and values wrap, so the list never forces',
-                'horizontal overflow.'
+                'number of `columns`. With `align`, it sizes to its content at one edge instead.',
+                'Long labels and values wrap, so the list never forces horizontal overflow.'
             ],
             links: [
                 {
@@ -103,6 +111,29 @@ export const keyValueDisplayPanel = hoistCmp.factory({
                                 enableClear: true,
                                 width: 110,
                                 options: ['left', 'top']
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Label variant',
+                            propName: 'KeyValueDisplayProps.labelVariant',
+                            control: select({
+                                bind: 'labelVariant',
+                                enableFilter: false,
+                                enableClear: true,
+                                width: 110,
+                                options: ['standard', 'muted']
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Align',
+                            propName: 'KeyValueDisplayProps.align',
+                            info: 'Empty to fill the width.',
+                            control: select({
+                                bind: 'align',
+                                enableFilter: false,
+                                enableClear: true,
+                                width: 110,
+                                options: ['left', 'right']
                             })
                         }),
                         wrapperOption({
@@ -183,8 +214,12 @@ export const keyValueDisplayPanel = hoistCmp.factory({
                         children: demoPlayground({
                             instanceWidth: 640,
                             showValue: false,
-                            caption:
-                                'The largest position of the sample portfolio, in a 640px box.',
+                            // Set at the same edge as an aligned list, so it stays under it.
+                            caption: span({
+                                style: {display: 'block', textAlign: listProps.align},
+                                children:
+                                    'The largest position of the sample portfolio, in a 640px box.'
+                            }),
                             config: fmtDemoConfig<KeyValueDisplayProps>('keyValueDisplay', {
                                 entries: raw('positionEntries'),
                                 ...listProps
@@ -192,7 +227,8 @@ export const keyValueDisplayPanel = hoistCmp.factory({
                             children: keyValueDisplay({
                                 entries: positionEntries,
                                 ...listProps,
-                                width: '100%'
+                                // An aligned list sizes to its content, so it takes no width.
+                                width: listProps.align ? undefined : '100%'
                             })
                         })
                     }),
@@ -336,6 +372,33 @@ export const keyValueDisplayPanel = hoistCmp.factory({
                         })
                     }),
                     demoSection({
+                        title: 'Totals and Muted Labels',
+                        note: "align: 'right' sizes the list to its content at the right edge, with labels and values aligned right. labelVariant: 'muted' makes the labels smaller and lighter.",
+                        children: demoGrid({
+                            columns: 2,
+                            children: [
+                                demoFrame({
+                                    label: "align: 'right'",
+                                    info: 'with dividers',
+                                    children: keyValueDisplay({
+                                        entries: TOTALS,
+                                        align: 'right',
+                                        dividers: true
+                                    })
+                                }),
+                                demoFrame({
+                                    label: "labelVariant: 'muted'",
+                                    info: "with labelSide: 'top'",
+                                    children: keyValueDisplay({
+                                        entries: positionEntries,
+                                        labelSide: 'top',
+                                        labelVariant: 'muted'
+                                    })
+                                })
+                            ]
+                        })
+                    }),
+                    demoSection({
                         title: 'Intent and Elements',
                         note: 'intent colors a value. A value can be any element.',
                         children: demoFrame({
@@ -447,6 +510,8 @@ export const keyValueDisplayPanel = hoistCmp.factory({
 
 class KeyValueDisplayPanelModel extends HoistModel {
     @bindable accessor labelSide: KeyValueDisplayProps['labelSide'] = null;
+    @bindable accessor labelVariant: KeyValueDisplayProps['labelVariant'] = null;
+    @bindable accessor align: KeyValueDisplayProps['align'] = null;
     @bindable accessor labelAlign: KeyValueDisplayProps['labelAlign'] = null;
     @bindable accessor valueAlign: KeyValueDisplayProps['valueAlign'] = null;
     @bindable accessor columns: number = null;
@@ -465,6 +530,8 @@ class KeyValueDisplayPanelModel extends HoistModel {
     get listProps(): PlaygroundListProps {
         const {
             labelSide,
+            labelVariant,
+            align,
             labelAlign,
             valueAlign,
             columns,
@@ -475,6 +542,8 @@ class KeyValueDisplayPanelModel extends HoistModel {
         } = this;
         return {
             labelSide: labelSide ?? undefined,
+            labelVariant: labelVariant ?? undefined,
+            align: align ?? undefined,
             labelAlign: labelAlign ?? undefined,
             valueAlign: valueAlign ?? undefined,
             columns: columns ?? undefined,
@@ -519,6 +588,8 @@ class KeyValueDisplayPanelModel extends HoistModel {
 /** The KeyValueDisplay props the rail drives, as the plain values its inputs produce. */
 interface PlaygroundListProps {
     labelSide?: KeyValueDisplayProps['labelSide'];
+    labelVariant?: KeyValueDisplayProps['labelVariant'];
+    align?: KeyValueDisplayProps['align'];
     labelAlign?: KeyValueDisplayProps['labelAlign'];
     valueAlign?: KeyValueDisplayProps['valueAlign'];
     columns?: number;
