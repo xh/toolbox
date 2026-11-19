@@ -17,6 +17,7 @@ import {attachmentsPanel} from './conversations/attachmentsDemo';
 import {errorsPanel} from './conversations/errorsDemo';
 import {genUiPanel} from './conversations/genUiDemo';
 import {interruptsPanel} from './conversations/interruptsDemo';
+import {openUiPanel} from './conversations/openUiDemo';
 import {reasoningPanel} from './conversations/reasoningDemo';
 import {richContentPanel} from './conversations/richContentDemo';
 import {timelinePanel} from './conversations/timelineDemo';
@@ -44,6 +45,7 @@ const PAGE_CONTENT: Record<string, ElementFactory> = {
     attachments: attachmentsPanel,
     errors: errorsPanel,
     genUi: genUiPanel,
+    openUi: openUiPanel,
     workspace: workspacePanel,
     liveModel: liveModelPanel
 };

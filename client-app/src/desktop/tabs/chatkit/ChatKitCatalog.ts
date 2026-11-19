@@ -173,6 +173,13 @@ export const CHAT_KIT_PAGES: ChatKitPage[] = [
         description: 'KPI tiles, a grid that fills as it streams, a chart and a card.',
         icon: () => Icon.mixedChart()
     },
+    {
+        id: 'openUi',
+        title: 'OpenUI Lang',
+        group: 'conversations',
+        description: 'A program in the reply: inputs bound to state, a live query and a form.',
+        icon: () => Icon.code()
+    },
 
     // Integrations
     {
