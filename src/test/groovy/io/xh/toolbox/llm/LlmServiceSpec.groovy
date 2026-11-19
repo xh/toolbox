@@ -184,6 +184,20 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
         thrown(RoutineRuntimeException)
     }
 
+    def 'calls use Sonnet 5.5 unless the config names a model'() {
+        when:
+        testConfigService.set('llmConfig', [maxTokens: 1000])
+
+        then:
+        service.createBody(request([[type: 'text', text: 'Hi']])).model == 'claude-sonnet-5-5'
+
+        when:
+        setLlmConfig(model: 'claude-opus-5-5')
+
+        then:
+        service.createBody(request([[type: 'text', text: 'Hi']])).model == 'claude-opus-5-5'
+    }
+
     def 'a conversation of more than 200 messages is too long'() {
         when:
         service.createBody([messages: (1..201).collect { [role: 'user', content: 'Hi'] }])
