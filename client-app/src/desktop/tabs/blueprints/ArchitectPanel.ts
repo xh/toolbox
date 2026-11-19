@@ -1,10 +1,7 @@
-import {
-    architectChatTools,
-    architectPrompt,
-    blueprintContextProvider
-} from '@xh/hoist-chat-kit/blueprint';
+import {architectPrompt} from '@xh/hoist-chat-kit/blueprint';
 import {ChatModel} from '@xh/hoist-chat-kit/core';
 import {chatPanel} from '@xh/hoist-chat-kit/desktop/cmp/chat';
+import {architectChatTools, blueprintContextProvider} from '@xh/hoist-chat-kit/genui/architect';
 import {ChatThreadsModel} from '@xh/hoist-chat-kit/threads';
 import {AnthropicCodec, HoistChatTransport} from '@xh/hoist-chat-kit/transport';
 import {placeholder} from '@xh/hoist/cmp/layout';

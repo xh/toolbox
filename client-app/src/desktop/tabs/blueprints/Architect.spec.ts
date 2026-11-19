@@ -1,12 +1,12 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
 import type {ChatToolSpec} from '@xh/hoist-chat-kit/core';
 import {
-    architectChatTools,
     architectPrompt,
     BlueprintModel,
     DataCatalog,
     FakeBlueprintDataProvider
 } from '@xh/hoist-chat-kit/blueprint';
+import {architectChatTools} from '@xh/hoist-chat-kit/genui/architect';
 import {initTestAppAsync} from '@xh/hoist/test-support';
 import {afterAll, beforeAll, describe, expect, it} from 'vitest';
 import catalogJson from '../../../test-support/blueprintsCatalog.json';
