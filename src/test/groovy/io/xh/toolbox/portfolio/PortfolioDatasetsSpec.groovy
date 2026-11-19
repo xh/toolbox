@@ -39,6 +39,19 @@ class PortfolioDatasetsSpec extends Specification {
         bySymbol(datasets(Instant.parse('2026-01-05T21:00:00Z')).positions(D4), 'AAA').quantity == 170
     }
 
+    def 'when the app day runs ahead of the exchange, the live day holds no orders until their time'() {
+        given: 'the evening of Jan 4 in New York, already Jan 5 - the app day - in UTC'
+        def ds = datasets(Instant.parse('2026-01-05T01:00:00Z'))
+
+        expect:
+        ds.isLivePositions(D4)
+        ds.isLiveOrders(D4)
+        ds.orders(D4) == []
+        bySymbol(ds.positions(D4), 'AAA').quantity == 150
+        bySymbol(ds.positions(D4), 'AAA').pnlDay == 150 * 15     // D3 holdings repriced 120 -> 135
+        ds.positions(D4.plusDays(1)) == ds.positions(D4)
+    }
+
     def 'Greeks are set on options only, from underlying notional'() {
         when:
         def o = bySymbol(datasets().positions(D4), opt.symbol)
@@ -152,6 +165,29 @@ class PortfolioDatasetsSpec extends Specification {
         ds.prices('AAA', D3, D2) == []
         ds.isLivePrices(D1, D4)
         !ds.isLivePrices(D1, D3)
+    }
+
+    def 'a hypothetical portfolio sizes each holding as its weight of the notional'() {
+        given:
+        def ds = datasets()
+
+        when:
+        def rows = ds.hypotheticalPortfolio([['AAA', 0.6], [opt.symbol, -0.1]], D4)
+        def aaa = rows[0], o = rows[1]
+
+        then:
+        rows*.id == ['AAA', opt.symbol]
+        aaa.mktVal == 60_000_000
+        aaa.weight == 0.6d
+        aaa.price == 135
+        aaa.betaAdjExposure == 72_000_000
+        aaa.sector == 'Technology'
+        o.mktVal == -10_000_000
+        o.delta == Math.round(-10_000_000 / 1400 * 100 * 135 * 0.5)
+        ds.shockedPnlFor(aaa, -0.1) == -7_200_000
+
+        and:
+        ds.hypotheticalPortfolio([['AAA', 1]], LocalDate.of(2020, 1, 1)) == []
     }
 
     def 'return is the price return over the window, signed by direction'() {

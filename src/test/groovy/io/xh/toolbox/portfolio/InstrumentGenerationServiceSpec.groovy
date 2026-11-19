@@ -19,6 +19,7 @@ class InstrumentGenerationServiceSpec extends Specification implements ServiceUn
 
     def 'instruments cover every type, with consistent hierarchies and identifiers'() {
         given:
+        useAppTimeZone('UTC')
         testConfigService
             .registerTypedConfig('portfolioConfigs', PortfolioConfig)
             .set('portfolioConfigs', [instrumentCount: 300])
