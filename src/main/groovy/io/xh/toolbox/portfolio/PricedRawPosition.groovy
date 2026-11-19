@@ -13,7 +13,7 @@ class PricedRawPosition implements JSONFormat{
         this.rawPosition = rawPosition
         this.endPx = endPx
         if (endPx != null) {
-            mktVal = (rawPosition.endQty * endPx).round()
+            mktVal = (rawPosition.endQty * endPx * rawPosition.instrument.multiplier).round()
             pnl = mktVal - rawPosition.cost
         }
     }

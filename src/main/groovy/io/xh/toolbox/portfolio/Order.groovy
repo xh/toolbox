@@ -3,6 +3,7 @@ package io.xh.toolbox.portfolio
 import io.xh.hoist.json.JSONFormatCached
 
 import java.time.Instant
+import java.time.LocalDate
 
 class Order extends JSONFormatCached {
     String id
@@ -16,10 +17,14 @@ class Order extends JSONFormatCached {
     Integer confidence
 
     Instant time
+    /** Trading day of the order, in the exchange's zone. */
+    LocalDate day
 
     String model
     String trader
     String fund
+    String strategy
+    String book
 
     String getKey() { [getSymbol(), trader, model, fund].join('||') }
 

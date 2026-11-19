@@ -2,6 +2,7 @@ package io.xh.toolbox.portfolio.generation
 
 import io.xh.hoist.BaseService
 import io.xh.toolbox.portfolio.Instrument
+import io.xh.toolbox.portfolio.InstrumentType
 import io.xh.toolbox.portfolio.MarketPrice
 import io.xh.toolbox.portfolio.Utils
 
@@ -31,8 +32,8 @@ class HistoricalPriceGenerationService extends BaseService {
             .logDebug("Generating historical prices for ${instruments.size()} instruments")
             .run {
                 List<LocalDate> tradingDays = tradingDayService.historicalDays(day)
-                return instruments.keySet().collectEntries {
-                    [it as String, generatePriceSeries(tradingDays)]
+                return instruments.collectEntries { symbol, inst ->
+                    [symbol, generatePriceSeries(tradingDays, inst.type)]
                 } as Map<String, List<MarketPrice>>
             }
     }
@@ -46,7 +47,7 @@ class HistoricalPriceGenerationService extends BaseService {
      * minimize Groovy dispatch overhead in this high-iteration inner loop (~300 days per
      * instrument, 500 instruments = ~150k total iterations).
      */
-    private List<MarketPrice> generatePriceSeries(List<LocalDate> tradingDays) {
+    private List<MarketPrice> generatePriceSeries(List<LocalDate> tradingDays, InstrumentType type) {
         int dayCount = tradingDays.size()
 
         // Pre-compute spike days and their neighbors as boolean arrays for O(1) lookup,
@@ -63,12 +64,14 @@ class HistoricalPriceGenerationService extends BaseService {
 
         List<MarketPrice> ret = new ArrayList<>(dayCount)
         Random rng = Utils.random
-        double startPx = randDouble(10, 100)
+        double startPx = randDouble(type.minStartPx, type.maxStartPx),
+            vol = type.vol
+        int dp = type == InstrumentType.FX ? 4 : 2
         for (int idx = 0; idx < dayCount; idx++) {
             boolean bigDown = rng.nextDouble() > 0.95  // ~5% chance of a larger swing down
             boolean bigUp = rng.nextDouble() > 0.95
-            double pctDown = rng.nextDouble() * (bigDown ? 0.1 : 0.02)
-            double pctUp = rng.nextDouble() * (bigUp ? 0.1 : 0.025)
+            double pctDown = rng.nextDouble() * (bigDown ? 0.1 : 0.02) * vol
+            double pctUp = rng.nextDouble() * (bigUp ? 0.1 : 0.025) * vol
             double open = startPx
             double high = startPx + (pctUp * startPx)
             double low = startPx - (pctDown * startPx)
@@ -78,10 +81,10 @@ class HistoricalPriceGenerationService extends BaseService {
 
             ret << new MarketPrice(
                     day: tradingDays[idx],
-                    high: high.round(2),
-                    low: low.round(2),
-                    open: open.round(2),
-                    close: close.round(2),
+                    high: high.round(dp),
+                    low: low.round(dp),
+                    open: open.round(dp),
+                    close: close.round(dp),
                     volume: randInt(80, maxVol) * 1000
             )
             startPx = close
