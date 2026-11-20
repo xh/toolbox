@@ -55,9 +55,10 @@ describe('Toolbox blueprint registry', () => {
     });
 
     it("resolves userFund to the user's fund preference", () => {
-        expect(userFundResolver.resolve({})).toBe('Oak Mount');
+        const context = {registry: createToolboxRegistry()};
+        expect(userFundResolver.resolve({}, context)).toBe('Oak Mount');
         XH.setPref('blueprintsFund', 'Red River');
-        expect(userFundResolver.resolve({})).toBe('Red River');
+        expect(userFundResolver.resolve({}, context)).toBe('Red River');
         XH.prefService.unset('blueprintsFund');
     });
 });
