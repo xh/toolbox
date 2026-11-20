@@ -1,5 +1,5 @@
 import type {Blueprint, BlueprintDataProvider, BlueprintIssue} from '@xh/hoist-chat-kit/blueprint';
-import {BlueprintModel, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
+import {BlueprintDesignModel, BlueprintModel, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
 import type {ChatMessageSpec, ChatModel} from '@xh/hoist-chat-kit/core';
 import {
     chatUiCalloutSpec,
@@ -74,6 +74,9 @@ export class BlueprintsPanelModel extends HoistModel {
 
     /** Null until the catalog loads. */
     @observableRef accessor blueprintModel: BlueprintModel = null;
+
+    /** Selection and structural edits on the open blueprint, in design mode. */
+    @observableRef accessor designModel: BlueprintDesignModel = null;
 
     /** The Architect's answers: text and layout around the blueprint's own widgets and data. */
     @observableRef accessor answerCatalog: ChatUiCatalog = null;
@@ -159,6 +162,7 @@ export class BlueprintsPanelModel extends HoistModel {
                     access: 'write'
                 })
             ));
+            this.designModel = this.markManaged(new BlueprintDesignModel({blueprintModel}));
             this.answerCatalog = new ChatUiCatalog({
                 components: [chatUiStackSpec(), chatUiTextSpec(), chatUiCalloutSpec()],
                 modes: ['document'],

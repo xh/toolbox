@@ -4,6 +4,7 @@ import type {
     BlueprintOp,
     BlueprintVariable
 } from '@xh/hoist-chat-kit/blueprint';
+import {elementOutline} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
@@ -98,6 +99,10 @@ export class InspectorModel extends HoistModel {
 
     @managed tabContainerModel = new TabContainerModel({
         tabs: [
+            {
+                id: 'outline',
+                content: () => elementOutline({designModel: this.panelModel.designModel})
+            },
             {id: 'variables', content: () => grid({model: this.variablesGridModel})},
             {id: 'issues', content: () => grid({model: this.issuesGridModel})},
             {id: 'history', content: () => inspectorHistory({inspector: this})},

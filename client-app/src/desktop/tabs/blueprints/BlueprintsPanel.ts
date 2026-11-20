@@ -159,7 +159,7 @@ const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
                   ]
                 : [],
             item: blueprintModel.blueprint
-                ? blueprintView({model: blueprintModel})
+                ? blueprintView({model: blueprintModel, designModel: model.designModel})
                 : placeholder(Icon.layout(), emptyText(model))
         }),
         selected ? inspectorPanel() : null
