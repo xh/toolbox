@@ -4,7 +4,6 @@ import type {
     BlueprintOp,
     BlueprintVariable
 } from '@xh/hoist-chat-kit/blueprint';
-import {elementOutline} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
@@ -15,6 +14,7 @@ import {applyJsonEdit} from './applyJsonEdit';
 import {BlueprintsPanelModel} from './BlueprintsPanelModel';
 import {inspectorHistory} from './InspectorHistory';
 import {inspectorJson} from './InspectorJson';
+import {inspectorOutline} from './InspectorOutline';
 import {markdownCol} from './markdown';
 
 /** The open blueprint's variables, validation issues and edit history. */
@@ -101,7 +101,7 @@ export class InspectorModel extends HoistModel {
         tabs: [
             {
                 id: 'outline',
-                content: () => elementOutline({designModel: this.panelModel.designModel})
+                content: () => inspectorOutline({designModel: this.panelModel.designModel})
             },
             {id: 'variables', content: () => grid({model: this.variablesGridModel})},
             {id: 'issues', content: () => grid({model: this.issuesGridModel})},
