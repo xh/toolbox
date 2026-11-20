@@ -1,13 +1,23 @@
 import {Icon} from '@xh/hoist/icon';
 import type {MouseEvent} from 'react';
 import {clamp, round} from 'lodash';
-import {type ContextMenuSpec, HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {type ContextMenuSpec, HoistModel, type Intent, XH} from '@xh/hoist/core';
+import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
+import {bindable, observableRef} from '@xh/hoist/mobx';
 import {clipboardMenuItem} from '@xh/hoist/desktop/cmp/clipboard';
 
 export class BasicPanelModel extends HoistModel {
     @bindable accessor state: string = null;
     @bindable accessor compactHeader: boolean = false;
+    @bindable accessor headerIntent: Intent = null;
+    @bindable accessor headerSwitch: boolean = true;
+
+    /** Side to collapse toward - `left` collapses to a vertical header. Null disables collapse. */
+    @bindable accessor collapseSide: 'top' | 'left' = null;
+    @bindable accessor modalSupport: boolean = false;
+
+    /** Rebuilt when the collapse or modal options change, as `PanelModel` fixes these on create. */
+    @observableRef accessor panelModel: PanelModel = null;
     @bindable accessor triggerError: boolean = false;
 
     /** Relative scale for the panel text - `em`, so it tracks the app font size at 1. */
@@ -26,6 +36,37 @@ export class BasicPanelModel extends HoistModel {
             },
             fireImmediately: true
         });
+
+        // Build the first model here, not via `fireImmediately`. This model is created during
+        // render, where MobX defers reactions until the render completes.
+        this.panelModel = this.createPanelModel();
+        this.addReaction({
+            track: () => [this.collapseSide, this.modalSupport],
+            run: () => {
+                XH.safeDestroy(this.panelModel);
+                this.panelModel = this.createPanelModel();
+            }
+        });
+    }
+
+    private createPanelModel(): PanelModel {
+        const {collapseSide, modalSupport} = this;
+        return new PanelModel({
+            side: collapseSide ?? 'top',
+            defaultSize: '100%',
+            collapsible: !!collapseSide,
+            resizable: false,
+            modalSupport,
+            errorBoundary: true,
+            // A lone panel has no neighbor to split from - collapse from the header.
+            showSplitter: false,
+            showHeaderCollapseButton: true
+        });
+    }
+
+    override destroy() {
+        XH.safeDestroy(this.panelModel);
+        super.destroy();
     }
 
     demoText = [

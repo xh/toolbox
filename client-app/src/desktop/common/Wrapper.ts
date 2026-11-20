@@ -43,6 +43,9 @@ export interface WrapperProps extends HoistProps {
      * *trigger* that re-runs the example to reflect changed options (e.g. a "Load Now" button) also
      * belongs here - render it as a full-width `button` after the option rows. Controls intrinsic to
      * the thing being demonstrated should stay in the demo content.
+     *
+     * Match the control to the prop type. Use `intentInput` (with `enableClear` when null is
+     * valid) for any intent prop, and `iconPicker` for any icon prop - not a generic `select`.
      */
     options?: ReactNode;
 

@@ -98,6 +98,7 @@ import {propertyTablePanel} from './tabs/components/general/PropertyTablePanel';
 import {separatorPanel} from './tabs/components/general/SeparatorPanel';
 import {sparklinePanel} from './tabs/components/general/SparklinePanel';
 import {statCardPanel} from './tabs/components/general/StatCardPanel';
+import {viewManagerPanel} from './tabs/components/general/ViewManagerPanel';
 import {relativeTimestampPanel} from './tabs/components/general/relativetimestamp/RelativeTimestampPanel';
 import {simpleRoutingPanel} from './tabs/system/routing/SimpleRoutingPanel';
 import {bannerPanel} from './tabs/layout/panels/BannerPanel';
@@ -345,7 +346,8 @@ export class AppModel extends BaseAppModel {
                             {name: 'propertyTable', path: '/propertyTable'},
                             {name: 'separator', path: '/separator'},
                             {name: 'sparkline', path: '/sparkline'},
-                            {name: 'callout', path: '/callout'}
+                            {name: 'callout', path: '/callout'},
+                            {name: 'viewManager', path: '/viewManager'}
                         ]
                     },
                     {
@@ -627,7 +629,8 @@ export class AppModel extends BaseAppModel {
                             {id: 'separator', content: separatorPanel},
                             {id: 'sparkline', content: sparklinePanel},
                             {id: 'statCard', title: 'StatCard', content: statCardPanel},
-                            {id: 'timestamp', content: relativeTimestampPanel}
+                            {id: 'timestamp', content: relativeTimestampPanel},
+                            {id: 'viewManager', title: 'ViewManager', content: viewManagerPanel}
                         ].map(it => ({...it, group: 'general'})),
                         ...[
                             {id: 'line', content: lineChartPanel},
