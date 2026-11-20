@@ -86,7 +86,6 @@ import {dateFormatsPanel} from './tabs/system/formats/DateFormatsPanel';
 import {errorMessagePanel} from './tabs/components/general/ErrorMessagePanel';
 import {exceptionHandlerPanel} from './tabs/system/exceptions/ExceptionHandlerPanel';
 import {iconsPanel} from './tabs/components/general/IconsPanel';
-import {keyValueDisplayPanel} from './tabs/components/general/KeyValueDisplayPanel';
 import {listDisplayPanel} from './tabs/components/general/ListDisplayPanel';
 import {inspectorPanel} from './tabs/system/InspectorPanel';
 import {jsxPanel} from './tabs/system/JsxPanel';
@@ -96,6 +95,7 @@ import {pdfViewerPanel} from './tabs/components/general/PdfViewerPanel';
 import {pinPadPanel} from './tabs/components/general/PinPadPanel';
 import {placeholderPanel} from './tabs/components/general/PlaceholderPanel';
 import {progressBarPanel} from './tabs/components/general/ProgressBarPanel';
+import {propertyTablePanel} from './tabs/components/general/PropertyTablePanel';
 import {separatorPanel} from './tabs/components/general/SeparatorPanel';
 import {sparklinePanel} from './tabs/components/general/SparklinePanel';
 import {statCardPanel} from './tabs/components/general/StatCardPanel';
@@ -343,7 +343,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'placeholder', path: '/placeholder'},
                             {name: 'statCard', path: '/statCard'},
                             {name: 'progressBar', path: '/progressBar'},
-                            {name: 'keyValueDisplay', path: '/keyValueDisplay'},
+                            {name: 'propertyTable', path: '/propertyTable'},
                             {name: 'listDisplay', path: '/listDisplay'},
                             {name: 'separator', path: '/separator'},
                             {name: 'sparkline', path: '/sparkline'},
@@ -616,17 +616,17 @@ export class AppModel extends BaseAppModel {
                             {id: 'clock', content: clockPanel},
                             {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
                             {id: 'icons', content: iconsPanel},
-                            {
-                                id: 'keyValueDisplay',
-                                title: 'KeyValueDisplay',
-                                content: keyValueDisplayPanel
-                            },
                             {id: 'listDisplay', title: 'ListDisplay', content: listDisplayPanel},
                             {id: 'markdown', content: markdownPanel},
                             {id: 'pdfViewer', title: 'PdfViewer', content: pdfViewerPanel},
                             {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                             {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                             {id: 'progressBar', title: 'ProgressBar', content: progressBarPanel},
+                            {
+                                id: 'propertyTable',
+                                title: 'PropertyTable',
+                                content: propertyTablePanel
+                            },
                             {id: 'separator', content: separatorPanel},
                             {id: 'sparkline', content: sparklinePanel},
                             {id: 'statCard', title: 'StatCard', content: statCardPanel},
