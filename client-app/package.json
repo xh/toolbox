@@ -1,6 +1,6 @@
 {
   "name": "toolbox",
-  "version": "13.0-SNAPSHOT",
+  "version": "14.0-SNAPSHOT",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -43,7 +43,7 @@
     "@fortawesome/pro-thin-svg-icons": "^7.3.1",
     "@ibm/plex-mono": "^2.5.0",
     "@ibm/plex-sans": "^1.1.0",
-    "@xh/hoist": "91.0.0",
+    "@xh/hoist": "next",
     "@xh/package-template": "~4.0.0",
     "ag-charts-community": "~14.2.0",
     "ag-grid-community": "~36.3.0",
@@ -67,7 +67,7 @@
     "@types/react-dom": "~19.3.0",
     "@xh/eslint-config": "^8.1.0",
     "@xh/hoist-chat-kit": "next",
-    "@xh/hoist-dev-utils": "16.5.0",
+    "@xh/hoist-dev-utils": "next",
     "@xh/hoist-docs": "^1.0.0",
     "cross-env": "~10.1.0",
     "eslint": "^10.15.0",
