@@ -24,7 +24,7 @@
         "shock": {"base": "fraction", "format": "shock"},
         "years": {"base": "number", "format": "years"},
         "ratio": {"base": "number", "format": "ratio"},
-        "ticker": {"base": "string", "renderer": "ticker"},
+        "ticker": {"base": "string", "renderer": "toolbox.ticker"},
         "identifier": {"base": "string", "aggregator": "UNIQUE"}
     },
     "fields": [
@@ -190,7 +190,7 @@
             "guidance": "One row per position. Updates live when the as-of date is today. Join to orders through the shared dimensions.",
             "params": {
                 "asOf": {"type": "localDate", "required": true},
-                "fund": {"type": "fund", "description": "One fund. Leave empty for all funds."}
+                "fund": {"type": "toolbox.fund", "description": "One fund. Leave empty for all funds."}
             },
             "fields": [
                 "fund", "strategy", "book", "trader", "model", "assetClass", "instrumentType", "sector",
@@ -332,7 +332,7 @@
             "guidance": "Use for fund-level totals and trends, such as a sparkline of each fund's P&L or drawdown. It is far smaller than positions, so prefer it for any per-fund figure.",
             "params": {
                 "asOf": {"type": "localDate", "required": true},
-                "fund": {"type": "fund", "description": "One fund. Leave empty for all funds."}
+                "fund": {"type": "toolbox.fund", "description": "One fund. Leave empty for all funds."}
             },
             "fields": [
                 "fund",
@@ -379,7 +379,7 @@
             "guidance": "One row per order. Updates live when the as-of date is today. A selection in a positions grid filters orders through the shared dimensions.",
             "params": {
                 "asOf": {"type": "localDate", "required": true},
-                "fund": {"type": "fund", "description": "One fund. Leave empty for all funds."}
+                "fund": {"type": "toolbox.fund", "description": "One fund. Leave empty for all funds."}
             },
             "fields": [
                 "fund", "strategy", "book", "trader", "model", "assetClass", "instrumentType", "sector",
@@ -444,7 +444,7 @@
             "guidance": "The position fields, priced for a portfolio of tickers and weights. Use it to stress or compare a hypothetical portfolio.",
             "params": {
                 "portfolio": {
-                    "type": "portfolio",
+                    "type": "toolbox.portfolio",
                     "required": true,
                     "description": "A portfolio: {\"holdings\": [{\"symbol\": \"AAPL\", \"weight\": 0.5}]}, with weights as fractions. The server prices it against a notional of 100,000,000 USD."
                 },
