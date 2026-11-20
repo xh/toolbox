@@ -92,3 +92,17 @@
     margin: 0;
   }
 }
+
+.tb-inspector__palette .xh-blueprint-widget-palette {
+  flex-flow: row wrap;
+  column-gap: calc(var(--xh-spacing) * 2);
+
+  .xh-blueprint-widget-palette__group {
+    flex-flow: row wrap;
+    align-items: center;
+  }
+
+  .xh-blueprint-widget-palette__category {
+    margin: 0 var(--xh-spacing-half) 0 0;
+  }
+}

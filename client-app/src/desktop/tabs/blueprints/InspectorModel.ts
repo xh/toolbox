@@ -4,6 +4,11 @@ import type {
     BlueprintOp,
     BlueprintVariable
 } from '@xh/hoist-chat-kit/blueprint';
+import {
+    presetsEditor,
+    sourcesEditor,
+    variablesEditor
+} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
@@ -18,7 +23,10 @@ import {inspectorOutline} from './InspectorOutline';
 import {inspectorPublishes} from './InspectorPublishes';
 import {markdownCol} from './markdown';
 
-/** The open blueprint's variables, validation issues and edit history. */
+/**
+ * The open blueprint's outline, variables, validation issues and edit history. In design, its
+ * variables, sources and presets are editable.
+ */
 export class InspectorModel extends HoistModel {
     @lookup(BlueprintsPanelModel) panelModel: BlueprintsPanelModel;
 
@@ -119,9 +127,19 @@ export class InspectorModel extends HoistModel {
         tabs: [
             {
                 id: 'outline',
-                content: () => inspectorOutline({designModel: this.panelModel.designModel})
+                content: () =>
+                    inspectorOutline({
+                        designModel: this.panelModel.designModel,
+                        designing: this.isDesigning
+                    })
             },
-            {id: 'variables', content: () => grid({model: this.variablesGridModel})},
+            {
+                id: 'variables',
+                content: () =>
+                    this.isDesigning
+                        ? variablesEditor({designModel: this.panelModel.designModel})
+                        : grid({model: this.variablesGridModel})
+            },
             {id: 'issues', content: () => grid({model: this.issuesGridModel})},
             {id: 'history', content: () => inspectorHistory({inspector: this})},
             {id: 'publishes', content: () => inspectorPublishes({inspector: this})},
@@ -144,6 +162,13 @@ export class InspectorModel extends HoistModel {
         if (this.parseError) return `Not valid JSON: ${this.parseError}`;
         const n = this.applyIssues.length;
         return n ? `Refused, ${n} error${n > 1 ? 's' : ''} - see Issues` : null;
+    }
+
+    /** True while the open blueprint is a writable draft in design mode. */
+    @computed
+    get isDesigning(): boolean {
+        const {mode, access} = this.panelModel.blueprintModel;
+        return mode === 'design' && access === 'write';
     }
 
     @computed
@@ -203,6 +228,11 @@ export class InspectorModel extends HoistModel {
                 fireImmediately: true
             },
             {
+                track: () => this.isDesigning,
+                run: designing => this.showDesignTabs(designing),
+                fireImmediately: true
+            },
+            {
                 track: () => (this.applyIssues.length ? this.applyIssues : this.panelModel.issues),
                 run: issues =>
                     this.load('issues', this.issuesGridModel, issues as BlueprintIssue[]),
@@ -244,6 +274,27 @@ export class InspectorModel extends HoistModel {
         this.applyIssues = version == null ? issues.filter(it => it.severity === 'error') : [];
     }
 
+    @action
+    private showDesignTabs(designing: boolean) {
+        const {tabContainerModel: tabs, panelModel} = this;
+        if (!designing) {
+            DESIGN_TABS.forEach(id => {
+                if (tabs.findTab(id)) tabs.removeTab(id);
+            });
+            return;
+        }
+        if (tabs.findTab('sources')) return;
+        const index = tabs.tabs.indexOf(tabs.findTab('variables')) + 1;
+        tabs.addTab(
+            {id: 'sources', content: () => sourcesEditor({designModel: panelModel.designModel})},
+            {index}
+        );
+        tabs.addTab(
+            {id: 'presets', content: () => presetsEditor({designModel: panelModel.designModel})},
+            {index: index + 1}
+        );
+    }
+
     /** Load a tab's grid, and show its row count in the tab's title. */
     @action
     private load(tabId: string, gridModel: GridModel, rows: object[]) {
@@ -254,6 +305,8 @@ export class InspectorModel extends HoistModel {
             : title;
     }
 }
+
+const DESIGN_TABS = ['sources', 'presets'];
 
 function toVariableRow(v: BlueprintVariable) {
     return {
