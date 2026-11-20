@@ -1,5 +1,5 @@
 import {HoistModel, XH} from '@xh/hoist/core';
-import {action, bindable, observableRef, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {encodeDocId} from '../../../core/docs/DocUtils';
 import type {DocEntry} from '../../../core/docs/types';
 import type {DocSearchResult} from '../../../core/svc/DocService';
@@ -16,13 +16,16 @@ const RECENT_SEARCHES_KEY = 'docs.recentSearches',
     RECENT_SEARCHES_MAX = 8;
 
 /**
- * Model for the dedicated docs search screen. Runs cross-corpus full-text search via the shared
- * {@link DocService}, enriching each hit with a matched-line snippet, and keeps a persisted list of
- * recent searches for the empty state. Results are grouped by library for display.
+ * Model for the dedicated docs search screen. Runs cross-corpus search via the shared
+ * {@link DocService}, whose hits carry an excerpt of their best-matching section, and keeps a
+ * persisted list of recent searches for the empty state. Results are grouped by library.
  */
 export class DocsSearchModel extends HoistModel {
     @bindable accessor query: string = '';
     @observableRef accessor results: DocSearchResult[] = [];
+
+    /** True when the last search failed. */
+    @observable accessor failed: boolean = false;
     @observableRef accessor recentSearches: string[] = [];
 
     constructor() {
@@ -31,7 +34,6 @@ export class DocsSearchModel extends HoistModel {
     }
 
     override onLinked() {
-        XH.docService.ensureIndexBuilt();
         this.addReaction({
             track: () => this.query,
             run: () => this.runSearch(),
@@ -67,35 +69,39 @@ export class DocsSearchModel extends HoistModel {
         XH.localStorageService.set(RECENT_SEARCHES_KEY, this.recentSearches);
     }
 
-    /** Open a hit in the reader (stacked on search, so back returns to results), recording the term. */
-    selectResult(entry: DocEntry) {
+    /**
+     * Open a hit in the reader at its best-matching section (stacked on search, so back returns to
+     * results), recording the term.
+     */
+    selectResult(entry: DocEntry, section?: string) {
         this.commitRecent();
-        XH.appendRoute('doc', {source: entry.source, docId: encodeDocId(entry.id)});
+        const params: Record<string, string> = {source: entry.source, docId: encodeDocId(entry.id)};
+        if (section) params.section = section;
+        XH.appendRoute('doc', params);
     }
 
     //------------------
     // Implementation
     //------------------
-    private runSearch() {
+    private async runSearch() {
         const query = this.query?.trim();
         if (!query) {
             runInAction(() => (this.results = []));
             return;
         }
-        const terms = this.queryTerms(query),
-            hits = XH.docService.searchDocs(query).map(r => ({
-                ...r,
-                matchedTerms: terms,
-                snippet: XH.docService.getContentSnippet(r.entry.source, r.entry.id, terms)
-            }));
-        runInAction(() => (this.results = hits));
-    }
-
-    private queryTerms(query: string): string[] {
-        return query
-            .toLowerCase()
-            .split(/\s+/)
-            .filter(t => t.length > 1);
+        let hits: DocSearchResult[] = [],
+            failed = false;
+        try {
+            hits = await XH.docService.searchDocsAsync(query);
+        } catch (e) {
+            this.logWarn('Docs search failed', e.message);
+            failed = true;
+        }
+        if (query !== this.query?.trim()) return;
+        runInAction(() => {
+            this.results = hits;
+            this.failed = failed;
+        });
     }
 
     /** Persist the current query as a recent search (most recent first, de-duped, capped). */

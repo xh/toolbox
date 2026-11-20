@@ -106,7 +106,7 @@ export const docContent = hoistCmp.factory<DocViewModel>({
                 if (model.activeDoc && !href.startsWith('http')) {
                     e.preventDefault();
                     const target = model.resolveContentLink(href);
-                    if (target) model.navigateToDoc(target.id, target.source);
+                    if (target) model.navigateToDoc(target.id, target.source, href.split('#')[1]);
                     // Unresolved relative links (e.g. .ts source files) are silently consumed to
                     // prevent the browser from navigating away from the SPA.
                     return;
