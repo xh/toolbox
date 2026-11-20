@@ -14,6 +14,16 @@
         letter-spacing: 0.5px;
       }
     }
+
+    // Library version beside each source's root node
+    &-version {
+      margin-left: 6px;
+      font-size: 10px;
+      color: var(--xh-text-color-muted);
+      font-weight: normal;
+      text-transform: none;
+      letter-spacing: normal;
+    }
   }
 
   // Content toolbar

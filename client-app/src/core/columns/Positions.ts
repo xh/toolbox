@@ -8,7 +8,6 @@ export const mktValCol: ColumnSpec = {
     align: 'right',
     width: 130,
     absSort: true,
-    agOptions: {aggFunc: 'sum'},
     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
     textRenderer: millionsTextRenderer({
         precision: 3,
@@ -22,11 +21,58 @@ export const pnlCol: ColumnSpec = {
     align: 'right',
     width: 130,
     absSort: true,
-    agOptions: {aggFunc: 'sum'},
     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
     textRenderer: numberTextRenderer({
         precision: 0,
         ledger: true,
         colorSpec: true
     })
+};
+
+export const dayPnlCol: ColumnSpec = {
+    field: {name: 'dayPnl', type: 'number'},
+    headerName: 'Day P&L',
+    headerTooltip: 'P&L since market open',
+    align: 'right',
+    width: 120,
+    absSort: true,
+    tooltip: val => fmtNumberTooltip(val, {ledger: true}),
+    textRenderer: numberTextRenderer({
+        precision: 0,
+        ledger: true,
+        colorSpec: true
+    })
+};
+
+export const longMktValCol: ColumnSpec = {
+    ...mktValCol,
+    field: {name: 'longMktVal', type: 'number'},
+    headerName: 'Long (m)',
+    headerTooltip: 'Market value of long positions (in millions USD)',
+    width: 110
+};
+
+export const shortMktValCol: ColumnSpec = {
+    ...mktValCol,
+    field: {name: 'shortMktVal', type: 'number'},
+    headerName: 'Short (m)',
+    headerTooltip: 'Market value of short positions (in millions USD)',
+    width: 110
+};
+
+export const costCol: ColumnSpec = {
+    ...mktValCol,
+    field: {name: 'cost', type: 'number'},
+    headerName: 'Cost Basis (m)',
+    headerTooltip: 'Total cost of all orders (in millions USD)'
+};
+
+export const commissionCol: ColumnSpec = {
+    field: {name: 'commission', type: 'number'},
+    headerName: 'Commission',
+    headerTooltip: 'Total commission paid on all orders (USD)',
+    align: 'right',
+    width: 120,
+    tooltip: val => fmtNumberTooltip(val),
+    textRenderer: numberTextRenderer({precision: 0})
 };

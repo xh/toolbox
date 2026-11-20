@@ -18,7 +18,10 @@ export interface DocCategory {
 export interface DocSourceInfo {
     label: string;
     categories: DocCategory[];
-    mode: string;
+    /** Version of the library whose docs are loaded. */
+    version: string;
+    /** Versions available - just the one loaded, the version Toolbox runs. */
+    versions: string[];
 }
 
 export interface DocSection {
