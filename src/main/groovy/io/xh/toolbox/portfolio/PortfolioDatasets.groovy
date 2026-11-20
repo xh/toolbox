@@ -131,7 +131,7 @@ class PortfolioDatasets {
         List<Map> positions = positions(asOf, fund)
         Map<String, Double> navs = navsByFund(positions)
         boolean withSeries = series.any { it in ['pnlHistory', 'cumPnlHistory', 'drawdownHistory'] }
-        Map<String, long[]> byPosition = withSeries ? pnlOverDays(baselineAndDays(day, FUND_SERIES), fund) : [:]
+        Map<String, long[]> byFund = withSeries ? sumByFund(pnlOverDays(baselineAndDays(day, FUND_SERIES), fund)) : [:]
 
         return positions.groupBy { it.fund }.collect { String f, List<Map> rows ->
             Map ret = [
@@ -143,12 +143,7 @@ class PortfolioDatasets {
                 pnlYtd: rows.sum { it.pnlYtd } as long
             ]
             if (withSeries) {
-                List<Long> daily = byPosition
-                    .findAll { key, pnl -> key.startsWith(f + '|') }
-                    .values()
-                    .collect { dailyChanges(it) }
-                    .transpose()
-                    .collect { it.sum() as long }
+                List<Long> daily = dailyChanges(byFund[f])
                 long cum = 0, peak = 0
                 List<Long> cumPnl = [], drawdown = []
                 daily.each {
@@ -315,26 +310,42 @@ class PortfolioDatasets {
 
     // Each position's total P&L - market value less cost - at the close of each day, by position
     // key, with the rounding of positionRow, so the last daily change equals pnlDay.
+    @CompileStatic
     private Map<String, long[]> pnlOverDays(List<LocalDate> days, String fund) {
-        Map<String, long[]> ret = [:]
+        Map<String, double[]> closes = [:]
         Map<String, Running> running = [:]
         List<Order> orders = liveOrders(days.last())
         int next = 0
-        days.eachWithIndex { LocalDate day, int i ->
-            if (day == null) return
+        for (int i = 0; i < days.size(); i++) {
+            LocalDate day = days[i]
+            if (day == null) continue
             for (; next < orders.size() && orders[next].day <= day; next++) {
                 Order o = orders[next]
                 if (fund && o.fund != fund) continue
                 String key = [o.fund, o.strategy, o.book, o.trader, o.model, o.symbol].join('|')
                 Running r = running[key]
-                if (!r) r = running[key] = new Running(instrument: o.instrument)
+                if (!r) r = running[key] = new Running(
+                    closes: closes.computeIfAbsent(o.symbol) { String symbol -> days.collect { priceOn(symbol, it) ?: 0d } as double[] },
+                    multiplier: o.instrument.multiplier,
+                    totals: new long[days.size()]
+                )
                 r.qty += o.quantity
                 r.cost += o.cost
             }
-            running.each { String key, Running r ->
-                double px = priceOn(r.instrument.symbol, day) ?: 0d
-                ret.computeIfAbsent(key) { new long[days.size()] }[i] = Math.round(r.qty * px * r.instrument.multiplier) - r.cost
+            for (Running r : running.values()) {
+                r.totals[i] = Math.round(r.qty * r.closes[i] * r.multiplier) - r.cost
             }
+        }
+        return running.collectEntries { key, r -> [key, r.totals] } as Map<String, long[]>
+    }
+
+    // Totals of position P&L series by fund - the first part of each position key.
+    @CompileStatic
+    private static Map<String, long[]> sumByFund(Map<String, long[]> byPosition) {
+        Map<String, long[]> ret = [:]
+        byPosition.each { String key, long[] totals ->
+            long[] sum = ret.computeIfAbsent(key.substring(0, key.indexOf('|'))) { new long[totals.length] }
+            for (int i = 0; i < totals.length; i++) sum[i] += totals[i]
         }
         return ret
     }
@@ -345,8 +356,10 @@ class PortfolioDatasets {
     }
 
     private static class Running {
-        Instrument instrument
+        double[] closes
+        int multiplier
         long qty, cost
+        long[] totals
     }
 
     //------------------------
