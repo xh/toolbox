@@ -1,0 +1,98 @@
+{
+    "schema": {
+        "blueprint": 1,
+        "widgets": {
+            "dashCanvas": 1,
+            "markdown": 1,
+            "callout": 1,
+            "panel": 1,
+            "box": 1,
+            "tileFrame": 1,
+            "statCard": 1,
+            "treemap": 1,
+            "cubeGrid": 1
+        },
+        "variableTypes": {"toolbox.fund": 1},
+        "resolvers": {"toolbox.userFund": 1, "previousBusinessDay": 1}
+    },
+    "variables": {
+        "fund": {"type": "toolbox.fund", "label": "Fund", "setBy": "prompt", "default": {"resolver": "toolbox.userFund"}},
+        "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "previousBusinessDay"}},
+        "sectorPick": {"type": "filter", "setBy": {"element": "sectorMap", "output": "selection"}}
+    },
+    "sources": {
+        "summary": {"dataset": "fundSummary", "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "fund"}}},
+        "positions": {"dataset": "positions", "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "fund"}}}
+    },
+    "root": "dashboard",
+    "elements": {
+        "dashboard": {
+            "component": "dashCanvas",
+            "children": [
+                {"id": "intro", "x": 0, "y": 0, "w": 12, "h": 2},
+                {"id": "headline", "x": 0, "y": 2, "w": 9, "h": 3},
+                {"id": "headlineNote", "x": 9, "y": 2, "w": 3, "h": 3},
+                {"id": "mapPanel", "x": 0, "y": 5, "w": 5, "h": 8},
+                {"id": "gridPanel", "x": 5, "y": 5, "w": 7, "h": 8},
+                {"id": "mapNote", "x": 0, "y": 13, "w": 5, "h": 2},
+                {"id": "gridNote", "x": 5, "y": 13, "w": 7, "h": 2}
+            ]
+        },
+        "intro": {
+            "component": "markdown",
+            "config": {
+                "source": "summary",
+                "text": "## P&L for {fund} as of {asOf}\nNAV **{nav}**, with day P&L of **{pnlDay}** and year to date **{pnlYtd}**."
+            }
+        },
+        "headline": {
+            "component": "tileFrame",
+            "children": [{"id": "navCard"}, {"id": "dayCard"}, {"id": "mtdCard"}, {"id": "ytdCard"}]
+        },
+        "navCard": {"component": "statCard", "config": {"source": "summary", "field": "nav", "trend": "cumPnlHistory"}},
+        "dayCard": {"component": "statCard", "config": {"source": "summary", "field": "pnlDay", "trend": "pnlHistory"}},
+        "mtdCard": {"component": "statCard", "config": {"source": "summary", "field": "pnlMtd"}},
+        "ytdCard": {"component": "statCard", "config": {"source": "summary", "field": "pnlYtd", "trend": "drawdownHistory"}},
+        "headlineNote": {
+            "component": "callout",
+            "config": {
+                "intent": "primary",
+                "title": "Stat cards with trends",
+                "text": "A **tile frame** of stat cards over the fund summary. NAV trends its cumulative P&L, day P&L its daily P&L, and YTD its drawdown."
+            }
+        },
+        "mapPanel": {"component": "panel", "config": {"title": "Market value by sector", "style": "card"}, "children": [{"id": "sectorMap"}]},
+        "sectorMap": {
+            "component": "treemap",
+            "config": {"source": "positions", "groupBy": ["sector", "symbol"], "value": "mktVal", "heat": "pnlDay", "maxDepth": 1}
+        },
+        "gridPanel": {"component": "panel", "config": {"title": "Positions", "style": "card"}, "children": [{"id": "posGrid"}]},
+        "posGrid": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "positions",
+                "groupBy": ["sector", "strategy", "symbol"],
+                "columnState": ["mktVal", "pnlDay", "pnlHistory"],
+                "sortBy": "mktVal|desc",
+                "filter": {"$var": "sectorPick"},
+                "summaryRow": true
+            }
+        },
+        "mapNote": {
+            "component": "callout",
+            "config": {
+                "intent": "primary",
+                "title": "Treemap selection",
+                "text": "Tiles size by market value and color by day P&L. Click a sector to filter the grid to it, and click again to clear."
+            }
+        },
+        "gridNote": {
+            "component": "callout",
+            "config": {
+                "intent": "primary",
+                "title": "Sparklines that sum",
+                "text": "**P&L history** draws each row's last 30 days. Group rows sum their positions' series point by point, each on its own scale."
+            }
+        }
+    }
+}

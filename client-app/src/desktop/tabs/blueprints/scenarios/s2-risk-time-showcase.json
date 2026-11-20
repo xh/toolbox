@@ -1,0 +1,137 @@
+{
+    "schema": {
+        "blueprint": 1,
+        "widgets": {
+            "dashCanvas": 1,
+            "markdown": 1,
+            "callout": 1,
+            "panel": 1,
+            "toolbar": 1,
+            "dateRangePicker": 1,
+            "cubeGrid": 1,
+            "chart": 1,
+            "heatmap": 1
+        },
+        "variableTypes": {"toolbox.fund": 1},
+        "resolvers": {"toolbox.userFund": 1, "previousBusinessDay": 1, "rangeStart": 1, "rangeEnd": 1, "periodStart": 1}
+    },
+    "variables": {
+        "fund": {"type": "toolbox.fund", "label": "Fund", "setBy": "prompt", "default": {"resolver": "toolbox.userFund"}},
+        "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "previousBusinessDay"}},
+        "lookback": {"type": "period", "label": "Lookback", "setBy": "prompt", "default": {"value": "3M"}, "calendar": "business"},
+        "window": {"type": "dateRange", "label": "Window", "setBy": {"element": "windowPicker"}, "default": {"value": "mtd"}},
+        "windowStart": {
+            "type": "localDate",
+            "setBy": "resolver",
+            "compute": {"resolver": "rangeStart", "args": {"range": {"$var": "window"}, "asOf": {"$var": "asOf"}}}
+        },
+        "windowEnd": {
+            "type": "localDate",
+            "setBy": "resolver",
+            "compute": {"resolver": "rangeEnd", "args": {"range": {"$var": "window"}, "asOf": {"$var": "asOf"}}}
+        },
+        "lookbackStart": {
+            "type": "localDate",
+            "setBy": "resolver",
+            "compute": {"resolver": "periodStart", "args": {"asOf": {"$var": "asOf"}, "period": {"$var": "lookback"}}}
+        },
+        "symbol": {"type": "string", "setBy": {"element": "holdings", "output": "selected", "field": "symbol"}}
+    },
+    "sources": {
+        "positions": {"dataset": "positions", "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "fund"}}},
+        "windowPrices": {
+            "dataset": "prices",
+            "params": {"symbol": {"$var": "symbol"}, "start": {"$var": "windowStart"}, "end": {"$var": "windowEnd"}}
+        },
+        "lookbackPrices": {
+            "dataset": "prices",
+            "params": {"symbol": {"$var": "symbol"}, "start": {"$var": "lookbackStart"}, "end": {"$var": "asOf"}}
+        }
+    },
+    "root": "dashboard",
+    "elements": {
+        "dashboard": {
+            "component": "dashCanvas",
+            "children": [
+                {"id": "intro", "x": 0, "y": 0, "w": 6, "h": 2},
+                {"id": "windowBar", "x": 6, "y": 0, "w": 6, "h": 1},
+                {"id": "timeNote", "x": 6, "y": 1, "w": 6, "h": 1},
+                {"id": "holdingsPanel", "x": 0, "y": 2, "w": 4, "h": 9},
+                {"id": "windowChart", "x": 4, "y": 2, "w": 8, "h": 5},
+                {"id": "lookbackChart", "x": 4, "y": 7, "w": 8, "h": 4},
+                {"id": "chartNote", "x": 0, "y": 11, "w": 12, "h": 1},
+                {"id": "pnlHeat", "x": 0, "y": 12, "w": 6, "h": 6},
+                {"id": "attribution", "x": 6, "y": 12, "w": 6, "h": 6},
+                {"id": "heatNote", "x": 0, "y": 18, "w": 6, "h": 2},
+                {"id": "attributionNote", "x": 6, "y": 18, "w": 6, "h": 2}
+            ]
+        },
+        "intro": {
+            "component": "markdown",
+            "config": {
+                "text": "## Risk and time\nPrice history for the holding you select, over a window and a lookback, then where today's P&L came from."
+            }
+        },
+        "windowBar": {"component": "toolbar", "config": {"overflowMenu": false}, "children": [{"id": "windowPicker"}]},
+        "windowPicker": {
+            "component": "dateRangePicker",
+            "config": {"label": "Window", "presets": ["mtd", "qtd", "ytd"], "asOf": {"$var": "asOf"}}
+        },
+        "timeNote": {
+            "component": "callout",
+            "config": {
+                "intent": "primary",
+                "text": "The **date range picker** sets the window chart's dates. The **Lookback** prompt takes a period, such as 3M, counted in business days."
+            }
+        },
+        "holdingsPanel": {"component": "panel", "config": {"title": "Top holdings", "style": "card"}, "children": [{"id": "holdings"}]},
+        "holdings": {
+            "component": "cubeGrid",
+            "config": {"source": "positions", "groupBy": ["symbol"], "columnState": ["mktVal", "pnlDay"], "sortBy": "mktVal|desc"}
+        },
+        "windowChart": {
+            "component": "chart",
+            "config": {
+                "source": "windowPrices",
+                "title": "Close and volume over the window",
+                "type": "spline",
+                "x": "day",
+                "y": ["close"],
+                "y2": ["volume"]
+            }
+        },
+        "lookbackChart": {
+            "component": "chart",
+            "config": {"source": "lookbackPrices", "title": "Close over the lookback", "type": "areaspline", "x": "day", "y": ["close"]}
+        },
+        "chartNote": {
+            "component": "callout",
+            "config": {
+                "intent": "primary",
+                "title": "Charts that follow a selection",
+                "text": "Both charts read prices for the holding selected on the left, and wait until one is. The window chart puts volume on a **second axis**."
+            }
+        },
+        "pnlHeat": {"component": "heatmap", "config": {"source": "positions", "x": "sector", "y": "strategy", "value": "pnlDay"}},
+        "attribution": {
+            "component": "chart",
+            "config": {"source": "positions", "title": "Day P&L by strategy", "type": "waterfall", "x": "strategy", "y": ["pnlDay"]}
+        },
+        "heatNote": {
+            "component": "callout",
+            "config": {
+                "intent": "primary",
+                "title": "Heatmap",
+                "text": "Day P&L for each sector and strategy, red to green around zero. Click a cell to select that pair."
+            }
+        },
+        "attributionNote": {
+            "component": "callout",
+            "config": {
+                "intent": "primary",
+                "title": "Waterfall",
+                "text": "Each strategy's day P&L steps from the one before, ending at the fund's total."
+            }
+        }
+    }
+}
