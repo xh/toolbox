@@ -245,6 +245,7 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
             publishedVersion: meta.publishedVersion ?? null,
             access: owner ? 'write' : 'read',
             canPublish: owner,
+            canShare: owner,
             updated: meta.updated,
             updatedBy: meta.updatedBy,
             ...(meta.copiedFrom ? {copiedFrom: meta.copiedFrom} : {}),

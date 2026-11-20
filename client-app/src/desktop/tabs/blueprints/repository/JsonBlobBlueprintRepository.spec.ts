@@ -136,6 +136,7 @@ describe('JsonBlobBlueprintRepository', () => {
         expect(await repository.listAsync()).toEqual([
             expect.objectContaining({id, access: 'read', canPublish: false})
         ]);
+        expect((await repository.listAsync())[0]).toMatchObject({canShare: false});
         expect((await repository.listAsync())[0].sharing).toBeUndefined();
         expect(await repository.openAsync(id, {as: 'publish'})).toMatchObject({
             kind: 'publish',
@@ -166,6 +167,7 @@ describe('JsonBlobBlueprintRepository', () => {
         const {id} = await repository.createAsync({name: 'Positions', blueprint});
         expect((await repository.listAsync())[0]).toMatchObject({
             id,
+            canShare: true,
             sharing: {writers: [OWNER], readers: ['*']}
         });
     });
