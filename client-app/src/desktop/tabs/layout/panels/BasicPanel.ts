@@ -1,7 +1,7 @@
-import {filler, p} from '@xh/hoist/cmp/layout';
+import {filler, hbox, p, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {intentInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {menuButton} from '@xh/hoist/desktop/cmp/menu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -54,84 +54,138 @@ export const basicPanel = hoistCmp.factory({
                     info: 'Render a denser, shorter header.'
                 }),
                 wrapperOption({
+                    label: 'Header Intent',
+                    propName: 'PanelProps.headerIntent',
+                    control: intentInput({model, bind: 'headerIntent', enableClear: true}),
+                    info: 'Color the header with an intent.'
+                }),
+                wrapperOption({
+                    label: 'Collapsible',
+                    propName: 'PanelConfig.side',
+                    control: select({
+                        model,
+                        bind: 'collapseSide',
+                        options: [
+                            {value: 'top', label: 'To top'},
+                            {value: 'left', label: 'To left'}
+                        ],
+                        placeholder: 'No',
+                        enableClear: true,
+                        width: 130
+                    }),
+                    info: 'Add a collapse toggle. Collapse to left for a vertical header.'
+                }),
+                wrapperOption({
+                    label: 'Modal Support',
+                    propName: 'PanelConfig.modalSupport',
+                    control: switchInput({model, bind: 'modalSupport'}),
+                    info: 'Add a toggle to pop the panel out as a modal.'
+                }),
+                wrapperOption({
                     label: 'Context Menu',
                     control: switchInput({model, bind: 'showContextMenu'}),
                     info: 'Add a right-click context menu.'
                 })
             ],
-            children: panel({
-                title: 'Basic Panel',
-                icon: Icon.window(),
+            // A collapsible panel sizes itself along its collapse side from `PanelModel.size`, so
+            // the frame sets the demo size and the panel fills it. Collapsing to the left needs a
+            // row layout, so the panel collapses to a vertical header at the frame's left edge.
+            children: (model.collapseSide === 'left' ? hbox : vbox)({
                 height: '60vh',
                 width: '90%',
-                compactHeader: model.compactHeader,
-                modelConfig: {
-                    errorBoundary: true,
-                    collapsible: false,
-                    resizable: false
+                style: {
+                    border: 'var(--xh-border-solid)',
+                    borderRadius: 8,
+                    overflow: 'hidden',
+                    boxShadow: 'var(--tbox-card-shadow)'
                 },
-                headerItems: [
-                    button({
-                        tooltip: 'Header Button',
-                        icon: Icon.gear(),
-                        onClick: () =>
-                            XH.toast({
-                                message: `You clicked a button within Panel.headerItems.`
-                            })
-                    })
-                ],
-                contextMenu: model.appliedContextMenu,
-                tbar: [
-                    menuButton({
-                        icon: Icon.chevronDown(),
-                        text: 'Menu Button',
-                        menuItems: [
-                            {text: 'Menu Item 1', icon: Icon.rocket(), intent: 'success'},
-                            {text: 'Menu Item 2', icon: Icon.skull(), intent: 'danger'},
-                            {
-                                text: 'Menu Item 3',
-                                icon: Icon.placeholder(),
-                                disabled: true
-                            },
-                            {heading: 'Another Section'},
-                            {text: 'Menu Item 4'},
-                            {
-                                text: 'Menu Item 5',
-                                items: ['Sub Item 1', 'Sub Item 2', 'Sub Item 3'].map(it => ({
-                                    text: it
-                                }))
-                            }
-                        ]
-                    })
-                ],
-                scrollable: true,
-                contentBoxProps: {
-                    padding: 'var(--xh-spacing)',
-                    style: {fontSize: `${model.textScale}em`}
-                },
-                children: [...model.demoText.map(it => p(it)), aComponentThatCanThrowInRender()],
-                bbar: [
-                    button({
-                        text: 'Simulate an Exception',
-                        icon: Icon.skull(),
-                        intent: 'danger',
-                        onClick: () => (model.triggerError = true)
-                    }),
-                    filler(),
-                    select({
-                        bind: 'state',
-                        options: usStates,
-                        placeholder: 'Select a State...'
-                    }),
-                    toolbarSep(),
-                    button({
-                        text: 'Show Toast',
-                        onClick: () =>
-                            XH.toast({
-                                message: `Currently selected State: ${model.state || 'None'}`
-                            })
-                    })
-                ]
+                item: panel({
+                    title: 'Basic Panel',
+                    icon: Icon.window(),
+                    compactHeader: model.compactHeader,
+                    headerIntent: model.headerIntent,
+                    // Remount when the model is rebuilt, so the panel and its header pick up the new model.
+                    key: model.panelModel.xhId,
+                    model: model.panelModel,
+                    headerItems: [
+                        switchInput({
+                            model,
+                            bind: 'headerSwitch',
+                            label: 'Live',
+                            labelSide: 'left'
+                        }),
+                        button({
+                            tooltip: 'Refresh',
+                            icon: Icon.refresh(),
+                            minimal: true,
+                            onClick: () => XH.toast({message: 'You clicked Refresh.'})
+                        }),
+                        button({
+                            tooltip: 'Header Button',
+                            icon: Icon.gear(),
+                            minimal: true,
+                            onClick: () =>
+                                XH.toast({
+                                    message: `You clicked a button within Panel.headerItems.`
+                                })
+                        })
+                    ],
+                    contextMenu: model.appliedContextMenu,
+                    tbar: [
+                        menuButton({
+                            icon: Icon.chevronDown(),
+                            text: 'Menu Button',
+                            menuItems: [
+                                {text: 'Menu Item 1', icon: Icon.rocket(), intent: 'success'},
+                                {text: 'Menu Item 2', icon: Icon.skull(), intent: 'danger'},
+                                {
+                                    text: 'Menu Item 3',
+                                    icon: Icon.placeholder(),
+                                    disabled: true
+                                },
+                                {heading: 'Another Section'},
+                                {text: 'Menu Item 4'},
+                                {
+                                    text: 'Menu Item 5',
+                                    items: ['Sub Item 1', 'Sub Item 2', 'Sub Item 3'].map(it => ({
+                                        text: it
+                                    }))
+                                }
+                            ]
+                        })
+                    ],
+                    scrollable: true,
+                    contentBoxProps: {
+                        padding: 'var(--xh-spacing)',
+                        style: {fontSize: `${model.textScale}em`}
+                    },
+                    children: [
+                        ...model.demoText.map(it => p(it)),
+                        aComponentThatCanThrowInRender()
+                    ],
+                    bbar: [
+                        button({
+                            text: 'Simulate an Exception',
+                            icon: Icon.skull(),
+                            intent: 'danger',
+                            onClick: () => (model.triggerError = true)
+                        }),
+                        filler(),
+                        select({
+                            bind: 'state',
+                            options: usStates,
+                            placeholder: 'Select a State...'
+                        }),
+                        toolbarSep(),
+                        button({
+                            text: 'Show Toast',
+                            onClick: () =>
+                                XH.toast({
+                                    message: `Currently selected State: ${model.state || 'None'}`
+                                })
+                        })
+                    ]
+                })
             })
         });
     }
