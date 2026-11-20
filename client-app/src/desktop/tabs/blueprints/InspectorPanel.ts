@@ -21,7 +21,7 @@ export const inspectorPanel = hoistCmp.factory({
                 defaultCollapsed: true,
                 persistWith: {localStorageKey: 'blueprintsInspector'}
             },
-            item: tabContainer({model: model.tabContainerModel})
+            item: tabContainer({model: model.tabContainerModel, switcher: {enableOverflow: true}})
         });
     }
 });

@@ -154,6 +154,9 @@ const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
                               'tb-blueprints__version',
                               model.documentModel.isStale && 'xh-intent-warning'
                           ),
+                          title: model.documentModel.isStale
+                              ? 'Saved elsewhere since you opened it, so your edits here are not saved. Reload to take the saved draft, or Save as new to keep yours.'
+                              : null,
                           item: documentStatus(model)
                       }),
                       button({
@@ -214,7 +217,7 @@ function documentStatus({documentModel, isSaving, saveIssues}: BlueprintsPanelMo
     if (doc.kind === 'publish') {
         return `Publish v${doc.version}${doc.access === 'write' ? '' : ' - read only'}`;
     }
-    if (documentModel.isStale) return `Draft v${doc.version} - saved elsewhere, your edits are not`;
+    if (documentModel.isStale) return 'Not saved - changed elsewhere';
     const error = saveIssues[0];
     if (error) return error.message;
     if (isSaving) return 'Saving...';

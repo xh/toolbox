@@ -57,7 +57,9 @@
 }
 
 .tb-blueprints__version {
-  margin-right: var(--xh-spacing-half);
+  flex: none;
+  margin: 0 var(--xh-spacing-half) 0 var(--xh-spacing);
+  white-space: nowrap;
   color: var(--xh-text-color-muted);
   font-size: 0.85em;
 }
