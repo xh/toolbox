@@ -25,14 +25,14 @@ describe('registry origins', () => {
 
     it("tells the app's entries from the built-ins", () => {
         expect(originOf(dash, 'widget:cubeGrid')).toBe('built-in');
-        expect(originOf(dash, 'widget:portfolioBuilder')).toBe('app');
-        expect(originOf(dash, 'variableType:fund')).toBe('app');
+        expect(originOf(dash, 'widget:toolbox.portfolioBuilder')).toBe('app');
+        expect(originOf(dash, 'variableType:toolbox.fund')).toBe('app');
         expect(originOf(dash, 'resolver:today')).toBe('built-in');
-        expect(originOf(dash, 'resolver:userFund')).toBe('app');
+        expect(originOf(dash, 'resolver:toolbox.userFund')).toBe('app');
         expect(originOf(dash, 'action:setVariable')).toBe('built-in');
-        expect(originOf(dash, 'action:publishToPmPack')).toBe('app');
+        expect(originOf(dash, 'action:toolbox.publishToPmPack')).toBe('app');
         expect(originOf(dash, 'renderer:bar')).toBe('built-in');
-        expect(originOf(dash, 'renderer:ticker')).toBe('app');
+        expect(originOf(dash, 'renderer:toolbox.ticker')).toBe('app');
         expect(dash.some(it => it.origin === 'chat kit')).toBe(false);
     });
 
@@ -46,8 +46,8 @@ describe('registry origins', () => {
     it('keeps built-ins and app entries as such in the answer registry', () => {
         // Adding a presentation copies the widget's spec, which stays a built-in.
         expect(originOf(ans, 'widget:chart')).toBe('built-in');
-        expect(originOf(ans, 'widget:portfolioBuilder')).toBe('app');
-        expect(originOf(ans, 'action:publishToPmPack')).toBe('app');
+        expect(originOf(ans, 'widget:toolbox.portfolioBuilder')).toBe('app');
+        expect(originOf(ans, 'action:toolbox.publishToPmPack')).toBe('app');
     });
 });
 
@@ -72,21 +72,21 @@ describe('registry used marks', () => {
     });
 
     it('marks resolvers, actions and variable types', () => {
-        expect(usages['resolver:userFund']).toEqual(['/variables/fund/default/resolver']);
+        expect(usages['resolver:toolbox.userFund']).toEqual(['/variables/fund/default/resolver']);
         expect(usages['resolver:dateOffset']).toEqual(['/variables/priceStart/compute/resolver']);
-        expect(usages['action:publishToPmPack']).toEqual([
+        expect(usages['action:toolbox.publishToPmPack']).toEqual([
             '/elements/reportActions/config/buttons/0/action/type'
         ]);
         expect(usages['action:setVariable']).toHaveLength(2);
         expect(usages['action:resetVariable']).toHaveLength(1);
-        expect(usages['variableType:fund']).toEqual(['/variables/fund/type']);
+        expect(usages['variableType:toolbox.fund']).toEqual(['/variables/fund/type']);
         expect(usages['action:openUrl']).toBeUndefined();
     });
 
     it('marks a renderer through the fields that use it', () => {
-        expect(usages['renderer:ticker']).toContain('positions.symbol');
+        expect(usages['renderer:toolbox.ticker']).toContain('positions.symbol');
         const weather = registryUsages(w2 as Blueprint, dashboard, catalog);
-        expect(weather['renderer:weatherIcon']).toEqual(
+        expect(weather['renderer:toolbox.weatherIcon']).toEqual(
             expect.arrayContaining(['weather.conditions', 'currentWeather.conditions'])
         );
     });

@@ -106,7 +106,7 @@
         },
         "ticker": {
             "base": "string",
-            "renderer": "ticker"
+            "renderer": "toolbox.ticker"
         },
         "identifier": {
             "base": "string",
@@ -144,7 +144,7 @@
         },
         "condition": {
             "base": "string",
-            "renderer": "weatherIcon",
+            "renderer": "toolbox.weatherIcon",
             "aggregator": "UNIQUE"
         }
     },
@@ -159,7 +159,7 @@
                     "required": true
                 },
                 "fund": {
-                    "type": "fund",
+                    "type": "toolbox.fund",
                     "description": "One fund. Leave empty for all funds."
                 }
             },
@@ -369,7 +369,7 @@
                     "required": true
                 },
                 "fund": {
-                    "type": "fund",
+                    "type": "toolbox.fund",
                     "description": "One fund. Leave empty for all funds."
                 }
             },
@@ -505,7 +505,7 @@
             "guidance": "The position fields, priced for a portfolio of tickers and weights. Use it to stress or compare a hypothetical portfolio.",
             "params": {
                 "portfolio": {
-                    "type": "portfolio",
+                    "type": "toolbox.portfolio",
                     "required": true,
                     "description": "A portfolio: {\"holdings\": [{\"symbol\": \"AAPL\", \"weight\": 0.5}]}, with weights as fractions. The server prices it against a notional of 100,000,000 USD."
                 },

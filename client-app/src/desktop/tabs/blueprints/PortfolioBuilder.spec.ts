@@ -27,10 +27,10 @@ beforeEach(async () => {
     });
     const issues = bpModel.setBlueprint({
         variables: {
-            portfolio: {type: 'portfolio', label: 'Portfolio', setBy: {element: 'builder'}}
+            portfolio: {type: 'toolbox.portfolio', label: 'Portfolio', setBy: {element: 'builder'}}
         },
         root: 'builder',
-        elements: {builder: {component: 'portfolioBuilder', config: {maxHoldings: 2}}}
+        elements: {builder: {component: 'toolbox.portfolioBuilder', config: {maxHoldings: 2}}}
     });
     expect(issues.filter(it => it.severity === 'error')).toEqual([]);
     builder = new PortfolioBuilderModel({

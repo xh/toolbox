@@ -201,7 +201,7 @@ export const portfolioBuilder = hoistCmp.factory({
 });
 
 export const portfolioBuilderSpec: WidgetSpec = {
-    name: 'portfolioBuilder',
+    name: 'toolbox.portfolioBuilder',
     version: 1,
     label: 'Portfolio builder',
     terms: ['portfolio builder', 'hypothetical portfolio', 'basket', 'pick tickers'],
@@ -211,9 +211,9 @@ export const portfolioBuilderSpec: WidgetSpec = {
         'An app widget where a user builds a portfolio from tickers and weights. Its value is a ' +
         'portfolio variable.',
     config: CONFIG_SCHEMA,
-    value: {type: 'portfolio'},
+    value: {type: 'toolbox.portfolio'},
     size: {default: {w: 4, h: 8}},
-    example: {component: 'portfolioBuilder', config: {maxHoldings: 50}},
+    example: {component: 'toolbox.portfolioBuilder', config: {maxHoldings: 50}},
     model: PortfolioBuilderModel,
     component: portfolioBuilder
 };

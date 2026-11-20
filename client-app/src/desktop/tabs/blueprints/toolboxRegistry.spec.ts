@@ -19,7 +19,12 @@ const catalog = new DataCatalog(catalogJson);
 const fundGrid: Blueprint = {
     variables: {
         asOf: {type: 'localDate', label: 'As of', setBy: 'prompt', default: {resolver: 'today'}},
-        fund: {type: 'fund', label: 'Fund', setBy: 'prompt', default: {resolver: 'userFund'}}
+        fund: {
+            type: 'toolbox.fund',
+            label: 'Fund',
+            setBy: 'prompt',
+            default: {resolver: 'toolbox.userFund'}
+        }
     },
     sources: {
         positions: {
@@ -92,7 +97,7 @@ describe('weatherIcon renderer', () => {
 
 describe('publishToPmPack action', () => {
     it('asks first, and describes the fund and date it publishes', () => {
-        expect(createToolboxRegistry().actions.publishToPmPack.sideEffects).toBe(true);
+        expect(createToolboxRegistry().actions['toolbox.publishToPmPack'].sideEffects).toBe(true);
         expect(publishToPmPackAction.describe({fund: 'Oak Mount', asOf: '2026-11-18'})).toBe(
             'Publish the report for Oak Mount, 2026-11-18'
         );

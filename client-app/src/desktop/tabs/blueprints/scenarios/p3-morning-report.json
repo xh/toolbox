@@ -10,12 +10,12 @@
             "buttonGroup": 1,
             "cubeGrid": 1
         },
-        "variableTypes": {"fund": 1},
-        "resolvers": {"userFund": 1, "previousBusinessDay": 1, "dateOffset": 1, "yearStart": 1}
+        "variableTypes": {"toolbox.fund": 1},
+        "resolvers": {"toolbox.userFund": 1, "previousBusinessDay": 1, "dateOffset": 1, "yearStart": 1}
     },
     "formats": {"mv": {"precision": 0, "ledger": true}, "greek": {"scale": "thousands", "precision": 0, "ledger": true}},
     "variables": {
-        "fund": {"type": "fund", "label": "Fund", "setBy": "prompt", "default": {"resolver": "userFund"}},
+        "fund": {"type": "toolbox.fund", "label": "Fund", "setBy": "prompt", "default": {"resolver": "toolbox.userFund"}},
         "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "previousBusinessDay"}},
         "grouping": {
             "type": "string[]",
@@ -107,7 +107,7 @@
                     {
                         "label": "Publish to PM pack",
                         "icon": "share",
-                        "action": {"type": "publishToPmPack", "fund": {"$var": "fund"}, "asOf": {"$var": "asOf"}}
+                        "action": {"type": "toolbox.publishToPmPack", "fund": {"$var": "fund"}, "asOf": {"$var": "asOf"}}
                     }
                 ]
             }

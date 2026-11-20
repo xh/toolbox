@@ -34,7 +34,7 @@ const ICONS: Record<string, () => ReactNode> = {
 
 /** A weather condition as its icon and name. A condition without its own icon gets a general one. */
 export const weatherIconRenderer: RendererSpec = {
-    name: 'weatherIcon',
+    name: 'toolbox.weatherIcon',
     app: true,
     appliesTo: {kinds: ['condition']},
     config: {},

@@ -36,15 +36,20 @@ afterAll(() => model.destroy());
 describe("the Architect over Toolbox's registry and catalog", () => {
     it("names Toolbox's own pieces in its prompt and tools", async () => {
         const prompt = architectPrompt(model);
-        for (const name of ['portfolioBuilder', 'positions', 'hypotheticalPortfolio', 'weather']) {
+        for (const name of [
+            'toolbox.portfolioBuilder',
+            'positions',
+            'hypotheticalPortfolio',
+            'weather'
+        ]) {
             expect(prompt).toContain(name);
         }
         const types = JSON.stringify(await run('describe_registry', {kind: 'variableType'}));
-        expect(types).toContain('fund');
-        expect(types).toContain('portfolio');
+        expect(types).toContain('toolbox.fund');
+        expect(types).toContain('toolbox.portfolio');
         const renderers = JSON.stringify(await run('describe_registry', {kind: 'renderer'}));
-        expect(renderers).toContain('ticker');
-        expect(renderers).toContain('weatherIcon');
+        expect(renderers).toContain('toolbox.ticker');
+        expect(renderers).toContain('toolbox.weatherIcon');
     });
 
     it('edits the blueprint as the architect, and the edit lands in history', async () => {

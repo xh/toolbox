@@ -1,14 +1,14 @@
 {
     "schema": {
         "blueprint": 1,
-        "widgets": {"tabContainer": 1, "dashCanvas": 1, "cubeGrid": 1, "chart": 1, "portfolioBuilder": 1},
-        "variableTypes": {"portfolio": 1},
+        "widgets": {"tabContainer": 1, "dashCanvas": 1, "cubeGrid": 1, "chart": 1, "toolbox.portfolioBuilder": 1},
+        "variableTypes": {"toolbox.portfolio": 1},
         "resolvers": {"previousBusinessDay": 1}
     },
     "variables": {
         "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "previousBusinessDay"}},
         "portfolio": {
-            "type": "portfolio",
+            "type": "toolbox.portfolio",
             "label": "Hypothetical portfolio",
             "setBy": {"element": "portfolioBuilder"}
         }
@@ -104,7 +104,7 @@
                 {"id": "hypoGrid", "x": 4, "y": 0, "w": 8, "h": 10}
             ]
         },
-        "portfolioBuilder": {"component": "portfolioBuilder", "config": {"maxHoldings": 50}},
+        "portfolioBuilder": {"component": "toolbox.portfolioBuilder", "config": {"maxHoldings": 50}},
         "hypoGrid": {
             "component": "cubeGrid",
             "config": {

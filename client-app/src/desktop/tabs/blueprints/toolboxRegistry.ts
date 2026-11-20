@@ -12,7 +12,7 @@ import {renderTicker} from './Ticker';
 import {weatherIconRenderer} from './WeatherIcon';
 
 export const fundType: VariableTypeSpec = {
-    name: 'fund',
+    name: 'toolbox.fund',
     app: true,
     matches: 'string',
     guidance:
@@ -22,25 +22,25 @@ export const fundType: VariableTypeSpec = {
 };
 
 export const portfolioType: VariableTypeSpec = {
-    name: 'portfolio',
+    name: 'toolbox.portfolio',
     app: true,
-    matches: 'portfolio',
+    matches: 'toolbox.portfolio',
     guidance:
         'A hypothetical portfolio: {"holdings": [{"symbol": "AAPL", "weight": 0.5}]}, with ' +
         'weights as fractions. A portfolio builder sets it, and sets it to null when empty.'
 };
 
 export const userFundResolver: ResolverSpec = {
-    name: 'userFund',
+    name: 'toolbox.userFund',
     app: true,
-    returns: 'fund',
+    returns: 'toolbox.fund',
     args: {},
     guidance: "The current user's own fund.",
     resolve: () => XH.getPref('blueprintsFund')
 };
 
 export const tickerRenderer: RendererSpec = {
-    name: 'ticker',
+    name: 'toolbox.ticker',
     app: true,
     appliesTo: {kinds: ['ticker']},
     config: {},
@@ -53,7 +53,7 @@ export const tickerRenderer: RendererSpec = {
  * activity tracking and confirms it with a toast.
  */
 export const publishToPmPackAction: ActionSpec = {
-    name: 'publishToPmPack',
+    name: 'toolbox.publishToPmPack',
     app: true,
     sideEffects: true,
     params: {
