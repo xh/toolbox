@@ -559,12 +559,12 @@
     },
     "prices": {
       "label": "Prices",
-      "description": "Daily prices for one symbol.",
-      "guidance": "One row per trading day. Chart close against day for price history.",
+      "description": "Daily prices for one symbol, or for every symbol.",
+      "guidance": "One row per symbol and trading day. Chart close against day for one symbol's price history. Join it onto positions by symbol for each symbol's latest close, or for a window's price bar. Without a symbol, rows are symbols times trading days - about 500 a day - and a request over 25,000 rows fails. Keep the date window small, such as the last few days for a latest close, and name a symbol or filter by symbol where you can.",
       "params": {
         "symbol": {
           "type": "string",
-          "required": true
+          "description": "One symbol. Leave empty for every symbol."
         },
         "start": {
           "type": "localDate",
