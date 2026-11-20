@@ -397,7 +397,7 @@
     },
     "fundSummary": {
       "label": "Fund Summary",
-      "description": "One row per fund at the close of the as-of date, with its NAV, P&L and recent trend.",
+      "description": "One row per fund at the close of the as-of date, with its manager, style, NAV, P&L and recent trend.",
       "guidance": "Use for fund-level totals and trends, such as a sparkline of each fund's P&L or drawdown. It is far smaller than positions, so prefer it for any per-fund figure.",
       "params": {
         "asOf": {
@@ -414,6 +414,22 @@
       ],
       "fields": [
         "fund",
+        {
+          "name": "manager",
+          "label": "Manager",
+          "type": "string",
+          "isDimension": true,
+          "category": "Organization",
+          "guidance": "The fund's portfolio manager. One per fund."
+        },
+        {
+          "name": "style",
+          "label": "Style",
+          "type": "string",
+          "isDimension": true,
+          "category": "Organization",
+          "guidance": "The fund's investment style: Long/Short, Macro, Credit or Multi-Strategy. One per fund, and several funds can share one. Join it onto positions by fund to group positions by style."
+        },
         {
           "name": "nav",
           "label": "NAV",

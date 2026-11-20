@@ -1,0 +1,111 @@
+{
+    "schema": {
+        "blueprint": 1,
+        "widgets": {"dashCanvas": 1, "markdown": 1, "callout": 1, "panel": 1, "box": 1, "cubeGrid": 1, "propertyTable": 1},
+        "variableTypes": {"toolbox.fund": 1},
+        "resolvers": {"previousBusinessDay": 1, "dateOffset": 1}
+    },
+    "variables": {
+        "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "previousBusinessDay"}},
+        "priceStart": {
+            "type": "localDate",
+            "setBy": "resolver",
+            "compute": {"resolver": "dateOffset", "args": {"from": {"$var": "asOf"}, "months": -1}}
+        },
+        "selFund": {"type": "toolbox.fund", "setBy": {"element": "posGrid", "output": "selected", "field": "fund"}},
+        "selSymbol": {"type": "string", "setBy": {"element": "posGrid", "output": "selected", "field": "symbol"}}
+    },
+    "sources": {
+        "positions": {
+            "dataset": "positions",
+            "params": {"asOf": {"$var": "asOf"}},
+            "joins": [
+                {"source": "funds", "on": {"fund": "fund"}, "fields": ["nav", "manager", "style"]},
+                {"source": "prices", "on": {"symbol": "symbol"}, "fields": ["close"], "as": {"close": "lastClose"}}
+            ]
+        },
+        "funds": {"dataset": "fundSummary", "params": {"asOf": {"$var": "asOf"}}},
+        "prices": {"dataset": "prices", "params": {"start": {"$var": "priceStart"}, "end": {"$var": "asOf"}}},
+        "selected": {
+            "dataset": "positions",
+            "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "selFund"}},
+            "filter": {"field": "symbol", "op": "=", "value": {"$var": "selSymbol"}}
+        }
+    },
+    "root": "dashboard",
+    "elements": {
+        "dashboard": {
+            "component": "dashCanvas",
+            "children": [
+                {"id": "intro", "x": 0, "y": 0, "w": 12, "h": 2},
+                {"id": "gridPanel", "x": 0, "y": 2, "w": 8, "h": 9},
+                {"id": "notes", "x": 8, "y": 2, "w": 4, "h": 9},
+                {"id": "detailPanel", "x": 0, "y": 11, "w": 8, "h": 4},
+                {"id": "detailNote", "x": 8, "y": 11, "w": 4, "h": 4}
+            ]
+        },
+        "intro": {
+            "component": "markdown",
+            "config": {
+                "text": "## Joining sources\nPositions take fields from two other datasets: each fund's NAV, manager and style, and each symbol's latest close."
+            }
+        },
+        "gridPanel": {"component": "panel", "config": {"title": "Positions by style", "style": "card"}, "children": [{"id": "posGrid"}]},
+        "posGrid": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "positions",
+                "groupBy": ["style", "fund", "symbol"],
+                "columnState": ["manager", "nav", "mktVal", "pnlDay", "lastClose"],
+                "sortBy": "mktVal|desc",
+                "summaryRow": true
+            }
+        },
+        "notes": {
+            "component": "box",
+            "config": {"direction": "column", "gap": 8},
+            "children": [{"id": "noteKeyed"}, {"id": "noteDims"}, {"id": "noteReduced"}]
+        },
+        "noteKeyed": {
+            "component": "callout",
+            "config": {
+                "intent": "primary",
+                "title": "Keyed join",
+                "text": "**NAV** comes from the fund summary. Fund rows show it, and the total sums only the funds in view."
+            }
+        },
+        "noteDims": {
+            "component": "callout",
+            "config": {
+                "intent": "primary",
+                "title": "Joined dimensions",
+                "text": "**Style** and **manager** come from the fund summary too. The grid groups positions by style, a dimension positions lack."
+            }
+        },
+        "noteReduced": {
+            "component": "callout",
+            "config": {
+                "intent": "primary",
+                "title": "Reduced join",
+                "text": "**Last close** reduces a month of daily prices to each symbol's latest close."
+            }
+        },
+        "detailPanel": {"component": "panel", "config": {"title": "Selected position", "style": "card"}, "children": [{"id": "detail"}]},
+        "detail": {
+            "component": "propertyTable",
+            "config": {
+                "source": "selected",
+                "fields": ["symbol", "fund", "trader", "sector", "region", "quantity", "price", "mktVal", "pnlDay", "pnlMtd", "pnlYtd", "beta"],
+                "columns": 3
+            }
+        },
+        "detailNote": {
+            "component": "callout",
+            "config": {
+                "intent": "success",
+                "title": "Waits for a selection",
+                "text": "The property table reads a source whose fund comes from the grid's selected row, so it waits until a position is selected."
+            }
+        }
+    }
+}
