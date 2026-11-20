@@ -31,7 +31,7 @@ export const catalogJson = hoistCmp.factory<CatalogModel>(({model}) =>
 );
 
 const datasetCard = hoistCmp.factory<DatasetCardModel>(({model}) => {
-    const {ds, expanded, usedCount, description, params} = model;
+    const {ds, expanded, usedCount, description} = model;
     return div({
         className: `tb-dataset${expanded ? ' tb-dataset--expanded' : ''}`,
         items: [
@@ -51,9 +51,7 @@ const datasetCard = hoistCmp.factory<DatasetCardModel>(({model}) => {
                               icon: Icon.check(),
                               item: `${usedCount} used`
                           })
-                        : null,
-                    badge({item: `${model.fieldCount} fields`}),
-                    params.length ? badge({item: `${params.length} params`}) : null
+                        : null
                 ]
             }),
             description ? div({className: 'tb-dataset__description', item: md(description)}) : null,
@@ -67,13 +65,17 @@ const datasetDetails = hoistCmp.factory<DatasetCardModel>(({model}) =>
         className: 'tb-dataset__details',
         items: [
             model.params.length
-                ? div({
-                      className: 'tb-dataset__params',
-                      items: model.params.map(p => paramCard({param: p, key: p.name}))
+                ? card({
+                      title: `Parameters (${model.params.length})`,
+                      icon: Icon.settings(),
+                      item: div({
+                          className: 'tb-dataset__params',
+                          items: model.params.map(p => paramCard({param: p, key: p.name}))
+                      })
                   })
                 : null,
             card({
-                title: 'Fields',
+                title: `Fields (${model.fieldCount})`,
                 icon: Icon.list(),
                 className: 'tb-dataset__fields',
                 items: [
