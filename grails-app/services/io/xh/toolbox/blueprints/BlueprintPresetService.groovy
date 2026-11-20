@@ -7,12 +7,12 @@ import io.xh.hoist.json.JSONParser
 /**
  * Seeds the Blueprints designer's preset blueprints at startup, so the client never does. Each
  * preset is a global blueprint: owned by {@link #OWNER}, readable by every user, and published
- * once. It is created only if missing, in both repositories the client can use:
+ * once. It is created if missing, and published again if its stored content differs from its file,
+ * in both repositories the client can use:
  *
- *   - JsonBlobs, in the layout of the client's `JsonBlobBlueprintRepository`. A stored preset whose
- *     content differs from its file is published again.
- *   - hoist-core's `BlueprintService`, when hoist-core provides it and blueprint storage is enabled.
- *     A stored preset there is left unchanged.
+ *   - JsonBlobs, in the layout of the client's `JsonBlobBlueprintRepository`.
+ *   - hoist-core's `BlueprintService`, via `ensureGlobal`, when hoist-core provides it and blueprint
+ *     storage is enabled.
  *
  * Also gives hoist-core's `xhBlueprintConfig` Toolbox's values while it is still unconfigured.
  */
