@@ -18,7 +18,7 @@
     "variables": {
         "fund": {"type": "toolbox.fund", "label": "Fund", "setBy": "prompt", "default": {"resolver": "toolbox.userFund"}},
         "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "previousBusinessDay"}},
-        "lookback": {"type": "period", "label": "Lookback", "setBy": "prompt", "default": {"value": "3M"}, "calendar": "business"},
+        "lookback": {"type": "period", "label": "Lookback", "setBy": "prompt", "default": {"value": "3M"}},
         "window": {"type": "dateRange", "label": "Window", "setBy": {"element": "windowPicker"}, "default": {"value": "mtd"}},
         "windowStart": {
             "type": "localDate",
@@ -84,7 +84,7 @@
                 "text": "The **date range picker** sets the window chart's dates. The **Lookback** prompt takes a period, such as 3M, counted in business days."
             }
         },
-        "holdingsPanel": {"component": "panel", "config": {"title": "Top holdings", "style": "card"}, "children": [{"id": "holdings"}]},
+        "holdingsPanel": {"component": "panel", "config": {"title": "Holdings", "style": "card"}, "children": [{"id": "holdings"}]},
         "holdings": {
             "component": "cubeGrid",
             "config": {"source": "positions", "groupBy": ["symbol"], "columnState": ["mktVal", "pnlDay"], "sortBy": "mktVal|desc"}

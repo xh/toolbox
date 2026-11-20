@@ -49,16 +49,16 @@
             "component": "tileFrame",
             "children": [{"id": "navCard"}, {"id": "dayCard"}, {"id": "mtdCard"}, {"id": "ytdCard"}]
         },
-        "navCard": {"component": "statCard", "config": {"source": "summary", "field": "nav", "trend": "cumPnlHistory"}},
+        "navCard": {"component": "statCard", "config": {"source": "summary", "field": "nav"}},
         "dayCard": {"component": "statCard", "config": {"source": "summary", "field": "pnlDay", "trend": "pnlHistory"}},
         "mtdCard": {"component": "statCard", "config": {"source": "summary", "field": "pnlMtd"}},
-        "ytdCard": {"component": "statCard", "config": {"source": "summary", "field": "pnlYtd", "trend": "drawdownHistory"}},
+        "ytdCard": {"component": "statCard", "config": {"source": "summary", "field": "pnlYtd", "trend": "cumPnlHistory"}},
         "headlineNote": {
             "component": "callout",
             "config": {
                 "intent": "primary",
                 "title": "Stat cards with trends",
-                "text": "A **tile frame** of stat cards over the fund summary. NAV trends its cumulative P&L, day P&L its daily P&L, and YTD its drawdown."
+                "text": "A **tile frame** of stat cards over the fund summary. Day P&L trends its daily P&L, and YTD P&L its cumulative P&L, ending at the figure."
             }
         },
         "mapPanel": {"component": "panel", "config": {"title": "Market value by sector", "style": "card"}, "children": [{"id": "sectorMap"}]},
