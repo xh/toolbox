@@ -37,8 +37,10 @@ describe('registry origins', () => {
     });
 
     it("marks chat kit's bridged components, actions and presentations in the answer registry", () => {
-        expect(originOf(ans, 'widget:stack')).toBe('chat kit');
-        expect(originOf(ans, 'widget:text')).toBe('chat kit');
+        // Text and stack translate to markdown and box, so their bridges stay out of answers.
+        expect(originOf(ans, 'widget:stack')).toBeUndefined();
+        expect(originOf(ans, 'widget:text')).toBeUndefined();
+        expect(ans.some(it => it.kind === 'widget' && it.origin === 'chat kit')).toBe(true);
         expect(originOf(ans, 'presentation:chart.card')).toBe('chat kit');
         expect(ans.some(it => it.kind === 'action' && it.origin === 'chat kit')).toBe(true);
     });
