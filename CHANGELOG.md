@@ -17,6 +17,7 @@
 ### New Features
 
 * Added a `KeyValueDisplay` demo page to Components > General, showing hoist-react's new display-only list of labeled values, with a playground, columns that fit the width, labels on the left or on top, label and value alignment, a block of totals sized to its content, muted labels, the compact size, dividers, intents and long text.
+* Added a `ListDisplay` demo page to Components > General, showing hoist-react's new short list of entries, with a playground, numbered rankings, icon and intent markers, clickable entries, narrow widths and the empty text.
 * Added a `Callout` demo page to Components > General, showing hoist-react's new note set off within content, with a playground that sets the container width, each intent with and without a title, standard and compact sizes, custom and hidden icons, callouts in a form, a detail panel and above a grid, a markdown body and long-URL wrapping.
 * Added a `ProgressBar` demo page to Components > General, showing hoist-react's new bar for a value against a maximum, with a playground, shares of a total from the sample portfolio, intents, a target marker, the indeterminate state and odd data.
 * Added a `Separator` demo page to Components > General, showing hoist-react's new rule between content, horizontal and vertical, with a label at the start, the center or the end.
