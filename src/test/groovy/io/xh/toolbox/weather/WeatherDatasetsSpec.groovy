@@ -77,8 +77,9 @@ class WeatherDatasetsSpec extends Specification {
         def row = utc.current('Sydney', 'imperial', NOW)
 
         then:
-        row.keySet() == ['id', 'city', 'temp', 'feelsLike', 'humidity', 'pressure', 'windSpeed', 'windGust', 'conditions', 'iconCode'] as Set
+        row.keySet() == ['id', 'city', 'temp', 'feelsLike', 'humidity', 'pressure', 'windSpeed', 'windGust', 'conditions', 'iconCode', 'tempNext24h'] as Set
         row.id == 'Sydney'
+        row.tempNext24h == utc.forecast('Sydney', 'imperial', NOW).take(8)*.temp
         row == utc.current('Sydney', 'imperial', NOW)
     }
 }

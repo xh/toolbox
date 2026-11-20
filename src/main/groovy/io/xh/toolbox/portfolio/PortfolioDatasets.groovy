@@ -17,6 +17,8 @@ import static io.xh.toolbox.portfolio.InstrumentType.Option
 class PortfolioDatasets {
 
     static final int VOL_WINDOW = 60
+    /** Points in a position's series, and in a fund's. */
+    static final int POSITION_SERIES = 30, FUND_SERIES = 60
     static final double Z95 = 1.645, Z99 = 2.326
     static final double FALLBACK_VOL = 0.02
     static final double HYPOTHETICAL_NOTIONAL = 100_000_000
@@ -72,8 +74,13 @@ class PortfolioDatasets {
     //------------------------
     // Datasets
     //------------------------
-    /** One row per position held at the close of asOf, optionally for one fund. */
-    List<Map> positions(LocalDate asOf, String fund = null) {
+    /**
+     * One row per position held at the close of asOf, optionally for one fund.
+     *
+     * @param series the series fields to compute - `closeHistory` and `pnlHistory` - which are left
+     *      out unless named, as they are costly
+     */
+    List<Map> positions(LocalDate asOf, String fund = null, Collection<String> series = []) {
         LocalDate day = resolveDay(asOf)
         if (!day) return []
 
@@ -97,7 +104,63 @@ class PortfolioDatasets {
 
         List<Map> rows = holdings.values().collect { positionRow(it, day, [prevDay, mtdBase, ytdBase]) }
         addPctNav(rows)
+        if ('closeHistory' in series) {
+            List<LocalDate> days = lastDays(day, POSITION_SERIES)
+            Map<String, List<Double>> closes = [:]
+            rows.each { row ->
+                row.closeHistory = closes.computeIfAbsent(row.symbol as String) { String symbol -> closeSeries(symbol, days) }
+            }
+        }
+        if ('pnlHistory' in series) {
+            Map<String, long[]> pnl = pnlOverDays(baselineAndDays(day, POSITION_SERIES), fund)
+            rows.each { it.pnlHistory = dailyChanges(pnl[it.id as String]) }
+        }
         return rows
+    }
+
+    /**
+     * One row per fund with positions at the close of asOf, optionally for one fund: its NAV at the
+     * prior close, its P&L summed from its positions, and, when named in `series`, its trend over
+     * the last {@link #FUND_SERIES} days - daily P&L, cumulative P&L over the window, and the
+     * cumulative P&L's drawdown below its running peak.
+     */
+    List<Map> fundSummary(LocalDate asOf, String fund = null, Collection<String> series = []) {
+        LocalDate day = resolveDay(asOf)
+        if (!day) return []
+
+        List<Map> positions = positions(asOf, fund)
+        Map<String, Double> navs = navsByFund(positions)
+        boolean withSeries = series.any { it in ['pnlHistory', 'cumPnlHistory', 'drawdownHistory'] }
+        Map<String, long[]> byPosition = withSeries ? pnlOverDays(baselineAndDays(day, FUND_SERIES), fund) : [:]
+
+        return positions.groupBy { it.fund }.collect { String f, List<Map> rows ->
+            Map ret = [
+                id    : f,
+                fund  : f,
+                nav   : Math.round(navs[f] ?: 0d),
+                pnlDay: rows.sum { it.pnlDay } as long,
+                pnlMtd: rows.sum { it.pnlMtd } as long,
+                pnlYtd: rows.sum { it.pnlYtd } as long
+            ]
+            if (withSeries) {
+                List<Long> daily = byPosition
+                    .findAll { key, pnl -> key.startsWith(f + '|') }
+                    .values()
+                    .collect { dailyChanges(it) }
+                    .transpose()
+                    .collect { it.sum() as long }
+                long cum = 0, peak = 0
+                List<Long> cumPnl = [], drawdown = []
+                daily.each {
+                    cum += it
+                    peak = Math.max(peak, cum)
+                    cumPnl << cum
+                    drawdown << cum - peak
+                }
+                ret += [pnlHistory: daily, cumPnlHistory: cumPnl, drawdownHistory: drawdown]
+            }
+            return ret
+        }
     }
 
     /** One row per order on asOf, optionally for one fund. */
@@ -227,6 +290,63 @@ class PortfolioDatasets {
             .groupBy { it.fund }
             .collectEntries { fund, fundRows -> [fund, fundRows.sum { Math.abs(it.priorCloseMktVal as long) } / 2d] }
             .findAll { fund, nav -> nav }
+    }
+
+    //------------------------
+    // Series
+    //------------------------
+    // The last n trading days through day, oldest first - fewer near the start of history.
+    private List<LocalDate> lastDays(LocalDate day, int n) {
+        int end = dayIndex[day]
+        portfolio.tradingDays.subList(Math.max(0, end - n + 1), end + 1)
+    }
+
+    // The last n trading days through day, after the day before them as a baseline. The baseline
+    // is null when the window starts with history, before which every P&L is 0.
+    private List<LocalDate> baselineAndDays(LocalDate day, int n) {
+        int end = dayIndex[day], start = end - n
+        return start >= 0 ? portfolio.tradingDays.subList(start, end + 1) : [null] + portfolio.tradingDays.subList(0, end + 1)
+    }
+
+    private List<Double> closeSeries(String symbol, List<LocalDate> days) {
+        int dp = portfolio.instruments[symbol].type == InstrumentType.FX ? 4 : 2
+        days.collect { priceOn(symbol, it)?.round(dp) }
+    }
+
+    // Each position's total P&L - market value less cost - at the close of each day, by position
+    // key, with the rounding of positionRow, so the last daily change equals pnlDay.
+    private Map<String, long[]> pnlOverDays(List<LocalDate> days, String fund) {
+        Map<String, long[]> ret = [:]
+        Map<String, Running> running = [:]
+        List<Order> orders = liveOrders(days.last())
+        int next = 0
+        days.eachWithIndex { LocalDate day, int i ->
+            if (day == null) return
+            for (; next < orders.size() && orders[next].day <= day; next++) {
+                Order o = orders[next]
+                if (fund && o.fund != fund) continue
+                String key = [o.fund, o.strategy, o.book, o.trader, o.model, o.symbol].join('|')
+                Running r = running[key]
+                if (!r) r = running[key] = new Running(instrument: o.instrument)
+                r.qty += o.quantity
+                r.cost += o.cost
+            }
+            running.each { String key, Running r ->
+                double px = priceOn(r.instrument.symbol, day) ?: 0d
+                ret.computeIfAbsent(key) { new long[days.size()] }[i] = Math.round(r.qty * px * r.instrument.multiplier) - r.cost
+            }
+        }
+        return ret
+    }
+
+    // Day over day changes of a P&L series, which starts with its baseline.
+    private static List<Long> dailyChanges(long[] totals) {
+        (1..<totals.length).collect { totals[it] - totals[it - 1] }
+    }
+
+    private static class Running {
+        Instrument instrument
+        long qty, cost
     }
 
     //------------------------

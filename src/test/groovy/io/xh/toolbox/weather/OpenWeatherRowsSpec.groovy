@@ -70,6 +70,11 @@ class OpenWeatherRowsSpec extends Specification {
         rows[1].conditions == 'Clear'
     }
 
+    def 'tempNext24h takes the first eight forecast steps\' temperatures'() {
+        expect:
+        OpenWeatherRows.tempNext24h(FORECAST) == [7.42, 6.1]
+    }
+
     def 'day follows the zone'() {
         expect: '03:00 UTC is the evening before in New York'
         OpenWeatherRows.forecast('London', FORECAST, ZoneId.of('America/New_York'))[0].day == '2026-11-18'

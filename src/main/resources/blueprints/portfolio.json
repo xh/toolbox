@@ -307,7 +307,70 @@
                     "category": "P&L",
                     "guidance": "Return over a window. Declare one instance per window on the source, such as month to date and year to date."
                 },
-                "shockedPnl"
+                "shockedPnl",
+                {
+                    "name": "closeHistory",
+                    "label": "Close (30d)",
+                    "type": "number[]",
+                    "kind": "price",
+                    "category": ["Trend"],
+                    "guidance": "The instrument's closing price for each of the last 30 business days through asOf, oldest first. The last point is live when asOf is today. Large across all funds: request it with a fund parameter or a filter."
+                },
+                {
+                    "name": "pnlHistory",
+                    "label": "Daily P&L (30d)",
+                    "type": "number[]",
+                    "kind": "pnl",
+                    "category": ["Trend"],
+                    "guidance": "The position's daily P&L for each of the last 30 business days through asOf, oldest first. The last point equals pnlDay, and is live when asOf is today. Large across all funds: request it with a fund parameter or a filter."
+                }
+            ]
+        },
+        "fundSummary": {
+            "label": "Fund Summary",
+            "description": "One row per fund at the close of the as-of date, with its NAV, P&L and recent trend.",
+            "guidance": "Use for fund-level totals and trends, such as a sparkline of each fund's P&L or drawdown. It is far smaller than positions, so prefer it for any per-fund figure.",
+            "params": {
+                "asOf": {"type": "localDate", "required": true},
+                "fund": {"type": "fund", "description": "One fund. Leave empty for all funds."}
+            },
+            "fields": [
+                "fund",
+                {
+                    "name": "nav",
+                    "label": "NAV",
+                    "type": "number",
+                    "kind": "exposure",
+                    "category": "Exposure",
+                    "guidance": "The fund's NAV at the prior close, as % of NAV uses."
+                },
+                {"name": "pnlDay", "label": "Day P&L", "type": "number", "kind": "pnl", "category": "P&L"},
+                {"name": "pnlMtd", "label": "MTD P&L", "type": "number", "kind": "pnl", "category": "P&L"},
+                {"name": "pnlYtd", "label": "YTD P&L", "type": "number", "kind": "pnl", "category": "P&L"},
+                {
+                    "name": "pnlHistory",
+                    "label": "Daily P&L (60d)",
+                    "type": "number[]",
+                    "kind": "pnl",
+                    "category": ["Trend"],
+                    "guidance": "The fund's daily P&L for each of the last 60 business days through asOf, oldest first. The last point equals pnlDay."
+                },
+                {
+                    "name": "cumPnlHistory",
+                    "label": "Cumulative P&L (60d)",
+                    "type": "number[]",
+                    "kind": "pnl",
+                    "category": ["Trend"],
+                    "guidance": "The fund's P&L accumulated over the last 60 business days, oldest first."
+                },
+                {
+                    "name": "drawdownHistory",
+                    "label": "Drawdown (60d)",
+                    "type": "number[]",
+                    "kind": "currency:USD",
+                    "category": ["Trend"],
+                    "guidance": "How far the fund's cumulative P&L sits below its running peak over the last 60 business days, in USD. Always zero or less."
+                }
             ]
         },
         "orders": {

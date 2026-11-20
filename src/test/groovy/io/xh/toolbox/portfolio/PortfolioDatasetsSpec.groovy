@@ -52,6 +52,55 @@ class PortfolioDatasetsSpec extends Specification {
         ds.positions(D4.plusDays(1)) == ds.positions(D4)
     }
 
+    def 'position series are computed only when requested, through asOf, with a live last point'() {
+        given:
+        def ds = datasets()
+
+        expect:
+        !bySymbol(ds.positions(D4), 'AAA').containsKey('closeHistory')
+        !bySymbol(ds.positions(D4), 'AAA').containsKey('pnlHistory')
+
+        when:
+        def rows = ds.positions(D4, null, ['closeHistory', 'pnlHistory'])
+        def aaa = bySymbol(rows, 'AAA')
+
+        then: 'all four days of history, since there are fewer than 30'
+        aaa.closeHistory == [100d, 110d, 120d, 135d]
+        aaa.pnlHistory == [0L, 1000L, 1000L, 2300L]
+        aaa.pnlHistory.last() == aaa.pnlDay
+        bySymbol(rows, opt.symbol).pnlHistory == [0L, 0L, 200L, 400L]
+
+        and: 'as of an earlier day'
+        bySymbol(ds.positions(D2, null, ['closeHistory', 'pnlHistory']), 'AAA').subMap('closeHistory', 'pnlHistory') ==
+            [closeHistory: [100d, 110d], pnlHistory: [0L, 1000L]]
+    }
+
+    def 'fund summary sums its positions, with daily, cumulative and drawdown series'() {
+        given:
+        def ds = datasets()
+        ds.currentPrices[eq.symbol] = new MarketPrice(day: D4, close: 100)
+
+        when:
+        def plain = ds.fundSummary(D4)
+        def rows = ds.fundSummary(D4, null, ['pnlHistory', 'drawdownHistory'])
+        def f1 = rows.find { it.fund == F1 }, f2 = rows.find { it.fund == F2 }
+
+        then:
+        plain*.fund.sort() == [F1, F2].sort()
+        !plain[0].containsKey('pnlHistory')
+        f1.subMap('id', 'nav', 'pnlDay') == [id: F1, nav: 59000L, pnlDay: -3300L]
+        f1.pnlHistory == [0L, 1000L, 1000L, -3300L]
+        f1.cumPnlHistory == [0L, 1000L, 2000L, -1300L]
+        f1.drawdownHistory == [0L, 0L, 0L, -3300L]
+        f1.pnlHistory.last() == f1.pnlDay
+        f2.pnlHistory == [0L, 0L, 200L, 400L]
+        f2.drawdownHistory.every { it == 0L }
+
+        expect:
+        ds.fundSummary(D4, F2)*.fund == [F2]
+        ds.fundSummary(LocalDate.of(2020, 1, 1)) == []
+    }
+
     def 'Greeks are set on options only, from underlying notional'() {
         when:
         def o = bySymbol(datasets().positions(D4), opt.symbol)

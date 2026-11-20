@@ -13,6 +13,8 @@ class WeatherDatasets {
 
     static final long STEP_MS = 3 * 60 * 60 * 1000L
     static final int FORECAST_STEPS = 40
+    /** Steps in `tempNext24h`: the next 24 hours. */
+    static final int SERIES_STEPS = 8
     private static final long DAY_MS = 24 * 60 * 60 * 1000L
 
     /** Zone that sets each step's `day` and whether it is day or night. */
@@ -37,12 +39,15 @@ class WeatherDatasets {
         }
     }
 
-    /** The conditions now, as one row. */
+    /**
+     * The conditions now, as one row, with `tempNext24h`: the temperatures of the first eight
+     * forecast steps, as the `weather` rows give them.
+     */
     Map current(String city, String units, Instant now) {
         Map w = sample(city, now.toEpochMilli(), units)
         return [id: city, city: city] + w.subMap(
             ['temp', 'feelsLike', 'humidity', 'pressure', 'windSpeed', 'windGust', 'conditions', 'iconCode']
-        )
+        ) + [tempNext24h: forecast(city, units, now).take(SERIES_STEPS)*.temp]
     }
 
     //------------------------
