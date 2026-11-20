@@ -25,6 +25,16 @@ class BlueprintCatalogSpec extends Specification {
         catalog.fieldsFor('orders').dir.isDimension
     }
 
+    def 'every dataset declares a key of its own fields'() {
+        given:
+        def merged = BlueprintCatalog.merge('Toolbox', ['portfolio', 'weather'].collect {
+            JSONParser.parseObject(getClass().getResourceAsStream("/blueprints/${it}.json"))
+        })
+
+        expect:
+        merged.datasets.every { name, ds -> ds.key && merged.fieldsFor(name).keySet().containsAll(ds.key) }
+    }
+
     def 'a valid request resolves params and field instances to their types'() {
         when:
         def req = catalog.parseRequest(

@@ -192,6 +192,7 @@
                 "asOf": {"type": "localDate", "required": true},
                 "fund": {"type": "toolbox.fund", "description": "One fund. Leave empty for all funds."}
             },
+            "key": ["fund", "strategy", "book", "trader", "model", "symbol"],
             "fields": [
                 "fund", "strategy", "book", "trader", "model", "assetClass", "instrumentType", "sector",
                 "industry", "region", "country", "ccy", "symbol", "issuer", "underlying", "isin", "cusip",
@@ -334,6 +335,7 @@
                 "asOf": {"type": "localDate", "required": true},
                 "fund": {"type": "toolbox.fund", "description": "One fund. Leave empty for all funds."}
             },
+            "key": ["fund"],
             "fields": [
                 "fund",
                 {
@@ -381,6 +383,7 @@
                 "asOf": {"type": "localDate", "required": true},
                 "fund": {"type": "toolbox.fund", "description": "One fund. Leave empty for all funds."}
             },
+            "key": ["orderId"],
             "fields": [
                 "fund", "strategy", "book", "trader", "model", "assetClass", "instrumentType", "sector",
                 "industry", "region", "country", "symbol", "quantity", "price", "mktVal",
@@ -428,6 +431,7 @@
                 "start": {"type": "localDate", "required": true},
                 "end": {"type": "localDate", "required": true}
             },
+            "key": ["symbol", "day"],
             "fields": [
                 "symbol",
                 {"name": "day", "label": "Day", "type": "localDate", "format": {"date": "date"}},
@@ -450,6 +454,7 @@
                 },
                 "asOf": {"type": "localDate", "required": true}
             },
+            "key": ["symbol"],
             "fields": [
                 "assetClass", "instrumentType", "sector", "industry", "region", "country", "ccy", "symbol",
                 "price", "mktVal",
