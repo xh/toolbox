@@ -1,0 +1,39 @@
+// Frames of set widths, side by side, wrapping when the page is narrow.
+.tb-property-table-panel__widths {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--xh-spacing-double);
+}
+
+// Frames at the width of a narrow detail panel.
+.tb-property-table-panel__narrow {
+  width: 460px;
+}
+
+.tb-property-table-panel__slim {
+  width: 340px;
+}
+
+// A frame the user can resize from its corner, to watch long words wrap.
+.tb-property-table-panel__resizable {
+  min-width: 160px;
+  max-width: 100%;
+  width: 340px;
+  overflow: auto;
+  resize: horizontal;
+}
+
+// Restyled through PropertyTable's CSS variables. A scoped override sets the resolved `--xh-`
+// variables - the unprefixed ones are read at the root.
+.tb-property-table-panel__restyled {
+  --xh-property-table-label-font-size: var(--xh-font-size-small-relative);
+  --xh-property-table-label-gap: calc(var(--xh-spacing) * 3);
+  --xh-property-table-value-font-weight: 600;
+  --xh-property-table-row-gap: var(--xh-spacing);
+
+  .xh-property-table__label {
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+}
