@@ -12,7 +12,7 @@
   3. Plain ASCII punctuation only. Use " - " for in-sentence breaks, never an em dash.
 -->
 
-## 13.0-SNAPSHOT - unreleased
+## 13.0.0 - 2026-11-20
 
 ### New Features
 
@@ -24,6 +24,10 @@
 * Added a `ViewManager` demo page to Components > General, with a playground for its menu button - including hoist-react's new `buttonTextMode` - and for the `ViewManagerModel` configs it is built with, saving layouts of a small dashboard. View sharing is off, so visitors cannot publish layouts to each other.
 * Switched the 30-day close column in the Portfolio example's Orders grid from the AG Grid sparkline to Hoist's `Sparkline`, with a tooltip showing the dates covered, the first and last close and the change.
 * Added Day P&L, Long, Short, Cost Basis and Commission columns to the desktop and mobile tree grid demos and the Portfolio example, rolled up on the server from the existing portfolio data. The tree column is now pinned left on mobile and in Portfolio.
+* Added a Header Intent picker to the Panel playground in Layout > Panels, showing hoist-react's new `Panel.headerIntent`, with Collapsible and Modal Support options to show the collapse and modal buttons and the vertical collapsed header.
+* Added a Fill Order option to the `PropertyTable` demo, showing hoist-react's new `fillOrder` prop, with a two-column example filled down columns.
+* Added an In a Toolbar section and an Intent option to the `Slider` demo, showing hoist-react's new `SliderProps.intent`.
+* Moved the `PdfViewer` demo's live viewer state into a `StatCardStrip` below the PDF, with a new Find card.
 
 ### Technical
 
@@ -33,9 +37,13 @@
 * Removed the bundled hoist-react and hoist-core MCP servers and the `installHoistCoreTools` Gradle task - agents now use the `hoist-docs` MCP server.
 * Migrated app CSS variable overrides and reads to hoist-react v91's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
 * Migrated element specs from the legacy `item` / `items` keys to the standard React `children` key, using hoist-react's v91 codemod.
+* Set `method: 'POST'` on the fetches that change server state - the WebSocket test's subscribe and unsubscribe and the file manager's delete - since hoist-react v91 sends a request with `params` and no `method` as a GET.
 
 ### Libraries
 
+* @xh/hoist `90.1 → 91.0`
+* @xh/hoist-dev-utils `16.2 → 16.5`
+* hoist-core `44.1 → 45.0`
 * ag-grid `36.2 → 36.3`
 * Gradle `9.8 → 9.9`
 
