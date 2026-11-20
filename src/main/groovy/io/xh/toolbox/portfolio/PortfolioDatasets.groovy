@@ -119,8 +119,8 @@ class PortfolioDatasets {
     }
 
     /**
-     * One row per fund with positions at the close of asOf, optionally for one fund: its NAV at the
-     * prior close, its P&L summed from its positions, and, when named in `series`, its trend over
+     * One row per fund with positions at the close of asOf, optionally for one fund: its manager
+     * and style, its NAV at the prior close, its P&L summed from its positions, and, when named in `series`, its trend over
      * the last {@link #FUND_SERIES} days - daily P&L, cumulative P&L over the window, and the
      * cumulative P&L's drawdown below its running peak.
      */
@@ -135,12 +135,14 @@ class PortfolioDatasets {
 
         return positions.groupBy { it.fund }.collect { String f, List<Map> rows ->
             Map ret = [
-                id    : f,
-                fund  : f,
-                nav   : Math.round(navs[f] ?: 0d),
-                pnlDay: rows.sum { it.pnlDay } as long,
-                pnlMtd: rows.sum { it.pnlMtd } as long,
-                pnlYtd: rows.sum { it.pnlYtd } as long
+                id     : f,
+                fund   : f,
+                manager: Lookups.FUND_PROFILES[f]?.manager,
+                style  : Lookups.FUND_PROFILES[f]?.style,
+                nav    : Math.round(navs[f] ?: 0d),
+                pnlDay : rows.sum { it.pnlDay } as long,
+                pnlMtd : rows.sum { it.pnlMtd } as long,
+                pnlYtd : rows.sum { it.pnlYtd } as long
             ]
             if (withSeries) {
                 List<Long> daily = dailyChanges(byFund[f])

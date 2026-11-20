@@ -8,6 +8,15 @@ class Lookups {
 
     static final List MODELS = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul']
     static final List FUNDS = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay']
+
+    /** Each fund's portfolio manager and investment style. */
+    static final Map<String, Map<String, String>> FUND_PROFILES = [
+        'Oak Mount'     : [manager: 'Dana Whitfield', style: 'Long/Short'],
+        'Black Crescent': [manager: 'Marcus Oyelaran', style: 'Macro'],
+        'Winter Star'   : [manager: 'Ingrid Solberg', style: 'Credit'],
+        'Red River'     : [manager: 'Tomas Reyes', style: 'Long/Short'],
+        'Hudson Bay'    : [manager: 'Priya Natarajan', style: 'Multi-Strategy']
+    ]
     static final List TRADERS = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major']
 
     static final Map<String, List<String>> INDUSTRIES = [
