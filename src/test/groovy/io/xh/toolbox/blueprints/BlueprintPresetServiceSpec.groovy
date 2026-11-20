@@ -77,6 +77,32 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
         JsonBlob.countByTypeAndName(PUBLISH_TYPE, 'bp-preset-w1:1') == 1
     }
 
+    def 'republishes a seeded preset whose stored content differs from its file, once'() {
+        given:
+        service.seedPresets()
+        def draft = JsonBlob.findByTypeAndName(BLUEPRINT_TYPE, 'bp-preset-p3')
+        draft.value = '{"blueprint": {"stale": true}, "pendingRenames": []}'
+        draft.save(flush: true)
+
+        when:
+        service.seedPresets()
+        service.seedPresets()
+
+        then:
+        JsonBlob.count() == 13
+        parseObject(JsonBlob.findByTypeAndName(PUBLISH_TYPE, 'bp-preset-p3:2').value) == [blueprint: preset('p3-morning-report')]
+        parseObject(JsonBlob.findByTypeAndName(PUBLISH_TYPE, 'bp-preset-p3:2').meta).subMap('blueprintId', 'version', 'publishedBy') ==
+            [blueprintId: 'bp-preset-p3', version: 2, publishedBy: OWNER]
+
+        when:
+        def refreshed = JsonBlob.findByTypeAndName(BLUEPRINT_TYPE, 'bp-preset-p3')
+
+        then:
+        parseObject(refreshed.value) == [blueprint: preset('p3-morning-report'), pendingRenames: []]
+        parseObject(refreshed.meta).subMap('name', 'draftVersion', 'publishedVersion') ==
+            [name: 'P3. A morning report', draftVersion: 3, publishedVersion: 2]
+    }
+
     def 'seeds hoist-core\'s blueprints only when it provides BlueprintService and storage is enabled'() {
         given:
         service.blueprintService = blueprintService ? [ensureGlobal: { String name, String desc, Map bp, String owner ->

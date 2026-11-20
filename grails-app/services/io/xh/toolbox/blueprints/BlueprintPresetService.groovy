@@ -9,8 +9,10 @@ import io.xh.hoist.json.JSONParser
  * preset is a global blueprint: owned by {@link #OWNER}, readable by every user, and published
  * once. It is created only if missing, in both repositories the client can use:
  *
- *   - JsonBlobs, in the layout of the client's `JsonBlobBlueprintRepository`.
+ *   - JsonBlobs, in the layout of the client's `JsonBlobBlueprintRepository`. A stored preset whose
+ *     content differs from its file is published again.
  *   - hoist-core's `BlueprintService`, when hoist-core provides it and blueprint storage is enabled.
+ *     A stored preset there is left unchanged.
  *
  * Also gives hoist-core's `xhBlueprintConfig` Toolbox's values while it is still unconfigured.
  */
@@ -86,7 +88,11 @@ class BlueprintPresetService extends BaseService {
             value: [blueprint: blueprint],
             meta: [blueprintId: id, version: 1, published: now, publishedBy: OWNER, renames: []]
         ], OWNER)
-        if (jsonBlobService.find(BLUEPRINT_TYPE, id, OWNER, OWNER)) return
+        def draft = jsonBlobService.find(BLUEPRINT_TYPE, id, OWNER, OWNER)
+        if (draft) {
+            refreshJsonBlobs(draft, preset, blueprint, now)
+            return
+        }
         jsonBlobService.create([
             type: BLUEPRINT_TYPE,
             name: id,
@@ -96,6 +102,30 @@ class BlueprintPresetService extends BaseService {
             meta: [name: preset.name, draftVersion: 2, publishedVersion: 1, updated: now, updatedBy: OWNER]
         ], OWNER)
         logInfo('Seeded blueprint preset', [id: id])
+    }
+
+    // A stored preset whose content differs from its file is published again, as a user's save and
+    // publish would, so clients that cache by publish version see the change.
+    private void refreshJsonBlobs(draft, Map preset, Map blueprint, long now) {
+        if (JSONParser.parseObject(draft.value as String).blueprint == blueprint) return
+
+        String id = preset.id
+        Map meta = JSONParser.parseObject(draft.meta as String)
+        int version = (meta.publishedVersion as int) + 1
+        String publishName = "$id:$version"
+        if (!jsonBlobService.find(PUBLISH_TYPE, publishName, OWNER, OWNER)) jsonBlobService.create([
+            type: PUBLISH_TYPE,
+            name: publishName,
+            owner: OWNER,
+            acl: '*',
+            value: [blueprint: blueprint],
+            meta: [blueprintId: id, version: version, published: now, publishedBy: OWNER, renames: []]
+        ], OWNER)
+        jsonBlobService.update(draft.token as String, [
+            value: [blueprint: blueprint, pendingRenames: []],
+            meta: meta + [draftVersion: (meta.draftVersion as int) + 1, publishedVersion: version, updated: now, updatedBy: OWNER]
+        ], OWNER)
+        logInfo('Republished changed blueprint preset', [id: id, version: version])
     }
 
     private Map loadPreset(String file) {
