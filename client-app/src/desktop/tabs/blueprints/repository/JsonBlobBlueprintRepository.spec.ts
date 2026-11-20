@@ -1,7 +1,7 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
 import {XH} from '@xh/hoist/core';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
-import {afterEach, beforeAll, describe, expect, it} from 'vitest';
+import {afterEach, beforeAll, describe, expect, it, vi} from 'vitest';
 import p1 from '../scenarios/p1-one-grid.json';
 import {
     BLUEPRINT_TYPE,
@@ -128,6 +128,34 @@ describe('JsonBlobBlueprintRepository', () => {
         expect((await repository.publishAsync(id, {base: 1})).publish.version).toBe(2);
     });
 
+    it("never rolls back the draft's published version, saving from an older listing", async () => {
+        const {id} = await repository.createAsync({name: 'Positions', blueprint}),
+            staleList = await XH.jsonBlobService.listAsync({type: BLUEPRINT_TYPE});
+        await repository.publishAsync(id, {base: 1});
+
+        // A save that lists the drafts as they were before the publish.
+        const list = vi.spyOn(XH.jsonBlobService, 'listAsync').mockResolvedValueOnce(staleList);
+        const result = await repository.saveDraftAsync(id, {blueprint, base: 2, renames: []});
+        list.mockRestore();
+
+        expect(result).toEqual({version: 3, issues: []});
+        expect((await repository.listAsync())[0]).toMatchObject({
+            draftVersion: 3,
+            publishedVersion: 1
+        });
+    });
+
+    it('retries a publish only when another took its number, and rethrows other errors', async () => {
+        const {id} = await repository.createAsync({name: 'Positions', blueprint}),
+            create = vi
+                .spyOn(XH.jsonBlobService, 'createAsync')
+                .mockRejectedValueOnce(new Error('Server unavailable'));
+
+        await expect(repository.publishAsync(id, {base: 1})).rejects.toThrow('Server unavailable');
+        expect(create).toHaveBeenCalledTimes(1);
+        create.mockRestore();
+    });
+
     it('lets another user read and copy the latest publish, and nothing more', async () => {
         const {id} = await repository.createAsync({name: 'Positions', blueprint});
         await repository.publishAsync(id, {base: 1});
@@ -161,6 +189,17 @@ describe('JsonBlobBlueprintRepository', () => {
             copiedFrom: {id, version: 1, as: 'publish'}
         });
         expect(copy.blueprint).toEqual(blueprint);
+    });
+
+    it("lists another user's blueprint only once it is published", async () => {
+        const {id} = await repository.createAsync({name: 'Positions', blueprint});
+        actAs(OTHER);
+        expect(await repository.listAsync()).toEqual([]);
+
+        actAs(OWNER);
+        await repository.publishAsync(id, {base: 1});
+        actAs(OTHER);
+        expect((await repository.listAsync()).map(it => it.id)).toEqual([id]);
     });
 
     it("shows the blueprint's sharing to its owner only", async () => {

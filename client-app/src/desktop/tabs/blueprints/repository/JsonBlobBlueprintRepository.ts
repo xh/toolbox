@@ -33,9 +33,10 @@ export const PERSONALIZATION_TYPE = 'toolboxBlueprintPersonalization';
  *   user may save, publish or delete it, as hoist-core lets only a blob's owner write it. Every
  *   other user has read access: they run its latest publish, and may copy it into a blueprint of
  *   their own. Summaries and records say so, and `canPublish` follows the owner.
- * - **Listing and access:** drafts and publishes are shared with all users (`acl: '*'`), so
- *   {@link listAsync} lists every blueprint. hoist-core's ACL is the only boundary: this class
- *   refuses readers in its own methods, but cannot keep them from reading a blob directly.
+ * - **Listing and access:** drafts and publishes are shared with all users (`acl: '*'`).
+ *   {@link listAsync} lists the user's own blueprints, and other users' once they have a publish.
+ *   hoist-core's ACL is the only boundary: this class refuses readers in its own methods, but
+ *   cannot keep them from reading a blob directly.
  * - **Drafts are not secret.** A draft is readable by any user through the JsonBlob API. The
  *   library keeps readers off drafts in the UI only.
  * - **Personalizations** are private blobs of their user, one per blueprint and preset.
@@ -43,11 +44,19 @@ export const PERSONALIZATION_TYPE = 'toolboxBlueprintPersonalization';
  *   number exists. hoist-core refuses a second active blob of the same type, owner and name, so
  *   on a collision this class reads the publishes again and tries the next number.
  * - **Saves** have no compare-and-set on the server, so `enforcesBase` is false and the library
- *   checks the draft's version first. This class checks it again, and after saving reads the
- *   draft back, warning if another save landed in between.
+ *   checks the draft's version first. This class reads the draft just before writing it, checks
+ *   the version again, keeps the meta it read but its version, and after saving reads the draft
+ *   back, warning if another save landed in between.
+ * - **Publishing is not atomic.** It creates the publish blob, then updates the draft's meta with
+ *   the new version and published number. If that second write fails, the publish stands but the
+ *   draft's version is not bumped. A save between the two reads, such as from the owner's other
+ *   tab, can land in the publish or be overwritten. Only the owner writes, so the window is narrow.
  * - **Deleting** archives the draft, its publishes and the owner's personalizations. Other users'
  *   personalizations cannot be archived by the owner. They are ignored once their blueprint is
  *   gone, and archived when their own user next loads them.
+ * - **Every call lists every blob of a type**, all drafts or all publishes, and filters in the
+ *   browser. That suits a small library like Toolbox's. A larger one wants a server endpoint that
+ *   queries by blueprint.
  */
 export class JsonBlobBlueprintRepository implements BlueprintRepository {
     readonly enforcesBase = false;
@@ -60,7 +69,9 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
     async listAsync(): Promise<BlueprintSummary[]> {
         const drafts = await XH.jsonBlobService.listAsync({type: BLUEPRINT_TYPE});
         return sortBy(
-            drafts.map(it => this.summaryOf(it)),
+            drafts
+                .filter(it => this.isOwner(it) || metaOf(it).publishedVersion != null)
+                .map(it => this.summaryOf(it)),
             it => it.name.toLowerCase()
         );
     }
@@ -132,13 +143,14 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
         const stub = await this.draftStubAsync(id);
         if (!stub) return {issues: [missing(id)]};
         if (!this.isOwner(stub)) return {issues: [notAllowed('save the draft')]};
-        const current = metaOf(stub).draftVersion;
+        const fresh = await XH.jsonBlobService.getAsync(stub.token),
+            current = metaOf(fresh).draftVersion;
         if (draft.base !== current) return {issues: [staleBaseIssue(draft.base, current)]};
 
         const version = current + 1;
         await XH.jsonBlobService.updateAsync(stub.token, {
             value: {blueprint: draft.blueprint, pendingRenames: draft.renames},
-            meta: {...metaOf(stub), draftVersion: version, ...this.touched()}
+            meta: {...metaOf(fresh), draftVersion: version, ...this.touched()}
         });
         return {version, issues: await this.racedIssuesAsync(stub.token, version)};
     }
@@ -150,11 +162,11 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
         const stub = await this.draftStubAsync(id);
         if (!stub) return {issues: [missing(id)]};
         if (!this.isOwner(stub)) return {issues: [notAllowed('publish')]};
-        const current = metaOf(stub).draftVersion;
+        const draft = await XH.jsonBlobService.getAsync(stub.token),
+            current = metaOf(draft).draftVersion;
         if (opts.base !== current) return {issues: [staleBaseIssue(opts.base, current)]};
 
-        const draft = await XH.jsonBlobService.getAsync(stub.token),
-            info = await this.createPublishAsync(id, draft, opts.note),
+        const info = await this.createPublishAsync(id, draft, opts.note),
             draftVersion = current + 1;
         await XH.jsonBlobService.updateAsync(stub.token, {
             value: {...draft.value, pendingRenames: []},
@@ -272,7 +284,7 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
         return all.filter(it => this.isOwner(it) && metaOf(it).blueprintId === id);
     }
 
-    // Create the next publish, taking a later number if another publish has taken this one.
+    // Create the next publish, taking a later number if another publish takes this one first.
     private async createPublishAsync(
         id: string,
         draft: JsonBlob,
@@ -300,7 +312,11 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
                 });
                 return info;
             } catch (e) {
-                if (attempt === 4) throw e;
+                // Retry only if another publish took this number, which hoist-core refuses.
+                const taker = (await this.publishStubsAsync(id)).find(
+                    it => metaOf(it).version === version
+                );
+                if (!taker || attempt === 4) throw e;
             }
         }
     }
