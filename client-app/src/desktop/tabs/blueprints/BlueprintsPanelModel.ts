@@ -23,6 +23,7 @@ import {
 } from '@xh/hoist/mobx';
 import {cloneDeep, find} from 'lodash';
 import {createArchitectChat} from './architectChat';
+import {migrateBlueprint} from './migrateBlueprint';
 import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
 import p1 from './scenarios/p1-one-grid.json';
@@ -293,7 +294,10 @@ export class BlueprintsPanelModel extends HoistModel {
 
 function readLibrary(): BlueprintRecord[] {
     try {
-        return XH.localStorageService.get(LIBRARY_KEY, null) ?? cloneDeep(PRESETS);
+        const stored: BlueprintRecord[] = XH.localStorageService.get(LIBRARY_KEY, null);
+        return stored
+            ? stored.map(it => ({...it, blueprint: migrateBlueprint(it.blueprint)}))
+            : cloneDeep(PRESETS);
     } catch (e) {
         XH.handleException(e, {showAlert: false});
         return cloneDeep(PRESETS);

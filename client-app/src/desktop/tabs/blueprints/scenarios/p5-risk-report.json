@@ -78,12 +78,13 @@
                 "source": "positions",
                 "filter": {"field": "instrumentType", "op": "=", "value": "Option"},
                 "groupBy": ["underlying"],
-                "columnState": [
-                    {"field": "delta", "format": {"name": "greek", "scale": "thousands"}},
-                    {"field": "gamma", "format": {"name": "greek", "scale": "thousands"}},
-                    {"field": "vega", "format": {"name": "greek", "scale": "thousands"}},
-                    {"field": "theta", "format": {"name": "greek", "scale": "thousands"}}
-                ]
+                "columnState": ["delta", "gamma", "vega", "theta"],
+                "columns": {
+                    "delta": {"format": {"name": "greek", "scale": "thousands"}},
+                    "gamma": {"format": {"name": "greek", "scale": "thousands"}},
+                    "vega": {"format": {"name": "greek", "scale": "thousands"}},
+                    "theta": {"format": {"name": "greek", "scale": "thousands"}}
+                }
             }
         },
         "bonds": {"component": "dashCanvas", "children": [{"id": "bondsGrid", "x": 0, "y": 0, "w": 12, "h": 10}]},

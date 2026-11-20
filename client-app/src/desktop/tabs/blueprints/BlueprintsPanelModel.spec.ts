@@ -1,6 +1,7 @@
 import {DataCatalog, FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
-import {find} from 'lodash';
+import {XH} from '@xh/hoist/core';
+import {cloneDeep, find, omit} from 'lodash';
 import {afterAll, beforeAll, describe, expect, it} from 'vitest';
 import {BlueprintsPanelModel, PRESETS} from './BlueprintsPanelModel';
 import p1 from './scenarios/p1-one-grid.json';
@@ -103,6 +104,24 @@ describe('Blueprints designer', () => {
         model.deleteBlueprint('p2');
         expect(find(model.records, {id: 'p2'})).toBeUndefined();
         expect(model.selectedId).toBe('p1');
+    });
+
+    it('brings a stored blueprint in an older shape up to date as the library loads', async () => {
+        const stale = cloneDeep(PRESETS),
+            p5 = find(stale, {id: 'p5'}).blueprint;
+        p5.elements.optionsGrid.config = {
+            ...omit(p5.elements.optionsGrid.config, 'columns'),
+            columnState: [{field: 'delta', format: {name: 'greek', scale: 'thousands'}}]
+        };
+        XH.localStorageService.set('blueprints.designer.library', stale);
+
+        const reloaded = await createModelAsync();
+        reloaded.selectedId = 'p5';
+        expect(reloaded.issues.filter(it => it.severity === 'error')).toEqual([]);
+        expect(reloaded.blueprintModel.blueprint.elements.optionsGrid.config.columns).toEqual({
+            delta: {format: {name: 'greek', scale: 'thousands'}}
+        });
+        reloaded.destroy();
     });
 
     it('restores the presets, and their empty conversations, on a reset', () => {
