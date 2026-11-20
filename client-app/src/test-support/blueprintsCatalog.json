@@ -1,925 +1,1076 @@
 {
-    "version": 1,
-    "label": "Toolbox",
-    "formats": {
-        "mv": {
-            "scale": "millions",
-            "precision": 1,
-            "ledger": true
-        },
-        "exposure": {
-            "scale": "millions",
-            "precision": 1,
-            "ledger": true
-        },
-        "pnl": {
-            "precision": 0,
-            "ledger": true,
-            "colorSpec": true,
-            "tooltip": true
-        },
-        "price": {
-            "precision": 2
-        },
-        "greek": {
-            "precision": 0,
-            "ledger": true
-        },
-        "pct": {
-            "precision": 2
-        },
-        "years": {
-            "precision": 2,
-            "label": "y"
-        },
-        "ratio": {
-            "precision": 2
-        },
-        "qty": {
-            "precision": 0
-        },
-        "temp": {
-            "precision": 0,
-            "label": "°"
-        },
-        "speed": {
-            "precision": 0
-        },
-        "pressure": {
-            "precision": 0,
-            "label": " hPa"
-        },
-        "percentPoints": {
-            "precision": 0,
-            "label": "%"
-        },
-        "chance": {
-            "precision": 0
-        },
-        "rain": {
-            "precision": 1,
-            "label": " mm"
-        }
+  "version": 1,
+  "label": "Toolbox",
+  "formats": {
+    "mv": {
+      "scale": "millions",
+      "precision": 1,
+      "ledger": true
     },
-    "kinds": {
-        "marketValue": {
-            "base": "currency:USD",
-            "format": "mv",
-            "aggregator": "SUM"
-        },
-        "exposure": {
-            "base": "currency:USD",
-            "format": "exposure",
-            "aggregator": "SUM"
-        },
-        "pnl": {
-            "base": "currency:USD",
-            "format": "pnl",
-            "aggregator": "SUM"
-        },
-        "risk": {
-            "base": "currency:USD",
-            "format": "exposure",
-            "aggregator": "server"
-        },
-        "greek": {
-            "base": "currency:USD",
-            "format": "greek",
-            "aggregator": "SUM"
-        },
-        "price": {
-            "base": "currency:USD",
-            "format": "price",
-            "aggregator": "UNIQUE"
-        },
-        "weight": {
-            "base": "fraction",
-            "format": "pct"
-        },
-        "years": {
-            "base": "number",
-            "format": "years"
-        },
-        "ratio": {
-            "base": "number",
-            "format": "ratio"
-        },
-        "ticker": {
-            "base": "string",
-            "renderer": "toolbox.ticker"
-        },
-        "identifier": {
-            "base": "string",
-            "aggregator": "UNIQUE"
-        },
-        "temperature": {
-            "base": "number",
-            "format": "temp",
-            "aggregator": "AVG"
-        },
-        "speed": {
-            "base": "number",
-            "format": "speed",
-            "aggregator": "AVG"
-        },
-        "pressure": {
-            "base": "number",
-            "format": "pressure",
-            "aggregator": "AVG"
-        },
-        "percentPoints": {
-            "base": "number",
-            "format": "percentPoints",
-            "aggregator": "AVG"
-        },
-        "chance": {
-            "base": "fraction",
-            "format": "chance",
-            "aggregator": "MAX"
-        },
-        "rain": {
-            "base": "number",
-            "format": "rain",
-            "aggregator": "SUM"
-        },
-        "condition": {
-            "base": "string",
-            "renderer": "toolbox.weatherIcon",
-            "aggregator": "UNIQUE"
-        }
+    "exposure": {
+      "scale": "millions",
+      "precision": 1,
+      "ledger": true
     },
-    "datasets": {
-        "positions": {
-            "label": "Positions",
-            "description": "Holdings at the close of the as-of date.",
-            "guidance": "One row per position. Updates live when the as-of date is today. Join to orders through the shared dimensions.",
-            "params": {
-                "asOf": {
-                    "type": "localDate",
-                    "required": true
-                },
-                "fund": {
-                    "type": "toolbox.fund",
-                    "description": "One fund. Leave empty for all funds."
-                }
-            },
-            "fields": [
-                "fund",
-                "strategy",
-                "book",
-                "trader",
-                "model",
-                "assetClass",
-                "instrumentType",
-                "sector",
-                "industry",
-                "region",
-                "country",
-                "ccy",
-                "symbol",
-                "issuer",
-                "underlying",
-                "isin",
-                "cusip",
-                "quantity",
-                "price",
-                "mktVal",
-                {
-                    "name": "notional",
-                    "label": "Notional",
-                    "type": "number",
-                    "kind": "exposure",
-                    "category": "Exposure"
-                },
-                {
-                    "name": "grossExposure",
-                    "label": "Gross Exposure",
-                    "type": "number",
-                    "kind": "exposure",
-                    "category": "Exposure"
-                },
-                {
-                    "name": "netExposure",
-                    "label": "Net Exposure",
-                    "type": "number",
-                    "kind": "exposure",
-                    "category": "Exposure"
-                },
-                {
-                    "name": "betaAdjExposure",
-                    "label": "Beta-Adj Exposure",
-                    "type": "number",
-                    "kind": "exposure",
-                    "category": "Exposure"
-                },
-                {
-                    "name": "pctNav",
-                    "label": "% of NAV",
-                    "type": "number",
-                    "kind": "weight",
-                    "aggregator": "server",
-                    "renderer": {
-                        "name": "bar",
-                        "max": 0.1
-                    },
-                    "category": "Exposure",
-                    "guidance": "Weight of the position in its fund. Meaningful within one fund."
-                },
-                {
-                    "name": "pnlDay",
-                    "label": "Day P&L",
-                    "type": "number",
-                    "kind": "pnl",
-                    "category": "P&L"
-                },
-                {
-                    "name": "pnlMtd",
-                    "label": "MTD P&L",
-                    "type": "number",
-                    "kind": "pnl",
-                    "category": "P&L"
-                },
-                {
-                    "name": "pnlYtd",
-                    "label": "YTD P&L",
-                    "type": "number",
-                    "kind": "pnl",
-                    "category": "P&L"
-                },
-                {
-                    "name": "delta",
-                    "label": "Delta",
-                    "type": "number",
-                    "kind": "greek",
-                    "category": [
-                        "Risk",
-                        "Greeks"
-                    ],
-                    "guidance": "Dollar delta. Set on options only, empty elsewhere."
-                },
-                {
-                    "name": "gamma",
-                    "label": "Gamma",
-                    "type": "number",
-                    "kind": "greek",
-                    "category": [
-                        "Risk",
-                        "Greeks"
-                    ],
-                    "guidance": "Dollar gamma. Set on options only."
-                },
-                {
-                    "name": "vega",
-                    "label": "Vega",
-                    "type": "number",
-                    "kind": "greek",
-                    "category": [
-                        "Risk",
-                        "Greeks"
-                    ],
-                    "guidance": "Dollar vega. Set on options only."
-                },
-                {
-                    "name": "theta",
-                    "label": "Theta",
-                    "type": "number",
-                    "kind": "greek",
-                    "category": [
-                        "Risk",
-                        "Greeks"
-                    ],
-                    "guidance": "Dollar theta per day. Set on options only."
-                },
-                {
-                    "name": "duration",
-                    "label": "Duration",
-                    "type": "number",
-                    "kind": "years",
-                    "aggregator": {
-                        "type": "weightedAverage",
-                        "weightField": "mktVal",
-                        "absolute": true
-                    },
-                    "category": [
-                        "Risk",
-                        "Fixed Income"
-                    ],
-                    "guidance": "Set on bonds only."
-                },
-                {
-                    "name": "dv01",
-                    "label": "DV01",
-                    "type": "number",
-                    "kind": "currency:USD",
-                    "aggregator": "SUM",
-                    "category": [
-                        "Risk",
-                        "Fixed Income"
-                    ],
-                    "guidance": "Set on bonds only."
-                },
-                {
-                    "name": "yield",
-                    "label": "Yield",
-                    "type": "number",
-                    "kind": "fraction",
-                    "aggregator": {
-                        "type": "weightedAverage",
-                        "weightField": "mktVal",
-                        "absolute": true
-                    },
-                    "category": [
-                        "Risk",
-                        "Fixed Income"
-                    ],
-                    "guidance": "Set on bonds only."
-                },
-                "beta",
-                "var95",
-                "var99",
-                {
-                    "name": "return",
-                    "label": "Return",
-                    "type": "number",
-                    "kind": "fraction",
-                    "aggregator": "server",
-                    "params": {
-                        "start": {
-                            "type": "localDate",
-                            "required": true
-                        },
-                        "end": {
-                            "type": "localDate",
-                            "required": true
-                        }
-                    },
-                    "category": "P&L",
-                    "guidance": "Return over a window. Declare one instance per window on the source, such as month to date and year to date."
-                },
-                "shockedPnl"
-            ]
-        },
-        "orders": {
-            "label": "Orders",
-            "description": "Orders on the as-of date.",
-            "guidance": "One row per order. Updates live when the as-of date is today. A selection in a positions grid filters orders through the shared dimensions.",
-            "params": {
-                "asOf": {
-                    "type": "localDate",
-                    "required": true
-                },
-                "fund": {
-                    "type": "toolbox.fund",
-                    "description": "One fund. Leave empty for all funds."
-                }
-            },
-            "fields": [
-                "fund",
-                "strategy",
-                "book",
-                "trader",
-                "model",
-                "assetClass",
-                "instrumentType",
-                "sector",
-                "industry",
-                "region",
-                "country",
-                "symbol",
-                "quantity",
-                "price",
-                "mktVal",
-                {
-                    "name": "orderId",
-                    "label": "Order ID",
-                    "type": "string",
-                    "kind": "identifier",
-                    "category": "Order"
-                },
-                {
-                    "name": "dir",
-                    "label": "Direction",
-                    "type": "string",
-                    "isDimension": true,
-                    "renderer": {
-                        "name": "badge",
-                        "intents": {
-                            "Buy": "success",
-                            "Sell": "danger"
-                        }
-                    },
-                    "category": "Order"
-                },
-                {
-                    "name": "commission",
-                    "label": "Commission",
-                    "type": "number",
-                    "kind": "currency:USD",
-                    "aggregator": "SUM",
-                    "category": "Order"
-                },
-                {
-                    "name": "confidence",
-                    "label": "Confidence",
-                    "type": "int",
-                    "aggregator": "AVG",
-                    "category": "Order",
-                    "guidance": "The model's confidence in the order, from 0 to 100."
-                },
-                {
-                    "name": "time",
-                    "label": "Time",
-                    "type": "date",
-                    "format": {
-                        "date": "time"
-                    },
-                    "aggregator": "MAX",
-                    "category": "Order"
-                }
-            ]
-        },
-        "prices": {
-            "label": "Prices",
-            "description": "Daily prices for one symbol.",
-            "guidance": "One row per trading day. Chart close against day for price history.",
-            "params": {
-                "symbol": {
-                    "type": "string",
-                    "required": true
-                },
-                "start": {
-                    "type": "localDate",
-                    "required": true
-                },
-                "end": {
-                    "type": "localDate",
-                    "required": true
-                }
-            },
-            "fields": [
-                "symbol",
-                {
-                    "name": "day",
-                    "label": "Day",
-                    "type": "localDate",
-                    "format": {
-                        "date": "date"
-                    }
-                },
-                {
-                    "name": "open",
-                    "label": "Open",
-                    "type": "number",
-                    "kind": "price"
-                },
-                {
-                    "name": "high",
-                    "label": "High",
-                    "type": "number",
-                    "kind": "price"
-                },
-                {
-                    "name": "low",
-                    "label": "Low",
-                    "type": "number",
-                    "kind": "price"
-                },
-                {
-                    "name": "close",
-                    "label": "Close",
-                    "type": "number",
-                    "kind": "price"
-                },
-                {
-                    "name": "volume",
-                    "label": "Volume",
-                    "type": "number",
-                    "kind": "shares",
-                    "aggregator": "SUM"
-                }
-            ]
-        },
-        "hypotheticalPortfolio": {
-            "label": "Hypothetical Portfolio",
-            "description": "Positions and risk for a portfolio the user builds.",
-            "guidance": "The position fields, priced for a portfolio of tickers and weights. Use it to stress or compare a hypothetical portfolio.",
-            "params": {
-                "portfolio": {
-                    "type": "toolbox.portfolio",
-                    "required": true,
-                    "description": "A portfolio: {\"holdings\": [{\"symbol\": \"AAPL\", \"weight\": 0.5}]}, with weights as fractions. The server prices it against a notional of 100,000,000 USD."
-                },
-                "asOf": {
-                    "type": "localDate",
-                    "required": true
-                }
-            },
-            "fields": [
-                "assetClass",
-                "instrumentType",
-                "sector",
-                "industry",
-                "region",
-                "country",
-                "ccy",
-                "symbol",
-                "price",
-                "mktVal",
-                {
-                    "name": "weight",
-                    "label": "Weight",
-                    "type": "number",
-                    "kind": "weight",
-                    "aggregator": "SUM",
-                    "category": "Exposure"
-                },
-                "beta",
-                "var95",
-                "var99",
-                "shockedPnl"
-            ]
-        },
-        "weather": {
-            "label": "Forecast",
-            "description": "The forecast for one city, for the next five days.",
-            "guidance": "One row per three-hour step. Chart a field against time for a trend. Group by day for a daily summary.",
-            "params": {
-                "city": {
-                    "type": "string",
-                    "required": true
-                },
-                "units": {
-                    "type": "string",
-                    "required": true,
-                    "options": {
-                        "values": [
-                            "imperial",
-                            "metric"
-                        ]
-                    }
-                }
-            },
-            "fields": [
-                "city",
-                "temp",
-                "feelsLike",
-                "humidity",
-                "pressure",
-                "windSpeed",
-                "windGust",
-                "conditions",
-                "iconCode",
-                {
-                    "name": "time",
-                    "label": "Time",
-                    "type": "date",
-                    "format": {
-                        "date": "dateTime"
-                    }
-                },
-                {
-                    "name": "day",
-                    "label": "Day",
-                    "type": "localDate",
-                    "isDimension": true,
-                    "format": {
-                        "date": "date"
-                    }
-                },
-                {
-                    "name": "tempMin",
-                    "label": "Low",
-                    "type": "number",
-                    "kind": "temperature",
-                    "aggregator": "MIN"
-                },
-                {
-                    "name": "tempMax",
-                    "label": "High",
-                    "type": "number",
-                    "kind": "temperature",
-                    "aggregator": "MAX"
-                },
-                {
-                    "name": "precipProbability",
-                    "label": "Chance of Rain",
-                    "type": "number",
-                    "kind": "chance"
-                },
-                {
-                    "name": "precipVolume",
-                    "label": "Rain",
-                    "type": "number",
-                    "kind": "rain"
-                }
-            ]
-        },
-        "currentWeather": {
-            "label": "Current Conditions",
-            "description": "The weather in one city now.",
-            "guidance": "One row. Use for stat cards of the current conditions.",
-            "params": {
-                "city": {
-                    "type": "string",
-                    "required": true
-                },
-                "units": {
-                    "type": "string",
-                    "required": true,
-                    "options": {
-                        "values": [
-                            "imperial",
-                            "metric"
-                        ]
-                    }
-                }
-            },
-            "fields": [
-                "city",
-                "temp",
-                "feelsLike",
-                "humidity",
-                "pressure",
-                "windSpeed",
-                "windGust",
-                "conditions",
-                "iconCode"
-            ]
-        }
+    "pnl": {
+      "precision": 0,
+      "ledger": true,
+      "colorSpec": true,
+      "tooltip": true
     },
-    "fields": [
-        {
-            "name": "fund",
-            "label": "Fund",
-            "type": "string",
-            "isDimension": true,
-            "category": "Organization",
-            "guidance": "The fund that holds the position. Most reports filter to one fund."
+    "price": {
+      "precision": 2
+    },
+    "greek": {
+      "precision": 0,
+      "ledger": true
+    },
+    "pct": {
+      "precision": 2
+    },
+    "shock": {
+      "precision": "auto",
+      "withPlusSign": true
+    },
+    "years": {
+      "precision": 2,
+      "label": "y"
+    },
+    "ratio": {
+      "precision": 2
+    },
+    "qty": {
+      "precision": 0
+    },
+    "temp": {
+      "precision": 0,
+      "label": "°"
+    },
+    "speed": {
+      "precision": 0
+    },
+    "pressure": {
+      "precision": 0,
+      "label": " hPa"
+    },
+    "percentPoints": {
+      "precision": 0,
+      "label": "%"
+    },
+    "chance": {
+      "precision": 0
+    },
+    "rain": {
+      "precision": 1,
+      "label": " mm"
+    }
+  },
+  "kinds": {
+    "marketValue": {
+      "base": "currency:USD",
+      "format": "mv",
+      "aggregator": "SUM"
+    },
+    "exposure": {
+      "base": "currency:USD",
+      "format": "exposure",
+      "aggregator": "SUM"
+    },
+    "pnl": {
+      "base": "currency:USD",
+      "format": "pnl",
+      "aggregator": "SUM"
+    },
+    "risk": {
+      "base": "currency:USD",
+      "format": "exposure",
+      "aggregator": "server"
+    },
+    "greek": {
+      "base": "currency:USD",
+      "format": "greek",
+      "aggregator": "SUM"
+    },
+    "price": {
+      "base": "currency:USD",
+      "format": "price",
+      "aggregator": "UNIQUE"
+    },
+    "weight": {
+      "base": "fraction",
+      "format": "pct"
+    },
+    "shock": {
+      "base": "fraction",
+      "format": "shock"
+    },
+    "years": {
+      "base": "number",
+      "format": "years"
+    },
+    "ratio": {
+      "base": "number",
+      "format": "ratio"
+    },
+    "ticker": {
+      "base": "string",
+      "renderer": "toolbox.ticker"
+    },
+    "identifier": {
+      "base": "string",
+      "aggregator": "UNIQUE"
+    },
+    "temperature": {
+      "base": "number",
+      "format": "temp",
+      "aggregator": "AVG"
+    },
+    "speed": {
+      "base": "number",
+      "format": "speed",
+      "aggregator": "AVG"
+    },
+    "pressure": {
+      "base": "number",
+      "format": "pressure",
+      "aggregator": "AVG"
+    },
+    "percentPoints": {
+      "base": "number",
+      "format": "percentPoints",
+      "aggregator": "AVG"
+    },
+    "chance": {
+      "base": "fraction",
+      "format": "chance",
+      "aggregator": "MAX"
+    },
+    "rain": {
+      "base": "number",
+      "format": "rain",
+      "aggregator": "SUM"
+    },
+    "condition": {
+      "base": "string",
+      "renderer": "toolbox.weatherIcon",
+      "aggregator": "UNIQUE"
+    }
+  },
+  "datasets": {
+    "positions": {
+      "label": "Positions",
+      "description": "Holdings at the close of the as-of date.",
+      "guidance": "One row per position. Updates live when the as-of date is today. Join to orders through the shared dimensions.",
+      "params": {
+        "asOf": {
+          "type": "localDate",
+          "required": true
         },
-        {
-            "name": "strategy",
-            "label": "Strategy",
-            "type": "string",
-            "isDimension": true,
-            "category": "Organization"
-        },
-        {
-            "name": "book",
-            "label": "Book",
-            "type": "string",
-            "isDimension": true,
-            "parentDimension": "strategy",
-            "category": "Organization"
-        },
-        {
-            "name": "trader",
-            "label": "Trader",
-            "type": "string",
-            "isDimension": true,
-            "category": "Organization"
-        },
-        {
-            "name": "model",
-            "label": "Model",
-            "type": "string",
-            "isDimension": true,
-            "category": "Organization",
-            "guidance": "The quant model that sized the position. Use only when the user asks about models."
-        },
-        {
-            "name": "assetClass",
-            "label": "Asset Class",
-            "type": "string",
-            "isDimension": true,
-            "category": "Classification"
-        },
-        {
-            "name": "instrumentType",
-            "label": "Instrument Type",
-            "type": "string",
-            "isDimension": true,
-            "parentDimension": "assetClass",
-            "category": "Classification",
-            "guidance": "One of Equity, Option, Future, Bond or FX. Filter on it to show one type, such as options for Greeks or bonds for duration."
-        },
-        {
-            "name": "sector",
-            "label": "Sector",
-            "type": "string",
-            "isDimension": true,
-            "category": "Classification"
-        },
-        {
-            "name": "industry",
-            "label": "Industry",
-            "type": "string",
-            "isDimension": true,
-            "parentDimension": "sector",
-            "category": "Classification"
-        },
-        {
-            "name": "region",
-            "label": "Region",
-            "type": "string",
-            "isDimension": true,
-            "category": "Classification"
-        },
-        {
-            "name": "country",
-            "label": "Country",
-            "type": "string",
-            "isDimension": true,
-            "parentDimension": "region",
-            "category": "Classification"
-        },
-        {
-            "name": "ccy",
-            "label": "Currency",
-            "type": "string",
-            "isDimension": true,
-            "category": "Instrument"
-        },
-        {
-            "name": "symbol",
-            "label": "Symbol",
-            "type": "string",
-            "kind": "ticker",
-            "isDimension": true,
-            "parentDimension": "industry",
-            "category": "Instrument"
-        },
-        {
-            "name": "issuer",
-            "label": "Issuer",
-            "type": "string",
-            "isDimension": true,
-            "category": "Instrument",
-            "guidance": "The company that issued the instrument. Group bonds by it."
-        },
-        {
-            "name": "underlying",
-            "label": "Underlying",
-            "type": "string",
-            "kind": "ticker",
-            "isDimension": true,
-            "category": "Instrument",
-            "guidance": "Set on options and futures only. Group options by it."
-        },
-        {
-            "name": "isin",
-            "label": "ISIN",
-            "type": "string",
-            "kind": "identifier",
-            "category": [
-                "Instrument",
-                "Identifiers"
-            ]
-        },
-        {
-            "name": "cusip",
-            "label": "CUSIP",
-            "type": "string",
-            "kind": "identifier",
-            "category": [
-                "Instrument",
-                "Identifiers"
-            ]
-        },
-        {
-            "name": "quantity",
-            "label": "Quantity",
-            "type": "number",
-            "kind": "shares",
-            "aggregator": "UNIQUE",
-            "format": "qty",
-            "category": "Exposure",
-            "guidance": "Shows only where one instrument is in view. Use market value to compare across instruments."
-        },
-        {
-            "name": "price",
-            "label": "Price",
-            "type": "number",
-            "kind": "price",
-            "category": "Exposure"
-        },
-        {
-            "name": "mktVal",
-            "label": "Market Value",
-            "type": "number",
-            "kind": "marketValue",
-            "category": "Exposure",
-            "description": "Value at the close of the as-of date.",
-            "guidance": "The default measure of size. Use it unless the user asks for gross, net or beta-adjusted exposure."
-        },
-        {
-            "name": "beta",
-            "label": "Beta",
-            "type": "number",
-            "kind": "ratio",
-            "aggregator": {
-                "type": "weightedAverage",
-                "weightField": "mktVal",
-                "absolute": true
-            },
-            "category": "Risk"
-        },
-        {
-            "name": "var95",
-            "label": "VaR (95%)",
-            "type": "number",
-            "kind": "risk",
-            "category": [
-                "Risk",
-                "VaR"
-            ],
-            "guidance": "One-day VaR. Does not add up, so the server computes it at each grouping level."
-        },
-        {
-            "name": "var99",
-            "label": "VaR (99%)",
-            "type": "number",
-            "kind": "risk",
-            "category": [
-                "Risk",
-                "VaR"
-            ]
-        },
-        {
-            "name": "shockedPnl",
-            "label": "Shocked P&L",
-            "type": "number",
-            "kind": "pnl",
-            "params": {
-                "shock": {
-                    "type": "number",
-                    "required": true,
-                    "description": "An equity shock as a fraction, such as -0.1 for minus 10 percent."
-                }
-            },
-            "category": [
-                "Risk",
-                "Stress"
-            ],
-            "guidance": "P&L if equities move by the shock. Declare one instance per shock on the source."
-        },
-        {
-            "name": "city",
-            "label": "City",
-            "type": "string",
-            "isDimension": true
-        },
-        {
-            "name": "temp",
-            "label": "Temperature",
-            "type": "number",
-            "kind": "temperature",
-            "guidance": "In Fahrenheit or Celsius, as the units parameter sets. Say which in titles."
-        },
-        {
-            "name": "feelsLike",
-            "label": "Feels Like",
-            "type": "number",
-            "kind": "temperature"
-        },
-        {
-            "name": "humidity",
-            "label": "Humidity",
-            "type": "number",
-            "kind": "percentPoints"
-        },
-        {
-            "name": "pressure",
-            "label": "Pressure",
-            "type": "number",
-            "kind": "pressure"
-        },
-        {
-            "name": "windSpeed",
-            "label": "Wind",
-            "type": "number",
-            "kind": "speed",
-            "guidance": "In miles per hour or meters per second, as the units parameter sets."
-        },
-        {
-            "name": "windGust",
-            "label": "Gusts",
-            "type": "number",
-            "kind": "speed",
-            "aggregator": "MAX"
-        },
-        {
-            "name": "conditions",
-            "label": "Conditions",
-            "type": "string",
-            "kind": "condition",
-            "guidance": "The main condition, usually Clear, Clouds, Rain, Drizzle, Thunderstorm, Snow or Mist. The provider can also report others, such as Haze, Fog or Smoke. Shows as an icon with its name."
-        },
-        {
-            "name": "iconCode",
-            "label": "Icon Code",
-            "type": "string",
-            "aggregator": "UNIQUE",
-            "guidance": "The provider's icon code, such as 01d or 01n. The weatherIcon renderer reads it to choose a day or night icon. Do not show it as a column."
+        "fund": {
+          "type": "toolbox.fund",
+          "description": "One fund. Leave empty for all funds."
         }
-    ]
+      },
+      "key": [
+        "fund",
+        "strategy",
+        "book",
+        "trader",
+        "model",
+        "symbol"
+      ],
+      "fields": [
+        "fund",
+        "strategy",
+        "book",
+        "trader",
+        "model",
+        "assetClass",
+        "instrumentType",
+        "sector",
+        "industry",
+        "region",
+        "country",
+        "ccy",
+        "symbol",
+        "issuer",
+        "underlying",
+        "isin",
+        "cusip",
+        "quantity",
+        "price",
+        "mktVal",
+        {
+          "name": "notional",
+          "label": "Notional",
+          "type": "number",
+          "kind": "exposure",
+          "category": "Exposure"
+        },
+        {
+          "name": "grossExposure",
+          "label": "Gross Exposure",
+          "type": "number",
+          "kind": "exposure",
+          "category": "Exposure"
+        },
+        {
+          "name": "netExposure",
+          "label": "Net Exposure",
+          "type": "number",
+          "kind": "exposure",
+          "category": "Exposure"
+        },
+        {
+          "name": "betaAdjExposure",
+          "label": "Beta-Adj Exposure",
+          "type": "number",
+          "kind": "exposure",
+          "category": "Exposure"
+        },
+        {
+          "name": "pctNav",
+          "label": "% of NAV",
+          "type": "number",
+          "kind": "weight",
+          "aggregator": "server",
+          "renderer": {
+            "name": "bar",
+            "max": 0.1
+          },
+          "category": "Exposure",
+          "guidance": "Weight of the position as a percent of its fund's NAV at the prior close. Meaningful within one fund."
+        },
+        {
+          "name": "pnlDay",
+          "label": "Day P&L",
+          "type": "number",
+          "kind": "pnl",
+          "category": "P&L"
+        },
+        {
+          "name": "pnlMtd",
+          "label": "MTD P&L",
+          "type": "number",
+          "kind": "pnl",
+          "category": "P&L"
+        },
+        {
+          "name": "pnlYtd",
+          "label": "YTD P&L",
+          "type": "number",
+          "kind": "pnl",
+          "category": "P&L"
+        },
+        {
+          "name": "delta",
+          "label": "Delta",
+          "type": "number",
+          "kind": "greek",
+          "category": [
+            "Risk",
+            "Greeks"
+          ],
+          "guidance": "Dollar delta. Set on options only, empty elsewhere."
+        },
+        {
+          "name": "gamma",
+          "label": "Gamma",
+          "type": "number",
+          "kind": "greek",
+          "category": [
+            "Risk",
+            "Greeks"
+          ],
+          "guidance": "Dollar gamma. Set on options only."
+        },
+        {
+          "name": "vega",
+          "label": "Vega",
+          "type": "number",
+          "kind": "greek",
+          "category": [
+            "Risk",
+            "Greeks"
+          ],
+          "guidance": "Dollar vega. Set on options only."
+        },
+        {
+          "name": "theta",
+          "label": "Theta",
+          "type": "number",
+          "kind": "greek",
+          "category": [
+            "Risk",
+            "Greeks"
+          ],
+          "guidance": "Dollar theta per day. Set on options only."
+        },
+        {
+          "name": "duration",
+          "label": "Duration",
+          "type": "number",
+          "kind": "years",
+          "aggregator": {
+            "type": "weightedAverage",
+            "weightField": "mktVal",
+            "absolute": true
+          },
+          "category": [
+            "Risk",
+            "Fixed Income"
+          ],
+          "guidance": "Set on bonds only."
+        },
+        {
+          "name": "dv01",
+          "label": "DV01",
+          "type": "number",
+          "kind": "currency:USD",
+          "aggregator": "SUM",
+          "category": [
+            "Risk",
+            "Fixed Income"
+          ],
+          "guidance": "Set on bonds only."
+        },
+        {
+          "name": "yield",
+          "label": "Yield",
+          "type": "number",
+          "kind": "fraction",
+          "aggregator": {
+            "type": "weightedAverage",
+            "weightField": "mktVal",
+            "absolute": true
+          },
+          "category": [
+            "Risk",
+            "Fixed Income"
+          ],
+          "guidance": "Set on bonds only."
+        },
+        "beta",
+        "var95",
+        "var99",
+        {
+          "name": "return",
+          "label": "Return",
+          "type": "number",
+          "kind": "fraction",
+          "aggregator": "server",
+          "params": {
+            "start": {
+              "type": "localDate",
+              "required": true
+            },
+            "end": {
+              "type": "localDate",
+              "required": true
+            }
+          },
+          "category": "P&L",
+          "guidance": "Return over a window. Declare one instance per window on the source, such as month to date and year to date."
+        },
+        "shockedPnl",
+        {
+          "name": "closeHistory",
+          "label": "Close (30d)",
+          "type": "number[]",
+          "kind": "price",
+          "category": [
+            "Trend"
+          ],
+          "guidance": "The instrument's closing price for each of the last 30 business days through asOf, oldest first. The last point is live when asOf is today. Large across all funds: request it with a fund parameter or a filter."
+        },
+        {
+          "name": "pnlHistory",
+          "label": "Daily P&L (30d)",
+          "type": "number[]",
+          "kind": "pnl",
+          "category": [
+            "Trend"
+          ],
+          "guidance": "The position's daily P&L for each of the last 30 business days through asOf, oldest first. The last point equals pnlDay, and is live when asOf is today. Large across all funds: request it with a fund parameter or a filter."
+        }
+      ]
+    },
+    "fundSummary": {
+      "label": "Fund Summary",
+      "description": "One row per fund at the close of the as-of date, with its NAV, P&L and recent trend.",
+      "guidance": "Use for fund-level totals and trends, such as a sparkline of each fund's P&L or drawdown. It is far smaller than positions, so prefer it for any per-fund figure.",
+      "params": {
+        "asOf": {
+          "type": "localDate",
+          "required": true
+        },
+        "fund": {
+          "type": "toolbox.fund",
+          "description": "One fund. Leave empty for all funds."
+        }
+      },
+      "key": [
+        "fund"
+      ],
+      "fields": [
+        "fund",
+        {
+          "name": "nav",
+          "label": "NAV",
+          "type": "number",
+          "kind": "exposure",
+          "category": "Exposure",
+          "guidance": "The fund's NAV at the prior close, as % of NAV uses."
+        },
+        {
+          "name": "pnlDay",
+          "label": "Day P&L",
+          "type": "number",
+          "kind": "pnl",
+          "category": "P&L"
+        },
+        {
+          "name": "pnlMtd",
+          "label": "MTD P&L",
+          "type": "number",
+          "kind": "pnl",
+          "category": "P&L"
+        },
+        {
+          "name": "pnlYtd",
+          "label": "YTD P&L",
+          "type": "number",
+          "kind": "pnl",
+          "category": "P&L"
+        },
+        {
+          "name": "pnlHistory",
+          "label": "Daily P&L (60d)",
+          "type": "number[]",
+          "kind": "pnl",
+          "category": [
+            "Trend"
+          ],
+          "guidance": "The fund's daily P&L for each of the last 60 business days through asOf, oldest first. The last point equals pnlDay."
+        },
+        {
+          "name": "cumPnlHistory",
+          "label": "Cumulative P&L (60d)",
+          "type": "number[]",
+          "kind": "pnl",
+          "category": [
+            "Trend"
+          ],
+          "guidance": "The fund's P&L accumulated over the last 60 business days, oldest first."
+        },
+        {
+          "name": "drawdownHistory",
+          "label": "Drawdown (60d)",
+          "type": "number[]",
+          "kind": "currency:USD",
+          "category": [
+            "Trend"
+          ],
+          "guidance": "How far the fund's cumulative P&L sits below its running peak over the last 60 business days, in USD. Always zero or less."
+        }
+      ]
+    },
+    "orders": {
+      "label": "Orders",
+      "description": "Orders on the as-of date.",
+      "guidance": "One row per order. Updates live when the as-of date is today. A selection in a positions grid filters orders through the shared dimensions.",
+      "params": {
+        "asOf": {
+          "type": "localDate",
+          "required": true
+        },
+        "fund": {
+          "type": "toolbox.fund",
+          "description": "One fund. Leave empty for all funds."
+        }
+      },
+      "key": [
+        "orderId"
+      ],
+      "fields": [
+        "fund",
+        "strategy",
+        "book",
+        "trader",
+        "model",
+        "assetClass",
+        "instrumentType",
+        "sector",
+        "industry",
+        "region",
+        "country",
+        "symbol",
+        "quantity",
+        "price",
+        "mktVal",
+        {
+          "name": "orderId",
+          "label": "Order ID",
+          "type": "string",
+          "kind": "identifier",
+          "category": "Order"
+        },
+        {
+          "name": "dir",
+          "label": "Direction",
+          "type": "string",
+          "isDimension": true,
+          "renderer": {
+            "name": "badge",
+            "intents": {
+              "Buy": "success",
+              "Sell": "danger"
+            }
+          },
+          "category": "Order"
+        },
+        {
+          "name": "commission",
+          "label": "Commission",
+          "type": "number",
+          "kind": "currency:USD",
+          "aggregator": "SUM",
+          "category": "Order"
+        },
+        {
+          "name": "confidence",
+          "label": "Confidence",
+          "type": "int",
+          "aggregator": "AVG",
+          "category": "Order",
+          "guidance": "The model's confidence in the order, from 0 to 100."
+        },
+        {
+          "name": "time",
+          "label": "Time",
+          "type": "date",
+          "format": {
+            "date": "time"
+          },
+          "aggregator": "MAX",
+          "category": "Order"
+        }
+      ]
+    },
+    "prices": {
+      "label": "Prices",
+      "description": "Daily prices for one symbol.",
+      "guidance": "One row per trading day. Chart close against day for price history.",
+      "params": {
+        "symbol": {
+          "type": "string",
+          "required": true
+        },
+        "start": {
+          "type": "localDate",
+          "required": true
+        },
+        "end": {
+          "type": "localDate",
+          "required": true
+        }
+      },
+      "key": [
+        "symbol",
+        "day"
+      ],
+      "fields": [
+        "symbol",
+        {
+          "name": "day",
+          "label": "Day",
+          "type": "localDate",
+          "format": {
+            "date": "date"
+          }
+        },
+        {
+          "name": "open",
+          "label": "Open",
+          "type": "number",
+          "kind": "price",
+          "aggregator": {
+            "type": "first",
+            "orderField": "day"
+          }
+        },
+        {
+          "name": "high",
+          "label": "High",
+          "type": "number",
+          "kind": "price",
+          "aggregator": "MAX"
+        },
+        {
+          "name": "low",
+          "label": "Low",
+          "type": "number",
+          "kind": "price",
+          "aggregator": "MIN"
+        },
+        {
+          "name": "close",
+          "label": "Close",
+          "type": "number",
+          "kind": "price",
+          "aggregator": {
+            "type": "last",
+            "orderField": "day"
+          }
+        },
+        {
+          "name": "volume",
+          "label": "Volume",
+          "type": "number",
+          "kind": "shares",
+          "aggregator": "SUM"
+        }
+      ]
+    },
+    "hypotheticalPortfolio": {
+      "label": "Hypothetical Portfolio",
+      "description": "Positions and risk for a portfolio the user builds.",
+      "guidance": "The position fields, priced for a portfolio of tickers and weights. Use it to stress or compare a hypothetical portfolio.",
+      "params": {
+        "portfolio": {
+          "type": "toolbox.portfolio",
+          "required": true,
+          "description": "A portfolio: {\"holdings\": [{\"symbol\": \"AAPL\", \"weight\": 0.5}]}, with weights as fractions. The server prices it against a notional of 100,000,000 USD."
+        },
+        "asOf": {
+          "type": "localDate",
+          "required": true
+        }
+      },
+      "key": [
+        "symbol"
+      ],
+      "fields": [
+        "assetClass",
+        "instrumentType",
+        "sector",
+        "industry",
+        "region",
+        "country",
+        "ccy",
+        "symbol",
+        "price",
+        "mktVal",
+        {
+          "name": "weight",
+          "label": "Weight",
+          "type": "number",
+          "kind": "weight",
+          "aggregator": "SUM",
+          "category": "Exposure"
+        },
+        "beta",
+        "var95",
+        "var99",
+        "shockedPnl"
+      ]
+    },
+    "weather": {
+      "label": "Forecast",
+      "description": "The forecast for one city, for the next five days.",
+      "guidance": "One row per three-hour step. Chart a field against time for a trend. Group by day for a daily summary.",
+      "params": {
+        "city": {
+          "type": "string",
+          "required": true
+        },
+        "units": {
+          "type": "string",
+          "required": true,
+          "options": {
+            "values": [
+              "imperial",
+              "metric"
+            ]
+          }
+        }
+      },
+      "key": [
+        "city",
+        "time"
+      ],
+      "fields": [
+        "city",
+        "temp",
+        "feelsLike",
+        "humidity",
+        "pressure",
+        "windSpeed",
+        "windGust",
+        "conditions",
+        "iconCode",
+        {
+          "name": "time",
+          "label": "Time",
+          "type": "date",
+          "format": {
+            "date": "dateTime"
+          }
+        },
+        {
+          "name": "day",
+          "label": "Day",
+          "type": "localDate",
+          "isDimension": true,
+          "format": {
+            "date": "date"
+          }
+        },
+        {
+          "name": "tempMin",
+          "label": "Low",
+          "type": "number",
+          "kind": "temperature",
+          "aggregator": "MIN"
+        },
+        {
+          "name": "tempMax",
+          "label": "High",
+          "type": "number",
+          "kind": "temperature",
+          "aggregator": "MAX"
+        },
+        {
+          "name": "precipProbability",
+          "label": "Chance of Rain",
+          "type": "number",
+          "kind": "chance"
+        },
+        {
+          "name": "precipVolume",
+          "label": "Rain",
+          "type": "number",
+          "kind": "rain"
+        }
+      ]
+    },
+    "currentWeather": {
+      "label": "Current Conditions",
+      "description": "The weather in one city now.",
+      "guidance": "One row. Use for stat cards of the current conditions.",
+      "params": {
+        "city": {
+          "type": "string",
+          "required": true
+        },
+        "units": {
+          "type": "string",
+          "required": true,
+          "options": {
+            "values": [
+              "imperial",
+              "metric"
+            ]
+          }
+        }
+      },
+      "key": [
+        "city"
+      ],
+      "fields": [
+        "city",
+        "temp",
+        "feelsLike",
+        "humidity",
+        "pressure",
+        "windSpeed",
+        "windGust",
+        "conditions",
+        "iconCode",
+        {
+          "name": "tempNext24h",
+          "label": "Next 24h",
+          "type": "number[]",
+          "kind": "temperature",
+          "guidance": "The temperature for each three-hour step of the next 24 hours, oldest first: the first eight steps of the weather dataset."
+        }
+      ]
+    }
+  },
+  "fields": [
+    {
+      "name": "fund",
+      "label": "Fund",
+      "type": "string",
+      "isDimension": true,
+      "category": "Organization",
+      "guidance": "The fund that holds the position. Most reports filter to one fund."
+    },
+    {
+      "name": "strategy",
+      "label": "Strategy",
+      "type": "string",
+      "isDimension": true,
+      "category": "Organization"
+    },
+    {
+      "name": "book",
+      "label": "Book",
+      "type": "string",
+      "isDimension": true,
+      "parentDimension": "strategy",
+      "category": "Organization"
+    },
+    {
+      "name": "trader",
+      "label": "Trader",
+      "type": "string",
+      "isDimension": true,
+      "category": "Organization"
+    },
+    {
+      "name": "model",
+      "label": "Model",
+      "type": "string",
+      "isDimension": true,
+      "category": "Organization",
+      "guidance": "The quant model that sized the position. Use only when the user asks about models."
+    },
+    {
+      "name": "assetClass",
+      "label": "Asset Class",
+      "type": "string",
+      "isDimension": true,
+      "category": "Classification"
+    },
+    {
+      "name": "instrumentType",
+      "label": "Instrument Type",
+      "type": "string",
+      "isDimension": true,
+      "parentDimension": "assetClass",
+      "category": "Classification",
+      "guidance": "One of Equity, Option, Future, Bond or FX. Filter on it to show one type, such as options for Greeks or bonds for duration."
+    },
+    {
+      "name": "sector",
+      "label": "Sector",
+      "type": "string",
+      "isDimension": true,
+      "category": "Classification"
+    },
+    {
+      "name": "industry",
+      "label": "Industry",
+      "type": "string",
+      "isDimension": true,
+      "parentDimension": "sector",
+      "category": "Classification"
+    },
+    {
+      "name": "region",
+      "label": "Region",
+      "type": "string",
+      "isDimension": true,
+      "category": "Classification"
+    },
+    {
+      "name": "country",
+      "label": "Country",
+      "type": "string",
+      "isDimension": true,
+      "parentDimension": "region",
+      "category": "Classification"
+    },
+    {
+      "name": "ccy",
+      "label": "Currency",
+      "type": "string",
+      "isDimension": true,
+      "category": "Instrument"
+    },
+    {
+      "name": "symbol",
+      "label": "Symbol",
+      "type": "string",
+      "kind": "ticker",
+      "isDimension": true,
+      "parentDimension": "industry",
+      "category": "Instrument"
+    },
+    {
+      "name": "issuer",
+      "label": "Issuer",
+      "type": "string",
+      "isDimension": true,
+      "category": "Instrument",
+      "guidance": "The company that issued the instrument. Group bonds by it."
+    },
+    {
+      "name": "underlying",
+      "label": "Underlying",
+      "type": "string",
+      "kind": "ticker",
+      "isDimension": true,
+      "category": "Instrument",
+      "guidance": "Set on options and futures only. Group options by it."
+    },
+    {
+      "name": "isin",
+      "label": "ISIN",
+      "type": "string",
+      "kind": "identifier",
+      "category": [
+        "Instrument",
+        "Identifiers"
+      ]
+    },
+    {
+      "name": "cusip",
+      "label": "CUSIP",
+      "type": "string",
+      "kind": "identifier",
+      "category": [
+        "Instrument",
+        "Identifiers"
+      ]
+    },
+    {
+      "name": "quantity",
+      "label": "Quantity",
+      "type": "number",
+      "kind": "shares",
+      "aggregator": "UNIQUE",
+      "format": "qty",
+      "category": "Exposure",
+      "guidance": "Shows only where one instrument is in view. Use market value to compare across instruments."
+    },
+    {
+      "name": "price",
+      "label": "Price",
+      "type": "number",
+      "kind": "price",
+      "category": "Exposure"
+    },
+    {
+      "name": "mktVal",
+      "label": "Market Value",
+      "type": "number",
+      "kind": "marketValue",
+      "category": "Exposure",
+      "description": "Value at the close of the as-of date.",
+      "guidance": "The default measure of size. Use it unless the user asks for gross, net or beta-adjusted exposure."
+    },
+    {
+      "name": "beta",
+      "label": "Beta",
+      "type": "number",
+      "kind": "ratio",
+      "aggregator": {
+        "type": "weightedAverage",
+        "weightField": "mktVal",
+        "absolute": true
+      },
+      "category": "Risk"
+    },
+    {
+      "name": "var95",
+      "label": "VaR (95%)",
+      "type": "number",
+      "kind": "risk",
+      "category": [
+        "Risk",
+        "VaR"
+      ],
+      "guidance": "One-day VaR. Does not add up, so the server computes it at each grouping level."
+    },
+    {
+      "name": "var99",
+      "label": "VaR (99%)",
+      "type": "number",
+      "kind": "risk",
+      "category": [
+        "Risk",
+        "VaR"
+      ]
+    },
+    {
+      "name": "shockedPnl",
+      "label": "Shocked P&L",
+      "type": "number",
+      "kind": "pnl",
+      "params": {
+        "shock": {
+          "type": "number",
+          "kind": "shock",
+          "required": true,
+          "description": "An equity shock as a fraction, such as -0.1 for minus 10 percent."
+        }
+      },
+      "category": [
+        "Risk",
+        "Stress"
+      ],
+      "guidance": "P&L if equities move by the shock. Declare one instance per shock on the source."
+    },
+    {
+      "name": "city",
+      "label": "City",
+      "type": "string",
+      "isDimension": true
+    },
+    {
+      "name": "temp",
+      "label": "Temperature",
+      "type": "number",
+      "kind": "temperature",
+      "guidance": "In Fahrenheit or Celsius, as the units parameter sets. Say which in titles."
+    },
+    {
+      "name": "feelsLike",
+      "label": "Feels Like",
+      "type": "number",
+      "kind": "temperature"
+    },
+    {
+      "name": "humidity",
+      "label": "Humidity",
+      "type": "number",
+      "kind": "percentPoints"
+    },
+    {
+      "name": "pressure",
+      "label": "Pressure",
+      "type": "number",
+      "kind": "pressure"
+    },
+    {
+      "name": "windSpeed",
+      "label": "Wind",
+      "type": "number",
+      "kind": "speed",
+      "guidance": "In miles per hour or meters per second, as the units parameter sets."
+    },
+    {
+      "name": "windGust",
+      "label": "Gusts",
+      "type": "number",
+      "kind": "speed",
+      "aggregator": "MAX"
+    },
+    {
+      "name": "conditions",
+      "label": "Conditions",
+      "type": "string",
+      "kind": "condition",
+      "guidance": "The main condition, usually Clear, Clouds, Rain, Drizzle, Thunderstorm, Snow or Mist. The provider can also report others, such as Haze, Fog or Smoke. Shows as an icon with its name."
+    },
+    {
+      "name": "iconCode",
+      "label": "Icon Code",
+      "type": "string",
+      "aggregator": "UNIQUE",
+      "guidance": "The provider's icon code, such as 01d or 01n. The weatherIcon renderer reads it to choose a day or night icon. Do not show it as a column."
+    }
+  ]
 }
