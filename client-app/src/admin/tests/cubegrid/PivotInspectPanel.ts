@@ -92,7 +92,7 @@ const tbar = hoistCmp.factory<PivotInspectModel>(({model}) =>
         button({
             icon: Icon.bolt(),
             text: 'Tick (+100)',
-            title: 'Add 100 to the first record and let the incremental update flow through',
+            tooltip: 'Add 100 to the first record and let the incremental update flow through',
             onClick: () => model.tickAsync()
         }),
         toolbarSep(),
@@ -104,7 +104,7 @@ const tbar = hoistCmp.factory<PivotInspectModel>(({model}) =>
         }),
         button({
             text: '2 - region >> sector',
-            title: 'Two pivot dimensions materialize pivot totals at the parent path',
+            tooltip: 'Two pivot dimensions materialize pivot totals at the parent path',
             active: model.pivotDepth === 2,
             onClick: () => (model.pivotDepth = 2)
         }),

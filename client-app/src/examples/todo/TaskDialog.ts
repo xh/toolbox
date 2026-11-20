@@ -8,7 +8,7 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {dateInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {TaskDialogModel} from './TaskDialogModel';
-import {dialog} from '@xh/hoist/kit/blueprint';
+import {dialog} from '@xh/hoist/desktop/cmp/dialog';
 
 export const taskDialog = hoistCmp.factory({
     model: uses(TaskDialogModel),
@@ -22,7 +22,6 @@ export const taskDialog = hoistCmp.factory({
             style: {width: 450},
             isOpen: model.isOpen,
             onClose: () => model.close(),
-            usePortal: false,
             children: formPanel()
         });
     }
