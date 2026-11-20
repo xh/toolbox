@@ -31,6 +31,7 @@ class BlueprintPresetService extends BaseService {
         [id: 'bp-preset-w1', file: 'w1-one-city', name: 'W1. Weather for one city'],
         [id: 'bp-preset-w2', file: 'w2-two-cities', name: 'W2. Two cities side by side'],
         [id: 'bp-preset-s3', file: 's3-joins-showcase', name: 'S3. Joining sources'],
+        [id: 'bp-preset-s4', file: 's4-inputs-showcase', name: 'S4. Inputs and actions'],
         [id: 'bp-preset-s5', file: 's5-weather-showcase', name: 'S5. Weather around the world']
     ]
 

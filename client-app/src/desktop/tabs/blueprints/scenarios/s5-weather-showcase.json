@@ -52,7 +52,7 @@
                 "text": "## Weather around the world\nCurrent conditions in four cities, each with its temperature over the next 24 hours."
             }
         },
-        "unitsBar": {"component": "toolbar", "children": [{"id": "unitsSelect"}]},
+        "unitsBar": {"component": "toolbar", "config": {"overflowMenu": false}, "children": [{"id": "unitsSelect"}]},
         "unitsSelect": {"component": "select", "config": {"label": "Units"}},
         "unitsNote": {
             "component": "callout",
@@ -66,10 +66,10 @@
                 "text": "Each city is a card-style **panel** holding a **tile frame** of stat cards. Temperature draws its next 24 hours as a sparkline **trend**."
             }
         },
-        "londonPanel": {"component": "panel", "config": {"title": "London", "style": "card"}, "children": [{"id": "londonTiles"}]},
-        "newYorkPanel": {"component": "panel", "config": {"title": "New York", "style": "card"}, "children": [{"id": "newYorkTiles"}]},
-        "tokyoPanel": {"component": "panel", "config": {"title": "Tokyo", "style": "card"}, "children": [{"id": "tokyoTiles"}]},
-        "sydneyPanel": {"component": "panel", "config": {"title": "Sydney", "style": "card"}, "children": [{"id": "sydneyTiles"}]},
+        "londonPanel": {"component": "panel", "config": {"title": {"$var": "london"}, "style": "card"}, "children": [{"id": "londonTiles"}]},
+        "newYorkPanel": {"component": "panel", "config": {"title": {"$var": "newYork"}, "style": "card"}, "children": [{"id": "newYorkTiles"}]},
+        "tokyoPanel": {"component": "panel", "config": {"title": {"$var": "tokyo"}, "style": "card"}, "children": [{"id": "tokyoTiles"}]},
+        "sydneyPanel": {"component": "panel", "config": {"title": {"$var": "sydney"}, "style": "card"}, "children": [{"id": "sydneyTiles"}]},
         "londonTiles": {
             "component": "tileFrame",
             "children": [{"id": "londonTemp"}, {"id": "londonConditions"}, {"id": "londonHumidity"}, {"id": "londonWind"}]

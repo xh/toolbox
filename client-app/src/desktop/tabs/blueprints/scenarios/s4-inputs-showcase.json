@@ -1,0 +1,129 @@
+{
+    "schema": {
+        "blueprint": 1,
+        "widgets": {
+            "dashCanvas": 1,
+            "markdown": 1,
+            "callout": 1,
+            "panel": 1,
+            "box": 1,
+            "toolbar": 1,
+            "select": 1,
+            "dateInput": 1,
+            "switchInput": 1,
+            "slider": 1,
+            "filterChooser": 1,
+            "separator": 1,
+            "spacer": 1,
+            "buttonGroup": 1,
+            "cubeGrid": 1
+        }
+    },
+    "variables": {
+        "fund": {
+            "type": "toolbox.fund",
+            "label": "Fund",
+            "setBy": {"element": "fundSelect"},
+            "default": {"value": "Oak Mount"},
+            "options": {"values": ["Oak Mount", "Red River", "Black Crescent", "Hudson Bay", "Winter Star"]}
+        },
+        "asOf": {"type": "localDate", "label": "As of", "setBy": {"element": "asOfInput"}, "default": {"resolver": "previousBusinessDay"}},
+        "showTotals": {"type": "bool", "label": "Totals", "setBy": {"element": "totalsSwitch"}, "default": {"value": true}},
+        "minPnl": {"type": "number", "label": "Day P&L at least", "setBy": {"element": "pnlSlider"}, "default": {"value": -500000}},
+        "posFilter": {"type": "filter", "label": "Filter", "setBy": {"element": "filterInput"}}
+    },
+    "sources": {
+        "positions": {
+            "dataset": "positions",
+            "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "fund"}},
+            "filter": {"op": "AND", "filters": [{"$var": "posFilter"}, {"field": "pnlDay", "op": ">=", "value": {"$var": "minPnl"}}]}
+        }
+    },
+    "root": "dashboard",
+    "elements": {
+        "dashboard": {
+            "component": "dashCanvas",
+            "children": [
+                {"id": "intro", "x": 0, "y": 0, "w": 12, "h": 2},
+                {"id": "mainPanel", "x": 0, "y": 2, "w": 8, "h": 10},
+                {"id": "notes", "x": 8, "y": 2, "w": 4, "h": 10}
+            ]
+        },
+        "intro": {
+            "component": "markdown",
+            "config": {
+                "text": "## Inputs and actions\nA toolbar of inputs sets the variables the positions source reads, and a row of buttons runs actions."
+            }
+        },
+        "mainPanel": {
+            "component": "panel",
+            "config": {"title": "Positions", "style": "card"},
+            "children": [{"id": "inputBar", "slot": "tbar"}, {"id": "body"}]
+        },
+        "inputBar": {
+            "component": "toolbar",
+            "children": [
+                {"id": "fundSelect"},
+                {"id": "asOfInput"},
+                {"id": "barSep"},
+                {"id": "totalsSwitch"},
+                {"id": "pnlSlider"},
+                {"id": "barSpacer"},
+                {"id": "filterInput"}
+            ]
+        },
+        "fundSelect": {"component": "select", "config": {"label": "Fund"}},
+        "asOfInput": {"component": "dateInput", "config": {"label": "As of"}},
+        "barSep": {"component": "separator"},
+        "totalsSwitch": {"component": "switchInput", "config": {"label": "Totals"}},
+        "pnlSlider": {"component": "slider", "config": {"label": "Day P&L at least", "min": -500000, "max": 500000, "step": 50000}},
+        "barSpacer": {"component": "spacer"},
+        "filterInput": {"component": "filterChooser", "config": {"source": "positions", "fields": ["sector", "region", "strategy", "trader"]}},
+        "body": {"component": "box", "config": {"direction": "column", "gap": 8}, "children": [{"id": "actions"}, {"id": "posGrid"}]},
+        "actions": {
+            "component": "buttonGroup",
+            "config": {
+                "buttons": [
+                    {
+                        "label": "Clear filters",
+                        "icon": "reset",
+                        "action": [
+                            {"type": "resetVariable", "variable": "posFilter"},
+                            {"type": "resetVariable", "variable": "minPnl"}
+                        ]
+                    },
+                    {"label": "Refresh", "icon": "refresh", "action": {"type": "refresh"}},
+                    {
+                        "label": "Publish to PM pack",
+                        "icon": "share",
+                        "action": {"type": "toolbox.publishToPmPack", "fund": {"$var": "fund"}, "asOf": {"$var": "asOf"}}
+                    }
+                ]
+            }
+        },
+        "posGrid": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "positions",
+                "groupBy": ["sector", "symbol"],
+                "columnState": ["mktVal", "pnlDay", "pnlMtd"],
+                "sortBy": "pnlDay|desc",
+                "summaryRow": {"$var": "showTotals"}
+            }
+        },
+        "notes": {
+            "component": "box",
+            "config": {"direction": "column", "gap": 8},
+            "children": [{"id": "noteSelect"}, {"id": "noteDate"}, {"id": "noteSwitch"}, {"id": "noteSlider"}, {"id": "noteFilter"}, {"id": "noteActions"}]
+        },
+        "noteSelect": {"component": "callout", "config": {"intent": "primary", "title": "Select", "text": "Picks the fund, from the options the variable lists."}},
+        "noteDate": {"component": "callout", "config": {"intent": "primary", "title": "Date input", "text": "Sets the as-of date the source loads."}},
+        "noteSwitch": {"component": "callout", "config": {"intent": "primary", "title": "Switch", "text": "Shows or hides the grid's totals row."}},
+        "noteSlider": {"component": "callout", "config": {"intent": "primary", "title": "Slider", "text": "Keeps positions whose day P&L is at least its value. It sets the variable when released."}},
+        "noteFilter": {"component": "callout", "config": {"intent": "primary", "title": "Filter chooser", "text": "Adds clauses on sector, region, strategy or trader to the source's filter."}},
+        "noteActions": {
+            "component": "callout",
+            "config": {"intent": "success", "title": "Actions", "text": "**Clear filters** runs two steps, **Refresh** reloads, and **Publish to PM pack** asks before it runs."}
+        }
+    }
+}

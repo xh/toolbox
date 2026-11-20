@@ -29,7 +29,8 @@
         "selected": {
             "dataset": "positions",
             "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "selFund"}},
-            "filter": {"field": "symbol", "op": "=", "value": {"$var": "selSymbol"}}
+            "filter": {"field": "symbol", "op": "=", "value": {"$var": "selSymbol"}},
+            "joins": [{"source": "funds", "on": {"fund": "fund"}, "fields": ["manager", "style"]}]
         }
     },
     "root": "dashboard",
@@ -56,7 +57,7 @@
             "config": {
                 "source": "positions",
                 "groupBy": ["style", "fund", "symbol"],
-                "columnState": ["manager", "nav", "mktVal", "pnlDay", "lastClose"],
+                "columnState": ["nav", "mktVal", "pnlDay", "lastClose"],
                 "sortBy": "mktVal|desc",
                 "summaryRow": true
             }
@@ -79,7 +80,7 @@
             "config": {
                 "intent": "primary",
                 "title": "Joined dimensions",
-                "text": "**Style** and **manager** come from the fund summary too. The grid groups positions by style, a dimension positions lack."
+                "text": "**Style** and **manager** come from the fund summary too. The grid groups positions by style, a dimension positions lack, and the selected position shows both."
             }
         },
         "noteReduced": {
@@ -90,12 +91,14 @@
                 "text": "**Last close** reduces a month of daily prices to each symbol's latest close."
             }
         },
-        "detailPanel": {"component": "panel", "config": {"title": "Selected position", "style": "card"}, "children": [{"id": "detail"}]},
+        "detailPanel": {"component": "panel", "config": {"title": "Selected position", "style": "card"}, "children": [{"id": "detailBody"}]},
+        "detailBody": {"component": "box", "config": {"direction": "column", "gap": 4}, "children": [{"id": "detailHead"}, {"id": "detail"}]},
+        "detailHead": {"component": "markdown", "config": {"text": "**{selSymbol}** in {selFund}"}},
         "detail": {
             "component": "propertyTable",
             "config": {
                 "source": "selected",
-                "fields": ["symbol", "fund", "trader", "sector", "region", "quantity", "price", "mktVal", "pnlDay", "pnlMtd", "pnlYtd", "beta"],
+                "fields": ["manager", "style", "price", "mktVal", "grossExposure", "pnlDay", "pnlMtd", "pnlYtd", "beta"],
                 "columns": 3
             }
         },
@@ -104,7 +107,7 @@
             "config": {
                 "intent": "success",
                 "title": "Waits for a selection",
-                "text": "The property table reads a source whose fund comes from the grid's selected row, so it waits until a position is selected."
+                "text": "The property table reads a source whose fund comes from the grid's selected row, so it waits until a symbol is selected, then totals its positions in that fund."
             }
         }
     }
