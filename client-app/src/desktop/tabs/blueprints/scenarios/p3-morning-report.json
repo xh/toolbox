@@ -116,7 +116,12 @@
             "component": "statCardStrip",
             "config": {
                 "source": "positions",
-                "cards": [{"field": "mktVal"}, {"field": "pnlDay"}, {"field": "pnlMtd"}, {"field": "pnlYtd"}]
+                "cards": [
+                    {"field": "mktVal", "format": {"scale": "millions", "precision": 1}},
+                    {"field": "pnlDay", "format": {"scale": "thousands", "precision": 0}},
+                    {"field": "pnlMtd", "format": {"scale": "millions", "precision": 1}},
+                    {"field": "pnlYtd", "format": {"scale": "millions", "precision": 1}}
+                ]
             }
         },
         "sectorChart": {
