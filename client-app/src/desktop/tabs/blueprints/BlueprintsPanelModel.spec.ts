@@ -121,7 +121,11 @@ describe('Blueprints designer', () => {
 
         const newId = await model.saveAsNewAsync('P1 kept');
         expect(newId).not.toBe(id);
-        expect(model.selected).toMatchObject({id: newId, name: 'P1 kept'});
+        expect(model.selected).toMatchObject({
+            id: newId,
+            name: 'P1 kept',
+            copiedFrom: {id, as: 'draft'}
+        });
         expect(model.documentModel.isStale).toBe(false);
         expect(groupBy(model)).toEqual(['fund']);
         expect(texts(model)).toEqual(['Group by trader']);

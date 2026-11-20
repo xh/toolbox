@@ -1,5 +1,6 @@
 import type {
     Blueprint,
+    BlueprintCreateSpec,
     BlueprintIssue,
     BlueprintOpenOptions,
     BlueprintPersonalization,
@@ -111,12 +112,7 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
         };
     }
 
-    async createAsync(spec: {
-        name: string;
-        description?: string;
-        blueprint: Blueprint;
-        copiedFrom?: BlueprintSummary['copiedFrom'];
-    }): Promise<BlueprintRecord> {
+    async createAsync(spec: BlueprintCreateSpec): Promise<BlueprintRecord> {
         const id = `bp-${XH.genId()}`;
         await XH.jsonBlobService.createAsync({
             type: BLUEPRINT_TYPE,
