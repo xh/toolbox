@@ -24,10 +24,14 @@ export class DocsPageModel extends DocViewModel {
      * Browse readers nest under a `category` segment whose `categoryId` param must be preserved on
      * write-back; the search/example readers do not carry it. Detect by route name so we never emit a
      * stray query param on the flatter routes.
+     *
+     * A pending section is written back too: the navigator rebuilds the reader page when its route
+     * params change, so a section left out of the route would be lost before it is scrolled to.
      */
     protected override routeParamsForDoc(entry: DocEntry): Record<string, string> {
         const params = super.routeParamsForDoc(entry);
         if (XH.routerState.name.includes('.category.')) params.categoryId = entry.category;
+        if (this.pendingScrollSection) params.section = this.pendingScrollSection;
         return params;
     }
 

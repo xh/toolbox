@@ -13,6 +13,8 @@ import {Icon} from '@xh/hoist/icon';
 import {pluralize} from '@xh/hoist/utils/js';
 import {useEffect, useRef} from 'react';
 import {docContent} from '../../../core/docs/DocContent';
+import {SEARCH_UNAVAILABLE_MSG} from '../../../core/docs/DocsUnavailable';
+import {docsUnavailable} from './DocsUnavailable';
 import {DocsPanelModel} from './DocsPanelModel';
 import './DocsTab.scss';
 
@@ -29,6 +31,7 @@ export const docsTab = hoistCmp.factory<DocsPanelModel>({
     className: 'tb-docs',
 
     render({model, className}) {
+        if (XH.docService.unavailable) return panel({className, children: docsUnavailable()});
         return panel({
             className,
             hotkeys: [
@@ -131,6 +134,8 @@ const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
             return placeholder(Icon.search(), 'Type to search across all documentation content.');
         }
 
+        if (model.searchFailed) return placeholder(Icon.warning(), SEARCH_UNAVAILABLE_MSG);
+
         if (searchResults.length === 0) {
             return searchQuery.trim().length < 3
                 ? placeholder(Icon.search(), 'Keep typing to search...')
@@ -148,7 +153,7 @@ const searchResultsBody = hoistCmp.factory<DocsPanelModel>({
                     className:
                         'tb-docs__search-result' +
                         (idx === selectedSearchIdx ? ' tb-docs__search-result--selected' : ''),
-                    onClick: () => model.selectSearchResult(r.entry),
+                    onClick: () => model.selectSearchResult(r.entry, r.section),
                     children: [
                         div({
                             className: 'tb-docs__search-result-header',
