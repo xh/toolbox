@@ -16,7 +16,7 @@
         "percentPoints": {"base": "number", "format": "percentPoints", "aggregator": "AVG"},
         "chance": {"base": "fraction", "format": "chance", "aggregator": "MAX"},
         "rain": {"base": "number", "format": "rain", "aggregator": "SUM"},
-        "condition": {"base": "string", "renderer": "weatherIcon", "aggregator": "UNIQUE"}
+        "condition": {"base": "string", "renderer": "toolbox.weatherIcon", "aggregator": "UNIQUE"}
     },
     "fields": [
         {"name": "city", "label": "City", "type": "string", "isDimension": true},
