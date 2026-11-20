@@ -139,6 +139,25 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         e.message == "Unknown symbol 'ZZZ'"
     }
 
+    def 'prices without a symbol serve every symbol, filtered before the row cap'() {
+        given:
+        service.maxPriceRows = 4
+        Map spec = [dataset: 'prices', params: [start: D3.toString(), end: D4.toString()], fields: ['symbol', 'close']]
+
+        expect:
+        rows(spec + [filter: [field: 'symbol', op: '=', value: ['AAA', 'AAA MAR26 C']]])*.close == [120d, 135d, 12d, 14d]
+
+        when:
+        rows(spec)
+
+        then:
+        def e = thrown(BlueprintRequestException)
+        e.message == 'prices would return 6 rows, over its limit of 4. Rows are symbols times trading days: name a symbol, filter by symbol, or shorten the window.'
+
+        cleanup:
+        service.maxPriceRows = BlueprintDataService.MAX_PRICE_ROWS
+    }
+
     def 'a hypothetical portfolio takes {holdings: [{symbol, weight}]}'() {
         expect:
         rows(dataset: 'hypotheticalPortfolio',

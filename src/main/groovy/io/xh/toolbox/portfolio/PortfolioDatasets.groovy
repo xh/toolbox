@@ -184,23 +184,29 @@ class PortfolioDatasets {
         }
     }
 
-    /** One row per trading day in [start, end] for a symbol, with the live day at current prices. */
+    /**
+     * One row per symbol and trading day in [start, end], by symbol then day, with the live day at
+     * current prices. A null symbol means every symbol.
+     */
     List<Map> prices(String symbol, LocalDate start, LocalDate end) {
-        (portfolio.historicalPrices[symbol] ?: [])
-            .findAll { it.day >= start && it.day <= end }
-            .collect { MarketPrice hist ->
-                MarketPrice p = hist.day == liveDay && currentPrices[symbol] ? currentPrices[symbol] : hist
-                [
-                    id    : "$symbol|${hist.day}".toString(),
-                    symbol: symbol,
-                    day   : hist.day.toString(),
-                    open  : p.open,
-                    high  : p.high,
-                    low   : p.low,
-                    close : p.close,
-                    volume: p.volume
-                ]
-            }
+        List<String> symbols = symbol ? [symbol] : portfolio.historicalPrices.keySet().sort()
+        symbols.collectMany { String s ->
+            (portfolio.historicalPrices[s] ?: [])
+                .findAll { it.day >= start && it.day <= end }
+                .collect { MarketPrice hist ->
+                    MarketPrice p = hist.day == liveDay && currentPrices[s] ? currentPrices[s] : hist
+                    [
+                        id    : "$s|${hist.day}".toString(),
+                        symbol: s,
+                        day   : hist.day.toString(),
+                        open  : p.open,
+                        high  : p.high,
+                        low   : p.low,
+                        close : p.close,
+                        volume: p.volume
+                    ]
+                }
+        }
     }
 
     /** Every instrument, which hypotheticalPortfolio can price, as {symbol, name, sector}, by symbol. */

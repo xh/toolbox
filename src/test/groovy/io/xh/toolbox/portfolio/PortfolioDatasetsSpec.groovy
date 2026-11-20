@@ -235,6 +235,15 @@ class PortfolioDatasetsSpec extends Specification {
         !ds.isLivePrices(D1, D3)
     }
 
+    def 'prices without a symbol cover every symbol, by symbol then day'() {
+        when:
+        def rows = datasets().prices(null, D3, D4)
+
+        then:
+        rows*.id == ['AAA', 'AAA 5.0 2030', 'AAA MAR26 C'].collectMany { s -> [D3, D4].collect { "$s|$it".toString() } }
+        rows.find { it.id == "AAA MAR26 C|$D4" }.close == 14d
+    }
+
     def 'a hypothetical portfolio sizes each holding as its weight of the notional'() {
         given:
         def ds = datasets()
