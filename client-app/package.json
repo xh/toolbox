@@ -68,7 +68,7 @@
     "@xh/eslint-config": "^8.1.0",
     "@xh/hoist-chat-kit": "next",
     "@xh/hoist-dev-utils": "next",
-    "@xh/hoist-docs": "next",
+    "@xh/hoist-docs": "^1.0.0",
     "cross-env": "~10.1.0",
     "eslint": "^10.15.0",
     "eslint-config-prettier": "~10.1.8",

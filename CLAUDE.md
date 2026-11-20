@@ -212,10 +212,10 @@ has a built-in `docs` command that shadows the script. A library with a sibling 
 be previewed uncommitted; `pnpm docs:watch` rewrites them on every change (reload the viewer to see
 it). The others come from the builds Toolbox installs.
 
-`@xh/hoist-docs` and `@xh/hoist-chat-kit` are specified as the `next` dist-tag, like `@xh/hoist`:
-hoist-docs publishes a snapshot on every push to its `develop`. To try unpublished changes to the
-tool, link it from a sibling checkout instead (`link:../../hoist-docs`, after
-`pnpm install && pnpm build` there).
+`@xh/hoist-chat-kit` is specified as the `next` dist-tag, like `@xh/hoist`. `@xh/hoist-docs` is a
+release range (`^1.0.0`), since its `develop` snapshots carry the next major version. To try
+unpublished changes to the tool, link it from a sibling checkout instead (`link:../../hoist-docs`,
+after `pnpm install && pnpm build` there).
 
 ### GitHub MCP Server (opt-in)
 
