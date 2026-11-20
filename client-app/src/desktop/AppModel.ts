@@ -86,6 +86,7 @@ import {dateFormatsPanel} from './tabs/system/formats/DateFormatsPanel';
 import {errorMessagePanel} from './tabs/components/general/ErrorMessagePanel';
 import {exceptionHandlerPanel} from './tabs/system/exceptions/ExceptionHandlerPanel';
 import {iconsPanel} from './tabs/components/general/IconsPanel';
+import {listDisplayPanel} from './tabs/components/general/ListDisplayPanel';
 import {inspectorPanel} from './tabs/system/InspectorPanel';
 import {jsxPanel} from './tabs/system/JsxPanel';
 import {markdownPanel} from './tabs/components/general/MarkdownPanel';
@@ -343,6 +344,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'statCard', path: '/statCard'},
                             {name: 'progressBar', path: '/progressBar'},
                             {name: 'propertyTable', path: '/propertyTable'},
+                            {name: 'listDisplay', path: '/listDisplay'},
                             {name: 'separator', path: '/separator'},
                             {name: 'sparkline', path: '/sparkline'},
                             {name: 'callout', path: '/callout'}
@@ -614,6 +616,7 @@ export class AppModel extends BaseAppModel {
                             {id: 'clock', content: clockPanel},
                             {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
                             {id: 'icons', content: iconsPanel},
+                            {id: 'listDisplay', title: 'ListDisplay', content: listDisplayPanel},
                             {id: 'markdown', content: markdownPanel},
                             {id: 'pdfViewer', title: 'PdfViewer', content: pdfViewerPanel},
                             {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
