@@ -189,7 +189,8 @@ export class BlueprintsPanelModel extends HoistModel {
             {
                 track: () => this.blueprintModel?.version,
                 run: () => {
-                    if (this.documentModel?.isDirty) this.saveAsync();
+                    const doc = this.documentModel;
+                    if (doc?.isDirty && !doc.isStale) this.saveAsync();
                 },
                 debounce: 1000
             }
@@ -247,15 +248,23 @@ export class BlueprintsPanelModel extends HoistModel {
     /** Open a blueprint: the user's own as its draft, another's at its latest publish. */
     async selectAsync(id: string, force = false) {
         if (!force && id === this.selectedId && this.documentModel?.document?.id === id) return;
+        if (!(await this.readyToLeaveAsync())) {
+            this.listGridModel.selModel.select(this.selectedId);
+            return;
+        }
         const prevId = this.documentModel?.document?.id;
         this.opening = this.opening.then(() => this.openAsync(id, prevId));
         await this.opening;
     }
 
-    /** Save the draft open, if it has unsaved edits. */
+    /**
+     * Save the draft open, if it has unsaved edits. The document runs one write at a time, so
+     * overlapping calls are safe. A stale draft is not saved: see {@link reloadDraftAsync} and
+     * {@link saveAsNewAsync}.
+     */
     async saveAsync() {
         const {documentModel} = this;
-        if (!documentModel?.isDirty || !this.canEdit) return;
+        if (!documentModel?.isDirty || !this.canEdit || documentModel.isStale) return;
         runInAction(() => (this.isSaving = true));
         try {
             const issues = await documentModel.saveDraftAsync();
@@ -263,6 +272,50 @@ export class BlueprintsPanelModel extends HoistModel {
         } finally {
             runInAction(() => (this.isSaving = false));
         }
+    }
+
+    /** Reopen the stored draft of a stale blueprint, discarding the edits made here. */
+    async reloadDraftAsync() {
+        const issues = await this.documentModel.reloadAsync();
+        runInAction(() => {
+            this.openIssues = issues;
+            this.saveIssues = [];
+        });
+        await this.refreshSummariesAsync();
+    }
+
+    /**
+     * Save the blueprint open, with its unsaved edits, as a new blueprint, and open it. For a
+     * stale draft, whose edits cannot save over the stored one. Returns its ID.
+     */
+    async saveAsNewAsync(name: string): Promise<string> {
+        const {documentModel} = this,
+            prevId = documentModel.document?.id,
+            issues = await documentModel.createAsync(name),
+            newId = documentModel.document?.id;
+        if (!newId || newId === prevId) {
+            runInAction(() => (this.saveIssues = issues));
+            return null;
+        }
+        this.saveConversation(newId);
+        await this.refreshSummariesAsync();
+        runInAction(() => {
+            this.selectedId = newId;
+            this.openIssues = issues;
+            this.saveIssues = [];
+            this.listGridModel.selModel.select(newId);
+        });
+        await this.loadPublishesAsync();
+        return newId;
+    }
+
+    async saveAsNewSelectedAsync() {
+        const name = await this.promptNameAsync(
+            'Save as a new blueprint',
+            'Save',
+            `${this.selected?.name} (mine)`
+        );
+        if (name) await this.saveAsNewAsync(name);
     }
 
     async publishAsync(note?: string) {
@@ -387,10 +440,7 @@ export class BlueprintsPanelModel extends HoistModel {
     private async openAsync(id: string, prevId: string) {
         const {documentModel, chatModel} = this;
         if (!documentModel) return;
-        if (prevId) {
-            await this.saveAsync();
-            this.saveConversation(prevId);
-        }
+        if (prevId) this.saveConversation(prevId);
 
         runInAction(() => {
             this.selectedId = id;
@@ -414,6 +464,20 @@ export class BlueprintsPanelModel extends HoistModel {
             chatModel.loadMessages(messages, id);
         });
         await this.loadPublishesAsync();
+    }
+
+    // Save the draft open before leaving it, or confirm that its unsaved edits may go.
+    private async readyToLeaveAsync(): Promise<boolean> {
+        await this.saveAsync();
+        const doc = this.documentModel;
+        if (!doc?.isDirty) return true;
+        return XH.confirm({
+            title: 'Unsaved edits',
+            message: doc.isStale
+                ? `"${this.selected?.name}" was saved elsewhere, so your edits here could not save. Leave them? To keep them, choose Cancel, then Save as new.`
+                : `Your edits to "${this.selected?.name}" are not saved. Leave them?`,
+            confirmProps: {text: 'Leave them', intent: 'danger', outlined: true}
+        });
     }
 
     private async loadPublishesAsync() {

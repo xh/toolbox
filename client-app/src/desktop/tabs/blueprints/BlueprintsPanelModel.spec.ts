@@ -1,7 +1,8 @@
 import {DataCatalog, FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint';
+import {XH} from '@xh/hoist/core';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {find} from 'lodash';
-import {afterAll, beforeAll, describe, expect, it} from 'vitest';
+import {afterAll, beforeAll, describe, expect, it, vi} from 'vitest';
 import {BlueprintsPanelModel, PRESETS} from './BlueprintsPanelModel';
 import {JsonBlobBlueprintRepository} from './repository/JsonBlobBlueprintRepository';
 import p1 from './scenarios/p1-one-grid.json';
@@ -65,6 +66,65 @@ describe('Blueprints designer', () => {
         await model.selectAsync(byName(PRESETS[1].name).id);
         await model.selectAsync(first);
         expect(groupBy(model)).toEqual(['sector']);
+    });
+
+    it('runs overlapping saves one after another, so no edit is lost', async () => {
+        await model.selectAsync(byName(PRESETS[0].name).id);
+        const {version} = model.documentModel.document;
+        groupByRegion(['strategy']);
+        const first = model.saveAsync();
+        groupByRegion(['trader']);
+        await Promise.all([first, model.saveAsync()]);
+
+        expect(model.saveIssues).toEqual([]);
+        expect(model.documentModel.isDirty).toBe(false);
+        expect(model.documentModel.document.version).toBeGreaterThan(version);
+        const saved = await model.repository.openAsync(model.selectedId, {as: 'draft'});
+        expect(saved.blueprint.elements.posGrid.config.groupBy).toEqual(['trader']);
+    });
+
+    it('holds a stale draft unsaved, and asks before leaving its edits', async () => {
+        const id = byName(PRESETS[0].name).id;
+        await model.selectAsync(id);
+        await saveElsewhere(id);
+
+        groupByRegion(['region', 'sector']);
+        await model.saveAsync();
+        expect(model.documentModel.isStale).toBe(true);
+        expect(model.documentModel.isDirty).toBe(true);
+
+        const confirm = vi.spyOn(XH, 'confirm').mockResolvedValue(false);
+        await model.selectAsync(byName(PRESETS[1].name).id);
+        expect(confirm).toHaveBeenCalled();
+        expect(model.selectedId).toBe(id);
+        expect(groupBy(model)).toEqual(['region', 'sector']);
+        confirm.mockRestore();
+    });
+
+    it('reloads a stale draft, discarding its edits', async () => {
+        const id = model.selectedId,
+            stored = await model.repository.openAsync(id, {as: 'draft'});
+        await model.reloadDraftAsync();
+        expect(model.documentModel.isStale).toBe(false);
+        expect(model.documentModel.isDirty).toBe(false);
+        expect(model.documentModel.document.version).toBe(stored.version);
+    });
+
+    it("saves a stale draft's edits as a new blueprint, with its conversation", async () => {
+        const id = byName(PRESETS[0].name).id;
+        await model.selectAsync(id);
+        model.chatModel.loadMessages([{role: 'user', content: 'Group by trader'}]);
+        await saveElsewhere(id);
+        groupByRegion(['fund']);
+        await model.saveAsync();
+        expect(model.documentModel.isStale).toBe(true);
+
+        const newId = await model.saveAsNewAsync('P1 kept');
+        expect(newId).not.toBe(id);
+        expect(model.selected).toMatchObject({id: newId, name: 'P1 kept'});
+        expect(model.documentModel.isStale).toBe(false);
+        expect(groupBy(model)).toEqual(['fund']);
+        expect(texts(model)).toEqual(['Group by trader']);
     });
 
     it('publishes the draft as the next version, and lists its publishes', async () => {
@@ -151,6 +211,16 @@ async function createModelAsync(): Promise<BlueprintsPanelModel> {
     });
     await ret.loadAsync();
     return ret;
+}
+
+// Save the draft as another tab would, leaving the designer's copy stale.
+async function saveElsewhere(id: string) {
+    const other = await model.repository.openAsync(id, {as: 'draft'});
+    await model.repository.saveDraftAsync(id, {
+        blueprint: other.blueprint,
+        base: other.version,
+        renames: []
+    });
 }
 
 function actAs(username: string) {

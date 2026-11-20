@@ -7,6 +7,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {segmentedControl} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import classNames from 'classnames';
 import type {ReactElement} from 'react';
 import {wrapper, wrapperAction, wrapperOptionGroup} from '../../common/Wrapper';
 import {architectPanel} from './ArchitectPanel';
@@ -148,11 +149,36 @@ const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
             compactHeader: true,
             headerItems: blueprintModel.blueprint
                 ? [
-                      span({className: 'tb-blueprints__version', item: documentStatus(model)}),
+                      span({
+                          className: classNames(
+                              'tb-blueprints__version',
+                              model.documentModel.isStale && 'xh-intent-warning'
+                          ),
+                          item: documentStatus(model)
+                      }),
+                      button({
+                          text: 'Reload',
+                          icon: Icon.refresh(),
+                          tooltip:
+                              'Open the draft as it was saved elsewhere, discarding your edits here',
+                          omit: !model.documentModel.isStale,
+                          onClick: () => model.reloadDraftAsync()
+                      }),
+                      button({
+                          text: 'Save as new',
+                          icon: Icon.copy(),
+                          tooltip: 'Keep your edits here as a new blueprint',
+                          intent: 'primary',
+                          omit: !model.documentModel.isStale,
+                          onClick: () => model.saveAsNewSelectedAsync()
+                      }),
                       button({
                           text: 'Publish',
                           icon: Icon.upload(),
-                          omit: !model.canEdit || !model.documentModel.canPublish,
+                          omit:
+                              !model.canEdit ||
+                              !model.documentModel.canPublish ||
+                              model.documentModel.isStale,
                           onClick: () => model.publishSelectedAsync()
                       }),
                       segmentedControl({
@@ -188,6 +214,7 @@ function documentStatus({documentModel, isSaving, saveIssues}: BlueprintsPanelMo
     if (doc.kind === 'publish') {
         return `Publish v${doc.version}${doc.access === 'write' ? '' : ' - read only'}`;
     }
+    if (documentModel.isStale) return `Draft v${doc.version} - saved elsewhere, your edits are not`;
     const error = saveIssues[0];
     if (error) return error.message;
     if (isSaving) return 'Saving...';
