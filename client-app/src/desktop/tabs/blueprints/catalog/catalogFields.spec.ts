@@ -95,7 +95,7 @@ describe('used-field marks', () => {
     it('records every place a field is used', () => {
         expect(usages.positions.pnlDay.map(it => it.path)).toEqual(
             expect.arrayContaining([
-                '/elements/headline/config/cards/1/field',
+                '/elements/headlinePnlDay/config/field',
                 '/elements/sectorChart/config/y/0',
                 '/elements/posGrid/config/sortBy',
                 '/elements/pnlButtons/config/buttons/0/action/value/field'

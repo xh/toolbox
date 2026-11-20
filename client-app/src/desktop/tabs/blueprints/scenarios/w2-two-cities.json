@@ -1,7 +1,7 @@
 {
     "schema": {
         "blueprint": 1,
-        "widgets": {"dashCanvas": 1, "buttonGroupInput": 1, "statCardStrip": 1, "chart": 1, "cubeGrid": 1}
+        "widgets": {"dashCanvas": 1, "buttonGroupInput": 1, "chart": 1, "cubeGrid": 1, "statCard": 1, "tileFrame": 1}
     },
     "variables": {
         "cityA": {
@@ -18,7 +18,12 @@
             "default": {"value": "London"},
             "options": {"values": ["Chicago", "London", "New York", "Paris", "Sydney", "Tokyo"]}
         },
-        "units": {"type": "string", "label": "Units", "setBy": {"element": "unitsToggle"}, "default": {"value": "imperial"}}
+        "units": {
+            "type": "string",
+            "label": "Units",
+            "setBy": {"element": "unitsToggle"},
+            "default": {"value": "imperial"}
+        }
     },
     "sources": {
         "currentA": {"dataset": "currentWeather", "params": {"city": {"$var": "cityA"}, "units": {"$var": "units"}}},
@@ -46,27 +51,33 @@
         },
         "unitsToggle": {
             "component": "buttonGroupInput",
-            "config": {
-                "options": [{"value": "imperial", "label": "°F"}, {"value": "metric", "label": "°C"}]
-            }
+            "config": {"options": [{"value": "imperial", "label": "°F"}, {"value": "metric", "label": "°C"}]}
         },
         "nowA": {
-            "component": "statCardStrip",
-            "config": {
-                "source": "currentA",
-                "title": {"$var": "cityA"},
-                "cards": [
-                    {"field": "conditions"},
-                    {"field": "temp"},
-                    {"field": "feelsLike"},
-                    {"field": "humidity"},
-                    {"field": "windSpeed"}
-                ]
-            }
+            "component": "tileFrame",
+            "config": {"title": {"$var": "cityA"}},
+            "children": [
+                {"id": "nowAConditions"},
+                {"id": "nowATemp"},
+                {"id": "nowAFeelsLike"},
+                {"id": "nowAHumidity"},
+                {"id": "nowAWindSpeed"}
+            ]
         },
+        "nowAConditions": {"component": "statCard", "config": {"source": "currentA", "field": "conditions"}},
+        "nowATemp": {"component": "statCard", "config": {"source": "currentA", "field": "temp"}},
+        "nowAFeelsLike": {"component": "statCard", "config": {"source": "currentA", "field": "feelsLike"}},
+        "nowAHumidity": {"component": "statCard", "config": {"source": "currentA", "field": "humidity"}},
+        "nowAWindSpeed": {"component": "statCard", "config": {"source": "currentA", "field": "windSpeed"}},
         "tempChartA": {
             "component": "chart",
-            "config": {"source": "forecastA", "title": "Temperature", "type": "line", "x": "time", "y": ["temp", "feelsLike"]}
+            "config": {
+                "source": "forecastA",
+                "title": "Temperature",
+                "type": "line",
+                "x": "time",
+                "y": ["temp", "feelsLike"]
+            }
         },
         "precipChartA": {
             "component": "chart",
@@ -80,7 +91,13 @@
         },
         "windChartA": {
             "component": "chart",
-            "config": {"source": "forecastA", "title": "Wind", "type": "line", "x": "time", "y": ["windSpeed", "windGust"]}
+            "config": {
+                "source": "forecastA",
+                "title": "Wind",
+                "type": "line",
+                "x": "time",
+                "y": ["windSpeed", "windGust"]
+            }
         },
         "forecastGridA": {
             "component": "cubeGrid",
@@ -90,22 +107,30 @@
             }
         },
         "nowB": {
-            "component": "statCardStrip",
-            "config": {
-                "source": "currentB",
-                "title": {"$var": "cityB"},
-                "cards": [
-                    {"field": "conditions"},
-                    {"field": "temp"},
-                    {"field": "feelsLike"},
-                    {"field": "humidity"},
-                    {"field": "windSpeed"}
-                ]
-            }
+            "component": "tileFrame",
+            "config": {"title": {"$var": "cityB"}},
+            "children": [
+                {"id": "nowBConditions"},
+                {"id": "nowBTemp"},
+                {"id": "nowBFeelsLike"},
+                {"id": "nowBHumidity"},
+                {"id": "nowBWindSpeed"}
+            ]
         },
+        "nowBConditions": {"component": "statCard", "config": {"source": "currentB", "field": "conditions"}},
+        "nowBTemp": {"component": "statCard", "config": {"source": "currentB", "field": "temp"}},
+        "nowBFeelsLike": {"component": "statCard", "config": {"source": "currentB", "field": "feelsLike"}},
+        "nowBHumidity": {"component": "statCard", "config": {"source": "currentB", "field": "humidity"}},
+        "nowBWindSpeed": {"component": "statCard", "config": {"source": "currentB", "field": "windSpeed"}},
         "tempChartB": {
             "component": "chart",
-            "config": {"source": "forecastB", "title": "Temperature", "type": "line", "x": "time", "y": ["temp", "feelsLike"]}
+            "config": {
+                "source": "forecastB",
+                "title": "Temperature",
+                "type": "line",
+                "x": "time",
+                "y": ["temp", "feelsLike"]
+            }
         },
         "precipChartB": {
             "component": "chart",
@@ -119,7 +144,13 @@
         },
         "windChartB": {
             "component": "chart",
-            "config": {"source": "forecastB", "title": "Wind", "type": "line", "x": "time", "y": ["windSpeed", "windGust"]}
+            "config": {
+                "source": "forecastB",
+                "title": "Wind",
+                "type": "line",
+                "x": "time",
+                "y": ["windSpeed", "windGust"]
+            }
         },
         "forecastGridB": {
             "component": "cubeGrid",

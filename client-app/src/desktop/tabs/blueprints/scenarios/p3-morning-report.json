@@ -4,19 +4,30 @@
         "widgets": {
             "tabContainer": 1,
             "dashCanvas": 1,
-            "statCardStrip": 1,
             "chart": 1,
             "groupingChooser": 1,
             "buttonGroup": 1,
-            "cubeGrid": 1
+            "cubeGrid": 1,
+            "statCard": 1,
+            "tileFrame": 1
         },
         "variableTypes": {"toolbox.fund": 1},
         "resolvers": {"toolbox.userFund": 1, "previousBusinessDay": 1, "dateOffset": 1, "yearStart": 1}
     },
     "formats": {"mv": {"precision": 0, "ledger": true}, "greek": {"scale": "thousands", "precision": 0, "ledger": true}},
     "variables": {
-        "fund": {"type": "toolbox.fund", "label": "Fund", "setBy": "prompt", "default": {"resolver": "toolbox.userFund"}},
-        "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "previousBusinessDay"}},
+        "fund": {
+            "type": "toolbox.fund",
+            "label": "Fund",
+            "setBy": "prompt",
+            "default": {"resolver": "toolbox.userFund"}
+        },
+        "asOf": {
+            "type": "localDate",
+            "label": "As of",
+            "setBy": "prompt",
+            "default": {"resolver": "previousBusinessDay"}
+        },
         "grouping": {
             "type": "string[]",
             "label": "Group by",
@@ -70,8 +81,15 @@
                             "posGrid": {
                                 "config": {
                                     "columnState": [
-                                        "grossExposure", "netExposure", "betaAdjExposure", "beta", "var95",
-                                        "pctNav", "retYtd", "delta", "vega"
+                                        "grossExposure",
+                                        "netExposure",
+                                        "betaAdjExposure",
+                                        "beta",
+                                        "var95",
+                                        "pctNav",
+                                        "retYtd",
+                                        "delta",
+                                        "vega"
                                     ]
                                 }
                             }
@@ -107,30 +125,59 @@
                     {
                         "label": "Publish to PM pack",
                         "icon": "share",
-                        "action": {"type": "toolbox.publishToPmPack", "fund": {"$var": "fund"}, "asOf": {"$var": "asOf"}}
+                        "action": {
+                            "type": "toolbox.publishToPmPack",
+                            "fund": {"$var": "fund"},
+                            "asOf": {"$var": "asOf"}
+                        }
                     }
                 ]
             }
         },
         "headline": {
-            "component": "statCardStrip",
-            "config": {
-                "source": "positions",
-                "cards": [
-                    {"field": "mktVal", "format": {"scale": "millions", "precision": 1}},
-                    {"field": "pnlDay", "format": {"scale": "thousands", "precision": 0}},
-                    {"field": "pnlMtd", "format": {"scale": "millions", "precision": 1}},
-                    {"field": "pnlYtd", "format": {"scale": "millions", "precision": 1}}
-                ]
-            }
+            "component": "tileFrame",
+            "children": [
+                {"id": "headlineMktVal"},
+                {"id": "headlinePnlDay"},
+                {"id": "headlinePnlMtd"},
+                {"id": "headlinePnlYtd"}
+            ]
+        },
+        "headlineMktVal": {
+            "component": "statCard",
+            "config": {"source": "positions", "field": "mktVal", "format": {"scale": "millions", "precision": 1}}
+        },
+        "headlinePnlDay": {
+            "component": "statCard",
+            "config": {"source": "positions", "field": "pnlDay", "format": {"scale": "thousands", "precision": 0}}
+        },
+        "headlinePnlMtd": {
+            "component": "statCard",
+            "config": {"source": "positions", "field": "pnlMtd", "format": {"scale": "millions", "precision": 1}}
+        },
+        "headlinePnlYtd": {
+            "component": "statCard",
+            "config": {"source": "positions", "field": "pnlYtd", "format": {"scale": "millions", "precision": 1}}
         },
         "sectorChart": {
             "component": "chart",
-            "config": {"source": "positions", "title": "Day P&L by Sector", "type": "column", "x": "sector", "y": ["pnlDay"]}
+            "config": {
+                "source": "positions",
+                "title": "Day P&L by Sector",
+                "type": "column",
+                "x": "sector",
+                "y": ["pnlDay"]
+            }
         },
         "regionChart": {
             "component": "chart",
-            "config": {"source": "positions", "title": "Day P&L by Region", "type": "column", "x": "region", "y": ["pnlDay"]}
+            "config": {
+                "source": "positions",
+                "title": "Day P&L by Region",
+                "type": "column",
+                "x": "region",
+                "y": ["pnlDay"]
+            }
         },
         "positions": {
             "component": "dashCanvas",
@@ -141,7 +188,10 @@
                 {"id": "priceChart", "x": 8, "y": 1, "w": 4, "h": 9}
             ]
         },
-        "groupChooser": {"component": "groupingChooser", "config": {"dimensions": ["fund", "strategy", "trader", "sector", "region", "symbol"]}},
+        "groupChooser": {
+            "component": "groupingChooser",
+            "config": {"dimensions": ["fund", "strategy", "trader", "sector", "region", "symbol"]}
+        },
         "pnlButtons": {
             "component": "buttonGroup",
             "config": {
@@ -177,7 +227,13 @@
         },
         "priceChart": {
             "component": "chart",
-            "config": {"source": "prices", "title": "Price, Last Three Months", "type": "line", "x": "day", "y": ["close"]}
+            "config": {
+                "source": "prices",
+                "title": "Price, Last Three Months",
+                "type": "line",
+                "x": "day",
+                "y": ["close"]
+            }
         },
         "orders": {"component": "dashCanvas", "children": [{"id": "ordersGrid", "x": 0, "y": 0, "w": 12, "h": 10}]},
         "ordersGrid": {

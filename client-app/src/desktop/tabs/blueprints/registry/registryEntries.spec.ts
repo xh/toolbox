@@ -55,7 +55,8 @@ describe('registry used marks', () => {
     const usages = registryUsages(p3 as Blueprint, dashboard, catalog);
 
     it('marks the widgets each element is', () => {
-        expect(usages['widget:statCardStrip']).toEqual(['/elements/headline/component']);
+        expect(usages['widget:tileFrame']).toEqual(['/elements/headline/component']);
+        expect(usages['widget:statCard']).toHaveLength(4);
         expect(
             Object.keys(usages)
                 .filter(it => it.startsWith('widget:'))
@@ -66,8 +67,9 @@ describe('registry used marks', () => {
             'widget:cubeGrid',
             'widget:dashCanvas',
             'widget:groupingChooser',
-            'widget:statCardStrip',
-            'widget:tabContainer'
+            'widget:statCard',
+            'widget:tabContainer',
+            'widget:tileFrame'
         ]);
     });
 

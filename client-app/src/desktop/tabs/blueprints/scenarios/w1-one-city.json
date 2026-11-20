@@ -1,5 +1,5 @@
 {
-    "schema": {"blueprint": 1, "widgets": {"dashCanvas": 1, "statCardStrip": 1, "chart": 1}},
+    "schema": {"blueprint": 1, "widgets": {"dashCanvas": 1, "chart": 1, "statCard": 1, "tileFrame": 1}},
     "variables": {
         "city": {
             "type": "string",
@@ -18,22 +18,27 @@
     "elements": {
         "dashboard": {
             "component": "dashCanvas",
-            "children": [{"id": "now", "x": 0, "y": 0, "w": 12, "h": 2}, {"id": "tempChart", "x": 0, "y": 2, "w": 12, "h": 6}]
+            "children": [
+                {"id": "now", "x": 0, "y": 0, "w": 12, "h": 2},
+                {"id": "tempChart", "x": 0, "y": 2, "w": 12, "h": 6}
+            ]
         },
         "now": {
-            "component": "statCardStrip",
-            "config": {
-                "source": "current",
-                "title": {"$var": "city"},
-                "cards": [
-                    {"field": "conditions"},
-                    {"field": "temp"},
-                    {"field": "feelsLike"},
-                    {"field": "humidity"},
-                    {"field": "windSpeed"}
-                ]
-            }
+            "component": "tileFrame",
+            "config": {"title": {"$var": "city"}},
+            "children": [
+                {"id": "nowConditions"},
+                {"id": "nowTemp"},
+                {"id": "nowFeelsLike"},
+                {"id": "nowHumidity"},
+                {"id": "nowWindSpeed"}
+            ]
         },
+        "nowConditions": {"component": "statCard", "config": {"source": "current", "field": "conditions"}},
+        "nowTemp": {"component": "statCard", "config": {"source": "current", "field": "temp"}},
+        "nowFeelsLike": {"component": "statCard", "config": {"source": "current", "field": "feelsLike"}},
+        "nowHumidity": {"component": "statCard", "config": {"source": "current", "field": "humidity"}},
+        "nowWindSpeed": {"component": "statCard", "config": {"source": "current", "field": "windSpeed"}},
         "tempChart": {
             "component": "chart",
             "config": {

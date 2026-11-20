@@ -1,7 +1,7 @@
 {
     "schema": {
         "blueprint": 1,
-        "widgets": {"dashCanvas": 1, "statCardStrip": 1, "cubeGrid": 1, "chart": 1},
+        "widgets": {"dashCanvas": 1, "cubeGrid": 1, "chart": 1, "statCard": 1, "tileFrame": 1},
         "resolvers": {"today": 1}
     },
     "variables": {
@@ -24,16 +24,20 @@
             ]
         },
         "headline": {
-            "component": "statCardStrip",
-            "config": {
-                "source": "positions",
-                "cards": [
-                    {"field": "grossExposure"},
-                    {"field": "netExposure"},
-                    {"field": "pnlDay"},
-                    {"agg": "count", "label": "Positions"}
-                ]
-            }
+            "component": "tileFrame",
+            "children": [
+                {"id": "headlineGrossExposure"},
+                {"id": "headlineNetExposure"},
+                {"id": "headlinePnlDay"},
+                {"id": "headlinePositions"}
+            ]
+        },
+        "headlineGrossExposure": {"component": "statCard", "config": {"source": "positions", "field": "grossExposure"}},
+        "headlineNetExposure": {"component": "statCard", "config": {"source": "positions", "field": "netExposure"}},
+        "headlinePnlDay": {"component": "statCard", "config": {"source": "positions", "field": "pnlDay"}},
+        "headlinePositions": {
+            "component": "statCard",
+            "config": {"source": "positions", "agg": "count", "label": "Positions"}
         },
         "posGrid": {
             "component": "cubeGrid",
