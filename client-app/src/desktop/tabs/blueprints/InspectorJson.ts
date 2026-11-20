@@ -27,13 +27,7 @@ export const inspectorJson = hoistCmp.factory<InspectorJsonProps>({
                 width: '100%'
             }),
             bbar: [
-                applyError
-                    ? span({
-                          className: 'xh-intent-danger',
-                          title: applyError,
-                          item: applyError.split('\n')[0]
-                      })
-                    : null,
+                applyError ? span({className: 'xh-intent-danger', item: applyError}) : null,
                 filler(),
                 button({
                     text: 'Revert',

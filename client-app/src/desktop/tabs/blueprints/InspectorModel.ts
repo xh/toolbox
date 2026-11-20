@@ -1,15 +1,11 @@
-import type {
-    Blueprint,
-    BlueprintIssue,
-    BlueprintOp,
-    BlueprintVariable
-} from '@xh/hoist-chat-kit/blueprint';
+import type {BlueprintIssue, BlueprintOp, BlueprintVariable} from '@xh/hoist-chat-kit/blueprint';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, computed, observable} from '@xh/hoist/mobx';
+import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
+import {applyJsonEdit} from './applyJsonEdit';
 import {BlueprintsPanelModel} from './BlueprintsPanelModel';
 import {inspectorJson} from './InspectorJson';
 import {markdownCol} from './markdown';
@@ -106,8 +102,19 @@ export class InspectorModel extends HoistModel {
     /** The blueprint as JSON, to edit. Follows the open blueprint until edited. */
     @bindable accessor draft: string = '';
 
-    /** Why the draft could not be applied: not JSON, or the blueprint's errors. */
-    @observable accessor applyError: string = null;
+    /** Why the draft is not JSON, if it isn't. */
+    @observable accessor parseError: string = null;
+
+    /** The errors that refused the last apply. Shown in the Issues tab until the next. */
+    @observableRef accessor applyIssues: BlueprintIssue[] = [];
+
+    /** One line on why the last apply failed, if it did. */
+    @computed
+    get applyError(): string {
+        if (this.parseError) return `Not valid JSON: ${this.parseError}`;
+        const n = this.applyIssues.length;
+        return n ? `Refused, ${n} error${n > 1 ? 's' : ''} - see Issues` : null;
+    }
 
     @computed
     get currentJson(): string {
@@ -120,28 +127,19 @@ export class InspectorModel extends HoistModel {
         return this.draft !== this.currentJson;
     }
 
-    /** Apply the draft in place, keeping the history. With errors, nothing changes. */
+    /** Apply the draft as one edit, "Edit JSON". With errors, nothing changes. */
     @action
     applyDraft() {
-        let bp: Blueprint;
-        try {
-            bp = JSON.parse(this.draft);
-        } catch (e) {
-            this.applyError = `Not valid JSON: ${e.message}`;
-            return;
-        }
-        const errors = this.panelModel.blueprintModel
-            .updateBlueprint(bp)
-            .filter(it => it.severity === 'error');
-        this.applyError = errors.length
-            ? errors.map(it => `${it.path}: ${it.message}`).join('\n')
-            : null;
+        const {parseError, issues} = applyJsonEdit(this.panelModel.blueprintModel, this.draft);
+        this.parseError = parseError ?? null;
+        this.applyIssues = issues;
     }
 
     @action
     revertDraft() {
         this.draft = this.currentJson;
-        this.applyError = null;
+        this.parseError = null;
+        this.applyIssues = [];
     }
 
     override onLinked() {
@@ -165,7 +163,7 @@ export class InspectorModel extends HoistModel {
                 fireImmediately: true
             },
             {
-                track: () => this.panelModel.issues,
+                track: () => (this.applyIssues.length ? this.applyIssues : this.panelModel.issues),
                 run: issues =>
                     this.load('issues', this.issuesGridModel, issues as BlueprintIssue[]),
                 fireImmediately: true
