@@ -17,6 +17,7 @@ import './Blueprints.scss';
 import {inspectorPanel} from './InspectorPanel';
 import {catalogPanel} from './catalog/CatalogPanel';
 import {registryPanel} from './registry/RegistryPanel';
+import {shareButton} from './ShareButton';
 
 /** The Blueprints Designer: a library of blueprints, each built with the Architect. */
 export const blueprintsPanel = hoistCmp.factory({
@@ -31,9 +32,9 @@ export const blueprintsPanel = hoistCmp.factory({
             description: [
                 'A blueprint describes a dashboard as JSON. Pick one, or start a new one, and ask',
                 'the Architect to build or change it. Your own blueprints open as drafts, which save',
-                'as you work. Publish a draft to share it: others run your latest publish, and may',
-                'copy it to make it their own. Each blueprint keeps its own conversation with the',
-                'Architect, in this browser.'
+                'as you work, and are private until you share them. Others you share with see only',
+                'your published versions: they run the latest, and may copy it to make it their own.',
+                'Each blueprint keeps its own conversation with the Architect, in this browser.'
             ],
             optionsLabel: null,
             options: [
@@ -184,6 +185,7 @@ const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
                               model.documentModel.isStale,
                           onClick: () => model.publishSelectedAsync()
                       }),
+                      shareButton({omit: !model.canEdit}),
                       segmentedControl({
                           omit: !model.canEdit,
                           value: blueprintModel.mode,

@@ -1,4 +1,4 @@
-import {DataCatalog, FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint';
+import {DataCatalog, FakeBlueprintDataProvider, isGlobal} from '@xh/hoist-chat-kit/blueprint';
 import {XH} from '@xh/hoist/core';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {find} from 'lodash';
@@ -157,6 +157,19 @@ describe('Blueprints designer', () => {
         await reloaded.selectAsync(first);
         expect(texts(reloaded)).toEqual(['Group by region', 'Done.']);
         reloaded.destroy();
+    });
+
+    it('shares the blueprint open with everyone, and makes it private again', async () => {
+        const id = await model.createBlueprintAsync('Shared');
+        expect(model.documentModel.document.sharing).toEqual({writers: [], readers: []});
+
+        await model.updateAccessAsync({writers: [], readers: ['*']});
+        expect(isGlobal(model.selected)).toBe(true);
+        expect(model.documentModel.document.sharing).toEqual({writers: [], readers: ['*']});
+
+        await model.updateAccessAsync({writers: [], readers: []});
+        expect(isGlobal(find(model.summaries, {id}))).toBe(false);
+        await model.deleteBlueprintAsync();
     });
 
     it('creates an empty dashboard, and opens its draft', async () => {

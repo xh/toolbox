@@ -1,5 +1,6 @@
 import type {
     Blueprint,
+    BlueprintAccessSpec,
     BlueprintDataProvider,
     BlueprintIssue,
     BlueprintPublish,
@@ -10,7 +11,8 @@ import {
     BlueprintDesignModel,
     BlueprintDocumentModel,
     BlueprintModel,
-    DataCatalog
+    DataCatalog,
+    isGlobal
 } from '@xh/hoist-chat-kit/blueprint';
 import type {ChatModel} from '@xh/hoist-chat-kit/core';
 import {
@@ -125,8 +127,14 @@ export class BlueprintsPanelModel extends HoistModel {
         columns: [
             {field: 'name', flex: 1},
             {
+                field: 'global',
+                width: 28,
+                align: 'center',
+                renderer: (v: boolean) => (v ? Icon.globe({title: 'Everyone can view'}) : null)
+            },
+            {
                 field: 'status',
-                width: 70,
+                width: 60,
                 align: 'right',
                 renderer: (v: string) =>
                     v === 'read' ? Icon.lock({title: 'Read only'}) : v ? v : null
@@ -168,10 +176,12 @@ export class BlueprintsPanelModel extends HoistModel {
         this.addReaction(
             {
                 track: () =>
-                    this.summaries.map(({id, name, access, publishedVersion}) => ({
-                        id,
-                        name,
-                        status: access === 'read' ? 'read' : publishedVersion ? null : 'draft'
+                    this.summaries.map(it => ({
+                        id: it.id,
+                        name: it.name,
+                        status:
+                            it.access === 'read' ? 'read' : it.publishedVersion ? null : 'draft',
+                        global: isGlobal(it)
                     })),
                 run: rows => {
                     this.listGridModel.loadData(rows);
@@ -325,6 +335,12 @@ export class BlueprintsPanelModel extends HoistModel {
         if (!issues.some(it => it.severity === 'error')) {
             XH.successToast(`Published version ${this.documentModel.document.publishedVersion}.`);
         }
+    }
+
+    /** Set who may write and read the blueprint open, and refresh the library list. */
+    async updateAccessAsync(spec: BlueprintAccessSpec) {
+        await this.documentModel.updateAccessAsync(spec);
+        await this.refreshSummariesAsync();
     }
 
     /** Create a blueprint, an empty dashboard by default, and open its draft. Returns its ID. */
@@ -499,6 +515,7 @@ export class BlueprintsPanelModel extends HoistModel {
                 blueprint: blueprint as Blueprint
             });
             await this.repository.publishAsync(record.id, {base: record.version});
+            await this.repository.updateAccessAsync?.(record.id, {writers: [], readers: ['*']});
         }
     }
 

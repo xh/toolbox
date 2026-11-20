@@ -35,13 +35,16 @@ afterEach(() => {
     hoistCore.jsonBlobs.reset();
 });
 
+const PRIVATE = {writers: [], readers: []},
+    GLOBAL = {writers: [], readers: ['*']};
+
 function actAs(username: string) {
     user = username;
     hoistCore.user.username = username;
 }
 
 describe('JsonBlobBlueprintRepository', () => {
-    it("creates a blueprint as its owner's draft, at version 1, with no publish", async () => {
+    it("creates a blueprint as its owner's private draft, at version 1, with no publish", async () => {
         const record = await repository.createAsync({name: 'Positions', blueprint});
 
         expect(record).toMatchObject({
@@ -52,6 +55,9 @@ describe('JsonBlobBlueprintRepository', () => {
             publishedVersion: null,
             access: 'write',
             canPublish: true,
+            canShare: true,
+            canShareGlobally: true,
+            sharing: {writers: [], readers: []},
             pendingRenames: []
         });
         expect(record.blueprint).toEqual(blueprint);
@@ -156,9 +162,10 @@ describe('JsonBlobBlueprintRepository', () => {
         create.mockRestore();
     });
 
-    it('lets another user read and copy the latest publish, and nothing more', async () => {
+    it('lets another user read and copy the latest publish of a global blueprint, and nothing more', async () => {
         const {id} = await repository.createAsync({name: 'Positions', blueprint});
         await repository.publishAsync(id, {base: 1});
+        await repository.updateAccessAsync(id, GLOBAL);
 
         actAs(OTHER);
         expect(await repository.listAsync()).toEqual([
@@ -191,24 +198,51 @@ describe('JsonBlobBlueprintRepository', () => {
         expect(copy.blueprint).toEqual(blueprint);
     });
 
-    it("lists another user's blueprint only once it is published", async () => {
+    it("lists another user's blueprint only once it is global and published", async () => {
         const {id} = await repository.createAsync({name: 'Positions', blueprint});
+        await repository.publishAsync(id, {base: 1});
         actAs(OTHER);
         expect(await repository.listAsync()).toEqual([]);
+        expect(await repository.openAsync(id, {as: 'publish'})).toBeNull();
 
         actAs(OWNER);
-        await repository.publishAsync(id, {base: 1});
+        const {id: unpublished} = await repository.createAsync({name: 'Orders', blueprint});
+        await repository.updateAccessAsync(id, GLOBAL);
+        await repository.updateAccessAsync(unpublished, GLOBAL);
         actAs(OTHER);
         expect((await repository.listAsync()).map(it => it.id)).toEqual([id]);
     });
 
-    it("shows the blueprint's sharing to its owner only", async () => {
+    it('shares a blueprint globally, its later publishes too, and makes it private again', async () => {
         const {id} = await repository.createAsync({name: 'Positions', blueprint});
-        expect((await repository.listAsync())[0]).toMatchObject({
-            id,
-            canShare: true,
-            sharing: {writers: [OWNER], readers: ['*']}
-        });
+        await repository.updateAccessAsync(id, GLOBAL);
+        expect((await repository.listAsync())[0]).toMatchObject({sharing: GLOBAL});
+        await repository.publishAsync(id, {base: 1});
+
+        actAs(OTHER);
+        expect(await repository.openAsync(id, {as: 'publish'})).toMatchObject({version: 1});
+
+        actAs(OWNER);
+        await repository.updateAccessAsync(id, PRIVATE);
+        expect((await repository.listAsync())[0]).toMatchObject({sharing: PRIVATE});
+        actAs(OTHER);
+        expect(await repository.listAsync()).toEqual([]);
+        expect(await repository.openAsync(id, {as: 'publish'})).toBeNull();
+    });
+
+    it('takes only private or global access, and only from the owner', async () => {
+        const {id} = await repository.createAsync({name: 'Positions', blueprint});
+        expect(repository.sharingModes).toEqual(['everyone']);
+        await expect(
+            repository.updateAccessAsync(id, {writers: [], readers: [OTHER]})
+        ).rejects.toThrow();
+        await expect(
+            repository.updateAccessAsync(id, {writers: ['*'], readers: []})
+        ).rejects.toThrow();
+
+        await repository.updateAccessAsync(id, GLOBAL);
+        actAs(OTHER);
+        await expect(repository.updateAccessAsync(id, PRIVATE)).rejects.toThrow();
     });
 
     it("deletes a blueprint with its publishes and the owner's personalizations", async () => {
@@ -255,6 +289,7 @@ describe('JsonBlobBlueprintRepository', () => {
     it("ignores another user's personalizations of a deleted blueprint", async () => {
         const {id} = await repository.createAsync({name: 'Positions', blueprint});
         await repository.publishAsync(id, {base: 1});
+        await repository.updateAccessAsync(id, GLOBAL);
         actAs(OTHER);
         await repository.savePersonalizationAsync({
             blueprintId: id,

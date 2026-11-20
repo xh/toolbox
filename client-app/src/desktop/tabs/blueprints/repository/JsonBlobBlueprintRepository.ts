@@ -1,5 +1,6 @@
 import type {
     Blueprint,
+    BlueprintAccessSpec,
     BlueprintCreateSpec,
     BlueprintIssue,
     BlueprintOpenOptions,
@@ -10,13 +11,14 @@ import type {
     BlueprintRename,
     BlueprintRepository,
     BlueprintSaveResult,
+    BlueprintSharingMode,
     BlueprintSummary
 } from '@xh/hoist-chat-kit/blueprint';
 import {staleBaseIssue} from '@xh/hoist-chat-kit/blueprint';
 import {XH} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
 import type {JsonBlob} from '@xh/hoist/svc';
-import {maxBy, sortBy} from 'lodash';
+import {isEqual, maxBy, sortBy} from 'lodash';
 
 /** JsonBlob type of a blueprint's draft, named by the blueprint's ID. */
 export const BLUEPRINT_TYPE = 'toolboxBlueprint';
@@ -31,14 +33,16 @@ export const PERSONALIZATION_TYPE = 'toolboxBlueprintPersonalization';
  * A {@link BlueprintRepository} on Hoist JsonBlobs.
  *
  * - **Writes:** a blueprint belongs to the user who created it, its JsonBlobs' owner. Only that
- *   user may save, publish or delete it, as hoist-core lets only a blob's owner write it. Every
- *   other user has read access: they run its latest publish, and may copy it into a blueprint of
- *   their own. Summaries and records say so, and `canPublish` follows the owner.
- * - **Listing and access:** drafts and publishes are shared with all users (`acl: '*'`).
- *   {@link listAsync} lists the user's own blueprints, and other users' once they have a publish.
- *   hoist-core's ACL is the only boundary: this class refuses readers in its own methods, but
- *   cannot keep them from reading a blob directly.
- * - **Drafts are not secret.** A draft is readable by any user through the JsonBlob API. The
+ *   user may save, publish, share or delete it, as hoist-core lets only a blob's owner write it.
+ *   Summaries and records say so, and `canPublish` and `canShare` follow the owner.
+ * - **Sharing** is private or global only (`sharingModes` is `everyone`). A new blueprint is
+ *   private: its blobs' ACL is unset, so only the owner reads them. Global sets `acl: '*'` on the
+ *   draft and every publish, and later publishes take the draft's ACL. Every other user then runs
+ *   its latest publish, and may copy it into a blueprint of their own.
+ * - **Listing:** {@link listAsync} lists the user's own blueprints, and global ones once they have
+ *   a publish. hoist-core's ACL is the only boundary: this class refuses readers in its own
+ *   methods, but cannot keep them from reading a global blob directly.
+ * - **A global draft is not secret.** It is readable by any user through the JsonBlob API. The
  *   library keeps readers off drafts in the UI only.
  * - **Personalizations** are private blobs of their user, one per blueprint and preset.
  * - **Publishes** never change. Each takes the next number, created only if no publish of that
@@ -61,6 +65,7 @@ export const PERSONALIZATION_TYPE = 'toolboxBlueprintPersonalization';
  */
 export class JsonBlobBlueprintRepository implements BlueprintRepository {
     readonly enforcesBase = false;
+    readonly sharingModes: BlueprintSharingMode[] = ['everyone'];
     private readonly username: () => string;
 
     constructor(config: {username?: () => string} = {}) {
@@ -117,7 +122,6 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
         await XH.jsonBlobService.createAsync({
             type: BLUEPRINT_TYPE,
             name: id,
-            acl: '*',
             value: {blueprint: spec.blueprint, pendingRenames: []},
             meta: {
                 name: spec.name,
@@ -202,6 +206,24 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
         });
     }
 
+    async updateAccessAsync(id: string, spec: BlueprintAccessSpec): Promise<void> {
+        const global = isEqual(spec, GLOBAL);
+        if (!global && !isEqual(spec, PRIVATE)) {
+            throw new Error(
+                'A blueprint here is private or shared with everyone, nothing between.'
+            );
+        }
+        const stub = await this.draftStubAsync(id);
+        if (!stub) throw new Error(`There is no blueprint '${id}'.`);
+        if (!this.isOwner(stub)) throw new Error('Only its owner can share a blueprint.');
+
+        const acl = global ? '*' : null,
+            publishes = await this.publishStubsAsync(id);
+        await Promise.all(
+            [stub, ...publishes].map(it => XH.jsonBlobService.updateAsync(it.token, {acl}))
+        );
+    }
+
     async deleteAsync(id: string): Promise<void> {
         const stub = await this.draftStubAsync(id);
         if (!stub) return;
@@ -254,10 +276,11 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
             access: owner ? 'write' : 'read',
             canPublish: owner,
             canShare: owner,
+            canShareGlobally: owner,
             updated: meta.updated,
             updatedBy: meta.updatedBy,
             ...(meta.copiedFrom ? {copiedFrom: meta.copiedFrom} : {}),
-            ...(owner ? {sharing: {writers: [blob.owner], readers: ['*']}} : {})
+            ...(owner ? {sharing: blob.acl === '*' ? GLOBAL : PRIVATE} : {})
         };
     }
 
@@ -302,7 +325,7 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
                 await XH.jsonBlobService.createAsync({
                     type: PUBLISH_TYPE,
                     name: `${id}:${version}`,
-                    acl: '*',
+                    acl: draft.acl,
                     value: {blueprint: draft.value.blueprint},
                     meta: {blueprintId: id, ...info}
                 });
@@ -332,6 +355,9 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
               ];
     }
 }
+
+const PRIVATE: BlueprintAccessSpec = {writers: [], readers: []},
+    GLOBAL: BlueprintAccessSpec = {writers: [], readers: ['*']};
 
 function metaOf(blob: JsonBlob): PlainObject {
     return (blob.meta ?? {}) as PlainObject;
