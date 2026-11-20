@@ -29,8 +29,10 @@ export const blueprintsPanel = hoistCmp.factory({
             icon: Icon.layout(),
             description: [
                 'A blueprint describes a dashboard as JSON. Pick one, or start a new one, and ask',
-                'the Architect to build or change it. Each keeps its own conversation, saved in',
-                'local storage.'
+                'the Architect to build or change it. Your own blueprints open as drafts, which save',
+                'as you work. Publish a draft to share it: others run your latest publish, and may',
+                'copy it to make it their own. Each blueprint keeps its own conversation with the',
+                'Architect, in this browser.'
             ],
             optionsLabel: null,
             options: [
@@ -54,9 +56,15 @@ export const blueprintsPanel = hoistCmp.factory({
                                     onClick: () => model.newBlueprintAsync()
                                 }),
                                 wrapperAction({
+                                    text: 'Copy',
+                                    icon: Icon.copy(),
+                                    disabled: !model.documentModel?.document,
+                                    onClick: () => model.copySelectedAsync()
+                                }),
+                                wrapperAction({
                                     text: 'Delete',
                                     icon: Icon.delete(),
-                                    disabled: !model.selected,
+                                    disabled: model.selected?.access !== 'write',
                                     onClick: () => model.deleteSelectedAsync()
                                 })
                             ]
@@ -71,19 +79,16 @@ export const blueprintsPanel = hoistCmp.factory({
                         viewButton({view: 'catalog', text: 'Data Catalog', icon: Icon.database()}),
                         viewButton({view: 'registry', text: 'Registry', icon: Icon.list()})
                     ]
-                }),
-                wrapperAction({
-                    text: 'Reset to presets',
-                    icon: Icon.reset(),
-                    intent: 'danger',
-                    disabled: !blueprintModel,
-                    onClick: () => model.resetLibraryAsync()
                 })
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/blueprints/BlueprintsPanelModel.ts',
                     notes: 'The library, and the models that open a blueprint.'
+                },
+                {
+                    url: '$TB/client-app/src/desktop/tabs/blueprints/repository/JsonBlobBlueprintRepository.ts',
+                    notes: 'Where blueprints persist, on Hoist JsonBlobs.'
                 },
                 {
                     url: '$TB/client-app/src/desktop/tabs/blueprints/architectChat.ts',
@@ -143,11 +148,15 @@ const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
             compactHeader: true,
             headerItems: blueprintModel.blueprint
                 ? [
-                      span({
-                          className: 'tb-blueprints__version',
-                          item: `v${blueprintModel.version}`
+                      span({className: 'tb-blueprints__version', item: documentStatus(model)}),
+                      button({
+                          text: 'Publish',
+                          icon: Icon.upload(),
+                          omit: !model.canEdit || !model.documentModel.canPublish,
+                          onClick: () => model.publishSelectedAsync()
                       }),
                       segmentedControl({
+                          omit: !model.canEdit,
                           value: blueprintModel.mode,
                           onChange: mode => blueprintModel.setMode(mode),
                           compact: true,
@@ -166,9 +175,21 @@ const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
     );
 });
 
-function emptyText({selected}: BlueprintsPanelModel): string {
+function emptyText({selected, openIssues}: BlueprintsPanelModel): string {
     if (!selected) return 'Pick a blueprint, or start a new one.';
-    return selected.blueprint
-        ? 'This blueprint has errors - see the Inspector.'
-        : 'This blueprint is empty. Ask the Architect to build it.';
+    const error = openIssues.find(it => it.severity === 'error');
+    return error ? error.message : 'This blueprint is empty. Ask the Architect to build it.';
+}
+
+/** Which version is open, and whether its edits are saved. */
+function documentStatus({documentModel, isSaving, saveIssues}: BlueprintsPanelModel): string {
+    const doc = documentModel.document;
+    if (!doc) return null;
+    if (doc.kind === 'publish') {
+        return `Publish v${doc.version}${doc.access === 'write' ? '' : ' - read only'}`;
+    }
+    const error = saveIssues[0];
+    if (error) return error.message;
+    if (isSaving) return 'Saving...';
+    return documentModel.isDirty ? `Draft v${doc.version} - unsaved` : `Draft v${doc.version}`;
 }

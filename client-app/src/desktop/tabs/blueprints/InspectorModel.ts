@@ -15,6 +15,7 @@ import {BlueprintsPanelModel} from './BlueprintsPanelModel';
 import {inspectorHistory} from './InspectorHistory';
 import {inspectorJson} from './InspectorJson';
 import {inspectorOutline} from './InspectorOutline';
+import {inspectorPublishes} from './InspectorPublishes';
 import {markdownCol} from './markdown';
 
 /** The open blueprint's variables, validation issues and edit history. */
@@ -75,6 +76,23 @@ export class InspectorModel extends HoistModel {
         ]
     });
 
+    @managed publishesGridModel = new GridModel({
+        store: {idSpec: 'version'},
+        sortBy: 'version|desc',
+        emptyText: 'Not published yet. Readers see a blueprint only once it is published.',
+        columns: [
+            {field: 'version', headerName: 'Ver', width: 50, align: 'right'},
+            {
+                field: 'published',
+                width: 130,
+                renderer: v => (v ? new Date(v).toLocaleString() : null)
+            },
+            {field: 'publishedBy', headerName: 'By', width: 80},
+            {field: 'note', flex: 1, minWidth: 100, tooltip: true},
+            {field: 'renames', width: 70, align: 'right'}
+        ]
+    });
+
     @managed historyGridModel = new GridModel({
         store: {idSpec: 'version'},
         sortBy: 'version|desc',
@@ -106,6 +124,7 @@ export class InspectorModel extends HoistModel {
             {id: 'variables', content: () => grid({model: this.variablesGridModel})},
             {id: 'issues', content: () => grid({model: this.issuesGridModel})},
             {id: 'history', content: () => inspectorHistory({inspector: this})},
+            {id: 'publishes', content: () => inspectorPublishes({inspector: this})},
             {id: 'json', title: 'JSON', content: () => inspectorJson({inspector: this})}
         ]
     });
@@ -187,6 +206,16 @@ export class InspectorModel extends HoistModel {
                 track: () => (this.applyIssues.length ? this.applyIssues : this.panelModel.issues),
                 run: issues =>
                     this.load('issues', this.issuesGridModel, issues as BlueprintIssue[]),
+                fireImmediately: true
+            },
+            {
+                track: () => this.panelModel.publishes,
+                run: publishes =>
+                    this.load(
+                        'publishes',
+                        this.publishesGridModel,
+                        publishes.map(it => ({...it, renames: it.renames.length}))
+                    ),
                 fireImmediately: true
             },
             {

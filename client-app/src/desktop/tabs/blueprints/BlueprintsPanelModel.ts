@@ -1,6 +1,18 @@
-import type {Blueprint, BlueprintDataProvider, BlueprintIssue} from '@xh/hoist-chat-kit/blueprint';
-import {BlueprintDesignModel, BlueprintModel, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
-import type {ChatMessageSpec, ChatModel} from '@xh/hoist-chat-kit/core';
+import type {
+    Blueprint,
+    BlueprintDataProvider,
+    BlueprintIssue,
+    BlueprintPublish,
+    BlueprintRepository,
+    BlueprintSummary
+} from '@xh/hoist-chat-kit/blueprint';
+import {
+    BlueprintDesignModel,
+    BlueprintDocumentModel,
+    BlueprintModel,
+    DataCatalog
+} from '@xh/hoist-chat-kit/blueprint';
+import type {ChatModel} from '@xh/hoist-chat-kit/core';
 import {
     chatUiCalloutSpec,
     chatUiStackSpec,
@@ -18,12 +30,14 @@ import {
     bindable,
     compareStructural,
     computed,
+    observable,
     observableRef,
     runInAction
 } from '@xh/hoist/mobx';
-import {cloneDeep, find} from 'lodash';
+import {find} from 'lodash';
+import {LocalThreadStore} from '../chatkit/integrations/LocalThreadStore';
 import {createArchitectChat} from './architectChat';
-import {migrateBlueprint} from './migrateBlueprint';
+import {JsonBlobBlueprintRepository} from './repository/JsonBlobBlueprintRepository';
 import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
 import p1 from './scenarios/p1-one-grid.json';
@@ -36,44 +50,56 @@ import w2 from './scenarios/w2-two-cities.json';
 /** What the designer shows beside the Architect: the open blueprint, or a reference page. */
 export type DesignerView = 'blueprint' | 'catalog' | 'registry';
 
-/** A blueprint in the designer's library, with its conversation with the Architect. */
-export interface BlueprintRecord {
-    id: string;
-    name: string;
-    /** Null for an empty blueprint. */
-    blueprint: PlainObject;
-    messages: ChatMessageSpec[];
-}
+/** The blueprints an empty library starts with, each published as its first version. */
+export const PRESETS: {name: string; blueprint: PlainObject}[] = [
+    {name: 'P1. One grid', blueprint: p1},
+    {name: 'P2. A linked dashboard', blueprint: p2},
+    {name: 'P3. A morning report', blueprint: p3},
+    {name: 'P5. A risk and stress report', blueprint: p5},
+    {name: 'W1. Weather for one city', blueprint: w1},
+    {name: 'W2. Two cities side by side', blueprint: w2}
+];
 
-/** The library a new user starts with, and returns to on a reset. */
-export const PRESETS: BlueprintRecord[] = [
-    {id: 'p1', name: 'P1. One grid', blueprint: p1},
-    {id: 'p2', name: 'P2. A linked dashboard', blueprint: p2},
-    {id: 'p3', name: 'P3. A morning report', blueprint: p3},
-    {id: 'p5', name: 'P5. A risk and stress report', blueprint: p5},
-    {id: 'w1', name: 'W1. Weather for one city', blueprint: w1},
-    {id: 'w2', name: 'W2. Two cities side by side', blueprint: w2}
-].map(it => ({...it, messages: []}));
+/** A new blueprint: an empty dashboard, ready for widgets. */
+const EMPTY_BLUEPRINT = {
+    root: 'dashboard',
+    elements: {dashboard: {component: 'dashCanvas', children: []}}
+} as Blueprint;
 
-const LIBRARY_KEY = 'blueprints.designer.library';
+// The local library this designer kept before blueprints moved to the server. Dropped on load.
+const OLD_LIBRARY_KEY = 'blueprints.designer.library';
 
 /**
- * The Blueprints designer: a library of blueprints in local storage, each with its own
- * conversation with the Architect. One {@link BlueprintModel} and one Architect `ChatModel` open
- * the selected blueprint, once the server's Data Catalog loads.
+ * The Blueprints designer: a library of blueprints in a {@link BlueprintRepository}, each with its
+ * own conversation with the Architect. One {@link BlueprintModel}, opened through a
+ * {@link BlueprintDocumentModel}, and one Architect `ChatModel` hold the selected blueprint, once
+ * the server's Data Catalog loads. The user's own blueprints open as drafts, which save as they
+ * change. Other users' blueprints open at their latest publish, read-only.
  */
 export class BlueprintsPanelModel extends HoistModel {
     override persistWith: PersistOptions = {localStorageKey: 'blueprintsDesigner'};
 
-    @observableRef accessor records: BlueprintRecord[] = readLibrary();
+    /** The blueprints the user may read, as the repository lists them. */
+    @observableRef accessor summaries: BlueprintSummary[] = [];
     @bindable @persist accessor selectedId: string = null;
     @bindable accessor view: DesignerView = 'blueprint';
 
     /** Issues from opening the selected blueprint. Errors mean it could not be shown. */
     @observableRef accessor openIssues: BlueprintIssue[] = [];
 
+    /** Issues from the last save or publish, such as a stale draft. */
+    @observableRef accessor saveIssues: BlueprintIssue[] = [];
+
+    /** Every publish of the blueprint open, oldest first. */
+    @observableRef accessor publishes: BlueprintPublish[] = [];
+
+    @observable accessor isSaving = false;
+
     /** Null until the catalog loads. */
     @observableRef accessor blueprintModel: BlueprintModel = null;
+
+    /** Opens, saves and publishes the selected blueprint through the repository. */
+    @observableRef accessor documentModel: BlueprintDocumentModel = null;
 
     /** Selection and structural edits on the open blueprint, in design mode. */
     @observableRef accessor designModel: BlueprintDesignModel = null;
@@ -84,16 +110,41 @@ export class BlueprintsPanelModel extends HoistModel {
     /** The Architect, holding the selected blueprint's conversation. Null until the catalog loads. */
     @observableRef accessor chatModel: ChatModel = null;
 
+    readonly repository: BlueprintRepository;
+
+    /** Each blueprint's conversation with the Architect, by blueprint ID. */
+    readonly threadStore = new LocalThreadStore({
+        storageKey: 'blueprints.designer.threads',
+        seed: () => [],
+        delayMs: 0
+    });
+
     @managed listGridModel = new GridModel({
         hideHeaders: true,
         emptyText: 'No blueprints',
-        columns: [{field: 'name', flex: 1}]
+        columns: [
+            {field: 'name', flex: 1},
+            {
+                field: 'status',
+                width: 70,
+                align: 'right',
+                renderer: (v: string) =>
+                    v === 'read' ? Icon.lock({title: 'Read only'}) : v ? v : null
+            }
+        ]
     });
 
     private createProvider: (catalog: DataCatalog) => BlueprintDataProvider;
+    private opening: Promise<void> = Promise.resolve();
 
-    get selected(): BlueprintRecord {
-        return find(this.records, {id: this.selectedId}) ?? null;
+    get selected(): BlueprintSummary {
+        return find(this.summaries, {id: this.selectedId}) ?? null;
+    }
+
+    /** True if the blueprint open is a draft the user may edit. */
+    get canEdit(): boolean {
+        const doc = this.documentModel?.document;
+        return doc?.kind === 'draft' && doc.access === 'write';
     }
 
     /** The open blueprint's issues, or why it could not be opened. */
@@ -106,22 +157,22 @@ export class BlueprintsPanelModel extends HoistModel {
     }
 
     constructor(
-        createProvider: (catalog: DataCatalog) => BlueprintDataProvider = () =>
-            new ServerDataProvider()
+        config: {
+            createProvider?: (catalog: DataCatalog) => BlueprintDataProvider;
+            repository?: BlueprintRepository;
+        } = {}
     ) {
         super();
-        this.createProvider = createProvider;
+        this.createProvider = config.createProvider ?? (() => new ServerDataProvider());
+        this.repository = config.repository ?? new JsonBlobBlueprintRepository();
         this.addReaction(
             {
-                track: () => this.selectedId,
-                run: (id, prevId) => this.open(id, prevId)
-            },
-            {
-                track: () => this.records,
-                run: records => XH.localStorageService.set(LIBRARY_KEY, records)
-            },
-            {
-                track: () => this.records.map(({id, name}) => ({id, name})),
+                track: () =>
+                    this.summaries.map(({id, name, access, publishedVersion}) => ({
+                        id,
+                        name,
+                        status: access === 'read' ? 'read' : publishedVersion ? null : 'draft'
+                    })),
                 run: rows => {
                     this.listGridModel.loadData(rows);
                     this.listGridModel.selModel.select(this.selectedId);
@@ -132,14 +183,15 @@ export class BlueprintsPanelModel extends HoistModel {
             {
                 track: () => this.listGridModel.selectedId as string,
                 run: id => {
-                    if (id) this.selectedId = id;
+                    if (id && id !== this.selectedId) this.selectAsync(id);
                 }
             },
             {
-                track: () => this.blueprintModel?.blueprint,
-                run: bp => {
-                    if (bp) this.update(this.selectedId, {blueprint: bp});
-                }
+                track: () => this.blueprintModel?.version,
+                run: () => {
+                    if (this.documentModel?.isDirty) this.saveAsync();
+                },
+                debounce: 1000
             }
         );
     }
@@ -157,11 +209,13 @@ export class BlueprintsPanelModel extends HoistModel {
                     catalog,
                     registry: createToolboxRegistry(),
                     dataProvider: this.createProvider(catalog),
-                    // The designer is a design surface: widget changes are edits.
                     mode: 'design',
                     access: 'write'
                 })
             ));
+            this.documentModel = this.markManaged(
+                new BlueprintDocumentModel({blueprintModel, repository: this.repository})
+            );
             this.designModel = this.markManaged(new BlueprintDesignModel({blueprintModel}));
             this.answerCatalog = new ChatUiCatalog({
                 components: [chatUiStackSpec(), chatUiTextSpec(), chatUiCalloutSpec()],
@@ -179,18 +233,110 @@ export class BlueprintsPanelModel extends HoistModel {
                 )
             );
         });
-        this.select(this.selected ? this.selectedId : this.records[0]?.id);
+        dropOldLibrary();
+
+        await this.refreshSummariesAsync();
+        if (!this.summaries.length && (await this.repository.canCreateAsync())) {
+            await this.seedAsync();
+            await this.refreshSummariesAsync();
+        }
+        const first = this.selected ? this.selectedId : this.summaries[0]?.id;
+        if (first) await this.selectAsync(first, true);
+    }
+
+    /** Open a blueprint: the user's own as its draft, another's at its latest publish. */
+    async selectAsync(id: string, force = false) {
+        if (!force && id === this.selectedId && this.documentModel?.document?.id === id) return;
+        const prevId = this.documentModel?.document?.id;
+        this.opening = this.opening.then(() => this.openAsync(id, prevId));
+        await this.opening;
+    }
+
+    /** Save the draft open, if it has unsaved edits. */
+    async saveAsync() {
+        const {documentModel} = this;
+        if (!documentModel?.isDirty || !this.canEdit) return;
+        runInAction(() => (this.isSaving = true));
+        try {
+            const issues = await documentModel.saveDraftAsync();
+            this.afterWrite(issues);
+        } finally {
+            runInAction(() => (this.isSaving = false));
+        }
+    }
+
+    async publishAsync(note?: string) {
+        const issues = await this.documentModel.publishAsync(note);
+        this.afterWrite(issues);
+        await this.loadPublishesAsync();
+        if (!issues.some(it => it.severity === 'error')) {
+            XH.successToast(`Published version ${this.documentModel.document.publishedVersion}.`);
+        }
+    }
+
+    /** Create a blueprint, an empty dashboard by default, and open its draft. Returns its ID. */
+    async createBlueprintAsync(
+        name: string,
+        blueprint: Blueprint = EMPTY_BLUEPRINT
+    ): Promise<string> {
+        await this.saveAsync();
+        const record = await this.repository.createAsync({name, blueprint});
+        await this.refreshSummariesAsync();
+        await this.selectAsync(record.id);
+        return record.id;
+    }
+
+    /**
+     * Copy the blueprint open into a new one, from its latest publish, or from its draft if it has
+     * none, and open the copy. Returns its ID.
+     */
+    async copyBlueprintAsync(name: string): Promise<string> {
+        await this.saveAsync();
+        const {selected} = this,
+            from = selected.publishedVersion ? undefined : ({as: 'draft'} as const),
+            record = await this.documentModel.copyAsync(name, from);
+        await this.refreshSummariesAsync();
+        await this.selectAsync(record.id);
+        return record.id;
+    }
+
+    /** Delete the blueprint open, with its conversation, and open the first left. */
+    async deleteBlueprintAsync() {
+        const id = this.selectedId;
+        await this.documentModel.deleteAsync();
+        await this.threadStore.deleteThreadsAsync([id]).catch(() => {});
+        await this.refreshSummariesAsync();
+        const next = this.summaries[0]?.id;
+        if (next) {
+            await this.selectAsync(next, true);
+        } else {
+            runInAction(() => (this.selectedId = null));
+        }
     }
 
     async newBlueprintAsync() {
-        const name = await XH.prompt<string>({
-            title: 'New blueprint',
-            icon: Icon.add(),
-            message: 'Name the blueprint.',
-            input: {rules: [required]},
-            confirmProps: {text: 'Create', intent: 'primary'}
+        const name = await this.promptNameAsync('New blueprint', 'Create', '');
+        if (name) await this.createBlueprintAsync(name);
+    }
+
+    async copySelectedAsync() {
+        const name = await this.promptNameAsync(
+            'Copy blueprint',
+            'Copy',
+            `${this.selected.name} (copy)`
+        );
+        if (name) await this.copyBlueprintAsync(name);
+    }
+
+    async publishSelectedAsync() {
+        const note = await XH.prompt<string>({
+            title: 'Publish',
+            icon: Icon.upload(),
+            message: `Publish the draft of "${this.selected.name}" as version ${(this.selected.publishedVersion ?? 0) + 1}. Readers run the latest publish.`,
+            input: {initialValue: '', item: undefined},
+            confirmProps: {text: 'Publish', intent: 'primary'}
         });
-        if (name) this.addBlueprint(name.trim());
+        if (note !== false) await this.publishAsync(note || undefined);
     }
 
     async deleteSelectedAsync() {
@@ -198,19 +344,20 @@ export class BlueprintsPanelModel extends HoistModel {
         if (!selected) return;
         const confirmed = await XH.confirm({
             title: 'Delete blueprint',
-            message: `Delete "${selected.name}" and its conversation with the Architect?`,
+            message: `Delete "${selected.name}", with its publishes and its conversation with the Architect?`,
             confirmProps: {text: 'Delete', intent: 'danger', outlined: true}
         });
-        if (confirmed) this.deleteBlueprint(selected.id);
+        if (confirmed) await this.deleteBlueprintAsync();
     }
 
-    async resetLibraryAsync() {
-        const confirmed = await XH.confirm({
-            title: 'Reset to presets',
-            message: 'Replace every blueprint and conversation with the presets?',
-            confirmProps: {text: 'Reset', intent: 'danger', outlined: true}
-        });
-        if (confirmed) this.resetLibrary();
+    /** Open one of the blueprint's publishes, read-only, or its draft again. */
+    async openVersionAsync(version: number | 'draft') {
+        await this.saveAsync();
+        const issues = await this.documentModel.openAsync(
+            this.selectedId,
+            version === 'draft' ? {as: 'draft'} : {as: 'publish', version}
+        );
+        runInAction(() => (this.openIssues = issues));
     }
 
     async clearConversationAsync() {
@@ -228,29 +375,6 @@ export class BlueprintsPanelModel extends HoistModel {
         this.view = this.view === view ? 'blueprint' : view;
     }
 
-    /** Add a blueprint, empty or a copy of one given, and open it. */
-    @action
-    addBlueprint(name: string, blueprint: PlainObject = null): BlueprintRecord {
-        const ret: BlueprintRecord = {id: XH.genId(), name, blueprint, messages: []};
-        this.records = [...this.records, ret];
-        this.select(ret.id);
-        return ret;
-    }
-
-    @action
-    deleteBlueprint(id: string) {
-        this.records = this.records.filter(it => it.id !== id);
-        if (id === this.selectedId) this.select(this.records[0]?.id);
-    }
-
-    /** Return to the presets, with no conversations. */
-    @action
-    resetLibrary() {
-        this.chatModel?.clear();
-        this.records = cloneDeep(PRESETS);
-        this.select(PRESETS[0].id);
-    }
-
     @action
     clearConversation() {
         this.chatModel.clear();
@@ -260,50 +384,99 @@ export class BlueprintsPanelModel extends HoistModel {
     //------------------
     // Implementation
     //------------------
-    /** Open a blueprint, even the one already selected. */
-    @action
-    private select(id: string) {
-        if (id === this.selectedId) {
-            this.open(id);
-        } else {
+    private async openAsync(id: string, prevId: string) {
+        const {documentModel, chatModel} = this;
+        if (!documentModel) return;
+        if (prevId) {
+            await this.saveAsync();
+            this.saveConversation(prevId);
+        }
+
+        runInAction(() => {
             this.selectedId = id;
+            this.view = 'blueprint';
+            this.saveIssues = [];
+            this.listGridModel.selModel.select(id);
+        });
+        const summary = this.selected,
+            issues = summary
+                ? await documentModel.openAsync(
+                      id,
+                      summary.access === 'write' ? {as: 'draft'} : {as: 'publish'}
+                  )
+                : [];
+        const messages = await this.threadStore
+            .loadMessagesAsync({threadId: id})
+            .then(it => it.messages)
+            .catch(() => []);
+        runInAction(() => {
+            this.openIssues = issues;
+            chatModel.loadMessages(messages, id);
+        });
+        await this.loadPublishesAsync();
+    }
+
+    private async loadPublishesAsync() {
+        const doc = this.documentModel.document,
+            publishes =
+                doc?.access === 'write' ? await this.repository.listPublishesAsync(doc.id) : [];
+        runInAction(() => (this.publishes = publishes));
+    }
+
+    private async refreshSummariesAsync() {
+        const summaries = await this.repository.listAsync();
+        runInAction(() => (this.summaries = summaries));
+    }
+
+    private async seedAsync() {
+        for (const {name, blueprint} of PRESETS) {
+            const record = await this.repository.createAsync({
+                name,
+                blueprint: blueprint as Blueprint
+            });
+            await this.repository.publishAsync(record.id, {base: record.version});
         }
     }
 
+    // Reflect a save or publish in the library list, and keep its issues to show.
     @action
-    private open(id: string, prevId?: string) {
-        const {blueprintModel, chatModel} = this;
-        if (!blueprintModel) return;
-        if (prevId) this.saveConversation(prevId);
-
-        const rec = this.selected;
-        this.view = 'blueprint';
-        this.listGridModel.selModel.select(id);
-        blueprintModel.clear();
-        this.openIssues = rec?.blueprint
-            ? blueprintModel.setBlueprint(rec.blueprint as Blueprint)
-            : [];
-        chatModel.loadMessages(rec?.messages ?? [], id);
+    private afterWrite(issues: BlueprintIssue[]) {
+        this.saveIssues = issues;
+        const doc = this.documentModel.document;
+        if (!doc) return;
+        this.summaries = this.summaries.map(it =>
+            it.id === doc.id
+                ? {
+                      ...it,
+                      draftVersion: doc.draftVersion,
+                      publishedVersion: doc.publishedVersion,
+                      updated: Date.now()
+                  }
+                : it
+        );
     }
 
-    private saveConversation(id: string = this.selectedId) {
-        this.update(id, {messages: this.chatModel.getMessageSpecs()});
+    private saveConversation(id: string = this.documentModel?.document?.id) {
+        if (!id) return;
+        this.threadStore.saveThread({id, messages: this.chatModel.getMessageSpecs()});
     }
 
-    @action
-    private update(id: string, changes: Partial<BlueprintRecord>) {
-        this.records = this.records.map(it => (it.id === id ? {...it, ...changes} : it));
+    private async promptNameAsync(title: string, action: string, initialValue: string) {
+        const name = await XH.prompt<string>({
+            title,
+            icon: Icon.add(),
+            message: 'Name the blueprint.',
+            input: {rules: [required], initialValue},
+            confirmProps: {text: action, intent: 'primary'}
+        });
+        return name ? name.trim() : null;
     }
 }
 
-function readLibrary(): BlueprintRecord[] {
+function dropOldLibrary() {
     try {
-        const stored: BlueprintRecord[] = XH.localStorageService.get(LIBRARY_KEY, null);
-        return stored
-            ? stored.map(it => ({...it, blueprint: migrateBlueprint(it.blueprint)}))
-            : cloneDeep(PRESETS);
+        XH.localStorageService.remove(OLD_LIBRARY_KEY);
     } catch (e) {
         XH.handleException(e, {showAlert: false});
-        return cloneDeep(PRESETS);
     }
 }

@@ -1,4 +1,4 @@
-import type {BlueprintRegistry, FieldDef} from '@xh/hoist-chat-kit/blueprint';
+import type {Blueprint, BlueprintRegistry, FieldDef} from '@xh/hoist-chat-kit/blueprint';
 import {ARCHITECT_TOOLS, architectPrompt, registryUsages} from '@xh/hoist-chat-kit/blueprint';
 import type {ArchitectTarget} from '@xh/hoist-chat-kit/blueprint';
 import {GridModel} from '@xh/hoist/cmp/grid';
@@ -260,7 +260,10 @@ export class RegistryModel extends HoistModel {
                 }
             };
         }
-        this.panelModel.addBlueprint(`Example - ${entry.label ?? entry.name}`, bp);
+        this.panelModel.createBlueprintAsync(
+            `Example - ${entry.label ?? entry.name}`,
+            bp as Blueprint
+        );
     }
 
     override onLinked() {
