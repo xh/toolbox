@@ -280,6 +280,14 @@ class BootStrap implements LogSupport {
                 note: 'Provide any js licenses needed by client here.'
             ),
             new ConfigSpec(
+                name: 'blueprintsRepository',
+                valueType: 'string',
+                defaultValue: 'jsonBlob',
+                clientVisible: true,
+                groupName: 'Toolbox',
+                note: "Where the Blueprints Designer keeps blueprints: 'jsonBlob' or 'hoistCore'. 'hoistCore' needs xhBlueprintConfig enabled. Reload the client after changing it."
+            ),
+            new ConfigSpec(
                 name: 'cubeTestDefaultDims',
                 valueType: 'json',
                 defaultValue: [

@@ -22,7 +22,8 @@ export function installToolboxFake(core: FakeHoistCore) {
             ['trader', 'dir', 'symbol'],
             ['model', 'sector', 'symbol'],
             ['model', 'region', 'trader', 'symbol']
-        ]
+        ],
+        blueprintsRepository: 'jsonBlob'
     });
 
     Object.assign(core.prefs, {

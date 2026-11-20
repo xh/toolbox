@@ -37,7 +37,7 @@ import {
 import {find} from 'lodash';
 import {LocalThreadStore} from '../chatkit/integrations/LocalThreadStore';
 import {createArchitectChat} from './architectChat';
-import {JsonBlobBlueprintRepository} from './repository/JsonBlobBlueprintRepository';
+import {createRepository} from './repository/createRepository';
 import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
 import p1 from './scenarios/p1-one-grid.json';
@@ -164,7 +164,7 @@ export class BlueprintsPanelModel extends HoistModel {
     ) {
         super();
         this.createProvider = config.createProvider ?? (() => new ServerDataProvider());
-        this.repository = config.repository ?? new JsonBlobBlueprintRepository();
+        this.repository = config.repository ?? createRepository();
         this.addReaction(
             {
                 track: () =>
