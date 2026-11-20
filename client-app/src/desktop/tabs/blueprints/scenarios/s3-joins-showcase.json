@@ -57,7 +57,7 @@
             "config": {
                 "source": "positions",
                 "groupBy": ["style", "fund", "symbol"],
-                "columnState": ["nav", "mktVal", "pnlDay", "lastClose"],
+                "columnState": ["manager", "nav", "mktVal", "pnlDay", "lastClose"],
                 "sortBy": "mktVal|desc",
                 "summaryRow": true
             }
@@ -98,7 +98,7 @@
             "component": "propertyTable",
             "config": {
                 "source": "selected",
-                "fields": ["manager", "style", "price", "mktVal", "grossExposure", "pnlDay", "pnlMtd", "pnlYtd", "beta"],
+                "fields": ["symbol", "fund", "manager", "style", "price", "mktVal", "grossExposure", "pnlDay", "pnlMtd", "pnlYtd", "beta"],
                 "columns": 3
             }
         },

@@ -25,7 +25,7 @@
             "label": "Fund",
             "setBy": {"element": "fundSelect"},
             "default": {"value": "Oak Mount"},
-            "options": {"values": ["Oak Mount", "Red River", "Black Crescent", "Hudson Bay", "Winter Star"]}
+            "options": {"dataset": "fundSummary", "field": "fund"}
         },
         "asOf": {"type": "localDate", "label": "As of", "setBy": {"element": "asOfInput"}, "default": {"resolver": "previousBusinessDay"}},
         "showTotals": {"type": "bool", "label": "Totals", "setBy": {"element": "totalsSwitch"}, "default": {"value": true}},
