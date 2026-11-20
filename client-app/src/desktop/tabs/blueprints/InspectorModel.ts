@@ -1,4 +1,9 @@
-import type {BlueprintIssue, BlueprintOp, BlueprintVariable} from '@xh/hoist-chat-kit/blueprint';
+import type {
+    BlueprintEditResult,
+    BlueprintIssue,
+    BlueprintOp,
+    BlueprintVariable
+} from '@xh/hoist-chat-kit/blueprint';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
@@ -7,6 +12,7 @@ import {action, bindable, computed, observable, observableRef} from '@xh/hoist/m
 import {capitalize} from 'lodash';
 import {applyJsonEdit} from './applyJsonEdit';
 import {BlueprintsPanelModel} from './BlueprintsPanelModel';
+import {inspectorHistory} from './InspectorHistory';
 import {inspectorJson} from './InspectorJson';
 import {markdownCol} from './markdown';
 
@@ -94,7 +100,7 @@ export class InspectorModel extends HoistModel {
         tabs: [
             {id: 'variables', content: () => grid({model: this.variablesGridModel})},
             {id: 'issues', content: () => grid({model: this.issuesGridModel})},
-            {id: 'history', content: () => grid({model: this.historyGridModel})},
+            {id: 'history', content: () => inspectorHistory({inspector: this})},
             {id: 'json', title: 'JSON', content: () => inspectorJson({inspector: this})}
         ]
     });
@@ -105,10 +111,10 @@ export class InspectorModel extends HoistModel {
     /** Why the draft is not JSON, if it isn't. */
     @observable accessor parseError: string = null;
 
-    /** The errors that refused the last apply. Shown in the Issues tab until the next. */
+    /** The errors that refused the last apply, undo or redo. Shown in the Issues tab until the next. */
     @observableRef accessor applyIssues: BlueprintIssue[] = [];
 
-    /** One line on why the last apply failed, if it did. */
+    /** One line on why the last apply, undo or redo failed, if it did. */
     @computed
     get applyError(): string {
         if (this.parseError) return `Not valid JSON: ${this.parseError}`;
@@ -133,6 +139,16 @@ export class InspectorModel extends HoistModel {
         const {parseError, issues} = applyJsonEdit(this.panelModel.blueprintModel, this.draft);
         this.parseError = parseError ?? null;
         this.applyIssues = issues;
+    }
+
+    @action
+    undo() {
+        this.showRefusal(this.panelModel.blueprintModel.undo());
+    }
+
+    @action
+    redo() {
+        this.showRefusal(this.panelModel.blueprintModel.redo());
     }
 
     @action
@@ -189,6 +205,11 @@ export class InspectorModel extends HoistModel {
     //------------------
     // Implementation
     //------------------
+    private showRefusal({version, issues}: BlueprintEditResult) {
+        this.parseError = null;
+        this.applyIssues = version == null ? issues.filter(it => it.severity === 'error') : [];
+    }
+
     /** Load a tab's grid, and show its row count in the tab's title. */
     @action
     private load(tabId: string, gridModel: GridModel, rows: object[]) {
