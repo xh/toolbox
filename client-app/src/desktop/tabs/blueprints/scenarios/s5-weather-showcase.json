@@ -36,9 +36,9 @@
         "dashboard": {
             "component": "dashCanvas",
             "children": [
-                {"id": "intro", "x": 0, "y": 0, "w": 8, "h": 2},
-                {"id": "unitsBar", "x": 8, "y": 0, "w": 4, "h": 1},
-                {"id": "unitsNote", "x": 8, "y": 1, "w": 4, "h": 1},
+                {"id": "intro", "x": 0, "y": 0, "w": 6, "h": 2},
+                {"id": "unitsBar", "x": 6, "y": 0, "w": 6, "h": 1},
+                {"id": "unitsNote", "x": 6, "y": 1, "w": 6, "h": 1},
                 {"id": "cardsNote", "x": 0, "y": 2, "w": 12, "h": 1},
                 {"id": "londonPanel", "x": 0, "y": 3, "w": 6, "h": 4},
                 {"id": "newYorkPanel", "x": 6, "y": 3, "w": 6, "h": 4},
