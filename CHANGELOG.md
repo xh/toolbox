@@ -26,6 +26,10 @@
 
 ### Technical
 
+* Changed the desktop and mobile docs viewers to read docs straight from `@xh/hoist-docs` in the browser, for the Hoist versions Toolbox runs, exported by `pnpm docs` at build time. Search now uses the same ranking as the MCP tools and opens each result at its best-matching section.
+* Removed the server-side `DocsService` and `DocsController`, including the GitHub download of docs at startup.
+* Made the docs viewers degrade gently when the docs cannot be loaded - they show a message with a retry, and the rest of Toolbox is unaffected.
+* Removed the bundled hoist-react and hoist-core MCP servers and the `installHoistCoreTools` Gradle task - agents now use the `hoist-docs` MCP server.
 * Migrated app CSS variable overrides and reads to hoist-react v91's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
 * Migrated element specs from the legacy `item` / `items` keys to the standard React `children` key, using hoist-react's v91 codemod.
 

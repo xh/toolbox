@@ -35,3 +35,6 @@ toolbox-logs/
 .DS_Store?
 ehthumbs.db
 Thumbs.db
+
+# Docs for the docs viewers, written by `pnpm docs` (scripts/export-docs.mjs)
+/client-app/public/hoist-docs/
