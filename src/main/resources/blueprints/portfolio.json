@@ -435,10 +435,10 @@
             "fields": [
                 "symbol",
                 {"name": "day", "label": "Day", "type": "localDate", "format": {"date": "date"}},
-                {"name": "open", "label": "Open", "type": "number", "kind": "price"},
-                {"name": "high", "label": "High", "type": "number", "kind": "price"},
-                {"name": "low", "label": "Low", "type": "number", "kind": "price"},
-                {"name": "close", "label": "Close", "type": "number", "kind": "price"},
+                {"name": "open", "label": "Open", "type": "number", "kind": "price", "aggregator": {"type": "first", "orderField": "day"}},
+                {"name": "high", "label": "High", "type": "number", "kind": "price", "aggregator": "MAX"},
+                {"name": "low", "label": "Low", "type": "number", "kind": "price", "aggregator": "MIN"},
+                {"name": "close", "label": "Close", "type": "number", "kind": "price", "aggregator": {"type": "last", "orderField": "day"}},
                 {"name": "volume", "label": "Volume", "type": "number", "kind": "shares", "aggregator": "SUM"}
             ]
         },
