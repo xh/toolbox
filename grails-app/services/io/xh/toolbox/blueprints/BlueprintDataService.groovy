@@ -30,19 +30,22 @@ class BlueprintDataService extends BaseService {
 
     private static final List<String> WEATHER_DATASETS = ['weather', 'currentWeather']
 
+    // Each takes the requested fields, so a dataset computes its costly fields only when asked for.
     private static final Map<String, Closure<List<Map>>> DATASETS = [
-        positions: { PortfolioDatasets ds, Map p -> ds.positions(p.asOf, p.fund) },
-        orders   : { PortfolioDatasets ds, Map p -> ds.orders(p.asOf, p.fund) },
-        prices   : { PortfolioDatasets ds, Map p ->
+        positions  : { PortfolioDatasets ds, Map p, Set<String> fields -> ds.positions(p.asOf, p.fund, fields) },
+        fundSummary: { PortfolioDatasets ds, Map p, Set<String> fields -> ds.fundSummary(p.asOf, p.fund, fields) },
+        orders     : { PortfolioDatasets ds, Map p, Set<String> fields -> ds.orders(p.asOf, p.fund) },
+        prices     : { PortfolioDatasets ds, Map p, Set<String> fields ->
             if (!ds.portfolio.instruments[p.symbol]) throw new BlueprintRequestException("Unknown symbol '${p.symbol}'")
             ds.prices(p.symbol, p.start, p.end)
         },
-        hypotheticalPortfolio: { PortfolioDatasets ds, Map p -> ds.hypotheticalPortfolio(parseHoldings(ds, p.portfolio), p.asOf) }
+        hypotheticalPortfolio: { PortfolioDatasets ds, Map p, Set<String> fields -> ds.hypotheticalPortfolio(parseHoldings(ds, p.portfolio), p.asOf) }
     ]
 
     private static final Map<String, Closure<Boolean>> LIVE = [
-        positions: { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) },
-        orders   : { PortfolioDatasets ds, Map p -> ds.isLiveOrders(p.asOf) },
+        positions  : { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) },
+        fundSummary: { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) },
+        orders     : { PortfolioDatasets ds, Map p -> ds.isLiveOrders(p.asOf) },
         prices   : { PortfolioDatasets ds, Map p -> ds.isLivePrices(p.start, p.end) },
         hypotheticalPortfolio: { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) }
     ]
@@ -103,12 +106,13 @@ class BlueprintDataService extends BaseService {
     BlueprintResult query(BlueprintRequest req, PortfolioDatasets ds = null, List<List<String>> sets = req.groupBy) {
         List<Map> rows
         Map<String, Double> navs = [:]
+        Set<String> requested = (req.fields + req.instances*.field) as Set
         if (isPortfolioDataset(req.dataset)) {
             ds = ds ?: currentDatasets()
-            rows = DATASETS[req.dataset](ds, req.params)
+            rows = DATASETS[req.dataset](ds, req.params, requested)
             if (req.dataset == 'positions') navs = PortfolioDatasets.navsByFund(rows)
         } else {
-            rows = weatherRows(req.dataset, req.params.city as String, req.params.units as String)
+            rows = weatherRows(req.dataset, req.params.city as String, req.params.units as String, requested)
         }
 
         req.instances.each { inst ->
@@ -159,12 +163,15 @@ class BlueprintDataService extends BaseService {
         }
     }
 
-    private List<Map> weatherRows(String dataset, String city, String units) {
+    private List<Map> weatherRows(String dataset, String city, String units, Set<String> fields) {
         boolean forecast = dataset == 'weather'
         if (weatherService.configured) {
-            return forecast ?
-                OpenWeatherRows.forecast(city, weatherService.getForecast(city, units), appZoneId) :
-                [OpenWeatherRows.current(city, weatherService.getCurrentWeather(city, units))]
+            if (forecast) return OpenWeatherRows.forecast(city, weatherService.getForecast(city, units), appZoneId)
+            Map row = OpenWeatherRows.current(city, weatherService.getCurrentWeather(city, units))
+            if ('tempNext24h' in fields) {
+                row.tempNext24h = OpenWeatherRows.tempNext24h(weatherService.getForecast(city, units))
+            }
+            return [row]
         }
         def seeded = new WeatherDatasets(appZoneId)
         return forecast ? seeded.forecast(city, units, Instant.now()) : [seeded.current(city, units, Instant.now())]

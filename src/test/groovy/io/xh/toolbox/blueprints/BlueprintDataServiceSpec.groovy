@@ -95,6 +95,17 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         service.query(service.parseRequest(base + [fields: ['var95'], groupBy: [[]]]), ds).formatForJSON().keySet() == ['rows', 'aggregates'] as Set
     }
 
+    def 'fund summary and position series route through requested fields'() {
+        given:
+        def ds = datasets()
+
+        expect:
+        service.getRows(service.parseRequest(dataset: 'fundSummary', params: [asOf: D4.toString()], fields: ['fund', 'pnlDay', 'cumPnlHistory']), ds)
+            .find { it.fund == F1 } == [id: F1, fund: F1, pnlDay: 2300L, cumPnlHistory: [0L, 1000L, 2000L, 4300L]]
+        service.getRows(service.parseRequest(dataset: 'positions', params: [asOf: D4.toString(), fund: F1], fields: ['symbol', 'closeHistory']), ds)
+            .find { it.symbol == 'AAA' }.closeHistory == [100d, 110d, 120d, 135d]
+    }
+
     def 'the source filter applies on the server, including to field instances'() {
         expect:
         rows(dataset: 'positions', params: [asOf: D4.toString()], fields: ['symbol'],
@@ -201,8 +212,18 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
             dataset: 'currentWeather', params: [city: 'London', units: 'imperial'], fields: ['conditions']
         ))
 
-        then:
+        then: 'the forecast only for the forecast, as tempNext24h was not requested'
         calls == [['forecast', 'London', 'metric'], ['current', 'London', 'imperial']]
+
+        when:
+        calls.clear()
+        def withSeries = service.getRows(service.parseRequest(
+            dataset: 'currentWeather', params: [city: 'London', units: 'metric'], fields: ['tempNext24h']
+        ))
+
+        then:
+        calls == [['current', 'London', 'metric'], ['forecast', 'London', 'metric']]
+        withSeries == [[id: 'London', tempNext24h: [7.42, 6.1]]]
         forecast == [
             [id: 'London|1795057200000', day: '2026-11-19', temp: 7.42, precipProbability: 0.62],
             [id: 'London|1795068000000', day: '2026-11-19', temp: 6.1, precipProbability: 0]
@@ -213,7 +234,7 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
     def 'the catalog merges the portfolio and weather catalogs'() {
         expect:
         service.catalogJson.label == 'Toolbox'
-        service.catalogJson.datasets.keySet() as List == ['positions', 'orders', 'prices', 'hypotheticalPortfolio', 'weather', 'currentWeather']
+        service.catalogJson.datasets.keySet() as List == ['positions', 'fundSummary', 'orders', 'prices', 'hypotheticalPortfolio', 'weather', 'currentWeather']
     }
 
     def 'weather datasets serve seeded rows without an API key, never live'() {

@@ -50,6 +50,11 @@ class OpenWeatherRows {
         ]
     }
 
+    /** The temperatures of the first eight three-hour steps of a `/forecast` response. */
+    static List tempNext24h(Map forecast) {
+        (forecast.list as List<Map>).take(WeatherDatasets.SERIES_STEPS).collect { (it.main as Map).temp }
+    }
+
     private static Map condition(Map item) {
         Map w = (item.weather as List<Map>)?.getAt(0)
         return [conditions: w?.main ?: 'Unknown', iconCode: w?.icon ?: '01d']

@@ -81,7 +81,16 @@
                 "city": {"type": "string", "required": true},
                 "units": {"type": "string", "required": true, "options": {"values": ["imperial", "metric"]}}
             },
-            "fields": ["city", "temp", "feelsLike", "humidity", "pressure", "windSpeed", "windGust", "conditions", "iconCode"]
+            "fields": [
+                "city", "temp", "feelsLike", "humidity", "pressure", "windSpeed", "windGust", "conditions", "iconCode",
+                {
+                    "name": "tempNext24h",
+                    "label": "Next 24h",
+                    "type": "number[]",
+                    "kind": "temperature",
+                    "guidance": "The temperature for each three-hour step of the next 24 hours, oldest first: the first eight steps of the weather dataset."
+                }
+            ]
         }
     }
 }
