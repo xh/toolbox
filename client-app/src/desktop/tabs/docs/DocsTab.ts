@@ -400,11 +400,10 @@ function searchTooltip(label: string = 'Search documentation') {
             label,
             hspacer(),
             span({
-                className: 'bp6-key-combo',
-                style: {display: 'inline-flex'},
+                className: 'xh-key-combo',
                 children: [
-                    span({className: 'bp6-key', children: 'Shift'}),
-                    span({className: 'bp6-key', children: 'S'})
+                    span({className: 'xh-key', children: 'Shift'}),
+                    span({className: 'xh-key', children: 'S'})
                 ]
             })
         ]
