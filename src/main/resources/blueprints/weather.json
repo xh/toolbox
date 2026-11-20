@@ -62,6 +62,7 @@
                 "city": {"type": "string", "required": true},
                 "units": {"type": "string", "required": true, "options": {"values": ["imperial", "metric"]}}
             },
+            "key": ["city", "time"],
             "fields": [
                 "city", "temp", "feelsLike", "humidity", "pressure", "windSpeed", "windGust", "conditions",
                 "iconCode",
@@ -81,6 +82,7 @@
                 "city": {"type": "string", "required": true},
                 "units": {"type": "string", "required": true, "options": {"values": ["imperial", "metric"]}}
             },
+            "key": ["city"],
             "fields": [
                 "city", "temp", "feelsLike", "humidity", "pressure", "windSpeed", "windGust", "conditions", "iconCode",
                 {
