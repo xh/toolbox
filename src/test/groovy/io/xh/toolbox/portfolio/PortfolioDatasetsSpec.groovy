@@ -88,7 +88,8 @@ class PortfolioDatasetsSpec extends Specification {
         then:
         plain*.fund.sort() == [F1, F2].sort()
         !plain[0].containsKey('pnlHistory')
-        f1.subMap('id', 'nav', 'pnlDay') == [id: F1, nav: 59000L, pnlDay: -3300L]
+        f1.subMap('id', 'nav', 'pnlDay', 'manager', 'style') == [id: F1, nav: 59000L, pnlDay: -3300L, manager: 'Dana Whitfield', style: 'Long/Short']
+        f2.style == 'Macro'
         f1.pnlHistory == [0L, 1000L, 1000L, -3300L]
         f1.cumPnlHistory == [0L, 1000L, 2000L, -1300L]
         f1.drawdownHistory == [0L, 0L, 0L, -3300L]
