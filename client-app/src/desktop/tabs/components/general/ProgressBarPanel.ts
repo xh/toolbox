@@ -3,7 +3,13 @@ import type {ProgressBarProps} from '@xh/hoist/cmp/progressbar';
 import {progressBar} from '@xh/hoist/cmp/progressbar';
 import type {Intent, LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
-import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {
+    intentInput,
+    numberInput,
+    select,
+    switchInput,
+    textInput
+} from '@xh/hoist/desktop/cmp/input';
 import {fmtMillions, fmtNumber, fmtPercent} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, observableRef, runInAction} from '@xh/hoist/mobx';
@@ -110,13 +116,7 @@ export const progressBarPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Intent',
                             propName: 'ProgressBarProps.intent',
-                            control: select({
-                                bind: 'intent',
-                                enableFilter: false,
-                                enableClear: true,
-                                width: 120,
-                                options: ['primary', 'success', 'warning', 'danger']
-                            })
+                            control: intentInput({bind: 'intent', enableClear: true})
                         })
                     ]
                 })

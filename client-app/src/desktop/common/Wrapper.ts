@@ -164,7 +164,15 @@ const optionsSection = hoistCmp.factory<OptionsSectionProps>({
 interface WrapperOptionProps extends HoistProps {
     /** Short, human-friendly label shown at the left of the row. */
     label: ReactNode;
-    /** The control element (e.g. `switchInput`, `select`, `numberInput`) shown at the right. */
+    /**
+     * The control element shown at the right. Match the control to the type of the prop it sets,
+     * and use Hoist's purpose-built inputs over a generic `select`:
+     * - An `Intent` - `intentInput`, with `enableClear` when no intent is a valid setting.
+     * - An icon - `iconPicker` with `valueField: 'name'`. Render the picked name with `Icon.get()`
+     *   and show it in a Playground snippet with `raw()`, as a call such as `Icon.clock()`.
+     * - A boolean - `switchInput`. A few fixed values - `segmentedControl`. More - `select`.
+     * - A number - `numberInput`, or a `slider` for a bounded range.
+     */
     control: ReactElement;
     /**
      * The qualified name of the Hoist API this option controls, when it maps 1:1 onto a single

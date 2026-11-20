@@ -4,7 +4,7 @@ import type {StatCardProps} from '@xh/hoist/cmp/statcard';
 import {statCard, statCardStrip} from '@xh/hoist/cmp/statcard';
 import type {Intent} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
-import {iconPicker, select, textInput} from '@xh/hoist/desktop/cmp/input';
+import {iconPicker, intentInput, select, textInput} from '@xh/hoist/desktop/cmp/input';
 import type {NumberFormatOptions} from '@xh/hoist/format';
 import {fmtMillions, fmtNumber, fmtPercent} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -133,13 +133,7 @@ export const statCardPanel = hoistCmp.factory({
                         wrapperOption({
                             label: 'Intent',
                             propName: 'StatCardProps.intent',
-                            control: select({
-                                bind: 'intent',
-                                enableFilter: false,
-                                enableClear: true,
-                                width: 120,
-                                options: ['primary', 'success', 'warning', 'danger']
-                            })
+                            control: intentInput({bind: 'intent', enableClear: true})
                         }),
                         wrapperOption({
                             label: 'Size',
