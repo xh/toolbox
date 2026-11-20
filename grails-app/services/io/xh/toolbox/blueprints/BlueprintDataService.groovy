@@ -30,13 +30,16 @@ class BlueprintDataService extends BaseService {
 
     private static final List<String> WEATHER_DATASETS = ['weather', 'currentWeather']
 
+    static final int MAX_PRICE_ROWS = 25_000
+    int maxPriceRows = MAX_PRICE_ROWS
+
     // Each takes the requested fields, so a dataset computes its costly fields only when asked for.
     private static final Map<String, Closure<List<Map>>> DATASETS = [
         positions  : { PortfolioDatasets ds, Map p, Set<String> fields -> ds.positions(p.asOf, p.fund, fields) },
         fundSummary: { PortfolioDatasets ds, Map p, Set<String> fields -> ds.fundSummary(p.asOf, p.fund, fields) },
         orders     : { PortfolioDatasets ds, Map p, Set<String> fields -> ds.orders(p.asOf, p.fund) },
         prices     : { PortfolioDatasets ds, Map p, Set<String> fields ->
-            if (!ds.portfolio.instruments[p.symbol]) throw new BlueprintRequestException("Unknown symbol '${p.symbol}'")
+            if (p.symbol && !ds.portfolio.instruments[p.symbol]) throw new BlueprintRequestException("Unknown symbol '${p.symbol}'")
             ds.prices(p.symbol, p.start, p.end)
         },
         hypotheticalPortfolio: { PortfolioDatasets ds, Map p, Set<String> fields -> ds.hypotheticalPortfolio(parseHoldings(ds, p.portfolio), p.asOf) }
@@ -121,6 +124,9 @@ class BlueprintDataService extends BaseService {
         }
 
         if (req.filter) rows = rows.findAll(req.filter.testFn)
+        if (req.dataset == 'prices' && rows.size() > maxPriceRows) {
+            throw new BlueprintRequestException("prices would return ${rows.size()} rows, over its limit of $maxPriceRows. Rows are symbols times trading days: name a symbol, filter by symbol, or shorten the window.")
+        }
 
         List<String> keep = ['id'] + req.fields + req.instances*.name
         return new BlueprintResult(
