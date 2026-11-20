@@ -43,7 +43,7 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
         service.seedPresets()
 
         then:
-        JsonBlob.count() == 12
+        JsonBlob.count() == PRESETS.size() * 2
         JsonBlob.findAllByType(BLUEPRINT_TYPE)*.name.sort() == PRESETS*.id.sort()
 
         when:
@@ -73,7 +73,7 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
         service.seedPresets()
 
         then:
-        JsonBlob.count() == 12
+        JsonBlob.count() == PRESETS.size() * 2
         JsonBlob.countByTypeAndName(PUBLISH_TYPE, 'bp-preset-w1:1') == 1
     }
 

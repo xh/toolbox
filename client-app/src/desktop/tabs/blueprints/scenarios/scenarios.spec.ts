@@ -8,11 +8,12 @@ import p1 from './p1-one-grid.json';
 import p2 from './p2-linked-dashboard.json';
 import p3 from './p3-morning-report.json';
 import p5 from './p5-risk-report.json';
+import s5 from './s5-weather-showcase.json';
 import w1 from './w1-one-city.json';
 import w2 from './w2-two-cities.json';
 
 /** Every blueprint the server seeds as a preset, from `BlueprintPresetService.PRESETS`. */
-const SCENARIOS: Record<string, unknown> = {p1, p2, p3, p5, w1, w2};
+const SCENARIOS: Record<string, unknown> = {p1, p2, p3, p5, w1, w2, s5};
 
 beforeAll(() => initTestAppAsync());
 

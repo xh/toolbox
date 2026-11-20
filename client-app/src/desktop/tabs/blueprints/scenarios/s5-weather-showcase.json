@@ -1,0 +1,106 @@
+{
+    "schema": {
+        "blueprint": 1,
+        "widgets": {
+            "dashCanvas": 1,
+            "markdown": 1,
+            "callout": 1,
+            "toolbar": 1,
+            "select": 1,
+            "panel": 1,
+            "tileFrame": 1,
+            "statCard": 1
+        }
+    },
+    "variables": {
+        "units": {
+            "type": "string",
+            "label": "Units",
+            "setBy": {"element": "unitsSelect"},
+            "default": {"value": "metric"},
+            "options": {"values": ["metric", "imperial"]}
+        },
+        "london": {"type": "string", "default": {"value": "London"}},
+        "newYork": {"type": "string", "default": {"value": "New York"}},
+        "tokyo": {"type": "string", "default": {"value": "Tokyo"}},
+        "sydney": {"type": "string", "default": {"value": "Sydney"}}
+    },
+    "sources": {
+        "londonNow": {"dataset": "currentWeather", "params": {"city": {"$var": "london"}, "units": {"$var": "units"}}},
+        "newYorkNow": {"dataset": "currentWeather", "params": {"city": {"$var": "newYork"}, "units": {"$var": "units"}}},
+        "tokyoNow": {"dataset": "currentWeather", "params": {"city": {"$var": "tokyo"}, "units": {"$var": "units"}}},
+        "sydneyNow": {"dataset": "currentWeather", "params": {"city": {"$var": "sydney"}, "units": {"$var": "units"}}}
+    },
+    "root": "dashboard",
+    "elements": {
+        "dashboard": {
+            "component": "dashCanvas",
+            "children": [
+                {"id": "intro", "x": 0, "y": 0, "w": 8, "h": 2},
+                {"id": "unitsBar", "x": 8, "y": 0, "w": 4, "h": 1},
+                {"id": "unitsNote", "x": 8, "y": 1, "w": 4, "h": 1},
+                {"id": "cardsNote", "x": 0, "y": 2, "w": 12, "h": 1},
+                {"id": "londonPanel", "x": 0, "y": 3, "w": 6, "h": 4},
+                {"id": "newYorkPanel", "x": 6, "y": 3, "w": 6, "h": 4},
+                {"id": "tokyoPanel", "x": 0, "y": 7, "w": 6, "h": 4},
+                {"id": "sydneyPanel", "x": 6, "y": 7, "w": 6, "h": 4}
+            ]
+        },
+        "intro": {
+            "component": "markdown",
+            "config": {
+                "text": "## Weather around the world\nCurrent conditions in four cities, each with its temperature over the next 24 hours."
+            }
+        },
+        "unitsBar": {"component": "toolbar", "children": [{"id": "unitsSelect"}]},
+        "unitsSelect": {"component": "select", "config": {"label": "Units"}},
+        "unitsNote": {
+            "component": "callout",
+            "config": {"intent": "primary", "text": "One **select** sets the units every city's source reads."}
+        },
+        "cardsNote": {
+            "component": "callout",
+            "config": {
+                "intent": "primary",
+                "title": "Card panels and sparkline trends",
+                "text": "Each city is a card-style **panel** holding a **tile frame** of stat cards. Temperature draws its next 24 hours as a sparkline **trend**."
+            }
+        },
+        "londonPanel": {"component": "panel", "config": {"title": "London", "style": "card"}, "children": [{"id": "londonTiles"}]},
+        "newYorkPanel": {"component": "panel", "config": {"title": "New York", "style": "card"}, "children": [{"id": "newYorkTiles"}]},
+        "tokyoPanel": {"component": "panel", "config": {"title": "Tokyo", "style": "card"}, "children": [{"id": "tokyoTiles"}]},
+        "sydneyPanel": {"component": "panel", "config": {"title": "Sydney", "style": "card"}, "children": [{"id": "sydneyTiles"}]},
+        "londonTiles": {
+            "component": "tileFrame",
+            "children": [{"id": "londonTemp"}, {"id": "londonConditions"}, {"id": "londonHumidity"}, {"id": "londonWind"}]
+        },
+        "newYorkTiles": {
+            "component": "tileFrame",
+            "children": [{"id": "newYorkTemp"}, {"id": "newYorkConditions"}, {"id": "newYorkHumidity"}, {"id": "newYorkWind"}]
+        },
+        "tokyoTiles": {
+            "component": "tileFrame",
+            "children": [{"id": "tokyoTemp"}, {"id": "tokyoConditions"}, {"id": "tokyoHumidity"}, {"id": "tokyoWind"}]
+        },
+        "sydneyTiles": {
+            "component": "tileFrame",
+            "children": [{"id": "sydneyTemp"}, {"id": "sydneyConditions"}, {"id": "sydneyHumidity"}, {"id": "sydneyWind"}]
+        },
+        "londonTemp": {"component": "statCard", "config": {"source": "londonNow", "field": "temp", "trend": "tempNext24h"}},
+        "londonConditions": {"component": "statCard", "config": {"source": "londonNow", "field": "conditions"}},
+        "londonHumidity": {"component": "statCard", "config": {"source": "londonNow", "field": "humidity"}},
+        "londonWind": {"component": "statCard", "config": {"source": "londonNow", "field": "windSpeed"}},
+        "newYorkTemp": {"component": "statCard", "config": {"source": "newYorkNow", "field": "temp", "trend": "tempNext24h"}},
+        "newYorkConditions": {"component": "statCard", "config": {"source": "newYorkNow", "field": "conditions"}},
+        "newYorkHumidity": {"component": "statCard", "config": {"source": "newYorkNow", "field": "humidity"}},
+        "newYorkWind": {"component": "statCard", "config": {"source": "newYorkNow", "field": "windSpeed"}},
+        "tokyoTemp": {"component": "statCard", "config": {"source": "tokyoNow", "field": "temp", "trend": "tempNext24h"}},
+        "tokyoConditions": {"component": "statCard", "config": {"source": "tokyoNow", "field": "conditions"}},
+        "tokyoHumidity": {"component": "statCard", "config": {"source": "tokyoNow", "field": "humidity"}},
+        "tokyoWind": {"component": "statCard", "config": {"source": "tokyoNow", "field": "windSpeed"}},
+        "sydneyTemp": {"component": "statCard", "config": {"source": "sydneyNow", "field": "temp", "trend": "tempNext24h"}},
+        "sydneyConditions": {"component": "statCard", "config": {"source": "sydneyNow", "field": "conditions"}},
+        "sydneyHumidity": {"component": "statCard", "config": {"source": "sydneyNow", "field": "humidity"}},
+        "sydneyWind": {"component": "statCard", "config": {"source": "sydneyNow", "field": "windSpeed"}}
+    }
+}

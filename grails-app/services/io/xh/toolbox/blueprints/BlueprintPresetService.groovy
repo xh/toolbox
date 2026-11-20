@@ -29,7 +29,8 @@ class BlueprintPresetService extends BaseService {
         [id: 'bp-preset-p3', file: 'p3-morning-report', name: 'P3. A morning report'],
         [id: 'bp-preset-p5', file: 'p5-risk-report', name: 'P5. A risk and stress report'],
         [id: 'bp-preset-w1', file: 'w1-one-city', name: 'W1. Weather for one city'],
-        [id: 'bp-preset-w2', file: 'w2-two-cities', name: 'W2. Two cities side by side']
+        [id: 'bp-preset-w2', file: 'w2-two-cities', name: 'W2. Two cities side by side'],
+        [id: 'bp-preset-s5', file: 's5-weather-showcase', name: 'S5. Weather around the world']
     ]
 
     /** What Toolbox, a demo, sets in `xhBlueprintConfig`: storage on, and every user may create and share. */
