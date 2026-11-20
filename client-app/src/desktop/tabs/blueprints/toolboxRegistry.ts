@@ -65,7 +65,7 @@ export const publishToPmPackAction: ActionSpec = {
                 type: ['string', 'null'],
                 description: 'A fund name, or null to publish for all funds.'
             },
-            asOf: {type: 'string', description: 'The report date, as YYYY-MM-DD.'}
+            asOf: {type: 'string', format: 'date', description: 'The report date, as YYYY-MM-DD.'}
         }
     },
     guidance: 'Publishes a report to the PM pack. Always asks the user to confirm.',
