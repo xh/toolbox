@@ -23,7 +23,9 @@ export const AppComponent = hoistCmp({
                     hideLogoutItem: false
                 },
                 appMenuButtonPosition: 'left',
-                leftItems: [viewManager({model: viewManagers.portfolioLayout, showFullPath: true})],
+                leftItems: [
+                    viewManager({model: viewManagers.portfolioLayout, buttonTextMode: 'fullPath'})
+                ],
                 rightItems: [
                     welcomeMsg(),
                     appBarSeparator(),
