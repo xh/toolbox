@@ -25,7 +25,7 @@
             "label": "Fund",
             "setBy": {"element": "fundSelect"},
             "default": {"value": "Oak Mount"},
-            "options": {"values": ["Oak Mount", "Red River", "Black Crescent", "Hudson Bay", "Winter Star"]}
+            "options": {"source": "funds", "field": "fund"}
         },
         "asOf": {"type": "localDate", "label": "As of", "setBy": {"element": "asOfInput"}, "default": {"resolver": "previousBusinessDay"}},
         "showTotals": {"type": "bool", "label": "Totals", "setBy": {"element": "totalsSwitch"}, "default": {"value": true}},
@@ -33,6 +33,7 @@
         "posFilter": {"type": "filter", "label": "Filter", "setBy": {"element": "filterInput"}}
     },
     "sources": {
+        "funds": {"dataset": "fundSummary", "params": {"asOf": {"$var": "asOf"}}},
         "positions": {
             "dataset": "positions",
             "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "fund"}},
@@ -116,7 +117,7 @@
             "config": {"direction": "column", "gap": 8},
             "children": [{"id": "noteSelect"}, {"id": "noteDate"}, {"id": "noteSwitch"}, {"id": "noteSlider"}, {"id": "noteFilter"}, {"id": "noteActions"}]
         },
-        "noteSelect": {"component": "callout", "config": {"intent": "primary", "title": "Select", "text": "Picks the fund, from the options the variable lists."}},
+        "noteSelect": {"component": "callout", "config": {"intent": "primary", "title": "Select", "text": "Picks the fund, from the funds the fund summary holds on the as-of date."}},
         "noteDate": {"component": "callout", "config": {"intent": "primary", "title": "Date input", "text": "Sets the as-of date the source loads."}},
         "noteSwitch": {"component": "callout", "config": {"intent": "primary", "title": "Switch", "text": "Shows or hides the grid's totals row."}},
         "noteSlider": {"component": "callout", "config": {"intent": "primary", "title": "Slider", "text": "Keeps positions whose day P&L is at least its value. It sets the variable when released."}},

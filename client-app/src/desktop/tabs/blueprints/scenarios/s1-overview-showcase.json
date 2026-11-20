@@ -42,7 +42,7 @@
             "component": "markdown",
             "config": {
                 "source": "summary",
-                "text": "## P&L for {fund} as of {asOf}\nNAV **{nav}**, with day P&L of **{pnlDay}** and year to date **{pnlYtd}**."
+                "text": "## P&L for {fund} as of {asOf}\nManaged by {manager}, a {style} fund. NAV **{nav}**, with day P&L of **{pnlDay}** and year to date **{pnlYtd}**."
             }
         },
         "headline": {
