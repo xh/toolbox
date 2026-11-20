@@ -8,7 +8,8 @@ import type {
     FieldUsages
 } from '@xh/hoist-chat-kit/blueprint';
 import {fieldUsages, resolveFieldDisplay, resolveFormat} from '@xh/hoist-chat-kit/blueprint';
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
@@ -17,8 +18,7 @@ import {castArray, groupBy, isEmpty, isString} from 'lodash';
 import {BlueprintsPanelModel} from '../BlueprintsPanelModel';
 import {describeFormat, describeSpec} from './catalogFields';
 import {markdownCol} from '../markdown';
-
-export type CatalogView = 'datasets' | 'kinds' | 'formats';
+import {catalogJson, datasetCards} from './CatalogViews';
 
 /**
  * The Data Catalog the server serves, as the Blueprints tab loaded it: its datasets and their
@@ -28,57 +28,17 @@ export type CatalogView = 'datasets' | 'kinds' | 'formats';
 export class CatalogModel extends HoistModel {
     @lookup(BlueprintsPanelModel) panelModel: BlueprintsPanelModel;
 
-    @bindable accessor view: CatalogView = 'datasets';
-    @bindable accessor showJson = false;
-
-    @managed datasetsGridModel = new GridModel({
-        store: {idSpec: 'name'},
-        selModel: 'single',
-        columns: [
-            usedCol(),
-            {field: 'name', width: 150},
-            {field: 'label', width: 130},
-            {field: 'fieldCount', headerName: 'Fields', width: 60, align: 'right'},
-            markdownCol({field: 'description', flex: 1, minWidth: 200})
+    @managed tabContainerModel = new TabContainerModel({
+        tabs: [
+            {id: 'datasets', title: 'Datasets', content: () => datasetCards()},
+            {id: 'kinds', title: 'Kinds', content: () => grid({model: this.kindsGridModel})},
+            {id: 'formats', title: 'Formats', content: () => grid({model: this.formatsGridModel})},
+            {id: 'json', title: 'JSON', content: () => catalogJson()}
         ]
     });
 
-    @managed paramsGridModel = new GridModel({
-        store: {idSpec: 'name'},
-        emptyText: 'No parameters',
-        columns: [
-            {field: 'name', width: 90},
-            {field: 'type', width: 90},
-            {field: 'required', headerName: 'Req', width: 50, align: 'center'},
-            {field: 'kind', width: 80},
-            {field: 'options', width: 140, tooltip: true},
-            markdownCol({field: 'description', flex: 1, minWidth: 160})
-        ]
-    });
-
-    @managed fieldsGridModel = new GridModel({
-        treeMode: true,
-        expandLevel: -1,
-        store: {idSpec: 'id', filterIncludesChildren: true},
-        emptyText: 'No fields',
-        columns: [
-            {field: 'name', isTreeColumn: true, width: 200},
-            usedCol(),
-            {field: 'label', width: 140},
-            {field: 'type', width: 80},
-            {field: 'kind', width: 110},
-            {field: 'align', width: 70},
-            {field: 'width', width: 60, align: 'right'},
-            {field: 'format', width: 200, tooltip: true},
-            {field: 'aggregator', width: 120, tooltip: true},
-            {field: 'role', width: 85},
-            {field: 'parentDimension', headerName: 'Parent', width: 90},
-            {field: 'params', width: 180, tooltip: true},
-            {field: 'renderer', width: 130, tooltip: true},
-            {field: 'deprecated', width: 110},
-            markdownCol({field: 'guidance', flex: 1, minWidth: 260})
-        ]
-    });
+    /** One per dataset, in catalog order. */
+    @managed datasetModels: DatasetCardModel[] = [];
 
     @managed kindsGridModel = new GridModel({
         store: {idSpec: 'name'},
@@ -115,56 +75,97 @@ export class CatalogModel extends HoistModel {
         return JSON.stringify(this.catalog.json, null, 2);
     }
 
-    get selectedDataset(): DatasetDef {
-        const name = this.datasetsGridModel.selectedId as string;
-        return name ? this.catalog.getDataset(name) : null;
-    }
-
     @computed
     get usages(): FieldUsages {
         return fieldUsages(this.panelModel.blueprintModel.blueprint, this.catalog);
-    }
-
-    @computed
-    get fieldsSummary(): string {
-        const ds = this.selectedDataset;
-        if (!ds) return null;
-        const used = Object.keys(this.usages[ds.name] ?? {}).length;
-        return `${Object.keys(ds.fields).length} fields, ${used} used by this blueprint`;
     }
 
     override onLinked() {
         const {catalog} = this;
         this.kindsGridModel.loadData(kindRows(catalog));
         this.formatsGridModel.loadData(formatRows(catalog));
-        this.addReaction(
-            {
-                track: () => this.usages,
-                run: usages => this.datasetsGridModel.loadData(datasetRows(catalog, usages)),
-                fireImmediately: true
-            },
-            {
-                track: () => [this.selectedDataset, this.usages],
-                run: ([ds, usages]) => this.loadDataset(ds as DatasetDef, usages as FieldUsages),
-                fireImmediately: true
-            }
+        this.datasetModels = Object.values(catalog.datasets).map(
+            (ds, idx) => new DatasetCardModel(ds, idx === 0)
         );
-        this.datasetsGridModel.selectFirstAsync();
+        this.addReaction({
+            track: () => this.usages,
+            run: usages => this.datasetModels.forEach(it => this.loadDataset(it, usages)),
+            fireImmediately: true
+        });
     }
 
     //------------------
     // Implementation
     //------------------
-    private loadDataset(ds: DatasetDef, usages: FieldUsages) {
-        this.paramsGridModel.loadData(ds ? paramRows(ds.params) : []);
-        this.fieldsGridModel.loadData(
-            ds
-                ? fieldTree(ds, this.catalog, usages[ds.name] ?? {}, this.blueprint, (src, name) =>
-                      this.panelModel.blueprintModel.getSource(src)?.fieldLabel(name)
-                  )
-                : []
+    private loadDataset(model: DatasetCardModel, usages: FieldUsages) {
+        const {ds} = model,
+            uses = usages[ds.name] ?? {};
+        model.usedCount = Object.keys(uses).length;
+        model.fieldsGridModel.loadData(
+            fieldTree(ds, this.catalog, uses, this.blueprint, (src, name) =>
+                this.panelModel.blueprintModel.getSource(src)?.fieldLabel(name)
+            )
         );
     }
+}
+
+/** One dataset's card: whether it is expanded, and its fields grid. */
+export class DatasetCardModel extends HoistModel {
+    @bindable accessor expanded: boolean;
+    @bindable accessor usedCount = 0;
+
+    @managed fieldsGridModel = new GridModel({
+        treeMode: true,
+        expandLevel: -1,
+        store: {idSpec: 'id', filterIncludesChildren: true},
+        emptyText: 'No fields',
+        columns: [
+            {field: 'name', isTreeColumn: true, width: 200},
+            usedCol(),
+            {field: 'label', width: 140},
+            {field: 'type', width: 80},
+            {field: 'kind', width: 110},
+            {field: 'align', width: 70},
+            {field: 'width', width: 60, align: 'right'},
+            {field: 'format', width: 200, tooltip: true},
+            {field: 'aggregator', width: 120, tooltip: true},
+            {field: 'role', width: 85},
+            {field: 'parentDimension', headerName: 'Parent', width: 90},
+            {field: 'params', width: 180, tooltip: true},
+            {field: 'renderer', width: 130, tooltip: true},
+            {field: 'deprecated', width: 110},
+            markdownCol({field: 'guidance', flex: 1, minWidth: 260})
+        ]
+    });
+
+    get fieldCount(): number {
+        return Object.keys(this.ds.fields).length;
+    }
+
+    get description(): string {
+        return [this.ds.description, this.ds.guidance].filter(Boolean).join(' ') || null;
+    }
+
+    get params(): ParamInfo[] {
+        return paramRows(this.ds.params);
+    }
+
+    constructor(
+        readonly ds: DatasetDef,
+        expanded = false
+    ) {
+        super();
+        this.expanded = expanded;
+    }
+}
+
+export interface ParamInfo {
+    name: string;
+    type: string;
+    required: boolean;
+    kind: string;
+    options: string;
+    description: string;
 }
 
 //------------------
@@ -182,17 +183,7 @@ function usedCol() {
     };
 }
 
-function datasetRows(catalog: DataCatalog, usages: FieldUsages) {
-    return Object.values(catalog.datasets).map(ds => ({
-        name: ds.name,
-        label: ds.label,
-        description: [ds.description, ds.guidance].filter(Boolean).join(' '),
-        fieldCount: Object.keys(ds.fields).length,
-        usedAt: usages[ds.name] ? `${Object.keys(usages[ds.name]).length} fields used` : null
-    }));
-}
-
-function paramRows(params: DatasetDef['params']) {
+function paramRows(params: DatasetDef['params']): ParamInfo[] {
     return Object.entries(params ?? {}).map(([name, p]) => ({
         name,
         type: p.type,
