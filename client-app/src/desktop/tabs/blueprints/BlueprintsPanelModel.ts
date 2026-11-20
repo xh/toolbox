@@ -24,7 +24,7 @@ import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {addToBlueprint} from '@xh/hoist-chat-kit/genui/architect';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import type {LoadSpec, PersistOptions, PlainObject} from '@xh/hoist/core';
+import type {LoadSpec, PersistOptions} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {Icon} from '@xh/hoist/icon';
 import {
@@ -42,25 +42,9 @@ import {createArchitectChat} from './architectChat';
 import {createRepository} from './repository/createRepository';
 import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
-import p1 from './scenarios/p1-one-grid.json';
-import p2 from './scenarios/p2-linked-dashboard.json';
-import p3 from './scenarios/p3-morning-report.json';
-import p5 from './scenarios/p5-risk-report.json';
-import w1 from './scenarios/w1-one-city.json';
-import w2 from './scenarios/w2-two-cities.json';
 
 /** What the designer shows beside the Architect: the open blueprint, or a reference page. */
 export type DesignerView = 'blueprint' | 'catalog' | 'registry';
-
-/** The blueprints an empty library starts with, each published as its first version. */
-export const PRESETS: {name: string; blueprint: PlainObject}[] = [
-    {name: 'P1. One grid', blueprint: p1},
-    {name: 'P2. A linked dashboard', blueprint: p2},
-    {name: 'P3. A morning report', blueprint: p3},
-    {name: 'P5. A risk and stress report', blueprint: p5},
-    {name: 'W1. Weather for one city', blueprint: w1},
-    {name: 'W2. Two cities side by side', blueprint: w2}
-];
 
 /** A new blueprint: an empty dashboard, ready for widgets. */
 const EMPTY_BLUEPRINT = {
@@ -247,10 +231,6 @@ export class BlueprintsPanelModel extends HoistModel {
         dropOldLibrary();
 
         await this.refreshSummariesAsync();
-        if (!this.summaries.length && (await this.repository.canCreateAsync())) {
-            await this.seedAsync();
-            await this.refreshSummariesAsync();
-        }
         const first = this.selected ? this.selectedId : this.summaries[0]?.id;
         if (first) await this.selectAsync(first, true);
     }
@@ -506,17 +486,6 @@ export class BlueprintsPanelModel extends HoistModel {
     private async refreshSummariesAsync() {
         const summaries = await this.repository.listAsync();
         runInAction(() => (this.summaries = summaries));
-    }
-
-    private async seedAsync() {
-        for (const {name, blueprint} of PRESETS) {
-            const record = await this.repository.createAsync({
-                name,
-                blueprint: blueprint as Blueprint
-            });
-            await this.repository.publishAsync(record.id, {base: record.version});
-            await this.repository.updateAccessAsync?.(record.id, {writers: [], readers: ['*']});
-        }
     }
 
     // Reflect a save or publish in the library list, and keep its issues to show.
