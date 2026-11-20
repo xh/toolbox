@@ -1,10 +1,11 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
 import {DataCatalog, fieldUsages} from '@xh/hoist-chat-kit/blueprint';
+import type {PlainObject} from '@xh/hoist/core';
 import {describe, expect, it} from 'vitest';
 import catalogJson from '../../../../test-support/blueprintsCatalog.json';
 import p3 from '../scenarios/p3-morning-report.json';
 import w2 from '../scenarios/w2-two-cities.json';
-import {formatOf} from './CatalogModel';
+import {fieldTree, formatOf} from './CatalogModel';
 import {describeFormat} from './catalogFields';
 
 const catalog = new DataCatalog(catalogJson as any),
@@ -155,3 +156,56 @@ describe('used-field marks', () => {
         expect(fieldUsages(null, catalog)).toEqual({});
     });
 });
+
+describe('field tree', () => {
+    const bp = {
+            root: 'grid',
+            sources: {
+                pos: {
+                    dataset: 'positions',
+                    params: {asOf: '2026-11-19'},
+                    fields: {
+                        pnlDay: {label: 'Today', align: 'center', format: {precision: 2}},
+                        shock10: {field: 'shockedPnl', params: {shock: -0.1}, label: 'P&L -10%'}
+                    }
+                }
+            },
+            elements: {
+                grid: {
+                    component: 'cubeGrid',
+                    config: {source: 'pos', columnState: ['pnlDay', 'shock10']}
+                }
+            }
+        } as unknown as Blueprint,
+        rows = () => {
+            const usages = fieldUsages(bp, catalog);
+            return flatten(
+                fieldTree(catalog.getDataset('positions'), catalog, usages.positions, bp)
+            );
+        },
+        row = (id: string) => rows().find(it => it.id === id);
+
+    it("shows a field as the catalog defines it, with the catalog's label and alignment", () => {
+        const f = field('positions', 'pnlDay');
+        expect(row('field:pnlDay')).toMatchObject({label: f.label, align: f.align ?? null});
+    });
+
+    it('adds a row for each source that overrides the field, with its display resolved', () => {
+        expect(row('override:pos:pnlDay')).toMatchObject({
+            name: 'pos',
+            role: 'Override',
+            label: 'Today',
+            align: 'center',
+            usedAt: '/sources/pos/fields/pnlDay'
+        });
+        expect(row('override:pos:pnlDay').format).toContain('precision: 2');
+    });
+
+    it("labels a field instance with the source's label for it", () => {
+        expect(row('instance:shockedPnl:shock10')).toMatchObject({label: 'P&L -10%'});
+    });
+});
+
+function flatten(nodes: PlainObject[]): PlainObject[] {
+    return nodes.flatMap(it => [it, ...flatten(it.children ?? [])]);
+}

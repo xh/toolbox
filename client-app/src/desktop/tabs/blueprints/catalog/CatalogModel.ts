@@ -1,11 +1,13 @@
 import type {
+    Blueprint,
     DataCatalog,
     DatasetDef,
     FieldDef,
+    FieldDisplayLayer,
     FieldUse,
     FieldUsages
 } from '@xh/hoist-chat-kit/blueprint';
-import {fieldUsages, resolveFormat} from '@xh/hoist-chat-kit/blueprint';
+import {fieldUsages, resolveFieldDisplay, resolveFormat} from '@xh/hoist-chat-kit/blueprint';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
@@ -65,6 +67,8 @@ export class CatalogModel extends HoistModel {
             {field: 'label', width: 140},
             {field: 'type', width: 80},
             {field: 'kind', width: 110},
+            {field: 'align', width: 70},
+            {field: 'width', width: 60, align: 'right'},
             {field: 'format', width: 200, tooltip: true},
             {field: 'aggregator', width: 120, tooltip: true},
             {field: 'role', width: 85},
@@ -98,6 +102,10 @@ export class CatalogModel extends HoistModel {
             {field: 'kinds', width: 140, tooltip: true}
         ]
     });
+
+    get blueprint(): Blueprint {
+        return this.panelModel.blueprintModel.blueprint;
+    }
 
     get catalog(): DataCatalog {
         return this.panelModel.blueprintModel.catalog;
@@ -149,7 +157,13 @@ export class CatalogModel extends HoistModel {
     //------------------
     private loadDataset(ds: DatasetDef, usages: FieldUsages) {
         this.paramsGridModel.loadData(ds ? paramRows(ds.params) : []);
-        this.fieldsGridModel.loadData(ds ? fieldTree(ds, this.catalog, usages[ds.name] ?? {}) : []);
+        this.fieldsGridModel.loadData(
+            ds
+                ? fieldTree(ds, this.catalog, usages[ds.name] ?? {}, this.blueprint, (src, name) =>
+                      this.panelModel.blueprintModel.getSource(src)?.fieldLabel(name)
+                  )
+                : []
+        );
     }
 }
 
@@ -189,8 +203,22 @@ function paramRows(params: DatasetDef['params']) {
     }));
 }
 
-/** Fields under their category path, with each instance the blueprint declares under its field. */
-export function fieldTree(ds: DatasetDef, catalog: DataCatalog, uses: Record<string, FieldUse[]>) {
+/**
+ * Fields under their category path. Under each field, the instances the blueprint declares and the
+ * sources that override how it shows.
+ *
+ * @param fieldLabel - a source's label for one of its fields, for an instance that sets none.
+ */
+export function fieldTree(
+    ds: DatasetDef,
+    catalog: DataCatalog,
+    uses: Record<string, FieldUse[]>,
+    blueprint: Blueprint,
+    fieldLabel?: (source: string, name: string) => string
+) {
+    const sources = Object.entries(blueprint?.sources ?? {}).filter(
+        ([, s]) => s.dataset === ds.name
+    );
     const roots: PlainObject[] = [],
         nodes: Record<string, PlainObject> = {},
         categoryNode = (path: string[]): PlainObject => {
@@ -209,7 +237,10 @@ export function fieldTree(ds: DatasetDef, catalog: DataCatalog, uses: Record<str
             row = {
                 ...fieldRow(f, catalog),
                 usedAt: pathsOf(fieldUses),
-                children: instanceRows(f, fieldUses)
+                children: [
+                    ...instanceRows(f, fieldUses, sources, catalog, blueprint, fieldLabel),
+                    ...overrideRows(f, sources, catalog, blueprint)
+                ]
             },
             parent = categoryNode(f.category ? castArray(f.category) : []);
         (parent ? parent.children : roots).push(row);
@@ -228,11 +259,14 @@ export function fieldTree(ds: DatasetDef, catalog: DataCatalog, uses: Record<str
 
 function fieldRow(f: FieldDef, catalog: DataCatalog) {
     const formatName = isString(f.format) ? f.format : null,
-        opts = describeFormat(formatOf(f, catalog));
+        opts = describeFormat(formatOf(f, catalog)),
+        {label, align, width} = resolveFieldDisplay(f);
     return {
         id: `field:${f.name}`,
         name: f.name,
-        label: f.label,
+        label,
+        align,
+        width,
         type: f.type,
         kind: f.kind,
         format: [formatName, opts].filter(Boolean).join(': ') || null,
@@ -250,22 +284,65 @@ function fieldRow(f: FieldDef, catalog: DataCatalog) {
     };
 }
 
-function instanceRows(f: FieldDef, uses: FieldUse[]) {
+function instanceRows(
+    f: FieldDef,
+    uses: FieldUse[],
+    sources: [string, PlainObject][],
+    catalog: DataCatalog,
+    blueprint: Blueprint,
+    fieldLabel: (source: string, name: string) => string
+) {
     return Object.entries(
         groupBy(
             uses.filter(u => u.instance),
             'instance'
         )
-    ).map(([name, instUses]) => ({
-        id: `instance:${f.name}:${name}`,
-        name,
-        label: f.label,
-        type: f.type,
-        kind: f.kind,
-        role: 'Instance',
-        params: describeParams(instUses.find(u => u.params)?.params),
-        usedAt: pathsOf(instUses)
-    }));
+    ).map(([name, instUses]) => {
+        const [src, s] = sources.find(([, it]) => it.fields?.[name]) ?? [],
+            inst = s?.fields[name] as FieldDisplayLayer,
+            display = resolveFieldDisplay(f, inst);
+        return {
+            id: `instance:${f.name}:${name}`,
+            name,
+            label: inst?.label ?? fieldLabel?.(src, name) ?? display.label,
+            align: display.align,
+            width: display.width,
+            type: f.type,
+            kind: f.kind,
+            format: describeFormat(resolveFormat(f, display.formats, {catalog, blueprint})),
+            renderer: describeSpec(display.renderer) || null,
+            role: 'Instance',
+            params: describeParams(instUses.find(u => u.params)?.params),
+            usedAt: pathsOf(instUses)
+        };
+    });
+}
+
+/** A row for each source that overrides how the field shows, with its display resolved. */
+function overrideRows(
+    f: FieldDef,
+    sources: [string, PlainObject][],
+    catalog: DataCatalog,
+    blueprint: Blueprint
+) {
+    return sources
+        .filter(([, s]) => s.fields?.[f.name] && !('field' in s.fields[f.name]))
+        .map(([src, s]) => {
+            const display = resolveFieldDisplay(f, s.fields[f.name] as FieldDisplayLayer);
+            return {
+                id: `override:${src}:${f.name}`,
+                name: src,
+                label: display.label,
+                align: display.align,
+                width: display.width,
+                type: f.type,
+                kind: f.kind,
+                format: describeFormat(resolveFormat(f, display.formats, {catalog, blueprint})),
+                renderer: describeSpec(display.renderer) || null,
+                role: 'Override',
+                usedAt: `/sources/${src}/fields/${f.name}`
+            };
+        });
 }
 
 function kindRows(catalog: DataCatalog) {
