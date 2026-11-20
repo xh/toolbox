@@ -1,7 +1,7 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import type {PropertyTableEntry, PropertyTableProps} from '@xh/hoist/cmp/propertytable';
 import {propertyTable} from '@xh/hoist/cmp/propertytable';
-import {a, div, span} from '@xh/hoist/cmp/layout';
+import {a, div} from '@xh/hoist/cmp/layout';
 import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
@@ -46,14 +46,6 @@ const SUMMARY: PropertyTableEntry[] = [
     }
 ];
 
-/** The totals at the foot of a trade confirmation. */
-const TOTALS: PropertyTableEntry[] = [
-    {label: 'Gross amount', value: fmtNumber(1_248_000, {precision: 2})},
-    {label: 'Commission', value: fmtNumber(624, {precision: 2})},
-    {label: 'Fees', value: fmtNumber(81.5, {precision: 2})},
-    {label: 'Net amount', value: fmtNumber(1_248_705.5, {precision: 2})}
-];
-
 /** Labels and values with long unbroken words, among normal ones. */
 const LONG_WORDS: PropertyTableEntry[] = [
     {label: 'Symbol', value: 'XZ'},
@@ -81,8 +73,8 @@ export const propertyTablePanel = hoistCmp.factory({
                 '',
                 'The caller formats each value. The list fills the',
                 'width of its container and fits as many columns as that width allows, or a set',
-                'number of `columns`. With `align`, it sizes to its content at one edge instead.',
-                'Long labels and values wrap, so the list never forces horizontal overflow.'
+                'number of `columns`. Long labels and values wrap, so the list never forces',
+                'horizontal overflow.'
             ],
             links: [
                 {
@@ -111,29 +103,6 @@ export const propertyTablePanel = hoistCmp.factory({
                                 enableClear: true,
                                 width: 110,
                                 options: ['left', 'top']
-                            })
-                        }),
-                        wrapperOption({
-                            label: 'Label variant',
-                            propName: 'PropertyTableProps.labelVariant',
-                            control: select({
-                                bind: 'labelVariant',
-                                enableFilter: false,
-                                enableClear: true,
-                                width: 110,
-                                options: ['standard', 'muted']
-                            })
-                        }),
-                        wrapperOption({
-                            label: 'Align',
-                            propName: 'PropertyTableProps.align',
-                            info: 'Empty to fill the width.',
-                            control: select({
-                                bind: 'align',
-                                enableFilter: false,
-                                enableClear: true,
-                                width: 110,
-                                options: ['left', 'right']
                             })
                         }),
                         wrapperOption({
@@ -214,12 +183,8 @@ export const propertyTablePanel = hoistCmp.factory({
                         children: demoPlayground({
                             instanceWidth: 640,
                             showValue: false,
-                            // Set at the same edge as an aligned list, so it stays under it.
-                            caption: span({
-                                style: {display: 'block', textAlign: listProps.align},
-                                children:
-                                    'The largest position of the sample portfolio, in a 640px box.'
-                            }),
+                            caption:
+                                'The largest position of the sample portfolio, in a 640px box.',
                             config: fmtDemoConfig<PropertyTableProps>('propertyTable', {
                                 entries: raw('positionEntries'),
                                 ...listProps
@@ -227,8 +192,7 @@ export const propertyTablePanel = hoistCmp.factory({
                             children: propertyTable({
                                 entries: positionEntries,
                                 ...listProps,
-                                // An aligned list sizes to its content, so it takes no width.
-                                width: listProps.align ? undefined : '100%'
+                                width: '100%'
                             })
                         })
                     }),
@@ -372,33 +336,6 @@ export const propertyTablePanel = hoistCmp.factory({
                         })
                     }),
                     demoSection({
-                        title: 'Totals and Muted Labels',
-                        note: "align: 'right' sizes the list to its content at the right edge, with labels and values aligned right. labelVariant: 'muted' makes the labels smaller and lighter.",
-                        children: demoGrid({
-                            columns: 2,
-                            children: [
-                                demoFrame({
-                                    label: "align: 'right'",
-                                    info: 'with dividers',
-                                    children: propertyTable({
-                                        entries: TOTALS,
-                                        align: 'right',
-                                        dividers: true
-                                    })
-                                }),
-                                demoFrame({
-                                    label: "labelVariant: 'muted'",
-                                    info: "with labelSide: 'top'",
-                                    children: propertyTable({
-                                        entries: positionEntries,
-                                        labelSide: 'top',
-                                        labelVariant: 'muted'
-                                    })
-                                })
-                            ]
-                        })
-                    }),
-                    demoSection({
                         title: 'Intent and Elements',
                         note: 'intent colors a value. A value can be any element.',
                         children: demoFrame({
@@ -510,8 +447,6 @@ export const propertyTablePanel = hoistCmp.factory({
 
 class PropertyTablePanelModel extends HoistModel {
     @bindable accessor labelSide: PropertyTableProps['labelSide'] = null;
-    @bindable accessor labelVariant: PropertyTableProps['labelVariant'] = null;
-    @bindable accessor align: PropertyTableProps['align'] = null;
     @bindable accessor labelAlign: PropertyTableProps['labelAlign'] = null;
     @bindable accessor valueAlign: PropertyTableProps['valueAlign'] = null;
     @bindable accessor columns: number = null;
@@ -530,8 +465,6 @@ class PropertyTablePanelModel extends HoistModel {
     get listProps(): PlaygroundListProps {
         const {
             labelSide,
-            labelVariant,
-            align,
             labelAlign,
             valueAlign,
             columns,
@@ -542,8 +475,6 @@ class PropertyTablePanelModel extends HoistModel {
         } = this;
         return {
             labelSide: labelSide ?? undefined,
-            labelVariant: labelVariant ?? undefined,
-            align: align ?? undefined,
             labelAlign: labelAlign ?? undefined,
             valueAlign: valueAlign ?? undefined,
             columns: columns ?? undefined,
@@ -588,8 +519,6 @@ class PropertyTablePanelModel extends HoistModel {
 /** The PropertyTable props the rail drives, as the plain values its inputs produce. */
 interface PlaygroundListProps {
     labelSide?: PropertyTableProps['labelSide'];
-    labelVariant?: PropertyTableProps['labelVariant'];
-    align?: PropertyTableProps['align'];
     labelAlign?: PropertyTableProps['labelAlign'];
     valueAlign?: PropertyTableProps['valueAlign'];
     columns?: number;
