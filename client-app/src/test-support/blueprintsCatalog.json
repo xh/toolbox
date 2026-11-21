@@ -44,10 +44,17 @@
     },
     "temp": {
       "precision": 0,
-      "label": "°"
+      "label": "\u00b0"
     },
     "speed": {
-      "precision": 0
+      "precision": 0,
+      "label": {
+        "param": "units",
+        "values": {
+          "imperial": " mph",
+          "metric": " m/s"
+        }
+      }
     },
     "pressure": {
       "precision": 0,
@@ -698,7 +705,36 @@
       "params": {
         "city": {
           "type": "string",
-          "required": true
+          "required": true,
+          "options": {
+            "values": [
+              "Atlanta",
+              "Austin",
+              "Boston",
+              "Chicago",
+              "Dallas",
+              "Denver",
+              "Houston",
+              "Las Vegas",
+              "London",
+              "Los Angeles",
+              "Miami",
+              "Minneapolis",
+              "Nashville",
+              "New York",
+              "Paris",
+              "Philadelphia",
+              "Phoenix",
+              "Portland",
+              "San Antonio",
+              "San Diego",
+              "San Francisco",
+              "Seattle",
+              "Sydney",
+              "Tokyo",
+              "Toronto"
+            ]
+          }
         },
         "units": {
           "type": "string",
@@ -777,7 +813,36 @@
       "params": {
         "city": {
           "type": "string",
-          "required": true
+          "required": true,
+          "options": {
+            "values": [
+              "Atlanta",
+              "Austin",
+              "Boston",
+              "Chicago",
+              "Dallas",
+              "Denver",
+              "Houston",
+              "Las Vegas",
+              "London",
+              "Los Angeles",
+              "Miami",
+              "Minneapolis",
+              "Nashville",
+              "New York",
+              "Paris",
+              "Philadelphia",
+              "Phoenix",
+              "Portland",
+              "San Antonio",
+              "San Diego",
+              "San Francisco",
+              "Seattle",
+              "Sydney",
+              "Tokyo",
+              "Toronto"
+            ]
+          }
         },
         "units": {
           "type": "string",
