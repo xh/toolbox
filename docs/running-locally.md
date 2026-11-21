@@ -173,12 +173,15 @@ local MySQL database untouched. All settings are passed on the command line for 
 * **Server** - from the project root:
   ```
   APP_TOOLBOX_USE_H2=true \
+  APP_TOOLBOX_MULTI_INSTANCE_ENABLED=false \
   APP_TOOLBOX_OAUTH_PROVIDER=NONE \
   APP_TOOLBOX_BOOTSTRAP_ADMIN_USER=agent@xh.io \
   APP_TOOLBOX_BOOTSTRAP_ADMIN_PASSWORD=localDevOnly \
   ./gradlew bootRun
   ```
   Startup logs `Local admin user available as per instanceConfig` once the user is seeded.
+  Keep multi-instance off: otherwise the server joins any Toolbox server already running on this
+  machine as a cluster member, and its empty H2 roles replace that server's cached roles.
 
   Always use these exact credentials - `agent@xh.io` / `localDevOnly` - and never a generated
   password. Then the developer, or any other agent that finds the login prompt, can sign in to a

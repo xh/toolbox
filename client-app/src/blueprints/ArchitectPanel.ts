@@ -45,7 +45,7 @@ export const architectPanel = hoistCmp.factory<BlueprintShellModel>({
                           title: 'Ask the Architect',
                           text: 'Describe the view you want, or a change to this one.'
                       },
-                      composerProps: {placeholder: 'Show my positions by sector...'},
+                      composerProps: {placeholder: model.type.examplePrompt},
                       messageListProps: {assistantName: 'Architect'}
                   })
                 : placeholder(

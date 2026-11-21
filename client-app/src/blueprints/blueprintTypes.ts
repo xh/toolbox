@@ -11,20 +11,24 @@ export interface BlueprintTypeSpec {
     label: string;
     datasets: string[];
     createRegistry: () => BlueprintRegistry;
+    /** An example request, shown as the Architect's placeholder. */
+    examplePrompt: string;
 }
 
 export const PORTFOLIO_TYPE: BlueprintTypeSpec = {
     name: 'toolbox.portfolio',
     label: 'Portfolio',
     datasets: ['positions', 'fundSummary', 'orders', 'prices', 'hypotheticalPortfolio'],
-    createRegistry: createPortfolioRegistry
+    createRegistry: createPortfolioRegistry,
+    examplePrompt: 'Show my positions by sector...'
 };
 
 export const WEATHER_TYPE: BlueprintTypeSpec = {
     name: 'toolbox.weather',
     label: 'Weather',
     datasets: ['weather', 'currentWeather'],
-    createRegistry: createWeatherRegistry
+    createRegistry: createWeatherRegistry,
+    examplePrompt: 'Show the weather in Tokyo for the next five days...'
 };
 
 export const BLUEPRINT_TYPES = [PORTFOLIO_TYPE, WEATHER_TYPE];
