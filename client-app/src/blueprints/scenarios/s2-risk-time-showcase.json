@@ -130,7 +130,7 @@
             "config": {
                 "intent": "primary",
                 "title": "Waterfall",
-                "text": "Each strategy's day P&L steps from the one before, ending at the fund's total."
+                "text": "Each strategy's day P&L steps from where the one before ended, so together the steps add up to the fund's day P&L."
             }
         }
     }
