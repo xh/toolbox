@@ -8,6 +8,7 @@ import io.xh.hoist.pref.PrefService
 import io.xh.hoist.telemetry.trace.TraceService
 import io.xh.hoist.config.ConfigSpec
 import io.xh.hoist.pref.PreferenceSpec
+import io.xh.toolbox.llm.LlmConfig
 import io.xh.toolbox.portfolio.PortfolioConfig
 import io.xh.toolbox.security.Auth0Config
 import io.xh.toolbox.security.EntraIdConfig
@@ -197,6 +198,20 @@ class BootStrap implements LogSupport {
                 note: 'API key for OpenWeatherMap (https://openweathermap.org/api). Sign up for a free key.'
             ),
             new ConfigSpec(
+                name: 'llmApiKey',
+                valueType: 'pwd',
+                defaultValue: 'UNCONFIGURED',
+                groupName: 'Toolbox - Example Apps',
+                note: 'Anthropic API key for the LLM relay used by the Live Model demo on the Chat Kit tab (https://console.anthropic.com/). In local development, APP_TOOLBOX_LLM_API_KEY in .env overrides it.'
+            ),
+            new ConfigSpec(
+                name: 'llmConfig',
+                valueType: 'json',
+                typedClass: LlmConfig,
+                groupName: 'Toolbox - Example Apps',
+                note: 'Settings for the LLM relay used by the Live Model demo on the Chat Kit tab - model, token and rate limits, request params and server tools. See LlmConfig for each key.'
+            ),
+            new ConfigSpec(
                 name: 'newsRefreshMins',
                 valueType: 'int',
                 defaultValue: 60,
@@ -249,6 +264,7 @@ class BootStrap implements LogSupport {
                 valueType: 'json',
                 defaultValue: [
                     hoistReact: 'https://github.com/xh/hoist-react/tree/develop',
+                    hoistChatKit: 'https://github.com/xh/hoist-chat-kit/tree/develop',
                     toolbox: 'https://github.com/xh/toolbox/tree/develop'
                 ],
                 clientVisible: true,

@@ -25,7 +25,7 @@ const RECENT_DOCS_KEY = 'docs.recentDocs',
     RECENT_DOCS_MAX = 8;
 
 /**
- * Service providing access to hoist-react and hoist-core documentation content.
+ * Service providing access to hoist-react, hoist-core and hoist-chat-kit documentation content.
  *
  * Docs come from @xh/hoist-docs, the same source AI agents read over MCP, for the Hoist versions
  * Toolbox runs. `pnpm docs` writes them into the client's public files at build time (or, during

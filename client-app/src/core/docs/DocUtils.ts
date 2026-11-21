@@ -1,10 +1,11 @@
 import {XH} from '@xh/hoist/core';
 import type {DocEntry, DocSection} from './types';
 
-// --- Source repo tokens (matching `$HR`/`$HC` url prefixes) -> doc viewer source names. ---
+// --- Source repo tokens (matching `$HR`/`$HC`/`$CK` url prefixes) -> doc viewer source names. ---
 const DOC_SOURCE_TOKENS: Record<string, string> = {
     $HR: 'hoist-react',
-    $HC: 'hoist-core'
+    $HC: 'hoist-core',
+    $CK: 'hoist-chat-kit'
 };
 
 /**
