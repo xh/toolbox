@@ -6,6 +6,8 @@ import io.xh.hoist.test.HoistUnitTest
 import io.xh.hoist.test.fakes.TestUser
 import spock.lang.Specification
 
+import static io.xh.hoist.util.DateTimeUtils.appDay
+
 /**
  * Tests the per-user limits and the request checks of {@link LlmService} - the policy that keeps
  * the relay from being an open proxy. Access is gated by the role on {@link LlmController}. Nothing
@@ -17,6 +19,7 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
              unlimited = new TestUser('unlimited', ['TOOLBOX_LLM_USER', LlmService.UNLIMITED_ROLE])
 
     def setup() {
+        useAppTimeZone('UTC')
         testConfigService.registerTypedConfig('llmConfig', LlmConfig)
         testConfigService.set('llmApiKey', 'test-key')
         setLlmConfig()
@@ -28,12 +31,12 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
 
         when: 'two calls are admitted and finish, failed or not'
         2.times {
-            service.reserveCall(member)
+            service.reserveCall(member, [:])
             service.releaseCall(member.username)
         }
 
         and:
-        service.reserveCall(member)
+        service.reserveCall(member, [:])
 
         then:
         def e = thrown(RoutineRuntimeException)
@@ -48,7 +51,7 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
 
         when:
         5.times {
-            service.reserveCall(unlimited)
+            service.reserveCall(unlimited, [:])
             service.releaseCall(unlimited.username)
         }
 
@@ -56,7 +59,7 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
         noExceptionThrown()
 
         when:
-        service.reserveCall(member)
+        service.reserveCall(member, [:])
 
         then:
         thrown(RoutineRuntimeException)
@@ -65,10 +68,10 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
     def 'a user may run at most two streams at once'() {
         given:
         setLlmConfig(rateLimit: 10)
-        2.times { service.reserveCall(unlimited) }
+        2.times { service.reserveCall(unlimited, [:]) }
 
         when:
-        service.reserveCall(unlimited)
+        service.reserveCall(unlimited, [:])
 
         then:
         def e = thrown(RoutineRuntimeException)
@@ -76,7 +79,7 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
 
         when: 'one finishes'
         service.releaseCall(unlimited.username)
-        service.reserveCall(unlimited)
+        service.reserveCall(unlimited, [:])
 
         then:
         noExceptionThrown()
@@ -85,16 +88,127 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
     def 'saving a config does not reset the limits'() {
         given:
         2.times {
-            service.reserveCall(member)
+            service.reserveCall(member, [:])
             service.releaseCall(member.username)
         }
 
         when:
         service.clearCaches()
-        service.reserveCall(member)
+        service.reserveCall(member, [:])
 
         then:
         thrown(RoutineRuntimeException)
+    }
+
+    def 'calls count in one replicated entry per user, so every instance sees them'() {
+        given: 'two calls admitted on another instance'
+        service._usage.put(member.username, [day: appDay().toString(), tokens: 0L, calls: [now(), now()]])
+
+        when:
+        service.reserveCall(member, [:])
+
+        then:
+        service._usage.replicate
+        def e = thrown(RoutineRuntimeException)
+        e.message.contains('limit of 2')
+    }
+
+    def 'a daily token limit refuses a user once today\'s tokens reach it, until the next day'() {
+        given:
+        setLlmConfig(rateLimit: 100, dailyTokenLimit: 100)
+        service.addTokens(member.username, [input_tokens: 60, output_tokens: 30, cache_read_input_tokens: 6, cache_creation_input_tokens: 4])
+
+        when:
+        service.reserveCall(member, CONTEXT)
+
+        then:
+        def e = thrown(RoutineRuntimeException)
+        e.message == "You have used today's 100 assistant tokens. Try again tomorrow."
+        testTrackService.lastTracked.msg == 'LLM token limit hit'
+        testTrackService.lastTracked.data == [limit: 100, tokens: 100, *: CONTEXT]
+
+        when: 'unlimited users are exempt'
+        service.addTokens(unlimited.username, [input_tokens: 500])
+        service.reserveCall(unlimited, [:])
+
+        then:
+        noExceptionThrown()
+
+        when: 'the count is per day'
+        service._usage.put(member.username, service._usage.get(member.username) + [day: appDay().minusDays(1).toString()])
+        service.reserveCall(member, [:])
+
+        then:
+        noExceptionThrown()
+    }
+
+    def 'the daily budget counts every user, and past it only unlimited users may call'() {
+        given:
+        setLlmConfig(rateLimit: 100, dailyTokenBudget: 150)
+        service.addTokens('other', [input_tokens: 100])
+        service.addTokens(unlimited.username, [output_tokens: 50])
+
+        when:
+        service.reserveCall(member, [:])
+
+        then:
+        def e = thrown(RoutineRuntimeException)
+        e.message == 'The assistant demo has paused for today. Try again tomorrow.'
+        testTrackService.lastTracked.msg == 'LLM token budget reached'
+
+        when:
+        service.reserveCall(unlimited, [:])
+
+        then:
+        noExceptionThrown()
+    }
+
+    def 'token limits are off by default'() {
+        given:
+        setLlmConfig(rateLimit: 100)
+        service.addTokens(member.username, [input_tokens: 10_000_000])
+
+        when:
+        service.reserveCall(member, [:])
+
+        then:
+        noExceptionThrown()
+        new LlmConfig([:]).with { [dailyTokenLimit, dailyTokenBudget, rateLimit] } == [null, null, 20]
+    }
+
+    def 'usage reports a user\'s calls and tokens, and what is left of each'() {
+        given:
+        setLlmConfig(rateLimit: 5, dailyTokenLimit: 1000, dailyTokenBudget: 2000)
+        service.reserveCall(member, [:])
+        service.releaseCall(member.username)
+        service.addTokens(member.username, [input_tokens: 300, output_tokens: 100])
+
+        expect:
+        service.usage(member) == [
+            unlimited: false, calls: 1, callsLeft: 4, tokens: 400, tokensLeft: 600, paused: false, canCall: true
+        ]
+
+        when:
+        service.addTokens('other', [input_tokens: 1600])
+
+        then:
+        service.usage(member).subMap('paused', 'canCall') == [paused: true, canCall: false]
+        service.usage(unlimited) == [
+            unlimited: true, calls: 0, callsLeft: null, tokens: 0, tokensLeft: null, paused: false, canCall: true
+        ]
+    }
+
+    def 'the context header keeps only app, feature and blueprintId, as short strings'() {
+        expect:
+        service.parseContext(header) == expected
+
+        where:
+        header                                                                        || expected
+        '{"app": "weather", "feature": "architect", "blueprintId": "bp1", "x": 1}'    || [app: 'weather', feature: 'architect', blueprintId: 'bp1']
+        '{"app": 42, "feature": "answer"}'                                            || [feature: 'answer']
+        "{\"app\": \"${'a' * 101}\"}"                                                  || [:]
+        'not json'                                                                    || [:]
+        null                                                                          || [:]
     }
 
     def 'an oversized body is rejected before it is parsed'() {
@@ -129,16 +243,17 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
         }
 
         when:
-        service.stream([messages: [[role: 'user', content: 'Hi']]], unlimited) { true }
+        service.stream([messages: [[role: 'user', content: 'Hi']]], unlimited, CONTEXT) { true }
 
         then:
         thrown(RoutineRuntimeException)
         testTrackService.lastTracked.msg == 'LLM call'
         testTrackService.lastTracked.severity == 'WARN'
         testTrackService.lastTracked.data.error == 'The model is busy.'
+        testTrackService.lastTracked.data.subMap('app', 'feature', 'blueprintId') == CONTEXT
 
         when: 'both of the user slots are free'
-        2.times { service.reserveCall(unlimited) }
+        2.times { service.reserveCall(unlimited, [:]) }
 
         then:
         noExceptionThrown()
@@ -149,14 +264,14 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
         loginAs(member)
 
         when:
-        service.stream([messages: [], unexpected: true], member) { true }
+        service.stream([messages: [], unexpected: true], member, [:]) { true }
 
         then:
         thrown(RoutineRuntimeException)
         testTrackService.lastTracked.msg == 'LLM request refused'
 
         when: 'the limit is untouched'
-        2.times { service.reserveCall(member) }
+        2.times { service.reserveCall(member, [:]) }
 
         then:
         noExceptionThrown()
@@ -210,6 +325,10 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
     //------------------
     // Implementation
     //------------------
+    static final Map CONTEXT = [app: 'weather', feature: 'architect', blueprintId: 'bp1']
+
+    private static long now() { System.currentTimeMillis() }
+
     private void setLlmConfig(Map overrides = [:]) {
         testConfigService.set('llmConfig', [model: 'test-model', maxTokens: 1000, rateLimit: 2] + overrides)
     }

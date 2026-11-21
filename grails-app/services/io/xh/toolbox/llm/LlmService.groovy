@@ -1,6 +1,7 @@
 package io.xh.toolbox.llm
 
 import io.xh.hoist.BaseService
+import io.xh.hoist.cache.Cache
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.exception.DataNotAvailableException
 import io.xh.hoist.exception.ExternalHttpException
@@ -21,7 +22,9 @@ import org.apache.hc.core5.http.ConnectionRequestTimeoutException
 import org.apache.hc.core5.http.io.entity.StringEntity
 import org.apache.hc.core5.util.Timeout
 
+import static io.xh.hoist.util.DateTimeUtils.DAYS
 import static io.xh.hoist.util.DateTimeUtils.HOURS
+import static io.xh.hoist.util.DateTimeUtils.appDay
 import static io.xh.hoist.util.StringUtils.elide
 import static java.nio.charset.StandardCharsets.UTF_8
 
@@ -45,15 +48,21 @@ import static java.nio.charset.StandardCharsets.UTF_8
  *     adds those enabled in `LlmConfig.serverTools`, and rejects any the client sends.
  *   - It caps the size of the request and the number of messages, and accepts only text, tool and
  *     thinking content blocks.
- *   - It limits each user to `LlmConfig.rateLimit` model calls per hour, counted from the moment a
- *     call is admitted, whether or not it succeeds, and to two streams at once. The count is in
- *     memory, per server instance, not shared across the cluster. A tool loop makes one call per
- *     step. Members of `TOOLBOX_LLM_UNLIMITED` have no hourly limit. With a limit of 0, only they
- *     can make calls.
+ *
+ * Limits - each from `LlmConfig`, shared across the cluster, and lifted for members of
+ * `TOOLBOX_LLM_UNLIMITED` except where noted:
+ *   - `rateLimit` model calls per user per hour, counted from the moment a call is admitted, whether
+ *     or not it succeeds. A tool loop makes one call per step. With a limit of 0, only unlimited
+ *     users can make calls.
+ *   - `dailyTokenLimit` tokens per user per app day, counted when each call ends.
+ *   - `dailyTokenBudget` tokens per app day across all users, unlimited ones included.
+ *   - Two streams at once per user, per server instance. This one applies to every user.
+ * {@link #usage} reports a user's standing against them.
  *
  * Tracking - each call is tracked in category `LLM`, with its token counts, and at WARN if it
  * failed. A refused request - a limit hit, or a request the policy rejects - is tracked at WARN,
- * so admins can see it in the Admin Console's Activity tab.
+ * so admins can see it in the Admin Console's Activity tab. Both carry the `app`, `feature` and
+ * `blueprintId` the client sends in the `X-Llm-Context` header - see {@link #parseContext}.
  *
  * Errors - expected failures throw routine exceptions, which log at DEBUG and which the client does
  * not report as errors: a rate limit hit, a rejected request, a full connection pool, and an
@@ -76,9 +85,11 @@ class LlmService extends BaseService {
     ConfigService configService
     TrackService trackService
 
-    // Per-user limits, guarded by this service's lock: username -> times of the calls admitted in
-    // the last hour, and username -> streams in progress.
-    private final Map<String, List<Long>> _callTimes = [:]
+    // Each user's use across the cluster: [day, tokens that day, times of calls in the last hour].
+    // A replicated cache has no atomic update, so the same user's calls updating it on two
+    // instances at once can lose one count - fine for a demo limit. Updated under this service's
+    // lock, which also guards the streams each user has in progress on this instance.
+    private final Cache<String, Map> _usage = createCache(name: 'usage', replicate: true, expireTime: 2 * DAYS)
     private final Map<String, Integer> _activeStreams = [:]
 
     // The pool size is the cap on concurrent streams. Its limits are set from config on init and
@@ -131,11 +142,13 @@ class LlmService extends BaseService {
      * @param request - Anthropic Messages request body, as built by the kit's `AnthropicCodec`.
      *      Checked and filtered as described in the class doc.
      * @param user - the authenticated user, for limits.
+     * @param context - the client's `app`, `feature` and `blueprintId`, from {@link #parseContext},
+     *      added to what is tracked.
      * @param onEvent - called with the JSON payload of each SSE `data:` field, in order. Return
      *      false to stop - e.g. when the client has disconnected. The upstream connection is
      *      then aborted, so no further tokens are generated or billed.
      */
-    void stream(Map request, HoistUser user, Closure<Boolean> onEvent) {
+    void stream(Map request, HoistUser user, Map context, Closure<Boolean> onEvent) {
         checkApiKey()
 
         Map body
@@ -144,11 +157,11 @@ class LlmService extends BaseService {
             body = createBody(request)
             post = createPost(body)
         } catch (RoutineRuntimeException e) {
-            warn('LLM request refused', [reason: e.message])
+            warn('LLM request refused', [reason: e.message, *: context])
             throw e
         }
 
-        reserveCall(user)
+        reserveCall(user, context)
         def usage = [:],
             toolCount = (body.tools as List)?.size() ?: 0,
             startTime = System.currentTimeMillis(),
@@ -177,7 +190,49 @@ class LlmService extends BaseService {
             throw t
         } finally {
             releaseCall(user.username)
-            trackCall(body.model as String, toolCount, usage, complete, error, startTime)
+            addTokens(user.username, usage)
+            trackCall(body.model as String, toolCount, usage, complete, error, startTime, context)
+        }
+    }
+
+    /**
+     * A user's standing against the limits: calls in the last hour and tokens today, what is left
+     * of each (null for no limit), whether the daily budget has paused the demo for them, and
+     * whether they can call now. Streams in progress are not counted.
+     */
+    synchronized Map usage(HoistUser user) {
+        def config = getConfig(),
+            use = usageOf(user.username),
+            unlimited = user.hasRole(UNLIMITED_ROLE),
+            calls = (use.calls as List).size(),
+            tokens = use.tokens as long,
+            callsLeft = unlimited ? null : Math.max(0, config.rateLimit - calls),
+            tokensLeft = unlimited || config.dailyTokenLimit == null ? null : Math.max(0L, config.dailyTokenLimit - tokens),
+            paused = !unlimited && budgetReached(config)
+        return [
+            unlimited : unlimited,
+            calls     : calls,
+            callsLeft : callsLeft,
+            tokens    : tokens,
+            tokensLeft: tokensLeft,
+            paused    : paused,
+            canCall   : !paused && callsLeft != 0 && tokensLeft != 0L
+        ]
+    }
+
+    /**
+     * The client's context for a call, from the `X-Llm-Context` header: JSON with any of `app`,
+     * `feature` and `blueprintId`, each a string of at most 100 characters. Anything else, or a
+     * malformed header, is dropped, as the context is only tracked.
+     */
+    Map parseContext(String header) {
+        if (!header) return [:]
+        try {
+            return JSONParser.parseObject(header)
+                .subMap(CONTEXT_KEYS)
+                .findAll { k, v -> v instanceof String && v.length() <= 100 }
+        } catch (Exception ignored) {
+            return [:]
         }
     }
 
@@ -334,10 +389,10 @@ class LlmService extends BaseService {
      * Admit a call within the user's limits, counting it at once, so that parallel requests cannot
      * all pass the check. Release it with {@link #releaseCall}.
      */
-    private void reserveCall(HoistUser user) {
+    private void reserveCall(HoistUser user, Map context) {
         def refusal = tryReserve(user)
         if (refusal) {
-            warn(refusal.msg as String, refusal.data as Map)
+            warn(refusal.msg as String, (refusal.data as Map) + context)
             throw new RoutineRuntimeException(refusal.error as String)
         }
     }
@@ -353,12 +408,26 @@ class LlmService extends BaseService {
             ]
         }
 
+        def config = getConfig(),
+            use = usageOf(username)
         if (!user.hasRole(UNLIMITED_ROLE)) {
-            def limit = config.rateLimit,
-                now = System.currentTimeMillis(),
-                times = _callTimes.computeIfAbsent(username) { [] }
-            times.removeAll { it < now - HOURS }
-            if (times.size() >= limit) {
+            if (budgetReached(config)) {
+                return [
+                    msg  : 'LLM token budget reached',
+                    data : [budget: config.dailyTokenBudget],
+                    error: 'The assistant demo has paused for today. Try again tomorrow.'
+                ]
+            }
+            def tokenLimit = config.dailyTokenLimit
+            if (tokenLimit != null && use.tokens >= tokenLimit) {
+                return [
+                    msg  : 'LLM token limit hit',
+                    data : [limit: tokenLimit, tokens: use.tokens],
+                    error: "You have used today's $tokenLimit assistant tokens. Try again tomorrow."
+                ]
+            }
+            def limit = config.rateLimit
+            if ((use.calls as List).size() >= limit) {
                 return [
                     msg  : 'LLM rate limit hit',
                     data : [limit: limit],
@@ -367,9 +436,9 @@ class LlmService extends BaseService {
                         'The assistant is not available right now.'
                 ]
             }
-            times << now
         }
 
+        _usage.put(username, use + [calls: (use.calls as List) + System.currentTimeMillis()])
         _activeStreams[username] = (_activeStreams[username] ?: 0) + 1
         return null
     }
@@ -377,6 +446,39 @@ class LlmService extends BaseService {
     private synchronized void releaseCall(String username) {
         def count = (_activeStreams[username] ?: 1) - 1
         count ? _activeStreams.put(username, count) : _activeStreams.remove(username)
+    }
+
+    /** Add a call's tokens to the user's count for today. */
+    private synchronized void addTokens(String username, Map usage) {
+        long tokens = totalTokens(usage)
+        if (!tokens) return
+        def use = usageOf(username)
+        _usage.put(username, use + [tokens: (use.tokens as long) + tokens])
+    }
+
+    /** A user's use as of now: today's tokens, and the times of calls in the last hour. */
+    private Map usageOf(String username) {
+        def stored = _usage.get(username),
+            today = appDay().toString(),
+            cutoff = System.currentTimeMillis() - HOURS
+        return [
+            day   : today,
+            tokens: stored?.day == today ? stored.tokens as long : 0L,
+            calls : ((stored?.calls ?: []) as List).findAll { (it as long) > cutoff }
+        ]
+    }
+
+    private boolean budgetReached(LlmConfig config) {
+        def budget = config.dailyTokenBudget
+        if (budget == null) return false
+        def today = appDay().toString()
+        long spent = _usage.map.values().findAll { it.day == today }.sum(0L) { it.tokens as long } as long
+        return spent >= budget
+    }
+
+    private static long totalTokens(Map usage) {
+        ['input_tokens', 'output_tokens', 'cache_read_input_tokens', 'cache_creation_input_tokens']
+            .sum(0L) { (usage[it] ?: 0) as long } as long
     }
 
     //--------------------------------------------------
@@ -387,7 +489,7 @@ class LlmService extends BaseService {
      * upstream rejected it.
      */
     private void trackCall(
-        String model, int toolCount, Map usage, boolean complete, Throwable error, long startTime
+        String model, int toolCount, Map usage, boolean complete, Throwable error, long startTime, Map context
     ) {
         trackService.track(
             category: 'LLM',
@@ -400,9 +502,11 @@ class LlmService extends BaseService {
                 cacheReadTokens : usage.cache_read_input_tokens,
                 cacheWriteTokens: usage.cache_creation_input_tokens,
                 outputTokens    : usage.output_tokens,
+                tokens          : totalTokens(usage),
                 toolCount       : toolCount,
                 complete        : complete,
-                error           : error?.message
+                error           : error?.message,
+                *               : context
             ]
         )
     }
@@ -454,6 +558,9 @@ class LlmService extends BaseService {
             streams: [active: streams.leased, waiting: streams.pending, max: streams.max]
         ]
     }
+
+    /** Keys of the client's context, tracked with each call. */
+    private static final List<String> CONTEXT_KEYS = ['app', 'feature', 'blueprintId']
 
     /** Request keys forwarded from the client. */
     private static final List<String> CLIENT_KEYS = ['system', 'messages', 'tools', 'tool_choice']
