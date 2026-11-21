@@ -136,6 +136,18 @@ export const propertyTablePanel = hoistCmp.factory({
                             control: numberInput({bind: 'columns', min: 1, max: 6, width: 70})
                         }),
                         wrapperOption({
+                            label: 'Fill order',
+                            propName: 'PropertyTableProps.fillOrder',
+                            info: 'Across rows or down columns.',
+                            control: select({
+                                bind: 'fillOrder',
+                                enableFilter: false,
+                                enableClear: true,
+                                width: 110,
+                                options: ['rows', 'columns']
+                            })
+                        }),
+                        wrapperOption({
                             label: 'Min column width',
                             propName: 'PropertyTableProps.minColumnWidth',
                             info: 'Default 240, or 160 with labels on top.',
@@ -222,7 +234,7 @@ export const propertyTablePanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Columns',
-                        note: 'columns sets the most columns. Entries fill row by row.',
+                        note: "columns sets the most columns. Entries fill row by row, or down each column with fillOrder: 'columns'.",
                         children: demoGrid({
                             columns: 1,
                             children: [
@@ -231,6 +243,15 @@ export const propertyTablePanel = hoistCmp.factory({
                                     children: propertyTable({
                                         entries: positionEntries,
                                         columns: 2
+                                    })
+                                }),
+                                demoFrame({
+                                    label: 'columns: 2',
+                                    info: "with fillOrder: 'columns'",
+                                    children: propertyTable({
+                                        entries: positionEntries,
+                                        columns: 2,
+                                        fillOrder: 'columns'
                                     })
                                 }),
                                 demoFrame({
@@ -450,6 +471,7 @@ class PropertyTablePanelModel extends HoistModel {
     @bindable accessor labelAlign: PropertyTableProps['labelAlign'] = null;
     @bindable accessor valueAlign: PropertyTableProps['valueAlign'] = null;
     @bindable accessor columns: number = null;
+    @bindable accessor fillOrder: PropertyTableProps['fillOrder'] = null;
     @bindable accessor minColumnWidth: number = null;
     @bindable accessor size: PropertyTableProps['size'] = null;
     @bindable accessor dividers = false;
@@ -468,6 +490,7 @@ class PropertyTablePanelModel extends HoistModel {
             labelAlign,
             valueAlign,
             columns,
+            fillOrder,
             minColumnWidth,
             size,
             dividers,
@@ -478,6 +501,7 @@ class PropertyTablePanelModel extends HoistModel {
             labelAlign: labelAlign ?? undefined,
             valueAlign: valueAlign ?? undefined,
             columns: columns ?? undefined,
+            fillOrder: fillOrder ?? undefined,
             minColumnWidth: minColumnWidth ?? undefined,
             size: size ?? undefined,
             dividers: dividers || undefined,
@@ -522,6 +546,7 @@ interface PlaygroundListProps {
     labelAlign?: PropertyTableProps['labelAlign'];
     valueAlign?: PropertyTableProps['valueAlign'];
     columns?: number;
+    fillOrder?: PropertyTableProps['fillOrder'];
     minColumnWidth?: number;
     size?: PropertyTableProps['size'];
     dividers?: boolean;
