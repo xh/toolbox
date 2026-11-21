@@ -21,6 +21,7 @@ class LlmController extends BaseController {
      * POST /llm/stream
      * Body: Anthropic Messages request body, as built by the kit's `AnthropicCodec`. See LlmService
      *      for the keys it accepts - the server sets `model`, `max_tokens` and `stream`.
+     * Header: optional `X-Llm-Context`, JSON `{app, feature, blueprintId}`, tracked with the call.
      * Returns: NDJSON - one Anthropic stream event per line, flushed as each arrives.
      *
      * Hoist's `renderNDJSON` buffers its output, which holds back a token stream, so this action
@@ -39,7 +40,7 @@ class LlmController extends BaseController {
 
         OutputStream out = null
         try {
-            llmService.stream(body, authUser) { String event ->
+            llmService.stream(body, authUser, llmService.parseContext(request.getHeader('X-Llm-Context'))) { String event ->
                 try {
                     out = out ?: response.outputStream
                     out.write((event + '\n').getBytes(UTF_8))
@@ -55,6 +56,15 @@ class LlmController extends BaseController {
             logWarn('LLM stream failed after the reply started', [error: e])
             writeError(e instanceof RoutineException ? e.message : 'The reply stopped on a server error.')
         }
+    }
+
+    /**
+     * GET /llm/usage
+     * Returns: the user's calls in the last hour and tokens today, and what is left of each - see
+     *      LlmService.usage.
+     */
+    def usage() {
+        renderJSON(llmService.usage(authUser))
     }
 
     //------------------------

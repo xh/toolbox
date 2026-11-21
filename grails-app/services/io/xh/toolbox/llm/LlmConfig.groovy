@@ -17,10 +17,23 @@ class LlmConfig extends TypedConfigMap {
     Integer maxTokens = 8192
 
     /**
-     * Max model calls per user per hour, per server instance. A tool loop makes one call per step.
+     * Max model calls per user per hour, across the cluster. A tool loop makes one call per step.
      * Members of `TOOLBOX_LLM_UNLIMITED` have no limit, and with 0 only they can make calls.
      */
     Integer rateLimit = 20
+
+    /**
+     * Max tokens per user per app day - input, output and cache reads and writes - or null for no
+     * limit. Checked before each call, so the call that crosses it completes. Members of
+     * `TOOLBOX_LLM_UNLIMITED` have no limit.
+     */
+    Long dailyTokenLimit = null
+
+    /**
+     * Max tokens per app day across all users, or null for no limit. Past it, only members of
+     * `TOOLBOX_LLM_UNLIMITED` can make calls, though their tokens count toward it.
+     */
+    Long dailyTokenBudget = null
 
     /**
      * Max concurrent streams, per server instance. Each holds a request thread for its whole length.
