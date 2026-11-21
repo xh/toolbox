@@ -73,6 +73,7 @@ export class BlueprintsPanelModel extends HoistModel {
     @observableRef accessor summaries: BlueprintSummary[] = [];
     @bindable @persist accessor selectedId: string = null;
     @bindable accessor view: DesignerView = 'blueprint';
+    @bindable accessor shareOpen = false;
 
     /** Issues from opening the selected blueprint. Errors mean it could not be shown. */
     @observableRef accessor openIssues: BlueprintIssue[] = [];

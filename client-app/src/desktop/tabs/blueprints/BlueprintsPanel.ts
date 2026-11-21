@@ -1,4 +1,4 @@
-import {blueprintLinkButton, blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
+import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid} from '@xh/hoist/cmp/grid';
 import {hbox, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
@@ -11,13 +11,13 @@ import classNames from 'classnames';
 import type {ReactElement} from 'react';
 import {wrapper, wrapperAction, wrapperOptionGroup} from '../../common/Wrapper';
 import {architectPanel} from './ArchitectPanel';
-import {BLUEPRINT_ROUTE, BlueprintsPanelModel} from './BlueprintsPanelModel';
+import {blueprintMenu} from './BlueprintMenu';
+import {BlueprintsPanelModel} from './BlueprintsPanelModel';
 import type {DesignerView} from './BlueprintsPanelModel';
 import './Blueprints.scss';
 import {inspectorPanel} from './InspectorPanel';
 import {catalogPanel} from './catalog/CatalogPanel';
 import {registryPanel} from './registry/RegistryPanel';
-import {shareButton} from './ShareButton';
 
 /** The Blueprints Designer: a library of blueprints, each built with the Architect. */
 export const blueprintsPanel = hoistCmp.factory({
@@ -156,25 +156,9 @@ const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
                               model.documentModel.isStale && 'xh-intent-warning'
                           ),
                           title: model.documentModel.isStale
-                              ? 'Saved elsewhere since you opened it, so your edits here are not saved. Reload to take the saved draft, or Save as new to keep yours.'
+                              ? 'Saved elsewhere since you opened it, so your edits here are not saved. From the menu, Reload to take the saved draft, or Save as new to keep yours.'
                               : null,
                           item: documentStatus(model)
-                      }),
-                      button({
-                          text: 'Reload',
-                          icon: Icon.refresh(),
-                          tooltip:
-                              'Open the draft as it was saved elsewhere, discarding your edits here',
-                          omit: !model.documentModel.isStale,
-                          onClick: () => model.reloadDraftAsync()
-                      }),
-                      button({
-                          text: 'Save as new',
-                          icon: Icon.copy(),
-                          tooltip: 'Keep your edits here as a new blueprint',
-                          intent: 'primary',
-                          omit: !model.documentModel.isStale,
-                          onClick: () => model.saveAsNewSelectedAsync()
                       }),
                       button({
                           text: 'Publish',
@@ -185,11 +169,6 @@ const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
                               model.documentModel.isStale,
                           onClick: () => model.publishSelectedAsync()
                       }),
-                      blueprintLinkButton({
-                          documentModel: model.documentModel,
-                          route: BLUEPRINT_ROUTE
-                      }),
-                      shareButton({omit: !model.canEdit}),
                       segmentedControl({
                           omit: !model.canEdit,
                           value: blueprintModel.mode,
@@ -199,7 +178,8 @@ const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
                               {value: 'design', label: 'Design', icon: Icon.edit()},
                               {value: 'run', label: 'Run', icon: Icon.play()}
                           ]
-                      })
+                      }),
+                      blueprintMenu()
                   ]
                 : [],
             item: blueprintModel.blueprint
