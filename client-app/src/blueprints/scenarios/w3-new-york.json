@@ -66,72 +66,76 @@
             "component": "dashCanvas",
             "children": [
                 {
-                    "id": "gauge",
+                    "id": "now",
                     "x": 0,
                     "y": 0,
-                    "w": 3,
-                    "h": 4
+                    "w": 12,
+                    "h": 2
                 },
                 {
-                    "id": "now",
-                    "x": 3,
-                    "y": 0,
-                    "w": 9,
-                    "h": 4
+                    "id": "humidity",
+                    "x": 0,
+                    "y": 2,
+                    "w": 4,
+                    "h": 5
                 },
                 {
                     "id": "tempChart",
-                    "x": 0,
-                    "y": 4,
-                    "w": 6,
+                    "x": 4,
+                    "y": 2,
+                    "w": 8,
                     "h": 5
                 },
                 {
                     "id": "precipChart",
-                    "x": 6,
-                    "y": 4,
-                    "w": 6,
-                    "h": 5
+                    "x": 0,
+                    "y": 7,
+                    "w": 12,
+                    "h": 4
                 }
             ]
         },
-        "gauge": {
+        "humidity": {
             "component": "gauge",
             "config": {
                 "source": "current",
-                "title": {
-                    "$var": "city"
-                },
-                "value": "temp",
+                "title": "Humidity",
+                "value": "humidity",
                 "min": 0,
                 "max": 100,
                 "stops": [
                     {
                         "at": 0,
-                        "color": "#4575b4"
+                        "color": "#fdae61"
                     },
                     {
                         "at": 0.5,
-                        "color": "#fee090"
+                        "color": "#a6d96a"
                     },
                     {
                         "at": 1,
-                        "color": "#d73027"
+                        "color": "#4575b4"
                     }
                 ]
             }
         },
         "now": {
             "component": "tileFrame",
+            "config": {
+                "title": {
+                    "$var": "city"
+                },
+                "minTileWidth": 120
+            },
             "children": [
                 {
                     "id": "nowConditions"
                 },
                 {
-                    "id": "nowFeelsLike"
+                    "id": "nowTemp"
                 },
                 {
-                    "id": "nowHumidity"
+                    "id": "nowFeelsLike"
                 },
                 {
                     "id": "nowWind"
@@ -145,18 +149,18 @@
                 "field": "conditions"
             }
         },
+        "nowTemp": {
+            "component": "statCard",
+            "config": {
+                "source": "current",
+                "field": "temp"
+            }
+        },
         "nowFeelsLike": {
             "component": "statCard",
             "config": {
                 "source": "current",
                 "field": "feelsLike"
-            }
-        },
-        "nowHumidity": {
-            "component": "statCard",
-            "config": {
-                "source": "current",
-                "field": "humidity"
             }
         },
         "nowWind": {

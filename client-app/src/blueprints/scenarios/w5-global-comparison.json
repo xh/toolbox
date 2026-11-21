@@ -3,12 +3,12 @@
         "blueprint": 1,
         "widgets": {
             "dashCanvas": 1,
-            "markdown": 1,
-            "buttonGroupInput": 1,
             "gauge": 1,
             "tileFrame": 1,
             "statCard": 1,
-            "chart": 1
+            "chart": 1,
+            "markdown": 1,
+            "buttonGroupInput": 1
         }
     },
     "variables": {
@@ -115,7 +115,7 @@
                     "x": 0,
                     "y": 0,
                     "w": 9,
-                    "h": 2
+                    "h": 1
                 },
                 {
                     "id": "unitsToggle",
@@ -125,93 +125,97 @@
                     "h": 1
                 },
                 {
-                    "id": "gaugeA",
-                    "x": 0,
-                    "y": 2,
-                    "w": 3,
-                    "h": 4
-                },
-                {
                     "id": "nowA",
-                    "x": 3,
-                    "y": 2,
-                    "w": 3,
-                    "h": 4
+                    "x": 0,
+                    "y": 1,
+                    "w": 6,
+                    "h": 3
                 },
                 {
-                    "id": "gaugeB",
-                    "x": 6,
-                    "y": 2,
-                    "w": 3,
-                    "h": 4
-                },
-                {
-                    "id": "nowB",
-                    "x": 9,
-                    "y": 2,
-                    "w": 3,
+                    "id": "humidityA",
+                    "x": 0,
+                    "y": 4,
+                    "w": 2,
                     "h": 4
                 },
                 {
                     "id": "tempChartA",
-                    "x": 0,
-                    "y": 6,
+                    "x": 2,
+                    "y": 4,
+                    "w": 4,
+                    "h": 4
+                },
+                {
+                    "id": "nowB",
+                    "x": 6,
+                    "y": 1,
                     "w": 6,
-                    "h": 5
+                    "h": 3
+                },
+                {
+                    "id": "humidityB",
+                    "x": 6,
+                    "y": 4,
+                    "w": 2,
+                    "h": 4
                 },
                 {
                     "id": "tempChartB",
-                    "x": 6,
-                    "y": 6,
-                    "w": 6,
-                    "h": 5
+                    "x": 8,
+                    "y": 4,
+                    "w": 4,
+                    "h": 4
                 },
                 {
                     "id": "precipChartA",
                     "x": 0,
-                    "y": 11,
+                    "y": 8,
                     "w": 12,
                     "h": 4
                 }
             ]
         },
-        "gaugeA": {
+        "humidityA": {
             "component": "gauge",
             "config": {
                 "source": "currentA",
-                "title": {
-                    "$var": "cityA"
-                },
-                "value": "temp",
-                "min": -10,
-                "max": 40,
+                "title": "Humidity",
+                "value": "humidity",
+                "min": 0,
+                "max": 100,
                 "stops": [
                     {
                         "at": 0,
-                        "color": "#4575b4"
+                        "color": "#fdae61"
                     },
                     {
                         "at": 0.5,
-                        "color": "#fee090"
+                        "color": "#a6d96a"
                     },
                     {
                         "at": 1,
-                        "color": "#d73027"
+                        "color": "#4575b4"
                     }
                 ]
             }
         },
         "nowA": {
             "component": "tileFrame",
+            "config": {
+                "title": {
+                    "$var": "cityA"
+                },
+                "minTileWidth": 120
+            },
             "children": [
                 {
                     "id": "nowAConditions"
                 },
                 {
-                    "id": "nowAFeelsLike"
+                    "id": "nowATemp"
                 },
                 {
-                    "id": "nowAHumidity"
+                    "id": "nowAFeelsLike"
                 },
                 {
                     "id": "nowAWind"
@@ -225,18 +229,18 @@
                 "field": "conditions"
             }
         },
+        "nowATemp": {
+            "component": "statCard",
+            "config": {
+                "source": "currentA",
+                "field": "temp"
+            }
+        },
         "nowAFeelsLike": {
             "component": "statCard",
             "config": {
                 "source": "currentA",
                 "field": "feelsLike"
-            }
-        },
-        "nowAHumidity": {
-            "component": "statCard",
-            "config": {
-                "source": "currentA",
-                "field": "humidity"
             }
         },
         "nowAWind": {
@@ -259,43 +263,47 @@
                 ]
             }
         },
-        "gaugeB": {
+        "humidityB": {
             "component": "gauge",
             "config": {
                 "source": "currentB",
-                "title": {
-                    "$var": "cityB"
-                },
-                "value": "temp",
-                "min": -10,
-                "max": 40,
+                "title": "Humidity",
+                "value": "humidity",
+                "min": 0,
+                "max": 100,
                 "stops": [
                     {
                         "at": 0,
-                        "color": "#4575b4"
+                        "color": "#fdae61"
                     },
                     {
                         "at": 0.5,
-                        "color": "#fee090"
+                        "color": "#a6d96a"
                     },
                     {
                         "at": 1,
-                        "color": "#d73027"
+                        "color": "#4575b4"
                     }
                 ]
             }
         },
         "nowB": {
             "component": "tileFrame",
+            "config": {
+                "title": {
+                    "$var": "cityB"
+                },
+                "minTileWidth": 120
+            },
             "children": [
                 {
                     "id": "nowBConditions"
                 },
                 {
-                    "id": "nowBFeelsLike"
+                    "id": "nowBTemp"
                 },
                 {
-                    "id": "nowBHumidity"
+                    "id": "nowBFeelsLike"
                 },
                 {
                     "id": "nowBWind"
@@ -309,18 +317,18 @@
                 "field": "conditions"
             }
         },
+        "nowBTemp": {
+            "component": "statCard",
+            "config": {
+                "source": "currentB",
+                "field": "temp"
+            }
+        },
         "nowBFeelsLike": {
             "component": "statCard",
             "config": {
                 "source": "currentB",
                 "field": "feelsLike"
-            }
-        },
-        "nowBHumidity": {
-            "component": "statCard",
-            "config": {
-                "source": "currentB",
-                "field": "humidity"
             }
         },
         "nowBWind": {
