@@ -59,6 +59,34 @@ export function summarizeLlmUse(logs: PlainObject[]): LlmSpendRow[] {
     return sortBy([...byKey.values()], ['username', 'app']);
 }
 
+/** The rows' counts summed, as a Total row for a grid's summary. */
+export function totalOf(rows: LlmSpendRow[]): LlmSpendRow {
+    const ret: LlmSpendRow = {
+        id: 'total',
+        username: 'Total',
+        app: null,
+        calls: 0,
+        failed: 0,
+        refused: 0,
+        inputTokens: 0,
+        outputTokens: 0,
+        cacheTokens: 0,
+        tokens: 0
+    };
+    rows.forEach(row => COUNTS.forEach(k => (ret[k] += row[k])));
+    return ret;
+}
+
+const COUNTS = [
+    'calls',
+    'failed',
+    'refused',
+    'inputTokens',
+    'outputTokens',
+    'cacheTokens',
+    'tokens'
+] as const;
+
 const REFUSALS = [
     'LLM rate limit hit',
     'LLM token limit hit',

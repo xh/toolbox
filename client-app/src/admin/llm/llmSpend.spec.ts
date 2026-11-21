@@ -1,11 +1,32 @@
 import {describe, expect, it} from 'vitest';
-import {summarizeLlmUse} from './llmSpend';
+import {summarizeLlmUse, totalOf} from './llmSpend';
 
 const call = (username: string, data: object, severity = 'INFO') => ({
     username,
     msg: 'LLM call',
     severity,
     data: JSON.stringify(data)
+});
+
+describe('totalOf', () => {
+    it('sums every count over the rows, as a Total row', () => {
+        const rows = summarizeLlmUse([
+            call('jdoe', {app: 'a', tokens: 10, inputTokens: 8, outputTokens: 2}),
+            call('asmith', {app: 'b', tokens: 5, cacheReadTokens: 5}, 'WARN')
+        ]);
+        expect(totalOf(rows)).toEqual({
+            id: 'total',
+            username: 'Total',
+            app: null,
+            calls: 2,
+            failed: 1,
+            refused: 0,
+            inputTokens: 8,
+            outputTokens: 2,
+            cacheTokens: 5,
+            tokens: 15
+        });
+    });
 });
 
 describe('summarizeLlmUse', () => {

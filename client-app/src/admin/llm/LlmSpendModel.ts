@@ -4,7 +4,7 @@ import type {LoadSpec} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {summarizeLlmUse} from './llmSpend';
+import {summarizeLlmUse, totalOf} from './llmSpend';
 
 /** One day's use of the Claude API relay, per user and app, from `LLM` track entries. */
 export class LlmSpendModel extends HoistModel {
@@ -51,7 +51,8 @@ export class LlmSpendModel extends HoistModel {
                 {loadSpec}
             );
         if (loadSpec.isStale) return;
-        this.gridModel.loadData(summarizeLlmUse(logs));
+        const rows = summarizeLlmUse(logs);
+        this.gridModel.loadData(rows, totalOf(rows));
     }
 }
 
@@ -59,7 +60,6 @@ function count() {
     return {
         width: 90,
         align: 'right' as const,
-        renderer: numberRenderer({precision: 0}),
-        aggregator: 'SUM'
+        renderer: numberRenderer({precision: 0})
     };
 }
