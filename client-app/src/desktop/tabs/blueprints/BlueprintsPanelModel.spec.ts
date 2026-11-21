@@ -211,6 +211,23 @@ describe('Blueprints designer', () => {
         await model.deleteBlueprintAsync();
     });
 
+    it('opens a link: the draft, a numbered publish, and a variable it sets', async () => {
+        const {id} = byName(MINE);
+        await model.openLinkAsync({id, draft: ''});
+        expect(model.selectedId).toBe(id);
+        expect(model.documentModel.document).toMatchObject({kind: 'draft'});
+
+        await model.openLinkAsync({id, version: '1', asOf: '2026-11-02'});
+        expect(model.documentModel.document).toMatchObject({kind: 'publish', version: 1});
+        expect(String(model.blueprintModel.getVariable('asOf').value)).toBe('2026-11-02');
+    });
+
+    it('refuses a link to a blueprint that is missing, for the denied view', async () => {
+        await model.openLinkAsync({id: 'bp-nope'});
+        expect(model.openIssues.some(it => it.severity === 'error')).toBe(true);
+        await model.selectAsync(byName(MINE).id);
+    });
+
     it('creates an empty dashboard, and opens its draft', async () => {
         const id = await model.createBlueprintAsync('Scratch');
         expect(model.selectedId).toBe(id);

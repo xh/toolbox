@@ -3,6 +3,7 @@ import type {
     BlueprintAccessSpec,
     BlueprintDataProvider,
     BlueprintIssue,
+    BlueprintLinkParams,
     BlueprintPublish,
     BlueprintRepository,
     BlueprintSummary
@@ -42,6 +43,9 @@ import {createArchitectChat} from './architectChat';
 import {createRepository} from './repository/createRepository';
 import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
+
+/** The route that opens one blueprint by its id, with link params: see `openLinkAsync`. */
+export const BLUEPRINT_ROUTE = 'default.blueprints.blueprint';
 
 /** What the designer shows beside the Architect: the open blueprint, or a reference page. */
 export type DesignerView = 'blueprint' | 'catalog' | 'registry';
@@ -128,6 +132,7 @@ export class BlueprintsPanelModel extends HoistModel {
 
     private createProvider: (catalog: DataCatalog) => BlueprintDataProvider;
     private opening: Promise<void> = Promise.resolve();
+    private lastLink: string = null;
 
     get selected(): BlueprintSummary {
         return find(this.summaries, {id: this.selectedId}) ?? null;
@@ -181,6 +186,10 @@ export class BlueprintsPanelModel extends HoistModel {
                 }
             },
             {
+                track: () => XH.routerState,
+                run: state => this.followRoute(state?.name, state?.params)
+            },
+            {
                 track: () => this.blueprintModel?.version,
                 run: () => {
                     const doc = this.documentModel;
@@ -231,6 +240,8 @@ export class BlueprintsPanelModel extends HoistModel {
         dropOldLibrary();
 
         await this.refreshSummariesAsync();
+        const {name, params} = XH.routerState ?? {};
+        if (name === BLUEPRINT_ROUTE && params?.id) return this.openLinkAsync(params);
         const first = this.selected ? this.selectedId : this.summaries[0]?.id;
         if (first) await this.selectAsync(first, true);
     }
@@ -244,6 +255,19 @@ export class BlueprintsPanelModel extends HoistModel {
         }
         const prevId = this.documentModel?.document?.id;
         this.opening = this.opening.then(() => this.openAsync(id, prevId));
+        await this.opening;
+        this.showInAddressBar(id);
+    }
+
+    /**
+     * Open a blueprint as a link names it: its id, `version` or `draft`, presets and variable
+     * values. A link the user may not follow leaves its refusal in `openIssues`.
+     */
+    async openLinkAsync(params: BlueprintLinkParams) {
+        this.lastLink = linkKey(params);
+        if (!(await this.readyToLeaveAsync())) return;
+        const prevId = this.documentModel?.document?.id;
+        this.opening = this.opening.then(() => this.openAsync(params.id as string, prevId, params));
         await this.opening;
     }
 
@@ -433,7 +457,7 @@ export class BlueprintsPanelModel extends HoistModel {
     //------------------
     // Implementation
     //------------------
-    private async openAsync(id: string, prevId: string) {
+    private async openAsync(id: string, prevId: string, link?: BlueprintLinkParams) {
         const {documentModel, chatModel} = this;
         if (!documentModel) return;
         if (prevId) this.saveConversation(prevId);
@@ -445,12 +469,14 @@ export class BlueprintsPanelModel extends HoistModel {
             this.listGridModel.selModel.select(id);
         });
         const summary = this.selected,
-            issues = summary
-                ? await documentModel.openAsync(
-                      id,
-                      summary.access === 'write' ? {as: 'draft'} : {as: 'publish'}
-                  )
-                : [];
+            issues = link
+                ? (await documentModel.openLinkAsync(link)).issues
+                : summary
+                  ? await documentModel.openAsync(
+                        id,
+                        summary.access === 'write' ? {as: 'draft'} : {as: 'publish'}
+                    )
+                  : [];
         const messages = await this.threadStore
             .loadMessagesAsync({threadId: id})
             .then(it => it.messages)
@@ -460,6 +486,23 @@ export class BlueprintsPanelModel extends HoistModel {
             chatModel.loadMessages(messages, id);
         });
         await this.loadPublishesAsync();
+    }
+
+    // Open the link the address bar names, unless it is the one already open.
+    private followRoute(name: string, params: BlueprintLinkParams) {
+        if (name !== BLUEPRINT_ROUTE || !params?.id || !this.documentModel) return;
+        if (linkKey(params) !== this.lastLink) this.openLinkAsync(params);
+    }
+
+    // Show the blueprint open in the address bar, as the link that opens it as it is now.
+    private showInAddressBar(id: string) {
+        if (!XH.hasRoute(BLUEPRINT_ROUTE)) return;
+        const params = {
+            id,
+            ...(this.documentModel?.document?.kind === 'draft' ? {draft: true} : {})
+        };
+        this.lastLink = linkKey(params);
+        XH.navigate(BLUEPRINT_ROUTE, params, {replace: true});
     }
 
     // Save the draft open before leaving it, or confirm that its unsaved edits may go.
@@ -529,4 +572,12 @@ function dropOldLibrary() {
     } catch (e) {
         XH.handleException(e, {showAlert: false});
     }
+}
+
+function linkKey(params: BlueprintLinkParams): string {
+    return JSON.stringify(
+        Object.entries(params ?? {})
+            .map(([k, v]) => [k, String(v)])
+            .sort()
+    );
 }

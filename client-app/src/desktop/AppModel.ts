@@ -377,7 +377,11 @@ export class AppModel extends BaseAppModel {
                         ]
                     },
                     chatKitRoutes(),
-                    {name: 'blueprints', path: '/blueprints'},
+                    {
+                        name: 'blueprints',
+                        path: '/blueprints',
+                        children: [{name: 'blueprint', path: '/:id?draft&version'}]
+                    },
                     {
                         name: 'docs',
                         path: '/docs',

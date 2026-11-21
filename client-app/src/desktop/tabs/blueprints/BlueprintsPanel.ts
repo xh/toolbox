@@ -1,4 +1,4 @@
-import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
+import {blueprintLinkButton, blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid} from '@xh/hoist/cmp/grid';
 import {hbox, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
@@ -11,7 +11,7 @@ import classNames from 'classnames';
 import type {ReactElement} from 'react';
 import {wrapper, wrapperAction, wrapperOptionGroup} from '../../common/Wrapper';
 import {architectPanel} from './ArchitectPanel';
-import {BlueprintsPanelModel} from './BlueprintsPanelModel';
+import {BLUEPRINT_ROUTE, BlueprintsPanelModel} from './BlueprintsPanelModel';
 import type {DesignerView} from './BlueprintsPanelModel';
 import './Blueprints.scss';
 import {inspectorPanel} from './InspectorPanel';
@@ -184,6 +184,10 @@ const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
                               !model.documentModel.canPublish ||
                               model.documentModel.isStale,
                           onClick: () => model.publishSelectedAsync()
+                      }),
+                      blueprintLinkButton({
+                          documentModel: model.documentModel,
+                          route: BLUEPRINT_ROUTE
                       }),
                       shareButton({omit: !model.canEdit}),
                       segmentedControl({
