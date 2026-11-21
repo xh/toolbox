@@ -17,6 +17,9 @@ import s4 from './s4-inputs-showcase.json';
 import s5 from './s5-weather-showcase.json';
 import w1 from './w1-one-city.json';
 import w2 from './w2-two-cities.json';
+import w3 from './w3-new-york.json';
+import w4 from './w4-new-york-london.json';
+import w5 from './w5-global-comparison.json';
 
 /** Every blueprint the server seeds as a preset, from `BlueprintPresetService.PRESETS`, by type. */
 const SCENARIOS: Record<string, [unknown, BlueprintTypeSpec]> = {
@@ -30,6 +33,9 @@ const SCENARIOS: Record<string, [unknown, BlueprintTypeSpec]> = {
     s4: [s4, PORTFOLIO_TYPE],
     w1: [w1, WEATHER_TYPE],
     w2: [w2, WEATHER_TYPE],
+    w3: [w3, WEATHER_TYPE],
+    w4: [w4, WEATHER_TYPE],
+    w5: [w5, WEATHER_TYPE],
     s5: [s5, WEATHER_TYPE]
 };
 

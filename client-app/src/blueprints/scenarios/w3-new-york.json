@@ -1,0 +1,198 @@
+{
+    "schema": {
+        "blueprint": 1,
+        "widgets": {
+            "dashCanvas": 1,
+            "gauge": 1,
+            "tileFrame": 1,
+            "statCard": 1,
+            "chart": 1
+        }
+    },
+    "variables": {
+        "city": {
+            "type": "string",
+            "label": "City",
+            "setBy": "prompt",
+            "default": {
+                "value": "New York"
+            },
+            "options": {
+                "values": [
+                    "Chicago",
+                    "London",
+                    "New York",
+                    "Paris",
+                    "Sydney",
+                    "Tokyo"
+                ]
+            }
+        },
+        "units": {
+            "type": "string",
+            "label": "Units",
+            "default": {
+                "value": "imperial"
+            }
+        }
+    },
+    "sources": {
+        "current": {
+            "dataset": "currentWeather",
+            "params": {
+                "city": {
+                    "$var": "city"
+                },
+                "units": {
+                    "$var": "units"
+                }
+            }
+        },
+        "forecast": {
+            "dataset": "weather",
+            "params": {
+                "city": {
+                    "$var": "city"
+                },
+                "units": {
+                    "$var": "units"
+                }
+            }
+        }
+    },
+    "root": "dashboard",
+    "elements": {
+        "dashboard": {
+            "component": "dashCanvas",
+            "children": [
+                {
+                    "id": "gauge",
+                    "x": 0,
+                    "y": 0,
+                    "w": 3,
+                    "h": 4
+                },
+                {
+                    "id": "now",
+                    "x": 3,
+                    "y": 0,
+                    "w": 9,
+                    "h": 4
+                },
+                {
+                    "id": "tempChart",
+                    "x": 0,
+                    "y": 4,
+                    "w": 6,
+                    "h": 5
+                },
+                {
+                    "id": "precipChart",
+                    "x": 6,
+                    "y": 4,
+                    "w": 6,
+                    "h": 5
+                }
+            ]
+        },
+        "gauge": {
+            "component": "gauge",
+            "config": {
+                "source": "current",
+                "title": {
+                    "$var": "city"
+                },
+                "value": "temp",
+                "min": 0,
+                "max": 100,
+                "stops": [
+                    {
+                        "at": 0,
+                        "color": "#4575b4"
+                    },
+                    {
+                        "at": 0.5,
+                        "color": "#fee090"
+                    },
+                    {
+                        "at": 1,
+                        "color": "#d73027"
+                    }
+                ]
+            }
+        },
+        "now": {
+            "component": "tileFrame",
+            "children": [
+                {
+                    "id": "nowConditions"
+                },
+                {
+                    "id": "nowFeelsLike"
+                },
+                {
+                    "id": "nowHumidity"
+                },
+                {
+                    "id": "nowWind"
+                }
+            ]
+        },
+        "nowConditions": {
+            "component": "statCard",
+            "config": {
+                "source": "current",
+                "field": "conditions"
+            }
+        },
+        "nowFeelsLike": {
+            "component": "statCard",
+            "config": {
+                "source": "current",
+                "field": "feelsLike"
+            }
+        },
+        "nowHumidity": {
+            "component": "statCard",
+            "config": {
+                "source": "current",
+                "field": "humidity"
+            }
+        },
+        "nowWind": {
+            "component": "statCard",
+            "config": {
+                "source": "current",
+                "field": "windSpeed"
+            }
+        },
+        "tempChart": {
+            "component": "chart",
+            "config": {
+                "source": "forecast",
+                "title": "Temperature",
+                "type": "line",
+                "x": "time",
+                "y": [
+                    "temp",
+                    "feelsLike"
+                ]
+            }
+        },
+        "precipChart": {
+            "component": "chart",
+            "config": {
+                "source": "forecast",
+                "title": "Precipitation",
+                "type": "column",
+                "x": "time",
+                "y": [
+                    "precipProbability"
+                ],
+                "y2": [
+                    "precipVolume"
+                ]
+            }
+        }
+    }
+}
