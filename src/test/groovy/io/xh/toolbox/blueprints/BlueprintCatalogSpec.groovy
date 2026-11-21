@@ -93,10 +93,10 @@ class BlueprintCatalogSpec extends Specification {
         def weather = new BlueprintCatalog(JSONParser.parseObject(getClass().getResourceAsStream('/blueprints/weather.json')))
 
         expect:
-        weather.parseRequest(dataset: 'weather', params: [city: 'Oslo', units: 'metric'], fields: ['temp']).params.units == 'metric'
+        weather.parseRequest(dataset: 'weather', params: [city: 'London', units: 'metric'], fields: ['temp']).params.units == 'metric'
 
         when:
-        weather.parseRequest(dataset: 'weather', params: [city: 'Oslo', units: 'kelvin'], fields: ['temp'])
+        weather.parseRequest(dataset: 'weather', params: [city: 'London', units: 'kelvin'], fields: ['temp'])
 
         then:
         def e = thrown(BlueprintRequestException)
@@ -135,6 +135,31 @@ class BlueprintCatalogSpec extends Specification {
         'a measure'     | [['mktVal']]         || "groupBy names 'mktVal', which is not a dimension of dataset 'positions'"
         'unknown field' | [['fund', 'colour']] || "groupBy names 'colour', which is not a dimension of dataset 'positions'"
         'not sets'      | ['fund']             || 'groupBy must be a list of grouping sets'
+    }
+
+    def 'a weather city must be one the app offers, so prompts get a select'() {
+        given:
+        def weather = new BlueprintCatalog(JSONParser.parseObject(getClass().getResourceAsStream('/blueprints/weather.json')))
+
+        expect:
+        ['weather', 'currentWeather'].every { weather.datasets[it].params.city.options.values.contains('New York') }
+        weather.parseRequest(dataset: 'currentWeather', params: [city: 'Tokyo', units: 'metric'], fields: ['temp']).params.city == 'Tokyo'
+
+        when:
+        weather.parseRequest(dataset: 'weather', params: [city: 'Atlantis', units: 'metric'], fields: ['temp'])
+
+        then:
+        def e = thrown(BlueprintRequestException)
+        e.message.startsWith("Parameter 'city' of dataset 'weather' must be one of Atlanta, Austin")
+    }
+
+    def 'wind speeds take their unit from the units param'() {
+        given:
+        Map weather = JSONParser.parseObject(getClass().getResourceAsStream('/blueprints/weather.json'))
+
+        expect:
+        weather.formats.speed.label == [param: 'units', values: [imperial: ' mph', metric: ' m/s']]
+        weather.datasets.values().every { it.params.units.options.values.sort() == ['imperial', 'metric'] }
     }
 
     def 'an optional param may be empty'() {
