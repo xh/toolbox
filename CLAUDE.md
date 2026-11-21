@@ -539,6 +539,20 @@ distinguishable from framework spans in the trace view.
 
 **Key pattern**: Apps follow Model + Component pairing. Models hold state (MobX observables), Components render UI. Services are singleton classes for data fetching and business logic. See the hoist-react docs (referenced above) for detailed coverage of this architecture.
 
+### Demo pages and playground options
+
+Most desktop demo tabs wrap their example in `wrapper()` from `desktop/common/Wrapper.ts`, with
+controls for the example in its `options` rail (usually via `wrapperOption`). Pick the control that
+matches the prop type. Hoist has dedicated pickers for some types, and a generic `select` is the
+wrong choice for them:
+
+- **Intent props** (`intent`, `headerIntent`, any `Intent`-typed value): use `intentInput` from
+  `@xh/hoist/desktop/cmp/input`. Pass `enableClear: true` when null is a valid value, which it
+  usually is. Use a `select` only for an obvious reason, such as a list that is not Hoist intents.
+- **Icon props**: use `iconPicker` from `@xh/hoist/desktop/cmp/input`.
+
+See `StatCardPanel.ts` for both in one options rail.
+
 ### Backend (`grails-app/`)
 - **`controllers/`** - REST controllers extending `BaseController` (from hoist-core). Package: `io.xh.toolbox.*`
 - **`services/`** - Business logic extending `BaseService`. Support `CachedValue`, `clearCachesConfigs`.
