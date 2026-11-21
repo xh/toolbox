@@ -4,6 +4,7 @@ import type {InitContext} from '@xh/hoist/core';
 import {XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
+import {featureRequestsPanel} from './featureRequests/FeatureRequestsPanel';
 import {llmSpendPanel} from './llm/LlmSpendPanel';
 import {viewManagers} from './viewManagers';
 import {CubeTestPanel} from './tests/cube/CubeTestPanel';
@@ -46,6 +47,7 @@ export class AppModel extends HoistAdminAppModel {
         return [
             ...super.getTabRoutes(),
             {name: 'llm', path: '/llm'},
+            {name: 'featureRequests', path: '/featureRequests'},
             {
                 name: 'tests',
                 path: '/tests',
@@ -117,6 +119,12 @@ export class AppModel extends HoistAdminAppModel {
         return [
             ...super.createTabs(),
             {id: 'llm', title: 'LLM', icon: Icon.ai(), content: llmSpendPanel},
+            {
+                id: 'featureRequests',
+                title: 'Requests',
+                icon: Icon.inbox(),
+                content: featureRequestsPanel
+            },
             {
                 id: 'tests',
                 icon: Icon.stopwatch(),
