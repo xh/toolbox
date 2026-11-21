@@ -68,6 +68,7 @@ describe('registry used marks', () => {
             'widget:cubeGrid',
             'widget:dashCanvas',
             'widget:groupingChooser',
+            'widget:presetSelector',
             'widget:statCard',
             'widget:tabContainer',
             'widget:tileFrame'

@@ -59,7 +59,8 @@
         "mainPanel": {
             "component": "panel",
             "config": {"title": "Positions", "style": "card"},
-            "children": [{"id": "inputBar", "slot": "tbar"}, {"id": "body"}]
+            "tbar": [{"id": "inputBar"}],
+            "children": [{"id": "body"}]
         },
         "inputBar": {
             "component": "toolbar",
