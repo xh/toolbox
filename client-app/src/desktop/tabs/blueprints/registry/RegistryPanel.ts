@@ -1,8 +1,10 @@
+import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
+import {badge} from '@xh/hoist/cmp/badge';
+import {card} from '@xh/hoist/cmp/card';
 import {grid} from '@xh/hoist/cmp/grid';
-import {div, filler, hframe, span, vbox} from '@xh/hoist/cmp/layout';
-import {storeFilterField} from '@xh/hoist/cmp/store';
+import {box, div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import type {PlainObject} from '@xh/hoist/core';
+import type {HoistProps, PlainObject} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, jsonInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -11,8 +13,9 @@ import {isEmpty} from 'lodash';
 import type {ReactNode} from 'react';
 import {md} from '../markdown';
 import {RegistryModel} from './RegistryModel';
+import type {RegistryEntry} from './registryEntries';
 
-/** The dashboard and answer registries: every entry by kind and origin, and its details. */
+/** The dashboard and answer registries: every entry by kind and origin, each a card. */
 export const registryPanel = hoistCmp.factory({
     displayName: 'RegistryPanel',
     model: creates(RegistryModel),
@@ -37,6 +40,14 @@ export const registryPanel = hoistCmp.factory({
                         button({value: 'app', text: 'App'})
                     ]
                 }),
+                textInput({
+                    bind: 'query',
+                    placeholder: 'Search...',
+                    leftIcon: Icon.search(),
+                    commitOnChange: true,
+                    enableClear: true,
+                    width: 180
+                }),
                 filler(),
                 button({
                     text: 'What the Architect sees',
@@ -46,21 +57,77 @@ export const registryPanel = hoistCmp.factory({
                 })
             ],
             item: hframe(
-                panel({
-                    modelConfig: {side: 'left', defaultSize: 320},
-                    tbar: [
-                        storeFilterField({
-                            gridModel: model.listGridModel,
-                            includeFields: ['name', 'label'],
-                            flex: 1
-                        })
-                    ],
-                    item: grid({model: model.listGridModel})
-                }),
-                model.showArchitect ? architectView() : detailView()
+                entryCards(),
+                model.showArchitect
+                    ? panel({
+                          modelConfig: {side: 'right', defaultSize: 420},
+                          item: architectView()
+                      })
+                    : null
             )
         });
     }
+});
+
+/** The entries shown, under a heading per kind, each a card that expands to its details. */
+const entryCards = hoistCmp.factory<RegistryModel>(({model}) => {
+    const {sections} = model;
+    return vbox({
+        className: 'tb-registry__cards',
+        flex: 1,
+        items: sections.length
+            ? sections.flatMap(({kind, label, entries}) => [
+                  div({
+                      key: `head-${kind}`,
+                      className: 'tb-registry__section',
+                      item: `${label} (${entries.length})`
+                  }),
+                  ...entries.map(it => entryCard({...it, key: it.entry.id}))
+              ])
+            : div({className: 'tb-registry__empty', item: 'No entries'})
+    });
+});
+
+interface EntryCardProps extends HoistProps<RegistryModel> {
+    entry: RegistryEntry;
+    name: string;
+    usedAt: string[];
+}
+
+const entryCard = hoistCmp.factory<EntryCardProps>(({model, entry, name, usedAt}) => {
+    const expanded = model.selectedId === entry.id,
+        {label, spec} = entry,
+        description = spec.description ?? spec.guidance;
+    return div({
+        className: `tb-dataset${expanded ? ' tb-dataset--expanded' : ''}`,
+        items: [
+            hbox({
+                className: 'tb-dataset__header',
+                onClick: () => model.toggle(entry.id),
+                items: [
+                    expanded ? Icon.chevronDown() : Icon.chevronRight(),
+                    span({className: 'tb-dataset__name', item: name}),
+                    label && label !== name
+                        ? span({className: 'tb-dataset__label', item: label})
+                        : null,
+                    filler(),
+                    usedAt.length
+                        ? badge({
+                              intent: 'success',
+                              icon: Icon.check(),
+                              title: usedAt.join('\n'),
+                              item: `${usedAt.length} used`
+                          })
+                        : null,
+                    badge({item: entry.origin})
+                ]
+            }),
+            description && !expanded
+                ? div({className: 'tb-dataset__description', item: md(firstLine(description))})
+                : null,
+            expanded ? detailView() : null
+        ]
+    });
 });
 
 const architectView = hoistCmp.factory<RegistryModel>(({model}) =>
@@ -91,7 +158,7 @@ const architectView = hoistCmp.factory<RegistryModel>(({model}) =>
 
 const detailView = hoistCmp.factory<RegistryModel>(({model}) => {
     const entry = model.selected;
-    if (!entry) return div({className: 'tb-registry__empty', item: 'Select an entry'});
+    if (!entry) return null;
     const {spec, kind} = entry,
         usedAt = model.selectedUsedAt,
         common: Row[] = [
@@ -143,30 +210,7 @@ const detailView = hoistCmp.factory<RegistryModel>(({model}) => {
                 ],
                 allowed
             ];
-            extra = [
-                schemaPanel('Config schema'),
-                spec.example
-                    ? panel({
-                          title: 'Example',
-                          compactHeader: true,
-                          height: 220,
-                          headerItems: [
-                              button({
-                                  text: 'Add as a new blueprint',
-                                  icon: Icon.add(),
-                                  minimal: true,
-                                  onClick: () => model.loadExample()
-                              })
-                          ],
-                          item: jsonInput({
-                              value: JSON.stringify(spec.example, null, 2),
-                              readonly: true,
-                              flex: 1,
-                              width: '100%'
-                          })
-                      })
-                    : null
-            ];
+            extra = [schemaPanel('Config schema'), spec.example ? exampleCard() : null];
             break;
         case 'variableType':
             rows = [
@@ -245,12 +289,51 @@ const detailView = hoistCmp.factory<RegistryModel>(({model}) => {
             break;
     }
 
-    return panel({
+    return vbox({
         className: 'tb-registry__detail',
-        scrollable: true,
         items: [propsTable([...common, ...rows]), ...extra]
     });
 });
+
+/** A widget's example: rendered live, as JSON, and added to the library as a blueprint. */
+const exampleCard = hoistCmp.factory<RegistryModel>(({model}) => {
+    const {exampleModel, exampleError} = model,
+        json = JSON.stringify(model.selected.spec.example, null, 2);
+    return card({
+        title: 'Example',
+        icon: Icon.play(),
+        items: [
+            hbox({
+                className: 'tb-registry__example-bar',
+                items: [
+                    filler(),
+                    button({
+                        text: 'Add as a new blueprint',
+                        icon: Icon.add(),
+                        minimal: true,
+                        onClick: () => model.loadExample()
+                    })
+                ]
+            }),
+            exampleModel
+                ? box({
+                      className: 'tb-registry__example',
+                      item: blueprintView({model: exampleModel})
+                  })
+                : div({
+                      className: 'tb-registry__empty',
+                      item: exampleError
+                          ? `Cannot render: ${exampleError}`
+                          : 'Renders in the Dashboard registry only.'
+                  }),
+            jsonInput({value: json, readonly: true, height: 160, width: '100%'})
+        ]
+    });
+});
+
+function firstLine(text: string): string {
+    return text.split('\n')[0];
+}
 
 type Row = [string, ReactNode];
 
@@ -269,11 +352,10 @@ function propsTable(rows: Row[]) {
 const schemaPanel = (title: string) => schemaGrid({title, key: title});
 
 const schemaGrid = hoistCmp.factory<RegistryModel>(({model, title}) =>
-    panel({
+    card({
         title,
-        compactHeader: true,
-        height: 300,
-        item: grid({model: model.schemaGridModel})
+        icon: Icon.code(),
+        item: grid({model: model.schemaGridModel, height: 300})
     })
 );
 

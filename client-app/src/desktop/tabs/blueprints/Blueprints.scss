@@ -20,10 +20,6 @@
     color: var(--xh-text-color-muted);
   }
 
-  &__detail .xh-panel__content {
-    gap: var(--xh-spacing);
-  }
-
   &__props {
     display: grid;
     grid-template-columns: max-content 1fr;
@@ -41,6 +37,33 @@
 
   &__sample-body {
     padding: var(--xh-spacing);
+  }
+
+  &__section {
+    flex: none;
+    margin-top: var(--xh-spacing);
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  &__detail {
+    gap: var(--xh-spacing);
+    padding: 0 var(--xh-spacing) var(--xh-spacing);
+  }
+
+  &__example {
+    height: 280px;
+    border: var(--xh-border-solid);
+    border-radius: 4px;
+    background-color: var(--xh-bg);
+    margin-bottom: var(--xh-spacing);
   }
 }
 
@@ -126,7 +149,8 @@
   }
 }
 
-.tb-catalog__datasets {
+.tb-catalog__datasets,
+.tb-registry__cards {
   gap: var(--xh-spacing);
   padding: var(--xh-spacing);
   overflow-y: auto;

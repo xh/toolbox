@@ -1,26 +1,31 @@
 import type {Blueprint, BlueprintRegistry, FieldDef} from '@xh/hoist-chat-kit/blueprint';
-import {ARCHITECT_TOOLS, architectPrompt, registryUsages} from '@xh/hoist-chat-kit/blueprint';
+import {
+    ARCHITECT_TOOLS,
+    architectPrompt,
+    BlueprintModel,
+    registryUsages
+} from '@xh/hoist-chat-kit/blueprint';
 import type {ArchitectTarget} from '@xh/hoist-chat-kit/blueprint';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, lookup, managed} from '@xh/hoist/core';
+import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
-import {bindable, computed} from '@xh/hoist/mobx';
-import {isEmpty, isString} from 'lodash';
+import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
+import {isEmpty, isString, sortBy} from 'lodash';
 import type {ReactNode} from 'react';
 import {BlueprintsPanelModel} from '../BlueprintsPanelModel';
 import {formatOf} from '../catalog/CatalogModel';
-import type {RegistryEntry, RegistryOrigin} from './registryEntries';
+import type {RegistryEntry, RegistryKind, RegistryOrigin} from './registryEntries';
 import {registryEntries, sampleParams, schemaRows} from './registryEntries';
 
 export type RegistryContext = 'dashboard' | 'answer';
 
-const KIND_LABELS = {
-    widget: '1 Widgets',
-    variableType: '2 Variable types',
-    resolver: '3 Resolvers',
-    action: '4 Actions',
-    renderer: '5 Renderers',
-    presentation: '6 Presentations'
+const KIND_LABELS: Record<RegistryKind, string> = {
+    widget: 'Widgets',
+    variableType: 'Variable types',
+    resolver: 'Resolvers',
+    action: 'Actions',
+    renderer: 'Renderers',
+    presentation: 'Presentations'
 };
 
 /**
@@ -36,29 +41,17 @@ export class RegistryModel extends HoistModel {
     @bindable accessor showArchitect = false;
     @bindable accessor sampleValue: string = null;
 
-    @managed listGridModel = new GridModel({
-        store: {idSpec: 'id'},
-        selModel: 'single',
-        groupBy: 'kindLabel',
-        groupRowRenderer: ({value}) => (value as string).replace(/^\d /, ''),
-        sortBy: 'name',
-        emptyText: 'No entries',
-        columns: [
-            {field: 'kindLabel', hidden: true},
-            {
-                field: 'usedAt',
-                headerName: '✓',
-                headerTooltip: 'Used by this blueprint',
-                width: 36,
-                align: 'center',
-                renderer: v => (v ? '✓' : null),
-                tooltip: v => v
-            },
-            {field: 'name', width: 150, tooltip: (v, {record}) => record.data.label},
-            {field: 'label', hidden: true},
-            {field: 'origin', width: 80}
-        ]
-    });
+    /** Text that narrows the entries to those whose name or label holds it. */
+    @bindable accessor query = '';
+
+    /** The expanded entry, whose details show. */
+    @bindable accessor selectedId: string = null;
+
+    /** The selected widget's example, rendered live. */
+    @observableRef accessor exampleModel: BlueprintModel = null;
+
+    /** Why the selected widget's example could not render, if it couldn't. */
+    @observable accessor exampleError: string = null;
 
     @managed schemaGridModel = new GridModel({
         treeMode: true,
@@ -103,8 +96,32 @@ export class RegistryModel extends HoistModel {
     }
 
     get selected(): RegistryEntry {
-        const id = this.listGridModel.selectedId;
+        const id = this.selectedId;
         return id ? (this.entries.find(it => it.id === id) ?? null) : null;
+    }
+
+    /** The entries shown, by kind in registry order, each with where the blueprint uses it. */
+    @computed
+    get sections(): RegistrySection[] {
+        const {usages, origins} = this,
+            q = this.query.trim().toLowerCase(),
+            shown = this.entries.filter(
+                it =>
+                    origins.includes(it.origin) &&
+                    (!q || [displayName(it), it.label].some(t => t?.toLowerCase().includes(q)))
+            );
+        return Object.entries(KIND_LABELS).flatMap(([kind, label]) => {
+            const entries = sortBy(
+                shown.filter(it => it.kind === kind),
+                displayName
+            ).map(entry => ({entry, name: displayName(entry), usedAt: usages[entry.id] ?? []}));
+            return entries.length ? [{kind: kind as RegistryKind, label, entries}] : [];
+        });
+    }
+
+    /** Expand an entry, or collapse it if expanded. */
+    toggle(id: string) {
+        this.selectedId = this.selectedId === id ? null : id;
     }
 
     /** Where the blueprint uses the selected entry. */
@@ -236,14 +253,44 @@ export class RegistryModel extends HoistModel {
     /** Add the selected widget's example to the library as a new blueprint, and open it. */
     loadExample() {
         const entry = this.selected,
-            example = entry?.spec.example;
-        if (!example) return;
+            bp = this.exampleBlueprint(entry);
+        if (!bp) return;
+        this.panelModel.createBlueprintAsync(`Example - ${entry.label ?? entry.name}`, bp);
+    }
+
+    override onLinked() {
+        this.addReaction({
+            track: () => this.selected,
+            run: entry => {
+                this.sampleValue = null;
+                this.showExample(entry);
+                const schema = entry?.kind === 'action' ? entry.spec.params : entry?.spec.config;
+                this.schemaGridModel.loadData(schemaRows(schema));
+            },
+            fireImmediately: true
+        });
+    }
+
+    override destroy() {
+        XH.safeDestroy(this.exampleModel);
+        super.destroy();
+    }
+
+    //------------------
+    // Implementation
+    //------------------
+    /**
+     * A blueprint of a widget's example alone. A source it names gets a source of that dataset,
+     * whose required dates are prompted variables that start at today, so data loads.
+     */
+    private exampleBlueprint(entry: RegistryEntry): Blueprint {
+        const example = entry?.kind === 'widget' ? entry.spec.example : null;
+        if (!example) return null;
         const {catalog} = this.blueprintModel,
             source = example.config?.source,
-            bp: PlainObject = {root: entry.name, elements: {[entry.name]: example}};
-        const ds = isString(source) ? catalog.getDataset(source) : null;
+            bp: PlainObject = {root: entry.name, elements: {[entry.name]: example}},
+            ds = isString(source) ? catalog.getDataset(source) : null;
         if (ds) {
-            // A required date becomes a prompted variable that starts at today, so data loads.
             const dates = Object.keys(ds.params).filter(
                 n => ds.params[n].required && ds.params[n].type === 'localDate'
             );
@@ -260,51 +307,33 @@ export class RegistryModel extends HoistModel {
                 }
             };
         }
-        this.panelModel.createBlueprintAsync(
-            `Example - ${entry.label ?? entry.name}`,
-            bp as Blueprint
-        );
+        return bp as Blueprint;
     }
 
-    override onLinked() {
-        this.addReaction(
-            {
-                track: () => [this.entries, this.usages, this.origins],
-                run: () => this.loadList(),
-                fireImmediately: true
-            },
-            {
-                track: () => this.selected,
-                run: entry => {
-                    this.sampleValue = null;
-                    const schema =
-                        entry?.kind === 'action' ? entry.spec.params : entry?.spec.config;
-                    this.schemaGridModel.loadData(schemaRows(schema));
-                },
-                fireImmediately: true
-            }
-        );
+    @action
+    private showExample(entry: RegistryEntry) {
+        XH.safeDestroy(this.exampleModel);
+        this.exampleModel = null;
+        this.exampleError = null;
+        const blueprint = this.context === 'dashboard' ? this.exampleBlueprint(entry) : null;
+        if (!blueprint) return;
+        const {catalog, registry, dataProvider} = this.blueprintModel;
+        try {
+            this.exampleModel = new BlueprintModel({blueprint, catalog, registry, dataProvider});
+        } catch (e) {
+            this.exampleError = e.message;
+        }
     }
+}
 
-    //------------------
-    // Implementation
-    //------------------
-    private loadList() {
-        const {entries, usages, origins} = this;
-        this.listGridModel.loadData(
-            entries
-                .filter(it => origins.includes(it.origin))
-                .map(it => ({
-                    id: it.id,
-                    kindLabel: KIND_LABELS[it.kind],
-                    name: it.kind === 'presentation' ? `${it.widget}.${it.name}` : it.name,
-                    label: it.label,
-                    origin: it.origin,
-                    usedAt: usages[it.id]?.join('\n') ?? null
-                }))
-        );
-        if (!this.listGridModel.selectedRecord) this.listGridModel.selectFirstAsync();
-    }
+export interface RegistrySection {
+    kind: RegistryKind;
+    label: string;
+    entries: {entry: RegistryEntry; name: string; usedAt: string[]}[];
+}
+
+function displayName(it: RegistryEntry): string {
+    return it.kind === 'presentation' ? `${it.widget}.${it.name}` : it.name;
 }
 
 const COLLECTION = {
