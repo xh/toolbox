@@ -1,6 +1,8 @@
 package io.xh.toolbox.blueprints
 
 import grails.testing.services.ServiceUnitTest
+import io.xh.hoist.exception.DataNotAvailableException
+import io.xh.hoist.exception.ExternalHttpException
 import io.xh.toolbox.portfolio.PortfolioDatasets
 import io.xh.toolbox.weather.OpenWeatherRowsSpec
 import io.xh.hoist.test.HoistUnitTest
@@ -248,6 +250,31 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
             [id: 'London|1795068000000', day: '2026-11-19', temp: 6.1, precipProbability: 0]
         ]
         current == [[id: 'London', conditions: 'Clouds']]
+    }
+
+    def 'an unknown city is a request error, and no OpenWeatherMap failure shows its URL'() {
+        given:
+        service.weatherService = [
+            configured       : true,
+            getCurrentWeather: { String city, String units ->
+                throw new ExternalHttpException("Failure calling https://api.openweathermap.org/data/2.5/weather?q=$city&appid=SECRET", null, status)
+            }
+        ]
+
+        when:
+        service.getRows(service.parseRequest(dataset: 'currentWeather', params: [city: 'Nowhere', units: 'metric'], fields: ['temp']))
+
+        then:
+        def e = thrown(expected)
+        e.message == message
+        !e.message.contains('SECRET')
+
+        where:
+        status || expected                  | message
+        404    || BlueprintRequestException | "Unknown city 'Nowhere'"
+        400    || BlueprintRequestException | "Unknown city 'Nowhere'"
+        401    || DataNotAvailableException | 'Weather data is unavailable: OpenWeatherMap returned 401'
+        null   || DataNotAvailableException | 'Weather data is unavailable: OpenWeatherMap returned no response'
     }
 
     def 'the catalog merges the portfolio and weather catalogs'() {

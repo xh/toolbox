@@ -1,6 +1,8 @@
 package io.xh.toolbox.blueprints
 
 import io.xh.hoist.BaseService
+import io.xh.hoist.exception.DataNotAvailableException
+import io.xh.hoist.exception.ExternalHttpException
 import io.xh.hoist.json.JSONParser
 import io.xh.hoist.json.JSONSerializer
 import io.xh.toolbox.portfolio.PortfolioDatasets
@@ -172,12 +174,20 @@ class BlueprintDataService extends BaseService {
     private List<Map> weatherRows(String dataset, String city, String units, Set<String> fields) {
         boolean forecast = dataset == 'weather'
         if (weatherService.configured) {
-            if (forecast) return OpenWeatherRows.forecast(city, weatherService.getForecast(city, units), appZoneId)
-            Map row = OpenWeatherRows.current(city, weatherService.getCurrentWeather(city, units))
-            if ('tempNext24h' in fields) {
-                row.tempNext24h = OpenWeatherRows.tempNext24h(weatherService.getForecast(city, units))
+            try {
+                if (forecast) return OpenWeatherRows.forecast(city, weatherService.getForecast(city, units), appZoneId)
+                Map row = OpenWeatherRows.current(city, weatherService.getCurrentWeather(city, units))
+                if ('tempNext24h' in fields) {
+                    row.tempNext24h = OpenWeatherRows.tempNext24h(weatherService.getForecast(city, units))
+                }
+                return [row]
+            } catch (ExternalHttpException e) {
+                // The exception's message holds the request URL, and with it the API key.
+                if (e.statusCode in [400, 404]) throw new BlueprintRequestException("Unknown city '$city'")
+                String status = e.statusCode ?: 'no response'
+                logWarn('OpenWeatherMap request failed', [city: city, status: status])
+                throw new DataNotAvailableException("Weather data is unavailable: OpenWeatherMap returned $status")
             }
-            return [row]
         }
         def seeded = new WeatherDatasets(appZoneId)
         return forecast ? seeded.forecast(city, units, Instant.now()) : [seeded.current(city, units, Instant.now())]
