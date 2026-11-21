@@ -263,18 +263,18 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
 
         when:
         def forecast = service.getRows(service.parseRequest(
-            dataset: 'weather', params: [city: 'Oslo', units: 'metric'], fields: ['time', 'day', 'temp', 'conditions']
+            dataset: 'weather', params: [city: 'Paris', units: 'metric'], fields: ['time', 'day', 'temp', 'conditions']
         ))
         def current = service.getRows(service.parseRequest(
-            dataset: 'currentWeather', params: [city: 'Oslo', units: 'imperial'], fields: ['city', 'temp']
+            dataset: 'currentWeather', params: [city: 'Paris', units: 'imperial'], fields: ['city', 'temp']
         ))
 
         then:
         forecast.size() == 40
         forecast[0].keySet() as List == ['id', 'time', 'day', 'temp', 'conditions']
-        forecast[0].id == "Oslo|${forecast[0].time}"
+        forecast[0].id == "Paris|${forecast[0].time}"
         current.size() == 1
         current[0].keySet() as List == ['id', 'city', 'temp']
-        !service.isLive(service.parseRequest(dataset: 'weather', params: [city: 'Oslo', units: 'metric']))
+        !service.isLive(service.parseRequest(dataset: 'weather', params: [city: 'Paris', units: 'metric']))
     }
 }
