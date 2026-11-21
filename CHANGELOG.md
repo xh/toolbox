@@ -16,8 +16,9 @@
 
 ### New Features
 
-* Added a Chat Kit tab to the desktop app - a tour of `@xh/hoist-chat-kit`, XH's new library of chat components for Hoist apps. Component pages put `ChatPanel`, `ChatComposer`, `ChatMessageList`, `ChatMarkdown`, sources and citations, the empty state, feedback, status cues and theming in a playground of their curated props. Scripted conversations show rich content, reasoning and tools, the agent timeline, approvals, agent questions, attachments, errors and stop, and generative UI without a server or a model. Two integrations show the kit wired up: a full `chatWorkspace` over a client-side thread store, and a live Claude chat relayed by the Toolbox server with tools that act on the app.
-* Added the Hoist Chat Kit docs to the Docs tab, served from the installed `@xh/hoist-chat-kit` package or a sibling checkout in local development, and a `$CK` link token that opens them in the viewer.
+* Added a Chat Kit tab to the desktop app, a tour of `@xh/hoist-chat-kit`, XH's new library of chat components for Hoist apps. Each major component has a playground, and scripted conversations run without a server or model. Two integration pages show a full `chatWorkspace` and a live Claude chat with tools that act on the app.
+* Added the Chat Kit docs to the Docs tab, with a `$CK` link token that opens them.
+* Added a `PropertyTable` demo page to Components > General, showing hoist-react's new display-only list of labeled values, with a playground, columns that fit the width, labels on the left or on top, label and value alignment, the compact size, dividers, intents and long text.
 * Added a `Callout` demo page to Components > General, showing hoist-react's new note set off within content, with a playground that sets the container width, each intent with and without a title, standard and compact sizes, custom and hidden icons, callouts in a form, a detail panel and above a grid, a markdown body and long-URL wrapping.
 * Added a `ProgressBar` demo page to Components > General, showing hoist-react's new bar for a value against a maximum, with a playground, shares of a total from the sample portfolio, intents, a target marker, the indeterminate state and odd data.
 * Added a `Separator` demo page to Components > General, showing hoist-react's new rule between content, horizontal and vertical, with a label at the start, the center or the end.
@@ -28,16 +29,19 @@
 
 ### Technical
 
+* Changed the desktop and mobile docs viewers to read docs straight from `@xh/hoist-docs` in the browser, for the Hoist versions Toolbox runs, exported by `pnpm docs` at build time. Search now uses the same ranking as the MCP tools and opens each result at its best-matching section.
+* Removed the server-side `DocsService` and `DocsController`, including the GitHub download of docs at startup.
+* Made the docs viewers degrade gently when the docs cannot be loaded - they show a message with a retry, and the rest of Toolbox is unaffected.
+* Removed the bundled hoist-react and hoist-core MCP servers and the `installHoistCoreTools` Gradle task - agents now use the `hoist-docs` MCP server.
 * Migrated app CSS variable overrides and reads to hoist-react v91's CSS variables - `--xh-` prefixed names in place of the removed unprefixed hooks, renamed variables, and sizes with units.
-* Added `LlmService` and a `/llm/stream` endpoint that relay the Anthropic Messages API as a token stream for the Chat Kit tab's Live Model demo. Access needs the new `TOOLBOX_LLM_USER` role, with a per-user hourly limit that `TOOLBOX_LLM_UNLIMITED` lifts, and every call tracked in category `LLM`. Configure with the new `llmApiKey` config and the typed `llmConfig` JSON config.
+* Added `LlmService` and a `/llm/stream` endpoint that relay the Anthropic Messages API for the Live Model demo. Access needs the `TOOLBOX_LLM_USER` role. An hourly limit applies unless the user has `TOOLBOX_LLM_UNLIMITED`. Configure it with the `llmApiKey` and `llmConfig` configs.
 * Migrated element specs from the legacy `item` / `items` keys to the standard React `children` key, using hoist-react's v91 codemod.
-* Granted `TOOLBOX_LLM_USER` to the local development bootstrap admin, so an agent on a throwaway H2 database can test the Live Model demo. The hourly limit still applies, and deployed instances are unaffected. This is a stopgap until hoist-core grants the bootstrap admin the roles that inherit from its admin roles.
 * Added an `XH_CHAT_KIT_PATH` switch that runs the dev server, the unit tests and `pnpm typecheck` against a local checkout of `@xh/hoist-chat-kit`. It is unset by default, and production builds ignore it. See `docs/running-locally.md`.
 * Added support in `pnpm typecheck` for `XH_HOIST_REACT_PATH`, which checks the app against a local checkout of hoist-react in place of the installed package. It is unset by default. See `docs/running-locally.md`.
 
 ### Libraries
 
-* @xh/hoist-chat-kit `2.0` - new
+* @xh/hoist-chat-kit `3.0` - new
 * ag-grid `36.2 → 36.3`
 * @openuidev/lang-core `1.1.0` - new, at the exact version that `@xh/hoist-chat-kit` takes as a peer
 * zod `4.6` - new, and forced across the dependency tree in place of zod 3
