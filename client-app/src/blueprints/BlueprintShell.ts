@@ -90,12 +90,14 @@ const mainPanel = hoistCmp.factory<BlueprintShellModel>(({model}) => {
         });
     }
 
+    // A failed open leaves the previous blueprint in the model, which must not show under this title.
+    const shown = blueprintModel.blueprint && !model.openIssues.some(it => it.severity === 'error');
     return hframe(
         panel({
             title: selected?.name ?? 'No blueprint',
             icon: Icon.layout(),
             compactHeader: true,
-            headerItems: blueprintModel.blueprint
+            headerItems: shown
                 ? [
                       span({
                           className: classNames(
@@ -129,11 +131,11 @@ const mainPanel = hoistCmp.factory<BlueprintShellModel>(({model}) => {
                       blueprintMenu()
                   ]
                 : [],
-            item: blueprintModel.blueprint
+            item: shown
                 ? blueprintView({model: blueprintModel, designModel: model.designModel})
                 : placeholder(Icon.layout(), emptyText(model))
         }),
-        selected ? inspectorPanel() : null
+        selected && shown ? inspectorPanel() : null
     );
 });
 
