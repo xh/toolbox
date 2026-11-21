@@ -32,11 +32,8 @@ class BlueprintsTabModel extends HoistModel {
             XH.routerState?.name?.startsWith(`default.blueprints.${typeRouteName(it)}`)
         );
         if (linked) this.typeName = linked.name;
-        this.addReaction({
-            track: () => this.typeName,
-            run: name => this.openType(find(BLUEPRINT_TYPES, {name}) ?? PORTFOLIO_TYPE),
-            fireImmediately: true
-        });
+        this.openType();
+        this.addReaction({track: () => this.typeName, run: () => this.openType()});
     }
 
     override destroy() {
@@ -44,7 +41,8 @@ class BlueprintsTabModel extends HoistModel {
         super.destroy();
     }
 
-    private openType(type: BlueprintTypeSpec) {
+    private openType() {
+        const type = find(BLUEPRINT_TYPES, {name: this.typeName}) ?? PORTFOLIO_TYPE;
         XH.safeDestroy(this.shellModel);
         const shellModel = new BlueprintShellModel({
             type,
