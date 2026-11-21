@@ -34,6 +34,20 @@ export class ExamplesTabModel extends HoistModel {
             ]
         },
         {
+            title: 'Portfolio Blueprints',
+            icon: Icon.portfolio(),
+            path: 'portfolioBlueprints',
+            srcPath: 'portfolioBlueprints',
+            text: [
+                p(
+                    'The Portfolio example again, built from blueprints: a morning report, risk views and showcases, each JSON that the Architect writes and changes as you ask.'
+                ),
+                p(
+                    'Open a report by link, change its fund and date, switch column views, and ask the Architect a question or for a new view beside the grid.'
+                )
+            ]
+        },
+        {
             title: 'Weather',
             icon: Icon.sun(),
             path: 'weather',
