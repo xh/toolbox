@@ -38,7 +38,7 @@ import {
     runInAction
 } from '@xh/hoist/mobx';
 import {find} from 'lodash';
-import {LocalThreadStore} from '../chatkit/integrations/LocalThreadStore';
+import {LocalThreadStore} from '../desktop/tabs/chatkit/integrations/LocalThreadStore';
 import {createArchitectChat} from './architectChat';
 import {createRepository} from './repository/createRepository';
 import {ServerDataProvider} from './ServerDataProvider';

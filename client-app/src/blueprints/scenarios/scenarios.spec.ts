@@ -2,7 +2,7 @@ import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
 import {DataCatalog, validateBlueprint} from '@xh/hoist-chat-kit/blueprint';
 import {initTestAppAsync} from '@xh/hoist/test-support';
 import {beforeAll, describe, expect, it} from 'vitest';
-import catalogJson from '../../../../test-support/blueprintsCatalog.json';
+import catalogJson from '../../test-support/blueprintsCatalog.json';
 import {createToolboxRegistry} from '../toolboxRegistry';
 import p1 from './p1-one-grid.json';
 import p2 from './p2-linked-dashboard.json';

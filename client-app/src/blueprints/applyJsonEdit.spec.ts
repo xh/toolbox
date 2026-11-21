@@ -4,7 +4,7 @@ import type {PlainObject} from '@xh/hoist/core';
 import {initTestAppAsync} from '@xh/hoist/test-support';
 import {cloneDeep} from 'lodash';
 import {afterEach, beforeAll, beforeEach, describe, expect, it} from 'vitest';
-import catalogJson from '../../../test-support/blueprintsCatalog.json';
+import catalogJson from '../test-support/blueprintsCatalog.json';
 import {applyJsonEdit} from './applyJsonEdit';
 import p2 from './scenarios/p2-linked-dashboard.json';
 import {createToolboxRegistry} from './toolboxRegistry';

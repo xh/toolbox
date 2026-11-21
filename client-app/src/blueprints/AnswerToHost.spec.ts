@@ -17,7 +17,7 @@ import type {ScriptedResponse} from '@xh/hoist-chat-kit/transport';
 import type {PlainObject} from '@xh/hoist/core';
 import {initTestAppAsync} from '@xh/hoist/test-support';
 import {beforeAll, beforeEach, describe, expect, it, onTestFinished, vi} from 'vitest';
-import catalogJson from '../../../test-support/blueprintsCatalog.json';
+import catalogJson from '../test-support/blueprintsCatalog.json';
 import p1 from './scenarios/p1-one-grid.json';
 import {createToolboxRegistry} from './toolboxRegistry';
 

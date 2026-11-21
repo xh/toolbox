@@ -5,7 +5,7 @@ import {initTestAppAsync} from '@xh/hoist/test-support';
 import type {ReactElement} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {beforeAll, describe, expect, it} from 'vitest';
-import catalogJson from '../../../test-support/blueprintsCatalog.json';
+import catalogJson from '../test-support/blueprintsCatalog.json';
 import {
     createToolboxRegistry,
     publishToPmPackAction,

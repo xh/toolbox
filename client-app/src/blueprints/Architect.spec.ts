@@ -9,7 +9,7 @@ import {
 import {architectChatTools} from '@xh/hoist-chat-kit/genui/architect';
 import {initTestAppAsync} from '@xh/hoist/test-support';
 import {afterAll, beforeAll, describe, expect, it} from 'vitest';
-import catalogJson from '../../../test-support/blueprintsCatalog.json';
+import catalogJson from '../test-support/blueprintsCatalog.json';
 import p1 from './scenarios/p1-one-grid.json';
 import {createToolboxRegistry} from './toolboxRegistry';
 

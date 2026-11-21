@@ -11,14 +11,14 @@ import {Icon} from '@xh/hoist/icon';
 import classNames from 'classnames';
 import type {ReactElement} from 'react';
 import {wrapper, wrapperAction, wrapperOptionGroup} from '../../common/Wrapper';
-import {architectPanel} from './ArchitectPanel';
-import {blueprintMenu} from './BlueprintMenu';
-import {BlueprintsPanelModel} from './BlueprintsPanelModel';
-import type {DesignerView} from './BlueprintsPanelModel';
-import './Blueprints.scss';
-import {inspectorPanel} from './InspectorPanel';
-import {catalogPanel} from './catalog/CatalogPanel';
-import {registryPanel} from './registry/RegistryPanel';
+import {architectPanel} from '../../../blueprints/ArchitectPanel';
+import {blueprintMenu} from '../../../blueprints/BlueprintMenu';
+import {BlueprintsPanelModel} from '../../../blueprints/BlueprintsPanelModel';
+import type {DesignerView} from '../../../blueprints/BlueprintsPanelModel';
+import '../../../blueprints/Blueprints.scss';
+import {inspectorPanel} from '../../../blueprints/InspectorPanel';
+import {catalogPanel} from '../../../blueprints/catalog/CatalogPanel';
+import {registryPanel} from '../../../blueprints/registry/RegistryPanel';
 
 /** The Blueprints Designer: a library of blueprints, each built with the Architect. */
 export const blueprintsPanel = hoistCmp.factory({
@@ -92,15 +92,15 @@ export const blueprintsPanel = hoistCmp.factory({
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/blueprints/BlueprintsPanelModel.ts',
+                    url: '$TB/client-app/src/blueprints/BlueprintsPanelModel.ts',
                     notes: 'The library, and the models that open a blueprint.'
                 },
                 {
-                    url: '$TB/client-app/src/desktop/tabs/blueprints/repository/JsonBlobBlueprintRepository.ts',
+                    url: '$TB/client-app/src/blueprints/repository/JsonBlobBlueprintRepository.ts',
                     notes: 'Where blueprints persist, on Hoist JsonBlobs.'
                 },
                 {
-                    url: '$TB/client-app/src/desktop/tabs/blueprints/architectChat.ts',
+                    url: '$TB/client-app/src/blueprints/architectChat.ts',
                     notes: "The Architect's chat."
                 },
                 {url: '$CK/blueprint/README.md', text: 'Blueprints'}

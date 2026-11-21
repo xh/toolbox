@@ -2,7 +2,7 @@ import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
 import {DataCatalog, fieldUsages} from '@xh/hoist-chat-kit/blueprint';
 import type {PlainObject} from '@xh/hoist/core';
 import {describe, expect, it} from 'vitest';
-import catalogJson from '../../../../test-support/blueprintsCatalog.json';
+import catalogJson from '../../test-support/blueprintsCatalog.json';
 import p3 from '../scenarios/p3-morning-report.json';
 import w2 from '../scenarios/w2-two-cities.json';
 import {fieldTree, formatOf} from './CatalogModel';

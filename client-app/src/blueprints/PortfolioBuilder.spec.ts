@@ -1,7 +1,7 @@
 import {BlueprintModel, DataCatalog, FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {afterEach, beforeAll, beforeEach, describe, expect, it} from 'vitest';
-import catalogJson from '../../../test-support/blueprintsCatalog.json';
+import catalogJson from '../test-support/blueprintsCatalog.json';
 import {PortfolioBuilderModel} from './PortfolioBuilder';
 import {createToolboxRegistry} from './toolboxRegistry';
 

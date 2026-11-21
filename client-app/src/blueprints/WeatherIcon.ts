@@ -10,7 +10,7 @@ import {
 import {hbox, span} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import type {ReactNode} from 'react';
-import {cloudRainIcon} from '../../../examples/weather/Icons';
+import {cloudRainIcon} from '../examples/weather/Icons';
 
 const [cloudIcon, cloudBoltIcon, cloudDrizzleIcon, cloudFogIcon, cloudSunIcon, snowflakeIcon] =
     Icon.registerAll([

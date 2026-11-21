@@ -3,7 +3,7 @@ import {DataCatalog, registryUsages} from '@xh/hoist-chat-kit/blueprint';
 import {chatUiStackSpec, chatUiTextSpec} from '@xh/hoist-chat-kit/desktop/cmp/genui';
 import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {describe, expect, it} from 'vitest';
-import catalogJson from '../../../../test-support/blueprintsCatalog.json';
+import catalogJson from '../../test-support/blueprintsCatalog.json';
 import p3 from '../scenarios/p3-morning-report.json';
 import w2 from '../scenarios/w2-two-cities.json';
 import {createToolboxRegistry} from '../toolboxRegistry';
