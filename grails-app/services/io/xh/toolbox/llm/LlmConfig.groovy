@@ -35,6 +35,9 @@ class LlmConfig extends TypedConfigMap {
      */
     Long dailyTokenBudget = null
 
+    /** Max feature requests per user per app day that the Blueprints Architect may send. */
+    Integer dailyFeatureRequests = 5
+
     /**
      * Max concurrent streams, per server instance. Each holds a request thread for its whole length.
      * A request beyond the limit fails at once with a "busy" message.
