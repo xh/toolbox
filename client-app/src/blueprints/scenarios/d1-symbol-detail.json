@@ -1,0 +1,196 @@
+{
+    "schema": {
+        "blueprint": 1,
+        "widgets": {
+            "dashCanvas": 1,
+            "markdown": 1,
+            "tileFrame": 1,
+            "statCard": 1,
+            "chart": 1,
+            "cubeGrid": 1
+        },
+        "resolvers": {
+            "previousBusinessDay": 1,
+            "dateOffset": 1
+        }
+    },
+    "variables": {
+        "symbol": {
+            "type": "string",
+            "label": "Symbol",
+            "setBy": "prompt"
+        },
+        "asOf": {
+            "type": "localDate",
+            "label": "As of",
+            "setBy": "prompt",
+            "default": {
+                "resolver": "previousBusinessDay"
+            }
+        },
+        "priceStart": {
+            "type": "localDate",
+            "setBy": "resolver",
+            "compute": {
+                "resolver": "dateOffset",
+                "args": {
+                    "from": {
+                        "$var": "asOf"
+                    },
+                    "months": -3
+                }
+            }
+        }
+    },
+    "sources": {
+        "holdings": {
+            "dataset": "positions",
+            "params": {
+                "asOf": {
+                    "$var": "asOf"
+                }
+            },
+            "filter": {
+                "field": "symbol",
+                "op": "=",
+                "value": {
+                    "$var": "symbol"
+                }
+            }
+        },
+        "prices": {
+            "dataset": "prices",
+            "params": {
+                "symbol": {
+                    "$var": "symbol"
+                },
+                "start": {
+                    "$var": "priceStart"
+                },
+                "end": {
+                    "$var": "asOf"
+                }
+            }
+        }
+    },
+    "root": "dashboard",
+    "elements": {
+        "dashboard": {
+            "component": "dashCanvas",
+            "children": [
+                {
+                    "id": "intro",
+                    "x": 0,
+                    "y": 0,
+                    "w": 12,
+                    "h": 1
+                },
+                {
+                    "id": "headline",
+                    "x": 0,
+                    "y": 1,
+                    "w": 12,
+                    "h": 2
+                },
+                {
+                    "id": "priceChart",
+                    "x": 0,
+                    "y": 3,
+                    "w": 6,
+                    "h": 5
+                },
+                {
+                    "id": "byFund",
+                    "x": 6,
+                    "y": 3,
+                    "w": 6,
+                    "h": 5
+                }
+            ]
+        },
+        "intro": {
+            "component": "markdown",
+            "config": {
+                "text": "## {symbol} across all funds, as of {asOf}"
+            }
+        },
+        "headline": {
+            "component": "tileFrame",
+            "config": {
+                "minTileWidth": 140
+            },
+            "children": [
+                {
+                    "id": "mktVal"
+                },
+                {
+                    "id": "pnlDay"
+                },
+                {
+                    "id": "pnlMtd"
+                },
+                {
+                    "id": "pnlYtd"
+                }
+            ]
+        },
+        "mktVal": {
+            "component": "statCard",
+            "config": {
+                "source": "holdings",
+                "field": "mktVal"
+            }
+        },
+        "pnlDay": {
+            "component": "statCard",
+            "config": {
+                "source": "holdings",
+                "field": "pnlDay"
+            }
+        },
+        "pnlMtd": {
+            "component": "statCard",
+            "config": {
+                "source": "holdings",
+                "field": "pnlMtd"
+            }
+        },
+        "pnlYtd": {
+            "component": "statCard",
+            "config": {
+                "source": "holdings",
+                "field": "pnlYtd"
+            }
+        },
+        "priceChart": {
+            "component": "chart",
+            "config": {
+                "source": "prices",
+                "title": "Close, last three months",
+                "type": "spline",
+                "x": "day",
+                "y": [
+                    "close"
+                ]
+            }
+        },
+        "byFund": {
+            "component": "cubeGrid",
+            "config": {
+                "source": "holdings",
+                "title": "By fund",
+                "groupBy": [
+                    "fund"
+                ],
+                "columnState": [
+                    "quantity",
+                    "mktVal",
+                    "pnlDay",
+                    "pnlYtd"
+                ],
+                "sortBy": "mktVal|desc",
+                "summaryRow": true
+            }
+        }
+    }
+}

@@ -223,7 +223,18 @@
                 "source": "positions",
                 "groupBy": {"$var": "grouping"},
                 "sortBy": "pnlDay|desc",
-                "filter": {"$var": "pnlFilter"}
+                "filter": {"$var": "pnlFilter"},
+                "rowActions": [
+                    {
+                        "label": "Open detail",
+                        "icon": "external-link",
+                        "action": {
+                            "type": "openBlueprint",
+                            "blueprint": "symbol-detail",
+                            "variables": {"symbol": {"$row": "symbol"}, "asOf": {"$var": "asOf"}}
+                        }
+                    }
+                ]
             }
         },
         "posViewsSelector": {"component": "presetSelector", "config": {"group": "posViews", "display": "segmented", "label": "Columns"}},

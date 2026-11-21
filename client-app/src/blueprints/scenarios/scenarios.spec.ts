@@ -6,6 +6,7 @@ import {beforeAll, describe, expect, it} from 'vitest';
 import catalogJson from '../../test-support/blueprintsCatalog.json';
 import {PORTFOLIO_TYPE, WEATHER_TYPE} from '../blueprintTypes';
 import type {BlueprintTypeSpec} from '../blueprintTypes';
+import d1 from './d1-symbol-detail.json';
 import p1 from './p1-one-grid.json';
 import p2 from './p2-linked-dashboard.json';
 import p3 from './p3-morning-report.json';
@@ -31,6 +32,7 @@ const SCENARIOS: Record<string, [unknown, BlueprintTypeSpec]> = {
     s2: [s2, PORTFOLIO_TYPE],
     s3: [s3, PORTFOLIO_TYPE],
     s4: [s4, PORTFOLIO_TYPE],
+    d1: [d1, PORTFOLIO_TYPE],
     w1: [w1, WEATHER_TYPE],
     w2: [w2, WEATHER_TYPE],
     w3: [w3, WEATHER_TYPE],

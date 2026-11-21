@@ -36,6 +36,7 @@ class BlueprintPresetService extends BaseService {
         [type: PORTFOLIO, token: 'risk-and-time', file: 's2-risk-time-showcase', name: 'S2. Risk and time'],
         [type: PORTFOLIO, token: 'joining-sources', file: 's3-joins-showcase', name: 'S3. Joining sources'],
         [type: PORTFOLIO, token: 'inputs-and-actions', file: 's4-inputs-showcase', name: 'S4. Inputs and actions'],
+        [type: PORTFOLIO, token: 'symbol-detail', file: 'd1-symbol-detail', name: 'Symbol detail'],
         [type: WEATHER, token: 'weather-one-city', file: 'w1-one-city', name: 'W1. Weather for one city'],
         [type: WEATHER, token: 'weather-two-cities', file: 'w2-two-cities', name: 'W2. Two cities side by side'],
         [type: WEATHER, token: 'weather-around-the-world', file: 's5-weather-showcase', name: 'S5. Weather around the world'],
