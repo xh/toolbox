@@ -49,6 +49,20 @@ export class ExamplesTabModel extends HoistModel {
             ]
         },
         {
+            title: 'Weather Blueprints',
+            icon: Icon.sun(),
+            path: 'weatherBlueprints',
+            srcPath: 'weatherBlueprints',
+            text: [
+                p(
+                    'The Weather example again, built from blueprints: each dashboard is JSON that the Architect writes and changes as you ask.'
+                ),
+                p(
+                    'Pick or start a blueprint, ask for a change, and inspect its variables, sources and JSON. Copy a link to share the dashboard as it is.'
+                )
+            ]
+        },
+        {
             title: 'Contacts',
             icon: Icon.users(),
             path: 'contact',

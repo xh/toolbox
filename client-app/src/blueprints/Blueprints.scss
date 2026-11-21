@@ -259,3 +259,8 @@
     gap: var(--xh-spacing-half);
   }
 }
+
+.tb-blueprint-app__library > .xh-panel__content {
+  padding: var(--xh-spacing);
+  overflow-y: auto;
+}
