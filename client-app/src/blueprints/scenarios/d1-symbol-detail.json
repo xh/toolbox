@@ -18,7 +18,8 @@
         "symbol": {
             "type": "string",
             "label": "Symbol",
-            "setBy": "prompt"
+            "setBy": "prompt",
+            "default": {"value": "EURUSD"}
         },
         "asOf": {
             "type": "localDate",
