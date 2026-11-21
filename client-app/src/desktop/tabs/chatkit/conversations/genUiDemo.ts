@@ -4,6 +4,7 @@ import type {
     ChatUiGridSpecProps,
     ChatUiStatCardsSpecProps
 } from '@xh/hoist-chat-kit/desktop/cmp/genui';
+import type {ChatUiDocument} from '@xh/hoist-chat-kit/genui';
 import {
     ScriptedChatTransport,
     scriptedDelay,
@@ -12,23 +13,24 @@ import {
 } from '@xh/hoist-chat-kit/transport';
 import type {ChatRunRequest, ScriptedRequestContext} from '@xh/hoist-chat-kit/transport';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {groupBy, round, sortBy, sumBy} from 'lodash';
+import {groupBy, last, round, sortBy, sumBy, takeRight} from 'lodash';
 import type {ChatDemoSpec} from '../common/ChatDemo';
 import {chatDemoPanel, KIT_LINKS} from '../common/ChatDemo';
 import {createCatalog} from './catalog';
 
 /**
  * Generative UI: the model shows Hoist components inline in its reply - a row of stat cards, a grid of
- * positions that fills in row by row, a line chart and a card with follow-up actions - through
- * a ChatUiCatalog of the kit's built-in components.
+ * positions that fills in row by row, a line chart, a card with follow-up actions and progress
+ * bars against a limit - through a ChatUiCatalog of the kit's built-in components.
  */
 const DEMO: ChatDemoSpec = {
     pageId: 'genUi',
     description: [
         'The model shows **Hoist components inline** in its reply, through a `ChatUiCatalog` of',
-        "the kit's four built-in specs: KPI tiles, a result table in two tiers, a Highcharts",
-        'chart and a detail card. Each is a tool the model calls with checked props, and renders',
-        'as it streams - the grid fills in row by row.',
+        "the kit's built-in specs: KPI tiles with trends, a result table in two tiers, a",
+        'Highcharts chart and a detail card. Each is a tool the model calls with checked props,',
+        'and renders as it streams - the grid fills in row by row. Progress bars and a property',
+        'table have no tool of their own, and arrive nested in a `show_ui` document.',
         '',
         "The card's buttons send follow-up prompts, one with structured context that travels",
         'with the message. Expand a table or chart to open it in the side panel.',
@@ -41,7 +43,9 @@ const DEMO: ChatDemoSpec = {
         'chatUiStatCardsSpec',
         'chatUiGridSpec',
         'chatUiChartSpec',
-        'chatUiCardSpec'
+        'chatUiCardSpec',
+        'chatUiProgressBarsSpec',
+        'chatUiPropertyTableSpec'
     ],
     links: [KIT_LINKS.genui, KIT_LINKS.genuiCmps, KIT_LINKS.protocols],
     heading: 'Ask for a portfolio review',
@@ -103,9 +107,11 @@ function createDrillDown() {
         textEvents('Here are the last eight NVDA trades, and how the book is spread by sector:'),
         toolCallEvents('show_grid', TRADES_GRID),
         toolCallEvents('show_chart', createSectorChart()),
+        textEvents('Against the 25% limit on any one sector:'),
+        toolCallEvents('show_ui', createSectorLimits()),
         textEvents(
             'The position was built mostly in September, at an average of $104. Semiconductors ' +
-                'are now a third of the book, above the 25% limit.'
+                'are now a third of the book, above the limit.'
         )
     ];
 }
@@ -113,7 +119,9 @@ function createDrillDown() {
 function createStatCards(): ChatUiStatCardsSpecProps {
     const rows = getPositionRows(),
         nav = sumBy(rows, 'marketValue'),
-        dayPnl = sumBy(rows, 'dayPnl');
+        dayPnl = sumBy(rows, 'dayPnl'),
+        bookLevels = getLevels().book,
+        [, lastLevel] = last(bookLevels);
     return {
         cards: [
             {
@@ -123,7 +131,11 @@ function createStatCards(): ChatUiStatCardsSpecProps {
                 decimals: 0,
                 delta: dayPnl / (nav - dayPnl),
                 deltaFormat: 'percent',
-                deltaLabel: 'today'
+                deltaLabel: 'today',
+                // The book's last 20 closes, scaled to today's value.
+                trend: takeRight(bookLevels, 20).map(([, level]) =>
+                    round((nav * level) / lastLevel)
+                )
             },
             {label: 'Day P&L', value: dayPnl, format: 'currency', decimals: 0, intent: 'danger'},
             {
@@ -143,6 +155,7 @@ function createStatCards(): ChatUiStatCardsSpecProps {
                 delta: 0.06,
                 deltaFormat: 'percent',
                 deltaLabel: 'vs last week',
+                trend: [612000, 598000, 640000, 655000, 683000, 724000],
                 intent: 'warning'
             }
         ]
@@ -229,12 +242,11 @@ function createPositionsGrid(): ChatUiGridSpecProps {
     };
 }
 
-function createPerformanceChart(): ChatUiChartSpecProps {
-    // Sixty trading days of the book and its benchmark, indexed to 100.
-    const start = LocalDate.get('2026-07-20'),
-        book: Array<[string, number]> = [],
+// Sixty trading days of the book and its benchmark, indexed to 100.
+function getLevels() {
+    const book: Array<[string, number]> = [],
         benchmark: Array<[string, number]> = [];
-    let date = start,
+    let date = LocalDate.get('2026-07-20'),
         bookLevel = 100,
         benchLevel = 100;
     for (let idx = 0; idx < 60; idx++) {
@@ -245,6 +257,11 @@ function createPerformanceChart(): ChatUiChartSpecProps {
         if (idx > 54) bookLevel *= 0.985;
         date = date.nextWeekday();
     }
+    return {book, benchmark};
+}
+
+function createPerformanceChart(): ChatUiChartSpecProps {
+    const {book, benchmark} = getLevels();
     return {
         title: 'Tech book vs benchmark (indexed to 100)',
         type: 'line',
@@ -375,20 +392,53 @@ const TRADES_GRID: ChatUiGridSpecProps = {
 };
 
 function createSectorChart(): ChatUiChartSpecProps {
+    const weights = getSectorWeights();
+    return {
+        title: 'Tech book by sector',
+        type: 'pie',
+        xAxis: {categories: weights.map(it => it.sector)},
+        yAxis: {format: 'percent'},
+        series: [{name: 'Weight', data: weights.map(it => it.weight)}]
+    };
+}
+
+// The weight of each sector against the limit, as progress bars in a titled stack. Progress bars
+// have no tool of their own, so they arrive in a document.
+function createSectorLimits(): ChatUiDocument {
+    return {
+        root: 'limits',
+        elements: {
+            limits: {
+                component: 'stack',
+                props: {title: 'Sector weights against the 25% limit'},
+                children: ['bars']
+            },
+            bars: {
+                component: 'progressBars',
+                props: {
+                    bars: getSectorWeights().map(({sector, weight}) => ({
+                        label: sector,
+                        value: weight,
+                        format: 'percent',
+                        intent: weight > SECTOR_LIMIT ? 'danger' : 'success',
+                        target: SECTOR_LIMIT
+                    }))
+                }
+            }
+        }
+    };
+}
+
+// The share of the book in each sector, largest first.
+function getSectorWeights(): Array<{sector: string; weight: number}> {
     const rows = getPositionRows(),
         nav = sumBy(rows, 'marketValue'),
         bySector = groupBy(rows, 'sector'),
         sectors = sortBy(Object.keys(bySector), it => -sumBy(bySector[it], 'marketValue'));
-    return {
-        title: 'Tech book by sector',
-        type: 'pie',
-        xAxis: {categories: sectors},
-        yAxis: {format: 'percent'},
-        series: [
-            {
-                name: 'Weight',
-                data: sectors.map(it => round(sumBy(bySector[it], 'marketValue') / nav, 4))
-            }
-        ]
-    };
+    return sectors.map(sector => ({
+        sector,
+        weight: round(sumBy(bySector[sector], 'marketValue') / nav, 4)
+    }));
 }
+
+const SECTOR_LIMIT = 0.25;
