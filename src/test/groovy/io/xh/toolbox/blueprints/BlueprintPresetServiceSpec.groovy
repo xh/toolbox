@@ -89,7 +89,7 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
         service.seedPresets()
 
         then:
-        JsonBlob.count() == 13
+        JsonBlob.count() == PRESETS.size() * 2 + 1
         parseObject(JsonBlob.findByTypeAndName(PUBLISH_TYPE, 'bp-preset-p3:2').value) == [blueprint: preset('p3-morning-report')]
         parseObject(JsonBlob.findByTypeAndName(PUBLISH_TYPE, 'bp-preset-p3:2').meta).subMap('blueprintId', 'version', 'publishedBy') ==
             [blueprintId: 'bp-preset-p3', version: 2, publishedBy: OWNER]
