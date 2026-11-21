@@ -45,7 +45,7 @@ export const blueprintsPanel = hoistCmp.factory({
                     children: [
                         storeFilterField({
                             gridModel: model.listGridModel,
-                            includeFields: ['name', 'description'],
+                            includeFields: ['name', 'description', 'owner'],
                             placeholder: 'Search blueprints...',
                             width: '100%'
                         }),

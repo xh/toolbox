@@ -117,6 +117,12 @@ export class BlueprintsPanelModel extends HoistModel {
             {field: 'name', flex: 1, tooltip: (v, {record}) => record.data.description ?? v},
             {field: 'description', hidden: true},
             {
+                field: 'owner',
+                width: 80,
+                cellClass: 'tb-blueprints__owner',
+                tooltip: (v: string) => (v ? `Owner: ${v}` : null)
+            },
+            {
                 field: 'global',
                 width: 28,
                 align: 'center',
@@ -171,6 +177,7 @@ export class BlueprintsPanelModel extends HoistModel {
                         id: it.id,
                         name: it.name,
                         description: it.description,
+                        owner: it.owner === XH.getUsername() ? null : it.owner,
                         status:
                             it.access === 'read' ? 'read' : it.publishedVersion ? null : 'draft',
                         global: isGlobal(it)

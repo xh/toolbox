@@ -58,11 +58,17 @@ describe('JsonBlobBlueprintRepository', () => {
             canShare: true,
             canShareGlobally: true,
             sharing: {writers: [], readers: []},
-            pendingRenames: []
+            pendingRenames: [],
+            owner: OWNER
         });
         expect(record.blueprint).toEqual(blueprint);
         expect(await repository.listAsync()).toEqual([
-            expect.objectContaining({id: record.id, name: 'Positions', access: 'write'})
+            expect.objectContaining({
+                id: record.id,
+                name: 'Positions',
+                access: 'write',
+                owner: OWNER
+            })
         ]);
         expect(await repository.openAsync(record.id, {as: 'publish'})).toBeNull();
         expect(await repository.canCreateAsync()).toBe(true);

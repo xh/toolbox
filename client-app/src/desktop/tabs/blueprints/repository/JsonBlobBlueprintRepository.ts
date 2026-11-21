@@ -270,6 +270,7 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
         return {
             id: blob.name,
             name: meta.name,
+            owner: blob.owner,
             ...(meta.description ? {description: meta.description} : {}),
             draftVersion: meta.draftVersion,
             publishedVersion: meta.publishedVersion ?? null,
