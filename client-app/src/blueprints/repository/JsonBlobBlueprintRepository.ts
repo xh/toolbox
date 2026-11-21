@@ -14,7 +14,7 @@ import type {
     BlueprintSharingMode,
     BlueprintSummary
 } from '@xh/hoist-chat-kit/blueprint';
-import {staleBaseIssue} from '@xh/hoist-chat-kit/blueprint';
+import {checkBlueprintType, staleBaseIssue} from '@xh/hoist-chat-kit/blueprint';
 import {XH} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
 import type {JsonBlob} from '@xh/hoist/svc';
@@ -37,9 +37,7 @@ export function jsonBlobTypes(type: string): {
         publish: `blueprintPublish.${type}`,
         personalization: `blueprintPersonalization.${type}`
     };
-    if (!type?.includes('.')) {
-        throw new Error(`A blueprint type is dotted, such as toolbox.weather, not '${type}'.`);
-    }
+    checkBlueprintType(type);
     if (type.length > 25) {
         throw new Error(`A blueprint type in JsonBlobs is at most 25 characters: '${type}'.`);
     }
