@@ -16,7 +16,7 @@ export const inspectorPanel = hoistCmp.factory({
             compactHeader: true,
             modelConfig: {
                 side: 'right',
-                defaultSize: 380,
+                defaultSize: 440,
                 minSize: 280,
                 defaultCollapsed: true,
                 persistWith: {localStorageKey: 'blueprintsInspector'}

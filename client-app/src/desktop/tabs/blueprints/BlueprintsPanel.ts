@@ -1,6 +1,7 @@
 import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid} from '@xh/hoist/cmp/grid';
 import {hbox, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import type {HoistProps} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -42,6 +43,12 @@ export const blueprintsPanel = hoistCmp.factory({
                     label: 'Blueprints',
                     icon: Icon.layout(),
                     children: [
+                        storeFilterField({
+                            gridModel: model.listGridModel,
+                            includeFields: ['name', 'description'],
+                            placeholder: 'Search blueprints...',
+                            width: '100%'
+                        }),
                         grid({
                             model: model.listGridModel,
                             className: 'tb-blueprints__list',

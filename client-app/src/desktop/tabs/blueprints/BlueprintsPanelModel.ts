@@ -114,7 +114,8 @@ export class BlueprintsPanelModel extends HoistModel {
         hideHeaders: true,
         emptyText: 'No blueprints',
         columns: [
-            {field: 'name', flex: 1},
+            {field: 'name', flex: 1, tooltip: (v, {record}) => record.data.description ?? v},
+            {field: 'description', hidden: true},
             {
                 field: 'global',
                 width: 28,
@@ -169,6 +170,7 @@ export class BlueprintsPanelModel extends HoistModel {
                     this.summaries.map(it => ({
                         id: it.id,
                         name: it.name,
+                        description: it.description,
                         status:
                             it.access === 'read' ? 'read' : it.publishedVersion ? null : 'draft',
                         global: isGlobal(it)
