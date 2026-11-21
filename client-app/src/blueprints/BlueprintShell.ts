@@ -140,9 +140,11 @@ const mainPanel = hoistCmp.factory<BlueprintShellModel>(({model}) => {
 });
 
 function emptyText({selected, openIssues}: BlueprintShellModel): string {
-    if (!selected) return 'Pick a blueprint, or start a new one.';
     const error = openIssues.find(it => it.severity === 'error');
-    return error ? error.message : 'This blueprint is empty. Ask the Architect to build it.';
+    if (error) return error.message;
+    return selected
+        ? 'This blueprint is empty. Ask the Architect to build it.'
+        : 'Pick a blueprint, or start a new one.';
 }
 
 /** Which version is open, and whether its edits are saved. */
