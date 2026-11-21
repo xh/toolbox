@@ -13,6 +13,8 @@ interface InspectorOutlineProps extends HoistProps {
     designModel: BlueprintDesignModel;
     /** True to show the widget palette above the outline. */
     designing: boolean;
+    /** Called when a preset badge is clicked, with its group, which the design model selects. */
+    onShowPresetGroup?: (name: string) => void;
 }
 
 /** The blueprint's elements, over the selected one's config, under the widget palette in design. */
@@ -20,7 +22,7 @@ export const inspectorOutline = hoistCmp.factory<InspectorOutlineProps>({
     displayName: 'InspectorOutline',
     model: false,
 
-    render({designModel, designing}) {
+    render({designModel, designing, onShowPresetGroup}) {
         return vframe(
             panel({
                 title: 'Add widget',
@@ -42,7 +44,7 @@ export const inspectorOutline = hoistCmp.factory<InspectorOutlineProps>({
             panel({
                 title: 'Config',
                 compactHeader: true,
-                item: elementInspector({designModel})
+                item: elementInspector({designModel, onShowPresetGroup})
             })
         );
     }

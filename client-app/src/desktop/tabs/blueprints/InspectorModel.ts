@@ -151,7 +151,8 @@ export class InspectorModel extends HoistModel {
                 content: () =>
                     inspectorOutline({
                         designModel: this.panelModel.designModel,
-                        designing: this.isDesigning
+                        designing: this.isDesigning,
+                        onShowPresetGroup: () => this.showPresets()
                     })
             },
             {id: 'data', content: () => inspectorTabs({model: this.dataTabsModel})},
@@ -200,6 +201,12 @@ export class InspectorModel extends HoistModel {
         const {parseError, issues} = applyJsonEdit(this.panelModel.blueprintModel, this.draft);
         this.parseError = parseError ?? null;
         this.applyIssues = issues;
+    }
+
+    /** Show the Presets tab, under Data. */
+    showPresets() {
+        this.tabContainerModel.activateTab('data');
+        this.dataTabsModel.activateTab('presets');
     }
 
     @action
