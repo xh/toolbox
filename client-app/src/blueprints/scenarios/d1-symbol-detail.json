@@ -183,7 +183,6 @@
                     "fund"
                 ],
                 "columnState": [
-                    "quantity",
                     "mktVal",
                     "pnlDay",
                     "pnlYtd"
