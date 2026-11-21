@@ -4,10 +4,10 @@ import {hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import type {BlueprintsPanelModel} from './BlueprintsPanelModel';
+import type {BlueprintShellModel} from './BlueprintShellModel';
 
 /** The Architect's conversation about the open blueprint. */
-export const architectPanel = hoistCmp.factory<BlueprintsPanelModel>({
+export const architectPanel = hoistCmp.factory<BlueprintShellModel>({
     displayName: 'ArchitectPanel',
 
     render({model}) {

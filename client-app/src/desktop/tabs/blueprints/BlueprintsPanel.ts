@@ -1,32 +1,22 @@
-import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
-import {grid} from '@xh/hoist/cmp/grid';
-import {hbox, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
-import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import type {HoistProps} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {segmentedControl} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import classNames from 'classnames';
 import type {ReactElement} from 'react';
+import {blueprintLibrary, blueprintWorkspace} from '../../../blueprints/BlueprintShell';
+import {BlueprintShellModel} from '../../../blueprints/BlueprintShellModel';
+import type {DesignerView} from '../../../blueprints/BlueprintShellModel';
 import {wrapper, wrapperAction, wrapperOptionGroup} from '../../common/Wrapper';
-import {architectPanel} from '../../../blueprints/ArchitectPanel';
-import {blueprintMenu} from '../../../blueprints/BlueprintMenu';
-import {BlueprintsPanelModel} from '../../../blueprints/BlueprintsPanelModel';
-import type {DesignerView} from '../../../blueprints/BlueprintsPanelModel';
-import '../../../blueprints/Blueprints.scss';
-import {inspectorPanel} from '../../../blueprints/InspectorPanel';
-import {catalogPanel} from '../../../blueprints/catalog/CatalogPanel';
-import {registryPanel} from '../../../blueprints/registry/RegistryPanel';
+
+/** The route that opens one blueprint in the tab, by its id. */
+export const BLUEPRINT_ROUTE = 'default.blueprints.blueprint';
 
 /** The Blueprints Designer: a library of blueprints, each built with the Architect. */
 export const blueprintsPanel = hoistCmp.factory({
     displayName: 'BlueprintsPanel',
-    model: creates(BlueprintsPanelModel),
+    model: creates(() => new BlueprintShellModel({route: BLUEPRINT_ROUTE})),
 
-    render({model}) {
-        const {blueprintModel} = model;
+    render() {
         return wrapper({
             title: 'Designer',
             icon: Icon.layout(),
@@ -42,43 +32,7 @@ export const blueprintsPanel = hoistCmp.factory({
                 wrapperOptionGroup({
                     label: 'Blueprints',
                     icon: Icon.layout(),
-                    children: [
-                        storeFilterField({
-                            gridModel: model.listGridModel,
-                            includeFields: ['name', 'description', 'owner'],
-                            placeholder: 'Search blueprints...',
-                            width: '100%'
-                        }),
-                        grid({
-                            model: model.listGridModel,
-                            className: 'tb-blueprints__list',
-                            agOptions: {domLayout: 'autoHeight'}
-                        }),
-                        hbox({
-                            className: 'tb-blueprints__list-actions',
-                            items: [
-                                wrapperAction({
-                                    text: 'New',
-                                    icon: Icon.add(),
-                                    intent: 'primary',
-                                    disabled: !blueprintModel,
-                                    onClick: () => model.newBlueprintAsync()
-                                }),
-                                wrapperAction({
-                                    text: 'Copy',
-                                    icon: Icon.copy(),
-                                    disabled: !model.documentModel?.document,
-                                    onClick: () => model.copySelectedAsync()
-                                }),
-                                wrapperAction({
-                                    text: 'Delete',
-                                    icon: Icon.delete(),
-                                    disabled: model.selected?.access !== 'write',
-                                    onClick: () => model.deleteSelectedAsync()
-                                })
-                            ]
-                        })
-                    ]
+                    children: [blueprintLibrary()]
                 }),
                 wrapperOptionGroup({
                     label: 'Reference',
@@ -92,7 +46,7 @@ export const blueprintsPanel = hoistCmp.factory({
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/blueprints/BlueprintsPanelModel.ts',
+                    url: '$TB/client-app/src/blueprints/BlueprintShellModel.ts',
                     notes: 'The library, and the models that open a blueprint.'
                 },
                 {
@@ -109,13 +63,13 @@ export const blueprintsPanel = hoistCmp.factory({
                 flex: 1,
                 width: '100%',
                 mask: 'onLoad',
-                item: blueprintModel ? hframe(architectPanel(), mainPanel()) : null
+                item: blueprintWorkspace()
             })
         });
     }
 });
 
-interface ViewButtonProps extends HoistProps<BlueprintsPanelModel> {
+interface ViewButtonProps extends HoistProps<BlueprintShellModel> {
     view: DesignerView;
     text: string;
     icon: ReactElement;
@@ -130,89 +84,3 @@ const viewButton = hoistCmp.factory<ViewButtonProps>(({model, view, text, icon})
         onClick: () => model.toggleView(view)
     })
 );
-
-const mainPanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
-    const {view, blueprintModel, selected} = model;
-    if (view !== 'blueprint') {
-        const isCatalog = view === 'catalog';
-        return panel({
-            title: isCatalog ? 'Data Catalog' : 'Registry',
-            icon: isCatalog ? Icon.database() : Icon.list(),
-            compactHeader: true,
-            headerItems: [
-                button({
-                    icon: Icon.close(),
-                    tooltip: 'Back to the blueprint',
-                    onClick: () => model.toggleView(view)
-                })
-            ],
-            item: isCatalog ? catalogPanel() : registryPanel()
-        });
-    }
-
-    return hframe(
-        panel({
-            title: selected?.name ?? 'No blueprint',
-            icon: Icon.layout(),
-            compactHeader: true,
-            headerItems: blueprintModel.blueprint
-                ? [
-                      span({
-                          className: classNames(
-                              'tb-blueprints__version',
-                              model.documentModel.isStale && 'xh-intent-warning'
-                          ),
-                          title: model.documentModel.isStale
-                              ? 'Saved elsewhere since you opened it, so your edits here are not saved. From the menu, Reload to take the saved draft, or Save as new to keep yours.'
-                              : null,
-                          item: documentStatus(model)
-                      }),
-                      button({
-                          text: 'Publish',
-                          icon: Icon.upload(),
-                          omit:
-                              !model.canEdit ||
-                              !model.documentModel.canPublish ||
-                              model.documentModel.isStale,
-                          onClick: () => model.publishSelectedAsync()
-                      }),
-                      segmentedControl({
-                          omit: !model.canEdit,
-                          value: blueprintModel.mode,
-                          onChange: mode => blueprintModel.setMode(mode),
-                          compact: true,
-                          options: [
-                              {value: 'design', label: 'Design', icon: Icon.edit()},
-                              {value: 'run', label: 'Run', icon: Icon.play()}
-                          ]
-                      }),
-                      blueprintMenu()
-                  ]
-                : [],
-            item: blueprintModel.blueprint
-                ? blueprintView({model: blueprintModel, designModel: model.designModel})
-                : placeholder(Icon.layout(), emptyText(model))
-        }),
-        selected ? inspectorPanel() : null
-    );
-});
-
-function emptyText({selected, openIssues}: BlueprintsPanelModel): string {
-    if (!selected) return 'Pick a blueprint, or start a new one.';
-    const error = openIssues.find(it => it.severity === 'error');
-    return error ? error.message : 'This blueprint is empty. Ask the Architect to build it.';
-}
-
-/** Which version is open, and whether its edits are saved. */
-function documentStatus({documentModel, isSaving, saveIssues}: BlueprintsPanelModel): string {
-    const doc = documentModel.document;
-    if (!doc) return null;
-    if (doc.kind === 'publish') {
-        return `Publish v${doc.version}${doc.access === 'write' ? '' : ' - read only'}`;
-    }
-    if (documentModel.isStale) return 'Not saved - changed elsewhere';
-    const error = saveIssues[0];
-    if (error) return error.message;
-    if (isSaving) return 'Saving...';
-    return documentModel.isDirty ? `Draft v${doc.version} - unsaved` : `Draft v${doc.version}`;
-}

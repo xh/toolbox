@@ -15,7 +15,7 @@ import type {PlainObject} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, computed} from '@xh/hoist/mobx';
 import {castArray, groupBy, isEmpty, isString} from 'lodash';
-import {BlueprintsPanelModel} from '../BlueprintsPanelModel';
+import {BlueprintShellModel} from '../BlueprintShellModel';
 import {datasetJoins, describeFormat, describeSpec} from './catalogFields';
 import type {DatasetJoin} from './catalogFields';
 import {markdownCol} from '../markdown';
@@ -27,7 +27,7 @@ import {catalogJson, datasetCards} from './CatalogViews';
  * blueprint uses.
  */
 export class CatalogModel extends HoistModel {
-    @lookup(BlueprintsPanelModel) panelModel: BlueprintsPanelModel;
+    @lookup(BlueprintShellModel) panelModel: BlueprintShellModel;
 
     @managed tabContainerModel = new TabContainerModel({
         tabs: [

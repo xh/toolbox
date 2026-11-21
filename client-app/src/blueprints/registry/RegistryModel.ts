@@ -12,7 +12,7 @@ import type {PlainObject} from '@xh/hoist/core';
 import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
 import {isEmpty, isString, sortBy} from 'lodash';
 import type {ReactNode} from 'react';
-import {BlueprintsPanelModel} from '../BlueprintsPanelModel';
+import {BlueprintShellModel} from '../BlueprintShellModel';
 import {formatOf} from '../catalog/CatalogModel';
 import type {RegistryEntry, RegistryKind, RegistryOrigin} from './registryEntries';
 import {registryEntries, sampleParams, schemaRows} from './registryEntries';
@@ -34,7 +34,7 @@ const KIND_LABELS: Record<RegistryKind, string> = {
  * marks what the blueprint uses, and shows an entry as the Architect sees it.
  */
 export class RegistryModel extends HoistModel {
-    @lookup(BlueprintsPanelModel) panelModel: BlueprintsPanelModel;
+    @lookup(BlueprintShellModel) panelModel: BlueprintShellModel;
 
     @bindable accessor context: RegistryContext = 'dashboard';
     @bindable accessor origins: RegistryOrigin[] = ['built-in', 'chat kit', 'app'];

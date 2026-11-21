@@ -68,6 +68,10 @@
 }
 
 .tb-blueprints {
+  &__library {
+    gap: var(--xh-spacing-half);
+  }
+
   &__list {
     flex: none;
     border: var(--xh-border-solid);

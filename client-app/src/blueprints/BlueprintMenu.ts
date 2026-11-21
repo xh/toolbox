@@ -7,17 +7,16 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuDivider, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import {BLUEPRINT_ROUTE} from './BlueprintsPanelModel';
-import type {BlueprintsPanelModel} from './BlueprintsPanelModel';
+import type {BlueprintShellModel} from './BlueprintShellModel';
 
 /**
  * The open blueprint's secondary actions: reload or save a stale draft as new, copy its link, and
  * share it. Its button turns to a warning while the draft is stale.
  */
-export const blueprintMenu = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
+export const blueprintMenu = hoistCmp.factory<BlueprintShellModel>(({model}) => {
     const doc = model.documentModel,
         stale = doc.isStale,
-        link = blueprintLinkUrl(doc, BLUEPRINT_ROUTE),
+        link = model.route ? blueprintLinkUrl(doc, model.route) : null,
         canShare = model.canEdit && doc.canShare;
 
     if (!stale && !link && !canShare) return null;
@@ -72,7 +71,7 @@ export const blueprintMenu = hoistCmp.factory<BlueprintsPanelModel>(({model}) =>
 });
 
 /** Who may see and edit the blueprint open. */
-const sharePanel = hoistCmp.factory<BlueprintsPanelModel>(({model}) => {
+const sharePanel = hoistCmp.factory<BlueprintShellModel>(({model}) => {
     const doc = model.documentModel,
         sharing: BlueprintAccessSpec = doc.document?.sharing ?? {writers: [], readers: []},
         modes = doc.sharingModes,

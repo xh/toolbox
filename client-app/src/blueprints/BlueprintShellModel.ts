@@ -24,8 +24,8 @@ import {
 import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {addToBlueprint} from '@xh/hoist-chat-kit/genui/architect';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import type {LoadSpec, PersistOptions} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import type {LoadSpec} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {Icon} from '@xh/hoist/icon';
 import {
@@ -37,15 +37,12 @@ import {
     observableRef,
     runInAction
 } from '@xh/hoist/mobx';
-import {find} from 'lodash';
+import {find, pick} from 'lodash';
 import {LocalThreadStore} from '../desktop/tabs/chatkit/integrations/LocalThreadStore';
 import {createArchitectChat} from './architectChat';
 import {createRepository} from './repository/createRepository';
 import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
-
-/** The route that opens one blueprint by its id, with link params: see `openLinkAsync`. */
-export const BLUEPRINT_ROUTE = 'default.blueprints.blueprint';
 
 /** What the designer shows beside the Architect: the open blueprint, or a reference page. */
 export type DesignerView = 'blueprint' | 'catalog' | 'registry';
@@ -59,19 +56,31 @@ const EMPTY_BLUEPRINT = {
 // The local library this designer kept before blueprints moved to the server. Dropped on load.
 const OLD_LIBRARY_KEY = 'blueprints.designer.library';
 
+export interface BlueprintShellConfig {
+    /**
+     * Names the shell's local state: its selection, and its conversations as `<key>.threads`.
+     * Default the Blueprints tab's.
+     */
+    storageKey?: string;
+    /** The route that opens one blueprint by its `id` param, with link params. Default none. */
+    route?: string;
+    /** The datasets of the server's Data Catalog the shell offers. Default all. */
+    datasets?: string[];
+    createProvider?: (catalog: DataCatalog) => BlueprintDataProvider;
+    repository?: BlueprintRepository;
+}
+
 /**
- * The Blueprints designer: a library of blueprints in a {@link BlueprintRepository}, each with its
- * own conversation with the Architect. One {@link BlueprintModel}, opened through a
+ * A blueprint app's shell: a library of blueprints in a {@link BlueprintRepository}, each with its
+ * own conversation with the Architect. The Blueprints tab and the blueprint example apps share it. One {@link BlueprintModel}, opened through a
  * {@link BlueprintDocumentModel}, and one Architect `ChatModel` hold the selected blueprint, once
  * the server's Data Catalog loads. The user's own blueprints open as drafts, which save as they
  * change. Other users' blueprints open at their latest publish, read-only.
  */
-export class BlueprintsPanelModel extends HoistModel {
-    override persistWith: PersistOptions = {localStorageKey: 'blueprintsDesigner'};
-
+export class BlueprintShellModel extends HoistModel {
     /** The blueprints the user may read, as the repository lists them. */
     @observableRef accessor summaries: BlueprintSummary[] = [];
-    @bindable @persist accessor selectedId: string = null;
+    @bindable accessor selectedId: string = null;
     @bindable accessor view: DesignerView = 'blueprint';
     @bindable accessor shareOpen = false;
 
@@ -103,12 +112,11 @@ export class BlueprintsPanelModel extends HoistModel {
 
     readonly repository: BlueprintRepository;
 
+    /** The route that opens one blueprint, if the app has one. */
+    readonly route: string;
+
     /** Each blueprint's conversation with the Architect, by blueprint ID. */
-    readonly threadStore = new LocalThreadStore({
-        storageKey: 'blueprints.designer.threads',
-        seed: () => [],
-        delayMs: 0
-    });
+    readonly threadStore: LocalThreadStore;
 
     @managed listGridModel = new GridModel({
         hideHeaders: true,
@@ -139,6 +147,7 @@ export class BlueprintsPanelModel extends HoistModel {
     });
 
     private createProvider: (catalog: DataCatalog) => BlueprintDataProvider;
+    private datasets: string[];
     private opening: Promise<void> = Promise.resolve();
     private lastLink: string = null;
 
@@ -161,13 +170,18 @@ export class BlueprintsPanelModel extends HoistModel {
             : (this.blueprintModel?.issues ?? []);
     }
 
-    constructor(
-        config: {
-            createProvider?: (catalog: DataCatalog) => BlueprintDataProvider;
-            repository?: BlueprintRepository;
-        } = {}
-    ) {
+    constructor(config: BlueprintShellConfig = {}) {
         super();
+        const {storageKey} = config;
+        this.persistWith = {localStorageKey: storageKey ?? 'blueprintsDesigner'};
+        this.markPersist('selectedId');
+        this.threadStore = new LocalThreadStore({
+            storageKey: storageKey ? `${storageKey}.threads` : 'blueprints.designer.threads',
+            seed: () => [],
+            delayMs: 0
+        });
+        this.route = config.route ?? null;
+        this.datasets = config.datasets ?? null;
         this.createProvider = config.createProvider ?? (() => new ServerDataProvider());
         this.repository = config.repository ?? createRepository();
         this.addReaction(
@@ -216,7 +230,10 @@ export class BlueprintsPanelModel extends HoistModel {
         const json = await XH.fetchJson({url: 'blueprints/catalog'}, {loadSpec});
         if (loadSpec.isStale) return;
 
-        const catalog = new DataCatalog(json);
+        const {datasets} = this,
+            catalog = new DataCatalog(
+                datasets ? {...json, datasets: pick(json.datasets, datasets)} : json
+            );
         runInAction(() => {
             const blueprintModel = (this.blueprintModel = this.markManaged(
                 new BlueprintModel({
@@ -251,7 +268,7 @@ export class BlueprintsPanelModel extends HoistModel {
 
         await this.refreshSummariesAsync();
         const {name, params} = XH.routerState ?? {};
-        if (name === BLUEPRINT_ROUTE && params?.id) return this.openLinkAsync(params);
+        if (name && name === this.route && params?.id) return this.openLinkAsync(params);
         const first = this.selected ? this.selectedId : this.summaries[0]?.id;
         if (first) await this.selectAsync(first, true);
     }
@@ -500,19 +517,20 @@ export class BlueprintsPanelModel extends HoistModel {
 
     // Open the link the address bar names, unless it is the one already open.
     private followRoute(name: string, params: BlueprintLinkParams) {
-        if (name !== BLUEPRINT_ROUTE || !params?.id || !this.documentModel) return;
+        if (!name || name !== this.route || !params?.id || !this.documentModel) return;
         if (linkKey(params) !== this.lastLink) this.openLinkAsync(params);
     }
 
     // Show the blueprint open in the address bar, as the link that opens it as it is now.
     private showInAddressBar(id: string) {
-        if (!XH.hasRoute(BLUEPRINT_ROUTE)) return;
+        const {route} = this;
+        if (!route || !XH.hasRoute(route)) return;
         const params = {
             id,
             ...(this.documentModel?.document?.kind === 'draft' ? {draft: true} : {})
         };
         this.lastLink = linkKey(params);
-        XH.navigate(BLUEPRINT_ROUTE, params, {replace: true});
+        XH.navigate(route, params, {replace: true});
     }
 
     // Save the draft open before leaving it, or confirm that its unsaved edits may go.

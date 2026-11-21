@@ -3,7 +3,7 @@ import {XH} from '@xh/hoist/core';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {find} from 'lodash';
 import {afterAll, beforeAll, describe, expect, it, vi} from 'vitest';
-import {BlueprintsPanelModel} from './BlueprintsPanelModel';
+import {BlueprintShellModel} from './BlueprintShellModel';
 import {
     BLUEPRINT_TYPE,
     JsonBlobBlueprintRepository,
@@ -32,7 +32,7 @@ const PRESETS = [
 ] as const;
 
 let user = OWNER,
-    model: BlueprintsPanelModel,
+    model: BlueprintShellModel,
     catalogRequests: number;
 
 beforeAll(async () => {
@@ -269,8 +269,8 @@ describe('Blueprints designer', () => {
 //------------------
 // Helpers
 //------------------
-async function createModelAsync(): Promise<BlueprintsPanelModel> {
-    const ret = new BlueprintsPanelModel({
+async function createModelAsync(): Promise<BlueprintShellModel> {
+    const ret = new BlueprintShellModel({
         createProvider: catalog => new FakeBlueprintDataProvider({catalog}),
         repository: new JsonBlobBlueprintRepository({username: () => user})
     });
@@ -316,7 +316,7 @@ function actAs(username: string) {
     hoistCore.user.username = username;
 }
 
-function byName(name: string, m: BlueprintsPanelModel = model) {
+function byName(name: string, m: BlueprintShellModel = model) {
     return find(m.summaries, {name});
 }
 
@@ -328,7 +328,7 @@ function groupByRegion(value: string[] = ['region']) {
     });
 }
 
-const groupBy = (m: BlueprintsPanelModel) =>
+const groupBy = (m: BlueprintShellModel) =>
     m.blueprintModel.blueprint.elements.posGrid.config.groupBy;
 
-const texts = (m: BlueprintsPanelModel) => m.chatModel.messages.map(it => it.text);
+const texts = (m: BlueprintShellModel) => m.chatModel.messages.map(it => it.text);

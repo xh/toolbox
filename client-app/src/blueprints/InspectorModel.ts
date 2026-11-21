@@ -16,7 +16,7 @@ import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
 import {applyJsonEdit} from './applyJsonEdit';
-import {BlueprintsPanelModel} from './BlueprintsPanelModel';
+import {BlueprintShellModel} from './BlueprintShellModel';
 import {inspectorHistory} from './InspectorHistory';
 import {inspectorJson} from './InspectorJson';
 import {inspectorOutline} from './InspectorOutline';
@@ -28,7 +28,7 @@ import {markdownCol} from './markdown';
  * document (issues, history, publishes, JSON). In design, the data tabs are editable.
  */
 export class InspectorModel extends HoistModel {
-    @lookup(BlueprintsPanelModel) panelModel: BlueprintsPanelModel;
+    @lookup(BlueprintShellModel) panelModel: BlueprintShellModel;
 
     @managed variablesGridModel = new GridModel({
         store: {idSpec: 'name'},
