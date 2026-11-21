@@ -3,6 +3,7 @@ import {architectPrompt} from '@xh/hoist-chat-kit/blueprint';
 import {ChatModel} from '@xh/hoist-chat-kit/core';
 import type {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {architectChatTools, blueprintContextProvider} from '@xh/hoist-chat-kit/genui/architect';
+import type {FeatureRequestSink} from '@xh/hoist-chat-kit/genui/architect';
 import {AnthropicCodec, HoistChatTransport} from '@xh/hoist-chat-kit/transport';
 import type {PlainObject} from '@xh/hoist/core';
 
@@ -14,13 +15,15 @@ import type {PlainObject} from '@xh/hoist/core';
  * @param onSave - called as each turn ends or pauses, to store the conversation.
  * @param context - what each call is for, sent as `X-Llm-Context` for the server's tracking.
  * @param sendBlocker - why the user may not send now, or null.
+ * @param featureRequests - where the Architect's feature requests go.
  */
 export function createArchitectChat(
     blueprintModel: BlueprintModel,
     catalog: ChatUiCatalog,
     onSave: () => void,
     context: () => PlainObject,
-    sendBlocker: () => string
+    sendBlocker: () => string,
+    featureRequests: FeatureRequestSink
 ): ChatModel {
     return new ChatModel({
         transport: new HoistChatTransport({
@@ -30,13 +33,14 @@ export function createArchitectChat(
                 system: architectPrompt({
                     catalogs: blueprintModel.catalogs,
                     registry: catalog.registry,
-                    withAnswers: true
+                    withAnswers: true,
+                    withFeatureRequests: true
                 }),
                 cacheControl: true
             })
         }),
         catalog,
-        tools: architectChatTools(blueprintModel, {catalog}),
+        tools: architectChatTools(blueprintModel, {catalog, featureRequests}),
         contextProviders: [blueprintContextProvider(blueprintModel)],
         // Each step is a model call, and counts toward the server's per-user `llmRateLimit`.
         maxSteps: 12,

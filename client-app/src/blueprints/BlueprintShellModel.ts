@@ -40,6 +40,7 @@ import {
 import {find, pick} from 'lodash';
 import {LocalThreadStore} from '../desktop/tabs/chatkit/integrations/LocalThreadStore';
 import {createArchitectChat} from './architectChat';
+import {featureRequestSink} from './featureRequestSink';
 import {usageBlockedReason} from './llmUsage';
 import type {LlmUsage} from './llmUsage';
 import {createRepository} from './repository/createRepository';
@@ -277,7 +278,12 @@ export class BlueprintShellModel extends HoistModel {
                         feature: 'architect',
                         blueprintId: this.documentModel?.document?.id
                     }),
-                    () => usageBlockedReason(this.usage)
+                    () => usageBlockedReason(this.usage),
+                    featureRequestSink(() => ({
+                        blueprintType: this.type.name,
+                        blueprintId: this.documentModel?.document?.id ?? null,
+                        app: XH.clientAppCode
+                    }))
                 )
             );
         });
