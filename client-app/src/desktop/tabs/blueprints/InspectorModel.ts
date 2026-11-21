@@ -10,7 +10,7 @@ import {
     variablesEditor
 } from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
@@ -24,8 +24,8 @@ import {inspectorPublishes} from './InspectorPublishes';
 import {markdownCol} from './markdown';
 
 /**
- * The open blueprint's outline, variables, validation issues and edit history. In design, its
- * variables, sources and presets are editable.
+ * The open blueprint's outline, its data (variables, plus sources and presets in design) and the
+ * document (issues, history, publishes, JSON). In design, the data tabs are editable.
  */
 export class InspectorModel extends HoistModel {
     @lookup(BlueprintsPanelModel) panelModel: BlueprintsPanelModel;
@@ -123,6 +123,27 @@ export class InspectorModel extends HoistModel {
         ]
     });
 
+    @managed dataTabsModel = new TabContainerModel({
+        tabs: [
+            {
+                id: 'variables',
+                content: () =>
+                    this.isDesigning
+                        ? variablesEditor({designModel: this.panelModel.designModel})
+                        : grid({model: this.variablesGridModel})
+            }
+        ]
+    });
+
+    @managed documentTabsModel = new TabContainerModel({
+        tabs: [
+            {id: 'issues', content: () => grid({model: this.issuesGridModel})},
+            {id: 'history', content: () => inspectorHistory({inspector: this})},
+            {id: 'publishes', content: () => inspectorPublishes({inspector: this})},
+            {id: 'json', title: 'JSON', content: () => inspectorJson({inspector: this})}
+        ]
+    });
+
     @managed tabContainerModel = new TabContainerModel({
         tabs: [
             {
@@ -133,17 +154,8 @@ export class InspectorModel extends HoistModel {
                         designing: this.isDesigning
                     })
             },
-            {
-                id: 'variables',
-                content: () =>
-                    this.isDesigning
-                        ? variablesEditor({designModel: this.panelModel.designModel})
-                        : grid({model: this.variablesGridModel})
-            },
-            {id: 'issues', content: () => grid({model: this.issuesGridModel})},
-            {id: 'history', content: () => inspectorHistory({inspector: this})},
-            {id: 'publishes', content: () => inspectorPublishes({inspector: this})},
-            {id: 'json', title: 'JSON', content: () => inspectorJson({inspector: this})}
+            {id: 'data', content: () => inspectorTabs({model: this.dataTabsModel})},
+            {id: 'document', content: () => inspectorTabs({model: this.documentTabsModel})}
         ]
     });
 
@@ -276,7 +288,7 @@ export class InspectorModel extends HoistModel {
 
     @action
     private showDesignTabs(designing: boolean) {
-        const {tabContainerModel: tabs, panelModel} = this;
+        const {dataTabsModel: tabs, panelModel} = this;
         if (!designing) {
             DESIGN_TABS.forEach(id => {
                 if (tabs.findTab(id)) tabs.removeTab(id);
@@ -284,15 +296,14 @@ export class InspectorModel extends HoistModel {
             return;
         }
         if (tabs.findTab('sources')) return;
-        const index = tabs.tabs.indexOf(tabs.findTab('variables')) + 1;
-        tabs.addTab(
-            {id: 'sources', content: () => sourcesEditor({designModel: panelModel.designModel})},
-            {index}
-        );
-        tabs.addTab(
-            {id: 'presets', content: () => presetsEditor({designModel: panelModel.designModel})},
-            {index: index + 1}
-        );
+        tabs.addTab({
+            id: 'sources',
+            content: () => sourcesEditor({designModel: panelModel.designModel})
+        });
+        tabs.addTab({
+            id: 'presets',
+            content: () => presetsEditor({designModel: panelModel.designModel})
+        });
     }
 
     /** Load a tab's grid, and show its row count in the tab's title. */
@@ -300,13 +311,15 @@ export class InspectorModel extends HoistModel {
     private load(tabId: string, gridModel: GridModel, rows: object[]) {
         const title = capitalize(tabId);
         gridModel.loadData(rows);
-        this.tabContainerModel.findTab(tabId).title = rows.length
-            ? `${title} (${rows.length})`
-            : title;
+        const tab = this.dataTabsModel.findTab(tabId) ?? this.documentTabsModel.findTab(tabId);
+        tab.title = rows.length ? `${title} (${rows.length})` : title;
     }
 }
 
 const DESIGN_TABS = ['sources', 'presets'];
+
+const inspectorTabs = ({model}: {model: TabContainerModel}) =>
+    tabContainer({model, switcher: {enableOverflow: true}});
 
 function toVariableRow(v: BlueprintVariable) {
     return {
