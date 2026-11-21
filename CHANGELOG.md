@@ -1,12 +1,13 @@
 # Changelog
 
 <!--
-  Entry conventions: CLAUDE.md ("Changelog" section) - read it before adding entries here.
+  New entries go in a fragment in changelog.d/, not in this file - run `pnpm changelog new` from
+  client-app/. A release assembles them here. Entry conventions: CLAUDE.md ("Changelog" section).
 
   Entries are parsed at build time and shown in-app to users. Three rules:
 
-  1. Every bullet is a single line, however long. The parser is line-based - a wrapped bullet keeps
-     its first line and silently drops the rest.
+  1. Start bullets and ### headings at column 0. Wrap bullets at 100 characters with a two-space
+     indent, and indent sub-bullets two spaces under their parent.
   2. Open with a past-tense verb (Added / Fixed / Removed), name what changed in backticks, and keep
      each bullet to one change. Use highly concise language suitable for relaying to app users.
   3. Plain ASCII punctuation only. Use " - " for in-sentence breaks, never an em dash.

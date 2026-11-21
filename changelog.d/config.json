@@ -1,0 +1,11 @@
+{
+    "sections": [
+        "Breaking Changes",
+        "New Features",
+        "Bug Fixes",
+        "Technical",
+        "Libraries"
+    ],
+    "headingFormat": "## {version} - {date}",
+    "maxLineLength": 100
+}
