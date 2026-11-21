@@ -88,6 +88,13 @@
   }
 }
 
+.tb-blueprints__usage {
+  flex: none;
+  margin-right: var(--xh-spacing-half);
+  color: var(--xh-text-color-muted);
+  font-size: 0.85em;
+}
+
 .tb-blueprints__version {
   flex: none;
   margin: 0 var(--xh-spacing-half) 0 var(--xh-spacing);

@@ -4,6 +4,7 @@ import {ChatModel} from '@xh/hoist-chat-kit/core';
 import type {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {architectChatTools, blueprintContextProvider} from '@xh/hoist-chat-kit/genui/architect';
 import {AnthropicCodec, HoistChatTransport} from '@xh/hoist-chat-kit/transport';
+import type {PlainObject} from '@xh/hoist/core';
 
 /**
  * The Architect: a chat with Claude, relayed by Toolbox's `llm/stream`, that edits the blueprint
@@ -11,15 +12,20 @@ import {AnthropicCodec, HoistChatTransport} from '@xh/hoist-chat-kit/transport';
  * questions with blueprints of their own through `show_ui`.
  *
  * @param onSave - called as each turn ends or pauses, to store the conversation.
+ * @param context - what each call is for, sent as `X-Llm-Context` for the server's tracking.
+ * @param sendBlocker - why the user may not send now, or null.
  */
 export function createArchitectChat(
     blueprintModel: BlueprintModel,
     catalog: ChatUiCatalog,
-    onSave: () => void
+    onSave: () => void,
+    context: () => PlainObject,
+    sendBlocker: () => string
 ): ChatModel {
     return new ChatModel({
         transport: new HoistChatTransport({
             url: 'llm/stream',
+            headers: () => ({'X-Llm-Context': JSON.stringify(context())}),
             codec: new AnthropicCodec({
                 system: architectPrompt({
                     catalogs: blueprintModel.catalogs,
@@ -34,6 +40,7 @@ export function createArchitectChat(
         contextProviders: [blueprintContextProvider(blueprintModel)],
         // Each step is a model call, and counts toward the server's per-user `llmRateLimit`.
         maxSteps: 12,
+        sendBlocker,
         onTurnComplete: onSave,
         onTurnPause: onSave
     });

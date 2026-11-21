@@ -1,24 +1,34 @@
 import {chatPanel} from '@xh/hoist-chat-kit/desktop/cmp/chat';
-import {placeholder} from '@xh/hoist/cmp/layout';
+import {placeholder, span} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import type {BlueprintShellModel} from './BlueprintShellModel';
+import {usageText} from './llmUsage';
 
 /** The Architect's conversation about the open blueprint. */
 export const architectPanel = hoistCmp.factory<BlueprintShellModel>({
     displayName: 'ArchitectPanel',
 
     render({model}) {
-        const {chatModel} = model,
-            hasAccess = XH.getUser().hasRole('TOOLBOX_LLM_USER');
+        const {chatModel, usage} = model,
+            hasAccess = XH.getUser().hasRole('TOOLBOX_LLM_USER'),
+            left = usageText(usage);
         return panel({
             title: 'Architect',
             icon: Icon.ai(),
             compactHeader: true,
             modelConfig: {side: 'left', defaultSize: 400, minSize: 300},
             headerItems: [
+                span({
+                    omit: !left,
+                    className: 'tb-blueprints__usage',
+                    title: usage
+                        ? `${usage.calls} calls this hour, ${usage.tokens} tokens today`
+                        : null,
+                    item: left
+                }),
                 button({
                     icon: Icon.delete(),
                     tooltip: 'Clear conversation',

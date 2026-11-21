@@ -40,6 +40,8 @@ import {
 import {find, pick} from 'lodash';
 import {LocalThreadStore} from '../desktop/tabs/chatkit/integrations/LocalThreadStore';
 import {createArchitectChat} from './architectChat';
+import {usageBlockedReason} from './llmUsage';
+import type {LlmUsage} from './llmUsage';
 import {createRepository} from './repository/createRepository';
 import {ServerDataProvider} from './ServerDataProvider';
 import {createToolboxRegistry} from './toolboxRegistry';
@@ -94,6 +96,9 @@ export class BlueprintShellModel extends HoistModel {
     @observableRef accessor publishes: BlueprintPublish[] = [];
 
     @observable accessor isSaving = false;
+
+    /** The user's use of the Claude API relay, or null if unknown or not allowed. */
+    @observableRef accessor usage: LlmUsage = null;
 
     /** Null until the catalog loads. */
     @observableRef accessor blueprintModel: BlueprintModel = null;
@@ -259,11 +264,23 @@ export class BlueprintShellModel extends HoistModel {
                 }
             });
             this.chatModel = this.markManaged(
-                createArchitectChat(blueprintModel, this.answerCatalog, () =>
-                    this.saveConversation()
+                createArchitectChat(
+                    blueprintModel,
+                    this.answerCatalog,
+                    () => {
+                        this.saveConversation();
+                        this.refreshUsageAsync();
+                    },
+                    () => ({
+                        app: XH.clientAppCode,
+                        feature: 'architect',
+                        blueprintId: this.documentModel?.document?.id
+                    }),
+                    () => usageBlockedReason(this.usage)
                 )
             );
         });
+        this.refreshUsageAsync();
         dropOldLibrary();
 
         await this.refreshSummariesAsync();
@@ -545,6 +562,17 @@ export class BlueprintShellModel extends HoistModel {
                 : `Your edits to "${this.selected?.name}" are not saved. Leave them?`,
             confirmProps: {text: 'Leave them', intent: 'danger', outlined: true}
         });
+    }
+
+    /** Fetch the user's usage of the Claude API relay, if they may call it. */
+    async refreshUsageAsync() {
+        if (!XH.getUser().hasRole('TOOLBOX_LLM_USER')) return;
+        try {
+            const usage = await XH.fetchJson({url: 'llm/usage'});
+            runInAction(() => (this.usage = usage));
+        } catch (e) {
+            XH.handleException(e, {showAlert: false});
+        }
     }
 
     private async loadPublishesAsync() {
