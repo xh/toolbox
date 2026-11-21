@@ -23,7 +23,9 @@ import {isEqual, maxBy, sortBy} from 'lodash';
 /**
  * The JsonBlob types that hold blueprints of one blueprint type: each draft, named by the
  * blueprint's ID; each publish, named `<id>:<n>`; and each user's personalization, named
- * `<id>|<preset>`. Throws if a name passes hoist-core's 50 characters.
+ * `<id>|<preset>`. A blueprint type is dotted, as the kit requires, and here at most 25 characters,
+ * tighter than the kit's 50, so `blueprintPersonalization.<type>` fits hoist-core's 50-character
+ * JsonBlob type. Throws on a type that is not.
  */
 export function jsonBlobTypes(type: string): {
     draft: string;
@@ -35,8 +37,11 @@ export function jsonBlobTypes(type: string): {
         publish: `blueprintPublish.${type}`,
         personalization: `blueprintPersonalization.${type}`
     };
-    if (ret.personalization.length > 50) {
-        throw new Error(`Blueprint type '${type}' is too long for a JsonBlob type.`);
+    if (!type?.includes('.')) {
+        throw new Error(`A blueprint type is dotted, such as toolbox.weather, not '${type}'.`);
+    }
+    if (type.length > 25) {
+        throw new Error(`A blueprint type in JsonBlobs is at most 25 characters: '${type}'.`);
     }
     return ret;
 }

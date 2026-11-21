@@ -48,7 +48,8 @@ describe('JsonBlobBlueprintRepository', () => {
             publish: 'blueprintPublish.toolbox.portfolio',
             personalization: 'blueprintPersonalization.toolbox.portfolio'
         });
-        expect(() => jsonBlobTypes('x'.repeat(30))).toThrow();
+        expect(() => jsonBlobTypes(`toolbox.${'x'.repeat(20)}`)).toThrow(/at most 25/);
+        expect(() => jsonBlobTypes('portfolio')).toThrow(/dotted/);
 
         const other = new JsonBlobBlueprintRepository({
                 type: 'toolbox.other',
