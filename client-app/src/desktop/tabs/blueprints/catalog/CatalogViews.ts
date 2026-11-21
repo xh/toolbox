@@ -55,7 +55,28 @@ const datasetCard = hoistCmp.factory<DatasetCardModel>(({model}) => {
                 ]
             }),
             description ? div({className: 'tb-dataset__description', item: md(description)}) : null,
+            datasetMeta({model}),
             expanded ? datasetDetails({model}) : null
+        ]
+    });
+});
+
+/** The fields that identify a row, and the datasets that can join on them. */
+const datasetMeta = hoistCmp.factory<DatasetCardModel>(({model}) => {
+    const {ds, joins} = model;
+    if (!ds.key?.length) return null;
+    return div({
+        className: 'tb-dataset__meta',
+        items: [
+            span({className: 'tb-dataset__meta-label', item: 'Grain'}),
+            span({className: 'tb-dataset__meta-value', item: ds.key.join(', ')}),
+            joins.length ? span({className: 'tb-dataset__meta-label', item: 'Joins'}) : null,
+            joins.length
+                ? span({
+                      className: 'tb-dataset__meta-value',
+                      item: joins.map(j => `${j.dataset} on ${j.on.join(', ')}`).join('; ')
+                  })
+                : null
         ]
     });
 });

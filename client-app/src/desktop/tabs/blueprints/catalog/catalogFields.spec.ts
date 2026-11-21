@@ -6,7 +6,7 @@ import catalogJson from '../../../../test-support/blueprintsCatalog.json';
 import p3 from '../scenarios/p3-morning-report.json';
 import w2 from '../scenarios/w2-two-cities.json';
 import {fieldTree, formatOf} from './CatalogModel';
-import {describeFormat} from './catalogFields';
+import {datasetJoins, describeFormat} from './catalogFields';
 
 const catalog = new DataCatalog(catalogJson as any),
     field = (dataset: string, name: string) => catalog.getDataset(dataset).fields[name],
@@ -209,3 +209,23 @@ describe('field tree', () => {
 function flatten(nodes: PlainObject[]): PlainObject[] {
     return nodes.flatMap(it => [it, ...flatten(it.children ?? [])]);
 }
+
+describe('datasetJoins', () => {
+    const joins = (name: string) => datasetJoins(catalog, catalog.getDataset(name));
+
+    it('lists the datasets whose key fields this one has as dimensions', () => {
+        expect(joins('positions')).toEqual([
+            {dataset: 'fundSummary', on: ['fund']},
+            {dataset: 'prices', on: ['symbol']},
+            {dataset: 'hypotheticalPortfolio', on: ['symbol']}
+        ]);
+        expect(joins('fundSummary')).toEqual([{dataset: 'positions', on: ['fund']}]);
+        expect(joins('orders')).toEqual([
+            {dataset: 'positions', on: ['fund', 'strategy', 'book', 'trader', 'model', 'symbol']},
+            {dataset: 'fundSummary', on: ['fund']},
+            {dataset: 'prices', on: ['symbol']},
+            {dataset: 'hypotheticalPortfolio', on: ['symbol']}
+        ]);
+        expect(joins('weather')).toEqual([{dataset: 'currentWeather', on: ['city']}]);
+    });
+});

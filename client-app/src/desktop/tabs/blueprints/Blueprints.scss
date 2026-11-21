@@ -173,6 +173,25 @@
     }
   }
 
+  &__meta {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 2px var(--xh-spacing);
+    padding: 0 var(--xh-spacing) var(--xh-spacing) calc(var(--xh-spacing) * 3);
+    font-size: var(--xh-font-size-small);
+  }
+
+  &__meta-label {
+    color: var(--xh-text-color-muted);
+    text-transform: uppercase;
+    font-size: 0.85em;
+    letter-spacing: 0.04em;
+  }
+
+  &__meta-value {
+    font-family: var(--xh-font-family-mono);
+  }
+
   &__details {
     gap: var(--xh-spacing);
     padding: 0 var(--xh-spacing) var(--xh-spacing);

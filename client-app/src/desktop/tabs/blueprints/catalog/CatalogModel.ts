@@ -16,7 +16,8 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, computed} from '@xh/hoist/mobx';
 import {castArray, groupBy, isEmpty, isString} from 'lodash';
 import {BlueprintsPanelModel} from '../BlueprintsPanelModel';
-import {describeFormat, describeSpec} from './catalogFields';
+import {datasetJoins, describeFormat, describeSpec} from './catalogFields';
+import type {DatasetJoin} from './catalogFields';
 import {markdownCol} from '../markdown';
 import {catalogJson, datasetCards} from './CatalogViews';
 
@@ -85,7 +86,7 @@ export class CatalogModel extends HoistModel {
         this.kindsGridModel.loadData(kindRows(catalog));
         this.formatsGridModel.loadData(formatRows(catalog));
         this.datasetModels = Object.values(catalog.datasets).map(
-            (ds, idx) => new DatasetCardModel(ds, idx === 0)
+            (ds, idx) => new DatasetCardModel(ds, datasetJoins(catalog, ds), idx === 0)
         );
         this.addReaction({
             track: () => this.usages,
@@ -152,6 +153,8 @@ export class DatasetCardModel extends HoistModel {
 
     constructor(
         readonly ds: DatasetDef,
+        /** The datasets that can join onto this one, with the fields they join on. */
+        readonly joins: DatasetJoin[],
         expanded = false
     ) {
         super();
