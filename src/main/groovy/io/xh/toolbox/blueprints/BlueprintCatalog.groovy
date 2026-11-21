@@ -190,6 +190,9 @@ class BlueprintCatalog {
                 } catch (DateTimeParseException ignored) {
                     fail("$desc must be a localDate as YYYY-MM-DD, got '$val'")
                 }
+            case 'string':
+                if (!(val instanceof String)) fail("$desc must be a string, got '$val'")
+                return val
             case 'number':
                 if (!(val instanceof Number)) fail("$desc must be a number, got '$val'")
                 return (val as Number).doubleValue()

@@ -157,6 +157,7 @@ class BlueprintCatalogSpec extends Specification {
         'missing required param'    | [dataset: 'positions', params: [:]]                                               || "Dataset 'positions' requires parameter 'asOf'"
         'unknown param'             | [dataset: 'positions', params: [asOf: '2026-11-18', book: 'x']]                   || "Unknown parameter 'book' for dataset 'positions'"
         'bad date'                  | [dataset: 'positions', params: [asOf: '11/18/2026']]                              || "Parameter 'asOf' of dataset 'positions' must be a localDate as YYYY-MM-DD, got '11/18/2026'"
+        'non-string string param'   | [dataset: 'prices', params: [symbol: ['A'], start: '2026-11-18', end: '2026-11-18']] || "Parameter 'symbol' of dataset 'prices' must be a string, got '[A]'"
         'unknown field'             | positions(['sector', 'pnl'])                                                      || "Unknown field 'pnl' in dataset 'positions'"
         'field not in dataset'      | positions(['orderId'])                                                            || "Unknown field 'orderId' in dataset 'positions'"
         'bare param field'          | positions(['return'])                                                             || "Field 'return' takes parameters"
