@@ -27,6 +27,24 @@ describe('createOpenUiLabCatalog', () => {
         expect(instructions).toContain('root = Stack(');
     });
 
+    it('teaches the model a signature for the form, the button and every input', () => {
+        const {instructions} = catalog;
+        [
+            'Form',
+            'Button',
+            'TextInput',
+            'TextArea',
+            'NumberInput',
+            'Select',
+            'DateInput',
+            'Checkbox',
+            'Switch',
+            'SegmentedControl',
+            'RadioInput',
+            'Slider'
+        ].forEach(name => expect(instructions).toContain(`${name}(`));
+    });
+
     it('delivers UI as reply text only, with no catalog tools for the model to call', () => {
         expect(catalog.toToolSchemas()).toEqual([]);
     });
