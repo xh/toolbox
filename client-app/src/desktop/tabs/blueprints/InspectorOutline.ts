@@ -27,7 +27,6 @@ export const inspectorOutline = hoistCmp.factory<InspectorOutlineProps>({
             panel({
                 title: 'Add widget',
                 compactHeader: true,
-                className: 'tb-inspector__palette',
                 omit: !designing,
                 modelConfig: {
                     side: 'top',
