@@ -113,7 +113,7 @@ tasks.withType(Test).configureEach { useJUnitPlatform() }
 // The Blueprints designer's preset blueprints, which the client's specs also use, have one home in
 // client-app. The server seeds them from its classpath - see BlueprintPresetService.
 tasks.named('processResources', ProcessResources) {
-    from('client-app/src/desktop/tabs/blueprints/scenarios') {
+    from('client-app/src/blueprints/scenarios') {
         include '*.json'
         into 'blueprints/scenarios'
     }

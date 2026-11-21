@@ -44,11 +44,12 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
 
         then:
         JsonBlob.count() == PRESETS.size() * 2
-        JsonBlob.findAllByType(BLUEPRINT_TYPE)*.name.sort() == PRESETS*.id.sort()
+        JsonBlob.findAllByType('blueprint.toolbox.portfolio')*.name.sort() == PRESETS.findAll { it.type == PORTFOLIO }*.token.sort()
+        JsonBlob.findAllByType('blueprint.toolbox.weather')*.name.sort() == PRESETS.findAll { it.type == WEATHER }*.token.sort()
 
         when:
-        def draft = JsonBlob.findByTypeAndName(BLUEPRINT_TYPE, 'bp-preset-p3')
-        def publish = JsonBlob.findByTypeAndName(PUBLISH_TYPE, 'bp-preset-p3:1')
+        def draft = JsonBlob.findByTypeAndName('blueprint.toolbox.portfolio', 'morning-report')
+        def publish = JsonBlob.findByTypeAndName('blueprintPublish.toolbox.portfolio', 'morning-report:1')
         Map draftMeta = parseObject(draft.meta), publishMeta = parseObject(publish.meta)
 
         then:
@@ -60,27 +61,27 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
         !draftMeta.containsKey('description')
         parseObject(publish.value) == [blueprint: preset('p3-morning-report')]
         publishMeta.subMap('blueprintId', 'version', 'publishedBy', 'renames') ==
-            [blueprintId: 'bp-preset-p3', version: 1, publishedBy: OWNER, renames: []]
+            [blueprintId: 'morning-report', version: 1, publishedBy: OWNER, renames: []]
         publishMeta.published instanceof Number
     }
 
     def 'completes a seed that was cut short, without duplicating its publish'() {
         given:
         service.seedPresets()
-        JsonBlob.findByTypeAndName(BLUEPRINT_TYPE, 'bp-preset-w1').delete(flush: true)
+        JsonBlob.findByTypeAndName('blueprint.toolbox.weather', 'weather-one-city').delete(flush: true)
 
         when:
         service.seedPresets()
 
         then:
         JsonBlob.count() == PRESETS.size() * 2
-        JsonBlob.countByTypeAndName(PUBLISH_TYPE, 'bp-preset-w1:1') == 1
+        JsonBlob.countByTypeAndName('blueprintPublish.toolbox.weather', 'weather-one-city:1') == 1
     }
 
     def 'republishes a seeded preset whose stored content differs from its file, once'() {
         given:
         service.seedPresets()
-        def draft = JsonBlob.findByTypeAndName(BLUEPRINT_TYPE, 'bp-preset-p3')
+        def draft = JsonBlob.findByTypeAndName('blueprint.toolbox.portfolio', 'morning-report')
         draft.value = '{"blueprint": {"stale": true}, "pendingRenames": []}'
         draft.save(flush: true)
 
@@ -90,12 +91,12 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
 
         then:
         JsonBlob.count() == PRESETS.size() * 2 + 1
-        parseObject(JsonBlob.findByTypeAndName(PUBLISH_TYPE, 'bp-preset-p3:2').value) == [blueprint: preset('p3-morning-report')]
-        parseObject(JsonBlob.findByTypeAndName(PUBLISH_TYPE, 'bp-preset-p3:2').meta).subMap('blueprintId', 'version', 'publishedBy') ==
-            [blueprintId: 'bp-preset-p3', version: 2, publishedBy: OWNER]
+        parseObject(JsonBlob.findByTypeAndName('blueprintPublish.toolbox.portfolio', 'morning-report:2').value) == [blueprint: preset('p3-morning-report')]
+        parseObject(JsonBlob.findByTypeAndName('blueprintPublish.toolbox.portfolio', 'morning-report:2').meta).subMap('blueprintId', 'version', 'publishedBy') ==
+            [blueprintId: 'morning-report', version: 2, publishedBy: OWNER]
 
         when:
-        def refreshed = JsonBlob.findByTypeAndName(BLUEPRINT_TYPE, 'bp-preset-p3')
+        def refreshed = JsonBlob.findByTypeAndName('blueprint.toolbox.portfolio', 'morning-report')
 
         then:
         parseObject(refreshed.value) == [blueprint: preset('p3-morning-report'), pendingRenames: []]
@@ -105,8 +106,8 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
 
     def 'seeds hoist-core\'s blueprints only when it provides BlueprintService and storage is enabled'() {
         given:
-        service.blueprintService = blueprintService ? [ensureGlobal: { String name, String desc, Map bp, String owner ->
-            ensureGlobalCalls << [name, desc, bp, owner]
+        service.blueprintService = blueprintService ? [ensureGlobal: { String type, String token, String name, String desc, Map bp, String owner ->
+            ensureGlobalCalls << [type, token, name, desc, bp, owner]
         }] : null
         blueprintConfig.enabled = enabled
 
@@ -114,13 +115,13 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
         service.seedPresets()
 
         then:
-        ensureGlobalCalls*.get(0) == expected
-        ensureGlobalCalls.every { it[1] == null && it[3] == OWNER }
-        !ensureGlobalCalls || ensureGlobalCalls[0][2] == preset('p1-one-grid')
+        ensureGlobalCalls.collect { it[0..2] } == expected
+        ensureGlobalCalls.every { it[3] == null && it[5] == OWNER }
+        !ensureGlobalCalls || ensureGlobalCalls[0][4] == preset('p1-one-grid')
 
         where:
         blueprintService | enabled || expected
-        true             | true    || PRESETS*.name
+        true             | true    || PRESETS.collect { [it.type, it.token, it.name] }
         true             | false   || []
         false            | true    || []
     }
