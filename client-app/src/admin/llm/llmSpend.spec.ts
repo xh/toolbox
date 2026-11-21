@@ -12,7 +12,7 @@ describe('summarizeLlmUse', () => {
     it("sums each user's calls, tokens and refusals per app", () => {
         const rows = summarizeLlmUse([
             call('jdoe', {
-                app: 'weatherBlueprints',
+                app: 'blueprintWeather',
                 inputTokens: 100,
                 outputTokens: 20,
                 cacheReadTokens: 5,
@@ -20,23 +20,23 @@ describe('summarizeLlmUse', () => {
                 tokens: 125
             }),
             call('jdoe', {
-                app: 'weatherBlueprints',
+                app: 'blueprintWeather',
                 inputTokens: 50,
                 outputTokens: 10,
                 cacheReadTokens: 0,
                 cacheWriteTokens: 5,
                 tokens: 65
             }),
-            call('jdoe', {app: 'weatherBlueprints', tokens: 7, error: 'boom'}, 'WARN'),
+            call('jdoe', {app: 'blueprintWeather', tokens: 7, error: 'boom'}, 'WARN'),
             call('jdoe', {tokens: 40}),
             {
                 username: 'jdoe',
                 msg: 'LLM rate limit hit',
                 severity: 'WARN',
-                data: JSON.stringify({app: 'weatherBlueprints'})
+                data: JSON.stringify({app: 'blueprintWeather'})
             },
             call('asmith', {
-                app: 'portfolioBlueprints',
+                app: 'blueprintPortfolio',
                 tokens: 300,
                 inputTokens: 250,
                 outputTokens: 50
@@ -45,9 +45,9 @@ describe('summarizeLlmUse', () => {
         ]);
         expect(rows).toEqual([
             {
-                id: 'asmith|portfolioBlueprints',
+                id: 'asmith|blueprintPortfolio',
                 username: 'asmith',
-                app: 'portfolioBlueprints',
+                app: 'blueprintPortfolio',
                 calls: 1,
                 failed: 0,
                 refused: 0,
@@ -69,9 +69,9 @@ describe('summarizeLlmUse', () => {
                 tokens: 40
             },
             {
-                id: 'jdoe|weatherBlueprints',
+                id: 'jdoe|blueprintWeather',
                 username: 'jdoe',
-                app: 'weatherBlueprints',
+                app: 'blueprintWeather',
                 calls: 3,
                 failed: 1,
                 refused: 1,

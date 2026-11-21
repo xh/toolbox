@@ -36,8 +36,8 @@ export class ExamplesTabModel extends HoistModel {
         {
             title: 'Portfolio Blueprints',
             icon: Icon.portfolio(),
-            path: 'portfolioBlueprints',
-            srcPath: 'portfolioBlueprints',
+            path: 'blueprintPortfolio',
+            srcPath: 'blueprintPortfolio',
             text: [
                 p(
                     'The Portfolio example again, built from blueprints: a morning report, risk views and showcases, each JSON that the Architect writes and changes as you ask.'
@@ -65,8 +65,8 @@ export class ExamplesTabModel extends HoistModel {
         {
             title: 'Weather Blueprints',
             icon: Icon.sun(),
-            path: 'weatherBlueprints',
-            srcPath: 'weatherBlueprints',
+            path: 'blueprintWeather',
+            srcPath: 'blueprintWeather',
             text: [
                 p(
                     'The Weather example again, built from blueprints: each dashboard is JSON that the Architect writes and changes as you ask.'
