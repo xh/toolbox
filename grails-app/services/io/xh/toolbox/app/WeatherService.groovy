@@ -4,6 +4,8 @@ import io.xh.hoist.BaseService
 import io.xh.hoist.cache.Cache
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.exception.DataNotAvailableException
+import io.xh.hoist.exception.ExternalHttpException
+import io.xh.hoist.exception.RoutineRuntimeException
 import io.xh.hoist.http.JSONClient
 import org.apache.hc.client5.http.classic.methods.HttpGet
 
@@ -52,7 +54,7 @@ class WeatherService extends BaseService {
         span('getCurrent')
             .logDebug("Loading forecast for $city")
             .run {
-                client.executeAsMap(new HttpGet(url))
+                fetch(city, url)
             }
       }
 
@@ -64,8 +66,20 @@ class WeatherService extends BaseService {
         span('getForecast')
             .logDebug("Loading forecast for $city")
             .run {
-                client.executeAsMap(new HttpGet(url))
+                fetch(city, url)
             }
+    }
+
+    private Map fetch(String city, String url) {
+        try {
+            return client.executeAsMap(new HttpGet(url))
+        } catch (ExternalHttpException e) {
+            // Its message holds the request URL, and with it the API key.
+            if (e.statusCode in [400, 404]) throw new RoutineRuntimeException("Unknown city '$city'")
+            String status = e.statusCode ?: 'no response'
+            logWarn('OpenWeatherMap request failed', [city: city, status: status])
+            throw new DataNotAvailableException("Weather data is unavailable: OpenWeatherMap returned $status")
+        }
     }
 
     private String getApiKey() {
