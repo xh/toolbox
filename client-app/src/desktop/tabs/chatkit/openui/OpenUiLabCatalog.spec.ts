@@ -17,6 +17,8 @@ describe('createOpenUiLabCatalog', () => {
             'Callout',
             'Badges',
             'StatCards',
+            'PropertyTable',
+            'ProgressBars',
             'Grid',
             'Chart',
             'Treemap',

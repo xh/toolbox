@@ -6,6 +6,8 @@ import {
     chatUiSeparatorSpec,
     chatUiGridSpec,
     chatUiInputSpecs,
+    chatUiProgressBarsSpec,
+    chatUiPropertyTableSpec,
     chatUiStatCardsSpec,
     chatUiSectionSpec,
     chatUiStackSpec,
@@ -57,6 +59,8 @@ export function createOpenUiLabCatalog({
             chatUiBadgesSpec(),
             // Values that the model writes into the program.
             chatUiStatCardsSpec({maxItems: 6}),
+            chatUiPropertyTableSpec(),
+            chatUiProgressBarsSpec(),
             chatUiGridSpec({maxRows: 50}),
             chatUiChartSpec(),
             chatUiTreeMapSpec(),

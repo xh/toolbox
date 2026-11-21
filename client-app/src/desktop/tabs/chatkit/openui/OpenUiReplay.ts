@@ -130,6 +130,105 @@ export const OPEN_UI_REPLAY_SCENARIOS: OpenUiReplayScenario[] = [
             )
     },
     {
+        prompt: 'Replay a position detail: a property table, a labeled separator and the price in its range.',
+        icon: Icon.detail(),
+        toolRounds: [
+            () => [{name: 'query_positions', input: {groupBy: ['symbol'], limit: 1}}],
+            ([top]) => [
+                {
+                    name: 'get_price_history',
+                    input: {symbol: top.firstRows[0].symbol, days: 90}
+                }
+            ]
+        ],
+        reply: ([top, {summary}]) => {
+            const {symbol, pnl, mktVal, positions} = top.firstRows[0],
+                {lastClose, change, high, low} = summary;
+            return [
+                `**${symbol}** is the most profitable symbol. Here is its detail.`,
+                '',
+                fence(
+                    `root = Stack([facts, split, range], "column", "medium", "${symbol}: position detail")`,
+                    `facts = PropertyTable([{label: "Symbol", value: "${symbol}"}, {label: "Positions", value: ${positions}}, {label: "Market value", value: ${mktVal}, format: "currency", decimals: 0}, {label: "P&L", value: ${pnl}, format: "currency", decimals: 0, intent: "${intentOf(pnl)}"}, {label: "Last close", value: ${lastClose}, format: "currency"}, {label: "Change, 90 days", value: ${change}, format: "percent", decimals: 1, intent: "${intentOf(change)}"}, {label: "High", value: ${high}, format: "currency"}, {label: "Low", value: ${low}, format: "currency"}, {label: "Hedged", value: true}, {label: "Approver"}], 2)`,
+                    'split = Separator("Last close in its 90-day range")',
+                    `range = ProgressBars([{label: "From the low to the high of 90 days", value: ${toCents(lastClose - low)}, max: ${toCents(high - low)}}])`
+                )
+            ].join('\n');
+        }
+    },
+    {
+        prompt: 'Replay a risk view: sector exposure against a limit, and stat cards with a trend.',
+        icon: Icon.shield(),
+        toolRounds: [
+            () => [
+                {
+                    name: 'query_positions',
+                    input: {groupBy: ['sector'], sortBy: 'mktVal', preview: MAX_BARS}
+                },
+                {name: 'query_positions', input: {groupBy: ['symbol'], limit: 1}}
+            ],
+            ([, top]) => [
+                {
+                    name: 'get_price_history',
+                    input: {symbol: top.firstRows[0].symbol, days: 30, preview: 30}
+                }
+            ]
+        ],
+        reply: ([sectors, top, prices]) => {
+            // The largest exposures first, as many as a progress bars component shows.
+            const rows = sectors.firstRows
+                    .map(({sector, mktVal}) => ({sector, exposure: Math.round(Math.abs(mktVal))}))
+                    .sort((a, b) => b.exposure - a.exposure)
+                    .slice(0, MAX_BARS),
+                // A limit that the largest sector breaks, and a warning level under it.
+                limit = Math.round(Math.max(...rows.map(it => it.exposure)) * 0.9),
+                warnAt = Math.round(limit * 0.8),
+                closes = (prices.firstRows ?? []).map(it => toCents(it.close)),
+                {symbol} = top.firstRows[0];
+            return [
+                'Exposure by sector against one limit, with the warning level marked on each bar.',
+                '',
+                fence(
+                    'root = Stack([kpis, split, bars], "column", "medium", "Risk view")',
+                    `kpis = StatCards([{label: "Gross exposure", value: ${Math.round(Math.abs(sectors.summary.mktVal))}, format: "currency", decimals: 0}, {label: "P&L", value: ${sectors.summary.pnl}, format: "currency", decimals: 0, intent: "${intentOf(sectors.summary.pnl)}"}, {label: "${symbol} close", value: ${prices.summary.lastClose}, format: "currency", delta: ${prices.summary.change}, deltaFormat: "percent", deltaLabel: "30 days", trend: [${closes.join(', ')}]}])`,
+                    `split = Separator("Exposure against a limit of ${(limit / 1e6).toFixed(1)}M")`,
+                    `bars = ProgressBars([${rows
+                        .map(
+                            ({sector, exposure}) =>
+                                `{label: "${sector}", value: ${exposure}, max: ${limit}, format: "currency", intent: "${exposure > limit ? 'danger' : exposure > warnAt ? 'warning' : 'success'}", target: ${warnAt}}`
+                        )
+                        .join(', ')}])`
+                )
+            ].join('\n');
+        }
+    },
+    {
+        prompt: 'Replay the new display parts: property tables, progress bars and stat cards with trends.',
+        icon: Icon.gift(),
+        reply: () =>
+            [
+                'Each new part, with made-up values, for a quick look.',
+                '',
+                fence(
+                    'root = Stack([kpis, plain, order, labeled, tables, limits, bars, inRow])',
+                    'kpis = StatCards([{label: "Revenue", value: 2483960, format: "currency", decimals: 0, delta: 0.042, deltaFormat: "percent", deltaLabel: "vs. last month", trend: [101, 103, 102, 106, 109, 107, 113, 111, 116, 118]}, {label: "Orders", value: 18375, trend: [310, 342, 298, 365, 401, 388, 420, 395, 441, 467]}, {label: "Returns", value: 87412, delta: 0.093, deltaFormat: "percent", deltaLabel: "vs. last month", invert: true, trend: [118, 116, 117, 112, 113, 108, 109, 104, 105, 101]}, {label: "On time", value: 0.964, format: "percent", decimals: 1}])',
+                    'plain = Separator()',
+                    'order = Section([facts], "Order 48211, filled at 09:30")',
+                    'facts = PropertyTable([{label: "Client", value: "Winter Star"}, {label: "Side", value: "Buy", intent: "primary"}, {label: "Quantity", value: 12500}, {label: "Price", value: 141.8, format: "currency"}, {label: "Notional", value: 1772500, format: "currency", decimals: 0}, {label: "Slippage", value: -0.0012, format: "percent", decimals: 2, intent: "danger"}, {label: "Confirmed", value: true}, {label: "Approver"}, {label: "Settlement instructions", value: "Deliver against payment to the account of record, on the second business day after the trade date."}], 2)',
+                    'labeled = Separator("Two tables in a row")',
+                    'tables = Stack([client, settlement], "row")',
+                    'client = PropertyTable([{label: "Client", value: "Winter Star"}, {label: "Tier", value: 1}, {label: "Region", value: "EMEA"}, {label: "On watchlist", value: false}], 1)',
+                    'settlement = PropertyTable([{label: "Trade date", value: "2026-11-20"}, {label: "Settles", value: "2026-11-24"}, {label: "Custodian", value: "Red River Trust"}, {label: "Status", value: "Pending", intent: "warning"}], 1)',
+                    'limits = Separator("Limits and progress")',
+                    'bars = ProgressBars([{label: "Technology", value: 412, max: 500, format: "currency", intent: "warning", target: 450}, {label: "Energy", value: 180, max: 500, format: "currency", intent: "success", target: 450}, {label: "Financials", value: 530, max: 500, format: "currency", intent: "danger", target: 450}, {label: "Import", value: 0.62, max: 1, format: "percent"}, {label: "A long label for the share of orders that shipped on time", value: 7, max: 12}])',
+                    'inRow = Stack([left, between, right], "row")',
+                    'left = Text("Left of a separator in a row.")',
+                    'between = Separator()',
+                    'right = Text("Right of it.")'
+                )
+            ].join('\n')
+    },
+    {
         prompt: 'Replay each display component on its own: callouts, badges, a separator, a section, tabs, a treemap and stat cards.',
         icon: Icon.layout(),
         reply: () =>
@@ -467,6 +566,19 @@ function queryProgram(dim: string): string {
         `q = Query("query_positions", {groupBy: ["${dim}"]}, {summary: {groups: 0, positions: 0}})`,
         `total = StatCards([{label: "Groups by ${dim}", value: q.summary.groups}, {label: "Positions", value: q.summary.positions}])`
     );
+}
+
+// Most bars that the kit's progress bars spec shows. It counts any more in a note.
+const MAX_BARS = 12;
+
+/** The intent that colors a signed figure. */
+function intentOf(value: number): string {
+    return value < 0 ? 'danger' : 'success';
+}
+
+/** A price rounded to the cent, as a program should hold it. */
+function toCents(value: number): number {
+    return Math.round(value * 100) / 100;
 }
 
 /** Statements as a fenced program, as the format's prompt asks a model to write one. */
