@@ -23,7 +23,8 @@ import {lineChartPanel} from './tabs/components/charts/LineChartPanel';
 import {ohlcChartPanel} from './tabs/components/charts/OHLCChartPanel';
 import {simpleTreeMapPanel} from './tabs/components/charts/SimpleTreeMapPanel';
 import {splitTreeMapPanel} from './tabs/components/charts/SplitTreeMapPanel';
-import {blueprintsPanel} from './tabs/blueprints/BlueprintsPanel';
+import {BLUEPRINT_TYPES} from '../blueprints/blueprintTypes';
+import {blueprintsPanel, typeRouteName} from './tabs/blueprints/BlueprintsPanel';
 import {chatKitRoutes, chatKitTab} from './tabs/chatkit/ChatKitTab';
 import {docsTab} from './tabs/docs/DocsTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
@@ -380,7 +381,11 @@ export class AppModel extends BaseAppModel {
                     {
                         name: 'blueprints',
                         path: '/blueprints',
-                        children: [{name: 'blueprint', path: '/:id?draft&version'}]
+                        children: BLUEPRINT_TYPES.map(type => ({
+                            name: typeRouteName(type),
+                            path: `/${typeRouteName(type)}`,
+                            children: [{name: 'blueprint', path: '/:id?draft&version'}]
+                        }))
                     },
                     {
                         name: 'docs',

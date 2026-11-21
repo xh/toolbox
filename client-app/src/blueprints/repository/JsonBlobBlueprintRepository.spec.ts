@@ -3,18 +3,16 @@ import {XH} from '@xh/hoist/core';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {afterEach, beforeAll, describe, expect, it, vi} from 'vitest';
 import p1 from '../scenarios/p1-one-grid.json';
-import {
-    BLUEPRINT_TYPE,
-    JsonBlobBlueprintRepository,
-    PUBLISH_TYPE
-} from './JsonBlobBlueprintRepository';
+import {JsonBlobBlueprintRepository, jsonBlobTypes} from './JsonBlobBlueprintRepository';
 
 const OWNER = 'jdoe',
     OTHER = 'asmith';
 
 let user = OWNER;
 
-const repository = new JsonBlobBlueprintRepository({username: () => user}),
+const TYPE = 'toolbox.test',
+    {draft: BLUEPRINT_TYPE, publish: PUBLISH_TYPE} = jsonBlobTypes(TYPE),
+    repository = new JsonBlobBlueprintRepository({type: TYPE, username: () => user}),
     blueprint = p1 as Blueprint,
     retitled = (title: string) =>
         ({
@@ -44,6 +42,40 @@ function actAs(username: string) {
 }
 
 describe('JsonBlobBlueprintRepository', () => {
+    it("keeps each blueprint type's blobs under its own JsonBlob types", async () => {
+        expect(jsonBlobTypes('toolbox.portfolio')).toEqual({
+            draft: 'blueprint.toolbox.portfolio',
+            publish: 'blueprintPublish.toolbox.portfolio',
+            personalization: 'blueprintPersonalization.toolbox.portfolio'
+        });
+        expect(() => jsonBlobTypes('x'.repeat(30))).toThrow();
+
+        const other = new JsonBlobBlueprintRepository({
+                type: 'toolbox.other',
+                username: () => user
+            }),
+            {id} = await repository.createAsync({name: 'Positions', blueprint});
+
+        expect(await repository.listAsync()).toEqual([expect.objectContaining({id, type: TYPE})]);
+        expect(repository.type).toBe(TYPE);
+        expect(await other.listAsync()).toEqual([]);
+        expect(await other.openAsync(id, {as: 'draft'})).toBeNull();
+    });
+
+    it('refuses a name its owner already has in the type, as a 400', async () => {
+        await repository.createAsync({name: 'Positions', blueprint});
+        await expect(repository.createAsync({name: 'Positions', blueprint})).rejects.toMatchObject({
+            httpStatus: 400
+        });
+        const other = new JsonBlobBlueprintRepository({
+            type: 'toolbox.other',
+            username: () => user
+        });
+        await expect(other.createAsync({name: 'Positions', blueprint})).resolves.toBeTruthy();
+        actAs(OTHER);
+        await expect(repository.createAsync({name: 'Positions', blueprint})).resolves.toBeTruthy();
+    });
+
     it("creates a blueprint as its owner's private draft, at version 1, with no publish", async () => {
         const record = await repository.createAsync({name: 'Positions', blueprint});
 

@@ -8,10 +8,12 @@ beforeAll(() => initTestAppAsync());
 
 describe('createRepository', () => {
     it('keeps blueprints in JsonBlobs, at the default config', () => {
-        expect(createRepository()).toBeInstanceOf(JsonBlobBlueprintRepository);
+        expect(createRepository('toolbox.portfolio')).toBeInstanceOf(JsonBlobBlueprintRepository);
     });
 
     it("keeps them in hoist-core's blueprint storage for hoistCore", () => {
-        expect(createRepository('hoistCore')).toBeInstanceOf(HoistCoreBlueprintRepository);
+        expect(createRepository('toolbox.portfolio', 'hoistCore')).toBeInstanceOf(
+            HoistCoreBlueprintRepository
+        );
     });
 });

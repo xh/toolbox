@@ -6,13 +6,16 @@ import {JsonBlobBlueprintRepository} from './JsonBlobBlueprintRepository';
 export type RepositoryKind = 'jsonBlob' | 'hoistCore';
 
 /**
- * The Designer's repository. `hoistCore` needs hoist-core's blueprint storage enabled on the server.
+ * The repository for one blueprint type. `hoistCore` needs hoist-core's blueprint storage enabled
+ * on the server.
+ * @param type - the blueprint type's name.
  * @param kind - defaults to the `blueprintsRepository` config.
  */
 export function createRepository(
+    type: string,
     kind: RepositoryKind = XH.getConf('blueprintsRepository', 'jsonBlob')
 ): BlueprintRepository {
     return kind === 'hoistCore'
-        ? new HoistCoreBlueprintRepository()
-        : new JsonBlobBlueprintRepository();
+        ? new HoistCoreBlueprintRepository({type})
+        : new JsonBlobBlueprintRepository({type});
 }

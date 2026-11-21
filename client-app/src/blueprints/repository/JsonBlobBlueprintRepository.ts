@@ -20,14 +20,26 @@ import type {PlainObject} from '@xh/hoist/core';
 import type {JsonBlob} from '@xh/hoist/svc';
 import {isEqual, maxBy, sortBy} from 'lodash';
 
-/** JsonBlob type of a blueprint's draft, named by the blueprint's ID. */
-export const BLUEPRINT_TYPE = 'toolboxBlueprint';
-
-/** JsonBlob type of one publish of a blueprint, named `<id>:<n>`. */
-export const PUBLISH_TYPE = 'toolboxBlueprintPublish';
-
-/** JsonBlob type of one user's personalization, named `<id>|<preset>`. */
-export const PERSONALIZATION_TYPE = 'toolboxBlueprintPersonalization';
+/**
+ * The JsonBlob types that hold blueprints of one blueprint type: each draft, named by the
+ * blueprint's ID; each publish, named `<id>:<n>`; and each user's personalization, named
+ * `<id>|<preset>`. Throws if a name passes hoist-core's 50 characters.
+ */
+export function jsonBlobTypes(type: string): {
+    draft: string;
+    publish: string;
+    personalization: string;
+} {
+    const ret = {
+        draft: `blueprint.${type}`,
+        publish: `blueprintPublish.${type}`,
+        personalization: `blueprintPersonalization.${type}`
+    };
+    if (ret.personalization.length > 50) {
+        throw new Error(`Blueprint type '${type}' is too long for a JsonBlob type.`);
+    }
+    return ret;
+}
 
 /**
  * A {@link BlueprintRepository} on Hoist JsonBlobs.
@@ -66,14 +78,22 @@ export const PERSONALIZATION_TYPE = 'toolboxBlueprintPersonalization';
 export class JsonBlobBlueprintRepository implements BlueprintRepository {
     readonly enforcesBase = false;
     readonly sharingModes: BlueprintSharingMode[] = ['everyone'];
+    readonly type: string;
     private readonly username: () => string;
+    private readonly types: ReturnType<typeof jsonBlobTypes>;
 
-    constructor(config: {username?: () => string} = {}) {
+    /**
+     * @param config.type - the blueprint type the repository holds. Blueprints of other types
+     *      are in other JsonBlob types, which it never reads.
+     */
+    constructor(config: {type: string; username?: () => string}) {
+        this.type = config.type;
+        this.types = jsonBlobTypes(config.type);
         this.username = config.username ?? (() => XH.getUsername());
     }
 
     async listAsync(): Promise<BlueprintSummary[]> {
-        const drafts = await XH.jsonBlobService.listAsync({type: BLUEPRINT_TYPE});
+        const drafts = await XH.jsonBlobService.listAsync({type: this.types.draft});
         return sortBy(
             drafts
                 .filter(it => this.isOwner(it) || metaOf(it).publishedVersion != null)
@@ -118,9 +138,15 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
     }
 
     async createAsync(spec: BlueprintCreateSpec): Promise<BlueprintRecord> {
+        const drafts = await XH.jsonBlobService.listAsync({type: this.types.draft});
+        if (drafts.some(it => this.isOwner(it) && metaOf(it).name === spec.name)) {
+            throw Object.assign(new Error(`You already have a blueprint named '${spec.name}'.`), {
+                httpStatus: 400
+            });
+        }
         const id = `bp-${XH.genId()}`;
         await XH.jsonBlobService.createAsync({
-            type: BLUEPRINT_TYPE,
+            type: this.types.draft,
             name: id,
             value: {blueprint: spec.blueprint, pendingRenames: []},
             meta: {
@@ -251,7 +277,7 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
 
     async savePersonalizationAsync(p: BlueprintPersonalization): Promise<void> {
         await XH.jsonBlobService.createOrUpdateAsync(
-            PERSONALIZATION_TYPE,
+            this.types.personalization,
             `${p.blueprintId}|${p.preset ?? ''}`,
             {value: p, meta: {blueprintId: p.blueprintId}}
         );
@@ -269,6 +295,7 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
             owner = this.isOwner(blob);
         return {
             id: blob.name,
+            type: this.type,
             name: meta.name,
             owner: blob.owner,
             ...(meta.description ? {description: meta.description} : {}),
@@ -290,17 +317,20 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
     }
 
     private async draftStubAsync(id: string): Promise<JsonBlob> {
-        const drafts = await XH.jsonBlobService.listAsync({type: BLUEPRINT_TYPE});
+        const drafts = await XH.jsonBlobService.listAsync({type: this.types.draft});
         return drafts.find(it => it.name === id) ?? null;
     }
 
     private async publishStubsAsync(id: string): Promise<JsonBlob[]> {
-        const publishes = await XH.jsonBlobService.listAsync({type: PUBLISH_TYPE});
+        const publishes = await XH.jsonBlobService.listAsync({type: this.types.publish});
         return publishes.filter(it => metaOf(it).blueprintId === id);
     }
 
     private async personalizationStubsAsync(id: string, includeValue = false) {
-        const all = await XH.jsonBlobService.listAsync({type: PERSONALIZATION_TYPE, includeValue});
+        const all = await XH.jsonBlobService.listAsync({
+            type: this.types.personalization,
+            includeValue
+        });
         return all.filter(it => this.isOwner(it) && metaOf(it).blueprintId === id);
     }
 
@@ -324,7 +354,7 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
                 };
             try {
                 await XH.jsonBlobService.createAsync({
-                    type: PUBLISH_TYPE,
+                    type: this.types.publish,
                     name: `${id}:${version}`,
                     acl: draft.acl,
                     value: {blueprint: draft.value.blueprint},

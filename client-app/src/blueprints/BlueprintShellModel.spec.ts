@@ -4,11 +4,8 @@ import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {find} from 'lodash';
 import {afterAll, beforeAll, describe, expect, it, vi} from 'vitest';
 import {BlueprintShellModel} from './BlueprintShellModel';
-import {
-    BLUEPRINT_TYPE,
-    JsonBlobBlueprintRepository,
-    PUBLISH_TYPE
-} from './repository/JsonBlobBlueprintRepository';
+import {PORTFOLIO_TYPE, WEATHER_TYPE} from './blueprintTypes';
+import {JsonBlobBlueprintRepository, jsonBlobTypes} from './repository/JsonBlobBlueprintRepository';
 import p1 from './scenarios/p1-one-grid.json';
 import p2 from './scenarios/p2-linked-dashboard.json';
 import p3 from './scenarios/p3-morning-report.json';
@@ -23,16 +20,18 @@ const OWNER = 'jdoe',
 
 // The presets the Toolbox server seeds at startup: global blueprints owned by `toolbox`.
 const PRESETS = [
-    ['p1', 'P1. One grid', p1],
-    ['p2', 'P2. A linked dashboard', p2],
-    ['p3', 'P3. A morning report', p3],
-    ['p5', 'P5. A risk and stress report', p5],
-    ['w1', 'W1. Weather for one city', w1],
-    ['w2', 'W2. Two cities side by side', w2]
+    ['p1', 'P1. One grid', p1, PORTFOLIO_TYPE],
+    ['p2', 'P2. A linked dashboard', p2, PORTFOLIO_TYPE],
+    ['p3', 'P3. A morning report', p3, PORTFOLIO_TYPE],
+    ['p5', 'P5. A risk and stress report', p5, PORTFOLIO_TYPE],
+    ['w1', 'W1. Weather for one city', w1, WEATHER_TYPE],
+    ['w2', 'W2. Two cities side by side', w2, WEATHER_TYPE]
 ] as const;
+const PORTFOLIO_PRESETS = PRESETS.filter(it => it[3] === PORTFOLIO_TYPE);
 
 let user = OWNER,
     model: BlueprintShellModel,
+    weatherModel: BlueprintShellModel,
     catalogRequests: number;
 
 beforeAll(async () => {
@@ -40,9 +39,13 @@ beforeAll(async () => {
     seedPresets();
     model = await createModelAsync();
     catalogRequests = hoistCore.requestsTo('blueprints/catalog').length;
+    weatherModel = await createModelAsync(WEATHER_TYPE);
 });
 
-afterAll(() => model.destroy());
+afterAll(() => {
+    model.destroy();
+    weatherModel.destroy();
+});
 
 describe('Blueprints designer', () => {
     it('builds its model from the server catalog', () => {
@@ -50,8 +53,12 @@ describe('Blueprints designer', () => {
         expect(model.blueprintModel.catalog).toBeInstanceOf(DataCatalog);
     });
 
-    it("lists the server's presets read-only, and opens the first at its publish", () => {
-        expect(model.summaries.map(it => it.name)).toEqual(PRESETS.map(it => it[1]));
+    it("lists the server's presets of its type read-only, and opens the first at its publish", () => {
+        expect(model.summaries.map(it => it.name)).toEqual(PORTFOLIO_PRESETS.map(it => it[1]));
+        expect(weatherModel.summaries.map(it => it.name)).toEqual([
+            'W1. Weather for one city',
+            'W2. Two cities side by side'
+        ]);
         expect(model.summaries.every(it => it.access === 'read')).toBe(true);
         expect(model.selected.name).toBe(PRESETS[0][1]);
         expect(model.documentModel.document).toMatchObject({kind: 'publish', version: 1});
@@ -59,10 +66,11 @@ describe('Blueprints designer', () => {
         expect(model.blueprintModel.blueprint).toMatchObject({root: p1.root});
     });
 
-    it.each(PRESETS.map(it => [it[1]]))('opens %s with no errors', async name => {
-        await model.selectAsync(byName(name).id);
-        expect(model.selected.name).toBe(name);
-        expect(model.issues.filter(it => it.severity === 'error')).toEqual([]);
+    it.each(PRESETS.map(it => [it[1], it[3]]))('opens %s with no errors', async (name, type) => {
+        const m = type === WEATHER_TYPE ? weatherModel : model;
+        await m.selectAsync(byName(name, m).id);
+        expect(m.selected.name).toBe(name);
+        expect(m.issues.filter(it => it.severity === 'error')).toEqual([]);
     });
 
     it('copies a preset into a private draft of its own, and opens it to design', async () => {
@@ -269,10 +277,12 @@ describe('Blueprints designer', () => {
 //------------------
 // Helpers
 //------------------
-async function createModelAsync(): Promise<BlueprintShellModel> {
+async function createModelAsync(type = PORTFOLIO_TYPE): Promise<BlueprintShellModel> {
     const ret = new BlueprintShellModel({
+        type,
+        storageKey: `spec.${type.name}`,
         createProvider: catalog => new FakeBlueprintDataProvider({catalog}),
-        repository: new JsonBlobBlueprintRepository({username: () => user})
+        repository: new JsonBlobBlueprintRepository({type: type.name, username: () => user})
     });
     await ret.loadAsync();
     return ret;
@@ -291,19 +301,20 @@ async function saveElsewhere(id: string) {
 // Seed the fake server's presets as BlueprintPresetService does.
 function seedPresets() {
     const now = Date.now();
-    PRESETS.forEach(([key, name, blueprint]) => {
+    PRESETS.forEach(([key, name, blueprint, type]) => {
         const id = `bp-preset-${key}`,
-            common = {owner: 'toolbox', acl: '*' as const};
+            common = {owner: 'toolbox', acl: '*' as const},
+            types = jsonBlobTypes(type.name);
         hoistCore.jsonBlobs.add({
             ...common,
-            type: BLUEPRINT_TYPE,
+            type: types.draft,
             name: id,
             value: {blueprint, pendingRenames: []},
             meta: {name, draftVersion: 2, publishedVersion: 1, updated: now, updatedBy: 'toolbox'}
         });
         hoistCore.jsonBlobs.add({
             ...common,
-            type: PUBLISH_TYPE,
+            type: types.publish,
             name: `${id}:1`,
             value: {blueprint},
             meta: {blueprintId: id, version: 1, published: now, publishedBy: 'toolbox', renames: []}

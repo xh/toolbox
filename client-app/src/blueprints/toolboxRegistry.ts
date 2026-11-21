@@ -78,7 +78,23 @@ export const publishToPmPackAction: ActionSpec = {
     }
 };
 
-/** The built-in registry, plus Toolbox's own variable types, resolvers and renderers. */
+/** The built-in registry, plus Toolbox's portfolio widgets, types, resolvers and renderers. */
+export function createPortfolioRegistry(): BlueprintRegistry {
+    return new BlueprintRegistry({
+        widgets: [portfolioBuilderSpec],
+        variableTypes: [fundType, portfolioType],
+        resolvers: [userFundResolver],
+        actions: [publishToPmPackAction],
+        renderers: [tickerRenderer]
+    });
+}
+
+/** The built-in registry, plus Toolbox's weather renderers. */
+export function createWeatherRegistry(): BlueprintRegistry {
+    return new BlueprintRegistry({renderers: [weatherIconRenderer]});
+}
+
+/** The built-in registry, plus everything Toolbox adds for any blueprint type. */
 export function createToolboxRegistry(): BlueprintRegistry {
     return new BlueprintRegistry({
         widgets: [portfolioBuilderSpec],

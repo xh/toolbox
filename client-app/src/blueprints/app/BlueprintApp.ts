@@ -9,6 +9,7 @@ import {BaseAppModel} from '../../BaseAppModel';
 import '../../core/Toolbox.scss';
 import {blueprintLibrary, blueprintWorkspace} from '../BlueprintShell';
 import {BlueprintShellModel} from '../BlueprintShellModel';
+import type {BlueprintTypeSpec} from '../blueprintTypes';
 
 /** The route of a blueprint app that opens one blueprint, by its id. */
 export const BLUEPRINT_APP_ROUTE = 'default.blueprint';
@@ -16,8 +17,8 @@ export const BLUEPRINT_APP_ROUTE = 'default.blueprint';
 export interface BlueprintAppConfig {
     /** Names the app's local state, such as its selection and conversations. */
     storageKey: string;
-    /** The datasets of the server's Data Catalog the app offers. */
-    datasets: string[];
+    /** The kind of blueprint the app holds. */
+    type: BlueprintTypeSpec;
     icon: ReactElement;
 }
 
@@ -42,10 +43,10 @@ export abstract class BlueprintAppModel extends BaseAppModel {
 
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);
-        const {storageKey, datasets} = this.appConfig;
+        const {storageKey, type} = this.appConfig;
         this.shellModel = new BlueprintShellModel({
             storageKey,
-            datasets,
+            type,
             route: BLUEPRINT_APP_ROUTE
         });
         await this.loadAsync(ctx);

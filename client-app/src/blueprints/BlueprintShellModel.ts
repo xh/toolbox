@@ -44,7 +44,7 @@ import {usageBlockedReason} from './llmUsage';
 import type {LlmUsage} from './llmUsage';
 import {createRepository} from './repository/createRepository';
 import {ServerDataProvider} from './ServerDataProvider';
-import {createToolboxRegistry} from './toolboxRegistry';
+import type {BlueprintTypeSpec} from './blueprintTypes';
 
 /** What the designer shows beside the Architect: the open blueprint, or a reference page. */
 export type DesignerView = 'blueprint' | 'catalog' | 'registry';
@@ -66,8 +66,8 @@ export interface BlueprintShellConfig {
     storageKey?: string;
     /** The route that opens one blueprint by its `id` param, with link params. Default none. */
     route?: string;
-    /** The datasets of the server's Data Catalog the shell offers. Default all. */
-    datasets?: string[];
+    /** The kind of blueprint the shell holds, with its datasets and registry. */
+    type: BlueprintTypeSpec;
     createProvider?: (catalog: DataCatalog) => BlueprintDataProvider;
     repository?: BlueprintRepository;
 }
@@ -152,7 +152,7 @@ export class BlueprintShellModel extends HoistModel {
     });
 
     private createProvider: (catalog: DataCatalog) => BlueprintDataProvider;
-    private datasets: string[];
+
     private opening: Promise<void> = Promise.resolve();
     private lastLink: string = null;
 
@@ -175,20 +175,23 @@ export class BlueprintShellModel extends HoistModel {
             : (this.blueprintModel?.issues ?? []);
     }
 
-    constructor(config: BlueprintShellConfig = {}) {
+    /** The kind of blueprint the shell holds. */
+    readonly type: BlueprintTypeSpec;
+
+    constructor(config: BlueprintShellConfig) {
         super();
         const {storageKey} = config;
         this.persistWith = {localStorageKey: storageKey ?? 'blueprintsDesigner'};
-        this.markPersist('selectedId');
+        this.markPersist('selectedId', {path: `selectedId.${config.type.name}`});
         this.threadStore = new LocalThreadStore({
             storageKey: storageKey ? `${storageKey}.threads` : 'blueprints.designer.threads',
             seed: () => [],
             delayMs: 0
         });
         this.route = config.route ?? null;
-        this.datasets = config.datasets ?? null;
+        this.type = config.type;
         this.createProvider = config.createProvider ?? (() => new ServerDataProvider());
-        this.repository = config.repository ?? createRepository();
+        this.repository = config.repository ?? createRepository(config.type.name);
         this.addReaction(
             {
                 track: () =>
@@ -235,15 +238,13 @@ export class BlueprintShellModel extends HoistModel {
         const json = await XH.fetchJson({url: 'blueprints/catalog'}, {loadSpec});
         if (loadSpec.isStale) return;
 
-        const {datasets} = this,
-            catalog = new DataCatalog(
-                datasets ? {...json, datasets: pick(json.datasets, datasets)} : json
-            );
+        const {type} = this,
+            catalog = new DataCatalog({...json, datasets: pick(json.datasets, type.datasets)});
         runInAction(() => {
             const blueprintModel = (this.blueprintModel = this.markManaged(
                 new BlueprintModel({
                     catalog,
-                    registry: createToolboxRegistry(),
+                    registry: type.createRegistry(),
                     dataProvider: this.createProvider(catalog),
                     mode: 'design',
                     access: 'write'

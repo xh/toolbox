@@ -1,9 +1,11 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
 import {DataCatalog, validateBlueprint} from '@xh/hoist-chat-kit/blueprint';
+import {pick} from 'lodash';
 import {initTestAppAsync} from '@xh/hoist/test-support';
 import {beforeAll, describe, expect, it} from 'vitest';
 import catalogJson from '../../test-support/blueprintsCatalog.json';
-import {createToolboxRegistry} from '../toolboxRegistry';
+import {PORTFOLIO_TYPE, WEATHER_TYPE} from '../blueprintTypes';
+import type {BlueprintTypeSpec} from '../blueprintTypes';
 import p1 from './p1-one-grid.json';
 import p2 from './p2-linked-dashboard.json';
 import p3 from './p3-morning-report.json';
@@ -16,17 +18,31 @@ import s5 from './s5-weather-showcase.json';
 import w1 from './w1-one-city.json';
 import w2 from './w2-two-cities.json';
 
-/** Every blueprint the server seeds as a preset, from `BlueprintPresetService.PRESETS`. */
-const SCENARIOS: Record<string, unknown> = {p1, p2, p3, p5, w1, w2, s1, s2, s3, s4, s5};
+/** Every blueprint the server seeds as a preset, from `BlueprintPresetService.PRESETS`, by type. */
+const SCENARIOS: Record<string, [unknown, BlueprintTypeSpec]> = {
+    p1: [p1, PORTFOLIO_TYPE],
+    p2: [p2, PORTFOLIO_TYPE],
+    p3: [p3, PORTFOLIO_TYPE],
+    p5: [p5, PORTFOLIO_TYPE],
+    s1: [s1, PORTFOLIO_TYPE],
+    s2: [s2, PORTFOLIO_TYPE],
+    s3: [s3, PORTFOLIO_TYPE],
+    s4: [s4, PORTFOLIO_TYPE],
+    w1: [w1, WEATHER_TYPE],
+    w2: [w2, WEATHER_TYPE],
+    s5: [s5, WEATHER_TYPE]
+};
 
 beforeAll(() => initTestAppAsync());
 
 describe('scenario blueprints', () => {
-    it.each(Object.keys(SCENARIOS))('%s validates with no issues', name => {
-        const catalog = new DataCatalog(catalogJson as any),
-            issues = validateBlueprint(SCENARIOS[name] as Blueprint, {
+    it.each(Object.keys(SCENARIOS))("%s validates with no issues, in its type's terms", name => {
+        const [blueprint, type] = SCENARIOS[name],
+            json = catalogJson as any,
+            catalog = new DataCatalog({...json, datasets: pick(json.datasets, type.datasets)}),
+            issues = validateBlueprint(blueprint as Blueprint, {
                 catalog,
-                registry: createToolboxRegistry()
+                registry: type.createRegistry()
             });
         expect(issues.map(it => `${it.severity} ${it.code} ${it.path}: ${it.message}`)).toEqual([]);
     });
