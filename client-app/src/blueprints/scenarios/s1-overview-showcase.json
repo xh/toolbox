@@ -58,7 +58,7 @@
             "config": {
                 "intent": "primary",
                 "title": "Stat cards with trends",
-                "text": "A **tile frame** of stat cards over the fund summary. Day P&L trends its daily P&L, and YTD P&L its cumulative P&L, ending at the figure."
+                "text": "Day P&L trends its daily P&L, and YTD P&L its cumulative P&L."
             }
         },
         "mapPanel": {"component": "panel", "config": {"title": "Market value by sector", "style": "card"}, "children": [{"id": "sectorMap"}]},

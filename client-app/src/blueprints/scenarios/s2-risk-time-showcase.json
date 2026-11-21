@@ -53,17 +53,17 @@
         "dashboard": {
             "component": "dashCanvas",
             "children": [
-                {"id": "intro", "x": 0, "y": 0, "w": 6, "h": 2},
+                {"id": "intro", "x": 0, "y": 0, "w": 6, "h": 3},
                 {"id": "windowBar", "x": 6, "y": 0, "w": 6, "h": 1},
-                {"id": "timeNote", "x": 6, "y": 1, "w": 6, "h": 1},
-                {"id": "holdingsPanel", "x": 0, "y": 2, "w": 4, "h": 9},
-                {"id": "windowChart", "x": 4, "y": 2, "w": 8, "h": 5},
-                {"id": "lookbackChart", "x": 4, "y": 7, "w": 8, "h": 4},
-                {"id": "chartNote", "x": 0, "y": 11, "w": 12, "h": 1},
-                {"id": "pnlHeat", "x": 0, "y": 12, "w": 6, "h": 6},
-                {"id": "attribution", "x": 6, "y": 12, "w": 6, "h": 6},
-                {"id": "heatNote", "x": 0, "y": 18, "w": 6, "h": 2},
-                {"id": "attributionNote", "x": 6, "y": 18, "w": 6, "h": 2}
+                {"id": "timeNote", "x": 6, "y": 1, "w": 6, "h": 2},
+                {"id": "holdingsPanel", "x": 0, "y": 3, "w": 4, "h": 9},
+                {"id": "windowChart", "x": 4, "y": 3, "w": 8, "h": 5},
+                {"id": "lookbackChart", "x": 4, "y": 8, "w": 8, "h": 4},
+                {"id": "chartNote", "x": 0, "y": 12, "w": 12, "h": 2},
+                {"id": "pnlHeat", "x": 0, "y": 14, "w": 6, "h": 6},
+                {"id": "attribution", "x": 6, "y": 14, "w": 6, "h": 6},
+                {"id": "heatNote", "x": 0, "y": 20, "w": 6, "h": 2},
+                {"id": "attributionNote", "x": 6, "y": 20, "w": 6, "h": 2}
             ]
         },
         "intro": {
