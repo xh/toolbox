@@ -55,6 +55,13 @@ import {createRepository} from './repository/createRepository';
 import {ServerDataProvider} from './ServerDataProvider';
 import type {BlueprintTypeSpec} from './blueprintTypes';
 
+/** The routes of a shell's library and reference pages. */
+export interface PageRoutes {
+    library: string;
+    catalog: string;
+    registry: string;
+}
+
 /** What the designer shows beside the Architect: the open blueprint, or a reference page. */
 export type DesignerView = 'blueprint' | 'catalog' | 'registry';
 
@@ -80,6 +87,11 @@ export interface BlueprintShellConfig {
     storageKey?: string;
     /** The route that opens one blueprint by its `id` param, with link params. Default none. */
     route?: string;
+    /**
+     * The routes of the library and the reference pages. Default the blueprint route's parent,
+     * with `catalog` and `registry` children.
+     */
+    pageRoutes?: PageRoutes;
     /** The kind of blueprint the shell holds, with its datasets and registry. */
     type: BlueprintTypeSpec;
     createProvider?: (catalog: DataCatalog) => BlueprintDataProvider;
@@ -145,6 +157,9 @@ export class BlueprintShellModel extends HoistModel {
 
     /** The route that opens one blueprint, if the app has one. */
     readonly route: string;
+
+    /** The routes of the library and the reference pages, if the app has them. */
+    readonly pageRoutes: PageRoutes;
 
     /** Each blueprint's conversation with the Architect, by blueprint ID. */
     readonly threadStore: LocalThreadStore;
@@ -309,6 +324,10 @@ export class BlueprintShellModel extends HoistModel {
             delayMs: 0
         });
         this.route = config.route ?? null;
+        const lib = this.route?.replace(/\.[^.]+$/, '') ?? null;
+        this.pageRoutes =
+            config.pageRoutes ??
+            (lib ? {library: lib, catalog: `${lib}.catalog`, registry: `${lib}.registry`} : null);
         this.type = config.type;
         this.createProvider = config.createProvider ?? (() => new ServerDataProvider());
         this.repository = config.repository ?? createRepository(config.type.name);
@@ -780,19 +799,19 @@ export class BlueprintShellModel extends HoistModel {
 
     // The reference page a route shows, or null for the blueprint page.
     private pageOfRoute(name: string): DesignerView {
-        const lib = this.libraryRoute;
-        if (!lib || !name) return null;
-        if (name === `${lib}.catalog`) return 'catalog';
-        if (name === `${lib}.registry`) return 'registry';
+        const routes = this.pageRoutes;
+        if (!routes || !name) return null;
+        if (name === routes.catalog) return 'catalog';
+        if (name === routes.registry) return 'registry';
         return null;
     }
 
     // Show the page in the address bar: a reference page's route, or the library or blueprint open.
     private showPageInAddressBar(view: DesignerView) {
-        const lib = this.libraryRoute;
-        if (!lib) return;
+        const routes = this.pageRoutes;
+        if (!routes) return;
         if (view !== 'blueprint') {
-            const route = `${lib}.${view}`;
+            const route = routes[view];
             if (XH.hasRoute(route) && XH.routerState?.name !== route) XH.navigate(route);
         } else if (this.libraryOpen || !this.documentModel?.document) {
             this.showLibraryInAddressBar();
@@ -801,9 +820,8 @@ export class BlueprintShellModel extends HoistModel {
         }
     }
 
-    // The route that shows the library: the blueprint route's parent.
     private get libraryRoute(): string {
-        return this.route?.replace(/\.[^.]+$/, '') ?? null;
+        return this.pageRoutes?.library ?? null;
     }
 
     private showLibraryInAddressBar() {
