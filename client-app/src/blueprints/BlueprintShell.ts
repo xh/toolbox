@@ -1,6 +1,5 @@
-import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid} from '@xh/hoist/cmp/grid';
-import {div, filler, hframe, placeholder, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {TabContainerModel, tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses} from '@xh/hoist/core';
@@ -12,14 +11,12 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import type {ReactNode} from 'react';
-import {architectPanel} from './ArchitectPanel';
 import {showBlueprintsHelp} from './blueprintsHelp';
 import './Blueprints.scss';
 import {BlueprintShellModel} from './BlueprintShellModel';
 import type {DesignerView} from './BlueprintShellModel';
 import {catalogPanel} from './catalog/CatalogPanel';
-import {documentBar} from './documentBar/DocumentBar';
-import {inspectorPanel} from './InspectorPanel';
+import {editor} from './editor/Editor';
 import {registryPanel} from './registry/RegistryPanel';
 
 interface BlueprintShellViewProps extends HoistProps<BlueprintShellModel> {
@@ -182,35 +179,3 @@ const newMenu = hoistCmp.factory<BlueprintShellModel>({
             )
         })
 });
-
-/** The open blueprint: its bar over the Architect, the blueprint and, in design, its Inspector. */
-const editor = hoistCmp.factory<BlueprintShellModel>({
-    model: uses(BlueprintShellModel),
-    render: () => vframe(documentBar(), hframe(architectPanel(), mainPanel()))
-});
-
-const mainPanel = hoistCmp.factory<BlueprintShellModel>({
-    model: uses(BlueprintShellModel),
-    render: ({model}) => {
-        const {blueprintModel, selected} = model;
-        // A failed open leaves the previous blueprint in the model, which must not show under this title.
-        const shown =
-            blueprintModel.blueprint && !model.openIssues.some(it => it.severity === 'error');
-        return hframe(
-            panel({
-                item: shown
-                    ? blueprintView({model: blueprintModel, designModel: model.designModel})
-                    : placeholder(Icon.layout(), emptyText(model))
-            }),
-            selected && shown ? inspectorPanel() : null
-        );
-    }
-});
-
-function emptyText({selected, openIssues}: BlueprintShellModel): string {
-    const error = openIssues.find(it => it.severity === 'error');
-    if (error) return error.message;
-    return selected
-        ? 'This blueprint is empty. Ask the Architect to build it.'
-        : 'Pick a blueprint, or start a new one.';
-}

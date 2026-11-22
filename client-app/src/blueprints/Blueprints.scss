@@ -95,7 +95,7 @@
   font-size: 0.85em;
 }
 
-.tb-inspector__default {
+.tb-editor__default {
   color: var(--xh-text-color-muted);
 }
 
@@ -364,4 +364,37 @@
   &__publish-buttons {
     gap: var(--xh-spacing-half);
   }
+}
+
+.tb-dock__rail {
+  flex: none;
+  width: 40px;
+  align-items: center;
+  gap: 2px;
+  padding: var(--xh-spacing-half) 0;
+  background-color: var(--xh-bg-alt);
+  border-right: var(--xh-border-solid);
+}
+
+.tb-dock__rail .tb-dock__rail-button {
+  width: 30px;
+  height: 30px;
+
+  &.tb-dock__rail-button--on {
+    background-color: var(--xh-bg);
+    color: var(--xh-intent-primary-text-color);
+    box-shadow: inset 2px 0 var(--xh-intent-primary);
+  }
+}
+
+.tb-history__undone {
+  opacity: 0.5;
+
+  .ag-cell {
+    text-decoration: line-through;
+  }
+}
+
+.tb-history__publish {
+  background-color: var(--xh-intent-success-trans1);
 }

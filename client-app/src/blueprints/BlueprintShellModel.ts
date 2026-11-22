@@ -95,6 +95,9 @@ export class BlueprintShellModel extends HoistModel {
     @bindable accessor libraryOpen = true;
     @bindable accessor shareOpen = false;
 
+    /** How the open blueprint shows: as its canvas, or as JSON. */
+    @bindable accessor editorView: 'canvas' | 'json' = 'canvas';
+
     /** The blueprints opened lately, latest first, for the quick switcher. */
     @bindable accessor recentIds: string[] = [];
 

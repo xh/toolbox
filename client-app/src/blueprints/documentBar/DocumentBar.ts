@@ -55,6 +55,16 @@ export const documentBar = hoistCmp.factory({
                           issuesChip(),
                           filler(),
                           segmentedControl({
+                              value: shell.editorView,
+                              onChange: v => (shell.editorView = v),
+                              compact: true,
+                              options: [
+                                  {value: 'canvas', label: 'Canvas', icon: Icon.gridLarge()},
+                                  {value: 'json', label: 'JSON', icon: Icon.code()}
+                              ]
+                          }),
+                          toolbarSep({omit: !canEdit}),
+                          segmentedControl({
                               omit: !canEdit,
                               value: blueprintModel.mode,
                               onChange: mode => blueprintModel.setMode(mode),
