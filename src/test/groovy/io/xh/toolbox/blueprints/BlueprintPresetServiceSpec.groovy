@@ -4,6 +4,7 @@ import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.jsonblob.JsonBlob
+import io.xh.hoist.json.JSONSerializer
 import io.xh.hoist.jsonblob.JsonBlobService
 import io.xh.hoist.test.HoistUnitTest
 import spock.lang.Specification
@@ -58,7 +59,7 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
         draftMeta.subMap('name', 'draftVersion', 'publishedVersion', 'updatedBy') ==
             [name: 'P3. A morning report', draftVersion: 2, publishedVersion: 1, updatedBy: OWNER]
         draftMeta.updated instanceof Number
-        !draftMeta.containsKey('description')
+        draftMeta.description == PRESETS.find { it.token == 'morning-report' }.description
         parseObject(publish.value) == [blueprint: preset('p3-morning-report')]
         publishMeta.subMap('blueprintId', 'version', 'publishedBy', 'renames') ==
             [blueprintId: 'morning-report', version: 1, publishedBy: OWNER, renames: []]
@@ -104,6 +105,27 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
             [name: 'P3. A morning report', draftVersion: 3, publishedVersion: 2]
     }
 
+    def 'takes a changed name or description without publishing again'() {
+        given:
+        service.seedPresets()
+        def draft = JsonBlob.findByTypeAndName('blueprint.toolbox.portfolio', 'morning-report')
+        draft.meta = JSONSerializer.serialize(parseObject(draft.meta) + [name: 'Old name', description: 'Old description'])
+        draft.save(flush: true)
+
+        when:
+        service.seedPresets()
+
+        then:
+        JsonBlob.count() == PRESETS.size() * 2
+        parseObject(JsonBlob.findByTypeAndName('blueprint.toolbox.portfolio', 'morning-report').meta).subMap('name', 'description', 'publishedVersion') ==
+            [name: 'P3. A morning report', description: PRESETS.find { it.token == 'morning-report' }.description, publishedVersion: 1]
+    }
+
+    def 'every preset has a one-line description'() {
+        expect:
+        PRESETS.every { it.description instanceof String && it.description.length() <= 120 && !it.description.contains('\n') }
+    }
+
     def 'seeds hoist-core\'s blueprints only when it provides BlueprintService and storage is enabled'() {
         given:
         service.blueprintService = blueprintService ? [ensureGlobal: { String type, String token, String name, String desc, Map bp, String owner ->
@@ -116,7 +138,8 @@ class BlueprintPresetServiceSpec extends Specification implements ServiceUnitTes
 
         then:
         ensureGlobalCalls.collect { it[0..2] } == expected
-        ensureGlobalCalls.every { it[3] == null && it[5] == OWNER }
+        ensureGlobalCalls.every { it[3] && it[5] == OWNER }
+        ensureGlobalCalls*.get(3) == (expected ? PRESETS*.description : [])
         !ensureGlobalCalls || ensureGlobalCalls[0][4] == preset('p1-one-grid')
 
         where:
