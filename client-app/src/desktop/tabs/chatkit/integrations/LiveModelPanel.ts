@@ -61,6 +61,9 @@ class LiveModelPanelModel extends HoistModel {
             // These three lines connect the chat to the Toolbox server, which relays Claude.
             transport: new HoistChatTransport({
                 url: 'llm/stream',
+                headers: {
+                    'X-Llm-Context': JSON.stringify({app: 'chatKit', feature: 'liveModel'})
+                },
                 codec: new AnthropicCodec({system, cacheControl: true})
             }),
             tools: [SET_THEME, this.createNavigateTool(), SHOW_TOAST, GET_APP_INFO],
