@@ -6,7 +6,7 @@ import catalogJson from '../../test-support/blueprintsCatalog.json';
 import p3 from '../scenarios/p3-morning-report.json';
 import w2 from '../scenarios/w2-two-cities.json';
 import {fieldTree, formatOf} from './CatalogModel';
-import {datasetJoins, describeFormat} from './catalogFields';
+import {datasetJoins, datasetUsers, describeFormat, matchDatasets} from './catalogFields';
 
 const catalog = new DataCatalog(catalogJson as any),
     field = (dataset: string, name: string) => catalog.getDataset(dataset).fields[name],
@@ -227,5 +227,43 @@ describe('datasetJoins', () => {
             {dataset: 'hypotheticalPortfolio', on: ['symbol']}
         ]);
         expect(joins('weather')).toEqual([{dataset: 'currentWeather', on: ['city']}]);
+    });
+});
+
+describe('matchDatasets', () => {
+    const datasets = Object.values(catalog.datasets);
+
+    it('lists every dataset, with no field hits, for no query', () => {
+        expect(matchDatasets(datasets, '').map(it => it.name)).toEqual(datasets.map(it => it.name));
+        expect(matchDatasets(datasets, '  ').every(it => !it.fieldHits.length)).toBe(true);
+    });
+
+    it('matches a dataset by name, label or description, ignoring case', () => {
+        expect(matchDatasets(datasets, 'HOLDINGS').map(it => it.name)).toEqual(['positions']);
+        expect(matchDatasets(datasets, 'fundsum').map(it => it.name)).toEqual(['fundSummary']);
+    });
+
+    it('matches by field, and names the fields hit', () => {
+        const hit = matchDatasets(datasets, 'pnlDay').find(it => it.name === 'positions');
+        expect(hit.fieldHits).toContain('pnlDay');
+    });
+});
+
+describe('datasetUsers', () => {
+    it('lists the sources over a dataset, and the widgets that read them', () => {
+        expect(datasetUsers(p3 as Blueprint, 'positions')).toEqual({
+            sources: ['positions'],
+            elements: [
+                'headlineMktVal',
+                'headlinePnlDay',
+                'headlinePnlMtd',
+                'headlinePnlYtd',
+                'sectorChart',
+                'regionChart',
+                'posGrid'
+            ]
+        });
+        expect(datasetUsers(p3 as Blueprint, 'fundSummary')).toEqual({sources: [], elements: []});
+        expect(datasetUsers(null, 'positions')).toEqual({sources: [], elements: []});
     });
 });

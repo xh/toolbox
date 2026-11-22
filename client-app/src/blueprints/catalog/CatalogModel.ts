@@ -1,5 +1,6 @@
 import type {
     Blueprint,
+    BlueprintSelection,
     DataCatalog,
     DatasetDef,
     FieldDef,
@@ -10,16 +11,30 @@ import type {
 import {fieldUsages, resolveFieldDisplay, resolveFormat} from '@xh/hoist-chat-kit/blueprint';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistModel, lookup, managed} from '@xh/hoist/core';
+import {DataViewModel} from '@xh/hoist/cmp/dataview';
+import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, computed} from '@xh/hoist/mobx';
-import {castArray, groupBy, isEmpty, isString} from 'lodash';
+import {castArray, find, groupBy, isEmpty, isString} from 'lodash';
 import {BlueprintShellModel} from '../BlueprintShellModel';
-import {datasetJoins, describeFormat, describeSpec} from './catalogFields';
+import {
+    datasetJoins,
+    datasetUsers,
+    describeFormat,
+    describeSpec,
+    matchDatasets
+} from './catalogFields';
 import type {DatasetJoin} from './catalogFields';
 import {markdownCol} from '../markdown';
-import {catalogJson, datasetCards} from './CatalogViews';
+import {
+    catalogJson,
+    datasetFields,
+    datasetItem,
+    datasetParams,
+    datasetsPage,
+    datasetUsedBy
+} from './CatalogViews';
 
 /**
  * The Data Catalog the server serves, as the Blueprints tab loaded it: its datasets and their
@@ -31,7 +46,7 @@ export class CatalogModel extends HoistModel {
 
     @managed tabContainerModel = new TabContainerModel({
         tabs: [
-            {id: 'datasets', title: 'Datasets', content: () => datasetCards()},
+            {id: 'datasets', title: 'Datasets', content: () => datasetsPage()},
             {id: 'kinds', title: 'Kinds', content: () => grid({model: this.kindsGridModel})},
             {id: 'formats', title: 'Formats', content: () => grid({model: this.formatsGridModel})},
             {id: 'json', title: 'JSON', content: () => catalogJson()}
@@ -40,6 +55,66 @@ export class CatalogModel extends HoistModel {
 
     /** One per dataset, in catalog order. */
     @managed datasetModels: DatasetCardModel[] = [];
+
+    /** Filters the datasets by name, label, description or field. */
+    @bindable accessor query = '';
+
+    /** The dataset the detail shows. */
+    @bindable accessor selectedName: string = null;
+
+    @managed listModel = new DataViewModel({
+        store: {
+            idSpec: 'name',
+            fields: ['label', 'description', 'grain', 'usedCount', 'fieldHits']
+        },
+        itemHeight: 78,
+        emptyText: 'No datasets match.',
+        renderer: (v, {record}) => datasetItem({data: {...record.data, name: record.id}})
+    });
+
+    @managed detailTabsModel = new TabContainerModel({
+        tabs: [
+            {id: 'fields', title: 'Fields', content: () => datasetFields()},
+            {id: 'parameters', title: 'Parameters', content: () => datasetParams()},
+            {id: 'usedBy', title: 'Used by', content: () => datasetUsedBy()}
+        ]
+    });
+
+    get selected(): DatasetCardModel {
+        return find(this.datasetModels, it => it.ds.name === this.selectedName) ?? null;
+    }
+
+    /** The open blueprint's sources over the selected dataset, and the elements reading them. */
+    @computed
+    get users(): {sources: string[]; elements: string[]} {
+        return datasetUsers(this.blueprint, this.selectedName);
+    }
+
+    /** The name of the writable draft open, which Add as source adds to, or null. */
+    get draftName(): string {
+        const {panelModel} = this;
+        return panelModel.canEdit ? (panelModel.selected?.name ?? null) : null;
+    }
+
+    /** Add a source over the selected dataset to the draft open, and show it there, selected. */
+    addAsSource() {
+        const {panelModel, selectedName} = this,
+            {blueprintModel, designModel} = panelModel;
+        if (blueprintModel.mode !== 'design') blueprintModel.setMode('design');
+        const {issues} = designModel.addSource(selectedName, {addVariables: true}),
+            error = issues.find(it => it.severity === 'error');
+        if (error) {
+            XH.dangerToast(error.message);
+            return;
+        }
+        this.showInEditor();
+    }
+
+    /** Select a source or element of the draft open, in the editor. */
+    reveal(selection: BlueprintSelection) {
+        this.panelModel.designModel.select(selection);
+        this.showInEditor();
+    }
 
     @managed kindsGridModel = new GridModel({
         store: {idSpec: 'name'},
@@ -86,18 +161,58 @@ export class CatalogModel extends HoistModel {
         this.kindsGridModel.loadData(kindRows(catalog));
         this.formatsGridModel.loadData(formatRows(catalog));
         this.datasetModels = Object.values(catalog.datasets).map(
-            (ds, idx) => new DatasetCardModel(ds, datasetJoins(catalog, ds), idx === 0)
+            ds => new DatasetCardModel(ds, datasetJoins(catalog, ds))
         );
-        this.addReaction({
-            track: () => this.usages,
-            run: usages => this.datasetModels.forEach(it => this.loadDataset(it, usages)),
-            fireImmediately: true
-        });
+        this.addReaction(
+            {
+                track: () => this.usages,
+                run: usages => this.datasetModels.forEach(it => this.loadDataset(it, usages)),
+                fireImmediately: true
+            },
+            {
+                track: () => [this.query, this.usages],
+                run: () => this.loadList(),
+                fireImmediately: true
+            },
+            {
+                track: () => this.listModel.selectedRecord,
+                run: rec => {
+                    if (rec) this.selectedName = rec.id as string;
+                },
+                fireImmediately: true
+            }
+        );
     }
 
     //------------------
     // Implementation
     //------------------
+    private showInEditor() {
+        const {panelModel} = this;
+        panelModel.libraryOpen = false;
+        panelModel.editorView = 'canvas';
+        panelModel.view = 'blueprint';
+    }
+
+    private loadList() {
+        const {listModel, catalog, usages} = this,
+            datasets = Object.values(catalog.datasets),
+            rows = matchDatasets(datasets, this.query).map(({name, fieldHits}) => {
+                const ds = catalog.getDataset(name);
+                return {
+                    name,
+                    label: ds.label && ds.label !== name ? ds.label : null,
+                    description: ds.description,
+                    grain: ds.key?.join(', ') ?? null,
+                    usedCount: Object.keys(usages[name] ?? {}).length,
+                    fieldHits
+                };
+            });
+        listModel.loadData(rows);
+        const keep = rows.some(it => it.name === this.selectedName);
+        listModel.selModel.select(keep ? this.selectedName : (rows[0]?.name ?? null));
+    }
+
     private loadDataset(model: DatasetCardModel, usages: FieldUsages) {
         const {ds} = model,
             uses = usages[ds.name] ?? {};
@@ -110,9 +225,8 @@ export class CatalogModel extends HoistModel {
     }
 }
 
-/** One dataset's card: whether it is expanded, and its fields grid. */
+/** One dataset's detail: its fields grid, parameters and joins. */
 export class DatasetCardModel extends HoistModel {
-    @bindable accessor expanded: boolean;
     @bindable accessor usedCount = 0;
 
     @managed fieldsGridModel = new GridModel({
@@ -154,11 +268,9 @@ export class DatasetCardModel extends HoistModel {
     constructor(
         readonly ds: DatasetDef,
         /** The datasets that can join onto this one, with the fields they join on. */
-        readonly joins: DatasetJoin[],
-        expanded = false
+        readonly joins: DatasetJoin[]
     ) {
         super();
-        this.expanded = expanded;
     }
 }
 
