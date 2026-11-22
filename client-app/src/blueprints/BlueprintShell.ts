@@ -181,7 +181,7 @@ const newMenu = hoistCmp.factory<BlueprintShellModel>({
                 menuItem({
                     text: 'Ask the Architect',
                     icon: Icon.ai(),
-                    onClick: () => model.newBlueprintAsync()
+                    onClick: () => model.newWithArchitectAsync()
                 })
             )
         })

@@ -274,6 +274,20 @@ export class EditorModel extends HoistModel {
         this.dockPanelModel.setCollapsed(false);
     }
 
+    /** Open the dock on the Architect, with its composer focused once it shows. */
+    askArchitect() {
+        this.showTab('architect');
+        const {composerModel} = this.shell.chatModel;
+        if (composerModel.inputRef.current) {
+            composerModel.focus();
+        } else {
+            this.addReaction({
+                when: () => !!composerModel.inputRef.current,
+                run: () => composerModel.focus()
+            });
+        }
+    }
+
     /** Add to a section of Structure, from its "+". */
     addToSection(section: 'element' | 'source' | 'variable' | 'preset') {
         const {shell} = this;
@@ -355,6 +369,10 @@ export class EditorModel extends HoistModel {
         const {shell} = this,
             {blueprintModel} = shell;
         shell.designModel.onRequestAdd = this.requestAdd;
+        if (shell.askArchitectOnOpen) {
+            shell.askArchitectOnOpen = false;
+            this.askArchitect();
+        }
         this.addReaction(
             {
                 track: () => this.currentJson,

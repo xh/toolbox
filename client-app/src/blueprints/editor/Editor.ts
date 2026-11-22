@@ -146,7 +146,7 @@ const blueprintPane = hoistCmp.factory<EditorModel>({
                       model: shell.blueprintModel,
                       designModel: shell.designModel,
                       onAddWidget: () => model.showTab('add'),
-                      onAskArchitect: () => model.showTab('architect')
+                      onAskArchitect: () => model.askArchitect()
                   })
                 : placeholder(Icon.layout(), emptyText(model))
         });

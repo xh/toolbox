@@ -99,6 +99,9 @@ export class BlueprintShellModel extends HoistModel {
     @bindable accessor libraryOpen = true;
     @bindable accessor shareOpen = false;
 
+    /** True to open the next editor on the Architect, its composer focused. */
+    @bindable accessor askArchitectOnOpen = false;
+
     /** How the open blueprint shows: as its canvas, its wiring map, or JSON. */
     @bindable accessor editorView: 'canvas' | 'map' | 'json' = 'canvas';
 
@@ -606,6 +609,14 @@ export class BlueprintShellModel extends HoistModel {
     async newBlueprintAsync() {
         const name = await this.promptNameAsync('New blueprint', 'Create', '');
         if (name) await this.createBlueprintAsync(name);
+    }
+
+    /** Create a blueprint, and open it on the Architect, ready to ask. */
+    async newWithArchitectAsync() {
+        const name = await this.promptNameAsync('New blueprint', 'Create', '');
+        if (!name) return;
+        runInAction(() => (this.askArchitectOnOpen = true));
+        await this.createBlueprintAsync(name);
     }
 
     /** Rename the blueprint open. Rejects, with an `httpStatus` of 400, a name the user has. */
