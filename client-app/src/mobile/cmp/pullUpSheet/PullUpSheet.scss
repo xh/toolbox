@@ -34,8 +34,7 @@
     height: var(--tb-sheet-expanded-h);
     // Collapsed: only the peek bar shows above the bottom edge; the rest sits below it. The slide is
     // animated via `bottom`, NOT `transform` - a CSS transform would make this panel the containing
-    // block for any position:fixed descendant, which offsets react-beautiful-dnd's drag clone in the
-    // Manage widgets sheet (the floating row would appear well below the finger).
+    // block for any position:fixed descendant.
     bottom: calc(var(--tb-sheet-peek-h) - var(--tb-sheet-expanded-h));
     // Use the standard app background (rather than the lighter --xh-bg-alt) in both themes - it
     // reads as a recessed drawer surface and interacts better with the controls inside the sheet.
