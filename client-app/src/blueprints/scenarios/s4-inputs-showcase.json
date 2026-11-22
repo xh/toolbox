@@ -110,7 +110,7 @@
                 "groupBy": ["sector", "symbol"],
                 "columnState": ["mktVal", "pnlDay", "pnlMtd"],
                 "sortBy": "pnlDay|desc",
-                "summaryRow": {"$var": "showTotals"}
+                "showSummary": {"$var": "showTotals"}
             }
         },
         "notes": {

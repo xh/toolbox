@@ -59,7 +59,7 @@
                 "groupBy": ["style", "fund", "symbol"],
                 "columnState": ["manager", "nav", "mktVal", "pnlDay", "lastClose"],
                 "sortBy": "mktVal|desc",
-                "summaryRow": true
+                "showSummary": "top"
             }
         },
         "notes": {

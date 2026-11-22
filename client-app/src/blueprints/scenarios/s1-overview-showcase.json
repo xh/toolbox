@@ -75,7 +75,7 @@
                 "columnState": ["mktVal", "pnlDay", "pnlHistory"],
                 "sortBy": "mktVal|desc",
                 "filter": {"$var": "sectorPick"},
-                "summaryRow": true
+                "showSummary": "top"
             }
         },
         "mapNote": {

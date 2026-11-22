@@ -189,7 +189,7 @@
                     "pnlYtd"
                 ],
                 "sortBy": "mktVal|desc",
-                "summaryRow": true
+                "showSummary": "top"
             }
         }
     }
