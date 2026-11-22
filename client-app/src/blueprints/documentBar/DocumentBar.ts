@@ -60,6 +60,7 @@ export const documentBar = hoistCmp.factory({
                               compact: true,
                               options: [
                                   {value: 'canvas', label: 'Canvas', icon: Icon.gridLarge()},
+                                  {value: 'map', label: 'Map', icon: Icon.treeList()},
                                   {value: 'json', label: 'JSON', icon: Icon.code()}
                               ]
                           }),

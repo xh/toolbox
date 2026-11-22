@@ -1,4 +1,5 @@
 import {
+    blueprintMap,
     blueprintView,
     elementOutline,
     widgetPalette
@@ -27,13 +28,12 @@ export const editor = hoistCmp.factory({
     model: creates(EditorModel),
 
     render({model}) {
-        const {shell} = model;
         return vframe(
             documentBar(),
             hframe(
                 dockRail(),
                 model.dockOpen ? dock() : null,
-                shell.editorView === 'json' && model.shown ? jsonView() : blueprintPane(),
+                mainView(),
                 model.isDesigning && model.shown ? inspector() : null
             )
         );
@@ -105,6 +105,28 @@ const dockContent = hoistCmp.factory<DockContentProps>({
                 return grid({model: model.valuesGridModel});
             default:
                 return architectChat();
+        }
+    }
+});
+
+const mainView = hoistCmp.factory<EditorModel>({
+    model: uses(EditorModel),
+    render: ({model}) => {
+        const {shell} = model;
+        if (!model.shown) return blueprintPane();
+        switch (shell.editorView) {
+            case 'json':
+                return jsonView();
+            case 'map':
+                return panel({
+                    className: 'tb-editor__map',
+                    item: blueprintMap({
+                        designModel: shell.designModel,
+                        onOpenElement: () => (shell.editorView = 'canvas')
+                    })
+                });
+            default:
+                return blueprintPane();
         }
     }
 });
