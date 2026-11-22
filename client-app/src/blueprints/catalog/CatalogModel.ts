@@ -80,6 +80,7 @@ export class CatalogModel extends HoistModel {
         treeStyle: 'none',
         expandLevel: 1,
         hideHeaders: true,
+        stripeRows: false,
         emptyText: 'Nothing matches.',
         rowClassFn: rec => `xh-blueprint-tree__row--${rec?.data.type}`,
         columns: [
