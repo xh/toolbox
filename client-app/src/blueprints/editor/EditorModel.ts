@@ -8,7 +8,7 @@ import {
 import {badge} from '@xh/hoist/cmp/badge';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistModel, lookup, managed, persist} from '@xh/hoist/core';
+import {HoistModel, lookup, managed, persist, XH} from '@xh/hoist/core';
 import type {PersistOptions} from '@xh/hoist/core';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
@@ -303,6 +303,31 @@ export class EditorModel extends HoistModel {
             this.runTab = id;
         }
         this.dockPanelModel.setCollapsed(false);
+    }
+
+    /** Add to a section of Structure, from its "+". */
+    addToSection(section: 'element' | 'source' | 'variable' | 'preset') {
+        const {shell} = this;
+        switch (section) {
+            case 'element':
+                this.showTab('add');
+                break;
+            case 'source':
+                shell.view = 'catalog';
+                break;
+            case 'variable': {
+                const error = shell.designModel
+                    .addVariable()
+                    .issues.find(it => it.severity === 'error');
+                if (error) XH.dangerToast(error.message);
+                break;
+            }
+            case 'preset':
+                this.inspectorTabsModel.activateTab('presets');
+                if (this.inspectorPanelModel.collapsed)
+                    this.inspectorPanelModel.setCollapsed(false);
+                break;
+        }
     }
 
     /** Show in the JSON view how a publish differs from the blueprint open. */

@@ -1,7 +1,7 @@
 import {
     blueprintMap,
+    blueprintStructure,
     blueprintView,
-    elementOutline,
     widgetPalette
 } from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid} from '@xh/hoist/cmp/grid';
@@ -96,7 +96,10 @@ const dockContent = hoistCmp.factory<DockContentProps>({
         const {designModel} = model.shell;
         switch (tab) {
             case 'structure':
-                return elementOutline({designModel});
+                return blueprintStructure({
+                    designModel,
+                    onAdd: section => model.addToSection(section)
+                });
             case 'add':
                 return widgetPalette({designModel});
             case 'history':
