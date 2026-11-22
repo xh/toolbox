@@ -88,8 +88,9 @@ export interface CatalogEntry {
 }
 
 /**
- * The catalog's datasets, kinds and formats that a query finds, in catalog order: a dataset by
- * name, label, description or field; a kind by name or base; a format by name or options.
+ * The catalog's datasets, and the kinds and formats their fields use, that a query finds, in
+ * catalog order: a dataset by name, label, description or field; a kind by name or base; a format
+ * by name or options.
  */
 export function catalogEntries(
     catalog: DataCatalog,
@@ -113,8 +114,14 @@ export function catalogEntries(
                 };
             }
         ),
+        fields = Object.values(catalog.datasets).flatMap(ds => Object.values(ds.fields)),
+        usedKinds = new Set(fields.map(f => f.kind).filter(k => k && catalog.kinds[k])),
+        usedFormats = new Set([
+            ...[...usedKinds].map(k => catalog.kinds[k].format),
+            ...fields.map(f => f.format)
+        ]),
         kinds = Object.entries(catalog.kinds)
-            .filter(([name, k]) => has(name, k.base))
+            .filter(([name, k]) => usedKinds.has(name) && has(name, k.base))
             .map(([name, k]): CatalogEntry => ({
                 id: `kind:${name}`,
                 section: 'Kinds',
@@ -123,6 +130,7 @@ export function catalogEntries(
                 meta: k.base ?? null
             })),
         formats = Object.entries(catalog.formats)
+            .filter(([name]) => usedFormats.has(name))
             .map(([name, opts]) => [name, describeFormat(opts)])
             .filter(([name, desc]) => has(name, desc))
             .map(([name, desc]): CatalogEntry => ({
@@ -135,8 +143,11 @@ export function catalogEntries(
     return [...datasets, ...kinds, ...formats];
 }
 
-/** A dataset's field tree regrouped by kind: kinds in name order, fields with none last. */
-export function fieldsByKind(tree: PlainObject[]): PlainObject[] {
+/**
+ * A dataset's field tree regrouped by kind: kinds in name order, fields with none last. A kind the
+ * catalog does not define is a base kind, and is labelled so.
+ */
+export function fieldsByKind(tree: PlainObject[], catalog: DataCatalog): PlainObject[] {
     const leaves: PlainObject[] = [],
         walk = (nodes: PlainObject[]) =>
             nodes.forEach(it => (it.id.startsWith('cat:') ? walk(it.children) : leaves.push(it)));
@@ -145,7 +156,21 @@ export function fieldsByKind(tree: PlainObject[]): PlainObject[] {
         kinds = sortBy(Object.keys(byKind), it => (it ? `0${it}` : '1'));
     return kinds.map(kind => ({
         id: `kind:${kind || 'none'}`,
-        name: kind || 'No kind',
+        name: !kind ? 'No kind' : catalog.kinds[kind] ? kind : `${kind} (base)`,
         children: byKind[kind]
     }));
+}
+
+/** A positive, a negative and a large number, scaled so a format shows each with digits. */
+export function sampleValues(format: PlainObject): number[] {
+    switch (format?.scale) {
+        case 'billions':
+            return [12345678901.2, -9876543210.9, 123456789012];
+        case 'millions':
+            return [12345678.9, -9876543.2, 123456789];
+        case 'thousands':
+            return [12345.6, -9876.5, 1234567];
+        default:
+            return [1234.56, -987.65, 1234567.89];
+    }
 }

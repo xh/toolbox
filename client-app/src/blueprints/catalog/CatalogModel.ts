@@ -30,7 +30,8 @@ import {
     datasetUsers,
     describeFormat,
     describeSpec,
-    fieldsByKind
+    fieldsByKind,
+    sampleValues
 } from './catalogFields';
 import type {CatalogEntry, DatasetJoin} from './catalogFields';
 import {catalogEntryName} from './CatalogViews';
@@ -142,7 +143,10 @@ export class CatalogModel extends HoistModel {
         const {catalog} = this,
             field: FieldDef = {name: 'sample', type: 'number', format} as FieldDef,
             opts = resolveFormat(field, [], {catalog, blueprint: null});
-        return SAMPLES.map(value => ({value, text: formatValue(value, field, opts, catalog)}));
+        return sampleValues(opts).map(value => ({
+            value,
+            text: formatValue(value, field, opts, catalog)
+        }));
     }
 
     /** A kind's resolved format options, as one line. */
@@ -252,12 +256,13 @@ export class CatalogModel extends HoistModel {
                 this.panelModel.blueprintModel.getSource(src)?.fieldLabel(name)
             );
         model.usedCount = Object.keys(uses).length;
-        model.fieldsGridModel.loadData(this.fieldsGrouping === 'kind' ? fieldsByKind(tree) : tree);
+        model.fieldsGridModel.loadData(
+            this.fieldsGrouping === 'kind' ? fieldsByKind(tree, this.catalog) : tree
+        );
     }
 }
 
-const SECTIONS = ['Datasets', 'Kinds', 'Formats'],
-    SAMPLES = [1234.5678, -987.654, 123456789];
+const SECTIONS = ['Datasets', 'Kinds', 'Formats'];
 
 /** One dataset's detail: its fields grid, parameters and joins. */
 export class DatasetCardModel extends HoistModel {

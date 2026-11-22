@@ -12,7 +12,8 @@ import {
     datasetUsers,
     describeFormat,
     fieldsByKind,
-    matchDatasets
+    matchDatasets,
+    sampleValues
 } from './catalogFields';
 
 const catalog = new DataCatalog(catalogJson as any),
@@ -281,12 +282,8 @@ describe('catalogEntries', () => {
         expect(rows.filter(it => it.kind === 'dataset').map(it => it.name)).toEqual(
             Object.keys(catalog.datasets)
         );
-        expect(rows.filter(it => it.kind === 'kind')).toHaveLength(
-            Object.keys(catalog.kinds).length
-        );
-        expect(rows.filter(it => it.kind === 'format')).toHaveLength(
-            Object.keys(catalog.formats).length
-        );
+        expect(rows.some(it => it.kind === 'kind')).toBe(true);
+        expect(rows.some(it => it.kind === 'format')).toBe(true);
         expect(rows.find(it => it.id === 'kind:pnl')).toMatchObject({
             section: 'Kinds',
             meta: 'currency:USD'
@@ -321,11 +318,47 @@ describe('fieldsByKind', () => {
                 {id: 'field:symbol', name: 'symbol', kind: null, children: []},
                 {id: 'field:mktVal', name: 'mktVal', kind: 'marketValue', children: []}
             ],
-            grouped = fieldsByKind(tree);
+            grouped = fieldsByKind(tree, catalog);
         expect(grouped.map(it => [it.name, it.children.map(c => c.name)])).toEqual([
             ['marketValue', ['mktVal']],
             ['pnl', ['pnlDay']],
             ['No kind', ['symbol']]
         ]);
+    });
+});
+
+describe('catalog list scope', () => {
+    it("lists only the kinds and formats its datasets' fields use", () => {
+        const portfolio = new DataCatalog({
+                ...(catalogJson as any),
+                datasets: {positions: (catalogJson as any).datasets.positions}
+            }),
+            rows = catalogEntries(portfolio, '', {}),
+            kinds = rows.filter(it => it.kind === 'kind').map(it => it.name),
+            formats = rows.filter(it => it.kind === 'format').map(it => it.name);
+        expect(kinds).toContain('pnl');
+        expect(kinds).not.toContain('temperature');
+        expect(formats).toContain('mv');
+        expect(formats).not.toContain('temp');
+    });
+});
+
+describe('fieldsByKind labels', () => {
+    it('names a base kind no catalog kind defines as a base', () => {
+        const grouped = fieldsByKind(
+            [{id: 'field:x', name: 'x', kind: 'currency:USD', children: []}],
+            catalog
+        );
+        expect(grouped[0].name).toBe('currency:USD (base)');
+    });
+});
+
+describe('sampleValues', () => {
+    it('scales a positive, a negative and a large sample to the format', () => {
+        expect(sampleValues({scale: 'millions', precision: 1})).toEqual([
+            12345678.9, -9876543.2, 123456789
+        ]);
+        expect(sampleValues({scale: 'thousands'})).toEqual([12345.6, -9876.5, 1234567]);
+        expect(sampleValues({precision: 2})).toEqual([1234.56, -987.65, 1234567.89]);
     });
 });
