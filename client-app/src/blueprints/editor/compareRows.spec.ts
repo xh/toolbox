@@ -22,10 +22,10 @@ describe('compareRows', () => {
         expect(compareRows(from, to)).toEqual([
             {path: '/variables/fund', change: 'removed', before: '{"type":"string"}', after: null},
             {
-                path: '/elements/dash/children',
-                change: 'changed',
-                before: '[{"id":"grid"}]',
-                after: '[{"id":"grid"},{"id":"note"}]'
+                path: '/elements/dash/children[note]',
+                change: 'added',
+                before: null,
+                after: '{"id":"note"}'
             },
             {
                 path: '/elements/grid/config/title',
@@ -38,6 +38,39 @@ describe('compareRows', () => {
                 change: 'added',
                 before: null,
                 after: '{"component":"callout"}'
+            }
+        ]);
+    });
+
+    it('keys an array of refs by id: one row per ref added or removed, and per key changed', () => {
+        const a = {
+                elements: {
+                    dash: {
+                        component: 'dashCanvas',
+                        children: [
+                            {id: 'p1', x: 0, y: 9, w: 6},
+                            {id: 'p2', x: 6, y: 0, w: 6}
+                        ]
+                    }
+                }
+            } as Blueprint,
+            b = structuredClone(a);
+        b.elements.dash.children[0].y = 10;
+        b.elements.dash.children.splice(1, 1, {id: 'p3', x: 6, y: 0, w: 3});
+
+        expect(compareRows(a, b)).toEqual([
+            {path: '/elements/dash/children[p1]/y', change: 'changed', before: '9', after: '10'},
+            {
+                path: '/elements/dash/children[p2]',
+                change: 'removed',
+                before: '{"id":"p2","x":6,"y":0,"w":6}',
+                after: null
+            },
+            {
+                path: '/elements/dash/children[p3]',
+                change: 'added',
+                before: null,
+                after: '{"id":"p3","x":6,"y":0,"w":3}'
             }
         ]);
     });
