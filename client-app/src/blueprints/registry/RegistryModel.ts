@@ -7,6 +7,7 @@ import {
 } from '@xh/hoist-chat-kit/blueprint';
 import type {ArchitectTarget} from '@xh/hoist-chat-kit/blueprint';
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
 import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
@@ -16,6 +17,15 @@ import {BlueprintShellModel} from '../BlueprintShellModel';
 import {formatOf} from '../catalog/CatalogModel';
 import type {RegistryEntry, RegistryKind, RegistryOrigin} from './registryEntries';
 import {registryEntries, sampleParams, schemaRows} from './registryEntries';
+import {
+    entryArchitect,
+    entryConfig,
+    entryExample,
+    entryJson,
+    entryName,
+    entryOutputs,
+    usedBadge
+} from './RegistryViews';
 
 export type RegistryContext = 'dashboard' | 'answer';
 
@@ -28,6 +38,8 @@ const KIND_LABELS: Record<RegistryKind, string> = {
     presentation: 'Presentations'
 };
 
+const KIND_ORDER = Object.values(KIND_LABELS);
+
 /**
  * The registries the Blueprints tab builds: the dashboard registry its blueprint renders with, and
  * the answer registry the Architect's answers render with. Lists each entry by kind and origin,
@@ -38,13 +50,12 @@ export class RegistryModel extends HoistModel {
 
     @bindable accessor context: RegistryContext = 'dashboard';
     @bindable accessor origins: RegistryOrigin[] = ['built-in', 'chat kit', 'app'];
-    @bindable accessor showArchitect = false;
     @bindable accessor sampleValue: string = null;
 
     /** Text that narrows the entries to those whose name or label holds it. */
     @bindable accessor query = '';
 
-    /** The expanded entry, whose details show. */
+    /** The entry the detail shows. */
     @bindable accessor selectedId: string = null;
 
     /** The selected widget's example, rendered live. */
@@ -52,6 +63,43 @@ export class RegistryModel extends HoistModel {
 
     /** Why the selected widget's example could not render, if it couldn't. */
     @observable accessor exampleError: string = null;
+
+    @managed listModel = new GridModel({
+        store: {idSpec: 'id'},
+        groupBy: 'group',
+        groupSortFn: (a, b) => KIND_ORDER.indexOf(a) - KIND_ORDER.indexOf(b),
+        hideHeaders: true,
+        emptyText: 'No entries match.',
+        columns: [
+            {field: 'group', hidden: true},
+            {
+                field: 'name',
+                flex: 1,
+                rendererIsComplex: true,
+                renderer: (v, {record}) => entryName(v, record.data.label)
+            },
+            {field: 'label', hidden: true},
+            {
+                field: 'used',
+                width: 70,
+                align: 'right',
+                rendererIsComplex: true,
+                renderer: (v, {record}) =>
+                    v ? usedBadge(v as number, record.data.usedAt as string[]) : null
+            },
+            {field: 'usedAt', hidden: true}
+        ]
+    });
+
+    @managed detailTabsModel = new TabContainerModel({
+        tabs: [
+            {id: 'example', title: 'Example', content: () => entryExample()},
+            {id: 'config', title: 'Config', content: () => entryConfig()},
+            {id: 'outputs', title: 'Outputs and presets', content: () => entryOutputs()},
+            {id: 'json', title: 'JSON', content: () => entryJson()},
+            {id: 'architect', title: 'What the Architect sees', content: () => entryArchitect()}
+        ]
+    });
 
     @managed schemaGridModel = new GridModel({
         treeMode: true,
@@ -104,7 +152,7 @@ export class RegistryModel extends HoistModel {
     @computed
     get sections(): RegistrySection[] {
         const {usages, origins} = this,
-            q = this.query.trim().toLowerCase(),
+            q = (this.query ?? '').trim().toLowerCase(),
             shown = this.entries.filter(
                 it =>
                     origins.includes(it.origin) &&
@@ -119,9 +167,27 @@ export class RegistryModel extends HoistModel {
         });
     }
 
-    /** Expand an entry, or collapse it if expanded. */
-    toggle(id: string) {
-        this.selectedId = this.selectedId === id ? null : id;
+    /** True if the selected entry can be added to the draft open: a dashboard widget. */
+    get canAddToDraft(): boolean {
+        const entry = this.selected;
+        return (
+            !!this.panelModel.draftName && entry?.kind === 'widget' && this.isIn('dashboard', entry)
+        );
+    }
+
+    /** Add the selected widget to the draft open, at the editor's add target, and show it there. */
+    addToDraft() {
+        const {panelModel, selected} = this,
+            {blueprintModel, designModel} = panelModel;
+        if (blueprintModel.mode !== 'design') blueprintModel.setMode('design');
+        const {issues, id} = designModel.addWidget(selected.name),
+            error = issues.find(it => it.severity === 'error');
+        if (error) {
+            XH.dangerToast(error.message);
+            return;
+        }
+        designModel.select({kind: 'element', id});
+        panelModel.showEditor();
     }
 
     /** Where the blueprint uses the selected entry. */
@@ -259,16 +325,32 @@ export class RegistryModel extends HoistModel {
     }
 
     override onLinked() {
-        this.addReaction({
-            track: () => this.selected,
-            run: entry => {
-                this.sampleValue = null;
-                this.showExample(entry);
-                const schema = entry?.kind === 'action' ? entry.spec.params : entry?.spec.config;
-                this.schemaGridModel.loadData(schemaRows(schema));
+        this.addReaction(
+            {
+                track: () => this.selected,
+                run: entry => {
+                    this.sampleValue = null;
+                    this.showExample(entry);
+                    const schema =
+                        entry?.kind === 'action' ? entry.spec.params : entry?.spec.config;
+                    this.schemaGridModel.loadData(schemaRows(schema));
+                    this.enableTabs(entry);
+                },
+                fireImmediately: true
             },
-            fireImmediately: true
-        });
+            {
+                track: () => this.sections,
+                run: sections => this.loadList(sections),
+                fireImmediately: true
+            },
+            {
+                track: () => this.listModel.selectedRecord,
+                run: rec => {
+                    if (rec) this.selectedId = rec.id as string;
+                },
+                fireImmediately: true
+            }
+        );
     }
 
     override destroy() {
@@ -279,6 +361,37 @@ export class RegistryModel extends HoistModel {
     //------------------
     // Implementation
     //------------------
+    private loadList(sections: RegistrySection[]) {
+        const {listModel} = this,
+            rows = sections.flatMap(({label, entries}) =>
+                entries.map(({entry, name, usedAt}) => ({
+                    id: entry.id,
+                    group: label,
+                    name,
+                    label: entry.label && entry.label !== name ? entry.label : null,
+                    used: usedAt.length,
+                    usedAt
+                }))
+            );
+        listModel.loadData(rows);
+        const keep = rows.some(it => it.id === this.selectedId);
+        listModel.selModel.select(keep ? this.selectedId : (rows[0]?.id ?? null));
+    }
+
+    // Disable the tabs an entry has nothing for, and leave a disabled tab.
+    @action
+    private enableTabs(entry: RegistryEntry) {
+        const {detailTabsModel: tabs} = this,
+            kind = entry?.kind,
+            has = {
+                example: ['widget', 'renderer', 'action', 'resolver'].includes(kind),
+                outputs: kind === 'widget'
+            };
+        tabs.findTab('example').setDisabled(!has.example);
+        tabs.findTab('outputs').setDisabled(!has.outputs);
+        if (tabs.activeTab?.disabled) tabs.activateTab(has.example ? 'example' : 'config');
+    }
+
     /**
      * A blueprint of a widget's example alone. A source it names gets a source of that dataset,
      * whose required dates are prompted variables that start at today, so data loads.

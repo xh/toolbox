@@ -244,6 +244,20 @@ export class BlueprintShellModel extends HoistModel {
         return doc?.kind === 'draft' && doc.access === 'write';
     }
 
+    /** The name of the writable draft open, which a reference page can add to, or null. */
+    get draftName(): string {
+        return this.canEdit ? (this.selected?.name ?? null) : null;
+    }
+
+    /** Show the open blueprint's canvas, in design, from a reference page. */
+    @action
+    showEditor() {
+        if (this.blueprintModel.mode !== 'design') this.blueprintModel.setMode('design');
+        this.libraryOpen = false;
+        this.editorView = 'canvas';
+        this.view = 'blueprint';
+    }
+
     /** The open blueprint's issues, or why it could not be opened. */
     @computed
     get issues(): BlueprintIssue[] {

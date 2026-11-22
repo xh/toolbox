@@ -91,7 +91,7 @@ export const datasetItem = hoistCmp.factory<DatasetItemProps>({
 const datasetDetail = hoistCmp.factory<DatasetCardModel>(({model}) => {
     const catalog = useContextModel(CatalogModel),
         {ds, joins, params, description} = model,
-        draft = catalog.draftName;
+        draft = catalog.panelModel.draftName;
     return panel({
         className: 'tb-dataset',
         items: [

@@ -90,12 +90,6 @@ export class CatalogModel extends HoistModel {
         return datasetUsers(this.blueprint, this.selectedName);
     }
 
-    /** The name of the writable draft open, which Add as source adds to, or null. */
-    get draftName(): string {
-        const {panelModel} = this;
-        return panelModel.canEdit ? (panelModel.selected?.name ?? null) : null;
-    }
-
     /** Add a source over the selected dataset to the draft open, and show it there, selected. */
     addAsSource() {
         const {panelModel, selectedName} = this,
@@ -105,15 +99,15 @@ export class CatalogModel extends HoistModel {
             error = issues.find(it => it.severity === 'error');
         if (error) {
             XH.dangerToast(error.message);
-            return;
+        } else {
+            panelModel.showEditor();
         }
-        this.showInEditor();
     }
 
     /** Select a source or element of the draft open, in the editor. */
     reveal(selection: BlueprintSelection) {
         this.panelModel.designModel.select(selection);
-        this.showInEditor();
+        this.panelModel.showEditor();
     }
 
     @managed kindsGridModel = new GridModel({
@@ -187,13 +181,6 @@ export class CatalogModel extends HoistModel {
     //------------------
     // Implementation
     //------------------
-    private showInEditor() {
-        const {panelModel} = this;
-        panelModel.libraryOpen = false;
-        panelModel.editorView = 'canvas';
-        panelModel.view = 'blueprint';
-    }
-
     private loadList() {
         const {listModel, catalog, usages} = this,
             datasets = Object.values(catalog.datasets),
