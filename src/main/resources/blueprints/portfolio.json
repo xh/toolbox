@@ -189,8 +189,8 @@
             "description": "Holdings at the close of the as-of date.",
             "guidance": "One row per position. Updates live when the as-of date is today. Join to orders through the shared dimensions.",
             "params": {
-                "asOf": {"type": "localDate", "required": true},
-                "fund": {"type": "toolbox.fund", "description": "One fund. Leave empty for all funds."}
+                "asOf": {"type": "localDate", "label": "As of", "required": true},
+                "fund": {"type": "toolbox.fund", "label": "Fund", "description": "One fund. Leave empty for all funds."}
             },
             "key": ["fund", "strategy", "book", "trader", "model", "symbol"],
             "fields": [
@@ -332,8 +332,8 @@
             "description": "One row per fund at the close of the as-of date, with its manager, style, NAV, P&L and recent trend.",
             "guidance": "Use for fund-level totals and trends, such as a sparkline of each fund's P&L or drawdown. It is far smaller than positions, so prefer it for any per-fund figure.",
             "params": {
-                "asOf": {"type": "localDate", "required": true},
-                "fund": {"type": "toolbox.fund", "description": "One fund. Leave empty for all funds."}
+                "asOf": {"type": "localDate", "label": "As of", "required": true},
+                "fund": {"type": "toolbox.fund", "label": "Fund", "description": "One fund. Leave empty for all funds."}
             },
             "key": ["fund"],
             "fields": [
@@ -396,8 +396,8 @@
             "description": "Orders on the as-of date.",
             "guidance": "One row per order. Updates live when the as-of date is today. A selection in a positions grid filters orders through the shared dimensions.",
             "params": {
-                "asOf": {"type": "localDate", "required": true},
-                "fund": {"type": "toolbox.fund", "description": "One fund. Leave empty for all funds."}
+                "asOf": {"type": "localDate", "label": "As of", "required": true},
+                "fund": {"type": "toolbox.fund", "label": "Fund", "description": "One fund. Leave empty for all funds."}
             },
             "key": ["orderId"],
             "fields": [
@@ -443,9 +443,9 @@
             "description": "Daily prices for one symbol, or for every symbol.",
             "guidance": "One row per symbol and trading day. Chart close against day for one symbol's price history. Join it onto positions by symbol for each symbol's latest close, or for a window's price bar. Without a symbol, rows are symbols times trading days - about 500 a day - and a request over 25,000 rows fails. Keep the date window small, such as the last few days for a latest close, and name a symbol or filter by symbol where you can.",
             "params": {
-                "symbol": {"type": "string", "description": "One symbol. Leave empty for every symbol."},
-                "start": {"type": "localDate", "required": true},
-                "end": {"type": "localDate", "required": true}
+                "symbol": {"type": "string", "label": "Symbol", "description": "One symbol. Leave empty for every symbol."},
+                "start": {"type": "localDate", "label": "Start", "required": true},
+                "end": {"type": "localDate", "label": "End", "required": true}
             },
             "key": ["symbol", "day"],
             "fields": [
@@ -465,10 +465,11 @@
             "params": {
                 "portfolio": {
                     "type": "toolbox.portfolio",
+                    "label": "Portfolio",
                     "required": true,
                     "description": "A portfolio: {\"holdings\": [{\"symbol\": \"AAPL\", \"weight\": 0.5}]}, with weights as fractions. The server prices it against a notional of 100,000,000 USD."
                 },
-                "asOf": {"type": "localDate", "required": true}
+                "asOf": {"type": "localDate", "label": "As of", "required": true}
             },
             "key": ["symbol"],
             "fields": [

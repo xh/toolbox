@@ -59,8 +59,8 @@
             "description": "The forecast for one city, for the next five days.",
             "guidance": "One row per three-hour step. Chart a field against time for a trend. Group by day for a daily summary.",
             "params": {
-                "city": {"type": "string", "required": true, "options": {"values": ["Atlanta", "Austin", "Boston", "Chicago", "Dallas", "Denver", "Houston", "Las Vegas", "London", "Los Angeles", "Miami", "Minneapolis", "Nashville", "New York", "Paris", "Philadelphia", "Phoenix", "Portland", "San Antonio", "San Diego", "San Francisco", "Seattle", "Sydney", "Tokyo", "Toronto"]}},
-                "units": {"type": "string", "required": true, "options": {"values": ["imperial", "metric"]}}
+                "city": {"type": "string", "label": "City", "required": true, "options": {"values": ["Atlanta", "Austin", "Boston", "Chicago", "Dallas", "Denver", "Houston", "Las Vegas", "London", "Los Angeles", "Miami", "Minneapolis", "Nashville", "New York", "Paris", "Philadelphia", "Phoenix", "Portland", "San Antonio", "San Diego", "San Francisco", "Seattle", "Sydney", "Tokyo", "Toronto"]}},
+                "units": {"type": "string", "label": "Units", "required": true, "options": {"values": ["imperial", "metric"]}}
             },
             "key": ["city", "time"],
             "fields": [
@@ -79,8 +79,8 @@
             "description": "The weather in one city now.",
             "guidance": "One row. Use for stat cards of the current conditions.",
             "params": {
-                "city": {"type": "string", "required": true, "options": {"values": ["Atlanta", "Austin", "Boston", "Chicago", "Dallas", "Denver", "Houston", "Las Vegas", "London", "Los Angeles", "Miami", "Minneapolis", "Nashville", "New York", "Paris", "Philadelphia", "Phoenix", "Portland", "San Antonio", "San Diego", "San Francisco", "Seattle", "Sydney", "Tokyo", "Toronto"]}},
-                "units": {"type": "string", "required": true, "options": {"values": ["imperial", "metric"]}}
+                "city": {"type": "string", "label": "City", "required": true, "options": {"values": ["Atlanta", "Austin", "Boston", "Chicago", "Dallas", "Denver", "Houston", "Las Vegas", "London", "Los Angeles", "Miami", "Minneapolis", "Nashville", "New York", "Paris", "Philadelphia", "Phoenix", "Portland", "San Antonio", "San Diego", "San Francisco", "Seattle", "Sydney", "Tokyo", "Toronto"]}},
+                "units": {"type": "string", "label": "Units", "required": true, "options": {"values": ["imperial", "metric"]}}
             },
             "key": ["city"],
             "fields": [
