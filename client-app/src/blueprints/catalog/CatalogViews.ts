@@ -1,14 +1,15 @@
+import {chip} from '@xh/hoist/cmp/chip';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hbox, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import type {HoistProps} from '@xh/hoist/core';
+import type {HoistProps, Intent} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {segmentedControl, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import type {KeyboardEvent as ReactKeyboardEvent, ReactNode} from 'react';
+import type {ReactNode} from 'react';
 import {jsonDialog} from '../jsonDialog';
 import {md} from '../markdown';
 import {CatalogModel} from './CatalogModel';
@@ -127,6 +128,7 @@ const datasetDetail = hoistCmp.factory<DatasetCardModel>(({model}) => {
                               joins.map(j => ({
                                   text: `${j.dataset} on ${j.on.join(', ')}`,
                                   title: `Show ${j.dataset}`,
+                                  intent: 'success',
                                   onClick: () => catalog.select(`dataset:${j.dataset}`)
                               }))
                           )
@@ -157,6 +159,7 @@ const datasetDetail = hoistCmp.factory<DatasetCardModel>(({model}) => {
                                 ...sources.map(id => ({
                                     text: id,
                                     title: `Show ${id} in the blueprint`,
+                                    intent: 'success',
                                     onClick: () => catalog.reveal({kind: 'source', id})
                                 })),
                                 ...elements.map(id => ({
@@ -225,9 +228,10 @@ const kindDetail = hoistCmp.factory<CatalogModel>({
                                           key: dataset,
                                           className: 'tb-catalog-detail__kind-row',
                                           children: [
-                                              chip({
+                                              factChip({
                                                   text: dataset,
                                                   title: `Show ${dataset}`,
+                                                  intent: 'success',
                                                   onClick: () => model.select(`dataset:${dataset}`)
                                               }),
                                               span({
@@ -357,34 +361,32 @@ function facts(rows: Fact[]) {
 interface ChipSpec {
     text: string;
     title?: string;
+    /** As for the kind of thing it names: `success` for a dataset or source, none for an element. */
+    intent?: Intent;
     onClick?: () => void;
 }
 
 function chips(specs: ChipSpec[]) {
     return hbox({
         className: 'tb-catalog-detail__chips',
-        children: specs.map((it, idx) => chip({...it, key: `${idx}-${it.text}`}))
+        children: specs.map((it, idx) => factChip({...it, key: `${idx}-${it.text}`}))
     });
 }
 
-/** A small label, clickable when given an `onClick`, as for a join or a reader. */
-function chip({key, text, title, onClick}: ChipSpec & {key?: string}) {
+/** A chip for a fact, clickable when given an `onClick`, with its title as a tooltip. */
+function factChip({key, text, title, intent, onClick}: ChipSpec & {key?: string}) {
     return span({
         key,
-        className: onClick ? 'tb-chip tb-chip--action' : 'tb-chip',
-        role: onClick ? 'button' : undefined,
-        tabIndex: onClick ? 0 : undefined,
+        className: 'tb-catalog-detail__chip',
         title,
-        onClick,
-        onKeyDown: onClick
-            ? (e: ReactKeyboardEvent) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      onClick();
-                  }
-              }
-            : undefined,
-        children: text
+        children: chip({
+            className: 'xh-font-family-mono',
+            minimal: true,
+            size: 'compact',
+            intent,
+            onClick: onClick ? () => onClick() : undefined,
+            children: text
+        })
     });
 }
 

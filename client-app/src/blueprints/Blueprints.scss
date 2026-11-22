@@ -110,6 +110,7 @@
 
 .tb-registry__origins {
   flex: none;
+  gap: var(--xh-spacing-half);
 }
 
 .tb-blueprints {
@@ -196,31 +197,6 @@
   color: var(--xh-text-color-muted);
 }
 
-.tb-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 6px;
-  border-radius: var(--xh-border-radius);
-  font-family: var(--xh-font-family-mono);
-  font-size: var(--xh-font-size-small);
-  color: var(--xh-intent-success-text-color);
-  background-color: var(--xh-intent-success-trans1);
-  white-space: nowrap;
-
-  &--action {
-    cursor: pointer;
-
-    &:hover {
-      background-color: var(--xh-intent-success-trans2);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--xh-intent-success-text-color);
-      outline-offset: 1px;
-    }
-  }
-}
-
 .tb-catalog-entry {
   align-items: baseline;
   gap: var(--xh-spacing-half);
@@ -292,6 +268,13 @@
   &__chips {
     flex-wrap: wrap;
     gap: var(--xh-spacing-half);
+    min-width: 0;
+  }
+
+  &__chip {
+    display: flex;
+    min-width: 0;
+    max-width: 100%;
   }
 
   &__kind-fields,

@@ -1,10 +1,11 @@
 import {badge} from '@xh/hoist/cmp/badge';
+import {chip} from '@xh/hoist/cmp/chip';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hbox, hframe, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {jsonDialog} from '../jsonDialog';
@@ -38,14 +39,16 @@ export const registryPanel = hoistCmp.factory({
                     children: [
                         toolbar({
                             className: 'tb-registry__origins',
-                            children: buttonGroupInput({
-                                bind: 'origins',
-                                enableMulti: true,
-                                outlined: true,
-                                children: ORIGINS.map(([value, text]) =>
-                                    button({value, text: `${text} ${counts[value]}`})
-                                )
-                            })
+                            children: ORIGINS.map(([value, text]) =>
+                                chip({
+                                    key: value,
+                                    outlined: true,
+                                    intent: 'primary',
+                                    active: model.origins.includes(value),
+                                    onClick: () => model.toggleOrigin(value),
+                                    children: `${text} ${counts[value]}`
+                                })
+                            )
                         }),
                         grid({model: model.listModel})
                     ]

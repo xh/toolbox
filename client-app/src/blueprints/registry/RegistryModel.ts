@@ -199,6 +199,14 @@ export class RegistryModel extends HoistModel {
         return ret;
     }
 
+    @action
+    toggleOrigin(origin: RegistryOrigin) {
+        const {origins} = this;
+        this.origins = origins.includes(origin)
+            ? origins.filter(it => it !== origin)
+            : [...origins, origin];
+    }
+
     showEntryJson() {
         const entry = this.selected;
         if (entry)
