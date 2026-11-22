@@ -73,20 +73,8 @@ export function roleWidgets(
     };
 }
 
-/** A Built-ins page: one widget, or every input at once. */
-export interface BuiltinPageSpec {
-    /** Tab id and route name, safe for a widget with a dotted name. */
-    id: string;
-    /** The widget's name, or `INPUTS_OVERVIEW`. */
-    name: string;
-    role: BuiltinRole;
-}
-
-/** Every Built-ins page, by role: the built-in widgets, then the app's own. */
-export function builtinPages(registry: BlueprintRegistry): BuiltinPageSpec[] {
-    return BUILTIN_ROLES.flatMap(role => {
-        const {builtIn, app} = roleWidgets(registry, role),
-            names = [...(role.key === 'input' ? [INPUTS_OVERVIEW] : []), ...builtIn, ...app];
-        return names.map(name => ({id: `builtin-${name.replace(/\./g, '-')}`, name, role}));
-    });
+/** A role's Built-ins in page order: every input at once for the input role, then its built-in widgets, then the app's own. */
+export function roleWidgetNames(registry: BlueprintRegistry, role: BuiltinRole): string[] {
+    const {builtIn, app} = roleWidgets(registry, role);
+    return [...(role.key === 'input' ? [INPUTS_OVERVIEW] : []), ...builtIn, ...app];
 }

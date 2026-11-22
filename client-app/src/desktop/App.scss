@@ -86,4 +86,10 @@ code.tb-code-link {
 // hoverable items with a filled active pill) is provided by the hoist-react framework default.
 .tb-switcher.xh-tab-switcher--left {
   width: 190px;
+
+  // The switcher's box clips, so its inner list scrolls when the tabs overflow.
+  .xh-tab-switcher__scroll {
+    height: 100%;
+    overflow-y: auto;
+  }
 }

@@ -414,24 +414,27 @@
   }
 }
 
-.tb-kinds {
+.tb-kinds,
+.tb-builtins {
   flex: 1;
   min-width: 0;
+}
 
-  &__index {
-    flex: none;
-    width: 180px;
-    overflow-y: auto;
-    padding: var(--xh-spacing-half) 0;
-    border-right: var(--xh-border-solid);
-  }
+// An in-page index whose entry for the section in view is marked, as the page scrolls.
+.tb-index {
+  flex: none;
+  width: 180px;
+  overflow-y: auto;
+  padding: var(--xh-spacing-half) 0;
+  border-right: var(--xh-border-solid);
 
-  &__index-group {
+  &__group {
     flex: none;
     margin-bottom: var(--xh-spacing);
   }
 
-  &__index-head {
+  &__head {
+    flex: none;
     padding: var(--xh-spacing-half) var(--xh-spacing);
     color: var(--xh-text-color-muted);
     font-size: 10px;
@@ -440,7 +443,7 @@
     text-transform: uppercase;
   }
 
-  &__index-entry {
+  &__entry {
     padding: 3px var(--xh-spacing);
     border-left: 3px solid transparent;
     font-family: var(--xh-font-family-mono);
@@ -456,6 +459,19 @@
       border-left-color: var(--xh-intent-primary);
       background-color: var(--xh-intent-primary-trans1);
     }
+  }
+}
+
+.tb-builtins {
+  &__scroll {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+  }
+
+  &__section {
+    display: flex;
+    height: 600px;
   }
 }
 

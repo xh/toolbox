@@ -2,11 +2,12 @@ import type {
     Blueprint,
     BlueprintElement,
     BlueprintRegistry,
+    DataCatalog,
     WidgetSpec
 } from '@xh/hoist-chat-kit/blueprint';
 import {BlueprintModel, CANVAS_COLUMNS, rescaleCells} from '@xh/hoist-chat-kit/blueprint';
 import {blueprintView, thumbnailPreview} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
-import {placeholder} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, hframe, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, uses, XH} from '@xh/hoist/core';
 import type {ElementFactory, LoadSpec, PlainObject} from '@xh/hoist/core';
 import {
@@ -18,15 +19,19 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {action, observableRef, runInAction} from '@xh/hoist/mobx';
+import {action, bindable, observableRef, runInAction} from '@xh/hoist/mobx';
+import classNames from 'classnames';
 import {groupBy, upperFirst} from 'lodash';
+import {useRef} from 'react';
 import {PORTFOLIO_TYPE} from '../../../../blueprints/blueprintTypes';
 import {createRepository} from '../../../../blueprints/repository/createRepository';
+import {anchorProps, topAnchor, useScrollTarget} from '../../../../blueprints/scrollSpy';
 import {ServerDataProvider} from '../../../../blueprints/ServerDataProvider';
 import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import {CONCEPT_PAGES} from '../concepts/conceptPages';
 import {portfolioCatalogAsync} from '../portfolioCatalog';
 import {builtinExample, INPUTS_OVERVIEW} from './builtinExamples';
+import {roleWidgetNames} from './builtinRoles';
 import type {BuiltinRole} from './builtinRoles';
 import {builtinSettings, minColumns} from './builtinSettings';
 import type {BuiltinSetting} from './builtinSettings';
@@ -40,6 +45,7 @@ class BuiltinPageModel extends HoistModel {
     @observableRef accessor blueprintModel: BlueprintModel = null;
     @observableRef accessor blueprint: Blueprint = null;
     private original: Blueprint = null;
+    private catalog: DataCatalog = null;
 
     constructor(
         readonly name: string,
@@ -57,22 +63,9 @@ class BuiltinPageModel extends HoistModel {
         if (loadSpec.isStale) return;
         const blueprint = builtinExample(this.name, this.registry, catalog);
         if (!blueprint) return;
-        const model = this.markManaged(
-            new BlueprintModel({
-                catalog,
-                registry: this.registry,
-                dataProvider: new ServerDataProvider(),
-                mode: 'run',
-                access: 'read'
-            })
-        );
-        model.drillInRepository = createRepository(PORTFOLIO_TYPE.name);
-        model.setBlueprint(blueprint);
+        this.catalog = catalog;
         this.original = blueprint;
-        runInAction(() => {
-            this.blueprintModel = model;
-            this.blueprint = blueprint;
-        });
+        this.open(blueprint);
     }
 
     /** A setting's value in the example: its root's, or its first child reference's. */
@@ -122,13 +115,37 @@ class BuiltinPageModel extends HoistModel {
         return this.registry.widgets[el?.component]?.size?.min?.w ?? 1;
     }
 
-    @action
+    /** Restore the example, dropping both setting changes and anything a user moved in it. */
     reset() {
-        this.apply(this.original);
+        this.open(this.original);
+    }
+
+    override destroy() {
+        XH.safeDestroy(this.blueprintModel);
+        super.destroy();
     }
 
     private get root(): PlainObject {
         return this.blueprint?.elements[this.blueprint.root];
+    }
+
+    // A new model, since a user's moves live in the old one's state rather than in its blueprint.
+    private open(blueprint: Blueprint) {
+        const old = this.blueprintModel,
+            model = new BlueprintModel({
+                catalog: this.catalog,
+                registry: this.registry,
+                dataProvider: new ServerDataProvider(),
+                mode: 'run',
+                access: 'read'
+            });
+        model.drillInRepository = createRepository(PORTFOLIO_TYPE.name);
+        model.setBlueprint(blueprint);
+        runInAction(() => {
+            this.blueprintModel = model;
+            this.blueprint = blueprint;
+        });
+        XH.safeDestroy(old);
     }
 
     private apply(blueprint: Blueprint) {
@@ -142,21 +159,124 @@ class BuiltinPageModel extends HoistModel {
     }
 }
 
-/** A Built-ins page's content. Each page has its own factory, which creates the page's model. */
-export function builtinPageContent(name: string, role: BuiltinRole): ElementFactory {
-    let ret = factories.get(name);
+/** A Built-ins role page: each widget of the role in sequence, with an index to jump between them. */
+class BuiltinRolePageModel extends HoistModel {
+    readonly pages: BuiltinPageModel[];
+
+    /** The widget the index marks: the one at the top of the scroll. */
+    @bindable accessor activeAnchor: string = null;
+
+    /** A widget to bring into view once it renders. */
+    @observableRef accessor scrollTarget: string = null;
+
+    constructor(readonly role: BuiltinRole) {
+        super();
+        const registry = PORTFOLIO_TYPE.createRegistry();
+        this.pages = roleWidgetNames(registry, role).map(name =>
+            this.markManaged(new BuiltinPageModel(name, role))
+        );
+        this.activeAnchor = this.pages[0]?.name ?? null;
+    }
+
+    override async doLoadAsync() {
+        await Promise.all(this.pages.map(it => it.loadAsync()));
+    }
+
+    override onLinked() {
+        this.addReaction({
+            track: () => XH.routerState,
+            run: state => {
+                const widget = state?.params?.widget;
+                if (state?.name === builtinRoute(this.role) && widget) this.goTo(widget);
+            },
+            fireImmediately: true
+        });
+    }
+
+    @action
+    goTo(name: string) {
+        this.activeAnchor = name;
+        this.scrollTarget = name;
+    }
+
+    @action
+    clearScrollTarget() {
+        this.scrollTarget = null;
+    }
+}
+
+/** A role's route name, under which `?widget=<name>` opens the page scrolled to that widget. */
+export function builtinRoute(role: BuiltinRole): string {
+    return `default.blueprints.builtin-${role.key}`;
+}
+
+/** A Built-ins role page's content. Each role has its own factory, which creates its model. */
+export function builtinRolePageContent(role: BuiltinRole): ElementFactory {
+    let ret = factories.get(role.key);
     if (!ret) {
         ret = hoistCmp.factory({
-            displayName: 'BlueprintsBuiltinPage',
-            model: creates(() => new BuiltinPageModel(name, role)),
-            render: () => builtinBody()
+            displayName: 'BlueprintsBuiltinRolePage',
+            model: creates(() => new BuiltinRolePageModel(role)),
+            render: () => rolePage()
         });
-        factories.set(name, ret);
+        factories.set(role.key, ret);
     }
     return ret;
 }
 
 const factories = new Map<string, ElementFactory>();
+
+const ANCHORS = 'tb-builtin';
+
+const rolePage = hoistCmp.factory<BuiltinRolePageModel>({
+    model: uses(BuiltinRolePageModel),
+    render({model}) {
+        const scrollRef = useRef<HTMLDivElement>(null);
+        useScrollTarget(ANCHORS, model.scrollTarget, () => model.clearScrollTarget());
+        return hframe({
+            className: 'tb-builtins',
+            children: [
+                vbox({
+                    className: 'tb-index',
+                    children: [
+                        hbox({
+                            className: 'tb-index__head',
+                            children: [
+                                span(model.role.title),
+                                filler(),
+                                span(String(model.pages.length))
+                            ]
+                        }),
+                        ...model.pages.map(({name}) =>
+                            div({
+                                key: name,
+                                className: classNames(
+                                    'tb-index__entry',
+                                    model.activeAnchor === name && 'tb-index__entry--active'
+                                ),
+                                onClick: () => model.goTo(name),
+                                children: pageTitle(name)
+                            })
+                        )
+                    ]
+                }),
+                div({
+                    ref: scrollRef,
+                    className: 'tb-builtins__scroll',
+                    onScroll: () => (model.activeAnchor = topAnchor(scrollRef.current)),
+                    children: model.pages.map(page =>
+                        div({
+                            key: page.name,
+                            ...anchorProps(ANCHORS, page.name),
+                            className: 'tb-builtins__section',
+                            children: builtinBody({model: page})
+                        })
+                    )
+                })
+            ]
+        });
+    }
+});
 
 const builtinBody = hoistCmp.factory<BuiltinPageModel>({
     model: uses(BuiltinPageModel),
@@ -165,7 +285,7 @@ const builtinBody = hoistCmp.factory<BuiltinPageModel>({
         const {name, spec, role, blueprintModel} = model,
             concept = CONCEPT_PAGES.find(it => it.id === role.concept);
         return wrapper({
-            title: name === INPUTS_OVERVIEW ? 'All inputs' : name,
+            title: pageTitle(name),
             icon: Icon.cube(),
             description: spec ? describe(spec, role) : INPUTS_INTRO,
             options: [
@@ -236,8 +356,12 @@ const ISLAND_TITLES: Record<string, string> = {
 const INPUTS_INTRO = [
     'Every input sets a variable, which sources, filters and other widgets read. Each input here is bound to its own variable, labelled from the variable, with its live value under it.',
     '',
-    "Pick a value to see the variable change. Each input's own page has its settings."
+    'Pick a value to see the variable change. Each input below has its own settings.'
 ];
+
+function pageTitle(name: string): string {
+    return name === INPUTS_OVERVIEW ? 'All inputs' : name;
+}
 
 // The widget's summary, then its facts as a list.
 function describe(spec: WidgetSpec, role: BuiltinRole): string[] {

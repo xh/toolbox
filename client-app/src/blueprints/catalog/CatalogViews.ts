@@ -10,12 +10,15 @@ import {Icon} from '@xh/hoist/icon';
 import classNames from 'classnames';
 import type {FieldDef} from '@xh/hoist-chat-kit/blueprint';
 import type {ReactNode} from 'react';
-import {useEffect, useRef} from 'react';
+import {useRef} from 'react';
 import {copyTextAsync} from '../copyLink';
+import {anchorProps, topAnchor, useScrollTarget} from '../scrollSpy';
 import {md} from '../markdown';
 import {fieldProps} from './catalogFields';
 import {CatalogModel, KINDS_AND_FORMATS} from './CatalogModel';
 import type {CatalogItem, DatasetCardModel} from './CatalogModel';
+
+const ANCHORS = 'tb-catalog';
 
 /** A list entry's name, with its short line on the right. */
 export function catalogEntryName(name: string, meta: string): ReactNode {
@@ -100,7 +103,7 @@ export const catalogJsonPanel = hoistCmp.factory<CatalogModel>({
 const datasetDetail = hoistCmp.factory<DatasetCardModel>(({model}) => {
     const catalog = model.catalogModel,
         {ds} = model;
-    useScrollTarget(catalog);
+    useScrollTarget(ANCHORS, catalog.scrollTarget, () => catalog.clearScrollTarget());
     return div({
         className: 'tb-catalog-detail',
         children: [
@@ -244,7 +247,7 @@ const fieldCard = hoistCmp.factory<FieldCardProps>(({model, field}) => {
         guidance = [field.description, field.guidance].filter(Boolean).join(' '),
         props = fieldProps(field);
     return div({
-        id: anchorId(`field:${model.ds.name}.${field.name}`),
+        ...anchorProps(ANCHORS, `field:${model.ds.name}.${field.name}`),
         className: classNames('tb-field-card', selected && 'tb-field-card--selected'),
         onClick: () => catalog.selectItem(item),
         children: [
@@ -286,12 +289,12 @@ const kindsAndFormats = hoistCmp.factory<CatalogModel>({
     render: ({model}) => {
         const {kinds, formats} = model.kindsAndFormats,
             scrollRef = useRef<HTMLDivElement>(null);
-        useScrollTarget(model);
+        useScrollTarget(ANCHORS, model.scrollTarget, () => model.clearScrollTarget());
         return hframe({
             className: 'tb-kinds',
             children: [
                 vbox({
-                    className: 'tb-kinds__index',
+                    className: 'tb-index',
                     children: [
                         indexGroup(model, 'Kinds', 'kind', kinds),
                         indexGroup(model, 'Formats', 'format', formats)
@@ -322,10 +325,10 @@ const kindsAndFormats = hoistCmp.factory<CatalogModel>({
 function indexGroup(model: CatalogModel, title: string, kind: string, names: string[]) {
     return vbox({
         key: kind,
-        className: 'tb-kinds__index-group',
+        className: 'tb-index__group',
         children: [
             hbox({
-                className: 'tb-kinds__index-head',
+                className: 'tb-index__head',
                 children: [span(title), filler(), span(String(names.length))]
             }),
             ...names.map(name => {
@@ -333,8 +336,8 @@ function indexGroup(model: CatalogModel, title: string, kind: string, names: str
                 return div({
                     key: anchor,
                     className: classNames(
-                        'tb-kinds__index-entry',
-                        model.activeAnchor === anchor && 'tb-kinds__index-entry--active'
+                        'tb-index__entry',
+                        model.activeAnchor === anchor && 'tb-index__entry--active'
                     ),
                     onClick: () => model.goTo(anchor),
                     children: name
@@ -429,8 +432,7 @@ function entryCard(model: CatalogModel, {item, head, left, right}: EntryCardSpec
     const sel = model.item,
         selected = sel?.kind === item.kind && sel.name === item.name;
     return div({
-        id: anchorId(`${item.kind}:${item.name}`),
-        ...({'data-anchor': `${item.kind}:${item.name}`} as {}),
+        ...anchorProps(ANCHORS, `${item.kind}:${item.name}`),
         className: classNames('tb-entry-card', selected && 'tb-entry-card--selected'),
         onClick: () => model.selectItem(item),
         children: [
@@ -503,35 +505,6 @@ function jsonButton(model: CatalogModel, item: CatalogItem) {
             e.stopPropagation();
             model.showJson(item);
         }
-    });
-}
-
-// The DOM id of a card, for scrolling to it.
-function anchorId(anchor: string): string {
-    return `tb-catalog-${anchor.replace(':', '-')}`;
-}
-
-// The anchor of the first card at or below the top of a scrolled container.
-function topAnchor(container: HTMLElement): string {
-    if (!container) return null;
-    const top = container.getBoundingClientRect().top,
-        cards = Array.from(container.querySelectorAll<HTMLElement>('[data-anchor]')),
-        atEnd = container.scrollTop + container.clientHeight >= container.scrollHeight - 2,
-        card = atEnd
-            ? cards.at(-1)
-            : (cards.find(it => it.getBoundingClientRect().bottom > top + 32) ?? cards.at(-1));
-    return card?.dataset.anchor ?? null;
-}
-
-// Scrolls the model's scroll target into view once it renders, then clears it.
-function useScrollTarget(model: CatalogModel) {
-    const target = model.scrollTarget;
-    useEffect(() => {
-        if (!target) return;
-        const el = document.getElementById(anchorId(target));
-        if (!el) return;
-        el.scrollIntoView({block: 'start'});
-        model.clearScrollTarget();
     });
 }
 
