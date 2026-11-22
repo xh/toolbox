@@ -1,0 +1,54 @@
+// Rows draw their own box - SortableList adds only the drag chrome.
+.tb-sortable-list-panel__box {
+  width: 100%;
+  border: 1px solid var(--xh-border-color);
+  border-radius: var(--xh-border-radius);
+  overflow: hidden;
+}
+
+.tb-sortable-list-panel__scroll {
+  height: 180px;
+  overflow-y: auto;
+  border: 1px solid var(--xh-border-color);
+}
+
+.tb-sortable-list-panel__pad {
+  padding: var(--xh-spacing);
+  --xh-sortable-list-gap: 6px;
+}
+
+.tb-sortable-list-panel__row {
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding-right: var(--xh-spacing-half);
+}
+
+.tb-sortable-list-panel__box .xh-sortable-list__item,
+.tb-sortable-list-panel__scroll .xh-sortable-list__item {
+  background-color: var(--xh-bg);
+  border-bottom: 1px solid var(--xh-border-color);
+}
+
+.tb-sortable-list-panel__name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tb-sortable-list-panel__meta {
+  font-size: var(--xh-font-size-small);
+  color: var(--xh-text-color-muted);
+}
+
+.tb-sortable-list-panel__detail {
+  padding: var(--xh-spacing);
+  background-color: var(--xh-bg-alt);
+  font-size: var(--xh-font-size-small);
+}
+
+.tb-sortable-list-panel__add {
+  width: 100%;
+  justify-content: flex-start;
+}

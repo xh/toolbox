@@ -1,0 +1,44 @@
+.tb-chip-panel__matrix {
+  display: grid;
+  grid-template-columns: 70px repeat(6, max-content);
+  gap: 6px 10px;
+  align-items: center;
+  padding: var(--xh-spacing);
+}
+
+.tb-chip-panel__head,
+.tb-chip-panel__kv-label {
+  font-size: var(--xh-font-size-small);
+  color: var(--xh-text-color-muted);
+}
+
+.tb-chip-panel__row {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: var(--xh-spacing);
+
+  &--tight {
+    gap: 3px;
+    padding: 0;
+  }
+}
+
+.tb-chip-panel__kv {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 6px 8px;
+  align-items: center;
+  padding: var(--xh-spacing);
+}
+
+.tb-chip-panel__grid {
+  display: flex;
+  flex-direction: column;
+  height: 220px;
+}
+
+.tb-chip-panel__reset {
+  cursor: pointer;
+  color: var(--xh-intent-primary-text-color);
+}
