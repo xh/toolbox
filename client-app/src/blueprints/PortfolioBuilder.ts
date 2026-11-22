@@ -214,6 +214,15 @@ export const portfolioBuilderSpec: WidgetSpec = {
     value: {type: 'toolbox.portfolio'},
     size: {default: {w: 4, h: 8}},
     example: {component: 'toolbox.portfolioBuilder', config: {maxHoldings: 50}},
+    exampleBlueprint: {
+        variables: {
+            portfolio: {
+                type: 'toolbox.portfolio',
+                label: 'Portfolio',
+                setBy: {element: 'toolbox.portfolioBuilder'}
+            }
+        }
+    },
     model: PortfolioBuilderModel,
     component: portfolioBuilder
 };

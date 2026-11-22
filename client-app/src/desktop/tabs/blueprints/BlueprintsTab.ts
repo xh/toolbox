@@ -8,6 +8,8 @@ import {BlueprintShellModel} from '../../../blueprints/BlueprintShellModel';
 import {BLUEPRINT_TYPES} from '../../../blueprints/blueprintTypes';
 import type {BlueprintTypeSpec} from '../../../blueprints/blueprintTypes';
 import {blueprintsOverview} from './BlueprintsOverview';
+import {BUILTIN_ROLES} from './builtins/builtinRoles';
+import {builtinsPageContent} from './builtins/BuiltinsPage';
 import {conceptPageContent} from './concepts/ConceptPage';
 import {CONCEPT_PAGES} from './concepts/conceptPages';
 
@@ -30,6 +32,12 @@ export function blueprintsTab(switcher: TabSwitcherConfig): TabConfig {
             title: page.title,
             group: 'concepts',
             content: conceptPageContent(page)
+        })),
+        ...BUILTIN_ROLES.map((role): TabConfig => ({
+            id: `builtin-${role.key}`,
+            title: role.title,
+            group: 'builtins',
+            content: builtinsPageContent(role)
         })),
         ...BLUEPRINT_TYPES.flatMap((type): TabConfig[] => {
             const name = typeRouteName(type),
@@ -73,6 +81,7 @@ export function blueprintsTab(switcher: TabSwitcherConfig): TabConfig {
                 groups: [
                     {key: 'overview', title: 'Overview'},
                     {key: 'concepts', title: 'Concepts'},
+                    {key: 'builtins', title: 'Built-ins'},
                     ...BLUEPRINT_TYPES.map(it => ({
                         key: typeRouteName(it),
                         title: `${it.label} example`
@@ -95,11 +104,12 @@ export function blueprintsRoutes(): HoistRoute {
         children: [
             {name: 'overview', path: '/overview'},
             ...CONCEPT_PAGES.map(it => ({name: `concept-${it.id}`, path: `/concepts/${it.id}`})),
+            ...BUILTIN_ROLES.map(it => ({name: `builtin-${it.key}`, path: `/builtins/${it.key}`})),
             ...BLUEPRINT_TYPES.flatMap(type => {
                 const name = typeRouteName(type);
                 return [
                     {name: `${name}Catalog`, path: `/${name}/catalog`},
-                    {name: `${name}Registry`, path: `/${name}/registry`},
+                    {name: `${name}Registry`, path: `/${name}/registry?entry`},
                     {
                         name,
                         path: `/${name}`,

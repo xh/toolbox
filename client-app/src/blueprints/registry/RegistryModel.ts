@@ -361,6 +361,17 @@ export class RegistryModel extends HoistModel {
     override onLinked() {
         this.addReaction(
             {
+                // A link may name the entry to show, such as from a Built-ins page.
+                track: () => XH.routerState?.params?.entry as string,
+                run: entry => {
+                    if (entry && this.entries.some(it => it.id === entry)) {
+                        this.selectedId = entry;
+                        this.listModel.selModel.select(entry);
+                    }
+                },
+                fireImmediately: true
+            },
+            {
                 track: () => this.selected,
                 run: entry => {
                     this.sampleValue = null;
