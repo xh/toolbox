@@ -174,6 +174,20 @@ export const segmentedControlPanel = hoistCmp.factory({
                     })
                 }),
                 demoRow({
+                    label: 'Boolean toggle',
+                    info: 'toggleOnClick: true - a click anywhere, or Space on it, flips the value',
+                    children: segmentedControl({
+                        bind: 'toggleExample',
+                        ...ambientProps,
+                        fill: false,
+                        toggleOnClick: true,
+                        options: [
+                            {value: true, label: 'On'},
+                            {value: false, label: 'Off'}
+                        ]
+                    })
+                }),
+                demoRow({
                     label: 'Disabled',
                     info: 'disabled: true',
                     children: segmentedControl({
@@ -242,6 +256,7 @@ const SEEDS = {
     contentSized: 'Short',
     primitiveOptions: 'Medium',
     disabledExample: 'fund',
+    toggleExample: true,
     tbarSegment: null,
     tbarLevel: null
 };
@@ -262,6 +277,7 @@ class SegmentedControlPanelModel extends InputDemoModel {
     @bindable accessor contentSized: string = SEEDS.contentSized;
     @bindable accessor primitiveOptions: string = SEEDS.primitiveOptions;
     @bindable accessor disabledExample: string = SEEDS.disabledExample;
+    @bindable accessor toggleExample: boolean = SEEDS.toggleExample;
     @bindable accessor tbarSegment: string = SEEDS.tbarSegment;
     @bindable accessor tbarLevel: string = SEEDS.tbarLevel;
 
