@@ -41,6 +41,7 @@ import {
 import {find, pick} from 'lodash';
 import {LocalThreadStore} from '../desktop/tabs/chatkit/integrations/LocalThreadStore';
 import {createArchitectChat} from './architectChat';
+import {revealEdit} from './editor/historyTimeline';
 import {copyLinkAsync} from './copyLink';
 import {LIBRARY_GROUPS, libraryGroup, libraryName, libraryStatus} from './libraryColumns';
 import {featureRequestSink} from './featureRequestSink';
@@ -365,7 +366,11 @@ export class BlueprintShellModel extends HoistModel {
                         blueprintType: this.type.name,
                         blueprintId: this.documentModel?.document?.id ?? null,
                         app: XH.clientAppCode
-                    }))
+                    })),
+                    ops => {
+                        revealEdit(this.designModel, ops);
+                        this.editorView = 'canvas';
+                    }
                 )
             );
         });

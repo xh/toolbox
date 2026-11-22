@@ -17,7 +17,7 @@ import {action, bindable, computed, observable, observableRef} from '@xh/hoist/m
 import {applyJsonEdit} from '../applyJsonEdit';
 import {BlueprintShellModel} from '../BlueprintShellModel';
 import {markdownCol} from '../markdown';
-import {editTarget, historyTimeline} from './historyTimeline';
+import {historyTimeline, revealEdit} from './historyTimeline';
 import type {TimelineRow} from './historyTimeline';
 
 export type DockTab = 'architect' | 'structure' | 'add' | 'history' | 'values';
@@ -271,16 +271,9 @@ export class EditorModel extends HoistModel {
         this.applyIssues = [];
     }
 
-    /** Select what an edit changed, if it is still there. */
+    /** Select what an edit changed, if it is still there, on the canvas. */
     showEdit(row: TimelineRow) {
-        const target = editTarget(row.ops);
-        if (!target) return;
-        this.shell.designModel.revealIssue({
-            code: 'history.show',
-            severity: 'warning',
-            message: '',
-            path: `/${target.kind === 'preset' ? 'presets' : `${target.kind}s`}/${target.id}`
-        });
+        revealEdit(this.shell.designModel, row.ops);
         this.shell.editorView = 'canvas';
         if (this.inspectorPanelModel.collapsed) this.inspectorPanelModel.setCollapsed(false);
     }

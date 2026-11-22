@@ -408,3 +408,30 @@
   color: var(--xh-text-color-muted);
   font-style: italic;
 }
+
+.tb-edit-card {
+  margin: var(--xh-spacing-half) 0;
+  padding: var(--xh-spacing-half) var(--xh-spacing);
+  border: var(--xh-border-solid);
+  border-radius: var(--xh-border-radius);
+
+  &__head,
+  &__bar {
+    align-items: center;
+    gap: var(--xh-spacing-half);
+  }
+
+  &__desc {
+    font-weight: 600;
+  }
+
+  &__note {
+    color: var(--xh-text-color-muted);
+    font-size: var(--xh-font-size-small);
+  }
+
+  &--undone &__desc {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+}

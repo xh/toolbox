@@ -1,4 +1,5 @@
 import type {
+    BlueprintDesignModel,
     BlueprintEdit,
     BlueprintOp,
     BlueprintPublish,
@@ -38,12 +39,8 @@ export function historyTimeline(
     publishes: BlueprintPublish[],
     stamps: Record<number, number>
 ): TimelineRow[] {
-    const undone = new Set<number>();
-    history.forEach(it => {
-        if (it.undoes != null) undone.add(it.undoes);
-        if (it.redoes != null) undone.delete(it.redoes);
-    });
-    const edits: TimelineRow[] = history.map(it => ({
+    const undone = undoneVersions(history),
+        edits: TimelineRow[] = history.map(it => ({
             id: `edit-${it.version}`,
             kind: 'edit',
             version: it.version,
@@ -66,6 +63,16 @@ export function historyTimeline(
     return orderBy([...edits, ...pubs], [it => it.time ?? 0], ['desc']);
 }
 
+/** The versions of the edits undone since, and not redone. */
+export function undoneVersions(history: BlueprintEdit[]): Set<number> {
+    const ret = new Set<number>();
+    history.forEach(it => {
+        if (it.undoes != null) ret.add(it.undoes);
+        if (it.redoes != null) ret.delete(it.redoes);
+    });
+    return ret;
+}
+
 /** What an edit touched first that may still be there: an element, variable, source or preset. */
 export function editTarget(ops: BlueprintOp[]): BlueprintSelection {
     for (const op of ops ?? []) {
@@ -84,4 +91,17 @@ export function editTarget(ops: BlueprintOp[]): BlueprintSelection {
         }
     }
     return null;
+}
+
+/** Select what an edit touched first, if it is still there. */
+export function revealEdit(designModel: BlueprintDesignModel, ops: BlueprintOp[]) {
+    const target = editTarget(ops);
+    if (!target) return;
+    const root = Object.keys(KINDS).find(it => KINDS[it] === target.kind);
+    designModel.revealIssue({
+        code: 'edit.show',
+        severity: 'warning',
+        message: '',
+        path: `/${root}/${target.id}`
+    });
 }
