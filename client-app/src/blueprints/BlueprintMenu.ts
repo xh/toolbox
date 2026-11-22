@@ -8,21 +8,19 @@ import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuDivider, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {BlueprintShellModel} from './BlueprintShellModel';
+import {showBlueprintsHelp} from './blueprintsHelp';
+import {libraryGroup} from './libraryColumns';
 import {copyLinkAsync} from './copyLink';
 
-/**
- * The open blueprint's secondary actions: reload or save a stale draft as new, copy its link, and
- * share it. Its button turns to a warning while the draft is stale.
- */
+/** The open blueprint's other actions: copy its link, share, copy, delete, and help. */
 export const blueprintMenu = hoistCmp.factory<BlueprintShellModel>({
     model: uses(BlueprintShellModel),
     render: ({model}) => {
         const doc = model.documentModel,
-            stale = doc.isStale,
             link = model.route ? blueprintLinkUrl(doc, model.route) : null,
-            canShare = model.canEdit && doc.canShare;
+            canShare = model.canEdit && doc.canShare,
+            isOwn = model.selected && libraryGroup(model.selected) === 'Yours';
 
-        if (!stale && !link && !canShare) return null;
         return popover({
             isOpen: model.shareOpen,
             onInteraction: open => {
@@ -32,28 +30,8 @@ export const blueprintMenu = hoistCmp.factory<BlueprintShellModel>({
             content: sharePanel(),
             item: popover({
                 position: 'bottom-right',
-                item: button({
-                    icon: stale ? Icon.warning() : Icon.ellipsisVertical(),
-                    intent: stale ? 'warning' : null,
-                    tooltip: stale ? 'Changed elsewhere - reload, or save as new' : 'More'
-                }),
+                item: button({icon: Icon.ellipsisVertical(), minimal: true, tooltip: 'More'}),
                 content: menu(
-                    menuItem({
-                        text: 'Reload',
-                        icon: Icon.refresh(),
-                        title: 'Open the draft as it was saved elsewhere, discarding your edits here',
-                        omit: !stale,
-                        onClick: () => model.reloadDraftAsync()
-                    }),
-                    menuItem({
-                        text: 'Save as new',
-                        icon: Icon.copy(),
-                        title: 'Keep your edits here as a new blueprint',
-                        intent: 'primary',
-                        omit: !stale,
-                        onClick: () => model.saveAsNewSelectedAsync()
-                    }),
-                    menuDivider({omit: !stale || (!link && !canShare)}),
                     menuItem({
                         text: 'Copy link',
                         icon: Icon.link(),
@@ -67,6 +45,24 @@ export const blueprintMenu = hoistCmp.factory<BlueprintShellModel>({
                             : Icon.users(),
                         omit: !canShare,
                         onClick: () => (model.shareOpen = true)
+                    }),
+                    menuItem({
+                        text: 'Make a copy',
+                        icon: Icon.copy(),
+                        onClick: () => model.copySelectedAsync()
+                    }),
+                    menuItem({
+                        text: 'Delete',
+                        icon: Icon.delete(),
+                        intent: 'danger',
+                        omit: !isOwn,
+                        onClick: () => model.deleteSelectedAsync()
+                    }),
+                    menuDivider(),
+                    menuItem({
+                        text: 'How Blueprints work',
+                        icon: Icon.questionCircle(),
+                        onClick: () => showBlueprintsHelp()
                     })
                 )
             })

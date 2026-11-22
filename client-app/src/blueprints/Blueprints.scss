@@ -95,14 +95,6 @@
   font-size: 0.85em;
 }
 
-.tb-blueprints__version {
-  flex: none;
-  margin: 0 var(--xh-spacing-half) 0 var(--xh-spacing);
-  white-space: nowrap;
-  color: var(--xh-text-color-muted);
-  font-size: 0.85em;
-}
-
 .tb-inspector__default {
   color: var(--xh-text-color-muted);
 }
@@ -317,4 +309,59 @@
 .tb-blueprints-help {
   gap: var(--xh-spacing);
   max-width: 520px;
+}
+
+.tb-docbar {
+  gap: var(--xh-spacing-half);
+  border-bottom: var(--xh-border-solid);
+
+  &__name {
+    font-weight: 600;
+    font-size: var(--xh-font-size-large);
+  }
+
+  &__status {
+    flex: none;
+    white-space: nowrap;
+  }
+
+  &__switcher {
+    width: 420px;
+    height: 360px;
+    gap: var(--xh-spacing-half);
+    padding: var(--xh-spacing-half);
+  }
+
+  &__issue-list {
+    max-width: 420px;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  &__publish {
+    width: 340px;
+    gap: var(--xh-spacing);
+    padding: var(--xh-spacing);
+  }
+
+  &__publish-title {
+    font-weight: 600;
+  }
+
+  &__publish-changes,
+  &__publish-readers {
+    color: var(--xh-text-color-muted);
+  }
+
+  &__publish-warning {
+    display: flex;
+    gap: var(--xh-spacing-half);
+    padding: var(--xh-spacing-half);
+    border-radius: var(--xh-border-radius);
+    background-color: var(--xh-intent-warning-trans1);
+  }
+
+  &__publish-buttons {
+    gap: var(--xh-spacing-half);
+  }
 }

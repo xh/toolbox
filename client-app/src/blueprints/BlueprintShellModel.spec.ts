@@ -193,6 +193,23 @@ describe('Blueprints designer', () => {
         expect(model.publishes.at(-1).note).toBe('Grouped by sector');
     });
 
+    it('keeps the blueprints opened lately, latest first, across a reload', async () => {
+        const mine = byName(MINE).id,
+            mineToo = byName(MINE_TOO).id;
+        await model.selectAsync(mine);
+        await model.selectAsync(mineToo);
+        await model.selectAsync(mine);
+        expect(model.recentIds.slice(0, 2)).toEqual([mine, mineToo]);
+        expect(model.recentIds.filter(it => it === mine)).toHaveLength(1);
+
+        // Persistence writes are debounced.
+        await new Promise(r => setTimeout(r, 300));
+
+        const reloaded = await createModelAsync();
+        expect(reloaded.recentIds.slice(0, 2)).toEqual([mine, mineToo]);
+        reloaded.destroy();
+    });
+
     it('keeps a conversation per blueprint, across a reload', async () => {
         const first = byName(MINE).id;
         await model.selectAsync(first);

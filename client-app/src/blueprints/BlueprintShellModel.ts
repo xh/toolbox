@@ -59,6 +59,8 @@ const EMPTY_BLUEPRINT = {
     elements: {dashboard: {component: 'dashCanvas', children: []}}
 } as Blueprint;
 
+const MAX_RECENT = 5;
+
 // The local library this designer kept before blueprints moved to the server. Dropped on load.
 const OLD_LIBRARY_KEY = 'blueprints.designer.library';
 
@@ -92,6 +94,9 @@ export class BlueprintShellModel extends HoistModel {
     /** True while the library shows, as when nothing is open, in place of the open blueprint. */
     @bindable accessor libraryOpen = true;
     @bindable accessor shareOpen = false;
+
+    /** The blueprints opened lately, latest first, for the quick switcher. */
+    @bindable accessor recentIds: string[] = [];
 
     /** Issues from opening the selected blueprint. Errors mean it could not be shown. */
     @observableRef accessor openIssues: BlueprintIssue[] = [];
@@ -231,6 +236,7 @@ export class BlueprintShellModel extends HoistModel {
         const {storageKey} = config;
         this.persistWith = {localStorageKey: storageKey ?? 'blueprintsDesigner'};
         this.markPersist('selectedId', {path: `selectedId.${config.type.name}`});
+        this.markPersist('recentIds', {path: `recentIds.${config.type.name}`});
         this.threadStore = new LocalThreadStore({
             storageKey: storageKey ? `${storageKey}.threads` : 'blueprints.designer.threads',
             seed: () => [],
@@ -531,17 +537,6 @@ export class BlueprintShellModel extends HoistModel {
         if (name) await this.copyBlueprintAsync(name);
     }
 
-    async publishSelectedAsync() {
-        const note = await XH.prompt<string>({
-            title: 'Publish',
-            icon: Icon.upload(),
-            message: `Publish the draft of "${this.selected.name}" as version ${(this.selected.publishedVersion ?? 0) + 1}. Readers run the latest publish.`,
-            input: {initialValue: '', item: undefined},
-            confirmProps: {text: 'Publish', intent: 'primary'}
-        });
-        if (note !== false) await this.publishAsync(note || undefined);
-    }
-
     async deleteSelectedAsync() {
         const {selected} = this;
         if (!selected) return;
@@ -597,6 +592,7 @@ export class BlueprintShellModel extends HoistModel {
             this.view = 'blueprint';
             this.libraryOpen = false;
             this.saveIssues = [];
+            this.recentIds = [id, ...this.recentIds.filter(it => it !== id)].slice(0, MAX_RECENT);
             this.listGridModel.selModel.select(id);
         });
         const summary = this.selected,

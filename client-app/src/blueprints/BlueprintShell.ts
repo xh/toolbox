@@ -1,25 +1,24 @@
 import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid} from '@xh/hoist/cmp/grid';
-import {a, div, filler, hframe, li, p, placeholder, span, ul, vbox} from '@xh/hoist/cmp/layout';
+import {div, filler, hframe, placeholder, vframe} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {TabContainerModel, tabContainer} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp, HoistModel, lookup, managed, uses, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup, managed, uses} from '@xh/hoist/core';
 import type {HoistProps} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {segmentedControl} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import classNames from 'classnames';
 import type {ReactNode} from 'react';
 import {architectPanel} from './ArchitectPanel';
-import {blueprintMenu} from './BlueprintMenu';
+import {showBlueprintsHelp} from './blueprintsHelp';
 import './Blueprints.scss';
 import {BlueprintShellModel} from './BlueprintShellModel';
 import type {DesignerView} from './BlueprintShellModel';
 import {catalogPanel} from './catalog/CatalogPanel';
+import {documentBar} from './documentBar/DocumentBar';
 import {inspectorPanel} from './InspectorPanel';
 import {registryPanel} from './registry/RegistryPanel';
 
@@ -184,10 +183,10 @@ const newMenu = hoistCmp.factory<BlueprintShellModel>({
         })
 });
 
-/** The open blueprint: the Architect beside it, and its Inspector in design. */
+/** The open blueprint: its bar over the Architect, the blueprint and, in design, its Inspector. */
 const editor = hoistCmp.factory<BlueprintShellModel>({
     model: uses(BlueprintShellModel),
-    render: () => hframe(architectPanel(), mainPanel())
+    render: () => vframe(documentBar(), hframe(architectPanel(), mainPanel()))
 });
 
 const mainPanel = hoistCmp.factory<BlueprintShellModel>({
@@ -199,50 +198,6 @@ const mainPanel = hoistCmp.factory<BlueprintShellModel>({
             blueprintModel.blueprint && !model.openIssues.some(it => it.severity === 'error');
         return hframe(
             panel({
-                title: selected?.name ?? 'No blueprint',
-                icon: Icon.layout(),
-                compactHeader: true,
-                headerItems: [
-                    button({
-                        text: 'Library',
-                        icon: Icon.chevronLeft(),
-                        onClick: () => model.showLibraryAsync()
-                    }),
-                    ...(shown
-                        ? [
-                              span({
-                                  className: classNames(
-                                      'tb-blueprints__version',
-                                      model.documentModel.isStale && 'xh-intent-warning'
-                                  ),
-                                  title: model.documentModel.isStale
-                                      ? 'Saved elsewhere since you opened it, so your edits here are not saved. From the menu, Reload to take the saved draft, or Save as new to keep yours.'
-                                      : null,
-                                  item: documentStatus(model)
-                              }),
-                              button({
-                                  text: 'Publish',
-                                  icon: Icon.upload(),
-                                  omit:
-                                      !model.canEdit ||
-                                      !model.documentModel.canPublish ||
-                                      model.documentModel.isStale,
-                                  onClick: () => model.publishSelectedAsync()
-                              }),
-                              segmentedControl({
-                                  omit: !model.canEdit,
-                                  value: blueprintModel.mode,
-                                  onChange: mode => blueprintModel.setMode(mode),
-                                  compact: true,
-                                  options: [
-                                      {value: 'design', label: 'Design', icon: Icon.edit()},
-                                      {value: 'run', label: 'Run', icon: Icon.play()}
-                                  ]
-                              }),
-                              blueprintMenu()
-                          ]
-                        : [])
-                ],
                 item: shown
                     ? blueprintView({model: blueprintModel, designModel: model.designModel})
                     : placeholder(Icon.layout(), emptyText(model))
@@ -258,56 +213,4 @@ function emptyText({selected, openIssues}: BlueprintShellModel): string {
     return selected
         ? 'This blueprint is empty. Ask the Architect to build it.'
         : 'Pick a blueprint, or start a new one.';
-}
-
-/** Which version is open, and whether its edits are saved. */
-function documentStatus({documentModel, isSaving, saveIssues}: BlueprintShellModel): string {
-    const doc = documentModel.document;
-    if (!doc) return null;
-    if (doc.kind === 'publish') {
-        return `Publish v${doc.version}${doc.access === 'write' ? '' : ' - read only'}`;
-    }
-    if (documentModel.isStale) return 'Not saved - changed elsewhere';
-    const error = saveIssues[0];
-    if (error) return error.message;
-    if (isSaving) return 'Saving...';
-    return documentModel.isDirty ? `Draft v${doc.version} - unsaved` : `Draft v${doc.version}`;
-}
-
-/** The "How Blueprints work" dialog: the concepts, and where to read more. */
-export function showBlueprintsHelp() {
-    XH.alert({
-        title: 'How Blueprints work',
-        icon: Icon.questionCircle(),
-        message: vbox({
-            className: 'tb-blueprints-help',
-            items: [
-                p(
-                    'A blueprint describes a dashboard as JSON: its widgets and layout, the data sources they read, and the variables that link them. Pick one in the library, or start a new one, and build or change it by hand or by asking the Architect.'
-                ),
-                p(
-                    'Your own blueprints open as drafts, which save as you work and are private until you share them. Others you share with see only your published versions: they run the latest, and may copy it to make it their own. Each blueprint keeps its own conversation with the Architect, in this browser.'
-                ),
-                p(
-                    'Data Catalog lists the data a blueprint can read, and Registry the widgets it can draw.'
-                ),
-                ul(
-                    li(
-                        a({
-                            href: '/app/docs/hoist-chat-kit/blueprint~README.md',
-                            target: '_blank',
-                            item: 'Blueprints, in the docs'
-                        })
-                    ),
-                    li(
-                        a({
-                            href: 'https://github.com/xh/toolbox/tree/develop/client-app/src/blueprints',
-                            target: '_blank',
-                            item: "Toolbox's blueprint code"
-                        })
-                    )
-                )
-            ]
-        })
-    });
 }
