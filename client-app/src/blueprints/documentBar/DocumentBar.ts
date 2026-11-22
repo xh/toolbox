@@ -301,7 +301,11 @@ const publishPanel = hoistCmp.factory<DocumentBarModel>({
                             icon: Icon.upload(),
                             intent: 'primary',
                             minimal: false,
-                            disabled: changes == null,
+                            disabled: changes == null || (last > 0 && !changes.length),
+                            tooltip:
+                                last > 0 && changes?.length === 0
+                                    ? `No changes since v${last}`
+                                    : null,
                             onClick: () => model.publishAsync()
                         })
                     ]

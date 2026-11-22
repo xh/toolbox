@@ -1,5 +1,5 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {div, filler} from '@xh/hoist/cmp/layout';
+import {a, div, filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {TabContainerModel, tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses} from '@xh/hoist/core';
@@ -117,7 +117,14 @@ const libraryPage = hoistCmp.factory<BlueprintShellModel>({
                         }),
                         div({
                             className: 'tb-library__lede',
-                            item: `Dashboards described as JSON over the ${model.type.label.toLowerCase()} data, built by hand or with the Architect. Your drafts save as you work and stay private until you share them.`
+                            items: [
+                                `Dashboards described as JSON over the ${model.type.label.toLowerCase()} data, built by hand or with the Architect. Your drafts save as you work and stay private until you share them. `,
+                                a({
+                                    className: 'tb-library__help',
+                                    onClick: () => showBlueprintsHelp(),
+                                    item: 'How Blueprints work'
+                                })
+                            ]
                         })
                     ]
                 }),
@@ -140,7 +147,7 @@ const libraryPage = hoistCmp.factory<BlueprintShellModel>({
                         rowHeight: 44,
                         onCellKeyDown: e => {
                             const {key} = e.event as KeyboardEvent;
-                            if (key === 'Enter' && e.data && !e.node.group)
+                            if (key === 'Enter' && e.data && !e.node.group && !e.data.placeholder)
                                 model.selectAsync(e.data.id);
                         }
                     }

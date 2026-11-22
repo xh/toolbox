@@ -63,6 +63,9 @@ describe('Blueprints designer', () => {
         expect(model.libraryOpen).toBe(true);
         expect(model.documentModel.document).toBeNull();
         expect(groupOf(byName(PRESETS[0][1]).id)).toBe('Examples');
+        // With none of the user's own, Yours still shows, with a hint.
+        const hint = model.listGridModel.store.allRecords.find(it => it.data.placeholder);
+        expect(hint?.data).toMatchObject({group: 'Yours'});
     });
 
     it('opens a preset at its publish in run mode, and leaves the library', async () => {
@@ -191,6 +194,19 @@ describe('Blueprints designer', () => {
         expect(model.selected.publishedVersion).toBe(2);
         expect(model.publishes.map(it => it.version)).toEqual([1, 2]);
         expect(model.publishes.at(-1).note).toBe('Grouped by sector');
+    });
+
+    it('renames the blueprint open, and refuses a name the user already has', async () => {
+        const id = byName(MINE_TOO).id;
+        await model.selectAsync(id);
+        await model.renameAsync(`${MINE_TOO} renamed`);
+        expect(model.selected.name).toBe(`${MINE_TOO} renamed`);
+        expect(model.documentModel.document.name).toBe(`${MINE_TOO} renamed`);
+        expect(model.listGridModel.store.allRecords.some(it => it.data.placeholder)).toBe(false);
+
+        await expect(model.renameAsync(MINE)).rejects.toMatchObject({httpStatus: 400});
+        expect(model.selected.name).toBe(`${MINE_TOO} renamed`);
+        await model.renameAsync(MINE_TOO);
     });
 
     it('keeps the blueprints opened lately, latest first, across a reload', async () => {

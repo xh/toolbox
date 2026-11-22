@@ -52,6 +52,12 @@ export const blueprintMenu = hoistCmp.factory<BlueprintShellModel>({
                         onClick: () => model.copySelectedAsync()
                     }),
                     menuItem({
+                        text: 'Rename...',
+                        icon: Icon.edit(),
+                        omit: !doc.canRename,
+                        onClick: () => model.renameSelectedAsync()
+                    }),
+                    menuItem({
                         text: 'Delete',
                         icon: Icon.delete(),
                         intent: 'danger',

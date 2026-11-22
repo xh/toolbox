@@ -25,7 +25,7 @@ import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {addToBlueprint} from '@xh/hoist-chat-kit/genui/architect';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import type {LoadSpec} from '@xh/hoist/core';
+import type {LoadSpec, PlainObject} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import {fmtCompactDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -60,6 +60,9 @@ const EMPTY_BLUEPRINT = {
 } as Blueprint;
 
 const MAX_RECENT = 5;
+
+// The id of the library's hint row, shown in Yours when the user has none of their own.
+export const NONE_OF_YOURS = '__noneOfYours';
 
 // The local library this designer kept before blueprints moved to the server. Dropped on load.
 const OLD_LIBRARY_KEY = 'blueprints.designer.library';
@@ -143,33 +146,45 @@ export class BlueprintShellModel extends HoistModel {
         groupBy: 'group',
         groupSortFn: (a, b) => LIBRARY_GROUPS.indexOf(a) - LIBRARY_GROUPS.indexOf(b),
         sortBy: 'name',
-        emptyText: 'No blueprints of your own yet. Copy an example or start a new one.',
-        onRowDoubleClicked: ({data}) => data && this.selectAsync(data.id),
+        emptyText: 'No blueprints match.',
+        rowClassFn: rec => (rec?.data.placeholder ? 'tb-library__hint' : null),
+        onRowDoubleClicked: ({data}) => data && !data.placeholder && this.selectAsync(data.id),
         contextMenu: [
             {
                 text: 'Open',
                 icon: Icon.openExternal(),
                 recordsRequired: 1,
+                displayFn: ({record}) => ({hidden: !!record?.data.placeholder}),
                 actionFn: ({record}) => this.selectAsync(record.id as string)
             },
             {
                 text: 'Copy',
                 icon: Icon.copy(),
                 recordsRequired: 1,
+                displayFn: ({record}) => ({hidden: !!record?.data.placeholder}),
                 actionFn: ({record}) => this.copyFromLibraryAsync(record.id as string)
             },
             {
                 text: 'Copy link',
                 icon: Icon.link(),
                 recordsRequired: 1,
-                displayFn: () => ({hidden: !this.route}),
+                displayFn: ({record}) => ({hidden: !this.route || !!record?.data.placeholder}),
                 actionFn: ({record}) => copyLinkAsync(this.linkTo(record.id as string))
+            },
+            {
+                text: 'Rename...',
+                icon: Icon.edit(),
+                recordsRequired: 1,
+                displayFn: ({record}) => ({
+                    hidden: !this.repository.renameAsync || !this.isOwnRow(record)
+                }),
+                actionFn: ({record}) => this.renameFromLibraryAsync(record.id as string)
             },
             {
                 text: 'Share...',
                 icon: Icon.users(),
                 recordsRequired: 1,
-                displayFn: ({record}) => ({hidden: record?.data.group !== 'Yours'}),
+                displayFn: ({record}) => ({hidden: !this.isOwnRow(record)}),
                 actionFn: ({record}) => this.shareFromLibraryAsync(record.id as string)
             },
             '-',
@@ -177,7 +192,7 @@ export class BlueprintShellModel extends HoistModel {
                 text: 'Delete',
                 icon: Icon.delete(),
                 recordsRequired: 1,
-                displayFn: ({record}) => ({hidden: record?.data.group !== 'Yours'}),
+                displayFn: ({record}) => ({hidden: !this.isOwnRow(record)}),
                 actionFn: ({record}) => this.deleteFromLibraryAsync(record.id as string)
             }
         ],
@@ -203,6 +218,7 @@ export class BlueprintShellModel extends HoistModel {
             {field: 'publishedVersion', hidden: true},
             {field: 'readOnly', hidden: true},
             {field: 'global', hidden: true},
+            {field: 'placeholder', hidden: true},
             {field: 'updated', width: 130, renderer: v => (v ? fmtCompactDate(v) : null)}
         ]
     });
@@ -251,8 +267,8 @@ export class BlueprintShellModel extends HoistModel {
         this.repository = config.repository ?? createRepository(config.type.name);
         this.addReaction(
             {
-                track: () =>
-                    this.summaries.map(it => ({
+                track: () => [
+                    ...this.summaries.map(it => ({
                         id: it.id,
                         group: libraryGroup(it),
                         name: it.name,
@@ -265,6 +281,17 @@ export class BlueprintShellModel extends HoistModel {
                         global: isGlobal(it),
                         updated: it.updated
                     })),
+                    ...(this.summaries.some(it => libraryGroup(it) === 'Yours')
+                        ? []
+                        : [
+                              {
+                                  id: NONE_OF_YOURS,
+                                  group: 'Yours',
+                                  name: 'No blueprints of your own yet. Copy an example or start a new one.',
+                                  placeholder: true
+                              }
+                          ])
+                ],
                 run: rows => {
                     this.listGridModel.loadData(rows);
                     this.listGridModel.selModel.select(this.selectedId);
@@ -509,6 +536,11 @@ export class BlueprintShellModel extends HoistModel {
         await this.copySelectedAsync();
     }
 
+    async renameFromLibraryAsync(id: string) {
+        await this.selectAsync(id);
+        await this.renameSelectedAsync();
+    }
+
     async shareFromLibraryAsync(id: string) {
         await this.selectAsync(id);
         runInAction(() => (this.shareOpen = true));
@@ -529,6 +561,19 @@ export class BlueprintShellModel extends HoistModel {
     async newBlueprintAsync() {
         const name = await this.promptNameAsync('New blueprint', 'Create', '');
         if (name) await this.createBlueprintAsync(name);
+    }
+
+    /** Rename the blueprint open. Rejects, with an `httpStatus` of 400, a name the user has. */
+    async renameAsync(name: string) {
+        await this.documentModel.renameAsync(name);
+        await this.refreshSummariesAsync();
+    }
+
+    async renameSelectedAsync() {
+        const {selected} = this,
+            name = await this.promptNameAsync('Rename blueprint', 'Rename', selected.name);
+        if (!name || name === selected.name) return;
+        await this.renameAsync(name).catchDefault();
     }
 
     async copySelectedAsync() {
@@ -585,6 +630,10 @@ export class BlueprintShellModel extends HoistModel {
     //------------------
     // Implementation
     //------------------
+    private isOwnRow(record: {data: PlainObject}): boolean {
+        return record?.data.group === 'Yours' && !record.data.placeholder;
+    }
+
     private async openAsync(id: string, prevId: string, link?: BlueprintLinkParams) {
         const {documentModel, chatModel} = this;
         if (!documentModel) return;

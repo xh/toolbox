@@ -235,6 +235,25 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
         });
     }
 
+    async renameAsync(
+        id: string,
+        spec: {name: string; description?: string}
+    ): Promise<BlueprintSummary> {
+        const drafts = await XH.jsonBlobService.listAsync({type: this.types.draft}),
+            stub = drafts.find(it => it.name === id);
+        if (!stub) throw new Error(`There is no blueprint '${id}'.`);
+        if (!this.isOwner(stub)) throw new Error('Only its owner can rename a blueprint.');
+        if (drafts.some(it => it !== stub && this.isOwner(it) && metaOf(it).name === spec.name)) {
+            throw Object.assign(new Error(`You already have a blueprint named '${spec.name}'.`), {
+                httpStatus: 400
+            });
+        }
+        const meta: PlainObject = {...metaOf(stub), name: spec.name, ...this.touched()};
+        if (spec.description !== undefined) meta.description = spec.description;
+        const updated = await XH.jsonBlobService.updateAsync(stub.token, {meta});
+        return this.summaryOf(updated);
+    }
+
     async updateAccessAsync(id: string, spec: BlueprintAccessSpec): Promise<void> {
         const global = isEqual(spec, GLOBAL);
         if (!global && !isEqual(spec, PRIVATE)) {

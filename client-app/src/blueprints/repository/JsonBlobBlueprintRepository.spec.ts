@@ -284,6 +284,34 @@ describe('JsonBlobBlueprintRepository', () => {
         await expect(repository.updateAccessAsync(id, PRIVATE)).rejects.toThrow();
     });
 
+    it('renames a blueprint for its owner only, keeping its versions and refusing a taken name', async () => {
+        const {id} = await repository.createAsync({
+            name: 'Positions',
+            description: 'All of them',
+            blueprint
+        });
+        await repository.createAsync({name: 'Orders', blueprint});
+        await repository.publishAsync(id, {base: 1});
+
+        const summary = await repository.renameAsync(id, {name: 'Book'});
+        expect(summary).toMatchObject({
+            id,
+            name: 'Book',
+            description: 'All of them',
+            draftVersion: 2,
+            publishedVersion: 1
+        });
+        await repository.renameAsync(id, {name: 'Book', description: 'The book'});
+        expect((await repository.openAsync(id, {as: 'publish'})).description).toBe('The book');
+
+        await expect(repository.renameAsync(id, {name: 'Orders'})).rejects.toMatchObject({
+            httpStatus: 400
+        });
+        await repository.updateAccessAsync(id, GLOBAL);
+        actAs(OTHER);
+        await expect(repository.renameAsync(id, {name: 'Mine'})).rejects.toThrow();
+    });
+
     it("deletes a blueprint with its publishes and the owner's personalizations", async () => {
         const {id} = await repository.createAsync({name: 'Positions', blueprint});
         await repository.publishAsync(id, {base: 1});

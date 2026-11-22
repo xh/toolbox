@@ -398,3 +398,13 @@
 .tb-history__publish {
   background-color: var(--xh-intent-success-trans1);
 }
+
+.tb-library__help {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tb-library__hint {
+  color: var(--xh-text-color-muted);
+  font-style: italic;
+}
