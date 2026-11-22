@@ -18,7 +18,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed, observableRef} from '@xh/hoist/mobx';
+import {action, bindable, computed, observableRef} from '@xh/hoist/mobx';
 import {castArray, groupBy, isEmpty, isString} from 'lodash';
 import type {ReactNode} from 'react';
 import {BlueprintShellModel} from '../BlueprintShellModel';
@@ -163,6 +163,7 @@ export class CatalogModel extends HoistModel {
     }
 
     /** Show the selected entry's JSON, as the catalog serves it. */
+    @action
     showEntryJson() {
         const sel = this.selection;
         if (!sel) return;
@@ -175,10 +176,12 @@ export class CatalogModel extends HoistModel {
     }
 
     /** Show the whole catalog's JSON. */
+    @action
     showCatalogJson() {
         this.shownJson = {title: 'Data Catalog', json: JSON.stringify(this.catalog.json, null, 2)};
     }
 
+    @action
     closeJson() {
         this.shownJson = null;
     }

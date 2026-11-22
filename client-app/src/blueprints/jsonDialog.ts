@@ -28,7 +28,7 @@ export const jsonDialog = hoistCmp.factory<JsonDialogProps>({
             isOpen: !!shown,
             onClose,
             title: shown?.title,
-            icon: Icon.code(),
+            icon: shown ? Icon.code() : null,
             style: {width: 640, height: 560},
             children: shown
                 ? panel({

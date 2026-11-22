@@ -207,12 +207,14 @@ export class RegistryModel extends HoistModel {
             : [...origins, origin];
     }
 
+    @action
     showEntryJson() {
         const entry = this.selected;
         if (entry)
             this.shownJson = {title: `${entry.name} (${entry.kind})`, json: entryJsonText(entry)};
     }
 
+    @action
     closeJson() {
         this.shownJson = null;
     }
