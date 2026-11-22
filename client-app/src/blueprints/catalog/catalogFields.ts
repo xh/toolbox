@@ -1,6 +1,12 @@
-import type {Blueprint, DataCatalog, DatasetDef, FieldUsages} from '@xh/hoist-chat-kit/blueprint';
+import type {
+    Blueprint,
+    DataCatalog,
+    DatasetDef,
+    FieldDef,
+    FieldUsages
+} from '@xh/hoist-chat-kit/blueprint';
 import type {PlainObject} from '@xh/hoist/core';
-import {groupBy, isPlainObject, isString, sortBy} from 'lodash';
+import {castArray, groupBy, isPlainObject, isString, sortBy} from 'lodash';
 
 /** Format options as one line, such as `scale: millions, precision: 1, ledger`. */
 export function describeFormat(opts: PlainObject): string {
@@ -143,22 +149,54 @@ export function catalogEntries(
     return [...datasets, ...kinds, ...formats];
 }
 
+/** A dataset's fields under one heading, as the Data Catalog lists them. */
+export interface FieldGroup {
+    title: string;
+    fields: FieldDef[];
+}
+
 /**
- * A dataset's field tree regrouped by kind: kinds in name order, fields with none last. A kind the
- * catalog does not define is a base kind, and is labelled so.
+ * A dataset's fields grouped by the catalog's field groups, in first-seen order with nested groups
+ * joined, or by kind: kinds in name order, a kind no catalog kind defines marked as a base, fields
+ * with none last.
  */
-export function fieldsByKind(tree: PlainObject[], catalog: DataCatalog): PlainObject[] {
-    const leaves: PlainObject[] = [],
-        walk = (nodes: PlainObject[]) =>
-            nodes.forEach(it => (it.id.startsWith('cat:') ? walk(it.children) : leaves.push(it)));
-    walk(tree);
-    const byKind = groupBy(leaves, it => it.kind ?? ''),
+export function fieldGroups(
+    ds: DatasetDef,
+    catalog: DataCatalog,
+    by: 'group' | 'kind'
+): FieldGroup[] {
+    const fields = Object.values(ds.fields);
+    if (by === 'group') {
+        const byGroup = groupBy(fields, f => castArray(f.category ?? 'Other').join(' › '));
+        return Object.entries(byGroup).map(([title, fields]) => ({title, fields}));
+    }
+    const byKind = groupBy(fields, f => f.kind ?? ''),
         kinds = sortBy(Object.keys(byKind), it => (it ? `0${it}` : '1'));
     return kinds.map(kind => ({
-        id: `kind:${kind || 'none'}`,
-        name: !kind ? 'No kind' : catalog.kinds[kind] ? kind : `${kind} (base)`,
-        children: byKind[kind]
+        title: !kind ? 'No kind' : catalog.kinds[kind] ? kind : `${kind} (base)`,
+        fields: byKind[kind]
     }));
+}
+
+/** The properties a field sets, beyond its name, label, type and role, each as one line. */
+export function fieldProps(f: FieldDef): [string, string][] {
+    const rows: [string, string][] = [
+        ['kind', f.kind],
+        ['format', describeSpec(f.format)],
+        ['aggregator', f.isDimension ? null : describeSpec(f.aggregator)],
+        ['under', f.parentDimension],
+        ['renderer', describeSpec(f.renderer)],
+        [
+            'params',
+            f.params
+                ? Object.entries(f.params)
+                      .map(([n, p]) => `${n}: ${p.type}${p.required ? '' : '?'}`)
+                      .join(', ')
+                : null
+        ],
+        ['use', f.replacedBy ?? (f.deprecated ? 'deprecated' : null)]
+    ];
+    return rows.filter(([, v]) => v);
 }
 
 /** A positive, a negative and a large number, scaled so a format shows each with digits. */

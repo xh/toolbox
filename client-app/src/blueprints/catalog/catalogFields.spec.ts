@@ -1,17 +1,17 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
 import {DataCatalog, fieldUsages} from '@xh/hoist-chat-kit/blueprint';
-import type {PlainObject} from '@xh/hoist/core';
 import {describe, expect, it} from 'vitest';
 import catalogJson from '../../test-support/blueprintsCatalog.json';
 import p3 from '../scenarios/p3-morning-report.json';
 import w2 from '../scenarios/w2-two-cities.json';
-import {fieldTree, formatOf} from './CatalogModel';
+import {formatOf} from './CatalogModel';
 import {
     catalogEntries,
     datasetJoins,
     datasetUsers,
     describeFormat,
-    fieldsByKind,
+    fieldGroups,
+    fieldProps,
     matchDatasets,
     sampleValues
 } from './catalogFields';
@@ -165,59 +165,6 @@ describe('used-field marks', () => {
     });
 });
 
-describe('field tree', () => {
-    const bp = {
-            root: 'grid',
-            sources: {
-                pos: {
-                    dataset: 'positions',
-                    params: {asOf: '2026-11-19'},
-                    fields: {
-                        pnlDay: {label: 'Today', align: 'center', format: {precision: 2}},
-                        shock10: {field: 'shockedPnl', params: {shock: -0.1}, label: 'P&L -10%'}
-                    }
-                }
-            },
-            elements: {
-                grid: {
-                    component: 'cubeGrid',
-                    config: {source: 'pos', columnState: ['pnlDay', 'shock10']}
-                }
-            }
-        } as unknown as Blueprint,
-        rows = () => {
-            const usages = fieldUsages(bp, catalog);
-            return flatten(
-                fieldTree(catalog.getDataset('positions'), catalog, usages.positions, bp)
-            );
-        },
-        row = (id: string) => rows().find(it => it.id === id);
-
-    it("shows a field as the catalog defines it, with the catalog's label and alignment", () => {
-        const f = field('positions', 'pnlDay');
-        expect(row('field:pnlDay')).toMatchObject({label: f.label, align: f.align ?? null});
-    });
-
-    it('adds a row for each source that overrides the field, with its display resolved', () => {
-        expect(row('override:pos:pnlDay')).toMatchObject({
-            name: 'pos',
-            role: 'Override',
-            label: 'Today',
-            align: 'center',
-            usedAt: '/sources/pos/fields/pnlDay'
-        });
-        expect(row('override:pos:pnlDay').format).toContain('precision: 2');
-    });
-
-    it("labels a field instance with the source's label for it", () => {
-        expect(row('instance:shockedPnl:shock10')).toMatchObject({label: 'P&L -10%'});
-    });
-});
-
-function flatten(nodes: PlainObject[]): PlainObject[] {
-    return nodes.flatMap(it => [it, ...flatten(it.children ?? [])]);
-}
-
 describe('datasetJoins', () => {
     const joins = (name: string) => datasetJoins(catalog, catalog.getDataset(name));
 
@@ -307,26 +254,6 @@ describe('catalogEntries', () => {
     });
 });
 
-describe('fieldsByKind', () => {
-    it('regroups the field tree by kind, kinds sorted, fields with none last', () => {
-        const tree = [
-                {
-                    id: 'cat:P&L',
-                    name: 'P&L',
-                    children: [{id: 'field:pnlDay', name: 'pnlDay', kind: 'pnl', children: []}]
-                },
-                {id: 'field:symbol', name: 'symbol', kind: null, children: []},
-                {id: 'field:mktVal', name: 'mktVal', kind: 'marketValue', children: []}
-            ],
-            grouped = fieldsByKind(tree, catalog);
-        expect(grouped.map(it => [it.name, it.children.map(c => c.name)])).toEqual([
-            ['marketValue', ['mktVal']],
-            ['pnl', ['pnlDay']],
-            ['No kind', ['symbol']]
-        ]);
-    });
-});
-
 describe('catalog list scope', () => {
     it("lists only the kinds and formats its datasets' fields use", () => {
         const portfolio = new DataCatalog({
@@ -343,13 +270,51 @@ describe('catalog list scope', () => {
     });
 });
 
-describe('fieldsByKind labels', () => {
-    it('names a base kind no catalog kind defines as a base', () => {
-        const grouped = fieldsByKind(
-            [{id: 'field:x', name: 'x', kind: 'currency:USD', children: []}],
-            catalog
-        );
-        expect(grouped[0].name).toBe('currency:USD (base)');
+describe('fieldGroups', () => {
+    const positions = catalog.getDataset('positions');
+
+    it("groups fields by the catalog's groups, in first-seen order, nested ones joined", () => {
+        const groups = fieldGroups(positions, catalog, 'group');
+        expect(groups.slice(0, 4).map(it => it.title)).toEqual([
+            'Organization',
+            'Classification',
+            'Instrument',
+            'Instrument › Identifiers'
+        ]);
+        expect(groups[0].fields.map(it => it.name)).toEqual([
+            'fund',
+            'strategy',
+            'book',
+            'trader',
+            'model'
+        ]);
+    });
+
+    it('groups fields by kind, kinds sorted, base kinds marked, fields with none last', () => {
+        const groups = fieldGroups(positions, catalog, 'kind'),
+            titles = groups.map(it => it.title);
+        expect(titles.at(-1)).toBe('No kind');
+        expect(titles).toContain('currency:USD (base)');
+        expect(titles.indexOf('marketValue')).toBeLessThan(titles.indexOf('pnl'));
+        expect(groups.every(it => it.fields.length > 0)).toBe(true);
+    });
+});
+
+describe('fieldProps', () => {
+    it('lists only the properties a field sets', () => {
+        expect(fieldProps(field('positions', 'mktVal'))).toEqual([
+            ['kind', 'marketValue'],
+            ['format', 'mv'],
+            ['aggregator', 'SUM']
+        ]);
+    });
+
+    it('names the parent of a dimension', () => {
+        expect(fieldProps(field('positions', 'book'))).toEqual([['under', 'strategy']]);
+    });
+
+    it('lists nothing for a field that sets nothing', () => {
+        expect(fieldProps(field('positions', 'fund'))).toEqual([]);
     });
 });
 

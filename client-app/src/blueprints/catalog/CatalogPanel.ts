@@ -1,9 +1,9 @@
 import {hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {CatalogModel} from './CatalogModel';
-import {catalogDetail, catalogJsonDialog, catalogList} from './CatalogViews';
+import {catalogDetail, catalogJsonPanel, catalogList} from './CatalogViews';
 
-/** The server's Data Catalog: its datasets, kinds and formats in one list, beside the one selected. */
+/** The server's Data Catalog: its datasets and kinds and formats, the one selected, and its JSON. */
 export const catalogPanel = hoistCmp.factory({
     displayName: 'CatalogPanel',
     model: creates(CatalogModel),
@@ -11,7 +11,7 @@ export const catalogPanel = hoistCmp.factory({
     render() {
         return hframe({
             className: 'tb-catalog',
-            children: [catalogList(), catalogDetail(), catalogJsonDialog()]
+            children: [catalogList(), catalogDetail(), catalogJsonPanel()]
         });
     }
 });
