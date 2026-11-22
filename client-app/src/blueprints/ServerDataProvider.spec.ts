@@ -2,6 +2,7 @@ import type {BlueprintDataRequest, BlueprintDataUpdate} from '@xh/hoist-chat-kit
 import {XH} from '@xh/hoist/core';
 import type {WebSocketMessage} from '@xh/hoist/svc';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
+import {runInAction} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {beforeAll, beforeEach, describe, expect, it, vi} from 'vitest';
 import {ServerDataProvider} from './ServerDataProvider';
@@ -30,6 +31,8 @@ beforeAll(async () => {
 
 beforeEach(() => {
     provider = new ServerDataProvider();
+    setChannel('channel-1');
+    XH.webSocketService.enabled = true;
     vi.spyOn(XH.webSocketService, 'subscribe').mockImplementation((topic, fn) => {
         push = fn;
         return {topic, fn} as any;
@@ -40,6 +43,10 @@ beforeEach(() => {
         return {rows: snapshot, aggregates: totals};
     });
 });
+
+function setChannel(key: string) {
+    runInAction(() => (XH.webSocketService.channelKey = key));
+}
 
 const subscribeRequests = () => hoistCore.requestsTo('blueprints/subscribe'),
     unsubscribeRequests = () => hoistCore.requestsTo('blueprints/unsubscribe'),
@@ -73,6 +80,42 @@ describe('ServerDataProvider', () => {
             {update: [{id: 'a', mktVal: 2}]},
             {remove: ['a']}
         ]);
+    });
+
+    it('subscribes once the socket has its channel, with that channel', async () => {
+        setChannel(null);
+        const before = subscribeRequests().length;
+        provider.subscribe(req, () => {});
+        await wait(10);
+        expect(subscribeRequests()).toHaveLength(before);
+
+        setChannel('channel-2');
+        await wait(10);
+        expect(subscribeRequests().at(-1).json).toMatchObject({channelKey: 'channel-2'});
+        releaseSnapshot();
+    });
+
+    it('asks nothing of the server when stopped before the socket connects', async () => {
+        setChannel(null);
+        const subsBefore = subscribeRequests().length,
+            unsubsBefore = unsubscribeRequests().length,
+            stop = provider.subscribe(req, () => {});
+        stop();
+        setChannel('channel-3');
+        await wait(10);
+        expect(subscribeRequests()).toHaveLength(subsBefore);
+        expect(unsubscribeRequests()).toHaveLength(unsubsBefore);
+    });
+
+    it('loads once, with no live updates, when websockets are off', async () => {
+        setChannel(null);
+        XH.webSocketService.enabled = false;
+        const updates: BlueprintDataUpdate[] = [],
+            subsBefore = subscribeRequests().length;
+        provider.subscribe(req, u => updates.push(u));
+        await wait(10);
+        expect(subscribeRequests()).toHaveLength(subsBefore);
+        expect(updates).toEqual([{replace: snapshot}]);
     });
 
     it('stops at once, and ends the server pushes once the subscribe settles', async () => {

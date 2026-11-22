@@ -7,6 +7,7 @@ import type {
 import {XH} from '@xh/hoist/core';
 import type {LoadSpec} from '@xh/hoist/core';
 import type {SuppliedAggregate} from '@xh/hoist/data';
+import {when} from '@xh/hoist/mobx';
 import {omit} from 'lodash';
 
 interface Subscription {
@@ -25,10 +26,12 @@ export class ServerDataProvider implements BlueprintDataProvider {
     }
 
     subscribe(req: BlueprintDataRequest, onUpdate: (u: BlueprintDataUpdate) => void): () => void {
-        const {webSocketService} = XH,
-            {channelKey} = webSocketService,
-            topic = XH.genId(),
-            key = subscriptionKey(req);
+        const {webSocketService} = XH;
+        if (!webSocketService.enabled) return this.loadOnce(req, onUpdate);
+
+        const topic = XH.genId(),
+            key = subscriptionKey(req),
+            sub: Subscription = {channelKey: null, topic, subscribed: null};
 
         let pending: BlueprintDataUpdate[] = [],
             active = true;
@@ -38,29 +41,45 @@ export class ServerDataProvider implements BlueprintDataProvider {
             else onUpdate(data);
         });
 
+        // The server pushes to the socket's channel, which it has only once connected.
+        const connected = webSocketService.connected
+            ? null
+            : when(() => webSocketService.connected);
+
         // Pushes can beat the snapshot, so hold them until it lands.
-        const subscribed = XH.postJson({
-            url: 'blueprints/subscribe',
-            body: {...req, channelKey, topic}
-        })
-            .then(({rows, aggregates}: BlueprintDataResult) => {
-                if (!active) return;
+        sub.subscribed = Promise.resolve(connected)
+            .then(() => {
+                if (!active) return null;
+                sub.channelKey = webSocketService.channelKey;
+                return XH.postJson({
+                    url: 'blueprints/subscribe',
+                    body: {...req, channelKey: sub.channelKey, topic}
+                });
+            })
+            .then((result: BlueprintDataResult) => {
+                if (!active || !result) return;
+                const {rows, aggregates} = result;
                 onUpdate(aggregates ? {replace: rows, aggregates} : {replace: rows});
                 pending.forEach(onUpdate);
                 pending = null;
             })
-            .catch(e => XH.handleException(e));
-        this.subscriptions.set(key, {channelKey, topic, subscribed});
+            .catch(e => {
+                if (active) XH.handleException(e);
+            });
+        this.subscriptions.set(key, sub);
 
         return () => {
             active = false;
+            connected?.cancel();
             if (this.subscriptions.get(key)?.topic === topic) this.subscriptions.delete(key);
             webSocketService.unsubscribe(subscription);
-            subscribed.finally(() =>
-                XH.postJson({url: 'blueprints/unsubscribe', body: {channelKey, topic}}).catch(e =>
-                    XH.handleException(e, {showAlert: false})
-                )
-            );
+            sub.subscribed.finally(() => {
+                if (!sub.channelKey) return;
+                XH.postJson({
+                    url: 'blueprints/unsubscribe',
+                    body: {channelKey: sub.channelKey, topic}
+                }).catch(e => XH.handleException(e, {showAlert: false}));
+            });
         };
     }
 
@@ -73,6 +92,21 @@ export class ServerDataProvider implements BlueprintDataProvider {
         if (sub) await sub.subscribed;
         const body = sub ? {...req, channelKey: sub.channelKey, topic: sub.topic} : req;
         return XH.postJson({url: 'blueprints/aggregates', body}, {loadSpec});
+    }
+
+    // Without a socket nothing pushes, so take the rows once, as a replace.
+    private loadOnce(req: BlueprintDataRequest, onUpdate: (u: BlueprintDataUpdate) => void) {
+        let active = true;
+        this.loadAsync(req)
+            .then(({rows, aggregates}) => {
+                if (active) onUpdate(aggregates ? {replace: rows, aggregates} : {replace: rows});
+            })
+            .catch(e => {
+                if (active) XH.handleException(e);
+            });
+        return () => {
+            active = false;
+        };
     }
 }
 
