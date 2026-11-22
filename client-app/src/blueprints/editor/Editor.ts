@@ -225,7 +225,10 @@ const inspector = hoistCmp.factory<EditorModel>({
             icon: Icon.search(),
             compactHeader: true,
             items: [
-                blueprintInspector({designModel: model.shell.designModel}),
+                blueprintInspector({
+                    designModel: model.shell.designModel,
+                    documentModel: model.shell.documentModel
+                }),
                 dialog({
                     isOpen: model.presetsDialogOpen,
                     onClose: () => (model.presetsDialogOpen = false),
