@@ -1,18 +1,20 @@
 import {
+    blueprintInspector,
     blueprintMap,
     blueprintStructure,
     blueprintView,
+    presetsEditor,
     widgetPalette
 } from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler, hframe, placeholder, span, vbox, vframe} from '@xh/hoist/cmp/layout';
-import {tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import type {HoistProps} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {jsonInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {dialog} from '@xh/hoist/kit/blueprint';
 import classNames from 'classnames';
 import {architectChat, architectHeaderItems} from '../ArchitectPanel';
 import {documentBar} from '../documentBar/DocumentBar';
@@ -222,10 +224,17 @@ const inspector = hoistCmp.factory<EditorModel>({
             title: 'Inspector',
             icon: Icon.search(),
             compactHeader: true,
-            item: tabContainer({
-                model: model.inspectorTabsModel,
-                switcher: {enableOverflow: true}
-            })
+            items: [
+                blueprintInspector({designModel: model.shell.designModel}),
+                dialog({
+                    isOpen: model.presetsDialogOpen,
+                    onClose: () => (model.presetsDialogOpen = false),
+                    title: 'Make a preset group',
+                    icon: Icon.bookmark(),
+                    style: {width: 480, height: 420},
+                    item: presetsEditor({designModel: model.shell.designModel})
+                })
+            ]
         })
 });
 

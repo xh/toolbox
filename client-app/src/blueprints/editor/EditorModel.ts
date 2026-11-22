@@ -1,13 +1,6 @@
 import type {BlueprintIssue, BlueprintVariable} from '@xh/hoist-chat-kit/blueprint';
-import {
-    elementInspector,
-    presetsEditor,
-    sourcesEditor,
-    variablesEditor
-} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {badge} from '@xh/hoist/cmp/badge';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed, persist, XH} from '@xh/hoist/core';
 import type {PersistOptions} from '@xh/hoist/core';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
@@ -43,16 +36,9 @@ const RUN_TABS: DockTabSpec[] = [
     {id: 'history', title: 'History', icon: Icon.history()}
 ];
 
-const INSPECTOR_TABS = {
-    element: 'config',
-    variable: 'variables',
-    source: 'sources',
-    preset: 'presets'
-};
-
 /**
- * The open blueprint's editor: the left dock and its tabs, the Inspector's tabs, the History
- * timeline, and the JSON view's draft.
+ * The open blueprint's editor: the left dock and its tabs, the Inspector, the History timeline,
+ * and the JSON view's draft.
  */
 export class EditorModel extends HoistModel {
     override persistWith: PersistOptions = {localStorageKey: 'blueprintsDock'};
@@ -96,25 +82,8 @@ export class EditorModel extends HoistModel {
         persistWith: {localStorageKey: 'blueprintsInspector'}
     });
 
-    @managed inspectorTabsModel = new TabContainerModel({
-        tabs: [
-            {
-                id: 'config',
-                title: 'Config',
-                content: () =>
-                    elementInspector({
-                        designModel: this.shell.designModel,
-                        onShowPresetGroup: () => this.inspectorTabsModel.activateTab('presets')
-                    })
-            },
-            {
-                id: 'variables',
-                content: () => variablesEditor({designModel: this.shell.designModel})
-            },
-            {id: 'sources', content: () => sourcesEditor({designModel: this.shell.designModel})},
-            {id: 'presets', content: () => presetsEditor({designModel: this.shell.designModel})}
-        ]
-    });
+    /** True while the dialog that makes a preset group shows. */
+    @bindable accessor presetsDialogOpen = false;
 
     @managed compareGridModel = new GridModel({
         store: {idSpec: 'path'},
@@ -323,7 +292,7 @@ export class EditorModel extends HoistModel {
                 break;
             }
             case 'preset':
-                this.inspectorTabsModel.activateTab('presets');
+                this.presetsDialogOpen = true;
                 if (this.inspectorPanelModel.collapsed)
                     this.inspectorPanelModel.setCollapsed(false);
                 break;
@@ -413,11 +382,10 @@ export class EditorModel extends HoistModel {
                 run: () => this.closeCompare()
             },
             {
-                // Until one inspector edits every kind, show the tab for what is selected.
-                track: () => shell.designModel.selection?.kind,
-                run: kind => {
-                    const tab = INSPECTOR_TABS[kind];
-                    if (tab) this.inspectorTabsModel.activateTab(tab);
+                // A new group is selected as it is made, and the Inspector then edits it.
+                track: () => shell.designModel.selection,
+                run: sel => {
+                    if (sel?.kind === 'preset') this.presetsDialogOpen = false;
                 }
             },
             {
