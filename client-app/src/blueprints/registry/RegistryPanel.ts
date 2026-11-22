@@ -98,7 +98,11 @@ const entryDetail = hoistCmp.factory<RegistryModel>({
                                 button({
                                     text: 'New blueprint from example',
                                     icon: Icon.copy(),
-                                    omit: !(entry.kind === 'widget' && spec.example),
+                                    omit: !(
+                                        model.context === 'dashboard' &&
+                                        entry.kind === 'widget' &&
+                                        spec.example
+                                    ),
                                     onClick: () => model.loadExample()
                                 })
                             ]

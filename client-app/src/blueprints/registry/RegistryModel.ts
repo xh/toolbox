@@ -58,6 +58,11 @@ export class RegistryModel extends HoistModel {
     /** The entry the detail shows. */
     @bindable accessor selectedId: string = null;
 
+    // The detail tab the user last picked, which entries keep showing while they have it.
+    private pickedTab: string = null;
+    // The tab last shown for a new entry, which is not a pick.
+    private autoTab: string = null;
+
     /** The selected widget's example, rendered live. */
     @observableRef accessor exampleModel: BlueprintModel = null;
 
@@ -171,7 +176,10 @@ export class RegistryModel extends HoistModel {
     get canAddToDraft(): boolean {
         const entry = this.selected;
         return (
-            !!this.panelModel.draftName && entry?.kind === 'widget' && this.isIn('dashboard', entry)
+            this.context === 'dashboard' &&
+            !!this.panelModel.draftName &&
+            entry?.kind === 'widget' &&
+            this.isIn('dashboard', entry)
         );
     }
 
@@ -344,6 +352,12 @@ export class RegistryModel extends HoistModel {
                 fireImmediately: true
             },
             {
+                track: () => this.detailTabsModel.activeTabId,
+                run: id => {
+                    if (id !== this.autoTab) this.pickedTab = id;
+                }
+            },
+            {
                 track: () => this.listModel.selectedRecord,
                 run: rec => {
                     if (rec) this.selectedId = rec.id as string;
@@ -378,18 +392,28 @@ export class RegistryModel extends HoistModel {
         listModel.selModel.select(keep ? this.selectedId : (rows[0]?.id ?? null));
     }
 
-    // Disable the tabs an entry has nothing for, and leave a disabled tab.
+    // Disable the tabs an entry has nothing for. Show the tab the user picked while the entry has
+    // it, else its example, else its config.
     @action
     private enableTabs(entry: RegistryEntry) {
-        const {detailTabsModel: tabs} = this,
+        const {detailTabsModel: tabs, pickedTab} = this,
             kind = entry?.kind,
             has = {
-                example: ['widget', 'renderer', 'action', 'resolver'].includes(kind),
+                example:
+                    (kind === 'widget' && !!entry.spec.example) ||
+                    ['renderer', 'action', 'resolver'].includes(kind),
                 outputs: kind === 'widget'
             };
         tabs.findTab('example').setDisabled(!has.example);
         tabs.findTab('outputs').setDisabled(!has.outputs);
-        if (tabs.activeTab?.disabled) tabs.activateTab(has.example ? 'example' : 'config');
+        const want =
+            pickedTab && !tabs.findTab(pickedTab).disabled
+                ? pickedTab
+                : has.example
+                  ? 'example'
+                  : 'config';
+        this.autoTab = want;
+        tabs.activateTab(want);
     }
 
     /**
