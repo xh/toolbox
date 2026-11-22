@@ -646,8 +646,11 @@ A fragment is the body of a release without its `##` heading:
 * @xh/hoist `80.0 → 80.1`
 ```
 
-- `pnpm changelog new` creates `changelog.d/<branch>.md`. `pnpm changelog check` validates every
-  fragment, and CI runs it on each pull request. `pnpm changelog preview` prints the next release.
+- `pnpm changelog add fix "<text>"` adds a one-line entry to `changelog.d/<branch>.md`. It finds the
+  section from a short name, such as `fix`, `feature`, `tech` or `lib`, and wraps the line.
+  `pnpm changelog new` creates an empty fragment for a longer entry.
+- `pnpm changelog check` validates every fragment, and CI runs it on each pull request.
+  `pnpm changelog preview` prints the next release.
 - **Sections**: `Breaking Changes`, `New Features`, `Bug Fixes`, `Technical`, `Libraries`, listed in
   `changelog.d/config.json` - the titles Hoist's `ChangelogDialog` maps to CSS classnames. `check`
   rejects any other `###` title.
