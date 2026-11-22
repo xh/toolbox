@@ -1,5 +1,12 @@
 import {faGithub, faMarkdown, faReact} from '@fortawesome/free-brands-svg-icons';
-import {faFaceFrown, faFaceMeh, faFaceSmile, faIcons} from '@fortawesome/pro-regular-svg-icons';
+import {
+    faArrowPointer,
+    faFaceFrown,
+    faFaceMeh,
+    faFaceSmile,
+    faHandPointer,
+    faIcons
+} from '@fortawesome/pro-regular-svg-icons';
 import {Icon} from '@xh/hoist/icon';
 
 /**
@@ -29,4 +36,9 @@ export const [faceFrownIcon, faceMehIcon, faceSmileIcon] = Icon.registerAll([
     {name: 'faceFrown', defs: faFaceFrown, keywords: ['feedback', 'sad', 'emoji']},
     {name: 'faceMeh', defs: faFaceMeh, keywords: ['feedback', 'neutral', 'emoji']},
     {name: 'faceSmile', defs: faFaceSmile, keywords: ['feedback', 'happy', 'emoji']}
+]);
+
+export const [arrowPointerIcon, handPointerIcon] = Icon.registerAll([
+    {name: 'arrowPointer', defs: faArrowPointer, keywords: ['select', 'cursor']},
+    {name: 'handPointer', defs: faHandPointer, keywords: ['click', 'interact', 'cursor']}
 ]);

@@ -9,6 +9,7 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {useEffect} from 'react';
+import {arrowPointerIcon, handPointerIcon} from '../../core/Icons';
 import {blueprintMenu} from '../BlueprintMenu';
 import {DocumentBarModel} from './DocumentBarModel';
 
@@ -52,6 +53,9 @@ export const documentBar = hoistCmp.factory({
                               })
                           }),
                           ...(stale ? staleActions(model) : []),
+                          interactionControl({
+                              omit: !canEdit || stale || blueprintModel.mode !== 'design'
+                          }),
                           ...(canEdit && !stale ? undoRedo(model) : []),
                           issuesChip(),
                           filler(),
@@ -219,6 +223,37 @@ function staleActions(model: DocumentBarModel) {
         })
     ];
 }
+
+/** Edit, where a click on the canvas selects, or Interact, where it reaches the widget. */
+const interactionControl = hoistCmp.factory<DocumentBarModel>({
+    model: uses(DocumentBarModel),
+    render: ({model}) => {
+        const {designModel} = model.shell;
+        return designModel
+            ? span({
+                  title: 'E: click to select. I: click to use the widgets.',
+                  children: segmentedControl({
+                      value: designModel.interaction,
+                      onChange: mode => designModel.setInteraction(mode),
+                      compact: true,
+                      intent: 'primary',
+                      options: [
+                          {
+                              value: 'edit',
+                              label: 'Edit',
+                              icon: arrowPointerIcon()
+                          },
+                          {
+                              value: 'interact',
+                              label: 'Interact',
+                              icon: handPointerIcon()
+                          }
+                      ]
+                  })
+              })
+            : null;
+    }
+});
 
 function undoRedo(model: DocumentBarModel) {
     const {blueprintModel, chatModel} = model.shell,

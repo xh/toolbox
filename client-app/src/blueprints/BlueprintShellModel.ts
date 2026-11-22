@@ -124,6 +124,9 @@ export class BlueprintShellModel extends HoistModel {
     /** How the library shows its blueprints: as a list, or as cards with schematics. */
     @bindable accessor libraryView: 'list' | 'cards' = 'list';
 
+    /** Whether a click on the design canvas selects, or reaches the widget. Kept per user. */
+    @bindable accessor interaction: 'edit' | 'interact' = 'edit';
+
     /** The blueprints the library's cards draw, by id, each with the version it was read at. */
     @observableRef accessor previews: Record<string, {version: number; blueprint: Blueprint}> = {};
 
@@ -332,6 +335,7 @@ export class BlueprintShellModel extends HoistModel {
         this.markPersist('recentIds', {path: `recentIds.${config.type.name}`});
         this.markPersist('maximize');
         this.markPersist('libraryView');
+        this.markPersist('interaction');
         this.threadStore = new LocalThreadStore({
             storageKey: storageKey ? `${storageKey}.threads` : 'blueprints.designer.threads',
             seed: () => [],
@@ -346,6 +350,13 @@ export class BlueprintShellModel extends HoistModel {
         this.createProvider = config.createProvider ?? (() => new ServerDataProvider());
         this.repository = config.repository ?? createRepository(config.type.name);
         this.addReaction(
+            // Keeps the choice however it changes: the docbar's control, or E and I on the canvas.
+            {
+                track: () => this.designModel?.interaction,
+                run: mode => {
+                    if (mode) this.interaction = mode;
+                }
+            },
             {
                 track: () => [
                     ...this.summaries.map(it => ({
@@ -426,6 +437,7 @@ export class BlueprintShellModel extends HoistModel {
                 new BlueprintDocumentModel({blueprintModel, repository: this.repository})
             );
             this.designModel = this.markManaged(new BlueprintDesignModel({blueprintModel}));
+            this.designModel.setInteraction(this.interaction);
             this.answerCatalog = new ChatUiCatalog({
                 components: [chatUiStackSpec(), chatUiTextSpec(), chatUiCalloutSpec()],
                 modes: ['document'],
