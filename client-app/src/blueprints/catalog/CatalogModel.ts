@@ -67,7 +67,7 @@ export class CatalogModel extends HoistModel {
             idSpec: 'name',
             fields: ['label', 'description', 'grain', 'usedCount', 'fieldHits']
         },
-        itemHeight: 78,
+        itemHeight: 92,
         emptyText: 'No datasets match.',
         renderer: (v, {record}) => datasetItem({data: {...record.data, name: record.id}})
     });
@@ -196,6 +196,8 @@ export class CatalogModel extends HoistModel {
                 };
             });
         listModel.loadData(rows);
+        // Cards render from their whole record, so redraw them for changed counts.
+        listModel.gridModel.agApi?.redrawRows();
         const keep = rows.some(it => it.name === this.selectedName);
         listModel.selModel.select(keep ? this.selectedName : (rows[0]?.name ?? null));
     }

@@ -274,9 +274,15 @@ export class EditorModel extends HoistModel {
         this.dockPanelModel.setCollapsed(false);
     }
 
-    /** Open the dock on the Architect, with its composer focused once it shows. */
+    /**
+     * Open the dock on the Architect, with its composer focused once it shows. Both modes' tabs
+     * take it, as a new blueprint may not yet be in design.
+     */
+    @action
     askArchitect() {
-        this.showTab('architect');
+        this.designTab = 'architect';
+        this.runTab = 'architect';
+        this.dockPanelModel.setCollapsed(false);
         const {composerModel} = this.shell.chatModel;
         if (composerModel.inputRef.current) {
             composerModel.focus();

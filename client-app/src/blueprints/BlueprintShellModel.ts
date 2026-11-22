@@ -27,6 +27,9 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import type {LoadSpec, PlainObject} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
+import type {ActionFnData, RecordActionSpec, StoreRecord} from '@xh/hoist/data';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {menu, menuDivider, menuItem, showContextMenu} from '@xh/hoist/kit/blueprint';
 import {fmtCompactDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {
@@ -39,6 +42,7 @@ import {
     runInAction
 } from '@xh/hoist/mobx';
 import {find, pick} from 'lodash';
+import type {ReactElement} from 'react';
 import {LocalThreadStore} from '../desktop/tabs/chatkit/integrations/LocalThreadStore';
 import {createArchitectChat} from './architectChat';
 import {revealEdit} from './editor/historyTimeline';
@@ -145,6 +149,55 @@ export class BlueprintShellModel extends HoistModel {
     /** Each blueprint's conversation with the Architect, by blueprint ID. */
     readonly threadStore: LocalThreadStore;
 
+    // The library rows' actions, for their context menu and their ⋯ button.
+    private readonly rowActions: Array<RecordActionSpec | '-'> = [
+        {
+            text: 'Open',
+            icon: Icon.openExternal(),
+            recordsRequired: 1,
+            displayFn: ({record}) => ({hidden: !!record?.data.placeholder}),
+            actionFn: ({record}) => this.selectAsync(record.id as string)
+        },
+        {
+            text: 'Copy',
+            icon: Icon.copy(),
+            recordsRequired: 1,
+            displayFn: ({record}) => ({hidden: !!record?.data.placeholder}),
+            actionFn: ({record}) => this.copyFromLibraryAsync(record.id as string)
+        },
+        {
+            text: 'Copy link',
+            icon: Icon.link(),
+            recordsRequired: 1,
+            displayFn: ({record}) => ({hidden: !this.route || !!record?.data.placeholder}),
+            actionFn: ({record}) => copyLinkAsync(this.linkTo(record.id as string))
+        },
+        {
+            text: 'Rename...',
+            icon: Icon.edit(),
+            recordsRequired: 1,
+            displayFn: ({record}) => ({
+                hidden: !this.repository.renameAsync || !this.isOwnRow(record)
+            }),
+            actionFn: ({record}) => this.renameFromLibraryAsync(record.id as string)
+        },
+        {
+            text: 'Share...',
+            icon: Icon.users(),
+            recordsRequired: 1,
+            displayFn: ({record}) => ({hidden: !this.isOwnRow(record)}),
+            actionFn: ({record}) => this.shareFromLibraryAsync(record.id as string)
+        },
+        '-',
+        {
+            text: 'Delete',
+            icon: Icon.delete(),
+            recordsRequired: 1,
+            displayFn: ({record}) => ({hidden: !this.isOwnRow(record)}),
+            actionFn: ({record}) => this.deleteFromLibraryAsync(record.id as string)
+        }
+    ];
+
     @managed listGridModel = new GridModel({
         store: {idSpec: 'id'},
         groupBy: 'group',
@@ -158,53 +211,7 @@ export class BlueprintShellModel extends HoistModel {
         },
         rowClassFn: rec => (rec?.data.placeholder ? 'tb-library__hint' : null),
         onRowDoubleClicked: ({data}) => data && !data.placeholder && this.selectAsync(data.id),
-        contextMenu: [
-            {
-                text: 'Open',
-                icon: Icon.openExternal(),
-                recordsRequired: 1,
-                displayFn: ({record}) => ({hidden: !!record?.data.placeholder}),
-                actionFn: ({record}) => this.selectAsync(record.id as string)
-            },
-            {
-                text: 'Copy',
-                icon: Icon.copy(),
-                recordsRequired: 1,
-                displayFn: ({record}) => ({hidden: !!record?.data.placeholder}),
-                actionFn: ({record}) => this.copyFromLibraryAsync(record.id as string)
-            },
-            {
-                text: 'Copy link',
-                icon: Icon.link(),
-                recordsRequired: 1,
-                displayFn: ({record}) => ({hidden: !this.route || !!record?.data.placeholder}),
-                actionFn: ({record}) => copyLinkAsync(this.linkTo(record.id as string))
-            },
-            {
-                text: 'Rename...',
-                icon: Icon.edit(),
-                recordsRequired: 1,
-                displayFn: ({record}) => ({
-                    hidden: !this.repository.renameAsync || !this.isOwnRow(record)
-                }),
-                actionFn: ({record}) => this.renameFromLibraryAsync(record.id as string)
-            },
-            {
-                text: 'Share...',
-                icon: Icon.users(),
-                recordsRequired: 1,
-                displayFn: ({record}) => ({hidden: !this.isOwnRow(record)}),
-                actionFn: ({record}) => this.shareFromLibraryAsync(record.id as string)
-            },
-            '-',
-            {
-                text: 'Delete',
-                icon: Icon.delete(),
-                recordsRequired: 1,
-                displayFn: ({record}) => ({hidden: !this.isOwnRow(record)}),
-                actionFn: ({record}) => this.deleteFromLibraryAsync(record.id as string)
-            }
-        ],
+        contextMenu: this.rowActions,
         columns: [
             {field: 'group', hidden: true},
             {
@@ -228,7 +235,24 @@ export class BlueprintShellModel extends HoistModel {
             {field: 'readOnly', hidden: true},
             {field: 'global', hidden: true},
             {field: 'placeholder', hidden: true},
-            {field: 'updated', width: 130, renderer: v => (v ? fmtCompactDate(v) : null)}
+            {field: 'updated', width: 130, renderer: v => (v ? fmtCompactDate(v) : null)},
+            {
+                colId: 'menu',
+                headerName: '',
+                width: 44,
+                align: 'center',
+                sortable: false,
+                rendererIsComplex: true,
+                renderer: (v, {record}) =>
+                    record.data.placeholder
+                        ? null
+                        : button({
+                              icon: Icon.ellipsisHorizontal(),
+                              minimal: true,
+                              title: 'More',
+                              onClick: e => this.showRowMenu(record, e)
+                          })
+            }
         ]
     });
 
@@ -682,6 +706,23 @@ export class BlueprintShellModel extends HoistModel {
     //------------------
     // Implementation
     //------------------
+    // The row's actions as a menu at the ⋯ button, as its context menu shows them.
+    private showRowMenu(record: StoreRecord, e: MouseEvent) {
+        e.stopPropagation();
+        const items = this.rowActions.flatMap((it): ReactElement[] => {
+            if (it === '-') return [menuDivider()];
+            if (it.displayFn?.({record} as ActionFnData)?.hidden) return [];
+            return [
+                menuItem({
+                    text: it.text,
+                    icon: it.icon,
+                    onClick: () => it.actionFn({record} as ActionFnData)
+                })
+            ];
+        });
+        showContextMenu(menu({children: items}), {left: e.clientX, top: e.clientY});
+    }
+
     private isOwnRow(record: {data: PlainObject}): boolean {
         return record?.data.group === 'Yours' && !record.data.placeholder;
     }

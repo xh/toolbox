@@ -10,7 +10,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {jsonInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import type {ReactNode} from 'react';
+import type {KeyboardEvent as ReactKeyboardEvent, ReactNode} from 'react';
 import {md} from '../markdown';
 import {CatalogModel} from './CatalogModel';
 import type {DatasetCardModel, ParamInfo} from './CatalogModel';
@@ -65,6 +65,7 @@ export const datasetItem = hoistCmp.factory<DatasetItemProps>({
                 hbox({
                     className: 'tb-dataset-item__head',
                     children: [
+                        Icon.database({className: 'tb-dataset-item__icon'}),
                         span({className: 'tb-dataset__name', children: name}),
                         label ? span({className: 'tb-dataset__label', children: label}) : null,
                         filler(),
@@ -132,12 +133,10 @@ const datasetDetail = hoistCmp.factory<DatasetCardModel>(({model}) => {
                               hbox({
                                   className: 'tb-dataset__chips',
                                   children: joins.map(j =>
-                                      button({
+                                      chip({
                                           key: j.dataset,
-                                          className: 'tb-dataset__chip',
                                           text: `${j.dataset} on ${j.on.join(', ')}`,
-                                          minimal: true,
-                                          tooltip: `Show ${j.dataset}`,
+                                          title: `Show ${j.dataset}`,
                                           onClick: () =>
                                               catalog.listModel.selModel.select(j.dataset)
                                       })
@@ -164,6 +163,35 @@ const datasetDetail = hoistCmp.factory<DatasetCardModel>(({model}) => {
         ]
     });
 });
+
+/** A small clickable label, as for a join or a reader. */
+function chip({
+    key,
+    text,
+    title,
+    onClick
+}: {
+    key: string;
+    text: string;
+    title: string;
+    onClick: () => void;
+}) {
+    return span({
+        key,
+        className: 'tb-dataset__chip',
+        role: 'button',
+        tabIndex: 0,
+        title,
+        onClick,
+        onKeyDown: (e: ReactKeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick();
+            }
+        },
+        children: text
+    });
+}
 
 function metaRow(label: string, value: ReactNode) {
     return hbox({
@@ -221,12 +249,10 @@ export const datasetUsedBy = hoistCmp.factory<CatalogModel>({
             hbox({
                 className: 'tb-dataset__chips',
                 children: ids.map(id =>
-                    button({
+                    chip({
                         key: id,
-                        className: 'tb-dataset__chip',
                         text: id,
-                        minimal: true,
-                        tooltip: `Show ${id} in the blueprint`,
+                        title: `Show ${id} in the blueprint`,
                         onClick: () => model.reveal({kind, id})
                     })
                 )

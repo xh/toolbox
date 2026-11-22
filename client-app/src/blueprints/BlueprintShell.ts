@@ -165,7 +165,8 @@ const newMenu = hoistCmp.factory<BlueprintShellModel>({
                 text: 'New',
                 icon: Icon.add(),
                 rightIcon: Icon.chevronDown(),
-                intent: 'primary'
+                intent: 'primary',
+                minimal: false
             }),
             content: menu(
                 menuItem({

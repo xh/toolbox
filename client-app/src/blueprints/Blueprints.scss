@@ -176,10 +176,19 @@
 }
 
 .tb-dataset-item {
-  width: 100%;
+  width: calc(100% - var(--xh-spacing) * 2);
+  height: calc(100% - var(--xh-spacing));
+  margin: var(--xh-spacing-half) var(--xh-spacing);
   gap: 2px;
   padding: var(--xh-spacing-half) var(--xh-spacing);
   overflow: hidden;
+  border: var(--xh-border-solid);
+  border-radius: var(--xh-border-radius);
+  background-color: var(--xh-bg);
+
+  &__icon {
+    color: var(--xh-text-color-muted);
+  }
 
   &__head {
     align-items: center;
@@ -264,10 +273,24 @@
     gap: var(--xh-spacing-half);
   }
 
-  &__chips .tb-dataset__chip {
+  &__chip {
+    padding: 1px 6px;
+    border-radius: var(--xh-border-radius);
     font-family: var(--xh-font-family-mono);
     font-size: var(--xh-font-size-small);
-    background-color: var(--xh-intent-primary-trans1);
+    color: var(--xh-intent-success-text-color);
+    background-color: var(--xh-intent-success-trans1);
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--xh-intent-success-trans2);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--xh-intent-success-text-color);
+      outline-offset: 1px;
+    }
   }
 
   &__count {
@@ -333,6 +356,8 @@
 }
 
 .tb-library {
+  max-width: 1280px;
+
   &__intro {
     flex: none;
     padding: var(--xh-spacing) calc(var(--xh-spacing) * 2) var(--xh-spacing-half);
