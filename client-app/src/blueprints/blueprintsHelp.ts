@@ -9,7 +9,7 @@ export function showBlueprintsHelp() {
         icon: Icon.questionCircle(),
         message: vbox({
             className: 'tb-blueprints-help',
-            items: [
+            children: [
                 p(
                     'A blueprint describes a dashboard as JSON: its widgets and layout, the data sources they read, and the variables that link them. Pick one in the library, or start a new one, and build or change it by hand or by asking the Architect.'
                 ),
@@ -24,14 +24,14 @@ export function showBlueprintsHelp() {
                         a({
                             href: '/app/docs/hoist-chat-kit/blueprint~README.md',
                             target: '_blank',
-                            item: 'Blueprints, in the docs'
+                            children: 'Blueprints, in the docs'
                         })
                     ),
                     li(
                         a({
                             href: 'https://github.com/xh/toolbox/tree/develop/client-app/src/blueprints',
                             target: '_blank',
-                            item: "Toolbox's blueprint code"
+                            children: "Toolbox's blueprint code"
                         })
                     )
                 )

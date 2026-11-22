@@ -7,9 +7,11 @@ export function renderTicker(value: unknown): ReactNode {
     const [root, ...rest] = String(value).split(' ');
     return span({
         className: 'tb-ticker',
-        items: [
-            span({className: 'tb-ticker__root', item: root}),
-            rest.length ? span({className: 'tb-ticker__detail', item: ` ${rest.join(' ')}`}) : null
+        children: [
+            span({className: 'tb-ticker__root', children: root}),
+            rest.length
+                ? span({className: 'tb-ticker__detail', children: ` ${rest.join(' ')}`})
+                : null
         ]
     });
 }

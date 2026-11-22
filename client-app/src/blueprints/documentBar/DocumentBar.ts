@@ -28,7 +28,7 @@ export const documentBar = hoistCmp.factory({
             stale = documentModel.isStale;
         return toolbar({
             className: 'tb-docbar',
-            items: [
+            children: [
                 button({
                     text: 'Library',
                     icon: Icon.chevronLeft(),
@@ -44,10 +44,10 @@ export const documentBar = hoistCmp.factory({
                               title: stale
                                   ? 'Saved elsewhere since you opened it, so your edits here are not saved. Reload to take the saved draft, or Save as new to keep yours.'
                                   : null,
-                              item: badge({
+                              children: badge({
                                   intent: status.intent,
                                   icon: status.locked ? Icon.lock() : null,
-                                  item: status.text
+                                  children: status.text
                               })
                           }),
                           ...(stale ? staleActions(model) : []),
@@ -106,7 +106,7 @@ const quickSwitcher = hoistCmp.factory<DocumentBarModel>({
             isOpen: model.switcherOpen,
             onInteraction: open => (model.switcherOpen = open),
             position: 'bottom-left',
-            item: button({
+            children: button({
                 className: 'tb-docbar__name',
                 text: model.shell.selected?.name ?? 'No blueprint',
                 rightIcon: Icon.chevronDown(),
@@ -115,7 +115,7 @@ const quickSwitcher = hoistCmp.factory<DocumentBarModel>({
             }),
             content: vbox({
                 className: 'tb-docbar__switcher',
-                items: [
+                children: [
                     storeFilterField({
                         gridModel: model.switcherGridModel,
                         includeFields: ['name', 'owner'],
@@ -205,7 +205,7 @@ const issuesChip = hoistCmp.factory<DocumentBarModel>({
             text = errorCount ? plural(errorCount, 'error') : plural(warnings, 'warning');
         return popover({
             position: 'bottom-left',
-            item: button({
+            children: button({
                 className: 'tb-docbar__issues',
                 text,
                 icon: Icon.warning(),
@@ -215,7 +215,7 @@ const issuesChip = hoistCmp.factory<DocumentBarModel>({
             }),
             content: menu({
                 className: 'tb-docbar__issue-list',
-                items: issues.map((issue, idx) =>
+                children: issues.map((issue, idx) =>
                     menuItem({
                         key: idx,
                         icon: issue.severity === 'error' ? Icon.error() : Icon.warning(),
@@ -241,7 +241,7 @@ const publishButton = hoistCmp.factory<DocumentBarModel>({
                 if (!open) model.publishOpen = false;
             },
             position: 'bottom-right',
-            item: button({
+            children: button({
                 text: 'Publish',
                 icon: Icon.upload(),
                 intent: 'primary',
@@ -263,11 +263,11 @@ const publishPanel = hoistCmp.factory<DocumentBarModel>({
             warnings = model.issues.filter(it => it.severity === 'warning');
         return vbox({
             className: 'tb-docbar__publish',
-            items: [
-                div({className: 'tb-docbar__publish-title', item: `Publish v${nextVersion}`}),
+            children: [
+                div({className: 'tb-docbar__publish-title', children: `Publish v${nextVersion}`}),
                 div({
                     className: 'tb-docbar__publish-changes',
-                    item: changesText(changes, last)
+                    children: changesText(changes, last)
                 }),
                 textArea({
                     bind: 'note',
@@ -278,7 +278,7 @@ const publishPanel = hoistCmp.factory<DocumentBarModel>({
                 warnings.length
                     ? div({
                           className: 'tb-docbar__publish-warning xh-intent-warning',
-                          items: [
+                          children: [
                               Icon.warning(),
                               span(
                                   `${plural(warnings.length, 'warning')}: ${warnings[0].message}${warnings.length > 1 ? ` And ${warnings.length - 1} more.` : ''} Publish anyway, or fix ${warnings.length > 1 ? 'them' : 'it'} first.`
@@ -288,13 +288,13 @@ const publishPanel = hoistCmp.factory<DocumentBarModel>({
                     : null,
                 div({
                     className: 'tb-docbar__publish-readers',
-                    item: shell.selected?.publishedVersion
+                    children: shell.selected?.publishedVersion
                         ? 'Readers move to this version when they next open it.'
                         : 'Readers you share with see published versions only.'
                 }),
                 hbox({
                     className: 'tb-docbar__publish-buttons',
-                    items: [
+                    children: [
                         filler(),
                         button({text: 'Cancel', onClick: () => (model.publishOpen = false)}),
                         button({

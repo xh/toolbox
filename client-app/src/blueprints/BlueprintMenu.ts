@@ -28,9 +28,9 @@ export const blueprintMenu = hoistCmp.factory<BlueprintShellModel>({
             },
             position: 'bottom-right',
             content: sharePanel(),
-            item: popover({
+            children: popover({
                 position: 'bottom-right',
-                item: button({icon: Icon.ellipsisVertical(), minimal: true, tooltip: 'More'}),
+                children: button({icon: Icon.ellipsisVertical(), minimal: true, tooltip: 'More'}),
                 content: menu(
                     menuItem({
                         text: 'Copy link',
@@ -90,7 +90,7 @@ const sharePanel = hoistCmp.factory<BlueprintShellModel>({
 
         return vbox({
             className: 'tb-blueprints__share',
-            items: [
+            children: [
                 switchInput({
                     label: 'Everyone can view',
                     omit: !doc.canShareGlobally || !modes.includes('everyone'),
@@ -119,7 +119,7 @@ const sharePanel = hoistCmp.factory<BlueprintShellModel>({
                 }),
                 div({
                     className: 'tb-blueprints__share-note',
-                    item: 'Others see its published versions, never your draft.'
+                    children: 'Others see its published versions, never your draft.'
                 })
             ]
         });
@@ -136,7 +136,7 @@ const granteeSelect = hoistCmp.factory<GranteeSelectProps>({
     model: false,
     render({label, value, onCommit}) {
         return vbox(
-            div({className: 'tb-blueprints__share-label', item: label}),
+            div({className: 'tb-blueprints__share-label', children: label}),
             select({
                 value,
                 enableMulti: true,

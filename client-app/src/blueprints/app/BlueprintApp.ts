@@ -76,7 +76,7 @@ export const BlueprintAppComponent = hoistCmp({
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
             mask: 'onLoad',
-            item: blueprintShellView({model: shellModel})
+            children: blueprintShellView({model: shellModel})
         });
     }
 });

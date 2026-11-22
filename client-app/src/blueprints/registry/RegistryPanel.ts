@@ -22,7 +22,7 @@ export const registryPanel = hoistCmp.factory({
             tbar: [
                 buttonGroupInput({
                     bind: 'context',
-                    items: [
+                    children: [
                         button({value: 'dashboard', text: 'Dashboard'}),
                         button({value: 'answer', text: 'Answers'})
                     ]
@@ -31,14 +31,14 @@ export const registryPanel = hoistCmp.factory({
                 buttonGroupInput({
                     bind: 'origins',
                     enableMulti: true,
-                    items: [
+                    children: [
                         button({value: 'built-in', text: 'Built-in'}),
                         button({value: 'chat kit', text: 'Chat kit'}),
                         button({value: 'app', text: 'App'})
                     ]
                 })
             ],
-            item: hframe(
+            children: hframe(
                 panel({
                     className: 'tb-registry__list',
                     modelConfig: {side: 'left', defaultSize: 320, minSize: 220, collapsible: false},
@@ -52,7 +52,7 @@ export const registryPanel = hoistCmp.factory({
                             flex: 1
                         })
                     ],
-                    item: grid({model: model.listModel})
+                    children: grid({model: model.listModel})
                 }),
                 model.selected ? entryDetail() : placeholder('Pick an entry.')
             )
@@ -70,22 +70,22 @@ const entryDetail = hoistCmp.factory<RegistryModel>({
             description = spec.description ?? spec.guidance;
         return panel({
             className: 'tb-registry__detail',
-            items: [
+            children: [
                 vbox({
                     className: 'tb-registry__header',
-                    items: [
+                    children: [
                         hbox({
                             className: 'tb-registry__title',
-                            items: [
-                                span({className: 'tb-registry__name', item: name}),
+                            children: [
+                                span({className: 'tb-registry__name', children: name}),
                                 entry.label && entry.label !== name
                                     ? span({
                                           className: 'tb-registry__label-text',
-                                          item: entry.label
+                                          children: entry.label
                                       })
                                     : null,
-                                badge({compact: true, item: entry.origin}),
-                                badge({compact: true, item: entry.kind}),
+                                badge({compact: true, children: entry.origin}),
+                                badge({compact: true, children: entry.kind}),
                                 filler(),
                                 button({
                                     text: `Add to ${draft}`,
@@ -108,7 +108,10 @@ const entryDetail = hoistCmp.factory<RegistryModel>({
                             ]
                         }),
                         description
-                            ? div({className: 'tb-registry__description', item: md(description)})
+                            ? div({
+                                  className: 'tb-registry__description',
+                                  children: md(description)
+                              })
                             : null
                     ]
                 }),

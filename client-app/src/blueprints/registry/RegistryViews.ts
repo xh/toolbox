@@ -16,9 +16,9 @@ import {RegistryModel} from './RegistryModel';
 export function entryName(name: string, label: string): ReactNode {
     return div({
         className: 'tb-registry-item',
-        items: [
-            span({className: 'tb-registry-item__name', item: name}),
-            label ? span({className: 'tb-registry-item__label', item: label}) : null
+        children: [
+            span({className: 'tb-registry-item__name', children: name}),
+            label ? span({className: 'tb-registry-item__label', children: label}) : null
         ]
     });
 }
@@ -26,7 +26,7 @@ export function entryName(name: string, label: string): ReactNode {
 export function usedBadge(count: number, usedAt: string[]): ReactNode {
     return span({
         title: usedAt?.join('\n'),
-        item: badge({intent: 'success', compact: true, item: `${count} used`})
+        children: badge({intent: 'success', compact: true, children: `${count} used`})
     });
 }
 
@@ -40,7 +40,7 @@ export const entryExample = hoistCmp.factory<RegistryModel>({
                 return model.exampleModel
                     ? panel({
                           className: 'tb-registry__example',
-                          item: blueprintView({model: model.exampleModel})
+                          children: blueprintView({model: model.exampleModel})
                       })
                     : placeholder(
                           model.exampleError
@@ -66,7 +66,10 @@ export const entryExample = hoistCmp.factory<RegistryModel>({
                             width: 200
                         })
                     ],
-                    item: div({className: 'tb-registry__sample-body', item: model.rendererSample})
+                    children: div({
+                        className: 'tb-registry__sample-body',
+                        children: model.rendererSample
+                    })
                 });
             }
             case 'action':
@@ -149,7 +152,7 @@ export const entryConfig = hoistCmp.factory<RegistryModel>({
         const schema = kind === 'action' ? spec.params : spec.config;
         return vbox({
             className: 'tb-registry__config',
-            items: [
+            children: [
                 props([
                     ...rows,
                     ['Used by this blueprint', usedAt.length ? usedAt.join('\n') : 'No'],
@@ -162,7 +165,7 @@ export const entryConfig = hoistCmp.factory<RegistryModel>({
                           compactHeader: true,
                           flex: 1,
                           minHeight: 200,
-                          item: grid({model: model.schemaGridModel})
+                          children: grid({model: model.schemaGridModel})
                       })
                     : null
             ]
@@ -224,12 +227,12 @@ export const entryArchitect = hoistCmp.factory<RegistryModel>({
     render: ({model}) =>
         vbox({
             flex: 1,
-            items: [
+            children: [
                 panel({
                     title: 'describe_registry, for this entry',
                     compactHeader: true,
                     flex: 1,
-                    item: jsonInput({
+                    children: jsonInput({
                         value: model.describeRegistryOutput,
                         readonly: true,
                         flex: 1,
@@ -245,7 +248,10 @@ export const entryArchitect = hoistCmp.factory<RegistryModel>({
                         defaultCollapsed: true
                     },
                     scrollable: true,
-                    item: div({className: 'tb-registry__prompt', item: md(model.architectIndex)})
+                    children: div({
+                        className: 'tb-registry__prompt',
+                        children: md(model.architectIndex)
+                    })
                 })
             ]
         })
@@ -259,11 +265,11 @@ type Row = [string, ReactNode];
 function props(rows: Row[]) {
     return div({
         className: 'tb-registry__props',
-        items: rows
+        children: rows
             .filter(([, v]) => v != null && v !== '')
             .flatMap(([label, value]) => [
-                span({className: 'tb-registry__label', item: label}),
-                span({className: 'tb-registry__value', item: value})
+                span({className: 'tb-registry__label', children: label}),
+                span({className: 'tb-registry__value', children: value})
             ])
     });
 }

@@ -41,12 +41,12 @@ export const fundInput = hoistCmp.factory<FundInputProps>({
             optionRenderer: (opt: FundOption) =>
                 hbox({
                     width: '100%',
-                    items: [
+                    children: [
                         span(opt.label),
                         filler(),
                         span({
                             className: 'xh-text-color-muted',
-                            item: fmtBillions(opt.aum, {precision: 2, label: true})
+                            children: fmtBillions(opt.aum, {precision: 2, label: true})
                         })
                     ]
                 }),

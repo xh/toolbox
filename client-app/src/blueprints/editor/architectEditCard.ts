@@ -95,24 +95,26 @@ const editCard = hoistCmp.factory<EditCardProps>({
             );
         return div({
             className: classNames('tb-edit-card', card.undone && 'tb-edit-card--undone'),
-            items: [
+            children: [
                 hbox({
                     className: 'tb-edit-card__head',
-                    items: [
+                    children: [
                         Icon.edit(),
                         span({
                             className: 'tb-edit-card__desc',
-                            item: description ?? 'Edited the blueprint'
+                            children: description ?? 'Edited the blueprint'
                         }),
-                        card.undone ? span({className: 'tb-edit-card__note', item: 'Undone'}) : null
+                        card.undone
+                            ? span({className: 'tb-edit-card__note', children: 'Undone'})
+                            : null
                     ]
                 }),
                 hbox({
                     className: 'tb-edit-card__bar',
-                    items: [
+                    children: [
                         span({
                             className: 'tb-edit-card__note',
-                            item: `${ops.length} change${ops.length === 1 ? '' : 's'}${warnings ? `, ${warnings} warning${warnings === 1 ? '' : 's'}` : ''}`
+                            children: `${ops.length} change${ops.length === 1 ? '' : 's'}${warnings ? `, ${warnings} warning${warnings === 1 ? '' : 's'}` : ''}`
                         }),
                         filler(),
                         button({

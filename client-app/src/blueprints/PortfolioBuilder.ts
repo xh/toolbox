@@ -165,10 +165,10 @@ export const portfolioBuilder = hoistCmp.factory({
                     optionRenderer: opt =>
                         hbox({
                             width: '100%',
-                            items: [
+                            children: [
                                 renderTicker(opt.symbol),
                                 filler(),
-                                span({className: 'xh-text-color-muted', item: opt.name})
+                                span({className: 'xh-text-color-muted', children: opt.name})
                             ]
                         }),
                     value: null,
@@ -183,7 +183,7 @@ export const portfolioBuilder = hoistCmp.factory({
                     onClick: () => model.removeSelected()
                 })
             ],
-            item: grid({model: model.gridModel}),
+            children: grid({model: model.gridModel}),
             bbar: [
                 span(
                     maxHoldings != null
@@ -193,7 +193,7 @@ export const portfolioBuilder = hoistCmp.factory({
                 filler(),
                 span({
                     className: offTarget ? 'xh-intent-warning' : null,
-                    item: `Total ${fmtPercent(totalWeight, {precision: 2})}`
+                    children: `Total ${fmtPercent(totalWeight, {precision: 2})}`
                 })
             ]
         });

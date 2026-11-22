@@ -33,7 +33,7 @@ export const datasetsPage = hoistCmp.factory<CatalogModel>({
                         flex: 1
                     })
                 ],
-                item: dataView({model: model.listModel})
+                children: dataView({model: model.listModel})
             }),
             model.selected ? datasetDetail({model: model.selected}) : placeholder('Pick a dataset.')
         )
@@ -61,26 +61,32 @@ export const datasetItem = hoistCmp.factory<DatasetItemProps>({
         const {name, label, description, grain, usedCount, fieldHits} = data;
         return vbox({
             className: 'tb-dataset-item',
-            items: [
+            children: [
                 hbox({
                     className: 'tb-dataset-item__head',
-                    items: [
-                        span({className: 'tb-dataset__name', item: name}),
-                        label ? span({className: 'tb-dataset__label', item: label}) : null,
+                    children: [
+                        span({className: 'tb-dataset__name', children: name}),
+                        label ? span({className: 'tb-dataset__label', children: label}) : null,
                         filler(),
                         usedCount
-                            ? badge({intent: 'success', compact: true, item: `${usedCount} used`})
+                            ? badge({
+                                  intent: 'success',
+                                  compact: true,
+                                  children: `${usedCount} used`
+                              })
                             : null
                     ]
                 }),
-                description ? div({className: 'tb-dataset-item__desc', item: description}) : null,
+                description
+                    ? div({className: 'tb-dataset-item__desc', children: description})
+                    : null,
                 fieldHits?.length
                     ? div({
                           className: 'tb-dataset-item__hits',
-                          item: `${fieldHits.slice(0, 3).join(', ')}${fieldHits.length > 3 ? ` and ${fieldHits.length - 3} more` : ''} in ${name}`
+                          children: `${fieldHits.slice(0, 3).join(', ')}${fieldHits.length > 3 ? ` and ${fieldHits.length - 3} more` : ''} in ${name}`
                       })
                     : grain
-                      ? div({className: 'tb-dataset-item__grain', item: `grain ${grain}`})
+                      ? div({className: 'tb-dataset-item__grain', children: `grain ${grain}`})
                       : null
             ]
         });
@@ -94,16 +100,16 @@ const datasetDetail = hoistCmp.factory<DatasetCardModel>(({model}) => {
         draft = catalog.panelModel.draftName;
     return panel({
         className: 'tb-dataset',
-        items: [
+        children: [
             vbox({
                 className: 'tb-dataset__header',
-                items: [
+                children: [
                     hbox({
                         className: 'tb-dataset__title',
-                        items: [
-                            span({className: 'tb-dataset__name', item: ds.name}),
+                        children: [
+                            span({className: 'tb-dataset__name', children: ds.name}),
                             ds.label && ds.label !== ds.name
-                                ? span({className: 'tb-dataset__label', item: ds.label})
+                                ? span({className: 'tb-dataset__label', children: ds.label})
                                 : null,
                             filler(),
                             button({
@@ -117,7 +123,7 @@ const datasetDetail = hoistCmp.factory<DatasetCardModel>(({model}) => {
                         ]
                     }),
                     description
-                        ? div({className: 'tb-dataset__description', item: md(description)})
+                        ? div({className: 'tb-dataset__description', children: md(description)})
                         : null,
                     ds.key?.length ? metaRow('Grain', span(ds.key.join(', '))) : null,
                     joins.length
@@ -125,7 +131,7 @@ const datasetDetail = hoistCmp.factory<DatasetCardModel>(({model}) => {
                               'Joins',
                               hbox({
                                   className: 'tb-dataset__chips',
-                                  items: joins.map(j =>
+                                  children: joins.map(j =>
                                       button({
                                           key: j.dataset,
                                           className: 'tb-dataset__chip',
@@ -162,7 +168,7 @@ const datasetDetail = hoistCmp.factory<DatasetCardModel>(({model}) => {
 function metaRow(label: string, value: ReactNode) {
     return hbox({
         className: 'tb-dataset__meta',
-        items: [span({className: 'tb-dataset__meta-label', item: label}), value]
+        children: [span({className: 'tb-dataset__meta-label', children: label}), value]
     });
 }
 
@@ -180,9 +186,9 @@ export const datasetFields = hoistCmp.factory<CatalogModel>({
                     key: selected.ds.name,
                     flex: 1
                 }),
-                span({className: 'tb-dataset__count', item: `${selected.fieldCount} fields`})
+                span({className: 'tb-dataset__count', children: `${selected.fieldCount} fields`})
             ],
-            item: grid({model: selected.fieldsGridModel, key: selected.ds.name})
+            children: grid({model: selected.fieldsGridModel, key: selected.ds.name})
         });
     }
 });
@@ -195,7 +201,7 @@ export const datasetParams = hoistCmp.factory<CatalogModel>({
         return params.length
             ? div({
                   className: 'tb-dataset__params',
-                  items: params.map(p => paramCard({param: p, key: p.name}))
+                  children: params.map(p => paramCard({param: p, key: p.name}))
               })
             : placeholder('This dataset takes no parameters.');
     }
@@ -214,7 +220,7 @@ export const datasetUsedBy = hoistCmp.factory<CatalogModel>({
         const chips = (kind: 'source' | 'element', ids: string[]) =>
             hbox({
                 className: 'tb-dataset__chips',
-                items: ids.map(id =>
+                children: ids.map(id =>
                     button({
                         key: id,
                         className: 'tb-dataset__chip',
@@ -227,7 +233,7 @@ export const datasetUsedBy = hoistCmp.factory<CatalogModel>({
             });
         return vbox({
             className: 'tb-dataset__used-by',
-            items: [
+            children: [
                 metaRow('Sources', chips('source', sources)),
                 metaRow('Widgets', elements.length ? chips('element', elements) : span('None'))
             ]
@@ -245,22 +251,22 @@ const paramCard = hoistCmp.factory<ParamCardProps>({
         const {name, type, required, kind, options, description} = param;
         return div({
             className: 'tb-dataset__param',
-            items: [
+            children: [
                 hbox({
                     className: 'tb-dataset__param-header',
-                    items: [
-                        span({className: 'tb-dataset__param-name', item: name}),
-                        span({className: 'tb-dataset__param-type', item: type}),
+                    children: [
+                        span({className: 'tb-dataset__param-name', children: name}),
+                        span({className: 'tb-dataset__param-type', children: type}),
                         filler(),
-                        required ? badge({intent: 'warning', item: 'required'}) : null
+                        required ? badge({intent: 'warning', children: 'required'}) : null
                     ]
                 }),
-                kind ? div({className: 'tb-dataset__param-meta', item: `Kind: ${kind}`}) : null,
+                kind ? div({className: 'tb-dataset__param-meta', children: `Kind: ${kind}`}) : null,
                 options
-                    ? div({className: 'tb-dataset__param-meta', item: `Options: ${options}`})
+                    ? div({className: 'tb-dataset__param-meta', children: `Options: ${options}`})
                     : null,
                 description
-                    ? div({className: 'tb-dataset__param-desc', item: md(description)})
+                    ? div({className: 'tb-dataset__param-desc', children: md(description)})
                     : null
             ]
         });

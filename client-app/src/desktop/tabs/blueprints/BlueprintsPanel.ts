@@ -78,14 +78,16 @@ export const blueprintsPanel = hoistCmp.factory({
         const {shellModel} = model;
         return panel({
             mask: shellModel.loadObserver,
-            item: blueprintShellView({
+            children: blueprintShellView({
                 model: shellModel,
                 key: shellModel.xhId,
                 leadingItems: [
                     buttonGroupInput({
                         bind: 'typeName',
                         model,
-                        items: BLUEPRINT_TYPES.map(it => button({value: it.name, text: it.label}))
+                        children: BLUEPRINT_TYPES.map(it =>
+                            button({value: it.name, text: it.label})
+                        )
                     }),
                     toolbarSep()
                 ]

@@ -96,7 +96,7 @@ export class EditorModel extends HoistModel {
                 renderer: v =>
                     badge({
                         intent: v === 'added' ? 'success' : v === 'removed' ? 'danger' : 'primary',
-                        item: v
+                        children: v
                     })
             },
             {field: 'path', flex: 1, minWidth: 200, cellClass: 'tb-editor__mono'},

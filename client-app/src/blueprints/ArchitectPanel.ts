@@ -41,7 +41,7 @@ export function architectHeaderItems(model: BlueprintShellModel): ReactNode[] {
             omit: !left,
             className: 'tb-blueprints__usage',
             title: usage ? `${usage.calls} calls this hour, ${usage.tokens} tokens today` : null,
-            item: left
+            children: left
         }),
         button({
             icon: Icon.delete(),

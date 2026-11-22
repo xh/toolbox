@@ -21,10 +21,10 @@ export function libraryGroup(s: BlueprintSummary): string {
 export function libraryName(name: string, description: string): ReactNode {
     return div({
         className: 'tb-library__name',
-        items: [
-            div({className: 'tb-library__title', item: name}),
+        children: [
+            div({className: 'tb-library__title', children: name}),
             description
-                ? div({className: 'tb-library__desc', item: description.split('\n')[0]})
+                ? div({className: 'tb-library__desc', children: description.split('\n')[0]})
                 : null
         ]
     });
@@ -35,13 +35,13 @@ export function libraryStatus(row: PlainObject): ReactNode {
     const {draftVersion, publishedVersion, readOnly} = row;
     return hbox({
         className: 'tb-library__status',
-        items: [
-            draftVersion ? badge({intent: 'primary', item: `Draft v${draftVersion}`}) : null,
+        children: [
+            draftVersion ? badge({intent: 'primary', children: `Draft v${draftVersion}`}) : null,
             publishedVersion
                 ? badge({
                       intent: 'success',
                       icon: readOnly ? Icon.lock() : null,
-                      item: `Published v${publishedVersion}`
+                      children: `Published v${publishedVersion}`
                   })
                 : null
         ]

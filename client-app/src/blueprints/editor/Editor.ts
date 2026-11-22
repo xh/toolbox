@@ -47,7 +47,7 @@ const dockRail = hoistCmp.factory<EditorModel>({
     render: ({model}) =>
         vbox({
             className: 'tb-dock__rail',
-            items: model.dockTabs.map(tab =>
+            children: model.dockTabs.map(tab =>
                 button({
                     key: tab.id,
                     className: classNames(
@@ -83,7 +83,7 @@ const dock = hoistCmp.factory<EditorModel>({
                     onClick: () => model.dockPanelModel.setCollapsed(true)
                 })
             ],
-            item: dockContent({tab: dockTab})
+            children: dockContent({tab: dockTab})
         });
     }
 });
@@ -125,7 +125,7 @@ const mainView = hoistCmp.factory<EditorModel>({
             case 'map':
                 return panel({
                     className: 'tb-editor__map',
-                    item: blueprintMap({
+                    children: blueprintMap({
                         designModel: shell.designModel,
                         onOpenElement: () => (shell.editorView = 'canvas')
                     })
@@ -141,7 +141,7 @@ const blueprintPane = hoistCmp.factory<EditorModel>({
     render: ({model}) => {
         const {shell} = model;
         return panel({
-            item: model.shown
+            children: model.shown
                 ? blueprintView({
                       model: shell.blueprintModel,
                       designModel: shell.designModel,
@@ -161,7 +161,7 @@ const jsonView = hoistCmp.factory<EditorModel>({
         const {applyError, isJsonDirty, isDesigning} = model;
         return panel({
             className: 'tb-editor__json',
-            item: jsonInput({
+            children: jsonInput({
                 bind: 'draft',
                 commitOnChange: true,
                 readonly: !isDesigning,
@@ -170,7 +170,9 @@ const jsonView = hoistCmp.factory<EditorModel>({
             }),
             bbar: isDesigning
                 ? [
-                      applyError ? span({className: 'xh-intent-danger', item: applyError}) : null,
+                      applyError
+                          ? span({className: 'xh-intent-danger', children: applyError})
+                          : null,
                       filler(),
                       button({
                           text: 'Revert',
@@ -202,7 +204,7 @@ const compareView = hoistCmp.factory<EditorModel>({
             tbar: [
                 span({
                     className: 'tb-editor__compare-title',
-                    item: `Changes from v${model.compareVersion} to ${open}`
+                    children: `Changes from v${model.compareVersion} to ${open}`
                 }),
                 filler(),
                 button({
@@ -211,7 +213,7 @@ const compareView = hoistCmp.factory<EditorModel>({
                     onClick: () => model.closeCompare()
                 })
             ],
-            item: grid({model: model.compareGridModel})
+            children: grid({model: model.compareGridModel})
         });
     }
 });
@@ -224,7 +226,7 @@ const inspector = hoistCmp.factory<EditorModel>({
             title: 'Inspector',
             icon: Icon.search(),
             compactHeader: true,
-            items: [
+            children: [
                 blueprintInspector({
                     designModel: model.shell.designModel,
                     documentModel: model.shell.documentModel
@@ -235,7 +237,7 @@ const inspector = hoistCmp.factory<EditorModel>({
                     title: 'Make a preset group',
                     icon: Icon.bookmark(),
                     style: {width: 480, height: 420},
-                    item: presetsEditor({designModel: model.shell.designModel})
+                    children: presetsEditor({designModel: model.shell.designModel})
                 })
             ]
         })

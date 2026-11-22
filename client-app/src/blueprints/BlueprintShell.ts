@@ -80,7 +80,7 @@ const pages = hoistCmp.factory<PagesProps>({
             className: 'tb-blueprints',
             tbar: toolbar({
                 className: 'tb-blueprints__pagebar',
-                items: [
+                children: [
                     ...leadingItems,
                     tabSwitcher({model: model.tabModel}),
                     filler(),
@@ -91,7 +91,7 @@ const pages = hoistCmp.factory<PagesProps>({
                     })
                 ]
             }),
-            item: tabContainer({model: model.tabModel, switcher: false})
+            children: tabContainer({model: model.tabModel, switcher: false})
         });
     }
 });
@@ -107,22 +107,22 @@ const libraryPage = hoistCmp.factory<BlueprintShellModel>({
     render: ({model}) =>
         panel({
             className: 'tb-library',
-            items: [
+            children: [
                 div({
                     className: 'tb-library__intro',
-                    items: [
+                    children: [
                         div({
                             className: 'tb-library__heading',
-                            item: `${model.type.label} blueprints`
+                            children: `${model.type.label} blueprints`
                         }),
                         div({
                             className: 'tb-library__lede',
-                            items: [
+                            children: [
                                 `Dashboards described as JSON over the ${model.type.label.toLowerCase()} data, built by hand or with the Architect. Your drafts save as you work and stay private until you share them. `,
                                 a({
                                     className: 'tb-library__help',
                                     onClick: () => showBlueprintsHelp(),
-                                    item: 'How Blueprints work'
+                                    children: 'How Blueprints work'
                                 })
                             ]
                         })
@@ -130,7 +130,7 @@ const libraryPage = hoistCmp.factory<BlueprintShellModel>({
                 }),
                 toolbar({
                     className: 'tb-library__bar',
-                    items: [
+                    children: [
                         storeFilterField({
                             gridModel: model.listGridModel,
                             includeFields: ['name', 'description', 'owner'],
@@ -161,7 +161,7 @@ const newMenu = hoistCmp.factory<BlueprintShellModel>({
     render: ({model}) =>
         popover({
             position: 'bottom-right',
-            item: button({
+            children: button({
                 text: 'New',
                 icon: Icon.add(),
                 rightIcon: Icon.chevronDown(),

@@ -46,7 +46,7 @@ export const weatherIconRenderer: RendererSpec = {
         return hbox({
             className: 'tb-weather-icon',
             alignItems: 'center',
-            items: [icon(), span(formatValue(value))]
+            children: [icon(), span(formatValue(value))]
         });
     }
 };
