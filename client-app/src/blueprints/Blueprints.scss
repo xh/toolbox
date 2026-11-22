@@ -324,20 +324,6 @@
 }
 
 .tb-library {
-  &__intro {
-    flex: none;
-    padding: var(--xh-spacing) calc(var(--xh-spacing) * 2) var(--xh-spacing-half);
-  }
-
-  &__heading {
-    font-size: var(--xh-font-size-large);
-    font-weight: 600;
-  }
-
-  &__lede {
-    color: var(--xh-text-color-muted);
-  }
-
   &__bar {
     padding: 0 calc(var(--xh-spacing) * 2);
   }
@@ -454,11 +440,6 @@
   background-color: var(--xh-intent-success-trans1);
 }
 
-.tb-library__help {
-  cursor: pointer;
-  white-space: nowrap;
-}
-
 .tb-library__hint {
   color: var(--xh-text-color-muted);
   font-style: italic;
@@ -498,4 +479,43 @@
 
 .tb-editor__compare-title {
   font-weight: 600;
+}
+
+.tb-concept__body {
+  max-width: 980px;
+  gap: var(--xh-spacing);
+  padding: calc(var(--xh-spacing) * 2) calc(var(--xh-spacing) * 3);
+}
+
+.tb-concept__title {
+  font-size: calc(var(--xh-font-size) * 1.6);
+  font-weight: 600;
+}
+
+.tb-concept__para {
+  line-height: 1.55;
+
+  .tb-markdown > * {
+    margin: 0;
+  }
+}
+
+.tb-concept__code {
+  margin: 0;
+  padding: var(--xh-spacing);
+  border-radius: var(--xh-border-radius);
+  font-family: var(--xh-font-family-mono);
+  font-size: var(--xh-font-size-small);
+  background-color: var(--xh-bg-alt);
+}
+
+.tb-concept__example {
+  flex: none;
+  height: 440px;
+  border: var(--xh-border-solid);
+  border-radius: var(--xh-border-radius);
+}
+
+.tb-concept__nav {
+  flex: none;
 }

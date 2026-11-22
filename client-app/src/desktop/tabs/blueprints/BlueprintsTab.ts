@@ -8,6 +8,8 @@ import {BlueprintShellModel} from '../../../blueprints/BlueprintShellModel';
 import {BLUEPRINT_TYPES} from '../../../blueprints/blueprintTypes';
 import type {BlueprintTypeSpec} from '../../../blueprints/blueprintTypes';
 import {blueprintsOverview} from './BlueprintsOverview';
+import {conceptPageContent} from './concepts/ConceptPage';
+import {CONCEPT_PAGES} from './concepts/conceptPages';
 
 const ROUTE = 'default.blueprints';
 
@@ -23,6 +25,12 @@ export function typeRouteName(type: BlueprintTypeSpec): string {
 export function blueprintsTab(switcher: TabSwitcherConfig): TabConfig {
     const tabs: TabConfig[] = [
         {id: 'overview', title: 'Overview', group: 'overview', content: blueprintsOverview},
+        ...CONCEPT_PAGES.map((page): TabConfig => ({
+            id: `concept-${page.id}`,
+            title: page.title,
+            group: 'concepts',
+            content: conceptPageContent(page)
+        })),
         ...BLUEPRINT_TYPES.flatMap((type): TabConfig[] => {
             const name = typeRouteName(type),
                 page = (view: string) => () => examplePage({type, key: view});
@@ -64,6 +72,7 @@ export function blueprintsTab(switcher: TabSwitcherConfig): TabConfig {
                 ...switcher,
                 groups: [
                     {key: 'overview', title: 'Overview'},
+                    {key: 'concepts', title: 'Concepts'},
                     ...BLUEPRINT_TYPES.map(it => ({
                         key: typeRouteName(it),
                         title: `${it.label} example`
@@ -85,6 +94,7 @@ export function blueprintsRoutes(): HoistRoute {
         path: '/blueprints',
         children: [
             {name: 'overview', path: '/overview'},
+            ...CONCEPT_PAGES.map(it => ({name: `concept-${it.id}`, path: `/concepts/${it.id}`})),
             ...BLUEPRINT_TYPES.flatMap(type => {
                 const name = typeRouteName(type);
                 return [

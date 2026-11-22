@@ -5,6 +5,7 @@ import type {ReactElement} from 'react';
 import {BLUEPRINT_TYPES} from '../../../blueprints/blueprintTypes';
 import {demoGallery, demoGalleryTile, demoPanel, demoSection} from '../../common/Demo';
 import {wrapper} from '../../common/Wrapper';
+import {CONCEPT_PAGES} from './concepts/conceptPages';
 
 /** The front page of the Blueprints tab: what Blueprints are, and where to find each example. */
 export const blueprintsOverview = hoistCmp.factory({
@@ -57,6 +58,23 @@ export const blueprintsOverview = hoistCmp.factory({
                             )
                         })
                     }),
+                    demoSection({
+                        title: 'Concepts',
+                        note: 'Each concept in a few paragraphs, with a small live example to read.',
+                        children: demoGallery({
+                            minTileWidth: 220,
+                            children: CONCEPT_PAGES.map(page =>
+                                demoGalleryTile({
+                                    key: page.id,
+                                    title: page.title,
+                                    description: firstSentence(page.paragraphs[0]),
+                                    showInstance: false,
+                                    onClick: () =>
+                                        XH.navigate(`default.blueprints.concept-${page.id}`)
+                                })
+                            )
+                        })
+                    }),
                     ...BLUEPRINT_TYPES.map(type =>
                         demoSection({
                             key: type.name,
@@ -91,6 +109,10 @@ export const blueprintsOverview = hoistCmp.factory({
 //------------------
 // Implementation
 //------------------
+function firstSentence(text: string): string {
+    return text.replace(/`/g, '').split(/(?<=\.)\s/)[0];
+}
+
 function examplePages(typeName: string) {
     const name = typeName.split('.').pop(),
         route = `default.blueprints.${name}`;

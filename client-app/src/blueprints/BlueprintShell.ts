@@ -1,5 +1,5 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {a, div, filler} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {TabContainerModel, tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, lookup, managed, uses} from '@xh/hoist/core';
@@ -108,26 +108,6 @@ const libraryPage = hoistCmp.factory<BlueprintShellModel>({
         panel({
             className: 'tb-library',
             children: [
-                div({
-                    className: 'tb-library__intro',
-                    children: [
-                        div({
-                            className: 'tb-library__heading',
-                            children: `${model.type.label} blueprints`
-                        }),
-                        div({
-                            className: 'tb-library__lede',
-                            children: [
-                                `Dashboards described as JSON over the ${model.type.label.toLowerCase()} data, built by hand or with the Architect. Your drafts save as you work and stay private until you share them. `,
-                                a({
-                                    className: 'tb-library__help',
-                                    onClick: () => showBlueprintsHelp(),
-                                    children: 'How Blueprints work'
-                                })
-                            ]
-                        })
-                    ]
-                }),
                 toolbar({
                     className: 'tb-library__bar',
                     children: [
