@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest';
 import {createPortfolioRegistry} from '../../../../blueprints/toolboxRegistry';
-import {builtinSettings} from './builtinSettings';
+import {builtinSettings, minColumns, rescaleCells} from './builtinSettings';
 
 const registry = createPortfolioRegistry(),
     settingsOf = (name: string) => builtinSettings({...registry.widgets[name], name});
@@ -56,5 +56,37 @@ describe('builtinSettings', () => {
     it('labels a setting by its title, else its key in words', () => {
         const byKey = Object.fromEntries(settingsOf('dashCanvas').map(it => [it.key, it.label]));
         expect(byKey.rowHeight).toBe('Row height');
+    });
+});
+
+describe('rescaleCells', () => {
+    const cells = [
+        {id: 'a', x: 0, y: 0, w: 4, h: 2},
+        {id: 'b', x: 4, y: 0, w: 4, h: 2},
+        {id: 'c', x: 8, y: 0, w: 4, h: 2},
+        {id: 'd', x: 0, y: 2, w: 7, h: 6},
+        {id: 'e', x: 7, y: 2, w: 5, h: 6}
+    ];
+
+    it('scales edges to a new column count, so neighbours share an edge', () => {
+        expect(rescaleCells(cells, 12, 6).map(it => [it.x, it.w])).toEqual([
+            [0, 2],
+            [2, 2],
+            [4, 2],
+            [0, 4],
+            [4, 2]
+        ]);
+        expect(rescaleCells(cells, 12, 24).map(it => [it.x, it.w])).toEqual([
+            [0, 8],
+            [8, 8],
+            [16, 8],
+            [0, 14],
+            [14, 10]
+        ]);
+    });
+
+    it('finds the fewest columns that keep every minimum width', () => {
+        const withMins = cells.map(it => ({...it, minW: 3}));
+        expect(minColumns(withMins, 12)).toBe(9);
     });
 });

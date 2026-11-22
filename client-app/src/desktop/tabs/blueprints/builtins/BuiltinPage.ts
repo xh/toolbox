@@ -28,7 +28,7 @@ import {CONCEPT_PAGES} from '../concepts/conceptPages';
 import {portfolioCatalogAsync} from '../portfolioCatalog';
 import {builtinExample, INPUTS_OVERVIEW} from './builtinExamples';
 import type {BuiltinRole} from './builtinRoles';
-import {builtinSettings} from './builtinSettings';
+import {builtinSettings, minColumns, rescaleCells} from './builtinSettings';
 import type {BuiltinSetting} from './builtinSettings';
 
 /** A Built-ins page: one widget, or every input at once, live, with its main settings to try. */
@@ -86,6 +86,14 @@ class BuiltinPageModel extends HoistModel {
     set(setting: BuiltinSetting, value: unknown) {
         const {blueprint} = this,
             root = this.root,
+            rescale = setting.key === 'columns' && root.children?.[0]?.w != null,
+            children = rescale
+                ? rescaleCells(
+                      root.children,
+                      (this.settingValue(setting) as number) ?? 12,
+                      (value as number) ?? 12
+                  )
+                : root.children,
             next = setting.perChild
                 ? {
                       ...root,
@@ -94,11 +102,22 @@ class BuiltinPageModel extends HoistModel {
                           [setting.key]: value
                       }))
                   }
-                : {...root, config: {...root.config, [setting.key]: value}};
+                : {...root, children, config: {...root.config, [setting.key]: value}};
         this.apply({
             ...blueprint,
             elements: {...blueprint.elements, [blueprint.root]: next as BlueprintElement}
         });
+    }
+
+    /** The fewest columns the example's cells fit at their widgets' minimum widths. */
+    get minColumns(): number {
+        const {blueprint, root} = this,
+            setting = this.settings.find(it => it.key === 'columns'),
+            cells = (root?.children ?? []).map((it: PlainObject) => ({
+                ...it,
+                minW: this.registry.widgets[blueprint.elements[it.id]?.component]?.size?.min?.w ?? 1
+            }));
+        return setting ? minColumns(cells, (this.settingValue(setting) as number) ?? 12) : 1;
     }
 
     @action
@@ -111,8 +130,13 @@ class BuiltinPageModel extends HoistModel {
     }
 
     private apply(blueprint: Blueprint) {
-        this.blueprint = blueprint;
-        this.blueprintModel.setBlueprint(blueprint);
+        const issues = this.blueprintModel.setBlueprint(blueprint) ?? [],
+            error = issues.find(it => it.severity === 'error');
+        if (error) {
+            XH.dangerToast(`That setting was refused: ${error.message}`);
+        } else {
+            this.blueprint = blueprint;
+        }
     }
 }
 
@@ -260,7 +284,7 @@ function settingControl(model: BuiltinPageModel, setting: BuiltinSetting) {
         case 'number':
             return numberInput({
                 value: value as number,
-                min: setting.min,
+                min: setting.key === 'columns' ? model.minColumns : setting.min,
                 max: setting.max,
                 placeholder: 'Default',
                 width: 90,

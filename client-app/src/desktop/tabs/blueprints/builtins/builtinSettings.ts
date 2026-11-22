@@ -81,3 +81,30 @@ function boolOptionsOf(node: EditorNode & {kind: 'boolean'}): {value: boolean; l
           ]
         : node.labels;
 }
+
+/**
+ * A canvas's cells placed on a new number of columns: each cell's edges scaled and rounded, so
+ * neighbours keep a shared edge and never overlap.
+ */
+export function rescaleCells<T extends {x: number; w: number}>(
+    cells: T[],
+    from: number,
+    to: number
+): T[] {
+    const at = (col: number) => Math.round((col * to) / from);
+    return cells.map(cell => {
+        const x = at(cell.x);
+        return {...cell, x, w: at(cell.x + cell.w) - x};
+    });
+}
+
+/**
+ * The fewest columns, up to 24, on which a canvas's cells keep their widgets' minimum widths
+ * once rescaled from `from` columns.
+ */
+export function minColumns(cells: {x: number; w: number; minW: number}[], from: number): number {
+    for (let n = 1; n <= 24; n++) {
+        if (rescaleCells(cells, from, n).every(it => it.w >= it.minW)) return n;
+    }
+    return from;
+}
