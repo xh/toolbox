@@ -15,6 +15,7 @@ import {action, bindable, computed, observable, observableRef} from '@xh/hoist/m
 import {isEmpty, isString, sortBy} from 'lodash';
 import type {ReactNode} from 'react';
 import {BlueprintShellModel} from '../BlueprintShellModel';
+import type {ShownJson} from '../jsonDialog';
 import {formatOf} from '../catalog/CatalogModel';
 import type {RegistryEntry, RegistryKind, RegistryOrigin} from './registryEntries';
 import {registryEntries, sampleParams, schemaRows} from './registryEntries';
@@ -22,7 +23,7 @@ import {
     entryArchitect,
     entryConfig,
     entryExample,
-    entryJson,
+    entryJsonText,
     entryName,
     entryOutputs,
     usedBadge
@@ -85,9 +86,10 @@ export class RegistryModel extends HoistModel {
                 field: 'name',
                 flex: 1,
                 rendererIsComplex: true,
-                renderer: (v, {record}) => entryName(v, record.data.label)
+                renderer: (v, {record}) => entryName(v, record.data.label, record.data.origin)
             },
             {field: 'label', hidden: true},
+            {field: 'origin', hidden: true},
             {
                 field: 'used',
                 width: 70,
@@ -105,7 +107,6 @@ export class RegistryModel extends HoistModel {
             {id: 'example', title: 'Example', content: () => entryExample()},
             {id: 'config', title: 'Config', content: () => entryConfig()},
             {id: 'outputs', title: 'Outputs and presets', content: () => entryOutputs()},
-            {id: 'json', title: 'JSON', content: () => entryJson()},
             {id: 'architect', title: 'What the Architect sees', content: () => entryArchitect()}
         ]
     });
@@ -174,6 +175,27 @@ export class RegistryModel extends HoistModel {
             ).map(entry => ({entry, name: displayName(entry), usedAt: usages[entry.id] ?? []}));
             return entries.length ? [{kind: kind as RegistryKind, label, entries}] : [];
         });
+    }
+
+    /** The JSON the dialog shows, or null. */
+    @observableRef accessor shownJson: ShownJson = null;
+
+    /** How many entries each origin has in the registry shown. */
+    @computed
+    get originCounts(): Record<RegistryOrigin, number> {
+        const ret = {'built-in': 0, 'chat kit': 0, app: 0} as Record<RegistryOrigin, number>;
+        this.entries.forEach(it => ret[it.origin]++);
+        return ret;
+    }
+
+    showEntryJson() {
+        const entry = this.selected;
+        if (entry)
+            this.shownJson = {title: `${entry.name} (${entry.kind})`, json: entryJsonText(entry)};
+    }
+
+    closeJson() {
+        this.shownJson = null;
     }
 
     /** True if the selected entry can be added to the draft open: a dashboard widget. */
@@ -387,6 +409,7 @@ export class RegistryModel extends HoistModel {
                     group: label,
                     name,
                     label: entry.label && entry.label !== name ? entry.label : null,
+                    origin: entry.origin,
                     used: usedAt.length,
                     usedAt
                 }))

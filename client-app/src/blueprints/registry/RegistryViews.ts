@@ -4,21 +4,23 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {div, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
-import {jsonInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {jsonInput, segmentedControl, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {isEmpty} from 'lodash';
 import type {ReactNode} from 'react';
 import {md} from '../markdown';
 import {RegistryModel} from './RegistryModel';
+import type {RegistryEntry} from './registryEntries';
 
 /** A list row's name, with its label when it differs. */
-export function entryName(name: string, label: string): ReactNode {
+export function entryName(name: string, label: string, origin: string): ReactNode {
     return div({
         className: 'tb-registry-item',
         children: [
             span({className: 'tb-registry-item__name', children: name}),
-            label ? span({className: 'tb-registry-item__label', children: label}) : null
+            label ? span({className: 'tb-registry-item__label', children: label}) : null,
+            origin === 'app' ? span({className: 'tb-registry-item__app', children: 'App'}) : null
         ]
     });
 }
@@ -32,6 +34,29 @@ export function usedBadge(count: number, usedAt: string[]): ReactNode {
 
 /** The entry at work: a widget's example, live; a renderer's sample; an action's or resolver's output. */
 export const entryExample = hoistCmp.factory<RegistryModel>({
+    model: uses(() => RegistryModel),
+    render: ({model}) =>
+        panel({
+            tbar: [
+                span({className: 'tb-muted', children: 'Show as'}),
+                segmentedControl({
+                    bind: 'context',
+                    compact: true,
+                    options: [
+                        {value: 'dashboard', label: 'Dashboard'},
+                        {value: 'answer', label: 'Chat answer'}
+                    ]
+                }),
+                span({
+                    className: 'tb-muted',
+                    children: 'changes the example and where it is allowed'
+                })
+            ],
+            children: exampleBody()
+        })
+});
+
+const exampleBody = hoistCmp.factory<RegistryModel>({
     model: uses(() => RegistryModel),
     render: ({model}) => {
         const entry = model.selected;
@@ -205,23 +230,11 @@ export const entryOutputs = hoistCmp.factory<RegistryModel>({
     }
 });
 
-/** A widget's example as JSON, or the entry's spec. */
-export const entryJson = hoistCmp.factory<RegistryModel>({
-    model: uses(() => RegistryModel),
-    render: ({model}) => {
-        const entry = model.selected;
-        if (!entry) return null;
-        const value =
-            entry.kind === 'widget' && entry.spec.example ? entry.spec.example : entry.spec;
-        return jsonInput({
-            value: safeJson(value),
-            readonly: true,
-            enableSearch: true,
-            flex: 1,
-            width: '100%'
-        });
-    }
-});
+/** A widget's example as JSON, or else the entry's spec, for the JSON dialog. */
+export function entryJsonText(entry: RegistryEntry): string {
+    const value = entry.kind === 'widget' && entry.spec.example ? entry.spec.example : entry.spec;
+    return safeJson(value);
+}
 
 /** What `describe_registry` gives the Architect for the entry, over the prompt's index. */
 export const entryArchitect = hoistCmp.factory<RegistryModel>({

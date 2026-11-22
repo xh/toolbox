@@ -6,7 +6,14 @@ import catalogJson from '../../test-support/blueprintsCatalog.json';
 import p3 from '../scenarios/p3-morning-report.json';
 import w2 from '../scenarios/w2-two-cities.json';
 import {fieldTree, formatOf} from './CatalogModel';
-import {datasetJoins, datasetUsers, describeFormat, matchDatasets} from './catalogFields';
+import {
+    catalogEntries,
+    datasetJoins,
+    datasetUsers,
+    describeFormat,
+    fieldsByKind,
+    matchDatasets
+} from './catalogFields';
 
 const catalog = new DataCatalog(catalogJson as any),
     field = (dataset: string, name: string) => catalog.getDataset(dataset).fields[name],
@@ -265,5 +272,60 @@ describe('datasetUsers', () => {
         });
         expect(datasetUsers(p3 as Blueprint, 'fundSummary')).toEqual({sources: [], elements: []});
         expect(datasetUsers(null, 'positions')).toEqual({sources: [], elements: []});
+    });
+});
+
+describe('catalogEntries', () => {
+    it('lists datasets, kinds and formats as sections, in catalog order', () => {
+        const rows = catalogEntries(catalog, '', {});
+        expect(rows.filter(it => it.kind === 'dataset').map(it => it.name)).toEqual(
+            Object.keys(catalog.datasets)
+        );
+        expect(rows.filter(it => it.kind === 'kind')).toHaveLength(
+            Object.keys(catalog.kinds).length
+        );
+        expect(rows.filter(it => it.kind === 'format')).toHaveLength(
+            Object.keys(catalog.formats).length
+        );
+        expect(rows.find(it => it.id === 'kind:pnl')).toMatchObject({
+            section: 'Kinds',
+            meta: 'currency:USD'
+        });
+    });
+
+    it('filters all three with one query, a field hit showing under its dataset', () => {
+        const rows = catalogEntries(catalog, 'pnl', {});
+        expect(rows.find(it => it.id === 'dataset:positions')?.meta).toMatch(
+            /pnlDay.* in positions/
+        );
+        expect(rows.some(it => it.id === 'kind:pnl')).toBe(true);
+        expect(rows.some(it => it.id === 'format:pnl')).toBe(true);
+        expect(rows.some(it => it.id === 'kind:marketValue')).toBe(false);
+    });
+
+    it("shows a dataset's used-field count without a query", () => {
+        const usages = fieldUsages(p3 as Blueprint, catalog),
+            row = catalogEntries(catalog, '', usages).find(it => it.id === 'dataset:positions');
+        expect(row.meta).toMatch(/^\d+ used$/);
+    });
+});
+
+describe('fieldsByKind', () => {
+    it('regroups the field tree by kind, kinds sorted, fields with none last', () => {
+        const tree = [
+                {
+                    id: 'cat:P&L',
+                    name: 'P&L',
+                    children: [{id: 'field:pnlDay', name: 'pnlDay', kind: 'pnl', children: []}]
+                },
+                {id: 'field:symbol', name: 'symbol', kind: null, children: []},
+                {id: 'field:mktVal', name: 'mktVal', kind: 'marketValue', children: []}
+            ],
+            grouped = fieldsByKind(tree);
+        expect(grouped.map(it => [it.name, it.children.map(c => c.name)])).toEqual([
+            ['marketValue', ['mktVal']],
+            ['pnl', ['pnlDay']],
+            ['No kind', ['symbol']]
+        ]);
     });
 });

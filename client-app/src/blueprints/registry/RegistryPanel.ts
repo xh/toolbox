@@ -6,7 +6,8 @@ import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {jsonDialog} from '../jsonDialog';
 import {Icon} from '@xh/hoist/icon';
 import {md} from '../markdown';
 import {RegistryModel} from './RegistryModel';
@@ -17,28 +18,10 @@ export const registryPanel = hoistCmp.factory({
     model: creates(RegistryModel),
 
     render({model}) {
-        return panel({
+        const counts = model.originCounts;
+        return hframe({
             className: 'tb-registry',
-            tbar: [
-                buttonGroupInput({
-                    bind: 'context',
-                    children: [
-                        button({value: 'dashboard', text: 'Dashboard'}),
-                        button({value: 'answer', text: 'Answers'})
-                    ]
-                }),
-                toolbarSep(),
-                buttonGroupInput({
-                    bind: 'origins',
-                    enableMulti: true,
-                    children: [
-                        button({value: 'built-in', text: 'Built-in'}),
-                        button({value: 'chat kit', text: 'Chat kit'}),
-                        button({value: 'app', text: 'App'})
-                    ]
-                })
-            ],
-            children: hframe(
+            children: [
                 panel({
                     className: 'tb-registry__list',
                     modelConfig: {side: 'left', defaultSize: 320, minSize: 220, collapsible: false},
@@ -52,13 +35,33 @@ export const registryPanel = hoistCmp.factory({
                             flex: 1
                         })
                     ],
-                    children: grid({model: model.listModel})
+                    children: [
+                        toolbar({
+                            className: 'tb-registry__origins',
+                            children: buttonGroupInput({
+                                bind: 'origins',
+                                enableMulti: true,
+                                outlined: true,
+                                children: ORIGINS.map(([value, text]) =>
+                                    button({value, text: `${text} ${counts[value]}`})
+                                )
+                            })
+                        }),
+                        grid({model: model.listModel})
+                    ]
                 }),
-                model.selected ? entryDetail() : placeholder('Pick an entry.')
-            )
+                model.selected ? entryDetail() : placeholder('Pick an entry.'),
+                jsonDialog({shown: model.shownJson, onClose: () => model.closeJson()})
+            ]
         });
     }
 });
+
+const ORIGINS = [
+    ['built-in', 'Built-in'],
+    ['chat kit', 'Chat kit'],
+    ['app', 'App']
+] as const;
 
 const entryDetail = hoistCmp.factory<RegistryModel>({
     model: uses(RegistryModel),
@@ -87,6 +90,11 @@ const entryDetail = hoistCmp.factory<RegistryModel>({
                                 badge({compact: true, children: entry.origin}),
                                 badge({compact: true, children: entry.kind}),
                                 filler(),
+                                button({
+                                    text: 'JSON',
+                                    icon: Icon.code(),
+                                    onClick: () => model.showEntryJson()
+                                }),
                                 button({
                                     text: `Add to ${draft}`,
                                     icon: Icon.add(),

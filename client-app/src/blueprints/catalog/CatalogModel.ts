@@ -8,94 +8,185 @@ import type {
     FieldUse,
     FieldUsages
 } from '@xh/hoist-chat-kit/blueprint';
-import {fieldUsages, resolveFieldDisplay, resolveFormat} from '@xh/hoist-chat-kit/blueprint';
-import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {DataViewModel} from '@xh/hoist/cmp/dataview';
+import {
+    fieldUsages,
+    formatValue,
+    resolveFieldDisplay,
+    resolveFormat
+} from '@xh/hoist-chat-kit/blueprint';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, computed} from '@xh/hoist/mobx';
-import {castArray, find, groupBy, isEmpty, isString} from 'lodash';
+import {bindable, computed, observableRef} from '@xh/hoist/mobx';
+import {castArray, groupBy, isEmpty, isString} from 'lodash';
+import type {ReactNode} from 'react';
 import {BlueprintShellModel} from '../BlueprintShellModel';
+import type {ShownJson} from '../jsonDialog';
+import {markdownCol} from '../markdown';
 import {
+    catalogEntries,
     datasetJoins,
     datasetUsers,
     describeFormat,
     describeSpec,
-    matchDatasets
+    fieldsByKind
 } from './catalogFields';
-import type {DatasetJoin} from './catalogFields';
-import {markdownCol} from '../markdown';
-import {
-    catalogJson,
-    datasetFields,
-    datasetItem,
-    datasetParams,
-    datasetsPage,
-    datasetUsedBy
-} from './CatalogViews';
+import type {CatalogEntry, DatasetJoin} from './catalogFields';
+import {catalogEntryName} from './CatalogViews';
 
 /**
- * The Data Catalog the server serves, as the Blueprints tab loaded it: its datasets and their
- * fields with kind defaults resolved, its kinds and formats, and marks on what the current
+ * The Data Catalog the server serves, as the Blueprints tab loaded it: one list of its datasets,
+ * kinds and formats beside the detail of the one selected, with marks on what the current
  * blueprint uses.
  */
 export class CatalogModel extends HoistModel {
     @lookup(BlueprintShellModel) panelModel: BlueprintShellModel;
 
-    @managed tabContainerModel = new TabContainerModel({
-        tabs: [
-            {id: 'datasets', title: 'Datasets', content: () => datasetsPage()},
-            {id: 'kinds', title: 'Kinds', content: () => grid({model: this.kindsGridModel})},
-            {id: 'formats', title: 'Formats', content: () => grid({model: this.formatsGridModel})},
-            {id: 'json', title: 'JSON', content: () => catalogJson()}
-        ]
-    });
-
     /** One per dataset, in catalog order. */
     @managed datasetModels: DatasetCardModel[] = [];
 
-    /** Filters the datasets by name, label, description or field. */
+    /** Filters datasets, kinds and formats, and datasets by their fields. */
     @bindable accessor query = '';
 
-    /** The dataset the detail shows. */
-    @bindable accessor selectedName: string = null;
+    /** The list entry the detail shows, as `<kind>:<name>`. */
+    @bindable accessor selectedId: string = null;
 
-    @managed listModel = new DataViewModel({
-        store: {
-            idSpec: 'name',
-            fields: ['label', 'description', 'grain', 'usedCount', 'fieldHits']
-        },
-        itemHeight: 92,
-        emptyText: 'No datasets match.',
-        renderer: (v, {record}) => datasetItem({data: {...record.data, name: record.id}})
-    });
+    /** How a dataset's fields group: by the catalog's field groups, or by kind. */
+    @bindable accessor fieldsGrouping: 'group' | 'kind' = 'group';
 
-    @managed detailTabsModel = new TabContainerModel({
-        tabs: [
-            {id: 'fields', title: 'Fields', content: () => datasetFields()},
-            {id: 'parameters', title: 'Parameters', content: () => datasetParams()},
-            {id: 'usedBy', title: 'Used by', content: () => datasetUsedBy()}
+    /** The JSON the dialog shows, or null. */
+    @observableRef accessor shownJson: ShownJson = null;
+
+    @managed listModel = new GridModel({
+        store: {idSpec: 'id'},
+        groupBy: 'section',
+        groupSortFn: (a, b) => SECTIONS.indexOf(a) - SECTIONS.indexOf(b),
+        hideHeaders: true,
+        emptyText: 'Nothing matches.',
+        columns: [
+            {field: 'section', hidden: true},
+            {field: 'kind', hidden: true},
+            {
+                field: 'name',
+                flex: 1,
+                rendererIsComplex: true,
+                renderer: (v, {record}) => catalogEntryName(v, record.data.meta)
+            },
+            {field: 'meta', hidden: true}
         ]
     });
 
-    get selected(): DatasetCardModel {
-        return find(this.datasetModels, it => it.ds.name === this.selectedName) ?? null;
+    get blueprint(): Blueprint {
+        return this.panelModel.blueprintModel.blueprint;
+    }
+
+    get catalog(): DataCatalog {
+        return this.panelModel.blueprintModel.catalog;
+    }
+
+    @computed
+    get usages(): FieldUsages {
+        return fieldUsages(this.panelModel.blueprintModel.blueprint, this.catalog);
+    }
+
+    /** The selected entry's kind and name. */
+    get selection(): {kind: CatalogEntry['kind']; name: string} {
+        const id = this.selectedId,
+            at = id?.indexOf(':') ?? -1;
+        return at > 0
+            ? {kind: id.slice(0, at) as CatalogEntry['kind'], name: id.slice(at + 1)}
+            : null;
+    }
+
+    /** The selected dataset's model, if a dataset is selected. */
+    get selectedDataset(): DatasetCardModel {
+        const sel = this.selection;
+        return sel?.kind === 'dataset'
+            ? (this.datasetModels.find(it => it.ds.name === sel.name) ?? null)
+            : null;
     }
 
     /** The open blueprint's sources over the selected dataset, and the elements reading them. */
     @computed
     get users(): {sources: string[]; elements: string[]} {
-        return datasetUsers(this.blueprint, this.selectedName);
+        return datasetUsers(this.blueprint, this.selectedDataset?.ds.name);
+    }
+
+    /** The fields that carry a kind, as `dataset.field`, by dataset. */
+    fieldsOfKind(kind: string): {dataset: string; fields: string[]}[] {
+        return Object.values(this.catalog.datasets)
+            .map(ds => ({
+                dataset: ds.name,
+                fields: Object.values(ds.fields)
+                    .filter(f => f.kind === kind)
+                    .map(f => f.name)
+            }))
+            .filter(it => it.fields.length);
+    }
+
+    /** The kinds that format their values with a format. */
+    kindsOfFormat(format: string): string[] {
+        return Object.entries(this.catalog.kinds)
+            .filter(([, k]) => k.format === format)
+            .map(([name]) => name);
+    }
+
+    /** A format's options, as one line. */
+    formatOptions(format: string): string {
+        return describeFormat(this.catalog.formats[format]);
+    }
+
+    /** A positive, a negative and a large number, each as a format shows it. */
+    formatSamples(format: string): {value: number; text: ReactNode}[] {
+        const {catalog} = this,
+            field: FieldDef = {name: 'sample', type: 'number', format} as FieldDef,
+            opts = resolveFormat(field, [], {catalog, blueprint: null});
+        return SAMPLES.map(value => ({value, text: formatValue(value, field, opts, catalog)}));
+    }
+
+    /** A kind's resolved format options, as one line. */
+    kindFormat(kind: string): string {
+        const k = this.catalog.kinds[kind];
+        return (
+            [
+                describeSpec(k?.format),
+                describeFormat(formatOf({name: kind, type: 'number', kind}, this.catalog))
+            ]
+                .filter(Boolean)
+                .join(': ') || null
+        );
+    }
+
+    /** Show the selected entry's JSON, as the catalog serves it. */
+    showEntryJson() {
+        const sel = this.selection;
+        if (!sel) return;
+        const {json} = this.catalog,
+            section = {dataset: 'datasets', kind: 'kinds', format: 'formats'}[sel.kind];
+        this.shownJson = {
+            title: `${sel.name} (${sel.kind})`,
+            json: JSON.stringify(json[section]?.[sel.name], null, 2)
+        };
+    }
+
+    /** Show the whole catalog's JSON. */
+    showCatalogJson() {
+        this.shownJson = {title: 'Data Catalog', json: JSON.stringify(this.catalog.json, null, 2)};
+    }
+
+    closeJson() {
+        this.shownJson = null;
     }
 
     /** Add a source over the selected dataset to the draft open, and show it there, selected. */
     addAsSource() {
-        const {panelModel, selectedName} = this,
+        const {panelModel} = this,
+            name = this.selectedDataset?.ds.name,
             {blueprintModel, designModel} = panelModel;
+        if (!name) return;
         if (blueprintModel.mode !== 'design') blueprintModel.setMode('design');
-        const {issues} = designModel.addSource(selectedName, {addVariables: true}),
+        const {issues} = designModel.addSource(name, {addVariables: true}),
             error = issues.find(it => it.severity === 'error');
         if (error) {
             XH.dangerToast(error.message);
@@ -110,57 +201,20 @@ export class CatalogModel extends HoistModel {
         this.panelModel.showEditor();
     }
 
-    @managed kindsGridModel = new GridModel({
-        store: {idSpec: 'name'},
-        sortBy: 'name',
-        columns: [
-            {field: 'name', width: 110},
-            {field: 'base', width: 110},
-            {field: 'format', width: 220, tooltip: true},
-            {field: 'aggregator', width: 140, tooltip: true},
-            {field: 'renderer', width: 120},
-            {field: 'fieldCount', headerName: 'Fields', width: 60, align: 'right'}
-        ]
-    });
-
-    @managed formatsGridModel = new GridModel({
-        store: {idSpec: 'name'},
-        sortBy: 'name',
-        columns: [
-            {field: 'name', width: 110},
-            {field: 'options', flex: 1, minWidth: 200, tooltip: true},
-            {field: 'kinds', width: 140, tooltip: true}
-        ]
-    });
-
-    get blueprint(): Blueprint {
-        return this.panelModel.blueprintModel.blueprint;
-    }
-
-    get catalog(): DataCatalog {
-        return this.panelModel.blueprintModel.catalog;
-    }
-
-    get catalogJson(): string {
-        return JSON.stringify(this.catalog.json, null, 2);
-    }
-
-    @computed
-    get usages(): FieldUsages {
-        return fieldUsages(this.panelModel.blueprintModel.blueprint, this.catalog);
+    /** Select a list entry, as from a join chip. */
+    select(id: string) {
+        this.listModel.selModel.select(id);
     }
 
     override onLinked() {
         const {catalog} = this;
-        this.kindsGridModel.loadData(kindRows(catalog));
-        this.formatsGridModel.loadData(formatRows(catalog));
         this.datasetModels = Object.values(catalog.datasets).map(
-            ds => new DatasetCardModel(ds, datasetJoins(catalog, ds))
+            ds => new DatasetCardModel(ds, datasetJoins(catalog, ds), this)
         );
         this.addReaction(
             {
-                track: () => this.usages,
-                run: usages => this.datasetModels.forEach(it => this.loadDataset(it, usages)),
+                track: () => [this.usages, this.fieldsGrouping],
+                run: () => this.datasetModels.forEach(it => this.loadDataset(it, this.usages)),
                 fireImmediately: true
             },
             {
@@ -171,7 +225,7 @@ export class CatalogModel extends HoistModel {
             {
                 track: () => this.listModel.selectedRecord,
                 run: rec => {
-                    if (rec) this.selectedName = rec.id as string;
+                    if (rec) this.selectedId = rec.id as string;
                 },
                 fireImmediately: true
             }
@@ -182,37 +236,28 @@ export class CatalogModel extends HoistModel {
     // Implementation
     //------------------
     private loadList() {
-        const {listModel, catalog, usages} = this,
-            datasets = Object.values(catalog.datasets),
-            rows = matchDatasets(datasets, this.query).map(({name, fieldHits}) => {
-                const ds = catalog.getDataset(name);
-                return {
-                    name,
-                    label: ds.label && ds.label !== name ? ds.label : null,
-                    description: ds.description,
-                    grain: ds.key?.join(', ') ?? null,
-                    usedCount: Object.keys(usages[name] ?? {}).length,
-                    fieldHits
-                };
-            });
+        const {listModel} = this,
+            rows = catalogEntries(this.catalog, this.query, this.usages);
         listModel.loadData(rows);
-        // Cards render from their whole record, so redraw them for changed counts.
-        listModel.gridModel.agApi?.redrawRows();
-        const keep = rows.some(it => it.name === this.selectedName);
-        listModel.selModel.select(keep ? this.selectedName : (rows[0]?.name ?? null));
+        // Group rows keep their render while their key holds, so counts would go stale.
+        listModel.agApi?.redrawRows();
+        const keep = rows.some(it => it.id === this.selectedId);
+        listModel.selModel.select(keep ? this.selectedId : (rows[0]?.id ?? null));
     }
 
     private loadDataset(model: DatasetCardModel, usages: FieldUsages) {
         const {ds} = model,
-            uses = usages[ds.name] ?? {};
-        model.usedCount = Object.keys(uses).length;
-        model.fieldsGridModel.loadData(
-            fieldTree(ds, this.catalog, uses, this.blueprint, (src, name) =>
+            uses = usages[ds.name] ?? {},
+            tree = fieldTree(ds, this.catalog, uses, this.blueprint, (src, name) =>
                 this.panelModel.blueprintModel.getSource(src)?.fieldLabel(name)
-            )
-        );
+            );
+        model.usedCount = Object.keys(uses).length;
+        model.fieldsGridModel.loadData(this.fieldsGrouping === 'kind' ? fieldsByKind(tree) : tree);
     }
 }
+
+const SECTIONS = ['Datasets', 'Kinds', 'Formats'],
+    SAMPLES = [1234.5678, -987.654, 123456789];
 
 /** One dataset's detail: its fields grid, parameters and joins. */
 export class DatasetCardModel extends HoistModel {
@@ -257,7 +302,8 @@ export class DatasetCardModel extends HoistModel {
     constructor(
         readonly ds: DatasetDef,
         /** The datasets that can join onto this one, with the fields they join on. */
-        readonly joins: DatasetJoin[]
+        readonly joins: DatasetJoin[],
+        readonly catalogModel: CatalogModel
     ) {
         super();
     }
@@ -438,35 +484,6 @@ function overrideRows(
                 usedAt: `/sources/${src}/fields/${f.name}`
             };
         });
-}
-
-function kindRows(catalog: DataCatalog) {
-    const fields = Object.values(catalog.datasets).flatMap(ds => Object.values(ds.fields));
-    return Object.entries(catalog.kinds).map(([name, k]) => ({
-        name,
-        base: k.base,
-        format: [
-            describeSpec(k.format),
-            describeFormat(formatOf({name, type: 'number', kind: name}, catalog))
-        ]
-            .filter(Boolean)
-            .join(': '),
-        aggregator: describeSpec(k.aggregator) || null,
-        renderer: describeSpec(k.renderer) || null,
-        fieldCount: new Set(fields.filter(f => f.kind === name).map(f => f.name)).size
-    }));
-}
-
-function formatRows(catalog: DataCatalog) {
-    return Object.entries(catalog.formats).map(([name, opts]) => ({
-        name,
-        options: describeFormat(opts),
-        kinds:
-            Object.entries(catalog.kinds)
-                .filter(([, k]) => k.format === name)
-                .map(([n]) => n)
-                .join(', ') || null
-    }));
 }
 
 /** A field's format as the catalog resolves it, before any blueprint or widget changes it. */
