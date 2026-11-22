@@ -400,14 +400,39 @@
   border-right: var(--xh-border-solid);
 }
 
-.tb-dock__rail .tb-dock__rail-button {
-  width: 30px;
-  height: 30px;
+// Outranks Hoist's minimal button colours, which carry six classes.
+.xh-app
+  .tb-dock__rail
+  .xh-button.bp6-button.xh-button--minimal.xh-button--intent-none.tb-dock__rail-button {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  color: var(--xh-text-color-muted);
 
+  svg {
+    font-size: 14px;
+  }
+
+  &:hover:not(.tb-dock__rail-button--on) {
+    color: var(--xh-text-color);
+    background-color: var(--xh-bg-highlight);
+  }
+
+  // The bar sits on the rail's outer edge, 4px out from the centred 32px button.
   &.tb-dock__rail-button--on {
-    background-color: var(--xh-bg);
     color: var(--xh-intent-primary-text-color);
-    box-shadow: inset 2px 0 var(--xh-intent-primary);
+    background-color: var(--xh-intent-primary-trans1);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      bottom: 5px;
+      left: -4px;
+      width: 3px;
+      border-radius: 0 2px 2px 0;
+      background-color: var(--xh-intent-primary-text-color);
+    }
   }
 }
 
@@ -464,12 +489,6 @@
   font-weight: 600;
 }
 
-.tb-concept__body {
-  max-width: 980px;
-  gap: var(--xh-spacing);
-  padding: calc(var(--xh-spacing) * 2) calc(var(--xh-spacing) * 3);
-}
-
 .tb-concept__title {
   font-size: calc(var(--xh-font-size) * 1.6);
   font-weight: 600;
@@ -481,26 +500,6 @@
   .tb-markdown > * {
     margin: 0;
   }
-}
-
-.tb-concept__code {
-  margin: 0;
-  padding: var(--xh-spacing);
-  border-radius: var(--xh-border-radius);
-  font-family: var(--xh-font-family-mono);
-  font-size: var(--xh-font-size-small);
-  background-color: var(--xh-bg-alt);
-}
-
-.tb-concept__example {
-  flex: none;
-  height: 440px;
-  border: var(--xh-border-solid);
-  border-radius: var(--xh-border-radius);
-}
-
-.tb-concept__nav {
-  flex: none;
 }
 
 // The switcher's box sets its display inline.

@@ -1,7 +1,7 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
 import {BlueprintDesignModel, BlueprintModel} from '@xh/hoist-chat-kit/blueprint';
 import {blueprintMap, blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
-import {div, filler, hbox, p, placeholder, pre, vbox} from '@xh/hoist/cmp/layout';
+import {placeholder} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, uses, XH} from '@xh/hoist/core';
 import type {ElementFactory, LoadSpec} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -10,9 +10,9 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {PORTFOLIO_TYPE} from '../../../../blueprints/blueprintTypes';
-import {md} from '../../../../blueprints/markdown';
 import {createRepository} from '../../../../blueprints/repository/createRepository';
 import {ServerDataProvider} from '../../../../blueprints/ServerDataProvider';
+import {wrapper, wrapperAction, wrapperOption} from '../../../common/Wrapper';
 import {portfolioCatalogAsync} from '../portfolioCatalog';
 import {CONCEPT_PAGES} from './conceptPages';
 import type {ConceptPage} from './conceptPages';
@@ -78,84 +78,82 @@ const conceptBody = hoistCmp.factory<ConceptPageModel>({
 
     render({model}) {
         const {page} = model,
-            idx = CONCEPT_PAGES.indexOf(page),
-            next = CONCEPT_PAGES[idx + 1];
-        return panel({
-            className: 'tb-concept',
-            scrollable: true,
-            children: vbox({
-                className: 'tb-concept__body',
-                children: [
-                    div({className: 'tb-concept__title', children: page.title}),
-                    ...page.paragraphs.map((it, i) =>
-                        div({key: i, className: 'tb-concept__para', children: md(it)})
-                    ),
-                    page.code ? pre({className: 'tb-concept__code', children: page.code}) : null,
-                    page.example ? exampleFrame() : architectLink(),
-                    hbox({
-                        className: 'tb-concept__nav',
-                        children: [
-                            filler(),
-                            next
-                                ? button({
-                                      text: `Next: ${next.title}`,
-                                      rightIcon: Icon.chevronRight(),
-                                      minimal: false,
-                                      onClick: () =>
-                                          XH.navigate(`default.blueprints.concept-${next.id}`)
-                                  })
-                                : null
-                        ]
-                    })
-                ]
+            next = CONCEPT_PAGES[CONCEPT_PAGES.indexOf(page) + 1];
+        return wrapper({
+            title: page.title,
+            icon: Icon.book(),
+            description: [
+                ...page.paragraphs.flatMap(it => [it, '']),
+                ...(page.code ? ['```json', page.code, '```'] : [])
+            ],
+            options: [
+                page.example
+                    ? wrapperOption({
+                          label: 'Show',
+                          control: segmentedControl({
+                              model,
+                              bind: 'view',
+                              options: [
+                                  {value: 'example', label: 'Example'},
+                                  {value: 'json', label: 'JSON'},
+                                  {value: 'map', label: 'Map'}
+                              ]
+                          })
+                      })
+                    : null,
+                next
+                    ? wrapperAction({
+                          text: `Next: ${next.title}`,
+                          icon: Icon.chevronRight(),
+                          onClick: () => XH.navigate(`default.blueprints.concept-${next.id}`)
+                      })
+                    : null
+            ].filter(Boolean),
+            children: panel({
+                className: 'tb-blueprints-island',
+                title: VIEW_TITLES[model.view],
+                icon: Icon.play(),
+                compactHeader: true,
+                width: '100%',
+                height: '100%',
+                mask: model.loadObserver,
+                children: page.example ? exampleBody() : architectLink()
             })
         });
     }
 });
 
-const exampleFrame = hoistCmp.factory<ConceptPageModel>({
+const VIEW_TITLES = {example: 'Example', json: 'JSON', map: 'Map'};
+
+const exampleBody = hoistCmp.factory<ConceptPageModel>({
     model: uses(ConceptPageModel),
     render: ({model}) => {
         const {blueprintModel, designModel, view} = model;
-        return panel({
-            className: 'tb-concept__example',
-            tbar: [
-                segmentedControl({
-                    bind: 'view',
-                    compact: true,
-                    options: [
-                        {value: 'example', label: 'Live example', icon: Icon.play()},
-                        {value: 'json', label: 'JSON', icon: Icon.code()},
-                        {value: 'map', label: 'Map', icon: Icon.treeList()}
-                    ]
-                })
-            ],
-            mask: model.loadObserver,
-            children: !blueprintModel
-                ? placeholder('Loading the example...')
-                : view === 'json'
-                  ? jsonInput({
-                        value: JSON.stringify(model.page.example, null, 2),
-                        readonly: true,
-                        flex: 1,
-                        width: '100%'
-                    })
-                  : view === 'map'
-                    ? blueprintMap({designModel})
-                    : blueprintView({model: blueprintModel})
-        });
+        if (!blueprintModel) return placeholder('Loading the example...');
+        switch (view) {
+            case 'json':
+                return jsonInput({
+                    value: JSON.stringify(model.page.example, null, 2),
+                    readonly: true,
+                    flex: 1,
+                    width: '100%'
+                });
+            case 'map':
+                return blueprintMap({designModel});
+            default:
+                return blueprintView({model: blueprintModel});
+        }
     }
 });
 
 const architectLink = hoistCmp.factory(() =>
-    p({
-        className: 'tb-concept__para',
-        children: button({
+    placeholder(
+        button({
             text: 'Open the Portfolio example',
             icon: Icon.ai(),
             intent: 'primary',
             minimal: false,
             onClick: () => XH.navigate('default.blueprints.portfolio')
         })
-    })
+    )
 );
