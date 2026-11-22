@@ -5,15 +5,18 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {blueprintShellView} from '../../../blueprints/BlueprintShell';
 import {BlueprintShellModel} from '../../../blueprints/BlueprintShellModel';
-import {BLUEPRINT_TYPES} from '../../../blueprints/blueprintTypes';
+import {BLUEPRINT_TYPES, PORTFOLIO_TYPE} from '../../../blueprints/blueprintTypes';
 import type {BlueprintTypeSpec} from '../../../blueprints/blueprintTypes';
 import {blueprintsOverview} from './BlueprintsOverview';
-import {BUILTIN_ROLES} from './builtins/builtinRoles';
-import {builtinsPageContent} from './builtins/BuiltinsPage';
+import {INPUTS_OVERVIEW} from './builtins/builtinExamples';
+import {builtinPageContent} from './builtins/BuiltinPage';
+import {BUILTIN_ROLES, builtinPages} from './builtins/builtinRoles';
 import {conceptPageContent} from './concepts/ConceptPage';
 import {CONCEPT_PAGES} from './concepts/conceptPages';
 
 const ROUTE = 'default.blueprints';
+
+const BUILTIN_PAGES = builtinPages(PORTFOLIO_TYPE.createRegistry());
 
 /** A blueprint type's route under the tab, such as `weather` for `toolbox.weather`. */
 export function typeRouteName(type: BlueprintTypeSpec): string {
@@ -33,11 +36,11 @@ export function blueprintsTab(switcher: TabSwitcherConfig): TabConfig {
             group: 'concepts',
             content: conceptPageContent(page)
         })),
-        ...BUILTIN_ROLES.map((role): TabConfig => ({
-            id: `builtin-${role.key}`,
-            title: role.title,
-            group: 'builtins',
-            content: builtinsPageContent(role)
+        ...BUILTIN_PAGES.map(({id, name, role}): TabConfig => ({
+            id,
+            title: name === INPUTS_OVERVIEW ? 'All inputs' : name,
+            group: `builtins-${role.key}`,
+            content: builtinPageContent(name, role)
         })),
         ...BLUEPRINT_TYPES.flatMap((type): TabConfig[] => {
             const name = typeRouteName(type),
@@ -81,7 +84,10 @@ export function blueprintsTab(switcher: TabSwitcherConfig): TabConfig {
                 groups: [
                     {key: 'overview', title: 'Overview'},
                     {key: 'concepts', title: 'Concepts'},
-                    {key: 'builtins', title: 'Built-ins'},
+                    ...BUILTIN_ROLES.map(it => ({
+                        key: `builtins-${it.key}`,
+                        title: `Built-ins: ${it.title}`
+                    })),
                     ...BLUEPRINT_TYPES.map(it => ({
                         key: typeRouteName(it),
                         title: `${it.label} example`
@@ -104,7 +110,7 @@ export function blueprintsRoutes(): HoistRoute {
         children: [
             {name: 'overview', path: '/overview'},
             ...CONCEPT_PAGES.map(it => ({name: `concept-${it.id}`, path: `/concepts/${it.id}`})),
-            ...BUILTIN_ROLES.map(it => ({name: `builtin-${it.key}`, path: `/builtins/${it.key}`})),
+            ...BUILTIN_PAGES.map(it => ({name: it.id, path: `/builtins/${it.name}`})),
             ...BLUEPRINT_TYPES.flatMap(type => {
                 const name = typeRouteName(type);
                 return [
