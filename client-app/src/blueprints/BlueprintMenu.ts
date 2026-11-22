@@ -1,13 +1,14 @@
 import {blueprintLinkUrl} from '@xh/hoist-chat-kit/blueprint';
 import type {BlueprintAccessSpec} from '@xh/hoist-chat-kit/blueprint';
 import {div, vbox} from '@xh/hoist/cmp/layout';
-import {hoistCmp, XH} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import type {HoistProps} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuDivider, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import type {BlueprintShellModel} from './BlueprintShellModel';
+import {copyLinkAsync} from './copyLink';
 
 /**
  * The open blueprint's secondary actions: reload or save a stale draft as new, copy its link, and
@@ -116,16 +117,6 @@ const sharePanel = hoistCmp.factory<BlueprintShellModel>(({model}) => {
         ]
     });
 });
-
-async function copyLinkAsync(link: string) {
-    try {
-        await navigator.clipboard.writeText(link);
-        XH.successToast('Link copied.');
-    } catch (e) {
-        XH.handleException(e, {showAlert: false});
-        XH.dangerToast('Could not copy the link.');
-    }
-}
 
 interface GranteeSelectProps extends HoistProps {
     label: string;

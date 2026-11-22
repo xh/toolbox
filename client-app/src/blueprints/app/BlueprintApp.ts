@@ -1,4 +1,3 @@
-import {hframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp, managed, uses, XH} from '@xh/hoist/core';
 import type {InitContext, LoadSpec} from '@xh/hoist/core';
 import {appBar} from '@xh/hoist/desktop/cmp/appbar';
@@ -7,7 +6,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import type {ReactElement} from 'react';
 import {BaseAppModel} from '../../BaseAppModel';
 import '../../core/Toolbox.scss';
-import {blueprintLibrary, blueprintWorkspace} from '../BlueprintShell';
+import {blueprintShellView} from '../BlueprintShell';
 import {BlueprintShellModel} from '../BlueprintShellModel';
 import type {BlueprintTypeSpec} from '../blueprintTypes';
 
@@ -36,7 +35,11 @@ export abstract class BlueprintAppModel extends BaseAppModel {
             {
                 name: 'default',
                 path: `/${XH.clientAppCode}`,
-                children: [{name: 'blueprint', path: '/:id?draft&version'}]
+                children: [
+                    {name: 'catalog', path: '/catalog'},
+                    {name: 'registry', path: '/registry'},
+                    {name: 'blueprint', path: '/:id?draft&version'}
+                ]
             }
         ];
     }
@@ -73,21 +76,7 @@ export const BlueprintAppComponent = hoistCmp({
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
             mask: 'onLoad',
-            item: hframe(
-                panel({
-                    title: 'Blueprints',
-                    compactHeader: true,
-                    className: 'tb-blueprint-app__library',
-                    modelConfig: {
-                        side: 'left',
-                        defaultSize: 280,
-                        minSize: 200,
-                        persistWith: {localStorageKey: `${config.storageKey}.library`}
-                    },
-                    item: blueprintLibrary({model: shellModel})
-                }),
-                blueprintWorkspace({model: shellModel})
-            )
+            item: blueprintShellView({model: shellModel})
         });
     }
 });

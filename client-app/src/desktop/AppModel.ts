@@ -386,7 +386,11 @@ export class AppModel extends BaseAppModel {
                         children: BLUEPRINT_TYPES.map(type => ({
                             name: typeRouteName(type),
                             path: `/${typeRouteName(type)}`,
-                            children: [{name: 'blueprint', path: '/:id?draft&version'}]
+                            children: [
+                                {name: 'catalog', path: '/catalog'},
+                                {name: 'registry', path: '/registry'},
+                                {name: 'blueprint', path: '/:id?draft&version'}
+                            ]
                         }))
                     },
                     {

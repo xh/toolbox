@@ -53,14 +53,21 @@ describe('Blueprints designer', () => {
         expect(model.blueprintModel.catalog).toBeInstanceOf(DataCatalog);
     });
 
-    it("lists the server's presets of its type read-only, and opens the first at its publish", () => {
+    it("opens on its library of the type's presets, read-only, as examples", () => {
         expect(model.summaries.map(it => it.name)).toEqual(PORTFOLIO_PRESETS.map(it => it[1]));
         expect(weatherModel.summaries.map(it => it.name)).toEqual([
             'W1. Weather for one city',
             'W2. Two cities side by side'
         ]);
         expect(model.summaries.every(it => it.access === 'read')).toBe(true);
-        expect(model.selected.name).toBe(PRESETS[0][1]);
+        expect(model.libraryOpen).toBe(true);
+        expect(model.documentModel.document).toBeNull();
+        expect(groupOf(byName(PRESETS[0][1]).id)).toBe('Examples');
+    });
+
+    it('opens a preset at its publish in run mode, and leaves the library', async () => {
+        await model.selectAsync(byName(PRESETS[0][1]).id);
+        expect(model.libraryOpen).toBe(false);
         expect(model.documentModel.document).toMatchObject({kind: 'publish', version: 1});
         expect(model.blueprintModel.mode).toBe('run');
         expect(model.blueprintModel.blueprint).toMatchObject({root: p1.root});
@@ -244,12 +251,24 @@ describe('Blueprints designer', () => {
         expect(model.blueprintModel.blueprint.elements).toBeTruthy();
     });
 
-    it('deletes the blueprint open, with its conversation, and opens the first left', async () => {
+    it('deletes the blueprint open, with its conversation, and returns to the library', async () => {
         const id = byName('Scratch').id;
         await model.selectAsync(id);
+        expect(groupOf(id)).toBe('Yours');
         await model.deleteBlueprintAsync();
         expect(find(model.summaries, {id})).toBeUndefined();
-        expect(model.selected.name).toBe(model.summaries[0].name);
+        expect(model.libraryOpen).toBe(true);
+        expect(model.selectedId).toBeNull();
+    });
+
+    it('returns to the library, saving the draft first', async () => {
+        await model.selectAsync(byName(MINE).id);
+        groupByRegion(['sector']);
+        await model.showLibraryAsync();
+        expect(model.libraryOpen).toBe(true);
+        expect(model.documentModel.isDirty).toBe(false);
+        await model.selectAsync(byName(MINE).id);
+        expect(model.libraryOpen).toBe(false);
     });
 
     it("opens another user's global blueprint at its latest publish, read-only, in run mode", async () => {
@@ -325,6 +344,10 @@ function seedPresets() {
 function actAs(username: string) {
     user = username;
     hoistCore.user.username = username;
+}
+
+function groupOf(id: string) {
+    return model.listGridModel.store.getById(id)?.data.group;
 }
 
 function byName(name: string, m: BlueprintShellModel = model) {

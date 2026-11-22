@@ -27,6 +27,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import type {LoadSpec} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
+import {fmtCompactDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {
     action,
@@ -40,6 +41,8 @@ import {
 import {find, pick} from 'lodash';
 import {LocalThreadStore} from '../desktop/tabs/chatkit/integrations/LocalThreadStore';
 import {createArchitectChat} from './architectChat';
+import {copyLinkAsync} from './copyLink';
+import {LIBRARY_GROUPS, libraryGroup, libraryName, libraryStatus} from './libraryColumns';
 import {featureRequestSink} from './featureRequestSink';
 import {usageBlockedReason} from './llmUsage';
 import type {LlmUsage} from './llmUsage';
@@ -85,6 +88,9 @@ export class BlueprintShellModel extends HoistModel {
     @observableRef accessor summaries: BlueprintSummary[] = [];
     @bindable accessor selectedId: string = null;
     @bindable accessor view: DesignerView = 'blueprint';
+
+    /** True while the library shows, as when nothing is open, in place of the open blueprint. */
+    @bindable accessor libraryOpen = true;
     @bindable accessor shareOpen = false;
 
     /** Issues from opening the selected blueprint. Errors mean it could not be shown. */
@@ -125,30 +131,71 @@ export class BlueprintShellModel extends HoistModel {
     readonly threadStore: LocalThreadStore;
 
     @managed listGridModel = new GridModel({
-        hideHeaders: true,
-        emptyText: 'No blueprints',
+        store: {idSpec: 'id'},
+        groupBy: 'group',
+        groupSortFn: (a, b) => LIBRARY_GROUPS.indexOf(a) - LIBRARY_GROUPS.indexOf(b),
+        sortBy: 'name',
+        emptyText: 'No blueprints of your own yet. Copy an example or start a new one.',
+        onRowDoubleClicked: ({data}) => data && this.selectAsync(data.id),
+        contextMenu: [
+            {
+                text: 'Open',
+                icon: Icon.openExternal(),
+                recordsRequired: 1,
+                actionFn: ({record}) => this.selectAsync(record.id as string)
+            },
+            {
+                text: 'Copy',
+                icon: Icon.copy(),
+                recordsRequired: 1,
+                actionFn: ({record}) => this.copyFromLibraryAsync(record.id as string)
+            },
+            {
+                text: 'Copy link',
+                icon: Icon.link(),
+                recordsRequired: 1,
+                displayFn: () => ({hidden: !this.route}),
+                actionFn: ({record}) => copyLinkAsync(this.linkTo(record.id as string))
+            },
+            {
+                text: 'Share...',
+                icon: Icon.users(),
+                recordsRequired: 1,
+                displayFn: ({record}) => ({hidden: record?.data.group !== 'Yours'}),
+                actionFn: ({record}) => this.shareFromLibraryAsync(record.id as string)
+            },
+            '-',
+            {
+                text: 'Delete',
+                icon: Icon.delete(),
+                recordsRequired: 1,
+                displayFn: ({record}) => ({hidden: record?.data.group !== 'Yours'}),
+                actionFn: ({record}) => this.deleteFromLibraryAsync(record.id as string)
+            }
+        ],
         columns: [
-            {field: 'name', flex: 1, tooltip: (v, {record}) => record.data.description ?? v},
+            {field: 'group', hidden: true},
+            {
+                field: 'name',
+                flex: 1,
+                minWidth: 220,
+                rendererIsComplex: true,
+                renderer: (v: string, {record}) => libraryName(v, record.data.description),
+                tooltip: (v, {record}) => record.data.description ?? v
+            },
             {field: 'description', hidden: true},
-            {
-                field: 'owner',
-                width: 80,
-                cellClass: 'tb-blueprints__owner',
-                tooltip: (v: string) => (v ? `Owner: ${v}` : null)
-            },
-            {
-                field: 'global',
-                width: 28,
-                align: 'center',
-                renderer: (v: boolean) => (v ? Icon.globe({title: 'Everyone can view'}) : null)
-            },
+            {field: 'owner', width: 140, cellClass: 'tb-blueprints__owner'},
             {
                 field: 'status',
-                width: 60,
-                align: 'right',
-                renderer: (v: string) =>
-                    v === 'read' ? Icon.lock({title: 'Read only'}) : v ? v : null
-            }
+                width: 200,
+                rendererIsComplex: true,
+                renderer: (v, {record}) => libraryStatus(record.data)
+            },
+            {field: 'draftVersion', hidden: true},
+            {field: 'publishedVersion', hidden: true},
+            {field: 'readOnly', hidden: true},
+            {field: 'global', hidden: true},
+            {field: 'updated', width: 130, renderer: v => (v ? fmtCompactDate(v) : null)}
         ]
     });
 
@@ -198,12 +245,16 @@ export class BlueprintShellModel extends HoistModel {
                 track: () =>
                     this.summaries.map(it => ({
                         id: it.id,
+                        group: libraryGroup(it),
                         name: it.name,
                         description: it.description,
-                        owner: it.owner === XH.getUsername() ? null : it.owner,
-                        status:
-                            it.access === 'read' ? 'read' : it.publishedVersion ? null : 'draft',
-                        global: isGlobal(it)
+                        owner: it.owner === XH.getUsername() ? 'you' : it.owner,
+                        status: it.access,
+                        draftVersion: it.access === 'write' ? it.draftVersion : null,
+                        publishedVersion: it.publishedVersion,
+                        readOnly: it.access === 'read',
+                        global: isGlobal(it),
+                        updated: it.updated
                     })),
                 run: rows => {
                     this.listGridModel.loadData(rows);
@@ -213,15 +264,10 @@ export class BlueprintShellModel extends HoistModel {
                 fireImmediately: true
             },
             {
-                track: () => this.listGridModel.selectedId as string,
-                run: id => {
-                    if (id && id !== this.selectedId) this.selectAsync(id);
-                }
-            },
-            {
                 track: () => XH.routerState,
                 run: state => this.followRoute(state?.name, state?.params)
             },
+            {track: () => this.view, run: view => this.showPageInAddressBar(view)},
             {
                 track: () => this.blueprintModel?.version,
                 run: () => {
@@ -293,13 +339,17 @@ export class BlueprintShellModel extends HoistModel {
         await this.refreshSummariesAsync();
         const {name, params} = XH.routerState ?? {};
         if (name && name === this.route && params?.id) return this.openLinkAsync(params);
-        const first = this.selected ? this.selectedId : this.summaries[0]?.id;
-        if (first) await this.selectAsync(first, true);
+        const page = this.pageOfRoute(name);
+        if (page) runInAction(() => (this.view = page));
     }
 
     /** Open a blueprint: the user's own as its draft, another's at its latest publish. */
     async selectAsync(id: string, force = false) {
-        if (!force && id === this.selectedId && this.documentModel?.document?.id === id) return;
+        if (!force && id === this.selectedId && this.documentModel?.document?.id === id) {
+            runInAction(() => (this.libraryOpen = false));
+            this.showInAddressBar(id);
+            return;
+        }
         if (!(await this.readyToLeaveAsync())) {
             this.listGridModel.selModel.select(this.selectedId);
             return;
@@ -424,18 +474,47 @@ export class BlueprintShellModel extends HoistModel {
         return record.id;
     }
 
-    /** Delete the blueprint open, with its conversation, and open the first left. */
+    /** Delete the blueprint open, with its conversation, and return to the library. */
     async deleteBlueprintAsync() {
         const id = this.selectedId;
         await this.documentModel.deleteAsync();
         await this.threadStore.deleteThreadsAsync([id]).catch(() => {});
         await this.refreshSummariesAsync();
-        const next = this.summaries[0]?.id;
-        if (next) {
-            await this.selectAsync(next, true);
-        } else {
-            runInAction(() => (this.selectedId = null));
-        }
+        runInAction(() => {
+            this.selectedId = null;
+            this.libraryOpen = true;
+        });
+        this.showLibraryInAddressBar();
+    }
+
+    /** A link to a blueprint at the app's route for one, or null if the app has none. */
+    linkTo(id: string): string {
+        const {route} = this;
+        return route && XH.hasRoute(route)
+            ? `${window.location.origin}${XH.router.buildUrl(route, {id})}`
+            : null;
+    }
+
+    async copyFromLibraryAsync(id: string) {
+        await this.selectAsync(id);
+        await this.copySelectedAsync();
+    }
+
+    async shareFromLibraryAsync(id: string) {
+        await this.selectAsync(id);
+        runInAction(() => (this.shareOpen = true));
+    }
+
+    async deleteFromLibraryAsync(id: string) {
+        await this.selectAsync(id);
+        await this.deleteSelectedAsync();
+    }
+
+    /** Show the library in place of the blueprint open, saving its draft first. */
+    async showLibraryAsync() {
+        if (this.libraryOpen || !(await this.readyToLeaveAsync())) return;
+        runInAction(() => (this.libraryOpen = true));
+        this.showLibraryInAddressBar();
     }
 
     async newBlueprintAsync() {
@@ -516,6 +595,7 @@ export class BlueprintShellModel extends HoistModel {
         runInAction(() => {
             this.selectedId = id;
             this.view = 'blueprint';
+            this.libraryOpen = false;
             this.saveIssues = [];
             this.listGridModel.selModel.select(id);
         });
@@ -541,8 +621,54 @@ export class BlueprintShellModel extends HoistModel {
 
     // Open the link the address bar names, unless it is the one already open.
     private followRoute(name: string, params: BlueprintLinkParams) {
-        if (!name || name !== this.route || !params?.id || !this.documentModel) return;
+        if (!name || !this.documentModel) return;
+        const page = this.pageOfRoute(name);
+        if (page) {
+            runInAction(() => (this.view = page));
+            return;
+        }
+        if (name === this.libraryRoute) {
+            runInAction(() => (this.view = 'blueprint'));
+            this.showLibraryAsync();
+            return;
+        }
+        if (name !== this.route || !params?.id) return;
+        runInAction(() => (this.view = 'blueprint'));
         if (linkKey(params) !== this.lastLink) this.openLinkAsync(params);
+    }
+
+    // The reference page a route shows, or null for the blueprint page.
+    private pageOfRoute(name: string): DesignerView {
+        const lib = this.libraryRoute;
+        if (!lib || !name) return null;
+        if (name === `${lib}.catalog`) return 'catalog';
+        if (name === `${lib}.registry`) return 'registry';
+        return null;
+    }
+
+    // Show the page in the address bar: a reference page's route, or the library or blueprint open.
+    private showPageInAddressBar(view: DesignerView) {
+        const lib = this.libraryRoute;
+        if (!lib) return;
+        if (view !== 'blueprint') {
+            const route = `${lib}.${view}`;
+            if (XH.hasRoute(route) && XH.routerState?.name !== route) XH.navigate(route);
+        } else if (this.libraryOpen || !this.documentModel?.document) {
+            this.showLibraryInAddressBar();
+        } else {
+            this.showInAddressBar(this.documentModel.document.id);
+        }
+    }
+
+    // The route that shows the library: the blueprint route's parent.
+    private get libraryRoute(): string {
+        return this.route?.replace(/\.[^.]+$/, '') ?? null;
+    }
+
+    private showLibraryInAddressBar() {
+        const route = this.libraryRoute;
+        this.lastLink = null;
+        if (route && XH.hasRoute(route) && XH.routerState?.name !== route) XH.navigate(route);
     }
 
     // Show the blueprint open in the address bar, as the link that opens it as it is now.
