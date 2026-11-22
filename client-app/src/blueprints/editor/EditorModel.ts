@@ -342,9 +342,19 @@ export class EditorModel extends HoistModel {
         if (this.inspectorPanelModel.collapsed) this.inspectorPanelModel.setCollapsed(false);
     }
 
+    override destroy() {
+        const {designModel} = this.shell ?? {};
+        if (designModel?.onRequestAdd === this.requestAdd) designModel.onRequestAdd = null;
+        super.destroy();
+    }
+
+    // Opens the dock on Add, for the design keys' `/`.
+    private readonly requestAdd = () => this.showTab('add');
+
     override onLinked() {
         const {shell} = this,
             {blueprintModel} = shell;
+        shell.designModel.onRequestAdd = this.requestAdd;
         this.addReaction(
             {
                 track: () => this.currentJson,
