@@ -435,3 +435,12 @@
     opacity: 0.6;
   }
 }
+
+.tb-editor__mono {
+  font-family: var(--xh-font-family-mono);
+  font-size: var(--xh-font-size-small);
+}
+
+.tb-editor__compare-title {
+  font-weight: 600;
+}

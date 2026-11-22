@@ -115,16 +115,22 @@ const blueprintPane = hoistCmp.factory<EditorModel>({
         const {shell} = model;
         return panel({
             item: model.shown
-                ? blueprintView({model: shell.blueprintModel, designModel: shell.designModel})
+                ? blueprintView({
+                      model: shell.blueprintModel,
+                      designModel: shell.designModel,
+                      onAddWidget: () => model.showTab('add'),
+                      onAskArchitect: () => model.showTab('architect')
+                  })
                 : placeholder(Icon.layout(), emptyText(model))
         });
     }
 });
 
-/** The blueprint as JSON, to edit and apply as one edit in design. */
+/** The blueprint as JSON, to edit and apply as one edit in design, or a comparison with a publish. */
 const jsonView = hoistCmp.factory<EditorModel>({
     model: uses(EditorModel),
     render: ({model}) => {
+        if (model.compareVersion != null) return compareView();
         const {applyError, isJsonDirty, isDesigning} = model;
         return panel({
             className: 'tb-editor__json',
@@ -155,6 +161,30 @@ const jsonView = hoistCmp.factory<EditorModel>({
                       })
                   ]
                 : null
+        });
+    }
+});
+
+const compareView = hoistCmp.factory<EditorModel>({
+    model: uses(EditorModel),
+    render: ({model}) => {
+        const doc = model.shell.documentModel.document,
+            open = doc.kind === 'draft' ? 'this draft' : `v${doc.version}`;
+        return panel({
+            className: 'tb-editor__compare',
+            tbar: [
+                span({
+                    className: 'tb-editor__compare-title',
+                    item: `Changes from v${model.compareVersion} to ${open}`
+                }),
+                filler(),
+                button({
+                    text: 'Close',
+                    icon: Icon.close(),
+                    onClick: () => model.closeCompare()
+                })
+            ],
+            item: grid({model: model.compareGridModel})
         });
     }
 });

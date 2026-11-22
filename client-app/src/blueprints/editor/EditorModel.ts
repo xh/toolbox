@@ -5,6 +5,7 @@ import {
     sourcesEditor,
     variablesEditor
 } from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
+import {badge} from '@xh/hoist/cmp/badge';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed, persist} from '@xh/hoist/core';
@@ -13,10 +14,11 @@ import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtCompactDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
+import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {applyJsonEdit} from '../applyJsonEdit';
 import {BlueprintShellModel} from '../BlueprintShellModel';
 import {markdownCol} from '../markdown';
+import {compareRows} from './compareRows';
 import {historyTimeline, revealEdit} from './historyTimeline';
 import type {TimelineRow} from './historyTimeline';
 
@@ -69,6 +71,9 @@ export class EditorModel extends HoistModel {
     /** The errors that refused the last JSON apply. */
     @observableRef accessor applyIssues: BlueprintIssue[] = [];
 
+    /** The publish the JSON view compares the blueprint open with, or null. */
+    @observable accessor compareVersion: number = null;
+
     // When each edit since the open was made, by version.
     @observableRef private accessor stamps: Record<number, number> = {};
 
@@ -108,6 +113,26 @@ export class EditorModel extends HoistModel {
             },
             {id: 'sources', content: () => sourcesEditor({designModel: this.shell.designModel})},
             {id: 'presets', content: () => presetsEditor({designModel: this.shell.designModel})}
+        ]
+    });
+
+    @managed compareGridModel = new GridModel({
+        store: {idSpec: 'path'},
+        emptyText: 'No changes.',
+        columns: [
+            {
+                field: 'change',
+                width: 90,
+                rendererIsComplex: true,
+                renderer: v =>
+                    badge({
+                        intent: v === 'added' ? 'success' : v === 'removed' ? 'danger' : 'primary',
+                        item: v
+                    })
+            },
+            {field: 'path', flex: 1, minWidth: 200, cellClass: 'tb-editor__mono'},
+            {field: 'before', flex: 1, minWidth: 160, cellClass: 'tb-editor__mono', tooltip: true},
+            {field: 'after', flex: 1, minWidth: 160, cellClass: 'tb-editor__mono', tooltip: true}
         ]
     });
 
@@ -177,7 +202,7 @@ export class EditorModel extends HoistModel {
             },
             {
                 ...actionCol,
-                width: 60,
+                width: 80,
                 actionsShowOnHoverOnly: true,
                 actions: [
                     {
@@ -187,6 +212,12 @@ export class EditorModel extends HoistModel {
                             hidden: record?.data.kind !== 'edit' || !this.isDesigning
                         }),
                         actionFn: ({record}) => this.showEdit(record.data as TimelineRow)
+                    },
+                    {
+                        icon: Icon.diff(),
+                        tooltip: 'Compare this version with the blueprint open',
+                        displayFn: ({record}) => ({hidden: record?.data.kind !== 'publish'}),
+                        actionFn: ({record}) => this.compareAsync(record.data.version as number)
                     },
                     {
                         icon: Icon.openExternal(),
@@ -263,6 +294,38 @@ export class EditorModel extends HoistModel {
         dockPanelModel.setCollapsed(false);
     }
 
+    /** Show a dock tab, opening the dock if closed. */
+    @action
+    showTab(id: DockTab) {
+        if (this.isDesigning) {
+            this.designTab = id;
+        } else {
+            this.runTab = id;
+        }
+        this.dockPanelModel.setCollapsed(false);
+    }
+
+    /** Show in the JSON view how a publish differs from the blueprint open. */
+    async compareAsync(version: number) {
+        const {shell} = this,
+            record = await shell.repository
+                .openAsync(shell.documentModel.document.id, {as: 'publish', version})
+                .catchDefault();
+        if (!record) return;
+        this.compareGridModel.loadData(
+            compareRows(record.blueprint, shell.blueprintModel.blueprint)
+        );
+        runInAction(() => {
+            this.compareVersion = version;
+            shell.editorView = 'json';
+        });
+    }
+
+    @action
+    closeCompare() {
+        this.compareVersion = null;
+    }
+
     /** Apply the JSON draft as one edit. With errors, nothing changes. */
     @action
     applyDraft() {
@@ -318,6 +381,11 @@ export class EditorModel extends HoistModel {
                 track: () => blueprintModel.variables.map(v => [v, v.value, v.isSet]),
                 run: () => this.valuesGridModel.loadData(blueprintModel.variables.map(toValueRow)),
                 fireImmediately: true
+            },
+            {
+                // A comparison is with the blueprint as it was when asked for.
+                track: () => [shell.documentModel.document, blueprintModel.version],
+                run: () => this.closeCompare()
             },
             {
                 // Until one inspector edits every kind, show the tab for what is selected.
