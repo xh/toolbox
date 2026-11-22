@@ -4,7 +4,7 @@ import type {
     BlueprintRegistry,
     WidgetSpec
 } from '@xh/hoist-chat-kit/blueprint';
-import {BlueprintModel} from '@xh/hoist-chat-kit/blueprint';
+import {BlueprintModel, CANVAS_COLUMNS, rescaleCells} from '@xh/hoist-chat-kit/blueprint';
 import {blueprintView, thumbnailPreview} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {placeholder} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, uses, XH} from '@xh/hoist/core';
@@ -28,7 +28,7 @@ import {CONCEPT_PAGES} from '../concepts/conceptPages';
 import {portfolioCatalogAsync} from '../portfolioCatalog';
 import {builtinExample, INPUTS_OVERVIEW} from './builtinExamples';
 import type {BuiltinRole} from './builtinRoles';
-import {builtinSettings, minColumns, rescaleCells} from './builtinSettings';
+import {builtinSettings, minColumns} from './builtinSettings';
 import type {BuiltinSetting} from './builtinSettings';
 
 /** A Built-ins page: one widget, or every input at once, live, with its main settings to try. */
@@ -90,8 +90,9 @@ class BuiltinPageModel extends HoistModel {
             children = rescale
                 ? rescaleCells(
                       root.children,
-                      (this.settingValue(setting) as number) ?? 12,
-                      (value as number) ?? 12
+                      (this.settingValue(setting) as number) ?? CANVAS_COLUMNS,
+                      (value as number) ?? CANVAS_COLUMNS,
+                      id => this.minWidth(id)
                   )
                 : root.children,
             next = setting.perChild
@@ -109,15 +110,16 @@ class BuiltinPageModel extends HoistModel {
         });
     }
 
-    /** The fewest columns the example's cells fit at their widgets' minimum widths. */
+    /** The fewest columns the example's canvas can have: its widest cell's minimum width. */
     get minColumns(): number {
-        const {blueprint, root} = this,
-            setting = this.settings.find(it => it.key === 'columns'),
-            cells = (root?.children ?? []).map((it: PlainObject) => ({
-                ...it,
-                minW: this.registry.widgets[blueprint.elements[it.id]?.component]?.size?.min?.w ?? 1
-            }));
-        return setting ? minColumns(cells, (this.settingValue(setting) as number) ?? 12) : 1;
+        const cells: PlainObject[] = this.root?.children ?? [];
+        return minColumns(cells.map(it => this.minWidth(it.id)));
+    }
+
+    // An element's widget's minimum width on a canvas, as the Inspector's rescale takes it.
+    private minWidth(id: string): number {
+        const el = this.blueprint?.elements[id];
+        return this.registry.widgets[el?.component]?.size?.min?.w ?? 1;
     }
 
     @action
