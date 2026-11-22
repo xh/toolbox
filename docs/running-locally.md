@@ -142,6 +142,16 @@ versions. Check out `hoist-react` and/or `hoist-core` as siblings of the `toolbo
   ./gradlew dependencies --write-locks -PrunHoistInline=false
   ```
 
+* **Unpublished chat kit (`blueprints` branch)** - the Blueprints code imports
+  `@xh/hoist-chat-kit/blueprint`, which no published chat kit has yet, so plain `pnpm test` fails
+  the blueprint specs at import. Run the client and its specs against a local chat kit checkout,
+  with inline hoist-react:
+  ```
+  XH_INLINE_PACKAGES=@xh/hoist-chat-kit=/abs/path/to/hoist-chat-kit pnpm startWithHoist
+  XH_INLINE_HOIST=true XH_INLINE_PACKAGES=@xh/hoist-chat-kit=/abs/path/to/hoist-chat-kit pnpm exec vitest run
+  ```
+  Drop this once a published chat kit has the blueprint package.
+
 ### Running multiple instances
 
 To run a second, independent instance alongside the first (e.g. to exercise multi-instance
