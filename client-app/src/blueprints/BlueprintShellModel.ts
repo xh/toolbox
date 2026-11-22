@@ -121,6 +121,12 @@ export class BlueprintShellModel extends HoistModel {
      */
     @bindable accessor maximize: 'off' | 'expand' | 'fill' = 'off';
 
+    /** How the library shows its blueprints: as a list, or as cards with schematics. */
+    @bindable accessor libraryView: 'list' | 'cards' = 'list';
+
+    /** The blueprints the library's cards draw, by id, each with the version it was read at. */
+    @observableRef accessor previews: Record<string, {version: number; blueprint: Blueprint}> = {};
+
     /** True to open the next editor on the Architect, its composer focused. */
     @bindable accessor askArchitectOnOpen = false;
 
@@ -325,6 +331,7 @@ export class BlueprintShellModel extends HoistModel {
         this.markPersist('selectedId', {path: `selectedId.${config.type.name}`});
         this.markPersist('recentIds', {path: `recentIds.${config.type.name}`});
         this.markPersist('maximize');
+        this.markPersist('libraryView');
         this.threadStore = new LocalThreadStore({
             storageKey: storageKey ? `${storageKey}.threads` : 'blueprints.designer.threads',
             seed: () => [],
@@ -379,6 +386,13 @@ export class BlueprintShellModel extends HoistModel {
                 run: state => this.followRoute(state?.name, state?.params)
             },
             {track: () => this.view, run: view => this.showPageInAddressBar(view)},
+            {
+                track: () => [this.libraryView, this.summaries],
+                run: ([view]) => {
+                    if (view === 'cards') this.loadPreviewsAsync();
+                },
+                fireImmediately: true
+            },
             {
                 track: () => this.blueprintModel?.version,
                 run: () => {
@@ -698,13 +712,22 @@ export class BlueprintShellModel extends HoistModel {
         }
     }
 
-    /** Open one of the blueprint's publishes, read-only, or its draft again. */
+    /**
+     * Open one of the blueprint's publishes, read-only, or its draft again. One that is refused
+     * leaves the version open as it was, and says why.
+     */
     async openVersionAsync(version: number | 'draft') {
         await this.saveAsync();
         const issues = await this.documentModel.openAsync(
-            this.selectedId,
-            version === 'draft' ? {as: 'draft'} : {as: 'publish', version}
-        );
+                this.selectedId,
+                version === 'draft' ? {as: 'draft'} : {as: 'publish', version}
+            ),
+            error = issues.find(it => it.severity === 'error');
+        if (error) {
+            const what = version === 'draft' ? 'The draft' : `Version ${version}`;
+            XH.dangerToast(`${what} did not open: ${error.message}`);
+            return;
+        }
         runInAction(() => (this.openIssues = issues));
     }
 
@@ -733,7 +756,7 @@ export class BlueprintShellModel extends HoistModel {
     // Implementation
     //------------------
     // The row's actions as a menu at the ⋯ button, as its context menu shows them.
-    private showRowMenu(record: StoreRecord, e: MouseEvent) {
+    showRowMenu(record: StoreRecord, e: MouseEvent) {
         e.stopPropagation();
         const items = this.rowActions.flatMap((it): ReactElement[] => {
             if (it === '-') return [menuDivider()];
@@ -879,6 +902,33 @@ export class BlueprintShellModel extends HoistModel {
             publishes =
                 doc?.access === 'write' ? await this.repository.listPublishesAsync(doc.id) : [];
         runInAction(() => (this.publishes = publishes));
+    }
+
+    // Read the blueprints the cards draw, each once per version: the draft of one's own, else the
+    // latest publish.
+    private async loadPreviewsAsync() {
+        const {previews} = this,
+            versionOf = (s: BlueprintSummary) =>
+                s.access === 'write' ? s.draftVersion : s.publishedVersion,
+            stale = this.summaries.filter(s => previews[s.id]?.version !== versionOf(s)),
+            loaded = await Promise.all(
+                stale.map(s =>
+                    this.repository
+                        .openAsync(s.id, s.access === 'write' ? {as: 'draft'} : {as: 'publish'})
+                        .then(rec =>
+                            rec ? {id: s.id, version: versionOf(s), blueprint: rec.blueprint} : null
+                        )
+                        .catch(() => null)
+                )
+            );
+        if (!loaded.some(Boolean)) return;
+        runInAction(() => {
+            const next = {...this.previews};
+            loaded.forEach(it => {
+                if (it) next[it.id] = {version: it.version, blueprint: it.blueprint};
+            });
+            this.previews = next;
+        });
     }
 
     private async refreshSummariesAsync() {

@@ -1,3 +1,4 @@
+import {widgetPreview} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import type {Blueprint, BlueprintRegistry, FieldDef} from '@xh/hoist-chat-kit/blueprint';
 import {
     ARCHITECT_TOOLS,
@@ -86,10 +87,20 @@ export class RegistryModel extends HoistModel {
                 field: 'name',
                 flex: 1,
                 rendererIsComplex: true,
-                renderer: (v, {record}) => entryName(v, record.data.label, record.data.origin)
+                renderer: (v, {record}) => {
+                    const {label, origin, kind} = record.data,
+                        spec = kind === 'widget' ? this.registry.widgets[v] : null;
+                    return entryName(
+                        v,
+                        label,
+                        origin,
+                        spec ? widgetPreview(spec, {width: 48, height: 16}) : null
+                    );
+                }
             },
             {field: 'label', hidden: true},
             {field: 'origin', hidden: true},
+            {field: 'kind', hidden: true},
             {
                 field: 'used',
                 width: 70,
@@ -421,6 +432,7 @@ export class RegistryModel extends HoistModel {
                     name,
                     label: entry.label && entry.label !== name ? entry.label : null,
                     origin: entry.origin,
+                    kind: entry.kind,
                     used: usedAt.length,
                     usedAt
                 }))

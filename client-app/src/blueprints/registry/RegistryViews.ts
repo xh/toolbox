@@ -14,10 +14,16 @@ import {RegistryModel} from './RegistryModel';
 import type {RegistryEntry} from './registryEntries';
 
 /** A list row's name, with its label when it differs. */
-export function entryName(name: string, label: string, origin: string): ReactNode {
+export function entryName(
+    name: string,
+    label: string,
+    origin: string,
+    glyph?: ReactNode
+): ReactNode {
     return div({
         className: 'tb-registry-item',
         children: [
+            glyph ? span({className: 'tb-registry-item__glyph', children: glyph}) : null,
             span({className: 'tb-registry-item__name', children: name}),
             label ? span({className: 'tb-registry-item__label', children: label}) : null,
             origin === 'app' ? span({className: 'tb-registry-item__app', children: 'App'}) : null

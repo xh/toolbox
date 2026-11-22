@@ -2,6 +2,7 @@ import {DataCatalog, FakeBlueprintDataProvider, isGlobal} from '@xh/hoist-chat-k
 import {XH} from '@xh/hoist/core';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {find} from 'lodash';
+import {wait} from '@xh/hoist/promise';
 import {afterAll, beforeAll, describe, expect, it, vi} from 'vitest';
 import {BlueprintShellModel} from './BlueprintShellModel';
 import {PORTFOLIO_TYPE, WEATHER_TYPE} from './blueprintTypes';
@@ -217,6 +218,27 @@ describe('Blueprints designer', () => {
         } finally {
             prompt.mockRestore();
             confirm.mockRestore();
+        }
+    });
+
+    it("loads each blueprint once for the library's cards, at its current version", async () => {
+        const opens = () => hoistCore.requestsTo('xh/getJsonBlob').length;
+        model.libraryView = 'cards';
+        try {
+            await wait(50);
+            const ids = model.summaries.map(it => it.id);
+            expect(Object.keys(model.previews).sort()).toEqual([...ids].sort());
+            expect(model.previews[byName(PRESETS[0][1]).id].blueprint).toMatchObject({
+                root: p1.root
+            });
+
+            const before = opens();
+            model.libraryView = 'list';
+            model.libraryView = 'cards';
+            await wait(50);
+            expect(opens()).toBe(before);
+        } finally {
+            model.libraryView = 'list';
         }
     });
 
