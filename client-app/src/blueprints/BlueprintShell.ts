@@ -101,140 +101,155 @@ const pages = hoistCmp.factory<PagesProps>({
 });
 
 /** The library, or the blueprint open. */
-const blueprintPage = hoistCmp.factory<BlueprintShellModel>(({model}) =>
-    model.libraryOpen ? libraryPage() : editor()
-);
+const blueprintPage = hoistCmp.factory<BlueprintShellModel>({
+    model: uses(BlueprintShellModel),
+    render: ({model}) => (model.libraryOpen ? libraryPage() : editor())
+});
 
-const libraryPage = hoistCmp.factory<BlueprintShellModel>(({model}) =>
-    panel({
-        className: 'tb-library',
-        items: [
-            div({
-                className: 'tb-library__intro',
-                items: [
-                    div({className: 'tb-library__heading', item: `${model.type.label} blueprints`}),
-                    div({
-                        className: 'tb-library__lede',
-                        item: `Dashboards described as JSON over the ${model.type.label.toLowerCase()} data, built by hand or with the Architect. Your drafts save as you work and stay private until you share them.`
-                    })
-                ]
-            }),
-            toolbar({
-                className: 'tb-library__bar',
-                items: [
-                    storeFilterField({
-                        gridModel: model.listGridModel,
-                        includeFields: ['name', 'description', 'owner'],
-                        placeholder: 'Search name, owner...',
-                        width: 260
-                    }),
-                    filler(),
-                    newMenu()
-                ]
-            }),
-            grid({
-                model: model.listGridModel,
-                agOptions: {
-                    rowHeight: 44,
-                    onCellKeyDown: e => {
-                        const {key} = e.event as KeyboardEvent;
-                        if (key === 'Enter' && e.data && !e.node.group)
-                            model.selectAsync(e.data.id);
+const libraryPage = hoistCmp.factory<BlueprintShellModel>({
+    model: uses(BlueprintShellModel),
+    render: ({model}) =>
+        panel({
+            className: 'tb-library',
+            items: [
+                div({
+                    className: 'tb-library__intro',
+                    items: [
+                        div({
+                            className: 'tb-library__heading',
+                            item: `${model.type.label} blueprints`
+                        }),
+                        div({
+                            className: 'tb-library__lede',
+                            item: `Dashboards described as JSON over the ${model.type.label.toLowerCase()} data, built by hand or with the Architect. Your drafts save as you work and stay private until you share them.`
+                        })
+                    ]
+                }),
+                toolbar({
+                    className: 'tb-library__bar',
+                    items: [
+                        storeFilterField({
+                            gridModel: model.listGridModel,
+                            includeFields: ['name', 'description', 'owner'],
+                            placeholder: 'Search name, owner...',
+                            width: 260
+                        }),
+                        filler(),
+                        newMenu()
+                    ]
+                }),
+                grid({
+                    model: model.listGridModel,
+                    agOptions: {
+                        rowHeight: 44,
+                        onCellKeyDown: e => {
+                            const {key} = e.event as KeyboardEvent;
+                            if (key === 'Enter' && e.data && !e.node.group)
+                                model.selectAsync(e.data.id);
+                        }
                     }
-                }
-            })
-        ]
-    })
-);
+                })
+            ]
+        })
+});
 
-const newMenu = hoistCmp.factory<BlueprintShellModel>(({model}) =>
-    popover({
-        position: 'bottom-right',
-        item: button({
-            text: 'New',
-            icon: Icon.add(),
-            rightIcon: Icon.chevronDown(),
-            intent: 'primary'
-        }),
-        content: menu(
-            menuItem({
-                text: 'Empty dashboard',
-                icon: Icon.layout(),
-                onClick: () => model.newBlueprintAsync()
+const newMenu = hoistCmp.factory<BlueprintShellModel>({
+    model: uses(BlueprintShellModel),
+    render: ({model}) =>
+        popover({
+            position: 'bottom-right',
+            item: button({
+                text: 'New',
+                icon: Icon.add(),
+                rightIcon: Icon.chevronDown(),
+                intent: 'primary'
             }),
-            menuItem({
-                text: 'From a Registry example',
-                icon: Icon.list(),
-                onClick: () => (model.view = 'registry')
-            }),
-            menuItem({
-                text: 'Ask the Architect',
-                icon: Icon.ai(),
-                onClick: () => model.newBlueprintAsync()
-            })
-        )
-    })
-);
+            content: menu(
+                menuItem({
+                    text: 'Empty dashboard',
+                    icon: Icon.layout(),
+                    onClick: () => model.newBlueprintAsync()
+                }),
+                menuItem({
+                    text: 'From a Registry example',
+                    icon: Icon.list(),
+                    onClick: () => (model.view = 'registry')
+                }),
+                menuItem({
+                    text: 'Ask the Architect',
+                    icon: Icon.ai(),
+                    onClick: () => model.newBlueprintAsync()
+                })
+            )
+        })
+});
 
 /** The open blueprint: the Architect beside it, and its Inspector in design. */
-const editor = hoistCmp.factory<BlueprintShellModel>(() => hframe(architectPanel(), mainPanel()));
+const editor = hoistCmp.factory<BlueprintShellModel>({
+    model: uses(BlueprintShellModel),
+    render: () => hframe(architectPanel(), mainPanel())
+});
 
-const mainPanel = hoistCmp.factory<BlueprintShellModel>(({model}) => {
-    const {blueprintModel, selected} = model;
-    // A failed open leaves the previous blueprint in the model, which must not show under this title.
-    const shown = blueprintModel.blueprint && !model.openIssues.some(it => it.severity === 'error');
-    return hframe(
-        panel({
-            title: selected?.name ?? 'No blueprint',
-            icon: Icon.layout(),
-            compactHeader: true,
-            headerItems: [
-                button({
-                    text: 'Library',
-                    icon: Icon.chevronLeft(),
-                    onClick: () => model.showLibraryAsync()
-                }),
-                ...(shown
-                    ? [
-                          span({
-                              className: classNames(
-                                  'tb-blueprints__version',
-                                  model.documentModel.isStale && 'xh-intent-warning'
-                              ),
-                              title: model.documentModel.isStale
-                                  ? 'Saved elsewhere since you opened it, so your edits here are not saved. From the menu, Reload to take the saved draft, or Save as new to keep yours.'
-                                  : null,
-                              item: documentStatus(model)
-                          }),
-                          button({
-                              text: 'Publish',
-                              icon: Icon.upload(),
-                              omit:
-                                  !model.canEdit ||
-                                  !model.documentModel.canPublish ||
-                                  model.documentModel.isStale,
-                              onClick: () => model.publishSelectedAsync()
-                          }),
-                          segmentedControl({
-                              omit: !model.canEdit,
-                              value: blueprintModel.mode,
-                              onChange: mode => blueprintModel.setMode(mode),
-                              compact: true,
-                              options: [
-                                  {value: 'design', label: 'Design', icon: Icon.edit()},
-                                  {value: 'run', label: 'Run', icon: Icon.play()}
-                              ]
-                          }),
-                          blueprintMenu()
-                      ]
-                    : [])
-            ],
-            item: shown
-                ? blueprintView({model: blueprintModel, designModel: model.designModel})
-                : placeholder(Icon.layout(), emptyText(model))
-        }),
-        selected && shown ? inspectorPanel() : null
-    );
+const mainPanel = hoistCmp.factory<BlueprintShellModel>({
+    model: uses(BlueprintShellModel),
+    render: ({model}) => {
+        const {blueprintModel, selected} = model;
+        // A failed open leaves the previous blueprint in the model, which must not show under this title.
+        const shown =
+            blueprintModel.blueprint && !model.openIssues.some(it => it.severity === 'error');
+        return hframe(
+            panel({
+                title: selected?.name ?? 'No blueprint',
+                icon: Icon.layout(),
+                compactHeader: true,
+                headerItems: [
+                    button({
+                        text: 'Library',
+                        icon: Icon.chevronLeft(),
+                        onClick: () => model.showLibraryAsync()
+                    }),
+                    ...(shown
+                        ? [
+                              span({
+                                  className: classNames(
+                                      'tb-blueprints__version',
+                                      model.documentModel.isStale && 'xh-intent-warning'
+                                  ),
+                                  title: model.documentModel.isStale
+                                      ? 'Saved elsewhere since you opened it, so your edits here are not saved. From the menu, Reload to take the saved draft, or Save as new to keep yours.'
+                                      : null,
+                                  item: documentStatus(model)
+                              }),
+                              button({
+                                  text: 'Publish',
+                                  icon: Icon.upload(),
+                                  omit:
+                                      !model.canEdit ||
+                                      !model.documentModel.canPublish ||
+                                      model.documentModel.isStale,
+                                  onClick: () => model.publishSelectedAsync()
+                              }),
+                              segmentedControl({
+                                  omit: !model.canEdit,
+                                  value: blueprintModel.mode,
+                                  onChange: mode => blueprintModel.setMode(mode),
+                                  compact: true,
+                                  options: [
+                                      {value: 'design', label: 'Design', icon: Icon.edit()},
+                                      {value: 'run', label: 'Run', icon: Icon.play()}
+                                  ]
+                              }),
+                              blueprintMenu()
+                          ]
+                        : [])
+                ],
+                item: shown
+                    ? blueprintView({model: blueprintModel, designModel: model.designModel})
+                    : placeholder(Icon.layout(), emptyText(model))
+            }),
+            selected && shown ? inspectorPanel() : null
+        );
+    }
 });
 
 function emptyText({selected, openIssues}: BlueprintShellModel): string {

@@ -1,15 +1,16 @@
 import {chatPanel} from '@xh/hoist-chat-kit/desktop/cmp/chat';
 import {placeholder, span} from '@xh/hoist/cmp/layout';
-import {hoistCmp, XH} from '@xh/hoist/core';
+import {hoistCmp, uses, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import type {BlueprintShellModel} from './BlueprintShellModel';
+import {BlueprintShellModel} from './BlueprintShellModel';
 import {usageText} from './llmUsage';
 
 /** The Architect's conversation about the open blueprint. */
 export const architectPanel = hoistCmp.factory<BlueprintShellModel>({
     displayName: 'ArchitectPanel',
+    model: uses(BlueprintShellModel),
 
     render({model}) {
         const {chatModel, usage} = model,
