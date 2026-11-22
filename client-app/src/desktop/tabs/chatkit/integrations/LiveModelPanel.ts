@@ -54,7 +54,7 @@ class LiveModelPanelModel extends HoistModel {
     }
 
     private createChatConfig(): ChatModelConfig {
-        const catalog = this.useCatalog ? createCatalog() : null,
+        const catalog = this.useCatalog ? createCatalog({withDocuments: true}) : null,
             system = catalog ? `${SYSTEM_PROMPT}\n\n${catalog.instructions}` : SYSTEM_PROMPT;
 
         return {

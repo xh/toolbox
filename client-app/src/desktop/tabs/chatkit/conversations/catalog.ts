@@ -3,6 +3,8 @@ import {
     chatUiCardSpec,
     chatUiChartSpec,
     chatUiGridSpec,
+    chatUiProgressBarsSpec,
+    chatUiPropertyTableSpec,
     chatUiStackSpec,
     chatUiStatCardsSpec,
     chatUiTextSpec
@@ -13,7 +15,7 @@ import {
  * model shows by calling `show_stat_cards`, `show_grid`, `show_chart` and `show_card`.
  *
  * @param withDocuments - also offer `show_ui` documents, which lay out several components, with
- *      `stack` and `text` to arrange them.
+ *      `stack` and `text` to arrange them, and `progressBars` and `propertyTable`, which only nest.
  */
 export function createCatalog({
     withDocuments = false
@@ -25,7 +27,14 @@ export function createCatalog({
             chatUiGridSpec({maxRows: 50}),
             chatUiChartSpec(),
             chatUiCardSpec(),
-            ...(withDocuments ? [chatUiStackSpec(), chatUiTextSpec()] : [])
+            ...(withDocuments
+                ? [
+                      chatUiStackSpec(),
+                      chatUiTextSpec(),
+                      chatUiProgressBarsSpec(),
+                      chatUiPropertyTableSpec()
+                  ]
+                : [])
         ],
         instructions:
             'The user is a portfolio manager. Lead with stat cards for headline numbers, use ' +
