@@ -196,6 +196,30 @@ describe('Blueprints designer', () => {
         expect(model.publishes.at(-1).note).toBe('Grouped by sector');
     });
 
+    it('copies, renames and deletes from the library without opening the blueprint', async () => {
+        await model.showLibraryAsync();
+        const openId = model.documentModel.document?.id,
+            prompt = vi.spyOn(XH, 'prompt').mockResolvedValue('Library copy'),
+            confirm = vi.spyOn(XH, 'confirm').mockResolvedValue(true);
+        try {
+            await model.copyFromLibraryAsync(byName(PRESETS[0][1]).id);
+            const copy = byName('Library copy');
+            expect(copy).toMatchObject({access: 'write'});
+
+            prompt.mockResolvedValue('Library copy renamed');
+            await model.renameFromLibraryAsync(copy.id);
+            expect(byName('Library copy renamed')?.id).toBe(copy.id);
+
+            await model.deleteFromLibraryAsync(copy.id);
+            expect(byName('Library copy renamed')).toBeUndefined();
+            expect(model.libraryOpen).toBe(true);
+            expect(model.documentModel.document?.id).toBe(openId);
+        } finally {
+            prompt.mockRestore();
+            confirm.mockRestore();
+        }
+    });
+
     it('renames the blueprint open, and refuses a name the user already has', async () => {
         const id = byName(MINE_TOO).id;
         await model.selectAsync(id);

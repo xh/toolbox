@@ -6,7 +6,7 @@ import type {HoistProps} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import classNames from 'classnames';
-import {editTarget, undoneVersions} from './historyTimeline';
+import {editTarget, originals, undoneVersions} from './historyTimeline';
 
 export interface EditCardState {
     /** True if the edit is in the blueprint's history, as made since it last opened. */
@@ -42,7 +42,8 @@ export function editCardState(
     if (!undoAllowed) {
         return ret(false, 'Undo needs design mode, and waits for the Architect to finish.');
     }
-    if (history.at(-1) !== entry) {
+    const last = history.at(-1);
+    if (last !== entry && originals(history)((last as {version: number}).version) !== version) {
         return ret(false, 'Undo the later edits first, from the bar or History.');
     }
     return ret(true, null);

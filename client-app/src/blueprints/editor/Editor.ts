@@ -32,7 +32,7 @@ export const editor = hoistCmp.factory({
             documentBar(),
             hframe(
                 dockRail(),
-                dock(),
+                model.dockOpen ? dock() : null,
                 shell.editorView === 'json' && model.shown ? jsonView() : blueprintPane(),
                 model.isDesigning && model.shown ? inspector() : null
             )

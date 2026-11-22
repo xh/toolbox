@@ -65,8 +65,9 @@ export class DocumentBarModel extends HoistModel {
 
     /** The open blueprint's errors and warnings, errors first. */
     get issues(): BlueprintIssue[] {
-        const {issues, saveIssues} = this.shell,
-            all = [...saveIssues, ...issues];
+        const {issues, saveIssues, documentModel} = this.shell,
+            // The status pill says a stale draft is not saved, so its refusal is not repeated here.
+            all = [...(documentModel.isStale ? [] : saveIssues), ...issues];
         return [
             ...all.filter(it => it.severity === 'error'),
             ...all.filter(it => it.severity !== 'error')

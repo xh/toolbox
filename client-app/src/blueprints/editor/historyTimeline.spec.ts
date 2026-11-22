@@ -24,19 +24,21 @@ describe('historyTimeline', () => {
         });
     });
 
-    it('strikes an edit undone, and clears it when redone', () => {
-        const undone = (history, stamps) =>
-            historyTimeline(history, [], stamps)
-                .filter(it => it.undone)
-                .map(it => it.version);
+    it('folds undo and redo into the original edit: struck while undone', () => {
+        const rows = (history, stamps) => historyTimeline(history, [], stamps);
         const h = [edit(1), edit(2, {undoes: 1, description: 'Undo: Edit 1'})];
-        expect(undone(h, {1: 1, 2: 2})).toEqual([1]);
+        expect(rows(h, {1: 1, 2: 2}).map(it => [it.version, it.undone])).toEqual([[1, true]]);
 
         h.push(edit(3, {redoes: 1, description: 'Redo: Edit 1'}));
-        expect(undone(h, {1: 1, 2: 2, 3: 3})).toEqual([]);
+        expect(rows(h, {1: 1, 2: 2, 3: 3}).map(it => [it.version, it.undone])).toEqual([
+            [1, false]
+        ]);
 
+        // A second undo reverts the redo, which stands for the original.
         h.push(edit(4, {undoes: 3, description: 'Undo: Edit 1'}));
-        expect(undone(h, {1: 1, 2: 2, 3: 3, 4: 4})).toEqual([3]);
+        expect(rows(h, {1: 1, 2: 2, 3: 3, 4: 4}).map(it => [it.version, it.undone])).toEqual([
+            [1, true]
+        ]);
     });
 });
 

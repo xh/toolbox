@@ -41,6 +41,13 @@ const RUN_TABS: DockTabSpec[] = [
     {id: 'history', title: 'History', icon: Icon.history()}
 ];
 
+const INSPECTOR_TABS = {
+    element: 'config',
+    variable: 'variables',
+    source: 'sources',
+    preset: 'presets'
+};
+
 /**
  * The open blueprint's editor: the left dock and its tabs, the Inspector's tabs, the History
  * timeline, and the JSON view's draft.
@@ -67,7 +74,7 @@ export class EditorModel extends HoistModel {
 
     @managed dockPanelModel = new PanelModel({
         side: 'left',
-        defaultSize: 380,
+        defaultSize: 320,
         minSize: 280,
         collapsible: true,
         showCollapsedStrip: false,
@@ -78,7 +85,7 @@ export class EditorModel extends HoistModel {
 
     @managed inspectorPanelModel = new PanelModel({
         side: 'right',
-        defaultSize: 400,
+        defaultSize: 360,
         minSize: 280,
         collapsible: true,
         persistWith: {localStorageKey: 'blueprintsInspector'}
@@ -311,6 +318,14 @@ export class EditorModel extends HoistModel {
                 track: () => blueprintModel.variables.map(v => [v, v.value, v.isSet]),
                 run: () => this.valuesGridModel.loadData(blueprintModel.variables.map(toValueRow)),
                 fireImmediately: true
+            },
+            {
+                // Until one inspector edits every kind, show the tab for what is selected.
+                track: () => shell.designModel.selection?.kind,
+                run: kind => {
+                    const tab = INSPECTOR_TABS[kind];
+                    if (tab) this.inspectorTabsModel.activateTab(tab);
+                }
             },
             {
                 // A reader opens on the blueprint, with the dock closed.

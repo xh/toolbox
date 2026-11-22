@@ -148,6 +148,11 @@ export class BlueprintShellModel extends HoistModel {
         groupSortFn: (a, b) => LIBRARY_GROUPS.indexOf(a) - LIBRARY_GROUPS.indexOf(b),
         sortBy: 'name',
         emptyText: 'No blueprints match.',
+        showGroupRowCounts: false,
+        groupRowRenderer: ({value, node}) => {
+            const n = node.allLeafChildren.filter(it => !it.data?.data.placeholder).length;
+            return `${value} (${n})`;
+        },
         rowClassFn: rec => (rec?.data.placeholder ? 'tb-library__hint' : null),
         onRowDoubleClicked: ({data}) => data && !data.placeholder && this.selectAsync(data.id),
         contextMenu: [
@@ -295,6 +300,8 @@ export class BlueprintShellModel extends HoistModel {
                 ],
                 run: rows => {
                     this.listGridModel.loadData(rows);
+                    // Group rows keep their render while their key holds, so counts would go stale.
+                    this.listGridModel.agApi?.redrawRows();
                     this.listGridModel.selModel.select(this.selectedId);
                 },
                 equals: compareStructural,
@@ -536,14 +543,25 @@ export class BlueprintShellModel extends HoistModel {
             : null;
     }
 
+    /** Copy a blueprint from its library row, staying on the library with the copy selected. */
     async copyFromLibraryAsync(id: string) {
-        await this.selectAsync(id);
-        await this.copySelectedAsync();
+        const summary = find(this.summaries, {id}),
+            name = await this.promptNameAsync('Copy blueprint', 'Copy', `${summary.name} (copy)`);
+        if (!name) return;
+        const from = summary.publishedVersion ? undefined : ({as: 'draft'} as const),
+            record = await this.repository.copyAsync(id, {name, from}).catchDefault();
+        if (!record) return;
+        await this.refreshSummariesAsync();
+        this.listGridModel.selModel.select(record.id);
     }
 
+    /** Rename a blueprint from its library row, staying on the library. */
     async renameFromLibraryAsync(id: string) {
-        await this.selectAsync(id);
-        await this.renameSelectedAsync();
+        const summary = find(this.summaries, {id}),
+            name = await this.promptNameAsync('Rename blueprint', 'Rename', summary.name);
+        if (!name || name === summary.name) return;
+        const renamed = await this.repository.renameAsync(id, {name}).catchDefault();
+        if (renamed) await this.refreshSummariesAsync();
     }
 
     async shareFromLibraryAsync(id: string) {
@@ -551,9 +569,17 @@ export class BlueprintShellModel extends HoistModel {
         runInAction(() => (this.shareOpen = true));
     }
 
+    /** Delete a blueprint from its library row, staying on the library. */
     async deleteFromLibraryAsync(id: string) {
-        await this.selectAsync(id);
-        await this.deleteSelectedAsync();
+        const summary = find(this.summaries, {id});
+        if (!summary || !(await this.confirmDeleteAsync(summary.name))) return;
+        await this.repository.deleteAsync(id);
+        await this.threadStore.deleteThreadsAsync([id]).catch(() => {});
+        await this.refreshSummariesAsync();
+        runInAction(() => {
+            if (this.selectedId === id) this.selectedId = null;
+            this.recentIds = this.recentIds.filter(it => it !== id);
+        });
     }
 
     /** Show the library in place of the blueprint open, saving its draft first. */
@@ -592,13 +618,9 @@ export class BlueprintShellModel extends HoistModel {
 
     async deleteSelectedAsync() {
         const {selected} = this;
-        if (!selected) return;
-        const confirmed = await XH.confirm({
-            title: 'Delete blueprint',
-            message: `Delete "${selected.name}", with its publishes and its conversation with the Architect?`,
-            confirmProps: {text: 'Delete', intent: 'danger', outlined: true}
-        });
-        if (confirmed) await this.deleteBlueprintAsync();
+        if (selected && (await this.confirmDeleteAsync(selected.name))) {
+            await this.deleteBlueprintAsync();
+        }
     }
 
     /** Open one of the blueprint's publishes, read-only, or its draft again. */
@@ -794,6 +816,14 @@ export class BlueprintShellModel extends HoistModel {
     private saveConversation(id: string = this.documentModel?.document?.id) {
         if (!id) return;
         this.threadStore.saveThread({id, messages: this.chatModel.getMessageSpecs()});
+    }
+
+    private confirmDeleteAsync(name: string): Promise<boolean> {
+        return XH.confirm({
+            title: 'Delete blueprint',
+            message: `Delete "${name}", with its publishes and its conversation with the Architect?`,
+            confirmProps: {text: 'Delete', intent: 'danger', outlined: true}
+        });
     }
 
     private async promptNameAsync(title: string, action: string, initialValue: string) {

@@ -40,16 +40,18 @@ export function historyTimeline(
     stamps: Record<number, number>
 ): TimelineRow[] {
     const undone = undoneVersions(history),
-        edits: TimelineRow[] = history.map(it => ({
-            id: `edit-${it.version}`,
-            kind: 'edit',
-            version: it.version,
-            time: stamps[it.version] ?? null,
-            author: it.author ?? 'user',
-            description: it.description ?? 'Edit',
-            undone: undone.has(it.version),
-            ops: it.ops
-        })),
+        edits: TimelineRow[] = history
+            .filter(it => it.undoes == null && it.redoes == null)
+            .map(it => ({
+                id: `edit-${it.version}`,
+                kind: 'edit',
+                version: it.version,
+                time: stamps[it.version] ?? null,
+                author: it.author ?? 'user',
+                description: it.description ?? 'Edit',
+                undone: undone.has(it.version),
+                ops: it.ops
+            })),
         pubs: TimelineRow[] = publishes.map(it => ({
             id: `publish-${it.version}`,
             kind: 'publish',
@@ -63,14 +65,30 @@ export function historyTimeline(
     return orderBy([...edits, ...pubs], [it => it.time ?? 0], ['desc']);
 }
 
-/** The versions of the edits undone since, and not redone. */
+/**
+ * The versions of the edits undone since, and not redone. A redo stands for the edit it applies
+ * again, so undoing a redo marks the original.
+ */
 export function undoneVersions(history: BlueprintEdit[]): Set<number> {
-    const ret = new Set<number>();
+    const ret = new Set<number>(),
+        original = originals(history);
     history.forEach(it => {
-        if (it.undoes != null) ret.add(it.undoes);
-        if (it.redoes != null) ret.delete(it.redoes);
+        if (it.undoes != null) ret.add(original(it.undoes));
+        if (it.redoes != null) ret.delete(original(it.redoes));
     });
     return ret;
+}
+
+/** Maps a version to the edit it stands for: a redo's original, else itself. */
+export function originals(
+    history: (BlueprintEdit & {version?: number})[]
+): (version: number) => number {
+    const of = new Map<number, number>();
+    history.forEach(it => {
+        if (it.redoes != null && it.version != null)
+            of.set(it.version, of.get(it.redoes) ?? it.redoes);
+    });
+    return version => of.get(version) ?? version;
 }
 
 /** What an edit touched first that may still be there: an element, variable, source or preset. */

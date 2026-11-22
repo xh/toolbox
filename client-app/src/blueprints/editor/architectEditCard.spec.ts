@@ -30,7 +30,7 @@ describe('editCardState', () => {
         const h = [edit(1), edit(2, {author: 'user', undoes: 1, description: 'Undo: Edit 1'})];
         expect(editCardState(h, 1, 'Edit 1', true)).toMatchObject({undone: true, canUndo: false});
         h.push(edit(3, {author: 'user', redoes: 1, description: 'Redo: Edit 1'}));
-        expect(editCardState(h, 1, 'Edit 1', true)).toMatchObject({undone: false});
+        expect(editCardState(h, 1, 'Edit 1', true)).toMatchObject({undone: false, canUndo: true});
     });
 
     it('matches nothing from before the blueprint last opened, even at the same version', () => {
