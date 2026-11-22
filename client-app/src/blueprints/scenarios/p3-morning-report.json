@@ -184,7 +184,7 @@
             "component": "dashCanvas",
             "children": [
                 {"id": "groupChooser", "x": 0, "y": 0, "w": 4, "h": 1},
-                {"id": "pnlButtons", "x": 4, "y": 0, "w": 4, "h": 1},
+                {"id": "pnlButtons", "x": 4, "y": 0, "w": 8, "h": 1},
                 {"id": "posGrid", "x": 0, "y": 1, "w": 8, "h": 9, "headerItems": [{"id": "posViewsSelector"}]},
                 {"id": "priceChart", "x": 8, "y": 1, "w": 4, "h": 9}
             ]
