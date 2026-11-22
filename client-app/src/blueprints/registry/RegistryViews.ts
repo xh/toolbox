@@ -43,11 +43,13 @@ export const entryExample = hoistCmp.factory<RegistryModel>({
                           children: blueprintView({model: model.exampleModel})
                       })
                     : placeholder(
-                          model.exampleError
-                              ? `Cannot render: ${model.exampleError}`
-                              : model.context === 'dashboard'
-                                ? 'This widget has no example.'
-                                : 'Examples render in the Dashboard registry only.'
+                          model.exampleNeedsBlueprint
+                              ? 'Container examples render in a full blueprint.'
+                              : model.exampleError
+                                ? `Cannot render: ${model.exampleError}`
+                                : model.context === 'dashboard'
+                                  ? 'This widget has no example.'
+                                  : 'Examples render in the Dashboard registry only.'
                       );
             case 'renderer': {
                 const users = model.rendererUsers;

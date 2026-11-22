@@ -1,5 +1,10 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
-import {DataCatalog, registryUsages} from '@xh/hoist-chat-kit/blueprint';
+import {
+    DataCatalog,
+    exampleBlueprintOf,
+    registryUsages,
+    validateBlueprint
+} from '@xh/hoist-chat-kit/blueprint';
 import {chatUiStackSpec, chatUiTextSpec} from '@xh/hoist-chat-kit/desktop/cmp/genui';
 import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {describe, expect, it} from 'vitest';
@@ -109,5 +114,19 @@ describe('registry used marks', () => {
         expect(registryUsages(bp, answers, catalog)['presentation:chart.card']).toEqual([
             '/elements/c/config/presentation'
         ]);
+    });
+});
+
+describe('built-in examples', () => {
+    it('each widget example in the dashboard registry builds a valid blueprint', () => {
+        const problems = Object.entries(dashboard.widgets).flatMap(([name, spec]) => {
+            if (!spec.example) return [];
+            const {blueprint, missing} = exampleBlueprintOf({...spec, name}, catalog);
+            if (!blueprint) return [`${name}: unresolved ${missing.join(', ')}`];
+            return validateBlueprint(blueprint, {registry: dashboard, catalog})
+                .filter(it => it.severity === 'error')
+                .map(it => `${name}: ${it.code} ${it.path} ${it.message}`);
+        });
+        expect(problems).toEqual([]);
     });
 });

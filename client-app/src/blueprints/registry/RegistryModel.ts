@@ -3,6 +3,7 @@ import {
     ARCHITECT_TOOLS,
     architectPrompt,
     BlueprintModel,
+    exampleBlueprintOf,
     registryUsages
 } from '@xh/hoist-chat-kit/blueprint';
 import type {ArchitectTarget} from '@xh/hoist-chat-kit/blueprint';
@@ -68,6 +69,9 @@ export class RegistryModel extends HoistModel {
 
     /** Why the selected widget's example could not render, if it couldn't. */
     @observable accessor exampleError: string = null;
+
+    /** True if the selected widget's example names children it does not carry. */
+    @observable accessor exampleNeedsBlueprint = false;
 
     @managed listModel = new GridModel({
         store: {idSpec: 'id'},
@@ -416,35 +420,10 @@ export class RegistryModel extends HoistModel {
         tabs.activateTab(want);
     }
 
-    /**
-     * A blueprint of a widget's example alone. A source it names gets a source of that dataset,
-     * whose required dates are prompted variables that start at today, so data loads.
-     */
     private exampleBlueprint(entry: RegistryEntry): Blueprint {
-        const example = entry?.kind === 'widget' ? entry.spec.example : null;
-        if (!example) return null;
-        const {catalog} = this.blueprintModel,
-            source = example.config?.source,
-            bp: PlainObject = {root: entry.name, elements: {[entry.name]: example}},
-            ds = isString(source) ? catalog.getDataset(source) : null;
-        if (ds) {
-            const dates = Object.keys(ds.params).filter(
-                n => ds.params[n].required && ds.params[n].type === 'localDate'
-            );
-            bp.variables = Object.fromEntries(
-                dates.map(n => [
-                    n,
-                    {type: 'localDate', setBy: 'prompt', default: {resolver: 'today'}}
-                ])
-            );
-            bp.sources = {
-                [source]: {
-                    dataset: source,
-                    params: Object.fromEntries(dates.map(n => [n, {$var: n}]))
-                }
-            };
-        }
-        return bp as Blueprint;
+        if (entry?.kind !== 'widget') return null;
+        return exampleBlueprintOf({...entry.spec, name: entry.name}, this.blueprintModel.catalog)
+            .blueprint;
     }
 
     @action
@@ -452,6 +431,8 @@ export class RegistryModel extends HoistModel {
         XH.safeDestroy(this.exampleModel);
         this.exampleModel = null;
         this.exampleError = null;
+        this.exampleNeedsBlueprint =
+            entry?.kind === 'widget' && !!entry.spec.example && !this.exampleBlueprint(entry);
         const blueprint = this.context === 'dashboard' ? this.exampleBlueprint(entry) : null;
         if (!blueprint) return;
         const {catalog, registry, dataProvider} = this.blueprintModel;

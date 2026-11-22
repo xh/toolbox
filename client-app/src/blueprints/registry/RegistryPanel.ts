@@ -101,7 +101,8 @@ const entryDetail = hoistCmp.factory<RegistryModel>({
                                     omit: !(
                                         model.context === 'dashboard' &&
                                         entry.kind === 'widget' &&
-                                        spec.example
+                                        spec.example &&
+                                        !model.exampleNeedsBlueprint
                                     ),
                                     onClick: () => model.loadExample()
                                 })
