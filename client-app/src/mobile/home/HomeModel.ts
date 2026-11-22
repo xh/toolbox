@@ -3,12 +3,7 @@ import {action, bindable, observableRef, runInAction} from '@xh/hoist/mobx';
 import type {WidgetSpec} from './widgets/WidgetCatalog';
 import {DEFAULT_WIDGET_IDS, WIDGETS, widgetSpec} from './widgets/WidgetCatalog';
 
-/** Drag result shape from react-beautiful-dnd (kept local to avoid a kit type import). */
-interface DragResult {
-    draggableId: string;
-    source: {droppableId: string; index: number};
-    destination?: {droppableId: string; index: number};
-}
+export type WidgetGroup = 'home' | 'available';
 
 /**
  * State + behavior for the mobile home widget dashboard.
@@ -43,6 +38,9 @@ export class HomeModel extends HoistModel {
      * {@link dashboardWidgets}.
      */
     @observableRef private accessor frozenDashboardIds: string[] = null;
+
+    /** Transient: the live order of both lists during a drag, shown in place of the saved order. */
+    @observableRef private accessor dragOrder: Record<WidgetGroup, string[]> = null;
 
     constructor() {
         super();
@@ -88,11 +86,11 @@ export class HomeModel extends HoistModel {
     }
 
     get homeWidgets(): WidgetSpec[] {
-        return this.resolvedHomeIds.map(widgetSpec);
+        return (this.dragOrder?.home ?? this.resolvedHomeIds).map(widgetSpec);
     }
 
     get availableWidgets(): WidgetSpec[] {
-        return this.resolvedAvailableIds.map(widgetSpec);
+        return (this.dragOrder?.available ?? this.resolvedAvailableIds).map(widgetSpec);
     }
 
     //------------------------
@@ -126,24 +124,49 @@ export class HomeModel extends HoistModel {
         this.availableIds = available;
     }
 
-    /** Apply a drag-reorder across the two droppable lists ('home' / 'available'). */
-    onDragEnd = (result: DragResult) => {
-        const {draggableId, source, destination} = result;
-        if (!destination) return; // dropped outside a list
+    //------------------------
+    // Drag between the two lists
+    //------------------------
+    /**
+     * Show `id` dragged onto `targetId` in `group` - taking its slot, or at the end of `group` if
+     * `targetId` is null. Nothing is saved until {@link commitDrag}.
+     */
+    @action
+    previewMove(id: string, group: WidgetGroup, targetId: string = null) {
+        const order = this.dragOrder ?? {
+                home: this.resolvedHomeIds,
+                available: this.resolvedAvailableIds
+            },
+            targetIdx = targetId ? order[group].indexOf(targetId) : -1,
+            next = {
+                home: order.home.filter(it => it !== id),
+                available: order.available.filter(it => it !== id)
+            },
+            to = next[group];
+        if (id === targetId) return;
+        to.splice(targetIdx < 0 ? to.length : targetIdx, 0, id);
+        this.dragOrder = next;
+    }
 
-        const home = [...this.resolvedHomeIds],
-            available = [...this.resolvedAvailableIds],
-            from = source.droppableId === 'home' ? home : available,
-            to = destination.droppableId === 'home' ? home : available;
+    /** True if `group`, as shown, holds no widget other than `id`. */
+    isEmptyBesides(group: WidgetGroup, id: string): boolean {
+        const widgets = group === 'home' ? this.homeWidgets : this.availableWidgets;
+        return widgets.every(w => w.id === id);
+    }
 
-        from.splice(source.index, 1);
-        to.splice(destination.index, 0, draggableId);
+    /** Save the order shown by {@link previewMove}. */
+    @action
+    commitDrag() {
+        if (!this.dragOrder) return;
+        this.homeIds = this.dragOrder.home;
+        this.availableIds = this.dragOrder.available;
+        this.dragOrder = null;
+    }
 
-        runInAction(() => {
-            this.homeIds = home;
-            this.availableIds = available;
-        });
-    };
+    @action
+    cancelDrag() {
+        this.dragOrder = null;
+    }
 
     @action
     restoreDefaults() {

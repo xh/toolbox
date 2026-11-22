@@ -18,6 +18,8 @@
 
 * Added a Chat Kit tab to the desktop app - a tour of `@xh/hoist-chat-kit`, XH's new library of chat components for Hoist apps. Component pages put `ChatPanel`, `ChatComposer`, `ChatMessageList`, `ChatMarkdown`, sources and citations, the empty state, feedback, status cues and theming in a playground of their curated props. Scripted conversations show rich content, reasoning and tools, the agent timeline, approvals, agent questions, attachments, errors and stop, and generative UI without a server or a model. Two integrations show the kit wired up: a full `chatWorkspace` over a client-side thread store, and a live Claude chat relayed by the Toolbox server with tools that act on the app.
 * Added the Hoist Chat Kit docs to the Docs tab, served from the installed `@xh/hoist-chat-kit` package or a sibling checkout in local development, and a `$CK` link token that opens them in the viewer.
+* Added a `Chip` demo page to Components > General, showing hoist-react's new compact label, with a playground, filled, minimal and outlined styles for each intent and a custom color, sizes, toggle and removable chips, and chips in an inspector, a toolbar and a grid column.
+* Added a `SortableList` demo page to Components > General, showing hoist-react's new drag-to-reorder list, with a playground, a horizontal list of chips, auto-scroll in a scrolling box, disabled items, and compact rows with an expandable detail and an Add row.
 
 ### Technical
 

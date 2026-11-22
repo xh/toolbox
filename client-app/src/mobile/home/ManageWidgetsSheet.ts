@@ -2,14 +2,14 @@ import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
 import type {HoistProps} from '@xh/hoist/core';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {dragDropContext, draggable, droppable} from '@xh/hoist/kit/react-beautiful-dnd';
+import {dragDropProvider, isSortable, useDroppable, useSortable} from '@xh/hoist/kit/dnd-kit';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {switchInput} from '@xh/hoist/mobile/cmp/input';
 import classNames from 'classnames';
 import {isEmpty} from 'lodash';
-import type {ReactElement} from 'react';
 import {createPortal} from 'react-dom';
 import {pullUpSheet} from '../cmp/pullUpSheet/PullUpSheet';
+import type {WidgetGroup} from './HomeModel';
 import {HomeModel} from './HomeModel';
 import type {WidgetSpec} from './widgets/WidgetCatalog';
 import './ManageWidgetsSheet.scss';
@@ -28,11 +28,7 @@ export const manageWidgetsSheet = hoistCmp.factory({
     render({model}) {
         if (!model.isManaging) return null;
 
-        // Portal the sheet to <body> so it (and its dnd content) escapes the Hoist navigator's Swiper
-        // wrapper, which carries an (identity) CSS transform. That transform is a containing block for
-        // the drag clone's position:fixed and would offset the floating row below the finger;
-        // rendering at <body> leaves no transformed ancestor, so the in-place clone tracks the
-        // pointer. (Paired with the sheet panel's transform-free `bottom` slide - see PullUpSheet.)
+        // Portal the sheet to <body>, out of the Hoist navigator's Swiper wrapper and its CSS transform.
         return createPortal(
             pullUpSheet({
                 className: 'tb-manage-widgets',
@@ -79,17 +75,33 @@ const resetFooter = hoistCmp.factory<HomeModel>(({model}) =>
 const sheetBody = hoistCmp.factory<HomeModel>(({model}) =>
     div({
         className: 'tb-manage-widgets__body',
-        children: dragDropContext({
-            onDragEnd: model.onDragEnd,
+        children: dragDropProvider({
+            // React renders the live order, so dnd-kit never moves a row's DOM node between lists.
+            onDragOver: e => {
+                e.preventDefault();
+                const {source, target} = e.operation;
+                if (!source || !target) return;
+                if (isSortable(target)) {
+                    model.previewMove(
+                        String(source.id),
+                        target.group as WidgetGroup,
+                        String(target.id)
+                    );
+                } else if (model.isEmptyBesides(target.id as WidgetGroup, String(source.id))) {
+                    // Over a list's padding, not a row - only an empty list takes the drop there.
+                    model.previewMove(String(source.id), target.id as WidgetGroup);
+                }
+            },
+            onDragEnd: e => (e.canceled ? model.cancelDrag() : model.commitDrag()),
             children: [
                 group({
-                    droppableId: 'home',
+                    groupId: 'home',
                     label: 'On your home',
                     widgets: model.homeWidgets,
                     emptyText: 'No widgets on your home yet - toggle one on below.'
                 }),
                 group({
-                    droppableId: 'available',
+                    groupId: 'available',
                     label: 'Available',
                     widgets: model.availableWidgets,
                     emptyText: 'You have added all the widgets.'
@@ -100,31 +112,25 @@ const sheetBody = hoistCmp.factory<HomeModel>(({model}) =>
 );
 
 interface GroupProps extends HoistProps {
-    droppableId: string;
+    groupId: WidgetGroup;
     label: string;
     widgets: WidgetSpec[];
     emptyText: string;
 }
 
-const group = hoistCmp.factory<GroupProps>(({droppableId, label, widgets, emptyText}) => {
-    const onHome = droppableId === 'home';
+const group = hoistCmp.factory<GroupProps>(({groupId, label, widgets, emptyText}) => {
+    // The list itself is a drop target, so an empty list can still take a widget.
+    const {ref} = useDroppable({id: groupId, accept: 'widget', collisionPriority: 0});
     return div({
         className: 'tb-manage-widgets__group',
         children: [
             div({className: 'tb-manage-widgets__group-label', children: label}),
-            droppable({
-                droppableId,
-                children: dndProps =>
-                    div({
-                        className: 'tb-manage-widgets__list',
-                        ref: dndProps.innerRef,
-                        children: [
-                            isEmpty(widgets)
-                                ? div({className: 'tb-manage-widgets__empty', children: emptyText})
-                                : widgets.map((w, idx) => widgetRow({key: w.id, w, idx, onHome})),
-                            dndProps.placeholder
-                        ]
-                    })
+            div({
+                className: 'tb-manage-widgets__list',
+                ref,
+                children: isEmpty(widgets)
+                    ? div({className: 'tb-manage-widgets__empty', children: emptyText})
+                    : widgets.map((w, idx) => widgetRow({key: w.id, w, idx, groupId}))
             })
         ]
     });
@@ -133,48 +139,38 @@ const group = hoistCmp.factory<GroupProps>(({droppableId, label, widgets, emptyT
 interface WidgetRowProps extends HoistProps<HomeModel> {
     w: WidgetSpec;
     idx: number;
-    onHome: boolean;
+    groupId: WidgetGroup;
 }
 
-const widgetRow = hoistCmp.factory<WidgetRowProps>(({model, w, idx, onHome}) =>
-    draggable({
-        key: w.id,
-        draggableId: w.id,
+const widgetRow = hoistCmp.factory<WidgetRowProps>(({model, w, idx, groupId}) => {
+    const sortable = useSortable({
+        id: w.id,
         index: idx,
-        children: (dndProps, dndState) => rowContent(model, w, onHome, dndProps, dndState)
-    })
-);
-
-// Row markup rendered inside the draggable's render-prop. A plain helper (not a factory) since it
-// receives rbd's dnd props directly and reads no observables of its own.
-function rowContent(
-    model: HomeModel,
-    w: WidgetSpec,
-    onHome: boolean,
-    dndProps,
-    dndState
-): ReactElement {
+        group: groupId,
+        type: 'widget',
+        accept: 'widget'
+    });
     return div({
         className: classNames(
             'tb-manage-widgets__row',
-            dndState.isDragging && 'tb-manage-widgets__row--dragging'
+            sortable.isDragging && 'tb-manage-widgets__row--dragging'
         ),
-        ref: dndProps.innerRef,
-        ...dndProps.draggableProps,
+        ref: sortable.ref,
         children: [
             // Drag handle owns the drag gesture, so the toggle stays independently tappable.
             div({
                 className: 'tb-manage-widgets__grip',
-                ...dndProps.dragHandleProps,
+                ref: sortable.handleRef,
+                'aria-label': w.title,
                 children: Icon.grip({prefix: 'fas'})
             }),
             div({className: 'tb-manage-widgets__row-icon', children: w.icon}),
             span({className: 'tb-manage-widgets__row-title', children: w.title}),
             filler(),
             switchInput({
-                value: onHome,
+                value: groupId === 'home',
                 onChange: v => model.setOnHome(w.id, v)
             })
         ]
     });
-}
+});

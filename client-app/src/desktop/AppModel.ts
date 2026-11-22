@@ -82,6 +82,8 @@ import {messagesPanel} from './tabs/system/dialogs/MessagesPanel';
 import {toastPanel} from './tabs/system/dialogs/ToastPanel';
 import {buttonsPanel} from './tabs/components/general/ButtonsPanel';
 import {calloutPanel} from './tabs/components/general/CalloutPanel';
+import {chipPanel} from './tabs/components/general/ChipPanel';
+import {sortableListPanel} from './tabs/components/general/SortableListPanel';
 import {clockPanel} from './tabs/components/general/ClockPanel';
 import {customPackagePanel} from './tabs/system/CustomPackagePanel';
 import {dateFormatsPanel} from './tabs/system/formats/DateFormatsPanel';
@@ -349,6 +351,8 @@ export class AppModel extends BaseAppModel {
                             {name: 'separator', path: '/separator'},
                             {name: 'sparkline', path: '/sparkline'},
                             {name: 'callout', path: '/callout'},
+                            {name: 'chip', path: '/chip'},
+                            {name: 'sortableList', path: '/sortableList'},
                             {name: 'viewManager', path: '/viewManager'}
                         ]
                     },
@@ -617,6 +621,7 @@ export class AppModel extends BaseAppModel {
                         ...[
                             {id: 'buttons', content: buttonsPanel},
                             {id: 'callout', content: calloutPanel},
+                            {id: 'chip', content: chipPanel},
                             {id: 'clock', content: clockPanel},
                             {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
                             {id: 'icons', content: iconsPanel},
@@ -631,6 +636,7 @@ export class AppModel extends BaseAppModel {
                                 content: propertyTablePanel
                             },
                             {id: 'separator', content: separatorPanel},
+                            {id: 'sortableList', title: 'SortableList', content: sortableListPanel},
                             {id: 'sparkline', content: sparklinePanel},
                             {id: 'statCard', title: 'StatCard', content: statCardPanel},
                             {id: 'timestamp', content: relativeTimestampPanel},

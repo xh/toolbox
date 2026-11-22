@@ -69,20 +69,25 @@ describe('managing widgets', () => {
         });
     });
 
-    it('applies a drag between lists, and ignores a drop outside them', () => {
+    it('shows a drag between lists live, and saves it only on drop', () => {
         createModel();
-        model.onDragEnd({
-            draggableId: 'releases',
-            source: {droppableId: 'home', index: 2},
-            destination: {droppableId: 'available', index: 0}
-        });
-        expect(model.resolvedAvailableIds).toEqual(['releases']);
+        model.previewMove('releases', 'available');
+        expect(model.availableWidgets.map(it => it.id)).toEqual(['releases']);
+        expect(model.resolvedAvailableIds).toEqual([]);
 
-        model.onDragEnd({
-            draggableId: 'welcome',
-            source: {droppableId: 'home', index: 0}
-        });
-        expect(model.resolvedHomeIds[0]).toBe('welcome');
+        model.commitDrag();
+        expect(model.resolvedAvailableIds).toEqual(['releases']);
+    });
+
+    it('reorders within a list by taking the target slot, and discards a cancelled drag', () => {
+        createModel();
+        const [first, second, third] = DEFAULT_WIDGET_IDS;
+        model.previewMove(first, 'home', third);
+        expect(model.homeWidgets.slice(0, 3).map(it => it.id)).toEqual([second, third, first]);
+
+        model.cancelDrag();
+        expect(model.homeWidgets.map(it => it.id)).toEqual(model.resolvedHomeIds);
+        expect(model.resolvedHomeIds[0]).toBe(first);
     });
 
     it('freezes the dashboard while managing, then shows the changes on close', () => {
