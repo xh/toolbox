@@ -520,6 +520,11 @@
   flex: none;
 }
 
+// The switcher's box sets its display inline.
+body.tb-blueprints-maximized .tb-switcher {
+  display: none !important;
+}
+
 .tb-builtins__body {
   max-width: 1080px;
   gap: var(--xh-spacing);

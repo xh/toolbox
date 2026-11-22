@@ -80,6 +80,7 @@ const pages = hoistCmp.factory<PagesProps>({
             className: 'tb-blueprints',
             tbar: toolbar({
                 className: 'tb-blueprints__pagebar',
+                omit: model.shell.maximize === 'fill' && !model.shell.libraryOpen,
                 children: [
                     ...leadingItems,
                     tabSwitcher({model: model.tabModel}),

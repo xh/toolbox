@@ -8,6 +8,7 @@ import {segmentedControl, textArea} from '@xh/hoist/desktop/cmp/input';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
+import {useEffect} from 'react';
 import {blueprintMenu} from '../BlueprintMenu';
 import {DocumentBarModel} from './DocumentBarModel';
 
@@ -90,9 +91,62 @@ export const documentBar = hoistCmp.factory({
                               omit: !isPublish,
                               onClick: () => shell.copySelectedAsync()
                           }),
-                          blueprintMenu()
+                          blueprintMenu(),
+                          toolbarSep(),
+                          maximizeButtons()
                       ]
                     : [filler()])
+            ]
+        });
+    }
+});
+
+/**
+ * Expand and Fill, which give the editor more room. Clicking the one on restores. While the editor
+ * is maximized, the page's root carries a class that hides the tab's left nav, and Esc restores it
+ * when nothing is selected.
+ */
+const maximizeButtons = hoistCmp.factory<DocumentBarModel>({
+    model: uses(DocumentBarModel),
+    render: ({model}) => {
+        const {shell} = model,
+            {maximize} = shell,
+            set = (v: typeof maximize) => (shell.maximize = maximize === v ? 'off' : v);
+        useEffect(() => {
+            if (maximize === 'off') return;
+            const cls = 'tb-blueprints-maximized',
+                onKeyDown = (e: KeyboardEvent) => {
+                    if (e.key === 'Escape' && !e.defaultPrevented && !shell.designModel.selection) {
+                        shell.maximize = 'off';
+                    }
+                };
+            document.body.classList.add(cls);
+            window.addEventListener('keydown', onKeyDown);
+            return () => {
+                document.body.classList.remove(cls);
+                window.removeEventListener('keydown', onKeyDown);
+            };
+        }, [maximize, shell]);
+        return hbox({
+            className: 'tb-docbar__maximize',
+            children: [
+                button({
+                    icon: Icon.arrowsLeftRight(),
+                    minimal: true,
+                    active: maximize === 'expand',
+                    tooltip: maximize === 'expand' ? 'Restore (Esc)' : 'Expand: hide the left nav',
+                    onClick: () => set('expand')
+                }),
+                button({
+                    icon: Icon.expand(),
+                    minimal: true,
+                    active: maximize === 'fill',
+                    tooltip:
+                        maximize === 'fill'
+                            ? 'Restore (Esc)'
+                            : 'Fill: also hide the page bar, for the whole area under the app bar',
+                    onClick: () => set('fill')
+                })
             ]
         });
     }

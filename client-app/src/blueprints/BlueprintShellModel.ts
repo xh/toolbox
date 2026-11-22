@@ -115,6 +115,12 @@ export class BlueprintShellModel extends HoistModel {
     @bindable accessor libraryOpen = true;
     @bindable accessor shareOpen = false;
 
+    /**
+     * How much room the editor takes: `expand` hides the tab's left nav, and `fill` also hides
+     * the page bar, leaving the editor the whole area under the app bar.
+     */
+    @bindable accessor maximize: 'off' | 'expand' | 'fill' = 'off';
+
     /** True to open the next editor on the Architect, its composer focused. */
     @bindable accessor askArchitectOnOpen = false;
 
@@ -318,6 +324,7 @@ export class BlueprintShellModel extends HoistModel {
         this.persistWith = {localStorageKey: storageKey ?? 'blueprintsDesigner'};
         this.markPersist('selectedId', {path: `selectedId.${config.type.name}`});
         this.markPersist('recentIds', {path: `recentIds.${config.type.name}`});
+        this.markPersist('maximize');
         this.threadStore = new LocalThreadStore({
             storageKey: storageKey ? `${storageKey}.threads` : 'blueprints.designer.threads',
             seed: () => [],
