@@ -115,6 +115,29 @@ describe('Blueprints designer', () => {
         model.editorView = 'canvas';
     });
 
+    it('leaves Preview for the view last shown when design mode is set from elsewhere', async () => {
+        await model.selectAsync(byName(MINE).id);
+        model.togglePreview();
+        model.blueprintModel.setMode('design');
+        expect(model.editorView).toBe('canvas');
+
+        model.editorView = 'map';
+        model.togglePreview();
+        expect(model.editorView).toBe('preview');
+        model.blueprintModel.setMode('design');
+        expect(model.editorView).toBe('map');
+        model.editorView = 'canvas';
+    });
+
+    it('shows Preview when run mode is set from elsewhere on a draft', async () => {
+        await model.selectAsync(byName(MINE).id);
+        model.blueprintModel.setMode('run');
+        expect(model.editorView).toBe('preview');
+        model.togglePreview();
+        expect(model.editorView).toBe('canvas');
+        expect(model.blueprintModel.mode).toBe('design');
+    });
+
     it('saves edits to the draft as its next version', async () => {
         await model.selectAsync(byName(MINE).id);
         const {version} = model.documentModel.document;

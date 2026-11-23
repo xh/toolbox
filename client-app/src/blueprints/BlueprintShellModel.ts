@@ -374,6 +374,19 @@ export class BlueprintShellModel extends HoistModel {
                         this.blueprintModel?.setMode(view === 'preview' ? 'run' : 'design');
                 }
             },
+            // The mode set any other way, such as the Architect's design-mode request, moves the view
+            // with it: design leaves Preview for the view last shown, and run shows Preview.
+            {
+                track: () => this.blueprintModel?.mode,
+                run: mode => {
+                    if (!this.canEdit) return;
+                    if (mode === 'design' && this.editorView === 'preview') {
+                        this.editorView = this.lastWorkView;
+                    } else if (mode === 'run' && this.editorView !== 'preview') {
+                        this.editorView = 'preview';
+                    }
+                }
+            },
             // The page's root carries the class that hides the app's nav only while one of this
             // type's blueprints is open, so other pages, deep links and reloads always keep it.
             {
