@@ -15,6 +15,7 @@
 .tb-sortable-list-panel__pad {
   padding: var(--xh-spacing);
   --xh-sortable-list-gap: 6px;
+  --xh-sortable-list-item-padding: 0;
 }
 
 .tb-sortable-list-panel__row {
@@ -22,7 +23,6 @@
   align-items: center;
   gap: 8px;
   min-width: 0;
-  padding-right: var(--xh-spacing-half);
 }
 
 .tb-sortable-list-panel__box .xh-sortable-list__item,
