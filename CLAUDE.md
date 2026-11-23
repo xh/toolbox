@@ -224,6 +224,14 @@ and `gh api` for anything else. Prefer it over raw `curl` calls to the GitHub AP
 
 ## Plugins
 
+### XH plugin (`xh@hoist-ai`)
+
+The shared `.claude/settings.json` enables XH's `xh@hoist-ai` plugin, but enabling does not
+install it. Each developer should install it once per machine at user scope, which covers every
+repo and worktree and auto-updates. If no `xh:` skills appear in your available skills, tell the
+developer the plugin is missing and give them the command
+`claude plugin install xh@hoist-ai --scope user`. Offer to run it for them.
+
 ### TypeScript LSP (enabled by default)
 
 The `typescript-lsp` plugin is enabled in `.claude/settings.json` and provides code intelligence
@@ -278,7 +286,8 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 
 Package manager: **pnpm** (version pinned via `packageManager` in `package.json`; `pnpm-lock.yaml`
 is the source of truth). Do not run `npm install` or `yarn install` here. If `pnpm` is not on the
-PATH, enable it once via `corepack enable pnpm`. The sibling `../../hoist-react` checkout is also
+PATH, install any recent version (see [pnpm.io/installation](https://pnpm.io/installation)). It
+switches to the pinned version automatically. The sibling `../../hoist-react` checkout is also
 pnpm-managed, and `startWithHoist` installs it with pnpm as well.
 
 ```bash
